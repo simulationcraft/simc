@@ -5,7 +5,7 @@ import dbc.fmt
 _FORMATDB = None
 
 class RawDBCRecord:
-    __slots__ = ( '_id', '_d', '_dbcp', '_flags' )
+    __slots__ = ( '_id', '_d', '_dbcp', '_flags', '_key' )
 
     def dbc_name(self):
         return self.__class__.__name__.replace('_', '-')
@@ -13,11 +13,12 @@ class RawDBCRecord:
     def is_hotfixed(self):
         return self._flags != 0
 
-    def __init__(self, parser, dbc_id, data):
+    def __init__(self, parser, dbc_id, data, key = 0):
         self._dbcp = parser
 
         self._id = dbc_id
         self._d = data
+        self._key = key
         self._flags = 0
 
         if not self._d:
@@ -26,6 +27,9 @@ class RawDBCRecord:
     def __getattr__(self, name):
         if name == 'id' and self._id > -1:
             return self._id
+        # Always return the parent id, even as 0 if the block does not exist in the db2 file
+        elif name == 'id_parent':
+            return self._key
         else:
             raise AttributeError
 
@@ -37,6 +41,9 @@ class RawDBCRecord:
         for i in range(0, len(self._d)):
             s.append('f%d=%d' % (i + 1, self._d[i]))
 
+        if self._key > 0:
+            s.append('id_parent=%u' % self._key)
+
         return ' '.join(s)
 
 class DBCRecord(RawDBCRecord):
@@ -46,13 +53,9 @@ class DBCRecord(RawDBCRecord):
 
     # Default value if database is accessed with a missing key (id)
     @classmethod
-    def default(cls, *args):
+    def default(cls, parser):
         if not cls.__d:
-            cls.__d = cls(None, 0, None)
-
-        # Ugly++ but it will have to do
-        for i in range(0, len(args), 2):
-            setattr(cls.__d, args[i], args[i + 1])
+            cls.__d = cls(parser, 0, None, 0)
 
         return cls.__d
 
@@ -131,14 +134,14 @@ class DBCRecord(RawDBCRecord):
             raise AttributeError
 
         if not hasattr(self, '_l'):
-            return self.__l[name].default()
+            return self.__l[name].default(self._dbcp)
 
         if name not in self._l:
-            return self.__l[name].default()
+            return self.__l[name].default(self._dbcp)
 
         v = self._l[name]
         if index >= len(v):
-            return self.__l[name].default()
+            return self.__l[name].default(self._dbcp)
         else:
             return v[index]
 
@@ -170,9 +173,6 @@ class DBCRecord(RawDBCRecord):
         try:
             field_idx = self._cd[name]
         except:
-            #if name == 'id':
-            #    return self._id
-            #raise AttributeError
             return super().__getattr__(name)
 
         if self._fo[field_idx] == 'S' and self._d[field_idx] > 0:
@@ -188,6 +188,9 @@ class DBCRecord(RawDBCRecord):
             try:
                 if field == 'id' and self._id > -1:
                     f.append(_FORMATDB.id_format(self.dbc_name()) % self._id)
+                    continue
+                elif field == 'id_parent':
+                    f.append(self._dbcp.key_format(self.__class__.__name__) % self._key)
                     continue
                 else:
                     field_idx = self._cd[field]
@@ -223,6 +226,9 @@ class DBCRecord(RawDBCRecord):
             fields.append('id')
         fields += self._fi
 
+        if self._dbcp.has_key_block():
+            fields.append('id_parent')
+
         return delim.join(fields)
 
     def __str__(self):
@@ -245,6 +251,10 @@ class DBCRecord(RawDBCRecord):
                 s.append('%s=%d' % (field, self._d[i]))
             else:
                 s.append('%s=%u' % (field, self._d[i]))
+
+        if self._key > 0:
+            s.append('id_parent=%u' % self._key)
+
         return ' '.join(s)
 
     def csv(self, delim = ',', header = False):
@@ -271,6 +281,9 @@ class DBCRecord(RawDBCRecord):
             else:
                 s += '%u%c' % (self._d[i], delim)
 
+        if self._key > 0:
+            s += '%u%c' % (self._key, delim)
+
         if len(s) > 0:
             s = s[0:-1]
         return s
@@ -278,8 +291,8 @@ class DBCRecord(RawDBCRecord):
 class Spell(DBCRecord):
     __slots__ = ( '_effects', 'max_effect_index' )
 
-    def __init__(self, dbc_parser, dbc_id, data):
-        DBCRecord.__init__(self, dbc_parser, dbc_id, data)
+    def __init__(self, dbc_parser, dbc_id, data, key_id):
+        DBCRecord.__init__(self, dbc_parser, dbc_id, data, key_id)
 
         self._effects = []
         self.max_effect_index = -1
@@ -307,7 +320,7 @@ class Spell(DBCRecord):
         # are the only ones that may be missing in Spellxxx. Just in case raise an 
         # attributeerror if something else is being accessed
         if 'effect_' in name:
-            return SpellEffect.default()
+            return SpellEffect.default(self._dbcp)
 
         return DBCRecord.__getattr__(self, name)
 
@@ -427,8 +440,12 @@ def initialize_data_model(options, obj):
         dbc.data.Spell.link('scaling', dbc.data.SpellScaling)
         dbc.data.Spell.link('artifact_power', dbc.data.ArtifactPowerRank)
         dbc.data.Spell.link('label', dbc.data.SpellLabel)
+        dbc.data.Spell.link('misc', dbc.data.SpellMisc)
 
-    if 'SpellEffect' in dir(obj):
+        if options.build >= 25600:
+            dbc.data.Spell.link('desc_var_link', dbc.data.SpellXDescriptionVariables)
+
+    if 'SpellEffect' in dir(obj) and options.build < 25600:
         dbc.data.SpellEffect.link('scaling', dbc.data.SpellEffectScaling)
 
     if 'SpellItemEnchantment' in dir(obj):

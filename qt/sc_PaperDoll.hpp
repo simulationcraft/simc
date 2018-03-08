@@ -5,9 +5,7 @@
 #pragma once
 #include "config.hpp"
 
-#ifndef SC_PAPERDOLL
-#define SC_PAPERDOLL
-#endif
+#if 0
 
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
@@ -490,3 +488,4 @@ private:
   } current_metric;
   QLabel* current_dps;
 };
+#endif

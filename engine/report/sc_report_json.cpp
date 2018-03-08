@@ -6,6 +6,7 @@
 #include "sc_report.hpp"
 #include "interfaces/sc_js.hpp"
 #include "simulationcraft.hpp"
+#include "util/git_info.hpp"
 
 #include "util/rapidjson/filewritestream.h"
 #include "util/rapidjson/document.h"
@@ -669,11 +670,12 @@ js::sc_js_t to_json( const player_collected_data_t::buffed_stats_t& bs )
 
 void to_json( JsonOutput root,
               const std::vector<player_collected_data_t::action_sequence_data_t*>& asd,
-              const std::vector<resource_e>& relevant_resources )
+              const std::vector<resource_e>& relevant_resources,
+              const sim_t& sim )
 {
   root.make_array();
 
-  range::for_each( asd, [ &root, &relevant_resources ]( const player_collected_data_t::action_sequence_data_t* entry ) {
+  range::for_each( asd, [ &root, &relevant_resources, &sim ]( const player_collected_data_t::action_sequence_data_t* entry ) {
     auto json = root.add();
 
     json[ "time" ] = entry -> time;
@@ -691,11 +693,48 @@ void to_json( JsonOutput root,
     {
       auto buffs = json[ "buffs" ];
       buffs.make_array();
-      range::for_each( entry -> buff_list, [ &buffs ]( const std::pair<buff_t*, int> data ) {
+      range::for_each( entry -> buff_list, [ &buffs, &sim ]( const std::pair< buff_t*, std::vector<double> > data ) {
         auto entry = buffs.add();
 
         entry[ "name" ] = data.first -> name();
-        entry[ "stacks" ] = data.second;
+        entry[ "stacks" ] = data.second[0];
+        if ( sim.json_full_states )
+        {
+          entry[ "remains" ] = data.second[1];
+        }
+      } );
+    }
+
+    // Writing cooldown and debuffs data if asking for json full states
+    if ( sim.json_full_states && entry -> cooldown_list.size() > 0 )
+    {
+      auto cooldowns = json[ "cooldowns" ];
+      cooldowns.make_array();
+      range::for_each( entry -> cooldown_list, [ &cooldowns, &sim ]( const std::pair< cooldown_t*, std::vector<double> > data ) {
+        auto entry = cooldowns.add();
+
+        entry[ "name" ] = data.first -> name();
+        entry[ "stacks" ] = data.second[ 0 ];
+        entry[ "remains" ] = data.second[ 1 ];
+      } );
+    }
+
+    if ( sim.json_full_states && entry -> target_list.size() > 0 )
+    {
+      auto targets = json[ "targets" ];
+      targets.make_array();
+      range::for_each( entry -> target_list, [ json, &targets, &sim ]
+          ( const std::pair< player_t*, std::vector< std::pair< buff_t*, std::vector<double> > > > target_data ) {
+        auto target_entry = targets.add();
+        target_entry[ "name" ] = target_data.first -> name();
+        auto debuffs = target_entry[ "debuffs" ];
+        debuffs.make_array();
+        range::for_each( target_data.second, [ &debuffs, &sim ]( const std::pair< buff_t*, std::vector<double> > data ) {
+          auto entry = debuffs.add();
+          entry[ "name" ] = data.first -> name();
+          entry[ "stack" ] = data.second[ 0 ];
+          entry[ "remains" ] = data.second[ 1 ];
+        } );
       } );
     }
 
@@ -861,12 +900,12 @@ void collected_data_to_json( JsonOutput root, const player_t& p )
 
     if ( ! cd.action_sequence_precombat.empty() )
     {
-      to_json( root[ "action_sequence_precombat" ], cd.action_sequence_precombat, relevant_resources );
+      to_json( root[ "action_sequence_precombat" ], cd.action_sequence_precombat, relevant_resources, sim );
     }
 
     if ( ! cd.action_sequence.empty() )
     {
-      to_json( root[ "action_sequence" ], cd.action_sequence, relevant_resources );
+      to_json( root[ "action_sequence" ], cd.action_sequence, relevant_resources, sim );
     }
 
     to_json( root[ "buffed_stats" ], cd.buffed_stats_snapshot, relevant_resources );
@@ -1180,6 +1219,7 @@ void to_json( JsonOutput& arr, const player_t& p )
 
   root[ "invert_scaling" ] = p.invert_scaling;
   root[ "reaction_offset" ] = p.reaction_offset;
+  root[ "reaction_max" ] = p.reaction_max;
   root[ "reaction_mean" ] = p.reaction_mean;
   root[ "reaction_stddev" ] = p.reaction_stddev;
   root[ "reaction_nu" ] = p.reaction_nu;
@@ -1285,6 +1325,7 @@ js::sc_js_t to_json( const player_t& p )
   }
   node.set( "invert_scaling", p.invert_scaling );
   node.set( "reaction_offset", to_json( p.reaction_offset ) );
+  node.set( "reaction_max", to_json( p.reaction_max ) );
   node.set( "reaction_mean", to_json( p.reaction_mean ) );
   node.set( "reaction_stddev", to_json( p.reaction_stddev ) );
   node.set( "reaction_nu", to_json( p.reaction_nu ) );
@@ -1730,9 +1771,11 @@ js::sc_js_t get_root( const sim_t& sim )
 {
   js::sc_js_t root;
   root.set( "version", SC_VERSION );
-#if defined( SC_GIT_REV )
-  root.set( "git_rev", SC_GIT_REV );
-#endif
+  if ( git_info::available())
+  {
+    root.set( "git_branch", git_info::branch() );
+    root.set( "git_rev", git_info::revision() );
+  }
   root.set( "ptr_enabled", SC_USE_PTR );
   root.set( "beta_enabled", SC_BETA );
   root.set( "build_date", __DATE__ );
@@ -1754,9 +1797,11 @@ void print_json2_pretty( FILE* o, const sim_t& sim )
   root[ "beta_enabled" ] = SC_BETA;
   root[ "build_date" ] = __DATE__;
   root[ "build_time" ] = __TIME__;
-#if defined( SC_GIT_REV )
-  root[ "git_revision" ] = SC_GIT_REV;
-#endif
+  if ( git_info::available())
+  {
+    root[ "git_revision" ] = git_info::revision();
+    root[ "git_branch" ] = git_info::branch();
+  }
 
   to_json( root[ "sim" ], sim );
 
@@ -1829,6 +1874,10 @@ void print_json( sim_t& sim )
     // Print JSON report
     try
     {
+      if( sim.json_full_states )
+      {
+        std::cout << "\nReport will be generated with full state for each action.\n";
+      }
       Timer t( "JSON-New report" );
       if ( ! sim.profileset_enabled )
       {

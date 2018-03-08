@@ -11,6 +11,7 @@
 #include <mutex>
 #include <condition_variable>
 
+#include "sc_option.hpp"
 #include "util/generic.hpp"
 #include "util/io.hpp"
 #include "sc_enums.hpp"
@@ -19,6 +20,7 @@ struct sim_t;
 struct sim_control_t;
 struct player_t;
 class extended_sample_data_t;
+struct talent_data_t;
 
 namespace js {
 struct JsonOutput;
@@ -26,6 +28,8 @@ struct JsonOutput;
 
 namespace profileset
 {
+class profilesets_t;
+
 struct statistical_data_t
 {
   double min, first_quartile, median, mean, third_quartile, max, std_dev;
@@ -107,22 +111,146 @@ public:
   { return { m_min, m_1stquartile, m_median, m_mean, m_3rdquartile, m_max, m_stddev }; }
 };
 
-class profile_set_t
+class profile_output_data_item_t
 {
-  std::string                   m_name;
-  sim_control_t*                m_options;
-  std::vector<profile_result_t> m_results;
-  bool                          m_has_output;
+  const char*                                      m_slot_name;
+  unsigned                                         m_item_id;
+  unsigned                                         m_item_level;
+  std::vector<int>                                 m_bonus_id;
+  unsigned                                         m_enchant_id;
+  std::array<int, MAX_GEM_SLOTS>                   m_gem_id;
+  std::array<std::vector<unsigned>, MAX_GEM_SLOTS> m_relic_data;
+  std::array<unsigned, MAX_GEM_SLOTS>              m_relic_ilevel;
+  std::array<unsigned, MAX_GEM_SLOTS>              m_relic_bonus_ilevel;
 
 public:
-  profile_set_t( const std::string& name, sim_control_t* opts, bool has_ouput );
+  profile_output_data_item_t() : m_slot_name( nullptr ), m_item_id( 0 ), m_item_level( 0 ), m_enchant_id( 0 )
+  { }
+
+  profile_output_data_item_t( const char* slot_str, unsigned id, unsigned item_level ) :
+    m_slot_name( slot_str ), m_item_id( id ), m_item_level( item_level )
+  { }
+
+  const char* slot_name() const
+  { return m_slot_name; }
+
+  profile_output_data_item_t& slot_name( const char* v )
+  { m_slot_name = v; return *this; }
+
+  unsigned item_id() const
+  { return m_item_id; }
+
+  profile_output_data_item_t& item_id( unsigned v )
+  { m_item_id = v; return *this; }
+
+  unsigned item_level() const
+  { return m_item_level; }
+
+  profile_output_data_item_t& item_level( unsigned v )
+  { m_item_level = v; return *this; }
+
+  const std::vector<int>& bonus_id() const
+  { return m_bonus_id; }
+
+  profile_output_data_item_t& bonus_id( const std::vector<int>& v )
+  { m_bonus_id = v; return *this; }
+
+  unsigned enchant_id() const
+  { return m_enchant_id; }
+
+  profile_output_data_item_t& enchant_id( unsigned v )
+  { m_enchant_id = v; return *this; }
+
+  const std::array<int, MAX_GEM_SLOTS>& gem_id() const
+  { return m_gem_id; }
+
+  profile_output_data_item_t& gem_id( const std::array<int, MAX_GEM_SLOTS>& v )
+  { m_gem_id = v; return *this; }
+
+  const std::array<std::vector<unsigned>, MAX_GEM_SLOTS>& relic_data() const
+  { return m_relic_data; }
+
+  profile_output_data_item_t& relic_data( const std::array<std::vector<unsigned>, MAX_GEM_SLOTS>& v )
+  { m_relic_data = v; return *this; }
+
+  const std::array<unsigned, MAX_GEM_SLOTS>& relic_ilevel() const
+  { return m_relic_ilevel; }
+
+  profile_output_data_item_t& relic_ilevel( const std::array<unsigned, MAX_GEM_SLOTS>& v )
+  { m_relic_ilevel = v; return *this; }
+
+  const std::array<unsigned, MAX_GEM_SLOTS>& relic_bonus_ilevel() const
+  { return m_relic_bonus_ilevel; }
+
+  profile_output_data_item_t& relic_bonus_ilevel( const std::array<unsigned, MAX_GEM_SLOTS>& v )
+  { m_relic_bonus_ilevel = v; return *this; }
+};
+
+class profile_output_data_t
+{
+  race_e                                  m_race;
+  std::vector<talent_data_t*>             m_talents;
+  std::string                             m_artifact;
+  std::string                             m_crucible;
+  std::vector<profile_output_data_item_t> m_gear;
+
+public:
+  profile_output_data_t() : m_race ( RACE_NONE )
+  { }
+
+  race_e race() const
+  { return m_race; }
+
+  profile_output_data_t& race( race_e v )
+  { m_race = v; return *this; }
+
+  const std::vector<talent_data_t*>& talents() const
+  { return m_talents; }
+
+  profile_output_data_t& talents( const std::vector<talent_data_t*>& v )
+  { m_talents = v; return *this; }
+
+  const std::string& artifact() const
+  { return m_artifact; }
+
+  profile_output_data_t& artifact( const std::string& v )
+  { m_artifact = v; return *this; }
+
+  const std::string& crucible() const
+  { return m_crucible; }
+
+  profile_output_data_t& crucible( const std::string& v )
+  { m_crucible = v; return *this; }
+
+  const std::vector<profile_output_data_item_t>& gear() const
+  { return m_gear; }
+
+  profile_output_data_t& gear( const std::vector<profile_output_data_item_t>& v )
+  { m_gear = v; return *this; }
+};
+
+class profile_set_t
+{
+  std::string                            m_name;
+  sim_control_t*                         m_options;
+  bool                                   m_has_output;
+  std::vector<profile_result_t>          m_results;
+  std::unique_ptr<profile_output_data_t> m_output_data;
+
+public:
+  profile_set_t( const std::string& name, sim_control_t* opts, bool has_output );
 
   ~profile_set_t();
+
+  void cleanup_options();
 
   const std::string& name() const
   { return m_name; }
 
   sim_control_t* options() const;
+
+  bool has_output() const
+  { return m_has_output; }
 
   const profile_result_t& result( scale_metric_e metric = SCALE_METRIC_NONE ) const;
 
@@ -131,13 +259,49 @@ public:
   size_t results() const
   { return m_results.size(); }
 
-  bool has_output() const
-  { return m_has_output; }
+  profile_output_data_t& output_data()
+  {
+    if ( ! m_output_data )
+    {
+      m_output_data = std::unique_ptr<profile_output_data_t>( new profile_output_data_t() );
+    }
+
+    return *m_output_data;
+  }
 };
 
+class worker_t
+{
+  bool           m_done;
+  sim_t*         m_parent;
+  profilesets_t* m_master;
+
+  sim_t*         m_sim;
+  profile_set_t* m_profileset;
+  std::thread*   m_thread;
+
+public:
+  worker_t( profilesets_t*, sim_t*, profile_set_t* );
+  ~worker_t();
+
+  const std::thread& thread() const;
+  std::thread& thread();
+  void execute();
+
+  bool is_done() const
+  { return m_done == true; }
+
+  sim_t* sim() const;
+};
 
 class profilesets_t
 {
+  enum simulation_mode
+  {
+    SEQUENTIAL = 0,
+    PARALLEL
+  };
+
   enum state
   {
     STARTED,            // Initial state
@@ -151,15 +315,32 @@ class profilesets_t
 
   static const size_t MAX_CHART_ENTRIES = 500;
 
-  state                          m_state;
-  profileset_vector_t            m_profilesets;
-  std::unique_ptr<sim_control_t> m_original;
-  int64_t                        m_insert_index;
-  size_t                         m_work_index;
-  std::mutex                     m_mutex;
-  std::unique_lock<std::mutex>   m_control_lock;
-  std::condition_variable        m_control;
-  std::thread                    m_thread;
+  state                                  m_state;
+  simulation_mode                        m_mode;
+  profileset_vector_t                    m_profilesets;
+  std::unique_ptr<sim_control_t>         m_original;
+  int64_t                                m_insert_index;
+  size_t                                 m_work_index;
+  std::mutex                             m_mutex;
+  std::unique_lock<std::mutex>           m_control_lock;
+  std::condition_variable                m_control;
+  std::vector<std::thread>               m_thread;
+
+  // Shared iterator for threaded init workers
+  opts::map_list_t::const_iterator       m_init_index;
+
+  // Parallel profileset worker information
+  size_t                                 m_max_workers;
+  std::vector<std::unique_ptr<worker_t>> m_current_work;
+
+  // Parallel profileset worker control
+  std::mutex                             m_work_mutex;
+  std::unique_lock<std::mutex>           m_work_lock;
+  std::condition_variable                m_work;
+
+  // Parallel profileset stats collection
+  double                                 m_start_time;
+  double                                 m_total_elapsed;
 
   bool validate( sim_t* sim );
 
@@ -168,24 +349,45 @@ class profilesets_t
   bool generate_chart( const sim_t& sim, io::ofstream& out ) const;
   void generate_sorted_profilesets( std::vector<const profile_set_t*>& out ) const;
 
+  void output_progressbar( const sim_t* ) const;
+
   void set_state( state new_state );
+
+  size_t n_workers() const;
+  void generate_work( sim_t*, std::unique_ptr<profile_set_t>& );
+  void cleanup_work();
+  void finalize_work();
 
   sim_control_t* create_sim_options( const sim_control_t*, const std::vector<std::string>& opts );
 public:
-  profilesets_t() : m_state( STARTED ), m_original( nullptr ), m_insert_index( -1 ),
-    m_work_index( 0 ), m_control_lock( m_mutex, std::defer_lock )
+  profilesets_t() : m_state( STARTED ), m_mode( SEQUENTIAL ),
+    m_original( nullptr ), m_insert_index( -1 ),
+    m_work_index( 0 ), m_control_lock( m_mutex, std::defer_lock ),
+    m_max_workers( 0 ), m_work_lock( m_work_mutex, std::defer_lock ),
+    m_start_time( 0 ), m_total_elapsed( 0 )
   { }
 
   ~profilesets_t()
   {
-    if ( m_thread.joinable() )
-    {
-      m_thread.join();
-    }
+    range::for_each( m_thread, []( std::thread& thread ) {
+      if ( thread.joinable() )
+      {
+        thread.join();
+      }
+    } );
+
+    range::for_each( m_current_work, []( std::unique_ptr<worker_t>& worker ) { worker -> thread().join(); } );
   }
 
   size_t n_profilesets() const
   { return m_profilesets.size(); }
+
+  size_t done_profilesets() const;
+
+  // Worker sim finished
+  void notify_worker();
+
+  std::string current_profileset_name();
 
   bool parse( sim_t* );
   void initialize( sim_t* );
@@ -204,13 +406,24 @@ public:
 
   bool is_done() const
   { return m_state == DONE; }
+
+  bool is_sequential() const
+  { return m_mode == SEQUENTIAL; }
+
+  bool is_parallel() const
+  { return m_mode == PARALLEL; }
 };
 
 void create_options( sim_t* sim );
 
 statistical_data_t collect( const extended_sample_data_t& c );
 statistical_data_t metric_data( const player_t* player, scale_metric_e metric );
+void save_output_data( std::unique_ptr<profile_set_t>& profileset, const player_t* parent_player, const player_t* player, std::string option );
+void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput& ovr );
 
+// Filter non-profilest options into a new control object, caller is responsible for deleting the
+// newly created control object.
+sim_control_t* filter_control( const sim_control_t* );
 } /* Namespace profileset ends */
 
 #endif /* SC_PROFILESET_HH */

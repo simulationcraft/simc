@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 PTR (wow build 25163)
+SimulationCraft 730-03 for World of Warcraft 7.3.5 PTR (wow build 25753)
 
 Name             : Backstab (id=53) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -220,7 +220,7 @@ Effects          :
 #2 (id=536)      : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
 #3 (id=101522)   : Weapon Damage% (31)
-                   Base Value: 208 | Scaled Value: 3.6 | Points Per Level: 8 | Target: Enemy (6)
+                   Base Value: 270 | Scaled Value: 4.22 | Points Per Level: 8 | Target: Enemy (6)
 Description      : An instant strike that causes $sw3 Physical damage.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
@@ -701,7 +701,7 @@ Regaining $w2 Energy every $t2 sec.][]
 
 Name             : Solar Wrath (Solar) (id=5176) [Scaling Spell (3), Spell Family (7)] 
 Class            : Restoration Rogue, Druid
-Race             : Night Elf
+Race             : Night Elf (0x8)
 School           : Nature
 Resource         : 3.5% Base Mana (0) (id=227)
 Spell Level      : 1
@@ -760,7 +760,7 @@ Effects          :
 #1 (id=1920)     : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #2 (id=99543)    : Weapon Damage% (31)
-                   Base Value: 360 | Scaled Value: 3.6 | Target: Enemy (6)
+                   Base Value: 432 | Scaled Value: 4.32 | Target: Enemy (6)
 Description      : Instantly attacks for $sw2 Physical damage. Awards 2 combo points.
 
 Name             : Sap (id=6770) [Spell Family (8)] 
@@ -878,7 +878,7 @@ Stance Mask      : 0x20000000
 Proc Flags       : ..x.x.x. x...x... x....... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell
 Affecting spells : Nightstalker (14062 effect#1), Subterfuge (108208 effect#3), Item - Rogue T18 Subtlety 2P Bonus (186278 effect#1), Hit and Run (196922 effect#2), Acrobatic Strikes (196924 effect#2), Flickering Shadows (197256 effect#2)
-Attributes       : ....x... x....... x.x.x... .x.x....   .....x.. ..x..... ........ ........ 
+Attributes       : ....x... ........ x.x.x... .x.x....   .....x.. ..x..... ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -897,6 +897,7 @@ Effects          :
 #5 (id=370947)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Garrote (703)
+Description      : $@spelldesc1856
 Tooltip          : Improved stealth.$?$w3!=0[
 Movement speed increased by $w3%.][]$?$w4!=0[
 Damage increased by $w4%.][]
@@ -1112,7 +1113,7 @@ Tooltip          : Bleed damage taken from the Rogue increased by $s4%.
 
 Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
-Race             : Orc
+Race             : Orc (0x2)
 School           : Physical
 Spell Level      : 1
 Duration         : 15 seconds
@@ -1129,12 +1130,12 @@ Effects          :
                    Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
                    Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
-Description      : Increases attack power by $s1. Lasts $d.
+Description      : Increases attack power by $s1 for $d.
 Tooltip          : Attack power increased by $s1.
 
 Name             : Elusiveness (Racial Passive) (id=21009) [Passive] 
 Class            : Rogue, Druid
-Race             : Night Elf
+Race             : Night Elf (0x8)
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1150,7 +1151,7 @@ Description      : Increases your speed while $?s5176[Prowl is active by $s1%.][
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc
+Race             : Orc (0x2)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1184,7 +1185,7 @@ Description      : $@spelldesc13877
 
 Name             : Arcane Torrent (Racial) (id=25046) 
 Class            : Rogue
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
@@ -1221,7 +1222,7 @@ Effects          :
 #1 (id=17065)    : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 0 (avg=0.25) | Target: Enemy (6)
 #2 (id=99544)    : Weapon Damage% (31)
-                   Base Value: 360 | Scaled Value: 3.6 | Target: Enemy (6)
+                   Base Value: 432 | Scaled Value: 4.32 | Target: Enemy (6)
 Description      : Instantly attacks for $sw2 Physical damage. Awards 2 combo points.
 
 Name             : Fleet Footed (Passive) (id=31209) [Spell Family (8), Passive] 
@@ -1360,7 +1361,7 @@ $mult=?s76803[${($76803m1/100+1)*$<mult2>}][${$<mult2>}]
 
 Name             : Interrupt (id=32747) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Physical
 Spell Level      : 10
 Range            : 100 yards
@@ -1446,7 +1447,7 @@ School           : Holy
 Range            : 50000 yards
 Duration         : 360 seconds
 Attributes       : ........ ........ .......x x.xx.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x.... ........   ........ ........ ........ ....x... 
+                 : x.x..... ......x. ...x.... ........   ........ ........ ....x... ....x... 
                  : .......x ........ ...x.... ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
@@ -1729,7 +1730,7 @@ Description      : $@spelldesc63268
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1746,7 +1747,7 @@ Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Aberration (Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1764,7 +1765,7 @@ Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -2025,7 +2026,7 @@ Description      : A vicious attack that deals $86392sw2 Physical damage with yo
 
 Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2127,7 +2128,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=119258)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Gouge (1776), Cheap Shot (1833), Sap (6770), Dismantle (207777)
+                   Affected Spells: Gouge (1776), Cheap Shot (1833), Sap (6770), Quaking Palm (107079), Dismantle (207777)
 Description      : Cheap Shot, Gouge, $?s207777[Sap, and Dismantle][and Sap] no longer cost Energy.
 
 Name             : Shadow Focus (id=112942) [Spell Family (8), Hidden] 
@@ -2199,7 +2200,7 @@ Attributes       : ........ ........ .....x.. ........   ...x...x ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=126788)   : School Damage (2): nature
-                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | AP Coefficient: 0.22100 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25415 | Target: Enemy (6)
 Description      : Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.
 
 Name             : Shuriken Toss (id=114014) [Scaling Spell (9), Spell Family (8)] 
@@ -2408,7 +2409,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=169681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Kidney Shot (408), Gouge (1776), Sap (6770)
+                   Affected Spells: Kidney Shot (408), Gouge (1776), Sap (6770), Quaking Palm (107079)
 #2 (id=169695)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Cheap Shot (1833), Blind (2094)
@@ -2439,7 +2440,7 @@ Effects          :
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
 #4 (id=191066)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
-                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724)
+                   Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
 #5 (id=191067)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=260699)   : Apply Aura (6) | Dummy (4)
@@ -2526,10 +2527,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179720)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Run Through (2098), Ambush (8676), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Death from Above (152150), Pistol Shot (185763), Cannonball Barrage (185779), Saber Slash (193315), Ghostly Strike (196937), Riposte (199753), Between the Eyes (199804), Greed (202822), Greed (202823), Blunderbuss (202895)
 #2 (id=191056)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Run Through (2098), Ambush (8676), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Death from Above (152150), Pistol Shot (185763), Cannonball Barrage (185779), Saber Slash (193315), Ghostly Strike (196937), Riposte (199753), Between the Eyes (199804), Greed (202822), Greed (202823), Blunderbuss (202895)
 #3 (id=191057)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -2779,7 +2780,7 @@ Description      : Venomous Wounds grants $s1 additional Energy each time it gra
 
 Name             : Expansive Mind (Racial Passive) (id=154744) [Passive] 
 Class            : Rogue, Monk
-Race             : Gnome
+Race             : Gnome (0x40)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3182,7 +3183,7 @@ Description      : Your Dispatch deals $186182m1% additional damage as Nature da
 Name             : Poison Knives (id=192376) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Artifact Power   : Id: 331, Index: 10, Max Rank: 8, Type: 32, Values: [ 4, 8, 12, 16, 20, 24, 28, 32 ]
+Artifact Power   : Id: 331, Index: 10, Max Rank: 8, Type: 32, Values: [ 3, 6, 9, 12, 15, 18, 21, 24 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3192,7 +3193,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
 #1 (id=282211)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 11 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Misc Value: 11 | Target: Self (1)
 #2 (id=343569)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Agonizing Poison (200803)
@@ -3379,7 +3380,7 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
 Effects          :
 #1 (id=283680)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Gouge (1776), Ambush (8676)
+                   Affected Spells: Gouge (1776), Ambush (8676), Quaking Palm (107079)
 #2 (id=318639)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ghostly Strike (196937)
@@ -3834,13 +3835,13 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289148)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Cheap Shot (1833), Run Through (2098), Ambush (8676), Blade Flurry (22482), Saber Slash (193315), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Dismantle (207777)
+                   Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Cheap Shot (1833), Run Through (2098), Ambush (8676), Blade Flurry (22482), Quaking Palm (107079), Saber Slash (193315), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Dismantle (207777)
 #2 (id=289149)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Stealth (1784), Vanish (11327)
 #3 (id=314667)   : Apply Aura (6) | Unknown(153)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Saber Slash (193315), Eviscerate (196819), Finality: Eviscerate (197393)
+                   Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Quaking Palm (107079), Saber Slash (193315), Eviscerate (196819), Finality: Eviscerate (197393)
 #4 (id=325547)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Death from Above (152150), Greed (202822), Greed (202823)
@@ -4319,7 +4320,7 @@ Description      : Saber Slash has a $s1% increased chance to strike an addition
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -5223,7 +5224,7 @@ Attack speed increased by $s2%.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
@@ -5240,7 +5241,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
@@ -5256,5 +5257,117 @@ Effects          :
 #2 (id=477480)   : Unknown(170)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Velocity         : 3 yards/sec
+Cooldown         : 150 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=477694)   : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*4,$AP*5)}
+
+Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
+Description      : Reduces Holy damage taken by ${$s1/-1}%.
+
+Name             : Light's Reckoning (Racial Passive) (id=255652) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477699)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256896 | Target: Self (1)
+Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
+
+Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477700)   : Apply Aura (6) | Unknown(447)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self (1)
+Description      : Experience gains from killing Demons increased by $s1%.
+
+Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 150 seconds
+Triggered by     : Light's Judgment (255647)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479673)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*4,$AP*5)}
+
+Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+Triggered by     : Light's Reckoning (255652)
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479676)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=479677)   : Direct Heal (10)
+                   Base Value: 100000 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
+Heals $s2 to allies within $A1. 
 
 

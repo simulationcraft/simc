@@ -5,8 +5,8 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
-#define SC_MAJOR_VERSION "730"
-#define SC_MINOR_VERSION "03"
+#define SC_MAJOR_VERSION "735"
+#define SC_MINOR_VERSION "02"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0
 #if SC_BETA
@@ -250,20 +250,6 @@ struct artifact_power_t
   { return rank_; }
 };
 
-// Spell information struct, holding static functions to output spell data in a human readable form
-
-namespace spell_info
-{
-std::string to_str( const dbc_t& dbc, const spell_data_t* spell, int level = MAX_LEVEL );
-void        to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t* parent, int level = MAX_LEVEL );
-//static std::string to_str( sim_t* sim, uint32_t spell_id, int level = MAX_LEVEL );
-std::string talent_to_str( const dbc_t& dbc, const talent_data_t* talent, int level = MAX_LEVEL );
-std::string set_bonus_to_str( const dbc_t& dbc, const item_set_bonus_t* set_bonus, int level = MAX_LEVEL );
-void        talent_to_xml( const dbc_t& dbc, const talent_data_t* talent, xml_node_t* parent, int level = MAX_LEVEL );
-void        set_bonus_to_xml( const dbc_t& dbc, const item_set_bonus_t* talent, xml_node_t* parent, int level = MAX_LEVEL );
-std::ostringstream& effect_to_str( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level = MAX_LEVEL );
-void                effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, xml_node_t*    parent, int level = MAX_LEVEL );
-}
 
 /* Luxurious sample data container with automatic merge/analyze,
  * intended to be used in class modules for custom reporting.
@@ -610,7 +596,7 @@ protected:
   buff_refresh_duration_callback_t _refresh_duration_callback;
   buff_stack_change_callback_t _stack_change_callback;
   double _rppm_freq, _rppm_mod;
-  rppm_scale_e _rppm_scale;
+  unsigned _rppm_scale;
   const spell_data_t* _trigger_data;
   std::vector<cache_e> _invalidate_list;
   friend struct ::buff_t;
@@ -686,7 +672,7 @@ public:
   { _rppm_freq = f; return *( static_cast<bufftype*>( this ) ); }
   bufftype& rppm_mod( double m )
   { _rppm_mod = m; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& rppm_scale( rppm_scale_e s )
+  bufftype& rppm_scale( unsigned s )
   { _rppm_scale = s; return *( static_cast<bufftype*>( this ) ); }
   bufftype& trigger_spell( const spell_data_t* s )
   { _trigger_data = s; return *( static_cast<bufftype*>( this ) ); }
@@ -841,12 +827,15 @@ public:
   bool reverse, constant, quiet, overridden, can_cancel;
   bool requires_invalidation;
 
+  // Optimization-related values
+  bool manual_chance_used; /// Is the buff triggered with a manual (positive) chance?
+
   // dynamic values
   double current_value;
   int current_stack;
   timespan_t buff_duration;
   double default_chance;
-  std::vector<timespan_t> stack_occurrence, stack_react_time;
+  std::vector<timespan_t> stack_react_time;
   std::vector<event_t*> stack_react_ready_triggers;
 
   buff_refresh_behavior_e refresh_behavior;
@@ -1695,13 +1684,15 @@ struct sim_t : private sc_thread_t
     std::string         pantheon_trinket_users;
     timespan_t          pantheon_trinket_interval;
     double              pantheon_trinket_interval_stddev;
+    double              archimondes_hatred_reborn_damage;
 
     expansion_opt_t() :
       infernal_cinders_users( 1 ), engine_of_eradication_orbs( 4 ),
       void_stalkers_contract_targets( -1 ),
       lavish_feast_as_dps( true ), specter_of_betrayal_overlap( 1.0 ),
       pantheon_trinket_interval( timespan_t::from_seconds( 1.0 ) ),
-      pantheon_trinket_interval_stddev( 0 )
+      pantheon_trinket_interval_stddev( 0 ),
+      archimondes_hatred_reborn_damage( 1.0 )
     { }
   } expansion_opts;
 
@@ -1777,6 +1768,7 @@ struct sim_t : private sc_thread_t
   int separate_stats_by_actions;
   int report_raid_summary;
   int buff_uptime_timeline;
+  int json_full_states;
   int decorated_tooltips;
 
   int allow_potions;
@@ -1912,9 +1904,13 @@ struct sim_t : private sc_thread_t
   opts::map_list_t profileset_map;
   profileset::profilesets_t profilesets;
   std::vector<scale_metric_e> profileset_metric;
+  std::vector<std::string> profileset_output_data;
   bool profileset_enabled;
+  int profileset_work_threads, profileset_init_threads;
 
-  sim_t( sim_t* parent = nullptr, int thread_index = 0 );
+  sim_t();
+  sim_t( sim_t* parent, int thread_index = 0 );
+  sim_t( sim_t* parent, int thread_index, sim_control_t* control );
   virtual ~sim_t();
 
   virtual void run() override;
@@ -1982,6 +1978,10 @@ struct sim_t : private sc_thread_t
     if ( average_range ) return ( min + max ) / 2.0;
     return rng().range( min, max );
   }
+
+  // Thread id of this sim_t object
+  std::thread::id thread_id() const
+  { return sc_thread_t::thread_id(); }
 private:
   void do_pause();
   void print_spell_query();
@@ -2574,7 +2574,7 @@ struct special_effect_t
   double stat_amount, discharge_amount, discharge_scaling;
   double proc_chance_;
   double ppm_;
-  rppm_scale_e rppm_scale_;
+  unsigned rppm_scale_;
   double rppm_modifier_;
   timespan_t duration_, cooldown_, tick;
   bool cost_reduction;
@@ -2659,7 +2659,7 @@ struct special_effect_t
   unsigned proc_flags2() const;
   double ppm() const;
   double rppm() const;
-  rppm_scale_e rppm_scale() const;
+  unsigned rppm_scale() const;
   double rppm_modifier() const;
   double proc_chance() const;
   timespan_t cooldown() const;
@@ -3033,7 +3033,7 @@ private:
   timespan_t   last_trigger_attempt;
   timespan_t   last_successful_trigger;
   timespan_t   initial_precombat_time;
-  rppm_scale_e scales_with;
+  unsigned     scales_with;
 
   real_ppm_t(): player(nullptr), freq(0), modifier(0), rppm(0), scales_with()
   { }
@@ -3045,9 +3045,9 @@ public:
                              double            PPM,
                              const timespan_t& last_trigger,
                              const timespan_t& last_successful_proc,
-                             rppm_scale_e      scales_with );
+                             unsigned          scales_with );
 
-  real_ppm_t( const std::string& name, player_t* p, double frequency = 0, double mod = 1.0, rppm_scale_e s = RPPM_NONE ) :
+  real_ppm_t( const std::string& name, player_t* p, double frequency = 0, double mod = 1.0, unsigned s = RPPM_NONE ) :
     player( p ),
     name_str( name ),
     freq( frequency ),
@@ -3061,7 +3061,7 @@ public:
 
   real_ppm_t( const std::string& name, player_t* p, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
 
-  void set_scaling( rppm_scale_e s )
+  void set_scaling( unsigned s )
   { scales_with = s; }
 
   void set_modifier( double mod )
@@ -3517,7 +3517,9 @@ struct player_collected_data_t
     const player_t* target;
     const timespan_t time;
     timespan_t wait_time;
-    std::vector<std::pair<buff_t*, int> > buff_list;
+    std::vector< std::pair< buff_t*, std::vector<double> > > buff_list;
+    std::vector< std::pair< cooldown_t*, std::vector<double> > > cooldown_list;
+    std::vector< std::pair<player_t*, std::vector< std::pair< buff_t*, std::vector<double> > > > > target_list;
     std::array<double, RESOURCE_MAX> resource_snapshot;
     std::array<double, RESOURCE_MAX> resource_max_snapshot;
 
@@ -3840,7 +3842,7 @@ struct player_t : public actor_t
   int         invert_scaling;
 
   // Reaction
-  timespan_t  reaction_offset, reaction_mean, reaction_stddev, reaction_nu;
+  timespan_t  reaction_offset, reaction_max, reaction_mean, reaction_stddev, reaction_nu;
   // Latency
   timespan_t  world_lag, world_lag_stddev;
   timespan_t  brain_lag, brain_lag_stddev;
@@ -3970,7 +3972,7 @@ struct player_t : public actor_t
     }
 
     double pct( resource_e rt ) const
-    { return current[ rt ] / max[ rt ]; }
+    { return max[ rt ] ? current[ rt ] / max[ rt ] : 0.0; }
 
     bool is_infinite( resource_e rt ) const
     { return infinite_resource[ rt ] != 0; }
@@ -4024,6 +4026,7 @@ struct player_t : public actor_t
   auto_dispose< std::vector<action_priority_list_t*> > action_priority_list;
   std::vector<action_t*> precombat_action_list;
   action_priority_list_t* active_action_list;
+  action_priority_list_t* default_action_list;
   action_priority_list_t* active_off_gcd_list;
   action_priority_list_t* restore_action_list;
   std::unordered_map<std::string, std::string> alist_map;
@@ -4115,6 +4118,7 @@ struct player_t : public actor_t
     buff_t* damage_done;
     buff_t* darkflight;
     buff_t* devotion_aura;
+    buff_t* entropic_embrace;
     buff_t* exhaustion;
     buff_t* guardian_spirit;
     buff_t* blessing_of_sacrifice;
@@ -4242,6 +4246,8 @@ struct player_t : public actor_t
     const spell_data_t* brawn;
     const spell_data_t* endurance;
     const spell_data_t* viciousness;
+    const spell_data_t* magical_affinity;
+    const spell_data_t* mountaineer;
   } racials;
 
   struct passives_t
@@ -4367,7 +4373,7 @@ struct player_t : public actor_t
   virtual double composite_dodge() const;
   virtual double composite_parry() const;
   virtual double composite_block() const;
-          double composite_block_dr( double extra_block ) const;
+  double composite_block_dr( double extra_block ) const;
   virtual double composite_block_reduction() const;
   virtual double composite_crit_block() const;
   virtual double composite_crit_avoidance() const;
@@ -4640,7 +4646,7 @@ struct player_t : public actor_t
 
   cooldown_t* get_cooldown( const std::string& name );
   real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
-  real_ppm_t* get_rppm    ( const std::string& name, double freq, double mod = 1.0, rppm_scale_e s = RPPM_NONE );
+  real_ppm_t* get_rppm    ( const std::string& name, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
   shuffled_rng_t* get_shuffled_rng(const std::string& name, int success_entries = 0, int total_entries = 0);
   dot_t*      get_dot     ( const std::string& name, player_t* source );
   gain_t*     get_gain    ( const std::string& name );
@@ -5371,6 +5377,9 @@ public:
   /// What type of damage this spell does.
   school_e school;
 
+  /// What base school components this spell has
+  std::vector<school_e> base_schools;
+
   /// Spell id if available, 0 otherwise
   unsigned id;
 
@@ -6041,15 +6050,34 @@ public:
   { return player -> cache.attack_power(); }
 
   virtual double composite_spell_power() const
-  { return player -> cache.spell_power( get_school() ); }
+  {
+    double spell_power = 0;
+    double tmp;
+
+    for ( auto base_school : base_schools )
+    {
+      tmp = player -> cache.spell_power( base_school );
+      if ( tmp > spell_power ) spell_power = tmp;
+    }
+
+    return spell_power;
+  }
 
   virtual double composite_target_crit_chance( player_t* /* target */ ) const
   { return 0.0; }
 
   virtual double composite_target_multiplier( player_t* target ) const
   {
-    return target->composite_player_vulnerability( get_school() ) *
-           player->composite_player_target_multiplier( target, get_school() );
+    double target_vulnerability = 0.0;
+    double tmp;
+
+    for ( auto base_school : base_schools )
+    {
+      tmp = target -> composite_player_vulnerability( base_school );
+      if ( tmp > target_vulnerability ) target_vulnerability = tmp;
+    }
+
+    return target_vulnerability * player -> composite_player_target_multiplier( target, get_school() );
   }
 
   virtual double composite_versatility( const action_state_t* ) const
@@ -6072,19 +6100,39 @@ public:
   virtual double composite_target_ta_multiplier( player_t* target ) const
   { return composite_target_multiplier( target ); }
 
-  virtual double composite_da_multiplier( const action_state_t* s ) const
+  virtual double composite_da_multiplier( const action_state_t* /* s */ ) const
   {
-    return action_multiplier() * action_da_multiplier() *
-           player -> cache.player_multiplier( s -> action -> get_school() ) *
-           player -> composite_player_dd_multiplier( s -> action -> get_school() , this );
+    double base_multiplier = action_multiplier();
+    double direct_multiplier = action_da_multiplier();
+    double player_school_multiplier = 0.0;
+    double tmp;
+
+    for ( auto base_school : base_schools )
+    {
+      tmp = player -> cache.player_multiplier( base_school );
+      if ( tmp > player_school_multiplier ) player_school_multiplier = tmp;
+    }
+
+    return base_multiplier * direct_multiplier * player_school_multiplier *
+           player -> composite_player_dd_multiplier( get_school(), this );
   }
 
   /// Normal ticking modifiers that are updated every tick
-  virtual double composite_ta_multiplier( const action_state_t* s ) const
+  virtual double composite_ta_multiplier( const action_state_t* /* s */ ) const
   {
-    return action_multiplier() * action_ta_multiplier() *
-           player -> cache.player_multiplier( s -> action -> get_school() ) *
-           player -> composite_player_td_multiplier( s -> action -> get_school() , this );
+    double base_multiplier = action_multiplier();
+    double tick_multiplier = action_ta_multiplier();
+    double player_school_multiplier = 0.0;
+    double tmp;
+
+    for ( auto base_school : base_schools )
+    {
+      tmp = player -> cache.player_multiplier( base_school );
+      if ( tmp > player_school_multiplier ) player_school_multiplier = tmp;
+    }
+
+    return base_multiplier * tick_multiplier * player_school_multiplier *
+           player -> composite_player_td_multiplier( get_school(), this );
   }
 
   /// Persistent modifiers that are snapshot at the start of the spell cast
@@ -6918,19 +6966,25 @@ struct dbc_proc_callback_t : public action_callback_t
     action_callback_t( i.player ), item( i ), effect( e ), cooldown( nullptr ),
     rppm( nullptr ), proc_chance( 0 ), ppm( 0 ),
     proc_buff( nullptr ), proc_action( nullptr ), weapon( nullptr )
-  { }
+  {
+    assert( e.proc_flags() != 0 );
+  }
 
   dbc_proc_callback_t( const item_t* i, const special_effect_t& e ) :
     action_callback_t( i -> player ), item( *i ), effect( e ), cooldown( nullptr ),
     rppm( nullptr ), proc_chance( 0 ), ppm( 0 ),
     proc_buff( nullptr ), proc_action( nullptr ), weapon( nullptr )
-  { }
+  {
+    assert( e.proc_flags() != 0 );
+  }
 
   dbc_proc_callback_t( player_t* p, const special_effect_t& e ) :
     action_callback_t( p ), item( default_item_ ), effect( e ), cooldown( nullptr ),
     rppm( nullptr ), proc_chance( 0 ), ppm( 0 ),
     proc_buff( nullptr ), proc_action( nullptr ), weapon( nullptr )
-  { }
+  {
+    assert( e.proc_flags() != 0 );
+  }
 
   virtual void initialize() override;
 
@@ -7532,6 +7586,9 @@ void initialize_special_effect_2( special_effect_t* effect );
 // Initialize generic Artifact traits
 void initialize_artifact_powers( player_t* );
 
+// Initialize special effects related to various race spells
+void initialize_racial_effects( player_t* );
+
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
 const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
 
@@ -7547,6 +7604,7 @@ struct proc_action_t : public T_ACTION
 {
   using super = T_ACTION;
   using base_action_t = proc_action_t<T_ACTION>;
+  const special_effect_t* effect;
 
   void __initialize()
   {
@@ -7568,18 +7626,28 @@ struct proc_action_t : public T_ACTION
   }
 
   proc_action_t( const special_effect_t& e ) :
-    super( e.name(), e.player, e.trigger() )
+    super( e.name(), e.player, e.trigger() ),
+    effect(&e)
   {
     this -> item = e.item;
     this -> cooldown = e.player -> get_cooldown( e.cooldown_name() );
 
     __initialize();
+  }
 
-    override_data( e );
+  void init() override
+  {
+    super::init();
+    if ( effect )
+    {
+
+      override_data( *effect );
+    }
   }
 
   proc_action_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
-    super( token, p, s )
+    super( token, p, s ),
+    effect(nullptr)
   {
     this -> item = i;
 
@@ -7622,13 +7690,14 @@ struct proc_attack_t : public proc_action_t<attack_t>
 
   proc_attack_t( const special_effect_t& e ) :
     super( e )
-  { }
+  {
+  }
 
   proc_attack_t( const std::string& token, player_t* p, const spell_data_t* s, const item_t* i = nullptr ) :
     super( token, p, s, i )
   { }
 
-  void override_data( const special_effect_t& e );
+  void override_data( const special_effect_t& e ) override;
 };
 
 struct proc_resource_t : public proc_action_t<spell_t>
@@ -8103,21 +8172,21 @@ inline double real_ppm_t::proc_chance( player_t*         player,
                                        double            PPM,
                                        const timespan_t& last_trigger,
                                        const timespan_t& last_successful_proc,
-                                       rppm_scale_e      scales_with )
+                                       unsigned          scales_with )
 {
   double coeff = 1.0;
   double seconds = std::min( ( player -> sim -> current_time() - last_trigger ).total_seconds(), max_interval() );
 
-  if ( scales_with == RPPM_HASTE )
+  if ( scales_with & RPPM_HASTE )
     coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
 
   // This might technically be two separate crit values, but this should be sufficient for our
   // cases. In any case, the client data does not offer information which crit it is (attack or
   // spell).
-  if ( scales_with == RPPM_CRIT )
+  if ( scales_with & RPPM_CRIT )
     coeff *= 1.0 + std::max( player -> cache.attack_crit_chance(), player -> cache.spell_crit_chance() );
 
-  if ( scales_with == RPPM_ATTACK_SPEED )
+  if ( scales_with & RPPM_ATTACK_SPEED )
     coeff *= 1.0 / player -> cache.attack_speed();
 
   double real_ppm = PPM * coeff;

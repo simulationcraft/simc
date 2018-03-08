@@ -4,11 +4,12 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "util/git_info.hpp"
 #include "sim/sc_profileset.hpp"
 #include <locale>
 
 #ifdef SC_SIGACTION
-#include <signal.h>
+#include <csignal>
 #endif
 
 namespace { // anonymous namespace ==========================================
@@ -23,11 +24,40 @@ struct sim_signal_handler_t
   static void report( int signal )
   {
     const char* name = strsignal( signal );
-    std::cerr << "sim_signal_handler: " << name
-              << "! Iteration=" << global_sim -> current_iteration
-              << " Seed=" << global_sim -> seed
-              << " TargetHealth=" << global_sim -> target -> resources.initial[ RESOURCE_HEALTH ]
-              << std::endl;
+    const sim_t* crashing_child = nullptr;
+    if ( signal == SIGSEGV )
+    {
+      for ( auto child : global_sim -> children )
+      {
+        if ( std::this_thread::get_id() == child ->  thread_id() )
+        {
+          crashing_child = child;
+          break;
+        }
+      }
+    }
+
+    std::cerr << "sim_signal_handler: " << name << "!";
+    if ( crashing_child )
+    {
+      std::cerr << " Thread=" << crashing_child -> thread_index
+                << " Iteration=" << crashing_child -> current_iteration
+                << " Seed=" << crashing_child -> seed << " (" << ( crashing_child -> seed + crashing_child -> thread_index ) << ")"
+                << " TargetHealth=" << crashing_child -> target -> resources.initial[ RESOURCE_HEALTH ];
+    }
+    else
+    {
+      std::cerr << " Iteration=" << global_sim -> current_iteration
+                << " Seed=" << global_sim -> seed
+                << " TargetHealth=" << global_sim -> target -> resources.initial[ RESOURCE_HEALTH ];
+    }
+
+    auto profileset = global_sim -> profilesets.current_profileset_name();
+    if ( ! profileset.empty() )
+    {
+      std::cerr << " ProfileSet=" << profileset;
+    }
+    std::cerr << std::endl;
     fflush( stderr );
   }
 
@@ -44,7 +74,7 @@ struct sim_signal_handler_t
       {
         global_sim -> cancel();
       }
-      else if ( global_sim -> profileset_map.size() > 0 )
+      else if ( ! global_sim -> profileset_map.empty() )
       {
         global_sim -> cancel();
       }
@@ -86,26 +116,25 @@ struct sim_signal_handler_t
 struct sim_signal_handler_t
 {
   static sim_t* global_sim;
-
-  sim_signal_handler_t() {}
 };
 #endif
 
 sim_t* sim_signal_handler_t::global_sim = nullptr;
 
-static sim_signal_handler_t handler;
+sim_signal_handler_t handler;
 
 // need_to_save_profiles ====================================================
 
 bool need_to_save_profiles( sim_t* sim )
 {
-  if ( sim -> save_profiles ) return true;
+  if ( sim -> save_profiles ) { return true;
+}
 
-  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+  for ( auto& player : sim -> player_list )
   {
-    player_t* p = sim -> player_list[ i ];
-    if ( ! p -> report_information.save_str.empty() )
+    if ( ! player -> report_information.save_str.empty() ) {
       return true;
+}
   }
 
   return false;
@@ -124,13 +153,15 @@ std::string get_cache_directory()
   if ( ! env )
   {
     env = getenv( "HOME" );
-    if ( env )
+    if ( env ) {
       s = std::string( env ) + "/.cache";
-    else
+    } else {
       s = "/tmp"; // back out
+}
   }
-  else
+  else {
     s = std::string( env );
+}
 #endif
 #ifdef _WIN32
   env = getenv( "TMP" );
@@ -218,13 +249,16 @@ int sim_t::main( const std::vector<std::string>& args )
     setup_success = false;
   }
 
-#if ! defined( SC_GIT_REV )
+  if ( !git_info::available() )
+  {
   util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s)\n",
       SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str());
-#else
-  util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s, git build %s)\n",
-      SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str(), SC_GIT_REV);
-#endif
+  }
+  else
+  {
+  util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s, git build %s %s)\n",
+      SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str(), git_info::branch(), git_info::revision());
+  }
 
   if ( display_hotfixes )
   {
@@ -244,7 +278,8 @@ int sim_t::main( const std::vector<std::string>& args )
     return 1;
   }
 
-  if ( canceled ) return 1;
+  if ( canceled ) { return 1;
+}
 
   std::cout << std::endl;
 
@@ -312,7 +347,7 @@ int main( int argc, char** argv )
 #endif
 
   sim_t sim;
-  handler.global_sim = &sim;
+  sim_signal_handler_t::global_sim = &sim;
 
   return sim.main( io::utf8_args( argc, argv ) );
 }

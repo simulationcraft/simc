@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383)
+SimulationCraft 735-01 for World of Warcraft 7.3.5 Live (wow build 25901)
 
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -144,12 +144,12 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Attributes       : ........ ........ x....... ........   ..x..... ......x. .x...... ..x..... 
-                 : ........ ..x..... x....... ..x.....   ........ ........ ........ ........ 
+                 : ........ ..x..... x....... ..x.....   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... .x......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Channeled (34), Periodic effect affected by haste (173)
+                 : Channeled (34), Disable player procs (112), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=480)      : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -365,12 +365,12 @@ Spell Level      : 10
 Range            : 30 yards
 Triggered by     : Tame Beast (1515)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ..x.....   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ..x.....   ........ .x...... x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Not a proc (105)
+                 : Not a proc (105), Disable player procs (112)
 Effects          :
 #1 (id=5970)     : Unknown(55)
                    Base Value: 10 | Scaled Value: 110 | Points Per Level: 1 | Target: Unknown(77)
@@ -752,7 +752,7 @@ Tooltip          : Tracking Undead.
 
 Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
-Race             : Orc
+Race             : Orc (0x2)
 School           : Physical
 Spell Level      : 1
 Duration         : 15 seconds
@@ -769,7 +769,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
                    Base Value: 3 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
-Description      : Increases attack power by $s1. Lasts $d.
+Description      : Increases attack power by $s1 for $d.
 Tooltip          : Attack power increased by $s1.
 
 Name             : Combat Experience (id=20782) [Spell Family (9), Passive] 
@@ -794,7 +794,7 @@ Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc
+Race             : Orc (0x2)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -882,7 +882,7 @@ Movement speed slowed by $s2%.
 
 Name             : Gift of the Naaru (Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
-Race             : Draenei
+Race             : Draenei (0x400)
 School           : Holy
 Spell Level      : 1
 Range            : 40 yards
@@ -906,7 +906,7 @@ Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Interrupt (id=32747) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Physical
 Spell Level      : 10
 Range            : 100 yards
@@ -1392,7 +1392,7 @@ Effects          :
 
 Name             : Sated (id=57724) 
 Class            : Hunter, Shaman, Mage
-Race             : Orc, Tauren, Troll, Goblin
+Race             : Orc, Tauren, Troll, Goblin, Highmountain Tauren (0xa0001a2)
 School           : Physical
 Range            : 50000 yards
 Duration         : 600 seconds
@@ -1443,7 +1443,7 @@ Description      : $@spelldesc57870
 
 Name             : Gift of the Naaru (Racial) (id=59543) [Spell Family (9)] 
 Class            : Hunter
-Race             : Draenei
+Race             : Draenei (0x400)
 School           : Holy
 Spell Level      : 1
 Range            : 40 yards
@@ -1625,7 +1625,7 @@ $damage=${$<ce>*($RAP*0.250)}
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1642,7 +1642,7 @@ Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Aberration (Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1660,7 +1660,7 @@ Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -1702,7 +1702,7 @@ Description      : Increases the damage done by your pets by $s1%.
 
 Name             : Arcane Torrent (Racial) (id=80483) 
 Class            : Hunter
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
@@ -2090,7 +2090,7 @@ Description      : You command your Bird of Prey to do a trick. Larger birds may
 
 Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2542,7 +2542,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -2791,14 +2791,17 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594)
+                   Hotfixed: Base Value (12 -> 15), Chain Multiplier (0 -> 1)
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Kill Command (34026), Chimaera Shot (53209), Barrage (120360), Barrage (120361), A Murder of Crows (131900), Chimaera Shot (171454), Chimaera Shot (171457), Cobra Shot (193455), Volley (194392), Stomp (199530), Stampede (201594)
+                   Hotfixed: Base Value (12 -> 15), Chain Multiplier (0 -> 1)
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Bestial Wrath (19574), Bestial Wrath (186254)
+                   Hotfixed: Base Value (12 -> 15), Chain Multiplier (0 -> 1)
 #4 (id=191140)   : Apply Aura (6) | Add Flat Modifier (107): Generic Modifier (0)
                    Base Value: -45 | Scaled Value: -45 | Target: Self (1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), A Murder of Crows (206505)
@@ -2810,10 +2813,10 @@ Effects          :
                    Affected Spells: Volley (194386), Volley (194392)
 #7 (id=260898)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #8 (id=260899)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #9 (id=260900)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #10 (id=260901)   : Apply Aura (6) | Dummy (4)
@@ -2840,10 +2843,10 @@ Effects          :
                    Affected Spells: Multi-Shot (2643)
 #2 (id=191134)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #3 (id=191135)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #4 (id=191136)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Aimed Shot (191043), Volley (194386), Volley (194392), Black Arrow (194599), Piercing Shot (198670), Windburst (204147), A Murder of Crows (206505), Marked Shot (212621), Piercing Shot (213678), Sidewinders (214579), Sidewinders (214581)
@@ -3868,7 +3871,7 @@ Resource         : 25 Focus (2) (id=10353)
 Spell Level      : 10 (max 20)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Hunter (137014 effect#3), Survival Hunter (137017 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Exposed Flank (252094 effect#1), In for the Kill (252095 effect#1)
+Affecting spells : Hunter (137014 effect#3), Survival Hunter (137017 effect#1), Raptor's Cry (203638 effect#1), Unseen Predator's Cloak (248212 effect#1), Exposed Flank (252094 effect#1), In for the Kill (252095 effect#1), Raptor Strike (262839 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3877,7 +3880,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=271205)   : Weapon Damage% (31)
-                   Base Value: 360 | Scaled Value: 3.6 | Target: Enemy (6)
+                   Base Value: 257 | Scaled Value: 2.57 | Target: Enemy (6)
 #2 (id=286017)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : A vicious slash dealing $sw1 Physical damage.
@@ -3951,6 +3954,7 @@ Effects          :
 #2 (id=296786)   : Apply Aura (6) | Unknown(271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
                    Affected Spells: Aimed Shot (19434), Aimed Shot (191043), Piercing Shot (198670), Piercing Shot (213678)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #3 (id=336244)   : Apply Aura (6) | Unknown(308)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Aimed Shot (19434), Aimed Shot (191043)
@@ -4496,12 +4500,12 @@ Description      : Tosses a hatchet at an enemy, dealing $s1 Physical damage.
 Name             : Cobra Shot (id=193455) [Spell Family (9)] 
 Class            : Beast Mastery Marksmanship Hunter
 School           : Physical
-Resource         : 40 Focus (2) (id=10443)
+Resource         : 50 Focus (2) (id=10443)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
-Affecting spells : Freezing Trap (3355 effect#2), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Guide: Sharpshooting (178549 effect#2), Aspect of the Wild (193530 effect#3), Spitting Cobras (197140 effect#1), Roar of the Seven Lions (207318 effect#1), Slithering Serpents (238051 effect#1), Bestial Rage (246116 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Guide: Sharpshooting (178549 effect#2), Aspect of the Wild (193530 effect#3), Spitting Cobras (197140 effect#1), Roar of the Seven Lions (207318 effect#1), Slithering Serpents (238051 effect#1), Bestial Rage (246116 effect#1), Cobra Shot (262837 effect#1), Cobra Shot (262838 effect#1)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4513,8 +4517,8 @@ Effects          :
 #1 (id=283801)   : Normalized Weapon Damage (121)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #2 (id=283802)   : Weapon Damage% (31)
-                   Base Value: 540 | Scaled Value: 5.4 | Target: Enemy (6)
-Description      : A quick shot causing ${$sw2*$<mult>} Physical damage.
+                   Base Value: 270 | Scaled Value: 2.7 | Target: Enemy (6)
+Description      : A quick shot causing $sw2 Physical damage.
 Variables        : $mult=${($min($pl-1,19)*12+112)/340}
 
 Name             : Mastery: Sniper Training (Mastery) (id=193468) [Spell Family (9), Passive] 
@@ -5281,7 +5285,7 @@ Description      : $@spelldesc200163
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -6211,7 +6215,7 @@ Tooltip          : Next $?s214579[Sidewinders][Arcane Shot or Multi-Shot] will a
 
 Name             : Expansive Mind (Racial Passive) (id=227057) [Passive] 
 Class            : Hunter
-Race             : Gnome
+Race             : Gnome (0x40)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6595,7 +6599,7 @@ Tooltip          : Generating ${$w1*$d/$t1} Focus over $d.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
@@ -6612,7 +6616,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
@@ -6628,5 +6632,172 @@ Effects          :
 #2 (id=477480)   : Unknown(170)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
+Hotfixed         : Variables
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Velocity         : 3 yards/sec
+Cooldown         : 150 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=477694)   : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
+
+Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
+Description      : Reduces Holy damage taken by ${$s1/-1}%.
+
+Name             : Light's Reckoning (Racial Passive) (id=255652) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477699)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256896 | Target: Self (1)
+Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
+
+Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477700)   : Apply Aura (6) | Unknown(447)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self (1)
+Description      : Experience gains from killing Demons increased by $s1%.
+
+Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
+Hotfixed         : Variables
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 150 seconds
+Triggered by     : Light's Judgment (255647)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479673)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Hotfixed: Chain Multiplier (0 -> 1)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
+
+Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
+Hotfixed         : Attributes
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+Triggered by     : Light's Reckoning (255652)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479676)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=479677)   : Direct Heal (10)
+                   Base Value: 100000 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
+Heals $s2 to allies within $A1. 
+
+Name             : Cobra Shot (Rank 2) (id=262837) [Spell Family (9), Passive] 
+Class            : Beast Mastery Hunter
+School           : Nature
+Spell Level      : 3
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=624333)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Cobra Shot (193455)
+Description      : Cobra Shot's cost is reduced by $s1.
+
+Name             : Cobra Shot (Rank 3) (id=262838) [Spell Family (9), Passive] 
+Class            : Beast Mastery Hunter
+School           : Nature
+Spell Level      : 52
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=624334)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Affected Spells: Cobra Shot (193455)
+Description      : Cobra Shot deals $s1% increased damage.
+
+Name             : Raptor Strike (Rank 2) (id=262839) [Spell Family (9), Passive] 
+Class            : Survival Hunter
+School           : Nature
+Spell Level      : 52
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=624335)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Affected Spells: Raptor Strike (186270)
+Description      : Raptor Strike deals $s1% increased damage.
 
 

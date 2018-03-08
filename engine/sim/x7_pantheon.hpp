@@ -51,8 +51,6 @@ struct pantheon_state_t
   std::vector<std::vector<real_ppm_t*>> rppm_objs;
   // Base trinket effects, bucketed by type
   std::vector<std::vector<pantheon_buff_state_t>> pantheon_state;
-  // Current state (in pantheon_state above) is proxy only?
-  bool                                  proxy_state_only;
   // Real pantheon trinket buffs per type
   std::vector<std::vector<buff_t*>>     actor_buffs;
   // Proxy buff attempt ticker
@@ -81,15 +79,7 @@ struct pantheon_state_t
   void start();
 
   // Reset state to initial values
-  void reset()
-  {
-    range::for_each( pantheon_state, []( std::vector<pantheon_buff_state_t>& states ) {
-      states.clear();
-    } );
-
-    attempt_event = nullptr;
-    proxy_state_only = true;
-  }
+  void reset();
 
   // Does the raid (including real actors and proxy ones) have pantheon empowerment capability?
   bool has_pantheon_capability() const;
@@ -110,7 +100,8 @@ private:
   pantheon_buff_state_t* buff_state( size_t type, const real_ppm_t* );
   pantheon_buff_state_t* buff_state( size_t type, const buff_t* );
 
-  // Translate player (base trinket) buff to pantheon system slot
+  // Translate player (base trinket) buff to pantheon system slot. Returns drivers.size() + 1 (i.e.,
+  // more entries than there are pantheon trinket types) if the buff is invalid.
   size_t buff_type( const buff_t* ) const;
 
   // Clean up buff state

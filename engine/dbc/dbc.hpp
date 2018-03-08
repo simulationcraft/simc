@@ -92,6 +92,7 @@ specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_
 std::string specialization_string     ( specialization_e spec );
 double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
 bool valid_gem_color( unsigned color );
+double stat_data_to_attribute( const stat_data_t&, attribute_e);
 
 const char* item_name_description( unsigned, bool ptr );
 
@@ -270,6 +271,8 @@ namespace hotfix
 
     virtual ~hotfix_entry_t() { }
 
+    virtual bool valid() const = 0;
+
     virtual void apply() { }
     virtual std::string to_str() const;
   };
@@ -294,6 +297,12 @@ namespace hotfix
       id_( id ), field_name_(), operation_( HOTFIX_NONE ), modifier_( 0 ),
       orig_value_( -std::numeric_limits<double>::max() ), dbc_value_( 0 ), hotfix_value_( 0 )
     { }
+
+    bool valid() const override
+    {
+      return orig_value_ == -std::numeric_limits<double>::max() ||
+             util::round( orig_value_, 5 ) == util::round( dbc_value_, 5 );
+    }
 
     virtual void apply() override
     {
@@ -362,7 +371,6 @@ namespace hotfix
     void apply_hotfix( bool ptr ) override;
   };
 
-  bool register_hotfix( const std::string&, const std::string&, const std::string&, unsigned = HOTFIX_FLAG_DEFAULT );
   spell_hotfix_entry_t& register_spell( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
   effect_hotfix_entry_t& register_effect( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
   power_hotfix_entry_t& register_power( const std::string&, const std::string&, const std::string&, unsigned, unsigned = hotfix::HOTFIX_FLAG_DEFAULT );
@@ -813,7 +821,7 @@ public:
   double      _prj_speed;          // 4 Projectile Speed
   unsigned    _school;             // 5 Spell school mask
   unsigned    _class_mask;         // 6 Class mask for spell
-  unsigned    _race_mask;          // 7 Racial mask for the spell
+  uint64_t    _race_mask;          // 7 Racial mask for the spell
   int         _scaling_type;       // 8 Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
   int         _max_scaling_level;  // 9 Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
   // SpellLevels.dbc
@@ -916,7 +924,7 @@ public:
   int initial_stacks() const
   { return _proc_charges; }
 
-  uint32_t race_mask() const
+  uint64_t race_mask() const
   { return _race_mask; }
 
   uint32_t level() const
@@ -1003,7 +1011,7 @@ public:
 
   bool is_race( race_e r ) const
   {
-    unsigned mask = util::race_mask( r );
+    uint64_t mask = util::race_mask( r );
     return ( _race_mask & mask ) == mask;
   }
 
@@ -1495,7 +1503,7 @@ public:
   double avoid_per_str_agi_by_level( unsigned level ) const;
 
   std::vector<const rppm_modifier_t*> real_ppm_modifiers( unsigned ) const;
-  rppm_scale_e real_ppm_scale( unsigned ) const;
+  unsigned real_ppm_scale( unsigned ) const;
   double real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level = 0 ) const;
 
   std::vector<const item_upgrade_t*> item_upgrades(unsigned ) const;

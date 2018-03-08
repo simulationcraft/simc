@@ -164,11 +164,11 @@ spell_mapping_reference_t<spell_data_t, unsigned> spell_categories_index(
 
 int dbc::build_level( bool ptr )
 {
-  return maybe_ptr( ptr ) ? 25383 : 25383;
+  return maybe_ptr( ptr ) ? 25753 : 25901;
 }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "7.3.2" : "7.3.2"; }
+{ return maybe_ptr( ptr ) ? "7.3.5" : "7.3.5"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 #if SC_BETA
@@ -312,6 +312,24 @@ bool dbc::valid_gem_color( unsigned color )
     default:
       return false;
   }
+}
+
+double dbc::stat_data_to_attribute(const stat_data_t& s, attribute_e a) {
+  switch (a) {
+  case ATTR_STRENGTH:
+    return s.strength;
+  case ATTR_AGILITY:
+    return s.agility;
+  case ATTR_STAMINA:
+    return s.stamina;
+  case ATTR_INTELLECT:
+    return s.intellect;
+  case ATTR_SPIRIT:
+    return s.spirit;
+  default:
+    assert(false);
+  }
+  return 0.0;
 }
 
 std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family, const spelleffect_data_t* effect ) const
@@ -1418,7 +1436,11 @@ unsigned dbc_t::race_ability_size() const
 
 unsigned dbc_t::race_ability_tree_size() const
 {
+#if SC_USE_PTR
+  return ptr ? ptr_MAX_RACE : MAX_RACE;
+#else
   return MAX_RACE;
+#endif
 }
 
 unsigned dbc_t::specialization_ability_size() const
@@ -1461,13 +1483,15 @@ std::vector<const rppm_modifier_t*> dbc_t::real_ppm_modifiers( unsigned spell_id
   return data;
 }
 
-rppm_scale_e dbc_t::real_ppm_scale( unsigned spell_id ) const
+unsigned dbc_t::real_ppm_scale( unsigned spell_id ) const
 {
 #if SC_USE_PTR
   const rppm_modifier_t* p = ptr ? __ptr_rppmmodifier_data : __rppmmodifier_data;
 #else
   const rppm_modifier_t* p = __rppmmodifier_data;
 #endif
+
+  unsigned scale = 0;
 
   while ( p -> spell_id != 0 )
   {
@@ -1479,18 +1503,18 @@ rppm_scale_e dbc_t::real_ppm_scale( unsigned spell_id ) const
 
     if ( p -> modifier_type == RPPM_MODIFIER_HASTE )
     {
-      return RPPM_HASTE;
+      scale |= RPPM_HASTE;
     }
     else if ( p -> modifier_type == RPPM_MODIFIER_CRIT )
     {
-      return RPPM_CRIT;
+      scale |= RPPM_CRIT;
     }
 
 
     p++;
   }
 
-  return RPPM_NONE;
+  return scale;
 }
 
 double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level ) const

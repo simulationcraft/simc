@@ -1323,7 +1323,7 @@ struct compare_name
 
 // sim_t::sim_t =============================================================
 
-sim_t::sim_t( sim_t* p, int index ) :
+sim_t::sim_t() :
   event_mgr( this ),
   out_std( *this, &std::cout, sim_ostream_t::no_close() ),
   out_log( *this, &std::cout, sim_ostream_t::no_close() ),
@@ -1342,7 +1342,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   analyze_number( 0 ),
   cleanup_threads( false ),
   control( nullptr ),
-  parent( p ),
+  parent( nullptr ),
   initialized( false ),
   target( nullptr ),
   heal_target( nullptr ),
@@ -1411,6 +1411,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_precision(2), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
   report_rng( 0 ), hosted_html( 0 ),
   save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ), buff_uptime_timeline( 0 ),
+  json_full_states( 0 ),
   decorated_tooltips( -1 ),
   allow_potions( true ),
   allow_food( true ),
@@ -1424,7 +1425,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   enable_dps_healing( false ),
   scaling_normalized( 1.0 ),
   // Multi-Threading
-  threads( 0 ), thread_index( index ), process_priority( computer_process::BELOW_NORMAL ),
+  threads( 0 ), thread_index( 0 ), process_priority( computer_process::BELOW_NORMAL ),
   work_queue( new work_queue_t() ),
   spell_query(), spell_query_level( MAX_LEVEL ),
   pause_mutex( nullptr ),
@@ -1435,7 +1436,10 @@ sim_t::sim_t( sim_t* p, int index ) :
   disable_hotfixes( false ),
   display_bonus_ids( false ),
   profileset_metric( { SCALE_METRIC_DPS } ),
-  profileset_enabled( false )
+  profileset_output_data(),
+  profileset_enabled( false ),
+  profileset_work_threads( 0 ),
+  profileset_init_threads( 1 )
 {
   item_db_sources.assign( std::begin( default_item_db_sources ),
                           std::end( default_item_db_sources ) );
@@ -1447,28 +1451,60 @@ sim_t::sim_t( sim_t* p, int index ) :
   create_options();
 
   profileset::create_options( this );
+}
 
-  if ( parent )
-  {
-    // Inherit setup
-    setup( parent -> control );
+sim_t::sim_t( sim_t* p, int index ) : sim_t()
+{
+  assert( p );
 
-    // Inherit 'scaling' settings from parent because these are set outside of the config file
-    assert( parent -> scaling );
-    scaling -> scale_stat  = parent -> scaling -> scale_stat;
-    scaling -> scale_value = parent -> scaling -> scale_value;
+  parent = p;
+  thread_index = index;
 
-    // Inherit reporting directives from parent
-    report_progress = parent -> report_progress;
+  // Inherit setup
+  setup( parent -> control );
 
-    // Inherit 'plot' settings from parent because are set outside of the config file
-    enchant = parent -> enchant;
+  // Inherit 'scaling' settings from parent because these are set outside of the config file
+  assert( parent -> scaling );
+  scaling -> scale_stat  = parent -> scaling -> scale_stat;
+  scaling -> scale_value = parent -> scaling -> scale_value;
 
-    // While we inherit the parent seed, it may get overwritten in sim_t::init
-    seed = parent -> seed;
+  // Inherit reporting directives from parent
+  report_progress = parent -> report_progress;
 
-    parent -> add_relative( this );
-  }
+  // Inherit 'plot' settings from parent because are set outside of the config file
+  enchant = parent -> enchant;
+
+  // While we inherit the parent seed, it may get overwritten in sim_t::init
+  seed = parent -> seed;
+
+  parent -> add_relative( this );
+}
+
+sim_t::sim_t( sim_t* p, int index, sim_control_t* control ) : sim_t()
+{
+  assert( p && control );
+
+  parent = p;
+  thread_index = index;
+
+  // Use specialized control for setup
+  setup( control );
+
+  // Inherit 'scaling' settings from parent because these are set outside of the config file
+  assert( parent -> scaling );
+  scaling -> scale_stat  = parent -> scaling -> scale_stat;
+  scaling -> scale_value = parent -> scaling -> scale_value;
+
+  // Inherit reporting directives from parent
+  report_progress = parent -> report_progress;
+
+  // Inherit 'plot' settings from parent because are set outside of the config file
+  enchant = parent -> enchant;
+
+  // While we inherit the parent seed, it may get overwritten in sim_t::init
+  seed = parent -> seed;
+
+  parent -> add_relative( this );
 }
 
 // sim_t::~sim_t ============================================================
@@ -1557,7 +1593,10 @@ void sim_t::cancel()
     relative -> cancel();
   }
 
-  profilesets.cancel();
+  if ( ! parent )
+  {
+    profilesets.cancel();
+  }
 }
 
 // sim_t::interrupt =========================================================
@@ -2381,7 +2420,7 @@ bool sim_t::init()
   }
   else if ( timewalk > 0 )
   {
-    if ( scale_to_itemlevel != -1 )
+    if ( scale_to_itemlevel == -1 )
     {
       switch ( timewalk )
       {
@@ -2811,9 +2850,23 @@ void sim_t::partition()
 
   int num_children = threads - 1;
 
+  sim_control_t* child_control = nullptr;
+  // Filter out profileset-related options from the child sim control, since they are not going to
+  // use them anyhow. This significantly speeds up child creation in situations where the input
+  // profile is a very large set of profileset sims.
+  if ( profileset_map.size() > 0 )
+  {
+    child_control = profileset::filter_control( control );
+  }
+  else
+  {
+    child_control = control;
+  }
+
   for ( int i = 0; i < num_children; i++ )
   {
-    auto  child = new sim_t( this, i + 1 );
+    auto  child = new sim_t( this, i + 1, child_control );
+
     assert( child );
     children.push_back( child );
 
@@ -2839,6 +2892,13 @@ void sim_t::partition()
 
   for ( auto & child : children )
     child -> launch();
+
+  // Safe to do for now, since control is only referenced by sim_t::setup, which is called in the
+  // sim_t constructor.
+  if ( profileset_map.size() > 0 )
+  {
+    delete child_control;
+  }
 }
 
 // sim_t::execute ===========================================================
@@ -3162,6 +3222,7 @@ void sim_t::create_options()
   add_option( opt_bool( "save_raid_summary", save_raid_summary ) );
   add_option( opt_bool( "save_gear_comments", save_gear_comments ) );
   add_option( opt_bool( "buff_uptime_timeline", buff_uptime_timeline ) );
+  add_option( opt_bool( "json_full_states", json_full_states ) );
   // Bloodlust
   add_option( opt_int( "bloodlust_percent", bloodlust_percent ) );
   add_option( opt_timespan( "bloodlust_time", bloodlust_time ) );
@@ -3305,6 +3366,7 @@ void sim_t::create_options()
   add_option( opt_int( "legion.void_stalkers_contract_targets", expansion_opts.void_stalkers_contract_targets ) );
   add_option( opt_bool( "legion.feast_as_dps", expansion_opts.lavish_feast_as_dps ) );
   add_option( opt_float( "legion.specter_of_betrayal_overlap", expansion_opts.specter_of_betrayal_overlap, 0, 1 ) );
+  add_option( opt_float( "legion.archimondes_hatred_reborn_damage", expansion_opts.archimondes_hatred_reborn_damage, 0, 1 ) );
   add_option( opt_string( "legion.pantheon_trinket_users", expansion_opts.pantheon_trinket_users ) );
   add_option( opt_timespan( "legion.pantheon_trinket_interval", expansion_opts.pantheon_trinket_interval ) );
   add_option( opt_float( "legion.pantheon_trinket_interval_stddev", expansion_opts.pantheon_trinket_interval_stddev ) );

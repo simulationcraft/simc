@@ -31,6 +31,8 @@ static const size_t ARTIFICIAL_DAMAGE_EFFECT_INDEX = 2U;
 static const size_t ARTIFICIAL_STAMINA_EFFECT_INDEX = 2U;
 // Base point increase for Artificial Damage & Stamina traits
 static const unsigned BASE_TRAIT_INCREASE = 6U;
+// Artificial Damage trait threshold for diminishing returns
+static const unsigned ARTIFICIAL_DAMAGE_CUTOFF_TRAIT = 52U;
 // Artificial Stamina trait threshold for diminishing returns
 static const unsigned ARTIFICIAL_STAMINA_CUTOFF_TRAIT = 52U;
 // Max trait rank
@@ -174,9 +176,14 @@ public:
       return 0.0;
     }
 
-    return m_artificial_damage -> effectN( ARTIFICIAL_DAMAGE_EFFECT_INDEX ).percent()
-           * .01
-           * ( purchased_points() + BASE_TRAIT_INCREASE );
+    // Buffed by 30% in 7.2, but spelldata still indicates the old value of 0.5 for tanks/discos and 1 for healers hehexd
+    auto full_effect =  m_artificial_damage -> effectN( ARTIFICIAL_DAMAGE_EFFECT_INDEX ).percent()
+                        * 0.013;
+
+    // As of 2018-02-23 there is no damage increase past the 52nd trait
+    auto full_points = std::min( ARTIFICIAL_DAMAGE_CUTOFF_TRAIT, purchased_points() );
+                           
+    return full_effect * ( full_points + BASE_TRAIT_INCREASE );
   }
 
   // The stamina multiplier for the Artificial Stamina trait

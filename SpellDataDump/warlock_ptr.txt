@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 PTR (wow build 25163)
+SimulationCraft 730-03 for World of Warcraft 7.3.5 PTR (wow build 25753)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -290,7 +290,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.03770 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.03540 | Target: Enemy (6)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$o1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -978,7 +978,7 @@ Description      : Deals Fire damage to all enemies near the caster.
 
 Name             : Expansive Mind (Racial Passive) (id=20591) [Passive] 
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
-Race             : Gnome
+Race             : Gnome (0x40)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1009,19 +1009,23 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .x...
                  : x..x.... x....... ...x.... ........   ........ x....... ........ ........ 
                  : ........ ........ x....... ........   ..x..x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .......x ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ .......x ........   ........ .x...... ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11684)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000
 #2 (id=11685)    : Trigger Spell (64): Soulstone
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 6203 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 6203
+#3 (id=623469)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Unknown(121)
+#4 (id=623470)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
 Description      : Stores the soul of the target party or raid member, allowing resurrection upon death.$?a231811[ Also castable to resurrect a dead target.][] Targets resurrect with $3026s2% health and $3026s1% mana.
 Tooltip          : Soul is stored.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc
+Race             : Orc (0x2)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1112,7 +1116,7 @@ Description      : $@spelldesc27243
 
 Name             : Arcane Torrent (Racial) (id=28730) 
 Class            : Mage, Warlock
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
@@ -1348,7 +1352,7 @@ Description      : Reduces all damage taken from area-of-effect attacks by $s1%.
 
 Name             : Interrupt (id=32747) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Physical
 Spell Level      : 10
 Range            : 100 yards
@@ -1368,7 +1372,7 @@ Tooltip          : Interrupted.
 
 Name             : Blood Fury (Racial) (id=33702) [Scaling Spell (-1)] 
 Class            : Mage, Warlock
-Race             : Orc
+Race             : Orc (0x2)
 School           : Physical
 Spell Level      : 1
 Duration         : 15 seconds
@@ -1385,7 +1389,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Target: Self (1)
 #2 (id=23584)    : Apply Aura (6) | Damage Done (13)
                    Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self (1)
-Description      : Increases your spell power by $s2.  Lasts $d.
+Description      : Increases your spell power by $s2 for $d.
 Tooltip          : Spell power increased by $s2.
 
 Name             : Rain of Fire (id=42223) [Spell Family (5)] 
@@ -1615,7 +1619,7 @@ Description      : $@spelldesc63312
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1632,7 +1636,7 @@ Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Aberration (Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1650,7 +1654,7 @@ Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -1961,7 +1965,7 @@ Description      : Allows you to give commands to control your demon.
 
 Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2363,7 +2367,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=124273)   : Summon (28)
@@ -3150,7 +3154,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Not a proc (105), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34500 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32400 | Target: Unknown(25)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -4342,7 +4346,7 @@ Description      : Curses the ground with a demonic bane, causing all of your si
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -5092,7 +5096,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=351154)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.60000 | Target: Enemy (6)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 
 Name             : Unstable Affliction (id=233490) [Spell Family (5)] 
@@ -5113,7 +5117,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=352664)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.92700 | Target: Enemy (6)
 Description      : $@spelldesc30108
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -5135,7 +5139,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=352671)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.92700 | Target: Enemy (6)
 Description      : $@spelldesc30108
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -5157,7 +5161,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=352672)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.92700 | Target: Enemy (6)
 Description      : $@spelldesc30108
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -5179,7 +5183,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=352673)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.92700 | Target: Enemy (6)
 Description      : $@spelldesc30108
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -5201,7 +5205,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=352674)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.96600 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.92700 | Target: Enemy (6)
 Description      : $@spelldesc30108
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -5409,7 +5413,7 @@ While out of combat you regenerate up to 3 Soul Shards.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
@@ -5426,7 +5430,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
@@ -5442,5 +5446,117 @@ Effects          :
 #2 (id=477480)   : Unknown(170)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Velocity         : 3 yards/sec
+Cooldown         : 150 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=477694)   : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*4,$AP*5)}
+
+Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
+Description      : Reduces Holy damage taken by ${$s1/-1}%.
+
+Name             : Light's Reckoning (Racial Passive) (id=255652) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477699)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256896 | Target: Self (1)
+Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
+
+Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477700)   : Apply Aura (6) | Unknown(447)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self (1)
+Description      : Experience gains from killing Demons increased by $s1%.
+
+Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 150 seconds
+Triggered by     : Light's Judgment (255647)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479673)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*4,$AP*5)}
+
+Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+Triggered by     : Light's Reckoning (255652)
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479676)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=479677)   : Direct Heal (10)
+                   Base Value: 100000 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
+Heals $s2 to allies within $A1. 
 
 

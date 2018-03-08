@@ -154,6 +154,79 @@ struct expiration_delay_t : public buff_event_t
     buff -> expire();
   }
 };
+
+struct buff_expr_t : public expr_t
+{
+  std::string               buff_name;
+  action_t*                 action;
+  buff_t*                   static_buff;
+  target_specific_t<buff_t> specific_buff;
+  double                    constant_value;
+
+  buff_expr_t( const std::string& n, const std::string& bn, action_t* a, buff_t* b, double cv = 0 ) :
+    expr_t( n ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false ),
+    constant_value( cv )
+  { }
+
+  virtual buff_t* create() const
+  {
+    action -> player -> get_target_data( action -> target );
+    auto buff = buff_t::find( action -> target, buff_name, action -> player );
+    if ( ! buff )
+    {
+      buff = buff_t::find( action -> target, buff_name, action -> target ); // Raid debuffs
+    }
+
+    if ( ! buff )
+    {
+      action -> sim -> errorf( "Reference to unknown buff/debuff %s by player %s",
+        buff_name.c_str(), action -> player -> name() );
+      assert( 0 );
+      action -> sim -> cancel();
+      // Prevent segfault
+      buff = buff_creator_t( action -> player, "dummy" );
+    }
+
+    return buff;
+  }
+
+  virtual buff_t* buff() const
+  {
+    if ( static_buff ) return static_buff;
+    buff_t*& buff = specific_buff[ action -> target ];
+    if ( ! buff )
+    {
+      buff = create();
+    }
+    return buff;
+  }
+
+  bool is_constant( double *v ) override
+  {
+    // Background action, so no need to check anything. This is for sure constant.
+    if ( action -> background )
+    {
+      return true;
+    }
+
+    // If there is no static buff, we cannot do the constant optimization for now
+    if ( static_buff == nullptr )
+    {
+      return false;
+    }
+
+    auto b = buff();
+
+    // Buff cannot proc, so it is constant.
+    if ( ! b -> manual_chance_used && b -> default_chance == 0 && b -> rppm == nullptr )
+    {
+      *v = constant_value;
+      return true;
+    }
+
+    return false;
+  }
+};
 }
 
 buff_t::buff_t(actor_pair_t q, const std::string& name, const spell_data_t* spell_data) :
@@ -185,6 +258,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   overridden(),
   can_cancel( true ),
   requires_invalidation(),
+  manual_chance_used( false ),
   current_value(),
   current_stack(),
   buff_duration( params._duration ),
@@ -247,7 +321,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   }
 
   // If there's no overridden proc chance (%), setup any potential custom RPPM-affecting attribute
-  if ( params._chance == -1 )
+  if ( params._chance == -1 && params._rppm_scale != RPPM_DISABLE )
   {
     if ( params._rppm_freq > -1 )
     {
@@ -428,11 +502,10 @@ buff_t* buff_t::set_max_stack( int max_stack )
     sim -> errorf( "buff %s: initialized with max_stack > 999. Setting max_stack to 999.\n", name_str.c_str() );
   }
 
-  stack_occurrence.resize( _max_stack + 1 );
   stack_react_time.resize( _max_stack + 1 );
   stack_react_ready_triggers.resize( _max_stack + 1 );
 
-  if ( as<int>( stack_uptime.size() ) < _max_stack )
+  if ( as<int>( stack_uptime.size() ) < _max_stack + 1 )
   {
     stack_uptime.resize( _max_stack + 1 );
   }
@@ -725,6 +798,7 @@ timespan_t buff_t::tick_time() const
   switch ( tick_time_behavior )
   {
     case BUFF_TICK_TIME_HASTED:
+      assert(player);
       return buff_period * player -> cache.spell_speed();
     case BUFF_TICK_TIME_CUSTOM:
       assert( tick_time_callback );
@@ -772,10 +846,6 @@ bool buff_t::may_react( int stack )
 
   if ( stack > _max_stack ) return false;
 
-  timespan_t occur = stack_occurrence[ stack ];
-
-  if ( occur <= timespan_t::zero() ) return true;
-
   return sim -> current_time() > stack_react_time[ stack ];
 }
 
@@ -783,12 +853,12 @@ bool buff_t::may_react( int stack )
 
 int buff_t::stack_react()
 {
-  int stack = 0;
+  int stack = current_stack;
 
-  for ( int i = 1; i <= current_stack; i++ )
+  for ( int i = current_stack; i >= 1; i-- )
   {
-    if ( stack_react_time[ i ] > sim -> current_time() ) break;
-    stack++;
+    if ( stack_react_time[ i ] <= sim -> current_time() ) break;
+    stack--;
   }
 
   return stack;
@@ -885,7 +955,14 @@ bool buff_t::trigger( int        stacks,
   }
   else
   {
-    if ( chance < 0 ) chance = default_chance;
+    if ( chance < 0 )
+    {
+      chance = default_chance;
+    }
+    else
+    {
+      manual_chance_used = chance > 0;
+    }
 
     if ( ! rng().roll( chance ) )
       return false;
@@ -1308,7 +1385,6 @@ void buff_t::bump( int stacks, double value )
       timespan_t react = sim -> current_time() + total_reaction_time;
       for ( int i = before_stack + 1; i <= current_stack; i++ )
       {
-        stack_occurrence[ i ] = sim -> current_time();
         stack_react_time[ i ] = react;
         if ( player && player -> ready_type == READY_TRIGGER )
         {
@@ -1491,8 +1567,7 @@ void buff_t::expire( timespan_t delay )
 void buff_t::predict()
 {
   // Guarantee that may_react() will return true if the buff is present.
-  fill( &stack_occurrence[ 0 ], &stack_occurrence[ current_stack + 1 ], timespan_t::min() );
-  fill( &stack_react_time[ 0 ], &stack_react_time[ current_stack + 1 ], timespan_t::min() );
+  std::fill( stack_react_time.begin(), stack_react_time.begin() + current_stack + 1, timespan_t::min() );
 }
 
 // buff_t::aura_gain ========================================================
@@ -1695,51 +1770,13 @@ expr_t* buff_t::create_expression(  std::string buff_name,
                                     const std::string& type,
                                     buff_t* static_buff )
 {
-  struct buff_expr_t : public expr_t
-  {
-    std::string buff_name;
-    action_t* action;
-    buff_t* static_buff;
-    target_specific_t<buff_t> specific_buff;
-
-    buff_expr_t( const std::string& n, const std::string& bn, action_t* a, buff_t* b ) :
-      expr_t( n ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false ) {}
-
-    virtual buff_t* create() const
-    {
-      action -> player -> get_target_data( action -> target );
-      auto buff = buff_t::find( action -> target, buff_name, action -> player );
-      if ( ! buff ) buff = buff_t::find( action -> target, buff_name, action -> target ); // Raid debuffs
-      if ( ! buff )
-      {
-        action -> sim -> errorf( "Reference to unknown buff/debuff %s by player %s", buff_name.c_str(), action -> player -> name() );
-        assert( 0 );
-        action -> sim -> cancel();
-        // Prevent segfault
-        buff = buff_creator_t( action -> player, "dummy" );
-      }
-
-      return buff;
-    }
-
-    virtual buff_t* buff() const
-    {
-      if ( static_buff ) return static_buff;
-      buff_t*& buff = specific_buff[ action -> target ];
-      if ( ! buff )
-      {
-        buff = create();
-      }
-      return buff;
-    }
-  };
-
   if ( type == "duration" )
   {
     struct duration_expr_t : public buff_expr_t
     {
       duration_expr_t( std::string bn, action_t* a, buff_t* b ) :
-        buff_expr_t( "buff_duration", bn, a, b ) {}
+        buff_expr_t( "buff_duration", bn, a, b, b ? b -> buff_duration.total_seconds() : 0 )
+      { }
       virtual double evaluate() override { return buff() -> buff_duration.total_seconds(); }
     };
     return new duration_expr_t( buff_name, action, static_buff );
@@ -1779,7 +1816,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     struct down_expr_t : public buff_expr_t
     {
       down_expr_t( std::string bn, action_t* a, buff_t* b ) :
-        buff_expr_t( "buff_down", bn, a, b ) {}
+        buff_expr_t( "buff_down", bn, a, b, 1.0 ) {}
       virtual double evaluate() override { return buff() -> check() <= 0; }
     };
     return new down_expr_t( buff_name, action, static_buff );
@@ -1809,7 +1846,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     struct max_stack_expr_t : public buff_expr_t
     {
       max_stack_expr_t( std::string bn, action_t* a, buff_t* b ) :
-        buff_expr_t( "buff_max_stack", bn, a, b ) {}
+        buff_expr_t( "buff_max_stack", bn, a, b, b ? b -> max_stack() : 0 ) {}
       virtual double evaluate() override { return buff() -> max_stack(); }
     };
     return new max_stack_expr_t( buff_name, action, static_buff );
@@ -2313,6 +2350,10 @@ void absorb_buff_t::expire_override( int expiration_stacks, timespan_t remaining
 {
   buff_t::expire_override( expiration_stacks, remaining_duration );
 
+  if ( !player)
+  {
+    return;
+  }
   auto it = range::find( player -> absorb_buff_list, this );
   if ( it != player -> absorb_buff_list.end() )
     player -> absorb_buff_list.erase( it );

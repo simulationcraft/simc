@@ -657,7 +657,7 @@ double rng_t::range( double min, double max )
  */
 double rng_t::gauss( double mean, double stddev, bool truncate_low_end )
 {
-
+  assert(stddev >= 0 && "Calling gauss with negative stddev");
   
   double z;
 
@@ -765,53 +765,53 @@ rng_t::rng_t() :
 // ==========================================================================
 
 /// parse rng type from string
-rng_t::type_e parse_type( const std::string& n )
+engine_type parse_type( const std::string& n )
 {
-  if( n == "murmurhash"   ) return rng_t::MURMURHASH;
-  if( n == "sfmt"         ) return rng_t::SFMT;
-  if( n == "std"          ) return rng_t::STD;
-  if( n == "tinymt"       ) return rng_t::TINYMT;
-  if( n == "xorshift64"   ) return rng_t::XORSHIFT64;
-  if( n == "xorshift128"  ) return rng_t::XORSHIFT128;
-  if( n == "xorshift1024" ) return rng_t::XORSHIFT1024;
+  if( n == "murmurhash"   ) return engine_type::MURMURHASH;
+  if( n == "sfmt"         ) return engine_type::SFMT;
+  if( n == "std"          ) return engine_type::STD;
+  if( n == "tinymt"       ) return engine_type::TINYMT;
+  if( n == "xorshift64"   ) return engine_type::XORSHIFT64;
+  if( n == "xorshift128"  ) return engine_type::XORSHIFT128;
+  if( n == "xorshift1024" ) return engine_type::XORSHIFT1024;
 
-  return rng_t::DEFAULT;
+  return engine_type::DEFAULT;
 }
 
 /**
  * Factory method to create a rng object with given rng-engine type
  */
-std::unique_ptr<rng_t> create( rng_t::type_e t )
+std::unique_ptr<rng_t> create( engine_type t )
 {
   switch( t )
   {
-  case rng_t::MURMURHASH:
+  case engine_type::MURMURHASH:
     return std::unique_ptr<rng_t>(new rng_murmurhash_t());
 
-  case rng_t::STD:
+  case engine_type::STD:
     return std::unique_ptr<rng_t>(new rng_mt_cxx11_t());
 
-  case rng_t::SFMT:
+  case engine_type::SFMT:
     return std::unique_ptr<rng_t>(new rng_sfmt_t());
 
-  case rng_t::TINYMT:
+  case engine_type::TINYMT:
     return std::unique_ptr<rng_t>(new rng_tinymt_t());
 
-  case rng_t::XORSHIFT64:
+  case engine_type::XORSHIFT64:
     return std::unique_ptr<rng_t>(new rng_xorshift64_t());
 
-  case rng_t::XORSHIFT128:
+  case engine_type::XORSHIFT128:
     return std::unique_ptr<rng_t>(new rng_xorshift128_t());
 
-  case rng_t::XORSHIFT1024:
+  case engine_type::XORSHIFT1024:
     return std::unique_ptr<rng_t>(new rng_xorshift1024_t());
 
-  case rng_t::DEFAULT:
+  case engine_type::DEFAULT:
   default:
     break;
   }
 
-  return create( rng_t::SFMT );
+  return create( engine_type::SFMT );
 }
 
 /**

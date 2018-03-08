@@ -4,7 +4,7 @@ level=110
 race=blood_elf
 role=tank
 position=front
-talents=3112031
+talents=3112033
 artifact=15:0:0:0:0:272:4:273:4:274:4:275:4:276:4:277:4:278:4:279:4:280:4:281:1:282:1:283:1:284:1:285:1:286:1:289:1:1331:1:1359:1:1481:4:1482:1:1483:1:1484:24:1627:1
 crucible=1739:3:1778:3:275:3
 
@@ -35,9 +35,11 @@ actions+=/arcane_torrent,if=runic_power.deficit>20
 actions+=/blood_fury
 actions+=/berserking,if=buff.dancing_rune_weapon.up
 actions+=/use_items
+actions+=/use_item,name=archimondes_hatred_reborn,if=buff.vampiric_blood.up
 actions+=/potion,if=buff.dancing_rune_weapon.up
 actions+=/dancing_rune_weapon,if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)&!cooldown.death_and_decay.ready
-actions+=/vampiric_blood
+actions+=/vampiric_blood,if=!equipped.archimondes_hatred_reborn|cooldown.trinket.ready
+actions+=/tombstone,if=buff.bone_shield.stack>=7
 actions+=/call_action_list,name=standard
 
 actions.standard=death_strike,if=runic_power.deficit<10
@@ -67,7 +69,7 @@ legs=dreadwake_legplates,id=152116,bonus_id=3612/1502
 feet=doomwalker_warboots,id=152009,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_haste
-trinket1=aggramars_conviction,id=154173,bonus_id=4213
+trinket1=aggramars_conviction,id=154173,bonus_id=3997
 trinket2=astral_alchemist_stone,id=151607,bonus_id=3609/601/3608
 main_hand=maw_of_the_damned,id=128402,gem_id=155847/155855/155852,relic_id=3612:1512/3612:1512/3612:1512,enchant=rune_of_the_fallen_crusader
 

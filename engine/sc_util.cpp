@@ -204,8 +204,8 @@ bool util::str_compare_ci( const std::string& l,
 {
   if ( l.size() != r.size() )
     return false;
-  else
-    return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
+
+  return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
 }
 
 // str_prefix_ci ============================================================
@@ -215,8 +215,8 @@ bool util::str_prefix_ci( const std::string& str,
 {
   if ( str.size() < prefix.size() )
     return false;
-  else
-    return std::equal( prefix.begin(), prefix.end(), str.begin(), pred_ci );
+
+  return std::equal( prefix.begin(), prefix.end(), str.begin(), pred_ci );
 }
 
 // str_in_str_ci ============================================================
@@ -317,28 +317,32 @@ const char* util::race_type_string( race_e type )
 {
   switch ( type )
   {
-    case RACE_NONE:      return "none";
-    case RACE_BEAST:     return "beast";
-    case RACE_BLOOD_ELF: return "blood_elf";
-    case RACE_DEMON:     return "demon";
-    case RACE_DRAENEI:   return "draenei";
-    case RACE_DRAGONKIN: return "dragonkin";
-    case RACE_DWARF:     return "dwarf";
-    case RACE_GIANT:     return "giant";
-    case RACE_GNOME:     return "gnome";
-    case RACE_HUMAN:     return "human";
-    case RACE_HUMANOID:  return "humanoid";
-    case RACE_NIGHT_ELF: return "night_elf";
-    case RACE_ORC:       return "orc";
-    case RACE_TAUREN:    return "tauren";
-    case RACE_TROLL:     return "troll";
-    case RACE_UNDEAD:    return "undead";
-    case RACE_GOBLIN:    return "goblin";
-    case RACE_WORGEN:    return "worgen";
-    case RACE_PANDAREN:  return "pandaren";
-    case RACE_PANDAREN_ALLIANCE:  return "pandaren_alliance";
-    case RACE_PANDAREN_HORDE:  return "pandaren_horde";
-    default:             return "unknown";
+    case RACE_NONE:                return "none";
+    case RACE_BEAST:               return "beast";
+    case RACE_BLOOD_ELF:           return "blood_elf";
+    case RACE_DEMON:               return "demon";
+    case RACE_DRAENEI:             return "draenei";
+    case RACE_DRAGONKIN:           return "dragonkin";
+    case RACE_DWARF:               return "dwarf";
+    case RACE_GIANT:               return "giant";
+    case RACE_GNOME:               return "gnome";
+    case RACE_HUMAN:               return "human";
+    case RACE_HUMANOID:            return "humanoid";
+    case RACE_NIGHT_ELF:           return "night_elf";
+    case RACE_ORC:                 return "orc";
+    case RACE_TAUREN:              return "tauren";
+    case RACE_TROLL:               return "troll";
+    case RACE_UNDEAD:              return "undead";
+    case RACE_GOBLIN:              return "goblin";
+    case RACE_WORGEN:              return "worgen";
+    case RACE_PANDAREN:            return "pandaren";
+    case RACE_PANDAREN_ALLIANCE:   return "pandaren_alliance";
+    case RACE_PANDAREN_HORDE:      return "pandaren_horde";
+    case RACE_VOID_ELF:            return "void_elf";
+    case RACE_HIGHMOUNTAIN_TAUREN: return "highmountain_tauren";
+    case RACE_LIGHTFORGED_DRAENEI: return "lightforged_draenei";
+    case RACE_NIGHTBORNE:          return "nightborne";
+    default:                       return "unknown";
   }
 }
 
@@ -360,7 +364,12 @@ const char* util::stats_type_string( stats_e type )
 
 race_e util::parse_race_type( const std::string &name )
 {
-  if ( name == "forsaken" ) return RACE_UNDEAD;
+  if ( name == "forsaken" )           return RACE_UNDEAD;
+
+  // TODO: Remove these once people had time to update their simc addons.
+  if ( name == "voidelf" )            return RACE_VOID_ELF;
+  if ( name == "lightforgeddraenei" ) return RACE_LIGHTFORGED_DRAENEI;
+  if ( name == "highmountaintauren" ) return RACE_HIGHMOUNTAIN_TAUREN;
 
   return parse_enum<race_e, RACE_NONE, RACE_MAX, race_type_string>( name );
 }
@@ -873,9 +882,9 @@ resource_e util::translate_power_type( power_e pt )
 
 // weapon_type_string =======================================================
 
-const char* util::weapon_type_string( weapon_e weapon )
+const char* util::weapon_type_string( weapon_e type )
 {
-  switch ( weapon )
+  switch ( type )
   {
     case WEAPON_NONE:      return "none";
     case WEAPON_DAGGER:    return "dagger";
@@ -927,9 +936,9 @@ const char* util::weapon_subclass_string( int subclass )
 
 // weapon_class_string ======================================================
 
-const char* util::weapon_class_string( int it )
+const char* util::weapon_class_string( int weapon_class )
 {
-  switch ( it )
+  switch ( weapon_class )
   {
     case INVTYPE_WEAPON:
       return "One Hand";
@@ -982,9 +991,9 @@ const char* util::slot_type_string( slot_e slot )
 }
 
 /// Slots with matching type of armour (cloth/leather/mail/plate)
-bool util::is_match_slot( slot_e s )
+bool util::is_match_slot( slot_e slot )
 {
-  switch ( s )
+  switch ( slot )
   {
     case SLOT_HEAD:
     case SLOT_SHOULDERS:
@@ -1202,6 +1211,8 @@ const char* util::special_effect_source_string( special_effect_source_e type )
     case SPECIAL_EFFECT_SOURCE_ADDON:   return "addon";
     case SPECIAL_EFFECT_SOURCE_GEM:     return "gem";
     case SPECIAL_EFFECT_SOURCE_SOCKET_BONUS: return "socket_bonus";
+    case SPECIAL_EFFECT_SOURCE_ARTIFACT: return "artifact";
+    case SPECIAL_EFFECT_SOURCE_RACE: return "race";
     case SPECIAL_EFFECT_SOURCE_FALLBACK: return "fallback";
     default:                            return "unknown";
   }
@@ -1606,48 +1617,48 @@ scale_metric_e util::parse_scale_metric( const std::string& name )
 
 // parse_origin =============================================================
 
-bool util::parse_origin( std::string& region_str,
-                         std::string& server_str,
-                         std::string& name_str,
-                         const std::string& origin_str )
+bool util::parse_origin( std::string& region,
+                         std::string& server,
+                         std::string& name,
+                         const std::string& origin )
 {
-  auto tokens = string_split( origin_str, "/:.?&=" );
+  auto tokens = string_split( origin, "/:.?&=" );
 
-  if ( origin_str.find( ".battle.net" ) != std::string::npos )
+  if ( origin.find( ".battle.net" ) != std::string::npos )
   {
     if ( tokens.size() < 2 || tokens[ 0 ] != "http" || tokens[ 1 ].empty() )
       return false;
-    region_str = tokens[ 1 ];
+    region = tokens[ 1 ];
 
     std::vector<std::string>::const_iterator pos = range::find( tokens, "character" );
     if ( pos == tokens.end() || ++pos == tokens.end() || pos -> empty() )
       return false;
-    server_str = *pos;
+    server = *pos;
 
     if ( ++pos == tokens.end() || pos -> empty() )
       return false;
-    name_str = *pos;
+    name = *pos;
 
     return true;
   }
 
-  if ( origin_str.find( ".battlenet.com." ) != std::string::npos )
+  if ( origin.find( ".battlenet.com." ) != std::string::npos )
   {
     std::vector<std::string>::const_iterator pos = range::find( tokens, "battlenet" );
     if ( pos == tokens.end() || ++pos == tokens.end() || *pos != "com" )
       return false;
     if ( ++pos == tokens.end() || pos -> empty() )
       return false;
-    region_str = *pos;
+    region = *pos;
 
     pos = range::find( tokens, "character" );
     if ( pos == tokens.end() || ++pos == tokens.end() || pos -> empty() )
       return false;
-    server_str = *pos;
+    server = *pos;
 
     if ( ++pos == tokens.end() || pos -> empty() )
       return false;
-    name_str = *pos;
+    name = *pos;
 
     return true;
   }
@@ -1697,9 +1708,9 @@ int util::class_id( player_e type )
 
 // race_id ==================================================================
 
-unsigned util::race_id( race_e r )
+unsigned util::race_id( race_e race )
 {
-  switch ( r )
+  switch ( race )
   {
     case RACE_NIGHT_ELF: return 4;
     case RACE_HUMAN: return 1;
@@ -1716,15 +1727,19 @@ unsigned util::race_id( race_e r )
     case RACE_PANDAREN: return 24;
     case RACE_PANDAREN_ALLIANCE: return 25;
     case RACE_PANDAREN_HORDE: return 26;
+    case RACE_NIGHTBORNE: return 27;
+    case RACE_HIGHMOUNTAIN_TAUREN: return 28;
+    case RACE_VOID_ELF: return 29;
+    case RACE_LIGHTFORGED_DRAENEI: return 30;
     default: return 0;
   }
 }
 
 // race_mask ================================================================
 
-unsigned util::race_mask( race_e r )
+unsigned util::race_mask( race_e race )
 {
-  uint32_t id = race_id( r );
+  uint32_t id = race_id( race );
 
   if ( id > 0 )
     return ( 1 << ( id - 1 ) );
@@ -1734,23 +1749,23 @@ unsigned util::race_mask( race_e r )
 
 // pet_class_type ===========================================================
 
-player_e util::pet_class_type( pet_e c )
+player_e util::pet_class_type( pet_e type )
 {
   player_e p = WARRIOR;
 
-  if ( c <= PET_HUNTER )
+  if ( type <= PET_HUNTER )
   {
     p = WARRIOR;
   }
-  else if ( c == PET_GHOUL )
+  else if ( type == PET_GHOUL )
   {
     p = ROGUE;
   }
-  else if ( c == PET_FELGUARD )
+  else if ( type == PET_FELGUARD )
   {
     p = WARRIOR;
   }
-  else if ( c <= PET_WARLOCK )
+  else if ( type <= PET_WARLOCK )
   {
     p = WARLOCK;
   }
@@ -1760,13 +1775,13 @@ player_e util::pet_class_type( pet_e c )
 
 // pet_mask =================================================================
 
-unsigned util::pet_mask( pet_e p )
+unsigned util::pet_mask( pet_e type )
 {
-  if ( p <= PET_FEROCITY_TYPE )
+  if ( type <= PET_FEROCITY_TYPE )
     return 0x1;
-  if ( p <= PET_TENACITY_TYPE )
+  if ( type <= PET_TENACITY_TYPE )
     return 0x2;
-  if ( p <= PET_CUNNING_TYPE )
+  if ( type <= PET_CUNNING_TYPE )
     return 0x4;
 
   return 0x0;
@@ -1774,9 +1789,9 @@ unsigned util::pet_mask( pet_e p )
 
 // pet_id ===================================================================
 
-unsigned util::pet_id( pet_e p )
+unsigned util::pet_id( pet_e type )
 {
-  uint32_t mask = pet_mask( p );
+  uint32_t mask = pet_mask( type );
 
   switch ( mask )
   {
@@ -1831,6 +1846,10 @@ race_e util::translate_race_id( int rid )
     case 24: return RACE_PANDAREN;
     case 25: return RACE_PANDAREN_ALLIANCE;
     case 26: return RACE_PANDAREN_HORDE;
+    case 27: return RACE_NIGHTBORNE;
+    case 28: return RACE_HIGHMOUNTAIN_TAUREN;
+    case 29: return RACE_VOID_ELF;
+    case 30: return RACE_LIGHTFORGED_DRAENEI;
   }
 
   return RACE_NONE;
@@ -1959,9 +1978,9 @@ stat_e util::translate_rating_mod( unsigned ratings )
 
 // translate_weapon_subclass ================================================
 
-weapon_e util::translate_weapon_subclass( int id )
+weapon_e util::translate_weapon_subclass( int weapon_subclass )
 {
-  switch ( id )
+  switch ( weapon_subclass )
   {
     case ITEM_SUBCLASS_WEAPON_AXE:          return WEAPON_AXE;
     case ITEM_SUBCLASS_WEAPON_AXE2:         return WEAPON_AXE_2H;
@@ -2082,7 +2101,7 @@ std::vector<std::string> util::string_split( const std::string& str, const std::
 
   std::string::size_type cut_pt, start = 0;
 
-  while ( ( cut_pt = str.find_first_of( delim, start ) ) != str.npos )
+  while ( ( cut_pt = str.find_first_of( delim, start ) ) != std::string::npos )
   {
     if ( cut_pt > start ) // Found something, push to the vector
       results.push_back( str.substr( start, cut_pt - start ) );
@@ -2112,7 +2131,7 @@ std::vector<std::string> util::string_split_allow_quotes( std::string str, const
   static const std::string in_quote = "\"";
   const std::string* search = &not_in_quote;
 
-  while ( ( cut_pt = str.find_first_of( *search, start ) ) != str.npos )
+  while ( ( cut_pt = str.find_first_of( *search, start ) ) != std::string::npos )
   {
     if ( str[ cut_pt ] == '"' )
     {
@@ -2141,7 +2160,7 @@ std::vector<std::string> util::string_split_allow_quotes( std::string str, const
 void util::replace_all( std::string& s, const std::string& from, const std::string& to )
 {
   std::string::size_type pos;
-  if ( ( pos = s.find( from ) ) != s.npos )
+  if ( ( pos = s.find( from ) ) != std::string::npos )
   {
     std::string::size_type from_length = from.length();
     std::string::size_type to_len = to.length();
@@ -2150,7 +2169,7 @@ void util::replace_all( std::string& s, const std::string& from, const std::stri
       s.replace( pos, from_length, to );
       pos += to_len;
     }
-    while ( ( pos = s.find( from, pos ) ) != s.npos );
+    while ( ( pos = s.find( from, pos ) ) != std::string::npos );
   }
 }
 
@@ -2160,13 +2179,13 @@ void util::erase_all( std::string& s, const std::string& from )
 {
   std::string::size_type pos;
 
-  if ( ( pos = s.find( from ) ) != s.npos )
+  if ( ( pos = s.find( from ) ) != std::string::npos )
   {
     do
     {
       s.erase( pos, from.length() );
     }
-    while ( ( pos = s.find( from ) ) != s.npos );
+    while ( ( pos = s.find( from ) ) != std::string::npos );
   }
 }
 
@@ -2240,44 +2259,12 @@ int util::parse_item_quality( const std::string& quality )
   return i;
 }
 
-// string_split =============================================================
-
-size_t util::string_split( const std::string& str,
-                           const char*        delim,
-                           const char*        format, ... )
-{
-  std::vector<std::string> str_splits = string_split( str,    delim );
-  std::vector<std::string> format_splits = string_split( format, " " );
-
-  if ( str_splits.size() == format_splits.size() )
-  {
-    va_list vap;
-    va_start( vap, format );
-
-    for ( size_t i = 0; i < str_splits.size(); i++ )
-    {
-      std::string& f = format_splits[ i ];
-      const char*  s =    str_splits[ i ].c_str();
-
-      if      ( f == "i" ) *( va_arg( vap, int*    ) ) = atoi( s );
-      else if ( f == "f" ) *( va_arg( vap, double* ) ) = atof( s );
-      else if ( f == "d" ) *( va_arg( vap, double* ) ) = atof( s );
-      else if ( f == "S" ) *( va_arg( vap, std::string* ) ) = s;
-      else assert( 0 );
-    }
-
-    va_end( vap );
-  }
-
-  return str_splits.size();
-}
-
 // string_strip_quotes ======================================================
 
 void util::string_strip_quotes( std::string& str )
 {
   std::string::size_type pos = str.find( '"' );
-  if ( pos == str.npos ) return;
+  if ( pos == std::string::npos ) return;
 
   std::string::iterator dst = str.begin() + pos, src = dst;
   while ( ++src != str.end() )
@@ -2304,8 +2291,8 @@ std::string util::to_string( double f )
 {
   if ( std::abs( f - static_cast<int>( f ) ) < 0.001 )
     return to_string( static_cast<int>( f ) );
-  else
-    return to_string( f, 3 );
+
+  return to_string( f, 3 );
 }
 
 // to_unsigned ==============================================================
@@ -2861,12 +2848,12 @@ bool util::is_number( const std::string& s )
 
 // fuzzy_stats ==============================================================
 
-void util::fuzzy_stats( std::string&       encoding_str,
-                        const std::string& description_str )
+void util::fuzzy_stats( std::string&       encoding,
+                        const std::string& description )
 {
-  if ( description_str.empty() ) return;
+  if ( description.empty() ) return;
 
-  std::string buffer = description_str;
+  std::string buffer = description;
   util::tokenize( buffer );
 
   if ( is_proc_description( buffer ) )
@@ -2874,37 +2861,37 @@ void util::fuzzy_stats( std::string&       encoding_str,
 
   std::vector<std::string> splits = util::string_split( buffer, "_." );
 
-  stat_search( encoding_str, splits, STAT_ALL,  "all stats" );
-  stat_search( encoding_str, splits, STAT_ALL,  "to all stats" );
+  stat_search( encoding, splits, STAT_ALL,  "all stats" );
+  stat_search( encoding, splits, STAT_ALL,  "to all stats" );
 
-  stat_search( encoding_str, splits, STAT_STRENGTH,  "strength" );
-  stat_search( encoding_str, splits, STAT_AGILITY,   "agility" );
-  stat_search( encoding_str, splits, STAT_STAMINA,   "stamina" );
-  stat_search( encoding_str, splits, STAT_INTELLECT, "intellect" );
-  stat_search( encoding_str, splits, STAT_SPIRIT,    "spirit" );
+  stat_search( encoding, splits, STAT_STRENGTH,  "strength" );
+  stat_search( encoding, splits, STAT_AGILITY,   "agility" );
+  stat_search( encoding, splits, STAT_STAMINA,   "stamina" );
+  stat_search( encoding, splits, STAT_INTELLECT, "intellect" );
+  stat_search( encoding, splits, STAT_SPIRIT,    "spirit" );
 
-  stat_search( encoding_str, splits, STAT_SPELL_POWER, "spell power" );
+  stat_search( encoding, splits, STAT_SPELL_POWER, "spell power" );
 
-  stat_search( encoding_str, splits, STAT_ATTACK_POWER,     "attack power" );
-  stat_search( encoding_str, splits, STAT_EXPERTISE_RATING, "expertise rating" );
+  stat_search( encoding, splits, STAT_ATTACK_POWER,     "attack power" );
+  stat_search( encoding, splits, STAT_EXPERTISE_RATING, "expertise rating" );
 
-  stat_search( encoding_str, splits, STAT_HASTE_RATING,     "haste" );
-  stat_search( encoding_str, splits, STAT_HASTE_RATING,     "haste rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,       "ranged hit rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,       "hit rating" );
-  stat_search( encoding_str, splits, STAT_HIT_RATING,       "hit" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "ranged critical strike" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "critical strike rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "critical strike" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "crit rating" );
-  stat_search( encoding_str, splits, STAT_CRIT_RATING,      "crit" );
-  stat_search( encoding_str, splits, STAT_MASTERY_RATING,   "mastery rating" );
-  stat_search( encoding_str, splits, STAT_MASTERY_RATING,   "mastery" );
+  stat_search( encoding, splits, STAT_HASTE_RATING,     "haste" );
+  stat_search( encoding, splits, STAT_HASTE_RATING,     "haste rating" );
+  stat_search( encoding, splits, STAT_HIT_RATING,       "ranged hit rating" );
+  stat_search( encoding, splits, STAT_HIT_RATING,       "hit rating" );
+  stat_search( encoding, splits, STAT_HIT_RATING,       "hit" );
+  stat_search( encoding, splits, STAT_CRIT_RATING,      "ranged critical strike" );
+  stat_search( encoding, splits, STAT_CRIT_RATING,      "critical strike rating" );
+  stat_search( encoding, splits, STAT_CRIT_RATING,      "critical strike" );
+  stat_search( encoding, splits, STAT_CRIT_RATING,      "crit rating" );
+  stat_search( encoding, splits, STAT_CRIT_RATING,      "crit" );
+  stat_search( encoding, splits, STAT_MASTERY_RATING,   "mastery rating" );
+  stat_search( encoding, splits, STAT_MASTERY_RATING,   "mastery" );
 
-  stat_search( encoding_str, splits, STAT_DODGE_RATING,     "dodge rating" );
-  stat_search( encoding_str, splits, STAT_PARRY_RATING,     "parry rating" );
-  stat_search( encoding_str, splits, STAT_BLOCK_RATING,     "block rating" );
-  stat_search( encoding_str, splits, STAT_BONUS_ARMOR,      "bonus armor rating" );
+  stat_search( encoding, splits, STAT_DODGE_RATING,     "dodge rating" );
+  stat_search( encoding, splits, STAT_PARRY_RATING,     "parry rating" );
+  stat_search( encoding, splits, STAT_BLOCK_RATING,     "block rating" );
+  stat_search( encoding, splits, STAT_BONUS_ARMOR,      "bonus armor rating" );
   // WOD-TODO: hybrid primary stats?
 }
 
@@ -2942,38 +2929,38 @@ namespace util {
  * partial specialization optimization for 32-bit numbers
  */
 template<>
-int numDigits( int32_t x )
+int numDigits( int32_t number )
 {
-  if ( x == std::numeric_limits<int32_t>::min() ) return 10 + 1;
-  if ( x < 0 ) return numDigits( -x ) + 1;
+  if ( number == std::numeric_limits<int32_t>::min() ) return 10 + 1;
+  if ( number < 0 ) return numDigits( -number ) + 1;
 
-  if ( x >= 10000 )
+  if ( number >= 10000 )
   {
-    if ( x >= 10000000 )
+    if ( number >= 10000000 )
     {
-      if ( x >= 100000000 )
+      if ( number >= 100000000 )
       {
-        if ( x >= 1000000000 )
+        if ( number >= 1000000000 )
           return 10;
         return 9;
       }
       return 8;
     }
-    if ( x >= 100000 )
+    if ( number >= 100000 )
     {
-      if ( x >= 1000000 )
+      if ( number >= 1000000 )
         return 7;
       return 6;
     }
     return 5;
   }
-  if ( x >= 100 )
+  if ( number >= 100 )
   {
-    if ( x >= 1000 )
+    if ( number >= 1000 )
       return 4;
     return 3;
   }
-  if ( x >= 10 )
+  if ( number >= 10 )
     return 2;
   return 1;
 }
@@ -3004,11 +2991,11 @@ double crit_multiplier( meta_gem_e gem )
 
 // stream_printf ============================================================
 
-std::ostream& stream_printf( std::ostream& stream, const char* fmt, ... )
+std::ostream& stream_printf( std::ostream& stream, const char* format, ... )
 {
   va_list fmtargs;
-  va_start( fmtargs, fmt );
-  stream << str::format( fmt, fmtargs );
+  va_start( fmtargs, format );
+  stream << str::format( format, fmtargs );
   va_end( fmtargs );
   return stream;
 }

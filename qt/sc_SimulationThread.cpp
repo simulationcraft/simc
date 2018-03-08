@@ -18,6 +18,7 @@ void SC_SimulateThread::run()
 {
   // ********* Parsing **********
   sim_control_t description;
+  error_str.clear();
   try
   {
     description.options.parse_text( utf8_options.constData() );

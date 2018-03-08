@@ -143,9 +143,14 @@ const std::string _race_strings[] =
   "draenei",
   "", "", "", "", "", "", "", "", "", "",
   "worgen",
+  "",
+  "",
   "pandaren",
-  "pandaren_alliance",
-  "pandaren_horde"
+  "",
+  "nightborne",
+  "highmountain_tauren",
+  "void_elf",
+  "lightforged_tauren"
 };
 
 const std::string _pet_class_strings[] =
@@ -203,7 +208,7 @@ unsigned class_str_to_mask( const std::string& str )
   return 1 << ( ( cls_id < 1 ) ? 0 : cls_id - 1 );
 }
 
-unsigned race_str_to_mask( const std::string& str )
+uint64_t race_str_to_mask( const std::string& str )
 {
   int race_id = -1;
 
@@ -219,7 +224,7 @@ unsigned race_str_to_mask( const std::string& str )
     break;
   }
 
-  return 1 << ( ( race_id < 1 ) ? 0 : race_id - 1 );
+  return 1LLU << ( ( race_id < 1 ) ? 0 : race_id - 1 );
 }
 
 unsigned school_str_to_mask( const std::string& str )

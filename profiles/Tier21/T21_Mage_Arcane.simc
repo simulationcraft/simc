@@ -4,9 +4,9 @@ level=110
 race=troll
 role=spell
 position=back
-talents=2022031
+talents=2023031
 artifact=4:0:0:0:0:72:4:73:1:74:4:75:4:77:4:78:1:79:4:80:1:81:4:82:4:83:4:84:4:86:1:87:1:290:1:1169:1:1339:1:1371:1:1529:4:1530:1:1531:1:1532:24:1639:1
-crucible=1739:1780:1529/1739:1780:82/1739:1780:1529
+crucible=1739:1780:81/1739:1780:82/1739:1780:81
 
 # Default consumables
 potion=deadly_grace
@@ -47,8 +47,8 @@ actions+=/call_action_list,name=burn,if=(buff.arcane_charge.stack=buff.arcane_ch
 actions+=/call_action_list,name=conserve
 
 actions.build=arcane_orb
-# If we cap out on Arcane Missiles, avoid munching another proc.
-actions.build+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
+# Use Arcane Missiles at max stacks to avoid munching a proc. Alternatively, we can cast at 3 stacks of Arcane Charge to conserve mana.
+actions.build+=/arcane_missiles,if=active_enemies<3&(variable.arcane_missiles_procs=buff.arcane_missiles.max_stack|(variable.arcane_missiles_procs&mana.pct<=50&buff.arcane_charge.stack=3)),chain=1
 actions.build+=/arcane_explosion,if=active_enemies>1
 actions.build+=/arcane_blast
 
@@ -62,6 +62,7 @@ actions.burn+=/stop_burn_phase,if=prev_gcd.1.evocation&cooldown.evocation.charge
 actions.burn+=/nether_tempest,if=refreshable|!ticking
 actions.burn+=/mark_of_aluneth
 actions.burn+=/mirror_image
+actions.burn+=/lights_judgment,if=buff.arcane_power.down
 # Prevents using RoP at super low mana.
 actions.burn+=/rune_of_power,if=mana.pct>30|(buff.arcane_power.up|cooldown.arcane_power.up)
 actions.burn+=/arcane_power
@@ -82,11 +83,11 @@ actions.burn+=/arcane_orb
 # Arcane Barrage has a good chance of launching an Arcane Orb at max Arcane Charge stacks.
 actions.burn+=/arcane_barrage,if=active_enemies>4&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack
 # Arcane Missiles are good, but not when there's multiple targets up.
-actions.burn+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
+actions.burn+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3,chain=1
 # Get PoM back on cooldown as soon as possible.
 actions.burn+=/arcane_blast,if=buff.presence_of_mind.up
 actions.burn+=/arcane_explosion,if=active_enemies>1
-actions.burn+=/arcane_missiles,if=variable.arcane_missiles_procs
+actions.burn+=/arcane_missiles,if=variable.arcane_missiles_procs>1,chain=1
 actions.burn+=/arcane_blast
 # Now that we're done burning, we can update the average_burn_length with the length of this burn.
 actions.burn+=/variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+burn_phase_duration)%variable.total_burns
@@ -101,7 +102,7 @@ actions.conserve+=/rune_of_power,if=full_recharge_time<=execute_time|prev_gcd.1.
 # We want Charged Up for our burn phase to refresh 2pt21 buff, but if we have time to let it recharge we can use it during conserve.
 actions.conserve+=/strict_sequence,name=abarr_cu_combo,if=talent.charged_up.enabled&cooldown.charged_up.recharge_time<variable.time_until_burn:arcane_barrage:charged_up
 # Arcane Missiles are good, but not when there's multiple targets up.
-actions.conserve+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3
+actions.conserve+=/arcane_missiles,if=variable.arcane_missiles_procs=buff.arcane_missiles.max_stack&active_enemies<3,chain=1
 actions.conserve+=/supernova
 # Use during pandemic refresh window or if the dot is missing.
 actions.conserve+=/nether_tempest,if=refreshable|!ticking
@@ -109,7 +110,7 @@ actions.conserve+=/nether_tempest,if=refreshable|!ticking
 actions.conserve+=/arcane_explosion,if=active_enemies>1&(mana.pct>=70-(10*equipped.mystic_kilt_of_the_rune_master))
 # Use Arcane Blast if we have the mana for it or a proc from legendary wrists. With the Kilt we can cast freely.
 actions.conserve+=/arcane_blast,if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|(buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master)
-actions.conserve+=/arcane_missiles,if=variable.arcane_missiles_procs
+actions.conserve+=/arcane_missiles,if=variable.arcane_missiles_procs,chain=1
 actions.conserve+=/arcane_barrage
 # The following two lines are here in case Arcane Barrage is on cooldown.
 actions.conserve+=/arcane_explosion,if=active_enemies>1
@@ -131,7 +132,7 @@ actions.variables+=/variable,name=time_until_burn,op=max,value=cooldown.charged_
 actions.variables+=/variable,name=time_until_burn,op=reset,if=target.time_to_die<variable.average_burn_length
 
 head=runebound_collar,id=152138,bonus_id=3612/1502
-neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=runebound_mantle,id=152141,bonus_id=3612/1502
 back=drape_of_the_arcane_tempest,id=147145,bonus_id=3563/1512,enchant=binding_of_intellect
 chest=runebound_tunic,id=152140,bonus_id=3612/1502
@@ -147,13 +148,13 @@ trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=aluneth,id=127857,gem_id=155846/155850/155846,relic_id=3612:1512/3612:1512/3612:1512
 
 # Gear Summary
-# gear_ilvl=964.60
-# gear_stamina=59433
+# gear_ilvl=965.27
+# gear_stamina=59745
 # gear_intellect=61267
-# gear_crit_rating=11737
-# gear_haste_rating=10435
+# gear_crit_rating=12755
+# gear_haste_rating=11973
 # gear_mastery_rating=8207
-# gear_versatility_rating=8977
+# gear_versatility_rating=6685
 # gear_armor=2364
 # set_bonus=tier20_2pc=1
 # set_bonus=tier21_2pc=1

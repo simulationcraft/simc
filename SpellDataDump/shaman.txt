@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383)
+SimulationCraft 735-01 for World of Warcraft 7.3.5 Live (wow build 25901)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -152,7 +152,7 @@ Less hindered by effects that reduce movement speed.][]
 
 Name             : Bloodlust (id=2825) [Spell Family (11)] 
 Class            : Shaman
-Race             : Orc, Tauren, Troll, Goblin
+Race             : Orc, Tauren, Troll, Goblin, Highmountain Tauren (0xa0001a2)
 School           : Nature
 Resource         : 21.5% Base Mana (0) (id=12194)
 Spell Level      : 50
@@ -457,7 +457,7 @@ Description      : Energizes both your weapons with lightning and delivers a mas
 
 Name             : Expansive Mind (Racial Passive) (id=20591) [Passive] 
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
-Race             : Gnome
+Race             : Gnome (0x40)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -495,7 +495,7 @@ Description      : Allows you to resurrect yourself upon death with $21169s1% he
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc
+Race             : Orc (0x2)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -530,7 +530,7 @@ Description      : $@spelldesc33757
 
 Name             : Gift of the Naaru (Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
-Race             : Draenei
+Race             : Draenei (0x400)
 School           : Holy
 Spell Level      : 1
 Range            : 40 yards
@@ -600,7 +600,7 @@ Description      : $@spelldesc17364
 
 Name             : Heroism (id=32182) [Spell Family (11)] 
 Class            : Shaman
-Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Worgen
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Worgen, Pandaren, Void Elf, Lightforged Draenei (0x3120044d)
 School           : Nature
 Resource         : 21.5% Base Mana (0) (id=1324)
 Spell Level      : 50
@@ -625,7 +625,7 @@ Tooltip          : Haste increased by $s1%.
 
 Name             : Blood Fury (Racial) (id=33697) [Scaling Spell (-1)] 
 Class            : Shaman, Monk
-Race             : Orc
+Race             : Orc (0x2)
 School           : Physical
 Spell Level      : 1
 Duration         : 15 seconds
@@ -644,7 +644,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Misc Value: 0x7e | Target: Self (1)
 #3 (id=116811)   : Apply Aura (6) | Modify Healing Power (135)
                    Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Misc Value: 126 | Target: Self (1)
-Description      : Increases your melee attack power by $s1 and your spell power by $s2. Lasts $d.
+Description      : Increases your melee attack power by $s1 and your spell power by $s2 for $d.
 Tooltip          : Melee attack power increased by $s1.
 Spell power increased by $s2.
 
@@ -951,7 +951,7 @@ Critical effect chance of next Healing Surge increased by $w2%.
 
 Name             : Exhaustion (id=57723) 
 Class            : Shaman
-Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Worgen
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Worgen, Pandaren, Void Elf, Lightforged Draenei (0x3120044d)
 School           : Physical
 Range            : 50000 yards
 Duration         : 600 seconds
@@ -970,7 +970,7 @@ Tooltip          : Cannot benefit from Heroism or other similar effects.
 
 Name             : Sated (id=57724) 
 Class            : Hunter, Shaman, Mage
-Race             : Orc, Tauren, Troll, Goblin
+Race             : Orc, Tauren, Troll, Goblin, Highmountain Tauren (0xa0001a2)
 School           : Physical
 Range            : 50000 yards
 Duration         : 600 seconds
@@ -1126,7 +1126,7 @@ Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
 Name             : Gift of the Naaru (Racial) (id=59547) [Spell Family (11)] 
 Class            : Shaman
-Race             : Draenei
+Race             : Draenei (0x400)
 School           : Holy
 Spell Level      : 1
 Range            : 40 yards
@@ -1317,7 +1317,7 @@ Description      : Reduces the damage your pet takes from creature area of effec
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1334,7 +1334,7 @@ Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Aberration (Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1352,7 +1352,7 @@ Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -1729,7 +1729,7 @@ Description      : You may equip one-handed weapons in your off-hand, and you ha
 
 Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2503,10 +2503,10 @@ Effects          :
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 26 | Target: Self (1)
 #6 (id=260997)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #7 (id=260998)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #8 (id=260999)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
@@ -2515,7 +2515,7 @@ Effects          :
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
 #10 (id=261001)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
-                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286)
+                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
 #11 (id=261002)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lava Burst (51505), Lightning Bolt (187837), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Bolt (214815), Lightning Bolt Overload (214816)
@@ -2572,16 +2572,16 @@ Effects          :
                    Affected Spells: Echo of the Elements (108283)
 #6 (id=260987)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #7 (id=260988)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #8 (id=260989)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
 #9 (id=260990)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
-                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286)
+                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
 #10 (id=260991)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #11 (id=260992)   : Apply Aura (6) | Dummy (4)
@@ -2614,15 +2614,12 @@ Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 13 | Scaled Value: 13 | Target: Self (1)
                    Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Windsong (201898), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802)
-                   Hotfixed: Base Value (10 -> 13), Chain Multiplier (0 -> 1)
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 13 | Scaled Value: 13 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Windsong (201898), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802)
-                   Hotfixed: Base Value (10 -> 13), Chain Multiplier (0 -> 1)
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 13 | Scaled Value: 13 | Target: Self (1)
                    Affected Spells: Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lava Lash (60103), Windstrike (115357), Windstrike Off-Hand (115360), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Sundering (197214), Fury of Air (197385), Unleash Lava (199053), Unleash Lightning (199054), Doom Vortex (199116), Windsong (201898), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Storm Tempests (214452), Feral Lunge (215802)
-                   Hotfixed: Base Value (10 -> 13), Chain Multiplier (0 -> 1)
 #4 (id=191040)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 120 | Scaled Value: 120 | Target: Self (1)
 #5 (id=191041)   : Apply Aura (6) | Unknown(179)
@@ -2643,8 +2640,9 @@ Effects          :
 #11 (id=261012)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
-#12 (id=261013)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#12 (id=261013)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Generic Modifier (0)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value 2: 364 (Label) | Target: Self (1)
+                   Affected Spells (Label): Golganneth's Thunderous Wrath (257430), Ravaging Storm (257286)
 #13 (id=261014)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=261015)   : Apply Aura (6) | Dummy (4)
@@ -3277,9 +3275,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=273956)   : Apply Aura (6) | Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
-#2 (id=349880)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Flame Shock (188389), Flame Shock (188838)
 
 Name             : Lightning Bolt (id=187837) [Spell Family (11)] 
 Class            : Enhancement Shaman
@@ -3455,7 +3450,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 6 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#11), Elemental Shaman (137040 effect#1), Lucidity (137326 effect#1), Elemental Bellows (184919 effect#1), Maelstrom (187828 effect#2), Firestorm (191740 effect#1), Ember Totem (210658 effect#1), Focused Elements (246594 effect#1), 
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#11), Elemental Shaman (137040 effect#1), Lucidity (137326 effect#1), Elemental Bellows (184919 effect#1), Firestorm (191740 effect#1), Ember Totem (210658 effect#1), Flame Shock (232643 effect#2), Focused Elements (246594 effect#1), 
 Attributes       : ........ ........ x.x..... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3549,7 +3544,7 @@ Duration         : 21 seconds
 Cooldown         : 6 seconds
 Category         : 19
 Category Cooldown: 6 seconds
-Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#11), Lucidity (137326 effect#1), Elemental Bellows (184919 effect#1), Maelstrom (187828 effect#2), Firestorm (191740 effect#1), Ember Totem (210658 effect#1), Focused Elements (246594 effect#1), 
+Affecting spells : Shaman Shock Range Bonus (32973 effect#1), Elemental Fury (60188 effect#1), Restoration Shaman (137039 effect#11), Lucidity (137326 effect#1), Elemental Bellows (184919 effect#1), Firestorm (191740 effect#1), Ember Totem (210658 effect#1), Flame Shock (232643 effect#2), Focused Elements (246594 effect#1), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5055,7 +5050,7 @@ Description      : Chain Heal heals for an additional $s1% on targets within you
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -5802,6 +5797,7 @@ Effects          :
 #3 (id=312136)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 400 | Scaled Value: 400 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Hurls frigid ice at the target, dealing $s1 Frost damage and causing your next $n Frost Shocks to deal $s3% increased damage.
 
 |cFFFFFFFFGenerates $s2 Maelstom.|r
@@ -6568,7 +6564,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=351111)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 17 | Target: Self (1)
-Description      : Flame Shock will spend up to $s1 Maelstrom to extend its duration by up to $188389s3%.
+#2 (id=651763)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Flame Shock (188389), Flame Shock (188838)
+Description      : Flame Shock has no cooldown, and will spend up to $s1 Maelstrom to extend its duration by up to $188389s3%.
 
 Name             : Boulderfist (id=246035) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -6590,7 +6589,7 @@ Description      : Rockbiter's recharge time is reduced by $s1% and it deals $s2
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
@@ -6624,7 +6623,6 @@ Effects          :
 Description      : Earth Shock and Frost Shock have a $s1% chance to cause an Elemental Overload.
 
 Name             : Earth Shock Overload (id=252143) [Spell Family (11)] 
-Hotfixed         : Attributes
 Class            : Shaman
 School           : Nature
 Range            : 100 yards
@@ -6642,7 +6640,7 @@ Description      : $@spelldesc251758
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
@@ -6658,5 +6656,121 @@ Effects          :
 #2 (id=477480)   : Unknown(170)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
+Hotfixed         : Variables
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Velocity         : 3 yards/sec
+Cooldown         : 150 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=477694)   : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
+
+Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
+Description      : Reduces Holy damage taken by ${$s1/-1}%.
+
+Name             : Light's Reckoning (Racial Passive) (id=255652) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477699)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256896 | Target: Self (1)
+Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
+
+Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477700)   : Apply Aura (6) | Unknown(447)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self (1)
+Description      : Experience gains from killing Demons increased by $s1%.
+
+Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
+Hotfixed         : Variables
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 150 seconds
+Triggered by     : Light's Judgment (255647)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479673)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Hotfixed: Chain Multiplier (0 -> 1)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
+
+Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
+Hotfixed         : Attributes
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+Triggered by     : Light's Reckoning (255652)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479676)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=479677)   : Direct Heal (10)
+                   Base Value: 100000 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
+Heals $s2 to allies within $A1. 
 
 

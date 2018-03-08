@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 PTR (wow build 25163)
+SimulationCraft 730-03 for World of Warcraft 7.3.5 PTR (wow build 25753)
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Arcane Fire Frost Mage
@@ -327,7 +327,7 @@ Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 2 seconds
-Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Arcane Instability (166872 effect#1), Arcane Focus (171375 effect#1), Ice Form (198144 effect#2), Norgannon's Foresight (236380 effect#1), Slipstream (236457 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Arcane Instability (166872 effect#1), Arcane Focus (171375 effect#1), Rule of Threes (187292 effect#1), Ice Form (198144 effect#2), Norgannon's Foresight (236380 effect#1), Slipstream (236457 effect#1)
 Triggered by     : Arcane Missiles! (79683)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ..x.x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -506,7 +506,7 @@ Tooltip          : Haste increased by $w1% and immune to pushback.
 Name             : Ignite (id=12654) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
-Spell Level      : 99
+Spell Level      : 78
 Range            : 50000 yards
 Duration         : 9 seconds
 Affecting spells : Everburning Consumption (194314 effect#1), Norgannon's Foresight (236380 effect#1)
@@ -574,7 +574,7 @@ Description      : Multiplies the critical strike chance of your spells against 
 
 Name             : Expansive Mind (Racial Passive) (id=20591) [Passive] 
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
-Race             : Gnome
+Race             : Gnome (0x40)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -590,7 +590,7 @@ Description      : Maximum mana increased by $s1%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc
+Race             : Orc (0x2)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -664,7 +664,7 @@ Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased healt
 
 Name             : Arcane Torrent (Racial) (id=28730) 
 Class            : Mage, Warlock
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
@@ -685,7 +685,7 @@ Tooltip          : Silenced.
 
 Name             : Gift of the Naaru (Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
-Race             : Draenei
+Race             : Draenei (0x400)
 School           : Holy
 Spell Level      : 1
 Range            : 40 yards
@@ -884,7 +884,7 @@ Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
 
 Name             : Interrupt (id=32747) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Physical
 Spell Level      : 10
 Range            : 100 yards
@@ -932,7 +932,7 @@ Tooltip          : Frozen in place.
 
 Name             : Blood Fury (Racial) (id=33702) [Scaling Spell (-1)] 
 Class            : Mage, Warlock
-Race             : Orc
+Race             : Orc (0x2)
 School           : Physical
 Spell Level      : 1
 Duration         : 15 seconds
@@ -949,7 +949,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Target: Self (1)
 #2 (id=23584)    : Apply Aura (6) | Damage Done (13)
                    Base Value: 5 | Scaled Value: 2242.68 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self (1)
-Description      : Increases your spell power by $s2.  Lasts $d.
+Description      : Increases your spell power by $s2 for $d.
 Tooltip          : Spell power increased by $s2.
 
 Name             : Arcane Charge (id=36032) [Spell Family (3)] 
@@ -1324,7 +1324,7 @@ Description      : $@spelldesc56382
 
 Name             : Sated (id=57724) 
 Class            : Hunter, Shaman, Mage
-Race             : Orc, Tauren, Troll, Goblin
+Race             : Orc, Tauren, Troll, Goblin, Highmountain Tauren (0xa0001a2)
 School           : Physical
 Range            : 50000 yards
 Duration         : 600 seconds
@@ -1343,7 +1343,7 @@ Tooltip          : Cannot benefit from Bloodlust or other similar effects.
 
 Name             : Gift of the Naaru (Racial) (id=59548) [Spell Family (3)] 
 Class            : Mage
-Race             : Draenei
+Race             : Draenei (0x400)
 School           : Holy
 Spell Level      : 1
 Range            : 40 yards
@@ -1528,7 +1528,7 @@ Description      : Reduces the damage your pet takes from creature area of effec
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1545,7 +1545,7 @@ Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Aberration (Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1563,7 +1563,7 @@ Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -1620,7 +1620,7 @@ Stacks           : 1 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Arcane Missiles (5143 effect#3), Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Arcane Instability (166872 effect#1), Arcane Focus (171375 effect#1), Ice Form (198144 effect#2), Norgannon's Foresight (236380 effect#1), Slipstream (236457 effect#1)
+Affecting spells : Arcane Missiles (5143 effect#3), Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Arcane Instability (166872 effect#1), Arcane Focus (171375 effect#1), Rule of Threes (187292 effect#1), Ice Form (198144 effect#2), Norgannon's Foresight (236380 effect#1), Slipstream (236457 effect#1)
 Triggered by     : Arcane Missiles (79684)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1813,7 +1813,7 @@ School           : Fire
 Range            : 50000 yards
 Duration         : 300 seconds
 Attributes       : ........ ........ ........ ..xx.x..   ........ ..x..... ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ....x.x. 
+                 : ..x..... ........ ........ ........   ........ ........ ....x... ....x.x. 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1902,7 +1902,7 @@ Description      : Increases your Intellect by $s1%.
 
 Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2749,7 +2749,7 @@ Description      : $@spelldesc146662
 Name             : Icicle (id=148012) [Spell Family (3), Hidden] 
 Class            : Mage
 School           : Physical
-Spell Level      : 80
+Spell Level      : 78
 Duration         : 60 seconds
 Proc Chance      : 101%
 Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
@@ -2770,7 +2770,7 @@ Tooltip          : Icicle storing $w1 damage.
 Name             : Icicle (id=148022) [Spell Family (3)] 
 Class            : Mage
 School           : Frost
-Spell Level      : 80
+Spell Level      : 78
 Range            : 100 yards
 Velocity         : 20 yards/sec
 Proc Chance      : 101%
@@ -3441,6 +3441,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 2 | Target: Self (1)
 Description      : Reduces all damage taken from players or their pets by ${$m1/-100}%.
 
+Name             : Rule of Threes (id=187292) [Spell Family (3), Hidden] 
+Class            : Mage
+School           : Physical
+Duration         : 10 seconds
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=273067)   : Apply Aura (6) | Add Percent Modifier (108): Unknown 2 (19)
+                   Base Value: -43 | Scaled Value: -43 | Misc Value: 19 | Target: Self (1)
+                   Affected Spells: Arcane Missiles (5143), Arcane Missiles! (79683)
+#2 (id=273068)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+Description      : Arcane Missiles now fires $m2 additional Missiles. 
+Tooltip          : Arcane Missiles now fires $m2 additional Missiles.
+
 Name             : Aegwynn's Ascendance (id=187677) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
@@ -3925,7 +3945,7 @@ Tooltip          : Frozen in place.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -4398,7 +4418,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 0x10 | Target: Self (1)
                    Affected School(s): Frost
 Description      : $@spelldesc205027
-Tooltip          : Frost damage dealt increased by $w1%
+Tooltip          : Frost damage dealt increased by ${$W1}.1%.
 
 Name             : Ray of Frost (id=208141) [Spell Family (3)] 
 Class            : Mage
@@ -5770,7 +5790,7 @@ Tooltip          : Your next Frostbolt or Flurry cast will also release a Comet 
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
@@ -5804,7 +5824,6 @@ Name             : Arctic Blast (id=253257) [Spell Family (3)]
 Class            : Mage
 School           : Physical
 Duration         : 15 seconds
-Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
                  : AOE Hostile Spell, Hostile Spell
@@ -5816,14 +5835,14 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=473551)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
                    Affected Spells: Ice Lance (30455), Ice Lance (228598)
 Description      : $@spelldesc251860
 Tooltip          : Damage of your next Ice Lance increased by $s1%.
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
@@ -5839,5 +5858,117 @@ Effects          :
 #2 (id=477480)   : Unknown(170)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Velocity         : 3 yards/sec
+Cooldown         : 150 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=477694)   : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*4,$AP*5)}
+
+Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
+Description      : Reduces Holy damage taken by ${$s1/-1}%.
+
+Name             : Light's Reckoning (Racial Passive) (id=255652) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477699)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256896 | Target: Self (1)
+Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
+
+Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477700)   : Apply Aura (6) | Unknown(447)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self (1)
+Description      : Experience gains from killing Demons increased by $s1%.
+
+Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 150 seconds
+Triggered by     : Light's Judgment (255647)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479673)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*4,$AP*5)}
+
+Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+Triggered by     : Light's Reckoning (255652)
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479676)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=479677)   : Direct Heal (10)
+                   Base Value: 100000 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
+Heals $s2 to allies within $A1. 
 
 

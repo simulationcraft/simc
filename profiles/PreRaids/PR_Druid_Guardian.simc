@@ -23,6 +23,7 @@ augmentation=defiled
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
+actions.precombat+=/variable,name=thrash_over_mangle,value=equipped.luffa_wrappings|artifact.jagged_claws.rank>5
 actions.precombat+=/bear_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -30,23 +31,48 @@ actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/blood_fury
-actions+=/berserking
-actions+=/arcane_torrent
-actions+=/use_item,slot=trinket2
-actions+=/incarnation
-actions+=/rage_of_the_sleeper
-actions+=/lunar_beam
-actions+=/frenzied_regeneration,if=incoming_damage_5s%health.max>=0.5|health<=health.max*0.4
-actions+=/bristling_fur,if=buff.ironfur.stack<=1
-actions+=/ironfur,if=!buff.ironfur.up|buff.gory_fur.up|rage>=80
-actions+=/thrash_bear,if=spell_targets.thrash_bear>=2
-actions+=/mangle
-actions+=/moonfire,if=buff.galactic_guardian.up
-actions+=/thrash_bear
-actions+=/pulverize,if=(buff.pulverize.remains<=6&dot.thrash_bear.stack>=2)|dot.thrash_bear.stack>3+equipped.elizes_everlasting_encasement*2
-actions+=/moonfire,target_if=dot.moonfire.refreshable&(spell_targets.swipe_bear<=3|equipped.fury_of_nature)
-actions+=/swipe_bear
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=st,if=active_enemies=1
+actions+=/call_action_list,name=aoe,if=active_enemies>1
+
+actions.aoe=moonfire,target_if=buff.galactic_guardian.up&equipped.lady_and_the_child&cooldown.thrash_bear.remains<2*gcd&buff.galactic_guardian.remains<2*gcd&(active_enemies<4|equipped.fury_of_nature&active_enemies<5)
+actions.aoe+=/pulverize,target_if=cooldown.thrash_bear.remains<2*gcd&dot.thrash_bear.stack=dot.thrash_bear.max_stacks
+actions.aoe+=/mangle,if=buff.incarnation.up&!variable.thrash_over_mangle&active_enemies<4
+actions.aoe+=/thrash_bear
+actions.aoe+=/moonfire,target_if=buff.galactic_guardian.up&equipped.lady_and_the_child&buff.galactic_guardian.remains<gcd&(active_enemies<4|equipped.fury_of_nature&active_enemies<5)
+actions.aoe+=/maul,if=rage.deficit<8&(!talent.incarnation.enabled&active_enemies<4|talent.incarnation.enabled&active_enemies<6)
+actions.aoe+=/mangle,if=!talent.galactic_guardian.enabled&active_enemies<5|talent.galactic_guardian.enabled&active_enemies<4
+actions.aoe+=/moonfire,target_if=!talent.galactic_guardian.enabled&dot.moonfire.refreshable&(!equipped.fury_of_nature&active_enemies<8|equipped.fury_of_nature&active_enemies<11)|buff.galactic_guardian.up&!equipped.lady_and_the_child&active_enemies<3
+actions.aoe+=/maul,if=!talent.incarnation.enabled&active_enemies<5|talent.incarnation.enabled&active_enemies<6
+actions.aoe+=/moonfire,target_if=!equipped.lady_and_the_child&dot.moonfire.refreshable&active_enemies<3
+actions.aoe+=/swipe_bear
+
+actions.cooldowns=rage_of_the_sleeper
+actions.cooldowns+=/potion,if=buff.rage_of_the_sleeper.up
+# if=buff.rage_of_the_sleeper.up
+actions.cooldowns+=/blood_fury
+# if=buff.rage_of_the_sleeper.up
+actions.cooldowns+=/berserking
+# if=buff.rage_of_the_sleeper.up
+actions.cooldowns+=/arcane_torrent
+# if=buff.rage_of_the_sleeper.up
+actions.cooldowns+=/lights_judgment
+actions.cooldowns+=/lunar_beam,if=buff.rage_of_the_sleeper.up
+actions.cooldowns+=/incarnation
+actions.cooldowns+=/barkskin,if=talent.brambles.enabled&(buff.rage_of_the_sleeper.up|talent.survival_of_the_fittest.enabled)
+actions.cooldowns+=/proc_sephuz,if=cooldown.thrash_bear.remains=0
+actions.cooldowns+=/use_items,if=cooldown.rage_of_the_sleeper.remains>12|buff.rage_of_the_sleeper.up|target.time_to_die<22
+
+actions.st=maul,if=rage.deficit<8
+actions.st+=/moonfire,if=buff.incarnation.up&dot.moonfire.refreshable|!dot.moonfire.ticking
+actions.st+=/pulverize,if=cooldown.thrash_bear.remains<2*gcd&dot.thrash_bear.stack=dot.thrash_bear.max_stacks
+actions.st+=/thrash_bear,if=variable.thrash_over_mangle|talent.rend_and_tear.enabled&dot.thrash_bear.stack<dot.thrash_bear.max_stacks
+actions.st+=/mangle
+actions.st+=/thrash_bear
+actions.st+=/moonfire,if=buff.galactic_guardian.up|(!talent.galactic_guardian.enabled&dot.moonfire.refreshable)
+actions.st+=/maul
+actions.st+=/moonfire,if=dot.moonfire.refreshable&talent.galactic_guardian.enabled&!equipped.lady_and_the_child
+actions.st+=/swipe_bear
 
 head=hood_of_the_blind_executioner,id=137511
 neck=pendant_of_the_moon_temple,id=139605,enchant_id=5439

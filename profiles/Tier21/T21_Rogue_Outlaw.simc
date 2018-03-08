@@ -1,8 +1,7 @@
 rogue="T21_Rogue_Outlaw"
 spec=outlaw
 level=110
-race=night_elf
-timeofday=day
+race=dwarf
 role=attack
 position=back
 talents=3310022
@@ -34,10 +33,10 @@ actions.precombat+=/roll_the_bones,if=!talent.slice_and_dice.enabled
 actions.precombat+=/curse_of_the_dreadblades,if=combo_points.deficit>=4
 
 # Executed every time the actor is available.
-# Fish for '2 Buffs' when Loaded Dice is up. Also try to get TB with Loaded Dice and 2 other buffs up. With SnD, consider that we never have to reroll.
-actions=variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&buff.loaded_dice.up&(rtb_buffs<2|rtb_buffs=2&!buff.true_bearing.up)
+# Reroll when Loaded Dice is up and if you have less than 2 buffs or less than 4 and no True Bearing. With SnD, consider that we never have to reroll.
+actions=variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&buff.loaded_dice.up&(rtb_buffs<2|(rtb_buffs<4&!buff.true_bearing.up))
 # Condition to use Saber Slash when not rerolling RtB or when using SnD
-actions+=/variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled-(buff.broadsides.up|buff.jolly_roger.up)-(talent.alacrity.enabled&buff.alacrity.stack<=4))
+actions+=/variable,name=ss_useable_noreroll,value=(combo_points<4+talent.deeper_stratagem.enabled)
 # Condition to use Saber Slash, when you have RtB or not
 actions+=/variable,name=ss_useable,value=(talent.anticipation.enabled&combo_points<5)|(!talent.anticipation.enabled&((variable.rtb_reroll&combo_points<4+talent.deeper_stratagem.enabled)|(!variable.rtb_reroll&variable.ss_useable_noreroll)))
 # Normal rotation
@@ -46,6 +45,8 @@ actions+=/call_action_list,name=cds
 # Conditions are here to avoid worthless check if nothing is available
 actions+=/call_action_list,name=stealth,if=stealthed.rogue|cooldown.vanish.up|cooldown.shadowmeld.up
 actions+=/death_from_above,if=energy.time_to_max>2&!variable.ss_useable_noreroll
+actions+=/sprint,if=equipped.thraxis_tricksy_treads&buff.death_from_above.up&buff.death_from_above.remains<=0.15
+actions+=/adrenaline_rush,if=buff.death_from_above.up&buff.death_from_above.remains<=0.15
 actions+=/slice_and_dice,if=!variable.ss_useable&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8&!buff.slice_and_dice.improved&!buff.loaded_dice.up
 actions+=/slice_and_dice,if=buff.loaded_dice.up&combo_points>=cp_max_spend&(!buff.slice_and_dice.improved|buff.slice_and_dice.remains<4)
 actions+=/slice_and_dice,if=buff.slice_and_dice.improved&buff.slice_and_dice.remains<=2&combo_points>=2&!buff.loaded_dice.up
@@ -55,6 +56,7 @@ actions+=/call_action_list,name=build
 actions+=/call_action_list,name=finish,if=!variable.ss_useable
 # Gouge is used as a CP Generator while nothing else is available and you have Dirty Tricks talent. It's unlikely that you'll be able to do this optimally in-game since it requires to move in front of the target, but it's here so you can quantifiy its value.
 actions+=/gouge,if=talent.dirty_tricks.enabled&combo_points.deficit>=1
+actions+=/arcane_pulse
 
 # Blade Flurry
 actions.bf=cancel_buff,name=blade_flurry,if=spell_targets.blade_flurry<2&buff.blade_flurry.up
@@ -62,8 +64,8 @@ actions.bf+=/cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldo
 actions.bf+=/blade_flurry,if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up
 
 # Builders
-actions.build=ghostly_strike,if=combo_points.deficit>=1+buff.broadsides.up&!buff.curse_of_the_dreadblades.up&(debuff.ghostly_strike.remains<debuff.ghostly_strike.duration*0.3|(cooldown.curse_of_the_dreadblades.remains<3&debuff.ghostly_strike.remains<14))&(combo_points>=3|(variable.rtb_reroll&time>=10))
-actions.build+=/pistol_shot,if=combo_points.deficit>=1+buff.broadsides.up&buff.opportunity.up&(energy.time_to_max>2-talent.quick_draw.enabled|(buff.blunderbuss.up&buff.greenskins_waterlogged_wristcuffs.up))
+actions.build=ghostly_strike,if=combo_points.deficit>=1+buff.broadsides.up&refreshable
+actions.build+=/pistol_shot,if=combo_points.deficit>=1+buff.broadsides.up+talent.quick_draw.enabled&buff.opportunity.up&(energy.time_to_max>2-talent.quick_draw.enabled|(buff.greenskins_waterlogged_wristcuffs.up&(buff.blunderbuss.up|buff.greenskins_waterlogged_wristcuffs.remains<2)))
 actions.build+=/saber_slash,if=variable.ss_useable
 
 # Cooldowns
@@ -71,15 +73,17 @@ actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=60|buff.adrenalin
 actions.cds+=/blood_fury
 actions.cds+=/berserking
 actions.cds+=/arcane_torrent,if=energy.deficit>40
+actions.cds+=/lights_judgment
 actions.cds+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=1
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&energy.deficit>0
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)
-actions.cds+=/sprint,if=equipped.thraxis_tricksy_treads&!variable.ss_useable
+actions.cds+=/sprint,if=!talent.death_from_above.enabled&equipped.thraxis_tricksy_treads&!variable.ss_useable
 actions.cds+=/darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down
-actions.cds+=/curse_of_the_dreadblades,if=combo_points.deficit>=4&(!talent.ghostly_strike.enabled|debuff.ghostly_strike.up)
+actions.cds+=/curse_of_the_dreadblades,if=combo_points.deficit>=4&(buff.true_bearing.up|buff.adrenaline_rush.up|time_to_die<20)
 
 # Finishers
-actions.finish=between_the_eyes,if=(mantle_duration>=0.2&!equipped.thraxis_tricksy_treads)|(equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up)
+# BTE in mantle used to be DPS neutral but is a loss due to t21
+actions.finish=between_the_eyes,if=equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up
 actions.finish+=/run_through,if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5
 
 # Stealth
@@ -88,31 +92,31 @@ actions.stealth+=/ambush,if=variable.ambush_condition
 actions.stealth+=/vanish,if=(variable.ambush_condition|equipped.mantle_of_the_master_assassin&!variable.rtb_reroll&!variable.ss_useable)&mantle_duration=0
 actions.stealth+=/shadowmeld,if=variable.ambush_condition
 
-head=headdress_of_living_brambles,id=152681,bonus_id=3612/1502
+head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
-shoulders=shoulderpads_of_the_dashing_scoundrel,id=152165,bonus_id=3612/1502
+shoulders=mantle_of_the_master_assassin,id=144236,bonus_id=3630
 back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
-chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
+chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
 wrists=greenskins_waterlogged_wristcuffs,id=137099,bonus_id=3630
-hands=gloves_of_the_dashing_scoundrel,id=152162,bonus_id=3612/1502
-waist=belt_of_fractured_sanity,id=151991,bonus_id=3612/1502
+hands=grips_of_hungering_shadows,id=152086,bonus_id=3612/1502
+waist=deathenveloping_cincture,id=151986,bonus_id=3612/1502
 legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
 feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
-finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
+finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
-trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,bonus_id=4213
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152028/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
+trinket1=convergence_of_fates,id=140806,bonus_id=3518/1502
+trinket2=golganneths_vitality,id=154174,bonus_id=3997
+main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=155847/155855/155853,relic_id=3612:1512/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=973.25
-# gear_agility=38366
-# gear_stamina=60761
-# gear_crit_rating=13425
-# gear_haste_rating=9897
-# gear_mastery_rating=1965
-# gear_versatility_rating=7899
-# gear_armor=2965
+# gear_ilvl=970.19
+# gear_agility=42388
+# gear_stamina=61296
+# gear_crit_rating=9948
+# gear_haste_rating=9636
+# gear_mastery_rating=5252
+# gear_versatility_rating=5766
+# gear_armor=3008
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

@@ -6,6 +6,7 @@
 #include "sc_report.hpp"
 #include <stack>
 #include "simulationcraft.hpp"
+#include "util/git_info.hpp"
 
 namespace
 {  // UNNAMED NAMESPACE ==========================================
@@ -1524,9 +1525,11 @@ void print_xml( sim_t* sim )
   writer.print_attribute( "ptr", sim->dbc.ptr ? "true" : "false" );
   writer.print_attribute( "wow_build",
                           util::to_string( sim->dbc.build_level() ) );
-#if defined( SC_GIT_REV )
-  writer.print_attribute( "sc_git_build", SC_GIT_REV );
-#endif
+  if ( git_info::available())
+  {
+    writer.print_attribute( "sc_git_branch", git_info::branch() );
+    writer.print_attribute( "sc_git_build", git_info::revision() );
+  }
 
 #if SC_BETA
 

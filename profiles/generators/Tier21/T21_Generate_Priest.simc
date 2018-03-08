@@ -1,6 +1,7 @@
 priest="T21_Priest_Shadow"
 level=110
 talents=2211231
+race=human
 spec=shadow
 role=spell
 position=back

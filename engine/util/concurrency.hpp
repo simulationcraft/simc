@@ -14,6 +14,7 @@
 #include "config.hpp"
 #include "generic.hpp"
 #include <memory>
+#include <thread>
 
 
 class mutex_t : private noncopyable
@@ -40,6 +41,7 @@ protected:
   sc_thread_t();
   virtual ~sc_thread_t();
 public:
+  std::thread::id thread_id() const;
   void launch();
   void join();
   static void sleep_seconds( double );

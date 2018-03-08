@@ -74,9 +74,9 @@
     { "data_type": "B", "field": "mechanic" },
     { "data_type": "B", "field": "effectsAllowed" },
     { "data_type": "B", "field": "effect" },
-    { "data_type": "I", "field": "statesAllowed" },
-    { "data_type": "I", "field": "state", "elements": 8 },
-    { "data_type": "I", "field": "flags", "elements": 16 }
+    { "data_type": "B", "field": "statesAllowed" },
+    { "data_type": "B", "field": "state", "elements": 8 },
+    { "data_type": "H", "field": "flags", "elements": 16 }
   ],
   "CreatureType": [
     { "data_type": "S", "field": "name" },
@@ -252,6 +252,11 @@
     { "data_type": "h", "field": "id_specialization" },
     { "data_type": "b", "field": "index" },
     { "data_type": "b", "field": "trigger_type" }
+  ],
+  "ItemLimitCategory": [
+    { "data_type": "S", "field": "name" },
+    { "data_type": "b", "field": "quantity" },
+    { "data_type": "b", "field": "flags" }
   ],
   "ItemNameDescription": [
     { "data_type": "S", "field": "desc", "formats": { "cpp": "%-30s" } },

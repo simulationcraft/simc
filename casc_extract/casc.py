@@ -374,6 +374,7 @@ class CDNIndex(CASCObject):
 	PATCH_BASE_URL = 'http://us.patch.battle.net:1119'
 
 	PATCH_BETA = 'wow_beta'
+	PATCH_ALPHA = 'wow_alpha'
 	PATCH_PTR = 'wowt'
 	PATCH_LIVE = 'wow'
 
@@ -413,6 +414,8 @@ class CDNIndex(CASCObject):
 			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_PTR )
 		elif self.options.beta:
 			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_BETA )
+		elif self.options.alpha:
+			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_ALPHA )
 		else:
 			return '%s/%s' % ( CDNIndex.PATCH_BASE_URL, CDNIndex.PATCH_LIVE )
 

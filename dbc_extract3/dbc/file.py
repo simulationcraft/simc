@@ -1,6 +1,6 @@
 import os, logging, sys
 
-import dbc
+import dbc, dbc.wdc1
 
 _PARSERS = {
     b'WDBC': None,
@@ -11,7 +11,8 @@ _PARSERS = {
     b'WCH5': dbc.parser.LegionWCHParser,
     b'WCH6': dbc.parser.LegionWCHParser,
     b'WCH7': dbc.parser.WCH7Parser,
-    b'WCH8': dbc.parser.WCH7Parser
+    b'WCH8': dbc.parser.WCH7Parser,
+    b'WDC1': dbc.wdc1.WDC1Parser
 }
 
 class DBCacheIterator:
@@ -20,6 +21,10 @@ class DBCacheIterator:
         self._parser = f.parser
         self._wdb_parser = wdb_parser
         self._records = f.parser.n_entries(wdb_parser)
+
+        self._key_field_name = dbc.use_hotfix_key_field(self._wdb_parser.class_name())
+        if self._key_field_name:
+            self._key_field_index = self._data_class._cd[self._key_field_name]
 
         self._record = 0
 
@@ -30,11 +35,48 @@ class DBCacheIterator:
         if self._record == self._records:
             raise StopIteration
 
-        dbc_id, offset, size = self._parser.get_record_info(self._wdb_parser, self._record)
-        data = self._parser.get_record(self._wdb_parser, offset, size)
+        dbc_id, record_id, offset, size, key_id = self._parser.get_record_info(self._wdb_parser, self._record)
+        data = self._parser.get_record(dbc_id, offset, size, self._wdb_parser)
+
+        # If the cache entry is for a WDB file that is expanded, we need to
+        # separate the record id and the key block id from the parsed data,
+        # since they are included as the first and last element of the parsed
+        # tuple, respectively
+        #
+        # TODO: Can we have key blocks in hotfix data somehow other than as an expanded record?
+        if self._wdb_parser.class_name() in dbc.EXPANDED_HOTFIX_RECORDS:
+            start_offset = 0
+            end_offset = len(data)
+            # If id block is used, and the cache entry for the db file uses an
+            # expanded parser, the id will be the first entry of the data.
+            # Strip it out, since we already have the id elsewhere in the hotfix entry
+            if self._wdb_parser.has_id_block():
+                start_offset += 1
+
+            # If the key block is used, and the cache entry for the db file
+            # uses an  expanded parser, the key id (parent id) will be the last
+            # entry of the data. Extract it out and pass it to the decorator
+            if self._wdb_parser.has_key_block():
+                key_id = data[-1]
+                end_offset -= 1
+
+            data = data[start_offset:end_offset]
+        elif self._wdb_parser.has_key_block():
+            # If the key block id is not duplicated in the record, it'll be at
+            # the end of the hotfix entry
+            if not self._key_field_name:
+                key_id = data[-1]
+                data = data[:-1]
+            # Duplicated, just grab it from the record index
+            else:
+                key_id = data[self._key_field_index]
+
         self._record += 1
 
-        return self._data_class(self._parser, dbc_id, data)
+        return self._data_class(self._parser,
+                                self._wdb_parser.has_id_block() and dbc_id or -1,
+                                data,
+                                self._wdb_parser.has_key_block() and key_id or 0)
 
 class DBCache:
     def __init__(self, options):
@@ -47,6 +89,8 @@ class DBCache:
 
         return True
 
+    # Hotfix cache has to be accessed with a specific WDB file parser to get
+    # the record layout (and the correct hotfix entries).
     def entries(self, wdb_parser):
         return DBCacheIterator(self, wdb_parser)
 
@@ -66,11 +110,14 @@ class DBCFileIterator:
         if self._record == self._n_records:
             raise StopIteration
 
-        dbc_id, offset, size = self._parser.get_record_info(self._record)
-        data = self._parser.get_record(offset, size)
+        dbc_id, record_id, offset, size, key_id = self._parser.get_record_info(self._record)
+        if self._parser.has_key_block() and key_id == 0:
+            key_id = self._parser.key(self._record)
+
+        data = self._parser.get_record(dbc_id, offset, size)
         self._record += 1
 
-        return self._decorator(self._parser, dbc_id, data)
+        return self._decorator(self._parser, dbc_id, data, key_id)
 
 class DBCFile:
     def __init__(self, options, filename, wdb_file = None):
@@ -166,12 +213,12 @@ class DBCFile:
 
     def decorate(self, data):
         # Output data based on data parser + class, we are sure we have those things at this point
-        return self.data_class(self.parser, *data)
+        return self.data_class(self.parser, data.dbc_id, data.record_data, data.parent_id)
 
     def find(self, id_):
-        record_data = self.parser.find(id_)
-        if len(record_data[1]) > 0:
-            return self.decorate(record_data)
+        data = self.parser.find(id_)
+        if data.valid():
+            return self.decorate(data)
         else:
             return 'Record with DBC id %u not found' % id_
 

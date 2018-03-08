@@ -7,6 +7,7 @@
 #include "sc_report.hpp"
 #include "data/report_data.inc"
 #include "interfaces/sc_js.hpp"
+#include "util/git_info.hpp"
 
 // Experimental Raw Ability Output for Blizzard to do comparisons
 namespace raw_ability_summary
@@ -841,7 +842,8 @@ void print_html_scale_factors( report::sc_html_stream& os, const sim_t& sim )
 
 struct help_box_t
 {
-  std::string abbreviation, text;
+  const char* abbreviation;
+  const char* text;
 };
 
 /* Here simple help boxes with just a Title/Abbreviation and a Text can be added
@@ -849,7 +851,7 @@ struct help_box_t
  * with '-',
  * everything lowerspace and '%' replaced by '-pct'
  */
-static const help_box_t help_boxes[] = {
+const help_box_t help_boxes[] = {
     {"APM", "Average number of actions executed per minute."},
     {"APS", "Average absorption per active player duration."},
     {"Constant Buffs",
@@ -953,9 +955,8 @@ void print_html_help_boxes( report::sc_html_stream& os, const sim_t& sim )
 {
   os << "<!-- Help Boxes -->\n";
 
-  for ( size_t i = 0; i < sizeof_array( help_boxes ); ++i )
+  for ( auto& hb : help_boxes )
   {
-    const help_box_t& hb     = help_boxes[ i ];
     std::string tokenized_id = hb.abbreviation;
     util::replace_all( tokenized_id, " ", "-" );
     util::replace_all( tokenized_id, "%", "-pct" );
@@ -1054,28 +1055,31 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
 
   os.format(
       "<span id=\"logo\"></span>\n"
-      "<h1><a href=\"%s\">SimulationCraft %s</a></h1>\n"
-#if !defined( SC_GIT_REV )
-      "<h2>for World of Warcraft %s %s (wow build level %d)</h2>\n\n",
-#else
-      "<h2>for World of Warcraft %s %s (wow build level %d, git build <a "
-      "href=\"%s\">%s</a>)</h2>\n\n",
-#endif
-      "http://www.simulationcraft.org/", SC_VERSION, sim.dbc.wow_version(),
-      ( sim.dbc.ptr ?
+      "<h1><a href=\"%s\">SimulationCraft %s</a></h1>\n",
+      "http://www.simulationcraft.org/", SC_VERSION);
+
+  const char* type =       ( sim.dbc.ptr ?
 #if SC_BETA
                     "BETA"
 #else
                     "PTR"
 #endif
-                    : "Live" ),
-#if !defined( SC_GIT_REV )
-      sim.dbc.build_level() );
-#else
-      sim.dbc.build_level(),
-      "https://github.com/simulationcraft/simc/commit/" SC_GIT_REV,
-      SC_GIT_REV );
-#endif
+                    : "Live" );
+
+  if ( !git_info::available())
+  {
+  os.format(
+      "<h2>for World of Warcraft %s %s (wow build level %d)</h2>\n\n",
+      sim.dbc.wow_version(), type, sim.dbc.build_level());
+  }
+  else
+  {
+    std::string commit_link = "https://github.com/simulationcraft/simc/commit/";
+    commit_link += git_info::revision();
+    os.format("<h2>for World of Warcraft %s %s (wow build level %d, git build <a "
+        "href=\"%s\">%s</a>)</h2>\n\n",
+        sim.dbc.wow_version(), type, sim.dbc.build_level(), commit_link.c_str(), git_info::revision());
+  }
 
   time_t rawtime;
   time( &rawtime );

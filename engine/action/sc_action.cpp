@@ -1387,6 +1387,18 @@ block_result_e action_t::calculate_block_result( action_state_t* s ) const
   if ( sim -> debug )
     sim -> out_debug.printf( "%s result for %s is %s", player -> name(), name(), util::block_result_type_string( block_result ) );
 
+  // 1/27/2018 -- Logs indicate that yellow weapon damage-based attacks cannot crit + block at the same time.
+  //              As white damage and yellow AP abilities may crit + block at the same time, this is likely a bug.
+  if ( player -> bugs )
+  {
+    if ( block_result != BLOCK_RESULT_UNBLOCKED && s -> result == RESULT_CRIT && special && weapon && weapon_multiplier > 0 )
+    {
+      s -> result = RESULT_HIT;
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s result for %s is changed from %s to %s", player -> name(), name(), util::result_type_string( RESULT_CRIT ), util::result_type_string( RESULT_HIT ) );
+    }
+  }
+
   return block_result;
 }
 
@@ -2183,6 +2195,17 @@ void action_t::init()
   // Setup default target in init
   default_target = target;
 
+  // Decompose school into base types. Note that if get_school() is overridden (e.g., to dynamically
+  // alter spell school), then base_schools must be manually updated, to cover the dynamic case.
+  for ( school_e target_school = SCHOOL_ARCANE, action_school = get_school();
+        target_school < SCHOOL_MAX_PRIMARY; ++target_school )
+  {
+    if ( dbc::is_school( action_school, target_school ) )
+    {
+      base_schools.push_back( target_school );
+    }
+  }
+
   // Make sure background is set for triggered actions.
   // Leads to double-readying of the player otherwise.
   assert( ( !execute_action || execute_action->background ) &&
@@ -2573,7 +2596,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       }
 
       ~new_tick_time_expr_t()
-      { action_state_t::release( state ); }
+      { delete state; }
     };
     return new new_tick_time_expr_t( *this );
   }
@@ -3595,7 +3618,12 @@ void action_t::add_child( action_t* child )
     // instead of the player.
     child->range = range;
   }
-  stats -> add_child( child -> stats );
+  // Check for this so we don't create a circular reference in cases where the child action is already set up to use 
+  // the same stats object as the parent action.
+  if (this->stats != child->stats)
+  {
+    stats->add_child(child->stats);
+  }
 }
 
 bool action_t::has_movement_directionality() const

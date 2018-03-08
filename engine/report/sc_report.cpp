@@ -3,8 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_report.hpp"
 #include "simulationcraft.hpp"
+#include "sc_report.hpp"
+#include "dbc/sc_spell_info.hpp"
 
 // ==========================================================================
 // Report
@@ -790,7 +791,7 @@ void report::print_spell_query( std::ostream& out, const sim_t& sim,
     switch ( data_type )
     {
       case DATA_TALENT:
-        out << spell_info::talent_to_str( sim.dbc, sim.dbc.talent( *i ) );
+        out << spell_info::talent_to_str( sim.dbc, sim.dbc.talent( *i ), level );
         break;
       case DATA_EFFECT:
       {
@@ -800,7 +801,7 @@ void report::print_spell_query( std::ostream& out, const sim_t& sim,
                  dbc::find_spell( &( sim ), base_effect->spell() ) )
         {
           spell_info::effect_to_str(
-              sim.dbc, spell, dbc::find_effect( &( sim ), base_effect ), sqs );
+              sim.dbc, spell, dbc::find_effect( &( sim ), base_effect ), sqs, level );
           out << sqs.str();
         }
       }
@@ -825,7 +826,7 @@ void report::print_spell_query( xml_node_t* root, FILE* file, const sim_t& sim,
     switch ( data_type )
     {
       case DATA_TALENT:
-        spell_info::talent_to_xml( sim.dbc, sim.dbc.talent( *i ), root );
+        spell_info::talent_to_xml( sim.dbc, sim.dbc.talent( *i ), root, level );
         break;
       case DATA_EFFECT:
       {
@@ -835,7 +836,7 @@ void report::print_spell_query( xml_node_t* root, FILE* file, const sim_t& sim,
                  dbc::find_spell( &( sim ), dbc_effect->spell() ) )
         {
           spell_info::effect_to_xml(
-              sim.dbc, spell, dbc::find_effect( &( sim ), dbc_effect ), root );
+              sim.dbc, spell, dbc::find_effect( &( sim ), dbc_effect ), root, level );
         }
       }
       break;
@@ -1603,6 +1604,8 @@ std::vector<std::string> report::item_decorator_t::parms() const
   {
     params.push_back( "bonusIDs=" + bonus_str.str() );
   }
+
+  params.push_back( "itemLevelOverride=" + util::to_string( m_item -> item_level() ) );
 
   return params;
 }

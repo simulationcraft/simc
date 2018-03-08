@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#if 0
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
 #include "sc_PaperDoll.hpp"
@@ -1970,3 +1971,4 @@ const race_e PaperdollClassButtonGroup::raceCombinations[ 12 ][ 15 ] = {
   // Warrior
   { RACE_HUMAN, RACE_ORC, RACE_DWARF, RACE_NIGHT_ELF, RACE_UNDEAD, RACE_TAUREN, RACE_GNOME, RACE_TROLL, RACE_GOBLIN, RACE_BLOOD_ELF, RACE_DRAENEI, RACE_WORGEN, RACE_PANDAREN, RACE_PANDAREN_ALLIANCE, RACE_PANDAREN_HORDE },
 };
+#endif

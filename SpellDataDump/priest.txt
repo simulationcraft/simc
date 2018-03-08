@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383)
+SimulationCraft 735-01 for World of Warcraft 7.3.5 Live (wow build 25901)
 
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
@@ -49,6 +49,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=95)       : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.62000 | Target: Friend (21)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=256131)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.62000 | Target: Friend (21)
 #3 (id=355489)   : Apply Aura (6) | Unknown(87)
@@ -109,7 +110,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Holy Priest (137031 effect#4), Lucidity (137323 effect#1), Muze's Unwavering Will (210632 effect#1), Invoke the Light (216122 effect#1)
+Affecting spells : Holy Priest (137031 effect#4), Lucidity (137323 effect#1), Muze's Unwavering Will (210632 effect#1), Invoke the Light (216122 effect#1), Smite (262861 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -118,7 +119,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=236)      : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.60000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.73300 | Target: Enemy (6)
 Description      : Smites an enemy for $s1 Holy damage$?s231682[ and absorbs the next $<shield> damage dealt by the enemy]?s231687[ and has a $231687s1% chance to reset the cooldown of Holy Fire][].
 Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
@@ -161,9 +162,9 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=242)      : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.31000 | Target: Enemy (6)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.31000 | Target: Enemy (6)
 #3 (id=323674)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self (1)
 Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?a185916[
@@ -188,23 +189,18 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ....x... ........ x.......   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=243)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 40 yards | Target: Friend (21) -> AOE friendly (31)
-                   Hotfixed: Chain Multiplier (0 -> 1), Target 1 (132 -> 21)
+#1 (id=243)      : Trigger Spell (64): Prayer of Healing
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 98367 | Target: Friend (21)
 #2 (id=105332)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Radius: 0 - 40 yards | Target: Unknown(132) -> AOE friendly (31)
-                   Hotfixed: Type (64 -> 10), SP Coefficient (0 -> 2.5), Trigger Spell (98367 -> 0), Chain Multiplier (0 -> 1), Target 1 (25 -> 132), Target 2 (0 -> 31)
 #3 (id=288930)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
-#4 (id=485632)   : Trigger Spell (64): Prayer of Healing
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 98367 | Target: Unknown(25)
-                   Hotfixed: NEW EFFECT
-Description      : A powerful prayer that heals the target and the ${$s3-1} nearest allies within $A1 yards for $s1.
+Description      : A powerful prayer that heals the target and the ${$s3-1} nearest allies within $A2 yards for $s2.
 
 Name             : Mind Control (id=605) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
-Resource         : 0.5% Base Mana (0) (id=69) w/ Discipline Priest (id=137032)
+Resource         : 0.5% Base Mana (0) (id=69)
 Spell Level      : 42
 Range            : 30 yards
 Cast Time        : 1.8 seconds
@@ -372,7 +368,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (9 seconds cooldown)
 Category         : 1602: Priest (137030 effect#2)
-Affecting spells : Shadowy Insight (124430 effect#1), Priest (137030 effect#2), Shadow Priest (137033 effect#1), Lucidity (137323 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#2), Mind Shattering (193643 effect#1), Voidform (194249 effect#4), Empty Mind (247226 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1)
+Affecting spells : Shadowy Insight (124430 effect#1), Priest (137030 effect#2), Shadow Priest (137033 effect#1), Lucidity (137323 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#2), Mind Shattering (193643 effect#1), Voidform (194249 effect#4), Empty Mind (247226 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -524,7 +520,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Stance Mask      : 0x08000000
-Affecting spells : Shadow Priest (137033 effect#2), Lucidity (137323 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#1), Voidform (194249 effect#4), Void Ray (205372 effect#1), Void Siphon (215322 effect#2), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1)
+Affecting spells : Shadow Priest (137033 effect#2), Lucidity (137323 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#1), Voidform (194249 effect#4), Void Ray (205372 effect#1), Void Siphon (215322 effect#2), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), 
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -595,7 +591,7 @@ Tooltip          : Maximum health increased by $w1%.
 
 Name             : Expansive Mind (Racial Passive) (id=20591) [Passive] 
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
-Race             : Gnome
+Race             : Gnome (0x40)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -628,7 +624,7 @@ Description      : Upon death, you become the Spirit of Redemption for $27827d. 
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc
+Race             : Orc (0x2)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -670,7 +666,7 @@ Tooltip          : You have become more powerful than anyone can possibly imagin
 
 Name             : Gift of the Naaru (Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
-Race             : Draenei
+Race             : Draenei (0x400)
 School           : Holy
 Spell Level      : 1
 Range            : 40 yards
@@ -795,7 +791,7 @@ Description      : Dispels magic in a $32375a1 yard radius, removing all harmful
 
 Name             : Interrupt (id=32747) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Physical
 Spell Level      : 10
 Range            : 100 yards
@@ -872,7 +868,7 @@ Proc Flags       : ...x.x.x .x...x.. .x.x.... ........
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Lucidity (137323 effect#1), Item - Priest WoD PvP Discipline 4P Bonus (171141 effect#1), Item - Priest WoD PvP Holy4P Bonus (171142 effect#1), Pain is in Your Mind (197713 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ...x.... x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -956,7 +952,7 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.5 | SP Coefficient: 0.71000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.5 | SP Coefficient: 0.57900 | Target: Enemy (6)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 600 | Scaled Value: 600 | Misc Value: insanity | Target: Self (1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals the Priest for ${$e2*100}% of damage dealt.
@@ -1215,7 +1211,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 47666 | Target: Enemy (6)
 
 Name             : Guardian Spirit (id=47788) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Holy Priest
 School           : Holy
 Resource         : 0.9% Base Mana (0) (id=2205)
@@ -1226,11 +1221,11 @@ Cooldown         : 240 seconds
 Stance Mask      : 0x88000000
 Affecting spells : Lucidity (137323 effect#1), Item - Priest WoD PvP Holy4P Bonus (171142 effect#1), Phyrix's Embrace (234689 effect#1), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
-                 : ........ x....... ...x.... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ...x.... x....... ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ......x. ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ....x...   ........ ........ ..xx.... ....x... 
+                 : ........ .....x.. ........ ....x...   ........ ........ ..xx.... ..x.x... 
 Effects          :
 #1 (id=40042)    : Apply Aura (6) | Unknown(118)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 127 | Target: Friend (21)
@@ -1277,7 +1272,7 @@ Description      : $@spelldesc57986
 
 Name             : Gift of the Naaru (Racial) (id=59544) 
 Class            : Priest
-Race             : Draenei
+Race             : Draenei (0x400)
 School           : Holy
 Spell Level      : 1
 Range            : 40 yards
@@ -1486,7 +1481,7 @@ Tooltip          : Movement speed increased by $s1%.
 
 Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1503,7 +1498,7 @@ Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Aberration (Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -1521,7 +1516,7 @@ Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Duration         : 10 seconds
 Cooldown         : 120 seconds
@@ -1810,7 +1805,7 @@ Description      : Increases your Intellect by $s1%.
 
 Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
-Race             : Worgen
+Race             : Worgen (0x200000)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2429,13 +2424,13 @@ Effects          :
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
 #5 (id=191083)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #6 (id=260687)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Damage (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Golganneth's Thunderous Wrath (257430), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #7 (id=260688)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
-                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286)
+                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
 #8 (id=260689)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=260690)   : Apply Aura (6) | Dummy (4)
@@ -2526,10 +2521,10 @@ Effects          :
 #1 (id=179716)   : Apply Aura (6) | Unknown(379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #2 (id=191072)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Base Value: 53 | Scaled Value: 53 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
 #3 (id=191073)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 53 | Scaled Value: 53 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
 #4 (id=191074)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
@@ -2546,19 +2541,15 @@ Effects          :
 #8 (id=260959)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: -55 | Scaled Value: -55 | Misc Value: 12 | Misc Value 2: 358 (Label) | Target: Self (1)
                    Affected Spells (Label): 
-                   Hotfixed: Base Value (-65 -> -55), Misc Value (0 -> 12), Misc Value 2 (230 -> 358), Chain Multiplier (0 -> 1)
 #9 (id=260960)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Generic Modifier (0)
                    Base Value: -65 | Scaled Value: -65 | Misc Value 2: 230 (Label) | Target: Self (1)
-                   Affected Spells (Label): Nightfall (213786), Fel Meteor (214052), Orb of Destruction (229700), Solar Collapse (229737), Nether Meteor (225764), Kil'jaeden's Burning Wish (235999), Crystalline Shockwave (225716), Arcane Swipe (225721), Colossal Slam (232044), Dread Torrent (246464), Piercing Anguish (246751), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Void Tendril (250834), Legion Bombardment (253248), Shadow Blades (253265), Gorshalach's Legacy (253329), Sorrow (253022), Prototype Personnel Decimator (255629), Echo of Gorshalach (255672), Gorshalach's Legacy (255673), Legion Bombardment (255713), Legion Bombardment (255724), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430), Legion Bombardment (257376)
-                   Hotfixed: Misc Value (3 -> 0), Misc Value 2 (232 -> 230), Chain Multiplier (0 -> 1)
+                   Affected Spells (Label): Nightfall (213786), Fel Meteor (214052), Orb of Destruction (229700), Solar Collapse (229737), Nether Meteor (225764), Kil'jaeden's Burning Wish (235999), Crystalline Shockwave (225716), Arcane Swipe (225721), Colossal Slam (232044), Dread Torrent (246464), Piercing Anguish (246751), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Void Tendril (250834), Legion Bombardment (253248), Gorshalach's Legacy (253329), Sorrow (253022), Prototype Personnel Decimator (255629), Echo of Gorshalach (255672), Gorshalach's Legacy (255673), Legion Bombardment (255713), Legion Bombardment (255724), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430), Legion Bombardment (257376)
 #10 (id=260961)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -65 | Scaled Value: -65 | Misc Value: 3 | Misc Value 2: 232 (Label) | Target: Self (1)
-                   Affected Spells (Label): Dark Blast (215444), Mechanical Bomb Squirrel (216085), Tormenting Cyclone (221845), Volatile Ichor (222187), Poisoned Dreams (222705), Flame Wreath (230257), Volatile Energy (230236), Carrion Swarm (225131), Terror From Below (242524), Spear of Anguish (242605), Shadow Wave (215089), Shadow Blades (253263), Pool of Pure Void (250766), Shadow Blades (255818), Shadow Blades (255870)
-                   Hotfixed: Misc Value (12 -> 3), Misc Value 2 (243 -> 232), Chain Multiplier (0 -> 1)
+                   Affected Spells (Label): Dark Blast (215444), Mechanical Bomb Squirrel (216085), Tormenting Cyclone (221845), Volatile Ichor (222187), Poisoned Dreams (222705), Flame Wreath (230257), Volatile Energy (230236), Carrion Swarm (225131), Terror From Below (242524), Spear of Anguish (242605), Shadow Wave (215089), Pool of Pure Void (250766)
 #11 (id=260962)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
                    Base Value: -65 | Scaled Value: -65 | Misc Value: 12 | Misc Value 2: 243 (Label) | Target: Self (1)
                    Affected Spells (Label): Flame Gale (230213)
-                   Hotfixed: Sub Type (4 -> 218), Base Value (0 -> -65), Misc Value (0 -> 12), Misc Value 2 (0 -> 243), Chain Multiplier (0 -> 1)
 #12 (id=260963)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #13 (id=260964)   : Apply Aura (6) | Dummy (4)
@@ -2579,12 +2570,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #21 (id=484060)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Hotfixed: NEW EFFECT
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
 Class            : Shadow Priest
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2595,10 +2585,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179717)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 23 | Scaled Value: 23 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Shadow Word: Death (32379), Mind Spike (73510), Shadowy Apparition (148859), Shadow Word: Death (199911), Shadow Word: Void (205351), Shadow Crash (205385), Shadow Crash (205386), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360), Mind Flay (237388)
 #2 (id=191068)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 23 | Scaled Value: 23 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589), Mind Flay (15407), Vampiric Touch (34914), Void Torrent (205065)
 #3 (id=191069)   : Apply Aura (6) | Unknown(419)
                    Base Value: -80 | Scaled Value: -80 | Target: Self (1)
@@ -2785,7 +2775,7 @@ Effects          :
 
 Name             : Ascension (id=161862) [Spell Family (6)] 
 Class            : Priest
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
 Spell Level      : 1
 GCD              : 1.5 seconds
@@ -3157,7 +3147,6 @@ Effects          :
 Description      : Void Eruption may be cast anytime your Insanity level is ${100+$m1/100} or higher$@switch<$s4>[][, and Voidform increases Shadow damage dealt by an additional $s3%].
 
 Name             : Mind Flay (id=193473) [Spell Family (6)] 
-Hotfixed         : Cooldown, GCD, Category Cooldown
 Class            : Priest
 School           : Shadow
 Spell Level      : 10
@@ -3650,7 +3639,6 @@ Tooltip          : Effects of Serendipity increased by $s1% and cost of Holy Wor
 Name             : Holy Word: Chastise (id=200196) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 3% Base Mana (0) (id=10781)
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -3692,7 +3680,6 @@ Description      : Holy Word: Chastise stuns the target for $200200d and is not 
 Name             : Holy Word: Chastise (id=200200) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 3% Base Mana (0) (id=10782)
 Spell Level      : 10
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -3761,7 +3748,7 @@ Description      : Penance may be cast on a friendly target, healing them for ${
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -4085,8 +4072,8 @@ Class            : Priest
 School           : Shadow
 Range            : 40 yards
 GCD              : 1.5 seconds
-Velocity         : 2.5 yards/sec
-Cooldown         : 30 seconds
+Velocity         : 1.5 yards/sec
+Cooldown         : 20 seconds
 Affecting spells : Shadow Priest (137033 effect#1), Voidform (194249 effect#4)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4098,7 +4085,7 @@ Effects          :
 #1 (id=303253)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 205386 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=303254)   : Energize Power (30)
-                   Base Value: 1500 | Scaled Value: 1500 | Misc Value: insanity | Target: Self (1)
+                   Base Value: 2000 | Scaled Value: 2000 | Misc Value: insanity | Target: Self (1)
 Description      : Hurl a bolt of slow-moving Shadow energy at the destination, dealing $205386s1 Shadow damage to all targets within $205386A1 yards.
 
 |cFFFFFFFFGenerates $/100;s2 Insanity.|r
@@ -4132,7 +4119,7 @@ Velocity         : 40 yards/sec
 Cooldown         : 4.5 seconds
 Category         : 1660
 Category Cooldown: 4.5 seconds
-Affecting spells : Mastery: Madness (77486 effect#1), Priest (137030 effect#1), Shadow Priest (137033 effect#1), Sinister Thoughts (194026 effect#1), Voidform (194249 effect#4), Void (211657 effect#1), Overwhelming Darkness (252909 effect#1)
+Affecting spells : Mastery: Madness (77486 effect#1), Priest (137030 effect#1), Shadow Priest (137033 effect#1), Sinister Thoughts (194026 effect#1), Voidform (194249 effect#4), Void (211657 effect#1), Overwhelming Darkness (252909 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4475,11 +4462,11 @@ Duration         : 4 seconds
 Mechanic         : Unknown(95)
 Attributes       : ........ ........ x......x x..x....   ...x.x.x ........ .x...... ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
-                 : .......x ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : .....x.. .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Does not break stealth (37)
+                 : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=340787)   : Apply Aura (6) | Stun (12)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
@@ -4555,7 +4542,7 @@ Class            : Priest
 School           : Shadow
 Spell Level      : 10
 Range            : 100 yards
-Velocity         : 18 yards/sec
+Velocity         : 30 yards/sec
 Affecting spells : Priest (137030 effect#1), Shadow Priest (137033 effect#1), Legacy of the Void (193225 effect#1), Voidform (194249 effect#12), Heart of the Void (248296 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -4565,10 +4552,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=343748)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 12.00000 | Target: Enemy (6)
 Description      : $@spelldesc228260
 
-Name             : Smite (Rank 2) (id=231682) [Spell Family (6), Passive] 
+Name             : Smite (Rank 3) (id=231682) [Spell Family (6), Passive] 
 Class            : Discipline Priest
 School           : Holy
 Spell Level      : 36
@@ -4641,7 +4628,7 @@ Description      : Shadow Word: Death has ${$s1+1} charges.
 
 Name             : Arcane Torrent (Racial) (id=232633) 
 Class            : Priest
-Race             : Blood Elf
+Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 2 seconds
 Cooldown         : 90 seconds
@@ -4755,7 +4742,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=359434)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Enemy (6)
 Description      : $@spelldesc234702
 
 Name             : Misery (id=238558) [Spell Family (6), Passive] 
@@ -4803,12 +4790,12 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=375229)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Smite (231682)
+                   Affected Spells: Smite (231682), Smite (262861)
 Description      : Smite's absorption effect is increased by $s1%.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
@@ -4825,7 +4812,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Pandaren (Alliance)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
@@ -4841,5 +4828,140 @@ Effects          :
 #2 (id=477480)   : Unknown(170)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
+
+Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
+Hotfixed         : Variables
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Velocity         : 3 yards/sec
+Cooldown         : 150 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=477694)   : Trigger Missiles (32)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
+
+Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477698)   : Apply Aura (6) | Unknown(87)
+                   Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
+Description      : Reduces Holy damage taken by ${$s1/-1}%.
+
+Name             : Light's Reckoning (Racial Passive) (id=255652) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477699)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256896 | Target: Self (1)
+Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
+
+Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=477700)   : Apply Aura (6) | Unknown(447)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self (1)
+Description      : Experience gains from killing Demons increased by $s1%.
+
+Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
+Hotfixed         : Variables
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 150 seconds
+Triggered by     : Light's Judgment (255647)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479673)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Hotfixed: Chain Multiplier (0 -> 1)
+Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
+
+Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
+Hotfixed         : Attributes
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Race             : Lightforged Draenei (0x20000000)
+School           : Holy
+Max Scaling Level: 120
+Range            : 40 yards
+Triggered by     : Light's Reckoning (255652)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=479676)   : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=479677)   : Direct Heal (10)
+                   Base Value: 100000 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+Description      : Deals $s1 Holy Damage to enemies within $A1.
+
+Heals $s2 to allies within $A1. 
+
+Name             : Smite (Rank 2) (id=262861) [Spell Family (6), Passive] 
+Class            : Discipline Holy Priest
+School           : Holy
+Spell Level      : 16
+Affecting spells : Lucidity (137323 effect#1), Sanctuary (246393 effect#1)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=624379)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Affected Spells: Smite (585)
+Description      : Smite deals $s1% increased damage.
+Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
 

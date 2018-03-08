@@ -63,6 +63,28 @@ struct ceil
 };
 }
 
+namespace binary
+{
+  template<class T = void>
+  struct max
+  {
+    constexpr T operator()(const T& _Left, const T& _Right) const
+    {
+      return (std::max(_Left, _Right));
+    }
+  };
+
+  template<class T = void>
+  struct min
+  {
+    constexpr T operator()(const T& _Left, const T& _Right) const
+    {
+      return (std::min(_Left, _Right));
+    }
+  };
+
+}
+
 expr_t* select_unary( const std::string& name, token_e op, expr_t* input )
 {
   switch ( op )
@@ -185,6 +207,11 @@ expr_t* select_binary( const std::string& name, token_e op, expr_t* left,
       return new expr_binary_t<std::multiplies>( name, op, left, right );
     case TOK_DIV:
       return new expr_binary_t<std::divides>( name, op, left, right );
+
+    case TOK_MAX:
+      return new expr_binary_t<binary::max>(name, op, left, right);
+    case TOK_MIN:
+      return new expr_binary_t<binary::min>(name, op, left, right);
 
     case TOK_EQ:
       return new expr_binary_t<std::equal_to>( name, op, left, right );
@@ -711,6 +738,8 @@ public:
         {
           return F<double>()( left, right->eval() );
         }
+        ~left_reduced_t()
+        { delete right; }
       };
       expr_t* reduced = new left_reduced_t(
           std::string( name() ) + "_left_reduced('" + left->name() + "')", op_,
@@ -736,6 +765,8 @@ public:
         {
           return F<double>()( left->eval(), right );
         }
+        ~right_reduced_t()
+        { delete left; }
       };
       expr_t* reduced = new right_reduced_t(
           std::string( name() ) + "_right_reduced('" + right->name() + "')",
@@ -772,6 +803,11 @@ expr_t* select_analyze_binary( const std::string& name, token_e op,
     case TOK_DIV:
       return new expr_analyze_binary_t<std::divides>( name, op, left, right );
 
+    case TOK_MAX:
+      return new expr_analyze_binary_t<binary::max>( name, op, left, right );
+    case TOK_MIN:
+      return new expr_analyze_binary_t<binary::min>( name, op, left, right );
+
     case TOK_EQ:
       return new expr_analyze_binary_t<std::equal_to>( name, op, left, right );
     case TOK_NOTEQ:
@@ -804,20 +840,24 @@ int precedence( token_e expr_token_type )
   {
     case TOK_FLOOR:
     case TOK_CEIL:
-      return 8;
+      return 9;
 
     case TOK_NOT:
     case TOK_PLUS:
     case TOK_MINUS:
     case TOK_ABS:
-      return 7;
+      return 8;
 
     case TOK_MULT:
     case TOK_DIV:
-      return 6;
+      return 7;
 
     case TOK_ADD:
     case TOK_SUB:
+      return 6;
+
+    case TOK_MAX:
+    case TOK_MIN:
       return 5;
 
     case TOK_EQ:
@@ -873,6 +913,8 @@ bool is_binary( token_e expr_token_type )
     case TOK_DIV:
     case TOK_ADD:
     case TOK_SUB:
+    case TOK_MAX:
+    case TOK_MIN:
     case TOK_EQ:
     case TOK_NOTEQ:
     case TOK_LT:
@@ -972,6 +1014,12 @@ token_e next_token( action_t* action, const std::string& expr_str,
       token_str += "=";
       return TOK_LTEQ;
     }
+    else if (expr_str[current_index] == '?')
+    {
+      current_index++;
+      token_str += '?';
+      return TOK_MAX;
+    }
     return TOK_LT;
   }
   if ( c == '>' )
@@ -981,6 +1029,12 @@ token_e next_token( action_t* action, const std::string& expr_str,
       current_index++;
       token_str += "=";
       return TOK_GTEQ;
+    }
+    else if (expr_str[current_index] == '?')
+    {
+      current_index++;
+      token_str += '?';
+      return TOK_MIN;
     }
     return TOK_GT;
   }

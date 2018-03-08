@@ -216,7 +216,10 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
       reset( require_reaction );
     // Still some time left, adjust ready
     else
+    {
       ready += amount;
+      last_charged += amount;
+    }
   }
   // Charge-based cooldown
   else if ( current_charge < charges )

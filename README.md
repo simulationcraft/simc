@@ -49,13 +49,13 @@ The SimulationCraft team is comprised of volunteer developers from all over the 
 
 We are a very laid back group of developers. While certain project members have areas of expertise, there is little in the way of strict responsibility and ownership. Developers are expected to exercise their initiative and help out wherever needed. GitHub provides considerable utilities for oversight. The mantra is: Just check it in. Don't ask for permission. If the code needs to be changed for functional (or artistic!) reasons, someone will revert/modify as needed.
 
-If you are interested in joining the team, contact us on IRC or send an email to natehieter@gmail.com with your contact info. We look forward to working with you!
+If you are interested in joining the team, contact us on Discord or send an email to natehieter@gmail.com with your contact info. We look forward to working with you!
 
 Checkout the [Developers Corner wiki page](../../wiki/Participate) as well.
 
 ## Community
 
-IRC: irc.gamers-irc.org (#simulationcraft)
+Discord: [SimCMinMax](https://discord.gg/tFR2uvK) (#simulationcraft)
 
 ## Important Notice
 

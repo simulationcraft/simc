@@ -40,7 +40,7 @@ void initialize_pantheon( player_t* proxy_player )
 }
 
 pantheon_state_t::pantheon_state_t( player_t* player ) :
-  player( player ), proxy_state_only( true ), attempt_event( nullptr )
+  player( player ), attempt_event( nullptr )
 {
   rppm_objs.resize( drivers.size() );
   actor_buffs.resize( drivers.size() );
@@ -226,13 +226,16 @@ void pantheon_state_t::trigger_pantheon_buff( buff_t* actor_buff )
   }
 
   auto slot = buff_type( actor_buff );
+  if ( slot >= marks.size() )
+  {
+    return;
+  }
+
   auto state = buff_state( slot, actor_buff );
   if ( state == nullptr )
   {
     pantheon_state[ slot ].push_back( { actor_buff, nullptr, timespan_t::min() } );
   }
-
-  proxy_state_only = false;
 
   // Clean up state before trying to figure out if there's empowerment to trigger
   cleanup_state();
@@ -276,45 +279,46 @@ bool pantheon_state_t::empowerment_state() const
 }
 
 // Trigger the empowerment buffs for all real actors and clear the empowerment state. Note that if
-// there are no real actors with base trinket buffs up (proxy_state_only), nothing is triggered.
+// there are no real actors with base trinket buffs up, nothing is triggered.
 void pantheon_state_t::trigger_empowerment()
 {
   if ( player -> sim -> debug )
   {
-    player -> sim -> out_debug.printf( "Pantheon state: Triggering empowerment on actors" );
+    player -> sim -> out_debug.printf( "Pantheon state: Triggering empowerment on actors and clearing state" );
     debug();
   }
 
-  if ( ! proxy_state_only )
-  {
-    range::for_each( pantheon_state, [ this ]( std::vector<pantheon_buff_state_t>& states ) {
-      range::for_each( states, [ this ]( const pantheon_buff_state_t& state ) {
-        if ( state.actor_buff )
-        {
-          auto it = cbmap.find( state.actor_buff );
-          if ( it != cbmap.end() )
-          {
-            it -> second();
-          }
-        }
-      } );
-
-      states.clear();
-    } );
-  }
-  else
-  {
-    if ( player -> sim -> debug )
+  range::for_each( pantheon_state[ O_WILDCARD_TRINKET ], [ this ]( const pantheon_buff_state_t& state ) {
+    if ( state.actor_buff )
     {
-      player -> sim -> out_debug.printf( "Pantheon state: Only proxy buffs up, clearing state" );
+      auto it = cbmap.find( state.actor_buff );
+      if ( it != cbmap.end() )
+      {
+        it -> second();
+      }
+    }
+  } );
+
+  pantheon_state[ O_WILDCARD_TRINKET ].clear();
+
+  range::for_each( pantheon_state, [ this ]( std::vector<pantheon_buff_state_t>& states ) {
+    if ( states.size() == 0 )
+      return;
+
+    auto random_it = states.begin() + static_cast<int>( player -> rng().range( 0, as<double>( states.size() ) ) );
+    if ( random_it -> actor_buff )
+    {
+      auto it = cbmap.find( random_it -> actor_buff );
+      if ( it != cbmap.end() )
+      {
+        it -> second();
+      }
     }
 
-    range::for_each( pantheon_state, []( std::vector<pantheon_buff_state_t>& states ) {
-      states.clear();
-    } );
-  }
+    states.erase( random_it );
+  } );
 
-  proxy_state_only = true;
+  debug();
 }
 
 void pantheon_state_t::debug() const
@@ -334,7 +338,7 @@ void pantheon_state_t::debug() const
   {
     const auto& states = pantheon_state[ slot ];
 
-    proxy_s << mark_strs[  slot ] << ": ";
+    proxy_s << mark_strs[ slot ] << ": ";
     proxy_s << "(" << states.size() << ")";
 
     if ( states.size() > 0 )
@@ -441,12 +445,38 @@ void pantheon_state_t::cleanup_state()
 
 size_t pantheon_state_t::buff_type( const buff_t* actor_buff ) const
 {
-  auto it = range::find_if( drivers, [ actor_buff ]( unsigned id ) {
+  auto it = range::find_if( marks, [ actor_buff ]( unsigned id ) {
     return id == actor_buff -> data().id();
   } );
 
-  return it != drivers.end();
+  if ( it != marks.end() )
+  {
+    return std::distance( marks.begin(), it );
+  }
+  else
+  {
+    return marks.size();
+  }
 }
+
+void pantheon_state_t::reset()
+{
+  range::for_each( pantheon_state, []( std::vector<pantheon_buff_state_t>& states ) {
+    states.clear();
+  } );
+
+  // We need to reset the RPPM objects manually with single_actor_batch=1, because the first defined
+  // actor is only active on the first actor simulation.
+  if ( player -> sim -> single_actor_batch )
+  {
+    range::for_each( rppm_objs, []( const std::vector<real_ppm_t*>& rppms ) {
+      range::for_each( rppms, []( real_ppm_t* obj ) { obj -> reset(); } );
+    } );
+  }
+
+  attempt_event = nullptr;
+}
+
 
 const std::vector<unsigned> pantheon_state_t::drivers {
   256817, // Mark of Aman'thul

@@ -5,7 +5,7 @@
 /*
   TODO (Holy):
     - everything, pretty much :(
- 
+
  TODO (Shockadin - e.h. Holy w/ role=attack):
     - Default APL
     + Mana
@@ -34,9 +34,7 @@
     - BoK/BoW
     - Check mana/mana regen for ret, sword of light has been significantly changed to no longer have the mana regen stuff, or the bonus to healing, reduction in mana costs, etc.
   TODO (prot):
-    - Aggramar's Stride (leg)
     - Uther's Guard (leg)
-    - Aegisjalmur, the Armguards of Awe (leg)
     - Tyr's Hand of Faith (leg)
     - Ilterendi, Crown Jewel of Silvermoon (leg - Holy?)
     - Aegis of Light: Convert from self-buff to totem/pet with area buff? (low priority)
@@ -44,7 +42,6 @@
     - Everything below this line is super-low priority and can probably be ignored ======
     - Final Stand?? (like Hand of Reckoning, but AOE)
     - Blessing of Spellweaving??
-    - Retribution Aura?? (like HS, but would need to be in player_t to trigger off of other players being hit)
 */
 #include "simulationcraft.hpp"
 
@@ -272,7 +269,7 @@ public:
     proc_t* blade_of_wrath;
       proc_t* topless_tower;
   } procs;
-    
+
     struct shuffled_rngs_t
     {
         // Holy
@@ -426,13 +423,19 @@ public:
 	artifact_power_t holy_aegis;
 	artifact_power_t bulwark_of_the_silver_hand;
 
-      
+
       // Holy
     artifact_power_t light_of_the_silver_hand;
     artifact_power_t shock_treatment;
     artifact_power_t virtues_of_the_light;
 
   } artifact;
+
+  // Default consumables
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
+  std::string default_rune() const override;
 
   player_t* beacon_target;
 
@@ -684,7 +687,7 @@ namespace buffs {
     }
 
   };
-    
+
   struct avenging_wrath_buff_t: public buff_t
   {
     avenging_wrath_buff_t( player_t* p ):
@@ -843,7 +846,7 @@ namespace buffs {
         {
         }
     };
-    
+
   struct shield_of_vengeance_buff_t : public absorb_buff_t
   {
     shield_of_vengeance_buff_t( player_t* p ):
@@ -1505,7 +1508,7 @@ struct avenging_wrath_t : public paladin_spell_t
       return paladin_spell_t::ready();
   }
 };
-    
+
 // Holy Avenger
     struct holy_avenger_t : public paladin_heal_t
     {
@@ -1513,16 +1516,16 @@ struct avenging_wrath_t : public paladin_spell_t
         : paladin_heal_t( "holy_avenger", p, p -> talents.holy_avenger )
         {
             parse_options( options_str );
-            
+
             if ( ! ( p -> talents.holy_avenger -> ok() ) )
                 background = true;
-            
+
         }
-        
+
         void execute() override
         {
             paladin_heal_t::execute();
-            
+
             p() -> buffs.holy_avenger -> trigger();
         }
     };
@@ -1986,6 +1989,8 @@ struct execution_sentence_t : public paladin_spell_t
   {
     double base_cost = paladin_spell_t::cost();
     int discounts = 0;
+    if ( p() -> buffs.divine_purpose -> up() )
+      discounts = base_cost;
     if ( p() -> buffs.the_fires_of_justice -> up() && base_cost > discounts )
       discounts++;
     if ( p() -> buffs.ret_t21_4p -> up() && base_cost > discounts )
@@ -2020,6 +2025,15 @@ struct execution_sentence_t : public paladin_spell_t
     {
       int num_stacks = (int)base_cost();
       p() -> buffs.crusade -> trigger( num_stacks );
+    }
+
+    if ( p() -> talents.divine_purpose -> ok() )
+    {
+      bool success = p() -> buffs.divine_purpose -> trigger( 1,
+        p() -> buffs.divine_purpose -> default_value,
+        p() -> spells.divine_purpose_ret -> proc_chance() );
+      if ( success )
+        p() -> procs.divine_purpose -> occur();
     }
   }
 
@@ -2369,24 +2383,24 @@ struct holy_shock_damage_t : public paladin_spell_t
 
     return cc;
   }
-    
+
     double composite_target_multiplier( player_t* t ) const override
     {
         double m = paladin_spell_t::composite_target_multiplier( t );
-        
+
         paladin_td_t* td = this -> td( t );
-        
+
         if ( td -> buffs.debuffs_judgment -> up() )
         {
             double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
             judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
             m *= judgment_multiplier;
         }
-        
+
         return m;
     }
 
-    
+
 //    virtual void execute() override
 //    {
 //        paladin_heal_t::execute();
@@ -2481,14 +2495,14 @@ struct holy_shock_t : public paladin_spell_t
 
       cooldown -> duration = cd_duration;
 //      cooldown -> duration = timespan_t::from_seconds( 9.0 );
-      
+
     paladin_spell_t::execute();
-      
+
       if ( p() -> buffs.divine_purpose -> check() )
       {
           p() -> buffs.divine_purpose -> expire();
       }
-      
+
       if ( p() -> talents.divine_purpose -> ok() )
       {
           bool success = p() -> buffs.divine_purpose -> trigger( 1,
@@ -3086,7 +3100,7 @@ struct light_of_dawn_t : public paladin_heal_t
     parse_options( options_str );
 
     aoe = 6;
-      
+
       cooldown = p -> cooldowns.light_of_dawn;
 
     // Holy Insight buffs all healing by 25% & WoG/EF/LoD by 50%.
@@ -3094,14 +3108,14 @@ struct light_of_dawn_t : public paladin_heal_t
 //    base_multiplier /= 1.0 + p -> passives.holy_insight -> effectN( 6 ).percent();
 //    base_multiplier *= 1.0 + p -> passives.holy_insight -> effectN( 9 ).percent();
   }
-    
+
     virtual void execute() override
     {
         if (p()->topless_tower) {
             if (p()->shuffled_rngs.topless_tower->trigger())
             {
                 p()->procs.topless_tower->occur();
-                
+
                 timespan_t proc_duration = timespan_t::from_seconds(p()->topless_tower->effectN(2).base_value());
                 if (p()->buffs.avenging_wrath->check())
                     p()->buffs.avenging_wrath->extend_duration(p(), proc_duration);
@@ -3109,7 +3123,7 @@ struct light_of_dawn_t : public paladin_heal_t
                     p()->buffs.avenging_wrath->trigger(1, p()->buffs.avenging_wrath->default_value, -1.0, proc_duration);
             }
         }
-        
+
         if ( p() -> sets -> has_set_bonus( PALADIN_HOLY, T20, B2 ) )
         {
             p()->cooldowns.light_of_dawn->adjust( timespan_t::from_seconds(-2.0));
@@ -3393,6 +3407,11 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
     if ( potential_target && potential_target != p() -> main_hand_attack -> target )
       p() -> main_hand_attack -> target = potential_target;
 
+    if ( p() -> main_hand_attack -> target -> is_sleeping() && potential_target == nullptr )
+    {
+      return false;
+    }
+
     return( p() -> main_hand_attack -> execute_event == nullptr ); // not swinging
   }
 };
@@ -3423,7 +3442,7 @@ struct crusader_strike_t : public holy_power_generator_t
     {
       base_multiplier *= 1.0 + p -> passives.retribution_paladin -> effectN( 8 ).percent();
     }
-      
+
       if (p->specialization() == PALADIN_HOLY) {
           base_multiplier *= 1.0 + p->passives.holy_paladin->effectN(5).percent();
       }
@@ -3458,17 +3477,17 @@ struct crusader_strike_t : public holy_power_generator_t
         if ( success )
           p() -> procs.the_fires_of_justice -> occur();
       }
-        
+
     }
   }
-    
+
     double composite_target_multiplier( player_t* t ) const override
     {
         double m = paladin_melee_attack_t::composite_target_multiplier( t );
-        
+
         if (p() -> specialization() == PALADIN_HOLY) {
             paladin_td_t* td = this -> td( t );
-            
+
             if ( td -> buffs.debuffs_judgment -> up() )
             {
                 double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent() + p() -> get_divine_judgment();
@@ -3476,12 +3495,12 @@ struct crusader_strike_t : public holy_power_generator_t
                 m *= judgment_multiplier;
             }
         }
-        
+
         return m;
     }
 
 };
-    
+
 
 // Zeal ==========================================================
 
@@ -5031,62 +5050,16 @@ void paladin_t::generate_action_prio_list_prot()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   //Flask
-  if ( sim -> allow_flasks )
-  {
-    if (true_level > 100)
-    {
-      precombat->add_action("flask,type=flask_of_ten_thousand_scars");
-      precombat->add_action("flask,type=flask_of_the_countless_armies,if=role.attack|using_apl.max_dps");
-    }
-    else if ( true_level > 90 )
-    {
-      precombat -> add_action( "flask,type=greater_draenic_stamina_flask" );
-      precombat -> add_action( "flask,type=greater_draenic_strength_flask,if=role.attack|using_apl.max_dps" );
-    }
-    else if ( true_level > 85 )
-      precombat -> add_action( "flask,type=earth" );
-    else if ( true_level >= 80 )
-      precombat -> add_action( "flask,type=steelskin" );
-  }
+  precombat -> add_action( "flask" );
 
   // Food
-  if ( sim -> allow_food )
-  {
-    if (level() > 100)
-    {
-      precombat->add_action("food,type=seedbattered_fish_plate");
-      precombat->add_action("food,type=azshari_salad,if=role.attack|using_apl.max_dps");
-    }
-    else if ( level() > 90 )
-    {
-      precombat -> add_action( "food,type=whiptail_fillet" );
-      precombat -> add_action( "food,type=pickled_eel,if=role.attack|using_apl.max_dps" );
-    }
-    else if ( level() > 85 )
-      precombat -> add_action( "food,type=chun_tian_spring_rolls" );
-    else if ( level() >= 80 )
-      precombat -> add_action( "food,type=seafood_magnifique_feast" );
-  }
+  precombat -> add_action( "food" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Pre-potting
-  std::string potion_type = "";
-  if ( sim -> allow_potions )
-  {
-    // no need for off/def pot options - Draenic Armor gives more AP than Draenic STR,
-    // and Mountains potion is pathetic at L90
-    if (true_level > 100)
-      potion_type = "unbending_potion";
-    else if ( true_level > 90 )
-      potion_type = "draenic_strength";
-    else if ( true_level >= 80 )
-      potion_type = "mogu_power";
-
-    if ( potion_type.length() > 0 )
-      precombat -> add_action( "potion,name=" + potion_type );
-  }
+  precombat -> add_action( "potion" );
 
   ///////////////////////
   // Action Priority List
@@ -5137,57 +5110,69 @@ void paladin_t::generate_action_prio_list_prot()
   def->add_action("call_action_list,name=prot");
 
   //defensive
-  prot->add_talent(this, "Seraphim", "if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2");
-  prot->add_action(this, "Shield of the Righteous", "if=(!talent.seraphim.enabled|action.shield_of_the_righteous.charges>2)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
-  prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&talent.seraphim.enabled&buff.seraphim.up&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
-  prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&!talent.seraphim.enabled&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
-  prot->add_talent(this, "Bastion of Light", "if=talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1");
+  //prot->add_talent(this, "Seraphim", "if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2");
+  prot->add_action(this, "Shield of the Righteous", "if=!talent.seraphim.enabled&(action.shield_of_the_righteous.charges>2)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
+  //prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&talent.seraphim.enabled&buff.seraphim.up&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
+  //prot->add_action(this, "Shield of the Righteous", "if=(talent.bastion_of_light.enabled&!talent.seraphim.enabled&cooldown.bastion_of_light.up)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)");
+  prot->add_talent(this, "Bastion of Light", "if=!talent.seraphim.enabled&talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1");
   prot->add_action(this, "Light of the Protector", "if=(health.pct<40)");
   prot->add_talent(this, "Hand of the Protector",  "if=(health.pct<40)");
   prot->add_action(this, "Light of the Protector", "if=("+threshold_lotp_rp+")&health.pct<55&talent.righteous_protector.enabled");
   prot->add_action(this, "Light of the Protector", "if=("+threshold_lotp+")&health.pct<55");
   prot->add_talent(this, "Hand of the Protector",  "if=("+threshold_hotp_rp+")&health.pct<65&talent.righteous_protector.enabled");
   prot->add_talent(this, "Hand of the Protector",  "if=("+threshold_hotp+")&health.pct<55");
-  prot->add_action(this, "Divine Steed", "if=talent.knight_templar.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Eye of Tyr", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_talent(this, "Aegis of Light", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Guardian of Ancient Kings", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Divine Shield", "if=talent.final_stand.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Ardent Defender", "if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
-  prot->add_action(this, "Lay on Hands", "if=health.pct<15");
+  prot->add_action(this, "Divine Steed", "if=!talent.seraphim.enabled&talent.knight_templar.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Eye of Tyr", "if=!talent.seraphim.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_talent(this, "Aegis of Light", "if=!talent.seraphim.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Guardian of Ancient Kings", "if=!talent.seraphim.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Divine Shield", "if=!talent.seraphim.enabled&talent.final_stand.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Ardent Defender", "if=!talent.seraphim.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action(this, "Lay on Hands", "if=!talent.seraphim.enabled&health.pct<15");
 
   //potion
   if (sim->allow_potions)
   {
     if (level() > 100)
     {
-      //prot->add_action("potion,name=the_old_war,if=role.attack|using_apl.max_dps");
-      prot->add_action("potion,name=unbending_potion");
-    }
-    if (true_level > 90)
-    {
-      prot->add_action("potion,name=draenic_strength,if=" + threshold + "&&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25");
+      prot->add_action("potion,name=old_war,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies<3");
+      prot->add_action("potion,name=prolonged_power,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies>=3");
+      prot->add_action("potion,name=unbending_potion,if=!talent.seraphim.enabled");
     }
     else if (true_level >= 80)
     {
-      prot->add_action("potion,name=mountains,if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25");
+      prot->add_action("potion,if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25");
     }
   }
 
   //stoneform
-  prot->add_action("stoneform,if=" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
+  prot->add_action("stoneform,if=!talent.seraphim.enabled&" + threshold + "&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
 
   //dps-single-target
   prot->add_action(this, "Avenging Wrath", "if=!talent.seraphim.enabled");
-  prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&buff.seraphim.up");
-  //prot -> add_action( "call_action_list,name=prot_aoe,if=spell_targets.avenger_shield>3" );
-  prot->add_action(this, "Judgment");
-  prot->add_action(this, "Avenger's Shield","if=talent.crusaders_judgment.enabled&buff.grand_crusader.up");
-  prot->add_talent(this, "Blessed Hammer");
-  prot->add_action(this, "Avenger's Shield");
-  prot->add_action(this, "Consecration" );
-  prot->add_talent(this, "Blinding Light");
-  prot->add_action(this, "Hammer of the Righteous");
+  //prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&buff.seraphim.up");
+  //prot->add_action( "call_action_list,name=prot_aoe,if=spell_targets.avenger_shield>3" );
+  prot->add_action(this, "Judgment", "if=!talent.seraphim.enabled");
+  prot->add_action(this, "Avenger's Shield","if=!talent.seraphim.enabled&talent.crusaders_judgment.enabled&buff.grand_crusader.up");
+  prot->add_talent(this, "Blessed Hammer", "if=!talent.seraphim.enabled");
+  prot->add_action(this, "Avenger's Shield", "if=!talent.seraphim.enabled");
+  prot->add_action(this, "Consecration", "if=!talent.seraphim.enabled");
+  prot->add_action(this, "Hammer of the Righteous", "if=!talent.seraphim.enabled");
+
+  //max dps build
+
+  prot->add_talent(this,"Seraphim","if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2");
+  prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&(buff.seraphim.up|cooldown.seraphim.remains<4)");
+  prot->add_action(this, "Ardent Defender", "if=talent.seraphim.enabled&buff.seraphim.up");
+  prot->add_action(this, "Shield of the Righteous", "if=talent.seraphim.enabled&(cooldown.consecration.remains>=0.1&(action.shield_of_the_righteous.charges>2.5&cooldown.seraphim.remains>3)|(buff.seraphim.up))");
+  prot->add_action(this, "Eye of Tyr", "if=talent.seraphim.enabled&equipped.151812&buff.seraphim.up");
+  prot->add_action(this, "Avenger's Shield", "if=talent.seraphim.enabled");
+  prot->add_action(this, "Judgment", "if=talent.seraphim.enabled&(active_enemies<2|set_bonus.tier20_2pc)");
+  prot->add_action(this, "Consecration", "if=talent.seraphim.enabled&(buff.seraphim.remains>6|buff.seraphim.down)");
+  prot->add_action(this, "Judgment", "if=talent.seraphim.enabled");
+  prot->add_action(this, "Consecration", "if=talent.seraphim.enabled");
+  prot->add_action(this, "Eye Of Tyr", "if=talent.seraphim.enabled&!equipped.151812");
+  prot->add_talent(this, "Blessed Hammer", "if=talent.seraphim.enabled");
+  prot->add_action(this, "Hammer of the Righteous", "if=talent.seraphim.enabled");
 
 
 
@@ -5210,51 +5195,19 @@ void paladin_t::generate_action_prio_list_ret()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   //Flask
-  if ( sim -> allow_flasks && true_level >= 80 )
-  {
-    std::string flask_action = "flask,type=";
-    if ( true_level > 100 )
-      flask_action += "flask_of_the_countless_armies";
-    else if ( true_level > 90 )
-      flask_action += "greater_draenic_strength_flask";
-    else if ( true_level > 85 )
-      flask_action += "winters_bite";
-    else
-      flask_action += "titanic_strength";
-
-    precombat -> add_action( flask_action );
-  }
+  precombat -> add_action( "flask" );
 
   // Food
-  if ( sim -> allow_food && level() >= 80 )
-  {
-    std::string food_action = "food,type=";
-    if ( level() > 100 )
-      food_action += "azshari_salad";
-    else if ( level() > 90 )
-      food_action += "sleeper_sushi";
-    else
-      food_action += ( level() > 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
+  precombat -> add_action( "food" );
 
-    precombat -> add_action( food_action );
-  }
-
-  if ( true_level > 100 )
-    precombat -> add_action( "augmentation,type=defiled" );
+  // Augmentation
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  // Pre-potting
-  if ( sim -> allow_potions && true_level >= 80 )
-  {
-    if ( true_level > 100 )
-      precombat -> add_action( "potion,name=old_war" );
-    else if ( true_level > 90 )
-      precombat -> add_action( "potion,name=draenic_strength" );
-    else
-      precombat -> add_action( ( true_level > 85 ) ? "potion,name=mogu_power" : "potion,name=golemblood" );
-  }
+  // Pre-Potion
+  precombat -> add_action( "potion" );
 
   ///////////////////////
   // Action Priority List
@@ -5325,13 +5278,9 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_potions )
   {
     if ( true_level > 100 )
-      cds -> add_action( "potion,name=old_war,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)" );
-    else if ( true_level > 90 )
-      cds -> add_action( "potion,name=draenic_strength,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
-    else if ( true_level > 85 )
-      cds -> add_action( "potion,name=mogu_power,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
+      cds -> add_action( "potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)" );
     else if ( true_level >= 80 )
-      cds -> add_action( "potion,name=golemblood,if=buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40" );
+      cds -> add_action( "potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|target.time_to_die<=40)" );
   }
 
   std::vector<std::string> racial_actions = get_racial_actions();
@@ -5343,6 +5292,10 @@ void paladin_t::generate_action_prio_list_ret()
       opener -> add_action( "arcane_torrent,if=!set_bonus.tier20_2pc" );
       cds -> add_action( "arcane_torrent,if=(buff.crusade.up|buff.avenging_wrath.up)&holy_power=2&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)" );
     }
+  else if (racial_actions[i] == "lights_judgment" )
+  {
+    cds -> add_action( "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>15)&cooldown.judgment.remains>gcd&(cooldown.divine_hammer.remains>gcd|cooldown.blade_of_justice.remains>gcd)&(buff.avenging_wrath.up|buff.crusade.stack>=15)" );
+  }
     else
     {
       opener -> add_action( racial_actions[ i ] );
@@ -5362,14 +5315,15 @@ void paladin_t::generate_action_prio_list_ret()
   finishers -> add_talent( this, "Execution Sentence", "if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.25|debuff.judgment.remains>gcd*4.25)" );
   finishers -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&buff.divine_purpose.react" );
   finishers -> add_action( this, "Divine Storm", "if=debuff.judgment.up&variable.ds_castable&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)" );
-  finishers -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.react&!equipped.137020" );
+  finishers -> add_talent( this, "Justicar's Vengeance", "if=debuff.judgment.up&buff.divine_purpose.react&!equipped.137020&!talent.final_verdict.enabled" );
   finishers -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&buff.divine_purpose.react" );
   finishers -> add_action( this, "Templar's Verdict", "if=debuff.judgment.up&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd)" );
 
   generators -> add_action( "variable,name=ds_castable,value=spell_targets.divine_storm>=2|(buff.scarlet_inquisitors_expurgation.stack>=29&(equipped.144358&(dot.wake_of_ashes.ticking&time>10|dot.wake_of_ashes.remains<gcd))|(buff.scarlet_inquisitors_expurgation.stack>=29&(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>15&!buff.crusade.up)|cooldown.avenging_wrath.remains>15)&!equipped.144358)" );
-  generators -> add_action( "call_action_list,name=finishers,if=(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)|(artifact.ashes_to_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2)" );
+  generators -> add_action( this, "Judgment", "if=set_bonus.tier21_4pc" );
+  generators -> add_action( "call_action_list,name=finishers,if=(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)|(talent.wake_of_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2)" );
   generators -> add_action( "call_action_list,name=finishers,if=talent.execution_sentence.enabled&(cooldown.judgment.remains<gcd*4.25|debuff.judgment.remains>gcd*4.25)&cooldown.execution_sentence.up|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5" );
-  generators -> add_action( this, "Judgment", "if=dot.execution_sentence.ticking&dot.execution_sentence.remains<gcd*2&debuff.judgment.remains<gcd*2|set_bonus.tier21_4pc" );
+  generators -> add_action( this, "Judgment", "if=dot.execution_sentence.ticking&dot.execution_sentence.remains<gcd*2&debuff.judgment.remains<gcd*2" );
   generators -> add_action( this, "Blade of Justice", "if=holy_power<=2&(set_bonus.tier20_2pc|set_bonus.tier20_4pc)" );
   generators -> add_talent( this, "Divine Hammer", "if=holy_power<=2&(set_bonus.tier20_2pc|set_bonus.tier20_4pc)" );
   generators -> add_action( this, "Wake of Ashes", "if=(!raid_event.adds.exists|raid_event.adds.in>15)&(holy_power<=0|holy_power=1&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)|holy_power=2&((cooldown.zeal.charges_fractional<=0.65|cooldown.crusader_strike.charges_fractional<=0.65)))" );
@@ -5394,67 +5348,55 @@ void paladin_t::generate_action_prio_list_holy_dps()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-  if ( sim -> allow_flasks && true_level >= 80 )
-  {
-    std::string flask_action = "flask,type=";
-      if (true_level > 100) {
-          flask_action += "flask_of_the_whispered_pact";
-      }
-    else if ( true_level > 90 )
-      flask_action += "greater_draenic_intellect_flask";
-    else
-      flask_action += ( true_level > 85 ) ? "warm_sun" : "draconic_mind";
+  // Flask
+  precombat -> add_action( "flask" );
 
-    precombat -> add_action( flask_action );
-  }
+  // Food
+  precombat -> add_action( "food" );
 
-  if ( sim -> allow_food && level() >= 80 )
-  {
-    std::string food_action = "food,type=";
-      if (true_level > 100) {
-          food_action += "the_hungry_magister";
-      }
-      else if ( level() > 90 )
-      food_action += "pickled_eel";
-    else
-      food_action += ( level() > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
-    precombat -> add_action( food_action );
-  }
-    
-    if ( true_level > 100 )
-        precombat -> add_action( "augmentation,type=defiled" );
-
+  // Augmentation
+  precombat -> add_action( "augmentation" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  precombat -> add_action( "potion,name=old_war" );
+
+  // Pre-pot
+  precombat -> add_action( "potion" );
 
   // action priority list
-    action_priority_list_t* def = get_action_priority_list( "default" );
-    action_priority_list_t* cds = get_action_priority_list( "cooldowns" );
-    action_priority_list_t* priority = get_action_priority_list( "priority" );
+  action_priority_list_t* def = get_action_priority_list( "default" );
+  action_priority_list_t* cds = get_action_priority_list( "cooldowns" );
+  action_priority_list_t* priority = get_action_priority_list( "priority" );
 
   def -> add_action( "auto_attack" );
-    def -> add_action( "call_action_list,name=cooldowns");
-    def -> add_action( "call_action_list,name=priority");
+  def -> add_action( "restore_mana,mana=0,if=prev.holy_shock"); // temporary, bad fix for mana, it's never an issue in any realistic scenario
+  def -> add_action( "call_action_list,name=cooldowns");
+  def -> add_action( "call_action_list,name=priority");
 
-    cds -> add_action("avenging_wrath");
-    if ( sim -> allow_potions )
-    {
-        cds -> add_action("potion,name=old_war,if=(buff.avenging_wrath.up)");
-    }
-    cds -> add_action("blood_fury,if=(buff.avenging_wrath.up)");
-    cds -> add_action("berserking,if=(buff.avenging_wrath.up)");
-    cds -> add_action("holy_avenger,if=(buff.avenging_wrath.up)");
-    cds -> add_action("use_items,if=(buff.avenging_wrath.up)");
+  cds -> add_action("strict_sequence,name=HA:avenging_wrath:holy_avenger:holy_shock,damage=1,if=talent.holy_avenger.enabled");
+  cds -> add_action("strict_sequence,name=noHA:avenging_wrath:holy_shock,damage=1,if=!talent.holy_avenger.enabled");
+  cds -> add_action("avenging_wrath,if=target.time_to_die<=25");
+  cds -> add_action("holy_avenger,if=buff.avenging_wrath.up|target.time_to_die<=20");
+  if ( sim -> allow_potions )
+  {
+      cds -> add_action("potion,if=buff.avenging_wrath.up|target.time_to_die<=25");
+  }
+  cds -> add_action("use_items,if=(buff.avenging_wrath.up)");
 
-    priority -> add_action("judgment");
-    priority -> add_action("holy_shock,damage=1");
-    priority -> add_action("crusader_strike");
-    priority -> add_action("holy_prism,target=self,if=active_enemies>=2");
-    priority -> add_action("holy_prism");
-    priority -> add_action("consecration");
-    priority -> add_action("light_of_dawn");
+  priority -> add_action("consecration,if=active_enemies>=3");
+  priority -> add_action("holy_prism,target=self,if=active_enemies>=3");
+  priority -> add_action("holy_shock,damage=1,if=debuff.judgment.up");
+  priority -> add_action("consecration,if=active_enemies>=2");
+  priority -> add_action("holy_prism,target=self,if=active_enemies>=2");
+  priority -> add_action("judgment,if=cooldown.holy_shock.remains<=gcd");
+  priority -> add_action("holy_prism,if=!debuff.judgment.up&cooldown.judgment.remains<=gcd&cooldown.holy_shock.remains<=gcd*2");
+  priority -> add_action("consecration,if=!debuff.judgment.up&cooldown.judgment.remains<=gcd&cooldown.holy_shock.remains<=gcd*2");
+  priority -> add_action("holy_shock,damage=1,if=cooldown.judgment.remains>gcd");
+  priority -> add_action("crusader_strike");
+  priority -> add_action("holy_prism");
+  priority -> add_action("consecration");
+  priority -> add_action("judgment");
+  priority -> add_action("light_of_dawn,if=equipped.151782"); // should be omitted without TTT equipped, haven't tested with
 }
 
 void paladin_t::generate_action_prio_list_holy()
@@ -5465,27 +5407,15 @@ void paladin_t::generate_action_prio_list_holy()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   //Flask
-  if ( sim -> allow_flasks && true_level >= 80 )
-  {
-    std::string flask_action = "flask,type=";
-    if ( true_level > 90 )
-      flask_action += "greater_draenic_intellect_flask";
-    else
-      flask_action += ( true_level > 85 ) ? "warm_sun" : "draconic_mind";
-
-    precombat -> add_action( flask_action );
-  }
+  precombat -> add_action( "flask" );
 
   // Food
-  if ( sim -> allow_food && level() >= 80 )
-  {
-    std::string food_action = "food,type=";
-    if ( level() > 90 )
-      food_action += "pickled_eel";
-    else
-      food_action += ( level() > 85 ) ? "mogu_fish_stew" : "seafood_magnifique_feast";
-    precombat -> add_action( food_action );
-  }
+  precombat -> add_action( "food" );
+
+  // Augmentation
+  precombat -> add_action( "augmentation" );
+
+
 
   precombat -> add_action( this, "Seal of Insight" );
   precombat -> add_action( this, "Beacon of Light" , "target=healing_target");
@@ -5494,6 +5424,9 @@ void paladin_t::generate_action_prio_list_holy()
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  // Augmentation
+  precombat -> add_action( "potion" );
 
   // action priority list
   action_priority_list_t* def = get_action_priority_list( "default" );
@@ -5578,6 +5511,128 @@ void paladin_t::init_assessors()
   }
 }
 
+// paladin_t::default_potion ================================================
+
+std::string paladin_t::default_potion() const
+{
+  std::string retribution_pot = (true_level > 100) ? "old_war" :
+                                (true_level >= 90) ? "draenic_strength" :
+                                (true_level >= 85) ? "mogu_power" :
+                                (true_level >= 80) ? "golemblood" :
+                                "disabled";
+
+  bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
+  std::string protection_pot = (true_level > 100) ? ( dps ? "prolonged_power" : "unbending_potion" ) :
+                               (true_level >= 90) ? "draenic_strength" :
+                               (true_level >= 85) ? "mogu_power" :
+                               (true_level >= 80) ? "mogu_power" :
+                               "disabled";
+
+  std::string holy_dps_pot = (true_level > 100) ? "old_war" :
+                             "disabled";
+
+  std::string holy_pot = "disabled";
+
+  switch ( specialization() )
+  {
+    case PALADIN_RETRIBUTION:
+      return retribution_pot;
+    case PALADIN_PROTECTION:
+      return protection_pot;
+    case PALADIN_HOLY:
+      return primary_role() == ROLE_ATTACK ? holy_dps_pot : holy_pot;
+    default:
+      return "disabled";
+  }
+}
+
+std::string paladin_t::default_food() const
+{
+  std::string retribution_food = (true_level > 100) ? "azshari_salad" :
+                                 (true_level >= 90) ? "sleeper_sushi" :
+                                 (true_level >= 85) ? "black_pepper_ribs_and_shrimp" :
+                                 (true_level >= 80) ? "beer_basted_crocolisk" :
+                                 "disabled";
+
+  bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
+  std::string protection_food = (true_level > 100) ? ( dps ? "lavish_suramar_feast" : "seedbattered_fish_plate" ) :
+                                (true_level >= 90) ? ( dps ? "pickled_eel" : "whiptail_fillet" ) :
+                                (true_level >= 85) ? "chun_tian_spring_rolls" :
+                                (true_level >= 80) ? "seafood_magnifique_feast" :
+                                "disabled";
+
+  std::string holy_dps_food = (true_level > 100) ? "lemon_herb_filet" :
+                              (true_level >= 90) ? "pickled_eel" :
+                              (true_level >= 85) ? "mogu_fish_stew" :
+                              (true_level >= 80) ? "seafood_magnifique_feast" :
+                              "disabled";
+
+  std::string holy_food = (true_level > 100) ? "lavish_suramar_feast" :
+                          (true_level >= 90) ? "pickled_eel" :
+                          (true_level >= 85) ? "mogu_fish_stew" :
+                          (true_level >= 80) ? "seafood_magnifique_feast" :
+                          "disabled";
+
+  switch ( specialization() )
+  {
+    case PALADIN_RETRIBUTION:
+      return retribution_food;
+    case PALADIN_PROTECTION:
+      return protection_food;
+    case PALADIN_HOLY:
+      return primary_role() == ROLE_ATTACK ? holy_dps_food : holy_food;
+    default:
+      return "disabled";
+  }
+}
+
+std::string paladin_t::default_flask() const
+{
+  std::string retribution_flask = (true_level > 100) ? "flask_of_the_countless_armies" :
+                                  (true_level >= 90) ? "greater_draenic_strength_flask" :
+                                  (true_level >= 85) ? "winters_bite" :
+                                  (true_level >= 80) ? "titanic_strength" :
+                                  "disabled";
+
+  bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
+  std::string protection_flask = (true_level > 100) ? (dps ? "flask_of_the_countless_armies" : "flask_of_ten_thousand_scars") :
+                                 (true_level >= 90) ? (dps ? "greater_draenic_strength_flask" : "greater_draenic_stamina_flask") :
+                                 (true_level >= 85) ? "earth" :
+                                 (true_level >= 80) ? "steelskin" :
+                                 "disabled";
+
+  std::string holy_dps_flask = (true_level > 100) ? "flask_of_the_whispered_pact" :
+                               (true_level >= 90) ? "greater_draenic_intellect_flask" :
+                               (true_level >= 85) ? "warm_sun" :
+                               (true_level >= 80) ? "draconic_mind" :
+                               "disabled";
+
+  std::string holy_flask = (true_level > 100) ? "flask_of_the_whispered_pact" :
+                           (true_level >= 90) ? "greater_draenic_intellect_flask" :
+                           (true_level >= 85) ? "warm_sun" :
+                           (true_level >= 80) ? "draconic_mind" :
+                           "disabled";
+
+  switch ( specialization() )
+  {
+    case PALADIN_RETRIBUTION:
+      return retribution_flask;
+    case PALADIN_PROTECTION:
+      return protection_flask;
+    case PALADIN_HOLY:
+      return primary_role() == ROLE_ATTACK ? holy_dps_flask : holy_flask;
+    default:
+      return "disabled";
+  }
+}
+
+std::string paladin_t::default_rune() const
+{
+  return (true_level >= 110) ? "defiled" :
+         (true_level >= 100) ? "hyper" :
+         "disabled";
+}
+
 // paladin_t::init_actions ==================================================
 
 void paladin_t::init_action_list()
@@ -5625,11 +5680,6 @@ void paladin_t::init_action_list()
           generate_action_prio_list_holy_dps();
         break;
       default:
-        if ( true_level > 80 )
-        {
-          action_list_str = "flask,type=draconic_mind/food,type=severed_sagefish_head";
-          action_list_str += "/potion,name=volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
-        }
         action_list_str += "/snapshot_stats";
         action_list_str += "/auto_attack";
         break;
@@ -5767,7 +5817,7 @@ void paladin_t::init_spells()
   artifact.unrelenting_light       = find_artifact_spell( "Unrelenting Light" );
   artifact.holy_aegis			   = find_artifact_spell("Holy Aegis");
   artifact.bulwark_of_the_silver_hand = find_artifact_spell("Bulwark of the Silver Hand");
-    
+
     artifact.light_of_the_silver_hand = find_artifact_spell( "Light of the Silver Hand");
     artifact.virtues_of_the_light = find_artifact_spell("Virtues of the Light");
     artifact.shock_treatment = find_artifact_spell("Shock Treatment");
@@ -6036,7 +6086,7 @@ double paladin_t::composite_melee_haste() const
 
   if ( sephuz )
     h /= 1.0 + sephuz -> effectN( 3 ).percent() ;
-    
+
   if (buffs.holy_avenger -> check())
     h *= buffs.holy_avenger -> value();
 
@@ -6065,7 +6115,7 @@ double paladin_t::composite_spell_crit_chance() const
   if ( buffs.avenging_wrath -> check() )
     m += buffs.avenging_wrath -> get_crit_bonus();
 
-    
+
     if (specialization() == PALADIN_HOLY) {
         m += artifact.virtues_of_the_light.percent(1);
     }
@@ -6273,7 +6323,7 @@ double paladin_t::composite_spell_power( school_e school ) const
   }
   return sp;
 }
-    
+
 // paladin_t::composite_melee_attack_power ==================================
 
 double paladin_t::composite_melee_attack_power() const
@@ -6988,7 +7038,7 @@ struct sephuzs_secret_enabler_t : public unique_gear::scoped_actor_callback_t<pa
   void manipulate( paladin_t* paladin, const special_effect_t& e ) override
   { paladin -> sephuz = e.driver(); }
 };
-    
+
 struct topless_tower_t : public unique_gear::scoped_actor_callback_t<paladin_t>
 {
     topless_tower_t() : super(PALADIN_HOLY)

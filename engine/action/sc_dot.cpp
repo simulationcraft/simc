@@ -833,6 +833,22 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
     };
     return new dot_stack_expr_t( this, action, dynamic );
   }
+  else if (name_str == "max_stacks")
+  {
+    struct max_stack_expr_t : public dot_expr_t
+    {
+      max_stack_expr_t(dot_t* d, action_t* a, bool dynamic)
+        : dot_expr_t("dot_max_stacks", d, a, dynamic)
+      {}
+
+      virtual double evaluate() override
+      {
+        return dot()->max_stack;
+      }
+    };
+    return new max_stack_expr_t(this, action, dynamic);
+  }
+
 
   return nullptr;
 }

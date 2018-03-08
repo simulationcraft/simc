@@ -2,6 +2,8 @@ import os, io, struct, sys, logging, math, re, binascii
 
 import dbc.fmt
 
+from dbc import DBCRecordInfo, DBCRecordData
+
 _BASE_HEADER = struct.Struct('<IIII')
 _DB_HEADER_1 = struct.Struct('<III')
 _DB_HEADER_2 = struct.Struct('<IIIHH')
@@ -37,8 +39,6 @@ def _do_parse(unpackers, data, record_offset, record_size):
     return full_data
 
 class DBCacheParser:
-    __expanded_parsers__ = [ 'SpellEffect', 'Spell' ]
-
     def is_magic(self): return self.magic == b'XFTH'
 
     def __init__(self, options):
@@ -49,11 +49,35 @@ class DBCacheParser:
         self.entries = {}
         self.parsers = {}
 
+        # Key block format storage, required so we can associate data classes
+        # with a specific key format; DBCache.bin will potentially contain
+        # multiple different entries for WDB files that have different key
+        # blocks.
+        self.key_formats = {}
+
         # See that file exists already
         normalized_path = os.path.abspath(os.path.join(options.cache_dir, 'DBCache.bin'))
         if os.access(normalized_path, os.R_OK):
             self.file_name_ = normalized_path
             logging.debug('DBCache.bin file found at %s', self.file_name_)
+
+    def __insert_key_format(self, wdb_parser):
+        if wdb_parser.class_name() in self.key_formats:
+            return
+
+        self.key_formats[wdb_parser.class_name()] = wdb_parser.key_format()
+
+    def has_clone_block(self):
+        return False
+
+    def has_key_block(self):
+        return False
+
+    def key_format(self, wdb_name = None):
+        if not wdb_name:
+            return '%u'
+
+        return self.key_formats[wdb_name]
 
     def get_string(self, offset):
         if offset == 0:
@@ -71,28 +95,35 @@ class DBCacheParser:
         sig = wdb_parser.table_hash
 
         if sig not in self.entries:
-            return -1, 0
+            return DBCRecordInfo(-1, record_id, 0, 0, 0)
 
         if record_id >= len(self.entries[sig]):
-            return -1, 0
+            return DBCRecordInfo(-1, record_id, 0, 0, 0)
 
-        dbc_id = wdb_parser.has_id_block() and self.entries[sig][record_id]['record_id'] or -1
-        return dbc_id, self.entries[sig][record_id]['offset'], \
-                self.entries[sig][record_id]['length']
+        dbc_id = self.entries[sig][record_id]['record_id']
+        key_id = 0
+        if wdb_parser.has_key_block() and wdb_parser.has_id_block() and dbc_id < len(wdb_parser.dbc_id_table):
+            real_record_info = wdb_parser.dbc_id_table[dbc_id]
+            if real_record_info:
+                key_id = real_record_info.parent_id
 
-    def get_record(self, wdb_parser, offset, size):
+        return DBCRecordInfo(dbc_id, record_id, self.entries[sig][record_id]['offset'], \
+                self.entries[sig][record_id]['length'], key_id)
+
+    def get_record(self, dbc_id, offset, size, wdb_parser):
         sig = wdb_parser.table_hash
 
         if sig not in self.entries:
             return None
 
         if sig not in self.parsers:
-            if wdb_parser.class_name() in DBCacheParser.__expanded_parsers__:
-                self.parsers[sig] = wdb_parser.create_expanded_parser(True)
-            else:
-                self.parsers[sig] = wdb_parser.create_formatted_parser(True)
+            self.__insert_key_format(wdb_parser)
+            self.parsers[sig] = wdb_parser.create_formatted_parser(
+                    inline_strings  = True,
+                    cache_parser    = True,
+                    expanded_parser = wdb_parser.class_name() in dbc.EXPANDED_HOTFIX_RECORDS)
 
-        return self.parsers[sig](self.data, offset, size)
+        return self.parsers[sig](dbc_id, self.data, offset, size)
 
     def n_entries(self, wdb_parser):
         sig = wdb_parser.table_hash
@@ -113,36 +144,51 @@ class DBCacheParser:
         if not self.parse_header():
             return False
 
-        entry_unpacker = struct.Struct('<4sIiIIII')
+        entry_unpacker = struct.Struct('<4sIiIIIBBBB')
 
         n_entries = 0
+        all_entries = []
         while self.parse_offset < len(self.data):
-            magic, unk_1, unk_2, length, sig, record_id, unk_3 = entry_unpacker.unpack_from(self.data, self.parse_offset)
+            magic, game_type, unk_2, length, sig, record_id, enabled, unk_4, unk_5, unk_6 = \
+                    entry_unpacker.unpack_from(self.data, self.parse_offset)
+
             if magic != b'XFTH':
                 logging.error('Invalid hotfix magic %s', magic.decode('utf-8'))
                 return False
 
             self.parse_offset += entry_unpacker.size
-            if length == 0:
-                continue
 
             entry = {
                 'record_id': record_id,
-                'unk_1': unk_1,
+                'game_type': game_type,
                 'unk_2': unk_2,
-                'unk_3': unk_3,
+                'enabled': enabled,
+                'unk_4': unk_4,
+                'unk_5': unk_5,
+                'unk_6': unk_6,
                 'length': length,
-                'offset': self.parse_offset
+                'offset': self.parse_offset,
+                'sig': sig,
             }
 
             if sig not in self.entries:
                 self.entries[sig] = []
 
-            self.entries[sig].append(entry)
+            if enabled:
+                self.entries[sig].append(entry)
+                all_entries.append(entry)
 
             # Skip data
             self.parse_offset += length
             n_entries += 1
+
+        if self.options.debug:
+            for entry in sorted(all_entries, key = lambda e: (e['unk_2'], e['sig'], e['record_id'])):
+                logging.debug('entry: { %s }',
+                    ('record_id=%(record_id)-6u game_type=%(game_type)u table_hash=%(sig)#.8x ' +
+                     'unk_2=%(unk_2)-5u enabled=%(enabled)u, unk_4=%(unk_4)-3u unk_5=%(unk_5)-3u ' +
+                     'unk_6=%(unk_6)-3u length=%(length)-3u offset=%(offset)-7u') % entry)
+
 
         logging.debug('Parsed %d hotfix entries', n_entries)
 
@@ -152,6 +198,7 @@ class DBCacheParser:
         header_unpack = struct.Struct('4sii32s')
 
         self.magic, self.unk_1, self.build, self.unk_u256 = header_unpack.unpack_from(self.data)
+        logging.debug('magic=%s, unk_1=%u, build=%u', self.magic, self.unk_1, self.build)
 
         if not self.is_magic():
             logging.error('DBCache.bin: Invalid data file format %s', self.magic.decode('utf-8'))
@@ -220,6 +267,15 @@ class DBCParserBase:
         self.id_format_str = '%%%uu' % n_digits
         return self.id_format_str
 
+    # Format of the foreign key, can be automatically deduced from the
+    # magnitude of the data. The optional parameter wdb_name is required for
+    # the WDB cache parser, since a single cache file can contain entries for
+    # multiplier wdb files. The data mode, when outputting the formatted
+    # version of the key (i.e., in the field method) will pass its class name
+    # to the key_format method.
+    def key_format(self, wdb_name = None):
+        return '%u'
+
     def use_inline_strings(self):
         return False
 
@@ -227,7 +283,7 @@ class DBCParserBase:
         if self.options.raw:
             self.record_parser = self.create_raw_parser()
         else:
-            self.record_parser = self.create_formatted_parser(self.use_inline_strings())
+            self.record_parser = self.create_formatted_parser(inline_strings = self.use_inline_strings())
 
         if self.record_parser == None:
             return False
@@ -366,15 +422,15 @@ class DBCParserBase:
         # One parser unpackers don't need to go through a function, can just do
         # the parsing in one go through a lambda function. Multi-parsers require state to be kept.
         if len(unpackers) == 1:
-            return lambda data, ro, rs: unpackers[0][1].unpack_from(data, ro)
+            return lambda dbc_id, data, ro, rs: unpackers[0][1].unpack_from(data, ro)
         else:
-            return lambda data, ro, rs: _do_parse(unpackers, data, ro, rs)
+            return lambda dbc_id, data, ro, rs: _do_parse(unpackers, data, ro, rs)
 
 
     # Sanitize data, blizzard started using dynamic width ints in WDB5, so
     # 3-byte ints have to be expanded to 4 bytes to parse them properly (with
     # struct module)
-    def create_formatted_parser(self, inline_strings):
+    def create_formatted_parser(self, inline_strings = False, cache_parser = False):
         field_idx = 0
         format_str = '<'
         unpackers = []
@@ -445,9 +501,9 @@ class DBCParserBase:
         # One parser unpackers don't need to go through a function, can just do
         # the parsing in one go through a lambda function. Multi-parsers require state to be kept.
         if len(unpackers) == 1:
-            return lambda data, ro, rs: list(unpackers[0][1].unpack_from(data, ro))
+            return lambda dbc_id, data, ro, rs: list(unpackers[0][1].unpack_from(data, ro))
         else:
-            return lambda data, ro, rs: _do_parse(unpackers, data, ro, rs)
+            return lambda dbc_id, data, ro, rs: _do_parse(unpackers, data, ro, rs)
 
     def n_expanded_fields(self):
         return sum([ fd[2] for fd in self.field_data ])
@@ -520,7 +576,9 @@ class DBCParserBase:
         field_offset = 0
         self.field_data = []
         for t in types:
-            if t in ['I', 'i', 'f', 'S']:
+            if t in ['Q', 'q']:
+                self.field_data.append((field_offset, 8, 1))
+            elif t in ['I', 'i', 'f', 'S']:
                 self.field_data.append((field_offset, 4, 1))
             elif t in ['H', 'h']:
                 self.field_data.append((field_offset, 2, 1))
@@ -560,7 +618,7 @@ class DBCParserBase:
 
         # Figure out the position of the id column. This may be none if WDB4/5
         # and id_block_offset > 0
-        if not self.options.raw:
+        if not self.options.raw and self.field_data:
             for idx in range(0, len(self.data_format)):
                 if self.data_format[idx].base_name() == 'id':
                     self.id_data = self.field_data[idx]
@@ -588,6 +646,9 @@ class DBCParserBase:
         return self.data[self.string_block_offset + offset:end_offset].decode('utf-8')
 
     def find_record_offset(self, id_):
+        if not self.id_data:
+            return DBCRecordInfo(id_, -1, 0, 0, 0)
+
         unpacker = None
         if self.id_data[1] == 1:
             unpacker = _BYTE
@@ -605,24 +666,24 @@ class DBCParserBase:
                 dbc_id &= 0x00FFFFFF
 
             if dbc_id == id_:
-                return -1, self.data_offset + self.record_size * record_id, self.record_size
+                return DBCRecordInfo(id_, record_id, self.data_offset + self.record_size * record_id, self.record_size, 0)
 
-        return -1, 0, 0
+        return DBCRecordInfo(id_, -1, 0, 0, 0)
 
     # Returns dbc_id (always 0 for base), record offset into file
     def get_record_info(self, record_id):
-        return -1, self.data_offset + record_id * self.record_size, self.record_size
+        return DBCRecordInfo(-1, record_id, self.data_offset + record_id * self.record_size, self.record_size, 0)
 
-    def get_record(self, offset, size):
-        return self.record_parser(self.data, offset, size)
+    def get_record(self, dbc_id, offset, size):
+        return self.record_parser(dbc_id, self.data, offset, size)
 
     def find(self, id_):
-        dbc_id, record_offset, record_size = self.find_record_offset(id_)
+        _, record_id, record_offset, record_size, key_id = self.find_record_offset(id_)
 
         if record_offset > 0:
-            return dbc_id, self.record_parser(self.data, record_offset, record_size)
+            return DBCRecordData(id_, key_id, self.record_parser(id_, self.data, record_offset, record_size))
         else:
-            return 0, tuple()
+            return DBCRecordData(id_, 0, tuple())
 
 # Proxy string unpacker for inlined strings. The size of the most recent parse
 # operation is stored in the size variable
@@ -662,7 +723,10 @@ class LegionWDBParser(DBCParserBase):
         self.clone_block_offset = 0
         self.offset_map_offset = 0
 
+        # Record information in a sparse record row-based table
         self.id_table = []
+        # Record information in a sparse dbc id (record id) based table
+        self.dbc_id_table = []
 
     def use_inline_strings(self):
         return self.has_offset_map()
@@ -673,11 +737,14 @@ class LegionWDBParser(DBCParserBase):
     def has_id_block(self):
         return (self.flags & X_ID_BLOCK) == X_ID_BLOCK
 
+    def has_key_block(self):
+        return False
+
     def n_cloned_records(self):
         return self.clone_segment_size // _CLONE.size
 
     def n_records(self):
-        if self.id_block_offset:
+        if self.has_id_block():
             return len(self.id_table)
         else:
             return self.records
@@ -692,10 +759,10 @@ class LegionWDBParser(DBCParserBase):
 
     def find_record_offset(self, id_):
         if self.has_id_block():
-            for record_id in range(0, self.n_records()):
-                if self.id_table[record_id][0] == id_:
-                    return self.id_table[record_id]
-            return -1, 0, 0
+            if id_ < len(self.dbc_id_table) and self.dbc_id_table[id_]:
+                return self.dbc_id_table[id_]
+            else:
+                return DBCRecordInfo(id_, -1, 0, 0, 0)
         else:
             return super().find_record_offset(id_)
 
@@ -706,10 +773,11 @@ class LegionWDBParser(DBCParserBase):
         return _ITEMRECORD.size
 
     def build_id_table(self):
-        if self.id_block_offset == 0:
+        if not self.has_id_block():
             return
 
         idtable = []
+        recordtable = [ None ] * (self.last_id + 1)
         indexdict = {}
 
         # Process ID block
@@ -730,8 +798,21 @@ class LegionWDBParser(DBCParserBase):
             else:
                 data_offset = self.data_offset + record_id * self.record_size
 
-            idtable.append((dbc_id, data_offset, size))
-            indexdict[dbc_id] = (data_offset, size)
+            # If the db2 file has a key block, we need to grab the key at this
+            # point from the block, to record it into the data we have. Storing
+            # the information now associates with the correct dbc id, since the
+            # key block is record index based, not dbc id based.
+            if self.has_key_block():
+                key_id, _ = _CLONE.unpack_from(self.data, self.key_block_offset + 12 + _CLONE.size * record_id)
+            else:
+                key_id = 0
+
+            record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size, key_id)
+            idtable.append(record_info)
+            recordtable[dbc_id] = record_info
+            # Key id needs to be recorded here as well, so that a possible
+            # clone block can also clone the key id
+            indexdict[dbc_id] = (data_offset, size, key_id)
             record_id += 1
 
         # Process clones
@@ -741,11 +822,21 @@ class LegionWDBParser(DBCParserBase):
             if source_id not in indexdict:
                 continue
 
-            idtable.append((target_id, indexdict[source_id][0], indexdict[source_id][1]))
+            source = indexdict[source_id]
+            record_info = DBCRecordInfo(target_id, record_id, source[0], source[1], source[2])
+            idtable.append(record_info)
+            recordtable[target_id] = record_info
+
+            record_id += 1
 
         self.id_table = idtable
-        # If we have an idtable, just index directly to it
-        self.get_record_info = lambda record_id: self.id_table[record_id]
+        self.dbc_id_table = recordtable
+
+    def get_record_info(self, id_):
+        if self.has_id_block():
+            return self.id_table[id_]
+        else:
+            return super().get_record_info(id_)
 
     def open(self):
         if not super().open():
@@ -950,8 +1041,8 @@ class WDB6RecordParser:
 
             self.id_index += self.fields[i].elements
 
-    def __call__(self, file_data, offset, size):
-        data = self.record_parser(file_data, offset, size)
+    def __call__(self, dbc_id, file_data, offset, size):
+        data = self.record_parser(dbc_id, file_data, offset, size)
         idx = 0
         for i in range(0, len(self.fields)):
             value = self.parser.get_field_value(i, data[self.id_index])
@@ -1154,18 +1245,17 @@ class LegionWCHParser(LegionWDBParser):
             while record_id < self.records:
                 ofs_offset_map_entry = self.offset_map_offset + record_id * _WCH_ITEMRECORD.size
                 dbc_id, data_offset, size = _WCH_ITEMRECORD.unpack_from(self.data, ofs_offset_map_entry)
-                self.id_table.append((dbc_id, data_offset, size))
+                record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size)
+                self.id_table.append(record_info)
                 record_id += 1
         elif self.has_id_block():
             unpacker = struct.Struct('%dI' % self.records)
             for dbc_id in unpacker.unpack_from(self.data, self.id_block_offset):
                 size = self.record_size
                 data_offset = self.data_offset + record_id * self.record_size
-                self.id_table.append((dbc_id, data_offset, size))
+                record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size)
+                self.id_table.append(record_info)
                 record_id += 1
-
-        # If we have an idtable, just index directly to it
-        self.get_record_info = lambda record_id: self.id_table[record_id]
 
     def is_wch(self):
         return True
@@ -1222,9 +1312,9 @@ class LegionWCHParser(LegionWDBParser):
             self.full_name(),
             ', '.join(['%s (len=%d, offset=%d)' % (u.format.decode('utf-8'), u.size, o) for _, u, o in self.unpackers]))
         if len(self.unpackers) == 1:
-            self.record_parser = lambda ro, rs: self.unpackers[0][1].unpack_from(self.data, ro)
+            self.record_parser = lambda id_, rd, ro, rs: self.unpackers[0][1].unpack_from(rd, ro)
         else:
-            self.record_parser = self.__do_parse
+            self.record_parser = lambda id_, rd, ro, rs: _do_parse(self.unpackers, rd, ro, rs)
 
         return True
 

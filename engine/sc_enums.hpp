@@ -158,6 +158,10 @@ enum race_e
   RACE_PANDAREN,
   RACE_PANDAREN_ALLIANCE,
   RACE_PANDAREN_HORDE,
+  RACE_VOID_ELF,
+  RACE_LIGHTFORGED_DRAENEI,
+  RACE_HIGHMOUNTAIN_TAUREN,
+  RACE_NIGHTBORNE,
   RACE_MAX,
   RACE_UNKNOWN
 };
@@ -447,6 +451,7 @@ enum special_effect_source_e
   SPECIAL_EFFECT_SOURCE_GEM,
   SPECIAL_EFFECT_SOURCE_SOCKET_BONUS,
   SPECIAL_EFFECT_SOURCE_ARTIFACT,
+  SPECIAL_EFFECT_SOURCE_RACE,
   SPECIAL_EFFECT_SOURCE_FALLBACK
 };
 
@@ -1167,13 +1172,13 @@ enum ready_e
 };
 
 /// Real PPM scale stats
-enum rppm_scale_e
+enum rppm_scale_e : uint8_t
 {
-  RPPM_NONE = 0,
-  RPPM_DISABLE,
-  RPPM_HASTE,
-  RPPM_CRIT,
-  RPPM_ATTACK_SPEED
+  RPPM_NONE         = 0x00,
+  RPPM_HASTE        = 0x01,
+  RPPM_CRIT         = 0x02,
+  RPPM_ATTACK_SPEED = 0x04,
+  RPPM_DISABLE      = 0xff
 };
 
 enum action_energize_e

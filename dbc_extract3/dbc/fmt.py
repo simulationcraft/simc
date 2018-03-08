@@ -25,6 +25,10 @@ class Field:
                 outfmt = u'%f'
             elif self.data_type == 'S':
                 outfmt = u'%s'
+            elif self.data_type == 'Q':
+                outfmt = u'%uLLU'
+            elif self.data_type == 'q':
+                outfmt = u'%dLLD'
             else:
                 outfmt = u'%u'
 
@@ -127,12 +131,16 @@ class DBFormat(object):
 
                 fmt = field_conf.get('data_type', u'I')
                 outfmt = u'%u'
-                if fmt in 'ihb':
+                if fmt in [ 'i', 'h', 'b' ]:
                     outfmt = u'%d'
                 elif fmt in 'f':
                     outfmt = u'%f'
                 elif fmt == 'S':
                     outfmt = u'%s'
+                elif fmt == 'q':
+                    outfmt = u'%dLLD'
+                elif fmt == 'Q':
+                    outfmt = u'%uLLU'
 
                 # Full data format
                 self.data[dbcfile]['data-format'].append(fmt)

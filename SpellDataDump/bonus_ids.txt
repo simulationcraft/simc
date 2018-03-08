@@ -1,4 +1,4 @@
-SimulationCraft 730-03 for World of Warcraft 7.3.2 Live (wow build 25383)
+SimulationCraft 735-01 for World of Warcraft 7.3.5 Live (wow build 25901)
 bonus_id={ 1 }, desc={ Heroic }, ilevel_adjust={ 20 }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -492,8 +492,8 @@ bonus_id={ 575 }, quality={ epic }, ilevel_adjust={ 20 }
 bonus_id={ 576 }, quality={ epic }, ilevel_adjust={ 30 }
 bonus_id={ 577 }, quality={ rare }, ilevel_adjust={ 20 }
 bonus_id={ 579 }, ilevel_adjust={ 7 }
-bonus_id={ 582 }, ilevel={ 10 @plvl 0 - 463 @plvl 90 }
-bonus_id={ 583 }, ilevel={ 10 @plvl 0 - 605 @plvl 100 }
+bonus_id={ 582 }, ilevel={ 5 @plvl 0 - 463 @plvl 90 }
+bonus_id={ 583 }, ilevel={ 5 @plvl 0 - 605 @plvl 100 }
 bonus_id={ 591 }, ilevel_adjust={ 20 }
 bonus_id={ 592 }, ilevel_adjust={ 30 }
 bonus_id={ 593 }, desc={ Stage 4 of 6 }, ilevel_adjust={ 45 }
@@ -504,11 +504,11 @@ bonus_id={ 597 }, desc={ Obliterum: 0/10 }, quality={ rare }, ilevel_adjust={ -1
 bonus_id={ 598 }, desc={ Obliterum: 0/10 }, quality={ rare }, ilevel_adjust={ -10 }
 bonus_id={ 599 }, desc={ Obliterum: 0/10 }, quality={ rare }, ilevel_adjust={ -5 }
 bonus_id={ 602 }, desc={ Timewalker }, ilevel={ 10 @plvl 0 - 600 @plvl 100 }
-bonus_id={ 603 }, stats={ 100% Crit [0.6667] }
-bonus_id={ 604 }, stats={ 100% Haste [0.6667] }
-bonus_id={ 605 }, stats={ 100% Mastery [0.6667] }
-bonus_id={ 606 }, stats={ 100% Crit [0.6667] }
-bonus_id={ 607 }, stats={ 100% Vers [0.6667] }
+bonus_id={ 603 }, stats={ 100% Crit [0.6666] }
+bonus_id={ 604 }, stats={ 100% Haste [0.6666] }
+bonus_id={ 605 }, stats={ 100% Mastery [0.6666] }
+bonus_id={ 606 }, stats={ 100% Crit [0.6666] }
+bonus_id={ 607 }, stats={ 100% Vers [0.6666] }
 bonus_id={ 608 }, socket={ 1 }
 bonus_id={ 609 }, ilevel_adjust={ 40 }
 bonus_id={ 615 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 850 @plvl 110 }
@@ -1775,7 +1775,7 @@ bonus_id={ 3567 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 3568 }, base_ilevel={ 810 }, quality={ epic }
 bonus_id={ 3569 }, ilevel_adjust={ 3 }
 bonus_id={ 3570 }, ilevel_adjust={ 60 }
-bonus_id={ 3571 }, ilevel_adjust={ 60 }
+bonus_id={ 3571 }, ilevel_adjust={ 90 }
 bonus_id={ 3572 }, base_ilevel={ 860 }
 bonus_id={ 3575 }, base_ilevel={ 855 }, desc={ Mythic }, quality={ epic }
 bonus_id={ 3576 }, base_ilevel={ 855 }, desc={ Heroic }, quality={ rare }
@@ -1792,9 +1792,9 @@ bonus_id={ 3586 }, ilevel_adjust={ 45 }
 bonus_id={ 3587 }, ilevel_adjust={ 6 }
 bonus_id={ 3588 }, ilevel_adjust={ 9 }
 bonus_id={ 3589 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 900 @plvl 110 }
-bonus_id={ 3590 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 10 @plvl 0 }
+bonus_id={ 3590 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 915 @plvl 110 }
 bonus_id={ 3591 }, ilevel={ 10 @plvl 0 - 800 @plvl 110 }
-bonus_id={ 3592 }, ilevel={ 10 @plvl 0 - 800 @plvl 110 }
+bonus_id={ 3592 }, ilevel={ 5 @plvl 0 - 800 @plvl 110 }
 bonus_id={ 3593 }, ilevel_adjust={ 5 }
 bonus_id={ 3594 }, ilevel_adjust={ 10 }
 bonus_id={ 3595 }, ilevel_adjust={ 15 }
@@ -1820,7 +1820,7 @@ bonus_id={ 3617 }, ilevel={ 569 @plvl 90 - 800 @plvl 110 }
 bonus_id={ 3618 }, suffix={ Shatug }, stats={ 60% Sta [0.9999], 40% Vers [0.6666] }
 bonus_id={ 3619 }, suffix={ F'harg }, stats={ 57% StrAgi [0.6666], 43% BonusArmor [0.5106] }
 bonus_id={ 3621 }, ilevel={ 10 @plvl 1 - 900 @plvl 110 }
-bonus_id={ 3622 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 10 @plvl 0 }
+bonus_id={ 3622 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 915 @plvl 110 }
 bonus_id={ 3623 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 880 @plvl 110 }
 bonus_id={ 3624 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 895 @plvl 110 }
 bonus_id={ 3625 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 930 @plvl 110 }
@@ -1828,6 +1828,356 @@ bonus_id={ 3626 }, desc={ Warforged }, ilevel={ 10 @plvl 1 - 945 @plvl 110 }
 bonus_id={ 3627 }, desc={ Timewarped }, ilevel={ 10 @plvl 1 - 880 @plvl 110 }
 bonus_id={ 3628 }, ilevel={ 10 @plvl 1 - 880 @plvl 110 }
 bonus_id={ 3630 }, ilevel_adjust={ 90 }
+bonus_id={ 3631 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3633 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3634 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3635 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3636 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3637 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3638 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3639 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3640 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3641 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3642 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3643 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3644 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3645 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3646 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3647 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3648 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3649 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3650 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3651 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3652 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3653 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3654 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3655 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3656 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3657 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3658 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3659 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3660 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3661 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3662 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3663 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3664 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3665 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3666 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3667 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3668 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3669 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3670 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3671 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3672 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3673 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3674 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3675 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3676 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3677 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3678 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3679 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3680 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3681 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3682 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3683 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3684 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3685 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3686 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3687 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3688 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3689 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3690 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3691 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3692 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3693 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3694 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3695 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3696 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3697 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3698 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3699 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3700 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3701 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3702 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3703 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3704 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3705 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3706 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3707 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3708 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3709 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3710 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3711 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3712 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3713 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3714 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3715 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3716 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3717 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3718 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3719 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3720 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3721 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3722 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3723 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3724 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3725 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3726 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3727 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3728 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3729 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3730 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3731 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3732 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3733 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3734 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3735 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3736 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3737 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3738 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3739 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3740 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3741 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3742 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3743 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3744 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3745 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3746 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3747 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3748 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3749 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3750 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3751 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3752 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3753 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3754 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3755 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3756 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3757 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3758 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3759 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3760 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3761 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3762 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3763 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3764 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3765 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3766 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3767 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3768 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3769 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3770 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3771 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3772 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3773 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3774 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3775 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3776 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3777 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3778 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3779 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3780 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3781 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3782 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3783 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3784 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3785 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3786 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3787 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3788 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3789 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3790 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3791 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3792 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 3793 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3794 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3795 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3796 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3797 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3798 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3799 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3800 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3801 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3802 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3803 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3804 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 3805 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 3806 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 3807 }, ilevel={ 1 @plvl 0 - 1 @plvl 120 }
+bonus_id={ 3808 }, ilevel={ 6 @plvl 0 - 6 @plvl 120 }
+bonus_id={ 3809 }, ilevel={ 11 @plvl 0 - 11 @plvl 120 }
+bonus_id={ 3810 }, ilevel={ 16 @plvl 0 - 16 @plvl 120 }
+bonus_id={ 3811 }, ilevel={ 21 @plvl 0 - 21 @plvl 120 }
+bonus_id={ 3812 }, ilevel={ 26 @plvl 0 - 26 @plvl 120 }
+bonus_id={ 3813 }, ilevel={ 31 @plvl 0 - 31 @plvl 120 }
+bonus_id={ 3814 }, ilevel={ 36 @plvl 0 - 36 @plvl 120 }
+bonus_id={ 3815 }, ilevel={ 41 @plvl 0 - 41 @plvl 120 }
+bonus_id={ 3816 }, ilevel={ 46 @plvl 0 - 46 @plvl 120 }
+bonus_id={ 3817 }, ilevel={ 51 @plvl 0 - 51 @plvl 120 }
+bonus_id={ 3818 }, ilevel={ 66 @plvl 0 - 66 @plvl 120 }
+bonus_id={ 3819 }, ilevel={ 72 @plvl 0 - 72 @plvl 120 }
+bonus_id={ 3820 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 3821 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 3823 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 3824 }, ilevel_adjust={ -1 }
+bonus_id={ 3825 }, ilevel_adjust={ 1 }
+bonus_id={ 3826 }, ilevel_adjust={ 2 }
+bonus_id={ 3827 }, ilevel_adjust={ 3 }
+bonus_id={ 3828 }, ilevel={ 10 @plvl 0 - 10 @plvl 120 }
+bonus_id={ 3829 }, ilevel={ 13 @plvl 0 - 13 @plvl 120 }
+bonus_id={ 3830 }, ilevel={ 16 @plvl 0 - 16 @plvl 120 }
+bonus_id={ 3831 }, ilevel={ 19 @plvl 0 - 19 @plvl 120 }
+bonus_id={ 3832 }, ilevel={ 24 @plvl 0 - 24 @plvl 120 }
+bonus_id={ 3833 }, ilevel={ 29 @plvl 0 - 29 @plvl 120 }
+bonus_id={ 3834 }, ilevel={ 34 @plvl 0 - 34 @plvl 120 }
+bonus_id={ 3835 }, ilevel={ 39 @plvl 0 - 39 @plvl 120 }
+bonus_id={ 3836 }, ilevel={ 44 @plvl 0 - 44 @plvl 120 }
+bonus_id={ 3837 }, ilevel={ 49 @plvl 0 - 49 @plvl 120 }
+bonus_id={ 3838 }, ilevel={ 54 @plvl 0 - 54 @plvl 120 }
+bonus_id={ 3839 }, ilevel={ 77 @plvl 0 - 77 @plvl 120 }
+bonus_id={ 3840 }, ilevel={ 96 @plvl 0 - 96 @plvl 120 }
+bonus_id={ 3841 }, ilevel={ 118 @plvl 0 - 118 @plvl 120 }
+bonus_id={ 3842 }, ilevel={ 132 @plvl 0 - 132 @plvl 120 }
+bonus_id={ 3843 }, ilevel={ 150 @plvl 0 - 199 @plvl 120 }
+bonus_id={ 3844 }, ilevel={ 180 @plvl 0 - 229 @plvl 120 }
+bonus_id={ 3845 }, ilevel={ 240 @plvl 0 - 240 @plvl 120 }
+bonus_id={ 3846 }, ilevel={ 294 @plvl 0 - 294 @plvl 120 }
+bonus_id={ 3847 }, ilevel={ 345 @plvl 0 - 345 @plvl 120 }
+bonus_id={ 3848 }, ilevel={ 392 @plvl 0 - 392 @plvl 120 }
+bonus_id={ 3849 }, ilevel={ 134 @plvl 0 - 134 @plvl 120 }
+bonus_id={ 3850 }, ilevel={ 154 @plvl 0 - 154 @plvl 120 }
+bonus_id={ 3851 }, ilevel={ 174 @plvl 0 - 174 @plvl 120 }
+bonus_id={ 3852 }, ilevel={ 358 @plvl 0 - 358 @plvl 120 }
+bonus_id={ 3853 }, ilevel={ 498 @plvl 0 - 498 @plvl 120 }
+bonus_id={ 3854 }, ilevel={ 557 @plvl 0 - 557 @plvl 120 }
+bonus_id={ 3855 }, ilevel={ 628 @plvl 0 - 628 @plvl 120 }
+bonus_id={ 3856 }, ilevel={ 768 @plvl 0 - 768 @plvl 120 }
+bonus_id={ 3857 }, ilevel={ 10 @plvl 0 - 10 @plvl 120 }
+bonus_id={ 3858 }, ilevel={ 14 @plvl 0 - 14 @plvl 120 }
+bonus_id={ 3859 }, ilevel={ 18 @plvl 0 - 18 @plvl 120 }
+bonus_id={ 3860 }, ilevel={ 23 @plvl 0 - 23 @plvl 120 }
+bonus_id={ 3861 }, ilevel={ 27 @plvl 0 - 27 @plvl 120 }
+bonus_id={ 3862 }, ilevel={ 32 @plvl 0 - 32 @plvl 120 }
+bonus_id={ 3863 }, ilevel={ 37 @plvl 0 - 37 @plvl 120 }
+bonus_id={ 3864 }, ilevel={ 42 @plvl 0 - 42 @plvl 120 }
+bonus_id={ 3865 }, ilevel={ 47 @plvl 0 - 47 @plvl 120 }
+bonus_id={ 3866 }, ilevel={ 52 @plvl 0 - 52 @plvl 120 }
+bonus_id={ 3867 }, ilevel={ 57 @plvl 0 - 57 @plvl 120 }
+bonus_id={ 3868 }, ilevel={ 81 @plvl 0 - 81 @plvl 120 }
+bonus_id={ 3869 }, ilevel={ 99 @plvl 0 - 99 @plvl 120 }
+bonus_id={ 3870 }, ilevel={ 138 @plvl 0 - 138 @plvl 120 }
+bonus_id={ 3871 }, ilevel={ 158 @plvl 0 - 158 @plvl 120 }
+bonus_id={ 3872 }, ilevel={ 178 @plvl 0 - 178 @plvl 120 }
+bonus_id={ 3873 }, ilevel={ 186 @plvl 0 - 186 @plvl 120 }
+bonus_id={ 3874 }, ilevel={ 510 @plvl 0 - 510 @plvl 120 }
+bonus_id={ 3875 }, ilevel={ 568 @plvl 0 - 568 @plvl 120 }
+bonus_id={ 3876 }, ilevel={ 612 @plvl 0 - 612 @plvl 120 }
+bonus_id={ 3877 }, ilevel={ 780 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 3878 }, ilevel={ 3 @plvl 0 - 3 @plvl 120 }
+bonus_id={ 3879 }, ilevel={ 8 @plvl 0 - 8 @plvl 120 }
+bonus_id={ 3880 }, ilevel={ 13 @plvl 0 - 13 @plvl 120 }
+bonus_id={ 3881 }, ilevel={ 18 @plvl 0 - 18 @plvl 120 }
+bonus_id={ 3882 }, ilevel={ 23 @plvl 0 - 23 @plvl 120 }
+bonus_id={ 3883 }, ilevel={ 28 @plvl 0 - 28 @plvl 120 }
+bonus_id={ 3884 }, ilevel={ 33 @plvl 0 - 33 @plvl 120 }
+bonus_id={ 3885 }, ilevel={ 38 @plvl 0 - 38 @plvl 120 }
+bonus_id={ 3886 }, ilevel={ 43 @plvl 0 - 43 @plvl 120 }
+bonus_id={ 3887 }, ilevel={ 48 @plvl 0 - 48 @plvl 120 }
+bonus_id={ 3888 }, ilevel={ 53 @plvl 0 - 53 @plvl 120 }
+bonus_id={ 3889 }, ilevel={ 69 @plvl 0 - 69 @plvl 120 }
+bonus_id={ 3890 }, ilevel={ 75 @plvl 0 - 75 @plvl 120 }
+bonus_id={ 3891 }, ilevel={ 125 @plvl 0 - 125 @plvl 120 }
+bonus_id={ 3892 }, ilevel={ 139 @plvl 0 - 139 @plvl 120 }
+bonus_id={ 3893 }, ilevel={ 175 @plvl 0 - 224 @plvl 120 }
+bonus_id={ 3894 }, ilevel={ 205 @plvl 0 - 254 @plvl 120 }
+bonus_id={ 3895 }, ilevel={ 270 @plvl 0 - 270 @plvl 120 }
+bonus_id={ 3896 }, ilevel={ 319 @plvl 0 - 319 @plvl 120 }
+bonus_id={ 3897 }, ilevel={ 345 @plvl 0 - 345 @plvl 120 }
+bonus_id={ 3898 }, ilevel={ 394 @plvl 0 - 394 @plvl 120 }
+bonus_id={ 3899 }, ilevel={ 13 @plvl 0 - 13 @plvl 120 }
+bonus_id={ 3900 }, ilevel={ 18 @plvl 0 - 18 @plvl 120 }
+bonus_id={ 3901 }, ilevel={ 28 @plvl 0 - 28 @plvl 120 }
+bonus_id={ 3902 }, ilevel={ 33 @plvl 0 - 33 @plvl 120 }
+bonus_id={ 3903 }, ilevel={ 38 @plvl 0 - 38 @plvl 120 }
+bonus_id={ 3904 }, ilevel={ 43 @plvl 0 - 43 @plvl 120 }
+bonus_id={ 3905 }, ilevel={ 53 @plvl 0 - 53 @plvl 120 }
+bonus_id={ 3906 }, ilevel={ 58 @plvl 0 - 58 @plvl 120 }
+bonus_id={ 3907 }, ilevel={ 63 @plvl 0 - 63 @plvl 120 }
+bonus_id={ 3908 }, ilevel={ 103 @plvl 0 - 103 @plvl 120 }
+bonus_id={ 3909 }, ilevel={ 122 @plvl 0 - 122 @plvl 120 }
+bonus_id={ 3910 }, ilevel={ 163 @plvl 0 - 163 @plvl 120 }
+bonus_id={ 3911 }, ilevel={ 184 @plvl 0 - 184 @plvl 120 }
+bonus_id={ 3912 }, ilevel={ 196 @plvl 0 - 196 @plvl 120 }
+bonus_id={ 3913 }, ilevel={ 401 @plvl 0 - 401 @plvl 120 }
+bonus_id={ 3914 }, ilevel={ 555 @plvl 0 - 555 @plvl 120 }
+bonus_id={ 3915 }, ilevel={ 606 @plvl 0 - 606 @plvl 120 }
+bonus_id={ 3916 }, ilevel={ 638 @plvl 0 - 638 @plvl 120 }
+bonus_id={ 3917 }, ilevel={ 785 @plvl 0 - 785 @plvl 120 }
+bonus_id={ 3918 }, ilevel={ 15 @plvl 0 - 15 @plvl 120 }
+bonus_id={ 3919 }, ilevel={ 20 @plvl 0 - 20 @plvl 120 }
+bonus_id={ 3920 }, ilevel={ 25 @plvl 0 - 25 @plvl 120 }
+bonus_id={ 3921 }, ilevel={ 30 @plvl 0 - 30 @plvl 120 }
+bonus_id={ 3922 }, ilevel={ 35 @plvl 0 - 35 @plvl 120 }
+bonus_id={ 3923 }, ilevel={ 40 @plvl 0 - 40 @plvl 120 }
+bonus_id={ 3924 }, ilevel={ 45 @plvl 0 - 45 @plvl 120 }
+bonus_id={ 3925 }, ilevel={ 50 @plvl 0 - 50 @plvl 120 }
+bonus_id={ 3926 }, ilevel={ 55 @plvl 0 - 55 @plvl 120 }
+bonus_id={ 3927 }, ilevel={ 60 @plvl 0 - 60 @plvl 120 }
+bonus_id={ 3928 }, ilevel={ 65 @plvl 0 - 65 @plvl 120 }
+bonus_id={ 3929 }, ilevel={ 106 @plvl 0 - 106 @plvl 120 }
+bonus_id={ 3930 }, ilevel={ 127 @plvl 0 - 127 @plvl 120 }
+bonus_id={ 3931 }, ilevel={ 167 @plvl 0 - 167 @plvl 120 }
+bonus_id={ 3932 }, ilevel={ 188 @plvl 0 - 188 @plvl 120 }
+bonus_id={ 3933 }, ilevel={ 196 @plvl 0 - 196 @plvl 120 }
+bonus_id={ 3934 }, ilevel={ 416 @plvl 0 - 416 @plvl 120 }
+bonus_id={ 3935 }, ilevel={ 567 @plvl 0 - 567 @plvl 120 }
+bonus_id={ 3936 }, ilevel={ 614 @plvl 0 - 614 @plvl 120 }
+bonus_id={ 3937 }, ilevel={ 638 @plvl 0 - 638 @plvl 120 }
+bonus_id={ 3938 }, ilevel={ 795 @plvl 0 - 795 @plvl 120 }
+bonus_id={ 3939 }, ilevel={ 20 @plvl 0 - 20 @plvl 120 }
+bonus_id={ 3940 }, ilevel={ 25 @plvl 0 - 25 @plvl 120 }
+bonus_id={ 3941 }, ilevel={ 23 @plvl 0 - 23 @plvl 120 }
+bonus_id={ 3942 }, ilevel={ 48 @plvl 0 - 48 @plvl 120 }
+bonus_id={ 3943 }, ilevel={ 30 @plvl 0 - 30 @plvl 120 }
+bonus_id={ 3944 }, ilevel={ 35 @plvl 0 - 35 @plvl 120 }
+bonus_id={ 3945 }, ilevel={ 40 @plvl 0 - 40 @plvl 120 }
+bonus_id={ 3946 }, ilevel={ 45 @plvl 0 - 45 @plvl 120 }
+bonus_id={ 3947 }, ilevel={ 50 @plvl 0 - 50 @plvl 120 }
+bonus_id={ 3948 }, ilevel={ 55 @plvl 0 - 55 @plvl 120 }
+bonus_id={ 3949 }, ilevel={ 60 @plvl 0 - 60 @plvl 120 }
+bonus_id={ 3950 }, ilevel={ 65 @plvl 0 - 65 @plvl 120 }
+bonus_id={ 3951 }, ilevel={ 70 @plvl 0 - 70 @plvl 120 }
+bonus_id={ 3952 }, ilevel={ 117 @plvl 0 - 117 @plvl 120 }
+bonus_id={ 3953 }, ilevel={ 142 @plvl 0 - 142 @plvl 120 }
+bonus_id={ 3954 }, ilevel={ 180 @plvl 0 - 180 @plvl 120 }
+bonus_id={ 3955 }, ilevel={ 202 @plvl 0 - 202 @plvl 120 }
+bonus_id={ 3956 }, ilevel={ 210 @plvl 0 - 210 @plvl 120 }
+bonus_id={ 3957 }, ilevel={ 425 @plvl 0 - 425 @plvl 120 }
+bonus_id={ 3958 }, ilevel={ 577 @plvl 0 - 577 @plvl 120 }
+bonus_id={ 3959 }, ilevel={ 624 @plvl 0 - 624 @plvl 120 }
+bonus_id={ 3960 }, ilevel={ 648 @plvl 0 - 648 @plvl 120 }
+bonus_id={ 3961 }, ilevel={ 810 @plvl 0 - 810 @plvl 120 }
+bonus_id={ 3962 }, ilevel={ 21 @plvl 0 - 21 @plvl 120 }
+bonus_id={ 3963 }, ilevel={ 26 @plvl 0 - 26 @plvl 120 }
+bonus_id={ 3964 }, ilevel={ 31 @plvl 0 - 31 @plvl 120 }
+bonus_id={ 3965 }, ilevel={ 36 @plvl 0 - 36 @plvl 120 }
+bonus_id={ 3966 }, ilevel={ 41 @plvl 0 - 41 @plvl 120 }
+bonus_id={ 3967 }, ilevel={ 46 @plvl 0 - 46 @plvl 120 }
+bonus_id={ 3968 }, ilevel={ 51 @plvl 0 - 51 @plvl 120 }
+bonus_id={ 3969 }, ilevel={ 56 @plvl 0 - 56 @plvl 120 }
+bonus_id={ 3970 }, ilevel={ 61 @plvl 0 - 61 @plvl 120 }
+bonus_id={ 3971 }, ilevel={ 66 @plvl 0 - 66 @plvl 120 }
+bonus_id={ 3972 }, ilevel={ 71 @plvl 0 - 71 @plvl 120 }
+bonus_id={ 3973 }, ilevel={ 121 @plvl 0 - 121 @plvl 120 }
+bonus_id={ 3974 }, ilevel={ 148 @plvl 0 - 148 @plvl 120 }
+bonus_id={ 3975 }, ilevel={ 184 @plvl 0 - 184 @plvl 120 }
+bonus_id={ 3976 }, ilevel={ 206 @plvl 0 - 206 @plvl 120 }
+bonus_id={ 3977 }, ilevel={ 210 @plvl 0 - 210 @plvl 120 }
+bonus_id={ 3978 }, ilevel={ 441 @plvl 0 - 441 @plvl 120 }
+bonus_id={ 3979 }, ilevel={ 588 @plvl 0 - 588 @plvl 120 }
+bonus_id={ 3980 }, ilevel={ 632 @plvl 0 - 632 @plvl 120 }
+bonus_id={ 3981 }, ilevel={ 648 @plvl 0 - 648 @plvl 120 }
+bonus_id={ 3982 }, ilevel={ 816 @plvl 0 - 816 @plvl 120 }
 bonus_id={ 3986 }, ilevel_adjust={ 5 }
 bonus_id={ 3987 }, ilevel_adjust={ 10 }
 bonus_id={ 3988 }, ilevel_adjust={ 15 }
@@ -1840,4 +2190,376 @@ bonus_id={ 3994 }, ilevel_adjust={ 45 }
 bonus_id={ 3995 }, ilevel_adjust={ 50 }
 bonus_id={ 3996 }, ilevel_adjust={ 55 }
 bonus_id={ 3997 }, ilevel_adjust={ 60 }
-bonus_id={ 4213 }, ilevel_adjust={ 60 }
+bonus_id={ 3998 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 3999 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4000 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4001 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4002 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4003 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4004 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4005 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4006 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4007 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4008 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4009 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4010 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4011 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4012 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4013 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4014 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4015 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4016 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4017 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4018 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4019 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4020 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4021 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4022 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4023 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4024 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4025 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4026 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4027 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4028 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4029 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4030 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4031 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4032 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4033 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4034 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4035 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4036 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4037 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4038 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4039 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4040 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4041 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4042 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4043 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4044 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4045 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4046 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4047 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4048 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4049 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4050 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4051 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4052 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4053 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4054 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4055 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4056 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4057 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4058 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4059 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4060 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4061 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4062 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4063 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4064 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4065 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4066 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4067 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4068 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4069 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4070 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4071 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4072 }, ilevel={ 1 @plvl 0 - 780 @plvl 120 }
+bonus_id={ 4074 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4075 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4076 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4077 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4079 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4080 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4082 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4083 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4085 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4086 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4088 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4089 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4090 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4091 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4092 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4093 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4094 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4095 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4096 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4097 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4098 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4099 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4100 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4101 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4102 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4103 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4104 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4105 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4106 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4107 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4108 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4109 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4110 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4111 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4112 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4113 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4114 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4115 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4116 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4117 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4118 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4119 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4120 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4121 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4122 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4123 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4124 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4125 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4126 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4127 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4128 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4129 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4130 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4131 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4132 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4133 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4134 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4135 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4136 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4137 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4138 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4139 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4140 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4141 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4142 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4143 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4144 }, ilevel={ 378 @plvl 0 - 378 @plvl 120 }
+bonus_id={ 4145 }, ilevel={ 378 @plvl 0 - 378 @plvl 120 }
+bonus_id={ 4146 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4147 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4148 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4149 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4150 }, ilevel={ 378 @plvl 0 - 378 @plvl 120 }
+bonus_id={ 4151 }, ilevel={ 378 @plvl 0 - 378 @plvl 120 }
+bonus_id={ 4152 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4153 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4154 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4155 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4156 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4157 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4158 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4159 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4160 }, ilevel={ 378 @plvl 0 - 378 @plvl 120 }
+bonus_id={ 4161 }, ilevel={ 378 @plvl 0 - 378 @plvl 120 }
+bonus_id={ 4162 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4163 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4164 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4165 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4166 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4167 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4168 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4169 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4170 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4171 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4172 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4173 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4174 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4175 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4176 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4177 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4178 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4179 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4180 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4181 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4182 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4183 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4184 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4185 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4186 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4187 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4188 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4189 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4190 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4191 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4192 }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4193 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4194 }, desc={ Heroic }, quality={ epic }, ilevel={ 110 @plvl 0 - 110 @plvl 120 }
+bonus_id={ 4195 }, ilevel={ 115 @plvl 0 - 115 @plvl 120 }
+bonus_id={ 4196 }, desc={ Heroic }, quality={ epic }, ilevel={ 200 @plvl 0 - 200 @plvl 120 }
+bonus_id={ 4197 }, ilevel={ 200 @plvl 0 - 200 @plvl 120 }
+bonus_id={ 4198 }, desc={ Heroic }, ilevel={ 346 @plvl 0 - 346 @plvl 120 }
+bonus_id={ 4199 }, ilevel={ 346 @plvl 0 - 346 @plvl 120 }
+bonus_id={ 4200 }, ilevel={ 463 @plvl 0 - 463 @plvl 120 }
+bonus_id={ 4201 }, ilevel={ 476 @plvl 0 - 476 @plvl 120 }
+bonus_id={ 4202 }, desc={ Heroic }, ilevel={ 630 @plvl 0 - 630 @plvl 120 }
+bonus_id={ 4204 }, desc={ Mythic }, quality={ epic }, ilevel={ 685 @plvl 0 - 685 @plvl 120 }
+bonus_id={ 4205 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4206 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4207 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4208 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4209 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4210 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4211 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4212 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4213 }, ilevel_adjust={ 90 }
+bonus_id={ 4214 }, ilevel={ 986 @plvl 0 - 986 @plvl 120 }
+bonus_id={ 4215 }, ilevel={ 1047 @plvl 0 - 1047 @plvl 120 }
+bonus_id={ 4216 }, ilevel={ 998 @plvl 0 - 998 @plvl 120 }
+bonus_id={ 4217 }, ilevel={ 1059 @plvl 0 - 1059 @plvl 120 }
+bonus_id={ 4218 }, ilevel={ 441 @plvl 0 - 441 @plvl 120 }
+bonus_id={ 4219 }, ilevel={ 490 @plvl 0 - 490 @plvl 120 }
+bonus_id={ 4220 }, ilevel={ 443 @plvl 0 - 443 @plvl 120 }
+bonus_id={ 4221 }, ilevel={ 492 @plvl 0 - 492 @plvl 120 }
+bonus_id={ 4222 }, ilevel={ 974 @plvl 0 - 974 @plvl 120 }
+bonus_id={ 4223 }, ilevel={ 1035 @plvl 0 - 1035 @plvl 120 }
+bonus_id={ 4224 }, ilevel={ 986 @plvl 0 - 986 @plvl 120 }
+bonus_id={ 4225 }, ilevel={ 1047 @plvl 0 - 1047 @plvl 120 }
+bonus_id={ 4226 }, ilevel={ 962 @plvl 0 - 962 @plvl 120 }
+bonus_id={ 4227 }, ilevel={ 1023 @plvl 0 - 1023 @plvl 120 }
+bonus_id={ 4228 }, ilevel={ 974 @plvl 0 - 974 @plvl 120 }
+bonus_id={ 4229 }, ilevel={ 1035 @plvl 0 - 1035 @plvl 120 }
+bonus_id={ 4230 }, suffix={ of Power }, quality={ epic }
+bonus_id={ 4231 }, suffix={ of the Stormbreaker }, socket={ 1 }
+bonus_id={ 4232 }, suffix={ of the Aurora }, ilevel_adjust={ 15 }
+bonus_id={ 4233 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4234 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4235 }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 4236 }, desc={ Heroic }, ilevel={ 353 @plvl 0 - 353 @plvl 120 }
+bonus_id={ 4237 }, desc={ Heroic }, ilevel={ 378 @plvl 0 - 378 @plvl 120 }
+bonus_id={ 4238 }, quality={ rare }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4239 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4240 }, ilevel={ 476 @plvl 0 - 476 @plvl 120 }
+bonus_id={ 4241 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4242 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4243 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4244 }, ilevel={ 7 @plvl 0 - 840 @plvl 120 }
+bonus_id={ 4246 }, ilevel={ 75 @plvl 0 - 75 @plvl 120 }
+bonus_id={ 4247 }, ilevel={ 70 @plvl 0 - 70 @plvl 120 }
+bonus_id={ 4248 }, ilevel={ 65 @plvl 0 - 65 @plvl 120 }
+bonus_id={ 4249 }, ilevel={ 142 @plvl 0 - 142 @plvl 120 }
+bonus_id={ 4250 }, ilevel={ 180 @plvl 0 - 180 @plvl 120 }
+bonus_id={ 4251 }, ilevel={ 202 @plvl 0 - 202 @plvl 120 }
+bonus_id={ 4252 }, ilevel={ 314 @plvl 0 - 314 @plvl 120 }
+bonus_id={ 4253 }, ilevel={ 425 @plvl 0 - 425 @plvl 120 }
+bonus_id={ 4254 }, ilevel={ 496 @plvl 0 - 496 @plvl 120 }
+bonus_id={ 4255 }, ilevel={ 624 @plvl 0 - 624 @plvl 120 }
+bonus_id={ 4256 }, ilevel={ 425 @plvl 0 - 425 @plvl 120 }
+bonus_id={ 4257 }, ilevel={ 457 @plvl 0 - 457 @plvl 120 }
+bonus_id={ 4258 }, ilevel={ 66 @plvl 0 - 66 @plvl 120 }
+bonus_id={ 4259 }, ilevel={ 71 @plvl 0 - 71 @plvl 120 }
+bonus_id={ 4260 }, ilevel={ 76 @plvl 0 - 76 @plvl 120 }
+bonus_id={ 4261 }, ilevel={ 148 @plvl 0 - 148 @plvl 120 }
+bonus_id={ 4262 }, ilevel={ 184 @plvl 0 - 184 @plvl 120 }
+bonus_id={ 4263 }, ilevel={ 206 @plvl 0 - 206 @plvl 120 }
+bonus_id={ 4264 }, ilevel={ 327 @plvl 0 - 327 @plvl 120 }
+bonus_id={ 4265 }, ilevel={ 441 @plvl 0 - 441 @plvl 120 }
+bonus_id={ 4266 }, ilevel={ 499 @plvl 0 - 499 @plvl 120 }
+bonus_id={ 4267 }, ilevel={ 632 @plvl 0 - 632 @plvl 120 }
+bonus_id={ 4268 }, ilevel={ 58 @plvl 0 - 58 @plvl 120 }
+bonus_id={ 4269 }, ilevel={ 63 @plvl 0 - 63 @plvl 120 }
+bonus_id={ 4270 }, ilevel={ 68 @plvl 0 - 68 @plvl 120 }
+bonus_id={ 4271 }, ilevel={ 122 @plvl 0 - 122 @plvl 120 }
+bonus_id={ 4272 }, ilevel={ 60 @plvl 0 - 60 @plvl 120 }
+bonus_id={ 4273 }, ilevel={ 65 @plvl 0 - 65 @plvl 120 }
+bonus_id={ 4274 }, ilevel={ 70 @plvl 0 - 70 @plvl 120 }
+bonus_id={ 4275 }, ilevel={ 127 @plvl 0 - 127 @plvl 120 }
+bonus_id={ 4276 }, ilevel={ 49 @plvl 0 - 49 @plvl 120 }
+bonus_id={ 4277 }, ilevel={ 54 @plvl 0 - 54 @plvl 120 }
+bonus_id={ 4278 }, ilevel={ 59 @plvl 0 - 59 @plvl 120 }
+bonus_id={ 4279 }, ilevel={ 64 @plvl 0 - 64 @plvl 120 }
+bonus_id={ 4280 }, ilevel={ 52 @plvl 0 - 52 @plvl 120 }
+bonus_id={ 4281 }, ilevel={ 57 @plvl 0 - 57 @plvl 120 }
+bonus_id={ 4282 }, ilevel={ 62 @plvl 0 - 62 @plvl 120 }
+bonus_id={ 4283 }, ilevel={ 67 @plvl 0 - 67 @plvl 120 }
+bonus_id={ 4284 }, ilevel={ 401 @plvl 0 - 401 @plvl 120 }
+bonus_id={ 4285 }, ilevel={ 431 @plvl 0 - 431 @plvl 120 }
+bonus_id={ 4286 }, ilevel={ 416 @plvl 0 - 416 @plvl 120 }
+bonus_id={ 4287 }, ilevel={ 447 @plvl 0 - 447 @plvl 120 }
+bonus_id={ 4288 }, ilevel={ 358 @plvl 0 - 358 @plvl 120 }
+bonus_id={ 4289 }, ilevel={ 390 @plvl 0 - 390 @plvl 120 }
+bonus_id={ 4290 }, ilevel={ 374 @plvl 0 - 374 @plvl 120 }
+bonus_id={ 4291 }, ilevel={ 406 @plvl 0 - 406 @plvl 120 }
+bonus_id={ 4292 }, ilevel={ 163 @plvl 0 - 163 @plvl 120 }
+bonus_id={ 4293 }, ilevel={ 184 @plvl 0 - 184 @plvl 120 }
+bonus_id={ 4294 }, ilevel={ 291 @plvl 0 - 291 @plvl 120 }
+bonus_id={ 4295 }, ilevel={ 401 @plvl 0 - 401 @plvl 120 }
+bonus_id={ 4296 }, ilevel={ 479 @plvl 0 - 479 @plvl 120 }
+bonus_id={ 4297 }, ilevel={ 606 @plvl 0 - 606 @plvl 120 }
+bonus_id={ 4298 }, ilevel={ 167 @plvl 0 - 167 @plvl 120 }
+bonus_id={ 4299 }, ilevel={ 188 @plvl 0 - 188 @plvl 120 }
+bonus_id={ 4300 }, ilevel={ 304 @plvl 0 - 304 @plvl 120 }
+bonus_id={ 4301 }, ilevel={ 416 @plvl 0 - 416 @plvl 120 }
+bonus_id={ 4302 }, ilevel={ 486 @plvl 0 - 486 @plvl 120 }
+bonus_id={ 4303 }, ilevel={ 614 @plvl 0 - 614 @plvl 120 }
+bonus_id={ 4304 }, ilevel={ 134 @plvl 0 - 134 @plvl 120 }
+bonus_id={ 4305 }, ilevel={ 358 @plvl 0 - 358 @plvl 120 }
+bonus_id={ 4306 }, ilevel={ 257 @plvl 0 - 257 @plvl 120 }
+bonus_id={ 4307 }, ilevel={ 437 @plvl 0 - 437 @plvl 120 }
+bonus_id={ 4308 }, ilevel={ 557 @plvl 0 - 557 @plvl 120 }
+bonus_id={ 4309 }, ilevel={ 154 @plvl 0 - 154 @plvl 120 }
+bonus_id={ 4310 }, ilevel={ 138 @plvl 0 - 138 @plvl 120 }
+bonus_id={ 4311 }, ilevel={ 158 @plvl 0 - 158 @plvl 120 }
+bonus_id={ 4312 }, ilevel={ 269 @plvl 0 - 269 @plvl 120 }
+bonus_id={ 4313 }, ilevel={ 374 @plvl 0 - 374 @plvl 120 }
+bonus_id={ 4314 }, ilevel={ 453 @plvl 0 - 453 @plvl 120 }
+bonus_id={ 4315 }, ilevel={ 568 @plvl 0 - 568 @plvl 120 }
+bonus_id={ 4316 }, ilevel={ 473 @plvl 0 - 473 @plvl 120 }
+bonus_id={ 4317 }, ilevel={ 441 @plvl 0 - 441 @plvl 120 }
+bonus_id={ 4318 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4319 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4320 }, quality={ rare }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 4321 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4322 }, quality={ rare }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 4323 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4324 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4325 }, quality={ rare }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 4326 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4327 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4328 }, quality={ rare }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 4329 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4330 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4331 }, quality={ rare }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 4332 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4333 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4334 }, quality={ rare }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 4335 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4336 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4337 }, quality={ rare }, ilevel={ 7 @plvl 0 - 790 @plvl 120 }
+bonus_id={ 4338 }, quality={ epic }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4493 }, ilevel={ 186 @plvl 0 - 186 @plvl 120 }
+bonus_id={ 4503 }, ilevel={ 604 @plvl 0 - 604 @plvl 120 }
+bonus_id={ 4738 }, quality={ epic }, ilevel={ 105 @plvl 0 - 105 @plvl 120 }
+bonus_id={ 4739 }, desc={ Heroic }, quality={ epic }, ilevel={ 115 @plvl 0 - 115 @plvl 120 }
+bonus_id={ 4740 }, desc={ Heroic }, quality={ epic }, ilevel={ 125 @plvl 0 - 125 @plvl 120 }
+bonus_id={ 4741 }, desc={ Warforged }, quality={ epic }, ilevel={ 476 @plvl 0 - 476 @plvl 120 }
+bonus_id={ 4742 }, desc={ Warforged }, quality={ epic }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4743 }, desc={ Warforged }, quality={ epic }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4744 }, desc={ Warforged }, quality={ epic }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4745 }, desc={ Warforged }, quality={ epic }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4746 }, desc={ Warforged }, quality={ epic }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4747 }, desc={ Warforged }, quality={ epic }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4748 }, desc={ Warforged }, quality={ epic }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4749 }, desc={ Warforged }, quality={ epic }, ilevel={ 13 @plvl 0 - 850 @plvl 120 }
+bonus_id={ 4750 }, desc={ Heroic Warforged }, quality={ epic }, ilevel={ 636 @plvl 0 - 636 @plvl 120 }
+bonus_id={ 4751 }, desc={ Mythic Warforged }, quality={ epic }, ilevel={ 695 @plvl 0 - 695 @plvl 120 }
+bonus_id={ 4752 }, desc={ Heroic }, quality={ epic }, ilevel={ 232 @plvl 0 - 232 @plvl 120 }
+bonus_id={ 4753 }, desc={ Heroic }, quality={ epic }, ilevel={ 219 @plvl 0 - 219 @plvl 120 }
+bonus_id={ 4754 }, ilevel={ 13 @plvl 0 - 800 @plvl 120 }
+bonus_id={ 4755 }, ilevel={ 340 @plvl 0 - 340 @plvl 120 }
+bonus_id={ 4756 }, ilevel={ 457 @plvl 0 - 457 @plvl 120 }
+bonus_id={ 4757 }, ilevel={ 350 @plvl 0 - 350 @plvl 120 }
+bonus_id={ 4758 }, ilevel={ 473 @plvl 0 - 473 @plvl 120 }
+bonus_id={ 4759 }, ilevel={ 316 @plvl 0 - 316 @plvl 120 }
+bonus_id={ 4760 }, ilevel={ 431 @plvl 0 - 431 @plvl 120 }
+bonus_id={ 4761 }, ilevel={ 328 @plvl 0 - 328 @plvl 120 }
+bonus_id={ 4762 }, ilevel={ 447 @plvl 0 - 447 @plvl 120 }
+bonus_id={ 4763 }, ilevel={ 281 @plvl 0 - 281 @plvl 120 }
+bonus_id={ 4764 }, ilevel={ 390 @plvl 0 - 390 @plvl 120 }
+bonus_id={ 4765 }, ilevel={ 469 @plvl 0 - 469 @plvl 120 }
+bonus_id={ 4766 }, ilevel={ 294 @plvl 0 - 294 @plvl 120 }
+bonus_id={ 4767 }, ilevel={ 406 @plvl 0 - 406 @plvl 120 }
+bonus_id={ 4768 }, ilevel={ 7 @plvl 0 - 7 @plvl 120 }
+bonus_id={ 4769 }, ilevel={ 11 @plvl 0 - 11 @plvl 120 }
+bonus_id={ 4770 }, ilevel={ 15 @plvl 0 - 15 @plvl 120 }
+bonus_id={ 4771 }, ilevel={ 7 @plvl 0 - 7 @plvl 120 }
+bonus_id={ 4772 }, ilevel={ 12 @plvl 0 - 12 @plvl 120 }
+bonus_id={ 4773 }, ilevel={ 16 @plvl 0 - 16 @plvl 120 }
+bonus_id={ 4774 }, ilevel={ 22 @plvl 0 - 22 @plvl 120 }

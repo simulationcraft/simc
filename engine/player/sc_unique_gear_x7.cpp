@@ -112,11 +112,17 @@ namespace item
   void specter_of_betrayal( special_effect_t&          );
   void cradle_of_anguish( special_effect_t&            );
 
+  // TODO
+  // Feverish Carapace damage reflect mechanic
+  // Shifting Cosmic Sliver
+  // Purely defensive stuff
+
   // 7.3.2 Raid
   void amanthuls_vision( special_effect_t&             );
   void golganneths_vitality( special_effect_t&         );
   void khazgoroths_courage( special_effect_t&          );
   void norgannons_prowess( special_effect_t&           );
+  void aggramars_conviction( special_effect_t&         );
   void prototype_personnel_decimator( special_effect_t& );
   void acrid_catalyst_injector( special_effect_t&      );
   void vitality_resonator( special_effect_t&           );
@@ -126,7 +132,14 @@ namespace item
   void gorshalach_legacy( special_effect_t&            );
   void forgefiends_fabricator( special_effect_t&       );
   void forgefiends_fabricator_detonate(special_effect_t&);
+  void diimas_glacial_aegis( special_effect_t&         );
+  void smoldering_titanguard( special_effect_t&        );
+  void riftworld_codex( special_effect_t&              );
 
+  // TODO
+  // Eye of f'harg / shatug interaction
+  // Purely defensive stuff
+  
   // 7.2.0 Dungeon
   void dreadstone_of_endless_shadows( special_effect_t& );
 
@@ -140,9 +153,9 @@ namespace item
 
   // Legendary
   void aggramars_stride( special_effect_t& );
+  void archimondes_hatred_reborn( special_effect_t& );
   void kiljadens_burning_wish( special_effect_t& );
   void norgannons_foresight( special_effect_t& );
-
 
 
 
@@ -1565,7 +1578,7 @@ void item::amanthuls_vision( special_effect_t& effect )
   auto empower_spell = effect.player -> find_spell( 256832 );
   auto empower_amount = empower_spell -> effectN( 1 ).average( effect.item );
   stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "amanthuls_grandeur", empower_spell, effect.item )
-    .add_stat( effect.player -> primary_stat(), empower_amount );
+    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), empower_amount );
 
   effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger();
@@ -1693,7 +1706,9 @@ struct ravaging_storm_t : public proc_spell_t
 {
   ravaging_storm_t( const special_effect_t& effect ) :
     proc_spell_t( "ravaging_storm", effect.player, effect.player -> find_spell( 257286 ), effect.item )
-  { }
+  {
+    split_aoe_damage = true;
+  }
 };
 
 // TODO: Can one have multiple Ravaging Storms active at the same time?
@@ -1712,9 +1727,11 @@ struct golganneths_vitality_proc_t : public pantheon_proc_callback_t
 protected:
   void execute( action_t* a, action_state_t* state ) override
   {
-    pantheon_proc_callback_t::execute( a, state );
-
+    // Note, buff needs to be up before pantheon_proc_callback_t::execute is called, as the buff's
+    // state will be used to determine empowerment state
     mark -> trigger();
+
+    pantheon_proc_callback_t::execute( a, state );
 
     make_event<ground_aoe_event_t>( *effect.player -> sim, effect.player, ground_aoe_params_t()
         .target( state -> target )
@@ -1814,6 +1831,8 @@ struct norgannons_command_t : public dbc_proc_callback_t
 
 void item::norgannons_prowess( special_effect_t& effect )
 {
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
+
   // Pre-create the base trinket buff; we will use it as the "mark" buff for the pantheon state
   // system
   effect.custom_buff = effect.create_buff();
@@ -1825,6 +1844,7 @@ void item::norgannons_prowess( special_effect_t& effect )
   secondary -> source = SPECIAL_EFFECT_SOURCE_ITEM;
   secondary -> type = SPECIAL_EFFECT_EQUIP;
   secondary -> spell_id = 256836;
+  secondary -> proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
   secondary -> proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
 
   effect.player -> special_effects.push_back( secondary );
@@ -1846,6 +1866,29 @@ void item::norgannons_prowess( special_effect_t& effect )
   } );
 
   secondary_cb -> buff = empower_buff;
+}
+
+// Aggramar's Conviction
+
+void item::aggramars_conviction( special_effect_t& effect )
+{
+  // Create the buff beforehand so we can register it as a pantheon marker buff to the pantheon
+  // state system
+  effect.custom_buff = effect.create_buff();
+
+  new pantheon_proc_callback_t( effect, effect.custom_buff );
+
+  // Empower effect
+  auto empower_spell = effect.player -> find_spell( 256831 );
+  auto empower_amount = empower_spell -> effectN( 1 ).average( effect.item );
+  // TODO : check if the max health increase is affected by % health mods or added after.
+  // Currently assumes that the health increase is affected by % health increase effects
+  stat_buff_t* empower_buff = stat_buff_creator_t( effect.player, "aggramars_fortitude", empower_spell, effect.item )
+    .add_stat( STAT_MAX_HEALTH, empower_amount );
+
+  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
+    empower_buff -> trigger();
+  } );
 }
 
 // Prototype Personnel Decimator ===========================================
@@ -1898,7 +1941,7 @@ struct personnel_decimator_driver_t : public dbc_proc_callback_t
 
 void item::prototype_personnel_decimator( special_effect_t& effect )
 {
-  effect.proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
   effect.execute_action = create_proc_action<personnel_decimator_t>( "personnel_decimator", effect );
 
   new personnel_decimator_driver_t( effect );
@@ -1931,7 +1974,7 @@ struct injector_proc_cb_t : public dbc_proc_callback_t
 
 void item::acrid_catalyst_injector( special_effect_t& effect )
 {
-  effect.proc_flags_ = PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
   effect.proc_flags2_ = PF2_CRIT;
 
   auto p = effect.player;
@@ -2163,7 +2206,7 @@ struct shadow_blades_buff_t : public buff_t
 
 void item::sheath_of_asara( special_effect_t& effect )
 {
-  effect.proc_flags_ = PF_RANGED | PF_RANGED_ABILITY | PF_SPELL | PF_AOE_SPELL | PF_PERIODIC;
+  effect.proc_flags_ = effect.driver() -> proc_flags() | PF_AOE_SPELL;
   effect.custom_buff = new shadow_blades_buff_t( effect );
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -2421,6 +2464,164 @@ void item::forgefiends_fabricator_detonate( special_effect_t& effect )
   effect.execute_action = new fire_mines_detonator_t( effect );
 }
 
+// Diima's Glacial Aegis
+
+struct chilling_nova_t : public proc_spell_t
+{
+  chilling_nova_t( special_effect_t& effect ) :
+    proc_spell_t( "chilling_nova", effect.player, effect.driver(), effect.item )
+  { }
+};
+
+void item::diimas_glacial_aegis( special_effect_t& effect )
+{
+  effect.execute_action = new chilling_nova_t( effect );
+}
+
+// Smoldering Titanguard
+
+
+struct wave_of_flame_t : public proc_spell_t
+{
+  wave_of_flame_t( special_effect_t& effect ) :
+    proc_spell_t( "wave_of_flame", effect.player, effect.player -> find_spell( 251948 ), effect.item )
+  {
+    aoe = -1;
+  }
+};
+
+struct bulwark_of_flame_t : public absorb_buff_t
+{
+  action_t* explosion;
+
+  bulwark_of_flame_t( special_effect_t& effect ) :
+    absorb_buff_t( absorb_buff_creator_t( effect.player, "bulwark_of_flame", effect.driver(), effect.item ) ),
+    explosion( new wave_of_flame_t( effect ) )
+  { }
+
+  void expire_override( int stacks, timespan_t remaining ) override
+  {
+    absorb_buff_t::expire_override( stacks, remaining );
+
+    explosion -> schedule_execute();
+
+    // Ensure there is no double-player-ready event created if the player is channeling something
+    // while this ability is being used. This is technically a bug, but for now the workaround is to
+    // not crash the sim.
+    if ( player -> channeling )
+    {
+      return;
+    }
+
+    // Due to the client not allowing the ability queue here, we have to wait
+    // the amount of lag + how often the key is spammed until the next ability is used.
+    // Modeling this as 2 * lag for now. Might increase to 3 * lag after looking at logs of people using the trinket
+    // (same as Draught of Souls)
+    timespan_t time = ( player -> world_lag_override ? player -> world_lag : sim -> world_lag ) * 2.0;
+    if ( ! player -> readying )
+    {
+      player -> schedule_ready( time );
+    }
+    else if ( player -> readying -> remains() < time )
+    {
+      player -> readying -> reschedule( time );
+    }
+  }
+};
+
+struct smoldering_titanguard_driver_t : public proc_spell_t
+{
+  const absorb_buff_t* bulwark_of_flame;
+
+  smoldering_titanguard_driver_t( special_effect_t& effect ) :
+    proc_spell_t( "bulwark_of_flame", effect.player, effect.driver(), effect.item ),
+    bulwark_of_flame( new bulwark_of_flame_t( effect ) )
+  {
+    channeled = true;
+    interrupt_auto_attack = false;
+    cooldown -> duration = timespan_t::zero();
+  }
+
+  double composite_haste() const override
+  { return 1.0; } // Not hasted.
+
+  void execute() override
+  {
+    // Use_item_t (that executes this action) will trigger a player-ready event after execution.
+    // Since this action is a "background channel", we'll need to cancel the player ready event to
+    // prevent the player from picking something to do while channeling.
+    event_t::cancel( player -> readying );
+
+    // The player readiness is reactivated when the absorb buff expires, which is after 3s or when the shield is consumed
+  }
+};
+
+void item::smoldering_titanguard( special_effect_t& effect )
+{
+  effect.execute_action = new smoldering_titanguard_driver_t( effect );
+}
+
+// Riftworld Codex
+
+struct flames_of_ruvaraad_damage_t : public proc_spell_t
+{
+  flames_of_ruvaraad_damage_t( const special_effect_t& effect ) :
+    proc_spell_t( "flames_of_ruvaraad", effect.player, effect.player -> find_spell( 252550 ), effect.item )
+  {}
+};
+
+struct riftworld_codex_callback_t : public dbc_proc_callback_t
+{
+  std::vector<buff_t*> buffs;
+
+  riftworld_codex_callback_t( const special_effect_t& effect, std::vector<buff_t*> b ) :
+    dbc_proc_callback_t( effect.item, effect ), buffs( b )
+  {}
+
+  void execute( action_t* /* a */, action_state_t* /* call_data */ ) override
+  {
+    // Codex prefers to proc inactive buffs over active ones.
+    // Make a vector with only the inactive buffs.
+    std::vector<buff_t*> inactive_buffs;
+
+    for ( unsigned i = 0; i < buffs.size(); i++ )
+    {
+      if ( ! buffs[ i ] -> check() )
+      {
+        inactive_buffs.push_back( buffs[ i ] );
+      }
+    }
+
+    // If the vector is empty, we can roll any of the buffs.
+    if ( inactive_buffs.empty() )
+    {
+      inactive_buffs = buffs;
+    }
+
+    // Roll it!
+    int roll = ( int ) ( listener -> sim -> rng().real() * inactive_buffs.size() );
+    inactive_buffs[ roll ] -> trigger();
+  }
+};
+
+
+void item::riftworld_codex( special_effect_t& effect )
+{
+  std::vector<buff_t*> buffs;
+
+  action_t* damage = new flames_of_ruvaraad_damage_t( effect );
+
+  buffs = {
+    absorb_buff_creator_t( effect.player, "light_of_absolarn", effect.player -> find_spell( 252545 ), effect.item ),
+    buff_creator_t( effect.player, "winds_of_kareth", effect.player -> find_spell( 251938 ), effect.item ),
+    buff_creator_t( effect.player, "flames_of_ruvaraad", effect.player -> find_spell( 256415 ), effect.item )
+      .tick_callback( [ damage ] ( buff_t*, int, const timespan_t& ) {
+        damage -> schedule_execute();
+      } )
+  };
+
+  new riftworld_codex_callback_t( effect, buffs );
+};
 
 // Toe Knee's Promise ======================================================
 
@@ -2501,38 +2702,36 @@ struct majordomos_dinner_bell_t : proc_spell_t
 
   void execute() override
   {
-    // The way this works, despite the tooltip, is that the buff matches your current food buff
-    // If you don't have a food buff, it is random
+    // The way this works, despite the tooltip, is that the buff matches your current food buff on tank specs ONLY
+    
+    int selected_buff = -1;
 
-    // 5/18/2017 - Reports are that this was hotfixed on PTR to always be random
-
-    // CHECK IF STILL TRUE - 6/9/2017
-    /*
-    if( player->consumables.food && !maybe_ptr(player->dbc.ptr) )
+    if ( player -> consumables.food && player -> role == ROLE_TANK )
     {
-      const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>(player->consumables.food);
-      if (food_buff && food_buff->stats.size() > 0)
+      const stat_buff_t* food_buff = dynamic_cast<stat_buff_t*>( player -> consumables.food );
+      if ( food_buff && food_buff -> stats.size() > 0 )
       {
-        const stat_e food_stat = food_buff->stats.front().stat;
-        const auto it = range::find_if(buffs, [food_stat](const stat_buff_t* buff) {
-          if (buff->stats.size() > 0)
-            return buff->stats.front().stat == food_stat;
+        const stat_e food_stat = food_buff -> stats.front().stat;
+        // Check if the food buff matches one of the trinket's stat buffs
+        const auto index_buffs = range::find_if(buffs, [food_stat](const stat_buff_t* buff) {
+          if ( buff -> stats.size() > 0 )
+            return buff -> stats.front().stat == food_stat;
           else
             return false;
         });
 
-        if (it != buffs.end())
+        if ( index_buffs != buffs.end())
         {
-          (*it)->trigger();
+          ( *index_buffs ) -> trigger();
           return;
         }
       }
     }
-    */
+    
+    // If you don't have a secondary stat food buff, or aren't on a tank specialization the buff will be random
+    selected_buff = (int) ( player -> sim -> rng().real() * buffs.size() );
 
-    // We didn't find a matching food buff, so pick randomly
-    const int selected_buff = (int)(player->sim->rng().real() * buffs.size());
-    buffs[selected_buff]->trigger();
+    buffs[selected_buff] -> trigger();
   }
 };
 
@@ -4541,7 +4740,7 @@ void item::elementium_bomb_squirrel( special_effect_t& effect )
 struct kiljaedens_burning_wish_t : public proc_spell_t
 {
   kiljaedens_burning_wish_t( const special_effect_t& effect ) :
-    proc_spell_t( "kiljaedens_burning_wish", effect.player, effect.player -> find_spell( 235999 ) )
+    proc_spell_t( "kiljaedens_burning_wish", effect.player, dbc::find_spell( effect.player, 235999 ) )
   {
     background = may_crit = true;
     aoe = -1;
@@ -4568,12 +4767,71 @@ struct kiljaedens_burning_wish_t : public proc_spell_t
   virtual double composite_crit_chance() const override
   { return 1.0; }
 
+  virtual bool verify_actor_level() const override
+  { return true; }
 };
 
 void item::kiljadens_burning_wish( special_effect_t& effect )
 {
   effect.execute_action = new kiljaedens_burning_wish_t( effect );
 }
+
+// Archimonde's Hatred Reborn
+
+struct archimondes_hatred_reborn_shield_t : public absorb_buff_t
+{
+  action_t* explosion;
+  special_effect_t& spell_effect;
+
+  archimondes_hatred_reborn_shield_t( special_effect_t& effect, action_t* a ) :
+    absorb_buff_t( absorb_buff_creator_t( effect.player, "archimondes_hatred_reborn", effect.driver(), effect.item ) ),
+    spell_effect( effect ),
+    explosion( a )
+  {
+    explosion -> snapshot_flags &= STATE_NO_MULTIPLIER;
+    explosion -> split_aoe_damage = true;
+  }
+
+  void start( int stacks, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
+  {
+    // The shield is based on the player's max health
+    double shield_amount = spell_effect.player -> resources.max[ RESOURCE_HEALTH ] * spell_effect.driver() -> effectN( 1 ).percent();
+
+    absorb_buff_t::start( stacks, shield_amount, duration );
+
+    // AHR deals damage based on the amount of damage absorbed by the shield
+    // But the damage taken models for tanking aren't realistic at the moment
+    // It's better to let the user chose how much of the shield is consumed on each use
+    double absorbed_damage_ratio = spell_effect.player -> sim -> expansion_opts.archimondes_hatred_reborn_damage;
+    if ( absorbed_damage_ratio < 0 )
+      absorbed_damage_ratio = 0;
+    else if ( absorbed_damage_ratio > 1)
+      absorbed_damage_ratio = 1;
+
+    double explosion_damage = shield_amount * spell_effect.driver() -> effectN( 2 ).percent() * absorbed_damage_ratio;
+
+    explosion -> base_dd_min = explosion -> base_dd_max = explosion_damage;
+  }
+
+  void expire_override( int stacks, timespan_t remaining ) override
+  {
+    absorb_buff_t::expire_override( stacks, remaining );
+
+    explosion -> schedule_execute();
+  }
+};
+
+void item::archimondes_hatred_reborn( special_effect_t& effect )
+{
+  effect.trigger_spell_id = 235188;
+
+  effect.custom_buff = new archimondes_hatred_reborn_shield_t( effect, effect.create_action() );
+
+  // Reset trigger_spell_id so it does not create an execute action.
+  effect.trigger_spell_id = 0;
+}
+
+
 // Nature's Call ============================================================
 
 // Helper class so we can handle all of the procs as 1 object.
@@ -5799,8 +6057,13 @@ void consumable::lemon_herb_filet( special_effect_t& effect )
 {
   double value = effect.driver() -> effectN( 1 ).percent();
 
+  if ( is_pandaren( effect.player -> race ) )
+  {
+    value *= 2.0;
+  }
+
   buff_t* dmf_well_fed = buff_creator_t( effect.player, "lemon_herb_filet", effect.driver() )
-    .default_value( effect.player -> race == race_e::RACE_PANDAREN ? 2 * value : value )
+    .default_value( value )
     .add_invalidate( CACHE_VERSATILITY );
 
   effect.custom_buff = dmf_well_fed;
@@ -6555,6 +6818,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 256819, item::golganneths_vitality      );
   register_special_effect( 256825, item::khazgoroths_courage       );
   register_special_effect( 256827, item::norgannons_prowess        );
+  register_special_effect( 256815, item::aggramars_conviction      );
   register_special_effect( 253242, item::prototype_personnel_decimator );
   register_special_effect( 253259, item::acrid_catalyst_injector   );
   register_special_effect( 253258, item::vitality_resonator        );
@@ -6564,6 +6828,9 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 253326, item::gorshalach_legacy         );
   register_special_effect( 253310, item::forgefiends_fabricator    );
   register_special_effect( 253322, item::forgefiends_fabricator_detonate  );
+  register_special_effect( 251940, item::diimas_glacial_aegis      );
+  register_special_effect( 251946, item::smoldering_titanguard     );
+  register_special_effect( 251925, item::riftworld_codex           );
 
   /* Legion 7.2.0 Dungeon */
   register_special_effect( 238498, item::dreadstone_of_endless_shadows );
@@ -6607,6 +6874,7 @@ void unique_gear::register_special_effects_x7()
   /* Legendaries */
   register_special_effect( 207692, cinidaria_the_symbiote_t() );
   register_special_effect( 207438, item::aggramars_stride );
+  register_special_effect( 235169, item::archimondes_hatred_reborn );
   register_special_effect( 235991, item::kiljadens_burning_wish );
   register_special_effect( 236373, item::norgannons_foresight );
 
