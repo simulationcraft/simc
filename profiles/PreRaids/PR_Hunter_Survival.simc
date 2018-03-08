@@ -48,6 +48,7 @@ actions.CDs=arcane_torrent,if=focus<=30
 actions.CDs+=/berserking,if=buff.aspect_of_the_eagle.up
 actions.CDs+=/blood_fury,if=buff.aspect_of_the_eagle.up
 actions.CDs+=/potion,if=buff.aspect_of_the_eagle.up
+actions.CDs+=/lights_judgment,if=!buff.aspect_of_the_eagle.up
 actions.CDs+=/snake_hunter,if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd&buff.aspect_of_the_eagle.down
 actions.CDs+=/aspect_of_the_eagle,if=buff.mongoose_fury.stack>=2&buff.mongoose_fury.remains>3*gcd
 

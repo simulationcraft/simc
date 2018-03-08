@@ -6587,6 +6587,7 @@ void hunter_t::apl_surv()
   CDs -> add_action( "berserking,if=buff.aspect_of_the_eagle.up" );
   CDs -> add_action( "blood_fury,if=buff.aspect_of_the_eagle.up" );
   CDs -> add_action( "potion,if=buff.aspect_of_the_eagle.up" );
+  CDs -> add_action( "lights_judgment,if=!buff.aspect_of_the_eagle.up" );
   CDs -> add_talent( this, "Snake Hunter", "if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd&buff.aspect_of_the_eagle.down" );
   CDs -> add_action( this, "Aspect of the Eagle", "if=buff.mongoose_fury.stack>=2&buff.mongoose_fury.remains>3*gcd" );
 
