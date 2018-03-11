@@ -640,7 +640,7 @@ struct rogue_t : public player_t
 
   void trigger_auto_attack( const action_state_t* );
   void trigger_seal_fate( const action_state_t* );
-  void trigger_main_gauche( const action_state_t*, double = 0 );
+  void trigger_main_gauche( const action_state_t* );
   void trigger_combat_potency( const action_state_t* );
   void trigger_energy_refund( const action_state_t* );
   void trigger_poison_bomb( const action_state_t* );
@@ -1279,8 +1279,19 @@ struct main_gauche_t : public rogue_attack_t
   main_gauche_t( rogue_t* p ) :
     rogue_attack_t( "main_gauche", p, p -> find_spell( 86392 ) )
   {
+    attack_power_mod.direct = p -> mastery.main_gauche -> ok() ? 1.0 : 0.0; // Mastery mod below
     special = background = may_crit = true;
     proc = true; // it's proc; therefore it cannot trigger main_gauche for chain-procs
+  }
+
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    // TEMP, very close to alpha value
+    m *= 2.0 * p() -> cache.mastery_value();
+
+    return m;
   }
 
   bool procs_combat_potency() const override
@@ -1914,7 +1925,7 @@ void rogue_attack_t::impact( action_state_t* state )
 {
   melee_attack_t::impact( state );
 
-  p() -> trigger_main_gauche( state, proc_chance_main_gauche() );
+  p() -> trigger_main_gauche( state );
   p() -> trigger_combat_potency( state );
   p() -> trigger_blade_flurry( state );
   p() -> trigger_shadow_techniques( state );
@@ -5090,7 +5101,7 @@ void rogue_t::trigger_seal_fate( const action_state_t* state )
   procs.seal_fate -> occur();
 }
 
-void rogue_t::trigger_main_gauche( const action_state_t* state, double chance )
+void rogue_t::trigger_main_gauche( const action_state_t* state )
 {
   if ( ! mastery.main_gauche -> ok() )
     return;
