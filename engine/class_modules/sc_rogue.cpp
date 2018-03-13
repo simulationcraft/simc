@@ -2994,12 +2994,12 @@ struct pistol_shot_t : public rogue_attack_t
 
     if ( p() -> buffs.opportunity -> up() )
     {
-      m *= 1.0 + p() -> buffs.opportunity -> data().effectN( 3 ).percent();
+      double ps_mod = 1.0 + p() -> buffs.opportunity -> data().effectN( 3 ).percent();
 
       if ( p() -> talent.quick_draw -> ok() )
-      {
-        m *= 1.0 + p() -> talent.quick_draw -> effectN( 1 ).percent();
-      }
+        ps_mod += p() -> talent.quick_draw -> effectN( 1 ).percent();
+
+      m *= ps_mod;
     }
 
     if ( p() -> buffs.greenskins_waterlogged_wristcuffs -> up() )
