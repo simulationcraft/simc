@@ -3895,7 +3895,7 @@ struct ice_nova_t : public frost_mage_spell_t
 
     aoe = -1;
 
-    double in_mult = 1.0 + p -> talents.ice_nova -> effectN( 1 ).percent();
+    double in_mult = 1.0 + p -> talents.ice_nova -> effectN( 3 ).percent();
     base_multiplier *= in_mult;
     base_aoe_multiplier = 1.0 / in_mult;
   }
