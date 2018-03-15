@@ -56,7 +56,7 @@ Cooldown         : 20 seconds
 Category         : 270
 Category Cooldown: 20 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(95)
+Mechanic         : Unknown(179)
 Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Deeper Stratagem (193531 effect#1), Acrobatic Strikes (196924 effect#1), Feeding Frenzy (242705 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -101,7 +101,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 18 seconds
 Cooldown         : 6 seconds
-Mechanic         : Bleed
+Mechanic         : Unknown(196)
 Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subterfuge (115192 effect#3), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Strangler (238066 effect#1), Item - Rogue T20 Assassination 4P Bonus (242274 effect#1), Item - Rogue T20 Assassination 2P Bonus (242275 effect#1), Headshot (242277 effect#1)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -112,7 +112,7 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=280)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.13000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.13000 | Mechanic: Unknown(196) | Target: Enemy (6)
 #2 (id=281)      : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
 #3 (id=282)      : Energize Power (30)
@@ -177,7 +177,7 @@ School           : Physical
 Spell Level      : 42
 Range            : 50000 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(72)
+Mechanic         : Unknown(168)
 Affecting spells : Iron Wire (196861 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -187,7 +187,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=450)      : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(72) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(168) | Target: Enemy (6)
 Description      : Silences an enemy for $d.
 Tooltip          : Silenced.
 
@@ -201,7 +201,7 @@ GCD              : 1 seconds
 Cooldown         : 30 seconds
 Category         : 22
 Category Cooldown: 30 seconds
-Mechanic         : Unknown(31)
+Mechanic         : Unknown(147)
 Attributes       : ....x... ........ ..x..... ......x.   .....x.. x.x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -256,7 +256,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=537)      : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(255) | Target: Enemy (6)
 Description      : A quick kick that interrupts spellcasting and prevents any spell in that school from being cast for $d.$?s56805[ If you successfully interrupt a spell, Kick's cooldown is reduced by ${$56805m2/1000} sec.][]
 
 Name             : Gouge (id=1776) [Spell Family (8)] 
@@ -272,7 +272,7 @@ Category         : 33
 Category Cooldown: 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Mechanic         : Unknown(110)
+Mechanic         : Unknown(186)
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Dirty Tricks (108216 effect#1), Broadsides (193356 effect#1), Acrobatic Strikes (196924 effect#1), 
@@ -356,7 +356,7 @@ GCD              : 1 seconds
 Duration         : 4 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x20000000
-Mechanic         : Unknown(95)
+Mechanic         : Unknown(179)
 Affecting spells : Dirty Tricks (108216 effect#1), Shadow Blades (121471 effect#3), Shadow Dance (185313 effect#6), Broadsides (193356 effect#3), Acrobatic Strikes (196924 effect#1)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ..x..... ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -427,7 +427,7 @@ Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
-Mechanic         : Bleed
+Mechanic         : Unknown(196)
 Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Serrated Edge (192315 effect#1), Gushing Wound (192329 effect#1), Blood of the Assassinated (192925 effect#1), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -438,9 +438,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=586)      : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13923 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13923 | Mechanic: Unknown(196) | Target: Enemy (6)
 #2 (id=239409)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Mechanic: Unknown(196) | Target: Enemy (6)
 #3 (id=293833)   : Trigger Spell (64): Rupture
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 199672 | Target: Enemy (6)
 #4 (id=293834)   : Trigger Spell (64): Rupture
@@ -492,7 +492,7 @@ Duration         : 60 seconds
 Cooldown         : 120 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Mechanic         : Unknown(10)
+Mechanic         : Unknown(134)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Blinding Powder (256165 effect#1), 
@@ -658,7 +658,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 12 seconds
-Mechanic         : Unknown(88)
+Mechanic         : Unknown(176)
 Affecting spells : Mastery: Potent Assassin (76803 effect#1), Master Poisoner (196864 effect#3)
 Triggered by     : Crippling Poison (3408)
 Attributes       : ........ ........ ........ ........   ...x...x ........ .x...... ........ 
@@ -788,7 +788,7 @@ Duration         : 60 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Stance Mask      : 0x20000000
-Mechanic         : Unknown(255)
+Mechanic         : Unknown(271)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Dirty Tricks (108216 effect#1), Shadow Dance (185313 effect#6)
@@ -805,25 +805,6 @@ Effects          :
 Description      : Incapacitates a target not in combat for $d. Only works on Humanoids, Beasts, Demons, and Dragonkin. Damage will revive the target. Limit 1.
 Tooltip          : Incapacitated.$?$w2!=0[
 Damage taken increased by $w2%.][]
-
-Name             : Expose Armor (id=8647) [Spell Family (8), Passive] 
-Class            : Rogue
-School           : Physical
-Spell Level      : 36
-Proc Chance      : 100%
-Proc Flags       : ..x.x.x. x...x... x.x..... ........ 
-                 : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=3602)     : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Your damage exposes weaknesses in the target's armor, increasing Physical damage taken by $113746s1% for $113746d.
 
 Name             : Ambush (id=8676) [Spell Family (8)] 
 Class            : Outlaw Rogue
@@ -1024,7 +1005,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=6402)     : Apply Aura (6) | Add Flat Modifier (107): Spell Proc Chance (18)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 18 | Target: Self (1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Agonizing Poison (200803)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Deadly Poison (113780), Agonizing Poison (200803)
 Description      : Increases the application chance of Deadly Poison and Wound Poison by $s1%.
 
 Name             : Ruthlessness (id=14161) [Spell Family (8), Passive] 
@@ -1178,7 +1159,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 1 seconds
 Cooldown         : 150 seconds
-Mechanic         : Unknown(72)
+Mechanic         : Unknown(168)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1364,7 +1345,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(227)
+Mechanic         : Unknown(255)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1379,7 +1360,7 @@ Description      : Interrupts casting for $d.
 Name             : Combat Potency (id=35546) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
-Mechanic         : Unknown(88)
+Mechanic         : Unknown(176)
 Triggered by     : Combat Potency (35551)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1529,7 +1510,7 @@ Resource         : 35 Energy (3) (id=2351)
 Spell Level      : 63
 GCD              : 1 seconds
 Velocity         : 18 yards/sec
-Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), The Dreadlord's Deceit (208693 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), The Dreadlord's Deceit (208693 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Fan of Knives (270070 effect#1)
 Attributes       : ....x... ........ x....... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
@@ -1538,7 +1519,7 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44107)    : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.20475 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.20500 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=150470)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Sprays knives at all targets within $A1 yards, dealing $s1 Physical damage and applying your active poisons at their normal rate.
@@ -1788,13 +1769,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.60000 | Target: Self (1)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), Internal Bleeding (154953), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388), Poison Bomb (255546)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | Target: Self (1)
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Envenom (32645), Deadly Poison (113780), Internal Bleeding (154953), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388), Poison Bomb (255546)
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.60000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Internal Bleeding (154953), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388)
-#3 (id=92122)    : Apply Aura (6) | Dummy (4)
-                   Base Value: 350 | Scaled Value: 350 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Deadly Poison (113780), Internal Bleeding (154953), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388)
 Description      : Increases the damage done by your poisons and bleeds by ${$s1}.1%.
 
 Name             : Mastery: Main Gauche (id=76806) [Spell Family (8), Passive] 
@@ -1987,9 +1966,9 @@ Range            : 100 yards
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Main Gauche (76806 effect#2), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Fortune's Strike (202521 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .....x.. .x...... ........ ......x. 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105)
 Effects          :
@@ -2226,23 +2205,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Poisons an enemy for $112961d.  Subsequent weapon strikes against the poisoned target will heal the Rogue for $112961s1% of damage dealt.
 
-Name             : Expose Armor (id=113746) [Spell Family (8)] 
-Class            : Rogue
-School           : Physical
-Range            : 50000 yards
-Duration         : 60 seconds
-Attributes       : ........ ........ ........ ........   ........ ...x.... ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=126739)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 0x1 | Target: Enemy (6)
-Description      : $@spelldesc8647
-Tooltip          : Physical damage taken increased by $w1%.
-
 Name             : Deadly Poison (id=113780) [Spell Family (8)] 
 Class            : Rogue
 School           : Nature
@@ -2286,24 +2248,6 @@ Effects          :
 Description      : Throws a shuriken at an enemy target for $s1 Physical damage.
 
 |cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
-
-Name             : Anticipation (id=114015) [Spell Family (8), Passive] 
-Class            : Rogue
-School           : Physical
-Proc Chance      : 100%
-Proc Flags       : ....x... x...x... ........ ........ 
-                 : Yellow Melee, Yellow Ranged, AOE Hostile Spell
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=127101)   : Apply Aura (6) | Modify Max Resource (418)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 4 | Target: Self (1)
-Description      : You may have a maximum of ${5+$m1} combo points. Finishers still consume a maximum of 5 combo points.
 
 Name             : Shroud of Concealment (id=114018) [Spell Family (8)] 
 Class            : Rogue
@@ -2403,7 +2347,7 @@ Attributes       : ....x... ........ ..x..... ........   .....x.. ........ .....
                  : Does not break stealth (37), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=150471)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | Radius: 0 - 10 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | Radius: 0 - 10 yards | Mechanic: Unknown(196) | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=715792)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Finishing move that slashes at all enemies within $A1 yards, dealing  instant damage and causing victims to bleed for additional damage. Lasts longer per combo point.
@@ -2653,10 +2597,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179721)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 32 | Scaled Value: 32 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Dispatch (111240), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
 #2 (id=191052)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 32 | Scaled Value: 32 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Dispatch (111240), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
 #3 (id=191053)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self (1)
@@ -2702,7 +2646,7 @@ Spell Level      : 1
 Range            : 30 yards
 Duration         : 60 seconds
 Cooldown         : 60 seconds
-Affecting spells : Subtlety Rogue (137035 effect#6), Assassination Rogue (137037 effect#4), Deeper Stratagem (193531 effect#6), 
+Affecting spells : Subtlety Rogue (137035 effect#6), Assassination Rogue (137037 effect#4)
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ..x..... 
                  : ........ ........ ........ ....x...   ........ ........ x...x... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -2893,7 +2837,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 12 seconds
-Mechanic         : Bleed
+Mechanic         : Unknown(196)
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#5), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -2904,7 +2848,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=215087)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03120 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03120 | Mechanic: Unknown(196) | Target: Enemy (6)
 Description      : $@spelldesc154904
 Tooltip          : Suffering $w1 damage every $t1 sec.
 
@@ -3162,7 +3106,7 @@ Effects          :
 #2 (id=269973)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.19656 | Misc Value: combo_points | Target: Self (1)
 #3 (id=269974)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
 #4 (id=316548)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Draw a concealed pistol and fire a quick shot at an enemy, dealing $s1 Physical damage and reducing movement speed by $s3% for $d.
@@ -3200,7 +3144,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 50000 yards
 Duration         : 1.5 seconds
-Mechanic         : Unknown(88)
+Mechanic         : Unknown(176)
 Attributes       : ........ x....... ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3360,7 +3304,7 @@ Resource         : 45 Energy (3) (id=10438)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Broadsides (193356 effect#3), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Jolly Roger (199603 effect#1), Swordmaster (200733 effect#1), Cursed Edges (202463 effect#1), Swordplay (211669 effect#1), Symbols of Death (212283 effect#1), Sabermetrics (238067 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Swashbuckler (269297 effect#1), Subtle Blade (269342 effect#2)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Broadsides (193356 effect#3), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Jolly Roger (199603 effect#1), Swordmaster (200733 effect#1), Cursed Edges (202463 effect#1), Swordplay (211669 effect#1), Symbols of Death (212283 effect#1), Sabermetrics (238067 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Swashbuckler (269297 effect#1), 
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3530,12 +3474,6 @@ Effects          :
 #5 (id=315626)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rupture (1943), Internal Bleeding (154953), Weaponmaster (193536), Nightblade (195452), Finality: Nightblade (197395)
-#6 (id=356351)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Marked for Death (137619)
-#7 (id=356352)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Marked for Death (137619)
 Description      : You may have a maximum of $s3 combo points, your finishing moves consume up to $s3 combo points, and your finishing moves deal $s4% increased damage.
 
 Name             : Weaponmaster (id=193536) [Spell Family (8)] 
@@ -3635,8 +3573,8 @@ Name             : Elaborate Planning (id=193640) [Spell Family (8), Passive]
 Class            : Rogue
 School           : Physical
 Proc Chance      : 100%
-Proc Flags       : ....x... x....... ........ ........ 
-                 : Yellow Melee, Yellow Ranged
+Proc Flags       : ....x... x.x...x. ........ ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, Heal
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -3647,8 +3585,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=284086)   : Apply Aura (6) | Proc Trigger Spell (42): Elaborate Planning
                    Base Value: 0 | Scaled Value: 0 | Points Per Combo Point: 20 | Trigger Spell: 193641 | Target: Self (1)
-#2 (id=284087)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 Description      : Your finishing moves grant $193641s1% increased damage done for $193641d.
 
 Name             : Elaborate Planning (id=193641) [Spell Family (8)] 
@@ -3667,16 +3603,16 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=284088)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Dispatch (111240), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
 #2 (id=479907)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 12 | Scaled Value: 12 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Dispatch (111240), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
 #3 (id=479908)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: 12 | Scaled Value: 12 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Run Through (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Dispatch (111240), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Cannonball Barrage (185779), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Saber Slash (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546)
 Description      : Increases damage done by $s1% for $d.
-Tooltip          : Increases damage done by $s1%.
+Tooltip          : Damage done increased by $s1%.
 
 Name             : Nightblade (id=195452) [Spell Family (8)] 
 Class            : Subtlety Rogue
@@ -3703,7 +3639,7 @@ Effects          :
 #1 (id=286896)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.12613 | Target: Enemy (6)
 #2 (id=286897)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Mechanic: Unknown(196) | Target: Enemy (6)
 #3 (id=331338)   : Trigger Spell (64): Nightblade
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222018 | Target: Enemy (6)
 #4 (id=331339)   : Trigger Spell (64): Nightblade
@@ -3835,10 +3771,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Poison Bomb (255546)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Deadly Poison (113780), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Poison Bomb (255546)
 #2 (id=289048)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Spore Cloud (32643), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Venomhide Poison (14795), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062)
 #3 (id=289049)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Crippling Poison (3408), Crippling Poison (3409), Leeching Poison (108211), Leeching Poison (112961)
@@ -4006,7 +3942,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 2 seconds
-Mechanic         : Unknown(95)
+Mechanic         : Unknown(179)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4107,7 +4043,7 @@ Effects          :
 #1 (id=289989)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.29400 | Target: Enemy (6)
 #2 (id=289990)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Mechanic: Unknown(196) | Target: Enemy (6)
 Description      : Finishing move that infects the target with shadowy energy, dealing Shadow damage over time and causing attacks against the target to reduce movement speed by $206760s1% for $206760d. Lasts longer per combo point.
    1 point  : ${$<bonus>*$m1*8/2} over 8 sec
    2 points: ${$<bonus>*$m1*10/2} over 10 sec
@@ -4157,7 +4093,7 @@ School           : Physical
 Resource         : 35 Energy (3) (id=10714)
 Spell Level      : 63
 GCD              : 1 seconds
-Velocity         : 18 yards/sec
+Velocity         : 35 yards/sec
 Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), The Dreadlord's Deceit (228224 effect#1), Headshot (242277 effect#1)
 Attributes       : ....x... ........ x....... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4167,11 +4103,11 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290720)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.15725 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.18000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=290721)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.05733 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=344592)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 50 | Scaled Value: 50 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Sprays shurikens at all targets within $A1 yards, dealing $s1 Physical damage.
 
 Damage increased by $s3% while Stealth or Shadow Dance is active.
@@ -4318,7 +4254,7 @@ Effects          :
 #1 (id=294039)   : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.18100 | Target: Enemy (6)
 #2 (id=294040)   : Apply Aura (6) | Stun (12)
-                   Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(95) | Target: Enemy (6)
+                   Base Value: 70 | Scaled Value: 70 | Mechanic: Unknown(179) | Target: Enemy (6)
 #3 (id=344382)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Finishing move that deals damage with your pistol and stuns the target.$?a235484[ Critical strikes with this ability deal four times normal damage.][]
@@ -4578,7 +4514,7 @@ Effects          :
 #2 (id=299183)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
 #3 (id=299184)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
 #4 (id=299185)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33033 | Target: Enemy (6)
 #5 (id=299186)   : School Damage (2): physical
@@ -4629,7 +4565,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : Disable target procs (113)
 Effects          :
 #1 (id=305751)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20 | Mechanic: Unknown(88) | Target: Enemy (6)
+                   Base Value: -20 | Scaled Value: -20 | Mechanic: Unknown(176) | Target: Enemy (6)
 Description      : $@spelldesc195452
 Tooltip          : Movement speed slowed by $w1%.
 
@@ -4642,7 +4578,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 45 seconds
-Mechanic         : Unknown(22)
+Mechanic         : Unknown(142)
 Affecting spells : Dirty Tricks (108216 effect#1), Acrobatic Strikes (196924 effect#1)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4748,7 +4684,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .x...
                  : Disable target procs (113)
 Effects          :
 #1 (id=310497)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -60 | Scaled Value: -60 | Mechanic: Unknown(88) | Target: Enemy (6)
+                   Base Value: -60 | Scaled Value: -60 | Mechanic: Unknown(176) | Target: Enemy (6)
 Description      : $@spelldesc209782
 Tooltip          : Movement speed slowed by $s1%.
 
@@ -4921,7 +4857,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 5 seconds
-Mechanic         : Unknown(88)
+Mechanic         : Unknown(176)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4931,7 +4867,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=332697)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
 Description      : $@spelldesc196951
 Tooltip          : Dazed. Movement speed reduced by $s1.
 
@@ -5107,7 +5043,7 @@ Attributes       : ....x... ........ ..x..... ..x....x   ........ ........ .....
 Effects          :
 #1 (id=373279)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Spore Cloud (32643), Envenom (32645), Deadly Poison (113780), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388), Poison Bomb (255546)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Envenom (32645), Deadly Poison (113780), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388), Poison Bomb (255546)
 Description      : $@spelldesc245388
 Tooltip          : $s1% increased damage taken from poisons from the casting Rogue.
 
@@ -5303,16 +5239,17 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
 #1 (id=477503)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
-#2 (id=479971)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Envenom and Rupture have a $@switch<$s2>[${$s1/10}%][${$s1/10}.1%] chance per combo point spent to smash a vial of poison at the target's location, creating a pool of acidic death that deals ${$255546s1*6} Nature damage over $255545d to all enemies within it.
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#2 (id=719191)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+Description      : Envenom and Rupture have a $<chance>% chance per combo point spent to smash a vial of poison at the target's location, creating a pool of acidic death that deals ${$255546s1*$s2} Nature damage over $255545d to all enemies within it.
+Variables        : $chance=${$s1/10}%
 
 Name             : Poison Bomb (id=255545) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Range            : 100 yards
-Duration         : 3 seconds
+Duration         : 2 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5321,7 +5258,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=477504)   : Unknown(179)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 11866 | Target: At Enemy (53)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11866 | Target: At Enemy (53)
 Description      : $@spelldesc255544
 
 Name             : Poison Bomb (id=255546) [Spell Family (8)] 
@@ -5338,7 +5275,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=477505)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.09828 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.11000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc255544
 
 Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
@@ -5630,5 +5567,41 @@ Effects          :
 #1 (id=480742)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
 Description      : After entering Stealth or Shadow Dance, your next Cheap Shot is free.
+
+Name             : Hidden Blades (id=270061) [Spell Family (8), Passive] 
+Class            : Rogue
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=718776)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Every $t1 sec, gain $270070s1% increased damage for your next Fan of Knives, stacking up to $270070u times.
+
+Name             : Fan of Knives (id=270070) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Duration         : Aura (infinite)
+Stacks           : 20 maximum
+Proc Chance      : 101%
+Proc Flags       : ........ ........ ........ .....x.. 
+                 
+Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=718785)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Affected Spells: Fan of Knives (51723)
+Description      : $@spelldesc270061
+Tooltip          : Your next Fan of Knives deals $s1% increased damage.
 
 

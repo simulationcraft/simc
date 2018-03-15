@@ -188,7 +188,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(153)
+Mechanic         : Unknown(213)
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... x....... .x...... 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -266,7 +266,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.00750 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.00800 | Target: Enemy (6)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$o1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -284,7 +284,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Duration         : 300 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(2)
+Mechanic         : Unknown(130)
 Affecting spells : Grimoire of Convert Demon (168800 effect#1)
 Attributes       : ........ ........ x....... ......x.   x....... ..x..... .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -327,34 +327,6 @@ Effects          :
 Description      : Summons an Infernal from the Twisting Nether, impacting for $22703s1 Fire damage and stunning all enemies in the area for $22703d.
 
 The Infernal will serve you for $111685d, dealing $20153s1 damage to all nearby enemies every $19483t1 sec and generating $264365s1 Soul Shard Fragment every $264364t1 sec.
-
-Name             : Hellfire (id=1949) [Spell Family (5)] 
-Class            : Warlock
-School           : Fire
-Resource         : 0.1 Soul Shard (7) and 0.4 Soul Shard (7) per tick (id=146)
-GCD              : 1.5 seconds
-Duration         : 10 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), 
-Attributes       : ........ ........ x....... ........   ......x. .......x x....... ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .....x.. ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Channeled (38), Cannot crit (93), Periodic effect affected by haste (173)
-Effects          :
-#1 (id=588)      : Apply Aura (6) | Periodic Trigger Spell (23): Hellfire every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 5857 | Target: Self (1)
-#2 (id=589)      : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Target: Self (1)
-#3 (id=186636)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
-Description      : Engulfs the surrounding area in hellfire, causing $1949m2 Fire damage to yourself, and $5857m1 Fire damage to all nearby enemies every $t1 sec.
-
-You may move while channeling Hellfire.
-
-|cFFFFFFFFCosts $s3 Soul Shard Fragments per sec.|r
-Tooltip          : Damages self and all nearby enemies.
 
 Name             : Use Soulstone (id=3026) [Spell Family (5)] 
 Class            : Warlock
@@ -448,7 +420,7 @@ Duration         : 8 seconds
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Periodic effect affected by haste (173)
@@ -457,9 +429,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (28)
 #2 (id=2040)     : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5420 | Target: Unknown(87)
-#3 (id=291291)   : Energize Power% (137)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#4 (id=322172)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
+#3 (id=291291)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Calls down a rain of hellfire, dealing ${$42223m1*8} Fire damage over $d to enemies in the area.
 Tooltip          : $42223s1 Fire damage every $5740t2 sec.
@@ -482,26 +452,9 @@ Attributes       : ........ ........ x....... ......x.   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2047)     : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(42) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(154) | Target: Enemy (6)
 Description      : Strikes fear in the enemy, disorienting for $118699d. Damage may cancel the effect. Limit 1.
 Tooltip          : Disoriented.
-
-Name             : Hellfire (id=5857) [Spell Family (5)] 
-Class            : Warlock
-School           : Fire
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), 
-Triggered by     : Hellfire (1949)
-Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ......x.   ........ ........ ........ .x...... 
-                 : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Requires line of sight (186)
-Effects          :
-#1 (id=2059)     : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Radius: 10 yards | Target: AOE enemy (15)
-Description      : $@spelldesc1949
 
 Name             : Create Healthstone (id=6201) [Spell Family (5)] 
 Class            : Warlock
@@ -611,7 +564,7 @@ Cooldown         : 30 seconds
 Category         : 1468
 Category Cooldown: 30 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(81)
+Mechanic         : Unknown(173)
 Attributes       : ........ ........ x....... ......x.   ..x..... ..x...x. .x...... .x...x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -632,7 +585,7 @@ Spell Level      : 31
 Range            : 10 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Mechanic         : Unknown(88)
+Mechanic         : Unknown(176)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
@@ -642,7 +595,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=2216)     : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
 Description      : Whips the enemy, reducing movement speed by $s2% for $d.
 
 |cFF777777(Right-Click to toggle)|r
@@ -670,13 +623,13 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2449)     : Apply Aura (6) | Unknown(407)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.784) | SP Coefficient: 0.25000 | Mechanic: Unknown(204) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.784) | SP Coefficient: 0.25000 | Mechanic: Unknown(240) | Target: Enemy (6)
 #2 (id=2450)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=149417)   : Trigger Missiles (32)
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 108396
 #4 (id=200196)   : Apply Aura (6) | Unknown(191)
-                   Base Value: 7 | Scaled Value: 7 | Mechanic: Unknown(204) | Target: Enemy (6)
+                   Base Value: 7 | Scaled Value: 7 | Mechanic: Unknown(240) | Target: Enemy (6)
 Description      : Horrifies an enemy target into fleeing, incapacitating for $6789d and healing you for $108396m1% of maximum health.
 Tooltip          : Incapacitated.
 
@@ -745,7 +698,7 @@ Duration         : 5 seconds
 Cooldown         : 10 seconds
 Category         : 82
 Category Cooldown: 10 seconds
-Mechanic         : Unknown(133)
+Mechanic         : Unknown(201)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -845,7 +798,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (12.96 seconds cooldown)
 Category         : 672: Warlock (137042 effect#2)
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Soul Harvest (196098 effect#1), Conflagration of Chaos (196546 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Flames of Sargeras (238074 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Soul Harvest (196098 effect#1), Conflagration of Chaos (196546 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Flames of Sargeras (238074 effect#1), Flashover (267115 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -857,7 +810,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
-Reduces the cast time of your next two Incinerates or Chaos Bolts by $117828s1% for $117828d.][]
+Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
 
 |cFFFFFFFFGenerates $245330s1 Soul Shard Fragments.|r
 
@@ -923,7 +876,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=10874)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(255) | Target: Enemy (6)
 Description      : Counters the enemy's spellcast, preventing any spell from that school of magic from being cast for $19647d.
 
 Name             : Devour Magic (id=19658) [Scaling Spell (11)] 
@@ -1042,7 +995,7 @@ Effects          :
 #1 (id=12912)    : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 0.60000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=12913)    : Apply Aura (6) | Stun (12)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Unknown(95) | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Unknown(179) | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : An infernal falls from the sky, dealing $s1 Fire damage to all targets, stunning them for $d.
 Tooltip          : Stunned.
 
@@ -1105,7 +1058,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 1 seconds
 Cooldown         : 150 seconds
-Mechanic         : Unknown(72)
+Mechanic         : Unknown(168)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1271,12 +1224,12 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=175537)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.68000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.68000 | Radius: 6 yards | Target: Cone Front (104)
 #2 (id=19796)    : Apply Aura (6) | Modify Healing Recevied% (118)
-                   Base Value: -10 | Scaled Value: -10 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 127 | Radius: 6 yards | Target: Cone Front (104)
 #3 (id=319698)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : A strong attack that does $s1% of the Felguard's weapon damage to its enemy, and reduces the effectiveness of any healing the victim receives by $s2% for $d.
+Description      : A strong attack that does $s1% of the Felguard's weapon damage to all enemies in front of it, and reduces the effectiveness of any healing the victim receives by $s2% for $d.
 
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Effectiveness of any healing reduced by $w2%.
@@ -1290,7 +1243,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Mechanic         : Unknown(95)
+Mechanic         : Unknown(179)
 Affecting spells : Darkfury (264874 effect#1)
 Attributes       : ........ ........ x....... ........   ...x...x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1367,7 +1320,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(227)
+Mechanic         : Unknown(255)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1439,7 +1392,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40331)    : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Target: Enemy (6)
 #2 (id=40332)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Enemy (6)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d.
@@ -1709,10 +1662,10 @@ Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ .x...... ........ 
                  : Hostile Spell Taken
-Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ..x..... ........ 
+Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ..x..... ........ 
                  : ........ ........ ....x... ........   .....x.. ........ ........ ........ 
-                 : ........ ........ .......x .....x..   ........ ........ ........ ........ 
+                 : ..x..... ........ .......x .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Disable player multipliers (221)
@@ -1786,11 +1739,11 @@ Duration         : 5 seconds
 Cooldown         : 30 seconds
 Attributes       : ....x... ........ x.x..... ........   ....x... ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Requires main-hand weapon (106)
+                 : Requires main-hand weapon (106), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=92647)    : Apply Aura (6) | Periodic Trigger Spell (23): Felstorm every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 89753 | Target: Self (1)
@@ -1838,7 +1791,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=92676)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(179) | Target: Enemy (6)
 Description      : The $?s108499[Wrathguard][Felguard] hurls its weapon, stunning the target for $89766d.
 Tooltip          : Stunned for $d.
 
@@ -2004,7 +1957,7 @@ Spell Level      : 14
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Cooldown         : 12 seconds
+Cooldown         : 20 seconds
 Affecting spells : Demonic Calling (205146 effect#1), Item - Warlock T19 Demonology 4P Bonus (212007 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -2017,7 +1970,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 Description      : Summons $s1 ferocious Dreadstalkers to attack the target for $193332d.
 
-Name             : Hand of Gul'dan (id=104317) [Spell Family (5)] 
+Name             : Wild Imp (id=104317) [Spell Family (5)] 
 Class            : Shaman, Warlock
 School           : Shadow
 Range            : 100 yards
@@ -2030,7 +1983,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=113739)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 55659 | Misc Value 2: 0xc8a | Target: Custom (18)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 55659 | Misc Value 2: 0xc8a | Target: Unknown(87)
 Description      : $@spelldesc105174
 
 Name             : Fel Firebolt (Basic Attack) (id=104318) [Scaling Spell (11), Spell Family (5)] 
@@ -2521,7 +2474,6 @@ Duration         : 20 seconds
 Cooldown         : 120 seconds
 Charges          : 0 (120 seconds cooldown)
 Category         : 1447
-Affecting spells : Raging Imps (267170 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2596,7 +2548,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129866)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(255) | Target: Enemy (6)
 Description      : Counter the enemy's spellcast, preventing any spell from that school of magic from being cast for $19647d.
 
 Name             : Wrathstorm (Special Ability) (id=115831) [Spell Family (57)] 
@@ -2749,7 +2701,7 @@ Range            : 30 yards
 Duration         : 20 seconds
 Category         : 1266
 Proc Chance      : 100%
-Mechanic         : Unknown(42)
+Mechanic         : Unknown(154)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Increased Fear Break Threshold (95677 effect#1)
@@ -2915,13 +2867,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179727)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
+                   Base Value: 32 | Scaled Value: 32 | Target: Self (1)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
 #2 (id=191031)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
+                   Base Value: 32 | Scaled Value: 32 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
 #3 (id=191032)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Base Value: 32 | Scaled Value: 32 | Target: Self (1)
 #4 (id=191033)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191034)   : Apply Aura (6) | Dummy (4)
@@ -2996,10 +2948,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179730)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
 #2 (id=191023)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
 #3 (id=191024)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
                    Affected Spells: Burning Rush (111400)
@@ -3148,7 +3100,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 30 seconds
-Mechanic         : Unknown(88)
+Mechanic         : Unknown(176)
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3206,7 +3158,7 @@ Duration         : 5 seconds
 Cooldown         : 10 seconds
 Category         : 82
 Category Cooldown: 10 seconds
-Mechanic         : Unknown(133)
+Mechanic         : Unknown(201)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3243,7 +3195,7 @@ Effects          :
 #1 (id=242715)   : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 0.12500 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=242716)   : Apply Aura (6) | Stun (12)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Unknown(95) | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Unknown(179) | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : The infernal releases a powerful burst of flames, dealing $s1 Fire damage to nearby targets, and stunning them for $d.
 Tooltip          : Stunned.
 
@@ -3264,7 +3216,7 @@ Effects          :
 #1 (id=242717)   : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=242718)   : Apply Aura (6) | Stun (12)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Unknown(95) | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Unknown(179) | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : The abyssal releases a powerful burst of flames, dealing $s1 Fire damage to nearby targets, and stunning them for $d.
 Tooltip          : Stunned.
 
@@ -3308,7 +3260,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242924)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(255) | Target: Enemy (6)
 Description      : Counter an enemy's spellcast, preventing any spell from that school of magic from being cast for $19647d.
 
 Name             : Item - Warlock T18 Demonology 4P Bonus (id=185964) [Spell Family (5), Passive, Hidden] 
@@ -3432,7 +3384,7 @@ Name             : Call Dreadstalkers (id=193332) [Spell Family (5)]
 Class            : Warlock
 School           : Shadowflame
 Range            : 50000 yards
-Duration         : 8 seconds
+Duration         : 12 seconds
 Affecting spells : Demonic Calling (205146 effect#1), Item - Warlock T19 Demonology 4P Bonus (212007 effect#1)
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
@@ -3479,7 +3431,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=287829)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
 #2 (id=341300)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 #3 (id=341301)   : Dummy (3)
@@ -3488,7 +3440,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #5 (id=479875)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Hellfire (1949), Hellfire (5857), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Demonic Power (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Chaos Bolt (213229), Harvester of Souls (218615), Compounding Horror (231489), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Rend Soul (242834), Demonbolt (264178), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213)
 Description      : Increases your damage and your pets' damage by $s1%. Lasts $d, increased by $s2 sec for each target afflicted by your $?s137043[Agony][]$?s137044[Doom][]$?s137046[Immolate][], up to a maximum of $s3 sec.
 Tooltip          : Damage increased by $s1%.
 
@@ -3569,7 +3521,7 @@ Effects          :
 #1 (id=287836)   : Apply Aura (6) | Dummy (4)
                    Base Value: 24 | Scaled Value: 24 | Misc Value: 37 | Target: Self (1)
 #2 (id=322166)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739)
 Description      : Corruption is now permanent and deals $s2% increased damage.
 
@@ -3680,7 +3632,7 @@ Effects          :
 #1 (id=288215)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 #2 (id=288216)   : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(72) | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(168) | Target: Unknown(25)
 Description      : $@spelldesc30108
 Tooltip          : Silenced.
 
@@ -3851,7 +3803,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288656)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Shadow Bolt (686), Demonbolt (157695), Shadow Bolt (232670)
+                   Affected Spells: Shadow Bolt (686), Shadow Bolt (232670), Demonbolt (264178)
 Description      : $@spelldesc196269
 Tooltip          : Your next Shadow Bolt is Instant.
 
@@ -3946,7 +3898,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 205146 | Target: Self (1)
 #2 (id=343479)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Trigger Spell: 205146 | Target: Self (1)
-Description      : Shadowbolt$?s264178[ and Soulfire have][ has] a $h% chance to make your next Call Dreadstalkers cost no Soul Shards.
+Description      : Shadow Bolt$?s264178[ and Demonbolt have][ has] a $h% chance to make your next Call Dreadstalkers cost no Soul Shards and have no cast time.
 
 Name             : Demonic Calling (id=205146) [Spell Family (5)] 
 Class            : Warlock
@@ -3967,12 +3919,15 @@ Effects          :
 #1 (id=302852)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Call Dreadstalkers (104316), Call Dreadstalkers (193332)
+#2 (id=719420)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Call Dreadstalkers (104316), Call Dreadstalkers (193332)
 Description      : $@spelldesc205145
-Tooltip          : Your next Call Dreadstalkers costs no Soul Shards.
+Tooltip          : Your next Call Dreadstalkers costs no Soul Shards and has no cast time.
 
 Name             : Reverse Entropy (id=205148) [Spell Family (5), Passive] 
 Class            : Warlock
-School           : Physical
+School           : Fire
 Proc Chance      : 101%
 Real PPM         : 2.5
 Proc Flags       : ........ ........ x.x..... ........ 
@@ -4990,7 +4945,7 @@ Effects          :
                    Affected Spells: Corruption (172), Agony (980), Unstable Affliction (30108), Corruption (146739), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499)
 Description      : Your Agony, Corruption, and Unstable Affliction deal their full damage $s1% faster.
 
-Name             : Fel Strike (id=264057) [Spell Family (5)] 
+Name             : Soul Strike (id=264057) [Spell Family (5)] 
 Class            : Warlock
 School           : Physical
 Spell Level      : 1
@@ -5006,7 +4961,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=707212)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Command your Felguard to smash its enemy with a Fel Strike, dealing $267964s1 Physical damage.
+Description      : Command your Felguard to strike into the soul of its enemy, dealing $267964s1 Shadow damage.$?c2[
+
+|cFFFFFFFFGenerates 1 Soul Shard.|r][]
 
 Name             : Riders (id=264078) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -5088,9 +5045,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707327)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Radius: 40 yards | Target: Unknown(120)
-Description      : Instantly sacrifice up to $s1 Wild Imps to generate $s1 charges of Molten Core.
+Description      : Instantly sacrifice up to $s1 Wild Imps to generate $s1 charges of Demonic Core.
 
-Name             : Molten Core (id=264173) [Spell Family (5)] 
+Name             : Demonic Core (id=264173) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Range            : 100 yards
@@ -5099,7 +5056,6 @@ Stacks           : 4 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Hostile Spell
-Affecting spells : Raging Imps (267170 effect#1)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5119,10 +5075,10 @@ Class            : Demonology Warlock
 School           : Shadowflame
 Spell Level      : 22
 Range            : 40 yards
-Cast Time        : 6 seconds
+Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), Molten Core (264173 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), Shadowy Inspiration (196606 effect#1), Maw of Shadows (211099 effect#1), Stolen Power (211583 effect#2), Demonic Core (264173 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5132,7 +5088,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.62000 | Target: Enemy (6)
-Description      : Send the fiery soul of a Wild Imp at the enemy, causing $s1 Shadowflame damage.$?c2[
+Description      : Send the fiery soul of a fallen demon at the enemy, causing $s1 Shadowflame damage.$?c2[
 
 |cFFFFFFFFGenerates 2 Soul Shards.|r][]
 
@@ -5233,7 +5189,7 @@ Effects          :
 Description      : Encases the Voidwalker in shadow energy, reducing physical damage taken by $s1%.
 Tooltip          : Damage taken reduced by $s1%.
 
-Name             : Demon Commander (id=265187) [Spell Family (5)] 
+Name             : Summon Demonic Tyrant (id=265187) [Spell Family (5)] 
 Class            : Demonology Warlock
 School           : Shadow
 Resource         : 2% Base Mana (0) (id=191505)
@@ -5252,7 +5208,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=709184)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 135002 | Misc Value 2: 0x109f | Radius: 5 yards | Target: Unknown(44)
-Description      : Summon a Demonic Commander to increase the duration of all of your current demons by ${$265273m2/1000}.1 sec, and increase the damage of all of your other demons by $265273s1%, while casting Shadow Bolt Volley at your enemies.
+Description      : Summon a Demonic Tyrant to increase the duration of all of your current demons by ${$265273m2/1000}.1 sec, and increase the damage of all of your other demons by $265273s1%, while casting Shadow Bolt Volley at your enemies.
 
 Name             : Demonic Power (id=265273) [Spell Family (5)] 
 Class            : Warlock
@@ -5290,7 +5246,7 @@ Duration         : 30 seconds
 Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), The Doom of Azeroth (211106 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   .....x.. ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5340,7 +5296,7 @@ Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
 
 Name             : Reverse Entropy (id=266030) [Spell Family (5)] 
 Class            : Warlock
-School           : Physical
+School           : Fire
 Duration         : 8 seconds
 Triggered by     : Reverse Entropy (205148)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -5391,7 +5347,7 @@ Tooltip          : Damage done by Chaos Bolt increased by $s1%.
 
 Name             : Internal Combustion (id=266134) [Spell Family (5), Passive] 
 Class            : Warlock
-School           : Physical
+School           : Fire
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5404,7 +5360,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 1 | Target: Self (1)
 Description      : Chaos Bolt consumes up to $s1 sec of Immolate's damage over time effect on your target, instantly dealing that much damage.
 
-Name             : Molten Core (id=267102) [Spell Family (5), Passive] 
+Name             : Demonic Core (id=267102) [Spell Family (5), Passive] 
 Class            : Demonology Warlock
 School           : Shadow
 Spell Level      : 30
@@ -5418,10 +5374,14 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
 #1 (id=713522)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 10 | Target: Self (1)
-Description      : When your Wild Imps expend all of their energy, they have a $s1% chance to combust into a ball of energy, granting you a stack of Molten Core. 
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 10 | Target: Self (1)
+#2 (id=718907)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 10 | Target: Self (1)
+Description      : When your Wild Imps expend all of their energy, you have a $s1% chance to absorb their life essence, granting you a stack of Demonic Core. 
 
-Molten Core reduces the cast time of Demonbolt by $264173s1%. Maximum $264173u stacks.
+When your summoned Dreadstalkers fade away, you have a $s2% chance to absorb their life essence, granting you a stack of Demonic Core.
+
+Demonic Core reduces the cast time of Demonbolt by $264173s1%. Maximum $264173u stacks.
 
 Name             : Flashover (id=267115) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -5441,25 +5401,27 @@ Effects          :
 #2 (id=713553)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 37 | Target: Self (1)
                    Affected Spells: Backdraft (117828)
-Description      : Conflagrate grants an additional stack of Backdraft.
+#3 (id=718439)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Affected Spells: Conflagrate (17962)
+Description      : Conflagrate deals $s3% increased damage and grants an additional stack of Backdraft.
 
-Name             : Raging Imps (id=267170) [Spell Family (5), Passive] 
+Name             : From the Shadows (id=267170) [Spell Family (5), Passive] 
 Class            : Warlock
 School           : Shadowflame
 Spell Level      : 10
 Range            : 40 yards
 Attributes       : ......x. ........ x....... ........   .......x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ...x.... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=713653)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+#1 (id=713653)   : Apply Aura (6) | Dummy (4)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Dark Soul (113858), Molten Core (264173)
-Description      : Molten Core now makes Demonbolt instant cast.
+Description      : Casting Call Dreadstalkers causes the target to take $s1% additional Shadowflame damage from you for the next $d.
 
 Name             : Demonic Strength (id=267171) [Spell Family (5)] 
 Class            : Warlock
@@ -5476,11 +5438,12 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=713654)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 0x7f | Target: Active Pet (5)
-                   Affected School(s): All
-Description      : Infuse your Felguard with demonic power, increasing all damage it deals by $s1% for $d.
-Tooltip          : Damage increased by $s1%.
+#1 (id=713654)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+#2 (id=720184)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 400 | Scaled Value: 400 | Misc Value: 127 | Target: Active Pet (5)
+Description      : Infuse your Felguard with demonic strength and command it to charge your target and unleash a Felstorm that will deal $s1% increased damage.
+Tooltip          : Your next Felstorm will deal $s1% increased damage.
 
 Name             : Bilescourge Bombers (id=267211) [Spell Family (5)] 
 Class            : Warlock
@@ -5495,12 +5458,12 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=713713)   : Unknown(179)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 13045 | Radius: 10 yards | Target: AOE enemy (instant) (16)
-Description      : Tear open a portal to the nether above the target location, from which several Bilescourge will pour out of and crash into the ground, dealing $267213s1 Shadow damage to all enemies within $267213A1 yards.
+Description      : Tear open a portal to the nether above the target location, from which several Bilescourge will pour out of and crash into the ground over $d, dealing $267213s1 Shadow damage to all enemies within $267213A1 yards.
 
 Name             : Bilescourge Bombers (id=267213) [Spell Family (5)] 
 Class            : Warlock
@@ -5539,7 +5502,7 @@ Attributes       : ......x. ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=713716)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
-Description      : Each Soul Shard spent reduces the cooldown of Demon Commander by ${$m1/1000}.1 sec.
+Description      : Each Soul Shard spent reduces the cooldown of Summon Demonic Tyrant by ${$m1/1000}.1 sec.
 
 Name             : Demonic Consumption (id=267215) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -5556,7 +5519,7 @@ Attributes       : ......xx ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=713717)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
-Description      : Your Demon Commander now destroys and absorbs the remaining power of all of your Wild Imps to empower himself.
+Description      : Your Demonic Tyrant now destroys and absorbs the remaining power of all of your Wild Imps to empower himself.
 
 Name             : Inner Demons (id=267216) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -5598,9 +5561,9 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 13046 | Radius: 5 yards | Target: Unknown(49)
 Description      : Tear open a portal to the Twisting Nether for $d.  Every time you spend Soul Shards, you will also command demons from the Nether to come out and fight for you.
 
-Name             : Fel Strike (id=267964) [Spell Family (5)] 
+Name             : Soul Strike (id=267964) [Spell Family (5)] 
 Class            : Warlock
-School           : Physical
+School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -5610,7 +5573,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=714972)   : School Damage (2): physical
+#1 (id=714972)   : School Damage (2): shadow
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc264057
 
@@ -5653,5 +5616,20 @@ $@spellicon48020
 $@spellname48020
 $@spelldesc48020
 
+
+Name             : Inferno (id=270545) [Spell Family (5), Passive] 
+Class            : Warlock
+School           : Fire
+Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=720130)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : Rain of Fire damage has a $s1% chance to generate a Soul Shard Fragment.
 
 

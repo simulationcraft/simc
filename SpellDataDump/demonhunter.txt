@@ -17,11 +17,11 @@ Description      : Allows one-hand and off-hand weapons to be equipped in the of
 
 Name             : Chaos Brand (id=1490) [Spell Family (107)] 
 Class            : Demon Hunter
-School           : Chaos
-Range            : 40 yards
-Duration         : 60 seconds
+School           : None
+Range            : 100 yards
+Duration         : Aura (infinite)
 Attributes       : ........ ........ ........ ........   ........ ...x.... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
@@ -55,7 +55,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(227)
+Mechanic         : Unknown(255)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -204,7 +204,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222031 | Target: Enemy (6)
 #3 (id=293650)   : Trigger Spell (64): Chaos Strike
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 199547 | Target: Enemy (6)
-Description      : Slice your target for ${$222031sw1+$199547sw1} Chaos damage. Chaos Strike has a $197125h% chance to refund $193840s1 Fury.
+Description      : Slice your target for ${$222031s1+$199547s1} Chaos damage. Chaos Strike has a $197125h% chance to refund $193840s1 Fury.
 
 Name             : Demon Soul (id=163073) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -378,7 +378,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=266200)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(227) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(255) | Target: Enemy (6)
 Description      : Interrupts the enemy's spellcasting and locks them from that school of magic for $d.|cFFFFFFFF$?s178940[
 
 Generates $218903s1 Fury on a successful interrupt.][
@@ -419,9 +419,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21)
 Effects          :
-#1 (id=268504)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
-#2 (id=309171)   : School Damage (2): physical
+#1 (id=268504)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33345 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 Description      : Throw a demonic glaive at the target, dealing $s1 Physical damage. The glaive can ricochet to ${$x1-1} additional enemies within 10 yards.
 
@@ -958,7 +956,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=292270)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 5 yards | Mechanic: Unknown(88) | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 5 yards | Mechanic: Unknown(176) | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=292271)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=292272)   : School Damage (2): physical
@@ -980,9 +978,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
-#1 (id=293648)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=293649)   : School Damage (2): chaos
+#1 (id=293648)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.57564 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc162794
 
@@ -1018,11 +1014,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294655)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Unknown(95) | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Unknown(179) | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=294659)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.32760 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=376438)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(88)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176)
 Description      : $@spelldesc191427
 Tooltip          : Stunned.
 
@@ -1339,9 +1335,9 @@ Name             : Arcane Torrent (Racial) (id=202719)
 Class            : Demon Hunter
 Race             : Blood Elf (0x200)
 School           : Arcane
-Duration         : 2 seconds
+Duration         : 1 seconds
 Cooldown         : 150 seconds
-Mechanic         : Unknown(72)
+Mechanic         : Unknown(168)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1806,7 +1802,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=301807)   : Apply Aura (6) | Silence (27)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 8 yards | Mechanic: Unknown(72) | Target: AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 8 yards | Mechanic: Unknown(168) | Target: AOE enemy (instant) (16)
 Description      : Silence affected enemies for $d.
 Tooltip          : Silenced.
 
@@ -2201,7 +2197,7 @@ School           : Physical
 Range            : 100 yards
 Duration         : 30 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(42)
+Mechanic         : Unknown(154)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Concentrated Sigils (207666 effect#5), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2)
@@ -2214,7 +2210,7 @@ Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=307160)   : Apply Aura (6) | Unknown(407)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Unknown(42) | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Unknown(154) | Target: AOE enemy (instant) (16)
 #2 (id=307162)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : Disorient affected enemies for $d.
@@ -2525,7 +2521,7 @@ Attributes       : ........ ........ x.x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=310890)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20 | Mechanic: Unknown(88) | Target: Enemy (6)
+                   Base Value: -20 | Scaled Value: -20 | Mechanic: Unknown(176) | Target: Enemy (6)
 Description      : $@spelldesc209400
 Tooltip          : Movement slowed by $s1%.
 
@@ -2690,7 +2686,7 @@ Effects          :
 #1 (id=313950)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.32760 | Target: Enemy (6)
 #2 (id=345978)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(95) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(179) | Target: Enemy (6)
 Description      : Impales the target for $s1 Chaos damage and stuns them for $d.
 Tooltip          : Stunned.
 
@@ -3036,7 +3032,7 @@ Class            : Demon Hunter
 School           : Physical
 Range            : 100 yards
 Duration         : 6 seconds
-Mechanic         : Unknown(88)
+Mechanic         : Unknown(176)
 Triggered by     : Master of the Glaive (203556)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3145,7 +3141,7 @@ Category         : 33
 Category Cooldown: 60 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Mechanic         : Unknown(255)
+Mechanic         : Unknown(271)
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ....x... ........ ....xx.. ........   ...x.... ..x..... ..x..... .x.x.... 
@@ -3259,9 +3255,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
-#1 (id=331359)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=331360)   : School Damage (2): chaos
+#1 (id=331359)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.36153 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc162794
 
@@ -3547,7 +3541,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=376439)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(88) | Target: Enemy (6)
+                   Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(176) | Target: Enemy (6)
 Description      : $@spelldesc191427
 Tooltip          : Dazed.
 
@@ -3648,8 +3642,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=477040)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Your damage brands the target, increasing magic damage taken by $1490s1% for $1490d.
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+Description      : Your $?c1[Chaos][Fire] damage brands the target, increasing magic damage taken by $1490s1%.
+
+(Duration reduced to $s1 min against players)
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
