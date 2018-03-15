@@ -3028,6 +3028,33 @@ struct evocation_t : public arcane_mage_spell_t
   }
 };
 
+// Ebonbolt Spell ===========================================================
+
+struct ebonbolt_t : public frost_mage_spell_t
+{
+  ebonbolt_t( mage_t* p, const std::string& options_str ) :
+    frost_mage_spell_t( "ebonbolt", p, p -> find_talent_spell( "Ebonbolt" ) )
+  {
+    parse_options( options_str );
+    parse_effect_data( p -> find_spell( 257538 ) -> effectN( 1 ) );
+
+    if ( p -> talents.splitting_ice -> ok() )
+    {
+      aoe                  = 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
+      base_aoe_multiplier *=     p -> talents.splitting_ice -> effectN( 2 ).percent();
+    }
+
+    calculate_on_impact = true;
+    track_shatter = true;
+  }
+
+  virtual void execute() override
+  {
+    frost_mage_spell_t::execute();
+    trigger_brain_freeze( 1.0 );
+  }
+};
+
 // Fireball Spell ===========================================================
 
 struct fireball_t : public fire_mage_spell_t
@@ -5484,6 +5511,7 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "cold_snap"              ) return new              cold_snap_t( this, options_str );
   if ( name == "comet_storm"            ) return new            comet_storm_t( this, options_str );
   if ( name == "cone_of_cold"           ) return new           cone_of_cold_t( this, options_str );
+  if ( name == "ebonbolt"               ) return new               ebonbolt_t( this, options_str );
   if ( name == "flurry"                 ) return new                 flurry_t( this, options_str );
   if ( name == "frostbolt"              ) return new              frostbolt_t( this, options_str );
   if ( name == "frozen_orb"             ) return new             frozen_orb_t( this, options_str );
