@@ -37,12 +37,6 @@ class HotfixIterator:
         if self._wdb_parser.class_name() in dbc.EXPANDED_HOTFIX_RECORDS:
             start_offset = 0
             end_offset = len(data)
-            # If id block is used, and the cache entry for the db file uses an
-            # expanded parser, the id will be the first entry of the data.
-            # Strip it out, since we already have the id elsewhere in the hotfix entry
-            if self._wdb_parser.has_id_block():
-                start_offset += 1
-
             # If the key block is used, and the cache entry for the db file
             # uses an  expanded parser, the key id (parent id) will be the last
             # entry of the data. Extract it out and pass it to the decorator

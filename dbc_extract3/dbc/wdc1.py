@@ -486,12 +486,7 @@ class ExpandedRecordParser(RecordParser):
         columns = []
         decoders = []
 
-        # Expanded parser always has the id column at the start, if the actual
-        # db2 file has an id block
-        if self.parser().has_id_block():
-            columns.append(WDC1ProxyColumn(self.parser(), None, 0, 0, 0))
-
-        # Then, iterate over the columns. Regardless of what sort of colun type
+        # Iterate over the columns. Regardless of what sort of colun type
         # the original file has, expanded data is always normal struct form, 4
         # (or 8?) bytes per field
         for column_idx in range(0, self.parser().fields):
@@ -689,7 +684,7 @@ class WDC1Column:
         if self.__size_type in [0, 8, 16, 24, -32]:
             return self.__field_size // self.field_bit_size()
         else:
-            return self.__elements
+            return self.__elements or 1
 
     def struct_type(self):
         if self.__size_type != WDC1_SPECIAL_COLUMN:
@@ -805,11 +800,6 @@ class WDC1ProxyColumn(WDC1Column):
 
     def short_type(self):
         return 'uint:32[p]'
-
-    def __str__(self):
-        return 'Column[ idx={}, offset={}, size={}, elements={} ]'.format(
-            self.__index, self.__offset, self.bit_size(), self.elements()
-        )
 
 
 class WDC1Parser(DBCParserBase):
