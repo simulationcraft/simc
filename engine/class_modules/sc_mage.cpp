@@ -403,6 +403,7 @@ public:
     // Frost
     buff_t* brain_freeze;
     buff_t* fingers_of_frost;
+    buff_t* freezing_rain;
     buff_t* frozen_mass;                       // T20 2pc Frost
     buff_t* icicles;                           // Buff to track icicles - doesn't always line up with icicle count though!
     buff_t* icy_veins;
@@ -2736,6 +2737,15 @@ struct blizzard_shard_t : public frost_mage_spell_t
     }
   }
 
+  virtual double action_multiplier() const override
+  {
+    double am = frost_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p() -> buffs.freezing_rain -> check_value();
+
+    return am;
+  }
+
   virtual double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double cpm = frost_mage_spell_t::composite_persistent_multiplier( s );
@@ -2760,6 +2770,16 @@ struct blizzard_t : public frost_mage_spell_t
     dot_duration = timespan_t::zero(); // This is just a driver for the ground effect.
     may_miss = false;
     may_crit = affected_by.shatter = false;
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    if ( p() -> buffs.freezing_rain -> up() )
+    {
+      return timespan_t::zero();
+    }
+
+    return frost_mage_spell_t::execute_time();
   }
 
   virtual double false_positive_pct() const override
@@ -3563,6 +3583,10 @@ struct frozen_orb_t : public frost_mage_spell_t
     if ( p() -> sets -> has_set_bonus( MAGE_FROST, T20, B2 ) )
     {
       p() -> buffs.frozen_mass -> trigger();
+    }
+    if ( p() -> talents.freezing_rain -> ok() )
+    {
+      p() -> buffs.freezing_rain -> trigger();
     }
   }
 
@@ -5943,8 +5967,9 @@ void mage_t::create_buffs()
   buffs.brain_freeze           = make_buff<buffs::brain_freeze_buff_t>( this );
   buffs.bone_chilling          = make_buff( this, "bone_chilling", find_spell( 205766 ) )
                                    -> set_default_value( talents.bone_chilling -> effectN( 1 ).percent() / 10 );
-  buffs.fingers_of_frost       = make_buff( this, "fingers_of_frost", find_spell( 44544 ) )
-                                   -> set_max_stack( find_spell( 44544 ) -> max_stacks() );
+  buffs.fingers_of_frost       = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
+  buffs.freezing_rain          = make_buff( this, "freezing_rain", find_spell( 270232 ) )
+                                   -> set_default_value( find_spell( 270232 ) -> effectN( 2 ).percent() );
   buffs.frozen_mass            = make_buff( this, "frozen_mass", find_spell( 242253 ) )
                                    -> set_default_value( find_spell( 242253 ) -> effectN( 1 ).percent() );
   buffs.rage_of_the_frost_wyrm = make_buff( this, "rage_of_the_frost_wyrm", find_spell( 248177 ) );
