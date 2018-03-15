@@ -553,9 +553,9 @@ public:
     const spell_data_t* pyromaniac;
     const spell_data_t* searing_touch;
     const spell_data_t* firestarter;
-    const spell_data_t* ray_of_frost;
-    const spell_data_t* lonely_winter;
     const spell_data_t* bone_chilling;
+    const spell_data_t* lonely_winter;
+    const spell_data_t* ice_nova;
 
     // Tier 30
     const spell_data_t* shimmer;
@@ -578,9 +578,8 @@ public:
     const spell_data_t* alexstraszas_fury;
     const spell_data_t* flame_on;
     const spell_data_t* phoenix_flames;
-    const spell_data_t* ice_nova;
     const spell_data_t* frozen_touch;
-    const spell_data_t* splitting_ice;
+    // TODO: add the NYI talent
     const spell_data_t* ebonbolt;
 
     // Tier 75
@@ -596,7 +595,9 @@ public:
     const spell_data_t* unstable_magic;
     const spell_data_t* erosion;
     const spell_data_t* flame_patch;
-    const spell_data_t* arctic_gale;
+    const spell_data_t* freezing_rain;
+    const spell_data_t* splitting_ice;
+    const spell_data_t* comet_storm;
 
     // Tier 100
     const spell_data_t* overpowered;
@@ -606,8 +607,8 @@ public:
     const spell_data_t* pyroclasm;
     const spell_data_t* meteor;
     const spell_data_t* thermal_void;
+    const spell_data_t* ray_of_frost;
     const spell_data_t* glacial_spike;
-    const spell_data_t* comet_storm;
   } talents;
 
   struct uptimes_t {
@@ -2719,7 +2720,6 @@ struct blizzard_shard_t : public frost_mage_spell_t
     aoe = -1;
     background = true;
     ground_aoe = true;
-    base_multiplier *= 1.0 + p -> talents.arctic_gale -> effectN( 1 ).percent();
     chills = true;
   }
 
@@ -3615,9 +3615,8 @@ struct glacial_spike_t : public frost_mage_spell_t
     parse_effect_data( p -> find_spell( 228600 ) -> effectN( 1 ) );
     if ( p -> talents.splitting_ice -> ok() )
     {
-      aoe = 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
-      base_aoe_multiplier *= p -> talents.splitting_ice
-                               -> effectN( 2 ).percent();
+      aoe                  = 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
+      base_aoe_multiplier *=     p -> talents.splitting_ice -> effectN( 2 ).percent();
     }
     calculate_on_impact = true;
     track_shatter = true;
@@ -3730,11 +3729,9 @@ struct ice_lance_t : public frost_mage_spell_t
     // TODO: Cleave distance for SI seems to be 8 + hitbox size.
     if ( p -> talents.splitting_ice -> ok() )
     {
-      base_multiplier *= 1.0 + p -> talents.splitting_ice
-                                 -> effectN( 3 ).percent();
-      aoe = 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
-      base_aoe_multiplier *= p -> talents.splitting_ice
-                               -> effectN( 2 ).percent();
+      aoe                  =   1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
+      base_multiplier     *= 1.0 + p -> talents.splitting_ice -> effectN( 3 ).percent();
+      base_aoe_multiplier *=       p -> talents.splitting_ice -> effectN( 2 ).percent();
     }
     calculate_on_impact = true;
     track_shatter = true;
@@ -5764,9 +5761,9 @@ void mage_t::init_spells()
   talents.pyromaniac         = find_talent_spell( "Pyromaniac"         );
   talents.searing_touch      = find_talent_spell( "Searing Touch"      );
   talents.firestarter        = find_talent_spell( "Firestarter"        );
-  talents.ray_of_frost       = find_talent_spell( "Ray of Frost"       );
-  talents.lonely_winter      = find_talent_spell( "Lonely Winter"      );
   talents.bone_chilling      = find_talent_spell( "Bone Chilling"      );
+  talents.lonely_winter      = find_talent_spell( "Lonely Winter"      );
+  talents.ice_nova           = find_talent_spell( "Ice Nova"           );
   // Tier 30
   talents.shimmer            = find_talent_spell( "Shimmer"            );
   talents.slipstream         = find_talent_spell( "Slipstream"         );
@@ -5786,9 +5783,8 @@ void mage_t::init_spells()
   talents.alexstraszas_fury  = find_talent_spell( "Alexstrasza's Fury" );
   talents.flame_on           = find_talent_spell( "Flame On"           );
   talents.phoenix_flames     = find_talent_spell( "Phoenix Flames"     );
-  talents.ice_nova           = find_talent_spell( "Ice Nova"           );
   talents.frozen_touch       = find_talent_spell( "Frozen Touch"       );
-  talents.splitting_ice      = find_talent_spell( "Splitting Ice"      );
+  // TODO: Add NYI talent here.
   talents.ebonbolt           = find_talent_spell( "Ebonbolt"           );
   // Tier 75
   talents.chrono_shift       = find_talent_spell( "Chrono Shift"       );
@@ -5802,7 +5798,9 @@ void mage_t::init_spells()
   talents.unstable_magic     = find_talent_spell( "Unstable Magic"     );
   talents.erosion            = find_talent_spell( "Erosion"            );
   talents.flame_patch        = find_talent_spell( "Flame Patch"        );
-  talents.arctic_gale        = find_talent_spell( "Arctic Gale"        );
+  talents.freezing_rain      = find_talent_spell( "Freezing Rain"      );
+  talents.splitting_ice      = find_talent_spell( "Splitting Ice"      );
+  talents.comet_storm        = find_talent_spell( "Comet Storm"        );
   // Tier 100
   talents.overpowered        = find_talent_spell( "Overpowered"        );
   talents.temporal_flux      = find_talent_spell( "Temporal Flux"      );
@@ -5811,8 +5809,8 @@ void mage_t::init_spells()
   talents.pyroclasm          = find_talent_spell( "Pyroclasm"          );
   talents.meteor             = find_talent_spell( "Meteor"             );
   talents.thermal_void       = find_talent_spell( "Thermal Void"       );
+  talents.ray_of_frost       = find_talent_spell( "Ray of Frost"       );
   talents.glacial_spike      = find_talent_spell( "Glacial Spike"      );
-  talents.comet_storm        = find_talent_spell( "Comet Storm"        );
 
   // Spec Spells
   spec.arcane_barrage_2      = find_specialization_spell( 231564 );
