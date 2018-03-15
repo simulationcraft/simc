@@ -87,7 +87,7 @@ public:
 struct icicle_tuple_t
 {
   timespan_t timestamp;
-  double     damage;
+  action_t*  icicle_action;
 };
 
 struct mage_td_t : public actor_target_data_t
@@ -314,8 +314,14 @@ struct mage_t : public player_t
 public:
   // Icicles
   std::vector<icicle_tuple_t> icicles;
-  action_t* icicle;
   event_t* icicle_event;
+
+  struct icicles_t
+  {
+    action_t* frostbolt;
+    action_t* flurry;
+  } icicle;
+
 
   // Ignite
   action_t* ignite;
@@ -488,9 +494,6 @@ public:
   {
     cooldown_reduction_data_t* blizzard;
     cooldown_reduction_data_t* t20_4pc;
-
-    luxurious_sample_data_t* glacial_spike_base;
-    luxurious_sample_data_t* glacial_spike_icicles;
 
     extended_sample_data_t* icy_veins_duration;
 
@@ -702,9 +705,9 @@ public:
   }
 
   // Public mage functions:
-  double get_icicle();
-  void   trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
-  bool   apply_crowd_control( const action_state_t* state, spell_mechanic type );
+  action_t* get_icicle();
+  void      trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
+  bool      apply_crowd_control( const action_state_t* state, spell_mechanic type );
 
   void              apl_precombat();
   void              apl_arcane();
@@ -1954,48 +1957,26 @@ struct frost_mage_spell_t : public mage_spell_t
     }
   }
 
-  void trigger_icicle_gain( action_state_t* state )
+  double icicle_sp_coefficient() const
+  {
+    return p() -> cache.mastery() * p() -> spec.icicles -> effectN( 3 ).mastery_value();
+  }
+
+  void trigger_icicle_gain( action_state_t* state, action_t* icicle_action )
   {
     if ( ! p() -> spec.icicles -> ok() )
       return;
 
-    if ( ! result_is_hit( state -> result ) )
-      return;
-
-    // Do not create zero damage Icicles (e.g. due to invulnerability events).
-    double m = state -> target_da_multiplier;
-    if ( m <= 0.0 )
-      return;
-
-    double amount = state -> result_total / m * p() -> cache.mastery_value();
-    if ( amount <= 0.0 )
-      return;
-
-    if ( p() -> talents.splitting_ice -> ok() )
-    {
-      amount *= 1.0 + p() -> talents.splitting_ice -> effectN( 3 ).percent();
-    }
-
-    assert( as<int>( p() -> icicles.size() ) <=
-            p() -> spec.icicles -> effectN( 2 ).base_value() );
+    p() -> buffs.icicles -> trigger();
 
     // Shoot one if capped
-    if ( as<int>( p() -> icicles.size() ) ==
-         p() -> spec.icicles -> effectN( 2 ).base_value() )
+    if ( as<int>( p() -> icicles.size() ) == p() -> spec.icicles -> effectN( 2 ).base_value() )
     {
       p() -> trigger_icicle( state );
     }
 
-    icicle_tuple_t tuple{ p() -> sim -> current_time(), amount };
+    icicle_tuple_t tuple{ p() -> sim -> current_time(), icicle_action };
     p() -> icicles.push_back( tuple );
-
-    if ( p() -> sim -> debug )
-    {
-      p() -> sim -> out_debug.printf( "%s icicle gain, damage=%f, total=%u",
-                                      p() -> name(),
-                                      amount,
-                                      as<unsigned>( p() -> icicles.size() ) );
-    }
   }
 
   virtual void impact_state( action_state_t* s, dmg_e rt )
@@ -2091,29 +2072,21 @@ struct frost_mage_spell_t : public mage_spell_t
 
 struct icicle_t : public frost_mage_spell_t
 {
-  icicle_t( mage_t* p ) :
-    frost_mage_spell_t( "icicle", p, p -> find_spell( 148022 ) )
+  icicle_t( mage_t* p, const std::string& trigger_spell ) :
+    frost_mage_spell_t( trigger_spell + "_icicle", p, p -> find_spell( 148022 ) )
   {
-    may_crit = affected_by.shatter = false;
     proc = background = true;
-
-    base_dd_min = base_dd_max = 1.0;
 
     if ( p -> talents.splitting_ice -> ok() )
     {
-      aoe = 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
-      base_aoe_multiplier *= p -> talents.splitting_ice
-                               -> effectN( 2 ).percent();
+      aoe                  =   1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
+      base_multiplier     *= 1.0 + p -> talents.splitting_ice -> effectN( 3 ).percent();
+      base_aoe_multiplier *=       p -> talents.splitting_ice -> effectN( 2 ).percent();
     }
   }
 
-  virtual void init() override
-  {
-    frost_mage_spell_t::init();
-
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_TGT_MUL_DA;
-  }
+  virtual double spell_direct_power_coefficient( const action_state_t* ) const override
+  { return spell_power_mod.direct + icicle_sp_coefficient(); }
 };
 
 // Presence of Mind Spell ===================================================
@@ -3338,6 +3311,10 @@ struct flurry_t : public frost_mage_spell_t
     may_miss = false;
     may_crit = affected_by.shatter = false;
     add_child( flurry_bolt );
+    if ( p -> spec.icicles -> ok() )
+    {
+      add_child( p -> icicle.flurry );
+    }
   }
 
   virtual void init() override
@@ -3360,6 +3337,8 @@ struct flurry_t : public frost_mage_spell_t
   virtual void execute() override
   {
     frost_mage_spell_t::execute();
+
+    trigger_icicle_gain( execute_state, p() -> icicle.flurry );
 
     bool brain_freeze = p() -> buffs.brain_freeze -> up();
     p() -> state.brain_freeze_active = brain_freeze;
@@ -3399,7 +3378,7 @@ struct frostbolt_t : public frost_mage_spell_t
     parse_effect_data( p -> find_spell( 228597 ) -> effectN( 1 ) );
     if ( p -> spec.icicles -> ok() )
     {
-      add_child( p -> icicle );
+      add_child( p -> icicle.frostbolt );
     }
 
     base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
@@ -3418,7 +3397,7 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    p() -> buffs.icicles -> trigger();
+    trigger_icicle_gain( execute_state, p() -> icicle.frostbolt );
 
     double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
     fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
@@ -3437,10 +3416,6 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    if ( ! result_is_hit( s -> result ) )
-      return;
-
-    trigger_icicle_gain( s );
     trigger_shattered_fragments( s -> target );
   }
 };
@@ -3605,14 +3580,8 @@ struct frozen_orb_t : public frost_mage_spell_t
 
 struct glacial_spike_t : public frost_mage_spell_t
 {
-  double icicle_damage;
-
-  // So that we don't need custom action_state_t to store it.
-  mutable double icicle_damage_ratio;
-
   glacial_spike_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike ),
-    icicle_damage( 0.0 )
+    frost_mage_spell_t( "glacial_spike", p, p -> talents.glacial_spike )
   {
     parse_options( options_str );
     parse_effect_data( p -> find_spell( 228600 ) -> effectN( 1 ) );
@@ -3636,73 +3605,21 @@ struct glacial_spike_t : public frost_mage_spell_t
     return frost_mage_spell_t::ready();
   }
 
-  virtual void record_data( action_state_t* data ) override
+  virtual double spell_direct_power_coefficient( const action_state_t* ) const override
   {
-    frost_mage_spell_t::record_data( data );
+    double extra_sp_coef = icicle_sp_coefficient();
 
-    if ( icicle_damage_ratio == 0.0 )
-      return;
+    extra_sp_coef *=       p() -> spec.icicles -> effectN( 2 ).base_value();
+    extra_sp_coef *= 1.0 + p() -> talents.splitting_ice -> effectN( 3 ).percent();
 
-    double amount  = data -> result_total;
-    double icicles = amount * icicle_damage_ratio;
-    double base    = amount - icicles;
-
-    p() -> sample_data.glacial_spike_base -> add( base );
-    p() -> sample_data.glacial_spike_icicles -> add( icicles );
-  }
-
-  virtual double calculate_impact_direct_amount( action_state_t* s ) const override
-  {
-    double base_amount = frost_mage_spell_t::calculate_impact_direct_amount( s );
-    double icicle_amount = icicle_damage;
-
-    icicle_damage_ratio = 0.0;
-
-    icicle_amount *= s -> target_da_multiplier;
-
-    if ( s -> chain_target > 0 )
-      icicle_amount *= base_aoe_multiplier;
-
-    double amount = base_amount + icicle_amount;
-    s -> result_raw = amount;
-
-    if ( result_is_miss( s -> result ) )
-    {
-      s -> result_total = 0.0;
-      return 0.0;
-    }
-    else
-    {
-      s -> result_total = amount;
-
-      if ( amount > 0 )
-        icicle_damage_ratio = icicle_amount / amount;
-
-      return amount;
-    }
+    return spell_power_mod.direct + extra_sp_coef;
   }
 
   virtual void execute() override
   {
-    // Ideally, this would be passed to impact() in action_state_t, but since
-    // it's pretty much impossible to execute another Glacial Spike before
-    // the first one impacts, this should be fine.
-    icicle_damage = 0.0;
-    int icicle_count = as<int>( p() -> icicles.size() );
-
-    for ( int i = 0; i < icicle_count; i++ )
-    {
-      icicle_damage += p() -> get_icicle();
-    }
-
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "Add %u icicles to glacial_spike for %f damage",
-                               icicle_count, icicle_damage );
-    }
-
     frost_mage_spell_t::execute();
 
+    p() -> icicles.clear();
     p() -> buffs.icicles -> expire();
   }
 
@@ -5214,11 +5131,11 @@ namespace events {
 struct icicle_event_t : public event_t
 {
   mage_t* mage;
+  action_t* icicle_action;
   player_t* target;
-  double damage;
 
-  icicle_event_t( mage_t& m, double d, player_t* t, bool first = false ) :
-    event_t( m ), mage( &m ), target( t ), damage( d )
+  icicle_event_t( mage_t& m, action_t* a, player_t* t, bool first = false ) :
+    event_t( m ), mage( &m ), icicle_action( a ), target( t )
   {
     double cast_time = first ? 0.25 : ( 0.4 * mage -> cache.spell_speed() );
 
@@ -5240,20 +5157,18 @@ struct icicle_event_t : public event_t
       return;
     }
 
-    mage -> icicle -> set_target( target );
-    mage -> icicle -> base_dd_min = damage;
-    mage -> icicle -> base_dd_max = damage;
-    mage -> icicle -> execute();
+    icicle_action -> set_target( target );
+    icicle_action -> execute();
 
     mage -> buffs.icicles -> decrement();
 
-    double new_damage = mage -> get_icicle();
-    if ( new_damage > 0.0 )
+    action_t* new_action = mage -> get_icicle();
+    if ( new_action )
     {
-      mage -> icicle_event = make_event<icicle_event_t>( sim(), *mage, new_damage, target );
+      mage -> icicle_event = make_event<icicle_event_t>( sim(), *mage, new_action, target );
       if ( mage -> sim -> debug )
-        mage -> sim -> out_debug.printf( "%s icicle use on %s (chained), damage=%f, total=%u",
-                               mage -> name(), target -> name(), new_damage, as<unsigned>( mage -> icicles.size() ) );
+        mage -> sim -> out_debug.printf( "%s icicle use on %s (chained), total=%u",
+                               mage -> name(), target -> name(), as<unsigned>( mage -> icicles.size() ) );
     }
   }
 };
@@ -5427,8 +5342,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   player_t( sim, MAGE, name, r ),
-  icicle( nullptr ),
   icicle_event( nullptr ),
+  icicle( icicles_t() ),
   ignite( nullptr ),
   ignite_spread_event( nullptr ),
   last_bomb_target( nullptr ),
@@ -5619,7 +5534,8 @@ bool mage_t::create_actions()
 
   if ( spec.icicles -> ok() )
   {
-    icicle = new icicle_t( this );
+    icicle.frostbolt = new icicle_t( this, "frostbolt" );
+    icicle.flurry    = new icicle_t( this, "flurry" );
   }
 
   if ( talents.arcane_familiar -> ok() )
@@ -6181,12 +6097,6 @@ void mage_t::init_uptimes()
       if ( talents.thermal_void -> ok() )
       {
         sample_data.icy_veins_duration = new extended_sample_data_t( "Icy Veins duration", false );
-      }
-
-      if ( talents.glacial_spike -> ok() )
-      {
-        sample_data.glacial_spike_base    = get_sample_data( "Glacial Spike base damage contribution" );
-        sample_data.glacial_spike_icicles = get_sample_data( "Glacial Spike Icicle damage contribution" );
       }
 
       if ( sets -> has_set_bonus( MAGE_FROST, T20, B4 ) )
@@ -7224,10 +7134,10 @@ stat_e mage_t::convert_hybrid_stat( stat_e s ) const
 
 // mage_t::get_icicle =======================================================
 
-double mage_t::get_icicle()
+action_t* mage_t::get_icicle()
 {
   if ( icicles.empty() )
-    return 0.0;
+    return nullptr;
 
   // All Icicles created before the treshold timed out.
   timespan_t threshold = sim -> current_time() - spec.icicles_driver -> duration();
@@ -7240,12 +7150,12 @@ double mage_t::get_icicle()
 
   if ( ! icicles.empty() )
   {
-    double damage = icicles.front().damage;
+    action_t* icicle_action = icicles.front().icicle_action;
     icicles.erase( icicles.begin() );
-    return damage;
+    return icicle_action;
   }
 
-  return 0.0;
+  return nullptr;
 }
 
 void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, player_t* chain_target )
@@ -7268,37 +7178,35 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
 
   if ( chain && ! icicle_event )
   {
-    double damage = get_icicle();
-    if ( damage == 0.0 )
+    action_t* icicle_action = get_icicle();
+    if ( ! icicle_action )
       return;
 
     assert( icicle_target );
-    icicle_event = make_event<events::icicle_event_t>( *sim, *this, damage, icicle_target, true );
+    icicle_event = make_event<events::icicle_event_t>( *sim, *this, icicle_action, icicle_target, true );
 
     if ( sim -> debug )
     {
-      sim -> out_debug.printf( "%s icicle use on %s%s, damage=%f, total=%u",
+      sim -> out_debug.printf( "%s icicle use on %s%s, total=%u",
                                name(), icicle_target -> name(),
-                               chain ? " (chained)" : "", damage,
+                               chain ? " (chained)" : "",
                                as<unsigned>( icicles.size() ) );
     }
   }
   else if ( ! chain )
   {
-    double damage = get_icicle();
-    if ( damage == 0.0 )
+    action_t* icicle_action = get_icicle();
+    if ( ! icicle_action )
       return;
 
-    icicle -> set_target( icicle_target );
-    icicle -> base_dd_min = damage;
-    icicle -> base_dd_max = damage;
-    icicle -> execute();
+    icicle_action -> set_target( icicle_target );
+    icicle_action -> execute();
 
     if ( sim -> debug )
     {
-      sim -> out_debug.printf( "%s icicle use on %s%s, damage=%f, total=%u",
+      sim -> out_debug.printf( "%s icicle use on %s%s, total=%u",
                                name(), icicle_target -> name(),
-                               chain ? " (chained)" : "", damage,
+                               chain ? " (chained)" : "",
                                as<unsigned>( icicles.size() ) );
     }
   }
