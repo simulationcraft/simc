@@ -1,5 +1,5 @@
-// Azerite powers, wow build 26175
-static constexpr std::array<azerite_power_t, 80> __azerite_power_data { {
+// Azerite powers, wow build 26231
+static constexpr std::array<azerite_power_t, 88> __azerite_power_data { {
   {  1,  55564 },
   {  2, 261582 },
   {  3,  24219 },
@@ -12,7 +12,7 @@ static constexpr std::array<azerite_power_t, 80> __azerite_power_data { {
   { 10, 191997 },
   { 11, 250295 },
   { 13, 263978 },
-  { 14, 263975 },
+  { 14, 268594 },
   { 15, 263962 },
   { 16, 263829 },
   { 17, 263786 },
@@ -80,4 +80,12 @@ static constexpr std::array<azerite_power_t, 80> __azerite_power_data { {
   { 79, 269568 },
   { 80, 269570 },
   { 81, 269594 },
+  { 82, 270583 },
+  { 83, 268437 },
+  { 84, 268595 },
+  { 85, 268596 },
+  { 86, 268435 },
+  { 87, 268600 },
+  { 88, 270669 },
+  { 89, 267683 },
 } };

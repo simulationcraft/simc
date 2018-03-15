@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26175
+// Class based active abilities, wow build 26231
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -219,7 +219,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       204147, // Windburst (Artifact)
            0,
     },
-    // Beast Mastery tree, 13 abilities
+    // Beast Mastery tree, 14 abilities
     {
       193530, // Aspect of the Wild
        19574, // Bestial Wrath
@@ -229,6 +229,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       217200, // Dire Frenzy
       109304, // Exhilaration
       187650, // Freezing Trap
+       19577, // Intimidation
        34026, // Kill Command
        34477, // Misdirection
         2643, // Multi-Shot
@@ -254,13 +255,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       193526, // Trueshot
            0,
     },
-    // Survival tree, 13 abilities
+    // Survival tree, 14 abilities
     {
       186289, // Aspect of the Eagle
       266779, // Coordinated Assault
       109304, // Exhilaration
       187650, // Freezing Trap
       190925, // Harpoon
+       19577, // Intimidation
       259489, // Kill Command
        34477, // Misdirection
       187707, // Muzzle
@@ -448,7 +450,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       205065, // Void Torrent (Artifact)
            0,
     },
-    // Discipline tree, 16 abilities
+    // Discipline tree, 15 abilities
     {
         2061, // Flash Heal
        73325, // Leap of Faith
@@ -456,7 +458,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       212036, // Mass Resurrection
        33206, // Pain Suppression
        47540, // Penance
-      200829, // Plea
        62618, // Power Word: Barrier
       194509, // Power Word: Radiance
           17, // Power Word: Shield
@@ -786,7 +787,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 8 abilities
+    // Pet tree, 7 abilities
     {
       225119, // Arcane Assault
        88084, // Arcane Blast
@@ -794,7 +795,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        33395, // Freeze
        59638, // Frostbolt
       155152, // Prismatic Crystal
-      135029, // Water Jet
        31707, // Waterbolt
            0,
     },
@@ -846,7 +846,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     // Demonology tree, 11 abilities
     {
       104316, // Call Dreadstalkers
-      265187, // Demon Commander
       264178, // Demonbolt
       234153, // Drain Life
       111898, // Grimoire: Felguard (Summon)
@@ -855,6 +854,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          686, // Shadow Bolt
        30283, // Shadowfury
       196606, // Shadowy Inspiration
+      265187, // Summon Demonic Tyrant
        30146, // Summon Felguard (Summon)
            0,
     },
@@ -1202,7 +1202,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (35)
 
-// Talent tree specialization abilities, wow build 26175
+// Talent tree specialization abilities, wow build 26231
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1462,6 +1462,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        19801, // Tranquilizing Shot
       262837, // Cobra Shot (Rank 2)
       262838, // Cobra Shot (Rank 3)
+       19577, // Intimidation
            0,
     },
     // Specialization abilities for Marksmanship
@@ -1477,7 +1478,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       193468, // Mastery: Sniper Training (Mastery)
       193526, // Trueshot
          781, // Disengage
-      212658, // Hunting Party
       231549, // Disengage (Rank 2)
       109304, // Exhilaration
       231546, // Exhilaration (Rank 2)
@@ -1495,7 +1495,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Survival
     {
       137017, // Survival Hunter
-      164856, // Survivalist
       186270, // Raptor Strike
       187650, // Freezing Trap
       187698, // Tar Trap
@@ -1517,6 +1516,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        34477, // Misdirection
       266779, // Coordinated Assault
       186289, // Aspect of the Eagle
+       19577, // Intimidation
            0,
     },
     {
@@ -1654,11 +1654,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       186440, // Shadow Mend
       194509, // Power Word: Radiance
         8122, // Psychic Scream
-      200829, // Plea
        45243, // Focused Will
       212036, // Mass Resurrection
         2061, // Flash Heal
-      200347, // The Penitent
       231682, // Smite (Rank 2)
       262861, // Smite (Rank 2)
            0,
@@ -1968,7 +1966,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       231584, // Brain Freeze (Rank 2)
       231582, // Shatter (Rank 2)
       231596, // Freeze (Pet)
-      231598, // Water Jet (Pet)
       108853, // Fire Blast
       235219, // Cold Snap
        11426, // Ice Barrier
@@ -2012,8 +2009,8 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       234153, // Drain Life
        30283, // Shadowfury
       264178, // Demonbolt
-      267102, // Molten Core
-      265187, // Demon Commander
+      267102, // Demonic Core
+      265187, // Summon Demonic Tyrant
       196277, // Implosion
            0,
     },
@@ -2235,6 +2232,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       231070, // Ironfur (Rank 2)
       159456, // Travel Form (Rank 2)
       228545, // Shapeshift Form (Shapeshift)
+      270100, // Bear Form (Rank 2)
            0,
     },
     // Specialization abilities for Restoration
@@ -2316,7 +2314,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26175
+// Class mastery abilities, wow build 26231
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2555,7 +2553,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26175
+// Racial abilities, wow build 26231
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3467,7 +3465,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26175
+// Set bonus data, wow build 26231
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4186,9 +4184,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
 };
-#define RPPMMOD_SIZE (866)
+#define RPPMMOD_SIZE (869)
 
-// 866 RPPM Modifiers, wow build level 26175
+// 869 RPPM Modifiers, wow build level 26231
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5056,11 +5054,14 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 268912,    4,  1,  1.0000 },
   { 269009,    4,  1,  1.0000 },
   { 269066,    4,  1,  1.0000 },
+  { 269853,    4,  1,  1.0000 },
+  { 270668,    4,  1,  1.0000 },
+  { 270679,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 26175
+// Artifact base data, wow build 26231
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -5107,7 +5108,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 
 #define ARTIFACT_POWER_SIZE (908)
 
-// Artifact power data, wow build 26175
+// Artifact power data, wow build 26231
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   { 1739,   0,  64,  0,   3, 250879, "Netherlight Fortification"          }, // Netherlight Fortification (id=250879, n_ranks=3)
   { 1770,   0,  64,  0,   3, 252088, "Light Speed"                        }, // Light Speed (id=252088, n_ranks=3)
@@ -5651,7 +5652,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   { 1345,  46,   0,  0,   1, 216122, "Invoke the Light"                   }, // Invoke the Light (id=216122, n_ranks=1)
   { 1379,  46,   5,  0,  20, 214925, "Forbidden Flame"                    }, // Forbidden Flame (id=214925, n_ranks=20)
   { 1436,  46,   8,  0,   0, 219655, "Artificial Damage"                  }, // Artificial Damage (id=219655, n_ranks=1)
-  { 1565,  46,  32, 13,   4, 238063, "Lenience's Reward"                  }, // Lenience's Reward (id=238063, n_ranks=8)
+  { 1565,  46,  32, 13,   4, 238063, "Lenience"                           }, // Lenience (id=238063, n_ranks=8)
   { 1566,  46,   0,  0,   1, 238099, "Tyranny of Pain"                    }, // Tyranny of Pain (id=238099, n_ranks=1)
   { 1567,  46,   1,  0,   1, 238135, "Aegis of Wrath"                     }, // Aegis of Wrath (id=238135, n_ranks=1)
   { 1568,  46,   5,  0,  50, 239042, "Concordance of the Legionfall"      }, // Concordance of the Legionfall (id=239042, n_ranks=100)
@@ -6020,7 +6021,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (7746)
 
-// Artifact power rank data, wow build 26175
+// Artifact power rank data, wow build 26231
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   {  2316,   40,  0, 205273,      0.000, 0x00000000, 0 },
   {  2317,   41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -13771,7 +13772,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
 };
 #define ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 artifact_power_rank hotfix entries, wow build level 26175
+// 0 artifact_power_rank hotfix entries, wow build level 26231
 static hotfix::client_hotfix_entry_t __artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };
