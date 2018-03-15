@@ -3426,6 +3426,8 @@ struct frostbolt_t : public frost_mage_spell_t
 
     double bf_proc_chance = p() -> spec.brain_freeze -> effectN( 1 ).percent();
     bf_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B2 ) -> effectN( 1 ).percent();
+    bf_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
+    // TODO: Double check if it interacts this way
     trigger_brain_freeze( bf_proc_chance );
 
     p() -> buffs.t19_oh_buff -> trigger();
@@ -3511,7 +3513,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     {
       double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
       fof_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
-      fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
       trigger_fof( fof_proc_chance );
     }
   }
