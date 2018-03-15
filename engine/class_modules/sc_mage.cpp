@@ -3495,8 +3495,6 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   {
     aoe = -1;
     background = true;
-
-    base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
     chills = true;
   }
 
