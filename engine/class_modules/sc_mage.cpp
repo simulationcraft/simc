@@ -7905,12 +7905,6 @@ public:
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_spell( "Mage", "2017-01-11", "Incorrect spell level for Frozen Orb bolt.", 84721 )
-      .field( "spell_level" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 57 )
-      .verification_value( 81 );
-
     hotfix::register_spell( "Mage", "2017-11-06", "Incorrect spell level for Icicles driver.", 148012 )
       .field( "spell_level" )
       .operation( hotfix::HOTFIX_SET )
