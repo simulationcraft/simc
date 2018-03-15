@@ -3512,7 +3512,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     frost_mage_spell_t::execute();
     if ( hit_any_target )
     {
-      double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
+      double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 2 ).percent();
       fof_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
       trigger_fof( fof_proc_chance );
     }
