@@ -1445,7 +1445,7 @@ js::sc_js_t to_json( const sim_t::overrides_t& o )
   js::sc_js_t node;
   node.set( "arcane_intellect", o.arcane_intellect );
   node.set( "chaos_brand", o.chaos_brand );
-  node.set( "expose_armor", o.expose_armor );
+  node.set( "mystic_touch", o.mystic_touch );
   node.set( "mortal_wounds", o.mortal_wounds );
   node.set( "bleeding", o.bleeding );
   node.set( "bloodlust", o.bloodlust );

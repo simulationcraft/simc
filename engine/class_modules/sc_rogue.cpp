@@ -664,7 +664,6 @@ struct rogue_t : public player_t
   void trigger_t21_4pc_assassination( const action_state_t* state );
   void trigger_t21_4pc_outlaw( const action_state_t* state );
   void trigger_t21_4pc_subtlety( const action_state_t* state );
-  void trigger_expose_armor( const action_state_t* state );
 
   // On-death trigger for Venomous Wounds energy replenish
   void trigger_venomous_wounds_death( player_t* );
@@ -1930,7 +1929,6 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_blade_flurry( state );
   p() -> trigger_shadow_techniques( state );
   p() -> trigger_insignia_of_ravenholdt( state );
-  p() -> trigger_expose_armor( state );
 
   if ( result_is_hit( state -> result ) )
   {
@@ -2077,8 +2075,6 @@ inline bool rogue_attack_t::ready()
 void rogue_attack_t::tick( dot_t* d )
 {
   melee_attack_t::tick( d );
-
-  p() -> trigger_expose_armor( d -> state );
 }
 
 // Melee Attack =============================================================
@@ -5702,17 +5698,6 @@ void rogue_t::trigger_t21_4pc_subtlety( const action_state_t* state )
   if ( rng().roll( sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> proc_chance() ) )
   {
     buffs.t21_4pc_subtlety -> trigger();
-  }
-}
-
-void rogue_t::trigger_expose_armor( const action_state_t* state )
-{
-  if ( ! sim -> overrides.expose_armor
-    && state -> action -> result_is_hit( state -> result )
-    && spell.expose_armor -> ok()
-    && state -> result_amount > 0.0 )
-  {
-    state -> target -> debuffs.expose_armor -> trigger();
   }
 }
 

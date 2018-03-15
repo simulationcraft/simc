@@ -513,6 +513,7 @@ public:
     const spell_data_t* chi_wave_damage;
     const spell_data_t* chi_wave_heal;
     const spell_data_t* healing_elixir;
+    const spell_data_t* mystic_touch;
     // Brewmaster
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
@@ -2625,6 +2626,19 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     else
     {
       return base_t::amount_type( state, periodic );
+    }
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+
+    if ( !sim -> overrides.mystic_touch
+      && s -> action -> result_is_hit( s -> result )
+      && p() -> passives.mystic_touch -> ok()
+      && s -> result_amount > 0.0 )
+    {
+      s -> target -> debuffs.mystic_touch -> trigger();
     }
   }
 };
@@ -6985,6 +6999,7 @@ void monk_t::init_spells()
   passives.chi_wave_damage                  = find_spell( 132467 );
   passives.chi_wave_heal                    = find_spell( 132463 );
   passives.healing_elixir                   = find_spell( 122281 ); // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
+  passives.mystic_touch                     = find_spell( 8647 );
 
   // Brewmaster
   passives.breath_of_fire_dot               = find_spell( 123725 );

@@ -2760,7 +2760,7 @@ void player_t::create_buffs()
     debuffs.chaos_brand  = buff_creator_t( this, "chaos_brand", find_spell( 1490 ) )
                            .default_value( find_spell( 1490 ) -> effectN( 1 ).percent() )
                            .cd( timespan_t::from_seconds( 5.0 ) );
-    debuffs.expose_armor = buff_creator_t( this, "expose_armor", find_spell( 113746 ) )
+    debuffs.mystic_touch = buff_creator_t( this, "mystic_touch", find_spell( 113746 ) )
                            .default_value( find_spell( 113746 ) -> effectN( 1 ).percent() )
                            .cd( timespan_t::from_seconds( 5.0 ) );
   }
@@ -3676,8 +3676,8 @@ double player_t::composite_player_vulnerability( school_e school ) const
   if ( debuffs.damage_taken && debuffs.damage_taken -> check() )
     m *= 1.0 + debuffs.damage_taken -> current_stack * 0.01;
 
-  if ( debuffs.expose_armor && dbc::has_common_school( debuffs.expose_armor -> data().effectN( 1 ).school_type(), school ) )
-    m *= 1.0 + debuffs.expose_armor -> value();
+  if ( debuffs.mystic_touch && dbc::has_common_school( debuffs.mystic_touch -> data().effectN( 1 ).school_type(), school ) )
+    m *= 1.0 + debuffs.mystic_touch -> value();
 
   if ( debuffs.chaos_brand && dbc::has_common_school( debuffs.chaos_brand -> data().effectN( 1 ).school_type(), school ) )
     m *= 1.0 + debuffs.chaos_brand -> value();
@@ -4589,7 +4589,7 @@ void player_t::arise()
     } );
 
     if ( sim -> overrides.chaos_brand   && debuffs.chaos_brand   ) debuffs.chaos_brand   -> override_buff();
-    if ( sim -> overrides.expose_armor  && debuffs.expose_armor  ) debuffs.expose_armor  -> override_buff();
+    if ( sim -> overrides.mystic_touch  && debuffs.mystic_touch  ) debuffs.mystic_touch  -> override_buff();
     if ( sim -> overrides.bleeding      && debuffs.bleeding      ) debuffs.bleeding      -> override_buff( 1, 1.0 );
     if ( sim -> overrides.mortal_wounds && debuffs.mortal_wounds ) debuffs.mortal_wounds -> override_buff();
   }

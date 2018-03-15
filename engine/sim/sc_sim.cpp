@@ -2966,7 +2966,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.arcane_intellect        = optimal_raid;
 
   overrides.chaos_brand             = optimal_raid;
-  overrides.expose_armor            = optimal_raid;
+  overrides.mystic_touch            = optimal_raid;
   overrides.mortal_wounds           = optimal_raid;
   overrides.bleeding                = optimal_raid;
 
@@ -3187,7 +3187,7 @@ void sim_t::create_options()
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
   add_option( opt_int( "override.chaos_brand", overrides.chaos_brand ) );
-  add_option( opt_int( "override.expose_armor", overrides.expose_armor ) );
+  add_option( opt_int( "override.mystic_touch", overrides.mystic_touch ) );
   add_option( opt_int( "override.mortal_wounds", overrides.mortal_wounds ) );
   add_option( opt_int( "override.bleeding", overrides.bleeding ) );
   add_option( opt_func( "override.spell_data", parse_override_spell_data ) );
