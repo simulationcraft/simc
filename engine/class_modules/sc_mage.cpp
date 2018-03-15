@@ -1962,7 +1962,7 @@ struct frost_mage_spell_t : public mage_spell_t
 
   double icicle_sp_coefficient() const
   {
-    return p() -> cache.mastery() * p() -> spec.icicles -> effectN( 3 ).mastery_value();
+    return p() -> cache.mastery() * p() -> spec.icicles -> effectN( 3 ).sp_coeff();
   }
 
   void trigger_icicle_gain( action_state_t* state, action_t* icicle_action )
