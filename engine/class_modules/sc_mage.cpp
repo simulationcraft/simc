@@ -4556,8 +4556,9 @@ struct ray_of_frost_t : public frost_mage_spell_t
   {
     parse_options( options_str );
 
-    channeled         = true;
-    hasted_ticks      = true;
+    channeled = true;
+    hasted_ticks = true;
+    chills = true;
   }
 
   virtual bool init_finished() override
