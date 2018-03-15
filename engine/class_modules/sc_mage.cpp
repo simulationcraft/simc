@@ -397,7 +397,7 @@ public:
     buff_t* ignition;                // T20 2pc Fire
     buff_t* streaking;               // T19 4pc Fire
     buff_t* inferno;                 // T21 4pc Fire
-    buff_t* ultimate_pyroblast;
+    buff_t* pyroclasm;
 
 
     // Frost
@@ -3231,7 +3231,7 @@ struct flamestrike_t : public fire_mage_spell_t
       p() -> buffs.hot_streak -> expire();
 
       p() -> buffs.kaelthas_ultimate_ability -> trigger();
-      p() -> buffs.ultimate_pyroblast -> trigger();
+      p() -> buffs.pyroclasm -> trigger();
 
       if ( p() -> talents.pyromaniac -> ok()
         && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
@@ -4474,7 +4474,7 @@ struct pyroblast_t : public fire_mage_spell_t
     if ( ! benefits_from_hot_streak() )
     {
       am *= 1.0 + p() -> buffs.kaelthas_ultimate_ability -> check_value()
-                + p() -> buffs.ultimate_pyroblast -> check_value();
+                + p() -> buffs.pyroclasm -> check_value();
     }
 
     am *= 1.0 + p() -> buffs.critical_massive -> value();
@@ -4514,7 +4514,7 @@ struct pyroblast_t : public fire_mage_spell_t
       p() -> buffs.hot_streak -> expire();
 
       p() -> buffs.kaelthas_ultimate_ability -> trigger();
-      p() -> buffs.ultimate_pyroblast -> trigger();
+      p() -> buffs.pyroclasm -> trigger();
 
       if ( p() -> talents.pyromaniac -> ok()
         && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
@@ -4527,7 +4527,7 @@ struct pyroblast_t : public fire_mage_spell_t
     else
     {
       p() -> buffs.kaelthas_ultimate_ability -> expire();
-      p() -> buffs.ultimate_pyroblast -> expire();
+      p() -> buffs.pyroclasm -> expire();
     }
   }
 
@@ -5955,7 +5955,7 @@ void mage_t::create_buffs()
   buffs.hot_streak             = make_buff( this, "hot_streak",  find_spell( 48108 ) );
   buffs.streaking              = make_buff<haste_buff_t>( this, "streaking", find_spell( 211399 ) )
                                    -> set_default_value( find_spell( 211399 ) -> effectN( 1 ).percent() );
-  buffs.ultimate_pyroblast     = make_buff( this, "ultimate_pyroblast", find_spell( 269651 ) )
+  buffs.pyroclasm              = make_buff( this, "pyroclasm", find_spell( 269651 ) )
                                    -> set_default_value( find_spell( 269651 ) -> effectN( 1 ).percent() )
                                    -> set_chance( talents.pyroclasm -> effectN( 1 ).percent() );
 
