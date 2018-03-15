@@ -27,7 +27,7 @@ class XFTHParser(DBCParserBase):
         self.parsers = {}
 
         # See that file exists already
-    def get_string(self, offset):
+    def get_string(self, offset, record_id, field_index):
         if offset == 0:
             return None
 
