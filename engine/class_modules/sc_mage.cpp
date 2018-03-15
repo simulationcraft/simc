@@ -2774,7 +2774,7 @@ struct blizzard_t : public frost_mage_spell_t
 
   virtual timespan_t execute_time() const override
   {
-    if ( p() -> buffs.freezing_rain -> up() )
+    if ( p() -> buffs.freezing_rain -> check() )
     {
       return timespan_t::zero();
     }
