@@ -581,6 +581,7 @@ public:
     const spell_data_t* ice_nova;
     const spell_data_t* frozen_touch;
     const spell_data_t* splitting_ice;
+    const spell_data_t* ebonbolt;
 
     // Tier 75
     const spell_data_t* chrono_shift;
@@ -3033,7 +3034,7 @@ struct evocation_t : public arcane_mage_spell_t
 struct ebonbolt_t : public frost_mage_spell_t
 {
   ebonbolt_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "ebonbolt", p, p -> find_talent_spell( "Ebonbolt" ) )
+    frost_mage_spell_t( "ebonbolt", p, p -> talents.ebonbolt )
   {
     parse_options( options_str );
     parse_effect_data( p -> find_spell( 257538 ) -> effectN( 1 ) );
@@ -5788,6 +5789,7 @@ void mage_t::init_spells()
   talents.ice_nova           = find_talent_spell( "Ice Nova"           );
   talents.frozen_touch       = find_talent_spell( "Frozen Touch"       );
   talents.splitting_ice      = find_talent_spell( "Splitting Ice"      );
+  talents.ebonbolt           = find_talent_spell( "Ebonbolt"           );
   // Tier 75
   talents.chrono_shift       = find_talent_spell( "Chrono Shift"       );
   talents.frenetic_speed     = find_talent_spell( "Frenetic Speed"     );
