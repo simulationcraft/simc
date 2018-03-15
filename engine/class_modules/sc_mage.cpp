@@ -5086,7 +5086,6 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
   double um_proc_rate;
   switch ( p() -> specialization() )
   {
-    // TODO: Check spelldata
     case MAGE_ARCANE:
       um_proc_rate = p() -> action.unstable_magic_explosion
                          -> data().effectN( 1 ).percent();
@@ -5599,7 +5598,7 @@ bool mage_t::create_actions()
     action.arcane_assault = new arcane_assault_t( this );
   }
 
-  if ( talents.unstable_magic -> ok() && specialization() != MAGE_FROST )
+  if ( talents.unstable_magic -> ok() )
   {
     action.unstable_magic_explosion = new unstable_magic_explosion_t( this );
   }
