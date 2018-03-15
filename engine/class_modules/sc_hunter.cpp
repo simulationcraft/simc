@@ -879,10 +879,21 @@ public:
   hunter_pet_t( hunter_t* owner, const std::string& pet_name, pet_e pt = PET_HUNTER, bool guardian = false, bool dynamic = false ) :
     base_t( owner -> sim, owner, pet_name, pt, guardian, dynamic )
   {
+    owner_coeff.ap_from_ap = 0.6;
+
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
   }
 
   hunter_t* o()             { return static_cast<hunter_t*>( owner ); }
   const hunter_t* o() const { return static_cast<hunter_t*>( owner ); }
+
+  double composite_melee_attack_power() const override
+  {
+    // does not handle sp -> ap but we don't have sp so...
+    const double ap = owner -> cache.attack_power() + owner -> main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
+    return ap * owner -> composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
+  }
 };
 
 // Template for common hunter pet action code.
@@ -1012,12 +1023,6 @@ public:
     gains( gains_t() ),
     benefits( benefits_t() )
   {
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( owner -> type, owner -> level() ) * 0.25;
-    main_hand_weapon.max_dmg    = dbc.spell_scaling( owner -> type, owner -> level() ) * 0.25;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
     stamina_per_owner = 0.7;
 
     initial.armor_multiplier *= 1.05;
@@ -1045,9 +1050,6 @@ public:
     base_gcd = timespan_t::from_seconds( 1.50 );
 
     resources.infinite_resource[RESOURCE_FOCUS] = o() -> resources.infinite_resource[RESOURCE_FOCUS];
-
-    owner_coeff.ap_from_ap = 0.6;
-    owner_coeff.sp_from_ap = 0.6;
   }
 
   void create_buffs() override
@@ -1238,7 +1240,6 @@ struct hunter_secondary_pet_t: public hunter_pet_t
   hunter_secondary_pet_t( hunter_t* owner, const std::string &pet_name ):
     hunter_pet_t( owner, pet_name, PET_HUNTER, true /*GUARDIAN*/ )
   {
-    owner_coeff.ap_from_ap = 1.15;
     regen_type = REGEN_DISABLED;
   }
 
@@ -1251,11 +1252,6 @@ struct hunter_secondary_pet_t: public hunter_pet_t
     resources.base[RESOURCE_MANA] = 0;
 
     stamina_per_owner = 0;
-
-    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, o() -> level() );
-    main_hand_weapon.max_dmg    = main_hand_weapon.min_dmg;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2 );
-    main_hand_weapon.type       = WEAPON_BEAST;
   }
 
   void summon( timespan_t duration = timespan_t::zero() ) override
@@ -1294,7 +1290,6 @@ struct dire_critter_t: public hunter_secondary_pet_t
   dire_critter_t( hunter_t* owner ):
     hunter_secondary_pet_t( owner, std::string( "dire_beast" ) )
   {
-    owner_coeff.ap_from_ap = 1.4;
   }
 
   void init_base_stats() override
@@ -1386,15 +1381,6 @@ struct spitting_cobra_t: public hunter_pet_t
     hunter_pet_t( o, "spitting_cobra", PET_HUNTER,
                   false /* a "hack" to make ability_lag work */ )
   {
-    /* nuoHep 16/01/2017 0vers no buffs, orc
-     *    AP      DMG
-     *   9491    13420
-     *   22381   31646
-     * As Cobra Spit has 1x AP mult it works out to
-     * the pet having exactly 1.4 ap coeff
-     */
-    owner_coeff.ap_from_ap = 1.4;
-
     regen_type = REGEN_DISABLED;
   }
 
