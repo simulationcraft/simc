@@ -731,12 +731,50 @@ static const std::unordered_map<unsigned, const std::string> _effect_subtype_str
   { 485, "Resist Forced Movement%"                      },
 };
 
+
+static const std::unordered_map<unsigned, const char*> _mechanic_strings { {
+  { 130, "Charm"          },
+  { 134, "Disorient"      },
+  { 142, "Disarm"         },
+  { 147, "Distract"       },
+  { 154, "Flee"           },
+  { 158, "Grip"           },
+  { 162, "Root"           },
+  { 165, "Slow"           },
+  { 168, "Silence"        },
+  { 173, "Sleep"          },
+  { 176, "Snare"          },
+  { 179, "Stun"           },
+  { 183, "Freeze"         },
+  { 186, "Incapacitate"   },
+  { 196, "Bleed"          },
+  { 201, "Heal"           },
+  { 205, "Polymorph"      },
+  { 213, "Banish"         },
+  { 218, "Shield"         },
+  { 223, "Shackle"        },
+  { 228, "Mount"          },
+  { 232, "Infect"         },
+  { 237, "Turn"           },
+  { 240, "Horrify"        },
+  { 246, "Invulneraility" },
+  { 255, "Interrupt"      },
+  { 263, "Daze"           },
+  { 265, "Discover"       },
+  { 271, "Sap"            },
+  { 274, "Enrage"         },
+  { 278, "Wound"          },
+  { 282, "Taunt"          }
+} };
+
 std::string mechanic_str( unsigned mechanic ) {
-  switch ( static_cast<spell_mechanic>( mechanic ) )
+  auto it = _mechanic_strings.find( mechanic );
+  if ( it != _mechanic_strings.end() )
   {
-    case MECHANIC_BLEED: return "Bleed";
-    default:             return "Unknown(" + util::to_string( mechanic ) + ")";
+    return it -> second;
   }
+
+  return "Unknown(" + util::to_string( mechanic ) + ")";
 }
 
 std::string spell_flags( const spell_data_t* spell )
