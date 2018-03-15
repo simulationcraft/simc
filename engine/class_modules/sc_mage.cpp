@@ -4619,13 +4619,18 @@ struct ray_of_frost_t : public frost_mage_spell_t
   virtual void tick( dot_t* d ) override
   {
     frost_mage_spell_t::tick( d );
-
     p() -> buffs.ray_of_frost -> trigger();
 
     if ( d -> current_tick == 3 || d -> current_tick == 6 )
     {
       trigger_fof( 1.0 );
     }
+  }
+
+  virtual void last_tick( dot_t* d ) override
+  {
+    frost_mage_spell_t::last_tick( d );
+    p() -> buffs.ray_of_frost -> expire();
   }
 
   virtual double action_multiplier() const override
