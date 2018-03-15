@@ -884,7 +884,7 @@ class WDC1Parser(DBCParserBase):
         # Foreign key block data, just a bunch of ids (on a per record basis)
         self.key_block = []
 
-    def get_string(self, offset):
+    def get_string(self, offset, record_id, field_index):
         if offset == 0:
             return None
 
@@ -1161,7 +1161,7 @@ class WDC1Parser(DBCParserBase):
                 logging.error('Unable to find source data with dbc_id %d for cloning', source_id)
                 return False
 
-            record_info = DBCRecordInfo(target_id, record_id, source.record_offset, source.record_size, source.parent_id)
+            record_info = DBCRecordInfo(target_id, source.record_id, source.record_offset, source.record_size, source.parent_id)
             self.id_table.append(record_info)
 
             if target_id > self.last_id:
@@ -1309,13 +1309,13 @@ class WDC1Parser(DBCParserBase):
         return True
 
     def parse_blocks(self):
+        if self.has_extended_column_info_block() and not self.parse_extended_column_info_block():
+            return False
+
         if self.has_id_block() and not self.parse_id_block():
             return False
 
         if self.has_clone_block() and not self.parse_clone_block():
-            return False
-
-        if self.has_extended_column_info_block() and not self.parse_extended_column_info_block():
             return False
 
         if self.has_sparse_block() and not self.parse_sparse_block():
@@ -1366,31 +1366,31 @@ class WDC1Parser(DBCParserBase):
         fields.append('byte_size={}'.format(len(self.data)))
 
         fields.append('records={} ({})'.format(self.records, self.n_records()))
-        fields.append('record_size={}'.format(self.record_size))
         fields.append('fields={} ({})'.format(self.fields, self.total_fields))
-        fields.append('first_id={}'.format(self.first_id))
-        fields.append('last_id={}'.format(self.last_id))
-
-        fields.append('locale={:#010x}'.format(self.locale))
+        fields.append('record_size={}'.format(self.record_size))
+        fields.append('string_block_size={}'.format(self.string_block_size))
         fields.append('table_hash={:#010x}'.format(self.table_hash))
         fields.append('layout_hash={:#010x}'.format(self.layout_hash))
+        fields.append('first_id={}'.format(self.first_id))
+        fields.append('last_id={}'.format(self.last_id))
+        fields.append('locale={:#010x}'.format(self.locale))
 
+        fields.append('clone_block_size={}'.format(self.clone_block_size))
         fields.append('flags={:#06x}'.format(self.flags))
         fields.append('id_index={}'.format(self.id_index))
+        fields.append('total_fields={}'.format(self.total_fields))
 
-        fields.append('string_block_size={}'.format(self.string_block_size))
-        fields.append('clone_block_size={}'.format(self.clone_block_size))
+        fields.append('ofs_record_packed_data={}'.format(self.packed_data_offset))
+        fields.append('wdc1_unk1={}'.format(self.wdc1_unk3))
+
+        if not self.has_offset_map():       fields.append('ofs_data={}'.format(self.data_offset))
         fields.append('id_block_size={}'.format(self.id_block_size))
         fields.append('column_info_block_size={}'.format(self.column_info_block_size))
-        fields.append('column_data_block_size={}'.format(self.column_data_block_size))
         fields.append('sparse_block_size={}'.format(self.sparse_block_size))
+        fields.append('column_data_block_size={}'.format(self.column_data_block_size))
         fields.append('key_block_size={}'.format(self.key_block_size))
 
-        fields.append('wdc1_unk1={}'.format(self.wdc1_unk3))
-        fields.append('ofs_record_packed_data={}'.format(self.packed_data_offset))
-
         # Offsets to blocks
-        if not self.has_offset_map():       fields.append('ofs_data={}'.format(self.data_offset))
         if self.string_block_size > 0:      fields.append('ofs_string_block={}'.format(self.string_block_offset))
         if self.has_offset_map():           fields.append('ofs_offset_map={}'.format(self.offset_map_offset))
         if self.has_id_block():             fields.append('ofs_id_block={}'.format(self.id_block_offset))
