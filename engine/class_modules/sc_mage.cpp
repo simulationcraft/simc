@@ -363,7 +363,6 @@ public:
     } arcane_charge;
 
     buff_stack_benefit_t* magtheridons_might;
-    buff_stack_benefit_t* ray_of_frost;
     buff_stack_benefit_t* zannesu_journey;
   } benefits;
 
@@ -442,7 +441,6 @@ public:
     cooldown_t* frozen_orb;
     cooldown_t* icy_veins;
     cooldown_t* presence_of_mind;
-    cooldown_t* ray_of_frost;
     cooldown_t* time_warp;
   } cooldowns;
 
@@ -1288,33 +1286,6 @@ struct lady_vashjs_grasp_t : public buff_t
       p -> buffs.fingers_of_frost -> predict();
       proc_fof -> occur();
     } );
-  }
-};
-
-struct ray_of_frost_buff_t : public buff_t
-{
-  timespan_t rof_cd;
-
-  ray_of_frost_buff_t( mage_t* p ) :
-    buff_t( p, "ray_of_frost", p -> find_spell( 208141 ) )
-  {
-    set_default_value( data().effectN( 1 ).percent() );
-    const spell_data_t* rof_data = p -> find_spell( 205021 );
-    rof_cd = rof_data -> cooldown() - rof_data -> duration();
-  }
-
-  virtual void expire_override( int stacks, timespan_t duration ) override
-  {
-    buff_t::expire_override( stacks, duration );
-
-    auto mage = debug_cast<mage_t*>( player );
-    // 205021 is the spell id for Ray of Frost
-    if ( mage -> channeling && mage -> channeling -> id == 205021 )
-    {
-      mage -> channeling -> interrupt_action();
-    }
-
-    mage -> cooldowns.ray_of_frost -> start( rof_cd );
   }
 };
 
@@ -4750,38 +4721,22 @@ struct ray_of_frost_t : public frost_mage_spell_t
     hasted_ticks      = true;
   }
 
-  virtual void init() override
+  virtual bool init_finished() override
   {
-    frost_mage_spell_t::init();
-    update_flags |= STATE_HASTE; // Not snapshotted for this spell.
-  }
-
-  virtual void execute() override
-  {
-    frost_mage_spell_t::execute();
-
-    p() -> cooldowns.ray_of_frost -> reset( false );
-
-    // Technically, the "castable duration" buff should be ID:208166
-    // To keep things simple, we just apply a 0 stack of the damage buff 208141
-    if ( ! p() -> buffs.ray_of_frost -> check() )
-    {
-      p() -> buffs.ray_of_frost -> trigger( 0 );
-    }
-  }
-
-  virtual timespan_t composite_dot_duration( const action_state_t* /* s */ ) const override
-  {
-    return data().duration();
+    proc_fof = p() -> get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
+    return frost_mage_spell_t::init_finished();
   }
 
   virtual void tick( dot_t* d ) override
   {
-    p() -> benefits.ray_of_frost -> update();
-
     frost_mage_spell_t::tick( d );
 
-    p() -> buffs.ray_of_frost -> bump( 1, p() -> buffs.ray_of_frost -> default_value );
+    p() -> buffs.ray_of_frost -> trigger();
+
+    if ( d -> current_tick == 3 || d -> current_tick == 6 )
+    {
+      trigger_fof( 1.0 );
+    }
   }
 
   virtual double action_multiplier() const override
@@ -5586,7 +5541,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
   cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
   cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
-  cooldowns.ray_of_frost     = get_cooldown( "ray_of_frost"     );
   cooldowns.time_warp        = get_cooldown( "time_warp"        );
 
   // Options
@@ -5623,7 +5577,6 @@ mage_t::~mage_t()
   delete benefits.arcane_charge.arcane_blast;
   delete benefits.arcane_charge.nether_tempest;
   delete benefits.magtheridons_might;
-  delete benefits.ray_of_frost;
   delete benefits.zannesu_journey;
 
   delete sample_data.burn_duration_history;
@@ -6170,7 +6123,8 @@ void mage_t::create_buffs()
   // than 5 actual Icicles.
   buffs.icicles                = make_buff( this, "icicles", find_spell( 205473 ) );
   buffs.icy_veins              = make_buff<buffs::icy_veins_buff_t>( this );
-  buffs.ray_of_frost           = make_buff<buffs::ray_of_frost_buff_t>( this );
+  buffs.ray_of_frost           = make_buff( this, "ray_of_frost", find_spell( 208141 ) )
+                                   -> set_default_value( find_spell( 208141 ) -> effectN( 1 ).percent() );
 
 
   // Talents
@@ -6287,12 +6241,6 @@ void mage_t::init_benefits()
     {
       benefits.magtheridons_might =
         new buff_stack_benefit_t( buffs.magtheridons_might, "Ice Lance +" );
-    }
-
-    if ( talents.ray_of_frost -> ok() )
-    {
-      benefits.ray_of_frost =
-        new buff_stack_benefit_t( buffs.ray_of_frost, "Ray of Frost Tick +" );
     }
 
     if ( buffs.zannesu_journey -> default_chance != 0.0 )
