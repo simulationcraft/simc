@@ -522,7 +522,7 @@
     { "data_type": "B", "field": "unk_2" }
   ],
   "SpellMechanic": [
-    { "data_type": "I", "field": "mechanic", "formats": { "cpp": "%2u" } }
+    { "data_type": "S", "field": "mechanic", "formats": { "cpp": "%2u" } }
   ],
   "SpellMisc": [
     { "data_type": "H", "field": "id_cast_time" },
