@@ -104,7 +104,6 @@ struct mage_td_t : public actor_target_data_t
     buff_t* erosion;
     buff_t* slow;
     buff_t* frost_bomb;
-    buff_t* water_jet;
     buff_t* winters_chill;
     buff_t* frozen;
   } debuffs;
@@ -901,9 +900,8 @@ struct water_elemental_pet_t : public mage_pet_t
   virtual void init_action_list() override
   {
     clear_action_priority_lists();
-    auto default_list = get_action_priority_list( "default" );
 
-    default_list -> add_action( this, find_pet_spell( "Water Jet" ), "Water Jet" );
+    auto default_list = get_action_priority_list( "default" );
     default_list -> add_action( this, find_pet_spell( "Waterbolt" ), "Waterbolt" );
 
     // Default
@@ -916,29 +914,10 @@ struct water_elemental_pet_t : public mage_pet_t
                                    const std::string& options_str ) override;
 };
 
-struct water_elemental_spell_t : public mage_pet_spell_t
-{
-  water_elemental_spell_t( const std::string& n, mage_pet_t* p, const spell_data_t* s )
-    : mage_pet_spell_t( n, p, s )
-  { }
-
-  virtual double action_multiplier() const override
-  {
-    double am = mage_pet_spell_t::action_multiplier();
-
-    if ( o() -> spec.icicles -> ok() )
-    {
-      am *= 1.0 + o() -> cache.mastery_value();
-    }
-
-    return am;
-  }
-};
-
-struct waterbolt_t : public water_elemental_spell_t
+struct waterbolt_t : public mage_pet_spell_t
 {
   waterbolt_t( water_elemental_pet_t* p, const std::string& options_str )
-    : water_elemental_spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
+    : mage_pet_spell_t( "waterbolt", p, p -> find_pet_spell( "Waterbolt" ) )
   {
     parse_options( options_str );
     trigger_gcd = timespan_t::zero();
@@ -946,7 +925,7 @@ struct waterbolt_t : public water_elemental_spell_t
 
   virtual timespan_t execute_time() const override
   {
-    timespan_t cast_time = water_elemental_spell_t::execute_time();
+    timespan_t cast_time = mage_pet_spell_t::execute_time();
 
     // For some reason welly seems to have a cap'd rate of cast of
     // 1.5/second. Instead of modeling this as a cooldown/GCD (like it is in game)
@@ -955,103 +934,20 @@ struct waterbolt_t : public water_elemental_spell_t
   }
 };
 
-struct freeze_t : public water_elemental_spell_t
+struct freeze_t : public mage_pet_spell_t
 {
-  proc_t* proc_fof;
-
   freeze_t( water_elemental_pet_t* p ) :
-    water_elemental_spell_t( "freeze", p, p -> find_pet_spell( "Freeze" ) )
+    mage_pet_spell_t( "freeze", p, p -> find_pet_spell( "Freeze" ) )
   {
     background = true;
     aoe = -1;
-
-    internal_cooldown = p -> get_cooldown( "wj_freeze" );
-    internal_cooldown -> duration = data().category_cooldown();
-  }
-
-  virtual bool init_finished() override
-  {
-    proc_fof = o() -> get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
-    return water_elemental_spell_t::init_finished();
   }
 
   virtual void impact( action_state_t* s ) override
   {
-    water_elemental_spell_t::impact( s );
+    mage_pet_spell_t::impact( s );
 
-    bool success = o() -> apply_crowd_control( s, MECHANIC_ROOT );
-    if ( success )
-    {
-      o() -> buffs.fingers_of_frost -> trigger();
-      o() -> buffs.fingers_of_frost -> predict();
-      proc_fof -> occur();
-    }
-  }
-};
-
-struct water_jet_t : public water_elemental_spell_t
-{
-  // queued water jet spell, auto cast water jet spell
-  bool queued;
-  bool autocast;
-
-  water_jet_t( water_elemental_pet_t* p, const std::string& options_str )
-    : water_elemental_spell_t( "water_jet", p, p -> find_pet_spell( "Water Jet" ) ),
-      queued( false ),
-      autocast( true )
-  {
-    parse_options( options_str );
-    channeled = tick_zero = true;
-
-    internal_cooldown = p -> get_cooldown( "wj_freeze" );
-    internal_cooldown -> duration = data().category_cooldown();
-  }
-
-  virtual void execute() override
-  {
-    // If this is a queued execute, disable queued status
-    if ( ! autocast && queued )
-      queued = false;
-
-    // Don't execute Water Jet if Water Elemental used Freeze
-    // during the cast
-    if ( internal_cooldown -> up() )
-    {
-      water_elemental_spell_t::execute();
-    }
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    water_elemental_spell_t::impact( s );
-
-    o() -> get_target_data( s -> target )
-        -> debuffs.water_jet -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, composite_dot_duration( s ) );
-  }
-
-  virtual void last_tick( dot_t* d ) override
-  {
-    water_elemental_spell_t::last_tick( d );
-
-    // If the channel is cancelled early, remove the debuff.
-    o() -> get_target_data( d -> target )
-        -> debuffs.water_jet -> expire();
-  }
-
-  virtual bool ready() override
-  {
-    // Not ready, until the owner gives permission to cast
-    if ( ! autocast && ! queued )
-      return false;
-
-    return water_elemental_spell_t::ready();
-  }
-
-  virtual void reset() override
-  {
-    water_elemental_spell_t::reset();
-
-    queued = false;
+    o() -> apply_crowd_control( s, MECHANIC_ROOT );
   }
 };
 
@@ -1060,8 +956,6 @@ action_t* water_elemental_pet_t::create_action( const std::string& name,
 {
   if ( name == "waterbolt" )
     return new waterbolt_t( this, options_str );
-  if ( name == "water_jet" )
-    return new water_jet_t( this, options_str );
 
   return mage_pet_t::create_action( name, options_str );
 }
@@ -3588,8 +3482,6 @@ struct frost_bomb_t : public frost_mage_spell_t
 
 struct frostbolt_t : public frost_mage_spell_t
 {
-  proc_t* proc_fof_water_jet;
-
   frostbolt_t( mage_t* p, const std::string& options_str ) :
     frost_mage_spell_t( "frostbolt", p, p -> find_specialization_spell( "Frostbolt" ) )
   {
@@ -3613,7 +3505,6 @@ struct frostbolt_t : public frost_mage_spell_t
   virtual bool init_finished() override
   {
     proc_fof = p() -> get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
-    proc_fof_water_jet = p() -> get_proc( "Fingers of Frost from Water Jet" );
     return frost_mage_spell_t::init_finished();
   }
 
@@ -3642,11 +3533,6 @@ struct frostbolt_t : public frost_mage_spell_t
       return;
 
     trigger_icicle_gain( s );
-
-    if ( td( s -> target ) -> debuffs.water_jet -> check() )
-    {
-      trigger_fof( 1.0, 1, proc_fof_water_jet );
-    }
 
     trigger_unstable_magic( s );
     trigger_shattered_fragments( s -> target );
@@ -5419,12 +5305,6 @@ struct freeze_t : public action_t
       pet_freeze -> init();
     }
 
-    auto water_jet = dynamic_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
-    if ( water_jet )
-    {
-      water_jet -> autocast = false;
-    }
-
     return ret;
   }
 
@@ -5456,95 +5336,6 @@ struct freeze_t : public action_t
   }
 };
 
-// Proxy cast Water Jet Action ================================================
-
-struct water_jet_t : public action_t
-{
-  pets::water_elemental::water_jet_t* action;
-
-  water_jet_t( mage_t* p, const std::string& options_str ) :
-    action_t( ACTION_OTHER, "water_jet", p ),
-    action( nullptr )
-  {
-    parse_options( options_str );
-
-    may_miss = may_crit = callbacks = false;
-    dual = true;
-    trigger_gcd = timespan_t::zero();
-    ignore_false_positive = true;
-    action_skill = 1;
-
-    if ( p -> talents.lonely_winter -> ok() )
-      background = true;
-  }
-
-  virtual bool init_finished() override
-  {
-    mage_t* m = debug_cast<mage_t*>( player );
-
-    if ( m -> pets.water_elemental )
-    {
-      action = dynamic_cast<pets::water_elemental::water_jet_t*>( m -> pets.water_elemental -> find_action( "water_jet" ) );
-      if ( action )
-      {
-        action -> autocast = false;
-      }
-    }
-
-    return action_t::init_finished();
-  }
-
-  virtual void execute() override
-  {
-    assert( action );
-
-    mage_t* m = debug_cast<mage_t*>( player );
-    action -> queued = true;
-
-    // Interrupt existing cast
-    if ( m -> pets.water_elemental -> executing )
-    {
-      m -> pets.water_elemental -> executing -> interrupt_action();
-    }
-
-    // Cancel existing (potential) player-ready event ..
-    if ( m -> pets.water_elemental -> readying )
-    {
-      event_t::cancel( m -> pets.water_elemental -> readying );
-    }
-
-    // and schedule a new one immediately.
-    m -> pets.water_elemental -> schedule_ready();
-  }
-
-  virtual bool ready() override
-  {
-    mage_t* m = debug_cast<mage_t*>( player );
-
-    if ( ! m -> pets.water_elemental )
-      return false;
-
-    if ( m -> pets.water_elemental -> is_sleeping() )
-      return false;
-
-    if ( ! action )
-      return false;
-
-    // Ensure that the Water Elemental's water_jet is ready. Note that this
-    // skips the water_jet_t::ready() call, and simply checks the "base" ready
-    // properties of the spell (most importantly, the cooldown). If normal
-    // ready() was called, this would always return false, as queued = false,
-    // before this action executes.
-    if ( ! action -> pets::water_elemental::water_elemental_spell_t::ready() )
-      return false;
-
-    // Don't re-execute if water jet is already queued
-    if ( action -> queued )
-      return false;
-
-    return action_t::ready();
-  }
-};
 } // namespace actions
 
 
@@ -5760,8 +5551,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.frost_bomb    = make_buff( *this, "frost_bomb", mage -> talents.frost_bomb );
   debuffs.frozen        = make_buff( *this, "frozen" )
                             -> set_duration( timespan_t::from_seconds( 0.5 ) );
-  debuffs.water_jet     = make_buff( *this, "water_jet", mage -> find_spell( 135029 ) )
-                            -> set_cooldown( timespan_t::zero() );
   debuffs.winters_chill = make_buff( *this, "winters_chill", mage -> find_spell( 228358 ) )
                             -> set_chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
 }
@@ -5924,7 +5713,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "water_elemental"        ) return new summon_water_elemental_t( this, options_str );
 
   if ( name == "freeze"                 ) return new                 freeze_t( this, options_str );
-  if ( name == "water_jet"              ) return new              water_jet_t( this, options_str );
 
   // Shared spells
   if ( name == "arcane_intellect"       ) return new       arcane_intellect_t( this, options_str );
@@ -6940,11 +6728,6 @@ void mage_t::apl_frost()
 
   single -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up",
     "In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill." );
-  single -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet|debuff.water_jet.remains>cast_time+travel_time" );
-  single -> add_action( "water_jet,if=action.frostbolt.travel_time>=spell_haste&prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<2&!buff.brain_freeze.react",
-    "Standard Frostbolt -> Water Jet -> Frostbolt combo. Used when the actor has higher haste or is far from the target." );
-  single -> add_action( "water_jet,if=action.frostbolt.travel_time<spell_haste&buff.fingers_of_frost.stack<1&!buff.brain_freeze.react",
-    "Alternate Water Jet -> Frostbolt -> Frostbolt combo. Used when the actor has low haste or is close to the target." );
   single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down" );
   single -> add_action( this, "Flurry",
     "if=buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled"
@@ -6980,13 +6763,10 @@ void mage_t::apl_frost()
   single -> add_action( this, "Ice Lance", "",
     "Use Ice Lance to do at least some damage while moving." );
 
-  aoe -> add_action( this, "Frostbolt", "if=prev_off_gcd.water_jet|debuff.water_jet.remains>cast_time+travel_time" );
   aoe -> add_action( this, "Blizzard" );
   aoe -> add_action( this, "Frozen Orb" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
-  aoe -> add_action( "water_jet,if=action.frostbolt.travel_time>=spell_haste&prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<2&!buff.brain_freeze.react" );
-  aoe -> add_action( "water_jet,if=action.frostbolt.travel_time<spell_haste&buff.fingers_of_frost.stack<1&!buff.brain_freeze.react" );
   aoe -> add_action( this, "Flurry", "if=buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)" );
   aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react" );
   aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
