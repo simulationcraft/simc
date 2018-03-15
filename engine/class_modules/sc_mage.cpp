@@ -3916,12 +3916,12 @@ struct ice_nova_t : public frost_mage_spell_t
      frost_mage_spell_t( "ice_nova", p, p -> talents.ice_nova )
   {
     parse_options( options_str );
-
     aoe = -1;
 
-    double in_mult = 1.0 + p -> talents.ice_nova -> effectN( 3 ).percent();
-    base_multiplier *= in_mult;
-    base_aoe_multiplier = 1.0 / in_mult;
+    double in_mult = p -> talents.ice_nova -> effectN( 3 ).percent();
+
+    base_multiplier     *= in_mult;
+    base_aoe_multiplier /= in_mult;
   }
 
   virtual void impact( action_state_t* s ) override
