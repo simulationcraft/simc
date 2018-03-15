@@ -103,7 +103,6 @@ struct mage_td_t : public actor_target_data_t
   {
     buff_t* erosion;
     buff_t* slow;
-    buff_t* frost_bomb;
     buff_t* winters_chill;
     buff_t* frozen;
   } debuffs;
@@ -345,7 +344,6 @@ public:
   struct actions_t
   {
     action_t* arcane_assault;
-    action_t* frost_bomb_explosion;
     action_t* legendary_arcane_orb;
     action_t* legendary_meteor;
     action_t* legendary_comet_storm;
@@ -591,7 +589,6 @@ public:
     // Tier 90
     const spell_data_t* nether_tempest;
     const spell_data_t* living_bomb;
-    const spell_data_t* frost_bomb;
     const spell_data_t* unstable_magic;
     const spell_data_t* erosion;
     const spell_data_t* flame_patch;
@@ -3391,64 +3388,6 @@ struct flurry_t : public frost_mage_spell_t
   }
 };
 
-// Frost Bomb Spell ===========================================================
-
-struct frost_bomb_explosion_t : public frost_mage_spell_t
-{
-  frost_bomb_explosion_t( mage_t* p ) :
-    frost_mage_spell_t( "frost_bomb_explosion", p, p -> find_spell( 113092 ) )
-  {
-    background = true;
-    callbacks = false;
-    radius = data().effectN( 2 ).radius_max();
-    aoe = -1;
-    parse_effect_data( data().effectN( 1 ) );
-    base_aoe_multiplier *= data().effectN( 2 ).sp_coeff() / data().effectN( 1 ).sp_coeff();
-  }
-};
-
-struct frost_bomb_t : public frost_mage_spell_t
-{
-  frost_bomb_t( mage_t* p, const std::string& options_str ) :
-    frost_mage_spell_t( "frost_bomb", p, p -> talents.frost_bomb )
-  {
-    parse_options( options_str );
-    // Frost Bomb no longer has ticking damage.
-    dot_duration = timespan_t::zero();
-    may_crit = affected_by.shatter = false;
-
-    if ( p -> action.frost_bomb_explosion )
-    {
-      add_child( p -> action.frost_bomb_explosion );
-    }
-  }
-
-  virtual void execute() override
-  {
-    frost_mage_spell_t::execute();
-
-    if ( hit_any_target )
-    {
-      if ( p() -> last_bomb_target != nullptr &&
-           p() -> last_bomb_target != execute_state -> target )
-      {
-        td( p() -> last_bomb_target ) -> debuffs.frost_bomb -> expire();
-      }
-      p() -> last_bomb_target = execute_state -> target;
-    }
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    frost_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> debuffs.frost_bomb -> trigger();
-    }
-  }
-};
-
 // Frostbolt Spell ==========================================================
 
 struct frostbolt_t : public frost_mage_spell_t
@@ -3968,16 +3907,6 @@ struct ice_lance_t : public frost_mage_spell_t
         && frozen & ~FF_FINGERS_OF_FROST )
       {
         p() -> procs.fingers_of_frost_wasted -> occur();
-      }
-    }
-
-    if ( frozen )
-    {
-      if ( td( s -> target ) -> debuffs.frost_bomb -> check() )
-      {
-        assert( p() -> action.frost_bomb_explosion );
-        p() -> action.frost_bomb_explosion -> set_target( s -> target );
-        p() -> action.frost_bomb_explosion -> execute();
       }
     }
 
@@ -5491,7 +5420,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
   debuffs.erosion       = make_buff<buffs::erosion_t>( this );
   debuffs.slow          = make_buff( *this, "slow", mage -> find_spell( 31589 ) );
-  debuffs.frost_bomb    = make_buff( *this, "frost_bomb", mage -> talents.frost_bomb );
   debuffs.frozen        = make_buff( *this, "frozen" )
                             -> set_duration( timespan_t::from_seconds( 0.5 ) );
   debuffs.winters_chill = make_buff( *this, "winters_chill", mage -> find_spell( 228358 ) )
@@ -5642,7 +5570,6 @@ action_t* mage_t::create_action( const std::string& name,
   if ( name == "comet_storm"            ) return new            comet_storm_t( this, options_str );
   if ( name == "cone_of_cold"           ) return new           cone_of_cold_t( this, options_str );
   if ( name == "flurry"                 ) return new                 flurry_t( this, options_str );
-  if ( name == "frost_bomb"             ) return new             frost_bomb_t( this, options_str );
   if ( name == "frostbolt"              ) return new              frostbolt_t( this, options_str );
   if ( name == "frozen_orb"             ) return new             frozen_orb_t( this, options_str );
   if ( name == "glacial_spike"          ) return new          glacial_spike_t( this, options_str );
@@ -5699,11 +5626,6 @@ bool mage_t::create_actions()
   if ( talents.arcane_familiar -> ok() )
   {
     action.arcane_assault = new arcane_assault_t( this );
-  }
-
-  if ( talents.frost_bomb -> ok() )
-  {
-    action.frost_bomb_explosion = new frost_bomb_explosion_t( this );
   }
 
   if ( talents.unstable_magic -> ok() && specialization() != MAGE_FROST )
@@ -5931,7 +5853,6 @@ void mage_t::init_spells()
   // Tier 90
   talents.nether_tempest     = find_talent_spell( "Nether Tempest"     );
   talents.living_bomb        = find_talent_spell( "Living Bomb"        );
-  talents.frost_bomb         = find_talent_spell( "Frost Bomb"         );
   talents.unstable_magic     = find_talent_spell( "Unstable Magic"     );
   talents.erosion            = find_talent_spell( "Erosion"            );
   talents.flame_patch        = find_talent_spell( "Flame Patch"        );
@@ -6676,7 +6597,6 @@ void mage_t::apl_frost()
     "Glacial Spike is delayed to fit into Frozen Mass, so we do not want to sit on a Brain Freeze proc for too long in that case." );
   single -> add_action( this, "Frozen Orb", "if=set_bonus.tier20_2pc&buff.fingers_of_frost.react<2",
     "With T20 2pc, Frozen Orb should be used as soon as it comes off CD." );
-  single -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react" );
   single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
   single -> add_action( this, "Frozen Orb" );
   single -> add_talent( this, "Ice Nova" );
@@ -6704,7 +6624,6 @@ void mage_t::apl_frost()
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
   aoe -> add_action( this, "Flurry", "if=buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)" );
-  aoe -> add_talent( this, "Frost Bomb", "if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react" );
   aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
   aoe -> add_talent( this, "Glacial Spike" );
   aoe -> add_action( this, "Frostbolt" );
