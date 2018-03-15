@@ -118,7 +118,7 @@ class WDC1HotfixKeyIdParser:
         if pad < 0:
             raise ValueError('Negative pad: {} for {}'.format(pad, self.record_parser.parser()))
 
-        if bytes_left < self.unpacker_size:
+        if bytes_left < self.unpacker.size:
             raise ValueError('Too few bytes to parse, wanted {}, got {} for {}'.format(
                 self.unpacker.size, bytes_left, self.record_parser.parser()))
 

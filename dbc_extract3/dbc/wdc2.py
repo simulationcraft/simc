@@ -45,6 +45,10 @@ class WDC2Parser(WDC1Parser):
         # Set heder format
         self.header_format = self.__WDC2_HEADER_FIELDS
 
+    # WDC2 string field offsets are not relative to the string block, but
+    # rather relative to the position of the (data, field index) tuple of the
+    # record in the file
+    # TODO: Is the computation field width aware?
     def get_string(self, offset, record_id, field_index):
         # Offset map files use inline strings, so use WDC1 (direct offset) strings
         if self.has_offset_map():
@@ -63,19 +67,19 @@ class WDC2Parser(WDC1Parser):
 
     # Compute offset into the file, based on what blocks we have
     def compute_block_offsets(self):
-        # Next, extended column information block
+        # Extended column information follows immediately after the static header
         self.column_info_block_offset = self.parse_offset
         running_offset = self.column_info_block_offset + self.column_info_block_size
 
-        # Followed by the column-specific data block
+        # Followed by the column-specific data block(s)
         self.column_data_block_offset = running_offset
         running_offset = self.column_data_block_offset + self.column_data_block_size
 
-        # Then, the sparse block
+        # Then, the sparse block(s)
         self.sparse_block_offset = running_offset
         running_offset = self.sparse_block_offset + self.sparse_block_size
 
-        # Offset immediately after the header
+        # After those, the set of records in the file
         self.data_offset = self.offset_records
 
         if self.has_offset_map():
@@ -88,11 +92,11 @@ class WDC2Parser(WDC1Parser):
             self.string_block_offset = self.data_offset + self.record_size * self.records
             running_offset = self.data_offset + self.record_size * self.records + self.string_block_size
 
-        # Next, ID block follows immmediately after string block
+        # Next, ID block follows immmediately after the new record + string block
         self.id_block_offset = running_offset
         running_offset = self.id_block_offset + self.id_block_size
 
-        # Then, a possible clone block offset
+        # Then, a possible clone block 
         self.clone_block_offset = running_offset
         running_offset = self.clone_block_offset + self.clone_block_size
 
