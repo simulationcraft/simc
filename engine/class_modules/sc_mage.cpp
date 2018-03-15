@@ -6338,7 +6338,6 @@ void mage_t::create_buffs()
   buffs.streaking              = make_buff<haste_buff_t>( this, "streaking", find_spell( 211399 ) )
                                    -> set_default_value( find_spell( 211399 ) -> effectN( 1 ).percent() );
   buffs.ultimate_pyroblast     = make_buff( this, "ultimate_pyroblast", find_spell( 269651 ) )
-                                   -> set_max_stack( 1 )  // TODO: 2 in spell data, 1 in game
                                    -> set_default_value( find_spell( 269651 ) -> effectN( 1 ).percent() )
                                    -> set_chance( talents.pyroclasm -> effectN( 1 ).percent() );
 
