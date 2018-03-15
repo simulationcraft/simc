@@ -3462,10 +3462,6 @@ struct frostbolt_t : public frost_mage_spell_t
     {
       add_child( p -> icicle );
     }
-    if ( p -> specialization() == MAGE_FROST && p -> action.unstable_magic_explosion )
-    {
-      add_child( p -> action.unstable_magic_explosion );
-    }
 
     base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
     chills = true;
@@ -3504,8 +3500,6 @@ struct frostbolt_t : public frost_mage_spell_t
       return;
 
     trigger_icicle_gain( s );
-
-    trigger_unstable_magic( s );
     trigger_shattered_fragments( s -> target );
   }
 };
@@ -5158,9 +5152,6 @@ struct unstable_magic_explosion_t : public mage_spell_t
       case MAGE_FIRE:
         school = SCHOOL_FIRE;
         break;
-      case MAGE_FROST:
-        school = SCHOOL_FROST;
-        break;
       default:
         // This shouldn't happen
         break;
@@ -5195,13 +5186,10 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
   double um_proc_rate;
   switch ( p() -> specialization() )
   {
+    // TODO: Check spelldata
     case MAGE_ARCANE:
       um_proc_rate = p() -> action.unstable_magic_explosion
                          -> data().effectN( 1 ).percent();
-      break;
-    case MAGE_FROST:
-      um_proc_rate = p() -> action.unstable_magic_explosion
-                         -> data().effectN( 2 ).percent();
       break;
     case MAGE_FIRE:
       um_proc_rate = p() -> action.unstable_magic_explosion
@@ -5718,7 +5706,7 @@ bool mage_t::create_actions()
     action.frost_bomb_explosion = new frost_bomb_explosion_t( this );
   }
 
-  if ( talents.unstable_magic -> ok() )
+  if ( talents.unstable_magic -> ok() && specialization() != MAGE_FROST )
   {
     action.unstable_magic_explosion = new unstable_magic_explosion_t( this );
   }
