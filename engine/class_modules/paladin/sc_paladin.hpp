@@ -173,6 +173,7 @@ public:
     buff_t* blade_of_wrath;
     buff_t* divine_purpose;
     buff_t* righteous_verdict;
+    buff_t* zeal;
     buff_t* inquisition;
 
     buff_t* divine_steed;
@@ -362,7 +363,7 @@ public:
     const spell_data_t* last_defender;
 
     // Retribution
-    const spell_data_t* greater_judgment;
+    const spell_data_t* zeal;
     const spell_data_t* righteous_verdict;
     const spell_data_t* execution_sentence;
     const spell_data_t* fires_of_justice;

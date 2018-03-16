@@ -660,6 +660,7 @@ void paladin_t::create_buffs_retribution()
 {
   buffs.crusade                = new buffs::crusade_buff_t( this );
 
+  buffs.zeal                           = make_buff( this, "zeal", find_spell( 269571 ) );
   buffs.righteous_verdict              = make_buff( this, "righteous_verdict", find_spell( 267611 ) );
   buffs.inquisition                    = new buffs::inquisition_buff_t( this );
   buffs.the_fires_of_justice           = make_buff( this, "fires_of_justice", find_spell( 209785 ) );
@@ -694,7 +695,7 @@ void paladin_t::init_rng_retribution()
 void paladin_t::init_spells_retribution()
 {
   // talents
-  talents.greater_judgment           = find_talent_spell( "Greater Judgment" );
+  talents.zeal                       = find_talent_spell( "Zeal" );
   talents.righteous_verdict          = find_talent_spell( "Righteous Verdict" );
   talents.execution_sentence         = find_talent_spell( "Execution Sentence" );
   talents.fires_of_justice           = find_talent_spell( "Fires of Justice" );

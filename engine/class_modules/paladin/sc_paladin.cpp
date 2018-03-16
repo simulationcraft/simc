@@ -640,6 +640,10 @@ struct melee_t : public paladin_melee_attack_t
           p() -> cooldowns.blade_of_justice -> reset( true );
         }
       }
+      if ( p() -> buffs.zeal -> check() )
+      {
+        p() -> buffs.zeal -> decrement();
+      }
     }
   }
 };
@@ -846,6 +850,10 @@ struct judgment_t : public paladin_melee_attack_t
       double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
       p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
     }
+    if ( p() -> talents.zeal -> ok() )
+    {
+      p() -> buffs.zeal -> trigger( p() -> talents.zeal -> effectN( 1 ).base_value() );
+    }
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
       p() -> buffs.sacred_judgment -> trigger();
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B4 ) )
@@ -855,23 +863,6 @@ struct judgment_t : public paladin_melee_attack_t
   proc_types proc_type() const override
   {
     return PROC1_MELEE_ABILITY;
-  }
-
-  double composite_target_crit_chance( player_t* t ) const override
-  {
-    double cc = paladin_melee_attack_t::composite_target_crit_chance( t );
-
-    if ( p() -> talents.greater_judgment -> ok() )
-    {
-      double threshold = p() -> talents.greater_judgment -> effectN( 1 ).base_value();
-      if ( ( t -> health_percentage() > threshold ) )
-      {
-        // TODO: is this correct? where does this come from?
-        return 1.0;
-      }
-    }
-
-    return cc;
   }
 
   // Special things that happen when Judgment damages target
@@ -1659,7 +1650,10 @@ double paladin_t::composite_melee_haste() const
 
 double paladin_t::composite_melee_speed() const
 {
-  return player_t::composite_melee_speed();
+  double s = player_t::composite_melee_speed();
+  if ( buffs.zeal -> check() )
+    s /= 1.0 + buffs.zeal -> data().effectN( 1 ).percent();
+  return s;
 }
 
 // paladin_t::composite_spell_crit_chance ==========================================
