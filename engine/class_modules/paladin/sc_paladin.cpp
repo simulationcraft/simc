@@ -819,6 +819,10 @@ struct judgment_t : public paladin_melee_attack_t
       base_costs[RESOURCE_MANA] = 0;
       if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
         base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
+
+      // TODO: more hax; really this is spellpower but the ap -> sp conversion seems to also take into account weapondps
+      attack_power_mod.direct = spell_power_mod.direct;
+      spell_power_mod.direct = 0;
     }
     else if ( p -> specialization() == PALADIN_HOLY )
     {
