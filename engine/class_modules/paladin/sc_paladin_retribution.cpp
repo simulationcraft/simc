@@ -660,7 +660,7 @@ void paladin_t::create_buffs_retribution()
 {
   buffs.crusade                = new buffs::crusade_buff_t( this );
 
-  buffs.zeal                           = make_buff( this, "zeal", find_spell( 269571 ) );
+  buffs.zeal                           = make_buff( this, "zeal", find_spell( 269571 ) ) -> add_invalidate( CACHE_ATTACK_SPEED );
   buffs.righteous_verdict              = make_buff( this, "righteous_verdict", find_spell( 267611 ) );
   buffs.inquisition                    = new buffs::inquisition_buff_t( this );
   buffs.the_fires_of_justice           = make_buff( this, "fires_of_justice", find_spell( 209785 ) );
