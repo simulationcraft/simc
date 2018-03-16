@@ -4527,7 +4527,7 @@ struct pyroblast_t : public fire_mage_spell_t
     else
     {
       p() -> buffs.kaelthas_ultimate_ability -> expire();
-      p() -> buffs.pyroclasm -> expire();
+      p() -> buffs.pyroclasm -> decrement();
     }
   }
 
