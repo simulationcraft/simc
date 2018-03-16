@@ -7790,8 +7790,9 @@ void druid_t::apl_precombat()
   else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
   {
     precombat -> add_action( this, "Moonkin Form" );
-    precombat -> add_action( "blessing_of_elune" );
     precombat -> add_action("variable,name=starfall_st,value=talent.soul_of_the_forest.enabled");
+    precombat -> add_action( "blessing_of_elune,if=!variable.starfall_st" );
+    precombat -> add_action("blessing_of_anshe,if=variable.starfall_st");
   }
   //else if (specialization() == DRUID_RESTORATION && (primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL))
   //{
@@ -8126,8 +8127,8 @@ void druid_t::apl_balance()
   if ( sim -> allow_potions && true_level >= 80 )
     default_list -> add_action( potion_action + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
 
-  default_list -> add_action( "blessing_of_elune,if=active_enemies<=2" );
-  default_list -> add_action( "blessing_of_anshe,if=active_enemies>=3" );
+  default_list -> add_action( "blessing_of_elune,if=active_enemies<=2&(!variable.starfall_st|(variable.starfall_st&buff.celestial_alignment.up))" );
+  default_list -> add_action( "blessing_of_anshe,if=active_enemies>=3|variable.starfall_st&!buff.celestial_alignment.up&cooldown.celestial_alignment.remains>15" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
@@ -8148,19 +8149,18 @@ void druid_t::apl_balance()
   default_list -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=79" );
   default_list -> add_talent( this, "Warrior of Elune");
   default_list -> add_action( "incarnation,if=astral_power>=40" );
-  default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
+  default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40&(!variable.starfall_st|time>=7*gcd.max)" );
   default_list -> add_action("call_action_list,name=aoe,if=(spell_targets.starfall>=2&talent.stellar_drift.enabled)|spell_targets.starfall>=3");
   default_list -> add_action("call_action_list,name=st");
   
+  ST -> add_action( this, "Starfall", "if=(buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<40))|(variable.starfall_st&!buff.stellar_empowerment.up)");
   ST -> add_talent( this, "Force of Nature");
   ST -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
   ST -> add_action( this, "Moonfire", "target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
   ST -> add_action( this, "Sunfire", "target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
-  ST -> add_action( this, "Starsurge","if=buff.oneths_intuition.react");
-  ST -> add_action( this, "Starfall", "if=(buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<40))|(variable.starfall_st&!buff.stellar_empowerment.up)");
   ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3&astral_power.deficit>10");
   ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3&astral_power.deficit>15");
-  ST -> add_action( this, "Starsurge", "if=astral_power.deficit<40|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.remains>5|(set_bonus.tier21_4pc&!buff.solar_solstice.up))|(gcd.max*(astral_power%40))>target.time_to_die");
+  ST -> add_action( this, "Starsurge", "if=buff.oneths_intuition.react|astral_power.deficit<40|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.remains>5|(set_bonus.tier21_4pc&!buff.solar_solstice.up))|(gcd.max*(astral_power%40))>target.time_to_die");
   ST -> add_action( this, "New Moon", "if=astral_power.deficit>10&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)");
   ST -> add_action( this, "Half Moon", "if=astral_power.deficit>20&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)");
   ST -> add_action( this, "Full Moon", "if=astral_power.deficit>40");
