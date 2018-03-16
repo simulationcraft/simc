@@ -568,6 +568,7 @@ struct wake_of_ashes_t : public paladin_spell_t
     // spell data doesn't have this
     hasted_gcd = true;
     may_crit = true;
+    aoe = -1;
   }
 };
 
