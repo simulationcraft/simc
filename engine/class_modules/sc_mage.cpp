@@ -6443,7 +6443,7 @@ void mage_t::apl_fire()
   default_list -> add_talent( this, "Mirror Image", "if=buff.combustion.down" );
   default_list -> add_talent( this, "Rune of Power", "if=firestarter.active&action.rune_of_power.charges=2|cooldown.combustion.remains>40&buff.combustion.down&!talent.kindling.enabled|target.time_to_die<11|talent.kindling.enabled&(charges_fractional>1.8|time<40)&cooldown.combustion.remains>40",
     "Standard Talent RoP Logic." );
-  default_list -> add_talent( this, "Rune of Power", "if=(buff.kaelthas_ultimate_ability.react&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))|(buff.erupting_infernal_core.up&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))",
+  default_list -> add_talent( this, "Rune of Power", "if=((buff.kaelthas_ultimate_ability.react|buff.pyroclasm.react)&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))|(buff.erupting_infernal_core.up&(cooldown.combustion.remains>40|action.rune_of_power.charges>1))",
     "RoP use while using Legendary Items." );
   default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor", true ) );
   default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void", true ) );
@@ -6472,7 +6472,7 @@ void mage_t::apl_fire()
   combustion_phase -> add_action( "use_items" );
   combustion_phase -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
   combustion_phase -> add_action( this, "Flamestrike", "if=(talent.flame_patch.enabled&active_enemies>2|active_enemies>4)&buff.hot_streak.react" );
-  combustion_phase -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&buff.combustion.remains>execute_time" );
+  combustion_phase -> add_action( this, "Pyroblast", "if=(buff.kaelthas_ultimate_ability.react|buff.pyroclasm.react)&buff.combustion.remains>execute_time" );
   combustion_phase -> add_action( this, "Pyroblast", "if=buff.hot_streak.react" );
   combustion_phase -> add_action( this, "Fire Blast", "if=buff.heating_up.react" );
   combustion_phase -> add_action( this, "Phoenix Flames" );
@@ -6485,6 +6485,7 @@ void mage_t::apl_fire()
   rop_phase        -> add_action( this, "Pyroblast", "if=buff.hot_streak.react" );
   rop_phase        -> add_action( "call_action_list,name=active_talents" );
   rop_phase        -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains&buff.rune_of_power.remains>cast_time" );
+  rop_phase        -> add_action( this, "Pyroblast", "if=buff.pyroclasm.react&execute_time<buff.pyroclasm.remains&buff.rune_of_power.remains>cast_time" );
   rop_phase        -> add_action( this, "Fire Blast", "if=!prev_off_gcd.fire_blast&buff.heating_up.react&firestarter.active&charges_fractional>1.7" );
   rop_phase        -> add_action( this, "Phoenix Flames", "if=!prev_gcd.1.phoenix_flames&charges_fractional>2.7&firestarter.active" );
   rop_phase        -> add_action( this, "Fire Blast", "if=!prev_off_gcd.fire_blast&!firestarter.active" );
@@ -6506,6 +6507,7 @@ void mage_t::apl_fire()
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&(!prev_gcd.1.pyroblast|action.pyroblast.in_flight)" );
   standard    -> add_action( this, "Pyroblast", "if=buff.hot_streak.react&target.health.pct<=30&equipped.132454" );
   standard    -> add_action( this, "Pyroblast", "if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains" );
+  standard    -> add_action( this, "Pyroblast", "if=buff.pyroclasm.react&execute_time<buff.pyroclasm.remains" );
   standard    -> add_action( "call_action_list,name=active_talents" );
   standard    -> add_action( this, "Fire Blast", "if=!talent.kindling.enabled&buff.heating_up.react&(!talent.rune_of_power.enabled|charges_fractional>1.4|cooldown.combustion.remains<40)&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die<4" );
   standard    -> add_action( this, "Fire Blast", "if=talent.kindling.enabled&buff.heating_up.react&(!talent.rune_of_power.enabled|charges_fractional>1.5|cooldown.combustion.remains<40)&(3-charges_fractional)*(18*spell_haste)<cooldown.combustion.remains+3|target.time_to_die<4" );
