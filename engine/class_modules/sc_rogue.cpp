@@ -5162,8 +5162,7 @@ void rogue_t::trigger_poison_bomb( const action_state_t* state )
                                     .target( state -> target )
                                     .x( state -> target -> x_position)
                                     .y( state -> target -> y_position)
-                                    //FIXME Hotfix 09-24: Hardcoded to 500ms, not found in spell data, still the case as of 04/08/2017.
-                                    .pulse_time( timespan_t::from_seconds( 0.5 ) )
+                                    .pulse_time( spell.poison_bomb_driver -> duration() / talent.poison_bomb -> effectN( 2 ).base_value() )
                                     .duration( spell.poison_bomb_driver -> duration() )
                                     .start_time( sim -> current_time() )
                                     .action( poison_bomb ));
