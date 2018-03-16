@@ -3348,9 +3348,6 @@ struct player_t : public actor_t
       start_at[ RESOURCE_ENERGY     ] = std::numeric_limits<double>::max();
       start_at[ RESOURCE_RUNE       ] = std::numeric_limits<double>::max();
       start_at[ RESOURCE_SOUL_SHARD ] = 3.0;
-
-      // TODO: Do monks want their initial chi reset here?
-      //start_at[ RESOURCE_CHI        ] = 1.0;
     }
 
     double pct( resource_e rt ) const
