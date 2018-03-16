@@ -3321,6 +3321,10 @@ struct player_t : public actor_t
         base_multiplier, initial_multiplier;
     std::array<int, RESOURCE_MAX> infinite_resource;
     std::array<bool, RESOURCE_MAX> active_resource;
+    // Initial user-input resources
+    std::array<double, RESOURCE_MAX> initial_opt;
+    // Start-of-combat resource level
+    std::array<double, RESOURCE_MAX> start_at;
 
     resources_t()
     {
@@ -3333,6 +3337,20 @@ struct player_t : public actor_t
       range::fill( initial_multiplier, 1.0 );
       range::fill( infinite_resource, 0 );
       range::fill( active_resource, true );
+      range::fill( initial_opt, -1.0 );
+      range::fill( start_at, 0.0 );
+
+      // Init some resources to specific values at the beginning of the combat, defaults to 0.
+      // The actual start-of-combat resource is min( computed_max, start_at ).
+      start_at[ RESOURCE_HEALTH     ] = std::numeric_limits<double>::max();
+      start_at[ RESOURCE_MANA       ] = std::numeric_limits<double>::max();
+      start_at[ RESOURCE_FOCUS      ] = std::numeric_limits<double>::max();
+      start_at[ RESOURCE_ENERGY     ] = std::numeric_limits<double>::max();
+      start_at[ RESOURCE_RUNE       ] = std::numeric_limits<double>::max();
+      start_at[ RESOURCE_SOUL_SHARD ] = 3.0;
+
+      // TODO: Do monks want their initial chi reset here?
+      //start_at[ RESOURCE_CHI        ] = 1.0;
     }
 
     double pct( resource_e rt ) const

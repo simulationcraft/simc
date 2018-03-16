@@ -942,7 +942,6 @@ public:
   void      create_buffs() override;
   void      init_gains() override;
   void      init_procs() override;
-  void      init_resources( bool force ) override;
   void      init_absorb_priority() override;
   bool      init_finished() override;
   double    composite_armor_multiplier() const override;
@@ -8692,16 +8691,6 @@ void death_knight_t::init_procs()
   procs.ready_rune               = get_proc( "Rune ready" );
 
   procs.t19_2pc_unholy           = get_proc( "Tier19 Unholy 2PC" );
-}
-
-// death_knight_t::init_resources ===========================================
-
-void death_knight_t::init_resources( bool force )
-{
-  player_t::init_resources( force );
-
-  resources.current[ RESOURCE_RUNIC_POWER ] = 0;
-  resources.current[ RESOURCE_RUNE        ] = resources.max[ RESOURCE_RUNE ];
 }
 
 // death_knight_t::init_absorb_priority =====================================

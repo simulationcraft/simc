@@ -535,6 +535,35 @@ bool parse_artifact( sim_t* sim, const std::string&, const std::string& value )
   return true;
 }
 
+bool parse_initial_resource( sim_t* sim, const std::string&, const std::string& value )
+{
+  player_t* player = sim -> active_player;
+  auto opts = util::string_split( value, ":/" );
+  for ( const auto& opt_str : opts )
+  {
+    auto resource_split = util::string_split( opt_str, "=" );
+    if ( resource_split.size() != 2 )
+    {
+      sim -> errorf( "%s unknown initial_resources option '%s'",
+          player -> name(), opt_str.c_str() );
+      return false;
+    }
+
+    resource_e resource = util::parse_resource_type( resource_split[ 0 ] );
+    double amount = util::from_string<double>( resource_split[ 1 ] );
+    if ( amount < 0 )
+    {
+      sim -> errorf( "%s too low initial_resources option '%s'",
+          player -> name(), opt_str.c_str() );
+      return false;
+    }
+
+    player -> resources.initial_opt[ resource ] = amount;
+  }
+
+  return true;
+}
+
 } // UNNAMED NAMESPACE ======================================================
 
 // This is a template for Ignite like mechanics, like of course Ignite, Hunter Piercing Shots, Priest Echo of Light, etc.
@@ -1510,29 +1539,61 @@ bool player_t::init_special_effects()
 
 // player_t::init_resources =================================================
 
+namespace
+{
+// Compute max resource r for an actor, based on their set base resources
+double compute_max_resource( player_t* p, resource_e r )
+{
+    double value = p -> resources.base[ r ];
+    value *= p -> resources.base_multiplier[ r ];
+    value += p -> total_gear.resource[ r ];
+
+    // re-ordered 19/06/2016 by Theck - initial_multiplier should do something for RESOURCE_HEALTH
+    if ( r == RESOURCE_HEALTH )
+      value += floor( p -> stamina() ) * p -> current.health_per_stamina;
+
+    value *= p -> resources.initial_multiplier[ r ];
+    value = floor( value );
+
+    return value;
+}
+}
+
 void player_t::init_resources( bool force )
 {
   if ( sim -> debug ) sim -> out_debug.printf( "Initializing resources for player (%s)", name() );
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
-    if ( force || resources.initial[ i ] == 0 )
+    // Don't reset non-forced and already-reset initial resources
+    if ( ! force && resources.initial[ i ] != 0 )
     {
-      resources.initial[ i ]  = resources.base[ i ];
-      resources.initial[ i ] *= resources.base_multiplier[ i ];
-      resources.initial[ i ] += total_gear.resource[ i ];
+      continue;
+    }
 
-      // re-ordered 19/06/2016 by Theck - initial_multiplier should do something for RESOURCE_HEALTH
-      if ( i == RESOURCE_HEALTH )
-        resources.initial[ i ] += floor( stamina() ) * current.health_per_stamina;
+    double max_resource = compute_max_resource( this, i );
 
-      resources.initial[ i ] *= resources.initial_multiplier[ i ];
+    resources.initial[ i ] = max_resource;
+    resources.max[ i ]     = max_resource;
 
-      resources.initial[ i ] = floor( resources.initial[ i ] );
+    if ( resources.initial_opt[ i ] != -1.0 )
+    {
+      double actual_resource = std::min( max_resource, resources.initial_opt[ i ] );
+
+      if ( sim -> debug )
+      {
+        sim -> out_debug.printf( "%s resource %s overridden to %f", name(),
+            util::resource_type_string( i ), actual_resource );
+      }
+
+      resources.current[ i ] = actual_resource;
+    }
+    else
+    {
+      // Actual "current" resource can never exceed the computed maximum resource for the actor
+      resources.current[ i ] = std::min( max_resource, resources.start_at[ i ] );
     }
   }
-
-  resources.current = resources.max = resources.initial;
 
   // Only collect pet resource timelines if they get reported separately
   if ( ! is_pet() || sim -> report_pets_separately )
@@ -10054,6 +10115,32 @@ std::string player_t::create_profile( save_e stype )
       if ( ! food_option.empty()  ) profile_str += "food=" + food_option + term;
       if ( ! rune_option.empty() ) profile_str += "augmentation=" + rune_option + term;
     }
+
+    std::vector<std::string> initial_resources;
+    for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
+    {
+      if ( resources.initial_opt[ r ] >= 0.0 )
+      {
+        std::string resource_str = util::resource_type_string( r );
+        std::string amount_str = util::to_string( resources.initial_opt[ r ] );
+        initial_resources.push_back( resource_str + "=" + amount_str );
+      }
+    }
+
+    if ( initial_resources.size() > 0 )
+    {
+      profile_str += term;
+      profile_str += "initial_resource=";
+      for ( size_t i = 0; i < initial_resources.size(); ++i )
+      {
+        profile_str += initial_resources[ i ];
+        if ( i < initial_resources.size() - 1 )
+        {
+          profile_str += '/';
+        }
+      }
+      profile_str += term;
+    }
   }
 
   if ( stype == SAVE_ALL || stype == SAVE_ACTIONS )
@@ -10425,6 +10512,9 @@ void player_t::create_options()
     add_option( opt_bool( "infinite_rage",   resources.infinite_resource[ RESOURCE_RAGE   ] ) );
     add_option( opt_bool( "infinite_runic",  resources.infinite_resource[ RESOURCE_RUNIC_POWER  ] ) );
     add_option( opt_bool( "infinite_astral_power", resources.infinite_resource[ RESOURCE_ASTRAL_POWER ] ) );
+
+    // Resources
+    add_option( opt_func( "initial_resource", parse_initial_resource ) );
 
     // Misc
     add_option( opt_string( "skip_actions", action_list_skip ) );

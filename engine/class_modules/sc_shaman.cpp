@@ -639,7 +639,6 @@ public:
 
   // Character Definition
   void init_spells() override;
-  void init_resources( bool force = false ) override;
   void init_base_stats() override;
   void init_scaling() override;
   void create_buffs() override;
@@ -6498,13 +6497,6 @@ void shaman_t::init_base_stats()
 
   // if ( specialization() == SHAMAN_ENHANCEMENT )
   //  ready_type = READY_TRIGGER;
-}
-
-void shaman_t::init_resources( bool force )
-{
-  player_t::init_resources( force );
-
-  resources.current[ RESOURCE_MAELSTROM ] = 0;
 }
 
 // shaman_t::init_scaling ===================================================
