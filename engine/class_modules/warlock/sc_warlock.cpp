@@ -70,7 +70,6 @@ namespace warlock
     {
       pet_t::create_buffs();
 
-      buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 171982 ) )->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )->set_chance( 1 );
       buffs.rage_of_guldan = make_buff( this, "rage_of_guldan", find_spell( 257926 ) )->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ); //change spell id to 253014 when whitelisted
     }
 
@@ -90,9 +89,6 @@ namespace warlock
       double m = pet_t::composite_player_multiplier( school );
 
       m *= 1.0;
-
-      if ( buffs.demonic_synergy->check() )
-        m *= 1.0 + buffs.demonic_synergy->data().effectN( 1 ).percent();
 
       if ( buffs.rage_of_guldan->check() )
         m *= 1.0 + ( buffs.rage_of_guldan->default_value / 100 );
@@ -663,11 +659,6 @@ double warlock_t::composite_player_multiplier( school_e school ) const
       m *= 1.0 + buffs.soul_harvest->check_stack_value();
   }
 
-  if (specialization() == WARLOCK_DEMONOLOGY) {
-    if (buffs.demonic_synergy->check())
-      m *= 1.0 + buffs.demonic_synergy->data().effectN(1).percent();
-  }
-
   m *= 1.0 + buffs.sindorei_spite->check_stack_value();
   m *= 1.0 + buffs.lessons_of_spacetime->check_stack_value();
 
@@ -962,8 +953,6 @@ void warlock_t::init_rng()
     init_rng_destruction();
 
   demonic_power_rppm                    = get_rppm( "demonic_power", find_spell( 196099 ) );
-  grimoire_of_synergy                   = get_rppm( "grimoire_of_synergy", talents.grimoire_of_synergy );
-  grimoire_of_synergy_pet               = get_rppm( "grimoire_of_synergy_pet", talents.grimoire_of_synergy );
 
   player_t::init_rng();
 }

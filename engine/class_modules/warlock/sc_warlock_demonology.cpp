@@ -334,11 +334,18 @@ namespace warlock {
                 if (result_is_hit(s->result)) {
                   int j = 0;
 
-                  for (size_t i = 0; i < p()->warlock_pet_list.wild_imps.size(); i++)
-                  {
-                    if (p()->warlock_pet_list.wild_imps[i]->is_sleeping())
+                  if (p()->talents.riders->ok()) {
+                    if (rng().roll(p()->talents.riders->effectN(1).percent()*shards_used))
                     {
-                      p()->warlock_pet_list.wild_imps[i]->summon();
+                      ++shards_used;
+                    }
+                  }
+
+                  for (auto imp : p()->warlock_pet_list.wild_imps)
+                  {
+                    if (imp->is_sleeping())
+                    {
+                      imp->summon();
                       if (++j == shards_used) break;
                     }
                   }
@@ -375,8 +382,8 @@ namespace warlock {
           warlock_spell_t::execute();
           if ( p()->buffs.demonic_core->check() )
             p()->buffs.demonic_core->decrement();
-          //if (p()->talents.demonic_calling->ok() && rng().roll(p()->talents.demonic_calling->proc_chance()))
-            //p()->buffs.demonic_calling->trigger();
+          if (p()->talents.demonic_calling->ok() && rng().roll(p()->talents.demonic_calling->proc_chance()))
+            p()->buffs.demonic_calling->trigger();
         }
       };
 
@@ -455,37 +462,122 @@ namespace warlock {
         }
       };
 
-      //struct implosion
+      struct implosion_t : public warlock_spell_t
+      {
+        struct implosion_aoe_t : public warlock_spell_t
+        {
+
+          implosion_aoe_t(warlock_t* p) :
+            warlock_spell_t("implosion_aoe", p, p -> find_spell(196278))
+          {
+            aoe = -1;
+            dual = true;
+            background = true;
+            callbacks = false;
+
+            p->spells.implosion_aoe = this;
+          }
+        };
+
+        implosion_aoe_t* explosion;
+
+        implosion_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("implosion", p),explosion(new implosion_aoe_t(p))
+        {
+          parse_options(options_str);
+          aoe = -1;
+          add_child(explosion);
+        }
+
+        virtual bool ready() override
+        {
+          bool r = warlock_spell_t::ready();
+
+          if (r)
+          {
+            for (auto imp : p()->warlock_pet_list.wild_imps)
+            {
+              if (!imp->is_sleeping())
+                return true;
+            }
+          }
+          return false;
+        }
+
+        virtual void execute() override
+        {
+          warlock_spell_t::execute();
+          for (auto imp : p()->warlock_pet_list.wild_imps)
+          {
+            if (!imp->is_sleeping())
+            {
+              explosion->execute();
+              imp->dismiss(true);
+            }
+          }
+        }
+      };
 
       // Talents
+      struct power_siphon_t : public warlock_spell_t {
+        power_siphon_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("power_siphon", p, p -> talents.power_siphon) {
+          parse_options(options_str);
+          harmful = false;
+          ignore_false_positive = true;
+        }
+
+        virtual void execute() override
+        {
+          warlock_spell_t::execute();
+
+          int i = 0;
+          for (auto imp : p()->warlock_pet_list.wild_imps)
+          {
+            if (!imp->is_sleeping())
+            {
+              p()->buffs.demonic_core->trigger();
+              imp->dismiss(true);
+              if (++i == p()->talents.power_siphon->effectN(1).base_value()) break;
+            }
+          }
+        }
+      };
+
       struct doom_t : public warlock_spell_t {
-            doom_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("doom", p, p -> talents.doom) {
-                parse_options(options_str);
-                may_crit = true;
-                hasted_ticks = true;
+        doom_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("doom", p, p -> talents.doom) {
+            parse_options(options_str);
+
+            base_tick_time = p->find_spell(265412)->duration();
+            dot_duration = p->find_spell(265412)->duration();
+            spell_power_mod.tick = p->find_spell(265469)->effectN(1).sp_coeff();
+
+            may_crit = true;
+            hasted_ticks = true;
+        }
+
+        timespan_t composite_dot_duration(const action_state_t* s) const override {
+            timespan_t duration = warlock_spell_t::composite_dot_duration(s);
+            return duration * p()->cache.spell_haste();
+        }
+
+        virtual double action_multiplier()const override {
+            double m = warlock_spell_t::action_multiplier();
+            return m;
+        }
+
+        virtual void tick(dot_t* d) override {
+            warlock_spell_t::tick(d);
+
+            if (d->state->result == RESULT_HIT || result_is_hit(d->state->result)) {
+                if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T19, B2) && rng().roll(p()->sets->set(WARLOCK_DEMONOLOGY, T19, B2)->effectN(1).percent()))
+                    p()->resource_gain(RESOURCE_SOUL_SHARD, 1, p()->gains.t19_2pc_demonology);
             }
+        }
 
-            timespan_t composite_dot_duration(const action_state_t* s) const override {
-                timespan_t duration = warlock_spell_t::composite_dot_duration(s);
-                return duration * p()->cache.spell_haste();
-            }
-
-            virtual double action_multiplier()const override {
-                double m = warlock_spell_t::action_multiplier();
-                double pet_counter = 0.0;
-
-                return m;
-            }
-
-            virtual void tick(dot_t* d) override {
-                warlock_spell_t::tick(d);
-
-                if (d->state->result == RESULT_HIT || result_is_hit(d->state->result)) {
-                    if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T19, B2) && rng().roll(p()->sets->set(WARLOCK_DEMONOLOGY, T19, B2)->effectN(1).percent()))
-                        p()->resource_gain(RESOURCE_SOUL_SHARD, 1, p()->gains.t19_2pc_demonology);
-                }
-            }
-        };
+        virtual void execute() override
+        {
+          warlock_spell_t::execute();
+        }
+      };
 
       struct grimoire_of_service_t : public summon_pet_t {
             grimoire_of_service_t(warlock_t* p, const std::string& pet_name, const std::string& options_str) :
@@ -516,8 +608,11 @@ namespace warlock {
 
         if (action_name == "shadow_bolt") return new          shadow_bolt_t(this, options_str);
         if (action_name == "demonbolt") return new            demonbolt_t(this, options_str);
-        if (action_name == "doom")          return new        doom_t(this, options_str);
         if (action_name == "hand_of_guldan") return new       hand_of_guldan_t(this, options_str);
+        if (action_name == "implosion") return new            implosion_t(this, options_str);
+
+        if (action_name == "doom")          return new        doom_t(this, options_str);
+        if (action_name == "power_siphon") return new         power_siphon_t(this, options_str);
 
         if (action_name == "call_dreadstalkers") return new   call_dreadstalkers_t(this, options_str);
         if (action_name == "summon_felguard") return new      summon_main_pet_t("felguard", this);
@@ -535,9 +630,6 @@ namespace warlock {
         ->set_refresh_behavior(buff_refresh_behavior::DURATION);
       //Talents
       buffs.demonic_calling = make_buff(this, "demonic_calling", talents.demonic_calling->effectN(1).trigger());
-      buffs.demonic_synergy = make_buff(this, "demonic_synergy", find_spell(171982))
-        ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-        ->set_chance(1);
       //Tier
       buffs.rage_of_guldan = make_buff(this, "rage_of_guldan", sets->set(WARLOCK_DEMONOLOGY, T21, B2)->effectN(1).trigger())
         ->set_duration(find_spell(257926)->duration())
@@ -559,10 +651,8 @@ namespace warlock {
         talents.riders                          = find_talent_spell("Riders");
         talents.power_siphon                    = find_talent_spell("Power Siphon");
         talents.summon_vilefiend                = find_talent_spell("Summon Vilefiend");
-        talents.overloaded                      = find_talent_spell("Overloaded");
         talents.demonic_strength                = find_talent_spell("Demonic Strength");
         talents.biliescourge_bombers            = find_talent_spell("Biliescourge Bombers");
-        talents.grimoire_of_synergy             = find_talent_spell("Grimoire of Synergy");
         talents.demonic_consumption             = find_talent_spell("Demonic Consumption");
         talents.grimoire_of_service             = find_talent_spell("Grimoire of Service");
         talents.inner_demons                    = find_talent_spell("Inner Demons");
@@ -585,7 +675,9 @@ namespace warlock {
 
     void warlock_t::create_apl_demonology() {
         action_priority_list_t* def = get_action_priority_list("default");
-
+       
+        def -> add_action("power_siphon,if=talent.power_siphon.enabled");
+        def -> add_action("doom,if=talent.doom.enabled&refreshable");
         def -> add_action("call_dreadstalkers");
         def -> add_action("hand_of_guldan,if=soul_shard>=3");
         def -> add_action("demonbolt,if=buff.demonic_core.stack>0");

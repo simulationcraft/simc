@@ -121,23 +121,23 @@ namespace warlock
         const spell_data_t* creeping_death;
         const spell_data_t* siphon_life;
         // DEMO
-        const spell_data_t* demonic_strength;
-        const spell_data_t* demonic_calling;
-        const spell_data_t* doom;
-
         const spell_data_t* riders;
-        const spell_data_t* power_siphon;
-        const spell_data_t* summon_vilefiend;
-
-        const spell_data_t* overloaded;
-        const spell_data_t* demonic_strength2;
+        const spell_data_t* demonic_strength;
         const spell_data_t* biliescourge_bombers;
 
-        const spell_data_t* grimoire_of_synergy;
-        const spell_data_t* demonic_consumption;
+        const spell_data_t* demonic_calling;
+        const spell_data_t* power_siphon;
+        const spell_data_t* doom;
+        
+        const spell_data_t* from_the_shadows;
+        const spell_data_t* soul_strike;
+        const spell_data_t* summon_vilefiend;
+        
+        const spell_data_t* inner_demons;
         const spell_data_t* grimoire_of_service;
 
-        const spell_data_t* inner_demons;
+        const spell_data_t* sacrificed_souls;
+        const spell_data_t* demonic_consumption;
         const spell_data_t* nether_portal;
         // DESTRO
         const spell_data_t* eradication;
@@ -192,8 +192,6 @@ namespace warlock
       propagate_const<real_ppm_t*> nightfall_rppm;
       propagate_const<real_ppm_t*> affliction_t20_2pc_rppm;
       propagate_const<real_ppm_t*> demonic_power_rppm; // grimoire of sacrifice
-      propagate_const<real_ppm_t*> grimoire_of_synergy; //caster ppm, i.e., if it procs, the wl will create a buff for the pet.
-      propagate_const<real_ppm_t*> grimoire_of_synergy_pet; //pet ppm, i.e., if it procs, the pet will create a buff for the wl.
 
                                         // Cooldowns
       struct cooldowns_t
@@ -249,7 +247,6 @@ namespace warlock
         propagate_const<buff_t*> demonic_speed; // t20 4pc
 
         //demonology buffs
-        propagate_const<buff_t*> demonic_synergy;
         propagate_const<buff_t*> demonic_core;
         propagate_const<buff_t*> demonic_calling;
         propagate_const<buff_t*> dreaded_haste; // t20 4pc
@@ -446,7 +443,6 @@ namespace warlock
 
         struct buffs_t
         {
-          propagate_const<buff_t*> demonic_synergy;
           propagate_const<haste_buff_t*> demonic_empowerment;
           propagate_const<buff_t*> the_expendables;
           propagate_const<buff_t*> rage_of_guldan;
@@ -572,17 +568,6 @@ namespace warlock
           if ( ab::n_targets() != 0 && ab::target_list().size() == 0 )
           {
             return;
-          }
-
-          if ( ab::hit_any_target && ab::result_is_hit( ab::execute_state->result ) )
-          {
-            if (p()->specialization() == WARLOCK_DEMONOLOGY) {
-              if (p()->o()->talents.grimoire_of_synergy->ok())
-              {
-                bool procced = p()->o()->grimoire_of_synergy_pet->trigger(); //check for RPPM
-                if (procced) p()->o()->buffs.demonic_synergy->trigger(); //trigger the buff
-              }
-            }
           }
         }
 
@@ -964,20 +949,6 @@ namespace warlock
             }
           }
 
-          if (p()->specialization() == WARLOCK_DEMONOLOGY) {
-            if (hit_any_target && result_is_hit(execute_state->result) && p()->talents.grimoire_of_synergy->ok())
-            {
-              auto my_pet = p()->warlock_pet_list.active; //get active pet
-              if (my_pet)
-              {
-                bool procced = p()->grimoire_of_synergy->trigger();
-                if (procced) my_pet->buffs.demonic_synergy->trigger();
-              }
-            }
-
-            p()->buffs.demonic_synergy->up();
-          }
-
           if ( can_feretory && p()->legendary.feretory_of_souls && rng().roll( p()->find_spell( 205702 )->proc_chance() ) && dbc::is_school( school, SCHOOL_FIRE ) )
             p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.feretory_of_souls );
         }
@@ -990,11 +961,6 @@ namespace warlock
 
           if ( d->state->result > 0 && result_is_hit( d->state->result ) && td( d->target )->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id )
             accumulate_seed_of_corruption( td( d->target ), d->state->result_amount );
-
-          if (p()->specialization() == WARLOCK_DEMONOLOGY) {
-            p()->buffs.demonic_synergy->up();
-          }
-          
         }
 
         void impact( action_state_t* s ) override
