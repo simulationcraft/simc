@@ -6,7 +6,13 @@ namespace warlock
     struct warlock_t;
 
     namespace pets {
-    struct warlock_pet_t;
+      struct warlock_pet_t;
+      namespace dreadstalker {
+        struct dreadstalker_t;
+      }
+      namespace wild_imp {
+        struct wild_imp_pet_t;
+      }
     }
 
     constexpr int MAX_UAS = 5;
@@ -63,6 +69,10 @@ namespace warlock
       {
         pets::warlock_pet_t* active;
         pets::warlock_pet_t* last;
+        static const int WILD_IMP_LIMIT = 40;
+        static const int DREADSTALKER_LIMIT = 4;
+        std::array<pets::wild_imp::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
+        std::array<pets::dreadstalker::dreadstalker_t*, DREADSTALKER_LIMIT> dreadstalkers;
       } warlock_pet_list;
 
       std::vector<std::string> pet_name_list;
@@ -190,6 +200,7 @@ namespace warlock
       {
         propagate_const<cooldown_t*> haunt;
         propagate_const<cooldown_t*> sindorei_spite_icd;
+        propagate_const<cooldown_t*> call_dreadstalkers;
       } cooldowns;
 
       // Passives
@@ -239,6 +250,8 @@ namespace warlock
 
         //demonology buffs
         propagate_const<buff_t*> demonic_synergy;
+        propagate_const<buff_t*> demonic_core;
+        propagate_const<buff_t*> demonic_calling;
         propagate_const<buff_t*> dreaded_haste; // t20 4pc
         propagate_const<buff_t*> rage_of_guldan; // t21 2pc
 
@@ -301,9 +314,9 @@ namespace warlock
         proc_t* one_shard_hog;
         proc_t* two_shard_hog;
         proc_t* three_shard_hog;
-        proc_t* four_shard_hog;
         proc_t* wild_imp;
         proc_t* fragment_wild_imp;
+        proc_t* dreadstalker_debug;
         proc_t* demonology_t20_2pc;
         //destro
         proc_t* t19_2pc_chaos_bolts;
@@ -722,6 +735,38 @@ namespace warlock
           virtual void init_base_stats() override;
           virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
         };
+      }
+      namespace dreadstalker
+      {
+        struct dreadstalker_t : public warlock_pet_t
+        {
+          dreadstalker_t(sim_t* sim, warlock_t* owner);
+          virtual void init_base_stats() override;
+          virtual void arise() override;
+          virtual void demise() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
+        };
+      }
+      namespace wild_imp {
+        struct wild_imp_pet_t : public warlock_pet_t
+        {
+          action_t* firebolt;
+          bool isnotdoge;
+
+          wild_imp_pet_t(sim_t* sim, warlock_t* owner);
+
+          virtual void init_base_stats() override;
+
+          virtual void dismiss(bool expired) override;
+
+          virtual action_t* create_action(const std::string& name,const std::string& options_str) override;
+
+          virtual void arise() override;
+
+          virtual void demise() override;
+          //void trigger(int timespan, bool isdoge = false) override;
+        };
+
       }
     }
 

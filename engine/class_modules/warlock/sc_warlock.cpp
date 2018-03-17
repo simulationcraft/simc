@@ -459,6 +459,7 @@ namespace warlock
         destro_mastery = false;
       }
     };
+
   } // end actions namespace
 
   namespace buffs
@@ -841,6 +842,18 @@ pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& /*
 
 void warlock_t::create_pets()
 {
+  if (specialization() == WARLOCK_DEMONOLOGY)
+  {
+    for (size_t i = 0; i < warlock_pet_list.wild_imps.size(); i++)
+    {
+      warlock_pet_list.wild_imps[i] = new pets::wild_imp::wild_imp_pet_t(sim, this);
+    }
+    for (size_t i = 0; i < warlock_pet_list.dreadstalkers.size(); i++)
+    {
+      warlock_pet_list.dreadstalkers[i] = new pets::dreadstalker::dreadstalker_t(sim, this);
+    }
+  }
+
   for ( auto& pet : pet_name_list )
   {
     create_pet( pet );
@@ -882,16 +895,6 @@ void warlock_t::create_buffs()
     ->set_default_value( find_spell( 236200 )->effectN( 1 ).percent() );
 
   //demonology buffs
-  buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 171982 ) )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_chance( 1 );
-  buffs.dreaded_haste = make_buff<haste_buff_t>( this, "dreaded_haste", sets->set( WARLOCK_DEMONOLOGY, T20, B4 )->effectN( 1 ).trigger() );
-  buffs.dreaded_haste->set_default_value( sets->set( WARLOCK_DEMONOLOGY, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
-  buffs.rage_of_guldan = make_buff( this, "rage_of_guldan", sets->set( WARLOCK_DEMONOLOGY, T21, B2 )->effectN( 1 ).trigger() )
-    ->set_duration( find_spell( 257926 )->duration() )
-    ->set_max_stack( find_spell( 257926 )->max_stacks() )
-    ->set_default_value( find_spell( 257926 )->effectN( 1 ).base_value() )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   //destruction buffs
   buffs.backdraft = make_buff( this, "backdraft", find_spell( 117828 ) );
@@ -1002,7 +1005,6 @@ void warlock_t::init_procs()
   procs.one_shard_hog                   = get_proc( "one_shard_hog" );
   procs.two_shard_hog                   = get_proc( "two_shard_hog" );
   procs.three_shard_hog                 = get_proc( "three_shard_hog" );
-  procs.four_shard_hog                  = get_proc( "four_shard_hog" );
   procs.demonic_calling                 = get_proc( "demonic_calling" );
   procs.power_trip                      = get_proc( "power_trip" );
   procs.soul_conduit                    = get_proc( "soul_conduit" );
