@@ -235,9 +235,11 @@ struct rogue_t : public player_t
     // Shared
     haste_buff_t* alacrity;
     buff_t* death_from_above;
-    buff_t* subterfuge;
-    // Assassination
     buff_t* elaborate_planning;
+    buff_t* subterfuge;
+    buff_t* hidden_blades_driver;
+    buff_t* hidden_blades;
+    // Assassination
     buff_t* dispatch;
     buff_t* master_assassin;
     buff_t* master_assassin_aura;
@@ -407,6 +409,7 @@ struct rogue_t : public player_t
   struct talents_t
   {
     // Shared
+    const spell_data_t* elaborate_planning;
 
     // Tier 2 - Level 30
     const spell_data_t* nightstalker;
@@ -423,13 +426,13 @@ struct rogue_t : public player_t
 
     // Tier 7 - Level 100
     const spell_data_t* death_from_above;
+    const spell_data_t* hidden_blades;
 
 
     // Specifics
 
     // Tier 1 - Level 15
     const spell_data_t* master_poisoner;
-    const spell_data_t* elaborate_planning;
     const spell_data_t* dispatch;
 
     const spell_data_t* ghostly_strike;
@@ -2647,14 +2650,22 @@ struct fan_of_knives_t: public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    // The Dreadlord's Deceit Legendary
-    if ( p() -> buffs.the_dreadlords_deceit -> up() )
-    {
-      m *= 1.0 + p() -> buffs.the_dreadlords_deceit -> check_stack_value();
-      p() -> buffs.the_dreadlords_deceit -> expire();
-    }
+    m *= 1.0 + p() -> buffs.the_dreadlords_deceit -> check_stack_value();
+
+    m *= 1.0 + p() -> buffs.hidden_blades -> check_stack_value();
 
     return m;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( p() -> buffs.the_dreadlords_deceit -> up() )
+      p() -> buffs.the_dreadlords_deceit -> expire();
+
+    if ( p() -> buffs.hidden_blades -> up() )
+      p() -> buffs.hidden_blades -> expire();
   }
 
   void schedule_travel( action_state_t* state ) override
@@ -3732,12 +3743,9 @@ struct shuriken_storm_t: public rogue_attack_t
       m *= 1.0 + data().effectN( 3 ).percent();
     }
 
-    // The Dreadlord's Deceit Legendary
-    if ( p() -> buffs.the_dreadlords_deceit -> up() )
-    {
-      m *= 1.0 + p() -> buffs.the_dreadlords_deceit -> check_stack_value();
-      p() -> buffs.the_dreadlords_deceit -> expire();
-    }
+    m *= 1.0 + p() -> buffs.the_dreadlords_deceit -> check_stack_value();
+
+    m *= 1.0 + p() -> buffs.hidden_blades -> check_stack_value();
 
     return m;
   }
@@ -3750,6 +3758,12 @@ struct shuriken_storm_t: public rogue_attack_t
     {
       p() -> buffs.shuriken_combo -> trigger((int)(execute_state -> n_targets) - 1);
     }
+
+    if ( p() -> buffs.the_dreadlords_deceit -> up() )
+      p() -> buffs.the_dreadlords_deceit -> expire();
+
+    if ( p() -> buffs.hidden_blades -> up() )
+      p() -> buffs.hidden_blades -> expire();
   }
 };
 
@@ -6037,7 +6051,7 @@ void rogue_t::init_action_list()
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
     build -> add_talent( this, "Dispatch" );
-    build -> add_action( this, "Fan of Knives", "if=buff.the_dreadlords_deceit.stack>=29" );
+    build -> add_action( this, "Fan of Knives", "if=buff.the_dreadlords_deceit.stack>=29|buff.hidden_blades.stack>=19" );
     build -> add_action( this, "Mutilate", "if=talent.exsanguinate.enabled&(debuff.vendetta.up|combo_points<=2)", "Mutilate is worth using over FoK for Exsanguinate builds in some 2T scenarios." );
     build -> add_action( this, "Fan of Knives", "if=spell_targets>1+equipped.insignia_of_ravenholdt" );
     build -> add_action( this, "Fan of Knives", "if=combo_points>=3+talent.deeper_stratagem.enabled&artifact.poison_knives.rank>=5|fok_rotation" );
@@ -6264,7 +6278,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
     stealthed -> add_action( this, "Shadowstrike", "if=buff.stealth.up", "If stealth is up, we really want to use Shadowstrike to benefits from the passive bonus, even if we are at max cp (from the precombat MfD)." );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&buff.vanish.up)&(spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration>=0.3))" );
-    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=2+equipped.insignia_of_ravenholdt&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1&buff.the_dreadlords_deceit.stack>=29))" );
+    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=2+equipped.insignia_of_ravenholdt&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1&(buff.the_dreadlords_deceit.stack>=29|buff.hidden_blades.stack>=19)))" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&buff.vanish.up)&combo_points.deficit<3+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin" );
     stealthed -> add_action( this, "Shadowstrike" );
   }
@@ -6779,6 +6793,7 @@ void rogue_t::init_spells()
 
   talent.alacrity           = find_talent_spell( "Alacrity" );
   talent.death_from_above   = find_talent_spell( "Death from Above" );
+  talent.hidden_blades      = find_talent_spell( "Hidden Blades" );
 
   talent.nightstalker       = find_talent_spell( "Nightstalker" );
   talent.subterfuge         = find_talent_spell( "Subterfuge" );
@@ -7059,6 +7074,14 @@ void rogue_t::create_buffs()
                                   //.duration( timespan_t::from_seconds( 1.475 ) )
                                   .quiet( true );
   buffs.subterfuge              = new buffs::subterfuge_t( this );
+  buffs.hidden_blades_driver    = buff_creator_t( this, "hidden_blades_driver", talent.hidden_blades )
+                                  .period( talent.hidden_blades -> effectN( 1 ).period() )
+                                  .quiet( true )
+                                  .tick_callback( [this]( buff_t*, int, const timespan_t& ) { buffs.hidden_blades -> trigger(); } )
+                                  .tick_time_behavior( buff_tick_time_behavior::UNHASTED );
+  buffs.hidden_blades           = buff_creator_t( this, "hidden_blades", find_spell( 270070 ) )
+                                  .default_value( find_spell( 270070 ) -> effectN( 1 ).percent() );
+  buffs.sephuzs_secret          = make_buff<haste_buff_t>( this, "sephuzs_secret", find_spell( 208052 ) );
   // Assassination
   buffs.elaborate_planning      = buff_creator_t( this, "elaborate_planning", talent.elaborate_planning -> effectN( 1 ).trigger() )
                                   .default_value( 1.0 + talent.elaborate_planning -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -7577,8 +7600,14 @@ void rogue_t::combat_begin()
 
   if ( legendary.the_dreadlords_deceit )
   {
-    buffs.the_dreadlords_deceit -> trigger(30);
+    buffs.the_dreadlords_deceit -> trigger( buffs.the_dreadlords_deceit -> data().max_stacks() );
     buffs.the_dreadlords_deceit_driver -> trigger();
+  }
+
+  if ( talent.hidden_blades -> ok() )
+  {
+    buffs.hidden_blades -> trigger( buffs.hidden_blades -> data().max_stacks() );
+    buffs.hidden_blades_driver -> trigger();
   }
 }
 
