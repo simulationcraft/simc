@@ -2287,11 +2287,11 @@ struct arcane_blast_t : public arcane_mage_spell_t
     p() -> benefits.arcane_charge.arcane_blast -> update();
     arcane_mage_spell_t::execute();
 
-    p() -> buffs.rhonins_assaulting_armwraps -> expire();
+    p() -> buffs.rhonins_assaulting_armwraps -> decrement();
 
     if ( last_resource_cost == 0 )
     {
-      p() -> buffs.rule_of_threes -> expire();
+      p() -> buffs.rule_of_threes -> decrement();
     }
 
     p() -> buffs.arcane_charge -> up();
@@ -2374,7 +2374,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
     if ( last_resource_cost == 0 )
     {
-      p() -> buffs.clearcasting -> expire();
+      p() -> buffs.clearcasting -> decrement();
     }
 
     p() -> buffs.quick_thinker -> trigger();
@@ -2556,11 +2556,11 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     {
       if ( p() -> buffs.clearcasting -> check() )
       {
-        p() -> buffs.clearcasting -> expire();
+        p() -> buffs.clearcasting -> decrement();
       }
       else
       {
-        p() -> buffs.rule_of_threes -> expire();
+        p() -> buffs.rule_of_threes -> decrement();
       }
     }
 
@@ -3390,7 +3390,7 @@ struct flurry_t : public frost_mage_spell_t
 
     bool brain_freeze = p() -> buffs.brain_freeze -> up();
     p() -> state.brain_freeze_active = brain_freeze;
-    p() -> buffs.brain_freeze -> expire();
+    p() -> buffs.brain_freeze -> decrement();
     p() -> state.flurry_bolt_count = 0;
     p() -> buffs.zannesu_journey -> trigger();
 
@@ -4526,7 +4526,7 @@ struct pyroblast_t : public fire_mage_spell_t
     }
     else
     {
-      p() -> buffs.kaelthas_ultimate_ability -> expire();
+      p() -> buffs.kaelthas_ultimate_ability -> decrement();
       p() -> buffs.pyroclasm -> decrement();
     }
   }
