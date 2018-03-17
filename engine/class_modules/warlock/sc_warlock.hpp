@@ -576,10 +576,12 @@ namespace warlock
 
           if ( ab::hit_any_target && ab::result_is_hit( ab::execute_state->result ) )
           {
-            if ( p()->o()->talents.grimoire_of_synergy->ok() )
-            {
-              bool procced = p()->o()->grimoire_of_synergy_pet->trigger(); //check for RPPM
-              if ( procced ) p()->o()->buffs.demonic_synergy->trigger(); //trigger the buff
+            if (p()->specialization() == WARLOCK_DEMONOLOGY) {
+              if (p()->o()->talents.grimoire_of_synergy->ok())
+              {
+                bool procced = p()->o()->grimoire_of_synergy_pet->trigger(); //check for RPPM
+                if (procced) p()->o()->buffs.demonic_synergy->trigger(); //trigger the buff
+              }
             }
           }
         }
@@ -952,16 +954,6 @@ namespace warlock
         {
           spell_t::execute();
 
-          if ( hit_any_target && result_is_hit( execute_state->result ) && p()->talents.grimoire_of_synergy->ok() )
-          {
-            auto my_pet = p()->warlock_pet_list.active; //get active pet
-            if ( my_pet )
-            {
-              bool procced = p()->grimoire_of_synergy->trigger();
-              if ( procced ) my_pet->buffs.demonic_synergy->trigger();
-            }
-          }
-
           if ( hit_any_target && result_is_hit( execute_state->result ) && p()->talents.grimoire_of_sacrifice->ok() && p()->buffs.demonic_power->up() )
           {
             bool procced = p()->demonic_power_rppm->trigger();
@@ -972,7 +964,19 @@ namespace warlock
             }
           }
 
-          p()->buffs.demonic_synergy->up();
+          if (p()->specialization() == WARLOCK_DEMONOLOGY) {
+            if (hit_any_target && result_is_hit(execute_state->result) && p()->talents.grimoire_of_synergy->ok())
+            {
+              auto my_pet = p()->warlock_pet_list.active; //get active pet
+              if (my_pet)
+              {
+                bool procced = p()->grimoire_of_synergy->trigger();
+                if (procced) my_pet->buffs.demonic_synergy->trigger();
+              }
+            }
+
+            p()->buffs.demonic_synergy->up();
+          }
 
           if ( can_feretory && p()->legendary.feretory_of_souls && rng().roll( p()->find_spell( 205702 )->proc_chance() ) && dbc::is_school( school, SCHOOL_FIRE ) )
             p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.feretory_of_souls );
@@ -987,7 +991,10 @@ namespace warlock
           if ( d->state->result > 0 && result_is_hit( d->state->result ) && td( d->target )->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id )
             accumulate_seed_of_corruption( td( d->target ), d->state->result_amount );
 
-          p()->buffs.demonic_synergy->up();
+          if (p()->specialization() == WARLOCK_DEMONOLOGY) {
+            p()->buffs.demonic_synergy->up();
+          }
+          
         }
 
         void impact( action_state_t* s ) override

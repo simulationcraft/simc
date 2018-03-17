@@ -628,17 +628,19 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 
   const warlock_td_t* td = get_target_data( target );
 
-  if ( td->debuffs_haunt->check() )
-    m *= 1.0 + find_spell( 48181 )->effectN( 2 ).percent();
-  if ( td->debuffs_shadow_embrace->check() )
-    m *= 1.0 + ( find_spell( 32390 )->effectN( 1 ).percent() * td->debuffs_shadow_embrace->check() );
+  if (specialization() == WARLOCK_AFFLICTION) {
+    if (td->debuffs_haunt->check())
+      m *= 1.0 + find_spell(48181)->effectN(2).percent();
+    if (td->debuffs_shadow_embrace->check())
+      m *= 1.0 + (find_spell(32390)->effectN(1).percent() * td->debuffs_shadow_embrace->check());
 
-  for ( auto& current_ua : td->dots_unstable_affliction )
-  {
-    if ( current_ua->is_ticking() )
+    for (auto& current_ua : td->dots_unstable_affliction)
     {
-      m *= 1.0 + find_spell( 30108 )->effectN( 3 ).percent();
-      break;
+      if (current_ua->is_ticking())
+      {
+        m *= 1.0 + find_spell(30108)->effectN(3).percent();
+        break;
+      }
     }
   }
 
@@ -648,9 +650,6 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 double warlock_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  if ( buffs.demonic_synergy->check() )
-    m *= 1.0 + buffs.demonic_synergy->data().effectN( 1 ).percent();
 
   if ( legendary.stretens_insanity )
     m *= 1.0 + buffs.stretens_insanity->check() * buffs.stretens_insanity->data().effectN( 1 ).percent();
@@ -662,6 +661,11 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( specialization() == WARLOCK_AFFLICTION ) {
     if ( buffs.soul_harvest->check() )
       m *= 1.0 + buffs.soul_harvest->check_stack_value();
+  }
+
+  if (specialization() == WARLOCK_DEMONOLOGY) {
+    if (buffs.demonic_synergy->check())
+      m *= 1.0 + buffs.demonic_synergy->data().effectN(1).percent();
   }
 
   m *= 1.0 + buffs.sindorei_spite->check_stack_value();
@@ -696,8 +700,11 @@ double warlock_t::composite_spell_haste() const
       h *= 1.0 / ( 1.0 + buffs.demonic_speed->check_value() );
   }
 
-  if ( buffs.dreaded_haste->check() )
-    h *= 1.0 / ( 1.0 + buffs.dreaded_haste->check_value() );
+  if (specialization() == WARLOCK_DEMONOLOGY)
+  {
+    if (buffs.dreaded_haste->check())
+      h *= 1.0 / (1.0 + buffs.dreaded_haste->check_value());
+  }
 
   return h;
 }
@@ -721,9 +728,11 @@ double warlock_t::composite_melee_haste() const
     if ( buffs.demonic_speed->check() )
       h *= 1.0 / ( 1.0 + buffs.demonic_speed->check_value() );
   }
-
-  if ( buffs.dreaded_haste->check() )
-    h *= 1.0 / ( 1.0 + buffs.dreaded_haste->check_value() );
+  if (specialization() == WARLOCK_DEMONOLOGY)
+  {
+    if (buffs.dreaded_haste->check())
+      h *= 1.0 / (1.0 + buffs.dreaded_haste->check_value());
+  }
 
   return h;
 }
