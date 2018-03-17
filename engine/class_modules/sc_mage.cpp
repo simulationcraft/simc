@@ -1017,9 +1017,9 @@ struct mirror_image_spell_t : public mage_pet_spell_t
 
   virtual bool init_finished() override
   {
-    if ( p() -> o() -> pets.mirror_images[ 0 ] )
+    if ( o() -> pets.mirror_images[ 0 ] )
     {
-      stats = p() -> o() -> pets.mirror_images[ 0 ] -> get_stats( name_str );
+      stats = o() -> pets.mirror_images[ 0 ] -> get_stats( name_str );
     }
 
     return mage_pet_spell_t::init_finished();
