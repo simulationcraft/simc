@@ -5934,9 +5934,8 @@ void mage_t::create_buffs()
   buffs.ignition               = make_buff( this, "ignition", find_spell( 246261 ) )
                                    -> set_trigger_spell( sets -> set( MAGE_FIRE, T20, B2 ) );
   buffs.inferno                = make_buff( this, "inferno", find_spell( 253220 ) )
-                                   -> set_default_value( find_spell( 253220 ) -> effectN( 1 ).percent() );
-  buffs.inferno -> buff_duration = buffs.combustion -> buff_duration;
-
+                                   -> set_default_value( find_spell( 253220 ) -> effectN( 1 ).percent() )
+                                   -> set_duration( buffs.combustion -> buff_duration );
   buffs.heating_up             = make_buff( this, "heating_up",  find_spell( 48107 ) );
   buffs.hot_streak             = make_buff( this, "hot_streak",  find_spell( 48108 ) );
   buffs.streaking              = make_buff<haste_buff_t>( this, "streaking", find_spell( 211399 ) )
@@ -5995,7 +5994,6 @@ void mage_t::create_buffs()
   buffs.ice_floes      = make_buff( this, "ice_floes", talents.ice_floes );
   buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this );
   buffs.rune_of_power  = make_buff( this, "rune_of_power", find_spell( 116014 ) )
-                           -> set_duration( find_spell( 116011 ) -> duration() )
                            -> set_default_value( find_spell( 116014 ) -> effectN( 1 ).percent() );
 
 
