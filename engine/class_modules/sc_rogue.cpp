@@ -7081,7 +7081,6 @@ void rogue_t::create_buffs()
                                   .tick_time_behavior( buff_tick_time_behavior::UNHASTED );
   buffs.hidden_blades           = buff_creator_t( this, "hidden_blades", find_spell( 270070 ) )
                                   .default_value( find_spell( 270070 ) -> effectN( 1 ).percent() );
-  buffs.sephuzs_secret          = make_buff<haste_buff_t>( this, "sephuzs_secret", find_spell( 208052 ) );
   // Assassination
   buffs.elaborate_planning      = buff_creator_t( this, "elaborate_planning", talent.elaborate_planning -> effectN( 1 ).trigger() )
                                   .default_value( 1.0 + talent.elaborate_planning -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
