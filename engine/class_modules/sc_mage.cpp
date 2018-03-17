@@ -441,7 +441,6 @@ public:
     cooldown_t* evocation;
     cooldown_t* frost_nova;
     cooldown_t* frozen_orb;
-    cooldown_t* icy_veins;
     cooldown_t* presence_of_mind;
     cooldown_t* time_warp;
   } cooldowns;
@@ -5407,7 +5406,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.evocation        = get_cooldown( "evocation"        );
   cooldowns.frost_nova       = get_cooldown( "frost_nova"       );
   cooldowns.frozen_orb       = get_cooldown( "frozen_orb"       );
-  cooldowns.icy_veins        = get_cooldown( "icy_veins"        );
   cooldowns.presence_of_mind = get_cooldown( "presence_of_mind" );
   cooldowns.time_warp        = get_cooldown( "time_warp"        );
 
