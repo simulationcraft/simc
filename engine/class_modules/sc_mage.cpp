@@ -94,15 +94,12 @@ struct mage_td_t : public actor_target_data_t
 {
   struct dots_t
   {
-    dot_t* ignite;
-    dot_t* living_bomb;
     dot_t* nether_tempest;
   } dots;
 
   struct debuffs_t
   {
     buff_t* erosion;
-    buff_t* slow;
     buff_t* winters_chill;
     buff_t* frozen;
   } debuffs;
@@ -4776,16 +4773,6 @@ struct slow_t : public arcane_mage_spell_t
     ignore_false_positive = true;
     triggers_erosion = false;
   }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> debuffs.slow -> trigger();
-    }
-  }
 };
 
 // Supernova Spell ==========================================================
@@ -5382,12 +5369,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots( dots_t() ),
   debuffs( debuffs_t() )
 {
-  dots.ignite            = target -> get_dot( "ignite",            mage );
-  dots.living_bomb       = target -> get_dot( "living_bomb",       mage );
   dots.nether_tempest    = target -> get_dot( "nether_tempest",    mage );
 
   debuffs.erosion       = make_buff<buffs::erosion_t>( this );
-  debuffs.slow          = make_buff( *this, "slow", mage -> find_spell( 31589 ) );
   debuffs.frozen        = make_buff( *this, "frozen" )
                             -> set_duration( timespan_t::from_seconds( 0.5 ) );
   debuffs.winters_chill = make_buff( *this, "winters_chill", mage -> find_spell( 228358 ) )
