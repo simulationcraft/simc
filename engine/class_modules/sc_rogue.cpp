@@ -1092,7 +1092,7 @@ struct rogue_attack_t : public melee_attack_t
     
     if ( p()->buffs.elaborate_planning->check() && data().affected_by( p()->buffs.elaborate_planning->data().effectN( 1 ) ) )
     {
-      m *= p()->buffs.elaborate_planning->data().effectN( 1 ).percent();
+      m *= 1.0 + p()->buffs.elaborate_planning->data().effectN( 1 ).percent();
     }
 
     return m;
@@ -1129,7 +1129,7 @@ struct rogue_attack_t : public melee_attack_t
 
     if ( p()->buffs.elaborate_planning->check() && data().affected_by( p()->buffs.elaborate_planning->data().effectN( 2 ) ) )
     {
-      m *= p()->buffs.elaborate_planning->data().effectN( 2 ).percent();
+      m *= 1.0 + p()->buffs.elaborate_planning->data().effectN( 2 ).percent();
     }
 
     return m;
@@ -2147,7 +2147,7 @@ struct melee_t : public rogue_attack_t
     // Subtlety
     if ( p()->buffs.symbols_of_death->check() )
     {
-      m *= p()->buffs.symbols_of_death->data().effectN( 2 ).percent() 
+      m *= 1.0 + p()->buffs.symbols_of_death->data().effectN( 2 ).percent()
         + p()->spec.t20_2pc_subtlety->effectN( 3 ).percent();
     }
 
@@ -2160,7 +2160,7 @@ struct melee_t : public rogue_attack_t
     // Assassination
     if ( p()->buffs.elaborate_planning->check() )
     {
-      m *= p()->buffs.elaborate_planning->data().effectN( 3 ).percent();
+      m *= 1.0 + p()->buffs.elaborate_planning->data().effectN( 3 ).percent();
     }
 
     return m;
@@ -7079,6 +7079,9 @@ void rogue_t::create_buffs()
                                   // and then let it be trackable in the APL. The driver will also expire this buff when the finisher is scheduled.
                                   //.duration( timespan_t::from_seconds( 1.475 ) )
                                   -> set_quiet( true );
+  buffs.elaborate_planning      = make_buff( this, "elaborate_planning", talent.elaborate_planning -> effectN( 1 ).trigger() )
+                                  -> set_default_value( 1.0 + talent.elaborate_planning -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+                                  -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.subterfuge              = new buffs::subterfuge_t( this );
   buffs.hidden_blades_driver    = make_buff( this, "hidden_blades_driver", talent.hidden_blades )
                                   -> set_period( talent.hidden_blades -> effectN( 1 ).period() )
@@ -7088,9 +7091,6 @@ void rogue_t::create_buffs()
   buffs.hidden_blades           = make_buff( this, "hidden_blades", find_spell( 270070 ) )
                                   -> set_default_value( find_spell( 270070 ) -> effectN( 1 ).percent() );
   // Assassination
-  buffs.elaborate_planning      = make_buff( this, "elaborate_planning", talent.elaborate_planning -> effectN( 1 ).trigger() )
-                                  -> set_default_value( 1.0 + talent.elaborate_planning -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-                                  -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.dispatch                = make_buff( this, "dispatch", talent.dispatch )
                                   -> set_duration( timespan_t::from_seconds( 10.0 ) ); // I see no buff spell in spell data yet, hardcode for now.
   buffs.master_assassin_aura    = make_buff(this, "master_assassin_aura", talent.master_assassin)
