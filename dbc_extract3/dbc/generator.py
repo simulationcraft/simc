@@ -1417,6 +1417,7 @@ class SpellDataGenerator(DataGenerator):
           ( 213229, 0 ),
           ( 243050, 0 ),        # Fire Rift
           ( 242922, 0 ),        # Jaws of Shadow
+		  ( 270569, 2 ),		# From the Shadows debuff
         ),
 
         # Monk:
