@@ -7607,16 +7607,14 @@ struct sephuzs_secret_t : public class_buff_cb_t<mage_t, haste_buff_t>
   { }
 
   virtual haste_buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<mage_t*>( e.player ) -> buffs.sephuzs_secret;
-  }
+  { return debug_cast<mage_t*>( e.player ) -> buffs.sephuzs_secret; }
 
   haste_buff_t* creator( const special_effect_t& e ) const override
   {
     auto buff = make_buff<haste_buff_t>( e.player, buff_name, e.trigger() );
-    buff->set_cooldown( e.player -> find_spell( 226262 ) -> duration() )
-      ->set_default_value( e.trigger() -> effectN( 2 ).percent() )
-      ->add_invalidate( CACHE_RUN_SPEED );
+    buff -> set_cooldown( e.player -> find_spell( 226262 ) -> duration() )
+         -> set_default_value( e.trigger() -> effectN( 2 ).percent() )
+         -> add_invalidate( CACHE_RUN_SPEED );
     return buff;
   }
 };
@@ -7651,14 +7649,12 @@ struct rhonins_assaulting_armwraps_t : public class_buff_cb_t<mage_t>
   { }
 
   virtual buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<mage_t*>( e.player ) -> buffs.rhonins_assaulting_armwraps;
-  }
+  { return debug_cast<mage_t*>( e.player ) -> buffs.rhonins_assaulting_armwraps; }
 
   buff_t* creator( const special_effect_t& e ) const override
   {
     return make_buff( e.player, buff_name, e.trigger() )
-      ->set_chance( e.driver() -> effectN( 1 ).percent() );
+      -> set_chance( e.driver() -> effectN( 1 ).percent() );
   }
 };
 
@@ -7669,14 +7665,12 @@ struct cord_of_infinity_t : public class_buff_cb_t<mage_t>
   { }
 
   virtual buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<mage_t*>( e.player ) -> buffs.cord_of_infinity;
-  }
+  { return debug_cast<mage_t*>( e.player ) -> buffs.cord_of_infinity; }
 
   buff_t* creator( const special_effect_t& e ) const override
   {
     return make_buff( e.player, buff_name, e.trigger() )
-      ->set_default_value( e.trigger() -> effectN( 1 ).percent() / 10.0 );
+      -> set_default_value( e.trigger() -> effectN( 1 ).percent() / 10.0 );
   }
 };
 
@@ -7686,9 +7680,7 @@ struct gravity_spiral_t : public scoped_actor_callback_t<mage_t>
   { }
 
   virtual void manipulate( mage_t* actor, const special_effect_t& e ) override
-  {
-    actor -> cooldowns.evocation -> charges += e.driver() -> effectN( 1 ).base_value();
-  }
+  { actor -> cooldowns.evocation -> charges += e.driver() -> effectN( 1 ).base_value(); }
 };
 
 struct mantle_of_the_first_kirin_tor_t : public scoped_action_callback_t<arcane_barrage_t>
@@ -7733,9 +7725,7 @@ struct marquee_bindings_of_the_sun_king_t : public class_buff_cb_t<mage_t>
   { }
 
   virtual buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<mage_t*>( e.player ) -> buffs.kaelthas_ultimate_ability;
-  }
+  { return debug_cast<mage_t*>( e.player ) -> buffs.kaelthas_ultimate_ability; }
 
   buff_t* creator( const special_effect_t& e ) const override
   {
@@ -7763,9 +7753,7 @@ struct contained_infernal_core_t : public class_buff_cb_t<mage_t>
   { }
 
   virtual buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<mage_t*>( e.player ) -> buffs.contained_infernal_core;
-  }
+  { return debug_cast<mage_t*>( e.player ) -> buffs.contained_infernal_core; }
 
   buff_t* creator( const special_effect_t& e ) const override
   {
@@ -7780,14 +7768,12 @@ struct magtheridons_banished_bracers_t : public class_buff_cb_t<mage_t>
   { }
 
   virtual buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<mage_t*>( e.player ) -> buffs.magtheridons_might;
-  }
+  { return debug_cast<mage_t*>( e.player ) -> buffs.magtheridons_might; }
 
   buff_t* creator( const special_effect_t& e ) const override
   {
     return make_buff( e.player, buff_name, e.trigger() )
-      ->set_default_value( e.trigger() -> effectN( 1 ).percent() );
+      -> set_default_value( e.trigger() -> effectN( 1 ).percent() );
   }
 };
 
@@ -7797,14 +7783,12 @@ struct zannesu_journey_t : public class_buff_cb_t<mage_t>
   { }
 
   virtual buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<mage_t*>( e.player ) -> buffs.zannesu_journey;
-  }
+  { return debug_cast<mage_t*>( e.player ) -> buffs.zannesu_journey; }
 
   buff_t* creator( const special_effect_t& e ) const override
   {
     return make_buff( e.player, buff_name, e.trigger() )
-      ->set_default_value( e.trigger() -> effectN( 1 ).percent() );
+      -> set_default_value( e.trigger() -> effectN( 1 ).percent() );
   }
 };
 
@@ -7814,9 +7798,7 @@ struct lady_vashjs_grasp_t : public scoped_actor_callback_t<mage_t>
   { }
 
   virtual void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
-  {
-    actor -> buffs.lady_vashjs_grasp -> default_chance = 1.0;
-  }
+  { actor -> buffs.lady_vashjs_grasp -> default_chance = 1.0; }
 };
 
 struct ice_time_t : public scoped_action_callback_t<frozen_orb_t>
@@ -7825,9 +7807,7 @@ struct ice_time_t : public scoped_action_callback_t<frozen_orb_t>
   { }
 
   virtual void manipulate( frozen_orb_t* action, const special_effect_t& /* e */ ) override
-  {
-    action -> ice_time = true;
-  }
+  { action -> ice_time = true; }
 };
 
 struct shattered_fragments_of_sindragosa_t : public class_buff_cb_t<mage_t>
@@ -7836,9 +7816,7 @@ struct shattered_fragments_of_sindragosa_t : public class_buff_cb_t<mage_t>
   { }
 
   virtual buff_t*& buff_ptr( const special_effect_t& e ) override
-  {
-    return debug_cast<mage_t*>( e.player ) -> buffs.shattered_fragments_of_sindragosa;
-  }
+  { return debug_cast<mage_t*>( e.player ) -> buffs.shattered_fragments_of_sindragosa; }
 
   buff_t* creator( const special_effect_t& e ) const override
   {
