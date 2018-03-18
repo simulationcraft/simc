@@ -1050,6 +1050,8 @@ void warlock_t::apl_precombat()
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
+  if (specialization() == WARLOCK_DEMONOLOGY)
+    precombat->add_action("inner_demons,if=talent.inner_demons.enabled&!buff.inner_demons.remains");
 
   precombat->add_action("summon_pet");
 

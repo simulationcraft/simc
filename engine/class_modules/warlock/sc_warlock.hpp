@@ -249,6 +249,7 @@ namespace warlock
         //demonology buffs
         propagate_const<buff_t*> demonic_core;
         propagate_const<buff_t*> demonic_calling;
+        propagate_const<buff_t*> inner_demons;
         propagate_const<buff_t*> dreaded_haste; // t20 4pc
         propagate_const<buff_t*> rage_of_guldan; // t21 2pc
 
@@ -404,13 +405,14 @@ namespace warlock
 
       // sc_warlock_demonology
       action_t* create_action_demonology( const std::string& action_name, const std::string& options_str );
-      pet_t* create_pet_demonology( const std::string& pet_name, const std::string& );
+      //pet_t* create_pet_demonology( const std::string& pet_name, const std::string& );
       void create_buffs_demonology();
       void init_spells_demonology();
       void init_gains_demonology();
       void init_rng_demonology();
       void init_procs_demonology();
       void create_options_demonology();
+      //void create_precombat_demonology();
       void create_apl_demonology();
       void legendaries_demonology();
 

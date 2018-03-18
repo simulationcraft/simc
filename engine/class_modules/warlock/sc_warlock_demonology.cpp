@@ -598,6 +598,25 @@ namespace warlock {
                 return summon_pet_t::init_finished();
             }
         };
+
+      struct inner_demons_t : public warlock_spell_t
+      {
+        inner_demons_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("inner_demons", p)
+        {
+          parse_options(options_str);
+          trigger_gcd = timespan_t::zero();
+          harmful = false;
+          ignore_false_positive = true;
+          action_skill = 1;
+        }
+
+        virtual void execute() override
+        {
+          warlock_spell_t::execute();
+          p()->buffs.inner_demons->trigger();
+        }
+      };
+
     } // end actions namespace
     namespace buffs {
     } // end buffs namespace
@@ -613,6 +632,7 @@ namespace warlock {
 
         if (action_name == "doom")          return new        doom_t(this, options_str);
         if (action_name == "power_siphon") return new         power_siphon_t(this, options_str);
+        if (action_name == "inner_demons") return new         inner_demons_t(this, options_str);
 
         if (action_name == "call_dreadstalkers") return new   call_dreadstalkers_t(this, options_str);
         if (action_name == "summon_felguard") return new      summon_main_pet_t("felguard", this);
@@ -630,6 +650,20 @@ namespace warlock {
         ->set_refresh_behavior(buff_refresh_behavior::DURATION);
       //Talents
       buffs.demonic_calling = make_buff(this, "demonic_calling", talents.demonic_calling->effectN(1).trigger());
+      buffs.inner_demons = make_buff(this, "inner_demons", find_spell(267216))
+        ->set_period(timespan_t::from_seconds(talents.inner_demons->effectN(1).base_value()))
+        ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
+        ->set_tick_callback([this](buff_t*, int, const timespan_t&)
+        {
+          for (auto imp : warlock_pet_list.wild_imps)
+          {
+            if (imp->is_sleeping())
+            {
+              imp->summon();
+              break;
+            }
+          }
+        });
       //Tier
       buffs.rage_of_guldan = make_buff(this, "rage_of_guldan", sets->set(WARLOCK_DEMONOLOGY, T21, B2)->effectN(1).trigger())
         ->set_duration(find_spell(257926)->duration())
