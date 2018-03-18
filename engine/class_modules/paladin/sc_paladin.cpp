@@ -1464,6 +1464,8 @@ void paladin_t::init_spells()
   // Ret Passives
   passives.judgment             = find_spell( 231663 );
 
+  spells.avenging_wrath = find_spell( (specialization() == PALADIN_HOLY) ? 31842 : 31884 );
+
   if ( talents.judgment_of_light -> ok() )
     active_judgment_of_light_proc = new judgment_of_light_proc_t( this );
 }
@@ -1734,27 +1736,6 @@ double paladin_t::composite_player_multiplier( school_e school ) const
   double m = player_t::composite_player_multiplier( school );
 
   // These affect all damage done by the paladin
-
-  // Avenging Wrath buffs everything
-  if ( buffs.avenging_wrath -> check() )
-  {
-    double aw_multiplier = buffs.avenging_wrath -> get_damage_mod();
-    if ( chain_of_thrayn )
-    {
-      aw_multiplier += spells.chain_of_thrayn -> effectN( 4 ).percent();
-    }
-    m *= 1.0 + aw_multiplier;
-  }
-
-  if ( buffs.crusade -> check() )
-  {
-    double aw_multiplier = 1.0 + buffs.crusade -> get_damage_mod();
-    if ( chain_of_thrayn )
-    {
-      aw_multiplier += spells.chain_of_thrayn -> effectN( 4 ).percent();
-    }
-    m *= aw_multiplier;
-  }
 
   // Last Defender
   if ( talents.last_defender -> ok() )

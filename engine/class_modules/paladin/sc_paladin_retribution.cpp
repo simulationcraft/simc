@@ -613,6 +613,7 @@ struct hammer_of_wrath_t : public holy_power_generator_t
   {
     parse_options( options_str );
     hasted_cd = hasted_gcd = true;
+    ret_crusade = avenging_wrath = ret_inquisition = true;
   }
 
   void init() override
@@ -721,7 +722,6 @@ void paladin_t::init_spells_retribution()
   spells.justice_gaze                  = find_spell( 211557 );
   spells.chain_of_thrayn               = find_spell( 206338 );
   spells.ashes_to_dust                 = find_spell( 236106 );
-  spells.blessing_of_the_ashbringer    = find_spell( 242981 );
 
   // Mastery
   passives.hand_of_light             = find_mastery_spell( PALADIN_RETRIBUTION );

@@ -305,7 +305,7 @@ public:
     const spell_data_t* gift_of_the_golden_valkyr;
     const spell_data_t* heathcliffs_immortality;
     const spell_data_t* consecration_bonus;
-    const spell_data_t* blessing_of_the_ashbringer;
+    const spell_data_t* avenging_wrath;
   } spells;
 
   // Talents
@@ -646,6 +646,8 @@ public:
   bool ret_mastery_direct;
   bool ret_execution_sentence;
   bool ret_inquisition;
+  bool ret_crusade;
+  bool avenging_wrath;
 
   paladin_action_t( const std::string& n, paladin_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
@@ -668,10 +670,13 @@ public:
     if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
       ret_execution_sentence = ab::data().affected_by( p() -> passives.execution_sentence -> effectN( 1 ) );
       ret_inquisition = ab::data().affected_by( p() -> talents.inquisition -> effectN( 1 ) );
+      ret_crusade = ab::data().affected_by( p() -> talents.crusade -> effectN( 1 ) );
     } else {
       ret_execution_sentence = false;
       ret_inquisition = false;
+      ret_crusade = false;
     }
+    avenging_wrath = ab::data().affected_by( player -> spells.avenging_wrath -> effectN( 1 ) );
 
     hasted_cd = hasted_gcd = false;
     auto update_hasted_cooldowns_by_passive = [&](const spell_data_t* passive) {
@@ -801,7 +806,27 @@ public:
         if ( p() -> buffs.inquisition -> up() )
           am *= 1.0 + p() -> buffs.inquisition -> data().effectN( 1 ).percent();
       }
+      if ( ret_crusade ) {
+        if ( p() -> buffs.crusade -> check() ) {
+          double aw_multiplier = 1.0 + p() -> buffs.crusade -> get_damage_mod();
+          if ( p() -> chain_of_thrayn ) {
+            aw_multiplier += p() -> spells.chain_of_thrayn -> effectN( 4 ).percent();
+          }
+          am *= aw_multiplier;
+        }
+      }
     }
+
+    if ( avenging_wrath ) {
+      if ( p() -> buffs.avenging_wrath -> check() ) {
+        double aw_multiplier = p() -> buffs.avenging_wrath -> get_damage_mod();
+        if ( p() -> chain_of_thrayn ) {
+          aw_multiplier += p() -> spells.chain_of_thrayn -> effectN( 4 ).percent();
+        }
+        am *= 1.0 + aw_multiplier;
+      }
+    }
+
     return am;
   }
 
