@@ -6529,7 +6529,7 @@ void mage_t::apl_frost()
   default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
   default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
   default_list -> add_action( "call_action_list,name=cooldowns" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
   default_list -> add_action( "call_action_list,name=single" );
 
   single -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up",
@@ -6560,10 +6560,12 @@ void mage_t::apl_frost()
   aoe -> add_action( this, "Blizzard" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
-  aoe -> add_action( this, "Flurry", "if=buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)" );
+  aoe -> add_action( this, "Flurry",
+    "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&"
+    "(!talent.glacial_spike.enabled|buff.icicles.stack<=4))" );
   aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
   aoe -> add_talent( this, "Ebonbolt" );
-  aoe -> add_talent( this, "Glacial Spike" );
+  aoe -> add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react" );
   aoe -> add_talent( this, "Ray of Frost" );
   aoe -> add_action( this, "Frostbolt" );
   aoe -> add_action( "call_action_list,name=movement" );
