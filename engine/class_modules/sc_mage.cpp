@@ -6534,47 +6534,37 @@ void mage_t::apl_frost()
 
   single -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up",
     "In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill." );
-  single -> add_talent( this, "Ray of Frost", "if=buff.icy_veins.up|cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down" );
   single -> add_action( this, "Flurry",
-    "if=buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled"
-    "|buff.icicles.stack<=4|cooldown.frozen_orb.remains<=10&set_bonus.tier20_2pc))",
-
-    "Winter's Chill from Flurry can apply to the spell cast right before (provided the travel time is long enough). This can be "
-    "exploited to a great effect with Glacial Spike (which deal a lot of damage by themselves) and Frostbolt (as a "
-    "guaranteed way to proc Frozen Veins and Chain Reaction). When using Glacial Spike, it is worth saving a Brain Freeze proc "
-    "when Glacial Spike is right around the corner (i.e. with 5 Icicles). However, when the actor also has T20 2pc, "
-    "Glacial Spike is delayed to fit into Frozen Mass, so we do not want to sit on a Brain Freeze proc for too long in that case." );
+    "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&"
+    "(!talent.glacial_spike.enabled|buff.icicles.stack<=4))" );
   single -> add_action( this, "Frozen Orb", "if=set_bonus.tier20_2pc&buff.fingers_of_frost.react<2",
     "With T20 2pc, Frozen Orb should be used as soon as it comes off CD." );
+  single -> add_action( this, "Blizzard", "if=active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2" );
   single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
+  single -> add_talent( this, "Ebonbolt" );
   single -> add_action( this, "Frozen Orb" );
-  single -> add_talent( this, "Ice Nova" );
   single -> add_talent( this, "Comet Storm" );
+  single -> add_talent( this, "Ice Nova" );
   single -> add_action( this, "Blizzard",
     "if=active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time",
 
     "Against low number of targets, Blizzard is used as a filler. Zann'esu buffed Blizzard is used only at 5 stacks." );
-  single -> add_action( this, "Frostbolt",
-    "if=buff.frozen_mass.remains>execute_time+action.glacial_spike.execute_time+action.glacial_spike.travel_time&!buff.brain_freeze.react&"
-    "talent.glacial_spike.enabled",
-
-    "While Frozen Mass is active, we want to fish for Brain Freeze for the next Glacial Spike. Stop when Frozen Mass is about to run out "
-    "and we wouldn't be able to cast Glacial Spike in time." );
-  single -> add_talent( this, "Glacial Spike", "if=cooldown.frozen_orb.remains>10|!set_bonus.tier20_2pc",
-    "Glacial Spike is generally used as it is available, unless we have T20 2pc. In that case, Glacial Spike is delayed when "
-    "Frozen Mass is happening soon (in less than 10 s)." );
+  single -> add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react" );
+  single -> add_talent( this, "Ray of Frost" );
   single -> add_action( this, "Frostbolt" );
   single -> add_action( "call_action_list,name=movement" );
   single -> add_action( this, "Ice Lance", "",
     "Use Ice Lance to do at least some damage while moving." );
 
-  aoe -> add_action( this, "Blizzard" );
   aoe -> add_action( this, "Frozen Orb" );
+  aoe -> add_action( this, "Blizzard" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
   aoe -> add_action( this, "Flurry", "if=buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)" );
   aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
+  aoe -> add_talent( this, "Ebonbolt" );
   aoe -> add_talent( this, "Glacial Spike" );
+  aoe -> add_talent( this, "Ray of Frost" );
   aoe -> add_action( this, "Frostbolt" );
   aoe -> add_action( "call_action_list,name=movement" );
   aoe -> add_action( this, "Cone of Cold" );
