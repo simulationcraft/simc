@@ -5026,6 +5026,19 @@ struct kill_command_t: public hunter_spell_t
     return false;
   }
 
+  // as of at least 20/03/2018 KC gcd gets reduced twice by haste, wow-bugtracker #219
+  timespan_t gcd() const override
+  {
+    timespan_t g = hunter_spell_t::gcd();
+
+    if ( g == timespan_t::zero() )
+      return g;
+
+    g *= player -> cache.attack_haste();
+
+    return std::max( g, min_gcd );
+  }
+
   // this is somewhat unfortunate but we can't get at the
   // pets dot in any other way
   template <typename F>
