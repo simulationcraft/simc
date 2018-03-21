@@ -266,7 +266,7 @@ public:
 
     // tier 45
     spell_data_ptr_t trailblazer;
-    spell_data_ptr_t posthaste;
+    spell_data_ptr_t natural_mending;
     spell_data_ptr_t camouflage;
 
     // tier 60
@@ -275,8 +275,8 @@ public:
     spell_data_ptr_t a_murder_of_crows;
 
     // tier 75
-    spell_data_ptr_t wyvern_sting;
-    spell_data_ptr_t intimidation;
+    spell_data_ptr_t born_to_be_wild;
+    spell_data_ptr_t posthaste;
     spell_data_ptr_t binding_shot;
 
     // tier 90
@@ -4589,7 +4589,7 @@ void hunter_t::init_spells()
 
   // tier 45
   talents.trailblazer                       = find_talent_spell( "Trailblazer" );
-  talents.posthaste                         = find_talent_spell( "Posthaste" );
+  talents.natural_mending                   = find_talent_spell( "Natural Mending" );
   talents.camouflage                        = find_talent_spell( "Camouflage" );
 
   // tier 60
@@ -4598,8 +4598,8 @@ void hunter_t::init_spells()
   talents.a_murder_of_crows                 = find_talent_spell( "A Murder of Crows" );
 
   // tier 75
-  talents.wyvern_sting                      = find_talent_spell( "Wyvern Sting" );
-  talents.intimidation                      = find_talent_spell( "Intimidation" );
+  talents.born_to_be_wild                   = find_talent_spell( "Born To Be Wild" );
+  talents.posthaste                         = find_talent_spell( "Posthaste" );
   talents.binding_shot                      = find_talent_spell( "Binding Shot" );
 
   // tier 90
