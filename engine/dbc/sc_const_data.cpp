@@ -1232,24 +1232,6 @@ double dbc_t::spell_crit_scaling( pet_e t, unsigned level ) const
   return spell_crit_scaling( util::pet_class_type( t ), level );
 }
 
-double dbc_t::regen_base( player_e t, unsigned level ) const
-{
-  uint32_t class_id = util::class_id( t );
-
-  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_base_mp5[ class_id ][ level - 1 ]
-             : __gt_base_mp5[ class_id ][ level - 1 ];
-#else
-  return __gt_base_mp5[ class_id ][ level - 1 ];
-#endif
-}
-
-double dbc_t::regen_base( pet_e t, unsigned level ) const
-{
-  return regen_base( util::pet_class_type( t ), level );
-}
-
 int dbc_t::resolve_item_scaling( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_LEVEL );
