@@ -1099,6 +1099,7 @@ void priest_t::init_base_stats()
       }
     }
   }
+  resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + talents.enlightenment -> effectN( 1 ).percent();
 
 
   // Discipline/Holy
