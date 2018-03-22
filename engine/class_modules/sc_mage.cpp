@@ -4617,7 +4617,8 @@ struct ray_of_frost_t : public frost_mage_spell_t
     frost_mage_spell_t::tick( d );
     p() -> buffs.ray_of_frost -> trigger();
 
-    if ( d -> current_tick == 3 || d -> current_tick == 6 )
+    // TODO: Now happens at 2.5 and 5.
+    if ( d -> current_tick == 3 || d -> current_tick == 5 )
     {
       trigger_fof( 1.0 );
     }
@@ -4626,6 +4627,7 @@ struct ray_of_frost_t : public frost_mage_spell_t
   virtual void last_tick( dot_t* d ) override
   {
     frost_mage_spell_t::last_tick( d );
+    // TODO: Figure out if this works correctly with Ice Floes in simc.
     p() -> buffs.ray_of_frost -> expire();
   }
 
