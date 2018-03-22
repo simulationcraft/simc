@@ -1285,7 +1285,7 @@ void item::engine_of_eradication( special_effect_t& effect )
   if ( buff == nullptr )
   {
     auto extra_seconds = timespan_t::from_seconds( effect.driver() -> effectN( 1 ).base_value() );
-    extra_seconds *= effect.player -> sim -> expansion_opts.engine_of_eradication_orbs;
+    extra_seconds *= effect.player -> sim -> legion_opts.engine_of_eradication_orbs;
 
     buff = make_buff<stat_buff_t>( effect.player, "demonic_vigor", effect.trigger(), effect.item );
     buff->add_stat( primary_stat, amount )
@@ -1391,7 +1391,7 @@ struct dread_torrent_driver_t : public spell_t
 
     // If we fail to overlap (which happens with probability 1 - overlap and there's been at least one reflection;
     // just pulse the most recent one and return short circuiting the last logic
-    if (rng().roll(1 - sim->expansion_opts.specter_of_betrayal_overlap) && !driver->reflections.empty())
+    if (rng().roll(1 - sim->legion_opts.specter_of_betrayal_overlap) && !driver->reflections.empty())
     {
       pulse(driver->reflections.back());
       return;
@@ -1496,7 +1496,7 @@ struct cradle_of_anguish_reset_t : public event_t
   stat_buff_t* buff;
 
   cradle_of_anguish_reset_t( const special_effect_t& e, stat_buff_t* b, size_t reset_idx = 0 ) :
-    event_t( *b -> sim, timespan_t::from_seconds( b -> sim -> expansion_opts.cradle_of_anguish_resets[ reset_idx ] ) -
+    event_t( *b -> sim, timespan_t::from_seconds( b -> sim -> legion_opts.cradle_of_anguish_resets[ reset_idx ] ) -
                         b -> sim -> current_time() ),
     effect( e ), current_idx( reset_idx ), buff( b )
   { }
@@ -1506,7 +1506,7 @@ struct cradle_of_anguish_reset_t : public event_t
     auto max_stack = buff -> check() == buff -> max_stack();
     buff -> expire();
 
-    if ( ++current_idx < sim().expansion_opts.cradle_of_anguish_resets.size() )
+    if ( ++current_idx < sim().legion_opts.cradle_of_anguish_resets.size() )
     {
       make_event<cradle_of_anguish_reset_t>( sim(), effect, buff, current_idx );
     }
@@ -1533,7 +1533,7 @@ void item::cradle_of_anguish( special_effect_t& effect )
 
   effect.player -> callbacks_on_arise.emplace_back( [ buff, effect ]() {
     buff -> trigger( buff -> data().max_stacks() );
-    if ( buff -> sim -> expansion_opts.cradle_of_anguish_resets.size() )
+    if ( buff -> sim -> legion_opts.cradle_of_anguish_resets.size() )
     {
       make_event<cradle_of_anguish_reset_t>( *buff -> sim, effect, buff );
       make_event<cradle_of_anguish_ticker_t>( *buff -> sim, buff,
@@ -1561,7 +1561,7 @@ protected:
   {
     dbc_proc_callback_t::execute( a, state );
 
-    listener -> sim -> expansion_data.pantheon_proxy -> trigger_pantheon_buff( base_buff );
+    listener -> sim -> legion_data.pantheon_proxy -> trigger_pantheon_buff( base_buff );
   }
 };
 
@@ -1581,7 +1581,7 @@ void item::amanthuls_vision( special_effect_t& effect )
   stat_buff_t* empower_buff = make_buff<stat_buff_t>( effect.player, "amanthuls_grandeur", empower_spell, effect.item )
     ->add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), empower_amount );
 
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
+  effect.player -> sim -> legion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger();
   } );
 }
@@ -1696,7 +1696,7 @@ void item::khazgoroths_courage( special_effect_t& effect )
       return versatility > crit && versatility > haste && versatility > mastery;
     } );
 
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
+  effect.player -> sim -> legion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger();
   } );
 }
@@ -1779,7 +1779,7 @@ void item::golganneths_vitality( special_effect_t& effect )
       else             secondary_cb -> deactivate();
     } );
 
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( mark_buff, [ empower_buff ]() {
+  effect.player -> sim -> legion_data.pantheon_proxy -> register_pantheon_effect( mark_buff, [ empower_buff ]() {
     empower_buff -> trigger();
   } );
 }
@@ -1862,7 +1862,7 @@ void item::norgannons_prowess( special_effect_t& effect )
       else if ( new_ == 0           ) secondary_cb -> deactivate();
     } );
 
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
+  effect.player -> sim -> legion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger( empower_buff -> max_stack() );
   } );
 
@@ -1887,7 +1887,7 @@ void item::aggramars_conviction( special_effect_t& effect )
   stat_buff_t* empower_buff = make_buff<stat_buff_t>( effect.player, "aggramars_fortitude", empower_spell, effect.item )
     ->add_stat( STAT_MAX_HEALTH, empower_amount );
 
-  effect.player -> sim -> expansion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
+  effect.player -> sim -> legion_data.pantheon_proxy -> register_pantheon_effect( effect.custom_buff, [ empower_buff ]() {
     empower_buff -> trigger();
   } );
 }
@@ -3208,7 +3208,7 @@ struct infernal_cinders_t : public proc_spell_t
   {
     double cc = proc_spell_t::composite_crit_chance();
 
-    cc += dancing_flames->effectN(1).percent() * (sim->expansion_opts.infernal_cinders_users - 1);
+    cc += dancing_flames->effectN(1).percent() * (sim->legion_opts.infernal_cinders_users - 1);
 
     return cc;
   }
@@ -3681,7 +3681,7 @@ void item::void_stalkers_contract( special_effect_t& effect )
 
       // Damage does AoE at the targeted enemy, defaults to unlimited targets,
       // "legion.void_stalkers_contract_targets" option controls the number of targets
-      damage -> aoe = player -> sim -> expansion_opts.void_stalkers_contract_targets;
+      damage -> aoe = player -> sim -> legion_opts.void_stalkers_contract_targets;
     }
 
     void execute() override
@@ -4818,7 +4818,7 @@ struct archimondes_hatred_reborn_shield_t : public absorb_buff_t
     // AHR deals damage based on the amount of damage absorbed by the shield
     // But the damage taken models for tanking aren't realistic at the moment
     // It's better to let the user chose how much of the shield is consumed on each use
-    double absorbed_damage_ratio = spell_effect.player -> sim -> expansion_opts.archimondes_hatred_reborn_damage;
+    double absorbed_damage_ratio = spell_effect.player -> sim -> legion_opts.archimondes_hatred_reborn_damage;
     if ( absorbed_damage_ratio < 0 )
       absorbed_damage_ratio = 0;
     else if ( absorbed_damage_ratio > 1)
@@ -6058,7 +6058,7 @@ void consumable::lavish_suramar_feast( special_effect_t& effect )
   }
 
   // TODO: Is this actually spec specific?
-  if ( effect.player -> role == ROLE_TANK && !effect.player->sim->expansion_opts.lavish_feast_as_dps )
+  if ( effect.player -> role == ROLE_TANK && !effect.player->sim->legion_opts.lavish_feast_as_dps )
   {
     effect.stat = STAT_STAMINA;
     effect.trigger_spell_id = 201641;

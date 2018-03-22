@@ -10537,65 +10537,6 @@ player_t* player_t::create( sim_t*,
   return 0;
 }
 
-namespace { // UNNAMED NAMESPACE
-
-void player_convergence( int convergence_scale,
-                         double confidence_estimator,
-                         extended_sample_data_t& dps,
-                         std::vector<double>& dps_convergence_error,
-                         double dps_error,
-                         double& dps_convergence )
-{
-  // Error Convergence ======================================================
-
-  int    convergence_iterations = 0;
-  double convergence_std_dev = 0;
-
-  if ( dps.data().size() > 1 && convergence_scale > 1 && !dps.simple )
-  {
-    double convergence_dps = 0;
-    double convergence_min = +1.0E+50;
-    double convergence_max = -1.0E+50;
-    for ( unsigned int i = 0; i < dps.data().size(); i += convergence_scale )
-    {
-      double i_dps = dps.data()[ i ];
-      convergence_dps += i_dps;
-      if ( convergence_min > i_dps ) convergence_min = i_dps;
-      if ( convergence_max < i_dps ) convergence_max = i_dps;
-    }
-    convergence_iterations = ( as<int>( dps.data().size() ) + convergence_scale - 1 ) / convergence_scale;
-    convergence_dps /= convergence_iterations;
-
-    dps_convergence_error.assign( dps.data().size(), 0 );
-
-    double sum_of_squares = 0;
-
-    for ( unsigned int i = 0; i < dps.data().size(); i++ )
-    {
-      double delta = dps.data()[ i ] - convergence_dps;
-      double delta_squared = delta * delta;
-
-      sum_of_squares += delta_squared;
-
-      if ( i > 1 )
-        dps_convergence_error[ i ] = confidence_estimator * sqrt( sum_of_squares / i ) / sqrt( ( float ) i );
-
-      if ( ( i % convergence_scale ) == 0 )
-        convergence_std_dev += delta_squared;
-    }
-  }
-
-  if ( convergence_iterations > 1 ) convergence_std_dev /= convergence_iterations;
-  convergence_std_dev = sqrt( convergence_std_dev );
-  double convergence_error = confidence_estimator * convergence_std_dev;
-  if ( convergence_iterations > 1 ) convergence_error /= sqrt( ( float ) convergence_iterations );
-
-  if ( convergence_error > 0 )
-    dps_convergence = convergence_error / ( dps_error * convergence_scale );
-}
-
-} // UNNAMED NAMESPACE
-
 /*
  * Analyze statistical data of a player
  */
@@ -10756,10 +10697,6 @@ void player_t::analyze( sim_t& s )
   }
 
   recreate_talent_str( s.talent_format );
-
-  // Error Convergence ======================================================
-  player_convergence( s.convergence_scale, s.confidence_estimator,
-                      collected_data.dps,  dps_convergence_error,  sim_t::distribution_mean_error( s, collected_data.dps ),  dps_convergence );
 }
 
 // Return sample_data reference over which this player gets scaled ( scale factors, reforge plots, etc. )

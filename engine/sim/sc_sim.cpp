@@ -1389,7 +1389,6 @@ sim_t::sim_t() :
   active_enemies( 0 ), active_allies( 0 ),
   _rng(), seed( 0 ), deterministic( 0 ), strict_work_queue( 0 ),
   average_range( true ), average_gauss( false ),
-  convergence_scale( 2 ),
   fight_style( "Patchwerk" ), add_waves( 0 ), overrides( overrides_t() ),
   default_aura_delay( timespan_t::from_millis( 30 ) ),
   default_aura_delay_stddev( timespan_t::from_millis( 5 ) ),
@@ -1690,9 +1689,9 @@ void sim_t::reset()
 
   raid_event_t::reset( this );
 
-  if ( expansion_data.pantheon_proxy )
+  if ( legion_data.pantheon_proxy )
   {
-    expansion_data.pantheon_proxy -> reset();
+    legion_data.pantheon_proxy -> reset();
   }
 }
 
@@ -1787,9 +1786,9 @@ void sim_t::combat_begin()
   }
   make_event<sim_safeguard_end_event_t>( *this, *this, expected_iteration_time + expected_iteration_time );
 
-  if ( expansion_data.pantheon_proxy )
+  if ( legion_data.pantheon_proxy )
   {
-    expansion_data.pantheon_proxy -> start();
+    legion_data.pantheon_proxy -> start();
   }
 }
 
@@ -3248,7 +3247,6 @@ void sim_t::create_options()
   add_option( opt_int( "min_report_iteration_data", min_report_iteration_data ) );
   add_option( opt_bool( "average_range", average_range ) );
   add_option( opt_bool( "average_gauss", average_gauss ) );
-  add_option( opt_int( "convergence_scale", convergence_scale ) );
   // Misc
   add_option( opt_list( "party", party_encoding ) );
   add_option( opt_func( "active", parse_active ) );
@@ -3367,15 +3365,15 @@ void sim_t::create_options()
   // Expansion-specific options
 
   // Legion
-  add_option( opt_int( "legion.infernal_cinders_users", expansion_opts.infernal_cinders_users, 1, 20 ) );
-  add_option( opt_int( "legion.engine_of_eradication_orbs", expansion_opts.engine_of_eradication_orbs, 0, 4 ) );
-  add_option( opt_int( "legion.void_stalkers_contract_targets", expansion_opts.void_stalkers_contract_targets ) );
-  add_option( opt_bool( "legion.feast_as_dps", expansion_opts.lavish_feast_as_dps ) );
-  add_option( opt_float( "legion.specter_of_betrayal_overlap", expansion_opts.specter_of_betrayal_overlap, 0, 1 ) );
-  add_option( opt_float( "legion.archimondes_hatred_reborn_damage", expansion_opts.archimondes_hatred_reborn_damage, 0, 1 ) );
-  add_option( opt_string( "legion.pantheon_trinket_users", expansion_opts.pantheon_trinket_users ) );
-  add_option( opt_timespan( "legion.pantheon_trinket_interval", expansion_opts.pantheon_trinket_interval ) );
-  add_option( opt_float( "legion.pantheon_trinket_interval_stddev", expansion_opts.pantheon_trinket_interval_stddev ) );
+  add_option( opt_int( "legion.infernal_cinders_users", legion_opts.infernal_cinders_users, 1, 20 ) );
+  add_option( opt_int( "legion.engine_of_eradication_orbs", legion_opts.engine_of_eradication_orbs, 0, 4 ) );
+  add_option( opt_int( "legion.void_stalkers_contract_targets", legion_opts.void_stalkers_contract_targets ) );
+  add_option( opt_bool( "legion.feast_as_dps", legion_opts.lavish_feast_as_dps ) );
+  add_option( opt_float( "legion.specter_of_betrayal_overlap", legion_opts.specter_of_betrayal_overlap, 0, 1 ) );
+  add_option( opt_float( "legion.archimondes_hatred_reborn_damage", legion_opts.archimondes_hatred_reborn_damage, 0, 1 ) );
+  add_option( opt_string( "legion.pantheon_trinket_users", legion_opts.pantheon_trinket_users ) );
+  add_option( opt_timespan( "legion.pantheon_trinket_interval", legion_opts.pantheon_trinket_interval ) );
+  add_option( opt_float( "legion.pantheon_trinket_interval_stddev", legion_opts.pantheon_trinket_interval_stddev ) );
   add_option( opt_func( "legion.cradle_of_anguish_resets", []( sim_t* sim, const std::string&, const std::string& value ) {
     auto split = util::string_split( value, ":/," );
     range::for_each( split, [ sim ]( const std::string& str ) {
@@ -3385,13 +3383,13 @@ void sim_t::create_options()
         return;
       }
 
-      auto it = range::find( sim -> expansion_opts.cradle_of_anguish_resets, v );
-      if ( it != sim -> expansion_opts.cradle_of_anguish_resets.end() )
+      auto it = range::find( sim -> legion_opts.cradle_of_anguish_resets, v );
+      if ( it != sim -> legion_opts.cradle_of_anguish_resets.end() )
       {
         return;
       }
 
-      sim -> expansion_opts.cradle_of_anguish_resets.push_back( v );
+      sim -> legion_opts.cradle_of_anguish_resets.push_back( v );
     } );
     return true;
   } ) );

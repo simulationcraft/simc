@@ -32,9 +32,9 @@ namespace unique_gear
 {
 void initialize_pantheon( player_t* proxy_player )
 {
-  if ( ! proxy_player -> sim -> expansion_data.pantheon_proxy )
+  if ( ! proxy_player -> sim -> legion_data.pantheon_proxy )
   {
-    proxy_player -> sim -> expansion_data.pantheon_proxy =
+    proxy_player -> sim -> legion_data.pantheon_proxy =
       std::unique_ptr<pantheon_state_t>( new pantheon_state_t( proxy_player ) );
   }
 }
@@ -75,7 +75,7 @@ pantheon_state_t::pantheon_state_t( player_t* player ) :
 
 void pantheon_state_t::parse_options()
 {
-  auto splits = util::string_split( player -> sim -> expansion_opts.pantheon_trinket_users, "/" );
+  auto splits = util::string_split( player -> sim -> legion_opts.pantheon_trinket_users, "/" );
   range::for_each( splits, [ this ]( const std::string& str ) {
     auto split = util::string_split( str, ":" );
     const auto& pantheon = split[ 0 ];
@@ -374,15 +374,15 @@ void pantheon_state_t::debug() const
 
 timespan_t pantheon_state_t::pantheon_ticker_delay() const
 {
-  if ( player -> sim -> expansion_opts.pantheon_trinket_interval_stddev == 0 )
+  if ( player -> sim -> legion_opts.pantheon_trinket_interval_stddev == 0 )
   {
-    return player -> sim -> expansion_opts.pantheon_trinket_interval;
+    return player -> sim -> legion_opts.pantheon_trinket_interval;
   }
 
-  auto dev = player -> sim -> expansion_opts.pantheon_trinket_interval *
-             player -> sim -> expansion_opts.pantheon_trinket_interval_stddev;
+  auto dev = player -> sim -> legion_opts.pantheon_trinket_interval *
+             player -> sim -> legion_opts.pantheon_trinket_interval_stddev;
 
-  return player -> rng().gauss( player -> sim -> expansion_opts.pantheon_trinket_interval, dev );
+  return player -> rng().gauss( player -> sim -> legion_opts.pantheon_trinket_interval, dev );
 }
 
 pantheon_state_t::pantheon_buff_state_t* pantheon_state_t::buff_state( size_t type, const real_ppm_t* rppm )

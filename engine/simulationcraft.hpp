@@ -178,13 +178,13 @@ const int MAX_ILEVEL = 1300;
 
 struct artifact_power_t
 {
-  artifact_power_t() :
-    rank_( 0 ), spell_( spell_data_t::not_found() ), rank_data_( artifact_power_rank_t::nil() ),
-    power_( artifact_power_data_t::nil() )
+  artifact_power_t(unsigned rank, const spell_data_t* spell, const artifact_power_data_t* power,
+      const artifact_power_rank_t* rank_data) :
+      rank_( rank ), spell_( spell ), rank_data_( rank_data ), power_( power )
   { }
 
-  artifact_power_t( unsigned rv, const spell_data_t* s, const artifact_power_data_t* p, const artifact_power_rank_t* r ):
-    rank_( rv ), spell_( s ), rank_data_( r ), power_( p )
+  artifact_power_t() :
+    artifact_power_t(0, spell_data_t::not_found(), artifact_power_data_t::nil(), artifact_power_rank_t::nil() )
   { }
 
   unsigned rank_;
@@ -986,7 +986,6 @@ struct sim_t : private sc_thread_t
   int active_enemies;
   int active_allies;
 
-  std::unordered_map<std::string, std::string> var_map;
   std::vector<std::unique_ptr<option_t>> options;
   std::vector<std::string> party_encoding;
   std::vector<std::string> item_db_sources;
@@ -998,7 +997,6 @@ struct sim_t : private sc_thread_t
   int deterministic;
   int strict_work_queue;
   int average_range, average_gauss;
-  int convergence_scale;
 
   // Raid Events
   std::vector<std::unique_ptr<raid_event_t>> raid_events;
@@ -1029,48 +1027,35 @@ struct sim_t : private sc_thread_t
   } auras;
 
   // Expansion specific custom parameters. Defaults in the constructor.
-  struct expansion_opt_t
+  struct legion_opt_t
   {
     // Legion
-    int                 infernal_cinders_users;
-    int                 engine_of_eradication_orbs;
-    int                 void_stalkers_contract_targets;
-    bool                lavish_feast_as_dps;
-    double              specter_of_betrayal_overlap;
+    int                 infernal_cinders_users = 1;
+    int                 engine_of_eradication_orbs = 4;
+    int                 void_stalkers_contract_targets = -1;
+    bool                lavish_feast_as_dps = true;
+    double              specter_of_betrayal_overlap = 1.0;
     std::vector<double> cradle_of_anguish_resets;
     std::string         pantheon_trinket_users;
-    timespan_t          pantheon_trinket_interval;
-    double              pantheon_trinket_interval_stddev;
-    double              archimondes_hatred_reborn_damage;
-
-    expansion_opt_t() :
-      infernal_cinders_users( 1 ), engine_of_eradication_orbs( 4 ),
-      void_stalkers_contract_targets( -1 ),
-      lavish_feast_as_dps( true ), specter_of_betrayal_overlap( 1.0 ),
-      pantheon_trinket_interval( timespan_t::from_seconds( 1.0 ) ),
-      pantheon_trinket_interval_stddev( 0 ),
-      archimondes_hatred_reborn_damage( 1.0 )
-    { }
-  } expansion_opts;
+    timespan_t          pantheon_trinket_interval = timespan_t::from_seconds( 1.0 );
+    double              pantheon_trinket_interval_stddev = 0.0;
+    double              archimondes_hatred_reborn_damage = 1.0;
+  } legion_opts;
 
   // Expansion specific data
-  struct expansion_data_t
+  struct legion_data_t
   {
     std::unique_ptr<unique_gear::pantheon_state_t> pantheon_proxy;
-
-    expansion_data_t() :
-      pantheon_proxy( nullptr )
-    { }
-  } expansion_data;
+  } legion_data;
 
   // Auras and De-Buffs
-  auto_dispose< std::vector<buff_t*> > buff_list;
+  auto_dispose<std::vector<buff_t*>> buff_list;
 
   // Global aura related delay
   timespan_t default_aura_delay;
   timespan_t default_aura_delay_stddev;
 
-  auto_dispose< std::vector<cooldown_t*> > cooldown_list;
+  auto_dispose<std::vector<cooldown_t*>> cooldown_list;
 
   // Reporting
   progress_bar_t progress_bar;
@@ -7507,7 +7492,7 @@ inline player_t* target_wrapper_expr_t::target() const
 { return action.target; }
 
 inline actor_target_data_t::actor_target_data_t( player_t* target, player_t* source ) :
-  actor_pair_t( target, source ), debuff(), dot( atd_dot_t() )
+  actor_pair_t( target, source ), debuff(), dot()
 {
   for (auto & elem : source -> sim -> target_data_initializer)
   {
