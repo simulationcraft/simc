@@ -1167,7 +1167,7 @@ enum effect_subtype_t : unsigned {
     A_376 = 376,
     A_377 = 377,
     A_378 = 378,
-    A_379 = 379,
+    A_MOD_MANA_REGEN_PCT = 379,
     A_380 = 380,
     A_381 = 381,
     A_382 = 382,

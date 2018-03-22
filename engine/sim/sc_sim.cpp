@@ -756,7 +756,7 @@ bool parse_spell_query( sim_t*             sim,
   if ( ( lvl_offset = value.rfind( "@" ) ) != std::string::npos )
   {
     std::string lvl_offset_str = value.substr( lvl_offset + 1 );
-    int sq_lvl = strtol( lvl_offset_str.c_str(), nullptr, 10 );
+    int sq_lvl = std::stoi( lvl_offset_str );
     if ( sq_lvl < 1 )
       return 0;
 

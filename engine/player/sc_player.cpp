@@ -872,7 +872,6 @@ player_t::~player_t()
 
 player_t::base_initial_current_t::base_initial_current_t() :
   stats(),
-  mana_regen_per_second(),
   spell_power_per_intellect( 0 ),
   spell_crit_per_intellect( 0 ),
   attack_power_per_strength( 0 ),
@@ -916,7 +915,6 @@ std::string player_t::base_initial_current_t::to_string()
   std::ostringstream s;
 
   s << stats.to_string();
-  s << "mana_regen_per_second=" << mana_regen_per_second;
   s << " spell_power_per_intellect=" << spell_power_per_intellect;
   s << " spell_crit_per_intellect=" << spell_crit_per_intellect;
   s << " attack_power_per_strength=" << attack_power_per_strength;
@@ -1067,7 +1065,7 @@ void player_t::init_base_stats()
     resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, level() );
     resources.base[ RESOURCE_MANA   ] = dbc.resource_base( type, level() );
 
-    base.mana_regen_per_second = dbc.regen_base( type, level() ) / 5.0;
+    resources.base_regen_per_second[ RESOURCE_MANA ] = dbc.regen_base( type, level() ) / 5.0;
     base.mana_regen_per_spirit = dbc.regen_spirit( type, level() );
     base.health_per_stamina    = dbc.health_per_stamina( level() );
 
@@ -2894,7 +2892,7 @@ double player_t::resource_regen_per_second( resource_e r ) const
 
   if ( r == RESOURCE_MANA )
   {
-    return current.mana_regen_per_second + cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
+    reg += cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
   }
 
   return reg;

@@ -7391,7 +7391,7 @@ void druid_t::init_base_stats()
 
   // Max Mana & Mana Regen modifiers
   resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + spec.druid -> effectN( 5 ).percent();
-  base.mana_regen_per_second *= 1.0 + spec.druid -> effectN( 5 ).percent();
+  resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + spec.druid -> effectN( 5 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.5 );
 }

@@ -293,6 +293,10 @@ void priest_t::init_spells_discipline()
   talents.evangelism     = find_talent_spell( "Evangelism" );
 
   // General Spells
+  specs.priest          = dbc::get_class_passive(*this, SPEC_NONE);
+  specs.holy            = dbc::get_class_passive(*this, PRIEST_HOLY);
+  specs.discipline      = dbc::get_class_passive(*this, PRIEST_DISCIPLINE);
+  specs.shadow          = dbc::get_class_passive(*this, PRIEST_SHADOW);
   specs.atonement       = find_specialization_spell( "Atonement" );
   specs.archangel       = find_specialization_spell( "Archangel" );
   specs.borrowed_time   = find_specialization_spell( "Borrowed Time" );

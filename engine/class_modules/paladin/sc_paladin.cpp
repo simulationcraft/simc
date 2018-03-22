@@ -1140,7 +1140,7 @@ void paladin_t::init_base_stats()
   base.expertise += passives.sanctuary -> effectN( 4 ).percent();
 
   // Holy Insight grants mana regen from spirit during combat
-  base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.015;
+  resources.base_regen_per_second[ RESOURCE_MANA ] = resources.base[ RESOURCE_MANA ] * 0.015;
 
   // Holy Insight increases max mana for Holy
 //  resources.base_multiplier[ RESOURCE_MANA ] = 1.0 + passives.holy_insight -> effectN( 1 ).percent();

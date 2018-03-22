@@ -265,7 +265,10 @@ public:
   // Specialization Spells
   struct
   {
+    const spell_data_t* priest; /// General priest data
+
     // Discipline
+    const spell_data_t* discipline; /// General discipline data
     const spell_data_t* archangel;
     const spell_data_t* atonement;
     const spell_data_t* borrowed_time;
@@ -278,6 +281,7 @@ public:
     const spell_data_t* enlightenment;
 
     // Holy
+    const spell_data_t* holy; /// General holy data
     const spell_data_t* meditation_holy;
     const spell_data_t* rapid_renewal;
     const spell_data_t* serendipity;
@@ -286,6 +290,7 @@ public:
     const spell_data_t* focused_will;
 
     // Shadow
+    const spell_data_t* shadow; /// General shadow data
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* voidform;
     const spell_data_t* void_eruption;
