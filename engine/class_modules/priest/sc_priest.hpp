@@ -275,14 +275,12 @@ public:
     const spell_data_t* divine_aegis;
     const spell_data_t* evangelism;
     const spell_data_t* grace;
-    const spell_data_t* meditation_disc;
     const spell_data_t* mysticism;
     const spell_data_t* spirit_shell;
     const spell_data_t* enlightenment;
 
     // Holy
     const spell_data_t* holy; /// General holy data
-    const spell_data_t* meditation_holy;
     const spell_data_t* rapid_renewal;
     const spell_data_t* serendipity;
     const spell_data_t* divine_providence;

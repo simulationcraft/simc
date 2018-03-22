@@ -91,7 +91,6 @@ void priest_t::init_spells_holy()
   talents.holy_word_salvation = find_talent_spell( "Holy Word: Salvation" );
 
   // General Spells
-  specs.meditation_holy   = find_specialization_spell( "Meditation" );
   specs.serendipity       = find_specialization_spell( "Serendipity" );
   specs.rapid_renewal     = find_specialization_spell( "Rapid Renewal" );
   specs.divine_providence = find_specialization_spell( "Divine Providence" );

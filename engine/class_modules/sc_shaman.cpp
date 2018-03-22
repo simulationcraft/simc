@@ -430,7 +430,6 @@ public:
     // Restoration
     const spell_data_t* ancestral_awakening;
     const spell_data_t* ancestral_focus;
-    const spell_data_t* meditation;
     const spell_data_t* purification;
     const spell_data_t* resurgence;
     const spell_data_t* riptide;
@@ -6372,7 +6371,6 @@ void shaman_t::init_spells()
   // Restoration
   spec.ancestral_awakening = find_specialization_spell( "Ancestral Awakening" );
   spec.ancestral_focus     = find_specialization_spell( "Ancestral Focus" );
-  spec.meditation          = find_specialization_spell( "Meditation" );
   spec.purification        = find_specialization_spell( "Purification" );
   spec.resurgence          = find_specialization_spell( "Resurgence" );
   spec.riptide             = find_specialization_spell( "Riptide" );
@@ -6493,7 +6491,6 @@ void shaman_t::init_base_stats()
   if ( spec.enhancement_shaman->ok() )
     resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman->effectN( 7 ).base_value();
 
-  base.mana_regen_from_spirit_multiplier = spec.meditation->effectN( 1 ).percent();
 
   // if ( specialization() == SHAMAN_ENHANCEMENT )
   //  ready_type = READY_TRIGGER;

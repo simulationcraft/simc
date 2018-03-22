@@ -1313,18 +1313,6 @@ double dbc_t::resource_base( player_e t, unsigned level ) const
 #endif
 }
 
-/* Mana regen per spirit
- */
-double dbc_t::regen_spirit( player_e, unsigned ) const
-{
-  return 0;
-}
-
-double dbc_t::regen_spirit( pet_e t, unsigned level ) const
-{
-  return regen_spirit( util::pet_class_type( t ), level );
-}
-
 double dbc_t::health_per_stamina( unsigned level ) const
 {
   assert( level > 0 && level <= MAX_SCALING_LEVEL );

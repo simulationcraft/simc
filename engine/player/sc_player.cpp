@@ -879,8 +879,6 @@ player_t::base_initial_current_t::base_initial_current_t() :
   attack_crit_per_agility( 0 ),
   dodge_per_agility( 0 ),
   parry_per_strength( 0 ),
-  mana_regen_per_spirit( 0 ),
-  mana_regen_from_spirit_multiplier( 0 ),
   health_per_stamina( 0 ),
   resource_reduction(),
   miss( 0 ),
@@ -922,8 +920,6 @@ std::string player_t::base_initial_current_t::to_string()
   s << " attack_crit_per_agility=" << attack_crit_per_agility;
   s << " dodge_per_agility=" << dodge_per_agility;
   s << " parry_per_strength=" << parry_per_strength;
-  s << " mana_regen_per_spirit=" << mana_regen_per_spirit;
-  s << " mana_regen_from_spirit_multiplier=" << mana_regen_from_spirit_multiplier;
   s << " health_per_stamina=" << health_per_stamina;
   // resource_reduction
   s << " miss=" << miss;
@@ -1084,7 +1080,6 @@ void player_t::init_base_stats()
       }
     }
 
-    base.mana_regen_per_spirit = dbc.regen_spirit( type, level() );
     base.health_per_stamina    = dbc.health_per_stamina( level() );
 
     // players have a base 7.5% hit/exp
@@ -2906,11 +2901,6 @@ double player_t::resource_regen_per_second( resource_e r ) const
     {
       reg *= 1.0 + buffs.surge_of_energy -> data().effectN( 1 ).percent();
     }
-  }
-
-  if ( r == RESOURCE_MANA )
-  {
-    reg += cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
   }
 
   return reg;

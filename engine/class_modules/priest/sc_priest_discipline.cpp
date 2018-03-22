@@ -303,7 +303,6 @@ void priest_t::init_spells_discipline()
   specs.divine_aegis    = find_specialization_spell( "Divine Aegis" );
   specs.evangelism      = find_specialization_spell( "Evangelism" );
   specs.grace           = find_specialization_spell( "Grace" );
-  specs.meditation_disc = find_specialization_spell( "Meditation" );
   specs.mysticism       = find_specialization_spell( "Mysticism" );
   specs.spirit_shell    = find_specialization_spell( "Spirit Shell" );
   specs.enlightenment   = find_specialization_spell( "Enlightenment" );

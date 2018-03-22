@@ -1087,11 +1087,6 @@ void priest_t::init_base_stats()
   }
 
   resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + talents.enlightenment -> effectN( 1 ).percent();
-
-
-  // Discipline/Holy
-  base.mana_regen_from_spirit_multiplier = specs.meditation_disc->ok() ? specs.meditation_disc->effectN( 1 ).percent()
-                                                                       : specs.meditation_holy->effectN( 1 ).percent();
 }
 
 void priest_t::init_resources( bool force )
