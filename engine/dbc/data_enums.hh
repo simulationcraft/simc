@@ -1193,7 +1193,7 @@ enum effect_subtype_t : unsigned {
     A_HASTED_COOLDOWN = 416,
     A_HASTED_GCD = 417,
     A_418 = 418,
-    A_419 = 419,
+    A_MOD_MANA_POOL_PCT = 419,
     A_420 = 420,
     A_421 = 421,
     A_MOD_ABSORB_DONE_PERCENT = 422,

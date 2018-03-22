@@ -1073,7 +1073,7 @@ void player_t::init_base_stats()
         {
           resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + effect->percent();
         }
-        if ( effect->subtype() == A_MOD_MAX_MANA_PCT )
+        if ( effect->subtype() == A_MOD_MAX_MANA_PCT || effect->subtype() == A_MOD_MANA_POOL_PCT )
         {
           resources.base[ RESOURCE_MANA ] *= 1.0 + effect->percent();
         }

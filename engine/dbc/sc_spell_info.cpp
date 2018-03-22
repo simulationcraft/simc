@@ -715,7 +715,7 @@ static const std::unordered_map<unsigned, const std::string> _effect_subtype_str
   { 416, "Hasted Cooldown Duration"                     },
   { 417, "Hasted Global Cooldown"                       },
   { 418, "Modify Max Resource"                          },
-  { 419, "Modify Mana Pool"                             },
+  { 419, "Modify Mana Pool%"                             },
   { 421, "Modify Absorb% Done"                          },
   { 422, "Modify Absorb% Done"                          },
   { 429, "Modify Pet Damage Done%"                      },
