@@ -346,7 +346,7 @@ void print_xml_player_stats( xml_writer_t& writer, player_t* p )
                               p->initial.stats.haste_rating,
                               100 * ( 1 / buffed_stats.spell_speed - 1 ) );
   print_xml_player_attribute( writer, "manareg_per_second",
-                              p->mana_regen_per_second(), 0,
+                              p->resource_regen_per_second( RESOURCE_MANA ), 0,
                               buffed_stats.manareg_per_second );
   print_xml_player_attribute(
       writer, "attackpower",

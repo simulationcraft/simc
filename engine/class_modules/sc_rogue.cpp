@@ -631,7 +631,7 @@ struct rogue_t : public player_t
   double    composite_spell_haste() const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
-  double    energy_regen_per_second() const override;
+  double    resource_regen_per_second( resource_e ) const override;
   double    passive_movement_modifier() const override;
   double    temporary_movement_modifier() const override;
 
@@ -6695,7 +6695,7 @@ void rogue_t::init_base_stats()
   resources.base[ RESOURCE_ENERGY ] += talent.vigor -> effectN( 1 ).base_value();
   resources.base[ RESOURCE_ENERGY ] += spec.assassination_rogue -> effectN( 5 ).base_value();
 
-  base_energy_regen_per_second = 10;
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
   base_energy_regen_mods = 1.0 + spec.vitality -> effectN( 1 ).percent();
   base_energy_regen_mods *= 1.0 + talent.vigor -> effectN( 2 ).percent();
 
@@ -7618,23 +7618,26 @@ void rogue_t::combat_begin()
 
 // rogue_t::energy_regen_per_second =========================================
 
-double rogue_t::energy_regen_per_second() const
+double rogue_t::resource_regen_per_second( resource_e r ) const
 {
-  double r = player_t::energy_regen_per_second();
+  double reg = player_t::resource_regen_per_second( r );
 
-  r *= base_energy_regen_mods;
-
-  if ( buffs.buried_treasure -> up() )
+  if ( r == RESOURCE_ENERGY )
   {
-    r *= 1.0 + buffs.buried_treasure -> check_value() / base_energy_regen_per_second;
+    reg *= base_energy_regen_mods;
+
+    if ( buffs.buried_treasure -> up() )
+    {
+      reg *= 1.0 + buffs.buried_treasure -> check_value() / resources.base_regen_per_second[ r ];
+    }
+
+    if ( buffs.slice_and_dice -> up() )
+    {
+      reg *= 1.0 + talent.slice_and_dice -> effectN( 3 ).percent() * buffs.slice_and_dice -> value();
+    }
   }
 
-  if ( buffs.slice_and_dice -> up() )
-  {
-    r *= 1.0 + talent.slice_and_dice -> effectN( 3 ).percent() * buffs.slice_and_dice -> value();
-  }
-
-  return r;
+  return reg;
 }
 
 // rogue_t::temporary_movement_modifier ==================================
@@ -7689,7 +7692,7 @@ void rogue_t::regen( timespan_t periodicity )
   {
     if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
     {
-      double energy_regen = periodicity.total_seconds() * energy_regen_per_second() * buffs.adrenaline_rush -> data().effectN( 1 ).percent();
+      double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * buffs.adrenaline_rush -> data().effectN( 1 ).percent();
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
     }
@@ -7698,7 +7701,7 @@ void rogue_t::regen( timespan_t periodicity )
   {
     if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
     {
-      double energy_regen = periodicity.total_seconds() * energy_regen_per_second() * buffs.t20_4pc_outlaw -> data().effectN( 1 ).percent();
+      double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * buffs.t20_4pc_outlaw -> data().effectN( 1 ).percent();
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.t20_4pc_outlaw );
     }
@@ -7721,7 +7724,7 @@ timespan_t rogue_t::available() const
       return timespan_t::from_seconds( 0.1 );
 
     return std::max(
-             timespan_t::from_seconds( ( 25 - energy ) / energy_regen_per_second() ),
+             timespan_t::from_seconds( ( 25 - energy ) / resource_regen_per_second( RESOURCE_ENERGY ) ),
              timespan_t::from_seconds( 0.1 )
            );
   }

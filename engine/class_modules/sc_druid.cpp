@@ -877,7 +877,7 @@ public:
   virtual resource_e primary_resource() const override;
   virtual role_e    primary_role() const override;
   virtual stat_e    convert_hybrid_stat( stat_e s ) const override;
-  virtual double    mana_regen_per_second() const override;
+  virtual double    resource_regen_per_second( resource_e ) const override;
   virtual stat_e    primary_stat() const override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* ) override;
@@ -7386,8 +7386,8 @@ void druid_t::init_base_stats()
   resources.active_resource[ RESOURCE_COMBO_POINT  ] = primary_role() == ROLE_ATTACK || talent.feral_affinity -> ok();
   resources.active_resource[ RESOURCE_RAGE         ] = primary_role() == ROLE_TANK || talent.guardian_affinity -> ok();
 
-  base_energy_regen_per_second = 10;
-  base_energy_regen_per_second *= 1.0 + talent.feral_affinity -> effectN( 2 ).percent();
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.feral_affinity -> effectN( 2 ).percent();
 
   // Max Mana & Mana Regen modifiers
   resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + spec.druid -> effectN( 5 ).percent();
@@ -8603,14 +8603,17 @@ void druid_t::merge( player_t& other )
 
 // druid_t::mana_regen_per_second ===========================================
 
-double druid_t::mana_regen_per_second() const
+double druid_t::resource_regen_per_second( resource_e r ) const
 {
-  double mp5 = player_t::mana_regen_per_second();
+  double reg = player_t::resource_regen_per_second( r );
 
-  if ( buff.moonkin_form -> check() )
-    mp5 *= 1.0 + buff.moonkin_form -> data().effectN( 5 ).percent() + ( 1 / cache.spell_haste() );
+  if ( r == RESOURCE_MANA )
+  {
+    if ( buff.moonkin_form -> check() )
+      reg *= 1.0 + buff.moonkin_form -> data().effectN( 5 ).percent() + ( 1 / cache.spell_haste() );
+  }
 
-  return mp5;
+  return reg;
 }
 
 // druid_t::available =======================================================
@@ -8625,7 +8628,7 @@ timespan_t druid_t::available() const
   if ( energy > 25 ) return timespan_t::from_seconds( 0.1 );
 
   return std::max(
-           timespan_t::from_seconds( ( 25 - energy ) / energy_regen_per_second() ),
+           timespan_t::from_seconds( ( 25 - energy ) / resource_regen_per_second( RESOURCE_ENERGY ) ),
            timespan_t::from_seconds( 0.1 )
          );
 }
@@ -10189,7 +10192,7 @@ struct chatoyant_signet_t : public scoped_actor_callback_t<druid_t>
   void manipulate( druid_t* p, const special_effect_t& e ) override
   {
     p -> resources.base[ RESOURCE_ENERGY ] += e.driver() -> effectN( 1 ).resource( RESOURCE_ENERGY );
-    p -> base_energy_regen_per_second *= ( 1.0 + e.driver() -> effectN( 2 ).percent( ) );
+    p -> resources.base_regen_per_second[ RESOURCE_ENERGY ] *= ( 1.0 + e.driver() -> effectN( 2 ).percent( ) );
   }
 };
 

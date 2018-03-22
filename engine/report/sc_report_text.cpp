@@ -353,7 +353,7 @@ void print_text_spell_stats( FILE* file, player_t* p )
       p->composite_spell_haste_rating(),
       100 * ( 1 / buffed_stats.spell_speed - 1 ),
       100 * ( 1 / p->cache.spell_speed() - 1 ), buffed_stats.manareg_per_second,
-      p->mana_regen_per_second(), 0 );
+      p->resource_regen_per_second( RESOURCE_MANA ), 0 );
 }
 
 // print_text_attack_stats ==================================================

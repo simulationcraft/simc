@@ -3244,11 +3244,8 @@ struct player_t : public actor_t
     double moving_away;
     movement_direction_e movement_direction;
     double armor_coeff;
-  private:
-    friend struct player_t;
     bool sleeping;
     rating_t rating;
-  public:
 
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
     double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
@@ -3260,32 +3257,17 @@ struct player_t : public actor_t
 
   gear_stats_t passive; // Passive stats from various passive auras (and similar effects)
 
-  const rating_t& current_rating() const
-  { return current.rating; }
-  const rating_t& initial_rating() const
-  { return initial.rating; }
-
-  // Spell Mechanics
-  double base_energy_regen_per_second;
-  double base_focus_regen_per_second;
-  double base_chi_regen_per_second;
   timespan_t last_cast;
 
   // Defense Mechanics
   struct diminishing_returns_constants_t
   {
-    double horizontal_shift;
-    double vertical_stretch;
-    double dodge_factor;
-    double parry_factor;
-    double miss_factor;
-    double block_factor;
-
-    diminishing_returns_constants_t()
-    {
-      horizontal_shift = vertical_stretch = 0.0;
-      dodge_factor = parry_factor = miss_factor = block_factor = 1.0;
-    }
+    double horizontal_shift = 0.0;
+    double vertical_stretch = 0.0;
+    double dodge_factor = 1.0;
+    double parry_factor = 1.0;
+    double miss_factor = 1.0;
+    double block_factor = 1.0;
   } def_dr;
 
   // Weapons
@@ -3310,6 +3292,7 @@ struct player_t : public actor_t
     std::array<double, RESOURCE_MAX> initial_opt;
     // Start-of-combat resource level
     std::array<double, RESOURCE_MAX> start_at;
+    std::array<double, RESOURCE_MAX> base_regen_per_second;
 
     resources_t()
     {
@@ -3324,6 +3307,7 @@ struct player_t : public actor_t
       range::fill( active_resource, true );
       range::fill( initial_opt, -1.0 );
       range::fill( start_at, 0.0 );
+      range::fill( base_regen_per_second, 0.0 );
 
       // Init some resources to specific values at the beginning of the combat, defaults to 0.
       // The actual start-of-combat resource is min( computed_max, start_at ).
@@ -3571,11 +3555,9 @@ struct player_t : public actor_t
   {
     gain_t* arcane_torrent;
     gain_t* endurance_of_niuzao;
-    gain_t* energy_regen;
-    gain_t* focus_regen;
+    std::array<gain_t*, RESOURCE_MAX> resource_regen;
     gain_t* health;
     gain_t* mana_potion;
-    gain_t* mp5_regen;
     gain_t* restore_mana;
     gain_t* touch_of_the_grave;
     gain_t* vampiric_embrace;
@@ -3705,9 +3687,7 @@ struct player_t : public actor_t
 
   virtual int level() const;
 
-  virtual double energy_regen_per_second() const;
-  virtual double focus_regen_per_second() const;
-  virtual double mana_regen_per_second() const;
+  virtual double resource_regen_per_second( resource_e ) const;
 
   virtual double composite_melee_haste() const;
   virtual double composite_melee_speed() const;

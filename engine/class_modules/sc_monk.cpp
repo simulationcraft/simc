@@ -706,7 +706,7 @@ public:
   virtual double    composite_melee_crit_chance_multiplier() const override;
   virtual double    composite_spell_crit_chance() const override;
   virtual double    composite_spell_crit_chance_multiplier() const override;
-  virtual double    energy_regen_per_second() const override;
+  virtual double    resource_regen_per_second( resource_e ) const override;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_player_heal_multiplier( const action_state_t* s ) const override;
@@ -7084,7 +7084,7 @@ void monk_t::init_base_stats()
       resources.base[RESOURCE_ENERGY] = 100;
       resources.base[RESOURCE_MANA] = 0;
       resources.base[RESOURCE_CHI] = 0;
-      base_energy_regen_per_second = 10.0;
+      resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
       break;
     }
     case MONK_MISTWEAVER:
@@ -7092,7 +7092,7 @@ void monk_t::init_base_stats()
       base.spell_power_per_intellect = 1.0;
       resources.base[RESOURCE_ENERGY] = 0;
       resources.base[RESOURCE_CHI] = 0;
-      base_energy_regen_per_second = 0;
+      resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
       break;
     }
     case MONK_WINDWALKER:
@@ -7107,13 +7107,13 @@ void monk_t::init_base_stats()
       resources.base[RESOURCE_CHI] = 4;
       resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
       resources.base[RESOURCE_CHI] += talent.ascension -> effectN( 1 ).base_value();
-      base_energy_regen_per_second = 10.0;
+      resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
       break;
     }
     default: break;
   }
 
-  base_chi_regen_per_second = 0;
+  resources.base_regen_per_second[ RESOURCE_CHI ] = 0;
 }
 
 // monk_t::init_scaling =====================================================
@@ -7975,13 +7975,16 @@ void monk_t::pre_analyze_hook()
 
 // monk_t::energy_regen_per_second ==========================================
 
-double monk_t::energy_regen_per_second() const
+double monk_t::resource_regen_per_second( resource_e r ) const
 {
-  double r = base_t::energy_regen_per_second();
+  double reg = base_t::resource_regen_per_second( r );
 
-  r *= 1.0 + talent.ascension -> effectN( 2 ).percent();
+  if ( r == RESOURCE_ENERGY )
+  {
+    reg *= 1.0 + talent.ascension -> effectN( 2 ).percent();
+  }
 
-  return r;
+  return reg;
 }
 
 // monk_t::combat_begin ====================================================

@@ -640,7 +640,7 @@ public:
   virtual role_e      primary_role() const override { return ROLE_SPELL; }
   virtual stat_e      convert_hybrid_stat( stat_e s ) const override;
   virtual stat_e      primary_stat() const override { return STAT_INTELLECT; }
-  virtual double      mana_regen_per_second() const override;
+  virtual double      resource_regen_per_second( resource_e ) const override;
   virtual double      composite_player_multiplier( school_e school ) const override;
   virtual double      composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   virtual double      composite_player_pet_damage_multiplier( const action_state_t* ) const override;
@@ -6603,16 +6603,19 @@ void mage_t::apl_default()
 
 // mage_t::mana_regen_per_second ==============================================
 
-double mage_t::mana_regen_per_second() const
+double mage_t::resource_regen_per_second( resource_e r ) const
 {
-  double mps = player_t::mana_regen_per_second();
+  double reg = player_t::resource_regen_per_second( r );
 
-  if ( spec.savant -> ok() )
+  if ( r == RESOURCE_MANA )
   {
-    mps *= 1.0 + cache.mastery() * spec.savant -> effectN( 1 ).mastery_value();
+    if ( spec.savant -> ok() )
+    {
+      reg *= 1.0 + cache.mastery() * spec.savant -> effectN( 1 ).mastery_value();
+    }
   }
 
-  return mps;
+  return reg;
 }
 
 // mage_t::invalidate_cache ===================================================

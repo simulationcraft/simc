@@ -1239,9 +1239,13 @@ void to_json( JsonOutput& arr, const player_t& p )
     }
   }
 
-  add_non_zero( root, "base_energy_regen_per_second", p.base_energy_regen_per_second );
-  add_non_zero( root, "base_focus_regen_per_second", p.base_focus_regen_per_second );
-  add_non_zero( root, "base_chi_regen_per_second", p.base_chi_regen_per_second );
+  for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
+  {
+    std::string name = "base_";
+    name += util::resource_type_string( r );
+    name += "_regen_per_second";
+    add_non_zero( root, name.c_str(), p.resources.base_regen_per_second[ r ] );
+  }
 
   /* TODO: Not implemented reporting begins here
 
@@ -1348,9 +1352,6 @@ js::sc_js_t to_json( const player_t& p )
   node.set( "base_stats", to_json( p.base ) );
   node.set( "initial_stats", to_json( p.initial ) );
   node.set( "current_stats", to_json( p.current ) );
-  node.set( "base_energy_regen_per_second", p.base_energy_regen_per_second );
-  node.set( "base_focus_regen_per_second", p.base_focus_regen_per_second );
-  node.set( "base_chi_regen_per_second", p.base_chi_regen_per_second );
   node.set( "diminishing_returns_constants", to_json( p.def_dr ) );
   node.set( "main_hand_weapon", to_json( p.main_hand_weapon ) );
   node.set( "off_hand_weapon", to_json( p.off_hand_weapon ) );

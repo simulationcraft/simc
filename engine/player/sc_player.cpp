@@ -703,8 +703,6 @@ player_t::player_t( sim_t*             s,
   base(),
   initial(),
   current(),
-  // Spell Mechanics
-  base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ), base_chi_regen_per_second( 0 ),
   last_cast( timespan_t::zero() ),
   // Defense Mechanics
   def_dr( diminishing_returns_constants_t() ),
@@ -2025,11 +2023,14 @@ void player_t::init_gains()
 
   gains.arcane_torrent         = get_gain( "arcane_torrent" );
   gains.endurance_of_niuzao    = get_gain( "endurance_of_niuzao" );
-  gains.energy_regen           = get_gain( "energy_regen" );
-  gains.focus_regen            = get_gain( "focus_regen" );
+  for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
+  {
+    std::string name = util::resource_type_string( r );
+    name += "_regen";
+    gains.resource_regen[ r ] = get_gain( name );
+  }
   gains.health                 = get_gain( "external_healing" );
   gains.mana_potion            = get_gain( "mana_potion" );
-  gains.mp5_regen              = get_gain( "mp5_regen" );
   gains.restore_mana           = get_gain( "restore_mana" );
   gains.touch_of_the_grave     = get_gain( "touch_of_the_grave" );
   gains.vampiric_embrace       = get_gain( "vampiric_embrace" );
@@ -2619,21 +2620,7 @@ void player_t::min_threshold_trigger()
   timespan_t time_to_threshold = timespan_t::zero();
   if ( i < resource_thresholds.size() )
   {
-    double rps = 0;
-    switch ( pres )
-    {
-      case RESOURCE_MANA:
-        rps = mana_regen_per_second();
-        break;
-      case RESOURCE_ENERGY:
-        rps = energy_regen_per_second();
-        break;
-      case RESOURCE_FOCUS:
-        rps = focus_regen_per_second();
-        break;
-      default:
-        break;
-    }
+    double rps = resources.base_regen_per_second[ pres ];
 
     if ( rps > 0 )
     {
@@ -2885,37 +2872,34 @@ int player_t::level() const
     return true_level;
 }
 
-// player_t::energy_regen_per_second ========================================
-
-double player_t::energy_regen_per_second() const
+double player_t::resource_regen_per_second( resource_e r ) const
 {
-  double r = 0;
-  if ( base_energy_regen_per_second )
-    r = base_energy_regen_per_second * ( 1.0 / cache.attack_haste() );
+  double reg = resources.base_regen_per_second[ r ];
 
-  if ( buffs.surge_of_energy && buffs.surge_of_energy -> up() )
+  if ( r == RESOURCE_FOCUS || r == RESOURCE_ENERGY )
   {
-    r *= 1.0 + buffs.surge_of_energy -> data().effectN( 1 ).percent();
+    if ( reg )
+    {
+      reg *= ( 1.0 / cache.attack_haste() );
+    }
   }
-  return r;
+
+  if ( r == RESOURCE_ENERGY )
+  {
+    if ( buffs.surge_of_energy && buffs.surge_of_energy -> check() )
+    {
+      reg *= 1.0 + buffs.surge_of_energy -> data().effectN( 1 ).percent();
+    }
+  }
+
+  if ( r == RESOURCE_MANA )
+  {
+    return current.mana_regen_per_second + cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
+  }
+
+  return reg;
 }
 
-// player_t::focus_regen_per_second =========================================
-
-double player_t::focus_regen_per_second() const
-{
-  double r = 0;
-  if ( base_focus_regen_per_second )
-    r = base_focus_regen_per_second * ( 1.0 / cache.attack_haste() );
-  return r;
-}
-
-// player_t::mana_regen_per_second ==========================================
-
-double player_t::mana_regen_per_second() const
-{
-  return current.mana_regen_per_second + cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
-}
 
 // player_t::composite_attack_haste =========================================
 
@@ -4911,29 +4895,8 @@ void player_t::regen( timespan_t periodicity )
   {
     if ( resources.is_active( r ) )
     {
-      double base;
-      gain_t* gain;
-
-      switch ( r )
-      {
-        case RESOURCE_ENERGY:
-          base = energy_regen_per_second();
-          gain = gains.energy_regen;
-          break;
-
-        case RESOURCE_FOCUS:
-          base = focus_regen_per_second();
-          gain = gains.focus_regen;
-          break;
-
-        case RESOURCE_MANA:
-          base = mana_regen_per_second();
-          gain = gains.mp5_regen;
-          break;
-
-        default:
-          continue;
-      }
+      double base = resource_regen_per_second( r );
+      gain_t* gain = gains.resource_regen[ r ];
 
       if ( gain && base )
         resource_gain( r, base * periodicity.total_seconds(), gain );
@@ -7140,7 +7103,7 @@ struct snapshot_stats_t : public action_t
     buffed_stats.spell_power  = util::round( p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     buffed_stats.spell_hit    = p -> cache.spell_hit();
     buffed_stats.spell_crit_chance = p -> cache.spell_crit_chance();
-    buffed_stats.manareg_per_second          = p -> mana_regen_per_second();
+    buffed_stats.manareg_per_second          = p -> resource_regen_per_second( RESOURCE_MANA );
 
     buffed_stats.attack_power = p -> cache.attack_power() * p -> composite_attack_power_multiplier();
     buffed_stats.attack_hit   = p -> cache.attack_hit();
@@ -7174,23 +7137,23 @@ struct snapshot_stats_t : public action_t
     if ( role == ROLE_SPELL || role == ROLE_HYBRID || role == ROLE_HEAL )
     {
       double chance = proxy_spell -> miss_chance( proxy_spell -> composite_hit(), sim -> target );
-      if ( chance < 0 ) spell_hit_extra = -chance * p -> current_rating().spell_hit;
+      if ( chance < 0 ) spell_hit_extra = -chance * p -> current.rating.spell_hit;
     }
 
     if ( role == ROLE_ATTACK || role == ROLE_HYBRID || role == ROLE_TANK )
     {
       double chance = proxy_attack -> miss_chance( proxy_attack -> composite_hit(), sim -> target );
       if ( p -> dual_wield() ) chance += 0.19;
-      if ( chance < 0 ) attack_hit_extra = -chance * p -> current_rating().attack_hit;
+      if ( chance < 0 ) attack_hit_extra = -chance * p -> current.rating.attack_hit;
       if ( p -> position() != POSITION_FRONT )
       {
         chance = proxy_attack -> dodge_chance( p -> cache.attack_expertise(), sim -> target );
-        if ( chance < 0 ) expertise_extra = -chance * p -> current_rating().expertise;
+        if ( chance < 0 ) expertise_extra = -chance * p -> current.rating.expertise;
       }
       else if ( p -> position() == POSITION_FRONT )
       {
         chance = proxy_attack -> parry_chance( p -> cache.attack_expertise(), sim -> target );
-        if ( chance < 0 ) expertise_extra = -chance * p -> current_rating().expertise;
+        if ( chance < 0 ) expertise_extra = -chance * p -> current.rating.expertise;
       }
     }
 
@@ -9220,7 +9183,7 @@ expr_t* player_t::create_expression( action_t* a,
   {
     return make_fn_expr( expression_str, [this]() {
       double h = std::max( 0.0, initial.stats.haste_rating ) /
-                 initial_rating().spell_haste;
+          initial.rating.spell_haste;
 
       return h;
     } );
@@ -9853,67 +9816,14 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
     }
     else if ( splits[ 1 ] == "regen" )
     {
-      if ( r == RESOURCE_ENERGY )
-        return make_mem_fn_expr( name_str, *this, &player_t::energy_regen_per_second );
-      else if ( r == RESOURCE_FOCUS )
-        return make_mem_fn_expr( name_str, *this, &player_t::focus_regen_per_second );
-      else if ( r == RESOURCE_MANA )
-        return make_mem_fn_expr( name_str, *this, &player_t::mana_regen_per_second );
+      return make_fn_expr( name_str, [this, r]{ return resources.base_regen_per_second[ r ]; } );
     }
 
     else if ( splits[1] == "time_to_max" )
     {
-      if ( r == RESOURCE_ENERGY )
-      {
-        struct time_to_max_energy_expr_t : public resource_expr_t
-        {
-          time_to_max_energy_expr_t( player_t& p, resource_e r ) :
-            resource_expr_t( "time_to_max_energy", p, r )
-          {
-          }
-          virtual double evaluate() override
-          {
-            return ( player.resources.max[RESOURCE_ENERGY] -
-              player.resources.current[RESOURCE_ENERGY] ) /
-              player.energy_regen_per_second();
-          }
-        };
-        return new time_to_max_energy_expr_t( *this, r );
-      }
-      else if ( r == RESOURCE_FOCUS )
-      {
-        struct time_to_max_focus_expr_t : public resource_expr_t
-        {
-          time_to_max_focus_expr_t( player_t& p, resource_e r ) :
-            resource_expr_t( "time_to_max_focus", p, r )
-          {
-          }
-          virtual double evaluate() override
-          {
-            return ( player.resources.max[RESOURCE_FOCUS] -
-              player.resources.current[RESOURCE_FOCUS] ) /
-              player.focus_regen_per_second();
-          }
-        };
-        return new time_to_max_focus_expr_t( *this, r );
-      }
-      else if ( r == RESOURCE_MANA )
-      {
-        struct time_to_max_mana_expr_t : public resource_expr_t
-        {
-          time_to_max_mana_expr_t( player_t& p, resource_e r ) :
-            resource_expr_t( "time_to_max_mana", p, r )
-          {
-          }
-          virtual double evaluate() override
-          {
-            return ( player.resources.max[RESOURCE_MANA] -
-              player.resources.current[RESOURCE_MANA] ) /
-              player.mana_regen_per_second();
-          }
-        };
-        return new time_to_max_mana_expr_t( *this, r );
-      }
+      return make_fn_expr("time_to_max_resource", [this, r]{
+        return ( resources.max[ r ] - resources.current[ r ] ) / resources.base_regen_per_second[ r ];
+      });
     }
   }
 

@@ -1330,7 +1330,7 @@ void set_bonus::t18_lfr_4pc_leather_melee( special_effect_t& effect )
   player_t* p = effect.player;
 
   p -> resources.base[ RESOURCE_ENERGY ] += effect.driver() -> effectN( 1 ).base_value();
-  p -> base_energy_regen_per_second *= 1.0 + effect.driver() -> effectN( 2 ).percent();
+  p -> resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + effect.driver() -> effectN( 2 ).percent();
 }
 
 // Items ====================================================================

@@ -1308,7 +1308,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           "<td class=\"right\">0</td>\n"
           "</tr>\n",
           ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-          buffed_stats.manareg_per_second, p.mana_regen_per_second() );
+          buffed_stats.manareg_per_second, p.resource_regen_per_second( RESOURCE_MANA ) );
     }
     j++;
     if ( buffed_stats.attack_power > 0 )

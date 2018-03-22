@@ -1802,7 +1802,7 @@ struct base_ghoul_pet_t : public death_knight_pet_t
     death_knight_pet_t::init_base_stats();
 
     resources.base[ RESOURCE_ENERGY ] = 100;
-    base_energy_regen_per_second  = 10;
+    resources.base_regen_per_second[ RESOURCE_ENERGY ]  = 10;
   }
 
   resource_e primary_resource() const override
@@ -1817,21 +1817,24 @@ struct base_ghoul_pet_t : public death_knight_pet_t
       return timespan_t::from_seconds( 0.1 );
 
     return std::max(
-             timespan_t::from_seconds( ( 40 - energy ) / energy_regen_per_second() ),
+             timespan_t::from_seconds( ( 40 - energy ) / resource_regen_per_second( RESOURCE_ENERGY ) ),
              timespan_t::from_seconds( 0.1 )
            );
   }
 
-  double energy_regen_per_second() const override
+  double resource_regen_per_second( resource_e r ) const override
   {
-    double r = pet_t::energy_regen_per_second();
+    double reg = pet_t::resource_regen_per_second( r );
 
-    // Army of the dead and pet ghoul energy regen double dips with haste
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/108
-    if ( o() -> bugs )
-      r *= ( 1.0 / cache.attack_haste() );
+    if ( r == RESOURCE_ENERGY )
+    {
+      // Army of the dead and pet ghoul energy regen double dips with haste
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/108
+      if ( o() -> bugs )
+        reg *= ( 1.0 / cache.attack_haste() );
+    }
 
-    return r;
+    return reg;
   }
 };
 

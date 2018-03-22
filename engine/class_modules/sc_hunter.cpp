@@ -646,7 +646,7 @@ public:
   {
     const timespan_t cast_time = std::max( this -> execute_time(), this -> gcd() );
     const timespan_t sf_time = std::min( cast_time, p() -> buffs.steady_focus -> remains() );
-    const double regen = p() -> focus_regen_per_second();
+    const double regen = p() -> resource_regen_per_second( RESOURCE_FOCUS );
     const double sf_mult = p() -> buffs.steady_focus -> check_value();
     size_t targets_hit = 1;
     if ( this -> energize_type_() == ENERGIZE_PER_HIT && ab::is_aoe() )
@@ -1123,13 +1123,21 @@ public:
     player_t::regen( periodicity );
     if ( o() -> buffs.steady_focus -> up() )
     {
-      double base = focus_regen_per_second() * o() -> buffs.steady_focus -> check_value();
+      double base = resource_regen_per_second( RESOURCE_FOCUS ) * o() -> buffs.steady_focus -> check_value();
       resource_gain( RESOURCE_FOCUS, base * periodicity.total_seconds(), gains.steady_focus );
     }
   }
 
-  double focus_regen_per_second() const override
-  { return o() -> focus_regen_per_second() * 1.25; }
+  double resource_regen_per_second( resource_e r ) const override
+  {
+    if ( r == RESOURCE_FOCUS )
+    {
+      return o() -> resource_regen_per_second( r ) * 1.25;
+    }
+
+    return base_t::resource_regen_per_second( r );
+
+  }
 
   double composite_melee_speed() const override
   {
@@ -4700,7 +4708,7 @@ void hunter_t::init_base_stats()
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility  = 1.0;
 
-  base_focus_regen_per_second = 10.0;
+  resources.base_regen_per_second[ RESOURCE_FOCUS ] = 10.0;
 
   resources.base[RESOURCE_FOCUS] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) + specs.marksmans_focus -> effectN( 1 ).resource( RESOURCE_FOCUS );
 }
@@ -5402,7 +5410,7 @@ void hunter_t::regen( timespan_t periodicity )
   player_t::regen( periodicity );
   if ( buffs.steady_focus -> up() )
   {
-    double base = focus_regen_per_second() * buffs.steady_focus -> check_value();
+    double base = resource_regen_per_second( RESOURCE_FOCUS ) * buffs.steady_focus -> check_value();
     resource_gain( RESOURCE_FOCUS, base * periodicity.total_seconds(), gains.steady_focus );
   }
 }

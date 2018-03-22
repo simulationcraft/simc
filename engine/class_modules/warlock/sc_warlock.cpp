@@ -18,7 +18,7 @@ namespace warlock
       pet_t::init_base_stats();
 
       resources.base[RESOURCE_ENERGY] = 200;
-      base_energy_regen_per_second = 10;
+      resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
 
       base.spell_power_per_intellect = 1;
 
@@ -751,11 +751,10 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
   return player_t::resource_gain( resource_type, amount, source, action );
 }
 
-double warlock_t::mana_regen_per_second() const
+double warlock_t::resource_regen_per_second( resource_e r ) const
 {
-  double mp5 = player_t::mana_regen_per_second();
-  //mp5 /= cache.spell_haste();
-  return mp5;
+  double reg = player_t::resource_regen_per_second( r );
+  return reg;
 }
 
 double warlock_t::composite_armor() const

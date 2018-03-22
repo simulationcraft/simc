@@ -145,7 +145,7 @@ namespace warlock {
           {
             warlock_pet_t::init_base_stats();
             resources.base[RESOURCE_ENERGY] = 0;
-            base_energy_regen_per_second = 0;
+            resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
             melee_attack = new warlock_pet_melee_t(this);
           }
 
@@ -221,7 +221,7 @@ namespace warlock {
             action_list_str = "fel_firebolt";
 
             resources.base[RESOURCE_ENERGY] = 100;
-            base_energy_regen_per_second = 0;
+            resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
           }
 
           void wild_imp_pet_t::dismiss(bool expired)

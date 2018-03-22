@@ -369,7 +369,7 @@ namespace warlock
       double    composite_melee_crit_chance() const override;
       double    composite_mastery() const override;
       double    resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
-      double    mana_regen_per_second() const override;
+      double    resource_regen_per_second( resource_e ) const override;
       double    composite_armor() const override;
       void      halt() override;
       void      combat_begin() override;
