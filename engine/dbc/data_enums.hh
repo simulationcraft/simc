@@ -971,7 +971,7 @@ enum effect_subtype_t : unsigned {
     A_MOD_SPELL_HEALING_OF_STAT_PERCENT = 175,
     A_SPIRIT_OF_REDEMPTION = 176,
     A_AOE_CHARM = 177,
-    A_MOD_DEBUFF_RESISTANCE = 178,
+    A_MOD_MAX_MANA_PCT = 178,
     A_MOD_ATTACKER_SPELL_CRIT_CHANCE = 179,
     A_MOD_FLAT_SPELL_DAMAGE_VERSUS = 180,
     A_181 = 181, // old A_MOD_FLAT_SPELL_CRIT_DAMAGE_VERSUS - possible flat spell crit damage versus

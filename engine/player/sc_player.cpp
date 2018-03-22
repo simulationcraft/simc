@@ -1065,8 +1065,10 @@ void player_t::init_base_stats()
     resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, level() );
     resources.base[ RESOURCE_MANA   ] = dbc.resource_base( type, level() );
 
-    // Mana Regen
-    resources.base_regen_per_second[ RESOURCE_MANA ] = dbc.resource_base( type, level() ) * 0.01; // 1% seems to be default for all classes
+    // 1% of max mana as mana regen per second for all classes.
+    resources.base_regen_per_second[ RESOURCE_MANA ] = dbc.resource_base( type, level() ) * 0.01;
+
+    // Automatically parse mana regen and max mana modifiers from class passives.
     for ( auto spell : dbc::class_passives( this ) )
     {
       for ( auto effect : *spell->_effects )
@@ -1075,8 +1077,13 @@ void player_t::init_base_stats()
         {
           resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + effect->percent();
         }
+        if ( effect->subtype() == A_MOD_MAX_MANA_PCT )
+        {
+          resources.base[ RESOURCE_MANA ] *= 1.0 + effect->percent();
+        }
       }
     }
+
     base.mana_regen_per_spirit = dbc.regen_spirit( type, level() );
     base.health_per_stamina    = dbc.health_per_stamina( level() );
 
