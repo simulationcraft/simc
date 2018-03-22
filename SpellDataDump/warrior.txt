@@ -115,7 +115,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Mechanic         : Unknown(196)
+Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -128,7 +128,7 @@ Effects          :
 #1 (id=310)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23213 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=357783)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20280 | Chain Multiplier: 1 | Mechanic: Unknown(196) | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20280 | Chain Multiplier: 1 | Mechanic: Bleed | Chain Targets: 1 | Target: Enemy (6)
 Description      : Wounds the target, causing $s1 Physical damage instantly and an additional $o2 Bleed damage over $d.
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
@@ -268,7 +268,7 @@ Attributes       : ........ ........ x.x..... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=523)      : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=236708)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=236709)   : School Damage (2): physical
@@ -353,7 +353,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(154)
+Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Warrior (137047 effect#2)
@@ -465,7 +465,7 @@ Effects          :
 #1 (id=2203)     : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.39312 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20 | Radius: 0 - 8 yards | Mechanic: Unknown(176) | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: -20 | Scaled Value: -20 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=357188)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #4 (id=357193)   : Energize Power (30)
@@ -517,7 +517,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=108711)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(255) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Pummels the target, interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
 Name             : Revenge (id=6572) [Spell Family (4)] 
@@ -600,7 +600,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
 Proc Chance      : 101%
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
@@ -667,7 +667,7 @@ Resource         : 10 Rage (1) (id=456)
 Spell Level      : 32
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Affecting spells : Warrior (137047 effect#2)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1012,7 +1012,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(255)
+Mechanic         : Interrupt
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1420,7 +1420,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 1 seconds
 Cooldown         : 150 seconds
-Mechanic         : Unknown(168)
+Mechanic         : Silence
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1783,7 +1783,7 @@ Class            : Warrior
 School           : Physical
 Range            : 50000 yards
 Duration         : 1 seconds
-Mechanic         : Unknown(162)
+Mechanic         : Root
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1793,7 +1793,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=115753)   : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Mechanic: Unknown(162) | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Mechanic: Root | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc100
 Tooltip          : Rooted.
 
@@ -1882,7 +1882,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 6 seconds
-Mechanic         : Unknown(196)
+Mechanic         : Bleed
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ..x..... ..x..... ..x...x. 
                  : ........ x......x ....x... ........   ........ ........ ........ ........ 
@@ -1892,7 +1892,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Cannot crit (93), Requires main-hand weapon (106), Disable player multipliers (221)
 Effects          :
 #1 (id=126202)   : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
-                   Base Value: 5 | Scaled Value: 0 (avg=0.094) | Mechanic: Unknown(196) | Target: Enemy (6)
+                   Base Value: 5 | Scaled Value: 0 (avg=0.094) | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc12292
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -1902,7 +1902,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
-Mechanic         : Unknown(196)
+Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1)
 Triggered by     : Deep Wounds (115768)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
@@ -1914,7 +1914,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=129821)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.11700 | Mechanic: Unknown(196) | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.11700 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc115768
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -2249,7 +2249,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=170833)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(179) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Enemy (6)
 Description      : $@spelldesc46968
 Tooltip          : Stunned.
 
@@ -2260,7 +2260,7 @@ Spell Level      : 1
 Range            : 30 yards
 Velocity         : 25 yards/sec
 Duration         : 4 seconds
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ..x..... ..x..... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2270,7 +2270,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
 Effects          :
 #1 (id=170838)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(179) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Enemy (6)
 Description      : $@spelldesc107570
 Tooltip          : Stunned.
 
@@ -2860,7 +2860,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 1
 Duration         : 6 seconds
-Mechanic         : Unknown(274)
+Mechanic         : Enrage
 Affecting spells : Warpaint (208154 effect#2), Item - Warrior T19 Fury 4P Bonus (212158 effect#1)
 Triggered by     : Item - Warrior T17 Fury 2P Bonus (165337), Enrage (184361), Trial by Combat (218826)
 Attributes       : ........ ........ ........ x......x   ........ ..x..... ........ ........ 
@@ -3155,7 +3155,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 1 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(162)
+Mechanic         : Root
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4287,7 +4287,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 20 yards
 Duration         : 6 seconds
-Mechanic         : Unknown(196)
+Mechanic         : Bleed
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -4297,7 +4297,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : Requires main-hand weapon (106), Disable player multipliers (221)
 Effects          :
 #1 (id=320479)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(196) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc215538
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -4891,7 +4891,7 @@ Class            : Warrior
 School           : Physical
 Range            : 50000 yards
 Duration         : 6 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -4901,7 +4901,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=356785)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc100
 Tooltip          : Movement slowed by $s1%.
 
@@ -4957,7 +4957,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 2.5 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5358,7 +5358,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(196)
+Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Mastery: Deep Wounds (262111 effect#1)
 Triggered by     : Mastery: Deep Wounds (262111), Deep Wounds (262304)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
@@ -5370,7 +5370,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
 Effects          :
 #1 (id=623125)   : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17940 | Mechanic: Unknown(196) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17940 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc262111
 Tooltip          : Bleeding for $w1 every $t1 sec.
 

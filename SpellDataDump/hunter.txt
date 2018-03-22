@@ -251,7 +251,7 @@ Spell Level      : 28
 Range            : 100 yards
 Duration         : 60 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(183)
+Mechanic         : Freeze
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ........ x..x..x.   .....x.. ..x..... ..x..... .x...... 
@@ -279,7 +279,7 @@ GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Duration         : 6 seconds
 Cooldown         : 5 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Affecting spells : Hunter (137014 effect#3), Item - Hunter WoD PvP 2P Bonus (166005 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3)
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -767,7 +767,7 @@ School           : Physical
 Range            : 100 yards
 Duration         : 5 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -864,7 +864,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(255)
+Mechanic         : Interrupt
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -939,7 +939,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=25516)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : The Warp Stalker slows time around the enemy, reducing their movement speed by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
@@ -975,7 +975,7 @@ Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(162)
+Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ....x... ........ ........ ......x.   ..x..... .x...... ........ .....x.. 
@@ -1018,7 +1018,7 @@ Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1027,7 +1027,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=42638)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : Snap at the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -1054,7 +1054,7 @@ School           : Physical
 Spell Level      : 80
 Range            : 8 - 25 yards
 Duration         : 1 seconds
-Mechanic         : Unknown(162)
+Mechanic         : Root
 Triggered by     : Charge (61685)
 Attributes       : ....x... ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1251,7 +1251,7 @@ Duration         : 6 seconds
 Cooldown         : 10 seconds
 Category         : 1247
 Category Cooldown: 10 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1260,7 +1260,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=47481)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=47482)    : Trigger Spell (64): Froststorm Breath
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 54689 | Target: Enemy (6)
 Description      : The Chimera blasts the target with frost breath, reducing movement speed by $s1% for $d.
@@ -1683,7 +1683,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 1 seconds
 Cooldown         : 150 seconds
-Mechanic         : Unknown(168)
+Mechanic         : Silence
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2181,7 +2181,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 5 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Attributes       : ........ ........ ..x..... x.xx...x   ...x.x.x ........ ..x..... ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -2191,7 +2191,7 @@ Attributes       : ........ ........ ..x..... x.xx...x   ...x.x.x ........ ..x..
                  : Cannot cancel aura (31), Does not break stealth (37)
 Effects          :
 #1 (id=133385)   : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(179) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Enemy (6)
 #2 (id=133386)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 Description      : Breaking the tether of Binding Shot will root the target in place for $d (3 sec PvP).
@@ -2352,7 +2352,7 @@ Effects          :
 #1 (id=140699)   : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.08518 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=150546)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards | Mechanic: Unknown(176) | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards | Mechanic: Snare | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc117050
 Tooltip          : Movement speed slowed by $s2%.
 
@@ -2371,7 +2371,7 @@ Effects          :
 #1 (id=150477)   : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.08518 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=150547)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards | Mechanic: Unknown(176) | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards | Mechanic: Snare | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc117050
 Tooltip          : Movement speed slowed by $s2%.
 
@@ -2519,7 +2519,7 @@ School           : Nature
 Spell Level      : 28
 Range            : 50000 yards
 Duration         : 39 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ x.xx....   ...x.x.x ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ....x...   ........ ........ ........ ......x. 
                  : x......x ...x...x ....x... ........   ...x.... ..x..... .xx..... ........ 
@@ -2540,7 +2540,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(162)
+Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
@@ -2813,7 +2813,7 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .x...
                  : Ranged Ability (1)
 Effects          :
 #1 (id=199883)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(255) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Interrupts spellcasting, preventing any spell in that school from being cast for $d.
 
 Name             : Adaptation (id=152244) [Passive] 
@@ -3090,7 +3090,7 @@ Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3099,7 +3099,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=224317)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : The Silithid slashes at the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -3110,7 +3110,7 @@ Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3119,7 +3119,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=224321)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : The Spider wraps webs around the target, slowing movement by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -3147,7 +3147,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(162)
+Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ........ ......x.   ........ ..x..... ..x..... ........ 
@@ -3168,7 +3168,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 30 seconds
-Mechanic         : Unknown(196)
+Mechanic         : Bleed
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Bullseye (204090 effect#1), Mongoose Power (211362 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3178,7 +3178,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=228151)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23400 | Mechanic: Unknown(196) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23400 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc162488
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
@@ -3572,7 +3572,7 @@ Effects          :
 #3 (id=272309)   : Knock Back (98)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 300 | Trigger Spell: 224729 | Radius: 8 yards | Target: Cone Front (104)
 #4 (id=711079)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 8 yards | Mechanic: Unknown(176) | Target: Cone Front (104)
+                   Base Value: -50 | Scaled Value: -50 | Radius: 8 yards | Mechanic: Snare | Target: Cone Front (104)
 Description      : Fires an explosion of bolts at all enemies in front of you, knocking them back,snaring them by $s4% for $d, and dealing $s1 Physical damage.
 Tooltip          : Movement speed reduced by $s4%.
 
@@ -3679,7 +3679,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=273764)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(255) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Interrupts spellcasting, preventing any spell in that school from being cast for $d.
 
 Name             : Item - Hunter T18 Survival 4P Bonus (id=188199) [Spell Family (9), Passive, Hidden] 
@@ -3782,7 +3782,7 @@ GCD              : 1.5 seconds
 Velocity         : 70 yards/sec
 Duration         : 3 seconds
 Cooldown         : 6 seconds
-Mechanic         : Unknown(162)
+Mechanic         : Root
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3891,7 +3891,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=280760)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc191384
 Tooltip          : Movement slowed by $s1%.
 
@@ -4180,7 +4180,7 @@ Attributes       : ....x... ........ x.x..... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=287183)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : Maims the target, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -4845,7 +4845,7 @@ Range            : 100 yards
 Duration         : 4 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken
 Affecting spells : Gust of Wind (190567 effect#1), Mastery: Sniper Training (193468 effect#2), Trueshot (211327 effect#1), Magnetized Blasting Cap Launcher (226841 effect#1), 
@@ -5383,7 +5383,7 @@ Effects          :
 #1 (id=483696)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=485325)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(196) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc34026
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
@@ -5865,7 +5865,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 4 seconds
-Mechanic         : Unknown(196)
+Mechanic         : Bleed
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6124,7 +6124,7 @@ Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6133,7 +6133,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=706186)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : The Dog bites the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -6144,7 +6144,7 @@ Spell Level      : 20
 Range            : 30 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6153,7 +6153,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=706228)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : The Worm spits acid at the target, slowing movement by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -6181,7 +6181,7 @@ Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6190,7 +6190,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=706845)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : The Wolf bites the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -6201,7 +6201,7 @@ Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6210,7 +6210,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=706860)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : The Bird of Prey claws at the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 

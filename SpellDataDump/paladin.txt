@@ -107,7 +107,7 @@ Spell Level      : 18
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 300 seconds
-Mechanic         : Unknown(246)
+Mechanic         : Invulneraility
 Affecting spells : Unbreakable Spirit (114154 effect#1), Final Stand (204077 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ .....x.. .....x..   ........ ........ ........ ........ 
@@ -138,7 +138,7 @@ Cooldown         : 60 seconds
 Category         : 32
 Category Cooldown: 60 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Affecting spells : Improved Hammer of Justice (24188 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -167,7 +167,7 @@ Duration         : 10 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (300 seconds cooldown)
 Category         : 1392
-Mechanic         : Unknown(246)
+Mechanic         : Invulneraility
 Affecting spells : Uther's Guard (207558 effect#2)
 Attributes       : ........ ........ x.x..... ........   ........ .......x ........ ........ 
                  : ...x.... x....... .....x.. ........   ........ ........ ........ ........ 
@@ -304,7 +304,7 @@ Duration         : 60 seconds
 Cooldown         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Mechanic         : Unknown(271)
+Mechanic         : Sap
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .xx..... .x...... 
@@ -431,7 +431,7 @@ Class            : Paladin
 School           : Holy
 Range            : 50000 yards
 Duration         : 30 seconds
-Mechanic         : Unknown(246)
+Mechanic         : Invulneraility
 Affecting spells : Endless Resolve (185086 effect#1)
 Attributes       : ........ ........ ........ ..x..x..   ...x...x ..x..... xx...... ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -694,9 +694,9 @@ Effects          :
 #1 (id=21607)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.52416 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 #2 (id=135932)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | Chain Multiplier: 1 | Mechanic: Unknown(255) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | Chain Multiplier: 1 | Mechanic: Interrupt | Target: Enemy (6)
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | Chain Multiplier: 1 | Mechanic: Unknown(168) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | Chain Multiplier: 1 | Mechanic: Silence | Target: Enemy (6)
 Description      : Hurls your shield at an enemy target, dealing $s1 Holy damage$?a231665[, interrupting and silencing the non-Player target for $d][], and then jumping to ${$x1-1} additional nearby enemies.
 Tooltip          : Silenced.
 
@@ -750,7 +750,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(255)
+Mechanic         : Interrupt
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1667,7 +1667,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Disable player procs (112)
 Effects          :
 #1 (id=102188)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(255) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Interrupts spellcasting and prevents any spell in that school from being cast for $d.
 
 Name             : Judgments of the Wise (id=105424) [Spell Family (10), Passive] 
@@ -2520,7 +2520,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 1 seconds
 Cooldown         : 150 seconds
-Mechanic         : Unknown(168)
+Mechanic         : Silence
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2632,7 +2632,7 @@ Range            : 15 yards
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 180 seconds
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Triggered by     : The Jailer's Libram (168802)
 Attributes       : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ x....... ........ ........ 
@@ -2746,7 +2746,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3018,7 +3018,7 @@ School           : Holy
 Spell Level      : 32
 Duration         : 15 seconds
 Cooldown         : 120 seconds
-Mechanic         : Unknown(218)
+Mechanic         : Shield
 Affecting spells : Unbreakable Spirit (114154 effect#1), Deflection (184778 effect#1)
 Attributes       : ........ ...x.... x.x..... .......x   ........ ........ ........ ........ 
                  : ........ ........ ...x.x.. ........   ........ ........ ........ ........ 
@@ -3697,7 +3697,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
-Mechanic         : Unknown(246)
+Mechanic         : Invulneraility
 Affecting spells : Uther's Guard (207558 effect#2)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... .....x.. ........   ........ ........ ........ ........ 
@@ -3859,7 +3859,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 180 seconds
-Mechanic         : Unknown(246)
+Mechanic         : Invulneraility
 Attributes       : ........ ........ ..x..... ........   ..x...x. ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -4004,7 +4004,7 @@ Effects          :
 #1 (id=303075)   : School Damage (2): holyfire
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.74300 | Radius: 12 yards | Target: Cone Front (104)
 #2 (id=324545)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 12 yards | Mechanic: Unknown(176) | Target: Cone Front (104)
+                   Base Value: -50 | Scaled Value: -50 | Radius: 12 yards | Mechanic: Snare | Target: Cone Front (104)
 #3 (id=324546)   : Apply Aura (6) | Periodic Damage (3): holyfire every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29400 | Radius: 12 yards | Target: Cone Front (104)
 #4 (id=356924)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
@@ -4023,7 +4023,7 @@ Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, G
 School           : Holy
 Range            : 100 yards
 Duration         : 6 seconds
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -4032,7 +4032,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=303108)   : Apply Aura (6) | Stun (12)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(179) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Stun | Target: Enemy (6)
 Description      : $@spelldesc205273
 Tooltip          : Stunned.
 
@@ -5041,7 +5041,7 @@ Effects          :
 #1 (id=478180)   : School Damage (2): holyfire
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.40000 | Radius: 12 yards | Target: Cone Front (104)
 #2 (id=478181)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 12 yards | Mechanic: Unknown(176) | Target: Cone Front (104)
+                   Base Value: -50 | Scaled Value: -50 | Radius: 12 yards | Mechanic: Snare | Target: Cone Front (104)
 #3 (id=478182)   : Energize Power (30)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: holy_power | Target: Self (1)
 Description      : Lash out at your enemies, dealing $sw1 Radiant damage to all enemies within $a1 yd in front of you and reducing their movement speed by $s2% for $d.
@@ -5056,7 +5056,7 @@ Class            : Paladin
 School           : Holy
 Range            : 100 yards
 Duration         : 5 seconds
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -5065,7 +5065,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=478187)   : Apply Aura (6) | Stun (12)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(179) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Stun | Target: Enemy (6)
 Description      : $@spelldesc255937
 Tooltip          : Stunned.
 

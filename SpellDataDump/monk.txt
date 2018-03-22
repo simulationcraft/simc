@@ -24,7 +24,7 @@ Duration         : 3 seconds
 Cooldown         : 8 seconds
 Category         : 82
 Category Cooldown: 8 seconds
-Mechanic         : Unknown(201)
+Mechanic         : Heal
 Attributes       : ........ ........ x....... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -35,9 +35,9 @@ Effects          :
 #1 (id=806)      : Threat (63)
                    Base Value: 1 | Scaled Value: 0 (avg=1.221) | Target: Enemy (6)
 #2 (id=140019)   : Unknown(114)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Mechanic: Unknown(201) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Mechanic: Heal | Target: Enemy (6)
 #3 (id=140020)   : Apply Aura (6) | Taunt (11)
-                   Base Value: 400 | Scaled Value: 400 | Mechanic: Unknown(201) | Target: Enemy (6)
+                   Base Value: 400 | Scaled Value: 400 | Mechanic: Heal | Target: Enemy (6)
 Description      : Your pet growls at the target, generating threat, taunting the target to attack the pet, and increasing threat that your pet generates against the target for $d.
 Tooltip          : Taunted.
 
@@ -160,7 +160,7 @@ School           : Physical
 Range            : 100 yards
 Duration         : 5 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -204,7 +204,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(255)
+Mechanic         : Interrupt
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -800,7 +800,7 @@ Category         : 33
 Category Cooldown: 60 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Mechanic         : Unknown(186)
+Mechanic         : Incapacitate
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Stagger (115069 effect#11), Mistweaver Monk (137024 effect#6)
@@ -1259,7 +1259,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Stagger (115069 effect#11), Mistweaver Monk (137024 effect#6)
@@ -1272,9 +1272,9 @@ Attributes       : ....x... ...x.... x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=130769)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=158599)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 1 | Scaled Value: 1 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Mechanic: Snare | Target: Enemy (6)
 Description      : Reduces the target's movement speed by $s1% for $d, duration refreshed by your melee attacks. Targets already snared will be rooted for $116706d instead.
 Tooltip          : Movement slowed by $w1%. When struck again by Disable, you will be rooted for $116706d.
 
@@ -1430,7 +1430,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=131839)   : Interrupt Cast (68)
-                   Base Value: 1 | Scaled Value: 1 | Mechanic: Unknown(255) | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Jabs the target in the throat, interrupting spellcasting and preventing any spell from that school of magic from being cast for $116705d.
 
 Name             : Disable (id=116706) [Spell Family (53)] 
@@ -1452,7 +1452,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=131840)   : Apply Aura (6) | Root (455)
-                   Base Value: 1 | Scaled Value: 1 | Mechanic: Unknown(162) | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Mechanic: Root | Target: Enemy (6)
 Description      : $@spelldesc116095
 Tooltip          : Rooted for $d.
 
@@ -1774,7 +1774,7 @@ Spell Level      : 60
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Stagger (115069 effect#11), Mistweaver Monk (137024 effect#6), Tiger Tail Sweep (264348 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1784,7 +1784,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=136665)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Mechanic: Unknown(179) | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Mechanic: Stun | Target: At Caster (22) -> AOE enemy (15)
 Description      : Knocks down all enemies within $A1 yards, stunning them for $d.
 Tooltip          : Stunned.
 
@@ -1875,7 +1875,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 5 yards
 Duration         : 4 seconds
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Affecting spells : Monk (137022 effect#1), Serenity (152173 effect#1), Katsuo's Eclipse (208045 effect#1)
 Triggered by     : Fists of Fury (113656)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2015,7 +2015,7 @@ Effects          :
 #2 (id=229522)   : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.85995 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #3 (id=283420)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20 | Radius: 0 - 8 yards | Mechanic: Unknown(176) | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: -20 | Scaled Value: -20 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #4 (id=335940)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 #5 (id=371335)   : Apply Aura (6) | Dummy (4)
@@ -2208,7 +2208,7 @@ Effects          :
 #1 (id=155941)   : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.08789 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=155942)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | AP Coefficient: 0.14742 | Radius: 0 - 8 yards | Mechanic: Unknown(176) | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: -70 | Scaled Value: -70 | AP Coefficient: 0.14742 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc101545
 Tooltip          : Movement speed reduced by $m2%.
 Variables        : $stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]
@@ -2869,7 +2869,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 1 seconds
 Cooldown         : 150 seconds
-Mechanic         : Unknown(168)
+Mechanic         : Silence
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3984,7 +3984,7 @@ Effects          :
 #1 (id=288833)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.32760 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=288837)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Unknown(176) | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 8 yards | Mechanic: Snare | Target: Unknown(87) -> AOE enemy (instant) (16)
 #3 (id=335941)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc196730
@@ -4369,7 +4369,7 @@ Range            : 100 yards
 Duration         : 20 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Mechanic         : Unknown(134)
+Mechanic         : Disorient
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ ..x.x... ......x.   ...x...x ........ ..x..... ........ 
@@ -4462,7 +4462,7 @@ Effects          :
 #1 (id=303159)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=303324)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 12 yards | Mechanic: Unknown(176) | Target: Unknown(129)
+                   Base Value: -50 | Scaled Value: -50 | Radius: 12 yards | Mechanic: Snare | Target: Unknown(129)
 #3 (id=303327)   : Trigger Spell (64): Strike of the Windlord
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222029 | Target: Self (1)
 #4 (id=303697)   : Trigger Spell (64): Strike of the Windlord

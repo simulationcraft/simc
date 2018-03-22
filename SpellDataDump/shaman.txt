@@ -224,7 +224,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 8
 Duration         : 5 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ....x...   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -233,7 +233,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=1247)     : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 10 yards | Mechanic: Unknown(176) | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: -50 | Scaled Value: -50 | Radius: 0 - 10 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 Description      : Reduces the movement speed of all nearby enemies by $s1%.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -769,7 +769,7 @@ Class            : Shaman
 School           : Nature
 Spell Level      : 66
 Cooldown         : 5 seconds
-Mechanic         : Unknown(201)
+Mechanic         : Heal
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
@@ -858,7 +858,7 @@ Effects          :
 #2 (id=43816)    : Knock Back (98)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 300 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=43817)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -40 | Scaled Value: -40 | Radius: 0 - 10 yards | Mechanic: Unknown(176) | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: -40 | Scaled Value: -40 | Radius: 0 - 10 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 Description      : Calls down a bolt of lightning, dealing $s1 Nature damage to all enemies within $A1 yards, reducing their movement speed by $s3% for $d, and knocking them away from the Shaman. Usable while stunned.
 Tooltip          : Movement speed reduced by $s3%.
 
@@ -901,7 +901,7 @@ Cooldown         : 30 seconds
 Category         : 1655
 Category Cooldown: 30 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Item - Shaman WoD PvP Elemental 2P Bonus (171109 effect#1)
@@ -1097,7 +1097,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=51296)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(255) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Disrupts the target's concentration with a burst of wind, interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
 Name             : Glyph of the Spectral Wolf (id=58135) [Spell Family (11), Passive, Hidden] 
@@ -1355,7 +1355,7 @@ Class            : Shaman
 School           : Nature
 Duration         : 8 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(162)
+Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Triggered by     : Earthgrab (116943)
@@ -2301,7 +2301,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 5 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ....x...   x....... ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2429,7 +2429,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=134743)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Mechanic: Unknown(179) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Mechanic: Stun | Target: Enemy (6)
 Description      : Smashes an enemy with a rocky fist, stunning the target for $d.
 Tooltip          : Stunned.
 
@@ -2455,7 +2455,7 @@ Class            : Shaman
 School           : Nature
 Cast Time        : 2 seconds
 Duration         : 3 seconds
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2776,7 +2776,7 @@ School           : Frost
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Triggered by     : Frostbrand (196834)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ x.......   ........ ........ ........ ......x. 
@@ -2786,7 +2786,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=200571)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc196834
 Tooltip          : Movement slowed by $s1%.
 
@@ -4340,7 +4340,7 @@ Effects          :
 #1 (id=288995)   : School Damage (2): frost
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.22500 | Target: Enemy (6)
 #2 (id=288996)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 #3 (id=313061)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | Target: Enemy (6)
 Description      : Chills the target with frost, causing $s1 Frost damage and reducing the target's movement speed by $s2% for $d. Maelstrom increases damage and duration up to $s3%.
@@ -4439,11 +4439,11 @@ Effects          :
 #1 (id=289629)   : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 3.12000 | Radius: 11 yards | Target: Unknown(129)
 #2 (id=290614)   : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Mechanic: Unknown(162) | Target: Unknown(129)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Mechanic: Root | Target: Unknown(129)
 #3 (id=290630)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 1 yards | Target: Unknown(47) -> Unknown(107)
 #4 (id=623637)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Mechanic: Unknown(186) | Target: Unknown(129)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 11 yards | Mechanic: Incapacitate | Target: Unknown(129)
 Description      : Shatters a line of earth in front of you with your main hand weapon, causing $s1 Physical damage and Incapacitating any enemy hit for $d.
 Tooltip          : Knocked aside.
 
@@ -4463,7 +4463,7 @@ Effects          :
 #1 (id=289974)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06224 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=289975)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -30 | Scaled Value: -30 | Radius: 0 - 8 yards | Mechanic: Unknown(176) | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: -30 | Scaled Value: -30 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc197211
 Tooltip          : Snared by $s2%.
 
@@ -4702,7 +4702,7 @@ Effects          :
 #1 (id=291727)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08400 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=302479)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20 | AP Coefficient: 0.21000 | Radius: 0 - 8 yards | Mechanic: Unknown(176) | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: -20 | Scaled Value: -20 | AP Coefficient: 0.21000 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 Description      : Deals $s1 Frost damage to all targets within $A1 yards.
 
 Name             : Thunder Bite (id=198485) [Spell Family (11)] 
@@ -5096,7 +5096,7 @@ Effects          :
 #1 (id=297755)   : School Damage (2): nature
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=297756)   : Apply Aura (6) | Taunt (11)
-                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Mechanic: Unknown(201) | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Mechanic: Heal | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Shakes the ground with thundering force, doing ${$<damage>} Nature damage to all enemies within $A1 yards, and Provoking them. This ability causes a moderate amount of additional threat.
 Variables        : $ce=$?s152244[${1.85}][${1.5}]
 $damage=${$<ce>*($RAP*0.250)}
@@ -5779,7 +5779,7 @@ Cooldown         : 30 seconds
 Category         : 1655
 Category Cooldown: 30 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Item - Shaman WoD PvP Elemental 2P Bonus (171109 effect#1)
@@ -5810,7 +5810,7 @@ Cooldown         : 30 seconds
 Category         : 1655
 Category Cooldown: 30 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Item - Shaman WoD PvP Elemental 2P Bonus (171109 effect#1)
@@ -5841,7 +5841,7 @@ Cooldown         : 30 seconds
 Category         : 1655
 Category Cooldown: 30 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Item - Shaman WoD PvP Elemental 2P Bonus (171109 effect#1)
@@ -5872,7 +5872,7 @@ Cooldown         : 30 seconds
 Category         : 1655
 Category Cooldown: 30 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Item - Shaman WoD PvP Elemental 2P Bonus (171109 effect#1)
@@ -6918,7 +6918,7 @@ Cooldown         : 30 seconds
 Category         : 1655
 Category Cooldown: 30 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Spiritwalker's Grace (79206 effect#1), Item - Shaman WoD PvP Elemental 2P Bonus (171109 effect#1)

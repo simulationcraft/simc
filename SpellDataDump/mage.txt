@@ -56,7 +56,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Ice Form (198144 effect#2)
@@ -127,7 +127,7 @@ Effects          :
 #1 (id=83)       : School Damage (2): frost
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.04478 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=84)       : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Unknown(162) | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 12 yards | Mechanic: Root | Target: At Caster (22) -> AOE enemy (15)
 Description      : Blasts enemies within $A1 yds of you for $122s1 Frost damage and freezes them in place for $122d. Damage may interrupt the freeze effect.
 Tooltip          : Frozen in place.
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
@@ -268,7 +268,7 @@ Effects          :
 #1 (id=126904)   : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 #2 (id=630)      : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -20 | Scaled Value: -20 | Radius: 8 yards | Mechanic: Unknown(176) | Target: AOE enemy (instant) (16)
+                   Base Value: -20 | Scaled Value: -20 | Radius: 8 yards | Mechanic: Snare | Target: AOE enemy (instant) (16)
 Description      : Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d.
 Tooltip          : Movement speed slowed by $s2%.
 
@@ -282,7 +282,7 @@ Duration         : 6 seconds
 Cooldown         : 24 seconds
 Category         : 88
 Category Cooldown: 24 seconds
-Mechanic         : Unknown(255)
+Mechanic         : Interrupt
 Affecting spells : Improved Counterspell (24429 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -620,7 +620,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Ice Form (198144 effect#2)
@@ -649,7 +649,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Ice Form (198144 effect#2)
@@ -674,7 +674,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 1 seconds
 Cooldown         : 150 seconds
-Mechanic         : Unknown(168)
+Mechanic         : Silence
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -785,7 +785,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=21198)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : Reduces the target's movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $w1%.
 
@@ -813,7 +813,7 @@ Attributes       : ........ ........ x...x... ........   ...x...x ........ .....
                  : Stop attacks (20)
 Effects          :
 #1 (id=21276)    : Apply Aura (6) | Confuse (5)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Mechanic: Unknown(134) | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 12 yards | Mechanic: Disorient | Target: Cone Front (104)
 #2 (id=21277)    : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 0 (avg=1.967, dl=0.15) | SP Coefficient: 0.58250 | Radius: 12 yards | Target: Cone Front (104)
 Description      : Enemies in a cone in front of you take $s2 Fire damage and are disoriented for $d. Damage will cancel the effect.
@@ -891,7 +891,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(255)
+Mechanic         : Interrupt
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -925,7 +925,7 @@ Attributes       : ........ ........ x....... ......x.   ...x...x ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=23237)    : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Unknown(162) | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Mechanic: Root | Target: AOE enemy (instant) (16)
 Description      : Blasts enemies in a $a1 yard radius with frost, freezing them in place for up to $d. Damage caused may interrupt the effect.
 Tooltip          : Frozen in place.
 
@@ -1151,7 +1151,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=36562)    : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: 3 | Scaled Value: 3 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=376737)   : Trigger Missiles (32)
                    Base Value: -1 | Scaled Value: 0 | Value Range: 1 | Trigger Spell: 228354 | Target: Enemy (6)
 Description      : Unleash a flurry of ice, striking the target $s1 times for a total of ${$228354s2*$m1} Frost damage. Each hit reduces the target's movement speed by $228354s1% for $228354d.
@@ -1165,7 +1165,7 @@ Spell Level      : 50
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 240 seconds
-Mechanic         : Unknown(246)
+Mechanic         : Invulneraility
 Attributes       : ........ ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ .....x.. .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1380,7 +1380,7 @@ Effects          :
 #1 (id=53215)    : School Damage (2): frost
                    Base Value: 1 | Scaled Value: 0 (avg=1.65, dl=0.1) | SP Coefficient: 0.27000 | Target: Enemy (6)
 #2 (id=53216)    : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
 Tooltip          : Reduced movement speed.
 
@@ -1394,7 +1394,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 50 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Ice Form (198144 effect#2)
@@ -1423,7 +1423,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 50 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Ice Form (198144 effect#2)
@@ -1452,7 +1452,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 50 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Ice Form (198144 effect#2)
@@ -1481,7 +1481,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 50 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Ice Form (198144 effect#2)
@@ -1676,7 +1676,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(183)
+Mechanic         : Freeze
 Proc Flags       : ...x.x.x .x.x.x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x....... x..xx...   .....x.. ........ .x...... ........ 
@@ -1688,7 +1688,7 @@ Attributes       : ........ ........ x....... x..xx...   .....x.. ........ .x...
                  : Cannot be used in combat (28), Does not break stealth (37)
 Effects          :
 #1 (id=82979)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Mechanic: Unknown(183) | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 20 yards | Mechanic: Freeze | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc113724
 Tooltip          : Incapacitated.
 
@@ -2306,7 +2306,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 50 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Ice Form (198144 effect#2)
@@ -3113,7 +3113,7 @@ Effects          :
 #1 (id=220362)   : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=220363)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 8 yards | Mechanic: Unknown(176) | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 8 yards | Mechanic: Snare | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Causes an explosion around yourself, dealing $s1 Fire damage to all enemies within $A1 yards, knocking them back, and reducing movement speed by $s2% for $d.
 Tooltip          : Movement speed reduced by $s2%.
 
@@ -3139,7 +3139,7 @@ Effects          :
 #1 (id=220383)   : School Damage (2): frost
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=220384)   : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Unknown(162) | Target: Unknown(63) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Root | Target: Unknown(63) -> AOE enemy (instant) (16)
 #3 (id=220385)   : Dummy (3)
                    Base Value: 300 | Scaled Value: 300 | Target: Enemy (6)
 Description      : Causes a whirl of icy wind around the enemy, dealing ${$s1*$s3/100} Frost damage to the target and $s1 Frost damage to all other enemies within $a2 yards, and freezing them in place for $d.
@@ -3155,7 +3155,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 50 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Ice Form (198144 effect#2)
@@ -3184,7 +3184,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 50 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Ice Form (198144 effect#2)
@@ -3213,7 +3213,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 50 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Ice Form (198144 effect#2)
@@ -3242,7 +3242,7 @@ Cast Time        : 1.7 seconds
 GCD              : 1.5 seconds
 Duration         : 50 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(205)
+Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Ice Form (198144 effect#2)
@@ -3562,7 +3562,7 @@ Effects          :
 #1 (id=281310)   : School Damage (2): frost
                    Base Value: 39 | Scaled Value: 40 - 49 | Value Range: 10 | Value Multiplier: 1 | SP Coefficient: 0.30000 | Target: Enemy (6)
 #2 (id=281311)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
 Tooltip          : Reduced movement speed.
 
@@ -3852,7 +3852,7 @@ Attributes       : ........ ........ ........ ........   ..x..... ......x. .....
                  : Channeled (34), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=302648)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=303101)   : Apply Aura (6) | Periodic Damage (3): frost every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Enemy (6)
 #3 (id=718208)   : Dummy (3)
@@ -4157,7 +4157,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=303945)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : Chilled, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
@@ -4374,7 +4374,7 @@ Class            : Mage
 School           : Arcane
 Range            : 100 yards
 Duration         : 6 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ........ 
@@ -4461,7 +4461,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=315617)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -70 | Scaled Value: -70 | Mechanic: Snare | Target: Enemy (6)
 Description      : Slowed by $s1% for $d.
 Tooltip          : Slowed by $s1% for $d.
 
@@ -4708,7 +4708,7 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=343734)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -70 | Scaled Value: -70 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=343735)   : School Damage (2): frost
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.38000 | Target: Enemy (6)
 Description      : $@spelldesc44614
@@ -4810,7 +4810,7 @@ Effects          :
 #1 (id=344289)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Target: Enemy (6)
 #2 (id=344290)   : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(162) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Root | Target: Enemy (6)
 Description      : $@spelldesc199786
 Tooltip          : Frozen in place.
 
@@ -5081,7 +5081,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=355677)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12500 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.12500 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc235313
 
 Name             : Blazing Soul (id=235365) [Spell Family (3), Passive] 
@@ -5260,7 +5260,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=357237)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 50 | Scaled Value: 50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: 50 | Scaled Value: 50 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc235711
 Tooltip          : Movement speed slowed by $s1%.
 

@@ -188,7 +188,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(213)
+Mechanic         : Banish
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... x....... .x...... 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -284,7 +284,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Duration         : 300 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(130)
+Mechanic         : Charm
 Affecting spells : Grimoire of Convert Demon (168800 effect#1)
 Attributes       : ........ ........ x....... ......x.   x....... ..x..... .x...... ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -452,7 +452,7 @@ Attributes       : ........ ........ x....... ......x.   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2047)     : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(154) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Flee | Target: Enemy (6)
 Description      : Strikes fear in the enemy, disorienting for $118699d. Damage may cancel the effect. Limit 1.
 Tooltip          : Disoriented.
 
@@ -564,7 +564,7 @@ Cooldown         : 30 seconds
 Category         : 1468
 Category Cooldown: 30 seconds
 Proc Chance      : 101%
-Mechanic         : Unknown(173)
+Mechanic         : Sleep
 Attributes       : ........ ........ x....... ......x.   ..x..... ..x...x. .x...... .x...x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -585,7 +585,7 @@ Spell Level      : 31
 Range            : 10 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
                  : .....x.. ........ ........ ........   ........ ........ ........ ........ 
@@ -595,7 +595,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=2216)     : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : Whips the enemy, reducing movement speed by $s2% for $d.
 
 |cFF777777(Right-Click to toggle)|r
@@ -623,13 +623,13 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2449)     : Apply Aura (6) | Unknown(407)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.784) | SP Coefficient: 0.25000 | Mechanic: Unknown(240) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.784) | SP Coefficient: 0.25000 | Mechanic: Horrify | Target: Enemy (6)
 #2 (id=2450)     : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=149417)   : Trigger Missiles (32)
                    Base Value: 15 | Scaled Value: 15 | Trigger Spell: 108396
 #4 (id=200196)   : Apply Aura (6) | Unknown(191)
-                   Base Value: 7 | Scaled Value: 7 | Mechanic: Unknown(240) | Target: Enemy (6)
+                   Base Value: 7 | Scaled Value: 7 | Mechanic: Horrify | Target: Enemy (6)
 Description      : Horrifies an enemy target into fleeing, incapacitating for $6789d and healing you for $108396m1% of maximum health.
 Tooltip          : Incapacitated.
 
@@ -698,7 +698,7 @@ Duration         : 5 seconds
 Cooldown         : 10 seconds
 Category         : 82
 Category Cooldown: 10 seconds
-Mechanic         : Unknown(201)
+Mechanic         : Heal
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -876,7 +876,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=10874)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(255) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Counters the enemy's spellcast, preventing any spell from that school of magic from being cast for $19647d.
 
 Name             : Devour Magic (id=19658) [Scaling Spell (11)] 
@@ -995,7 +995,7 @@ Effects          :
 #1 (id=12912)    : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 0.60000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=12913)    : Apply Aura (6) | Stun (12)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Unknown(179) | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : An infernal falls from the sky, dealing $s1 Fire damage to all targets, stunning them for $d.
 Tooltip          : Stunned.
 
@@ -1058,7 +1058,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 1 seconds
 Cooldown         : 150 seconds
-Mechanic         : Unknown(168)
+Mechanic         : Silence
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1243,7 +1243,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 60 seconds
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Affecting spells : Darkfury (264874 effect#1)
 Attributes       : ........ ........ x....... ........   ...x...x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1320,7 +1320,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(255)
+Mechanic         : Interrupt
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1791,7 +1791,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=92676)    : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(179) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Enemy (6)
 Description      : The $?s108499[Wrathguard][Felguard] hurls its weapon, stunning the target for $89766d.
 Tooltip          : Stunned for $d.
 
@@ -2548,7 +2548,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=129866)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(255) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Counter the enemy's spellcast, preventing any spell from that school of magic from being cast for $19647d.
 
 Name             : Wrathstorm (Special Ability) (id=115831) [Spell Family (57)] 
@@ -2701,7 +2701,7 @@ Range            : 30 yards
 Duration         : 20 seconds
 Category         : 1266
 Proc Chance      : 100%
-Mechanic         : Unknown(154)
+Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Increased Fear Break Threshold (95677 effect#1)
@@ -3100,7 +3100,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 30 seconds
-Mechanic         : Unknown(176)
+Mechanic         : Snare
 Attributes       : ........ ........ x....... ........   ..x..... ........ ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3158,7 +3158,7 @@ Duration         : 5 seconds
 Cooldown         : 10 seconds
 Category         : 82
 Category Cooldown: 10 seconds
-Mechanic         : Unknown(201)
+Mechanic         : Heal
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3195,7 +3195,7 @@ Effects          :
 #1 (id=242715)   : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 0.12500 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=242716)   : Apply Aura (6) | Stun (12)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Unknown(179) | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : The infernal releases a powerful burst of flames, dealing $s1 Fire damage to nearby targets, and stunning them for $d.
 Tooltip          : Stunned.
 
@@ -3216,7 +3216,7 @@ Effects          :
 #1 (id=242717)   : School Damage (2): fire
                    Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=242718)   : Apply Aura (6) | Stun (12)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Unknown(179) | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : The abyssal releases a powerful burst of flames, dealing $s1 Fire damage to nearby targets, and stunning them for $d.
 Tooltip          : Stunned.
 
@@ -3260,7 +3260,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242924)   : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(255) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Counter an enemy's spellcast, preventing any spell from that school of magic from being cast for $19647d.
 
 Name             : Item - Warlock T18 Demonology 4P Bonus (id=185964) [Spell Family (5), Passive, Hidden] 
@@ -3632,7 +3632,7 @@ Effects          :
 #1 (id=288215)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 #2 (id=288216)   : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(168) | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Silence | Target: Unknown(25)
 Description      : $@spelldesc30108
 Tooltip          : Silenced.
 

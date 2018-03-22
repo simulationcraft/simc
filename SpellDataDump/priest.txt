@@ -11,7 +11,7 @@ Duration         : 15 seconds
 Category         : 56
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Mechanic         : Unknown(218)
+Mechanic         : Shield
 Affecting spells : Improved Power Word: Shield (24191 effect#1), Priest (137030 effect#1), Shadow Priest (137033 effect#7), Clear Thoughts (167695 effect#1), Aegis of Wrath (238135 effect#2)
 Attributes       : ........ ...x.... x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.x.. ........   ........ ........ ........ ........ 
@@ -204,7 +204,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Mechanic         : Unknown(130)
+Mechanic         : Charm
 Attributes       : ........ ........ x.x.x... ........   ..x..... .....x.. .x...... ..x..x.. 
                  : ......x. ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ .....x..   ........ ........ ........ ........ 
@@ -391,7 +391,7 @@ Duration         : 8 seconds
 Cooldown         : 60 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
-Mechanic         : Unknown(154)
+Mechanic         : Flee
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Improved Psychic Scream (44297 effect#1), Psychic Voice (196704 effect#1)
@@ -422,7 +422,7 @@ GCD              : 1.5 seconds
 Duration         : 50 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Mechanic         : Unknown(223)
+Mechanic         : Shackle
 Affecting spells : Glyph of Shackle Undead (57986 effect#1)
 Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
                  : ........ ........ ...x.... ........   x....... ........ ........ ........ 
@@ -528,7 +528,7 @@ Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.33750 | Target: Enemy (6)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
                    Base Value: 300 | Scaled Value: 300 | Misc Value: 13 | Target: Self (1)
 #4 (id=623774)   : Dummy (3)
@@ -547,7 +547,7 @@ Duration         : 4 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Mechanic         : Unknown(168)
+Mechanic         : Silence
 Affecting spells : Last Word (263716 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -818,7 +818,7 @@ School           : Physical
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 3 seconds
-Mechanic         : Unknown(255)
+Mechanic         : Interrupt
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1418,7 +1418,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1427,7 +1427,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=58262)    : Apply Aura (6) | Stun (12)
-                   Base Value: 1 | Scaled Value: 1 | Mechanic: Unknown(240) | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Mechanic: Horrify | Target: Enemy (6)
 Description      : Terrifies the target in place, stunning them for $d.
 Tooltip          : Stunned.
 
@@ -1620,7 +1620,7 @@ Spell Level      : 63
 Range            : 40 yards
 Duration         : 1.5 seconds
 Cooldown         : 90 seconds
-Mechanic         : Unknown(158)
+Mechanic         : Grip
 Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1810,7 +1810,7 @@ School           : Shadow
 Spell Level      : 1
 Duration         : 3 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(240)
+Mechanic         : Horrify
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x....... ..x...x.   ...x...x ........ ........ ........ 
@@ -2659,7 +2659,7 @@ Effects          :
 #3 (id=191069)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165)
-#4 (id=191070)   : Apply Aura (6) | Modify Mana Pool (419)
+#4 (id=191070)   : Apply Aura (6) | Modify Mana Pool% (419)
                    Base Value: -80 | Scaled Value: -80 | Target: Self (1)
 #5 (id=191071)   : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 26 | Target: Self (1)
@@ -3235,7 +3235,7 @@ Effects          :
 #1 (id=283828)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Target: Enemy (6)
 #2 (id=283829)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Unknown(176) | Target: Enemy (6)
+                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 Description      : Assaults the target's mind with Shadow energy, causing $o1 Shadow damage over $d and slowing their movement speed by $s2%.
 Tooltip          : $?$w2=0[Taking][Movement speed slowed and taking] Shadow damage every $t1 sec.
 
@@ -3709,7 +3709,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294708)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(134) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Disorient | Target: Enemy (6)
 Description      : $@spelldesc88625
 Tooltip          : Incapacitated.
 
@@ -3746,7 +3746,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=294717)   : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Unknown(179) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Enemy (6)
 Description      : $@spelldesc88625
 Tooltip          : Stunned.
 
@@ -3864,7 +3864,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301476)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 10 yards | Mechanic: Unknown(176) | Target: Unknown(132) -> AOE enemy (instant) (16)
+                   Base Value: -70 | Scaled Value: -70 | Radius: 0 - 10 yards | Mechanic: Snare | Target: Unknown(132) -> AOE enemy (instant) (16)
 #2 (id=301490)   : Unknown(144)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: 300 | Radius: 0 - 10 yards | Target: [AOE enemy (instant) (16)]
 Description      : Creates a burst of light around a friendly target, knocking away nearby enemies and slowing their movement speed by $s1% for $d.
@@ -3960,7 +3960,7 @@ Duration         : 30 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x08000000
-Mechanic         : Unknown(130)
+Mechanic         : Charm
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ..x..... 
                  : ......x. ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ...x.... ........ .....x..   ........ ........ ........ ........ 
@@ -4367,7 +4367,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 5 seconds
 Proc Chance      : 100%
-Mechanic         : Unknown(179)
+Mechanic         : Stun
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x......x x..x....   ...x.x.x ........ .x...... ........ 
@@ -4530,7 +4530,7 @@ Race             : Blood Elf (0x200)
 School           : Arcane
 Duration         : 1 seconds
 Cooldown         : 150 seconds
-Mechanic         : Unknown(168)
+Mechanic         : Silence
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4962,7 +4962,7 @@ Class            : Priest
 School           : Physical
 Range            : 100 yards
 Duration         : 4 seconds
-Mechanic         : Unknown(255)
+Mechanic         : Interrupt
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
