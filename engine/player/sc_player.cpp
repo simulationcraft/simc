@@ -1065,7 +1065,18 @@ void player_t::init_base_stats()
     resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, level() );
     resources.base[ RESOURCE_MANA   ] = dbc.resource_base( type, level() );
 
-    resources.base_regen_per_second[ RESOURCE_MANA ] = dbc.regen_base( type, level() ) / 5.0;
+    // Mana Regen
+    resources.base_regen_per_second[ RESOURCE_MANA ] = dbc.resource_base( type, level() ) * 0.01; // 1% seems to be default for all classes
+    for ( auto spell : dbc::class_passives( this ) )
+    {
+      for ( auto effect : *spell->_effects )
+      {
+        if ( effect->subtype() == A_MOD_MANA_REGEN_PCT )
+        {
+          resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + effect->percent();
+        }
+      }
+    }
     base.mana_regen_per_spirit = dbc.regen_spirit( type, level() );
     base.health_per_stamina    = dbc.health_per_stamina( level() );
 

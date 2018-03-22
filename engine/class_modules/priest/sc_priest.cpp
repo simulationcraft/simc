@@ -1086,19 +1086,6 @@ void priest_t::init_base_stats()
     resources.base[ RESOURCE_INSANITY ] = 100.0;
   }
 
-  // Mana Regen
-  resources.base_regen_per_second[ RESOURCE_MANA ] = resources.base[ RESOURCE_MANA ] * 0.01; // 1% seems to be default for all classes
-  for ( auto spell : dbc::class_passives( this ) )
-  {
-    for ( unsigned i = 1; i < spell->effect_count(); ++i )
-    {
-      auto effect = spell->effectN( i );
-      if ( effect.subtype() == A_MOD_MANA_REGEN_PCT )
-      {
-        resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + effect.percent();
-      }
-    }
-  }
   resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + talents.enlightenment -> effectN( 1 ).percent();
 
 

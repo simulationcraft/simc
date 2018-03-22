@@ -5867,7 +5867,7 @@ void mage_t::init_base_stats()
   base.attack_power_per_strength = 0.0;
   base.attack_power_per_agility = 0.0;
 
-  resources.base_regen_per_second[ RESOURCE_MANA ] = resources.base[ RESOURCE_MANA ] * 0.01;
+  // Mana Attunement
   resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + find_spell( 121039 ) -> effectN( 1 ).percent();
 }
 

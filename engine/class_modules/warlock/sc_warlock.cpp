@@ -1022,8 +1022,6 @@ void warlock_t::init_base_stats()
 
   base.attribute_multiplier[ATTR_STAMINA] *= 1.0 + spec.fel_armor->effectN( 1 ).percent();
 
-  resources.base_regen_per_second[ RESOURCE_MANA ] = resources.base[RESOURCE_MANA] * 0.01;
-
   resources.base[RESOURCE_SOUL_SHARD] = 5;
 
   if ( default_pet.empty() )
