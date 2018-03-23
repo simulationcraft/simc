@@ -2903,8 +2903,6 @@ struct player_collected_data_t
   double calculate_max_spike_damage( const health_changes_timeline_t& tl, int window );
   std::ostream& data_str( std::ostream& s ) const;
 
-  static bool tank_container_type( const player_t* for_actor, int target_statistics_level );
-  static bool generic_container_type( const player_t* for_actor, int target_statistics_level );
 };
 
 struct player_talent_points_t
@@ -3212,7 +3210,6 @@ struct player_t : public actor_t
   double       death_pct; // Player will die if he has equal or less than this value as health-pct
   double       height; // Actor height, only used for enemies. Affects the travel distance calculation for spells.
   double       combat_reach; // AKA hitbox size, for enemies.
-  int          timewalk;
   player_t*    default_target;
 
   // dynamic attributes - things which change during combat
@@ -3267,8 +3264,6 @@ struct player_t : public actor_t
 
   // Artifact
   std::unique_ptr<artifact::player_artifact_data_t> artifact;
-
-  virtual ~player_t();
 
   // TODO: FIXME, these stats should not be increased by scale factor deltas
   struct base_initial_current_t
@@ -3612,6 +3607,26 @@ struct player_t : public actor_t
   auto_dispose<std::vector<action_variable_t*>> variables;
   std::vector<std::string> action_map;
 
+  regen_type_e regen_type;
+
+  /// Last iteration time regeneration occurred. Set at player_t::arise()
+  timespan_t last_regen;
+
+  /// A list of CACHE_x enumerations (stats) that affect the resource regeneration of the actor.
+  std::vector<bool> regen_caches;
+
+  /// Flag to indicate if any pets require dynamic regneration. Initialized in player_t::init().
+  bool dynamic_regen_pets;
+
+  /// Visited action lists, needed for call_action_list support. Reset by player_t::execute_action().
+  uint64_t visited_apls_;
+
+  /// Internal counter for action priority lists, used to set action_priority_list_t::internal_id for lists.
+  unsigned action_list_id_;
+
+
+
+
   player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e );
 
   // Static methods
@@ -3626,40 +3641,52 @@ struct player_t : public actor_t
 
 
   // Normal methods
-  bool add_action( std::string action, std::string options = "", std::string alist = "default" );
-  bool add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
   void init_character_properties();
-  double composite_block_dr( double extra_block ) const;
   void collect_resource_timeline_information();
-  specialization_e specialization() const
-  { return _spec; }
-  const char* primary_tree_name() const;
-  timespan_t total_reaction_time();
   void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
   void modify_current_rating( rating_e stat, double amount );
-  double       compute_incoming_damage( timespan_t = timespan_t::from_seconds( 5 ) );
-  double       calculate_time_to_bloodlust();
-
-  bool is_moving() const { return buffs.movement && buffs.movement -> check(); }
-
+  void create_talents_numbers();
+  void create_talents_armory();
+  void create_talents_wowhead();
+  void clear_action_priority_lists() const;
+  void copy_action_priority_list( const std::string& old_list, const std::string& new_list );
+  void change_position( position_e );
+  bool add_action( std::string action, std::string options = "", std::string alist = "default" );
+  bool add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
+  void add_option( std::unique_ptr<option_t> o )
+  {
+    // Push_front so derived classes (eg. enemy_t) can override existing options
+    options.insert( options.begin(), std::move( o ) );
+  }
   bool parse_talents_numbers( const std::string& talent_string );
   bool parse_talents_armory( const std::string& talent_string );
   bool parse_talents_armory2( const std::string& talent_string );
   bool parse_talents_wowhead( const std::string& talent_string );
-
-  void create_talents_numbers();
-  void create_talents_armory();
-  void create_talents_wowhead();
-
-  void                    clear_action_priority_lists() const;
-  void                    copy_action_priority_list( const std::string& old_list, const std::string& new_list );
-
-
-  artifact_power_t find_artifact_spell( const std::string& name, bool tokenized = false ) const;
-  artifact_power_t find_artifact_spell( unsigned power_id ) const;
   expr_t* create_resource_expression( const std::string& name );
 
+
+  bool is_moving() const
+  { return buffs.movement && buffs.movement -> check(); }
+  double composite_block_dr( double extra_block ) const;
+  bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
+  bool is_enemy() const { return _is_enemy( type ); }
+  bool is_add() const { return type == ENEMY_ADD; }
+  bool is_sleeping() const { return _is_sleeping( this ); }
+  bool is_my_pet( const player_t* t ) const;
+  bool in_gcd() const { return gcd_ready > sim -> current_time(); }
+  bool recent_cast() const;
+  bool dual_wield() const
+  { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
+  bool has_shield_equipped() const
+  { return  items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD; }
+  /// Figure out if healing should be recorded
+  bool record_healing() const
+  { return role == ROLE_TANK || role == ROLE_HEAL || sim -> enable_dps_healing; }
+  specialization_e specialization() const
+  { return _spec; }
+  const char* primary_tree_name() const;
+  timespan_t total_reaction_time();
   double avg_item_level() const;
   double get_attribute( attribute_e a ) const
   { return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
@@ -3675,35 +3702,25 @@ struct player_t : public actor_t
   { return get_attribute( ATTR_SPIRIT ); }
   double mastery_coefficient() const
   { return _mastery -> mastery_value(); }
-  double      get_player_distance( const player_t& ) const;
-  double      get_ground_aoe_distance( const action_state_t& ) const;
-  double      get_position_distance( double m = 0, double v = 0 ) const;
-
-  void change_position( position_e );
+  double get_player_distance( const player_t& ) const;
+  double get_ground_aoe_distance( const action_state_t& ) const;
+  double get_position_distance( double m = 0, double v = 0 ) const;
+  double compute_incoming_damage( timespan_t = timespan_t::from_seconds( 5 ) ) const;
+  double calculate_time_to_bloodlust() const;
+  slot_e parent_item_slot( const item_t& item ) const;
+  slot_e child_item_slot( const item_t& item ) const;
+  /// Actor-specific cooldown tolerance for queueable actions
+  timespan_t cooldown_tolerance() const
+  { return cooldown_tolerance_ < timespan_t::zero() ? sim -> default_cooldown_tolerance : cooldown_tolerance_; }
   position_e position() const
   { return current.position; }
 
-  void add_option( std::unique_ptr<option_t> o )
-  {
-    // Push_front so derived classes (eg. enemy_t) can override existing options
-    options.insert( options.begin(), std::move( o ) );
-  }
-
-  bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
-  bool is_enemy() const { return _is_enemy( type ); }
-  bool is_add() const { return type == ENEMY_ADD; }
-  bool is_sleeping() const { return _is_sleeping( this ); }
 
   pet_t* cast_pet() { return debug_cast<pet_t*>( this ); }
   const pet_t* cast_pet() const { return debug_cast<const pet_t*>( this ); }
-  bool is_my_pet( player_t* t ) const;
 
-  bool      in_gcd() const { return gcd_ready > sim -> current_time(); }
-  bool      recent_cast();
-  bool      dual_wield() const { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
-  bool      has_shield_equipped() const
-  { return  items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD; }
-
+  artifact_power_t find_artifact_spell( const std::string& name, bool tokenized = false ) const;
+  artifact_power_t find_artifact_spell( unsigned power_id ) const;
   const spell_data_t* find_racial_spell( const std::string& name, race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( const std::string& name ) const;
@@ -3727,6 +3744,7 @@ struct player_t : public actor_t
   uptime_t*   find_uptime  ( const std::string& name ) const;
   luxurious_sample_data_t* find_sample_data( const std::string& name ) const;
   action_priority_list_t* find_action_priority_list( const std::string& name ) const;
+  int find_action_id( const std::string& name ) const;
 
   cooldown_t* get_cooldown( const std::string& name );
   real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
@@ -3740,11 +3758,8 @@ struct player_t : public actor_t
   uptime_t*   get_uptime  ( const std::string& name );
   luxurious_sample_data_t* get_sample_data( const std::string& name );
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
-
-
   int get_action_id( const std::string& name );
 
-  int find_action_id( const std::string& name );
 
   // Virtual methods
   virtual void invalidate_cache( cache_e c );
@@ -3939,7 +3954,6 @@ struct player_t : public actor_t
   virtual void cost_reduction_gain( school_e school, double amount, gain_t* g = nullptr, action_t* a = nullptr );
   virtual void cost_reduction_loss( school_e school, double amount, action_t* a = nullptr );
 
-  virtual double get_raw_dps( action_state_t* );
   virtual void assess_damage( school_e, dmg_e, action_state_t* );
   virtual void target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* );
@@ -3967,6 +3981,8 @@ struct player_t : public actor_t
   virtual void armory_extensions( const std::string& /* region */, const std::string& /* server */, const std::string& /* character */,
                                   cache::behavior_e /* behavior */ = cache::players() )
   {}
+
+  virtual void do_dynamic_regen();
 
   /**
    * Returns owner if available, otherwise the player itself.
@@ -4068,30 +4084,6 @@ private:
   void do_update_movement( double yards );
 public:
 
-  // Static (default), Dynamic, Disabled
-  regen_type_e regen_type;
-
-  // Last iteration time regenration occurred. Set at player_t::arise()
-  timespan_t last_regen;
-
-  // A list of CACHE_x enumerations (stats) that affect the resource
-  // regeneration of the actor.
-  std::vector<bool> regen_caches;
-
-  // Flag to indicate if any pets require dynamic regneration. Initialized in
-  // player_t::init().
-  bool dynamic_regen_pets;
-
-  // Perform dynamic resource regeneration
-  virtual void do_dynamic_regen();
-
-  // Visited action lists, needed for call_action_list support. Reset by
-  // player_t::execute_action().
-  uint64_t visited_apls_;
-
-  // Internal counter for action priority lists, used to set
-  // action_priority_list_t::internal_id for lists.
-  unsigned action_list_id_;
 
   // Figure out another actor, by name. Prioritizes pets > harmful targets >
   // other players. Used by "actor.<name>" expression currently.
@@ -4101,18 +4093,6 @@ public:
   event_t* resource_threshold_trigger;
   std::vector<double> resource_thresholds;
   void min_threshold_trigger();
-
-  // Figure out if healing should be recorded
-  bool record_healing() const
-  { return role == ROLE_TANK || role == ROLE_HEAL || sim -> enable_dps_healing; }
-
-  // Child item functionality
-  slot_e parent_item_slot( const item_t& item ) const;
-  slot_e child_item_slot( const item_t& item ) const;
-
-  // Actor-specific cooldown tolerance for queueable actions
-  timespan_t cooldown_tolerance() const
-  { return cooldown_tolerance_ < timespan_t::zero() ? sim -> default_cooldown_tolerance : cooldown_tolerance_; }
 
   // Assessors
 
@@ -7266,9 +7246,13 @@ void initialize_concordance( player_t& );
 
 // Inlines ==================================================================
 
-inline bool player_t::is_my_pet( player_t* t ) const
+inline bool player_t::is_my_pet( const player_t* t ) const
 { return t -> is_pet() && t -> cast_pet() -> owner == this; }
 
+
+/**
+ * Perform dynamic resource regeneration
+ */
 inline void player_t::do_dynamic_regen()
 {
   if ( sim -> current_time() == last_regen )
