@@ -6919,11 +6919,13 @@ void unique_gear::register_special_effects_x7()
 
 void unique_gear::register_hotfixes_x7()
 {
+  /*
   hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-4", "Set Velocity to a reasonable value.", 191380 )
     .field( "prj_speed" )
     .operation( hotfix::HOTFIX_SET )
     .modifier( 40 )
     .verification_value( 1 );
+  */
 }
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )
