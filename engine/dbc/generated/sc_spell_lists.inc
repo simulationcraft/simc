@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26231
+// Class based active abilities, wow build 26287
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -28,7 +28,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warrior
   {
-    // General tree, 14 abilities
+    // General tree, 17 abilities
     {
         6673, // Battle Shout
       117313, // Bloodthirst Heal
@@ -37,7 +37,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         6544, // Heroic Leap
        57755, // Heroic Throw
       203524, // Neltharion's Fury (Artifact)
+      203526, // Neltharion's Fury
       205545, // Odyn's Fury (Artifact)
+      205546, // Odyn's Fury
+      205547, // Odyn's Fury
       203178, // Opportunity Strikes
         6552, // Pummel
       156287, // Ravager
@@ -193,7 +196,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Hunter
   {
-    // General tree, 22 abilities
+    // General tree, 23 abilities
     {
        61648, // Aspect of the Chameleon
       186257, // Aspect of the Cheetah
@@ -211,6 +214,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1543, // Flare
       203415, // Fury of the Eagle (Artifact)
          136, // Mend Pet
+      209997, // Play Dead
          982, // Revive Pet
       175686, // Stopping Power
         1515, // Tame Beast
@@ -334,7 +338,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Rogue
   {
-    // General tree, 17 abilities
+    // General tree, 21 abilities
     {
        22482, // Blade Flurry
        31224, // Cloak of Shadows
@@ -345,8 +349,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        56814, // Detection
         1966, // Feint
       209782, // Goremaw's Bite (Artifact)
+      209783, // Goremaw's Bite
+      209784, // Goremaw's Bite
         1766, // Kick
       192759, // Kingsbane (Artifact)
+      192760, // Kingsbane
+      222062, // Kingsbane
       112974, // Leeching Poison (Talent)
         1804, // Pick Lock
       114018, // Shroud of Concealment
@@ -450,8 +458,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       205065, // Void Torrent (Artifact)
            0,
     },
-    // Discipline tree, 15 abilities
+    // Discipline tree, 16 abilities
     {
+       19236, // Desperate Prayer
         2061, // Flash Heal
        73325, // Leap of Faith
         1706, // Levitate
@@ -787,14 +796,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 7 abilities
+    // Pet tree, 6 abilities
     {
       225119, // Arcane Assault
        88084, // Arcane Blast
        88082, // Fireball
        33395, // Freeze
        59638, // Frostbolt
-      155152, // Prismatic Crystal
        31707, // Waterbolt
            0,
     },
@@ -843,11 +851,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 11 abilities
+    // Demonology tree, 12 abilities
     {
       104316, // Call Dreadstalkers
       264178, // Demonbolt
       234153, // Drain Life
+      270569, // From the Shadows
       111898, // Grimoire: Felguard (Summon)
       105174, // Hand of Gul'dan
       196277, // Implosion
@@ -913,7 +922,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Monk
   {
-    // General tree, 17 abilities
+    // General tree, 19 abilities
     {
       100784, // Blackout Kick
       117952, // Crackling Jade Lightning
@@ -927,6 +936,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       205406, // Sheilun's Gift (Artifact)
       209525, // Soothing Mist (Honor Talent)
       205320, // Strike of the Windlord (Artifact)
+      205414, // Strike of the Windlord
+      222029, // Strike of the Windlord
       100780, // Tiger Palm
       101643, // Transcendence
       119996, // Transcendence: Transfer
@@ -1138,7 +1149,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Demon Hunter
   {
-    // General tree, 18 abilities
+    // General tree, 19 abilities
     {
       188499, // Blade Dance
       198589, // Blur
@@ -1154,6 +1165,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       217832, // Imprison
       191427, // Metamorphosis
       207407, // Soul Carver (Artifact)
+      214743, // Soul Carver
       188501, // Spectral Sight
       185123, // Throw Glaive
       185245, // Torment
@@ -1202,7 +1214,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (35)
 
-// Talent tree specialization abilities, wow build 26231
+// Talent tree specialization abilities, wow build 26287
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1639,7 +1651,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        33206, // Pain Suppression
        62618, // Power Word: Barrier
          527, // Purify
-       77484, // Mastery: Absolution
        81749, // Atonement
       137032, // Discipline Priest
        47536, // Rapture
@@ -1659,6 +1670,8 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         2061, // Flash Heal
       231682, // Smite (Rank 2)
       262861, // Smite (Rank 2)
+       19236, // Desperate Prayer
+      271534, // Mastery: Reverence
            0,
     },
     // Specialization abilities for Holy
@@ -2128,6 +2141,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       261916, // Blackout Kick (Rank 2)
       261917, // Blackout Kick (Rank 3)
       262840, // Rising Sun Kick (Rank 2)
+      271232, // Touch of Death Amplifier
            0,
     },
     {
@@ -2314,7 +2328,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26231
+// Class mastery abilities, wow build 26287
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2404,9 +2418,8 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
   },
   // Class mastery abilities for Priest
   {
-    // Masteries for Discipline specialization
     {
-      77484, // Mastery: Absolution
+          0,
     },
     // Masteries for Holy specialization
     {
@@ -2553,7 +2566,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26231
+// Racial abilities, wow build 26287
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3465,7 +3478,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26231
+// Set bonus data, wow build 26287
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4184,9 +4197,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
 };
-#define RPPMMOD_SIZE (869)
+#define RPPMMOD_SIZE (878)
 
-// 869 RPPM Modifiers, wow build level 26231
+// 878 RPPM Modifiers, wow build level 26287
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -4327,7 +4340,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 196099,    5,  1,  1.0000 },
   { 196777,    4,  1,  1.0000 },
   { 197846,    4,  1,  1.0000 },
-  { 198068,    4,  1,  1.0000 },
   { 198735,    4,  1,  1.0000 },
   { 199806,    4,  1,  1.0000 },
   { 201336,    4,  1,  1.0000 },
@@ -5046,6 +5058,8 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 267177,    4,  1,  1.0000 },
   { 268035,    4,  1,  1.0000 },
   { 268191,    4,  1,  1.0000 },
+  { 268501,    4,  1,  1.0000 },
+  { 268517,    4,  1,  1.0000 },
   { 268771,    4,  1,  1.0000 },
   { 268855,    4,  1,  1.0000 },
   { 268888,    4,  1,  1.0000 },
@@ -5057,11 +5071,19 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 269853,    4,  1,  1.0000 },
   { 270668,    4,  1,  1.0000 },
   { 270679,    4,  1,  1.0000 },
+  { 270809,    4,  1,  1.0000 },
+  { 270921,    4,  1,  1.0000 },
+  { 271190,    4,  1,  1.0000 },
+  { 271547,    4,  1,  1.0000 },
+  { 271631,    4,  1,  1.0000 },
+  { 271681,    4,  1,  1.0000 },
+  { 271683,    4,  1,  1.0000 },
+  { 271705,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 26231
+// Artifact base data, wow build 26287
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -5108,7 +5130,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 
 #define ARTIFACT_POWER_SIZE (908)
 
-// Artifact power data, wow build 26231
+// Artifact power data, wow build 26287
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   { 1739,   0,  64,  0,   3, 250879, "Netherlight Fortification"          }, // Netherlight Fortification (id=250879, n_ranks=3)
   { 1770,   0,  64,  0,   3, 252088, "Light Speed"                        }, // Light Speed (id=252088, n_ranks=3)
@@ -6021,7 +6043,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (7746)
 
-// Artifact power rank data, wow build 26231
+// Artifact power rank data, wow build 26287
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   {  2316,   40,  0, 205273,      0.000, 0x00000000, 0 },
   {  2317,   41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -13772,7 +13794,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
 };
 #define ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 artifact_power_rank hotfix entries, wow build level 26231
+// 0 artifact_power_rank hotfix entries, wow build level 26287
 static hotfix::client_hotfix_entry_t __artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };
