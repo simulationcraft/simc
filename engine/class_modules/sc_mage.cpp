@@ -4603,6 +4603,8 @@ struct ray_of_frost_t : public frost_mage_spell_t
 
     channeled = true;
     hasted_ticks = true;
+    // Triggers on execute as well as each tick.
+    // TODO: Double check this matches the fixed behavior.
     chills = true;
   }
 
@@ -4616,6 +4618,10 @@ struct ray_of_frost_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::tick( d );
     p() -> buffs.ray_of_frost -> trigger();
+    if ( p() -> talents.bone_chilling -> ok() )
+    {
+      p() -> buffs.bone_chilling -> trigger();
+    }
 
     // TODO: Now happens at 2.5 and 5.
     if ( d -> current_tick == 3 || d -> current_tick == 5 )
