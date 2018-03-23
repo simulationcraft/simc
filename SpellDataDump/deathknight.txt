@@ -4442,7 +4442,7 @@ Class            : Blood Death Knight
 School           : Physical
 Resource         : 1 Rune (5) (id=11004)
 Resource         : -15 Runic Power (6) (id=11005)
-Resource         : 0 Health (-2) and 10 Health (-2) per tick (id=11006) w/ Blood for Blood (id=202846)
+Resource         : 0 - 10 Health (-2) (id=11006) w/ Blood for Blood (id=202846)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds

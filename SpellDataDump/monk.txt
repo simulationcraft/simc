@@ -4592,7 +4592,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 Name             : Soothing Mist (Honor Talent) (id=209525) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 0% - 0.3% Base Mana (0) (id=11091)
+Resource         : 0% Base Mana (0) and 0.3% Base Mana (0) per tick (id=11091)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 0.5 seconds

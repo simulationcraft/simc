@@ -4599,7 +4599,7 @@ Taking $30108s3% increased damage from the Warlock.
 Name             : Drain Life (id=234153) [Spell Family (5)] 
 Class            : Affliction Demonology Destruction Warlock
 School           : Shadow
-Resource         : 0% - 1% Base Mana (0) (id=11721)
+Resource         : 0% Base Mana (0) and 1% Base Mana (0) per tick (id=11721)
 Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
