@@ -427,6 +427,9 @@ void mangazas_madness( special_effect_t& effect )
   priest_t* priest = debug_cast<priest_t*>( effect.player );
   assert( priest );
   do_trinket_init( priest, PRIEST_SHADOW, priest->active_items.mangazas_madness, effect );
+
+  priest->cooldowns.shadow_word_void->charges +=
+      priest->active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
 }
 
 void mother_shahrazs_seduction( special_effect_t& effect )
@@ -893,7 +896,7 @@ double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
 
-  if ( specialization() == PRIEST_SHADOW )  // TODO: check if this is really increasing all spells
+  if ( specialization() == PRIEST_SHADOW )
   {
     if ( buffs.shadowform->check() )
     {

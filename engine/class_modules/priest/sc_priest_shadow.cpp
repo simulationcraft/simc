@@ -234,12 +234,6 @@ public:
 
   void init() override
   {
-    if ( priest().active_items.mangazas_madness )  // FIXME is this check needed? &&
-                                                   // priest().cooldowns.shadow_word_void->charges < 1)
-    {
-      priest().cooldowns.shadow_word_void->charges +=
-          priest().active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
-    }
     priest().cooldowns.shadow_word_void->hasted = true;
 
     priest_spell_t::init();
@@ -346,7 +340,6 @@ struct mind_sear_tick_t final : public priest_spell_t
 {
   double insanity_gain;
 
-  // TODO: Mind Sear is missing damage information in spell data
   mind_sear_tick_t( priest_t& p, const spell_data_t* mind_sear )
     : priest_spell_t( "mind_sear_tick", p, mind_sear->effectN( 1 ).trigger() ),
       insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() )
@@ -392,23 +385,12 @@ struct mind_sear_t final : public priest_spell_t
 
     tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
   }
-
-  void tick( dot_t* d ) override
-  {
-    priest_spell_t::tick( d );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-  }
 };
 
 struct new_void_tendril_mind_flay_t final : public priest_spell_t
 {
-  bool* active_flag;
-
-  new_void_tendril_mind_flay_t( priest_t& p ) : priest_spell_t( "mind_flay_void_tendril", p, p.find_spell( 193473 ) )
+  new_void_tendril_mind_flay_t( priest_t& p ) :
+    priest_spell_t( "mind_flay_void_tendril", p, p.find_spell( 193473 ) )
 
   {
     aoe                    = 1;
@@ -2036,7 +2018,7 @@ void priest_t::insanity_state_t::adjust_end_event()
     drain();
   }
 
-  // All drained, cancel voidform. TODO: Can this really even happen?
+  // All drained, cancel voidform.
   if ( actor.resources.current[ RESOURCE_INSANITY ] == 0 && actor.options.priest_set_voidform_duration == 0 )
   {
     event_t::cancel( end );
@@ -2129,9 +2111,8 @@ void priest_t::create_buffs_shadow()
                                                      sets->set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() );
   buffs.power_overwhelming->set_trigger_spell( sets->set( specialization(), T19OH, B8 ) );
   buffs.void_vb    = make_buff( this, "void", find_spell( 211657 ) )->set_chance( 1.0 );
-  buffs.empty_mind = make_buff( this, "empty_mind", find_spell( 247226 ) )
-                         ->set_chance( sets->has_set_bonus( PRIEST_SHADOW, T20, B2 ) )
-                         ->set_max_stack( 10 );  // TODO Update from spelldata
+  buffs.empty_mind = make_buff( this, "empty_mind", sets->set( PRIEST_SHADOW, T20, B2 )->effectN(1).trigger() )
+                         ->set_trigger_spell( sets->set( PRIEST_SHADOW, T20, B2 ) );
   buffs.overwhelming_darkness = new buffs::overwhelming_darkness_t( *this );
 
   // Talents
@@ -2409,6 +2390,7 @@ void priest_t::generate_apl_shadow()
                     "if=(talent.mindbender.enabled&cooldown.mindbender.remains<(variable.erupt_eval+gcd.max*4%3))|!"
                     "talent.mindbender.enabled|set_bonus.tier20_4pc" );
   main->add_talent( this, "Shadow Crash", "if=talent.shadow_crash.enabled" );
+  main->add_action( this, "Mind Sear", "if=active_enemies>6" );
   main->add_action( this, "Shadow Word: Death",
                     "if=(active_enemies<=4|(talent.reaper_of_souls.enabled&active_enemies<=2))&cooldown.shadow_word_"
                     "death.charges=2&insanity<="
