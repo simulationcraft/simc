@@ -1388,7 +1388,7 @@ struct wilfreds_sigil_of_superior_summoning_t : public scoped_actor_callback_t<w
 {
   wilfreds_sigil_of_superior_summoning_t() : super( WARLOCK ) { }
 
-  void manipulate( warlock_t* p, const special_effect_t& e ) override { }
+  void manipulate( warlock_t*, const special_effect_t& ) override { }
 };
 
 struct sindorei_spite_t : public class_buff_cb_t<warlock_t>

@@ -4801,14 +4801,14 @@ struct archimondes_hatred_reborn_shield_t : public absorb_buff_t
 
   archimondes_hatred_reborn_shield_t( special_effect_t& effect, action_t* a ) :
     absorb_buff_t( effect.player, "archimondes_hatred_reborn", effect.driver(), effect.item ),
-    spell_effect( effect ),
-    explosion( a )
+    explosion( a ),
+    spell_effect( effect )
   {
     explosion -> snapshot_flags &= STATE_NO_MULTIPLIER;
     explosion -> split_aoe_damage = true;
   }
 
-  void start( int stacks, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
+  void start( int stacks, double /*value*/ = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
   {
     // The shield is based on the player's max health
     double shield_amount = spell_effect.player -> resources.max[ RESOURCE_HEALTH ] * spell_effect.driver() -> effectN( 1 ).percent();

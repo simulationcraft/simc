@@ -5136,7 +5136,7 @@ void hunter_t::apl_mm()
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
   action_priority_list_t* targetdie = get_action_priority_list( "targetdie" );
-  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+  //action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
   action_priority_list_t* patient_sniper = get_action_priority_list( "patient_sniper" );
   action_priority_list_t* non_patient_sniper = get_action_priority_list( "non_patient_sniper" );

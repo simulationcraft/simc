@@ -127,7 +127,7 @@ action_t* priest_t::create_action_holy( const std::string& name, const std::stri
   return nullptr;
 }
 
-expr_t* priest_t::create_expression_holy( action_t* a, const std::string& name_str )
+expr_t* priest_t::create_expression_holy( action_t*, const std::string& /*name_str*/ )
 {
   return nullptr;
 }

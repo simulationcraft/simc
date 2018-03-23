@@ -5379,7 +5379,7 @@ void rogue_t::trigger_weaponmaster( const action_state_t* s )
     return;
   }
 
-  actions::rogue_attack_t* attack = cast_attack( s -> action );
+  //actions::rogue_attack_t* attack = cast_attack( s -> action );
   if ( ! s -> action -> result_is_hit( s -> result ) )
   {
     return;

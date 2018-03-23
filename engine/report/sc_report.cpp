@@ -1305,6 +1305,7 @@ std::string report::decoration_domain( const sim_t& sim )
   }
 #else
   return "beta";
+  (void) sim;
 #endif
 }
 

@@ -5600,7 +5600,7 @@ struct protection_rage_t: public warrior_buff_t < buff_t >
 {
   protection_rage_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s )
-      .tick_callback( [ this, &p ]( buff_t* b, int, const timespan_t& ) {
+      .tick_callback( [ this, &p ]( buff_t*, int, const timespan_t& ) {
         p.resource_gain( RESOURCE_RAGE,
                          p.sets -> set( WARRIOR_PROTECTION, T20, B2 ) -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RAGE ),
                          p.gain.protection_t20_2p );

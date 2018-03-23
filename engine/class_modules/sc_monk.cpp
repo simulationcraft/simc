@@ -1877,13 +1877,9 @@ public:
     return static_cast<monk_t*>( owner );
   }
 
-  double composite_player_multiplier( school_e school ) const override
+  const monk_t* o() const
   {
-    double m = pet_t::composite_player_multiplier( school );
-
-    monk_t* monk = static_cast<monk_t*>( owner );
-
-    return m;
+    return static_cast<monk_t*>( owner );
   }
 
   virtual void init_action_list() override
@@ -6337,11 +6333,11 @@ namespace buffs
     using base_t = monk_buff_t;
 
     monk_buff_t( monk_td_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ):
-      buff_t( p, name, s )
+      buff_t( p, name, s, item )
     {}
 
     monk_buff_t( monk_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ):
-      buff_t( &p, name, s )
+      buff_t( &p, name, s, item )
     {}
 
     monk_td_t& get_td( player_t* t )
@@ -9474,7 +9470,7 @@ struct monk_module_t: public module_t
       .verification_value( -3000 );*/
   }
 
-  virtual void init( player_t* p ) const override {}
+  virtual void init( player_t* ) const override {}
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}
 };

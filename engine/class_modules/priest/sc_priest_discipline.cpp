@@ -379,7 +379,7 @@ action_t* priest_t::create_action_discipline( const std::string& name, const std
   return nullptr;
 }
 
-expr_t* priest_t::create_expression_discipline( action_t* a, const std::string& name_str )
+expr_t* priest_t::create_expression_discipline( action_t*, const std::string& /*name_str*/ )
 {
   return nullptr;
 }

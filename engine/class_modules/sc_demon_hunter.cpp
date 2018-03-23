@@ -1273,7 +1273,7 @@ struct consume_soul_t : public demon_hunter_heal_t
     }
   }
 
-  double calculate_heal( const action_state_t* s ) const
+  double calculate_heal( const action_state_t* ) const
   {
     if ( p()->specialization() == DEMON_HUNTER_HAVOC )
     {
@@ -3386,7 +3386,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
   vengeful_retreat_damage_t* damage;
 
   vengeful_retreat_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "vengeful_retreat", p, p -> spec.vengeful_retreat )
+    : demon_hunter_attack_t( "vengeful_retreat", p, p -> spec.vengeful_retreat, options_str )
   {
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
     // use_off_gcd = true;
