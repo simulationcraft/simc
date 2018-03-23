@@ -3497,7 +3497,7 @@ struct saber_slash_t : public rogue_attack_t
 
     p() -> buffs.t19_4pc_outlaw -> decrement();
 
-    if ( p() -> buffs.broadsides -> up() )
+    if ( ! saberslash_proc_event && p() -> buffs.broadsides -> up() )
     {
       p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 1 ).base_value(),
           p() -> gains.broadsides, this );
