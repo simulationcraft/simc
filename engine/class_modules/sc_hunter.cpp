@@ -121,7 +121,6 @@ struct hunter_t: public player_t
 public:
 
   // Active
-
   struct actives_t
   {
     pets::hunter_main_pet_t* pet;
@@ -244,11 +243,6 @@ public:
     proc_t* wasted_hunting_companion;
     proc_t* mortal_wounds;
     proc_t* zevrims_hunger;
-    proc_t* animal_instincts_mongoose;
-    proc_t* animal_instincts_aspect;
-    proc_t* animal_instincts_harpoon;
-    proc_t* animal_instincts_flanking;
-    proc_t* animal_instincts;
   } procs;
 
   // Talents
@@ -3063,34 +3057,6 @@ struct flanking_strike_t: hunter_melee_attack_t
     if ( p() -> active.pet )
       p() -> active.pet -> active.flanking_strike -> execute();
 
-    if ( p() -> talents.animal_instincts -> ok() )
-    {
-      const timespan_t animal_instincts = base_animal_instincts_cdr * p() -> cache.spell_haste();
-
-      animal_instincts_cds.clear();
-
-      if ( !p() -> cooldowns.flanking_strike -> up() )
-        animal_instincts_cds.emplace_back( p() -> cooldowns.flanking_strike,
-                                                               p() -> procs.animal_instincts_flanking );
-      if ( p() -> cooldowns.mongoose_bite -> current_charge != p() -> cooldowns.mongoose_bite -> charges )
-        animal_instincts_cds.emplace_back( p() -> cooldowns.mongoose_bite,
-                                                               p() -> procs.animal_instincts_mongoose );
-      if ( !p() -> cooldowns.aspect_of_the_eagle -> up() )
-        animal_instincts_cds.emplace_back( p() -> cooldowns.aspect_of_the_eagle,
-                                                               p() -> procs.animal_instincts_aspect );
-      if ( !p() -> cooldowns.harpoon -> up() )
-        animal_instincts_cds.emplace_back( p() -> cooldowns.harpoon,
-                                                               p() -> procs.animal_instincts_harpoon );
-
-      if ( !animal_instincts_cds.empty() )
-      {
-        size_t roll = p() -> rng().range( animal_instincts_cds.size() );
-
-        animal_instincts_cds[roll].first -> adjust( animal_instincts );
-        animal_instincts_cds[roll].second -> occur();
-      }
-    }
-
     if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T21, B2 ) &&
          rng().roll( p() -> sets -> set( HUNTER_SURVIVAL, T21, B2 ) -> proc_chance() ) )
     {
@@ -4829,11 +4795,6 @@ void hunter_t::init_procs()
   procs.wasted_hunting_companion     = get_proc( "wasted_hunting_companion" );
   procs.mortal_wounds                = get_proc( "mortal_wounds" );
   procs.zevrims_hunger               = get_proc( "zevrims_hunger" );
-  procs.animal_instincts_mongoose    = get_proc( "animal_instincts_mongoose" );
-  procs.animal_instincts_aspect      = get_proc( "animal_instincts_aspect" );
-  procs.animal_instincts_harpoon     = get_proc( "animal_instincts_harpoon" );
-  procs.animal_instincts_flanking    = get_proc( "animal_instincts_flanking" );
-  procs.animal_instincts             = get_proc( "animal_instincts" );
 }
 
 // hunter_t::init_rng =======================================================
