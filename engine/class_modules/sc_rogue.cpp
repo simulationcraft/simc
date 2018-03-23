@@ -237,12 +237,12 @@ struct rogue_t : public player_t
     buff_t* death_from_above;
     buff_t* elaborate_planning;
     buff_t* subterfuge;
-    buff_t* hidden_blades_driver;
-    buff_t* hidden_blades;
     // Assassination
     buff_t* dispatch;
     buff_t* master_assassin;
     buff_t* master_assassin_aura;
+    buff_t* hidden_blades_driver;
+    buff_t* hidden_blades;
     // Outlaw
     buff_t* killing_spree;
     buff_t* loaded_dice;
@@ -426,7 +426,6 @@ struct rogue_t : public player_t
 
     // Tier 7 - Level 100
     const spell_data_t* death_from_above;
-    const spell_data_t* hidden_blades;
 
 
     // Specifics
@@ -467,6 +466,7 @@ struct rogue_t : public player_t
 
     // Tier 7 - Level 100
     const spell_data_t* poison_bomb;
+    const spell_data_t* hidden_blades;
     const spell_data_t* crimson_tempest;
 
     const spell_data_t* loaded_dice;
@@ -3745,8 +3745,6 @@ struct shuriken_storm_t: public rogue_attack_t
 
     m *= 1.0 + p() -> buffs.the_dreadlords_deceit -> check_stack_value();
 
-    m *= 1.0 + p() -> buffs.hidden_blades -> check_stack_value();
-
     return m;
   }
 
@@ -3761,9 +3759,6 @@ struct shuriken_storm_t: public rogue_attack_t
 
     if ( p() -> buffs.the_dreadlords_deceit -> up() )
       p() -> buffs.the_dreadlords_deceit -> expire();
-
-    if ( p() -> buffs.hidden_blades -> up() )
-      p() -> buffs.hidden_blades -> expire();
   }
 };
 
@@ -6287,7 +6282,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
     stealthed -> add_action( this, "Shadowstrike", "if=buff.stealth.up", "If stealth is up, we really want to use Shadowstrike to benefits from the passive bonus, even if we are at max cp (from the precombat MfD)." );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&buff.vanish.up)&(spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk|(mantle_duration<=1.3&mantle_duration>=0.3))" );
-    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=2+equipped.insignia_of_ravenholdt&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1&(buff.the_dreadlords_deceit.stack>=29|buff.hidden_blades.stack>=19)))" );
+    stealthed -> add_action( this, "Shuriken Storm", "if=buff.shadowmeld.down&((combo_points.deficit>=2+equipped.insignia_of_ravenholdt&spell_targets.shuriken_storm>=3+equipped.shadow_satyrs_walk)|(combo_points.deficit>=1&buff.the_dreadlords_deceit.stack>=29))" );
     stealthed -> add_action( "call_action_list,name=finish,if=combo_points>=5+(talent.deeper_stratagem.enabled&buff.vanish.up)&combo_points.deficit<3+buff.shadow_blades.up-equipped.mantle_of_the_master_assassin" );
     stealthed -> add_action( this, "Shadowstrike" );
   }
@@ -6802,7 +6797,6 @@ void rogue_t::init_spells()
 
   talent.alacrity           = find_talent_spell( "Alacrity" );
   talent.death_from_above   = find_talent_spell( "Death from Above" );
-  talent.hidden_blades      = find_talent_spell( "Hidden Blades" );
 
   talent.nightstalker       = find_talent_spell( "Nightstalker" );
   talent.subterfuge         = find_talent_spell( "Subterfuge" );
@@ -6821,6 +6815,7 @@ void rogue_t::init_spells()
   talent.exsanguinate       = find_talent_spell( "Exsanguinate" );
 
   talent.poison_bomb        = find_talent_spell( "Poison Bomb" );
+  talent.hidden_blades      = find_talent_spell( "Hidden Blades" );
   talent.crimson_tempest    = find_talent_spell( "Crimson Tempest" );
 
   talent.ghostly_strike     = find_talent_spell( "Ghostly Strike" );
