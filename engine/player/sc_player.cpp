@@ -5855,7 +5855,7 @@ void player_t::dismiss_pet( const std::string& pet_name )
   pet_t* p = find_pet( pet_name );
   if ( !p )
   {
-    sim->errorf("Player %s: Could not find pet with name '%s' to dismiss.", name(), pet_name );
+    sim->errorf("Player %s: Could not find pet with name '%s' to dismiss.", name(), pet_name.c_str() );
     return;
   }
   p -> dismiss();
