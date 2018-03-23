@@ -3402,9 +3402,6 @@ struct player_t : public actor_t
   double dpr;
   std::vector<std::pair<timespan_t, double> > incoming_damage; // for tank active mitigation conditionals
 
-  std::vector<double> dps_convergence_error;
-  double dps_convergence;
-
   // Heal
   double iteration_heal, iteration_heal_taken, iteration_absorb, iteration_absorb_taken; // temporary accumulators
   double hpr;
