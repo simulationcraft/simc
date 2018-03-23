@@ -541,16 +541,16 @@
     { "data_type": "i", "field": "cost",                "formats": { "cpp": "%5u" } },
     { "data_type": "f", "field": "pct_cost",            "formats": { "cpp": "%7.3f" } },
     { "data_type": "f", "field": "pct_cost_per_second", "formats": { "cpp": "%7.3f" } },
-    { "data_type": "I", "field": "aura_id",             "formats": { "cpp": "%7u" } },
     { "data_type": "f", "field": "pct_cost_max",        "formats": { "cpp": "%7.3f" } },
+    { "data_type": "I", "field": "aura_id",             "formats": { "cpp": "%7u" } },
     { "data_type": "B", "field": "unk_5",     "formats": { "cpp": "%4u" } },
     { "data_type": "b", "field": "type_power",          "formats": { "cpp": "%3u" } },
     { "data_type": "H", "field": "id",                  "formats": { "cpp": "%5u" } },
     { "data_type": "B", "field": "unk_6" },
     { "data_type": "H", "field": "cost_per_second" },
-    { "data_type": "h", "field": "cost_max",            "formats": { "cpp": "%4u" } },
+    { "data_type": "H", "field": "unk_4" },
     { "data_type": "H", "field": "unk_3" },
-    { "data_type": "H", "field": "unk_4" }
+    { "data_type": "h", "field": "cost_max",            "formats": { "cpp": "%4u" } }    
   ],
   "SpellProcsPerMinute": [
     { "data_type": "f", "field": "ppm" },
