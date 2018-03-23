@@ -75,7 +75,7 @@ struct resource_threshold_event_t : public event_t
   void execute() override
   {
     player->trigger_ready();
-    player->resource_threshold_trigger = 0;
+    player->resource_threshold_trigger = nullptr;
   }
 };
 
@@ -110,13 +110,12 @@ struct execute_pet_action_t : public action_t
       return true;
     }
 
-    for ( size_t i = 0; i < pet->action_list.size(); ++i )
+    for ( auto& action : pet->action_list )
     {
-      action_t* a = pet->action_list[ i ];
-      if ( a->name_str == action_str )
+      if ( action->name_str == action_str )
       {
-        a->background = true;
-        pet_action    = a;
+        action->background = true;
+        pet_action    = action;
       }
     }
 
@@ -132,6 +131,7 @@ struct execute_pet_action_t : public action_t
 
   virtual void execute() override
   {
+    assert(pet_action);
     pet_action->execute();
   }
 
@@ -179,10 +179,12 @@ struct leech_t : public heal_t
   }
 };
 
-// sorted_action_priority_lists =============================================
-
-// APLs need to always be initialized in the same order, otherwise copy= profiles may break in some
-// cases. Order will be: precombat -> default -> alphabetical list of custom apls
+/**
+ * Get sorted list of action priorirty lists
+ *
+ * APLs need to always be initialized in the same order, otherwise copy= profiles may break in some cases.
+ * Order will be: precombat -> default -> alphabetical list of custom apls
+ */
 std::vector<action_priority_list_t*> sorted_action_priority_lists( const player_t* p )
 {
   std::vector<action_priority_list_t*> apls = p->action_priority_list;
@@ -211,8 +213,6 @@ std::vector<action_priority_list_t*> sorted_action_priority_lists( const player_
 
   return apls;
 }
-
-// has_foreground_actions ===================================================
 
 bool has_foreground_actions( const player_t& p )
 {
@@ -270,7 +270,7 @@ bool parse_talent_url( sim_t* sim, const std::string& name, const std::string& u
     }
   }
 
-  sim->errorf( "Unable to decode talent string '%s' for player %s\n", url.c_str(), p->name() );
+  sim->errorf( "Unable to decode talent string '%s' for player '%s'.\n", url.c_str(), p->name() );
 
   return false;
 }
@@ -281,7 +281,7 @@ bool parse_talent_override( sim_t* sim, const std::string& name, const std::stri
 {
   assert( name == "talent_override" );
   (void)name;
-  assert( sim->active_player );
+
   player_t* p = sim->active_player;
 
   if ( !p->talent_overrides_str.empty() )
@@ -300,9 +300,6 @@ bool parse_artifact_override( sim_t* sim, const std::string& name, const std::st
 
   player_t* p = sim->active_player;
 
-  if ( !p )
-    return false;
-
   if ( !p->artifact_overrides_str.empty() )
     p->artifact_overrides_str += "/";
   p->artifact_overrides_str += override_str;
@@ -316,7 +313,7 @@ bool parse_timeofday( sim_t* sim, const std::string& name, const std::string& ov
 {
   assert( name == "timeofday" );
   (void)name;
-  assert( sim->active_player );
+
   player_t* p = sim->active_player;
 
   if ( util::str_compare_ci( override_str, "night" ) || util::str_compare_ci( override_str, "nighttime" ) )
@@ -330,6 +327,7 @@ bool parse_timeofday( sim_t* sim, const std::string& name, const std::string& ov
   else
   {
     sim->errorf( "\n%s timeofday string \"%s\" not valid.\n", sim->active_player->name(), override_str.c_str() );
+    return false;
   }
 
   return true;
@@ -354,7 +352,7 @@ bool parse_world_lag( sim_t* sim, const std::string& name, const std::string& va
   assert( name == "world_lag" );
   (void)name;
 
-  sim->active_player->world_lag = timespan_t::from_seconds( atof( value.c_str() ) );
+  sim->active_player->world_lag = timespan_t::from_seconds( std::stod( value ) );
 
   if ( sim->active_player->world_lag < timespan_t::zero() )
   {
@@ -373,7 +371,7 @@ bool parse_world_lag_stddev( sim_t* sim, const std::string& name, const std::str
   assert( name == "world_lag_stddev" );
   (void)name;
 
-  sim->active_player->world_lag_stddev = timespan_t::from_seconds( atof( value.c_str() ) );
+  sim->active_player->world_lag_stddev = timespan_t::from_seconds( std::stod( value ) );
 
   if ( sim->active_player->world_lag_stddev < timespan_t::zero() )
   {
@@ -392,7 +390,7 @@ bool parse_brain_lag( sim_t* sim, const std::string& name, const std::string& va
   assert( name == "brain_lag" );
   (void)name;
 
-  sim->active_player->brain_lag = timespan_t::from_seconds( atof( value.c_str() ) );
+  sim->active_player->brain_lag = timespan_t::from_seconds( std::stod( value ) );
 
   if ( sim->active_player->brain_lag < timespan_t::zero() )
   {
@@ -409,7 +407,7 @@ bool parse_brain_lag_stddev( sim_t* sim, const std::string& name, const std::str
   assert( name == "brain_lag_stddev" );
   (void)name;
 
-  sim->active_player->brain_lag_stddev = timespan_t::from_seconds( atof( value.c_str() ) );
+  sim->active_player->brain_lag_stddev = timespan_t::from_seconds( std::stod( value ) );
 
   if ( sim->active_player->brain_lag_stddev < timespan_t::zero() )
   {
@@ -443,9 +441,14 @@ bool parse_stat_timelines( sim_t* sim, const std::string& name, const std::strin
 
   std::vector<std::string> stats = util::string_split( value, "," );
 
-  for ( size_t i = 0; i < stats.size(); ++i )
+  for ( auto& stat_type : stats )
   {
-    stat_e st = util::parse_stat_type( stats[ i ] );
+    stat_e st = util::parse_stat_type( stat_type );
+    if ( st == STAT_NONE )
+    {
+      sim->errorf( "'%s' could not parse timeline stat '%s' (%s).\n", sim->active_player->name(), stat_type.c_str(), value.c_str() );
+      return false;
+    }
 
     sim->active_player->stat_timelines.push_back( st );
   }
@@ -457,7 +460,6 @@ bool parse_stat_timelines( sim_t* sim, const std::string& name, const std::strin
 
 bool parse_origin( sim_t* sim, const std::string&, const std::string& origin )
 {
-  assert( sim->active_player );
   player_t& p = *sim->active_player;
 
   p.origin_str = origin;
@@ -475,7 +477,6 @@ bool parse_origin( sim_t* sim, const std::string&, const std::string& origin )
 bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
 {
   static const char* error_str = "%s invalid 'set_bonus' option value '%s' given, available options: %s";
-  assert( sim->active_player );
 
   player_t* p = sim->active_player;
 
@@ -487,8 +488,8 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
     return false;
   }
 
-  int opt_val = util::to_int( set_bonus_split[ 1 ] );
-  if ( errno != 0 || ( opt_val != 0 && opt_val != 1 ) )
+  int opt_val = std::stoi( set_bonus_split[ 1 ] );
+  if ( opt_val != 0 && opt_val != 1 )
   {
     sim->errorf( error_str, p->name(), value.c_str(), p->sets->generate_set_bonus_options().c_str() );
     return false;
@@ -534,7 +535,13 @@ bool parse_initial_resource( sim_t* sim, const std::string&, const std::string& 
     }
 
     resource_e resource = util::parse_resource_type( resource_split[ 0 ] );
-    double amount       = util::from_string<double>( resource_split[ 1 ] );
+    if ( resource == RESOURCE_NONE )
+    {
+      sim->errorf( "%s could not parse valid resource from '%s'", player->name(), resource_split[ 0 ].c_str() );
+      return false;
+    }
+
+    double amount = std::stod( resource_split[ 1 ] );
     if ( amount < 0 )
     {
       sim->errorf( "%s too low initial_resources option '%s'", player->name(), opt_str.c_str() );
