@@ -315,8 +315,8 @@ Effects          :
 Name             : Tiger Palm (id=100780) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Resource         : 50 Energy (3) (id=5167)
-Resource         : 50 Energy (3) (id=10716)
+Resource         : 50 Energy (3) (id=5167) w/ Brewmaster Monk (id=137023)
+Resource         : 50 Energy (3) (id=10716) w/ Windwalker Monk (id=137025)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -358,7 +358,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 Name             : Blackout Kick (id=100784) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Resource         : 3 Chi (12) (id=6139)
+Resource         : 3 Chi (12) (id=6139) w/ Windwalker Monk (id=137025)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -428,9 +428,9 @@ If used again while active, you will land, dealing $123586m1 damage to all enemi
 Name             : Spinning Crane Kick (id=101546) [Spell Family (53)] 
 Class            : Mistweaver Windwalker Monk
 School           : Physical
-Resource         : 2 Chi (12) (id=6140)
-Resource         : 1% Base Mana (0) (id=10833)
-Resource         : 3 Chi (12) (id=10834)
+Resource         : 2 Chi (12) (id=6140) w/ Windwalker Monk (id=137025)
+Resource         : 1% Base Mana (0) (id=10833) w/ Mistweaver Monk (id=137024)
+Resource         : 3 Chi (12) (id=10834) w/ Brewmaster Monk (id=137023)
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
@@ -535,8 +535,8 @@ Movement speed reduced by $s2%.
 Name             : Rising Sun Kick (id=107428) [Spell Family (53)] 
 Class            : Mistweaver Windwalker Monk
 School           : Physical
-Resource         : 2 Chi (12) (id=6143)
-Resource         : 1.5% Base Mana (0) (id=10832)
+Resource         : 2 Chi (12) (id=6143) w/ Windwalker Monk (id=137025)
+Resource         : 1.5% Base Mana (0) (id=10832) w/ Mistweaver Monk (id=137024)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -788,8 +788,8 @@ Name             : Paralysis (id=115078) [Scaling Spell (6), Spell Family (53)]
 Class            : Monk
 School           : Physical
 Resource         : 3% Base Mana (0) (id=6420)
-Resource         : 20 Energy (3) (id=6421)
-Resource         : 20 Energy (3) (id=7588)
+Resource         : 20 Energy (3) (id=6421) w/ Stagger (id=115069)
+Resource         : 20 Energy (3) (id=7588) w/ Stance of the Fierce Tiger (id=103985)
 Resource         : 3% Base Mana (0) (id=9366)
 Spell Level      : 25
 Range            : 20 yards
@@ -1254,7 +1254,7 @@ When you kill an enemy with $?s152174[Chi Explosion][Blackout Kick], you have a 
 Name             : Disable (id=116095) [Spell Family (53)] 
 Class            : Windwalker Monk
 School           : Physical
-Resource         : 15 Energy (3) (id=6079)
+Resource         : 15 Energy (3) (id=6079) w/ Stagger (id=115069)
 Resource         : 0.7% Base Mana (0) (id=6422)
 Resource         : 15 Energy (3) (id=7579)
 Spell Level      : 16
@@ -1399,9 +1399,9 @@ Tooltip          : Your next spell cast is empowered:
 Name             : Effuse (id=116694) [Spell Family (53)] 
 Class            : Brewmaster Mistweaver Windwalker Monk
 School           : Nature
-Resource         : 2% Base Mana (0) (id=6078)
-Resource         : 30 Energy (3) (id=9204)
-Resource         : 30 Energy (3) (id=9205)
+Resource         : 2% Base Mana (0) (id=6078) w/ Mistweaver Monk (id=137024)
+Resource         : 30 Energy (3) (id=9204) w/ Brewmaster Monk (id=137023)
+Resource         : 30 Energy (3) (id=9205) w/ Windwalker Monk (id=137025)
 Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -1681,8 +1681,8 @@ Description      : Effuse, Renewing Mist, Enveloping Mist, and Vivify also cause
 Name             : Crackling Jade Lightning (id=117952) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 20 Energy (3) and 20 Energy (3) per tick (id=11676)
-Resource         : 20 Energy (3) and 20 Energy (3) per tick (id=11677)
+Resource         : 20 Energy (3) and 20 Energy (3) per tick (id=11676) w/ Windwalker Monk (id=137025)
+Resource         : 20 Energy (3) and 20 Energy (3) per tick (id=11677) w/ Brewmaster Monk (id=137023)
 Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4592,7 +4592,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 Name             : Soothing Mist (Honor Talent) (id=209525) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 0% Base Mana (0) (id=11091)
+Resource         : 0% - 0.3% Base Mana (0) (id=11091)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 0.5 seconds

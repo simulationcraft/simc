@@ -862,7 +862,7 @@ Tooltip          : Movement speed reduced by $s3%.
 Name             : Lava Burst (id=51505) [Spell Family (11)] 
 Class            : Elemental Restoration Shaman
 School           : Fire
-Resource         : 6% Base Mana (0) (id=11268)
+Resource         : 6% Base Mana (0) (id=11268) w/ Restoration Shaman (id=137039)
 Spell Level      : 12
 Range            : 40 yards
 Cast Time        : 2 seconds
@@ -1917,7 +1917,7 @@ Description      : $@spelldesc105174
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
 Class            : Demonology Shaman, Warlock
 School           : Shadowflame
-Resource         : 1 Soul Shard (7) (id=4987)
+Resource         : 1 - 3 Soul Shard (7) (id=4987)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -3311,7 +3311,7 @@ Effects          :
 Name             : Lightning Bolt (id=187837) [Spell Family (11)] 
 Class            : Enhancement Shaman
 School           : Nature
-Resource         : 0 Maelstrom (11) (id=11199)
+Resource         : 0 - 40 Maelstrom (11) (id=11199) w/ Overcharge (id=210727)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4333,7 +4333,7 @@ Tooltip          : Melee attacks reduce target's movement speed by $147732s1% fo
 Name             : Frost Shock (id=196840) [Spell Family (11)] 
 Class            : Elemental Shaman
 School           : Frost
-Resource         : 0 Maelstrom (11) (id=10598)
+Resource         : 0 - 20 Maelstrom (11) (id=10598)
 Spell Level      : 38
 Range            : 40 yards
 GCD              : 1.5 seconds

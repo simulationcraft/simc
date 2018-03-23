@@ -2667,8 +2667,8 @@ Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1
 Name             : Fel Eruption (id=211881) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
-Resource         : 10 Fury (17) (id=11144)
-Resource         : 10 Pain (18) (id=11161)
+Resource         : 10 Fury (17) (id=11144) w/ Havoc Demon Hunter (id=212612)
+Resource         : 10 Pain (18) (id=11161) w/ Vengeance Demon Hunter (id=212613)
 Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds

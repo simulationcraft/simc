@@ -3640,7 +3640,7 @@ Tooltip          : Taking $s1% reduced damage.
 Name             : Bonestorm (id=194844) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
-Resource         : 10 Runic Power (6) (id=10533)
+Resource         : 10 - 100 Runic Power (6) (id=10533)
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 60 seconds
@@ -4269,6 +4269,24 @@ Effects          :
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
+Name             : Blood for Blood (Honor Talent) (id=202846) [Spell Family (15), Passive, Hidden] 
+Class            : Death Knight
+School           : Physical
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=299112)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Affected Spells: Heart Strike (206930)
+#2 (id=299113)   : None (0)
+                   Base Value: 10 | Scaled Value: 10
+Description      : Heart Strike damage increased by $m1%, but costs $m2% of your total health.
+
 Name             : Northrend Winds (Honor Talent) (id=204088) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
@@ -4424,13 +4442,13 @@ Class            : Blood Death Knight
 School           : Physical
 Resource         : 1 Rune (5) (id=11004)
 Resource         : -15 Runic Power (6) (id=11005)
-Resource         : 0 Health (-2) and 10 Health (-2) per tick (id=11006)
+Resource         : 0 Health (-2) and 10 Health (-2) per tick (id=11006) w/ Blood for Blood (id=202846)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Category         : 1207
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#3), Veinrender (192457 effect#1), Item - Death Knight T19 Blood 2P Bonus (211039 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#3), Veinrender (192457 effect#1), Blood for Blood (202846 effect#1), Item - Death Knight T19 Blood 2P Bonus (211039 effect#1), Master of Ghouls (246995 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 

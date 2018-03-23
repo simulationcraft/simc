@@ -100,7 +100,7 @@ Description      : Dispels Magic on the enemy target, removing $m1 beneficial Ma
 Name             : Smite (id=585) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 0.5% Base Mana (0) (id=62)
+Resource         : 0.5% Base Mana (0) (id=62) w/ Discipline Priest (id=137032)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -139,7 +139,7 @@ Tooltip          : Reduced threat level.
 Name             : Shadow Word: Pain (id=589) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
 School           : Shadow
-Resource         : 2.2% Base Mana (0) (id=10512)
+Resource         : 2.2% Base Mana (0) (id=10512) w/ Discipline Priest (id=137032)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -220,8 +220,8 @@ Tooltip          : Under the command of the Priest.
 Name             : Levitate (id=1706) [Spell Family (6)] 
 Class            : Discipline Holy Shadow Priest
 School           : Holy
-Resource         : 0.9% Base Mana (0) (id=136)
-Resource         : 0.9% Base Mana (0) (id=11171)
+Resource         : 0.9% Base Mana (0) (id=136) w/ Discipline Priest (id=137032)
+Resource         : 0.9% Base Mana (0) (id=11171) w/ Holy Priest (id=137031)
 Spell Level      : 32
 Range            : 30 yards
 GCD              : 1.5 seconds

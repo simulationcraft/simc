@@ -172,7 +172,7 @@ Name             : Rip (id=1079) [Spell Family (7)]
 Class            : Feral Druid
 School           : Physical
 Resource         : 30 Energy (3) (id=113)
-Resource         : 1 Combo Points (4) (id=10588)
+Resource         : 1 - 5 Combo Points (4) (id=10588)
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
@@ -681,7 +681,7 @@ Description      : Maul the target for $s2 Physical damage.
 Name             : Moonfire (Lunar) (id=8921) [Spell Family (7)] 
 Class            : Druid
 School           : Arcane
-Resource         : 6% Base Mana (0) (id=11196)
+Resource         : 6% Base Mana (0) (id=11196) w/ Restoration Druid (id=137012)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -911,7 +911,7 @@ Description      : Instantly heals a friendly target for $s1.
 Name             : Rebirth (id=20484) [Spell Family (7)] 
 Class            : Druid
 School           : Nature
-Resource         : 10 Rage (1) (id=10971)
+Resource         : 10 Rage (1) (id=10971) w/ Bear Form (id=5487)
 Spell Level      : 42
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1001,7 +1001,7 @@ Name             : Ferocious Bite (id=22568) [Spell Family (7)]
 Class            : Feral Druid
 School           : Physical
 Resource         : 25 Energy (3) (id=939)
-Resource         : 1 Combo Points (4) (id=10587)
+Resource         : 1 - 5 Combo Points (4) (id=10587)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
@@ -1032,7 +1032,7 @@ Name             : Maim (id=22570) [Scaling Spell (3), Spell Family (7)]
 Class            : Feral Druid
 School           : Physical
 Resource         : 35 Energy (3) (id=940)
-Resource         : 1 Combo Points (4) (id=9773)
+Resource         : 1 - 5 Combo Points (4) (id=9773)
 Spell Level      : 63
 Range            : 5 yards
 GCD              : 1 seconds
@@ -1393,7 +1393,7 @@ Name             : Savage Roar (id=52610) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Resource         : 30 Energy (3) (id=2413)
-Resource         : 1 Combo Points (4) (id=11447)
+Resource         : 1 - 5 Combo Points (4) (id=11447)
 Spell Level      : 1
 Range            : 100 yards
 GCD              : 1 seconds
@@ -2004,7 +2004,7 @@ Description      : Cures harmful effects on the friendly target, removing all Ma
 Name             : Sunfire (Solar) (id=93402) [Scaling Spell (3), Spell Family (7)] 
 Class            : Balance Restoration Druid
 School           : Nature
-Resource         : 12% Base Mana (0) (id=11197)
+Resource         : 12% Base Mana (0) (id=11197) w/ Restoration Druid (id=137012)
 Spell Level      : 16
 Range            : 40 yards
 GCD              : 1.5 seconds

@@ -2759,7 +2759,7 @@ Effects          :
 Name             : Execute (id=163201) [Spell Family (4)] 
 Class            : Arms Warrior
 School           : Physical
-Resource         : 20 Rage (1) (id=9491)
+Resource         : 20 - 40 Rage (1) (id=9491)
 Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds

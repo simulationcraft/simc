@@ -4759,7 +4759,7 @@ Description      : $@spelldesc212431
 Name             : Piercing Shot (id=213678) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
-Resource         : 20 Focus (2) (id=11207)
+Resource         : 20 - 100 Focus (2) (id=11207)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds

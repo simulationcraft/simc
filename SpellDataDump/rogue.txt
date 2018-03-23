@@ -47,7 +47,7 @@ Name             : Kidney Shot (id=408) [Spell Family (8)]
 Class            : Assassination Subtlety Rogue
 School           : Physical
 Resource         : 25 Energy (3) (id=46)
-Resource         : 1 Combo Points (4) (id=10591)
+Resource         : 1 - 5 Combo Points (4) (id=10591)
 Spell Level      : 34
 Range            : 5 yards
 GCD              : 1 seconds
@@ -422,7 +422,7 @@ Name             : Rupture (id=1943) [Spell Family (8)]
 Class            : Assassination Rogue
 School           : Physical
 Resource         : 25 Energy (3) (id=145)
-Resource         : 1 Combo Points (4) (id=10589)
+Resource         : 1 - 5 Combo Points (4) (id=10589)
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
@@ -515,7 +515,7 @@ Name             : Run Through (id=2098) [Spell Family (8)]
 Class            : Outlaw Rogue
 School           : Physical
 Resource         : 35 Energy (3) (id=158)
-Resource         : 1 Combo Points (4) (id=10581)
+Resource         : 1 - 5 Combo Points (4) (id=10581)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
@@ -678,7 +678,7 @@ Name             : Slice and Dice (id=5171) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Resource         : 25 Energy (3) (id=226)
-Resource         : 1 Combo Points (4) (id=11434)
+Resource         : 1 - 5 Combo Points (4) (id=11434)
 Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
@@ -1300,7 +1300,7 @@ Replaces         : Eviscerate (id=196819)
 Class            : Assassination Rogue
 School           : Nature
 Resource         : 35 Energy (3) (id=1350)
-Resource         : 1 Combo Points (4) (id=10585)
+Resource         : 1 - 5 Combo Points (4) (id=10585)
 Spell Level      : 36
 Range            : 5 yards
 GCD              : 1 seconds
@@ -2336,7 +2336,7 @@ Name             : Crimson Tempest (id=121411) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Resource         : 35 Energy (3) (id=6786)
-Resource         : 1 Combo Points (4) (id=12386)
+Resource         : 1 - 5 Combo Points (4) (id=12386)
 Spell Level      : 60
 GCD              : 1 seconds
 Duration         : 2 seconds
@@ -2759,7 +2759,7 @@ Name             : Death from Above (id=152150) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Resource         : 25 Energy (3) (id=9050)
-Resource         : 1 Combo Points (4) (id=10584)
+Resource         : 1 - 5 Combo Points (4) (id=10584)
 Range            : 15 yards
 GCD              : 2 seconds
 Duration         : 1 seconds
@@ -3336,7 +3336,7 @@ Name             : Roll the Bones (id=193316) [Spell Family (8)]
 Class            : Outlaw Rogue
 School           : Physical
 Resource         : 25 Energy (3) (id=10439)
-Resource         : 1 Combo Points (4) (id=11404)
+Resource         : 1 - 5 Combo Points (4) (id=11404)
 Spell Level      : 40
 Range            : 100 yards
 GCD              : 1 seconds
@@ -3622,7 +3622,7 @@ Name             : Nightblade (id=195452) [Spell Family (8)]
 Class            : Subtlety Rogue
 School           : Shadow
 Resource         : 25 Energy (3) (id=10522)
-Resource         : 1 Combo Points (4) (id=10590)
+Resource         : 1 - 5 Combo Points (4) (id=10590)
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1 seconds
@@ -3719,7 +3719,7 @@ Name             : Eviscerate (id=196819) [Spell Family (8)]
 Class            : Assassination Subtlety Rogue
 School           : Physical
 Resource         : 35 Energy (3) (id=10594)
-Resource         : 1 Combo Points (4) (id=10595)
+Resource         : 1 - 5 Combo Points (4) (id=10595)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
@@ -3996,7 +3996,7 @@ Name             : Finality: Eviscerate (id=197393) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Resource         : 35 Energy (3) (id=10683)
-Resource         : 1 Combo Points (4) (id=10684)
+Resource         : 1 - 5 Combo Points (4) (id=10684)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
@@ -4024,7 +4024,7 @@ Name             : Finality: Nightblade (id=197395) [Spell Family (8)]
 Class            : Rogue
 School           : Shadow
 Resource         : 25 Energy (3) (id=10685)
-Resource         : 1 Combo Points (4) (id=10686)
+Resource         : 1 - 5 Combo Points (4) (id=10686)
 Spell Level      : 46
 Range            : 5 yards
 GCD              : 1 seconds
@@ -4239,7 +4239,7 @@ Name             : Between the Eyes (id=199804) [Spell Family (8)]
 Class            : Outlaw Rogue
 School           : Physical
 Resource         : 25 Energy (3) (id=10767)
-Resource         : 1 Combo Points (4) (id=10768)
+Resource         : 1 - 5 Combo Points (4) (id=10768)
 Spell Level      : 20
 Range            : 20 yards
 GCD              : 1 seconds

@@ -325,7 +325,7 @@ Tooltip          : Incapacitated.
 Name             : Judgment (id=20271) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
-Resource         : 3% Base Mana (0) (id=11198)
+Resource         : 3% Base Mana (0) (id=11198) w/ Holy Paladin (id=137029)
 Spell Level      : 3
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -1316,7 +1316,7 @@ Description      : An efficient spell, healing a friendly target for $s1.
 Name             : Inquisition (id=84963) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
-Resource         : 1 Holy Power (9) (id=3985)
+Resource         : 1 - 3 Holy Power (9) (id=3985)
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Affecting spells : Fires of Justice (209785 effect#1)
@@ -1803,7 +1803,7 @@ Name             : Holy Prism (id=114165) [Spell Family (10)]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Holy
-Resource         : 17% Base Mana (0) (id=9441)
+Resource         : 17% Base Mana (0) (id=9441) w/ Holy Paladin (id=137029)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2276,6 +2276,7 @@ Effects          :
 
 Name             : Holy Paladin (id=137029) [Spell Family (10), Passive, Hidden] 
 Class            : Holy Paladin
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
