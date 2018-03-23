@@ -4604,7 +4604,6 @@ struct ray_of_frost_t : public frost_mage_spell_t
     channeled = true;
     hasted_ticks = true;
     // Triggers on execute as well as each tick.
-    // TODO: Double check this matches the fixed behavior.
     chills = true;
   }
 
@@ -4633,8 +4632,8 @@ struct ray_of_frost_t : public frost_mage_spell_t
   virtual void last_tick( dot_t* d ) override
   {
     frost_mage_spell_t::last_tick( d );
-    // TODO: Figure out if this works correctly with Ice Floes in simc.
     p() -> buffs.ray_of_frost -> expire();
+    p() -> buffs.ice_floes -> decrement();
   }
 
   virtual double action_multiplier() const override
