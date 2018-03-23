@@ -227,7 +227,6 @@ public:
   combo_strikes_e previous_combo_strike;
 
   double gift_of_the_ox_proc_chance;
-  unsigned int internal_id;
   // Containers for when to start the trigger for the 19 4-piece Windwalker Combo Master buff
   combo_strikes_e t19_melee_4_piece_container_1;
   combo_strikes_e t19_melee_4_piece_container_2;
@@ -615,7 +614,6 @@ public:
       active_actions( active_actions_t() ),
       previous_combo_strike( CS_NONE ),
       gift_of_the_ox_proc_chance(),
-      internal_id(),
       t19_melee_4_piece_container_1( CS_NONE ),
       t19_melee_4_piece_container_2( CS_NONE ),
       t19_melee_4_piece_container_3( CS_NONE ),
@@ -2558,13 +2556,10 @@ struct monk_heal_t: public monk_action_t < heal_t >
 
       if ( td( t ) -> dots.enveloping_mist -> is_ticking() )
       {
-        if ( p() -> internal_id != internal_id )
-        {
-          if ( p() -> talent.mist_wrap )
-            am *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent() + p() -> talent.mist_wrap -> effectN( 2 ).percent();
-          else
-            am *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent();
-        }
+        if ( p() -> talent.mist_wrap )
+          am *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent() + p() -> talent.mist_wrap -> effectN( 2 ).percent();
+        else
+          am *= 1.0 + p() -> spec.enveloping_mist -> effectN( 2 ).percent();
       }
 
       if ( p() -> buff.life_cocoon -> up() )
@@ -2572,13 +2567,6 @@ struct monk_heal_t: public monk_action_t < heal_t >
     }
 
     return am;
-  }
-
-  double action_ta_multiplier() const override
-  {
-    double atm = base_t::action_ta_multiplier();
-
-    return atm;
   }
 };
 
@@ -5617,8 +5605,6 @@ struct enveloping_mist_t: public monk_heal_t
       dot_duration += p.talent.mist_wrap -> effectN( 1 ).time_value();
 
     mastery = new gust_of_mists_t( p );
-
-    p.internal_id = internal_id;
   }
 
   virtual double cost() const override
