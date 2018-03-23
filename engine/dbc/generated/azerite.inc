@@ -1,4 +1,4 @@
-// Azerite powers, wow build 26287
+// Azerite powers, wow build 26297
 static constexpr std::array<azerite_power_t, 99> __azerite_power_data { {
   {   1,  55564 },
   {   2, 261582 },

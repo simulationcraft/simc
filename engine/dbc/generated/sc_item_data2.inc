@@ -1,6 +1,6 @@
 #define RAND_PROP_POINTS_SIZE (1300)
 
-// Random property points for item levels 1-1300, wow build 26287
+// Random property points for item levels 1-1300, wow build 26297
 static struct random_prop_data_t __rand_prop_points_data[] = {
   {    1, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
   {    2, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 }, {     0,     0,     0,     0,     0 } },
@@ -1306,7 +1306,7 @@ static struct random_prop_data_t __rand_prop_points_data[] = {
 };
 #define RAND_SUFFIX_SIZE (450)
 
-// Random new-style item suffixes, wow build 26287
+// Random new-style item suffixes, wow build 26297
 static struct random_suffix_data_t __rand_suffix_data[] = {
   {   5, "of the Monkey"          , {  2802,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
   {   6, "of the Eagle"           , {  2804,  2803,     0,     0,     0 }, {  6666, 10000,     0,     0,     0 } },
@@ -1762,7 +1762,7 @@ static struct random_suffix_data_t __rand_suffix_data[] = {
 };
 #define SPELL_ITEM_ENCH_SIZE (4150)
 
-// Item enchantment data, wow build 26287
+// Item enchantment data, wow build 26297
 static struct item_enchantment_data_t __spell_item_ench_data[] = {
   {   13,  33,      0, -1,   5,   1,   0,   0, {   2,   0,   0 }, {    3,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
   {   14,  33,      0, -1,  15,  15,   0,   0, {   2,   0,   0 }, {    4,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened (+$k1 Damage)"           },
@@ -5916,7 +5916,7 @@ static struct item_enchantment_data_t __spell_item_ench_data[] = {
   { 5971,   0,      0,  0,   1, 100,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 271431,      0,      0 }, {  0.0000,  0.0000,  0.0000 }, 271433, "Cooled Hearthing"                  },
   {    0,   0,      0,  0,   0,   0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, 0                                   },
 };
-// Item armor values data from ItemArmorQuality.dbc, ilevels 1-1300, wow build 26287
+// Item armor values data from ItemArmorQuality.dbc, ilevels 1-1300, wow build 26297
 static struct item_scale_data_t __itemarmorquality_data[] = {
   {    1, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
   {    2, {  0.900,  0.950,  1.000,  1.000,  1.000,  1.000,  1.000 } },
@@ -7221,7 +7221,7 @@ static struct item_scale_data_t __itemarmorquality_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorShield.dbc, ilevels 1-1300, wow build 26287
+// Item armor values data from ItemArmorShield.dbc, ilevels 1-1300, wow build 26297
 static struct item_scale_data_t __itemarmorshield_data[] = {
   {    1, {   10.830,   11.432,   12.034,   12.034,   12.034,   12.034,   12.034 } },
   {    2, {   11.346,   11.976,   12.607,   12.607,   12.607,   12.607,   12.607 } },
@@ -8526,7 +8526,7 @@ static struct item_scale_data_t __itemarmorshield_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item armor values data from ItemArmorTotal.dbc, ilevels 1-1300, wow build 26287
+// Item armor values data from ItemArmorTotal.dbc, ilevels 1-1300, wow build 26297
 static struct item_armor_type_data_t __itemarmortotal_data[] = {
   {    1, {    14.334,    24.279,    35.579,   53.2841 } },
   {    2, {    15.016,    25.435,    37.274,   55.8214 } },
@@ -9858,7 +9858,7 @@ static struct item_armor_type_data_t __armor_slot_data[] = {
   { 0, { 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHand.dbc, ilevels 1-1300, wow build 26287
+// Item damage data from ItemDamageOneHand.dbc, ilevels 1-1300, wow build 26297
 static struct item_scale_data_t __itemdamageonehand_data[] = {
   {    1, {     0.260,     0.419,     0.434,     0.434,     0.434,     0.434,     0.434 } },
   {    2, {     0.304,     0.489,     0.506,     0.506,     0.506,     0.506,     0.506 } },
@@ -11163,7 +11163,7 @@ static struct item_scale_data_t __itemdamageonehand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-1300, wow build 26287
+// Item damage data from ItemDamageOneHandCaster.dbc, ilevels 1-1300, wow build 26297
 static struct item_scale_data_t __itemdamageonehandcaster_data[] = {
   {    1, {     0.130,     0.209,     0.217,     0.217,     0.217,     0.217,     0.217 } },
   {    2, {     0.152,     0.244,     0.253,     0.253,     0.253,     0.253,     0.253 } },
@@ -12468,7 +12468,7 @@ static struct item_scale_data_t __itemdamageonehandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-1300, wow build 26287
+// Item damage data from ItemDamageTwoHand.dbc, ilevels 1-1300, wow build 26297
 static struct item_scale_data_t __itemdamagetwohand_data[] = {
   {    1, {     0.345,     0.555,     0.575,     0.575,     0.575,     0.575,     0.575 } },
   {    2, {     0.402,     0.647,     0.670,     0.670,     0.670,     0.670,     0.670 } },
@@ -13773,7 +13773,7 @@ static struct item_scale_data_t __itemdamagetwohand_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-1300, wow build 26287
+// Item damage data from ItemDamageTwoHandCaster.dbc, ilevels 1-1300, wow build 26297
 static struct item_scale_data_t __itemdamagetwohandcaster_data[] = {
   {    1, {     0.172,     0.277,     0.287,     0.287,     0.287,     0.287,     0.287 } },
   {    2, {     0.201,     0.323,     0.335,     0.335,     0.335,     0.335,     0.335 } },
@@ -15078,7 +15078,7 @@ static struct item_scale_data_t __itemdamagetwohandcaster_data[] = {
   { 0, { 0, 0, 0, 0, 0, 0, 0 } }
 };
 
-// Gem properties, wow build 26287
+// Gem properties, wow build 26297
 static struct gem_property_data_t __gem_property_data[] = {
   {    2,  2686, 0x00000002,    0 },
   {    3,  2687, 0x00000008,    0 },
@@ -17125,13 +17125,13 @@ static struct gem_property_data_t __gem_property_data[] = {
   {    0,     0, 0x00000000,    0 },
 };
 
-// Item upgrade rules, wow build level 26287
+// Item upgrade rules, wow build level 26297
 static struct item_upgrade_rule_t __item_upgrade_rule_data[] = {
   { 0,    0,      0 },
   { 0,    0,      0 },
 };
 
-// Upgrade rule data, wow build level 26287
+// Upgrade rule data, wow build level 26297
 static struct item_upgrade_t __upgrade_rule_data[] = {
   {   1,   1,    0,  8 },
   { 373,  89,    0,  4 },
@@ -17192,7 +17192,7 @@ static struct item_upgrade_t __upgrade_rule_data[] = {
 
 #define ITEM_BONUS_TREE_SIZE (2141)
 
-// Item bonus trees, wow build 26287
+// Item bonus trees, wow build 26297
 static struct item_bonus_tree_entry_t __item_bonus_tree_data[ITEM_BONUS_TREE_SIZE] = {
   {    1,    1,  5,    0,    1 },
   {  107,   61,  5,    0,  449 },
@@ -19339,7 +19339,7 @@ static struct item_bonus_tree_entry_t __item_bonus_tree_data[ITEM_BONUS_TREE_SIZ
 
 #define ITEM_BONUS_SIZE (5057)
 
-// Item bonuses, wow build 26287
+// Item bonuses, wow build 26297
 static struct item_bonus_entry_t __item_bonus_data[ITEM_BONUS_SIZE] = {
   {    1,    1,  1,     20,      0,  0 },
   {    2,    1,  2,      7,  15789,  1 },
@@ -24402,7 +24402,7 @@ static struct item_bonus_entry_t __item_bonus_data[ITEM_BONUS_SIZE] = {
 
 #define ITEM_BONUS_MAP_SIZE (49100)
 
-// Item bonus map, wow build 26287
+// Item bonus map, wow build 26297
 static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE] = {
   {      1, 109188,  393 },
   {    125, 109550,  438 },
@@ -73508,7 +73508,7 @@ static struct item_bonus_node_entry_t __item_bonus_map_data[ITEM_BONUS_MAP_SIZE]
 
 #define SCALING_STAT_DISTRIBUTION_SIZE (587)
 
-// Scaling stat distributions, wow build 26287
+// Scaling stat distributions, wow build 26297
 static struct scaling_stat_distribution_t __scaling_stat_distribution_data[SCALING_STAT_DISTRIBUTION_SIZE] = {
   {    1,   0,  80,   956 },
   {    2,   0,  80,   956 },
@@ -74101,7 +74101,7 @@ static struct scaling_stat_distribution_t __scaling_stat_distribution_data[SCALI
 
 #define CURVE_POINT_SIZE (14769)
 
-// Curve points data, wow build 26287
+// Curve points data, wow build 26297
 static struct curve_point_t __curve_point_data[CURVE_POINT_SIZE] = {
   {    8,  0,    0.00000,    1.00000 },
   {    9,  0,    0.00000,    1.00000 },
@@ -88876,7 +88876,7 @@ static struct curve_point_t __curve_point_data[CURVE_POINT_SIZE] = {
 
 #define ITEM_NAME_DESCRIPTION_SIZE (240)
 
-// Item name descriptions, wow build 26287
+// Item name descriptions, wow build 26297
 static struct item_name_description_t __item_name_description_data[ITEM_NAME_DESCRIPTION_SIZE] = {
   {     2, "Now with extra description"   },
   {    20, "Season 10"                    },
@@ -89122,7 +89122,7 @@ static struct item_name_description_t __item_name_description_data[ITEM_NAME_DES
 
 #define ITEM_CHILD_EQUIPMENT_SIZE (23)
 
-// Item child equipment, wow build 26287
+// Item child equipment, wow build 26297
 static struct item_child_equipment_t __item_child_equipment_data[ITEM_CHILD_EQUIPMENT_SIZE] = {
   {  2, 127417,   1728 },
   {  3, 127829, 127830 },
