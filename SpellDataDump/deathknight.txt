@@ -76,9 +76,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 3 | Scaled Value: 324.72 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 340.56 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
-                   Base Value: 3 | Scaled Value: 324.72 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 340.56 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
 Description      : Increases attack power by $s1 for $d.
 Tooltip          : Attack power increased by $s1.
 
@@ -427,8 +427,8 @@ Class            : Frost Death Knight
 School           : Physical
 Resource         : -25 Runic Power (6) (id=5909)
 Spell Level      : 57
+GCD              : 1.5 seconds
 Velocity         : 4 yards/sec
-Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 1614
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -905,6 +905,7 @@ Name             : Pillar of Frost (id=51271) [Spell Family (15)]
 Class            : Frost Death Knight
 School           : Physical
 Spell Level      : 57
+GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 60 seconds
 Affecting spells : Frozen Core (189179 effect#1)
@@ -1769,7 +1770,7 @@ Effects          :
 #2 (id=90623)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Death Coil (47632), Death and Decay (52212), Scourge Strike (70890), Outbreak (77575), Soul Reaper (130736), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739)
-Description      : Increases your Shadow damage abiilites by ${$s1}.1%.
+Description      : Increases the damage of your Shadow damage abiilites by ${$s1}.1%.
 
 Name             : Blood Shield (id=77535) [Spell Family (15)] 
 Class            : Death Knight
@@ -3639,7 +3640,7 @@ Tooltip          : Taking $s1% reduced damage.
 Name             : Bonestorm (id=194844) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
-Resource         : 10 - 100 Runic Power (6) (id=10533)
+Resource         : 10 Runic Power (6) (id=10533)
 GCD              : 1.5 seconds
 Duration         : 1 seconds
 Cooldown         : 60 seconds
@@ -3788,6 +3789,7 @@ Description      : Every $s1 Festering Wounds you burst, you gain 1 Rune.
 Name             : Blighted Rune Weapon (id=194918) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 60 seconds
 Stacks           : 5 initial, 5 maximum
@@ -3827,7 +3829,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ....x...   ........ ........ ........ ....x... 
 Effects          :
 #1 (id=286506)   : Apply Aura (6) | Modify Armor by Primary Stat% (268)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #2 (id=293376)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 195182 | Target: Self (1)
 #3 (id=306110)   : Apply Aura (6) | Modify Max Health% (133)
@@ -4267,24 +4269,6 @@ Effects          :
 Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
-Name             : Blood for Blood (Honor Talent) (id=202846) [Spell Family (15), Passive, Hidden] 
-Class            : Death Knight
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=299112)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-                   Affected Spells: Heart Strike (206930)
-#2 (id=299113)   : None (0)
-                   Base Value: 10 | Scaled Value: 10
-Description      : Heart Strike damage increased by $m1%, but costs $m2% of your total health.
-
 Name             : Northrend Winds (Honor Talent) (id=204088) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
 School           : Physical
@@ -4440,13 +4424,13 @@ Class            : Blood Death Knight
 School           : Physical
 Resource         : 1 Rune (5) (id=11004)
 Resource         : -15 Runic Power (6) (id=11005)
-Resource         : 0 - 10 Health (-2) (id=11006) w/ Blood for Blood (id=202846)
+Resource         : 0 Health (-2) and 10 Health (-2) per tick (id=11006)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Category         : 1207
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#3), Veinrender (192457 effect#1), Blood for Blood (202846 effect#1), Item - Death Knight T19 Blood 2P Bonus (211039 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#3), Veinrender (192457 effect#1), Item - Death Knight T19 Blood 2P Bonus (211039 effect#1), Master of Ghouls (246995 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -4776,6 +4760,7 @@ Name             : Hungering Rune Weapon (id=207127) [Spell Family (15)]
 Class            : Death Knight
 School           : Physical
 Spell Level      : 1
+GCD              : 1.5 seconds
 Velocity         : 4 yards/sec
 Duration         : 12 seconds
 Cooldown         : 1 seconds
@@ -5004,8 +4989,9 @@ Name             : Obliteration (id=207256) [Spell Family (15)]
 Class            : Death Knight
 School           : Physical
 Spell Level      : 82
+GCD              : 1.5 seconds
 Velocity         : 4 yards/sec
-Duration         : 10 seconds
+Duration         : 12 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ x....... ........ 
@@ -5792,7 +5778,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=324699)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 1 | Scaled Value: 43.41162 (avg=0.17647) | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 45.52926 (avg=0.17647) | Misc Value: 33554432 | Target: Self (1)
 Description      : $@spelldesc152280
 Tooltip          : Mastery increased by $s1.
 
@@ -6345,9 +6331,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 100000 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 100000 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 

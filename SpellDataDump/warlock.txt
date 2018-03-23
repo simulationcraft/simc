@@ -1348,9 +1348,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=118955)   : Apply Aura (6) | Modify Healing Power (135)
-                   Base Value: 5 | Scaled Value: 324.72 (avg=1.32) | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 340.56 (avg=1.32) | Target: Self (1)
 #2 (id=23584)    : Apply Aura (6) | Damage Done (13)
-                   Base Value: 5 | Scaled Value: 324.72 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 340.56 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self (1)
 Description      : Increases your spell power by $s2 for $d.
 Tooltip          : Spell power increased by $s2.
 
@@ -1701,7 +1701,7 @@ Name             : Hand of Gul'dan (id=86040) [Spell Family (5)]
 Class            : Shaman, Warlock
 School           : Shadowflame
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), Dirty Hands (211105 effect#1), Meteoric Flare (269594 effect#2)
+Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), Dirty Hands (211105 effect#1), Meteoric Flare (269594 effect#2), From the Shadows (270569 effect#1)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
                  : ........ ........ ........ .x......   ........ ..x..... ........ ..x..... 
@@ -2039,7 +2039,7 @@ Immune to interrupt and silence effects.
 Name             : Hand of Gul'dan (id=105174) [Spell Family (5)] 
 Class            : Demonology Shaman, Warlock
 School           : Shadowflame
-Resource         : 1 - 3 Soul Shard (7) (id=4987)
+Resource         : 1 Soul Shard (7) (id=4987)
 Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -2470,6 +2470,7 @@ Name             : Dark Soul (id=113858) [Spell Family (5)]
 Class            : Warlock
 School           : Fire
 Resource         : 3% Base Mana (0) (id=5585)
+GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
 Charges          : 0 (120 seconds cooldown)
@@ -4598,7 +4599,7 @@ Taking $30108s3% increased damage from the Warlock.
 Name             : Drain Life (id=234153) [Spell Family (5)] 
 Class            : Affliction Demonology Destruction Warlock
 School           : Shadow
-Resource         : 0% Base Mana (0) and 1% Base Mana (0) per tick (id=11721)
+Resource         : 0% Base Mana (0) (id=11721)
 Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -4884,9 +4885,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 100000 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 100000 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -4965,7 +4966,7 @@ Description      : Command your Felguard to strike into the soul of its enemy, d
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
 
-Name             : Riders (id=264078) [Spell Family (5), Passive] 
+Name             : Growing Shadows (id=264078) [Spell Family (5), Passive] 
 Class            : Warlock
 School           : Shadowflame
 Spell Level      : 10
@@ -4979,8 +4980,8 @@ Attributes       : ......x. ........ x....... ........   .......x ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=707240)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 33 | Scaled Value: 33 | Target: Self (1)
-Description      : Hand of Gul'dan has a $s1% chance per Soul Shard spent to spawn an additional Wild Imp.
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+Description      : When your Dreadstalkers charge into battle, their Dreadbite attack now hits all targets within $271971A1 yards and deals $s1% more damage.
 
 Name             : Deathbolt (id=264106) [Spell Family (5)] 
 Class            : Warlock
@@ -5078,7 +5079,7 @@ Range            : 40 yards
 Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), Shadowy Inspiration (196606 effect#1), Maw of Shadows (211099 effect#1), Stolen Power (211583 effect#2), Demonic Core (264173 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), Shadowy Inspiration (196606 effect#1), Maw of Shadows (211099 effect#1), Stolen Power (211583 effect#2), Demonic Core (264173 effect#1), From the Shadows (270569 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5421,7 +5422,7 @@ Attributes       : ......x. ........ x....... ........   .......x ........ .....
 Effects          :
 #1 (id=713653)   : Apply Aura (6) | Dummy (4)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 3 | Target: Self (1)
-Description      : Casting Call Dreadstalkers causes the target to take $s1% additional Shadowflame damage from you for the next $d.
+Description      : Casting Call Dreadstalkers causes the target to take $270569s1% additional Shadowflame damage from you for the next $270569d.
 
 Name             : Demonic Strength (id=267171) [Spell Family (5)] 
 Class            : Warlock
@@ -5442,8 +5443,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=720184)   : Apply Aura (6) | Dummy (4)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: 127 | Target: Active Pet (5)
-Description      : Infuse your Felguard with demonic strength and command it to charge your target and unleash a Felstorm that will deal $s1% increased damage.
-Tooltip          : Your next Felstorm will deal $s1% increased damage.
+Description      : Infuse your Felguard with demonic strength and command it to charge your target and unleash a Felstorm that will deal $s2% increased damage.
+Tooltip          : Your next Felstorm will deal $s2% increased damage.
 
 Name             : Bilescourge Bombers (id=267211) [Spell Family (5)] 
 Class            : Warlock
@@ -5631,5 +5632,39 @@ Effects          :
 #1 (id=720130)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Rain of Fire damage has a $s1% chance to generate a Soul Shard Fragment.
+
+Name             : From the Shadows (id=270569) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadowflame
+Spell Level      : 10
+Range            : 100 yards
+Duration         : 12 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=720176)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
+                   Affected Spells: Hand of Gul'dan (86040), Totem Mastery (226772), Demonbolt (264178)
+Description      : $@spelldesc267170
+Tooltip          : Damage taken from the Warlock's Shadowflame damage spells increased by $s1%.
+
+Name             : Dreadbite (id=271971) 
+Class            : Warlock
+School           : Shadow
+Range            : 50000 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=722506)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Description      : Bite the target, dealing Shadow damage.
 
 

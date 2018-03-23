@@ -30,7 +30,7 @@ Attributes       : ........ ........ x....... ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ....x... ........ ........ 
 Effects          :
 #1 (id=806)      : Threat (63)
                    Base Value: 1 | Scaled Value: 0 (avg=1.221) | Target: Enemy (6)
@@ -232,11 +232,11 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 3 | Scaled Value: 324.72 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 340.56 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
 #2 (id=23582)    : Apply Aura (6) | Damage Done (13)
-                   Base Value: 5 | Scaled Value: 324.72 (avg=1.32) | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 340.56 (avg=1.32) | Misc Value: 0x7e | Target: Self (1)
 #3 (id=116811)   : Apply Aura (6) | Modify Healing Power (135)
-                   Base Value: 5 | Scaled Value: 324.72 (avg=1.32) | Misc Value: 126 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 340.56 (avg=1.32) | Misc Value: 126 | Target: Self (1)
 Description      : Increases your melee attack power by $s1 and your spell power by $s2 for $d.
 Tooltip          : Melee attack power increased by $s1.
 Spell power increased by $s2.
@@ -315,8 +315,8 @@ Effects          :
 Name             : Tiger Palm (id=100780) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Resource         : 50 Energy (3) (id=5167) w/ Brewmaster Monk (id=137023)
-Resource         : 50 Energy (3) (id=10716) w/ Windwalker Monk (id=137025)
+Resource         : 50 Energy (3) (id=5167)
+Resource         : 50 Energy (3) (id=10716)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -358,7 +358,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 Name             : Blackout Kick (id=100784) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Resource         : 3 Chi (12) (id=6139) w/ Windwalker Monk (id=137025)
+Resource         : 3 Chi (12) (id=6139)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -428,9 +428,9 @@ If used again while active, you will land, dealing $123586m1 damage to all enemi
 Name             : Spinning Crane Kick (id=101546) [Spell Family (53)] 
 Class            : Mistweaver Windwalker Monk
 School           : Physical
-Resource         : 2 Chi (12) (id=6140) w/ Windwalker Monk (id=137025)
-Resource         : 1% Base Mana (0) (id=10833) w/ Mistweaver Monk (id=137024)
-Resource         : 3 Chi (12) (id=10834) w/ Brewmaster Monk (id=137023)
+Resource         : 2 Chi (12) (id=6140)
+Resource         : 1% Base Mana (0) (id=10833)
+Resource         : 3 Chi (12) (id=10834)
 Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
@@ -535,8 +535,8 @@ Movement speed reduced by $s2%.
 Name             : Rising Sun Kick (id=107428) [Spell Family (53)] 
 Class            : Mistweaver Windwalker Monk
 School           : Physical
-Resource         : 2 Chi (12) (id=6143) w/ Windwalker Monk (id=137025)
-Resource         : 1.5% Base Mana (0) (id=10832) w/ Mistweaver Monk (id=137024)
+Resource         : 2 Chi (12) (id=6143)
+Resource         : 1.5% Base Mana (0) (id=10832)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -788,8 +788,8 @@ Name             : Paralysis (id=115078) [Scaling Spell (6), Spell Family (53)]
 Class            : Monk
 School           : Physical
 Resource         : 3% Base Mana (0) (id=6420)
-Resource         : 20 Energy (3) (id=6421) w/ Stagger (id=115069)
-Resource         : 20 Energy (3) (id=7588) w/ Stance of the Fierce Tiger (id=103985)
+Resource         : 20 Energy (3) (id=6421)
+Resource         : 20 Energy (3) (id=7588)
 Resource         : 3% Base Mana (0) (id=9366)
 Spell Level      : 25
 Range            : 20 yards
@@ -840,7 +840,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #2 (id=162038)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Enemy (6)
-Description      : Use ancient Pandaren knowledge of anatomy to inflict mortal damage on an enemy. After $d, the target will take damage equal to $s2% of your maximum health, reduced against players.
+Description      : Inflict mortal damage on an enemy, causing the target to take damage equal to $s2% of your maximum health after $d, reduced against players.
+
+During the $d duration, $271232s1% of all other damage you deal to the target will be added to the final damage dealt.
 Tooltip          : Taking $w1 damage when this effect expires.
 
 Name             : Chi Wave (id=115098) [Scaling Spell (6), Spell Family (53)] 
@@ -1000,6 +1002,7 @@ Name             : Energizing Elixir (id=115288) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Level      : 1
+GCD              : 1 seconds
 Cooldown         : 60 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
@@ -1251,7 +1254,7 @@ When you kill an enemy with $?s152174[Chi Explosion][Blackout Kick], you have a 
 Name             : Disable (id=116095) [Spell Family (53)] 
 Class            : Windwalker Monk
 School           : Physical
-Resource         : 15 Energy (3) (id=6079) w/ Stagger (id=115069)
+Resource         : 15 Energy (3) (id=6079)
 Resource         : 0.7% Base Mana (0) (id=6422)
 Resource         : 15 Energy (3) (id=7579)
 Spell Level      : 16
@@ -1331,7 +1334,7 @@ Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#5), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Uplifting Trance (197206 effect#1), Infusion of Life (199380 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#5), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Uplifting Trance (197206 effect#1), Infusion of Life (199380 effect#1), Invigorating Brew (269622 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1396,9 +1399,9 @@ Tooltip          : Your next spell cast is empowered:
 Name             : Effuse (id=116694) [Spell Family (53)] 
 Class            : Brewmaster Mistweaver Windwalker Monk
 School           : Nature
-Resource         : 2% Base Mana (0) (id=6078) w/ Mistweaver Monk (id=137024)
-Resource         : 30 Energy (3) (id=9204) w/ Brewmaster Monk (id=137023)
-Resource         : 30 Energy (3) (id=9205) w/ Windwalker Monk (id=137025)
+Resource         : 2% Base Mana (0) (id=6078)
+Resource         : 30 Energy (3) (id=9204)
+Resource         : 30 Energy (3) (id=9205)
 Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -1678,8 +1681,8 @@ Description      : Effuse, Renewing Mist, Enveloping Mist, and Vivify also cause
 Name             : Crackling Jade Lightning (id=117952) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 20 Energy (3) and 20 Energy (3) per tick (id=11676) w/ Windwalker Monk (id=137025)
-Resource         : 20 Energy (3) and 20 Energy (3) per tick (id=11677) w/ Brewmaster Monk (id=137023)
+Resource         : 20 Energy (3) and 20 Energy (3) per tick (id=11676)
+Resource         : 20 Energy (3) and 20 Energy (3) per tick (id=11677)
 Spell Level      : 18
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -2250,6 +2253,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 40 yards
+GCD              : 1 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
 Category         : 1418
@@ -3008,6 +3012,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 40 yards
+GCD              : 1.5 seconds
 Duration         : 45 seconds
 Cooldown         : 180 seconds
 Category         : 1418
@@ -3289,6 +3294,7 @@ Name             : Storm, Earth, and Fire (id=137639) [Spell Family (53)]
 Class            : Windwalker Monk
 School           : Nature
 Spell Level      : 50
+GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 16 seconds
 Charges          : 1 (90 seconds cooldown)
@@ -3366,7 +3372,8 @@ Description      : $@spelldesc116847
 Name             : Serenity (id=152173) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Duration         : 8 seconds
+GCD              : 1 seconds
+Duration         : 9 seconds
 Cooldown         : 90 seconds
 Affecting spells : Spiritual Focus (195298 effect#5), Split Personality (238059 effect#2)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3753,6 +3760,47 @@ Effects          :
 Description      : Effuse, Enveloping Mist, Vivify, and Life Cocoon also trigger Soothing Mist.
 
 After casting these spells, you continue to channel healing mists into the target, healing them for $115175s1 every $115175t1 sec, until you take any other action.
+
+Name             : Gale Burst (id=195399) [Spell Family (53), Passive] 
+Class            : Monk
+School           : Physical
+Range            : 100 yards
+Proc Chance      : 101%
+Artifact Power   : Id: 830, Index: 1, Max Rank: 1, Type: 1
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Cannot cancel aura (31)
+Effects          :
+#1 (id=286825)   : Apply Aura (6) | Proc Trigger Spell (42): Gale Burst
+                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 195403 | Target: Self (1)
+Description      : Increases damage done by Touch of Death by $s1% of all damage you dealt to the target during the duration.
+
+Name             : Gale Burst (id=195403) [Spell Family (53), Hidden] 
+Class            : Monk
+School           : Physical
+Range            : 100 yards
+Duration         : 8 seconds
+Proc Chance      : 101%
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Triggered by     : Gale Burst (195399)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=286829)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Description      : $@spelldesc195399
 
 Name             : Elusive Brawler (id=195630) [Spell Family (53)] 
 Class            : Monk
@@ -4306,6 +4354,7 @@ Class            : Monk
 School           : Nature
 Spell Level      : 1
 Range            : 40 yards
+GCD              : 1.5 seconds
 Duration         : 45 seconds
 Cooldown         : 180 seconds
 Category         : 1418
@@ -4543,7 +4592,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 Name             : Soothing Mist (Honor Talent) (id=209525) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 0% Base Mana (0) and 0.3% Base Mana (0) per tick (id=11091)
+Resource         : 0% Base Mana (0) (id=11091)
 Spell Level      : 10
 Range            : 40 yards
 GCD              : 0.5 seconds
@@ -5229,8 +5278,8 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7f | Target: Self (1)
 #3 (id=369883)   : Apply Aura (6) | Scale% (Stacking) (61)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Description      : Turns your skin to stone, increasing your current and maximum health by $s1%, and reducing damage taken by $s2%.
-Tooltip          : Health increased by $w1%.
+Description      : Turns your skin to stone, increasing your current and maximum health by $s1%, and reducing damage taken by $s2% for $d.
+Tooltip          : Maximum health increased by $w1%.
 Damage taken reduced by $w2%.
 
 Name             : Brewmaster's Balance (id=245013) [Spell Family (53), Passive] 
@@ -5422,9 +5471,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 100000 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 100000 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -5708,5 +5757,46 @@ Effects          :
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Leg Sweep (119381)
 Description      : Increases the range of Leg Sweep by $s1 yds and reduces its cooldown by ${$s2/-1000} sec.
+
+Name             : Touch of Death Amplifier (id=271232) [Spell Family (53), Passive, Hidden] 
+Class            : Windwalker Monk
+School           : Physical
+Spell Level      : 32
+Range            : 100 yards
+Proc Chance      : 101%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, AOE Hostile Spell, Hostile Spell
+Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7), Cannot cancel aura (31)
+Effects          :
+#1 (id=721354)   : Apply Aura (6) | Proc Trigger Spell (42): Touch of Death Amplifier
+                   Base Value: 10 | Scaled Value: 10 | Trigger Spell: 271233 | Target: Self (1)
+Description      : Increases damage done by Touch of Death by $s1% of all damage you dealt to the target during the duration.
+
+Name             : Touch of Death Amplifier (id=271233) [Spell Family (53), Hidden] 
+Class            : Monk
+School           : Physical
+Range            : 100 yards
+Duration         : 8 seconds
+Proc Chance      : 101%
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Triggered by     : Touch of Death Amplifier (271232)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=721355)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Description      : $@spelldesc195399
 
 

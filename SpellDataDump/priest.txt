@@ -8,25 +8,23 @@ Spell Level      : 8
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Category         : 56
-Proc Chance      : 101%
 Stance Mask      : 0x08000000
 Mechanic         : Shield
 Affecting spells : Improved Power Word: Shield (24191 effect#1), Priest (137030 effect#1), Shadow Priest (137033 effect#7), Clear Thoughts (167695 effect#1), Aegis of Wrath (238135 effect#2)
-Attributes       : ........ ...x.... x.x..... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.x.. ........   ........ ........ ........ ........ 
-                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=13)       : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Friend (21)
-#2 (id=374547)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
 Description      : Shields an ally for $d, absorbing $<shield> damage, and preventing damage from delaying spellcasting.
 Tooltip          : Absorbs $w1 damage.
-Variables        : $shield=$?a47536[${$SP*1*(1+$@versadmg)*(1+$47536s1/100)}][${$SP*1*(1+$@versadmg)}]
+Variables        : $mastery=$?a271534[${(1+$271534s2/100)}][${1}]
+$rapture=$?a47536[${(1+$47536s1/100)}][${1}]
+$shield=${$SP*1*(1+$@versadmg)*$<mastery>*$<rapture>}
 
 Name             : Renew (id=139) [Spell Family (6)] 
 Class            : Holy Priest
@@ -102,7 +100,7 @@ Description      : Dispels Magic on the enemy target, removing $m1 beneficial Ma
 Name             : Smite (id=585) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 0.5% Base Mana (0) (id=62) w/ Discipline Priest (id=137032)
+Resource         : 0.5% Base Mana (0) (id=62)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -141,7 +139,7 @@ Tooltip          : Reduced threat level.
 Name             : Shadow Word: Pain (id=589) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
 School           : Shadow
-Resource         : 2.2% Base Mana (0) (id=10512) w/ Discipline Priest (id=137032)
+Resource         : 2.2% Base Mana (0) (id=10512)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -158,7 +156,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=242)      : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.15000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | Target: Enemy (6)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.15000 | Target: Enemy (6)
 #3 (id=323674)   : Energize Power (30)
@@ -222,8 +220,8 @@ Tooltip          : Under the command of the Priest.
 Name             : Levitate (id=1706) [Spell Family (6)] 
 Class            : Discipline Holy Shadow Priest
 School           : Holy
-Resource         : 0.9% Base Mana (0) (id=136) w/ Discipline Priest (id=137032)
-Resource         : 0.9% Base Mana (0) (id=11171) w/ Holy Priest (id=137031)
+Resource         : 0.9% Base Mana (0) (id=136)
+Resource         : 0.9% Base Mana (0) (id=11171)
 Spell Level      : 32
 Range            : 30 yards
 GCD              : 1.5 seconds
@@ -441,6 +439,7 @@ Name             : Power Infusion (id=10060) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Spell Level      : 1
+GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -489,6 +488,7 @@ Name             : Vampiric Embrace (id=15286) [Spell Family (6)]
 Class            : Shadow Priest
 School           : Shadow
 Spell Level      : 70
+GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
 Proc Chance      : 100%
@@ -562,9 +562,9 @@ Description      : Silences the target, preventing them from casting spells for 
 Tooltip          : Silenced.
 
 Name             : Desperate Prayer (id=19236) [Spell Family (6)] 
-Class            : Holy Priest
+Class            : Discipline Holy Priest
 School           : Holy
-Spell Level      : 52
+Spell Level      : 55
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Category         : 671
@@ -927,9 +927,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=111848)   : Trigger Spell (64): (41967)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 41967 | Target: Self (1)
-Description      : Summons a shadowy fiend to attack the target for $d.
+Description      : Summons a shadowy fiend to attack the target for $d.$?c3[
 
-|cFFFFFFFFGenerates ${$262485s1/100} Insanity each time the Shadowfiend attacks.|r
+|cFFFFFFFFGenerates ${$262485s1/100} Insanity each time the Shadowfiend attacks.|r][]
 
 Name             : Holy Word: Sanctify (id=34861) [Spell Family (6)] 
 Class            : Holy Priest
@@ -1140,7 +1140,7 @@ School           : Holy
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Twist of Fate (123254 effect#2), Shadow Priest (137033 effect#1), Reparation (186478 effect#1), Voidform (194249 effect#1), Confession (197708 effect#1), Shadowform (232698 effect#1), Radiant Focus (252848 effect#1), Twist of Fate (265258 effect#2), 
+Affecting spells : Twist of Fate (123254 effect#2), Shadow Priest (137033 effect#1), Reparation (186478 effect#1), Voidform (194249 effect#1), Confession (197708 effect#1), Shadowform (232698 effect#1), Radiant Focus (252848 effect#1), Twist of Fate (265258 effect#2), Mastery: Reverence (271534 effect#1), 
 Triggered by     : Penance (47758)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -1664,23 +1664,6 @@ Mind Blast will detonate these spikes, each dealing $s2% of their original damag
 
 |cFFFFFFFFGenerates ${$m3/100} Insanity.|r
 
-Name             : Mastery: Absolution (id=77484) [Spell Family (6), Passive] 
-Class            : Discipline Priest
-School           : Physical
-Spell Level      : 78
-Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=68099)    : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.60000 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Atonement (81749)
-Description      : Increases the healing transferred through Atonement by ${$s1}.1%.
-
 Name             : Mastery: Echo of Light (id=77485) [Spell Family (6), Passive] 
 Class            : Holy Priest
 School           : Physical
@@ -1738,7 +1721,7 @@ Effects          :
 #1 (id=68109)    : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 1 | Scaled Value: 1 | Target: Friend (21)
 Description      : Heals every $t1 sec for $d.
-Tooltip          : Healing $w every $t1 sec.
+Tooltip          : Healing $w1 every $t1 sec.
 
 Name             : Shadowy Apparitions (id=78203) [Spell Family (6), Passive] 
 Class            : Shadow Priest
@@ -1766,7 +1749,6 @@ Spell Level      : 20
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Hostile Spell, Periodic
-Affecting spells : Mastery: Absolution (77484 effect#1)
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2787,27 +2769,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: insanity | Target: Self (1)
 Description      : $@spelldesc78203
 
-Name             : Clarity of Will (id=152118) [Spell Family (6)] 
-Class            : Priest
-School           : Holy
-Resource         : 2.8% Base Mana (0) (id=9170)
-Range            : 40 yards
-Cast Time        : 2 seconds
-GCD              : 1.5 seconds
-Duration         : 20 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=210595)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Friend (21)
-Description      : Shields the target with a protective ward for $d, absorbing $<shield> damage.
-Tooltip          : Absorbs $w1 damage.
-Variables        : $shield=${$SP*2.25*(1+$@versadmg)}
-
 Name             : Auspicious Spirits (id=155271) [Spell Family (6), Passive] 
 Class            : Priest
 School           : Shadow
@@ -2953,7 +2914,7 @@ Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Shadow Priest (137033 effect#6), Thoughts of Insanity (193647 effect#1), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Darkest Shadows (216212 effect#1)
+Affecting spells : Shadow Priest (137033 effect#6), Thoughts of Insanity (193647 effect#1), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Darkest Shadows (216212 effect#1), Mastery: Reverence (271534 effect#1)
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2995,7 +2956,7 @@ Duration         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Shadow Priest (137033 effect#6), Thoughts of Insanity (193647 effect#1), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Darkest Shadows (216212 effect#1)
+Affecting spells : Shadow Priest (137033 effect#6), Thoughts of Insanity (193647 effect#1), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Darkest Shadows (216212 effect#1), Mastery: Reverence (271534 effect#1)
 Attributes       : ........ ........ x....... ..x....x   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3168,6 +3129,7 @@ Description      : $?s73510[Mind Spike][Mind Flay] and Mind Blast deal $s3% more
 Name             : Surrender to Madness (id=193223) [Spell Family (6)] 
 Class            : Priest
 School           : Physical
+GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 240 seconds
 Attributes       : ........ ........ ........ .....x.x   ........ ........ ........ ........ 
@@ -3667,6 +3629,7 @@ Name             : Apotheosis (id=200183) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Spell Level      : 1
+GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
@@ -4616,7 +4579,7 @@ School           : Physical
 Artifact Power   : Id: 1565, Index: 13, Max Rank: 8, Type: 32, Values: [ -50, -100, -150, -200, -250, -300, -350, -400 ]
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4833,9 +4796,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 100000 | Scaled Value: 15564.52 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 100000 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -5058,27 +5021,6 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 2 | Trigger Spell: 265258 | Target: Self (1)
 Description      : After healing a target below $s1% health, you deal $265258s2% increased damage and $265258s1% increased healing for $265258d.
 
-Name             : Power Infusion (id=265314) [Spell Family (6)] 
-Class            : Priest
-School           : Holy
-Spell Level      : 1
-Duration         : 20 seconds
-Cooldown         : 120 seconds
-Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=709373)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 25 | Scaled Value: 25 | SP Coefficient: 0.25000 | Misc Value: 126 | Target: Self (1)
-#2 (id=709374)   : Apply Aura (6) | Modify Power Cost% (72)
-                   Base Value: -25 | Scaled Value: -25 | Misc Value: 126 | Misc Value 2: 0x1 | Target: Self (1)
-Description      : Infuses you with power for $d, increasing Haste by $s1% and reducing the mana cost of all spells by $s2%.
-Tooltip          : Haste increased by $w1%.
-Mana cost of all spells reduced by $w2%.
-
 Name             : Contrition (id=270501) [Spell Family (6)] 
 Class            : Priest
 School           : Physical
@@ -5097,5 +5039,86 @@ Effects          :
 #1 (id=719440)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | Target: Friend (21)
 Description      : $@spelldesc197419
+
+Name             : Luminous Barrier (id=271466) [Spell Family (6)] 
+Class            : Priest
+School           : Holy
+Resource         : 4% Base Mana (0) (id=191663)
+Spell Level      : 8
+Range            : 40 yards
+GCD              : 1.5 seconds
+Duration         : 10 seconds
+Cooldown         : 180 seconds
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=721739)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+Description      : Create a shield on all allies within $A1 yards, absorbing $<shield> damage on each of them for $d.
+Tooltip          : Absorbs $w1 damage.
+Variables        : $shield=${$SP*1.5*(1+$@versadmg)}
+
+Name             : Orison (id=271531) [Spell Family (6), Passive] 
+Class            : Priest
+School           : Physical
+Spell Level      : 1
+Proc Chance      : 100%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Heal
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=721827)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
+Description      : Power Word: Shield instantly heals the target for $271532s1.
+
+Name             : Orison (id=271532) [Spell Family (6)] 
+Class            : Priest
+School           : Physical
+Spell Level      : 1
+Range            : 100 yards
+Proc Chance      : 100%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Heal
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=721828)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Friend (21)
+Description      : $@spelldesc271531
+
+Name             : Mastery: Reverence (id=271534) [Spell Family (6), Passive] 
+Class            : Discipline Priest
+School           : Physical
+Spell Level      : 78
+Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=721830)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Target: Self (1)
+                   Affected Spells: Penance (47666), Shadow Mend (186263), Shadow Mend (187464)
+#2 (id=721831)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Target: Self (1)
+                   Affected Spells: Penance (47666)
+Description      : Increases the damage of Penance, the absorption of Power Word: Shield, and the healing of Shadow Mend by ${$s1}.1%.
 
 
