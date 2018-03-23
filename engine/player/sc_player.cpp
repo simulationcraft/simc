@@ -710,9 +710,8 @@ player_t::player_t( sim_t*             s,
   main_hand_attack( nullptr ), off_hand_attack( nullptr ),
   current_attack_speed( 1.0 ),
   // Resources
-  resources( resources_t() ),
+  resources(),
   // Consumables
-  consumables(),
   // Events
   executing( 0 ), queueing( 0 ), channeling( 0 ), strict_sequence( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ), first_cast( true ),
   last_foreground_action( 0 ), prev_gcd_actions( 0 ),
@@ -762,6 +761,7 @@ player_t::player_t( sim_t*             s,
   base_movement_speed( 7.0 ), passive_modifier( 0 ),
   x_position( 0.0 ), y_position( 0.0 ),
   default_x_position( 0.0 ), default_y_position( 0.0 ),
+  consumables(),
   buffs(),
   debuffs(),
   gains(),
@@ -3068,17 +3068,20 @@ double player_t::composite_miss() const
   return total_miss;
 }
 
-// player_t::composite_block ===========================================
-// Two methods here.  The first has no arguments and is the method we override in
-// class modules (for example, to add spec/talent/etc.-based block contributions).
-// The second method accepts a dobule and handles base block and diminishing returns.
-// See paladin_t::composite_block() to see how this works.
-
+/**
+ * Composite block chance.
+ *
+ * Use composite_block_dr function to apply diminishing returns on the part of your block which is affected by it.
+ * See paladin_t::composite_block() to see how this works.
+ */
 double player_t::composite_block() const
 {
   return player_t::composite_block_dr( 0.0 );
 }
 
+/**
+ * Helper function to calculate block value after diminishing returns.
+ */
 double player_t::composite_block_dr( double extra_block ) const
 {
   // Start with sources not subject to DR - base block (stored in current.block)
@@ -3172,8 +3175,9 @@ double player_t::composite_crit_avoidance() const
   return 0;
 }
 
-// player_t::composite_spell_haste ==========================================
-
+/**
+ * This is the subset of the old_spell_haste that applies to RPPM
+ */
 double player_t::composite_spell_haste() const
 {
   double h;
@@ -3201,8 +3205,9 @@ double player_t::composite_spell_haste() const
   return h;
 }
 
-// player_t::composite_spell_speed ==========================================
-
+/**
+ * This is the old spell_haste and incorporates everything that buffs cast speed
+ */
 double player_t::composite_spell_speed() const
 {
   auto speed = cache.spell_haste();
@@ -3748,8 +3753,9 @@ double player_t::composite_mastery_value() const
 
 #if defined(SC_USE_STAT_CACHE)
 
-// player_t::invalidate_cache ===============================================
-
+/**
+ * Invalidate a stat cache, resulting in re-calculation of the composite stat value.
+ */
 void player_t::invalidate_cache( cache_e c )
 {
   if ( ! cache.active ) return;
@@ -3819,7 +3825,8 @@ void player_t::invalidate_cache( cache_e c )
       break;
   }
 }
-
+#else
+  void invalidate_cache( cache_e ) {}
 #endif
 
 void player_t::sequence_add_wait( const timespan_t& amount, const timespan_t& ts )
@@ -4813,6 +4820,14 @@ void player_t::stun()
 void player_t::moving()
 {
   halt();
+}
+
+void player_t::finish_moving()
+{
+  if ( buffs.norgannons_foresight )
+  {
+    buffs.norgannons_foresight -> trigger();
+  }
 }
 
 // player_t::clear_debuffs===================================================
@@ -6312,6 +6327,29 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
     action_priority_list.push_back( a );
   }
   return a;
+}
+
+int player_t::find_action_id( const std::string& name )
+{
+  for ( size_t i = 0; i < action_map.size(); i++ )
+  {
+    if ( util::str_compare_ci( name, action_map[ i ] ) )
+      return static_cast<int>(i);
+  }
+
+  return -1;
+}
+
+int player_t::get_action_id( const std::string& name )
+{
+  auto id = find_action_id( name );
+  if ( id != -1 )
+  {
+    return id;
+  }
+
+  action_map.push_back( name );
+  return action_map.size() - 1;
 }
 
 // Wait For Cooldown Action =================================================
@@ -8075,8 +8113,10 @@ bool player_t::parse_talents_numbers( const std::string& talent_string )
   return true;
 }
 
-// player_t::parse_talents_armory ===========================================
 
+/**
+ * Old-style armory format for xx.battle.net / xx.battlenet.com
+ */
 bool player_t::parse_talents_armory( const std::string& talent_string )
 {
   talent_points.clear();
@@ -8210,6 +8250,9 @@ player_e armory2_parse_player_type( const std::string& class_name )
 }
 }
 
+/**
+ * New armory format used in worldofwarcraft.com / www.wowchina.com
+ */
 bool player_t::parse_talents_armory2( const std::string& talents_url )
 {
   auto split = util::string_split( talents_url, "#/=" );
@@ -10666,6 +10709,118 @@ void player_t::change_position( position_e new_pos )
   current.position = new_pos;
 }
 
+timespan_t player_t::time_to_move() const
+{
+  if ( current.distance_to_move > 0 || current.moving_away > 0 )
+  {
+    // Add 1ms of time to ensure that we finish this run. This is necessary due to the millisecond accuracy in our timing system.
+    return timespan_t::from_seconds( ( current.distance_to_move + current.moving_away ) / composite_movement_speed() + 0.001 );
+  }
+  else
+    return timespan_t::zero();
+}
+
+void player_t::trigger_movement( double distance, movement_direction_e direction )
+{
+  // Distance of 0 disables movement
+  if ( distance == 0 )
+    do_update_movement( 9999 );
+  else
+  {
+    if ( direction == MOVEMENT_AWAY )
+      current.moving_away = distance;
+    else
+      current.distance_to_move = distance;
+    current.movement_direction = direction;
+    if ( buffs.movement )
+    {
+      buffs.movement -> trigger();
+    }
+  }
+}
+
+void player_t::update_movement( timespan_t duration )
+{
+  // Presume stunned players don't move
+  if ( buffs.stunned -> check() )
+    return;
+
+  double yards = duration.total_seconds() * composite_movement_speed();
+  do_update_movement( yards );
+
+  if ( sim -> debug )
+  {
+    if ( current.movement_direction == MOVEMENT_TOWARDS )
+    {
+      sim -> out_debug.printf( "Player %s movement towards target, direction=%s speed=%f distance_covered=%f to_go=%f duration=%f",
+                               name(),
+                               util::movement_direction_string( movement_direction() ),
+                               composite_movement_speed(),
+                               yards,
+                               current.distance_to_move,
+                               duration.total_seconds() );
+    }
+    else
+    {
+      sim -> out_debug.printf( "Player %s movement away from target, direction=%s speed=%f distance_covered=%f to_go=%f duration=%f",
+                               name(),
+                               util::movement_direction_string( movement_direction() ),
+                               composite_movement_speed(),
+                               yards,
+                               current.moving_away,
+                               duration.total_seconds() );
+    }
+  }
+}
+
+/**
+ * Instant teleport. No overshooting support for now.
+ */
+void player_t::teleport( double yards, timespan_t duration )
+{
+  do_update_movement( yards );
+
+  if ( sim -> debug )
+    sim -> out_debug.printf( "Player %s warp, direction=%s speed=LIGHTSPEED! distance_covered=%f to_go=%f",
+        name(),
+        util::movement_direction_string( movement_direction() ),
+        yards,
+        current.distance_to_move );
+  (void) duration;
+}
+
+/**
+ * Update movement data, and also control the buff
+ */
+void player_t::do_update_movement( double yards )
+{
+  if ( ( yards >= current.distance_to_move ) && current.moving_away <= 0 )
+  {
+    //x_position += current.distance_to_move;
+    current.distance_to_move = 0;
+    current.movement_direction = MOVEMENT_NONE;
+    if ( buffs.movement )
+    {
+      buffs.movement -> expire();
+    }
+  }
+  else
+  {
+    if ( current.moving_away > 0 )
+    {
+      //x_position -= yards;
+      current.moving_away -= yards;
+      current.distance_to_move += yards;
+    }
+    else
+    {
+      //x_position += yards;
+      current.moving_away = 0;
+      current.movement_direction = MOVEMENT_TOWARDS;
+      current.distance_to_move -= yards;
+    }
+  }
+}
 /* Invalidate ALL stats
  */
 void player_stat_cache_t::invalidate_all()
@@ -12048,7 +12203,9 @@ void player_t::adjust_action_queue_time()
   queueing -> reschedule_queue_event();
 }
 
-// Verify that the user has an use_item action defined for each on-use item
+/**
+ * Verify that the user input (APL) contains an use-item line for all on-use items
+ */
 bool player_t::verify_use_items() const
 {
   if ( ! sim -> use_item_verification ||
@@ -12098,13 +12255,15 @@ bool player_t::verify_use_items() const
   return missing_actions.size() == 0;
 }
 
-// Figure out a target out of all non-sleeping targets. Skip "invulnerable" ones for now, anything
-// else is fair game.
-//
-// TODO: This skips certain very custom targets (such as Soul Effigy), is it a problem (since those
-// usually are handled in action target cache regeneration)?
+/**
+ * Poor man's targeting support. Acquire_target is triggered by various events (see retarget_event_e) in the core.
+ * Context contains the triggering entity (if relevant). Figures out a target out of all non-sleeping targets.
+ * Skip "invulnerable" ones for now, anything else is fair game.
+ */
 void player_t::acquire_target( retarget_event_e event, player_t* context )
 {
+  // TODO: This skips certain very custom targets (such as Soul Effigy), is it a problem (since those
+  // usually are handled in action target cache regeneration)?
   if ( sim -> debug )
   {
     sim -> out_debug.printf( "%s retargeting event=%s context=%s",
@@ -12222,6 +12381,14 @@ void expansion::legion::initialize_concordance( player_t& player )
   }
 }
 
+/**
+ * A method to "activate" an actor in the simulator. Single actor batch mode activates one primary actor at a time,
+ * while normal simulation mode activates all actors at the beginning of the sim.
+ *
+ * NOTE: Currently, the only thing that occurs during activation of an actor is the registering of various state change
+ * callbacks (via the action_t::activate method) to the global actor lists.
+ * Actor pets are also activated by default.
+ */
 void player_t::activate()
 {
   // Activate all actions of the actor

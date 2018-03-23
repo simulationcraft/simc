@@ -1073,7 +1073,7 @@ js::sc_js_t to_json( const weapon_t& )
   return node;
 }
 
-js::sc_js_t to_json( const player_t::resources_t& )
+js::sc_js_t to_json( const player_resources_t& )
 {
   js::sc_js_t node;
   // TODO

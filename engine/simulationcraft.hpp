@@ -3140,6 +3140,54 @@ struct player_scaling_t
   { scales_with[ stat ] = state; }
 };
 
+// Resources
+struct player_resources_t
+{
+  std::array<double, RESOURCE_MAX> base, initial, max, current, temporary,
+      base_multiplier, initial_multiplier;
+  std::array<int, RESOURCE_MAX> infinite_resource;
+  std::array<bool, RESOURCE_MAX> active_resource;
+  // Initial user-input resources
+  std::array<double, RESOURCE_MAX> initial_opt;
+  // Start-of-combat resource level
+  std::array<double, RESOURCE_MAX> start_at;
+  std::array<double, RESOURCE_MAX> base_regen_per_second;
+
+  player_resources_t() :
+    base(),
+    initial(),
+    max(),
+    current(),
+    temporary(),
+    infinite_resource(),
+    start_at(),
+    base_regen_per_second()
+  {
+    base_multiplier.fill( 1.0 );
+    initial_multiplier.fill( 1.0 );
+    active_resource.fill( true );
+    initial_opt.fill( -1.0 );
+
+    // Init some resources to specific values at the beginning of the combat, defaults to 0.
+    // The actual start-of-combat resource is min( computed_max, start_at ).
+    start_at[ RESOURCE_HEALTH     ] = std::numeric_limits<double>::max();
+    start_at[ RESOURCE_MANA       ] = std::numeric_limits<double>::max();
+    start_at[ RESOURCE_FOCUS      ] = std::numeric_limits<double>::max();
+    start_at[ RESOURCE_ENERGY     ] = std::numeric_limits<double>::max();
+    start_at[ RESOURCE_RUNE       ] = std::numeric_limits<double>::max();
+    start_at[ RESOURCE_SOUL_SHARD ] = 3.0;
+  }
+
+  double pct( resource_e rt ) const
+  { return max[ rt ] ? current[ rt ] / max[ rt ] : 0.0; }
+
+  bool is_infinite( resource_e rt ) const
+  { return infinite_resource[ rt ] != 0; }
+
+  bool is_active( resource_e rt ) const
+  { return active_resource[ rt ] && current[ rt ] >= 0.0; }
+};
+
 struct player_t : public actor_t
 {
   static const int default_level = 110;
@@ -3279,61 +3327,7 @@ struct player_t : public actor_t
   // Current attack speed (needed for dynamic attack speed adjustments)
   double current_attack_speed;
 
-  // Resources
-  struct resources_t
-  {
-    std::array<double, RESOURCE_MAX> base, initial, max, current, temporary,
-        base_multiplier, initial_multiplier;
-    std::array<int, RESOURCE_MAX> infinite_resource;
-    std::array<bool, RESOURCE_MAX> active_resource;
-    // Initial user-input resources
-    std::array<double, RESOURCE_MAX> initial_opt;
-    // Start-of-combat resource level
-    std::array<double, RESOURCE_MAX> start_at;
-    std::array<double, RESOURCE_MAX> base_regen_per_second;
-
-    resources_t()
-    {
-      range::fill( base, 0.0 );
-      range::fill( initial, 0.0 );
-      range::fill( max, 0.0 );
-      range::fill( current, 0.0 );
-      range::fill( temporary, 0.0 );
-      range::fill( base_multiplier, 1.0 );
-      range::fill( initial_multiplier, 1.0 );
-      range::fill( infinite_resource, 0 );
-      range::fill( active_resource, true );
-      range::fill( initial_opt, -1.0 );
-      range::fill( start_at, 0.0 );
-      range::fill( base_regen_per_second, 0.0 );
-
-      // Init some resources to specific values at the beginning of the combat, defaults to 0.
-      // The actual start-of-combat resource is min( computed_max, start_at ).
-      start_at[ RESOURCE_HEALTH     ] = std::numeric_limits<double>::max();
-      start_at[ RESOURCE_MANA       ] = std::numeric_limits<double>::max();
-      start_at[ RESOURCE_FOCUS      ] = std::numeric_limits<double>::max();
-      start_at[ RESOURCE_ENERGY     ] = std::numeric_limits<double>::max();
-      start_at[ RESOURCE_RUNE       ] = std::numeric_limits<double>::max();
-      start_at[ RESOURCE_SOUL_SHARD ] = 3.0;
-    }
-
-    double pct( resource_e rt ) const
-    { return max[ rt ] ? current[ rt ] / max[ rt ] : 0.0; }
-
-    bool is_infinite( resource_e rt ) const
-    { return infinite_resource[ rt ] != 0; }
-
-    bool is_active( resource_e rt ) const
-    { return active_resource[ rt ] && current[ rt ] >= 0.0; }
-  } resources;
-
-  struct consumables_t {
-    buff_t* flask;
-    stat_buff_t* guardian_elixir;
-    stat_buff_t* battle_elixir;
-    buff_t* food;
-    buff_t* augmentation;
-  } consumables;
+  player_resources_t resources;
 
   // Events
   action_t* executing;
@@ -3454,6 +3448,14 @@ struct player_t : public actor_t
   double base_movement_speed;
   double passive_modifier; // _PASSIVE_ movement speed modifiers
   double x_position, y_position, default_x_position, default_y_position;
+
+  struct consumables_t {
+    buff_t* flask;
+    stat_buff_t* guardian_elixir;
+    stat_buff_t* battle_elixir;
+    buff_t* food;
+    buff_t* augmentation;
+  } consumables;
 
   struct buffs_t
   {
@@ -3606,11 +3608,146 @@ struct player_t : public actor_t
 
   bool active_during_iteration;
   const spelleffect_data_t* _mastery; // = find_mastery_spell( specialization() ) -> effectN( 1 );
+  player_stat_cache_t cache;
+  auto_dispose<std::vector<action_variable_t*>> variables;
+  std::vector<std::string> action_map;
 
   player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e );
 
-  virtual const char* name() const override { return name_str.c_str(); }
+  // Static methods
+  static player_t* create( sim_t* sim, const player_description_t& );
+  static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == TMI_BOSS || t == TANK_DUMMY; }
+  static bool _is_sleeping( const player_t* t ) { return t -> current.sleeping; }
 
+
+  // Overrides
+  const char* name() const override
+  { return name_str.c_str(); }
+
+
+  // Normal methods
+  bool add_action( std::string action, std::string options = "", std::string alist = "default" );
+  bool add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
+  void init_character_properties();
+  double composite_block_dr( double extra_block ) const;
+  void collect_resource_timeline_information();
+  specialization_e specialization() const
+  { return _spec; }
+  const char* primary_tree_name() const;
+  timespan_t total_reaction_time();
+  void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
+  void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
+  void modify_current_rating( rating_e stat, double amount );
+  double       compute_incoming_damage( timespan_t = timespan_t::from_seconds( 5 ) );
+  double       calculate_time_to_bloodlust();
+
+  bool is_moving() const { return buffs.movement && buffs.movement -> check(); }
+
+  bool parse_talents_numbers( const std::string& talent_string );
+  bool parse_talents_armory( const std::string& talent_string );
+  bool parse_talents_armory2( const std::string& talent_string );
+  bool parse_talents_wowhead( const std::string& talent_string );
+
+  void create_talents_numbers();
+  void create_talents_armory();
+  void create_talents_wowhead();
+
+  void                    clear_action_priority_lists() const;
+  void                    copy_action_priority_list( const std::string& old_list, const std::string& new_list );
+
+
+  artifact_power_t find_artifact_spell( const std::string& name, bool tokenized = false ) const;
+  artifact_power_t find_artifact_spell( unsigned power_id ) const;
+  expr_t* create_resource_expression( const std::string& name );
+
+  double avg_item_level() const;
+  double get_attribute( attribute_e a ) const
+  { return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
+  double strength() const
+  { return get_attribute( ATTR_STRENGTH ); }
+  double agility() const
+  { return get_attribute( ATTR_AGILITY ); }
+  double stamina() const
+  { return get_attribute( ATTR_STAMINA ); }
+  double intellect() const
+  { return get_attribute( ATTR_INTELLECT ); }
+  double spirit() const
+  { return get_attribute( ATTR_SPIRIT ); }
+  double mastery_coefficient() const
+  { return _mastery -> mastery_value(); }
+  double      get_player_distance( const player_t& ) const;
+  double      get_ground_aoe_distance( const action_state_t& ) const;
+  double      get_position_distance( double m = 0, double v = 0 ) const;
+
+  void change_position( position_e );
+  position_e position() const
+  { return current.position; }
+
+  void add_option( std::unique_ptr<option_t> o )
+  {
+    // Push_front so derived classes (eg. enemy_t) can override existing options
+    options.insert( options.begin(), std::move( o ) );
+  }
+
+  bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
+  bool is_enemy() const { return _is_enemy( type ); }
+  bool is_add() const { return type == ENEMY_ADD; }
+  bool is_sleeping() const { return _is_sleeping( this ); }
+
+  pet_t* cast_pet() { return debug_cast<pet_t*>( this ); }
+  const pet_t* cast_pet() const { return debug_cast<const pet_t*>( this ); }
+  bool is_my_pet( player_t* t ) const;
+
+  bool      in_gcd() const { return gcd_ready > sim -> current_time(); }
+  bool      recent_cast();
+  bool      dual_wield() const { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
+  bool      has_shield_equipped() const
+  { return  items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD; }
+
+  const spell_data_t* find_racial_spell( const std::string& name, race_e s = RACE_NONE ) const;
+  const spell_data_t* find_class_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_pet_spell( const std::string& name ) const;
+  const spell_data_t* find_talent_spell( const std::string& name, specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
+  const spell_data_t* find_specialization_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_specialization_spell( unsigned spell_id, specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_mastery_spell( specialization_e s, uint32_t idx = 0 ) const;
+  const spell_data_t* find_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_spell( unsigned int id ) const;
+
+  pet_t*      find_pet( const std::string& name ) const;
+  item_t*     find_item( const std::string& );
+  item_t*     find_item( unsigned );
+  action_t*   find_action( const std::string& ) const;
+  cooldown_t* find_cooldown( const std::string& name ) const;
+  dot_t*      find_dot     ( const std::string& name, player_t* source ) const;
+  stats_t*    find_stats   ( const std::string& name ) const;
+  gain_t*     find_gain    ( const std::string& name ) const;
+  proc_t*     find_proc    ( const std::string& name ) const;
+  benefit_t*  find_benefit ( const std::string& name ) const;
+  uptime_t*   find_uptime  ( const std::string& name ) const;
+  luxurious_sample_data_t* find_sample_data( const std::string& name ) const;
+  action_priority_list_t* find_action_priority_list( const std::string& name ) const;
+
+  cooldown_t* get_cooldown( const std::string& name );
+  real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
+  real_ppm_t* get_rppm    ( const std::string& name, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
+  shuffled_rng_t* get_shuffled_rng(const std::string& name, int success_entries = 0, int total_entries = 0);
+  dot_t*      get_dot     ( const std::string& name, player_t* source );
+  gain_t*     get_gain    ( const std::string& name );
+  proc_t*     get_proc    ( const std::string& name );
+  stats_t*    get_stats   ( const std::string& name, action_t* action = nullptr );
+  benefit_t*  get_benefit ( const std::string& name );
+  uptime_t*   get_uptime  ( const std::string& name );
+  luxurious_sample_data_t* get_sample_data( const std::string& name );
+  action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
+
+
+  int get_action_id( const std::string& name );
+
+  int find_action_id( const std::string& name );
+
+  // Virtual methods
+  virtual void invalidate_cache( cache_e c );
   virtual void init();
   virtual void override_talent( std::string& override_str );
   virtual void override_artifact( const std::string& override_str );
@@ -3622,12 +3759,7 @@ struct player_t : public actor_t
   virtual std::vector<std::string> get_item_actions( const std::string& options = std::string() );
   virtual std::vector<std::string> get_profession_actions();
   virtual std::vector<std::string> get_racial_actions();
-  bool add_action( std::string action, std::string options = "", std::string alist = "default" );
-  bool add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
-
-
   virtual void init_target();
-  void init_character_properties();
   virtual void init_race();
   virtual void init_talents();
   virtual bool init_artifact();
@@ -3639,7 +3771,6 @@ struct player_t : public actor_t
   virtual void init_weapon( weapon_t& );
   virtual void init_base_stats();
   virtual void init_initial_stats();
-
   virtual void init_defense();
   virtual void create_buffs();
   virtual bool create_special_effects();
@@ -3655,34 +3786,21 @@ struct player_t : public actor_t
   virtual void init_distance_targeting();
   virtual void init_absorb_priority();
   virtual void init_assessors();
-
   virtual bool create_actions();
   virtual bool init_actions();
   virtual bool init_finished();
-
-  // Verify that the user input (APL) contains an use-item line for all on-use items
   virtual bool verify_use_items() const;
-
   virtual void reset();
   virtual void combat_begin();
   virtual void combat_end();
   virtual void merge( player_t& other );
-
   virtual void datacollection_begin();
   virtual void datacollection_end();
 
-  // Single actor batch mode calls this every time the active (player) actor changes for all targets
+  /// Single actor batch mode calls this every time the active (player) actor changes for all targets
   virtual void actor_changed() { }
-
-  // A method to "activate" an actor in the simulator. Single actor batch mode activates one primary
-  // actor at a time, while normal simulation mode activates all actors at the beginning of the sim.
-  //
-  // NOTE: Currently, the only thing that occurs during activation of an actor is the registering of
-  // various state change callbacks (via the action_t::activate method) to the global actor lists.
-  // Actor pets are also activated by default.
   virtual void activate();
   virtual void deactivate();
-
   virtual int level() const;
 
   virtual double resource_regen_per_second( resource_e ) const;
@@ -3692,158 +3810,113 @@ struct player_t : public actor_t
   virtual double composite_melee_attack_power() const;
   virtual double composite_melee_hit() const;
   virtual double composite_melee_crit_chance() const;
-  virtual double composite_melee_crit_chance_multiplier() const { return 1.0; }
+  virtual double composite_melee_crit_chance_multiplier() const
+  { return 1.0; }
   virtual double composite_melee_expertise( const weapon_t* w = nullptr ) const;
-
-  virtual double composite_spell_haste() const; //This is the subset of the old_spell_haste that applies to RPPM
-  virtual double composite_spell_speed() const; //This is the old spell_haste and incorporates everything that buffs cast speed
+  virtual double composite_spell_haste() const;
+  virtual double composite_spell_speed() const;
   virtual double composite_spell_power( school_e school ) const;
   virtual double composite_spell_crit_chance() const;
-  virtual double composite_spell_crit_chance_multiplier() const { return 1.0; }
+  virtual double composite_spell_crit_chance_multiplier() const
+  { return 1.0; }
   virtual double composite_spell_hit() const;
   virtual double composite_mastery() const;
   virtual double composite_mastery_value() const;
   virtual double composite_bonus_armor() const;
-
   virtual double composite_damage_versatility() const;
   virtual double composite_heal_versatility() const;
   virtual double composite_mitigation_versatility() const;
-
   virtual double composite_leech() const;
   virtual double composite_run_speed() const;
   virtual double composite_avoidance() const;
-
   virtual double composite_armor() const;
   virtual double composite_armor_multiplier() const;
   virtual double composite_miss() const;
   virtual double composite_dodge() const;
   virtual double composite_parry() const;
   virtual double composite_block() const;
-  double composite_block_dr( double extra_block ) const;
   virtual double composite_block_reduction() const;
   virtual double composite_crit_block() const;
   virtual double composite_crit_avoidance() const;
-
   virtual double composite_attack_power_multiplier() const;
   virtual double composite_spell_power_multiplier() const;
-
-  virtual double matching_gear_multiplier( attribute_e /* attr */ ) const { return 0; }
-
+  virtual double matching_gear_multiplier( attribute_e /* attr */ ) const
+  { return 0; }
   virtual double composite_player_multiplier   ( school_e ) const;
   virtual double composite_player_dd_multiplier( school_e,  const action_t* /* a */ = nullptr ) const { return 1; }
   virtual double composite_player_td_multiplier( school_e,  const action_t* a = nullptr ) const;
-  // Persistent multipliers that are snapshot at the beginning of the spell application/execution
+  /// Persistent multipliers that are snapshot at the beginning of the spell application/execution
   virtual double composite_persistent_multiplier( school_e ) const
   { return 1.0; }
   virtual double composite_player_target_multiplier( player_t* target, school_e school ) const;
-
   virtual double composite_player_heal_multiplier( const action_state_t* s ) const;
-  virtual double composite_player_dh_multiplier( school_e /* school */ ) const { return 1; }
-  virtual double composite_player_th_multiplier( school_e school ) const;
-
+  virtual double composite_player_dh_multiplier( school_e ) const { return 1; }
+  virtual double composite_player_th_multiplier( school_e ) const;
   virtual double composite_player_absorb_multiplier( const action_state_t* s ) const;
-
-  virtual double composite_player_pet_damage_multiplier( const action_state_t* /* state */ ) const;
-
+  virtual double composite_player_pet_damage_multiplier( const action_state_t* ) const;
   virtual double composite_player_critical_damage_multiplier( const action_state_t* s ) const;
   virtual double composite_player_critical_healing_multiplier() const;
-
   virtual double composite_mitigation_multiplier( school_e ) const;
-
   virtual double temporary_movement_modifier() const;
   virtual double passive_movement_modifier() const;
   virtual double composite_movement_speed() const;
-
   virtual double composite_attribute( attribute_e attr ) const;
   virtual double composite_attribute_multiplier( attribute_e attr ) const;
-
   virtual double composite_rating_multiplier( rating_e /* rating */ ) const;
   virtual double composite_rating( rating_e rating ) const;
-
   virtual double composite_spell_hit_rating() const
   { return composite_rating( RATING_SPELL_HIT ); }
   virtual double composite_spell_crit_rating() const
   { return composite_rating( RATING_SPELL_CRIT ); }
   virtual double composite_spell_haste_rating() const
   { return composite_rating( RATING_SPELL_HASTE ); }
-
   virtual double composite_melee_hit_rating() const
   { return composite_rating( RATING_MELEE_HIT ); }
   virtual double composite_melee_crit_rating() const
   { return composite_rating( RATING_MELEE_CRIT ); }
   virtual double composite_melee_haste_rating() const
   { return composite_rating( RATING_MELEE_HASTE ); }
-
   virtual double composite_ranged_hit_rating() const
   { return composite_rating( RATING_RANGED_HIT ); }
   virtual double composite_ranged_crit_rating() const
   { return composite_rating( RATING_RANGED_CRIT ); }
   virtual double composite_ranged_haste_rating() const
   { return composite_rating( RATING_RANGED_HASTE ); }
-
   virtual double composite_mastery_rating() const
   { return composite_rating( RATING_MASTERY ); }
   virtual double composite_expertise_rating() const
   { return composite_rating( RATING_EXPERTISE ); }
-
   virtual double composite_dodge_rating() const
   { return composite_rating( RATING_DODGE ); }
   virtual double composite_parry_rating() const
   { return composite_rating( RATING_PARRY ); }
   virtual double composite_block_rating() const
   { return composite_rating( RATING_BLOCK ); }
-
   virtual double composite_damage_versatility_rating() const
   { return composite_rating( RATING_DAMAGE_VERSATILITY ); }
   virtual double composite_heal_versatility_rating() const
   { return composite_rating( RATING_HEAL_VERSATILITY ); }
   virtual double composite_mitigation_versatility_rating() const
   { return composite_rating( RATING_MITIGATION_VERSATILITY ); }
-
   virtual double composite_leech_rating() const
   { return composite_rating( RATING_LEECH ); }
-
   virtual double composite_speed_rating() const
   { return composite_rating( RATING_SPEED ); }
-
   virtual double composite_avoidance_rating() const
   { return composite_rating( RATING_AVOIDANCE ); }
-
-  double get_attribute( attribute_e a ) const
-  { return util::floor( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
-
-  double strength() const  { return get_attribute( ATTR_STRENGTH ); }
-  double agility() const   { return get_attribute( ATTR_AGILITY ); }
-  double stamina() const   { return get_attribute( ATTR_STAMINA ); }
-  double intellect() const { return get_attribute( ATTR_INTELLECT ); }
-  double spirit() const    { return get_attribute( ATTR_SPIRIT ); }
-  double mastery_coefficient() const { return _mastery -> mastery_value(); }
-
-  // Stat Caching
-  player_stat_cache_t cache;
-#if defined(SC_USE_STAT_CACHE)
-  virtual void invalidate_cache( cache_e c );
-#else
-  void invalidate_cache( cache_e ) {}
-#endif
 
   virtual void interrupt();
   virtual void halt();
   virtual void moving();
-  virtual void finish_moving()
-  {
-    if ( buffs.norgannons_foresight )
-    {
-      buffs.norgannons_foresight -> trigger();
-    }
-  }
+  virtual void finish_moving();
   virtual void stun();
   virtual void clear_debuffs();
   virtual void trigger_ready();
   virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false );
   virtual void arise();
   virtual void demise();
-  virtual timespan_t available() const { return timespan_t::from_seconds( 0.1 ); }
+  virtual timespan_t available() const
+  { return timespan_t::from_seconds( 0.1 ); }
   virtual action_t* select_action( const action_priority_list_t& );
   virtual action_t* execute_action();
 
@@ -3852,27 +3925,17 @@ struct player_t : public actor_t
   virtual double resource_loss( resource_e resource_type, double amount, gain_t* g = nullptr, action_t* a = nullptr );
   virtual void   recalculate_resource_max( resource_e resource_type );
   virtual bool   resource_available( resource_e resource_type, double cost ) const;
-  void collect_resource_timeline_information();
-  virtual resource_e primary_resource() const { return RESOURCE_NONE; }
+  virtual resource_e primary_resource() const
+  { return RESOURCE_NONE; }
   virtual role_e   primary_role() const;
-  virtual stat_e convert_hybrid_stat( stat_e s ) const { return s; }
-  specialization_e specialization() const { return _spec; }
-  const char* primary_tree_name() const;
+  virtual stat_e convert_hybrid_stat( stat_e s ) const
+  { return s; }
   virtual stat_e normalize_by() const;
-
   virtual stat_e primary_stat() const { return STAT_NONE; }
-
   virtual double health_percentage() const;
   virtual double max_health() const;
   virtual double current_health() const;
   virtual timespan_t time_to_percent( double percent ) const;
-  timespan_t total_reaction_time();
-
-  void stat_gain( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
-  void stat_loss( stat_e stat, double amount, gain_t* g = nullptr, action_t* a = nullptr, bool temporary = false );
-
-  void modify_current_rating( rating_e stat, double amount );
-
   virtual void cost_reduction_gain( school_e school, double amount, gain_t* g = nullptr, action_t* a = nullptr );
   virtual void cost_reduction_loss( school_e school, double amount, action_t* a = nullptr );
 
@@ -3882,9 +3945,6 @@ struct player_t : public actor_t
   virtual void assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* );
   virtual void assess_damage_imminent( school_e, dmg_e, action_state_t* );
   virtual void do_damage( action_state_t* );
-  double       compute_incoming_damage( timespan_t = timespan_t::from_seconds( 5 ) );
-  double       calculate_time_to_bloodlust();
-
   virtual void assess_heal( school_e, dmg_e, action_state_t* );
 
   virtual bool taunt( player_t* /* source */ ) { return false; }
@@ -3892,42 +3952,9 @@ struct player_t : public actor_t
   virtual void  summon_pet( const std::string& name, timespan_t duration = timespan_t::zero() );
   virtual void dismiss_pet( const std::string& name );
 
-  bool is_moving() const { return buffs.movement && buffs.movement -> check(); }
-
-  bool parse_talents_numbers( const std::string& talent_string );
-  // Old-style armory format for xx.battle.net / xx.battlenet.com
-  bool parse_talents_armory( const std::string& talent_string );
-  // New armory format used in worldofwarcraft.com / www.wowchina.com
-  bool parse_talents_armory2( const std::string& talent_string );
-  bool parse_talents_wowhead( const std::string& talent_string );
-
-  void create_talents_numbers();
-  void create_talents_armory();
-  void create_talents_wowhead();
-
-  const spell_data_t* find_racial_spell( const std::string& name, race_e s = RACE_NONE ) const;
-  const spell_data_t* find_class_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_pet_spell( const std::string& name ) const;
-  const spell_data_t* find_talent_spell( const std::string& name, specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
-  const spell_data_t* find_specialization_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_specialization_spell( unsigned spell_id, specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_mastery_spell( specialization_e s, uint32_t idx = 0 ) const;
-  const spell_data_t* find_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
-  const spell_data_t* find_spell( unsigned int id ) const;
-
-  artifact_power_t find_artifact_spell( const std::string& name, bool tokenized = false ) const;
-  artifact_power_t find_artifact_spell( unsigned power_id ) const;
-
   virtual expr_t* create_expression( action_t*, const std::string& name );
-  expr_t* create_resource_expression( const std::string& name );
 
   virtual void create_options();
-  void add_option( std::unique_ptr<option_t> o )
-  {
-    // Push_front so derived classes (eg. enemy_t) can override existing options
-    // (eg. target_level)
-    options.insert( options.begin(), std::move( o ) );
-  }
   void recreate_talent_str( talent_format_e format = TALENT_FORMAT_NUMBERS );
   virtual std::string create_profile( save_e = SAVE_ALL );
 
@@ -3941,20 +3968,6 @@ struct player_t : public actor_t
                                   cache::behavior_e /* behavior */ = cache::players() )
   {}
 
-  // Class-Specific Methods
-  static player_t* create( sim_t* sim, const player_description_t& );
-
-  bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
-  bool is_enemy() const { return _is_enemy( type ); }
-  static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD || t == TMI_BOSS || t == TANK_DUMMY; }
-  bool is_add() const { return type == ENEMY_ADD; }
-  static bool _is_sleeping( const player_t* t ) { return t -> current.sleeping; }
-  bool is_sleeping() const { return _is_sleeping( this ); }
-
-  pet_t* cast_pet() { return debug_cast<pet_t*>( this ); }
-  const pet_t* cast_pet() const { return debug_cast<const pet_t*>( this ); }
-  bool is_my_pet( player_t* t ) const;
-
   /**
    * Returns owner if available, otherwise the player itself.
    */
@@ -3964,48 +3977,8 @@ struct player_t : public actor_t
   player_t* get_owner_or_self()
   { return const_cast<player_t*>(static_cast<const player_t*>(this) -> get_owner_or_self()); }
 
-  bool      in_gcd() const { return gcd_ready > sim -> current_time(); }
-  bool      recent_cast();
-  bool      dual_wield() const { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
-  bool      has_shield_equipped() const
-  { return  items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD; }
-
   // T18 Hellfire Citadel class trinket detection
   virtual bool has_t18_class_trinket() const;
-
-  action_priority_list_t* find_action_priority_list( const std::string& name ) const;
-  void                    clear_action_priority_lists() const;
-  void                    copy_action_priority_list( const std::string& old_list, const std::string& new_list );
-
-  pet_t*    find_pet( const std::string& name ) const;
-  item_t*     find_item( const std::string& );
-  item_t*     find_item( unsigned );
-  action_t*   find_action( const std::string& ) const;
-  cooldown_t* find_cooldown( const std::string& name ) const;
-  dot_t*      find_dot     ( const std::string& name, player_t* source ) const;
-  stats_t*    find_stats   ( const std::string& name ) const;
-  gain_t*     find_gain    ( const std::string& name ) const;
-  proc_t*     find_proc    ( const std::string& name ) const;
-  benefit_t*  find_benefit ( const std::string& name ) const;
-  uptime_t*   find_uptime  ( const std::string& name ) const;
-  luxurious_sample_data_t* find_sample_data( const std::string& name ) const;
-
-  cooldown_t* get_cooldown( const std::string& name );
-  real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
-  real_ppm_t* get_rppm    ( const std::string& name, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
-  shuffled_rng_t* get_shuffled_rng(const std::string& name, int success_entries = 0, int total_entries = 0);
-  dot_t*      get_dot     ( const std::string& name, player_t* source );
-  gain_t*     get_gain    ( const std::string& name );
-  proc_t*     get_proc    ( const std::string& name );
-  stats_t*    get_stats   ( const std::string& name, action_t* action = nullptr );
-  benefit_t*  get_benefit ( const std::string& name );
-  uptime_t*   get_uptime  ( const std::string& name );
-  luxurious_sample_data_t* get_sample_data( const std::string& name );
-  double      get_player_distance( const player_t& ) const;
-  double      get_ground_aoe_distance( const action_state_t& ) const;
-  double      get_position_distance( double m = 0, double v = 0 ) const;
-  double avg_item_level() const;
-  action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
 
   // Targetdata stuff
   virtual actor_target_data_t* get_target_data( player_t* /* target */ ) const
@@ -4023,10 +3996,6 @@ struct player_t : public actor_t
 
   scaling_metric_data_t scaling_for_metric( scale_metric_e metric ) const;
 
-  void change_position( position_e );
-  position_e position() const
-  { return current.position; }
-
   virtual action_t* create_proc_action( const std::string& /* name */, const special_effect_t& /* effect */ )
   { return nullptr; }
   virtual bool requires_data_collection() const
@@ -4034,111 +4003,30 @@ struct player_t : public actor_t
 
   rng::rng_t& rng() { return sim -> rng(); }
   rng::rng_t& rng() const { return sim -> rng(); }
-  auto_dispose<std::vector<action_variable_t*>> variables;
-  // Add 1ms of time to ensure that we finish this run. This is necessary due
-  // to the millisecond accuracy in our timing system.
-  virtual timespan_t time_to_move() const
-  {
-    if ( current.distance_to_move > 0 || current.moving_away > 0 )
-      return timespan_t::from_seconds( ( current.distance_to_move + current.moving_away ) / composite_movement_speed() + 0.001 );
-    else
-      return timespan_t::zero();
-  }
-
-  virtual void trigger_movement( double distance, movement_direction_e direction )
-  {
-    // Distance of 0 disables movement
-    if ( distance == 0 )
-      do_update_movement( 9999 );
-    else
-    {
-      if ( direction == MOVEMENT_AWAY )
-        current.moving_away = distance;
-      else
-        current.distance_to_move = distance;
-      current.movement_direction = direction;
-      if ( buffs.movement )
-      {
-        buffs.movement -> trigger();
-      }
-    }
-  }
-
-  virtual void update_movement( timespan_t duration )
-  {
-    // Presume stunned players don't move
-    if ( buffs.stunned -> check() )
-      return;
-
-    double yards = duration.total_seconds() * composite_movement_speed();
-    do_update_movement( yards );
-
-    if ( sim -> debug )
-    {
-      if ( current.movement_direction == MOVEMENT_TOWARDS )
-      {
-        sim -> out_debug.printf( "Player %s movement towards target, direction=%s speed=%f distance_covered=%f to_go=%f duration=%f",
-                                 name(),
-                                 util::movement_direction_string( movement_direction() ),
-                                 composite_movement_speed(),
-                                 yards,
-                                 current.distance_to_move,
-                                 duration.total_seconds() );
-      }
-      else
-      {
-        sim -> out_debug.printf( "Player %s movement away from target, direction=%s speed=%f distance_covered=%f to_go=%f duration=%f",
-                                 name(),
-                                 util::movement_direction_string( movement_direction() ),
-                                 composite_movement_speed(),
-                                 yards,
-                                 current.moving_away,
-                                 duration.total_seconds() );
-      }
-    }
-  }
-
-  // Instant teleport. No overshooting support for now.
-  virtual void teleport( double yards, timespan_t duration = timespan_t::zero() )
-  {
-    do_update_movement( yards );
-
-    if ( sim -> debug )
-      sim -> out_debug.printf( "Player %s warp, direction=%s speed=LIGHTSPEED! distance_covered=%f to_go=%f",
-          name(),
-          util::movement_direction_string( movement_direction() ),
-          yards,
-          current.distance_to_move );
-    (void) duration;
-  }
-
+  virtual timespan_t time_to_move() const;
+  virtual void trigger_movement( double distance, movement_direction_e);
+  virtual void update_movement( timespan_t duration );
+  virtual void teleport( double yards, timespan_t duration = timespan_t::zero() );
   virtual movement_direction_e movement_direction() const
   { return current.movement_direction; }
 
-  std::vector<std::string> action_map;
+  virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */ = nullptr );
 
-  size_t get_action_id( const std::string& name )
-  {
-    for ( size_t i = 0; i < action_map.size(); ++i )
-    {
-      if ( util::str_compare_ci( name, action_map[ i ] ) )
-        return i;
-    }
+  // Default consumable methods
+  virtual std::string default_potion() const
+  { return ""; }
+  virtual std::string default_flask() const
+  { return ""; }
+  virtual std::string default_food() const
+  { return ""; }
+  virtual std::string default_rune() const
+  { return ""; }
 
-    action_map.push_back( name );
-    return action_map.size() - 1;
-  }
+  // JSON Report extension. Overridable in class methods. Root element is an object assigned for
+  // each JSON player object under "custom" property.
+  virtual void output_json_report( js::JsonOutput& /* root */ ) const
+  { }
 
-  int find_action_id( const std::string& name )
-  {
-    for ( size_t i = 0; i < action_map.size(); i++ )
-    {
-      if ( util::str_compare_ci( name, action_map[ i ] ) )
-        return static_cast<int>(i);
-    }
-
-    return -1;
-  }
 private:
   std::vector<unsigned> active_dots;
 public:
@@ -4177,36 +4065,7 @@ public:
   virtual void adjust_auto_attack( haste_type_e haste_type );
 
 private:
-  // Update movement data, and also control the buff
-  void do_update_movement( double yards )
-  {
-    if ( ( yards >= current.distance_to_move ) && current.moving_away <= 0 )
-    {
-      //x_position += current.distance_to_move;
-      current.distance_to_move = 0;
-      current.movement_direction = MOVEMENT_NONE;
-      if ( buffs.movement )
-      {
-        buffs.movement -> expire();
-      }
-    }
-    else
-    {
-      if ( current.moving_away > 0 )
-      {
-        //x_position -= yards;
-        current.moving_away -= yards;
-        current.distance_to_move += yards;
-      }
-      else
-      {
-        //x_position += yards;
-        current.moving_away = 0;
-        current.movement_direction = MOVEMENT_TOWARDS;
-        current.distance_to_move -= yards;
-      }
-    }
-  }
+  void do_update_movement( double yards );
 public:
 
   // Static (default), Dynamic, Disabled
@@ -4261,24 +4120,6 @@ public:
   // action_t::assess_damage.
   assessor::state_assessor_pipeline_t assessor_out_damage;
 
-  // Poor man's targeting support, acquire_target is triggered by various events (see
-  // retarget_event_e) in the core. Context contains the triggering entity (if relevant)
-  virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */ = nullptr );
-
-  // Default consumable methods
-  virtual std::string default_potion() const
-  { return ""; }
-  virtual std::string default_flask() const
-  { return ""; }
-  virtual std::string default_food() const
-  { return ""; }
-  virtual std::string default_rune() const
-  { return ""; }
-
-  // JSON Report extension. Overridable in class methods. Root element is an object assigned for
-  // each JSON player object under "custom" property.
-  virtual void output_json_report( js::JsonOutput& /* root */ ) const
-  { }
 };
 
 
@@ -4734,7 +4575,7 @@ public:
    *
    * Every action -- even actions without spelldata -- is given an internal_id
    */
-  unsigned internal_id;
+  int internal_id;
 
   /// What resource does this ability use.
   resource_e resource_current;
