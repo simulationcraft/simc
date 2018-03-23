@@ -452,7 +452,6 @@
     { "data_type": "H", "field": "sub_type", "formats": { "cpp": "%3u" } },
     { "data_type": "I", "field": "amplitude" },
     { "data_type": "i", "field": "base_value" },
-
     { "data_type": "f", "field": "sp_coefficient" },
     { "data_type": "f", "field": "dmg_multiplier" },
     { "data_type": "i", "field": "chain_target", "formats": { "cpp": "%3d" } },
@@ -460,9 +459,9 @@
     { "data_type": "I", "field": "item_type" },
     { "data_type": "I", "field": "id_mechanic" },
     { "data_type": "f", "field": "points_per_combo_points" },
+    { "data_type": "f", "field": "unk_1" },
     { "data_type": "f", "field": "real_ppl" },
     { "data_type": "I", "field": "trigger_spell" },
-    { "data_type": "f", "field": "unk_1" },
     { "data_type": "f", "field": "ap_coefficient" },
     { "data_type": "f", "field": "pvp_coefficient" },
     { "data_type": "f", "field": "average" },
@@ -470,8 +469,8 @@
     { "data_type": "f", "field": "bonus" },
     { "data_type": "f", "field": "unk_24" },
     { "data_type": "i", "field": "misc_value", "elements": 2 },
-    { "data_type": "I", "field": "class_mask", "elements": 4 },
     { "data_type": "B", "field": "id_radius", "elements": 2 },
+    { "data_type": "I", "field": "class_mask", "elements": 4 },
     { "data_type": "B", "field": "implicit_target", "elements": 2 }
   ],
   "SpellEffectAutoDescription": [
