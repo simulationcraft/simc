@@ -669,31 +669,31 @@ js::sc_js_t to_json( const player_collected_data_t::buffed_stats_t& bs )
 }
 
 void to_json( JsonOutput root,
-              const std::vector<player_collected_data_t::action_sequence_data_t*>& asd,
+              const std::vector<player_collected_data_t::action_sequence_data_t>& asd,
               const std::vector<resource_e>& relevant_resources,
               const sim_t& sim )
 {
   root.make_array();
 
-  range::for_each( asd, [ &root, &relevant_resources, &sim ]( const player_collected_data_t::action_sequence_data_t* entry ) {
+  range::for_each( asd, [ &root, &relevant_resources, &sim ]( const player_collected_data_t::action_sequence_data_t& entry ) {
     auto json = root.add();
 
-    json[ "time" ] = entry -> time;
-    if ( entry -> action )
+    json[ "time" ] = entry.time;
+    if ( entry.action )
     {
-      json[ "name" ] = entry -> action -> name();
-      json[ "target" ] = entry -> action -> target -> name();
+      json[ "name" ] = entry.action -> name();
+      json[ "target" ] = entry.action -> target -> name();
     }
     else
     {
-      json[ "wait" ] = entry -> wait_time;
+      json[ "wait" ] = entry.wait_time;
     }
 
-    if ( entry -> buff_list.size() > 0 )
+    if ( entry.buff_list.size() > 0 )
     {
       auto buffs = json[ "buffs" ];
       buffs.make_array();
-      range::for_each( entry -> buff_list, [ &buffs, &sim ]( const std::pair< buff_t*, std::vector<double> > data ) {
+      range::for_each( entry.buff_list, [ &buffs, &sim ]( const std::pair< buff_t*, std::vector<double> > data ) {
         auto entry = buffs.add();
 
         entry[ "name" ] = data.first -> name();
@@ -706,11 +706,11 @@ void to_json( JsonOutput root,
     }
 
     // Writing cooldown and debuffs data if asking for json full states
-    if ( sim.json_full_states && entry -> cooldown_list.size() > 0 )
+    if ( sim.json_full_states && entry.cooldown_list.size() > 0 )
     {
       auto cooldowns = json[ "cooldowns" ];
       cooldowns.make_array();
-      range::for_each( entry -> cooldown_list, [ &cooldowns, &sim ]( const std::pair< cooldown_t*, std::vector<double> > data ) {
+      range::for_each( entry.cooldown_list, [ &cooldowns, &sim ]( const std::pair< cooldown_t*, std::vector<double> > data ) {
         auto entry = cooldowns.add();
 
         entry[ "name" ] = data.first -> name();
@@ -719,11 +719,11 @@ void to_json( JsonOutput root,
       } );
     }
 
-    if ( sim.json_full_states && entry -> target_list.size() > 0 )
+    if ( sim.json_full_states && entry.target_list.size() > 0 )
     {
       auto targets = json[ "targets" ];
       targets.make_array();
-      range::for_each( entry -> target_list, [ json, &targets, &sim ]
+      range::for_each( entry.target_list, [ json, &targets, &sim ]
           ( const std::pair< player_t*, std::vector< std::pair< buff_t*, std::vector<double> > > > target_data ) {
         auto target_entry = targets.add();
         target_entry[ "name" ] = target_data.first -> name();
@@ -741,9 +741,9 @@ void to_json( JsonOutput root,
     auto resources = json[ "resources" ];
     auto resources_max = json[ "resources_max" ];
     range::for_each( relevant_resources, [ &resources, &resources_max, &entry ]( resource_e r ) {
-      resources[ util::resource_type_string( r ) ] = entry -> resource_snapshot[ r ];
+      resources[ util::resource_type_string( r ) ] = entry.resource_snapshot[ r ];
       // TODO: Why do we have this instead of using some static one?
-      resources_max[ util::resource_type_string( r ) ] = entry -> resource_max_snapshot[ r ];
+      resources_max[ util::resource_type_string( r ) ] = entry.resource_max_snapshot[ r ];
     } );
   } );
 }
@@ -984,11 +984,11 @@ js::sc_js_t to_json( const player_collected_data_t& cd, const sim_t& sim )
     node.set( "health_changes", to_json( cd.health_changes_tmi ) );
     for ( const auto& asd : cd.action_sequence )
     {
-      node.add( "action_sequence", to_json( *asd ) );
+      node.add( "action_sequence", to_json( asd ) );
     }
     for ( const auto& asd : cd.action_sequence_precombat )
     {
-      node.add( "action_sequence_precombat", to_json( *asd ) );
+      node.add( "action_sequence_precombat", to_json( asd ) );
     }
     node.set( "buffed_stats_snapshot", to_json( cd.buffed_stats_snapshot ) );
   }
@@ -1540,7 +1540,6 @@ void to_json( JsonOutput root, const sim_t& sim )
   options_root[ "optimal_raid" ] = sim.optimal_raid;
   options_root[ "log" ] = sim.log;
   options_root[ "debug_each" ] = sim.debug_each;
-  options_root[ "auto_ready_trigger" ] = sim.auto_ready_trigger;
   options_root[ "stat_cache" ] = sim.stat_cache;
   options_root[ "max_aoe_enemies" ] = sim.max_aoe_enemies;
   options_root[ "show_etmi" ] = sim.show_etmi;
@@ -1706,7 +1705,6 @@ js::sc_js_t to_json( const sim_t& sim )
   node.set( "optimal_raid", sim.optimal_raid );
   node.set( "log", sim.log );
   node.set( "debug_each", sim.debug_each );
-  node.set( "auto_ready_trigger", sim.auto_ready_trigger );
   node.set( "stat_cache", sim.stat_cache );
   node.set( "max_aoe_enemies", sim.max_aoe_enemies );
   node.set( "show_etmi", sim.show_etmi );

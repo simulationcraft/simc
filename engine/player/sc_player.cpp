@@ -589,18 +589,20 @@ void residual_action::trigger( action_t* residual_action, player_t* t, double am
         sim().out_debug.printf( "%s %s residual_action delay_event_start amount=%f", a->player->name(), action->name(),
                                 amount );
     }
+
     virtual const char* name() const override
     {
       return "residual_action_delay_event";
     }
+
     virtual void execute() override
     {
       // Don't ignite on targets that are not active
       if ( target->is_sleeping() )
         return;
 
-      dot_t* dot                           = action->get_dot( target );
-      residual_periodic_state_t* dot_state = debug_cast<residual_periodic_state_t*>( dot->state );
+      dot_t* dot     = action->get_dot( target );
+      auto dot_state = debug_cast<residual_periodic_state_t*>( dot->state );
 
       assert( action->dot_duration > timespan_t::zero() );
 
@@ -641,11 +643,8 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   actor_t( s, n ),
   type( t ),
   parent( nullptr ),
-
   index( -1 ),
   actor_spawn_index( -1 ),
-
-  // (static) attributes
   race( r ),
   role( ROLE_NONE ),
   true_level( default_level ),
@@ -659,12 +658,9 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   height( 0 ),
   combat_reach( 1.0 ),
   default_target( nullptr ),
-
-  // dynamic stuff
   target( 0 ),
   initialized( false ),
   potion_used( false ),
-
   region_str( s->default_region_str ),
   server_str( s->default_server_str ),
   origin_str(),
@@ -720,7 +716,6 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   first_cast( true ),
   last_foreground_action( 0 ),
   prev_gcd_actions( 0 ),
-
   off_gcdactions(),
   cast_delay_reaction( timespan_t::zero() ),
   cast_delay_occurred( timespan_t::zero() ),
@@ -746,7 +741,6 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   iteration_resource_gained(),
   rps_gain( 0 ),
   rps_loss( 0 ),
-
   tmi_window( 6.0 ),
   collected_data( this ),
   // Damage
@@ -760,14 +754,13 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   iteration_absorb(),
   iteration_absorb_taken(),
   hpr( 0 ),
-
-  report_information( player_processed_report_information_t() ),
+  report_information(),
   // Gear
   sets( ( !is_pet() && !is_enemy() ) ? new set_bonus_t( this ) : nullptr ),
   meta_gem( META_GEM_NONE ),
   matching_gear( false ),
   karazhan_trinkets_paired( false ),
-  item_cooldown( cooldown_t( "item_cd", *this ) ),
+  item_cooldown( "item_cd", *this ),
   legendary_tank_cloak_cd( nullptr ),
   warlords_unseeing_eye( 0.0 ),
   warlords_unseeing_eye_stats(),
@@ -969,8 +962,8 @@ void player_t::init()
     sim->out_debug.printf( "Initializing player %s", name() );
 
   // Ensure the precombat and default lists are the first listed
-  get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." )->used =
-      true;
+  auto pc = get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." );
+  pc->used = true;
   get_action_priority_list( "default", "Executed every time the actor is available." );
 
   for ( auto& elem : alist_map )
@@ -1070,7 +1063,7 @@ void player_t::init_base_stats()
         dbc.race_base( race ).intellect + dbc.attribute_base( type, level() ).intellect;
     base.stats.attribute[ STAT_SPIRIT ] = dbc.race_base( race ).spirit + dbc.attribute_base( type, level() ).spirit;
 
-    // heroic presence is treated like base stats, floored before adding in; tested 7/20/2014
+    // heroic presence is treated like base stats, floored before adding in; tested 2014-07-20
     base.stats.attribute[ STAT_STRENGTH ] += util::floor( racials.heroic_presence->effectN( 1 ).average( this ) );
     base.stats.attribute[ STAT_AGILITY ] += util::floor( racials.heroic_presence->effectN( 2 ).average( this ) );
     base.stats.attribute[ STAT_INTELLECT ] += util::floor( racials.heroic_presence->effectN( 3 ).average( this ) );
@@ -1086,7 +1079,7 @@ void player_t::init_base_stats()
     resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, level() );
     resources.base[ RESOURCE_MANA ]   = dbc.resource_base( type, level() );
 
-    // 1% of max mana as mana regen per second for all classes.
+    // 1% of base mana as mana regen per second for all classes.
     resources.base_regen_per_second[ RESOURCE_MANA ] = dbc.resource_base( type, level() ) * 0.01;
 
     // Automatically parse mana regen and max mana modifiers from class passives.
@@ -1146,7 +1139,11 @@ void player_t::init_base_stats()
   if ( type == WARRIOR || type == PALADIN || type == ROGUE || type == DEATH_KNIGHT || type == MONK ||
        type == DEMON_HUNTER || specialization() == SHAMAN_ENHANCEMENT || type == ENEMY || type == TMI_BOSS ||
        type == TANK_DUMMY )
-    base.parry = 0.03 + ( dbc.race_base( race ).strength + 0.0739 ) * base.parry_per_strength;
+  {
+    base.parry = 0.03;
+    double phantom_strength = 0.0739; // TODO: check if this is still the case in legion/bfa
+    base.parry += ( dbc.race_base( race ).strength +phantom_strength ) * base.parry_per_strength;
+  }
 
   // Extract avoidance DR values from table in sc_extra_data.inc
   def_dr.horizontal_shift = dbc.horizontal_shift( type );
@@ -1156,20 +1153,17 @@ void player_t::init_base_stats()
   def_dr.miss_factor      = dbc.miss_factor( type );
   def_dr.block_factor     = dbc.block_factor( type );
 
-  base.spell_power_multiplier  = 1.0;
-  base.attack_power_multiplier = 1.0;
-
   if ( ( meta_gem == META_EMBER_PRIMAL ) || ( meta_gem == META_EMBER_SHADOWSPIRIT ) ||
        ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
   {
     resources.base_multiplier[ RESOURCE_MANA ] *= 1.02;
   }
 
-  resources.base_multiplier[ RESOURCE_MANA ] *= 1 + racials.expansive_mind->effectN( 1 ).percent();
-  resources.base_multiplier[ RESOURCE_RAGE ] *= 1 + racials.expansive_mind->effectN( 1 ).percent();
-  resources.base_multiplier[ RESOURCE_ENERGY ] *= 1 + racials.expansive_mind->effectN( 1 ).percent();
-  resources.base_multiplier[ RESOURCE_RUNIC_POWER ] *= 1 + racials.expansive_mind->effectN( 1 ).percent();
-  resources.base_multiplier[ RESOURCE_FOCUS ] *= 1 + racials.expansive_mind->effectN( 1 ).percent();
+  // Expansive Mind
+  for ( auto& r : { RESOURCE_MANA, RESOURCE_RAGE, RESOURCE_ENERGY, RESOURCE_RUNIC_POWER, RESOURCE_FOCUS} )
+  {
+    resources.base_multiplier[ r ] *= 1.0 + racials.expansive_mind->effectN( 1 ).percent();
+  }
 
   if ( true_level >= 50 && matching_gear )
   {
@@ -1258,8 +1252,7 @@ bool player_t::init_items()
     sim->out_debug.printf( "Initializing items for player (%s)", name() );
 
   // Create items
-  std::vector<std::string> splits = util::string_split( items_str, "/" );
-  for ( const std::string& split : splits )
+  for ( const std::string& split : util::string_split( items_str, "/" ) )
   {
     if ( find_item( split ) )
     {
@@ -1268,9 +1261,9 @@ bool player_t::init_items()
     items.push_back( item_t( this, split ) );
   }
 
-  std::array<bool, SLOT_MAX> slots;  // true if the given item is equal to the highest armor type the player can wear
+  std::array<bool, SLOT_MAX> matching_gear_slots;  // true if the given item is equal to the highest armor type the player can wear
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
-    slots[ i ] = !util::is_match_slot( i );
+    matching_gear_slots[ i ] = !util::is_match_slot( i );
 
   // We need to simple-parse the items first, this will set up some base information, and parse out
   // simple options
@@ -1351,13 +1344,13 @@ bool player_t::init_items()
       return false;
     }
 
-    slots[ item.slot ] = item.is_matching_type();
+    matching_gear_slots[ item.slot ] = item.is_matching_type();
   }
 
   matching_gear = true;
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
   {
-    if ( !slots[ i ] )
+    if ( !matching_gear_slots[ i ] )
     {
       matching_gear = false;
       break;
@@ -1504,7 +1497,6 @@ bool player_t::create_special_effects()
   if ( sim->debug )
     sim->out_debug.printf( "Creating special effects for player (%s)", name() );
 
-  // Initialize the buff and callback for the 7.2 "infinite" artifact power
   expansion::legion::initialize_concordance( *this );
 
   // Initialize all item-based special effects. This includes any DBC-backed enchants, gems, as well
@@ -1570,14 +1562,16 @@ bool player_t::init_special_effects()
 
 namespace
 {
-/// Compute max resource r for an actor, based on their set base resources
+/**
+ * Compute max resource r for an actor, based on their set base resources
+ */
 double compute_max_resource( player_t* p, resource_e r )
 {
   double value = p->resources.base[ r ];
   value *= p->resources.base_multiplier[ r ];
   value += p->total_gear.resource[ r ];
 
-  // re-ordered 19/06/2016 by Theck - initial_multiplier should do something for RESOURCE_HEALTH
+  // re-ordered 2016-06-19 by Theck - initial_multiplier should do something for RESOURCE_HEALTH
   if ( r == RESOURCE_HEALTH )
     value += floor( p->stamina() ) * p->current.health_per_stamina;
 
@@ -1630,11 +1624,11 @@ void player_t::init_resources( bool force )
   {
     if ( collected_data.resource_timelines.size() == 0 )
     {
-      for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+      for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
       {
-        if ( resources.max[ i ] > 0 )
+        if ( resources.max[ r ] > 0 )
         {
-          collected_data.resource_timelines.push_back( player_collected_data_t::resource_timeline_t( i ) );
+          collected_data.resource_timelines.emplace_back( r );
         }
       }
     }
@@ -1707,15 +1701,15 @@ std::string player_t::init_use_item_actions( const std::string& append )
 {
   std::string buffer;
 
-  for ( size_t i = 0; i < items.size(); ++i )
+  for ( auto& item : items )
   {
-    if ( items[ i ].slot == SLOT_HANDS )
+    if ( item.slot == SLOT_HANDS )
       continue;
 
-    if ( items[ i ].has_use_special_effect() )
+    if ( item.has_use_special_effect() )
     {
       buffer += "/use_item,slot=";
-      buffer += items[ i ].slot_name();
+      buffer += item.slot_name();
       if ( !append.empty() )
       {
         buffer += append;
@@ -1964,8 +1958,7 @@ void player_t::init_talents()
 
   if ( !talent_overrides_str.empty() )
   {
-    std::vector<std::string> splits = util::string_split( talent_overrides_str, "/" );
-    for ( std::string& split : splits )
+    for ( auto& split : util::string_split( talent_overrides_str, "/" ) )
     {
       override_talent( split );
     }
@@ -2000,8 +1993,7 @@ bool player_t::init_artifact()
 
   if ( !artifact_overrides_str.empty() )
   {
-    std::vector<std::string> splits = util::string_split( artifact_overrides_str, "/" );
-    for ( const std::string& split : splits )
+    for ( auto& split : util::string_split( artifact_overrides_str, "/" ) )
     {
       override_artifact( split );
     }
@@ -2112,7 +2104,7 @@ void player_t::init_stats()
     {
       for ( size_t i = 0; i < stat_timelines.size(); ++i )
       {
-        collected_data.stat_timelines.push_back( player_collected_data_t::stat_timeline_t( stat_timelines[ i ] ) );
+        collected_data.stat_timelines.emplace_back( stat_timelines[ i ] );
       }
     }
   }
@@ -2321,17 +2313,16 @@ bool player_t::create_actions()
     // Convert old style action list to new style, all lines are without comments
     if ( !apl->action_list_str.empty() )
     {
-      std::vector<std::string> splits = util::string_split( apl->action_list_str, "/" );
-      for ( size_t i = 0; i < splits.size(); i++ )
-        apl->action_list.push_back( action_priority_t( splits[ i ], "" ) );
+      for ( auto& split : util::string_split( apl->action_list_str, "/" ) )
+        apl->action_list.emplace_back( split, "" );
     }
 
     if ( sim->debug )
       sim->out_debug.printf( "Player %s: actions.%s=%s", name(), apl->name_str.c_str(), apl->action_list_str.c_str() );
 
-    for ( size_t i = 0; i < apl->action_list.size(); i++ )
+    for ( auto& action_priority : apl->action_list )
     {
-      std::string& action_str = apl->action_list[ i ].action_;
+      std::string& action_str = action_priority.action_;
 
       std::string::size_type cut_pt = action_str.find( ',' );
       std::string action_name       = action_str.substr( 0, cut_pt );
@@ -2339,7 +2330,7 @@ bool player_t::create_actions()
       if ( cut_pt != std::string::npos )
         action_options = action_str.substr( cut_pt + 1 );
 
-      action_t* a = NULL;
+      action_t* a = nullptr;
 
       cut_pt = action_name.find( ':' );
       if ( cut_pt != std::string::npos )
@@ -2365,49 +2356,47 @@ bool player_t::create_actions()
         a = create_action( action_name, action_options );
       }
 
-      if ( a )
-      {
-        bool skip = false;
-        for ( size_t k = 0; k < skip_actions.size(); k++ )
-        {
-          if ( skip_actions[ k ] == a->name_str )
-          {
-            skip = true;
-            break;
-          }
-        }
-
-        if ( skip )
-        {
-          a->background = true;
-        }
-        else
-        {
-          // a -> action_list = action_priority_list[ alist ] -> name_str;
-          a->action_list = apl;
-
-          a->signature_str = action_str;
-          a->signature     = &( apl->action_list[ i ] );
-
-          if ( sim->separate_stats_by_actions > 0 && !is_pet() )
-          {
-            a->marker =
-                (char)( ( j < 10 ) ? ( '0' + j )
-                                   : ( j < 36 ) ? ( 'A' + j - 10 )
-                                                : ( j < 66 ) ? ( 'a' + j - 36 )
-                                                             : ( j < 79 ) ? ( '!' + j - 66 )
-                                                                          : ( j < 86 ) ? ( ':' + j - 79 ) : '.' );
-
-            a->stats = get_stats( a->name_str + "__" + a->marker, a );
-          }
-          j++;
-        }
-      }
-      else
+      if ( !a )
       {
         sim->errorf( "Player %s unable to create action: %s\n", name(), action_str.c_str() );
         sim->cancel();
         return false;
+      }
+
+      bool skip = false;
+      for ( auto& skip_action : skip_actions )
+      {
+        if ( skip_action == a->name_str )
+        {
+          skip = true;
+          break;
+        }
+      }
+
+      if ( skip )
+      {
+        a->background = true;
+      }
+      else
+      {
+        // a -> action_list = action_priority_list[ alist ] -> name_str;
+        a->action_list = apl;
+
+        a->signature_str = action_str;
+        a->signature     = &( action_priority );
+
+        if ( sim->separate_stats_by_actions > 0 && !is_pet() )
+        {
+          a->marker =
+              (char)( ( j < 10 ) ? ( '0' + j )
+                                 : ( j < 36 ) ? ( 'A' + j - 10 )
+                                              : ( j < 66 ) ? ( 'a' + j - 36 )
+                                                           : ( j < 79 ) ? ( '!' + j - 66 )
+                                                                        : ( j < 86 ) ? ( ':' + j - 79 ) : '.' );
+
+          a->stats = get_stats( a->name_str + "__" + a->marker, a );
+        }
+        j++;
       }
     }
   }
@@ -2424,9 +2413,9 @@ bool player_t::create_actions()
 
 bool player_t::init_actions()
 {
-  for ( size_t i = 0; i < action_list.size(); ++i )
+  for ( auto& action : action_list )
   {
-    action_list[ i ]->init();
+    action->init();
   }
 
   range::for_each( action_list, []( action_t* a ) { a->consolidate_snapshot_flags(); } );
@@ -3523,9 +3512,13 @@ double player_t::composite_movement_speed() const
 double player_t::composite_attribute( attribute_e attr ) const
 {
   double a = current.stats.attribute[ attr ];
-  double m = ( ( true_level >= 50 ) && matching_gear ) ? ( 1.0 + matching_gear_multiplier( attr ) ) : 1.0;
+  double mult = 1.0;
+  if ( ( true_level >= 50 ) && matching_gear )
+  {
+    mult *= 1.0 + matching_gear_multiplier( attr );
+  }
 
-  a = util::floor( ( a - base.stats.attribute[ attr ] ) * m ) + base.stats.attribute[ attr ];
+  a = util::floor( ( a - base.stats.attribute[ attr ] ) * mult ) + base.stats.attribute[ attr ];
 
   return a;
 }
@@ -3750,6 +3743,7 @@ void player_t::invalidate_cache( cache_e c )
       break;
     case CACHE_BONUS_ARMOR:
       invalidate_cache( CACHE_ARMOR );
+      break;
     default:
       break;
   }
@@ -3804,11 +3798,10 @@ void player_t::sequence_add_wait( const timespan_t& amount, const timespan_t& ts
       if ( in_combat )
       {
         if ( collected_data.action_sequence.size() &&
-             collected_data.action_sequence.back()->wait_time > timespan_t::zero() )
-          collected_data.action_sequence.back()->wait_time += amount;
+             collected_data.action_sequence.back().wait_time > timespan_t::zero() )
+          collected_data.action_sequence.back().wait_time += amount;
         else
-          collected_data.action_sequence.push_back(
-              new player_collected_data_t::action_sequence_data_t( ts, amount, this ) );
+          collected_data.action_sequence.emplace_back( ts, amount, this );
       }
     }
     else
@@ -3830,11 +3823,9 @@ void player_t::sequence_add( const action_t* a, const player_t* target, const ti
     if ( collected_data.action_sequence.size() <= sim->expected_max_time() * 2.0 + 3.0 )
     {
       if ( in_combat )
-        collected_data.action_sequence.push_back(
-            new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
+        collected_data.action_sequence.emplace_back( a, target, ts, this );
       else
-        collected_data.action_sequence_precombat.push_back(
-            new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
+        collected_data.action_sequence_precombat.emplace_back( a, target, ts, this );
     }
     else
     {
@@ -3858,13 +3849,13 @@ void player_t::combat_begin()
 
   init_resources( true );
 
+  // Execute pre-combat actions
   if ( !is_pet() && !is_add() )
   {
-    for ( size_t i = 0; i < precombat_action_list.size(); i++ )
+    for ( auto& action : precombat_action_list )
     {
-      if ( precombat_action_list[ i ]->ready() )
+      if ( action->ready() )
       {
-        action_t* action = precombat_action_list[ i ];
         if ( action->harmful )
         {
           if ( first_cast )
@@ -3933,16 +3924,6 @@ void player_t::combat_end()
   }
   else
     cast_pet()->dismiss();
-
-  double f_length = iteration_fight_length.total_seconds();
-  double w_time   = iteration_waiting_time.total_seconds();
-
-  if ( ready_type == READY_POLL && sim->auto_ready_trigger )
-    if ( !is_pet() && !is_enemy() )
-      if ( f_length > 0 && ( w_time / f_length ) > 0.25 )
-      {
-        // ready_type = READY_TRIGGER;
-      }
 
   if ( sim->debug )
     sim->out_debug.printf( "Combat ends for player %s at time %.4f fight_length=%.4f", name(),
@@ -4354,7 +4335,7 @@ void player_t::reset()
   for ( auto& buff : buff_list )
     buff->reset();
 
-  last_foreground_action = 0;
+  last_foreground_action = nullptr;
   prev_gcd_actions.clear();
   off_gcdactions.clear();
 
@@ -12511,6 +12492,9 @@ stat_e expansion::legion::concordance_stat_type( const player_t& player )
   }
 }
 
+/**
+ * Initialize the buff and callback for the 7.2 "infinite" artifact power.
+ */
 void expansion::legion::initialize_concordance( player_t& player )
 {
   // Unconditionally initialize 7.2 "infinite" buff

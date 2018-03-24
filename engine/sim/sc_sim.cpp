@@ -1376,7 +1376,11 @@ sim_t::sim_t() :
   save_prefix_str( "save_" ),
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
-  auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), show_etmi( 0 ), tmi_window_global( 0 ), tmi_bin_size( 0.5 ),
+  stat_cache( 1 ),
+  max_aoe_enemies( 20 ),
+  show_etmi( 0 ),
+  tmi_window_global( 0 ),
+  tmi_bin_size( 0.5 ),
   requires_regen_event( false ), single_actor_batch( false ),
   progressbar_type( 0 ),
   armory_retries( 3 ),
@@ -3176,7 +3180,6 @@ void sim_t::create_options()
   add_option( opt_string( "spell_query_xml_output_file", spell_query_xml_output_file_str ) );
   add_option( opt_func( "item_db_source", parse_item_sources ) );
   add_option( opt_func( "proxy", parse_proxy ) );
-  add_option( opt_int( "auto_ready_trigger", auto_ready_trigger ) );
   add_option( opt_int( "stat_cache", stat_cache ) );
   add_option( opt_int( "max_aoe_enemies", max_aoe_enemies ) );
   add_option( opt_bool( "optimize_expressions", optimize_expressions ) );

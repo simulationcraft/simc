@@ -123,11 +123,9 @@ class noncopyable
 {
 protected:
   noncopyable() = default;
-#if !defined( SC_VS )  // Visual Studio 2013 does not like to create defaults
-                       // move member functions
   noncopyable( noncopyable&& ) = default;
   noncopyable& operator=( noncopyable&& ) = default;
-#endif
+
   noncopyable( const noncopyable& ) = delete;
   noncopyable& operator=( const noncopyable& ) = delete;
 };

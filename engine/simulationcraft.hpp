@@ -149,9 +149,9 @@ namespace highchart {
 
 // Talent Translation =======================================================
 
-const int MAX_TALENT_ROWS = 7;
-const int MAX_TALENT_COLS = 3;
-const int MAX_TALENT_SLOTS = MAX_TALENT_ROWS * MAX_TALENT_COLS;
+constexpr int MAX_TALENT_ROWS = 7;
+constexpr int MAX_TALENT_COLS = 3;
+constexpr int MAX_TALENT_SLOTS = MAX_TALENT_ROWS * MAX_TALENT_COLS;
 
 
 // Utilities ================================================================
@@ -941,7 +941,6 @@ struct sim_t : private sc_thread_t
   talent_format_e talent_format;
   auto_dispose< std::vector<player_t*> > actor_list;
   std::string main_target_str;
-  int         auto_ready_trigger;
   int         stat_cache;
   int         max_aoe_enemies;
   bool        show_etmi;
@@ -2860,7 +2859,7 @@ struct player_collected_data_t
   // used.
   int total_iterations;
 
-  struct action_sequence_data_t
+  struct action_sequence_data_t : noncopyable
   {
     const action_t* action;
     const player_t* target;
@@ -2875,8 +2874,8 @@ struct player_collected_data_t
     action_sequence_data_t( const timespan_t& ts, const timespan_t& wait, const player_t* p );
     action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p );
   };
-  auto_dispose< std::vector<action_sequence_data_t*> > action_sequence;
-  auto_dispose< std::vector<action_sequence_data_t*> > action_sequence_precombat;
+  std::vector<action_sequence_data_t> action_sequence;
+  std::vector<action_sequence_data_t> action_sequence_precombat;
 
   // Buffed snapshot_stats (for reporting)
   struct buffed_stats_t

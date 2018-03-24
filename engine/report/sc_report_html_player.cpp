@@ -2111,19 +2111,19 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
 
     for ( const auto& sequence_data : p.collected_data.action_sequence )
     {
-      if ( !sequence_data->action || !sequence_data->action->harmful )
+      if ( !sequence_data.action || !sequence_data.action->harmful )
         continue;
       bool found = false;
       for ( size_t j = 0; j < targets.size(); ++j )
       {
-        if ( targets[ j ] == sequence_data->target->name() )
+        if ( targets[ j ] == sequence_data.target->name() )
         {
           found = true;
           break;
         }
       }
       if ( !found )
-        targets.push_back( sequence_data->target->name() );
+        targets.push_back( sequence_data.target->name() );
     }
 
     // Sample Sequence (text string)
@@ -2154,12 +2154,12 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
     for ( const auto& sequence_data :
           p.collected_data.action_sequence_precombat )
     {
-      print_html_sample_sequence_string_entry( os, *sequence_data, p, true );
+      print_html_sample_sequence_string_entry( os, sequence_data, p, true );
     }
 
     for ( const auto& sequence_data : p.collected_data.action_sequence )
     {
-      print_html_sample_sequence_string_entry( os, *sequence_data, p );
+      print_html_sample_sequence_string_entry( os, sequence_data, p );
     }
 
     os << "\n</div>\n"
@@ -2187,12 +2187,12 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
     for ( const auto& sequence_data :
           p.collected_data.action_sequence_precombat )
     {
-      print_html_sample_sequence_table_entry( os, *sequence_data, p, true );
+      print_html_sample_sequence_table_entry( os, sequence_data, p, true );
     }
 
     for ( const auto& sequence_data : p.collected_data.action_sequence )
     {
-      print_html_sample_sequence_table_entry( os, *sequence_data, p );
+      print_html_sample_sequence_table_entry( os, sequence_data, p );
     }
 
     // close table
