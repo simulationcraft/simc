@@ -200,7 +200,9 @@ public:
       auto obj = rapidjson::Value();
       obj.SetObject();
 
-      v_.AddMember( rapidjson::StringRef( n ), obj, d_.GetAllocator() );
+      rapidjson::Value key { n, d_.GetAllocator() };
+
+      v_.AddMember( key, obj, d_.GetAllocator() );
     }
 
     return JsonOutput( d_, v_[ n ] );
