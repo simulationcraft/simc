@@ -806,6 +806,7 @@ void collected_data_to_json( JsonOutput root, const player_t& p )
   add_non_zero( root, "dmg", cd.dmg );
   add_non_zero( root, "compound_dmg", cd.compound_dmg );
   add_non_zero( root, "timeline_dmg", cd.timeline_dmg );
+  add_non_zero( root, "total_iterations", cd.total_iterations );
   if ( !p.is_enemy() && sim.target_list.size() > 1 )
   {
     add_non_zero( root, "prioritydps", cd.prioritydps );
