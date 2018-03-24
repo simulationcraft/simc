@@ -4228,11 +4228,11 @@ public:
   virtual void init() override;
   virtual void init_base_stats() override;
   virtual void init_target() override;
+  virtual bool init_finished() override;
   virtual void reset() override;
   virtual void summon( timespan_t duration = timespan_t::zero() );
   virtual void dismiss( bool expired = false );
   virtual void assess_damage( school_e, dmg_e, action_state_t* s ) override;
-  virtual void combat_begin() override;
 
   virtual const char* name() const override { return full_name_str.c_str(); }
   virtual const player_t* get_owner_or_self() const override

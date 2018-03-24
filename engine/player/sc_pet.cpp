@@ -270,15 +270,20 @@ void pet_t::assess_damage( school_e       school,
   return base_t::assess_damage( school, type, s );
 }
 
-// pet_t::combat_begin ======================================================
+// pet_t::init_finished ======================================================
 
-void pet_t::combat_begin()
+bool pet_t::init_finished()
 {
+  if ( ! player_t::init_finished() )
+  {
+    return false;
+  }
+
   // By default, only report statistics in the context of the owner
   if ( ! quiet )
     quiet = ! sim -> report_pets_separately;
 
-  base_t::combat_begin();
+  return true;
 }
 
 // pet_t::find_pet_spell ====================================================
