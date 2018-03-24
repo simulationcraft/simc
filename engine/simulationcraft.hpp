@@ -116,6 +116,7 @@ namespace highchart {
 
 // string formatting library
 #include "util/fmt/format.h"
+#include "util/fmt/ostream.h"
 
 // Time class representing ingame time
 #include "sc_timespan.hpp"
@@ -820,6 +821,16 @@ struct sim_ostream_t
   template <class T>
   sim_ostream_t & operator<< (T const& rhs);
   sim_ostream_t& printf( const char* format, ... );
+
+  /**
+   * Print using fmt libraries python-like formatting syntax.
+   */
+  template<typename... Args>
+  sim_ostream_t& print(fmt::CStringRef format, Args&& ... args)
+  {
+    *this << fmt::format(format, std::forward<Args>(args)... );
+    return *this;
+  }
 private:
   static void dont_close( std::ostream* ) {}
   sim_t& sim;
@@ -1299,6 +1310,21 @@ struct sim_t : private sc_thread_t
   void      use_optimal_buffs_and_debuffs( int value );
   expr_t*   create_expression( action_t*, const std::string& name );
   void      errorf( const char* format, ... ) PRINTF_ATTRIBUTE(2, 3);
+  /**
+   * Create error using fmt libraries python-like formatting syntax.
+   */
+  template<typename... Args>
+  void error(fmt::CStringRef format, Args&& ... args)
+  {
+    if ( thread_index != 0 )
+      return;
+
+    auto s = fmt::format(format, std::forward<Args>(args)... );
+    util::replace_all( s, "\n", "" );
+    std::cerr << s << "\n";
+
+    error_list.push_back( s );
+  }
   void abort();
   void combat();
   void combat_begin();

@@ -220,9 +220,8 @@ struct power_infusion_t final : public priest_spell_t
     priest().buffs.power_infusion->trigger();
     if ( sim->debug )
     {
-      std::string out = std::string( priest().name() ) + " used Power Infusion with " +
-                        std::to_string( priest().buffs.insanity_drain_stacks->value() ) + " Insanity drain stacks.";
-      priest().sim->out_debug << out;
+      priest().sim->out_debug.print("{} used Power Infusion with {} Insanity drain stacks.",
+          priest().name(), priest().buffs.insanity_drain_stacks->value());
     }
   }
 };
@@ -586,7 +585,7 @@ void priest_td_t::target_demise()
 {
   if ( priest().sim->debug )
   {
-    priest().sim->out_debug.printf( "Player %s demised. Priest %s resets targetdata for him.", target->name(),
+    priest().sim->out_debug.print( "Player '{}' demised. Priest '{}' resets targetdata for him.", target->name(),
                                     priest().name() );
   }
 
@@ -1334,7 +1333,7 @@ void priest_t::init_action_list()
   {
     if ( !quiet )
     {
-      sim->errorf( "Player %s's role (%s) or spec(%s) is currently not supported.", name(),
+      sim->error( "Player {}'s role ({}) or spec({}) is currently not supported.", name(),
                    util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
     }
     quiet = true;
