@@ -93,3 +93,8 @@ UTF-8 CPP (http://utfcpp.sourceforge.net)
 
 Copyright (c) 2006 Nemanja Trifunovic. All rights reserved.
 Boost Software License, Version 1.0 (see LICENSE.BOOST for more information).
+
+{fmt} (https://github.com/fmtlib/fmt)
+
+Copyright (c) 2012 - 2016, Victor Zverovich. All rights reserved.
+BSD 2-Clause "Simplified" License (see LICENSE.BSD2 for more information).

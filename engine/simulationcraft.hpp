@@ -114,6 +114,9 @@ namespace highchart {
 #include "dbc/data_definitions.hh"
 #include "util/utf8.h"
 
+// string formatting library
+#include "util/fmt/format.h"
+
 // Time class representing ingame time
 #include "sc_timespan.hpp"
 

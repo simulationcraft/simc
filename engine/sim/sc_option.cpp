@@ -8,6 +8,7 @@
 #include <sstream>
 #include <iostream>
 
+#include "util/fmt/format.h"
 #include "util/io.hpp"
 #include "sc_util.hpp"
 
@@ -590,9 +591,7 @@ void opts::parse( sim_t*                 sim,
 
     if ( index == std::string::npos )
     {
-      std::stringstream stream;
-      stream << context << ": Unexpected parameter '" << s << "'. Expected format: name=value";
-      throw std::invalid_argument( stream.str() );
+        throw std::invalid_argument( fmt::format("{}: Unexpected parameter '{}'. Expected format: name=value", context, s) );
     }
 
     std::string n = s.substr( 0, index );
@@ -600,9 +599,7 @@ void opts::parse( sim_t*                 sim,
 
     if ( ! opts::parse( sim, options, n, v ) )
     {
-      std::stringstream stream;
-      stream << context << ": Unexpected parameter '" << n << "'.";
-      throw std::invalid_argument( stream.str() );
+      throw std::invalid_argument( fmt::format("{}: Unexpected parameter '{}'.", context, n) );
     }
   }
 }
@@ -730,9 +727,7 @@ void option_db_t::parse_token( const std::string& token )
     io::cfile file = open_file( auto_path, parsed_token, actual_name );
     if ( ! file )
     {
-      std::stringstream s;
-      s << "Unexpected parameter '" << parsed_token << "'. Expected format: name=value";
-      throw std::invalid_argument( s.str() );
+      throw std::invalid_argument( fmt::format("Unexpected parameter '{}'. Expected format: name=value", parsed_token) );
     }
     parse_file( file );
     return;

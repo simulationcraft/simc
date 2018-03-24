@@ -5,4 +5,5 @@ engine/util/rapidjson/* linguist-vendored
 engine/util/rapidxml/* linguist-vendored
 engine/util/utf8.h linguist-vendored
 engine/util/utf8/* linguist-vendored
+engine/util/fmt/* linguist-vendored
 locale/*.qm linguist-vendored
