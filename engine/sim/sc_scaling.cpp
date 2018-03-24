@@ -472,6 +472,7 @@ void scaling_t::analyze()
   {
     player_t* p = sim -> player_list[ i ];
     if ( p -> quiet ) continue;
+    if ( p -> scaling == nullptr ) continue;
 
     for ( scale_metric_e sm = SCALE_METRIC_NONE; sm < SCALE_METRIC_MAX; sm++ )
     {
