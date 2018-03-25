@@ -60,13 +60,26 @@ public:
 class ofstream : public std::ofstream
 {
 public:
+  /**
+   * Output using printf formatting syntax.
+   */
   template<typename... Args>
   ofstream& printf(fmt::CStringRef format, Args&& ... args)
   {
     fmt::MemoryWriter w;
     fmt::printf(w, format, std::forward<Args>(args)... );
 
-    *this << w.c_str();
+    *this << w.str();
+
+    return *this;
+  }
+  /**
+   * Output using fmt::format formatting syntax.
+   */
+  template<typename... Args>
+  ofstream& format(fmt::CStringRef format, Args&& ... args)
+  {
+    *this << fmt::format(format, std::forward<Args>(args)... );
 
     return *this;
   }
