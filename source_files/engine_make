@@ -3,7 +3,6 @@
 
 SRC += \
     util$(PATHSEP)xml.cpp \
-    util$(PATHSEP)str.cpp \
     util$(PATHSEP)stopwatch.cpp \
     util$(PATHSEP)rng.cpp \
     util$(PATHSEP)io.cpp \

@@ -4,7 +4,6 @@
 
  HEADERS += engine/util/xml.hpp
  HEADERS += engine/util/timeline.hpp
- HEADERS += engine/util/str.hpp
  HEADERS += engine/util/stopwatch.hpp
  HEADERS += engine/util/sc_resourcepaths.hpp
  HEADERS += engine/util/sample_data.hpp
@@ -38,7 +37,6 @@
  HEADERS += engine/class_modules/warlock/sc_warlock.hpp
  HEADERS += engine/class_modules/priest/sc_priest.hpp
  SOURCES += engine/util/xml.cpp
- SOURCES += engine/util/str.cpp
  SOURCES += engine/util/stopwatch.cpp
  SOURCES += engine/util/rng.cpp
  SOURCES += engine/util/io.cpp
