@@ -212,20 +212,18 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
   }
 
   size_t prev_size = status.size();
+  fmt::MemoryWriter new_status;
 
-  status = "[";
-  status.insert( 1, steps, '.' );
-  status += "]";
-
-  int length = static_cast<int>( steps * pct + 0.5 );
-  for ( int i = 1; i < length + 1; ++i )
+  int progress_length = static_cast<int>( steps * pct + 0.5 );
+  if ( progress_length >= 1 )
   {
-    status[ i ] = '=';
+    new_status.write("[{:=>{}s}", ">", progress_length);
+    new_status.write("{:.>{}}]", "", steps - progress_length);
   }
-
-  if ( length > 0 )
+  else
   {
-    status[ length ] = '>';
+    new_status.write("[{:=>{}}", "", progress_length);
+    new_status.write("{:.>{}}]", "", steps - progress_length);
   }
 
   double current_time = util::wall_time() - start_time;
@@ -235,21 +233,21 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
   int remaining_min = remaining_sec / 60;
   remaining_sec -= remaining_min * 60;
 
-  str::format( status, " %d/%d", finished ? progress.total_iterations : progress.current_iterations, progress.total_iterations );
+  new_status.write(" {:d}/{:d}", finished ? progress.total_iterations : progress.current_iterations, progress.total_iterations );
 
   if ( sim.target_error > 0 )
   {
-    str::format( status, " Mean=%.0f Error=%.3f%%", sim.current_mean, sim.current_error );
+    new_status.write(" Mean={:.0f} Error={:.3f}%", sim.current_mean, sim.current_error );
   }
 
   if ( remaining_min > 0 )
   {
-    str::format( status, " %dmin", remaining_min );
+    new_status.write(" {:d}min", remaining_min );
   }
 
   if ( remaining_sec > 0 )
   {
-    str::format( status, " %dsec", remaining_sec );
+    new_status.write(" {:d}sec", remaining_sec );
   }
 
   if ( finished )
@@ -259,22 +257,22 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
     int total_msec = 1000 * ( current_time - static_cast<int>( current_time ) );
     if ( total_min > 0 )
     {
-      str::format( status, " %dmin", total_min );
+      new_status.write(" {:d}min", total_min );
     }
 
     if ( total_sec > 0 )
     {
-      str::format( status, " %d", total_sec );
+      new_status.write(" {:d}", total_sec );
       if ( total_msec > 0 )
       {
-        str::format( status, ".%d", total_msec );
+        new_status.write(".{:d}", total_msec );
       }
 
       status += "sec";
     }
     else if ( total_msec > 0 )
     {
-      str::format( status, " %dmsec", total_msec );
+      new_status.write(" {:d}msec", total_msec );
     }
   }
 
@@ -287,16 +285,16 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
 
     if ( total_left > 0 )
     {
-      status += " (";
-      status += format_time( total_left );
-      status += ")";
+      new_status.write(" ({:s})", format_time( total_left ));
     }
   }
 
   if ( prev_size > status.size() )
   {
-    status.insert( status.end(), ( prev_size - status.size() ), ' ' );
+    new_status.write("{:.{}}", ' ', prev_size - status.size() );
   }
+
+  status = new_status.str();
 
   return true;
 }

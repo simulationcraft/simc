@@ -98,20 +98,6 @@ bool pred_ci ( char a, char b )
   return std::tolower( a ) == std::tolower( b );
 }
 
-// vfprintf_helper ==========================================================
-
-int vfprintf_helper( FILE *stream, const char *fmt, va_list args )
-{
-  std::string p_locale = setlocale( LC_CTYPE, nullptr );
-  setlocale( LC_CTYPE, "" );
-
-  int retcode = ::fprintf( stream, "%s", str::format( fmt, args ).c_str() );
-
-  setlocale( LC_CTYPE, p_locale.c_str() );
-
-  return retcode;
-}
-
 stopwatch_t wall_sw( STOPWATCH_WALL );
 stopwatch_t  cpu_sw( STOPWATCH_CPU  );
 
@@ -2398,62 +2384,6 @@ int64_t util::parse_date( const std::string& month_day_year )
   return atoi( buffer.c_str() );
 }
 
-// fprintf ==================================================================
-
-int util::fprintf( FILE *stream, const char *format,  ... )
-{
-  va_list fmtargs;
-  va_start( fmtargs, format );
-
-  int retcode = vfprintf_helper( stream, format, fmtargs );
-
-  va_end( fmtargs );
-
-  return retcode;
-}
-
-// printf ===================================================================
-
-int util::printf( const char *format,  ... )
-{
-  va_list fmtargs;
-  va_start( fmtargs, format );
-
-  int retcode = vfprintf_helper( stdout, format, fmtargs );
-
-  va_end( fmtargs );
-
-  return retcode;
-}
-
-// snprintf =================================================================
-
-int util::snformat( char* buf, size_t size, const char* fmt, ... )
-{
-  va_list ap;
-  va_start( ap, fmt );
-  std::string buffer;
-  str::format( buffer, fmt, ap );
-  va_end( ap );
-  assert( size > buffer.size() );
-  strncpy( buf, buffer.c_str(), size-1 );
-  return static_cast<int>( buffer.size() );
-}
-
-// vfprintf =================================================================
-
-int util::vfprintf( FILE *stream, const char *format, va_list fmtargs )
-{
-  return vfprintf_helper( stream, format, fmtargs );
-}
-
-// vprintf ==================================================================
-
-int util::vprintf( const char *format, va_list fmtargs )
-{
-  return util::vfprintf( stdout, format, fmtargs );
-}
-
 // urlencode ================================================================
 
 void util::urlencode( std::string& str )
@@ -3021,32 +2951,6 @@ double crit_multiplier( meta_gem_e gem )
   }
 }
 
-// stream_printf ============================================================
-
-std::ostream& stream_printf( std::ostream& stream, const char* format, ... )
-{
-  va_list fmtargs;
-  va_start( fmtargs, format );
-  stream << str::format( format, fmtargs );
-  va_end( fmtargs );
-  return stream;
-}
 
 } // namespace util
 
-#ifdef _MSC_VER
-
-// vsnprintf ================================================================
-
-int vsnprintf_simc( char* buf, size_t size, const char* fmt, va_list ap )
-{
-  if ( buf && size )
-  {
-    std::string buffer = str::format( fmt, ap );
-    strncpy( buf, buffer.c_str(), size-1 );
-    return static_cast<int>( buffer.size() );
-  }
-  return vfprintf_helper( stdout, fmt, ap );
-}
-
-#endif

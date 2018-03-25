@@ -644,18 +644,6 @@ bool xml_writer_t::ready() const
   return file != nullptr;
 }
 
-int xml_writer_t::printf( const char *format, ... ) const
-{
-  va_list fmtargs;
-  va_start( fmtargs, format );
-
-  int retcode = vfprintf( file, format, fmtargs );
-
-  va_end( fmtargs );
-
-  return retcode;
-}
-
 void xml_writer_t::init_document( const std::string & stylesheet_file )
 {
   assert( current_state == NONE );

@@ -117,6 +117,7 @@ namespace highchart {
 // string formatting library
 #include "util/fmt/format.h"
 #include "util/fmt/ostream.h"
+#include "util/fmt/printf.h"
 
 // Time class representing ingame time
 #include "sc_timespan.hpp"
@@ -132,9 +133,6 @@ namespace highchart {
 
 // Random Number Generators
 #include "util/rng.hpp"
-
-// String Utilities
-#include "util/str.hpp"
 
 // mutex, thread
 #include "util/concurrency.hpp"
@@ -784,7 +782,14 @@ struct sc_raw_ostream_t {
   template <class T>
   sc_raw_ostream_t & operator<< (T const& rhs)
   { (*_stream) << rhs; return *this; }
-  sc_raw_ostream_t& printf( const char* format, ... );
+
+  template<typename... Args>
+  sc_raw_ostream_t& printf(fmt::CStringRef format, Args&& ... args)
+  {
+    fmt::fprintf(*get_stream(), format, std::forward<Args>(args)... );
+    return *this;
+  }
+
   sc_raw_ostream_t( std::shared_ptr<std::ostream> os ) :
     _stream( os ) {}
   const sc_raw_ostream_t operator=( std::shared_ptr<std::ostream> os )
@@ -820,7 +825,9 @@ struct sim_ostream_t
   { return _raw.get_stream(); }
   template <class T>
   sim_ostream_t & operator<< (T const& rhs);
-  sim_ostream_t& printf( const char* format, ... );
+
+  template<typename... Args>
+  sim_ostream_t& printf(fmt::CStringRef format, Args&& ... args);
 
   /**
    * Print using fmt libraries python-like formatting syntax.
@@ -1309,7 +1316,22 @@ struct sim_t : private sc_thread_t
   cooldown_t* get_cooldown( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
   expr_t*   create_expression( action_t*, const std::string& name );
-  void      errorf( const char* format, ... ) PRINTF_ATTRIBUTE(2, 3);
+  /**
+   * Create error with printf formatting.
+   */
+  template<typename... Args>
+  void errorf(fmt::CStringRef format, Args&& ... args)
+  {
+    if ( thread_index != 0 )
+      return;
+
+    auto s = fmt::sprintf(format, std::forward<Args>(args)... );
+    util::replace_all( s, "\n", "" );
+    std::cerr << s << "\n";
+
+    error_list.push_back( s );
+  }
+
   /**
    * Create error using fmt libraries python-like formatting syntax.
    */
@@ -7502,6 +7524,14 @@ sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)
 {
   _raw << util::to_string( sim.current_time().total_seconds(), 3 ) << " " << rhs << "\n";
 
+  return *this;
+}
+
+template<typename... Args>
+sim_ostream_t& sim_ostream_t::printf(fmt::CStringRef format, Args&& ... args)
+{
+  _raw << util::to_string( sim.current_time().total_seconds(), 3 ) << " ";
+  fmt::fprintf(*_raw.get_stream(), format, std::forward<Args>(args)... );
   return *this;
 }
 

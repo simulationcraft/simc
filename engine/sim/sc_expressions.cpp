@@ -1118,7 +1118,8 @@ void print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
   for ( size_t i = 0; i < tokens.size(); i++ )
   {
     expr_token_t& t = tokens[ i ];
-    str::format( str, "%2d '%s'", t.type, t.label.c_str() );
+    auto labels = fmt::format("%2d '%s'", t.type, t.label.c_str() );
+    str += labels;
     if ( i < tokens.size() - 1 )
       str += " | ";
   }

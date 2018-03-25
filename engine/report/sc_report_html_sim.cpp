@@ -113,18 +113,24 @@ void print_raw_action_damage( report::sc_html_stream& os, const stats_t& s,
     os << ">\n";
 
     os.format(
-        format, util::encode_html( p.name() ).c_str(),
-        util::encode_html( s.player->name() ).c_str(), s.name_str.c_str(),
-        " ticks", -id, tick_total, tick_total / sim.max_time.total_seconds(),
+        format,
+        util::encode_html( p.name() ).c_str(),
+        util::encode_html( s.player->name() ).c_str(),
+        s.name_str.c_str(),
+        " ticks",
+        -id,
+        tick_total,
+        tick_total / sim.max_time.total_seconds(),
         s.num_ticks.mean() / sim.max_time.total_minutes(),
         s.tick_results[ RESULT_HIT ].actual_amount.mean(),
         s.tick_results[ RESULT_CRIT ].actual_amount.mean(),
-        s.num_executes.mean(), s.num_ticks.mean(),
+        s.num_executes.mean(),
+        s.num_ticks.mean(),
         s.tick_results[ RESULT_CRIT ].pct,
         s.tick_results[ RESULT_MISS ].pct + s.tick_results[ RESULT_DODGE ].pct +
             s.tick_results[ RESULT_PARRY ].pct,
         s.tick_results[ RESULT_GLANCE ].pct,
-        0,
+        0.0,
         s.total_intervals.mean(), s.total_amount.mean(),
         s.player->collected_data.fight_length.mean() );
   }

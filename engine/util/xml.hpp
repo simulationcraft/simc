@@ -184,7 +184,11 @@ public:
 
   bool ready() const;
 
-  int printf( const char *format, ... ) const PRINTF_ATTRIBUTE( 2, 3 );
+  template<typename... Args>
+  int printf(fmt::CStringRef format, Args&& ... args)
+  {
+    return fmt::fprintf(file, format, std::forward<Args>(args)... );
+  }
   void init_document( const std::string & stylesheet_file );
   void begin_tag( const std::string & tag );
   void end_tag( const std::string & tag );

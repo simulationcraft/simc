@@ -65,17 +65,6 @@ void add_non_zero( JsonOutput root, const char* name, bool v )
 void add_non_zero( JsonOutput root, const char* name, const std::string& v )
 { add_non_default( root, name, v, std::string() ); }
 
-// js::sc_js_t to_json( const timespan_t& t )
-//{
-//  js::sc_js_t node;
-//  node.set( "seconds", t.total_seconds() );
-//  std::string formatted_time;
-//  str::format( formatted_time, "%d:%02d.%03d</td>\n", (int)t.total_minutes(),
-//               (int)t.total_seconds() % 60, (int)t.total_millis() % 1000 );
-//  node.set( "formatted", formatted_time );
-//  return node;
-//}
-
 js::sc_js_t to_json( const simple_sample_data_t& sd )
 {
   js::sc_js_t node;

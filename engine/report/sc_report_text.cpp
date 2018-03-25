@@ -1234,7 +1234,7 @@ void print_text_report( FILE* file, sim_t* sim, bool detail )
   auto beta_warnings = report::beta_warnings();
   for ( const auto& line : beta_warnings )
   {
-    util::fprintf( file, " * %s\n", line.c_str() );
+    util::fprintf( file, " * %s \n", line.c_str() );
   }
 #endif
 
@@ -1390,6 +1390,9 @@ void print_text( sim_t* sim, bool detail )
   catch ( const std::exception& e )
   {
     sim->errorf( "Failed to print text output! %s", e.what() );
+#ifndef NDEBUG
+    throw;
+#endif
   }
 }
 

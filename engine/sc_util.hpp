@@ -7,6 +7,9 @@
 
 #include "config.hpp"
 
+#include "util/fmt/format.h"
+#include "util/fmt/ostream.h"
+#include "util/fmt/printf.h"
 #include "sc_enums.hpp"
 #include "dbc/data_enums.hh"
 #include "dbc/specialization.hpp"
@@ -143,10 +146,16 @@ int to_int( const char* str );
 
 int64_t parse_date( const std::string& month_day_year );
 
-int printf( const char *format, ... ) PRINTF_ATTRIBUTE( 1, 2 );
-int fprintf( FILE *stream, const char *format, ... ) PRINTF_ATTRIBUTE( 2, 3 );
-int vfprintf( FILE *stream, const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 2, 0 );
-int vprintf( const char *format, va_list fmtargs ) PRINTF_ATTRIBUTE( 1, 0 );
+template<typename... Args>
+int printf(fmt::CStringRef format, Args&& ... args)
+{
+  return fmt::printf(format, std::forward<Args>(args)... );
+}
+template<typename... Args>
+int fprintf(std::FILE* stream, fmt::CStringRef format, Args&& ... args)
+{
+  return fmt::fprintf(stream, format, std::forward<Args>(args)... );
+}
 
 std::string encode_html( const std::string& );
 std::string decode_html( const std::string& );
@@ -173,15 +182,12 @@ std::string inverse_tokenize( const std::string& name );
 
 bool is_number( const std::string& s );
 
-int snformat( char* buf, size_t size, const char* fmt, ... );
 void fuzzy_stats( std::string& encoding, const std::string& description );
 
 template <class T>
 int numDigits( T number );
 
 bool contains_non_ascii( const std::string& );
-
-std::ostream& stream_printf( std::ostream&, const char* format, ... );
 
 template<class T>
 T from_string( const std::string& );

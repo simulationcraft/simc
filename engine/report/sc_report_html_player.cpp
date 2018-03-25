@@ -1858,16 +1858,20 @@ void print_html_sample_sequence_string_entry(
     return;
 
   std::string targetname = data.action->harmful ? data.target->name() : "none";
-  std::array<char, 100> time;
+  std::string time_str;
   if ( precombat )
-    util::snformat( time.data(), time.size(), "Pre" );
+  {
+    time_str = "Pre";
+  }
   else
-    util::snformat( time.data(), time.size(), "%d:%02d.%03d",
-                    (int)data.time.total_minutes(),
-                    (int)data.time.total_seconds() % 60,
-                    (int)data.time.total_millis() % 1000 );
+  {
+    auto time_str = fmt::format("{:d}{:02d}.{:03d}", (int)data.time.total_minutes(),
+                                                     (int)data.time.total_seconds() % 60,
+                                                     (int)data.time.total_millis() % 1000 );
+  }
+
   os.format( "<span class=\"%s_seq_target_%s\" title=\"[%s] %s%s\n|", p.name(),
-             targetname.c_str(), time.data(), data.action->name(),
+             targetname.c_str(), time_str, data.action->name(),
              ( targetname == "none" ? "" : " @ " + targetname ).c_str() );
 
   resource_e pr = p.primary_resource();
@@ -2144,7 +2148,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
     {
       if ( j == 12 )
         j = 2;
-      os.format( ".%s_seq_target_%s { color: #%s; }\n", p.name(),
+      os.format( ".{}_seq_target_{} {{ color: #{}; }}\n", p.name(),
                  targets[ i ].c_str(), colors[ j ] );
       j++;
     }

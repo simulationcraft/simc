@@ -3,6 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "util/str.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -12,7 +13,6 @@
 #include <vector>
 #include <map>
 #include <memory>
-#include "str.hpp"
 #include "json.hpp"
 
 // ==========================================================================

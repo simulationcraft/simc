@@ -236,7 +236,7 @@ bool wowhead::download_item_data( item_t&            item,
     assert( n_sockets <= static_cast< int >( sizeof_array( item.parsed.data.socket_color ) ) );
     for ( int i = 0; i < n_sockets; i++ )
     {
-      std::string socket_str = str::format( "socket%d", i + 1 );
+      std::string socket_str = fmt::format( "socket%d", i + 1 );
       if ( jsonequip.HasMember( socket_str.c_str() ) )
         item.parsed.data.socket_color[ i ] = jsonequip[ socket_str.c_str() ].GetUint();
     }

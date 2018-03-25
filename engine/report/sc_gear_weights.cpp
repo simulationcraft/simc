@@ -131,8 +131,8 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::wowhead(
         }
         first = false;
 
-        str::format( id_string, "%d", id );
-        str::format( value_string, "%.*f", p.sim->report_precision, value );
+        id_string += fmt::format( "%d", id );
+        value_string += fmt::format( "{:.{}f}", value, p.sim->report_precision );
       }
     }
 
@@ -226,7 +226,7 @@ std::array<std::string, SCALE_METRIC_MAX> gear_weights::pawn(
           s += ",";
         }
         first = false;
-        str::format( s, " %s=%.*f", name, p.sim->report_precision, value );
+        s += fmt::format(" {}={:.{}f}", name, value, p.sim->report_precision );
       }
     }
     s += " )";

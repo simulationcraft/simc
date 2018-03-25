@@ -3640,26 +3640,8 @@ void sim_t::detailed_progress( std::string* detail, int current_iterations, int 
   if ( detail )
   {
     detail -> clear();
-    str::format( *detail, "%d/%d", current_iterations, total_iterations );
+    *detail = fmt::format("fooo {:d}/{:d}", current_iterations, total_iterations );
   }
-}
-
-// sim_t::errorf ============================================================
-
-void sim_t::errorf( const char* fmt, ... )
-{
-  if ( thread_index != 0 )
-    return;
-
-  va_list fmtargs;
-  va_start( fmtargs, fmt );
-  std::string s = str::format( fmt, fmtargs );
-  va_end( fmtargs );
-
-  util::replace_all( s, "\n", "" );
-  std::cerr << s << "\n";
-
-  error_list.push_back( s );
 }
 
 void sim_t::abort()
@@ -3781,30 +3763,6 @@ void sc_timeline_t::adjust( const extended_sample_data_t& adjustor )
 }
 
 // FIXME!  Move this to util at some point.
-
-sc_raw_ostream_t& sc_raw_ostream_t::printf( const char* fmt, ... )
-{
-  va_list fmtargs;
-  va_start( fmtargs, fmt );
-  std::string buffer = str::format( fmt, fmtargs );
-  va_end( fmtargs );
-
-  (*_stream) << buffer;
-
-  return *this;
-}
-
-sim_ostream_t& sim_ostream_t::printf( const char* fmt, ... )
-{
-  va_list fmtargs;
-  va_start( fmtargs, fmt );
-  std::string buffer = str::format( fmt, fmtargs );
-  va_end( fmtargs );
-
-  _raw << util::to_string( sim.current_time().total_seconds(), 3 ) << " " << buffer << "\n";
-
-  return *this;
-}
 
 void sim_t::enable_debug_seed()
 {

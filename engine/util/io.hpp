@@ -7,6 +7,7 @@
 #define SC_IO_HPP
 
 #include "config.hpp"
+#include "util/fmt/printf.h"
 #include <string>
 #include <vector>
 #include <fstream>
@@ -59,7 +60,16 @@ public:
 class ofstream : public std::ofstream
 {
 public:
-  ofstream& format( const char* format, ... );
+  template<typename... Args>
+  ofstream& format(fmt::CStringRef format, Args&& ... args)
+  {
+    fmt::MemoryWriter w;
+    fmt::printf(w, format, std::forward<Args>(args)... );
+
+    *this << w.c_str();
+
+    return *this;
+  }
   void open( const char* filename, openmode mode = out | trunc );
   void open( const std::string& filename, openmode mode = out | trunc )
   { return open( filename.c_str(), mode ); }

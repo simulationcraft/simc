@@ -508,11 +508,12 @@ template <typename Stream>
 bool sc_json_writer_t<Stream>::Double( double d )
 {
   this->Prefix( rapidjson::kNumberType );
-  char buffer[ 100 ];
-  int ret = util::snformat( buffer, sizeof( buffer ), "%.*f",
-                            sim.report_precision, d );
-  RAPIDJSON_ASSERT( ret >= 1 );
-  for ( int i = 0; i < ret; ++i )
-    this->os_->Put( buffer[ i ] );
-  return static_cast<size_t>( ret ) < sizeof( buffer );
+  std::array<char, 100> buffer;
+  fmt::ArrayWriter w( buffer.data(), buffer.size() );
+  w.write("{:.{}f}", d, sim.report_precision );
+  for ( unsigned i = 0; i < w.size(); ++i )
+  {
+    this->os_->Put( w.data()[ i ] );
+  }
+  return true;
 }
