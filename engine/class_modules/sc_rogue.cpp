@@ -760,7 +760,6 @@ struct rogue_attack_t : public melee_attack_t
     bool ruthlessness;
     bool relentless_strikes;
     bool deepening_shadows;
-    bool ghostly_strike;
     bool vendetta;
     bool alacrity;
     bool adrenaline_rush_gcd;
@@ -884,7 +883,6 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.ruthlessness = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.relentless_strikes = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.deepening_shadows = base_costs[ RESOURCE_COMBO_POINT ] > 0;
-    affected_by.ghostly_strike = data().affected_by( p() -> talent.ghostly_strike -> effectN( 5 ) );
     affected_by.vendetta = data().affected_by( p() -> spec.vendetta -> effectN( 1 ) );
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
@@ -5748,7 +5746,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.toxic_blade = make_buff( *this, "toxic_blade", source -> talent.toxic_blade -> effectN( 4 ).trigger() )
     -> set_default_value( source -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source -> talent.ghostly_strike )
-    -> set_default_value( source -> talent.ghostly_strike -> effectN( 5 ).percent() );
+    -> set_default_value( source -> talent.ghostly_strike -> effectN( 3 ).percent() );
   const spell_data_t* fw_debuff = source -> talent.find_weakness -> effectN( 1 ).trigger();
   debuffs.find_weakness = make_buff( *this, "find_weakness", fw_debuff )
     -> set_default_value( fw_debuff -> effectN( 1 ).percent() );
