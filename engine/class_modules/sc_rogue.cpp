@@ -2442,12 +2442,11 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     const rogue_attack_state_t* state = cast_state( s );
 
-    timespan_t duration = data().duration() + timespan_t::from_seconds( 2 * state -> cp );
-    // Exsang NYI because it does not work on alpha as well.
-    /*if ( state -> exsanguinated )
+    timespan_t duration = data().duration() * ( 1 + state -> cp );
+    if ( state -> exsanguinated )
     {
       duration *= 1.0 / ( 1.0 + p() -> talent.exsanguinate -> effectN( 1 ).percent() );
-    }*/
+    }
 
     return duration;
   }
@@ -5514,6 +5513,7 @@ void rogue_t::trigger_exsanguinate( const action_state_t* state )
   do_exsanguinate( td -> dots.garrote, coeff );
   do_exsanguinate( td -> dots.internal_bleeding, coeff );
   do_exsanguinate( td -> dots.rupture, coeff );
+  do_exsanguinate( td -> dots.crimson_tempest, coeff );
 }
 
 void rogue_t::trigger_relentless_strikes( const action_state_t* state )
