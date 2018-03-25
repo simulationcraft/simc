@@ -9961,21 +9961,21 @@ public:
           row_class_str = " class=\"odd\"";
 
         // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
-        os.format( "<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
+        os.printf( "<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
                    row_class_str.c_str(),
                    name_str.c_str(),
                    util::round( tf_exe_up / tf_exe_total * 100, 2 ),
                    util::round( tf_benefit_up / tf_benefit_total * 100, 2 ) );
         if ( p.talent.savage_roar -> ok() )
         {
-           os.format("<td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
+           os.printf("<td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
               util::round(sr_exe_up / sr_exe_total * 100, 2),
               util::round(sr_benefit_up / sr_benefit_total * 100, 2));
         }
         if ( p.talent.bloodtalons -> ok() )
         {
           // Table Row : Name, TF up, TF total, TF up/total, TF up/sum(TF up)
-          os.format( "<td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
+          os.printf( "<td class=\"right\">%.2f %%</td><td class=\"right\">%.2f %%</td>\n",
                      util::round( bt_exe_up / bt_exe_total * 100, 2 ),
                      util::round( bt_benefit_up / bt_benefit_total * 100, 2 ) );
         }

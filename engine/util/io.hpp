@@ -61,7 +61,7 @@ class ofstream : public std::ofstream
 {
 public:
   template<typename... Args>
-  ofstream& format(fmt::CStringRef format, Args&& ... args)
+  ofstream& printf(fmt::CStringRef format, Args&& ... args)
   {
     fmt::MemoryWriter w;
     fmt::printf(w, format, std::forward<Args>(args)... );

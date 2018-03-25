@@ -888,7 +888,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
 
   std::string tokenized_name = name;
   util::tokenize( tokenized_name );
-  os.format(
+  os.printf(
       "<a id=\"actor%d_%s_stats_toggle\" "
       "class=\"toggle-details\">%s</a></td>\n",
       p.index, tokenized_name.c_str(), name.c_str() );
@@ -919,7 +919,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
     os << " class=\"odd\"";
   }
   os << ">\n";
-  os.format(
+  os.printf(
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">Count</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%d</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -932,7 +932,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
     os << " class=\"odd\"";
   }
   os << ">\n";
-  os.format(
+  os.printf(
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">Mean</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -946,7 +946,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
   }
   os << ">\n";
 
-  os.format(
+  os.printf(
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -959,7 +959,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
     os << " class=\"odd\"";
   }
   os << ">\n";
-  os.format(
+  os.printf(
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -972,7 +972,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
     os << " class=\"odd\"";
   }
   os << ">\n";
-  os.format(
+  os.printf(
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -985,7 +985,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
     os << " class=\"odd\"";
   }
   os << ">\n";
-  os.format(
+  os.printf(
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% "
       "]</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
@@ -1002,7 +1002,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.format(
+    os.printf(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
@@ -1015,7 +1015,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.format(
+    os.printf(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">5th Percentile</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
@@ -1028,7 +1028,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.format(
+    os.printf(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">95th Percentile</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
@@ -1041,7 +1041,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.format(
+    os.printf(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 95th Percentile - 5th "
         "Percentile )</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
@@ -1055,7 +1055,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.format(
+    os.printf(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Mean Distribution</b></td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n" );
@@ -1067,7 +1067,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.format(
+    os.printf(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
@@ -1082,7 +1082,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.format(
+    os.printf(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence "
         "Intervall</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
@@ -1097,7 +1097,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.format(
+    os.printf(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence "
         "Intervall</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
@@ -1125,7 +1125,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.format(
+    os.printf(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
@@ -1140,7 +1140,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.format(
+    os.printf(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
@@ -1155,7 +1155,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.format(
+    os.printf(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with "
         "Delta=300</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
@@ -1169,7 +1169,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.format(
+    os.printf(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with "
         "Delta=300</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
@@ -1183,7 +1183,7 @@ void report::print_html_sample_data( report::sc_html_stream& os,
       os << " class=\"odd\"";
     }
     os << ">\n";
-    os.format(
+    os.printf(
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with "
         "Delta=300</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"

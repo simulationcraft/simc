@@ -46,7 +46,7 @@ struct player_ready_event_t : public player_event_t
 
         // Waiting Debug
         if ( sim().debug )
-          sim().out_debug.printf( "%s is waiting for %.4f resource=%.2f", p()->name(), x.total_seconds(),
+          sim().out_debug.print( "{} is waiting for {} resource={}", p()->name(), x,
                                   p()->resources.current[ p()->primary_resource() ] );
       }
       else
@@ -11794,7 +11794,7 @@ void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* nma, con
 
     for ( size_t i = 0; i < health_changes.timeline.data().size(); i++ )
     {
-      f.format( "%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ], timeline_healing_taken.data()[ i ],
+      f.printf( "%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ], timeline_healing_taken.data()[ i ],
                 health_changes.timeline.data()[ i ], health_changes.timeline_normalized.data()[ i ], nma->data()[ i ],
                 wv[ i ] );
     }

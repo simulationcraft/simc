@@ -7305,14 +7305,14 @@ public:
       if ( ++row & 1 )
         row_class = " class=\"odd\"";
 
-      os.format( "<tr%s>", row_class.c_str() );
+      os.printf( "<tr%s>", row_class.c_str() );
       os << "<td class=\"left\">" << name << "</td>";
-      os.format( "<td class=\"right\">%.3f</td>", data -> normal.mean() );
-      os.format( "<td class=\"right\">%.3f</td>", data -> normal.min() );
-      os.format( "<td class=\"right\">%.3f</td>", data -> normal.max() );
-      os.format( "<td class=\"right\">%.3f</td>", data -> cumulative.mean() );
-      os.format( "<td class=\"right\">%.3f</td>", data -> cumulative.min() );
-      os.format( "<td class=\"right\">%.3f</td>", data -> cumulative.max() );
+      os.printf( "<td class=\"right\">%.3f</td>", data -> normal.mean() );
+      os.printf( "<td class=\"right\">%.3f</td>", data -> normal.min() );
+      os.printf( "<td class=\"right\">%.3f</td>", data -> normal.max() );
+      os.printf( "<td class=\"right\">%.3f</td>", data -> cumulative.mean() );
+      os.printf( "<td class=\"right\">%.3f</td>", data -> cumulative.min() );
+      os.printf( "<td class=\"right\">%.3f</td>", data -> cumulative.max() );
       os << "</tr>\n";
     }
 
@@ -7340,15 +7340,15 @@ public:
        << "</tr>\n"
        << "<tbody>\n";
 
-    os.format("<tr><td class=\"left\">Count</td><td>%d</td></tr>\n", p.sample_data.burn_duration_history -> count() );
-    os.format("<tr><td class=\"left\">Minimum</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> min() );
-    os.format("<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> percentile( 0.05 ) );
-    os.format("<tr><td class=\"left\">Mean</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> mean() );
-    os.format("<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> percentile( 0.95 ) );
-    os.format("<tr><td class=\"left\">Max</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> max() );
-    os.format("<tr><td class=\"left\">Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> variance );
-    os.format("<tr><td class=\"left\">Mean Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> mean_variance );
-    os.format("<tr><td class=\"left\">Mean Std. Dev</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> mean_std_dev );
+    os.printf("<tr><td class=\"left\">Count</td><td>%d</td></tr>\n", p.sample_data.burn_duration_history -> count() );
+    os.printf("<tr><td class=\"left\">Minimum</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> min() );
+    os.printf("<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> percentile( 0.05 ) );
+    os.printf("<tr><td class=\"left\">Mean</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> mean() );
+    os.printf("<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> percentile( 0.95 ) );
+    os.printf("<tr><td class=\"left\">Max</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> max() );
+    os.printf("<tr><td class=\"left\">Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> variance );
+    os.printf("<tr><td class=\"left\">Mean Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> mean_variance );
+    os.printf("<tr><td class=\"left\">Mean Std. Dev</td><td>%.3f</td></tr>\n", p.sample_data.burn_duration_history -> mean_std_dev );
 
     os << "</tbody>\n"
        << "</table>\n";
@@ -7377,15 +7377,15 @@ public:
        << "</tr>\n"
        << "<tbody>\n";
 
-    os.format("<tr><td class=\"left\">Count</td><td>%d</td></tr>\n", p.sample_data.burn_initial_mana -> count() );
-    os.format("<tr><td class=\"left\">Minimum</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> min() );
-    os.format("<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> percentile( 0.05 ) );
-    os.format("<tr><td class=\"left\">Mean</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> mean() );
-    os.format("<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> percentile( 0.95 ) );
-    os.format("<tr><td class=\"left\">Max</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> max() );
-    os.format("<tr><td class=\"left\">Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> variance );
-    os.format("<tr><td class=\"left\">Mean Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> mean_variance );
-    os.format("<tr><td class=\"left\">Mean Std. Dev</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> mean_std_dev );
+    os.printf("<tr><td class=\"left\">Count</td><td>%d</td></tr>\n", p.sample_data.burn_initial_mana -> count() );
+    os.printf("<tr><td class=\"left\">Minimum</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> min() );
+    os.printf("<tr><td class=\"left\">5<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> percentile( 0.05 ) );
+    os.printf("<tr><td class=\"left\">Mean</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> mean() );
+    os.printf("<tr><td class=\"left\">95<sup>th</sup> percentile</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> percentile( 0.95 ) );
+    os.printf("<tr><td class=\"left\">Max</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> max() );
+    os.printf("<tr><td class=\"left\">Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> variance );
+    os.printf("<tr><td class=\"left\">Mean Variance</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> mean_variance );
+    os.printf("<tr><td class=\"left\">Mean Std. Dev</td><td>%.3f</td></tr>\n", p.sample_data.burn_initial_mana -> mean_std_dev );
 
     os << "</tbody>\n"
        << "</table>\n";
@@ -7459,7 +7459,7 @@ public:
       if ( ++row & 1 )
         row_class = " class=\"odd\"";
 
-      os.format( "<tr%s>", row_class.c_str() );
+      os.printf( "<tr%s>", row_class.c_str() );
 
       auto format_cell = [ bff, &os ] ( double mean, bool wc_util )
       {
@@ -7471,7 +7471,7 @@ public:
           format_str += " (%.1f%%)";
         format_str += "</td>";
 
-        os.format( format_str.c_str(), mean, bff ? 100.0 * mean / bff : 0.0 );
+        os.printf( format_str.c_str(), mean, bff ? 100.0 * mean / bff : 0.0 );
       };
 
       assert( data -> procs.size() == actions::mage_spell_t::FROZEN_MAX );

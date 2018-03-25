@@ -19,6 +19,7 @@
 #include <type_traits>
 
 #include "util/generic.hpp"
+#include "util/fmt/format.h"
 
 // if timespan_t is in the global namespace, there's a name lookup issue with
 // one of the Qt headers. Problem is avoided by defining in a sub-namespace
@@ -265,7 +266,9 @@ namespace timespan_adl_barrier
 
   inline std::ostream& operator<<(std::ostream &os, const timespan_t& x)
   {
-    os << x.total_seconds() << "seconds";
+    os << fmt::format("{:d}:{:02d}.{:03d}", (int)x.total_minutes(),
+                                            (int)x.total_seconds() % 60,
+                                            (int)x.total_millis() % 1000 );
     return os;
   }
 } // namespace timespan_adl_barrier

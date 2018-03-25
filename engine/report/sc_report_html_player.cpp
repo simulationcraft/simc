@@ -251,51 +251,51 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   const auto& tr = s.tick_results;
 
   // Result type
-  os.format( "<td class=\"right small\">%s</td>\n", type_str.c_str() );
+  os.printf( "<td class=\"right small\">%s</td>\n", type_str.c_str() );
 
-  os.format( "<td class=\"right small\">%.1f</td>\n",
+  os.printf( "<td class=\"right small\">%.1f</td>\n",
              result_type == 1
              ? s.num_tick_results.mean()
              : s.num_direct_results.mean() );
 
   // Hit results
-  os.format( "<td class=\"right small\">%.0f</td>\n",
+  os.printf( "<td class=\"right small\">%.0f</td>\n",
              result_type == 1
              ? mean_value<result_t, result_e>( tr, { RESULT_HIT } )
              : mean_value<full_result_t, full_result_e>( dr, { FULLTYPE_HIT, FULLTYPE_HIT_BLOCK, FULLTYPE_HIT_CRITBLOCK } ) );
 
   // Crit results
-  os.format( "<td class=\"right small\">%.0f</td>\n",
+  os.printf( "<td class=\"right small\">%.0f</td>\n",
              result_type == 1
              ? mean_value<result_t, result_e>( tr, { RESULT_CRIT } )
              : mean_value<full_result_t, full_result_e>( dr, { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ) );
 
   // Mean amount
-  os.format( "<td class=\"right small\">%.0f</td>\n",
+  os.printf( "<td class=\"right small\">%.0f</td>\n",
              result_type == 1
              ? mean_damage( tr )
              : mean_damage( dr ) );
 
   // Crit%
-  os.format( "<td class=\"right small\">%.1f%%</td>\n",
+  os.printf( "<td class=\"right small\">%.1f%%</td>\n",
              result_type == 1
              ? pct_value<result_t, result_e>( tr, { RESULT_CRIT } )
              : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_CRIT, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT_CRITBLOCK } ) );
 
   if ( player_has_avoidance( p, stats_mask ) )
-    os.format( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Avoid%
+    os.printf( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Avoid%
                result_type == 1
                ? pct_value<result_t, result_e>( tr, { RESULT_MISS, RESULT_DODGE, RESULT_PARRY } )
                : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_MISS, FULLTYPE_DODGE, FULLTYPE_PARRY } ) );
 
   if ( player_has_glance( p, stats_mask ) )
-    os.format( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Glance%
+    os.printf( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Glance%
              result_type == 1
              ? pct_value<result_t, result_e>( tr, { RESULT_GLANCE } )
              : pct_value<full_result_t, full_result_e>( dr, { FULLTYPE_GLANCE, FULLTYPE_GLANCE_BLOCK, FULLTYPE_GLANCE_CRITBLOCK } ) );
 
   if ( player_has_block( p, stats_mask ) )
-    os.format( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Block%
+    os.printf( "<td class=\"right small\">%.1f%%</td>\n",  // direct_results Block%
         result_type == 1
         ? 0
         : pct_value<full_result_t, full_result_e>( dr,
@@ -309,11 +309,11 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
   if ( player_has_tick_results( p, stats_mask ) )
   {
     if ( util::str_in_str_ci( type_str, "Periodic" ) )
-      os.format( "<td class=\"right small\">%.1f%%</td>\n",  // Uptime%
+      os.printf( "<td class=\"right small\">%.1f%%</td>\n",  // Uptime%
                  100 * s.total_tick_time.mean() /
                      p.collected_data.fight_length.mean() );
     else
-      os.format( "<td class=\"right small\">&#160;</td>\n" );
+      os.printf( "<td class=\"right small\">&#160;</td>\n" );
   }
 }
 
@@ -358,29 +358,29 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
     if ( cAPSpct > s.portion_amount )
       compound_aps_pct = "&#160;(" + util::to_string( cAPSpct * 100, 1 ) + "%)";
 
-    os.format( "<td class=\"right small\" rowspan=\"%d\">%.0f%s</td>\n",
+    os.printf( "<td class=\"right small\" rowspan=\"%d\">%.0f%s</td>\n",
                result_rows, s.portion_aps.pretty_mean(), compound_aps.c_str() );
-    os.format( "<td class=\"right small\" rowspan=\"%d\">%.1f%%%s</td>\n",
+    os.printf( "<td class=\"right small\" rowspan=\"%d\">%.1f%%%s</td>\n",
                result_rows, s.portion_amount * 100, compound_aps_pct.c_str() );
   }
 
   // Number of executes
-  os.format( "<td class=\"right small\" rowspan=\"%d\">%.1f</td>\n",
+  os.printf( "<td class=\"right small\" rowspan=\"%d\">%.1f</td>\n",
              result_rows, s.num_executes.pretty_mean() );
 
   // Execute interval
-  os.format( "<td class=\"right small\" rowspan=\"%d\">%.2fsec</td>\n",
+  os.printf( "<td class=\"right small\" rowspan=\"%d\">%.2fsec</td>\n",
              result_rows, s.total_intervals.pretty_mean() );
 
   // Skip the rest of this for abilities that do no damage
   if ( s.compound_amount > 0 )
   {
     // Amount per execute
-    os.format( "<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
+    os.printf( "<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
                result_rows, s.ape );
 
     // Amount per execute time
-    os.format( "<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
+    os.printf( "<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
                result_rows, s.apet );
 
     bool periodic_only = false;
@@ -392,10 +392,10 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
       print_html_action_summary( os, stats_mask, 1, s, p );
     }
     else
-      os.format( "<td class=\"right small\" colspan=\"%d\"></td>\n",
+      os.printf( "<td class=\"right small\" colspan=\"%d\"></td>\n",
                  n_columns );
 
-    os.format( "</tr>\n" );
+    os.printf( "</tr>\n" );
 
     if ( !periodic_only && s.has_tick_amount_results() )
     {
@@ -432,7 +432,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
        << "\" class=\"filler\">\n";
 
     // Stat Details
-    os.format( "<h4>Stats details: %s </h4>\n", s.name_str.c_str() );
+    os.printf( "<h4>Stats details: %s </h4>\n", s.name_str.c_str() );
 
     os << "<table class=\"details\">\n"
        << "<tr>\n";
@@ -453,7 +453,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
     os << "</tr>\n"
        << "<tr>\n";
 
-    os.format(
+    os.printf(
         "<td class=\"right small\">%s</td>\n"
         "<td class=\"right small\">%.2f</td>\n"
         "<td class=\"right small\">%.2f</td>\n"
@@ -500,7 +500,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
         for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
           if ( p.scaling->scales_with[ i ] )
           {
-            os.format( "<th>%s</th>\n", util::stat_type_abbrev( i ) );
+            os.printf( "<th>%s</th>\n", util::stat_type_abbrev( i ) );
             colspan++;
           }
         if ( p.sim->scaling->scale_lag )
@@ -515,10 +515,10 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
           if ( p.scaling->scales_with[ i ] )
           {
             if ( s.scaling->value.get_stat( i ) > 1.0e5 )
-              os.format( "<td>%.*e</td>\n", p.sim->report_precision,
+              os.printf( "<td>%.*e</td>\n", p.sim->report_precision,
                          s.scaling->value.get_stat( i ) );
             else
-              os.format( "<td>%.*f</td>\n", p.sim->report_precision,
+              os.printf( "<td>%.*f</td>\n", p.sim->report_precision,
                          s.scaling->value.get_stat( i ) );
           }
         os << "</tr>\n";
@@ -538,7 +538,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
             value /= 2;
           }
 
-          os.format( "<td>%s%.0f</td>\n", prefix.c_str(), value );
+          os.printf( "<td>%s%.0f</td>\n", prefix.c_str(), value );
         }
         os << "</tr>\n";
         os << "<tr>\n"
@@ -548,10 +548,10 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
           {
             scale_metric_e sm = p.sim->scaling->scaling_metric;
             if ( p.scaling->scaling_error[ sm ].get_stat( i ) > 1.0e5 )
-              os.format( "<td>%.*e</td>\n", p.sim->report_precision,
+              os.printf( "<td>%.*e</td>\n", p.sim->report_precision,
                          s.scaling->error.get_stat( i ) );
             else
-              os.format( "<td>%.*f</td>\n", p.sim->report_precision,
+              os.printf( "<td>%.*f</td>\n", p.sim->report_precision,
                          s.scaling->error.get_stat( i ) );
           }
         os << "</tr>\n";
@@ -600,7 +600,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
         k++;
         os << ">\n";
 
-        os.format(
+        os.printf(
             "<td class=\"left small\">%s</td>\n"
             "<td class=\"right small\">%.2f</td>\n"
             "<td class=\"right small\">%.2f%%</td>\n"
@@ -666,7 +666,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
         }
         k++;
         os << ">\n";
-        os.format(
+        os.printf(
             "<td class=\"left small\">%s</td>\n"
             "<td class=\"right small\">%.1f</td>\n"
             "<td class=\"right small\">%.2f%%</td>\n"
@@ -720,9 +720,9 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
         continue;
       processed_actions.push_back( a->name() );
 
-      os.format( "<h4>Action details: %s </h4>\n", a->name() );
+      os.printf( "<h4>Action details: %s </h4>\n", a->name() );
 
-      os.format(
+      os.printf(
           "<div class=\"float\">\n"
           "<h5>Static Values</h5>\n"
           "<ul>\n"
@@ -756,7 +756,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
       // Spelldata
       if ( a->data().ok() )
       {
-        os.format(
+        os.printf(
             "<div class=\"float\">\n"
             "<h5>Spelldata</h5>\n"
             "<ul>\n"
@@ -780,7 +780,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
 
       if ( a->spell_power_mod.direct || a->base_dd_min || a->base_dd_max )
       {
-        os.format(
+        os.printf(
             "<div class=\"float\">\n"
             "<h5>Direct Damage</h5>\n"
             "<ul>\n"
@@ -798,7 +798,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
       }
       if ( a->dot_duration > timespan_t::zero() )
       {
-        os.format(
+        os.printf(
             "<div class=\"float\">\n"
             "<h5>Damage Over Time</h5>\n"
             "<ul>\n"
@@ -822,7 +822,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
       }
       if ( a->weapon )
       {
-        os.format(
+        os.printf(
             "<div class=\"float\">\n"
             "<h5>Weapon</h5>\n"
             "<ul>\n"
@@ -866,7 +866,7 @@ int print_html_action_resource( report::sc_html_stream& os, const stats_t& s,
       }
       ++j;
       os << ">\n";
-      os.format(
+      os.printf(
           "<td class=\"left\">%s</td>\n"
           "<td class=\"left\">%s</td>\n"
           "<td class=\"right\">%.1f</td>\n"
@@ -876,7 +876,7 @@ int print_html_action_resource( report::sc_html_stream& os, const stats_t& s,
           util::inverse_tokenize( util::resource_type_string( i ) ).c_str(),
           s.resource_gain.count[ i ], s.resource_gain.actual[ i ],
           s.resource_gain.actual[ i ] / s.resource_gain.count[ i ] );
-      os.format(
+      os.printf(
           "<td class=\"right\">%.1f</td>\n"
           "<td class=\"right\">%.1f</td>\n",
           s.rpe[ i ], s.apr[ i ] );
@@ -893,7 +893,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
   if ( p.items.empty() )
     return;
 
-  os.format(
+  os.printf(
       "<div class=\"player-section gear\">\n"
       "<h3 class=\"toggle\">Gear</h3>\n"
       "<div class=\"toggle-content hide\">\n"
@@ -913,7 +913,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       continue;
     }
 
-    os.format(
+    os.printf(
         "<tr>\n"
         "<th class=\"left\">%s</th>\n"
         "<th class=\"left\">%s</th>\n"
@@ -990,7 +990,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += " }";
     }
 
-    os.format(
+    os.printf(
         "<tr>\n"
         "<th class=\"left\" colspan=\"2\"></th>\n"
         "<td class=\"left small\">%s</td>\n"
@@ -1076,7 +1076,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
 
     for ( attribute_e i = ATTRIBUTE_NONE; ++i < ATTR_AGI_INT; )
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">%s</th>\n"
           "<td class=\"right\">%.0f</td>\n"
@@ -1093,16 +1093,16 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           util::floor( p.total_gear.attribute[ i ] ) );
       // append hybrid attributes as a parenthetical if appropriate
       if ( hybrid_attributes[ i ] > 0 )
-        os.format( " (%.0f)", hybrid_attributes[ i ] );
+        os.printf( " (%.0f)", hybrid_attributes[ i ] );
 
-      os.format( "</td>\n</tr>\n" );
+      os.printf( "</td>\n</tr>\n" );
 
       j++;
     }
     for ( resource_e i = RESOURCE_NONE; ++i < RESOURCE_MAX; )
     {
       if ( p.resources.max[ i ] > 0 )
-        os.format(
+        os.printf(
             "<tr%s>\n"
             "<th class=\"left\">%s</th>\n"
             "<td class=\"right\"></td>\n"
@@ -1118,7 +1118,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     }
     if ( buffed_stats.spell_power > 0 )
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Spell Power</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1135,7 +1135,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     }
     if ( p.composite_melee_crit_chance() == p.composite_spell_crit_chance() )
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Crit</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1152,7 +1152,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     }
     else
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Melee Crit</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1166,7 +1166,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           100 * p.composite_melee_crit_chance(),
           p.composite_melee_crit_rating() );
       j++;
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Spell Crit</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1183,7 +1183,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     }
     if ( p.composite_melee_haste() == p.composite_spell_haste() )
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Haste</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1202,7 +1202,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     }
     else
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Melee Haste</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1216,7 +1216,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           100 * ( 1 / p.composite_melee_haste() - 1 ),
           p.composite_melee_haste_rating() );
       j++;
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Spell Haste</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1233,7 +1233,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     }
     if ( p.composite_spell_speed() != p.composite_spell_haste() )
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Spell Speed</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1250,7 +1250,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     }
     if ( p.composite_melee_speed() != p.composite_melee_haste() )
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Swing Speed</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1265,7 +1265,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           p.composite_melee_haste_rating() );
       j++;
     }
-    os.format(
+    os.printf(
         "<tr%s>\n"
         "<th class=\"left\">Damage / Heal Versatility</th>\n"
         "<td class=\"right\"></td>\n"
@@ -1281,7 +1281,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     j++;
     if ( p.primary_role() == ROLE_TANK )
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Mitigation Versatility</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1298,7 +1298,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     }
     if ( buffed_stats.manareg_per_second > 0 )
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">ManaReg per Second</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1313,7 +1313,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     j++;
     if ( buffed_stats.attack_power > 0 )
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Attack Power</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1328,7 +1328,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           p.initial.stats.attack_power );
       j++;
     }
-    os.format(
+    os.printf(
         "<tr%s>\n"
         "<th class=\"left\">Mastery</th>\n"
         "<td class=\"right\"></td>\n"
@@ -1345,7 +1345,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     {
       if ( p.dual_wield() )
       {
-        os.format(
+        os.printf(
             "<tr%s>\n"
             "<th class=\"left\">Expertise</th>\n"
             "<td class=\"right\"></td>\n"
@@ -1364,7 +1364,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       }
       else
       {
-        os.format(
+        os.printf(
             "<tr%s>\n"
             "<th class=\"left\">Expertise</th>\n"
             "<td class=\"right\"></td>\n"
@@ -1380,7 +1380,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
         j++;
       }
     }
-    os.format(
+    os.printf(
         "<tr%s>\n"
         "<th class=\"left\">Armor</th>\n"
         "<td class=\"right\"></td>\n"
@@ -1394,7 +1394,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     j++;
     if ( buffed_stats.bonus_armor > 0 )
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Bonus Armor</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1409,7 +1409,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     }
     if ( buffed_stats.run_speed > 0 )
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Run Speed</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1424,7 +1424,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     }
     if ( buffed_stats.leech > 0 )
     {
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Leech</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1441,7 +1441,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
     {
       if ( buffed_stats.avoidance > 0 )
       {
-        os.format(
+        os.printf(
             "<tr%s>\n"
             "<th class=\"left\">Avoidance</th>\n"
             "<td class=\"right\"></td>\n"
@@ -1454,7 +1454,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
             p.composite_avoidance(), p.composite_avoidance_rating() );
         j++;
       }
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Tank-Miss</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1466,7 +1466,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           ( j % 2 == 1 ) ? " class=\"odd\"" : "", 100 * buffed_stats.miss,
           100 * ( p.cache.miss() ), 0.0 );
       j++;
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Tank-Dodge</th>\n"
           "<td class=\"right\">%.2f%%</td>\n"
@@ -1476,7 +1476,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           ( j % 2 == 1 ) ? " class=\"odd\"" : "", 100 * buffed_stats.dodge,
           100 * ( p.composite_dodge() ), p.composite_dodge_rating() );
       j++;
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Tank-Parry</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1488,7 +1488,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           ( j % 2 == 1 ) ? " class=\"odd\"" : "", 100 * buffed_stats.parry,
           100 * ( p.composite_parry() ), p.composite_parry_rating() );
       j++;
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Tank-Block</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1500,7 +1500,7 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
           ( j % 2 == 1 ) ? " class=\"odd\"" : "", 100 * buffed_stats.block,
           100 * p.composite_block(), p.composite_block_rating() );
       j++;
-      os.format(
+      os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Tank-Crit</th>\n"
           "<td class=\"right\"></td>\n"
@@ -1541,14 +1541,14 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
     {
       if ( row == 6 )
       {
-        os.format(
+        os.printf(
             "<tr>\n"
             "<th class=\"left\">%d</th>\n",
             100 );
       }
       else
       {
-        os.format(
+        os.printf(
             "<tr>\n"
             "<th class=\"left\">%d</th>\n",
             ( row + 1 ) * 15 );
@@ -1570,11 +1570,11 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
         }
         if ( p.talent_points.has_row_col( row, col ) )
         {
-          os.format( "<td class=\"filler\">%s</td>\n", name.c_str() );
+          os.printf( "<td class=\"filler\">%s</td>\n", name.c_str() );
         }
         else
         {
-          os.format( "<td>%s</td>\n", name.c_str() );
+          os.printf( "<td>%s</td>\n", name.c_str() );
         }
       }
       os << "</tr>\n";
@@ -1608,7 +1608,7 @@ void print_html_player_scale_factor_table(
 
   for ( size_t i = 0; i < scaling_stats.size(); i++ )
   {
-    os.format( "<th>%s</th>\n", util::stat_type_abbrev( scaling_stats[ i ] ) );
+    os.printf( "<th>%s</th>\n", util::stat_type_abbrev( scaling_stats[ i ] ) );
   }
   if ( p.sim->scaling->scale_lag )
   {
@@ -1622,14 +1622,14 @@ void print_html_player_scale_factor_table(
   for ( const auto& stat : scaling_stats )
   {
     if ( std::abs( p.scaling->scaling[ sm ].get_stat( stat ) ) > 1.0e5 )
-      os.format( "<td>%.*e</td>\n", p.sim->report_precision,
+      os.printf( "<td>%.*e</td>\n", p.sim->report_precision,
                  p.scaling->scaling[ sm ].get_stat( stat ) );
     else
-      os.format( "<td>%.*f</td>\n", p.sim->report_precision,
+      os.printf( "<td>%.*f</td>\n", p.sim->report_precision,
                  p.scaling->scaling[ sm ].get_stat( stat ) );
   }
   if ( p.sim->scaling->scale_lag )
-    os.format( "<td>%.*f</td>\n", p.sim->report_precision,
+    os.printf( "<td>%.*f</td>\n", p.sim->report_precision,
                p.scaling->scaling_lag[ sm ] );
   os << "</tr>\n";
   os << "<tr>\n"
@@ -1637,7 +1637,7 @@ void print_html_player_scale_factor_table(
 
   for ( const auto& stat : scaling_stats )
   {
-    os.format( "<td>%.*f</td>\n", p.sim->report_precision,
+    os.printf( "<td>%.*f</td>\n", p.sim->report_precision,
                p.scaling->scaling_normalized[ sm ].get_stat( stat ) );
   }
   os << "</tr>\n";
@@ -1655,7 +1655,7 @@ void print_html_player_scale_factor_table(
       prefix = "+/- ";
     }
 
-    os.format( "<td>%s%.0f</td>\n", prefix.c_str(), value );
+    os.printf( "<td>%s%.0f</td>\n", prefix.c_str(), value );
   }
   if ( p.sim->scaling->scale_lag )
     os << "<td>100</td>\n";
@@ -1665,33 +1665,33 @@ void print_html_player_scale_factor_table(
 
   for ( const auto& stat : scaling_stats )
     if ( std::abs( p.scaling->scaling[ sm ].get_stat( stat ) ) > 1.0e5 )
-      os.format( "<td>%.*e</td>\n", p.sim->report_precision,
+      os.printf( "<td>%.*e</td>\n", p.sim->report_precision,
                  p.scaling->scaling_error[ sm ].get_stat( stat ) );
     else
-      os.format( "<td>%.*f</td>\n", p.sim->report_precision,
+      os.printf( "<td>%.*f</td>\n", p.sim->report_precision,
                  p.scaling->scaling_error[ sm ].get_stat( stat ) );
 
   if ( p.sim->scaling->scale_lag )
-    os.format( "<td>%.*f</td>\n", p.sim->report_precision,
+    os.printf( "<td>%.*f</td>\n", p.sim->report_precision,
                p.scaling->scaling_lag_error[ sm ] );
   os << "</tr>\n";
 
   /*
-  os.format(
+  os.printf(
       "<tr class=\"left\">\n"
       "<th>Gear Ranking</th>\n"
       "<td colspan=\"%i\" class=\"filler\">\n"
       "<ul class=\"float\">\n",
       colspan );
   if ( !ri.gear_weights_wowhead_std_link[ sm ].empty() )
-    os.format( "<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n",
+    os.printf( "<li><a href=\"%s\" class=\"ext\">wowhead</a></li>\n",
                ri.gear_weights_wowhead_std_link[ sm ].c_str() );
   os << "</ul>\n";
   os << "</td>\n";
   os << "</tr>\n";
 
   // Optimizers section
-  os.format(
+  os.printf(
       "<tr class=\"left\">\n"
       "<th>Optimizers</th>\n"
       "<td colspan=\"%i\" class=\"filler\">\n"
@@ -1701,7 +1701,7 @@ void print_html_player_scale_factor_table(
   // askmrrobot
   if ( !ri.gear_weights_askmrrobot_link[ sm ].empty() )
   {
-    os.format( "<li><a href=\"%s\" class=\"ext\">askmrrobot</a></li>\n",
+    os.printf( "<li><a href=\"%s\" class=\"ext\">askmrrobot</a></li>\n",
                ri.gear_weights_askmrrobot_link[ sm ].c_str() );
   }
 
@@ -1712,7 +1712,7 @@ void print_html_player_scale_factor_table(
   */
 
   // Text Ranking
-  os.format(
+  os.printf(
       "<tr class=\"left\">\n"
       "<th><a href=\"#help-scale-factor-ranking\" "
       "class=\"help\">Ranking</a></th>\n"
@@ -1743,13 +1743,13 @@ void print_html_player_scale_factor_table(
         os << " ~= ";
     }
 
-    os.format( "%s", util::stat_type_abbrev( scaling_stats[ i ] ) );
+    os.printf( "%s", util::stat_type_abbrev( scaling_stats[ i ] ) );
   }
   os << "</table>\n";
   if ( !ri.gear_weights_pawn_string[ sm ].empty() )
   {
     os << "<table class=\"sc mt\">\n";
-    os.format(
+    os.printf(
         "<tr class\"left\">\n"
         "<th>Pawn string</th>\n"
         "<td colspan=\"%i\" class=\"filler\">\n"
@@ -1801,7 +1801,7 @@ void print_html_player_scale_factors(
              sim.scaling->scale_factor_noise <
                  p.scaling->scaling_lag_error[ default_sm ] /
                      fabs( p.scaling->scaling_lag[ default_sm ] ) )
-          os.format(
+          os.printf(
               "<p>Player may have insufficient iterations (%d) to calculate "
               "scale factor for lag (error is >%.0f%% delta score)</p>\n",
               sim.iterations, sim.scaling->scale_factor_noise * 100.0 );
@@ -1814,7 +1814,7 @@ void print_html_player_scale_factors(
               p.scaling->scaling_stats[ default_sm ][ i ] );
           if ( sim.scaling->scale_factor_noise > 0 &&
                sim.scaling->scale_factor_noise < error / fabs( value ) )
-            os.format(
+            os.printf(
                 "<p>Player may have insufficient iterations (%d) to calculate "
                 "scale factor for stat %s (error is >%.0f%% delta score)</p>\n",
                 sim.iterations,
@@ -1870,7 +1870,7 @@ void print_html_sample_sequence_string_entry(
                                                      (int)data.time.total_millis() % 1000 );
   }
 
-  os.format( "<span class=\"%s_seq_target_%s\" title=\"[%s] %s%s\n|", p.name(),
+  os.printf( "<span class=\"%s_seq_target_%s\" title=\"[%s] %s%s\n|", p.name(),
              targetname.c_str(), time_str, data.action->name(),
              ( targetname == "none" ? "" : " @ " + targetname ).c_str() );
 
@@ -1879,12 +1879,12 @@ void print_html_sample_sequence_string_entry(
   if ( print_html_sample_sequence_resource( p, data, pr ) )
   {
     if ( pr == RESOURCE_HEALTH || pr == RESOURCE_MANA )
-      os.format( " %d%%", (int)( ( data.resource_snapshot[ pr ] /
+      os.printf( " %d%%", (int)( ( data.resource_snapshot[ pr ] /
                                    data.resource_max_snapshot[ pr ] ) *
                                  100 ) );
     else
-      os.format( " %.1f", data.resource_snapshot[ pr ] );
-    os.format( " %s |", util::resource_type_string( pr ) );
+      os.printf( " %.1f", data.resource_snapshot[ pr ] );
+    os.printf( " %s |", util::resource_type_string( pr ) );
   }
 
   for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
@@ -1892,12 +1892,12 @@ void print_html_sample_sequence_string_entry(
     if ( print_html_sample_sequence_resource( p, data, r ) && r != pr )
     {
       if ( r == RESOURCE_HEALTH || r == RESOURCE_MANA )
-        os.format( " %d%%", (int)( ( data.resource_snapshot[ r ] /
+        os.printf( " %d%%", (int)( ( data.resource_snapshot[ r ] /
                                      data.resource_max_snapshot[ r ] ) *
                                    100 ) );
       else
-        os.format( " %.1f", data.resource_snapshot[ r ] );
-      os.format( " %s |", util::resource_type_string( r ) );
+        os.printf( " %.1f", data.resource_snapshot[ r ] );
+      os.printf( " %s |", util::resource_type_string( r ) );
     }
   }
 
@@ -1907,13 +1907,13 @@ void print_html_sample_sequence_string_entry(
     int stacks   = data.buff_list[ b ].second[0];
     if ( !buff->constant )
     {
-      os.format( "\n%s", buff->name() );
+      os.printf( "\n%s", buff->name() );
       if ( stacks > 1 )
-        os.format( "(%d)", stacks );
+        os.printf( "(%d)", stacks );
     }
   }
 
-  os.format( "\">%c</span>", data.action ? data.action->marker : 'W' );
+  os.printf( "\">%c</span>", data.action ? data.action->marker : 'W' );
 }
 // print_html_sample_sequence_table_entry =====================================
 
@@ -1927,14 +1927,14 @@ void print_html_sample_sequence_table_entry(
   if ( precombat )
     os << "<td class=\"right\">Pre</td>\n";
   else
-    os.format( "<td class=\"right\">%d:%02d.%03d</td>\n",
+    os.printf( "<td class=\"right\">%d:%02d.%03d</td>\n",
                (int)data.time.total_minutes(),
                (int)data.time.total_seconds() % 60,
                (int)data.time.total_millis() % 1000 );
 
   if ( data.action )
   {
-    os.format(
+    os.printf(
         "<td class=\"left\">%s</td>\n"
         "<td class=\"left\">%c</td>\n"
         "<td class=\"left\">%s</td>\n"
@@ -1946,7 +1946,7 @@ void print_html_sample_sequence_table_entry(
   }
   else
   {
-    os.format(
+    os.printf(
         "<td class=\"left\">Waiting</td>\n"
         "<td class=\"left\">&nbsp;</td>\n"
         "<td class=\"left\">&nbsp;</td>\n"
@@ -1954,7 +1954,7 @@ void print_html_sample_sequence_table_entry(
         data.wait_time.total_seconds() );
   }
 
-  os.format( "<td class=\"left\">" );
+  os.printf( "<td class=\"left\">" );
 
   bool first    = true;
   resource_e pr = p.primary_resource();
@@ -1964,11 +1964,11 @@ void print_html_sample_sequence_table_entry(
     if ( first )
       first = false;
 
-    os.format( " %.1f/%.0f: <b>%.0f%%", data.resource_snapshot[ pr ],
+    os.printf( " %.1f/%.0f: <b>%.0f%%", data.resource_snapshot[ pr ],
                data.resource_max_snapshot[ pr ],
                data.resource_snapshot[ pr ] / data.resource_max_snapshot[ pr ] *
                    100.0 );
-    os.format( " %s</b>", util::resource_type_string( pr ) );
+    os.printf( " %s</b>", util::resource_type_string( pr ) );
   }
 
   for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
@@ -1978,17 +1978,17 @@ void print_html_sample_sequence_table_entry(
       if ( first )
         first = false;
       else
-        os.format( " | " );
+        os.printf( " | " );
 
-      os.format( " %.1f/%.0f: <b>%.0f%%", data.resource_snapshot[ r ],
+      os.printf( " %.1f/%.0f: <b>%.0f%%", data.resource_snapshot[ r ],
                  data.resource_max_snapshot[ r ],
                  data.resource_snapshot[ r ] / data.resource_max_snapshot[ r ] *
                      100.0 );
-      os.format( " %s</b>", util::resource_type_string( r ) );
+      os.printf( " %s</b>", util::resource_type_string( r ) );
     }
   }
 
-  os.format( "</td>\n<td class=\"left\">" );
+  os.printf( "</td>\n<td class=\"left\">" );
 
   first = true;
   for ( size_t b = 0; b < data.buff_list.size(); ++b )
@@ -2001,11 +2001,11 @@ void print_html_sample_sequence_table_entry(
       if ( first )
         first = false;
       else
-        os.format( ", " );
+        os.printf( ", " );
 
-      os.format( "%s", buff->name() );
+      os.printf( "%s", buff->name() );
       if ( stacks > 1 )
-        os.format( "(%d)", stacks );
+        os.printf( "(%d)", stacks );
     }
   }
 
@@ -2053,7 +2053,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
         als += "&#160;<small><em>" +
                util::encode_html( alist->action_list_comment_str.c_str() ) +
                "</em></small>";
-      os.format(
+      os.printf(
           "<table class=\"sc\">\n"
           "<tr>\n"
           "<th class=\"right\"></th>\n"
@@ -2083,7 +2083,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
             util::encode_html( a->signature->comment_.c_str() ) +
             "</em></small>";
 
-    os.format(
+    os.printf(
         "<td class=\"right\" style=\"vertical-align:top\">%c</td>\n"
         "<td class=\"left\" style=\"vertical-align:top\">%.2f</td>\n"
         "<td class=\"left\">%s</td>\n"
@@ -2148,7 +2148,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
     {
       if ( j == 12 )
         j = 2;
-      os.format( ".{}_seq_target_{} {{ color: #{}; }}\n", p.name(),
+      os.printf( ".{}_seq_target_{} {{ color: #{}; }}\n", p.name(),
                  targets[ i ].c_str(), colors[ j ] );
       j++;
     }
@@ -2176,7 +2176,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os,
        << "<div class=\"toggle-content hide\">\n";
 
     // create table header
-    os.format(
+    os.printf(
         "<table class=\"sc\">\n"
         "<tr>\n"
         "<th class=\"center\">time</th>\n"
@@ -2286,7 +2286,7 @@ void print_html_gain( report::sc_html_stream& os, const gain_t& g,
          << util::inverse_tokenize( util::resource_type_string( i ) )
          << "</td>\n";
       os << "<td class=\"right\">" << g.count[ i ] << "</td>\n";
-      os.format(
+      os.printf(
           "<td class=\"right\">%.2f (%.2f%%)</td>\n", g.actual[ i ],
           g.actual[ i ] ? g.actual[ i ] / total_gains[ i ] * 100.0 : 0.0 );
       os << "<td class=\"right\">" << g.actual[ i ] / g.count[ i ] << "</td>\n";
@@ -2786,7 +2786,7 @@ void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t&
   // Spelldata
    if ( data.ok() )
    {
-     os.format(
+     os.printf(
          "<td style=\"vertical-align: top;\" class=\"filler\">\n"
          "<h4>%s details</h4>\n"
          "<ul>\n"
@@ -2841,15 +2841,15 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
   if ( report_details )
   {
     buff_name = report::buff_decorator_t( b ).decorate();
-    os.format(
+    os.printf(
         "<td class=\"left\"><span class=\"toggle-details\">%s</span></td>\n",
         buff_name.c_str() );
   }
   else
-    os.format( "<td class=\"left\">%s</td>\n", buff_name.c_str() );
+    os.printf( "<td class=\"left\">%s</td>\n", buff_name.c_str() );
 
   if ( !constant_buffs )
-    os.format(
+    os.printf(
         "<td class=\"right\">%.1f</td>\n"
         "<td class=\"right\">%.1f</td>\n"
         "<td class=\"right\">%.1fsec</td>\n"
@@ -2870,7 +2870,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
 
   if ( report_details )
   {
-    os.format(
+    os.printf(
         "<tr class=\"details hide\">\n"
         "<td colspan=\"%d\" class=\"filler\">\n"
         "<table><tr>\n"
@@ -2878,7 +2878,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
         "<h4>Buff details</h4>\n"
         "<ul>\n",
         b.constant ? 1 : 9);
-    os.format(
+    os.printf(
         "<li><span class=\"label\">buff initial source:</span>%s</li>\n"
         "<li><span class=\"label\">cooldown name:</span>%s</li>\n"
         "<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
@@ -2908,12 +2908,12 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
         b.buff_period.total_seconds());
     if ( b.item )
     {
-      os.format(
+      os.printf(
           "<li><span class=\"label\">associated item:</span>%s</li>\n",
           b.item->full_name().c_str());
 
     }
-    os.format(
+    os.printf(
         "</ul>\n");
 
     if ( b.rppm )
@@ -2921,7 +2921,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
       os << "<h4>RPPM Buff details</h4>\n"
          << "<ul>\n";
 
-      os.format(
+      os.printf(
           "<li><span class=\"label\">scaling:</span>%s</li>\n"
           "<li><span class=\"label\">frequency:</span>%.2f</li>\n"
           "<li><span class=\"label\">modifier:</span>%.2f</li>\n",
@@ -2938,7 +2938,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
 
       for ( size_t j = 0; j < stat_buff->stats.size(); ++j )
       {
-        os.format(
+        os.printf(
             "<li><span class=\"label\">stat:</span>%s</li>\n"
             "<li><span class=\"label\">amount:</span>%.2f</li>\n",
             util::stat_type_string( stat_buff->stats[ j ].stat ),
@@ -2954,7 +2954,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
       double uptime = b.stack_uptime[ j ].uptime_sum.mean();
       if ( uptime > 0 )
       {
-        os.format( "<li><span class=\"label\">%s_%d:</span>%.2f%%</li>\n",
+        os.printf( "<li><span class=\"label\">%s_%d:</span>%.2f%%</li>\n",
                    b.name_str.c_str(), j, uptime * 100.0 );
       }
     }
@@ -2964,7 +2964,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b,
     {
       os << "<h4>Trigger Attempt Success</h4>\n"
          << "<ul>\n";
-      os.format( "<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n",
+      os.printf( "<li><span class=\"label\">trigger_pct:</span>%.2f%%</li>\n",
                  b.trigger_pct.mean() );
       os << "</ul>\n";
     }
@@ -3097,7 +3097,7 @@ void print_html_player_description( report::sc_html_stream& os,
 
   if ( !p.report_information.thumbnail_url.empty() )
   {
-    os.format(
+    os.printf(
         "<class=\"toggle-thumbnail ext%s\"><img src=\"%s\" "
         "alt=\"%s\" class=\"player-thumbnail\"/>\n",
         ( num_players == 1 ) ? "" : " hide",
@@ -3116,18 +3116,18 @@ void print_html_player_description( report::sc_html_stream& os,
          sim.num_enemies > 1 ) ||
        ( p.primary_role() == ROLE_TANK && sim.num_enemies > 1 ) )
   {
-    os.format( "\">%s&#160;:&#160;%.0f dps, %.0f dps to main target", n.c_str(),
+    os.printf( "\">%s&#160;:&#160;%.0f dps, %.0f dps to main target", n.c_str(),
                p.collected_data.dps.mean(),
                p.collected_data.prioritydps.mean() );
   }
   else if ( p.collected_data.dps.mean() >= p.collected_data.hps.mean() ||
             p.primary_role() == ROLE_TANK )
   {
-    os.format( "\">%s&#160;:&#160;%.0f dps", n.c_str(),
+    os.printf( "\">%s&#160;:&#160;%.0f dps", n.c_str(),
                p.collected_data.dps.mean() );
   }
   else
-    os.format( "\">%s&#160;:&#160;%.0f hps (%.0f aps)", n.c_str(),
+    os.printf( "\">%s&#160;:&#160;%.0f hps (%.0f aps)", n.c_str(),
                p.collected_data.hps.mean() + p.collected_data.aps.mean(),
                p.collected_data.aps.mean() );
 
@@ -3135,37 +3135,37 @@ void print_html_player_description( report::sc_html_stream& os,
   if ( p.primary_role() == ROLE_TANK && !p.is_enemy() )
   {
     // print DTPS & HPS
-    os.format( ", %.0f dtps", p.collected_data.dtps.mean() );
-    os.format( ", %.0f hps (%.0f aps)",
+    os.printf( ", %.0f dtps", p.collected_data.dtps.mean() );
+    os.printf( ", %.0f hps (%.0f aps)",
                p.collected_data.hps.mean() + p.collected_data.aps.mean(),
                p.collected_data.aps.mean() );
     // print TMI
     double tmi_display = p.collected_data.theck_meloree_index.mean();
     if ( tmi_display >= 1.0e7 )
-      os.format( ", %.2fM TMI", tmi_display / 1.0e6 );
+      os.printf( ", %.2fM TMI", tmi_display / 1.0e6 );
     else if ( std::abs( tmi_display ) <= 999.9 )
-      os.format( ", %.3fk TMI", tmi_display / 1.0e3 );
+      os.printf( ", %.3fk TMI", tmi_display / 1.0e3 );
     else
-      os.format( ", %.1fk TMI", tmi_display / 1.0e3 );
+      os.printf( ", %.1fk TMI", tmi_display / 1.0e3 );
     // if we're using a non-standard window, append that to the label
     // appropriately (i.e. TMI-4.0 for a 4.0-second window)
     if ( p.tmi_window != 6.0 )
-      os.format( "-%1.1f", p.tmi_window );
+      os.printf( "-%1.1f", p.tmi_window );
 
     if ( sim.show_etmi || sim.player_no_pet_list.size() > 1 )
     {
       double etmi_display =
           p.collected_data.effective_theck_meloree_index.mean();
       if ( etmi_display >= 1.0e7 )
-        os.format( ", %.1fk ETMI", etmi_display / 1.0e6 );
+        os.printf( ", %.1fk ETMI", etmi_display / 1.0e6 );
       else if ( std::abs( etmi_display ) <= 999.9 )
-        os.format( ", %.3fk ETMI", etmi_display / 1.0e3 );
+        os.printf( ", %.3fk ETMI", etmi_display / 1.0e3 );
       else
-        os.format( ", %.1fk ETMI", etmi_display / 1.0e3 );
+        os.printf( ", %.1fk ETMI", etmi_display / 1.0e3 );
       // if we're using a non-standard window, append that to the label
       // appropriately (i.e. TMI-4.0 for a 4.0-second window)
       if ( p.tmi_window != 6.0 )
-        os.format( "-%1.1f", p.tmi_window );
+        os.printf( "-%1.1f", p.tmi_window );
     }
 
     os << "\n";
@@ -3193,14 +3193,14 @@ void print_html_player_description( report::sc_html_stream& os,
     pt = util::pet_type_string( p.cast_pet()->pet_type );
   else
     pt = util::player_type_string( p.type );
-  os.format(
+  os.printf(
       "<li><b>Race:</b> %s</li>\n"
       "<li><b>Class:</b> %s</li>\n",
       util::inverse_tokenize( p.race_str ).c_str(),
       util::inverse_tokenize( pt ).c_str() );
 
   if ( p.specialization() != SPEC_NONE )
-    os.format( "<li><b>Spec:</b> %s</li>\n",
+    os.printf( "<li><b>Spec:</b> %s</li>\n",
                util::inverse_tokenize(
                    dbc::specialization_string( p.specialization() ) )
                    .c_str() );
@@ -3211,7 +3211,7 @@ void print_html_player_description( report::sc_html_stream& os,
     timewalk_str += util::to_string( p.true_level );
     timewalk_str += ")";
   }
-  os.format(
+  os.printf(
       "<li><b>Level:</b> %d%s</li>\n"
       "<li><b>Role:</b> %s</li>\n"
       "<li><b>Position:</b> %s</li>\n"
@@ -3293,7 +3293,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
             p.collected_data.dps.percentile( 0.5 - sim.confidence / 2 ) );
       double dps_error =
           sim_t::distribution_mean_error( sim, p.collected_data.dps );
-      os.format(
+      os.printf(
           "<td>%.1f</td>\n"
           "<td>%.1f</td>\n"
           "<td>%.1f / %.3f%%</td>\n"
@@ -3313,7 +3313,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
                        cd.hps.percentile( 0.5 - sim.confidence / 2 ) );
       double hps_error =
           sim_t::distribution_mean_error( sim, p.collected_data.hps );
-      os.format(
+      os.printf(
           "<td>%.1f</td>\n"
           "<td>%.1f</td>\n"
           "<td>%.2f / %.2f%%</td>\n"
@@ -3333,7 +3333,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
                        cd.aps.percentile( 0.5 - sim.confidence / 2 ) );
       double aps_error =
           sim_t::distribution_mean_error( sim, p.collected_data.aps );
-      os.format(
+      os.printf(
           "<td>%.1f</td>\n"
           "<td>%.2f / %.2f%%</td>\n"
           "<td>%.0f / %.1f%%</td>\n"
@@ -3391,7 +3391,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
                           cd.dtps.percentile( 0.5 - sim.confidence / 2 ) );
     double dtps_error =
         sim_t::distribution_mean_error( sim, p.collected_data.dtps );
-    os.format(
+    os.printf(
         "<td>%.1f</td>\n"
         "<td>%.2f / %.2f%%</td>\n"
         "<td>%.0f / %.1f%%</td>\n",
@@ -3410,21 +3410,21 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
 
     // print TMI
     if ( std::abs( cd.theck_meloree_index.mean() ) > 1.0e8 )
-      os.format( "<td>%1.3e</td>\n", cd.theck_meloree_index.mean() );
+      os.printf( "<td>%1.3e</td>\n", cd.theck_meloree_index.mean() );
     else
-      os.format( "<td>%.1fk</td>\n", cd.theck_meloree_index.mean() / 1e3 );
+      os.printf( "<td>%.1fk</td>\n", cd.theck_meloree_index.mean() / 1e3 );
 
     // print TMI error/variance
     if ( tmi_error > 1.0e6 )
     {
-      os.format( "<td>%1.2e / %.2f%%</td>\n", tmi_error,
+      os.printf( "<td>%1.2e / %.2f%%</td>\n", tmi_error,
                  cd.theck_meloree_index.mean()
                      ? tmi_error * 100.0 / cd.theck_meloree_index.mean()
                      : 0.0 );
     }
     else
     {
-      os.format( "<td>%.0f / %.2f%%</td>\n", tmi_error,
+      os.printf( "<td>%.0f / %.2f%%</td>\n", tmi_error,
                  cd.theck_meloree_index.mean()
                      ? tmi_error * 100.0 / cd.theck_meloree_index.mean()
                      : 0.0 );
@@ -3432,26 +3432,26 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
 
     // print  TMI min/max
     if ( std::abs( cd.theck_meloree_index.min() ) > 1.0e8 )
-      os.format( "<td>%1.2e</td>\n", cd.theck_meloree_index.min() );
+      os.printf( "<td>%1.2e</td>\n", cd.theck_meloree_index.min() );
     else
-      os.format( "<td>%.1fk</td>\n", cd.theck_meloree_index.min() / 1e3 );
+      os.printf( "<td>%.1fk</td>\n", cd.theck_meloree_index.min() / 1e3 );
 
     if ( std::abs( cd.theck_meloree_index.max() ) > 1.0e8 )
-      os.format( "<td>%1.2e</td>\n", cd.theck_meloree_index.max() );
+      os.printf( "<td>%1.2e</td>\n", cd.theck_meloree_index.max() );
     else
-      os.format( "<td>%.1fk</td>\n", cd.theck_meloree_index.max() / 1e3 );
+      os.printf( "<td>%.1fk</td>\n", cd.theck_meloree_index.max() / 1e3 );
 
     // print TMI range
     if ( tmi_range > 1.0e8 )
     {
-      os.format( "<td>%1.2e / %.1f%%</td>\n", tmi_range,
+      os.printf( "<td>%1.2e / %.1f%%</td>\n", tmi_range,
                  cd.theck_meloree_index.mean()
                      ? tmi_range * 100.0 / cd.theck_meloree_index.mean()
                      : 0.0 );
     }
     else
     {
-      os.format( "<td>%.1fk / %.1f%%</td>\n", tmi_range / 1e3,
+      os.printf( "<td>%.1fk / %.1f%%</td>\n", tmi_range / 1e3,
                  cd.theck_meloree_index.mean()
                      ? tmi_range * 100.0 / cd.theck_meloree_index.mean()
                      : 0.0 );
@@ -3461,12 +3461,12 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
     os << "<td>&#160;&#160;&#160;&#160;&#160;</td>\n";
 
     // print Max Spike Size stats
-    os.format( "<td>%.1f%%</td>\n", cd.max_spike_amount.mean() );
-    os.format( "<td>%.1f%%</td>\n", cd.max_spike_amount.min() );
-    os.format( "<td>%.1f%%</td>\n", cd.max_spike_amount.max() );
+    os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.mean() );
+    os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.min() );
+    os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.max() );
 
     // print rough estimate of spike frequency
-    os.format( "<td>%.1f</td>\n",
+    os.printf( "<td>%.1f</td>\n",
                cd.theck_meloree_index.mean()
                    ? std::exp( cd.theck_meloree_index.mean() / 1e3 /
                                cd.max_spike_amount.mean() )
@@ -3476,8 +3476,8 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
     os << "<td>&#160;&#160;&#160;&#160;&#160;</td>\n";
 
     // print TMI window and bin size
-    os.format( "<td>%.2fs</td>\n", p.tmi_window );
-    os.format( "<td>%.2fs</td>\n", sim.tmi_bin_size );
+    os.printf( "<td>%.2fs</td>\n", p.tmi_window );
+    os.printf( "<td>%.2fs</td>\n", sim.tmi_bin_size );
 
     // End defensive table
     os << "</tr>\n"
@@ -3499,7 +3499,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
        << "</tr>\n"
        << "<tr>\n";
 
-    os.format(
+    os.printf(
         "<td>%.1f</td>\n"
         "<td>%.1f</td>\n"
         "<td>%s</td>\n"
@@ -3533,7 +3533,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
     if ( !p.origin_str.empty() )
     {
       std::string origin_url = util::encode_html( p.origin_str );
-      os.format(
+      os.printf(
           "<tr class=\"left\">\n"
           "<th><a href=\"#help-origin\" class=\"help\">Origin</a></th>\n"
           "<td><a href=\"%s\" class=\"ext\">%s</a></td>\n"
@@ -3543,7 +3543,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
 
     if ( !p.talents_str.empty() )
     {
-      os.format(
+      os.printf(
           "<tr class=\"left\">\n"
           "<th>Talents</th>\n"
           "<td><ul class=\"float\">\n" );
@@ -3565,7 +3565,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
             }
           }
           if ( p.talent_points.has_row_col( row, col ) )
-            os.format( "<li><strong>%d</strong>:&#160;%s</li>\n",
+            os.printf( "<li><strong>%d</strong>:&#160;%s</li>\n",
                        row == 6 ? 100 : ( row + 1 ) * 15, name.c_str() );
         }
       }
@@ -3574,7 +3574,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
         url_string = util::create_blizzard_talent_url( p );
 
       std::string enc_url = util::encode_html( url_string );
-      os.format(
+      os.printf(
           "<li><a href=\"%s\" class=\"ext\">Talent Calculator</a></li>\n",
           enc_url.c_str() );
 
@@ -3591,7 +3591,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
     // Professions
     if ( !p.professions_str.empty() )
     {
-      os.format(
+      os.printf(
           "<tr class=\"left\">\n"
           "<th>Professions</th>\n"
           "<td>\n"
@@ -3761,7 +3761,7 @@ void output_player_damage_summary( report::sc_html_stream& os,
       if ( first )
       {
         first = false;
-        os.format(
+        os.printf(
             "<tr>\n"
             "<th class=\"left small\">pet - %s</th>\n"
             "<th class=\"right small\">%.0f / %.0f</th>\n"
@@ -3865,7 +3865,7 @@ void output_player_heal_summary( report::sc_html_stream& os,
       if ( first )
       {
         first = false;
-        os.format(
+        os.printf(
             "<tr>\n"
             "<th class=\"left small\">pet - %s</th>\n"
             "<th class=\"right small\">%.0f / %.0f</th>\n"
@@ -3932,7 +3932,7 @@ void output_player_simple_ability_summary( report::sc_html_stream& os,
       if ( first )
       {
         first = false;
-        os.format(
+        os.printf(
             "<tr>\n"
             "<th class=\"left small\">pet - %s</th>\n"
             "<th colspan=\"%d\" class=\"filler\"></th>\n"
@@ -3990,7 +3990,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os,
         os << " class=\"odd\"";
       }
       os << ">\n";
-      os.format(
+      os.printf(
           "<td class=\"left\">%s</td>\n"
           "<td class=\"right\">%.1f%%</td>\n"
           "</tr>\n",
@@ -4015,7 +4015,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os,
           os << " class=\"odd\"";
         }
         os << ">\n";
-        os.format(
+        os.printf(
             "<td class=\"left\">%s</td>\n"
             "<td class=\"right\">%.1f%%</td>\n"
             "</tr>\n",
@@ -4040,7 +4040,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os,
         os << " class=\"odd\"";
       }
       os << ">\n";
-      os.format(
+      os.printf(
           "<td class=\"left\">%s</td>\n"
           "<td class=\"right\">%.1f%%</td>\n"
           "</tr>\n",
@@ -4065,7 +4065,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os,
           os << " class=\"odd\"";
         }
         os << ">\n";
-        os.format(
+        os.printf(
             "<td class=\"left\">%s</td>\n"
             "<td class=\"right\">%.1f%%</td>\n"
             "</tr>\n",
@@ -4108,7 +4108,7 @@ void print_html_player_procs( report::sc_html_stream& os,
           os << " class=\"odd\"";
         }
         os << ">\n";
-        os.format(
+        os.printf(
             "<td class=\"left\">%s</td>\n"
             "<td class=\"right\">%.1f</td>\n"
             "<td class=\"right\">%.1fsec</td>\n"

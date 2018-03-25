@@ -7532,6 +7532,7 @@ sim_ostream_t& sim_ostream_t::printf(fmt::CStringRef format, Args&& ... args)
 {
   _raw << util::to_string( sim.current_time().total_seconds(), 3 ) << " ";
   fmt::fprintf(*_raw.get_stream(), format, std::forward<Args>(args)... );
+  _raw << "\n";
   return *this;
 }
 

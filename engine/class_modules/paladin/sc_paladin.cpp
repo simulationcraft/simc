@@ -2333,14 +2333,14 @@ public:
 
       std::string row_class;
       if ( ++row & 1 ) row_class = " class=\"odd\"";
-      os.format( "<tr%s>", row_class.c_str() );
+      os.printf( "<tr%s>", row_class.c_str() );
       os << "<td class=\"left\">" << name << "</td>";
-      os.format( "<td class=\"right\">%.3f</td>", data -> normal.mean() );
-      os.format( "<td class=\"right\">%.3f</td>", data -> normal.min() );
-      os.format( "<td class=\"right\">%.3f</td>", data -> normal.max() );
-      os.format( "<td class=\"right\">%.3f</td>", data -> cumulative.mean() );
-      os.format( "<td class=\"right\">%.3f</td>", data -> cumulative.min() );
-      os.format( "<td class=\"right\">%.3f</td>", data -> cumulative.max() );
+      os.printf( "<td class=\"right\">%.3f</td>", data -> normal.mean() );
+      os.printf( "<td class=\"right\">%.3f</td>", data -> normal.min() );
+      os.printf( "<td class=\"right\">%.3f</td>", data -> normal.max() );
+      os.printf( "<td class=\"right\">%.3f</td>", data -> cumulative.mean() );
+      os.printf( "<td class=\"right\">%.3f</td>", data -> cumulative.min() );
+      os.printf( "<td class=\"right\">%.3f</td>", data -> cumulative.max() );
       os << "</tr>\n";
     }
   }

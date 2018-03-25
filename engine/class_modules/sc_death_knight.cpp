@@ -9491,11 +9491,11 @@ public:
          << "</tr>\n";
 
     os << "<tr>\n";
-    os.format( "<td class=\"right\">%.3f</td>", p._runes.rune_waste.min() );
-    os.format( "<td class=\"right\">%.3f</td>", p._runes.rune_waste.percentile( .05 ) );
-    os.format( "<td class=\"right\">%.3f / %.3f</td>", p._runes.rune_waste.mean(), p._runes.rune_waste.percentile( .5 ) );
-    os.format( "<td class=\"right\">%.3f</td>", p._runes.rune_waste.percentile( .95 ) );
-    os.format( "<td class=\"right\">%.3f</td>", p._runes.rune_waste.max() );
+    os.printf( "<td class=\"right\">%.3f</td>", p._runes.rune_waste.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", p._runes.rune_waste.percentile( .05 ) );
+    os.printf( "<td class=\"right\">%.3f / %.3f</td>", p._runes.rune_waste.mean(), p._runes.rune_waste.percentile( .5 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", p._runes.rune_waste.percentile( .95 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", p._runes.rune_waste.max() );
     os  << "</tr>\n";
     os << "</table>\n";
 
@@ -9511,11 +9511,11 @@ public:
            << "<th>Maximum</th>\n"
          << "</tr>\n";
 
-    os.format( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.min() );
-    os.format( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.percentile( .05 ) );
-    os.format( "<td class=\"right\">%.3f / %.3f</td>", p._runes.cumulative_waste.mean(), p._runes.cumulative_waste.percentile( .5 ) );
-    os.format( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.percentile( .95 ) );
-    os.format( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.max() );
+    os.printf( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.percentile( .05 ) );
+    os.printf( "<td class=\"right\">%.3f / %.3f</td>", p._runes.cumulative_waste.mean(), p._runes.cumulative_waste.percentile( .5 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.percentile( .95 ) );
+    os.printf( "<td class=\"right\">%.3f</td>", p._runes.cumulative_waste.max() );
     os  << "</tr>\n";
 
     os << "</table>\n";

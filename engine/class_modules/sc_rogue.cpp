@@ -7787,16 +7787,16 @@ public:
 
       os << "<tr>";
       os << "<td class=\"left\">Main hand</td>";
-      os.format("<td class=\"right\">%.3f</td>", p.dfa_mh -> min() );
-      os.format("<td class=\"right\">%.3f</td>", p.dfa_mh -> mean() );
-      os.format("<td class=\"right\">%.3f</td>", p.dfa_mh -> max() );
+      os.printf("<td class=\"right\">%.3f</td>", p.dfa_mh -> min() );
+      os.printf("<td class=\"right\">%.3f</td>", p.dfa_mh -> mean() );
+      os.printf("<td class=\"right\">%.3f</td>", p.dfa_mh -> max() );
       os << "</tr>";
 
       os << "<tr>";
       os << "<td class=\"left\">Off hand</td>";
-      os.format("<td class=\"right\">%.3f</td>", p.dfa_oh -> min() );
-      os.format("<td class=\"right\">%.3f</td>", p.dfa_oh -> mean() );
-      os.format("<td class=\"right\">%.3f</td>", p.dfa_oh -> max() );
+      os.printf("<td class=\"right\">%.3f</td>", p.dfa_oh -> min() );
+      os.printf("<td class=\"right\">%.3f</td>", p.dfa_oh -> mean() );
+      os.printf("<td class=\"right\">%.3f</td>", p.dfa_oh -> max() );
       os << "</tr>";
 
       os << "</table>";

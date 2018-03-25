@@ -8291,14 +8291,14 @@ public:
       if ( ++n & 1 )
         row_class_str = " class=\"odd\"";
 
-      os.format( "<tr%s>", row_class_str.c_str() );
+      os.printf( "<tr%s>", row_class_str.c_str() );
       os << "<td class=\"left\">" << name_str << "</td>";
-      os.format( "<td class=\"right\">%.3f</td>", entry->second.mean() );
-      os.format( "<td class=\"right\">%.3f</td>", entry->second.min() );
-      os.format( "<td class=\"right\">%.3f</td>", entry->second.max() );
-      os.format( "<td class=\"right\">%.3f</td>", iter_entry->second.mean() );
-      os.format( "<td class=\"right\">%.3f</td>", iter_entry->second.min() );
-      os.format( "<td class=\"right\">%.3f</td>", iter_entry->second.max() );
+      os.printf( "<td class=\"right\">%.3f</td>", entry->second.mean() );
+      os.printf( "<td class=\"right\">%.3f</td>", entry->second.min() );
+      os.printf( "<td class=\"right\">%.3f</td>", entry->second.max() );
+      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.mean() );
+      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.min() );
+      os.printf( "<td class=\"right\">%.3f</td>", iter_entry->second.max() );
       os << "</tr>\n";
     }
   }
