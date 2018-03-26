@@ -2061,6 +2061,7 @@ struct special_effect_t
   timespan_t tick_time() const;
 };
 
+inline std::ostream& operator<<(std::ostream &os, const special_effect_t& x);
 // Item =====================================================================
 
 struct stat_pair_t
@@ -2249,6 +2250,7 @@ struct item_t
 
   const special_effect_t* special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE ) const;
 };
+std::ostream& operator<<(std::ostream&, const item_t&);
 
 
 // Benefit ==================================================================
@@ -2413,6 +2415,8 @@ struct set_bonus_t
   std::string to_profile_string( const std::string& = "\n" ) const;
   std::string generate_set_bonus_options() const;
 };
+
+std::ostream& operator<<(std::ostream&, const set_bonus_t&);
 
 // "Real" 'Procs per Minute' helper class =====================================
 
@@ -4235,12 +4239,14 @@ struct pet_t : public player_t
 
   struct owner_coefficients_t
   {
-    double armor, health, ap_from_ap, ap_from_sp, sp_from_ap, sp_from_sp;
-    owner_coefficients_t();
+    double armor = 1.0;
+    double health = 1.0;
+    double ap_from_ap = 0.0;
+    double ap_from_sp = 0.0;
+    double sp_from_ap = 0.0;
+    double sp_from_sp = 0.0;
   } owner_coeff;
 
-private:
-  void init_pet_t_();
 public:
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian = false, bool dynamic = false );
   pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian = false, bool dynamic = false );
@@ -6438,7 +6444,7 @@ struct token_t
   double value;
   std::string value_str;
 };
-size_t parse_tokens( std::vector<token_t>& tokens, const std::string& encoded_str );
+std::vector<token_t> parse_tokens( const std::string& encoded_str );
 
 bool has_item_bonus_type( const item_t& item, item_bonus_type bonus_type );
 }

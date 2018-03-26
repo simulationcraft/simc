@@ -1401,16 +1401,16 @@ double item_database::item_budget( const item_t* item, unsigned max_ilevel )
 
 // item_database::parse_tokens ==============================================
 
-size_t item_database::parse_tokens( std::vector<token_t>& tokens,
-                                    const std::string&    encoded_str )
+std::vector<item_database::token_t> item_database::parse_tokens( const std::string& encoded_str )
 {
+  std::vector<token_t> tokens;
   std::vector<std::string> splits = util::string_split( encoded_str, "_" );
 
-  tokens.resize( splits.size() );
-  for ( size_t i = 0; i < splits.size(); i++ )
+  tokens.reserve( splits.size() );
+  for ( auto& split : splits )
   {
-    token_t& t = tokens[ i ];
-    t.full = splits[ i ];
+    token_t t ;
+    t.full = split;
     int index = 0;
     while ( t.full[ index ] != '\0' &&
             t.full[ index ] != '%'  &&
@@ -1426,9 +1426,10 @@ size_t item_database::parse_tokens( std::vector<token_t>& tokens,
       t.value_str = t.full.substr( 0, index );
       t.value = atof( t.value_str.c_str() );
     }
+    tokens.push_back( std::move(t) );
   }
 
-  return splits.size();
+  return tokens;
 }
 
 const item_data_t* dbc::find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& f )

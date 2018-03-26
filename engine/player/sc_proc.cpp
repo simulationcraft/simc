@@ -32,7 +32,6 @@ const proc_parse_opt_t __proc_opts[] =
   { "smelee",      PF_MELEE_ABILITY                                            },
   { "wranged",     PF_RANGED                                                   },
   { "sranged",     PF_RANGED_ABILITY                                           },
-  { nullptr,             0                                                     },
 };
 
 const proc_parse_opt_t __proc2_opts[] =
@@ -47,12 +46,11 @@ const proc_parse_opt_t __proc2_opts[] =
   { "impact",      PF2_LANDED           },
   { "tickheal",    PF2_PERIODIC_HEAL    },
   { "tickdamage",  PF2_PERIODIC_DAMAGE  },
-  { nullptr,             0              },
 };
 
 bool has_proc( const std::vector<std::string>& opts, const std::string& proc )
 {
-  for (auto & opt : opts)
+  for ( auto & opt : opts )
   {
     if ( util::str_compare_ci( opt, proc ) )
       return true;
@@ -60,24 +58,26 @@ bool has_proc( const std::vector<std::string>& opts, const std::string& proc )
   return false;
 }
 
+template<size_t N>
 void parse_proc_flags( const std::string&      flags,
-                              const proc_parse_opt_t* opts,
-                              unsigned&               proc_flags )
+                       const proc_parse_opt_t ( &opts)[ N ],
+                       unsigned& proc_flags )
 {
   std::vector<std::string> splits = util::string_split( flags, "/" );
 
-  const proc_parse_opt_t* proc_opt = opts;
-  do
+  for( auto& proc_opt : opts )
   {
-    if ( has_proc( splits, proc_opt -> opt ) )
-      proc_flags |= proc_opt -> flags;
-
-    proc_opt++;
-  } while ( proc_opt -> opt );
+    if ( has_proc( splits, proc_opt.opt ) )
+      proc_flags |= proc_opt.flags;
+  }
 }
 
-// Helper function to detect stat buff type from spell effect data, more
-// specifically by mapping Blizzard's effect sub types to actual stats in simc.
+/**
+ * Detect stat buff type from spelleffect data.
+ *
+ * Helper function to detect stat buff type from spell effect data, more specifically by mapping Blizzard's
+ * effect sub types to actual stats in simc.
+ */
 stat_e stat_buff_type( const spelleffect_data_t& effect )
 {
   stat_e stat = STAT_NONE;
@@ -131,7 +131,6 @@ special_effect_t::special_effect_t( const item_t* item ) :
 {
   reset();
 }
-// special_effect_t::reset ======================================
 
 void special_effect_t::reset()
 {
@@ -195,8 +194,6 @@ void special_effect_t::reset()
   buff_disabled = false;
 }
 
-// special_effect_t::driver =================================================
-
 const spell_data_t* special_effect_t::driver() const
 {
   if ( !player || spell_id == 0 )
@@ -204,8 +201,6 @@ const spell_data_t* special_effect_t::driver() const
 
   return player -> find_spell( spell_id );
 }
-
-// special_effect_t::trigger ================================================
 
 const spell_data_t* special_effect_t::trigger() const
 {
@@ -226,8 +221,6 @@ const spell_data_t* special_effect_t::trigger() const
   // shouldnt break procs.
   return driver();
 }
-
-// special_effect_t::is_stat_buff ===========================================
 
 bool special_effect_t::is_stat_buff() const
 {
@@ -251,8 +244,6 @@ bool special_effect_t::is_stat_buff() const
   return false;
 }
 
-// special_effect_t::stat ===================================================
-
 stat_e special_effect_t::stat_type() const
 {
   if ( stat != STAT_NONE )
@@ -272,8 +263,6 @@ stat_e special_effect_t::stat_type() const
   return STAT_NONE;
 }
 
-// special_effect_t::max_stack ==============================================
-
 int special_effect_t::max_stack() const
 {
   if ( max_stacks != -1 )
@@ -287,9 +276,6 @@ int special_effect_t::max_stack() const
 
   return -1;
 }
-
-
-// special_effect_t::initialize_stat_buff ===================================
 
 stat_buff_t* special_effect_t::initialize_stat_buff() const
 {
@@ -375,8 +361,6 @@ absorb_buff_t* special_effect_t::initialize_absorb_buff() const
   auto buff = make_buff<absorb_buff_t>( player, name(), buff_spell,
                                source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
 
-
-
   // Setup user option overrides. Note that if there are no user set overrides,
   // the buff will automagically deduce correct options from the spell data,
   // the special_effect_t object should not issue overrides to the creator
@@ -405,8 +389,6 @@ absorb_buff_t* special_effect_t::initialize_absorb_buff() const
   return buff;
 }
 
-// special_effect_t::buff_type ==============================================
-
 special_effect_buff_e special_effect_t::buff_type() const
 {
   if ( buff_disabled )
@@ -420,8 +402,6 @@ special_effect_buff_e special_effect_t::buff_type() const
 
   return SPECIAL_EFFECT_BUFF_NONE;
 }
-
-// special_effect_t::create_buff ============================================
 
 buff_t* special_effect_t::create_buff() const
 {
@@ -730,8 +710,6 @@ attack_t* special_effect_t::initialize_attack_action() const
   return attack;
 }
 
-// special_effect_t::proc_flags =============================================
-
 unsigned special_effect_t::proc_flags() const
 {
   if ( proc_flags_ != 0 )
@@ -742,8 +720,6 @@ unsigned special_effect_t::proc_flags() const
 
   return 0;
 }
-
-// special_effect_t::proc_flags2 ============================================
 
 unsigned special_effect_t::proc_flags2() const
 {
@@ -757,8 +733,6 @@ unsigned special_effect_t::proc_flags2() const
   return proc_flags2_;
 }
 
-// special_effect_t::ppm ====================================================
-
 // DBC data has no concept of "old style" procs per minute, they will be
 // manually set by simc.
 double special_effect_t::ppm() const
@@ -769,8 +743,6 @@ double special_effect_t::ppm() const
   return 0;
 }
 
-// special_effect_t::rppm ===================================================
-
 double special_effect_t::rppm() const
 {
   if ( ppm_ <= 0 && ppm_ != std::numeric_limits<double>::min() )
@@ -778,8 +750,6 @@ double special_effect_t::rppm() const
 
   return driver() -> real_ppm();
 }
-
-// special_effect_t::rppm_scale =============================================
 
 unsigned special_effect_t::rppm_scale() const
 {
@@ -791,8 +761,6 @@ unsigned special_effect_t::rppm_scale() const
   return player -> dbc.real_ppm_scale( driver() -> id() );
 }
 
-// special_effect_t::rppm_modifier ==========================================
-
 double special_effect_t::rppm_modifier() const
 {
   if ( rppm_modifier_ != -1.0 )
@@ -803,11 +771,12 @@ double special_effect_t::rppm_modifier() const
   return player -> dbc.real_ppm_modifier( driver() -> id(), player, item ? item -> item_level() : 0 );
 }
 
-// special_effect_t::cooldown ===============================================
-
-// Cooldowns are automatically extracted from the driver spell. However, the
-// "Cooldown" value is prioritized over "Internal Cooldown" in DBC data. In
-// reality, there should not be any (single) driver, that includes both.
+/**
+ * Get cooldown duration.
+ *
+ * Cooldowns are automatically extracted from the driver spell. However, the "Cooldown" value is prioritized over
+ * "Internal Cooldown" in DBC data. In reality, there should not be any (single) driver, that includes both.
+ */
 timespan_t special_effect_t::cooldown() const
 {
   if ( cooldown_ >= timespan_t::zero() )
@@ -832,8 +801,6 @@ timespan_t special_effect_t::cooldown() const
   return timespan_t::zero();
 }
 
-// special_effect_t::duration ===============================================
-
 timespan_t special_effect_t::duration() const
 {
   if ( duration_ > timespan_t::zero() )
@@ -847,20 +814,20 @@ timespan_t special_effect_t::duration() const
 }
 
 
-// special_effect_t::tick_time ==============================================
-
-// The tick time is selected from the first periodically executed effect of the
-// _triggered_ spell. Periodically executing drivers are currently not
-// supported. Note that ticking behavior has now moved to buff_t, instead of
-// being kludged in the callback itself (as it was done in the
-// "proc_callback_t" days).
+/**
+ * Get tick time.
+ *
+ * The tick time is selected from the first periodically executed effect of the _triggered_ spell.
+ * Periodically executing drivers are currently not supported. Note that ticking behavior has now moved to buff_t,
+ *  instead of being kludged in the callback itself (as it was done in the "proc_callback_t" days).
+ */
 timespan_t special_effect_t::tick_time() const
 {
   if ( tick > timespan_t::zero() )
     return tick;
 
   // Search trigger for now, it's not likely that the driver is ticking
-  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  for ( size_t i = 1; i <= trigger() -> effect_count(); i++ )
   {
     if ( trigger() -> effectN( i ).period() > timespan_t::zero() )
       return trigger() -> effectN( i ).period();
@@ -869,8 +836,6 @@ timespan_t special_effect_t::tick_time() const
   return timespan_t::zero();
 }
 
-// special_effect_t::proc_chance ============================================
-
 double special_effect_t::proc_chance() const
 {
   if ( proc_chance_ > 0 )
@@ -878,8 +843,6 @@ double special_effect_t::proc_chance() const
 
   return driver() -> proc_chance();
 }
-
-// special_effect_t::name ===================================================
 
 std::string special_effect_t::name() const
 {
@@ -914,115 +877,112 @@ std::string special_effect_t::name() const
 
   return n;
 }
+inline std::ostream& operator<<(std::ostream &os, const special_effect_t& se)
+{
+  os << se.name();
+  os << " type=" << util::special_effect_string( se.type );
+  os << " source=" << util::special_effect_source_string( se.source );
 
-// special_effect_t::to_string ==============================================
+  if ( ! se.trigger_str.empty() )
+    os << " proc=" << se.trigger_str;
+
+  if ( se.spell_id > 0 )
+    os << " driver=" << se.spell_id;
+
+  if ( se.trigger() -> ok() )
+    os << " trigger=" << se.trigger() -> id();
+
+  if ( se.is_stat_buff() )
+  {
+    os << " stat=" << util::stat_type_abbrev( se.stat == STAT_NONE ? se.stat_type() : se.stat );
+    os << " amount=" << se.stat_amount;
+    os << " duration=" << se.duration().total_seconds();
+    if ( se.tick_time() != timespan_t::zero() )
+      os << " tick=" << se.tick_time().total_seconds();
+    if ( se.reverse )
+      os << " Reverse";
+  }
+
+  if ( se.school != SCHOOL_NONE )
+  {
+    os << " school=" << util::school_type_string( se.school );
+    os << " amount=" << se.discharge_amount;
+    if ( se.discharge_scaling > 0 )
+      os << " coeff=" << se.discharge_scaling;
+  }
+
+  if ( se.max_stacks > 0 )
+    os << " max_stack=" << se.max_stacks;
+
+  if ( se.proc_chance() > 0 )
+    os << " proc_chance=" << se.proc_chance() * 100.0 << "%";
+
+  if ( se.ppm() > 0 )
+    os << " ppm=" << se.ppm();
+
+  if ( se.rppm() > 0 )
+  {
+    os << " rppm=" << se.rppm() * se.rppm_modifier();
+    if ( se.rppm_scale() & RPPM_HASTE )
+    {
+      os << " (Haste)";
+    }
+
+    if ( se.rppm_scale() & RPPM_CRIT )
+    {
+      os << " (Crit)";
+    }
+
+    if ( se.rppm_scale() & RPPM_ATTACK_SPEED )
+    {
+      os << " (ASpeed)";
+    }
+  }
+
+  if ( se.cooldown() > timespan_t::zero() )
+  {
+    if ( se.type == SPECIAL_EFFECT_EQUIP )
+      os << " icd=";
+    else if ( se.type == SPECIAL_EFFECT_USE )
+      os << " cd=";
+    else
+      os << " (i)cd=";
+    os << se.cooldown().total_seconds();
+
+    if ( se.cooldown_group() > 0 )
+    {
+      os << " cdgrp=" << se.cooldown_group();
+      os << " cdgrp_duration=" << se.cooldown_group_duration().total_seconds();
+    }
+  }
+
+  if ( se.weapon_proc )
+    os << " weaponproc";
+
+  return os;
+}
 
 std::string special_effect_t::to_string() const
 {
-  std::ostringstream s;
-
-  s << name();
-  s << " type=" << util::special_effect_string( type );
-  s << " source=" << util::special_effect_source_string( source );
-
-  if ( ! trigger_str.empty() )
-    s << " proc=" << trigger_str;
-
-  if ( spell_id > 0 )
-    s << " driver=" << spell_id;
-
-  if ( trigger() -> ok() )
-    s << " trigger=" << trigger() -> id();
-
-  if ( is_stat_buff() )
-  {
-    s << " stat=" << util::stat_type_abbrev( stat == STAT_NONE ? stat_type() : stat );
-    s << " amount=" << stat_amount;
-    s << " duration=" << duration().total_seconds();
-    if ( tick_time() != timespan_t::zero() )
-      s << " tick=" << tick_time().total_seconds();
-    if ( reverse )
-      s << " Reverse";
-  }
-
-  if ( school != SCHOOL_NONE )
-  {
-    s << " school=" << util::school_type_string( school );
-    s << " amount=" << discharge_amount;
-    if ( discharge_scaling > 0 )
-      s << " coeff=" << discharge_scaling;
-  }
-
-  if ( max_stacks > 0 )
-    s << " max_stack=" << max_stacks;
-
-  if ( proc_chance() > 0 )
-    s << " proc_chance=" << proc_chance() * 100.0 << "%";
-
-  if ( ppm() > 0 )
-    s << " ppm=" << ppm();
-
-  if ( rppm() > 0 )
-  {
-    s << " rppm=" << rppm() * rppm_modifier();
-    if ( rppm_scale() & RPPM_HASTE )
-    {
-      s << " (Haste)";
-    }
-
-    if ( rppm_scale() & RPPM_CRIT )
-    {
-      s << " (Crit)";
-    }
-
-    if ( rppm_scale() & RPPM_ATTACK_SPEED )
-    {
-      s << " (ASpeed)";
-    }
-  }
-
-  if ( cooldown() > timespan_t::zero() )
-  {
-    if ( type == SPECIAL_EFFECT_EQUIP )
-      s << " icd=";
-    else if ( type == SPECIAL_EFFECT_USE )
-      s << " cd=";
-    else
-      s << " (i)cd=";
-    s << cooldown().total_seconds();
-
-    if ( cooldown_group() > 0 )
-    {
-      s << " cdgrp=" << cooldown_group();
-      s << " cdgrp_duration=" << cooldown_group_duration().total_seconds();
-    }
-  }
-
-  if ( weapon_proc )
-    s << " weaponproc";
-
+  std::stringstream s;
+  s << *this;
   return s.str();
 }
-
-// special_effect::parse_special_effect =====================================
 
 bool special_effect::parse_special_effect_encoding( special_effect_t& effect,
                                           const std::string& encoding )
 {
   if ( encoding.empty() || encoding == "custom" || encoding == "none" ) return true;
 
-  std::vector<item_database::token_t> tokens;
-
   const item_t* item = effect.item;
   const player_t* player = effect.player;
 
-  size_t num_tokens = item_database::parse_tokens( tokens, encoding );
+   auto tokens = item_database::parse_tokens( encoding );
 
   effect.encoding_str = encoding;
 
-  for ( size_t i = 0; i < num_tokens; i++ )
+  for ( auto& t : tokens )
   {
-    item_database::token_t& t = tokens[ i ];
     stat_e s;
     school_e sc;
 
@@ -1223,8 +1183,7 @@ bool special_effect::usable_proc( const special_effect_t& effect )
 void dbc_proc_callback_t::initialize()
 {
   if ( listener -> sim -> debug )
-    listener -> sim -> out_debug.printf( "Initializing proc %s: %s",
-        effect.name().c_str(), effect.to_string().c_str() );
+    listener -> sim -> out_debug.print( "Initializing proc: {}", effect );
 
   // Initialize proc chance triggers. Note that this code only chooses one, and
   // prioritizes RPPM > PPM > proc chance.

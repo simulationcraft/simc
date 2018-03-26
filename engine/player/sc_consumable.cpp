@@ -7,16 +7,16 @@
 
 namespace { // UNNAMED NAMESPACE
 
-enum elixir_type_e
+enum class elixir
 {
-  ELIXIR_GUARDIAN,
-  ELIXIR_BATTLE
+  GUARDIAN,
+  BATTLE
 };
 
 struct elixir_data_t
 {
   std::string name;
-  elixir_type_e type;
+  elixir type;
   stat_e st;
   int stat_amount;
 };
@@ -24,8 +24,8 @@ struct elixir_data_t
 const elixir_data_t elixir_data[] =
 {
   // mop
-  { "mantid", ELIXIR_GUARDIAN, STAT_BONUS_ARMOR, 256 },
-  { "mad_hozen", ELIXIR_BATTLE, STAT_CRIT_RATING, 85 },
+  { "mantid", elixir::GUARDIAN, STAT_BONUS_ARMOR, 256 },
+  { "mad_hozen", elixir::BATTLE, STAT_CRIT_RATING, 85 },
 };
 
 struct elixir_t : public action_t
@@ -48,32 +48,31 @@ struct elixir_t : public action_t
     trigger_gcd = timespan_t::zero();
     harmful = false;
 
-    for ( size_t i = 0; i < sizeof_array( elixir_data ); ++i )
+    for ( auto& elixir : elixir_data )
     {
-      const elixir_data_t& d = elixir_data[ i ];
-      if ( d.name == type_str )
+      if ( elixir.name == type_str )
       {
-        data = &d;
+        data = &elixir;
         break;
       }
     }
     if ( ! data )
     {
-      sim -> errorf( "Player %s attempting to use unsupported elixir '%s'.\n",
-                     player -> name(), type_str.c_str() );
+      sim -> error( "Player {} attempting to use unsupported elixir '{}'.\n",
+                     player -> name(), type_str );
       background = true;
     }
     else
     {
       double amount = data -> stat_amount;
-      buff = stat_buff_creator_t( player, data -> name + "_elixir" )
-             .duration( timespan_t::from_seconds( 60 * 60 ) ) // 1hr
-             .add_stat( data -> st, amount );
-      if ( data -> type == ELIXIR_BATTLE )
+      buff = make_buff<stat_buff_t>( player, data -> name + "_elixir" )
+             ->add_stat( data -> st, amount );
+      buff->set_duration( timespan_t::from_minutes( 60 ) );
+      if ( data -> type == elixir::BATTLE )
       {
         player -> consumables.battle_elixir = buff;
       }
-      else if ( data -> type == ELIXIR_GUARDIAN )
+      else if ( data -> type == elixir::GUARDIAN )
       {
         player -> consumables.guardian_elixir = buff;
       }
@@ -98,7 +97,7 @@ struct elixir_t : public action_t
       }
     }
 
-    if ( sim -> log ) sim -> out_log.printf( "%s uses elixir %s", p.name(), data -> name.c_str() );
+    if ( sim -> log ) sim -> out_log.print( "{} uses elixir {}.", p.name(), data -> name );
 
   }
   virtual bool ready() override
@@ -111,10 +110,10 @@ struct elixir_t : public action_t
 
     assert( data );
 
-    if ( data -> type == ELIXIR_BATTLE && player -> consumables.battle_elixir && player -> consumables.battle_elixir -> check() )
+    if ( data -> type == elixir::BATTLE && player -> consumables.battle_elixir && player -> consumables.battle_elixir -> check() )
       return false;
 
-    if ( data -> type == ELIXIR_GUARDIAN && player -> consumables.guardian_elixir && player -> consumables.guardian_elixir -> check() )
+    if ( data -> type == elixir::GUARDIAN && player -> consumables.guardian_elixir && player -> consumables.guardian_elixir -> check() )
       return false;
 
     return action_t::ready();
@@ -174,7 +173,7 @@ struct mana_potion_t : public action_t
 
   virtual void execute() override
   {
-    if ( sim -> log ) sim -> out_log.printf( "%s uses Mana potion", player -> name() );
+    if ( sim -> log ) sim -> out_log.print( "{} uses Mana potion", player -> name() );
     double gain = rng().range( min, max );
     player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_potion );
     player -> potion_used = true;
@@ -204,6 +203,7 @@ struct health_stone_t : public heal_t
   health_stone_t( player_t* p, const std::string& options_str ) :
     heal_t( "health_stone", p ), charges( 3 )
   {
+    add_option( opt_float( "pct_heal", base_pct_heal ) );
     parse_options( options_str );
 
     cooldown -> duration = timespan_t::from_minutes( 2 );

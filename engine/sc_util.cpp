@@ -194,8 +194,9 @@ bool util::str_compare_ci( const std::string& l,
   return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
 }
 
-// str_prefix_ci ============================================================
-
+/**
+ * Check if a string starts with a given prefix, case insensitive.
+ */
 bool util::str_prefix_ci( const std::string& str,
                           const std::string& prefix )
 {
@@ -205,8 +206,12 @@ bool util::str_prefix_ci( const std::string& str,
   return std::equal( prefix.begin(), prefix.end(), str.begin(), pred_ci );
 }
 
-// str_in_str_ci ============================================================
-
+/**
+ * Check if a substring is contained in a string, case insensitive.
+ *
+ * @param l string to search in.
+ * @param r substring to check.
+ */
 bool util::str_in_str_ci( const std::string& l,
                           const std::string& r )
 {

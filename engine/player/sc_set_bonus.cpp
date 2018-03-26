@@ -5,11 +5,11 @@
 
 #include "simulationcraft.hpp"
 
-set_bonus_t::set_bonus_t( player_t* player ) : actor( player )
+set_bonus_t::set_bonus_t( player_t* player ) :
+  actor( player ),
+  set_bonus_spec_data( SET_BONUS_MAX ),
+  set_bonus_spec_count( SET_BONUS_MAX )
 {
-  // First, pre-allocate vectors based on current boundaries of the set bonus data in DBC
-  set_bonus_spec_data.resize( SET_BONUS_MAX );
-  set_bonus_spec_count.resize( SET_BONUS_MAX );
   for ( size_t i = 0; i < set_bonus_spec_data.size(); i++ )
   {
     set_bonus_spec_data[ i ].resize( actor -> dbc.specialization_max_per_class() );
@@ -69,19 +69,18 @@ set_bonus_t::set_bonus_t( player_t* player ) : actor( player )
 // Initialize set bonus counts based on the items of the actor
 void set_bonus_t::initialize_items()
 {
-  for (auto & elem : actor -> items)
+  for ( auto& item : actor -> items)
   {
-    item_t* item = &( elem );
-    if ( item -> parsed.data.id == 0 )
+    if ( item.parsed.data.id == 0 )
       continue;
 
-    if ( item -> parsed.data.id_set == 0 )
+    if ( item.parsed.data.id_set == 0 )
       continue;
 
     for ( size_t bonus_idx = 0; bonus_idx < dbc::n_set_bonus( maybe_ptr( actor -> dbc.ptr ) ); bonus_idx++ )
     {
       const item_set_bonus_t& bonus = dbc::set_bonus( maybe_ptr( actor -> dbc.ptr ) )[ bonus_idx ];
-      if ( bonus.set_id != static_cast<unsigned>( item -> parsed.data.id_set ) )
+      if ( bonus.set_id != static_cast<unsigned>( item.parsed.data.id_set ) )
         continue;
 
       if ( bonus.class_id != -1 && ! bonus.has_spec( static_cast< int >( actor -> _spec ) ) )
@@ -97,6 +96,7 @@ void set_bonus_t::initialize_items()
 std::vector<const item_set_bonus_t*> set_bonus_t::enabled_set_bonus_data() const
 {
   std::vector<const item_set_bonus_t*> bonuses;
+
   // Disable all set bonuses, and set bonus options if challenge mode is set
   if ( actor -> sim -> challenge_mode == 1 )
     return bonuses;
@@ -104,24 +104,23 @@ std::vector<const item_set_bonus_t*> set_bonus_t::enabled_set_bonus_data() const
   if ( actor -> sim -> disable_set_bonuses == 1 ) // Or if global disable set bonus override is used.
     return bonuses;
 
-  for ( size_t idx = 0; idx < set_bonus_spec_data.size(); idx++ )
+  for ( auto& spec_data : set_bonus_spec_data )
   {
-    for ( size_t spec_idx = 0; spec_idx < set_bonus_spec_data[ idx ].size(); spec_idx++ )
+    for ( auto& bonus_type : spec_data )
     {
-      for ( size_t bonus_idx = 0; bonus_idx < set_bonus_spec_data[ idx ][ spec_idx ].size(); bonus_idx++ )
+      for ( auto& bonus_data : bonus_type )
       {
-        const set_bonus_data_t& data = set_bonus_spec_data[ idx ][ spec_idx ][ bonus_idx ];
         // Most specs have the fourth specialization empty, or only have
         // limited number of roles, so there's no set bonuses for those entries
-        if ( data.bonus == nullptr )
+        if ( bonus_data.bonus == nullptr )
           continue;
 
-        if ( data.spell -> id() == 0 )
+        if ( bonus_data.spell -> id() == 0 )
         {
           continue;
         }
 
-        bonuses.push_back( data.bonus );
+        bonuses.push_back( bonus_data.bonus );
       }
     }
   }
@@ -200,51 +199,55 @@ void set_bonus_t::initialize()
   }
 
   if ( actor -> sim -> debug )
-    actor -> sim -> out_debug << to_string();
+  {
+    actor -> sim -> out_debug.print("Initialized set bonus: {}", *this);
+  }
 }
 
 std::string set_bonus_t::to_string() const
 {
-  std::string s;
+  std::stringstream s;
+  s << *this;
+  return s.str();
+}
 
-  for ( size_t idx = 0; idx < set_bonus_spec_data.size(); idx++ )
+
+std::ostream& operator<<(std::ostream& os, const set_bonus_t& sb)
+{
+  int i = 0;
+  for ( size_t idx = 0; idx < sb.set_bonus_spec_data.size(); idx++ )
   {
-    for ( size_t spec_idx = 0; spec_idx < set_bonus_spec_data[ idx ].size(); spec_idx++ )
+    for ( size_t spec_idx = 0; spec_idx < sb.set_bonus_spec_data[ idx ].size(); spec_idx++ )
     {
-      for ( size_t bonus_idx = 0; bonus_idx < set_bonus_spec_data[ idx ][ spec_idx ].size(); bonus_idx++ )
+      for ( size_t bonus_idx = 0; bonus_idx < sb.set_bonus_spec_data[ idx ][ spec_idx ].size(); bonus_idx++ )
       {
-        const set_bonus_data_t& data = set_bonus_spec_data[ idx ][ spec_idx ][ bonus_idx ];
+        auto& data = sb.set_bonus_spec_data[ idx ][ spec_idx ][ bonus_idx ];
         if ( data.bonus == nullptr )
           continue;
 
         unsigned spec_role_idx = static_cast<int>( spec_idx );
 
         if ( data.overridden >= 1 ||
-           ( data.overridden == -1 && set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus -> bonus ) )
+           ( data.overridden == -1 && sb.set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus -> bonus ) )
         {
-          if ( ! s.empty() )
-            s += ", ";
+          if ( i > 0 )
+            os << ", ";
 
-          std::string spec_role_str = util::specialization_string( actor -> specialization() );
+          std::string spec_role_str = util::specialization_string( sb.actor -> specialization() );
 
-          s += "{ ";
-          s += data.bonus -> set_name;
-          s += ", ";
-          s += data.bonus -> set_opt_name;
-          s += ", ";
-          s += spec_role_str;
-          s += ", ";
-          s += util::to_string( data.bonus -> bonus );
-          s += " piece bonus";
-          if ( data.overridden >= 1 )
-            s += " (overridden)";
-          s += " }";
+          os << fmt::format("{{ {}, {}, {}, {} piece bonus {} }}",
+              data.bonus -> set_name,
+              data.bonus -> set_opt_name,
+              spec_role_str,
+              util::to_string( data.bonus -> bonus ),
+              ( data.overridden >= 1 ) ? " (overridden)" : "");
+          ++i;
         }
       }
     }
   }
 
-  return s;
+  return os;
 }
 
 std::string set_bonus_t::to_profile_string( const std::string& newline ) const
@@ -266,11 +269,10 @@ std::string set_bonus_t::to_profile_string( const std::string& newline ) const
         if ( data.overridden >= 1 ||
            ( data.overridden == -1 && set_bonus_spec_count[ idx ][ spec_role_idx ] >= data.bonus -> bonus ) )
         {
-          s += "# set_bonus=";
-          s += data.bonus -> set_opt_name;
-          s += "_" + util::to_string( data.bonus -> bonus ) + "pc";
-          s += "=1";
-          s += newline;
+          s += fmt::format("# set_bonus={}_{}pc=1{}",
+              data.bonus -> set_opt_name,
+              data.bonus -> bonus,
+              newline);
         }
       }
     }

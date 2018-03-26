@@ -5,33 +5,62 @@
 
 #include "simulationcraft.hpp"
 
-// ==========================================================================
-// Pet
-// ==========================================================================
-pet_t::owner_coefficients_t::owner_coefficients_t() :
-  armor ( 1.0 ),
-  health( 1.0 ),
-  ap_from_ap( 0.0 ),
-  ap_from_sp( 0.0 ),
-  sp_from_ap( 0.0 ),
-  sp_from_sp( 0.0 )
-{}
+namespace {
+struct expiration_t : public event_t
+{
+  pet_t& pet;
 
-// pet_t::pet_t =============================================================
+  expiration_t( pet_t& p, timespan_t duration ) :
+    event_t( p, duration ),
+    pet( p )
+  {
+  }
 
-void pet_t::init_pet_t_()
+  virtual const char* name() const override
+  { return "pet_expiration"; }
+
+  virtual void execute() override
+  {
+    pet.expiration = nullptr;
+
+    if ( ! pet.is_sleeping() )
+      pet.dismiss( true );
+  }
+};
+}
+
+pet_t::pet_t( sim_t*             sim,
+              player_t*          owner,
+              const std::string& name,
+              bool               guardian,
+              bool               dynamic ) :
+  pet_t( sim, owner, name, PET_NONE, guardian, dynamic )
+{
+}
+
+pet_t::pet_t( sim_t*             sim,
+              player_t*          owner,
+              const std::string& name,
+              pet_e              type,
+              bool               guardian,
+              bool               dynamic ) :
+  player_t( sim, type == PET_ENEMY ? ENEMY_ADD : guardian ? PLAYER_GUARDIAN : PLAYER_PET, name, RACE_NONE ),
+  full_name_str( owner -> name_str + '_' + name_str ),
+  owner( owner ),
+  stamina_per_owner( 0.75 ),
+  intellect_per_owner( 0.30 ),
+  summoned( false ),
+  dynamic( dynamic ),
+  pet_type( type ),
+  expiration( nullptr ),
+  duration( timespan_t::zero() ),
+  affects_wod_legendary_ring( true ),
+  owner_coeff()
 {
   target = owner -> target;
   true_level = owner -> true_level;
-  full_name_str = owner -> name_str + '_' + name_str;
-  expiration = nullptr;
-  duration = timespan_t::zero();
-  affects_wod_legendary_ring = true;
 
   owner -> pet_list.push_back( this );
-
-  stamina_per_owner = 0.75;
-  intellect_per_owner = 0.30;
 
   party = owner -> party;
   regen_type = owner -> regen_type;
@@ -44,33 +73,6 @@ void pet_t::init_pet_t_()
   if ( sim -> statistics_level < 2 )
     collected_data.dps.change_mode( true );
 }
-
-pet_t::pet_t( sim_t*             s,
-              player_t*          o,
-              const std::string& n,
-              bool               g,
-              bool               d ) :
-  player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n, RACE_NONE ),
-  owner( o ), summoned( false ), dynamic( d ), pet_type( PET_NONE ),
-  owner_coeff( owner_coefficients_t() )
-{
-  init_pet_t_();
-}
-
-pet_t::pet_t( sim_t*             s,
-              player_t*          o,
-              const std::string& n,
-              pet_e              pt,
-              bool               g,
-              bool               d ) :
-  player_t( s, pt == PET_ENEMY ? ENEMY_ADD : g ? PLAYER_GUARDIAN : PLAYER_PET, n, RACE_NONE ),
-  owner( o ), summoned( false ), dynamic( d ), pet_type( pt ),
-  owner_coeff( owner_coefficients_t() )
-{
-  init_pet_t_();
-}
-
-// base_t::pet_attribute ====================================================
 
 double pet_t::composite_attribute( attribute_e attr ) const
 {
@@ -91,8 +93,6 @@ double pet_t::composite_attribute( attribute_e attr ) const
   return a;
 }
 
-// pet_t::composite_player_multiplier =======================================
-
 double pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
@@ -102,8 +102,6 @@ double pet_t::composite_player_multiplier( school_e school ) const
 
   return m;
 }
-
-// pet_t::init ==============================================================
 
 void pet_t::init()
 {
@@ -116,19 +114,12 @@ void pet_t::init()
   }
 }
 
-// pet_t::init_base =========================================================
-
 void pet_t::init_base_stats()
 {
-  //mp5_per_spirit = dbc.mp5_per_spirit( pet_type, level );
-
   // Pets have inherent 5% critical strike chance if not overridden.
   base.spell_crit_chance  = 0.05;
   base.attack_crit_chance = 0.05;
-
 }
-
-// pet_t::init_target =======================================================
 
 void pet_t::init_target()
 {
@@ -138,8 +129,6 @@ void pet_t::init_target()
     target = owner -> target;
 }
 
-// pet_t::reset =============================================================
-
 void pet_t::reset()
 {
   base_t::reset();
@@ -147,13 +136,11 @@ void pet_t::reset()
   expiration = nullptr;
 }
 
-// pet_t::summon ============================================================
-
 void pet_t::summon( timespan_t summon_duration )
 {
   if ( sim -> log )
   {
-    sim -> out_log.printf( "%s summons %s. for %.2fs", owner -> name(), name(), summon_duration.total_seconds() );
+    sim -> out_log.print( "{} summons {} for {}.", owner -> name(), name(), summon_duration );
   }
 
   current.distance = owner -> current.distance;
@@ -175,23 +162,6 @@ void pet_t::summon( timespan_t summon_duration )
   if ( summon_duration > timespan_t::zero() )
   {
     duration = summon_duration;
-    struct expiration_t : public event_t
-    {
-      pet_t& pet;
-      expiration_t( pet_t& p, timespan_t duration ) :
-        event_t( p, duration ),
-        pet( p )
-      {
-      }
-      virtual const char* name() const override
-      { return "pet_summon_duration"; }
-      virtual void execute() override
-      {
-        pet.expiration = nullptr;
-        if ( ! pet.is_sleeping() )
-          pet.dismiss( true );
-      }
-    };
     expiration = make_event<expiration_t>( *sim, *this, summon_duration );
   }
 
@@ -200,11 +170,9 @@ void pet_t::summon( timespan_t summon_duration )
   owner -> trigger_ready();
 }
 
-// pet_t::dismiss ===========================================================
-
 void pet_t::dismiss( bool expired )
 {
-  if ( sim -> log ) sim -> out_log.printf( "%s dismisses %s", owner -> name(), name() );
+  if ( sim -> log ) sim -> out_log.print( "{} dismisses {}", owner -> name(), name() );
 
   // Remove from active_pets list
   auto it = range::find( owner -> active_pets, this );
@@ -222,11 +190,12 @@ void pet_t::dismiss( bool expired )
   demise();
 }
 
-// pet_t::create_options ====================================================
-
-// Specialize pet "player-scope" options. Realistically speaking, anything else than adjusting the
-// pet APL seems somewhat pointless. Class modules are still free to override the pet's
-// create_options() to add to the list.
+/**
+ * Specialize pet "player-scope" options.
+ *
+ * Realistically speaking, anything else than adjusting the pet APL seems somewhat pointless.
+ * Class modules are still free to override the pet's create_options() to add to the list.
+ */
 void pet_t::create_options()
 {
   add_option( opt_string( "actions", action_list_str ) );
@@ -235,11 +204,11 @@ void pet_t::create_options()
   add_option( opt_string( "action_list", choose_action_list ) );
 }
 
-// pet_t::create_buffs ======================================================
-
-// Create the bare necessity of buffs for pets, skipping anything that's done in
-// player_t::create_buffs.
-
+/**
+ * Create pet buffs.
+ *
+ * Create the bare necessity of buffs for pets, skipping anything that's done in player_t::create_buffs.
+ */
 void pet_t::create_buffs()
 {
   if ( is_enemy() )
@@ -249,7 +218,7 @@ void pet_t::create_buffs()
   else
   {
     if ( sim -> debug )
-      sim -> out_debug.printf( "Creating Auras, Buffs, and Debuffs for player (%s)", name() );
+      sim -> out_debug.print( "Creating Auras, Buffs, and Debuffs for pet '{}'.", name() );
 
     buffs.stunned = buff_creator_t( this, "stunned" ).max_stack( 1 );
     buffs.movement = buff_creator_t( this, "movement" );
@@ -257,8 +226,6 @@ void pet_t::create_buffs()
     debuffs.casting = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );
   }
 }
-
-// pet_t::assess_damage =====================================================
 
 void pet_t::assess_damage( school_e       school,
                            dmg_e          type,
@@ -269,8 +236,6 @@ void pet_t::assess_damage( school_e       school,
 
   return base_t::assess_damage( school, type, s );
 }
-
-// pet_t::init_finished ======================================================
 
 bool pet_t::init_finished()
 {
@@ -285,8 +250,6 @@ bool pet_t::init_finished()
 
   return true;
 }
-
-// pet_t::find_pet_spell ====================================================
 
 const spell_data_t* pet_t::find_pet_spell( const std::string& name )
 {
@@ -323,27 +286,32 @@ double pet_t::hit_exp() const
 
 double pet_t::pet_crit() const
 {
-  return std::max( owner -> cache.attack_crit_chance(),
-                   owner -> cache.spell_crit_chance() );
+  return std::max( owner -> cache.attack_crit_chance(), owner -> cache.spell_crit_chance() );
 }
 
 double pet_t::composite_melee_attack_power() const
 {
   double ap = 0;
+
   if ( owner_coeff.ap_from_ap > 0.0 )
     ap += owner -> cache.attack_power() * owner -> composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
+
   if ( owner_coeff.ap_from_sp > 0.0 )
     ap += owner -> cache.spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier() * owner_coeff.ap_from_sp;
+
   return ap;
 }
 
 double pet_t::composite_spell_power( school_e school ) const
 {
   double sp = 0;
+
   if ( owner_coeff.sp_from_ap > 0.0 )
     sp += owner -> cache.attack_power() * owner -> composite_attack_power_multiplier() * owner_coeff.sp_from_ap;
+
   if ( owner_coeff.sp_from_sp > 0.0 )
     sp += owner -> cache.spell_power( school ) * owner -> composite_spell_power_multiplier() * owner_coeff.sp_from_sp;
+
   return sp;
 }
 

@@ -291,95 +291,94 @@ std::string item_t::socket_bonus_stats_str() const
   return str;
 }
 
-std::string item_t::to_string() const
+std::ostream& operator<<(std::ostream& s, const item_t& item )
 {
-  std::ostringstream s;
 
-  s << "name=" << name_str;
-  s << " id=" << parsed.data.id;
-  if ( slot != SLOT_INVALID )
+  s << "name=" << item.name_str;
+  s << " id=" << item.parsed.data.id;
+  if ( item.slot != SLOT_INVALID )
   {
-    s << " slot=" << slot_name();
+    s << " slot=" << item.slot_name();
   }
-  s << " quality=" << util::item_quality_string( parsed.data.quality );
-  if ( upgrade_level() > 0 )
+  s << " quality=" << util::item_quality_string( item.parsed.data.quality );
+  if ( item.upgrade_level() > 0 )
   {
-    s << " upgrade_level=" << upgrade_level();
+    s << " upgrade_level=" << item.upgrade_level();
   }
-  s << " ilevel=" << item_level();
-  if ( parent_slot == SLOT_INVALID )
+  s << " ilevel=" << item.item_level();
+  if ( item.parent_slot == SLOT_INVALID )
   {
-    if ( sim -> scale_to_itemlevel > 0 )
-      s << " (" << ( parsed.data.level + item_database::upgrade_ilevel( *this, upgrade_level() ) ) << ")";
-    else if ( upgrade_level() > 0 )
-      s << " (" << parsed.data.level << ")";
-    if ( parsed.drop_level > 0 )
-      s << " drop_level=" << parsed.drop_level;
+    if ( item.sim -> scale_to_itemlevel > 0 )
+      s << " (" << ( item.parsed.data.level + item_database::upgrade_ilevel( item, item.upgrade_level() ) ) << ")";
+    else if ( item.upgrade_level() > 0 )
+      s << " (" << item.parsed.data.level << ")";
+    if ( item.parsed.drop_level > 0 )
+      s << " drop_level=" << item.parsed.drop_level;
   }
   else
   {
-    s << " (" << player -> items[ parent_slot ].slot_name() << ")";
+    s << " (" << item.player -> items[ item.parent_slot ].slot_name() << ")";
   }
-  if ( parsed.data.lfr() )
+  if ( item.parsed.data.lfr() )
     s << " LFR";
-  if ( parsed.data.heroic() )
+  if ( item.parsed.data.heroic() )
     s << " Heroic";
-  if ( parsed.data.mythic() )
+  if ( item.parsed.data.mythic() )
     s << " Mythic";
-  if ( parsed.data.warforged() )
+  if ( item.parsed.data.warforged() )
     s << " Warforged";
-  if ( util::is_match_slot( slot ) )
-    s << " match=" << is_matching_type();
+  if ( util::is_match_slot( item.slot ) )
+    s << " match=" << item.is_matching_type();
 
   bool is_weapon = false;
-  if ( parsed.data.item_class == ITEM_CLASS_ARMOR )
-    s << " type=armor/" << util::armor_type_string( parsed.data.item_subclass );
-  else if ( parsed.data.item_class == ITEM_CLASS_WEAPON )
+  if ( item.parsed.data.item_class == ITEM_CLASS_ARMOR )
+    s << " type=armor/" << util::armor_type_string( item.parsed.data.item_subclass );
+  else if ( item.parsed.data.item_class == ITEM_CLASS_WEAPON )
   {
     std::string class_str;
-    if ( util::weapon_class_string( parsed.data.inventory_type ) )
-      class_str = util::weapon_class_string( parsed.data.inventory_type );
+    if ( util::weapon_class_string( item.parsed.data.inventory_type ) )
+      class_str = util::weapon_class_string( item.parsed.data.inventory_type );
     else
       class_str = "Unknown";
-    std::string str = util::weapon_subclass_string( parsed.data.item_subclass );
+    std::string str = util::weapon_subclass_string( item.parsed.data.item_subclass );
     util::tokenize( str );
     util::tokenize( class_str );
     s << " type=" << class_str << "/" << str;
     is_weapon = true;
   }
 
-  if ( has_stats() )
+  if ( item.has_stats() )
   {
     s << " stats={ ";
-    s << item_stats_str();
+    s << item.item_stats_str();
     s << " }";
   }
 
-  if ( parsed.suffix_stats.size() > 0 )
+  if ( item.parsed.suffix_stats.size() > 0 )
   {
     s << " suffix_stats={ ";
-    s << suffix_stats_str();
+    s << item.suffix_stats_str();
     s << " }";
   }
 
-  if ( parsed.gem_stats.size() > 0 )
+  if ( item.parsed.gem_stats.size() > 0 )
   {
     s << " gems={ ";
-    s << gem_stats_str();
+    s << item.gem_stats_str();
     s << " }";
   }
 
-  if ( socket_color_match() && parsed.socket_bonus_stats.size() > 0 )
+  if ( item.socket_color_match() && item.parsed.socket_bonus_stats.size() > 0 )
   {
     s << " socket_bonus={ ";
-    s << socket_bonus_stats_str();
+    s << item.socket_bonus_stats_str();
     s << " }";
   }
 
   if ( is_weapon )
   {
     s << " damage={ ";
-    weapon_t* w = weapon();
+    weapon_t* w = item.weapon();
     s << w -> min_dmg;
     s << " - ";
     s << w -> max_dmg;
@@ -389,29 +388,29 @@ std::string item_t::to_string() const
     s << w -> swing_time.total_seconds();
   }
 
-  if ( parsed.enchant_stats.size() > 0 && parsed.encoded_enchant.empty() )
+  if ( item.parsed.enchant_stats.size() > 0 && item.parsed.encoded_enchant.empty() )
   {
     s << " enchant={ ";
-    s << enchant_stats_str();
+    s << item.enchant_stats_str();
     s << " }";
   }
-  else if ( ! parsed.encoded_enchant.empty() )
-    s << " enchant={ " << parsed.encoded_enchant << " }";
+  else if ( ! item.parsed.encoded_enchant.empty() )
+    s << " enchant={ " << item.parsed.encoded_enchant << " }";
 
-  for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
+  for ( size_t i = 0; i < item.parsed.special_effects.size(); i++ )
   {
     s << " effect={ ";
-    s << parsed.special_effects[ i ] -> to_string();
+    s << item.parsed.special_effects[ i ] -> to_string();
     s << " }";
   }
 
-  if ( ! source_str.empty() )
-    s << " source=" << source_str;
+  if ( ! item.source_str.empty() )
+    s << " source=" << item.source_str;
 
   bool has_spells = false;
-  for ( size_t i = 0; i < sizeof_array( parsed.data.id_spell ); i++ )
+  for ( auto& spell_id : item.parsed.data.id_spell )
   {
-    if ( parsed.data.id_spell[ i ] > 0 )
+    if ( spell_id > 0 )
     {
       has_spells = true;
       break;
@@ -421,13 +420,13 @@ std::string item_t::to_string() const
   if ( has_spells )
   {
     s << " proc_spells={ ";
-    for ( size_t i = 0; i < sizeof_array( parsed.data.id_spell ); i++ )
+    for ( size_t i = 0; i < sizeof_array( item.parsed.data.id_spell ); i++ )
     {
-      if ( parsed.data.id_spell[ i ] <= 0 )
+      if ( item.parsed.data.id_spell[ i ] <= 0 )
         continue;
 
       s << "proc=";
-      switch ( parsed.data.trigger_spell[ i ] )
+      switch ( item.parsed.data.trigger_spell[ i ] )
       {
         case ITEM_SPELLTRIGGER_ON_USE:
           s << "OnUse";
@@ -439,13 +438,21 @@ std::string item_t::to_string() const
           s << "Unknown";
           break;
       }
-      s << "/" << parsed.data.id_spell[ i ] << ", ";
+      s << "/" << item.parsed.data.id_spell[ i ] << ", ";
     }
 
     std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
     s << " }";
   }
 
+  return s;
+}
+
+std::string item_t::to_string() const
+{
+
+  std::ostringstream s;
+  s << *this;
   return s.str();
 }
 
@@ -1450,11 +1457,10 @@ bool item_t::decode_stats()
     range::fill( parsed.data.stat_alloc, 0 );
     range::fill( parsed.stat_val, 0 );
 
-    std::vector<item_database::token_t> tokens;
-    size_t num_tokens = item_database::parse_tokens( tokens, option_stats_str );
+    auto tokens = item_database::parse_tokens( option_stats_str );
     size_t stat = 0;
 
-    for ( size_t i = 0; i < num_tokens && stat < sizeof_array( parsed.stat_val ); i++ )
+    for ( size_t i = 0; i < tokens.size() && stat < sizeof_array( parsed.stat_val ); i++ )
     {
       stat_e s = util::parse_stat_type( tokens[ i ].name );
       if ( s == STAT_NONE )
@@ -1673,12 +1679,10 @@ bool item_t::decode_gems()
     player -> meta_gem = meta_gem;
   }
 
-  std::vector<item_database::token_t> tokens;
-  size_t num_tokens = item_database::parse_tokens( tokens, option_gems_str );
+  auto tokens = item_database::parse_tokens( option_gems_str );
 
-  for ( size_t i = 0; i < num_tokens; i++ )
+  for ( auto& t : tokens )
   {
-    item_database::token_t& t = tokens[ i ];
     stat_e s;
 
     if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
@@ -1845,14 +1849,12 @@ bool item_t::decode_weapon()
   }
   else
   {
-    std::vector<item_database::token_t> tokens;
-    size_t num_tokens = item_database::parse_tokens( tokens, option_weapon_str );
+    auto tokens = item_database::parse_tokens( option_weapon_str );
 
     bool dps_set = false, dmg_set = false, min_set = false, max_set = false;
 
-    for ( size_t i = 0; i < num_tokens; i++ )
+    for ( auto& t : tokens )
     {
-      item_database::token_t& t = tokens[ i ];
       weapon_e type;
       school_e school;
 
@@ -1965,15 +1967,14 @@ bool item_t::decode_data_source()
 
 std::vector<stat_pair_t> item_t::str_to_stat_pair( const std::string& stat_str )
 {
-  std::vector<item_database::token_t> tokens;
   std::vector<stat_pair_t> stats;
 
-  item_database::parse_tokens( tokens, stat_str );
-  for ( size_t i = 0; i < tokens.size(); i++ )
+  auto tokens = item_database::parse_tokens( stat_str );
+  for ( auto& t : tokens )
   {
     stat_e s = STAT_NONE;
-    if ( ( s = util::parse_stat_type( tokens[ i ].name ) ) != STAT_NONE && tokens[ i ].value != 0 )
-      stats.push_back( stat_pair_t( s, static_cast<int>( tokens[ i ].value ) ) );
+    if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE && t.value != 0 )
+      stats.push_back( stat_pair_t( s, static_cast<int>( t.value ) ) );
   }
 
   return stats;

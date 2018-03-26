@@ -18,11 +18,7 @@ namespace /* ANONYMOUS NAMESPACE */
  * applicable. The enchant ID (number) maps to the array of
  * item_enchantment_data_t structs in sc_item_data.inc.
  */
-static const enchant_db_item_t __enchant_db[] = {
-
-  { nullptr,                         0    }
-
-};
+const enchant_db_item_t __enchant_db[] = {};
 
 size_t enchant_map_key(const dbc_t& dbc, const item_enchantment_data_t& enchant)
 {
@@ -30,14 +26,15 @@ size_t enchant_map_key(const dbc_t& dbc, const item_enchantment_data_t& enchant)
 }
 
 thread_local std::unordered_map<size_t, std::string> cached_enchant_names;
+
 } /* ANONYMOUS NAMESPACE */
 
 unsigned enchant::find_enchant_id( const std::string& name )
 {
-  for ( size_t i = 0; i < sizeof_array( __enchant_db ) - 1; i++ )
+  for ( auto& enchant_entry : __enchant_db )
   {
-    if ( util::str_compare_ci( __enchant_db[ i ].enchant_name, name ) )
-      return __enchant_db[ i ].enchant_id;
+    if ( util::str_compare_ci( enchant_entry.enchant_name, name ) )
+      return enchant_entry.enchant_id;
   }
 
   return 0;
@@ -45,10 +42,10 @@ unsigned enchant::find_enchant_id( const std::string& name )
 
 std::string enchant::find_enchant_name( unsigned enchant_id )
 {
-  for ( size_t i = 0; i < sizeof_array( __enchant_db ) - 1; i++ )
+  for ( auto& enchant_entry : __enchant_db )
   {
-    if ( __enchant_db[ i ].enchant_id == enchant_id )
-      return __enchant_db[ i ].enchant_name;
+    if ( enchant_entry.enchant_id == enchant_id )
+      return enchant_entry.enchant_name;
   }
 
   return std::string();
@@ -132,6 +129,7 @@ namespace {
 		return enchant_name;
 	}
 }
+
 /**
 * Return a "simc-encoded" enchant name for a given DBC item enchantment.
 *
@@ -618,10 +616,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
 
   if ( item.player -> sim -> debug )
   {
-    std::string debug_str = "relic: " + relic.to_string();
-    debug_str += " ilevel_increase=+" + util::to_string( util::floor( ilevel_value ) );
-
-    item.player -> sim -> out_debug << debug_str;
+    item.player -> sim -> out_debug.print("relic: {} ilevel_increase=+{}", relic, util::floor( ilevel_value ));
   }
 
   item.parsed.relic_bonus_ilevel[ relic_idx ] = util::floor( ilevel_value );
