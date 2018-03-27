@@ -256,7 +256,7 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | Misc Value: pain | Target: Self (1)
 #4 (id=313444)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Engulf yourself in flames, instantly causing $187727s1 Fire damage to enemies within $187727A1 yards and radiating $178741s1 Fire damage every sec.  Lasts $d.
+Description      : Engulf yourself in flames, instantly causing $187727s1 Fire damage to enemies within $187727A1 yards and radiating $178741s1 Fire damage every sec for $d.
 
 |cFFFFFFFFGenerates ${$s3/10+$178741s2/10*$d} Pain over $d.|r
 Tooltip          : Burns nearby enemies for $178741s1 Fire damage every $178740t1 sec.$?a207548[
@@ -1868,11 +1868,11 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=301971)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 0.26208 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 0.13500 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 #2 (id=301972)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
                    Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | Radius: 8 yards | Target: AOE enemy (instant) (16)
 #3 (id=357241)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08681
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09000
 Description      : $@spelldesc204596
 Tooltip          : Suffering $w2 Fire damage every $t2 sec.
 
@@ -2308,7 +2308,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Immolation Aura (178741), Immolation Aura (187727), Infernal Strike (189110), Infernal Strike (189112), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fiery Brand (207744), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Felblade (232893), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922)
 #3 (id=707094)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 0.07371 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=1, dl=0.1) | AP Coefficient: 0.05000 | Target: Enemy (6)
 Description      : $@spelldesc204021
 Tooltip          : Branded, taking $w3 Fire damage every $t3 sec, and dealing $204021s1% less damage to the branding Demon Hunter$?s264002[ and taking $s2% more Fire damage from them][].
 
@@ -2462,7 +2462,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=309919)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Demon Spikes (203819)
 Description      : While Demon Spikes is active, you deal $s1% increased Physical damage and your melee attacks snare targets by $210003s1% for $210003d.
 
@@ -3266,7 +3266,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Not a proc (105), Requires main-hand weapon (106)
 Effects          :
 #1 (id=338878)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.53703 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | Target: Enemy (6)
 #2 (id=338879)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc209795
@@ -3285,7 +3285,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
 #1 (id=338881)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.06704 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.80000 | Target: Enemy (6)
 #2 (id=338882)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc209795

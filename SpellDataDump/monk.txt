@@ -437,7 +437,7 @@ Duration         : 1.5 seconds
 Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Stagger (115069 effect#11), Mistweaver Monk (137024 effect#6), Serenity (152173 effect#1), 
 Triggered by     : Cyclone Strikes (220358)
 Attributes       : ....x... ........ x.x..... ........   ..x...x. ........ ........ .....x.. 
-                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... .x...... ........   ........ ........ ........ ........ 
@@ -4071,7 +4071,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=288838)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #2 (id=344166)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #3 (id=344167)   : Apply Aura (6) | Dummy (4)
@@ -5007,7 +5007,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=344191)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
 #2 (id=344192)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 11 | Target: Self (1)

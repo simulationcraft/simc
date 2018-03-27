@@ -138,7 +138,7 @@ School           : Physical
 Resource         : 20 Rage (1) (id=99)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Cooldown         : 12 seconds
+Cooldown         : 6 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), In For The Kill (248622 effect#1), Deadly Calm (262228 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -150,9 +150,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=357)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.48360 | Radius: 8 yards | Target: Cone Front (104)
-#2 (id=129888)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front (104)
-Description      : Strikes all enemies in front of you with a sweeping attack for $s1 Physical damage, inflicting Deep Wounds.
+#2 (id=722907)   : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3
+Description      : Strikes all enemies in front of you with a sweeping attack for $s1 Physical damage. Hitting $s2 or more targets inflicts Deep Wounds.
 
 Name             : Shield Wall (id=871) [Spell Family (4)] 
 Class            : Protection Warrior
@@ -201,7 +201,7 @@ Effects          :
                    Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Bladestorm (50622), Heroic Leap (52174), Bladestorm Off-Hand (95738), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Bladestorm (222634), Bladestorm (227847), Devastator (236282)
 #5 (id=298858)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self (1)
-Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s1% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they do to you by $s1% for $d.]$?s202743[
+Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s1% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they deal to you by $s1% for $d.]$?s202743[
 
 |cFFFFFFFFGenerates ${$m5/10} Rage.|r][]
 Tooltip          : $?s199023[Demoralized, dealing $s1% less damage.][Demoralized, dealing $s1% less damage to the shouting Warrior.]
@@ -429,7 +429,7 @@ Resource         : 25 Rage (1) (id=12400)
 Spell Level      : 8 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Sudden Death (52437 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Deathdealer (200846 effect#1), Sense Death (200979 effect#1), Juggernaut (201009 effect#1), Colossus Smash (208086 effect#1), Deathblow (209481 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), In For The Kill (248622 effect#1), Shattered Defenses (248625 effect#1), Deadly Calm (262228 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Deathdealer (200846 effect#1), Sense Death (200979 effect#1), Juggernaut (201009 effect#1), Colossus Smash (208086 effect#1), Deathblow (209481 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), In For The Kill (248622 effect#1), Shattered Defenses (248625 effect#1), Deadly Calm (262228 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -945,8 +945,8 @@ Attributes       : ....x.xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=19302)    : Apply Aura (6) | Proc Trigger Spell (42): Sudden Death
-                   Base Value: 40 | Scaled Value: 40 | Trigger Spell: 52437 | Target: Self (1)
+#1 (id=19302)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 Description      : Your damaging melee abilities have a chance to make your next Execute cost no Rage, be usable on any target regardless of their health, and deal damage as if you spent $s1 Rage.
 
 Name             : Second Wind (id=29838) [Spell Family (4), Passive] 
@@ -1183,33 +1183,6 @@ Effects          :
 #1 (id=44600)    : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.10221 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc6544
-
-Name             : Sudden Death (id=52437) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Duration         : 10 seconds
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
-Triggered by     : Sudden Death (29725)
-Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=44921)    : Apply Aura (6) | Unknown(262)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798)
-#2 (id=240564)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798)
-#3 (id=623417)   : Apply Aura (6) | Modify Max Cost (63)
-                   Base Value: -300 | Scaled Value: -300 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798)
-Description      : $@spelldesc29725
-Tooltip          : Execute costs no Rage, can be used on any target, and deals damage as if you spent $29725s1 Rage.
 
 Name             : Heroic Throw (id=57755) [Spell Family (4)] 
 Class            : Warrior
@@ -1918,7 +1891,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=129821)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.11700 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.14000 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc115768
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -2763,7 +2736,7 @@ Resource         : 20 - 40 Rage (1) (id=9491)
 Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Recklessness (1719 effect#4), Sudden Death (52437 effect#1), Warrior (137047 effect#1), Death Sentence (144442 effect#1), Deathdealer (200846 effect#1), Sense Death (200979 effect#1), Juggernaut (201009 effect#1), Deathblow (209481 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Shattered Defenses (248625 effect#1), Deadly Calm (262228 effect#1), 
+Affecting spells : Recklessness (1719 effect#4), Warrior (137047 effect#1), Death Sentence (144442 effect#1), Deathdealer (200846 effect#1), Sense Death (200979 effect#1), Juggernaut (201009 effect#1), Deathblow (209481 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Shattered Defenses (248625 effect#1), Deadly Calm (262228 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -2787,7 +2760,7 @@ School           : Physical
 Spell Level      : 7 (max 80)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Sudden Death (52437 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Deathdealer (200846 effect#1), Sense Death (200979 effect#1), Juggernaut (201009 effect#1), Colossus Smash (208086 effect#1), Deathblow (209481 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), In For The Kill (248622 effect#1), Shattered Defenses (248625 effect#1), Deadly Calm (262228 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Deathdealer (200846 effect#1), Sense Death (200979 effect#1), Juggernaut (201009 effect#1), Colossus Smash (208086 effect#1), Deathblow (209481 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), In For The Kill (248622 effect#1), Shattered Defenses (248625 effect#1), Deadly Calm (262228 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x....... 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -3402,7 +3375,7 @@ Resource         : 10 Rage (1) (id=10852)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Victorious (32216 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), In For The Kill (248622 effect#1), Sweeping Strikes (260708 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Victorious (32216 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), In For The Kill (248622 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3684,10 +3657,10 @@ Effects          :
                    Base Value: 600 | Scaled Value: 600 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Demoralizing Shout (125565)
 #2 (id=298924)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Demoralizing Shout (125565)
 #3 (id=298925)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Demoralizing Shout (125565)
 Description      : Demoralizing Shout also generates ${$m1/10} Rage, and increases damage you deal to affected targets by $s2%.
 
@@ -3709,7 +3682,7 @@ Effects          :
 #2 (id=298938)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Recklessness (1719)
-Description      : Battle Cry lasts ${$s1/1000} sec longer and generates ${$m2/10} Rage.
+Description      : Recklessness lasts ${$s1/1000} sec longer and generates ${$m2/10} Rage.
 
 Name             : Carnage (id=202922) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -4858,7 +4831,7 @@ Effects          :
 #1 (id=357205)   : Apply Aura (6) | Proc Trigger Spell (42): Devastator
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 236282 | Target: Self (1)
 #2 (id=357212)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30
+                   Base Value: 20 | Scaled Value: 20
 Description      : Your auto attacks deal an additional ${$236282sw1*$<mult>} Physical damage and have a $s2% chance to reset the remaining cooldown on Shield Slam.
 Variables        : $mult=${($max(0,$min($pl-12,8))*8.5+241)/309}
 
@@ -4879,7 +4852,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=357208)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.32994 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21000 | Target: Enemy (6)
 #2 (id=357209)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
 #3 (id=357211)   : Energize Power (30)
@@ -5272,7 +5245,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Sudden Death (52437 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Deathdealer (200846 effect#1), Sense Death (200979 effect#1), Juggernaut (201009 effect#1), Colossus Smash (208086 effect#1), Deathblow (209481 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), In For The Kill (248622 effect#1), Shattered Defenses (248625 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Deathdealer (200846 effect#1), Sense Death (200979 effect#1), Juggernaut (201009 effect#1), Colossus Smash (208086 effect#1), Deathblow (209481 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), In For The Kill (248622 effect#1), Shattered Defenses (248625 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), 
 Triggered by     : Execute (163201)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ......x.   ........ .xx..... ........ ........ 
@@ -5337,7 +5310,6 @@ Tooltip          : Bleeding for $w1 every $t1 sec.
 Name             : Dreadnaught (id=262150) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
-Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5348,8 +5320,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=623181)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1680 | Target: Self (1)
-#2 (id=623182)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 23 | Target: Self (1)
+#2 (id=623182)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Overpower (7384)
 Description      : Overpower has ${1+$s1} charges, and it increases the damage of your next Mortal Strike by an additional $s2%.
 
@@ -5388,7 +5360,7 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=623308)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Mortal Strike (12294), Improved Hamstring (24428), Whirlwind Off-Hand (44949), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Colossus Smash (208086), Execute (260798)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Mortal Strike (12294), Improved Hamstring (24428), Whirlwind Off-Hand (44949), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Impending Victory (202168), Colossus Smash (208086), Execute (260798)
 #2 (id=623342)   : Apply Aura (6) | Modify Max Cost (63)
                    Base Value: -400 | Scaled Value: -400 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798)

@@ -1708,7 +1708,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Self (1)
 Description      : Your healing is increased by ${$s1}.1% for each of your Restoration heal over time effects on the target.
 
-Name             : Thrash (Feral, Guardian) (id=77758) [Spell Family (7)] 
+Name             : Thrash (id=77758) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Resource         : 0 Rage (1) (id=10840)
@@ -2487,7 +2487,7 @@ Description      : Swipe nearby enemies, inflicting $s3 Physical damage.$?a23128
 
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
 
-Name             : Thrash (Feral, Guardian) (id=106830) [Spell Family (7)] 
+Name             : Thrash (id=106830) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
 Resource         : 45 Energy (3) (id=5069)
@@ -3109,39 +3109,36 @@ Effects          :
 #9 (id=260760)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-#10 (id=260761)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Moonfire (8921), Moonfire (164812)
-#11 (id=260762)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
+#10 (id=260761)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: -2 | Scaled Value: -2 | Misc Value: 8 | Target: Self (1)
                    Affected Spells: Astral Influence (197524), Power of the Archdruid (213121)
-#12 (id=260763)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#11 (id=260762)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#13 (id=260764)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
+#12 (id=260763)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 22 | Misc Value 2: 248 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#14 (id=260765)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#13 (id=260764)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 249 (Label) | Target: Self (1)
                    Affected Spells (Label): Orb of Destruction (229700), Void Tendril (250834)
-#15 (id=260766)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#14 (id=260765)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
-#16 (id=351087)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#15 (id=260766)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 289 (Label) | Target: Self (1)
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
-#17 (id=351088)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#16 (id=351087)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
-#18 (id=368361)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#17 (id=351088)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
-#19 (id=474886)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
+#18 (id=368361)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
                    Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
-#20 (id=477116)   : Apply Aura (6) | Dummy (4)
+#19 (id=474886)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#21 (id=481806)   : Apply Aura (6) | Dummy (4)
+#20 (id=477116)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Feral Druid (id=137011) [Spell Family (7), Passive, Hidden] 
@@ -4523,7 +4520,7 @@ Attributes       : ....x... ........ .....x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=281782)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.00842 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.02500 | Mechanic: Bleed | Target: Enemy (6)
 #2 (id=301092)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Sunfire (93402), Cenarion Ward (102352), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Nature's Essence (189800), Dreamwalker (189853), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Enraged Mangle (202085), Spring Blossoms (207386), Ashamane's Rip (210705), Swipe (213771), Mark of Shifting (224392), Echoing Stars (226104), Enraged Maul (236716)
@@ -4789,7 +4786,7 @@ Name             : Astral Influence (id=197524) [Spell Family (7), Passive]
 Class            : Balance Druid
 School           : Astral
 Spell Level      : 34
-Affecting spells : Guardian Druid (137010 effect#11), Feral Druid (137011 effect#10)
+Affecting spells : Guardian Druid (137010 effect#10), Feral Druid (137011 effect#10)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5770,7 +5767,8 @@ Description      : Thrash also generates ${$203961s1/10} Rage each time it deals
 Name             : Galactic Guardian (id=203964) [Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
-Proc Chance      : 7%
+Internal Cooldown: 2 seconds
+Proc Chance      : 5%
 Proc Flags       : ..x.x... ....x... x.x..... ........ 
                  : White Melee, Yellow Melee, AOE Hostile Spell, Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6546,7 +6544,7 @@ Effects          :
 #2 (id=317224)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=317225)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11404 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Swipe nearby enemies, inflicting $s3 Physical damage.
 
 Name             : Protection of Ashamane (id=214274) [Spell Family (7), Hidden] 
