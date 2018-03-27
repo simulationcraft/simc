@@ -8,6 +8,7 @@
 using namespace unique_gear;
 
 namespace {
+namespace x7 { // YaN - Yet another namespace - to resolve conflicts with global namespaces.
 /**
  * Forward declarations so we can reorganize the file a bit more sanely.
  */
@@ -6753,10 +6754,12 @@ void artifact_power::infusion_of_light( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+} // x7
 } // unnamed namespace
 
 void unique_gear::register_special_effects_x7()
 {
+  using namespace x7;
   /* Legion 7.0 Dungeon */
   register_special_effect( 214829, item::chaos_talisman                 );
   register_special_effect( 213782, item::corrupted_starlight            );
@@ -6925,6 +6928,7 @@ void unique_gear::register_special_effects_x7()
 
 void unique_gear::register_hotfixes_x7()
 {
+  using namespace x7;
   /*
   hotfix::register_spell( "Mark of the Distant Army", "2017-01-10-4", "Set Velocity to a reasonable value.", 191380 )
     .field( "prj_speed" )
@@ -6936,6 +6940,7 @@ void unique_gear::register_hotfixes_x7()
 
 void unique_gear::register_target_data_initializers_x7( sim_t* sim )
 {
+  using namespace x7;
   std::vector< slot_e > trinkets;
   trinkets.push_back( SLOT_TRINKET_1 );
   trinkets.push_back( SLOT_TRINKET_2 );
