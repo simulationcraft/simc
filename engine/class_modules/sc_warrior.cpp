@@ -5521,7 +5521,7 @@ void warrior_t::apl_prot()
   prot -> add_action( this, "Avatar", "if=buff.battle_cry.up" );
   prot -> add_action( this, "Demoralizing Shout", "if=buff.battle_cry.up" );
   prot -> add_action( this, "Ravager", "if=talent.ravager.enabled&buff.battle_cry.up" );
-  prot -> add_action( this, "Shield Block", "(buff.battle_cry.up&buff.shield_block.down)|(shield_block.charges>=1&cooldown.shield_slam.remains=0&gcd.remains=0)" );
+  prot -> add_action( this, "Shield Block", "if=(buff.battle_cry.up&buff.shield_block.down)|(cooldown.shield_slam.remains=0&gcd.remains=0)" );
   prot -> add_action( this, "Ignore Pain", "if=(!talent.vengeance.enabled&buff.renewed_fury.remains<=0)|(!talent.vengeance.enabled&rage.deficit>=40)|(buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage<30&!buff.revenge.react)" );
   prot -> add_action( this, "Shield Slam" );
   prot -> add_action( this, "Revenge", "if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_ignore_pain.up)|(buff.vengeance_revenge.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage>=30)" );
