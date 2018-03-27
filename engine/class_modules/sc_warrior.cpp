@@ -5503,7 +5503,7 @@ void warrior_t::apl_prot()
     else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       if ( items[i].slot != SLOT_WAIST )
-        default_list -> add_action( "use_item,name=" + items[i].name_str );
+        default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.battle_cry.up" );
     }
   }
 
@@ -5517,16 +5517,17 @@ void warrior_t::apl_prot()
     prot -> add_action( "potion,if=target.time_to_die<25" );
   }
 
-  prot -> add_action( this, "Battle Cry", "if=cooldown.shield_slam.remains=0" );
-  prot -> add_action( this, "Avatar" );
-  prot -> add_action( this, "Demoralizing Shout" );
-  prot -> add_action( this, "Ravager", "if=talent.ravager.enabled" );
-  prot -> add_action( this, "Shield Block", "if=cooldown.shield_slam.remains=0" );
-  prot -> add_action( this, "Ignore Pain", "if=(!talent.vengeance.enabled&buff.renewed_fury.remains<1.5)|(!talent.vengeance.enabled&rage.deficit>=40)|(buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage<30&!buff.revenge.react)" );
+  prot -> add_action( this, "Battle Cry", "if=gcd.remains=0" );
+  prot -> add_action( this, "Avatar", "if=buff.battle_cry.up" );
+  prot -> add_action( this, "Demoralizing Shout", "if=buff.battle_cry.up" );
+  prot -> add_action( this, "Ravager", "if=talent.ravager.enabled&buff.battle_cry.up" );
+  prot -> add_action( this, "Shield Block", "(buff.battle_cry.up&buff.shield_block.down)|(shield_block.charges>=1&cooldown.shield_slam.remains=0&gcd.remains=0)" );
+  prot -> add_action( this, "Ignore Pain", "if=(!talent.vengeance.enabled&buff.renewed_fury.remains<=0)|(!talent.vengeance.enabled&rage.deficit>=40)|(buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage<30&!buff.revenge.react)" );
   prot -> add_action( this, "Shield Slam" );
   prot -> add_action( this, "Revenge", "if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_ignore_pain.up)|(buff.vengeance_revenge.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage>=30)" );
   prot -> add_action( this, "Thunder Clap" );
   prot -> add_action( this, "Devastate" );
+  prot -> add_action( this, "Berserker Rage" );
 }
 
 // NO Spec Combat Action Priority List
