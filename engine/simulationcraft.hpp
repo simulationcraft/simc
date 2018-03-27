@@ -7923,7 +7923,7 @@ public:
 // effect_callbacks_t::register_callback =====================================
 
 template <typename T>
-static void add_callback( std::vector<T*>& callbacks, T* cb )
+inline void add_callback( std::vector<T*>& callbacks, T* cb )
 {
   if ( range::find( callbacks, cb ) == callbacks.end() )
     callbacks.push_back( cb );

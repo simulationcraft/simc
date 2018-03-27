@@ -260,7 +260,6 @@ bool wowhead::download_item_data( item_t&            item,
     for ( size_t i = 0; i < spell_links.size(); i++ )
     {
       int trigger_type = -1;
-      unsigned spell_id = 0;
 
       std::string v;
       if ( spell_links[ i ] -> get_value( v, "." ) && v != "Equip: " && v != "Use: " )
@@ -281,10 +280,14 @@ bool wowhead::download_item_data( item_t&            item,
       else
         begin++;
 
-      spell_id = util::to_unsigned( url.substr( begin ) );
-      if ( spell_id > 0 && trigger_type != -1 )
+      int parsed_spell_id = std::stoi( url.substr( begin ) );
+      if ( parsed_spell_id < 0 )
       {
-        item.parsed.data.id_spell[ spell_idx ] = spell_id;
+        throw std::invalid_argument(fmt::format("Invalid spell id {} < 0.", parsed_spell_id) );
+      }
+      if ( parsed_spell_id > 0 && trigger_type != -1 )
+      {
+        item.parsed.data.id_spell[ spell_idx ] = parsed_spell_id;
         item.parsed.data.trigger_spell[ spell_idx ] = trigger_type;
         spell_idx++;
       }

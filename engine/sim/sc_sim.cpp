@@ -3460,10 +3460,8 @@ void sim_t::setup( sim_control_t* c )
     }
     if ( ! opts::parse(this, p->options, o.name, o.value))
     {
-      std::stringstream s;
-      s << "Unable to parse option '" << o.name << "' with value '" << o.value
-          << "' for player '" << p->name() << "'";
-      throw std::invalid_argument(s.str());
+      throw std::invalid_argument(fmt::format("Unable to parse option '{}' with value '{}' for player '{}'.",
+          o.name, o.value, p->name()));
     }
 
   }

@@ -147,8 +147,12 @@ cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
   action( nullptr )
 {}
 
-// Adjust a dynamic cooldown (reduction) multiplier based on the current action associated with the
-// cooldown. Actions are associated by start() calls.
+/**
+ * Adjust a dynamic cooldown.
+ *
+ * Adjust a dynamic cooldown (reduction) multiplier based on the current action associated with the cooldown.
+ * Actions are associated by start() calls.
+ */
 void cooldown_t::adjust_recharge_multiplier()
 {
   if ( up() )

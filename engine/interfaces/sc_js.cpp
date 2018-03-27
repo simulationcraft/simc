@@ -41,7 +41,10 @@ rapidjson::Value* sc_js_t::path_value( const std::string& path_str )
       if ( v -> GetType() != rapidjson::kArrayType )
         v -> SetArray();
 
-      unsigned idx = util::to_unsigned( path[ i ] ), missing = 0;
+      int parsed_idx = std::stoi( path[ i ] );
+      assert( parsed_idx >= 0 );
+      unsigned idx = parsed_idx;
+      unsigned missing = 0;
       if ( v -> Size() <= idx )
         missing = ( idx - v -> Size() ) + 1;
 

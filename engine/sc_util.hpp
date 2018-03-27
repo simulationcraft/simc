@@ -130,7 +130,7 @@ double crit_multiplier( meta_gem_e gem );
 
 std::vector<std::string> string_split( const std::string& str, const std::string& delim );
 std::vector<std::string> string_split_allow_quotes( std::string str, const char* delim );
-void string_strip_quotes( std::string& str );
+std::string string_strip_quotes( std::string str );
 void replace_all( std::string& s, const std::string&, const std::string& );
 void erase_all( std::string& s, const std::string& from );
 
@@ -189,48 +189,12 @@ int numDigits( T number );
 
 bool contains_non_ascii( const std::string& );
 
-template<class T>
-T from_string( const std::string& );
-
 template <class T>
 double duration_fp_seconds(const T& chrono_time)
 {
   auto now = std::chrono::high_resolution_clock::now();
 
   return std::chrono::duration<double, std::chrono::seconds::period>( now - chrono_time ).count();
-}
-
-template<>
-inline int from_string( const std::string& v )
-{
-  return strtol( v.c_str(), nullptr, 10 );
-}
-template<>
-inline bool from_string( const std::string& v )
-{
-  return from_string<int>( v ) != 0;
-}
-
-template<>
-inline unsigned from_string( const std::string& v )
-{
-  return strtoul( v.c_str(), nullptr, 10 );
-}
-
-template<>
-inline double from_string( const std::string& v )
-{
-  return strtod( v.c_str(), nullptr );
-}
-template<>
-inline timespan_t from_string( const std::string& v )
-{
-  return timespan_t::from_seconds( util::from_string<double>( v ) );
-}
-template<>
-inline std::string from_string( const std::string& v )
-{
-  return v;
 }
 
 // https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2

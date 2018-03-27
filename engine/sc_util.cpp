@@ -2099,7 +2099,8 @@ std::vector<std::string> util::string_split_allow_quotes( std::string str, const
 }
 
 
-/* replaces all occurrences of 'from' in the string 's', with 'to'
+/**
+ * Replaces all occurrences of 'from' in the string 's', with 'to'.
  */
 void util::replace_all( std::string& s, const std::string& from, const std::string& to )
 {
@@ -2284,10 +2285,10 @@ int util::parse_item_quality( const std::string& quality )
 
 // string_strip_quotes ======================================================
 
-void util::string_strip_quotes( std::string& str )
+std::string util::string_strip_quotes( std::string str )
 {
   std::string::size_type pos = str.find( '"' );
-  if ( pos == std::string::npos ) return;
+  if ( pos == std::string::npos ) return str;
 
   std::string::iterator dst = str.begin() + pos, src = dst;
   while ( ++src != str.end() )
@@ -2297,6 +2298,7 @@ void util::string_strip_quotes( std::string& str )
   }
 
   str.resize( dst - str.begin() );
+  return str;
 }
 
 // to_string ================================================================

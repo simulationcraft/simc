@@ -287,6 +287,8 @@ public:
   html_decorator_t()
   { }
 
+  virtual ~html_decorator_t() = default;
+
   virtual std::string url_params() const
   {
     std::stringstream s;

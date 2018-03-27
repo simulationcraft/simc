@@ -7,11 +7,12 @@
 
 using namespace unique_gear;
 
+namespace {
 /**
  * Forward declarations so we can reorganize the file a bit more sanely.
  */
 
-namespace consumable
+namespace consumables
 {
   void potion_of_the_old_war( special_effect_t& );
   void potion_of_deadly_grace( special_effect_t& );
@@ -25,7 +26,7 @@ namespace enchants
 {
   void mark_of_the_hidden_satyr( special_effect_t& );
   void mark_of_the_distant_army( special_effect_t& );
-  void mark_of_the_ancient_priestess( special_effect_t& ); // NYI
+  //void mark_of_the_ancient_priestess( special_effect_t& ); // NYI
 }
 
 namespace item
@@ -78,7 +79,7 @@ namespace item
   void leyspark(special_effect_t& );
 
   // 7.0 Raid
-  void bloodthirsty_instinct( special_effect_t& );
+  //void bloodthirsty_instinct( special_effect_t& );
   void natures_call( special_effect_t& );
   void ravaged_seed_pod( special_effect_t& );
   void spontaneous_appendages( special_effect_t& );
@@ -200,8 +201,11 @@ namespace artifact_power
 
 namespace util
 {
-// Return the Karazhan Chest empowerment multiplier (as 1.0 + multiplier) for trinkets, or 1.0 if
-// the chest is not found on the actor.
+/**
+ * Return the Karazhan Chest empowerment multiplier.
+ *
+ * Multiplier is in form (as 1.0 + multiplier) for trinkets, or 1.0 if the chest is not found on the actor.
+ */
 double composite_karazhan_empower_multiplier( const player_t* player )
 {
   auto it = range::find_if( player -> items, []( const item_t& item ) {
@@ -280,7 +284,7 @@ void set_bonus::passive_stat_aura( special_effect_t& effect )
     stat = STAT_BONUS_ARMOR;
   }
 
-  double amount = util::round( spell -> effectN( 1 ).average( effect.player, std::min( MAX_LEVEL, effect.player -> level() ) ) );
+  double amount = ::util::round( spell -> effectN( 1 ).average( effect.player, std::min( MAX_LEVEL, effect.player -> level() ) ) );
 
   effect.player -> passive.add_stat( stat, amount );
 }
@@ -1810,7 +1814,7 @@ struct norgannons_command_t : public dbc_proc_callback_t
     range::for_each( nuke_spell_ids, [ this, &effect ]( unsigned spell_id ) {
       auto spell = effect.player -> find_spell( spell_id );
       std::string name = spell -> name_cstr();
-      util::tokenize( name );
+      ::util::tokenize( name );
 
       auto action = create_proc_action<norgannon_nuke_t>( name, effect, name, spell );
       nukes.push_back( action );
@@ -4617,7 +4621,7 @@ struct darkmoon_deck_t
       assert( s -> found() );
 
       std::string n = s -> name_cstr();
-      util::tokenize( n );
+      ::util::tokenize( n );
 
       cards.push_back( stat_buff_creator_t( player, n, s, effect.item ) );
     }
@@ -5774,7 +5778,7 @@ void set_bonus::march_of_the_legion( special_effect_t&  effect ) {
     const spell_data_t* spell = effect.player->find_spell( 228445 );
 
     std::string spell_name = spell->name_cstr();
-    util::tokenize( spell_name );
+    ::util::tokenize( spell_name );
 
     struct march_t : public proc_spell_t
     {
@@ -5918,7 +5922,7 @@ struct legion_potion_damage_t : public T
 
 // Potion of the Old War ====================================================
 
-void consumable::potion_of_the_old_war( special_effect_t& effect )
+void consumables::potion_of_the_old_war( special_effect_t& effect )
 {
   // Instantiate a new action if we cannot find a suitable one already
   auto action = effect.player -> find_action( effect.name() );
@@ -5958,10 +5962,10 @@ void consumable::potion_of_the_old_war( special_effect_t& effect )
 
 // Potion of Deadly Grace ===================================================
 
-void consumable::potion_of_deadly_grace( special_effect_t& effect )
+void consumables::potion_of_deadly_grace( special_effect_t& effect )
 {
   std::string action_name = effect.driver() -> effectN( 1 ).trigger() -> name_cstr();
-  util::tokenize( action_name );
+  ::util::tokenize( action_name );
 
   // Instantiate a new action if we cannot find a suitable one already
   auto action = effect.player -> find_action( action_name );
@@ -6010,7 +6014,7 @@ void consumable::potion_of_deadly_grace( special_effect_t& effect )
 
 // Hearty Feast =============================================================
 
-void consumable::hearty_feast( special_effect_t& effect )
+void consumables::hearty_feast( special_effect_t& effect )
 {
   effect.stat = effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT );
   switch ( effect.stat )
@@ -6039,7 +6043,7 @@ void consumable::hearty_feast( special_effect_t& effect )
 
 // Lavish Suramar Feast =====================================================
 
-void consumable::lavish_suramar_feast( special_effect_t& effect )
+void consumables::lavish_suramar_feast( special_effect_t& effect )
 {
   effect.stat = effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT );
   switch ( effect.stat )
@@ -6069,7 +6073,7 @@ void consumable::lavish_suramar_feast( special_effect_t& effect )
 
 // Lemon Herb Filet =========================================================
 
-void consumable::lemon_herb_filet( special_effect_t& effect )
+void consumables::lemon_herb_filet( special_effect_t& effect )
 {
   double value = effect.driver() -> effectN( 1 ).percent();
 
@@ -6152,7 +6156,7 @@ struct pepper_breath_driver_t : public proc_spell_t
   }
 };
 
-void consumable::pepper_breath( special_effect_t& effect )
+void consumables::pepper_breath( special_effect_t& effect )
 {
   unsigned trigger_id = 0;
   switch ( effect.driver() -> id() )
@@ -6749,6 +6753,8 @@ void artifact_power::infusion_of_light( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+} // unnamed namespace
+
 void unique_gear::register_special_effects_x7()
 {
   /* Legion 7.0 Dungeon */
@@ -6895,14 +6901,14 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 236373, item::norgannons_foresight );
 
   /* Consumables */
-  register_special_effect( 188028, consumable::potion_of_the_old_war );
-  register_special_effect( 188027, consumable::potion_of_deadly_grace );
-  register_special_effect( 201351, consumable::hearty_feast );
-  register_special_effect( 201352, consumable::lavish_suramar_feast );
-  register_special_effect( 225606, consumable::pepper_breath );
-  register_special_effect( 225601, consumable::pepper_breath );
-  register_special_effect( 201336, consumable::pepper_breath );
-  register_special_effect( 185736, consumable::lemon_herb_filet );
+  register_special_effect( 188028, consumables::potion_of_the_old_war );
+  register_special_effect( 188027, consumables::potion_of_deadly_grace );
+  register_special_effect( 201351, consumables::hearty_feast );
+  register_special_effect( 201352, consumables::lavish_suramar_feast );
+  register_special_effect( 225606, consumables::pepper_breath );
+  register_special_effect( 225601, consumables::pepper_breath );
+  register_special_effect( 201336, consumables::pepper_breath );
+  register_special_effect( 185736, consumables::lemon_herb_filet );
 
   /* Artifact powers */
   register_special_effect( 252906, artifact_power::torment_the_weak );
