@@ -55,7 +55,7 @@ endif
 
 MKDIR      = mkdir
 CXX        = g++
-CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++11 -O3 -MMD -MP
+CPP_FLAGS  = -Wall -Wextra -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++11 -O3 -MMD -MP -pedantic
 OPTS       =
 GIT        = $(shell [ -d ../.git ] && which git)
 

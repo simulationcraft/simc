@@ -18,7 +18,9 @@ namespace /* ANONYMOUS NAMESPACE */
  * applicable. The enchant ID (number) maps to the array of
  * item_enchantment_data_t structs in sc_item_data.inc.
  */
-const enchant_db_item_t __enchant_db[] = {};
+const enchant_db_item_t __enchant_db[] = {
+    { nullptr, 0 } // Dummy entry since we can not have a array with size 0.
+};
 
 size_t enchant_map_key(const dbc_t& dbc, const item_enchantment_data_t& enchant)
 {
@@ -33,6 +35,8 @@ unsigned enchant::find_enchant_id( const std::string& name )
 {
   for ( auto& enchant_entry : __enchant_db )
   {
+    if ( !enchant_entry.enchant_name )
+      continue;
     if ( util::str_compare_ci( enchant_entry.enchant_name, name ) )
       return enchant_entry.enchant_id;
   }
@@ -44,6 +48,8 @@ std::string enchant::find_enchant_name( unsigned enchant_id )
 {
   for ( auto& enchant_entry : __enchant_db )
   {
+    if ( !enchant_entry.enchant_name )
+      continue;
     if ( enchant_entry.enchant_id == enchant_id )
       return enchant_entry.enchant_name;
   }

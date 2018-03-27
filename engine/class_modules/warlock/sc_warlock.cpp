@@ -159,19 +159,19 @@ namespace warlock
       {
         action_list_str = "shadow_bite";
         owner_coeff.ap_from_sp *= 1.2;
-      };
+      }
 
       void felhunter_pet_t::init_base_stats()
       {
         warlock_pet_t::init_base_stats();
         melee_attack = new warlock_pet_melee_t( this );
-      };
+      }
 
       action_t* felhunter_pet_t::create_action( const std::string& name, const std::string& options_str )
       {
         if ( name == "shadow_bite" ) return new shadow_bite_t( this );
         return warlock_pet_t::create_action( name, options_str );
-      };
+      }
     }
 
     namespace imp

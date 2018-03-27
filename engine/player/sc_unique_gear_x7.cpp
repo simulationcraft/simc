@@ -2622,7 +2622,7 @@ void item::riftworld_codex( special_effect_t& effect )
   };
 
   new riftworld_codex_callback_t( effect, buffs );
-};
+}
 
 // Toe Knee's Promise ======================================================
 
