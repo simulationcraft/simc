@@ -1,6 +1,6 @@
 #define TALENT_SIZE (651)
 
-// 651 talents, wow build 26297
+// 651 talents, wow build 26310
 static struct talent_data_t __talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class, Spc, Col, Row, SpellID, ReplcID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001,   0,   0,   3,   29838,       0,  0 },
@@ -80,7 +80,7 @@ static struct talent_data_t __talent_data[] = {
   { "Burning Rush"                      , 19285, 0x00, 0x0100,   0,   1,   2,  111400,       0,  0 },
   { "Dark Pact"                         , 19286, 0x00, 0x0100,   0,   2,   2,  108416,       0,  0 },
   { "Demonic Circle"                    , 19288, 0x00, 0x0100,   0,   2,   4,  268358,       0,  0 },
-  { "Growing Shadows"                   , 19290, 0x00, 0x0100, 266,   0,   0,  264078,       0,  0 },
+  { "Dreadlash"                         , 19290, 0x00, 0x0100, 266,   0,   0,  264078,       0,  0 },
   { "Mortal Coil"                       , 19291, 0x00, 0x0100,   0,   1,   4,    6789,       0,  0 },
   { "Phantom Singularity"               , 19292, 0x00, 0x0100,   0,   1,   3,  205179,       0,  0 },
   { "Siphon Life"                       , 19293, 0x00, 0x0100,   0,   2,   6,   63106,       0,  0 },
@@ -280,7 +280,7 @@ static struct talent_data_t __talent_data[] = {
   { "Iron Stomach"                      , 22121, 0x00, 0x0008, 260,   0,   3,  193546,       0,  0 },
   { "Elusiveness"                       , 22122, 0x00, 0x0008,   0,   1,   3,   79008,       0,  0 },
   { "Cheat Death"                       , 22123, 0x00, 0x0008,   0,   2,   3,   31230,       0,  0 },
-  { "Elaborate Planning"                , 22125, 0x00, 0x0008, 260,   0,   6,  193640,       0,  0 },
+  { "Blade Fury"                        , 22125, 0x00, 0x0008, 260,   0,   6,  272026,       0,  0 },
   { "Static Charge"                     , 22127, 0x00, 0x0040,   0,   2,   2,  265046,       0,  0 },
   { "Soothing Darkness"                 , 22128, 0x00, 0x0008, 261,   0,   3,  200759,       0,  0 },
   { "Master of Shadows"                 , 22132, 0x00, 0x0008, 261,   0,   6,  196976,       0,  0 },
@@ -456,8 +456,8 @@ static struct talent_data_t __talent_data[] = {
   { "Incarnation: Tree of Life"         , 22421, 0x00, 0x0400, 105,   2,   4,   33891,       0,  0 },
   { "Spring Blossoms"                   , 22422, 0x00, 0x0400, 105,   2,   5,  207385,       0,  0 },
   { "Earthwarden"                       , 22423, 0x00, 0x0400, 104,   0,   5,  203974,       0,  0 },
-  { "Rend and Tear"                     , 22425, 0x00, 0x0400, 104,   2,   6,  204053,       0,  0 },
-  { "Pulverize"                         , 22426, 0x00, 0x0400, 104,   0,   6,   80313,       0,  0 },
+  { "Pulverize"                         , 22425, 0x00, 0x0400, 104,   2,   6,   80313,       0,  0 },
+  { "Rend and Tear"                     , 22426, 0x00, 0x0400, 104,   0,   6,  204053,       0,  0 },
   { "Lunar Beam"                        , 22427, 0x00, 0x0400, 104,   1,   6,  204066,       0,  0 },
   { "Holy Shield"                       , 22428, 0x00, 0x0002,  66,   0,   0,  152261,       0,  0 },
   { "Blessed Hammer"                    , 22430, 0x00, 0x0002,  66,   2,   0,  204019,   53595,  0 },
@@ -620,7 +620,7 @@ static struct talent_data_t __talent_data[] = {
   { "Mana Shield"                       , 23072, 0x00, 0x0080,  62,   0,   1,  235463,       0,  0 },
   { "Ice Floes"                         , 23073, 0x00, 0x0080,  64,   2,   1,  108839,       0,  0 },
   { "Blast Wave"                        , 23074, 0x00, 0x0080,  63,   2,   1,  157981,       0,  0 },
-  { "Cannonball Barrage"                , 23075, 0x00, 0x0008, 260,   1,   6,  185767,       0,  0 },
+  { "Blade Rush"                        , 23075, 0x00, 0x0008, 260,   1,   6,  271877,       0,  0 },
   { "Dirty Tricks"                      , 23077, 0x00, 0x0008, 260,   0,   4,  108216,       0,  0 },
   { "Shot in the Dark"                  , 23078, 0x00, 0x0008, 261,   0,   4,  257505,       0,  0 },
   { "Word of Glory"                     , 23086, 0x00, 0x0002,  70,   2,   5,  210191,       0,  0 },
