@@ -123,6 +123,14 @@ void simulate_profileset( sim_t* parent, profile_set_t& set, sim_t*& profile_sim
       .iterations( progress.current_iterations );
   } );
 
+  if ( ! parent -> profileset_output_data.empty() )
+  {
+    const auto parent_player = parent -> player_no_pet_list.data().front();
+    range::for_each( parent -> profileset_output_data, [ & ]( const std::string& option ) {
+        save_output_data( &set, parent_player, player, option );
+    } );
+  }
+
   set.cleanup_options();
 }
 
@@ -1115,7 +1123,7 @@ statistical_data_t metric_data( const player_t* player, scale_metric_e metric )
   }
 }
 
-void save_output_data( std::unique_ptr<profile_set_t>& profileset, const player_t* parent_player, const player_t* player, std::string option )
+void save_output_data( profile_set_t* profileset, const player_t* parent_player, const player_t* player, std::string option )
 {
   // TODO: Make an enum to proper use a switch instead of if/else
   if ( option == "race") {
@@ -1188,6 +1196,44 @@ void save_output_data( std::unique_ptr<profile_set_t>& profileset, const player_
     {
       profileset -> output_data().gear( saved_gear );
     }
+  } else if ( option == "stats" ) {
+    const auto& buffed_stats = player -> collected_data.buffed_stats_snapshot;
+
+    // primary stats
+
+    profileset -> output_data().stamina( util::floor( buffed_stats.attribute[ ATTR_STAMINA ] ) );
+    profileset -> output_data().agility( util::floor( buffed_stats.attribute[ ATTR_AGILITY ] ) );
+    profileset -> output_data().intellect( util::floor( buffed_stats.attribute[ ATTR_INTELLECT ] ) );
+    profileset -> output_data().strength( util::floor( buffed_stats.attribute[ ATTR_STRENGTH ] ) );
+
+    // secondary stats
+
+    profileset -> output_data().crit_rating( util::floor( player -> composite_melee_crit_rating() > player -> composite_spell_crit_rating()
+                       ? player -> composite_melee_crit_rating()
+                       : player -> composite_spell_crit_rating() ) );
+    profileset -> output_data().crit_pct( buffed_stats.attack_crit_chance > buffed_stats.spell_crit_chance
+                       ? buffed_stats.attack_crit_chance
+                       : buffed_stats.spell_crit_chance );
+
+    profileset -> output_data().haste_rating( util::floor( player -> composite_melee_haste_rating() > player -> composite_spell_haste_rating()
+                       ? player -> composite_melee_haste_rating()
+                       : player -> composite_spell_haste_rating() ) );
+
+    double attack_haste_pct = 1 / buffed_stats.attack_haste - 1;
+    double spell_haste_pct = 1 / buffed_stats.spell_haste - 1;
+    profileset -> output_data().haste_pct( attack_haste_pct > spell_haste_pct ? attack_haste_pct : spell_haste_pct );
+
+    profileset -> output_data().mastery_rating( util::floor( player -> composite_mastery_rating() ) );
+    profileset -> output_data().mastery_pct( buffed_stats.mastery_value );
+
+    profileset -> output_data().versatility_rating( util::floor( player -> composite_damage_versatility_rating() ) );
+    profileset -> output_data().versatility_pct( buffed_stats.damage_versatility );
+
+    // tertiary stats
+
+    profileset -> output_data().avoidance( buffed_stats.avoidance );
+    profileset -> output_data().leech( buffed_stats.leech );
+    profileset -> output_data().speed( buffed_stats.run_speed );
   }
 }
 
@@ -1229,6 +1275,25 @@ void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput&
       ovr_slot[ "item_id"    ] = item.item_id();
       ovr_slot[ "item_level" ] = item.item_level();
     }
+  }
+  if ( output_data.agility() ) {
+    ovr[ "stats" ][ "stamina" ] = output_data.stamina();
+    ovr[ "stats" ][ "agility" ] = output_data.agility();
+    ovr[ "stats" ][ "intellect" ] = output_data.strength();
+    ovr[ "stats" ][ "strength" ] = output_data.intellect();
+
+    ovr[ "stats" ][ "crit_rating" ] = output_data.crit_rating();
+    ovr[ "stats" ][ "crit_pct" ] = output_data.crit_pct();
+    ovr[ "stats" ][ "haste_rating" ] = output_data.haste_rating();
+    ovr[ "stats" ][ "haste_pct" ] = output_data.haste_pct();
+    ovr[ "stats" ][ "mastery_rating" ] = output_data.mastery_rating();
+    ovr[ "stats" ][ "mastery_pct" ] = output_data.mastery_pct();
+    ovr[ "stats" ][ "versatility_rating" ] = output_data.versatility_rating();
+    ovr[ "stats" ][ "versatility_pct" ] = output_data.versatility_pct();
+
+    ovr[ "stats" ][ "avoidance" ] = output_data.avoidance();
+    ovr[ "stats" ][ "leech" ] = output_data.leech();
+    ovr[ "stats" ][ "speed" ] = output_data.speed();
   }
 }
 
