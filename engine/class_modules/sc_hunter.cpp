@@ -6607,13 +6607,13 @@ void hunter_t::apl_mm()
   non_patient_sniper -> add_talent( this, "Sentinel", "if=!debuff.hunters_mark.up" );
   non_patient_sniper -> add_talent( this, "Black Arrow", "if=talent.sidewinders.enabled|spell_targets.multishot<6" );
   non_patient_sniper -> add_talent( this, "A Murder of Crows", "if=target.time_to_die>=cooldown+duration|target.health.pct<20" );
-  non_patient_sniper -> add_action( this, "Windburst");
+  non_patient_sniper -> add_action( this, "Windburst" );
   non_patient_sniper -> add_talent( this, "Barrage", "if=spell_targets>2|(target.health.pct<20&buff.bullseye.stack<25)" );
-  non_patient_sniper -> add_action( this, "Marked Shot", "if=buff.marking_targets.up|buff.trueshot.up" );
+  non_patient_sniper -> add_action( this, "Marked Shot" );
+  non_patient_sniper -> add_action( this, "Arcane Shot", "if=set_bonus.tier21_4pc&equipped.zevrims_hunger&talent.sentinel.enabled&(buff.marking_targets.up|buff.trueshot.up)&!variable.waiting_for_sentinel" );
   non_patient_sniper -> add_talent( this, "Sidewinders", "if=!variable.waiting_for_sentinel&(debuff.hunters_mark.down|(buff.trueshot.down&buff.marking_targets.down))&((buff.marking_targets.up|buff.trueshot.up)|charges_fractional>1.8)&(focus.deficit>cast_regen)" );
   non_patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time" );
   non_patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(buff.lock_and_load.up&lowest_vuln_within.5>gcd.max))&(spell_targets.multishot<5|talent.trick_shot.enabled|buff.sentinels_sight.stack=20)" );
-  non_patient_sniper -> add_action( this, "Marked Shot" );
   non_patient_sniper -> add_action( this, "Aimed Shot", "if=focus+cast_regen>focus.max&!buff.sentinels_sight.up" );
   non_patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets.multishot>1&!variable.waiting_for_sentinel" );
   non_patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot=1&!variable.waiting_for_sentinel" );

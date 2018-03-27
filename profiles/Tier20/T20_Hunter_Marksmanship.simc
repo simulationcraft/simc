@@ -61,11 +61,11 @@ actions.non_patient_sniper+=/black_arrow,if=talent.sidewinders.enabled|spell_tar
 actions.non_patient_sniper+=/a_murder_of_crows,if=target.time_to_die>=cooldown+duration|target.health.pct<20
 actions.non_patient_sniper+=/windburst
 actions.non_patient_sniper+=/barrage,if=spell_targets>2|(target.health.pct<20&buff.bullseye.stack<25)
-actions.non_patient_sniper+=/marked_shot,if=buff.marking_targets.up|buff.trueshot.up
+actions.non_patient_sniper+=/marked_shot
+actions.non_patient_sniper+=/arcane_shot,if=set_bonus.tier21_4pc&equipped.zevrims_hunger&talent.sentinel.enabled&(buff.marking_targets.up|buff.trueshot.up)&!variable.waiting_for_sentinel
 actions.non_patient_sniper+=/sidewinders,if=!variable.waiting_for_sentinel&(debuff.hunters_mark.down|(buff.trueshot.down&buff.marking_targets.down))&((buff.marking_targets.up|buff.trueshot.up)|charges_fractional>1.8)&(focus.deficit>cast_regen)
 actions.non_patient_sniper+=/aimed_shot,if=talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time
 actions.non_patient_sniper+=/aimed_shot,if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(buff.lock_and_load.up&lowest_vuln_within.5>gcd.max))&(spell_targets.multishot<5|talent.trick_shot.enabled|buff.sentinels_sight.stack=20)
-actions.non_patient_sniper+=/marked_shot
 actions.non_patient_sniper+=/aimed_shot,if=focus+cast_regen>focus.max&!buff.sentinels_sight.up
 actions.non_patient_sniper+=/multishot,if=spell_targets.multishot>1&!variable.waiting_for_sentinel
 actions.non_patient_sniper+=/arcane_shot,if=spell_targets.multishot=1&!variable.waiting_for_sentinel
