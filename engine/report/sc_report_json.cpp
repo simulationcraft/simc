@@ -623,9 +623,12 @@ void to_json( JsonOutput root, const player_t& p,
   add_non_zero( root[ "stats" ], "versatility_rating", p.composite_damage_versatility_rating());
   add_non_zero( root[ "stats" ], "versatility_pct", bs.damage_versatility);
 
-  add_non_zero( root[ "stats" ], "leech", bs.leech );
-  add_non_zero( root[ "stats" ], "speed", bs.run_speed );
-  add_non_zero( root[ "stats" ], "avoidance", bs.avoidance );
+  add_non_zero( root[ "stats" ], "avoidance_rating", p.composite_avoidance_rating());
+  add_non_zero( root[ "stats" ], "avoidance_pct", bs.avoidance );
+  add_non_zero( root[ "stats" ], "leech_rating", p.composite_leech_rating());
+  add_non_zero( root[ "stats" ], "leech_pct", bs.leech );
+  add_non_zero( root[ "stats" ], "speed_rating", p.composite_speed_rating());
+  add_non_zero( root[ "stats" ], "speed_pct", bs.run_speed );
 
   add_non_zero( root[ "stats" ], "manareg_per_second", bs.manareg_per_second );
 
