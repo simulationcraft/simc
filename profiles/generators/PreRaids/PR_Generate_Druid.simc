@@ -1,10 +1,9 @@
 druid="PR_Druid_Balance"
-level=110
+level=120
 race=troll
 role=attack
 talents=3200233
 spec=balance
-artifact=59:137303:137381:137303:0:1035:3:1036:3:1039:3:1040:3:1041:1:1042:5:1044:1:1046:1:1047:1:1049:1:1294:1
 
 head=corpse_feast_headwrap,id=137427,bonus_id=1727
 neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_hidden_satyr
@@ -26,13 +25,12 @@ save=PR_Druid_Balance.simc
 
 
 druid="PR_Druid_Feral"
-level=110
+level=120
 race=night_elf
 timeofday=day
 role=attack
 position=back
 talents=3323322
-artifact=58:137340:137465:137307:0:1153:1:1154:1:1157:1:1158:1:1161:6:1163:3:1164:3:1165:3:1166:3:1327:1
 spec=feral
 
 head=hood_of_the_blind_executioner,id=137511,bonus_id=1727
@@ -56,13 +54,12 @@ save=PR_Druid_Feral.simc
 
 
 druid="PR_Druid_Guardian"
-level=110
+level=120
 race=worgen
 timeofday=night
 role=tank
 position=front
 talents=3323323
-artifact=57:0:0:0:0:948:3:950:3:951:3:952:3:954:2:956:3:957:1:958:1:960:1:961:1:979:1:1334:1
 spec=guardian
 
 head=hood_of_the_blind_executioner,id=137511

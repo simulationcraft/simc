@@ -1,11 +1,10 @@
 # Windwalker
 monk="PR_Monk_Windwalker"
-level=110
+level=120
 race=blood_elf
 role=hybrid
 position=back
 talents=3010032
-artifact=50:0:0:0:0:800:3:801:3:820:3:822:3:825:3:827:1:828:1:831:1:833:1:1341:1
 spec=windwalker
 
 head=veil_of_unseen_strikes,id=134447,bonus_id=1727

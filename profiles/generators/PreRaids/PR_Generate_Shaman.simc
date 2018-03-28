@@ -1,11 +1,11 @@
 shaman="PR_Shaman_Enhancement"
-level=110
+level=120
 race=troll
 role=attack
 position=back
 talents=2002222
-artifact=41:137316:137543:133682:0:899:1:901:1:902:1:903:1:904:1:905:1:906:1:909:3:910:5:911:3:912:3:913:1:1351:1
 spec=enhancement
+
 head=collar_of_honorable_exultation,id=136777,bonus_id=1492/1727
 neck=wolfstride_pendant,id=133633,bonus_id=1492/1727,enchant=mark_of_the_hidden_satyr
 shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1492/1727
@@ -27,13 +27,12 @@ save=PR_Shaman_Enhancement.simc
 
 
 shaman="PR_Shaman_Elemental"
-level=110
+level=120
 race=orc
 role=attack
 position=ranged_back
 talents=2112333
 spec=elemental
-artifact=40:0:0:0:0:291:1:292:1:293:1:294:1:296:1:300:2:301:3:302:3:303:3:304:3:1350:1
 
 head=shadow_archers_helm,id=139244,bonus_id=1492/1727
 neck=breathless_choker,id=137461,bonus_id=1492/1727,enchant=mark_of_the_hidden_satyr

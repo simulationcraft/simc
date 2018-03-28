@@ -5,8 +5,7 @@ race=dwarf
 role=spell
 position=back
 talents=2033021
-artifact=53:0:0:0:0:783:1:784:4:785:4:786:4:787:4:788:4:789:4:790:4:791:4:792:4:793:1:794:1:795:1:796:1:797:1:798:1:1296:1:1373:1:1537:4:1538:1:1539:1:1540:24:1641:1
-crucible=1739:1780:789/1739:1780:789/1739:1780:789
+artifact=53:0:0:0:0
 
 # Default consumables
 potion=prolonged_power
@@ -24,6 +23,7 @@ augmentation=defiled
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
+actions.precombat+=/arcane_intellect
 actions.precombat+=/water_elemental
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mirror_image
@@ -37,21 +37,18 @@ actions+=/ice_lance,if=!buff.fingers_of_frost.react&prev_gcd.1.flurry
 # Time Warp is used right at the start. If the actor has Shard of the Exodar, try to synchronize the second Time Warp with Icy Veins. If the target is about to die, use Time Warp regardless.
 actions+=/time_warp,if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(cooldown.icy_veins.remains<1|target.time_to_die<50)
 actions+=/call_action_list,name=cooldowns
-actions+=/call_action_list,name=aoe,if=active_enemies>=3
+actions+=/call_action_list,name=aoe,if=active_enemies>=4
 actions+=/call_action_list,name=single
 
-actions.aoe=frostbolt,if=prev_off_gcd.water_jet
-# Make sure Frozen Orb is used before Blizzard if both are available. This is a small gain with Freezing Rain and on par without.
-actions.aoe+=/frozen_orb
+actions.aoe=frozen_orb
 actions.aoe+=/blizzard
 actions.aoe+=/comet_storm
 actions.aoe+=/ice_nova
-actions.aoe+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<3&!buff.brain_freeze.react
-actions.aoe+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt)
-actions.aoe+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react
+actions.aoe+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled|buff.icicles.stack<=4))
 actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react
 actions.aoe+=/ebonbolt
-actions.aoe+=/glacial_spike
+actions.aoe+=/glacial_spike,if=buff.brain_freeze.react
+actions.aoe+=/ray_of_frost
 actions.aoe+=/frostbolt
 actions.aoe+=/call_action_list,name=movement
 actions.aoe+=/cone_of_cold
@@ -73,33 +70,22 @@ actions.movement+=/ice_floes,if=buff.ice_floes.down
 
 # In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill.
 actions.single=ice_nova,if=debuff.winters_chill.up
-actions.single+=/frostbolt,if=prev_off_gcd.water_jet
-# Basic Water Jet combo. Since Water Jet can only be used if the actor is not casting, we use it right after Frostbolt is executed. At the default distance, Frostbolt travels slightly over 1 s, giving Water Jet enough time to apply the DoT (Water Jet's cast time is 1 s, with haste scaling). The APL then forces another Frostbolt to guarantee getting both FoFs from the Water Jet. This works for most haste values (roughly from 0% to 160%). When changing the default distance, great care must be taken otherwise this action won't produce two FoFs.
-actions.single+=/water_jet,if=prev_gcd.1.frostbolt&buff.fingers_of_frost.stack<3&!buff.brain_freeze.react
-actions.single+=/ray_of_frost,if=buff.icy_veins.up|cooldown.icy_veins.remains>action.ray_of_frost.cooldown&buff.rune_of_power.down
-# Winter's Chill from Flurry can apply to the spell cast right before (provided the travel time is long enough). This can be exploited to a great effect with Ebonbolt, Glacial Spike (which deal a lot of damage by themselves) and Frostbolt (as a guaranteed way to proc Frozen Veins and Chain Reaction). When using Glacial Spike, it is worth saving a Brain Freeze proc when Glacial Spike is right around the corner (i.e. with 5 Icicles). However, when the actor also has T20 2pc, Glacial Spike is delayed to fit into Frozen Mass, so we do not want to sit on a Brain Freeze proc for too long in that case.
-actions.single+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled|buff.icicles.stack<=4|cooldown.frozen_orb.remains<=10&set_bonus.tier20_2pc))
+actions.single+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled|buff.icicles.stack<=4))
 # With T20 2pc, Frozen Orb should be used as soon as it comes off CD.
-actions.single+=/frozen_orb,if=set_bonus.tier20_2pc&buff.fingers_of_frost.react<3
-# Freezing Rain Blizzard. While the normal Blizzard action is usually enough, right after Frozen Orb the actor will be getting a lot of FoFs, which might delay Blizzard to the point where we miss out on Freezing Rain. Therefore, if we are not at a risk of overcapping on FoF, use Blizzard before using Ice Lance.
-actions.single+=/blizzard,if=cast_time=0&active_enemies>1&buff.fingers_of_frost.react<3
-actions.single+=/frost_bomb,if=debuff.frost_bomb.remains<action.ice_lance.travel_time&buff.fingers_of_frost.react
+actions.single+=/frozen_orb,if=set_bonus.tier20_2pc&buff.fingers_of_frost.react<2
+actions.single+=/blizzard,if=active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2
 actions.single+=/ice_lance,if=buff.fingers_of_frost.react
 actions.single+=/ebonbolt
 actions.single+=/frozen_orb
-actions.single+=/ice_nova
 actions.single+=/comet_storm
+actions.single+=/ice_nova
 # Against low number of targets, Blizzard is used as a filler. Zann'esu buffed Blizzard is used only at 5 stacks.
 actions.single+=/blizzard,if=active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time
-# While Frozen Mass is active, we want to fish for Brain Freeze for the next Glacial Spike. Stop when Frozen Mass is about to run out and we wouldn't be able to cast Glacial Spike in time.
-actions.single+=/frostbolt,if=buff.frozen_mass.remains>execute_time+action.glacial_spike.execute_time+action.glacial_spike.travel_time&!buff.brain_freeze.react&talent.glacial_spike.enabled
-# Glacial Spike is generally used as it is available, unless we have T20 2pc. In that case, Glacial Spike is delayed when Frozen Mass is happening soon (in less than 10 s).
-actions.single+=/glacial_spike,if=cooldown.frozen_orb.remains>10|!set_bonus.tier20_2pc
+actions.single+=/glacial_spike,if=buff.brain_freeze.react
+actions.single+=/ray_of_frost
 actions.single+=/frostbolt
 actions.single+=/call_action_list,name=movement
-# While on the move, use instant Blizzard if available.
-actions.single+=/blizzard
-# Otherwise just use Ice Lance to do at least some damage.
+# Use Ice Lance to do at least some damage while moving.
 actions.single+=/ice_lance
 
 head=runebound_collar,id=152138,bonus_id=3612/1502
@@ -119,14 +105,14 @@ trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=ebonchill,id=128862,bonus_id=731,gem_id=155850/155846/155850,relic_id=3612:1512/3612:1512/3612:1512
 
 # Gear Summary
-# gear_ilvl=967.27
-# gear_stamina=59745
-# gear_intellect=65839
-# gear_crit_rating=10640
-# gear_haste_rating=12025
-# gear_mastery_rating=5632
-# gear_versatility_rating=9139
-# gear_armor=2389
+# gear_ilvl=100.13
+# gear_stamina=344
+# gear_intellect=297
+# gear_crit_rating=117
+# gear_haste_rating=147
+# gear_mastery_rating=78
+# gear_versatility_rating=143
+# gear_armor=109
 # set_bonus=tier20_2pc=1
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

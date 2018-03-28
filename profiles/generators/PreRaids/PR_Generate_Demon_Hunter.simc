@@ -1,11 +1,10 @@
 demonhunter="PR_Demon_Hunter_Havoc"
-level=110
+level=120
 race=night_elf
 timeofday=night
 role=attack
 position=back
 talents=2220311
-artifact=3:137407:133684:137407:0:1001:6:1002:3:1003:3:1005:3:1006:3:1010:1:1012:1:1013:1:1016:1:1330:1
 
 spec=havoc
 head=vigilant_bondbreaker_headdress,id=134446,bonus_id=1727/1492
@@ -29,14 +28,13 @@ save=PR_Demon_Hunter_Havoc.simc
 
 
 demonhunter="PR_Demon_Hunter_Vengeance"
-level=110
+level=120
 race=night_elf
 timeofday=night
 role=tank
 position=front
 talents=3323313
 spec=vengeance
-artifact=60:0:0:0:0:1096:1:1098:1:1099:3:1228:1:1229:3:1230:3:1231:3:1233:2:1234:3:1236:1:1328:1:1434:1
 
 head=hood_of_the_blind_executioner,id=137511
 neck=pendant_of_the_moon_temple,id=139605,enchant_id=5439

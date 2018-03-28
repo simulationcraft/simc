@@ -1,11 +1,11 @@
 paladin="PR_Paladin_Retribution"
 spec=retribution
-level=110
+level=120
 race=blood_elf
 role=attack
 position=back
 talents=1202102
-artifact=2:136717:137316:136717:0:40:1:41:3:42:3:47:1:50:3:51:3:53:6:350:1:353:1:1275:1
+artifact=2:0:0:0:0
 
 # Default consumables
 potion=old_war
@@ -38,46 +38,39 @@ actions.cooldowns=use_item,name=faulty_countermeasure,if=(buff.avenging_wrath.up
 actions.cooldowns+=/potion,if=(buff.bloodlust.react|buff.avenging_wrath.up|buff.crusade.up&buff.crusade.remains<25|target.time_to_die<=40)
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
-actions.cooldowns+=/arcane_torrent,if=(buff.crusade.up|buff.avenging_wrath.up)&holy_power=2&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)
-actions.cooldowns+=/lights_judgment
+actions.cooldowns+=/arcane_torrent,if=(buff.crusade.up|buff.avenging_wrath.up)&holy_power<=4
+actions.cooldowns+=/lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>15)&cooldown.judgment.remains>gcd&(cooldown.divine_hammer.remains>gcd|cooldown.blade_of_justice.remains>gcd)&(buff.avenging_wrath.up|buff.crusade.stack>=15)
 actions.cooldowns+=/shield_of_vengeance
-actions.cooldowns+=/avenging_wrath
-actions.cooldowns+=/crusade,if=holy_power>=3|((equipped.137048|race.blood_elf)&holy_power>=2)
+actions.cooldowns+=/avenging_wrath,if=buff.inquisition.up|!talent.inquisition.enabled
+actions.cooldowns+=/crusade,if=holy_power>=4
 
-actions.finishers=execution_sentence,if=spell_targets.divine_storm<=3&(cooldown.judgment.remains<gcd*4.25|debuff.judgment.remains>gcd*4.25)
-actions.finishers+=/divine_storm,if=debuff.judgment.up&variable.ds_castable&buff.divine_purpose.react
-actions.finishers+=/divine_storm,if=debuff.judgment.up&variable.ds_castable&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
-actions.finishers+=/justicars_vengeance,if=debuff.judgment.up&buff.divine_purpose.react&!equipped.137020
-actions.finishers+=/templars_verdict,if=debuff.judgment.up&buff.divine_purpose.react
-actions.finishers+=/templars_verdict,if=debuff.judgment.up&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd)
+actions.finishers=inquisition,if=buff.inquisition.down|buff.inquisition.remains<3&holy_power>=2
+actions.finishers+=/execution_sentence,if=spell_targets.divine_storm<=4
+actions.finishers+=/divine_storm,if=variable.ds_castable&buff.divine_purpose.react
+actions.finishers+=/divine_storm,if=variable.ds_castable&(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)
+actions.finishers+=/justicars_vengeance,if=buff.divine_purpose.react&!talent.righteous_verdict.enabled
+actions.finishers+=/templars_verdict,if=buff.divine_purpose.react&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd)
+actions.finishers+=/templars_verdict,if=(!talent.crusade.enabled|cooldown.crusade.remains>gcd*2)&(!talent.execution_sentence.enabled|cooldown.execution_sentence.remains>gcd*3)
 
-actions.generators=variable,name=ds_castable,value=spell_targets.divine_storm>=2|(buff.scarlet_inquisitors_expurgation.stack>=29&(equipped.144358&(dot.wake_of_ashes.ticking&time>10|dot.wake_of_ashes.remains<gcd))|(buff.scarlet_inquisitors_expurgation.stack>=29&(buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=15|cooldown.crusade.remains>15&!buff.crusade.up)|cooldown.avenging_wrath.remains>15)&!equipped.144358)
-actions.generators+=/call_action_list,name=finishers,if=(buff.crusade.up&buff.crusade.stack<15|buff.liadrins_fury_unleashed.up)|(talent.wake_of_ashes.enabled&cooldown.wake_of_ashes.remains<gcd*2)
-actions.generators+=/call_action_list,name=finishers,if=talent.execution_sentence.enabled&(cooldown.judgment.remains<gcd*4.25|debuff.judgment.remains>gcd*4.25)&cooldown.execution_sentence.up|buff.whisper_of_the_nathrezim.up&buff.whisper_of_the_nathrezim.remains<gcd*1.5
-actions.generators+=/judgment,if=dot.execution_sentence.ticking&dot.execution_sentence.remains<gcd*2&debuff.judgment.remains<gcd*2|set_bonus.tier21_4pc
-actions.generators+=/blade_of_justice,if=holy_power<=2&(set_bonus.tier20_2pc|set_bonus.tier20_4pc)
-actions.generators+=/divine_hammer,if=holy_power<=2&(set_bonus.tier20_2pc|set_bonus.tier20_4pc)
-actions.generators+=/wake_of_ashes,if=(!raid_event.adds.exists|raid_event.adds.in>15)&(holy_power<=0|holy_power=1&(cooldown.blade_of_justice.remains>gcd|cooldown.divine_hammer.remains>gcd)|holy_power=2&((cooldown.zeal.charges_fractional<=0.65|cooldown.crusader_strike.charges_fractional<=0.65)))
-actions.generators+=/blade_of_justice,if=holy_power<=3&!set_bonus.tier20_4pc
-actions.generators+=/divine_hammer,if=holy_power<=3&!set_bonus.tier20_4pc
-actions.generators+=/judgment
-actions.generators+=/call_action_list,name=finishers,if=buff.divine_purpose.up
-actions.generators+=/zeal,if=cooldown.zeal.charges_fractional>=1.65&holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|cooldown.divine_hammer.remains>gcd*2)&debuff.judgment.remains>gcd
-actions.generators+=/crusader_strike,if=cooldown.crusader_strike.charges_fractional>=1.65&holy_power<=4&(cooldown.blade_of_justice.remains>gcd*2|cooldown.divine_hammer.remains>gcd*2)&debuff.judgment.remains>gcd&(talent.greater_judgment.enabled|!set_bonus.tier20_4pc&talent.the_fires_of_justice.enabled)
-actions.generators+=/consecration
-actions.generators+=/hammer_of_justice,if=equipped.137065&target.health.pct>=75&holy_power<=4
+actions.generators=variable,name=ds_castable,value=spell_targets.divine_storm>=3
+actions.generators+=/call_action_list,name=finishers,if=holy_power>=5
+actions.generators+=/hammer_of_wrath
+actions.generators+=/wake_of_ashes,if=(!raid_event.adds.exists|raid_event.adds.in>20)&(holy_power<=0|holy_power=1&cooldown.blade_of_justice.remains>gcd)&(cooldown.crusade.remains>20|!talent.crusade.enabled)
+actions.generators+=/blade_of_justice,if=holy_power<=2|(holy_power=3&(!talent.hammer_of_wrath.enabled|cooldown.hammer_of_wrath.remains>gcd*2|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down)))
+actions.generators+=/judgment,if=holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|(holy_power=4&cooldown.blade_of_justice.remains>gcd*2&(!talent.hammer_of_wrath.enabled|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down)))
+actions.generators+=/consecration,if=holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|(holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2&(!talent.hammer_of_wrath.enabled|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down)))
+actions.generators+=/crusader_strike,if=cooldown.crusader_strike.charges_fractional>=1.75&(holy_power<=2|holy_power<=3&cooldown.blade_of_justice.remains>gcd*2|holy_power=4&cooldown.blade_of_justice.remains>gcd*2&cooldown.judgment.remains>gcd*2&cooldown.consecration.remains>gcd*2&(!talent.hammer_of_wrath.enabled|target.health.pct>=20&(buff.avenging_wrath.down|buff.crusade.down)))
 actions.generators+=/call_action_list,name=finishers
-actions.generators+=/zeal
 actions.generators+=/crusader_strike
 
 actions.opener=blood_fury
 actions.opener+=/berserking
-actions.opener+=/arcane_torrent,if=!set_bonus.tier20_2pc
-actions.opener+=/lights_judgment
-actions.opener+=/judgment
-actions.opener+=/blade_of_justice,if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up
-actions.opener+=/divine_hammer,if=equipped.137048|race.blood_elf|!cooldown.wake_of_ashes.up
+actions.opener+=/arcane_torrent
 actions.opener+=/wake_of_ashes
+actions.opener+=/inquisition,if=talent.wake_of_ashes.enabled
+actions.opener+=/arcane_torrent,if=holy_power<5
+actions.opener+=/blade_of_justice,if=holy_power<5
+actions.opener+=/judgment,if=holy_power<5
 
 head=crown_of_ash,id=137526,bonus_id=1727
 neck=understone_gorget,id=134491,bonus_id=1727,enchant=mark_of_the_hidden_satyr
@@ -96,12 +89,12 @@ trinket2=memento_of_angerboda,id=133644,bonus_id=1727/1492
 main_hand=ashbringer,id=120978,bonus_id=737,gem_id=136717/137316/136717,relic_id=3412/3412/3412
 
 # Gear Summary
-# gear_ilvl=174.67
-# gear_strength=433
-# gear_stamina=690
-# gear_crit_rating=357
-# gear_haste_rating=351
-# gear_mastery_rating=34
-# gear_versatility_rating=87
-# gear_armor=1060
+# gear_ilvl=159.20
+# gear_strength=384
+# gear_stamina=645
+# gear_crit_rating=317
+# gear_haste_rating=344
+# gear_mastery_rating=15
+# gear_versatility_rating=85
+# gear_armor=646
 # set_bonus=tier19p_plate_2pc=1

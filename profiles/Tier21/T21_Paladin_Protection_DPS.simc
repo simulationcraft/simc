@@ -5,13 +5,12 @@ race=blood_elf
 role=tank
 position=front
 talents=2112132
-artifact=49:0:0:0:0:1120:1:1121:4:1122:4:1123:4:1124:4:1125:4:1126:4:1127:4:1128:4:1129:4:1130:1:1131:1:1132:1:1133:1:1134:1:1135:1:1343:1:1378:1:1557:4:1558:1:1559:1:1560:24:1646:1
-crucible=1739:3:1778:3:1126:1:1121:2
+artifact=49:0:0:0:0
 
 # Default consumables
-potion=prolonged_power
-flask=flask_of_the_countless_armies
-food=lavish_suramar_feast
+potion=unbending_potion
+flask=flask_of_ten_thousand_scars
+food=seedbattered_fish_plate
 augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
@@ -113,12 +112,5 @@ main_hand=oathseeker,id=128867
 off_hand=truthguard,id=128866,bonus_id=736,gem_id=155851/152293/152024,relic_id=3612:1512/3612:1502/3612:1502
 
 # Gear Summary
-# gear_ilvl=965.38
-# gear_strength=36408
-# gear_stamina=60838
-# gear_crit_rating=12239
-# gear_haste_rating=13470
-# gear_mastery_rating=4575
-# gear_versatility_rating=6101
-# gear_armor=5273
+# gear_ilvl=105.88
 # set_bonus=tier20_2pc=1

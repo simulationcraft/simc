@@ -5,8 +5,7 @@ race=blood_elf
 role=tank
 position=front
 talents=2300131
-artifact=49:0:0:0:0:1120:1:1121:4:1122:4:1123:4:1124:4:1125:4:1126:4:1127:4:1128:4:1129:4:1130:1:1131:1:1132:1:1133:1:1134:1:1135:1:1343:1:1378:1:1557:4:1558:1:1559:1:1560:24:1646:1
-crucible=1739:1784:1124/1739:1784:1129/1739:1784:1129
+artifact=49:0:0:0:0
 
 # Default consumables
 potion=unbending_potion
@@ -116,12 +115,5 @@ main_hand=oathseeker,id=128867
 off_hand=truthguard,id=128866,gem_id=152043/152048/155846,relic_id=3612:1502/3612:1502/3612:1512
 
 # Gear Summary
-# gear_ilvl=972.25
-# gear_strength=34015
-# gear_stamina=61779
-# gear_crit_rating=5748
-# gear_haste_rating=20662
-# gear_mastery_rating=10639
-# gear_versatility_rating=3143
-# gear_armor=5260
+# gear_ilvl=100.13
 # set_bonus=tier21_2pc=1

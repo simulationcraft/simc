@@ -1,9 +1,6 @@
-# Tier19
-# Tier 19 Nighthold
-# * Ilvl Cap: 910
-# * Artifact Rank Cap: 52
-# * 3 Relics with max ilevel of 910
-# * No Legendaries
+# T22M
+# Tier 22 Uldir
+# * Ilvl Cap: TBD
 # * No items from World Bosses / World Quests / BoEs
 # * Mythic+ gear is permitted up to the Mythic+ item level cap
 # * No Random Gems (ie. Bonus RNG Gem Slots)
@@ -13,37 +10,37 @@
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 # Death Knight
-T19_Generate_Death_Knight.simc
+#T22_Generate_Death_Knight.simc
 
 # Demon Hunter
-T19_Generate_Demon_Hunter.simc
+#T22_Generate_Demon_Hunter.simc
 
 # Druid
-T19_Generate_Druid.simc
+#T22_Generate_Druid.simc
 
 # Hunter
-T19_Generate_Hunter.simc
+#T22_Generate_Hunter.simc
 
 # Mage
-T19_Generate_Mage.simc
+#T22_Generate_Mage.simc
 
 # Monk
-T19_Generate_Monk.simc
+#T22_Generate_Monk.simc
 
 # Paladin
-T19_Generate_Paladin.simc
+#T22_Generate_Paladin.simc
 
 # Priest
-T19_Generate_Priest.simc
+#T22_Generate_Priest.simc
 
 # Rogue
-T19_Generate_Rogue.simc
+#T22_Generate_Rogue.simc
 
 # Shaman
-T19_Generate_Shaman.simc
+#T22_Generate_Shaman.simc
 
 # Warlock
-T19_Generate_Warlock.simc
+#T22_Generate_Warlock.simc
 
 # Warrior
-T19_Generate_Warrior.simc
+#T22_Generate_Warrior.simc

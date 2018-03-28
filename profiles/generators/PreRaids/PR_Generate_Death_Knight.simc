@@ -1,11 +1,10 @@
 deathknight="PR_Death_Knight_Frost"
-level=110
+level=120
 race=blood_elf
 spec=frost
 role=attack
 position=back
 talents=3120032
-artifact=12:0:0:0:0:108:3:109:3:110:3:113:3:119:1:120:1:122:1:123:1:1090:3:1332:1
 
 head=crown_of_ash,id=137526,bonus_id=1492:1826
 neck=raven_filigree_pendant,id=134499,bonus_id=1492:1826,enchant=mark_of_the_claw
@@ -28,13 +27,12 @@ save=PR_Death_Knight_Frost.simc
 
 
 deathknight="PR_Death_Knight_Unholy"
-level=110
+level=120
 race=draenei
 spec=unholy
 role=attack
 position=back
 talents=1210023
-artifact=16:0:0:0:0:149:1:151:1:152:1:156:3:157:3:158:3:262:3:263:1:264:3:1333:1
 
 head=crown_of_ash,id=137526,bonus_id=1492:1826
 neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1492:1826,enchant=mark_of_the_hidden_satyr
