@@ -206,9 +206,12 @@ class profile_output_data_t
             m_strength,
             m_intellect,
             m_stamina,
-            m_avoidance,
-            m_leech,
-            m_speed;
+            m_avoidance_rating,
+            m_avoidance_pct,
+            m_leech_rating,
+            m_leech_pct,
+            m_speed_rating,
+            m_speed_pct;
 
 public:
   profile_output_data_t() : m_race ( RACE_NONE )
@@ -316,23 +319,41 @@ public:
   profile_output_data_t& stamina( double d )
   { m_stamina = d; return *this; }
 
-  double avoidance() const
-  { return m_avoidance; }
+  double avoidance_rating() const
+  { return m_avoidance_rating; }
 
-  profile_output_data_t& avoidance( double d )
-  { m_avoidance = d; return *this; }
+  profile_output_data_t& avoidance_rating( double d )
+  { m_avoidance_rating = d; return *this; }
 
-  double leech() const
-  { return m_leech; }
+  double avoidance_pct() const
+  { return m_avoidance_pct; }
 
-  profile_output_data_t& leech( double d )
-  { m_leech = d; return *this; }
+  profile_output_data_t& avoidance_pct( double d )
+  { m_avoidance_pct = d; return *this; }
 
-  double speed() const
-  { return m_speed; }
+  double leech_rating() const
+  { return m_leech_rating; }
 
-  profile_output_data_t& speed( double d )
-  { m_speed = d; return *this; }
+  profile_output_data_t& leech_rating( double d )
+  { m_leech_rating = d; return *this; }
+
+  double leech_pct() const
+  { return m_leech_pct; }
+
+  profile_output_data_t& leech_pct( double d )
+  { m_leech_pct = d; return *this; }
+
+  double speed_rating() const
+  { return m_speed_rating; }
+
+  profile_output_data_t& speed_rating( double d )
+  { m_speed_rating = d; return *this; }
+
+  double speed_pct() const
+  { return m_speed_pct; }
+
+  profile_output_data_t& speed_pct( double d )
+  { m_speed_pct = d; return *this; }
 };
 
 class profile_set_t

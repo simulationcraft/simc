@@ -1231,9 +1231,12 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
 
     // tertiary stats
 
-    profileset.output_data().avoidance( buffed_stats.avoidance );
-    profileset.output_data().leech( buffed_stats.leech );
-    profileset.output_data().speed( buffed_stats.run_speed );
+    profileset.output_data().avoidance_rating( player -> composite_avoidance_rating() );
+    profileset.output_data().avoidance_pct( buffed_stats.avoidance );
+    profileset.output_data().leech_rating( player -> composite_leech_rating() );
+    profileset.output_data().leech_pct( buffed_stats.leech );
+    profileset.output_data().speed_rating( player -> composite_spell_haste_rating() );
+    profileset.output_data().speed_pct( buffed_stats.run_speed );
   }
 }
 
@@ -1291,9 +1294,12 @@ void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput&
     ovr[ "stats" ][ "versatility_rating" ] = output_data.versatility_rating();
     ovr[ "stats" ][ "versatility_pct" ] = output_data.versatility_pct();
 
-    ovr[ "stats" ][ "avoidance" ] = output_data.avoidance();
-    ovr[ "stats" ][ "leech" ] = output_data.leech();
-    ovr[ "stats" ][ "speed" ] = output_data.speed();
+    ovr[ "stats" ][ "avoidance_rating" ] = output_data.avoidance_rating();
+    ovr[ "stats" ][ "avoidance_pct" ] = output_data.avoidance_pct();
+    ovr[ "stats" ][ "leech_rating" ] = output_data.leech_rating();
+    ovr[ "stats" ][ "leech_pct" ] = output_data.leech_pct();
+    ovr[ "stats" ][ "speed_rating" ] = output_data.speed_rating();
+    ovr[ "stats" ][ "speed_pct" ] = output_data.speed_pct();
   }
 }
 
