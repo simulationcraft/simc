@@ -5517,7 +5517,7 @@ void rogue_t::spend_combo_points( const action_state_t* state )
   if ( ! state -> action -> result_is_hit( state -> result ) )
     return;
 
-  int max_spend = (int)std::min( resources.current[ RESOURCE_COMBO_POINT ], consume_cp_max() );
+  double max_spend = std::min( resources.current[ RESOURCE_COMBO_POINT ], consume_cp_max() );
 
   if ( legendary.denial_of_the_halfgiants && buffs.shadow_blades -> up() )
   {
