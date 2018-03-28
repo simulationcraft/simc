@@ -2116,14 +2116,6 @@ void priest_t::create_buffs_shadow()
   buffs.overwhelming_darkness = new buffs::overwhelming_darkness_t( *this );
 
   // Talents
-  buffs.power_infusion = make_buff<haste_buff_t>( this, "power_infusion", talents.power_infusion )
-                             ->add_invalidate( CACHE_SPELL_HASTE )
-                             ->add_invalidate( CACHE_HASTE );
-  buffs.twist_of_fate = make_buff( this, "twist_of_fate", talents.twist_of_fate )
-                            ->set_duration( talents.twist_of_fate->effectN( 1 ).trigger()->duration() )
-                            ->set_default_value( talents.twist_of_fate->effectN( 1 ).trigger()->effectN( 2 ).percent() )
-                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                            ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   buffs.void_torrent           = make_buff( this, "void_torrent", talents.void_torrent );
   buffs.surrender_to_madness   = make_buff( this, "surrender_to_madness", talents.surrender_to_madness )
                                          ->set_stack_change_callback( [ this ] ( buff_t*, int, int after )

@@ -1133,6 +1133,16 @@ void priest_t::create_buffs()
 {
   base_t::create_buffs();
 
+  // Shared talent buffs
+
+  buffs.power_infusion = make_buff<haste_buff_t>( this, "power_infusion", talents.power_infusion )
+                             ->add_invalidate( CACHE_SPELL_HASTE )
+                             ->add_invalidate( CACHE_HASTE );
+  buffs.twist_of_fate = make_buff( this, "twist_of_fate", talents.twist_of_fate )
+                            ->set_duration( talents.twist_of_fate->effectN( 1 ).trigger()->duration() )
+                            ->set_default_value( talents.twist_of_fate->effectN( 1 ).trigger()->effectN( 2 ).percent() )
+                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                            ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   create_buffs_shadow();
   create_buffs_discipline();
   create_buffs_holy();
