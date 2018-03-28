@@ -1,0 +1,80 @@
+demonhunter="T21_Demon_Hunter_Havoc"
+spec=havoc
+level=110
+race=blood_elf
+role=attack
+position=back
+talents=3310333
+artifact=3:0:0:0:0
+
+# Default consumables
+potion=prolonged_power
+flask=seventh_demon
+food=the_hungry_magister
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/augmentation
+actions.precombat+=/food
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/metamorphosis,if=!(talent.demon_reborn.enabled&(talent.demonic.enabled|set_bonus.tier21_4pc))
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/pick_up_fragment
+actions+=/consume_magic
+actions+=/nemesis
+actions+=/metamorphosis
+actions+=/vengeful_retreat
+actions+=/fel_rush
+actions+=/fel_barrage
+actions+=/dark_slash
+actions+=/throw_glaive
+actions+=/felblade
+actions+=/immolation_aura
+actions+=/death_sweep
+actions+=/fel_eruption
+actions+=/blade_dance
+actions+=/eye_beam
+actions+=/annihilation
+actions+=/chaos_strike
+actions+=/demons_bite
+actions+=/potion
+
+head=raddons_cascading_eyes,id=137061,bonus_id=3630
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+shoulders=felreaper_spaulders,id=152123,bonus_id=3612/1502
+back=felreaper_drape,id=152119,bonus_id=3612/1502,enchant=binding_of_agility
+chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
+wrists=fiendish_logisticians_wristwraps,id=151992,bonus_id=3612/1502
+hands=felreaper_gloves,id=152120,bonus_id=3612/1502
+waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
+legs=felreaper_leggings,id=152122,bonus_id=3612/1502
+feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
+finger1=anger_of_the_halfgiants,id=137038,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
+finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
+trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
+trinket2=golganneths_vitality,id=154174,bonus_id=3997
+main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=155848/155852/155848/0,relic_id=3612:1512/3612:1512/3612:1512
+off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0
+
+# Gear Summary
+# gear_ilvl=100.13
+# gear_agility=219
+# gear_stamina=343
+# gear_crit_rating=419
+# gear_haste_rating=78
+# gear_mastery_rating=98
+# gear_versatility_rating=58
+# gear_armor=177
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1
