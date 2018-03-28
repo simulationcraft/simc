@@ -297,7 +297,6 @@ struct rogue_t : public player_t
     cooldown_t* cloak_of_shadows;
     cooldown_t* riposte;
     cooldown_t* grappling_hook;
-    cooldown_t* cannonball_barrage;
     cooldown_t* marked_for_death;
     cooldown_t* death_from_above;
     cooldown_t* weaponmaster;
@@ -568,7 +567,6 @@ struct rogue_t : public player_t
     cooldowns.between_the_eyes         = get_cooldown( "between_the_eyes"         );
     cooldowns.blind                    = get_cooldown( "blind"                    );
     cooldowns.gouge                    = get_cooldown( "gouge"                    );
-    cooldowns.cannonball_barrage       = get_cooldown( "cannon_ball_barrage"      );
     cooldowns.cloak_of_shadows         = get_cooldown( "cloak_of_shadows"         );
     cooldowns.death_from_above         = get_cooldown( "death_from_above"         );
     cooldowns.grappling_hook           = get_cooldown( "grappling_hook"           );
@@ -2392,36 +2390,6 @@ struct blade_flurry_t : public rogue_attack_t
     {
       p() -> buffs.shivarran_symmetry -> trigger();
     }
-  }
-};
-
-// Cannonball Barrage =======================================================
-
-struct cannonball_barrage_damage_t : public rogue_attack_t
-{
-  cannonball_barrage_damage_t( rogue_t* p ) :
-    rogue_attack_t( "cannonball_barrage_damage", p, p -> find_spell( 185779 ) )
-  {
-    aoe = -1;
-    background = true;
-  }
-
-  timespan_t travel_time() const override
-  {
-    // 01/16/2018 - Spell data has 0.6y/s velocity but because the projectiles spawn above the target, this doesn't matter much
-    //              Logs show it as about a 1s delay before the first tick.
-    return timespan_t::from_seconds(1);
-  }
-};
-
-struct cannonball_barrage_t : public rogue_attack_t
-{
-  cannonball_barrage_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "cannonball_barrage", p, p -> talent.cannonball_barrage, options_str )
-  {
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    dot_duration = base_tick_time * 6; // 01/16/2018 - Manually adjust to avoid partial last tick due to the 330ms tick time with 2s duration
-    tick_action = new cannonball_barrage_damage_t( p );
   }
 };
 
@@ -5467,7 +5435,6 @@ void rogue_t::trigger_true_bearing( const action_state_t* state )
   cooldowns.vanish -> adjust( v, false );
   // Talents
   cooldowns.grappling_hook -> adjust( v, false );
-  cooldowns.cannonball_barrage -> adjust( v, false );
   cooldowns.killing_spree -> adjust( v, false );
   cooldowns.marked_for_death -> adjust( v, false );
   cooldowns.death_from_above -> adjust( v, false );
@@ -5485,7 +5452,6 @@ void rogue_t::trigger_restless_blades( const action_state_t* state )
   cooldowns.vanish -> adjust( v, false );
   // Talents
   cooldowns.grappling_hook -> adjust( v, false );
-  cooldowns.cannonball_barrage -> adjust( v, false );
   cooldowns.killing_spree -> adjust( v, false );
   cooldowns.marked_for_death -> adjust( v, false );
   cooldowns.death_from_above -> adjust( v, false );
@@ -6157,7 +6123,6 @@ void rogue_t::init_action_list()
       else
         cds -> add_action( racial_actions[i] );
     }
-    cds -> add_talent( this, "Cannonball Barrage", "if=spell_targets.cannonball_barrage>=1" );
     cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&energy.deficit>0" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)" );
     cds -> add_action( this, "Sprint", "if=!talent.death_from_above.enabled&equipped.thraxis_tricksy_treads&!variable.ss_useable" );
@@ -6304,7 +6269,6 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "backstab"            ) return new backstab_t           ( this, options_str );
   if ( name == "between_the_eyes"    ) return new between_the_eyes_t   ( this, options_str );
   if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
-  if ( name == "cannonball_barrage"  ) return new cannonball_barrage_t ( this, options_str );
   if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( this, options_str );
   if ( name == "death_from_above"    ) return new death_from_above_t   ( this, options_str );
   if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
