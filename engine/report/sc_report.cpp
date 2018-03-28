@@ -396,15 +396,15 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
-    max_ilevel_allowed        = 400;
+    max_ilevel_allowed        = 400; // TBD
     max_weapon_ilevel_allowed = 400;
     tier_name                 = "PR";
   }
   else if ( p.report_information.save_str.find( "T21" ) != std::string::npos )
   {
     legendary_items_allowed      = 2;
-    max_ilevel_allowed           = 1000;
-    max_weapon_ilevel_allowed    = 999;
+    max_ilevel_allowed           = 400; // TBD
+    max_weapon_ilevel_allowed    = 400;
     tier_name                    = "T21";
   }
   else if ( p.report_information.save_str.find( "T22" ) != std::string::npos )
