@@ -5205,9 +5205,6 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( !buffs.blade_flurry -> check() )
     return;
 
-  if ( !state -> action -> weapon )
-    return;
-
   if ( !state -> action -> result_is_hit( state -> result ) )
     return;
 
