@@ -234,10 +234,9 @@ struct rogue_t : public player_t
     // Talents
     // Shared
     haste_buff_t* alacrity;
-    buff_t* death_from_above;
-    buff_t* elaborate_planning;
     buff_t* subterfuge;
     // Assassination
+    buff_t* elaborate_planning;
     buff_t* dispatch;
     buff_t* master_assassin;
     buff_t* master_assassin_aura;
@@ -249,6 +248,7 @@ struct rogue_t : public player_t
     buff_t* slice_and_dice;
     // Subtlety
     buff_t* master_of_shadows;
+    buff_t* death_from_above;
 
 
     // Legendaries
@@ -408,70 +408,59 @@ struct rogue_t : public player_t
   struct talents_t
   {
     // Shared
-    const spell_data_t* elaborate_planning;
-
-    // Tier 2 - Level 30
     const spell_data_t* nightstalker;
     const spell_data_t* subterfuge;
-    const spell_data_t* shadow_focus;
 
-    // Tier 3 - Level 45
     const spell_data_t* vigor;
     const spell_data_t* deeper_stratagem;
     const spell_data_t* marked_for_death;
 
-    // Tier 6 - Level 90
     const spell_data_t* alacrity;
 
-    // Tier 7 - Level 100
-    const spell_data_t* death_from_above;
-
-
-    // Specifics
-
-    // Tier 1 - Level 15
+    // Assassination
     const spell_data_t* master_poisoner;
+    const spell_data_t* elaborate_planning;
     const spell_data_t* dispatch;
 
-    const spell_data_t* ghostly_strike;
-    const spell_data_t* swordmaster;
-    const spell_data_t* quick_draw;
-
-    const spell_data_t* weaponmaster;
-    const spell_data_t* find_weakness;
-    const spell_data_t* gloomblade;
-
-    // Tier 2 - Level 30
-    const spell_data_t* hit_and_run;
     const spell_data_t* master_assassin;
 
-    // Tier 4 - Level 60
     const spell_data_t* thuggee;
     const spell_data_t* internal_bleeding;
 
-    // Tier 5 - Level 75
-    const spell_data_t* dirty_tricks;
-
-    // Tier 6 - Level 90
     const spell_data_t* venom_rush;
     const spell_data_t* toxic_blade;
     const spell_data_t* exsanguinate;
 
-    const spell_data_t* cannonball_barrage;
-    const spell_data_t* killing_spree;
-
-    const spell_data_t* enveloping_shadows;
-    const spell_data_t* dark_shadow;
-
-    // Tier 7 - Level 100
     const spell_data_t* poison_bomb;
     const spell_data_t* hidden_blades;
     const spell_data_t* crimson_tempest;
 
+    // Outlaw
+    const spell_data_t* ghostly_strike;
+    const spell_data_t* swordmaster;
+    const spell_data_t* quick_draw;
+
+    const spell_data_t* hit_and_run;
+
+    const spell_data_t* dirty_tricks;
+
     const spell_data_t* loaded_dice;
     const spell_data_t* slice_and_dice;
 
+    const spell_data_t* killing_spree;
+
+    // Subtlety
+    const spell_data_t* weaponmaster;
+    const spell_data_t* find_weakness;
+    const spell_data_t* gloomblade;
+
+    const spell_data_t* shadow_focus;
+
+    const spell_data_t* enveloping_shadows;
+    const spell_data_t* dark_shadow;
+
     const spell_data_t* master_of_shadows;
+    const spell_data_t* death_from_above;
   } talent;
 
   // Masteries
@@ -6753,21 +6742,22 @@ void rogue_t::init_spells()
   spell.expose_armor                  = find_spell( 8647 );
 
   // Talents
+  // Shared
+  talent.nightstalker       = find_talent_spell( "Nightstalker" );
+  talent.subterfuge         = find_talent_spell( "Subterfuge" );
+
   talent.vigor              = find_talent_spell( "Vigor" );
   talent.deeper_stratagem   = find_talent_spell( "Deeper Stratagem" );
   talent.marked_for_death   = find_talent_spell( "Marked for Death" );
 
   talent.alacrity           = find_talent_spell( "Alacrity" );
-  talent.death_from_above   = find_talent_spell( "Death from Above" );
 
-  talent.nightstalker       = find_talent_spell( "Nightstalker" );
-  talent.subterfuge         = find_talent_spell( "Subterfuge" );
-  talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
-  talent.master_assassin    = find_talent_spell( "Master Assassin" );
-
+  // Assassination
   talent.master_poisoner    = find_talent_spell( "Master Poisoner" );
   talent.elaborate_planning = find_talent_spell( "Elaborate Planning" );
   talent.dispatch           = find_talent_spell( "Dispatch" );
+
+  talent.master_assassin    = find_talent_spell( "Master Assassin" );
 
   talent.thuggee            = find_talent_spell( "Thuggee" );
   talent.internal_bleeding  = find_talent_spell( "Internal Bleeding" );
@@ -6780,29 +6770,32 @@ void rogue_t::init_spells()
   talent.hidden_blades      = find_talent_spell( "Hidden Blades" );
   talent.crimson_tempest    = find_talent_spell( "Crimson Tempest" );
 
-  talent.ghostly_strike     = find_talent_spell( "Ghostly Strike" );
+  // Outlaw
   talent.swordmaster        = find_talent_spell( "Swordmaster" );
   talent.quick_draw         = find_talent_spell( "Quick Draw" );
+  talent.ghostly_strike     = find_talent_spell( "Ghostly Strike" );
+
+  talent.hit_and_run        = find_talent_spell( "Hit and Run" );
 
   talent.dirty_tricks       = find_talent_spell( "Dirty Tricks" );
-
-  talent.cannonball_barrage = find_talent_spell( "Cannonball Barrage" );
-  talent.killing_spree      = find_talent_spell( "Killing Spree" );
 
   talent.loaded_dice        = find_talent_spell( "Loaded Dice" );
   talent.slice_and_dice     = find_talent_spell( "Slice and Dice" );
 
+  talent.killing_spree      = find_talent_spell( "Killing Spree" );
+
+  // Subtlety
   talent.weaponmaster       = find_talent_spell( "Weaponmaster" );
   talent.find_weakness      = find_talent_spell( "Find Weakness" );
   talent.gloomblade         = find_talent_spell( "Gloomblade" );
+
+  talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
 
   talent.enveloping_shadows = find_talent_spell( "Enveloping Shadows" );
   talent.dark_shadow        = find_talent_spell( "Dark Shadow" );
 
   talent.master_of_shadows  = find_talent_spell( "Master of Shadows" );
-
-  talent.hit_and_run        = find_talent_spell( "Hit and Run" );
-
+  talent.death_from_above   = find_talent_spell( "Death from Above" );
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
@@ -7031,23 +7024,11 @@ void rogue_t::create_buffs()
   buffs.alacrity                = make_buff<haste_buff_t>( this, "alacrity", find_spell( 193538 ) );
   buffs.alacrity -> set_default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
                  -> set_chance( talent.alacrity -> ok() );
-  buffs.death_from_above        = make_buff( this, "death_from_above", spell.death_from_above )
-                                  // Note: Duration is set to 1.475s (+/- gauss RNG) on action execution in order to match the current model
-                                  // and then let it be trackable in the APL. The driver will also expire this buff when the finisher is scheduled.
-                                  //.duration( timespan_t::from_seconds( 1.475 ) )
-                                  -> set_quiet( true );
+  buffs.subterfuge              = new buffs::subterfuge_t( this );
+  // Assassination
   buffs.elaborate_planning      = make_buff( this, "elaborate_planning", talent.elaborate_planning -> effectN( 1 ).trigger() )
                                   -> set_default_value( 1.0 + talent.elaborate_planning -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
                                   -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.subterfuge              = new buffs::subterfuge_t( this );
-  buffs.hidden_blades_driver    = make_buff( this, "hidden_blades_driver", talent.hidden_blades )
-                                  -> set_period( talent.hidden_blades -> effectN( 1 ).period() )
-                                  -> set_quiet( true )
-                                  -> set_tick_callback( [this]( buff_t*, int, const timespan_t& ) { buffs.hidden_blades -> trigger(); } )
-                                  -> set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
-  buffs.hidden_blades           = make_buff( this, "hidden_blades", find_spell( 270070 ) )
-                                  -> set_default_value( find_spell( 270070 ) -> effectN( 1 ).percent() );
-  // Assassination
   buffs.dispatch                = make_buff( this, "dispatch", talent.dispatch )
                                   -> set_duration( timespan_t::from_seconds( 10.0 ) ); // I see no buff spell in spell data yet, hardcode for now.
   buffs.master_assassin_aura    = make_buff(this, "master_assassin_aura", talent.master_assassin)
@@ -7057,15 +7038,22 @@ void rogue_t::create_buffs()
                                   -> set_default_value( spec.master_assassin->effectN( 1 ).percent() )
                                   -> set_duration( timespan_t::from_seconds( talent.master_assassin->effectN( 1 ).base_value() ) )
                                   -> add_invalidate( CACHE_CRIT_CHANCE );
+  buffs.hidden_blades_driver    = make_buff( this, "hidden_blades_driver", talent.hidden_blades )
+                                  -> set_period( talent.hidden_blades -> effectN( 1 ).period() )
+                                  -> set_quiet( true )
+                                  -> set_tick_callback( [this]( buff_t*, int, const timespan_t& ) { buffs.hidden_blades -> trigger(); } )
+                                  -> set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
+  buffs.hidden_blades           = make_buff( this, "hidden_blades", find_spell( 270070 ) )
+                                  -> set_default_value( find_spell( 270070 ) -> effectN( 1 ).percent() );
   // Outlaw
-  buffs.killing_spree           = make_buff( this, "killing_spree", talent.killing_spree )
-                                  -> set_duration( talent.killing_spree -> duration() );
   buffs.loaded_dice             = make_buff( this, "loaded_dice", talent.loaded_dice -> effectN( 1 ).trigger() );
   buffs.slice_and_dice          = make_buff( this, "slice_and_dice", talent.slice_and_dice )
                                   -> set_period( timespan_t::zero() )
                                   -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                                   -> set_affects_regen( true )
                                   -> add_invalidate( CACHE_ATTACK_SPEED );
+  buffs.killing_spree           = make_buff( this, "killing_spree", talent.killing_spree )
+                                  -> set_duration( talent.killing_spree -> duration() );
   // Subtlety
   buffs.master_of_shadows       = make_buff( this, "master_of_shadows", find_spell( 196980 ) )
                                   -> set_period( find_spell( 196980 ) -> effectN( 1 ).period() )
@@ -7073,6 +7061,11 @@ void rogue_t::create_buffs()
                                     resource_gain( RESOURCE_ENERGY, find_spell( 196980 ) -> effectN( 1 ).base_value(), gains.master_of_shadows );
                                   } )
                                   -> set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.death_from_above        = make_buff( this, "death_from_above", spell.death_from_above )
+                                  // Note: Duration is set to 1.475s (+/- gauss RNG) on action execution in order to match the current model
+                                  // and then let it be trackable in the APL. The driver will also expire this buff when the finisher is scheduled.
+                                  //.duration( timespan_t::from_seconds( 1.475 ) )
+                                  -> set_quiet( true );
 
 
   // Legendaries
