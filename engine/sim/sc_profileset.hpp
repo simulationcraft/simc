@@ -524,7 +524,7 @@ void create_options( sim_t* sim );
 
 statistical_data_t collect( const extended_sample_data_t& c );
 statistical_data_t metric_data( const player_t* player, scale_metric_e metric );
-void save_output_data( profile_set_t* profileset, const player_t* parent_player, const player_t* player, std::string option );
+void save_output_data( profile_set_t& profileset, const player_t* parent_player, const player_t* player, std::string option );
 void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput& ovr );
 
 // Filter non-profilest options into a new control object, caller is responsible for deleting the
