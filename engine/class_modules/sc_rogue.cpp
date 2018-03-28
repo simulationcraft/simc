@@ -316,7 +316,6 @@ struct rogue_t : public player_t
     gain_t* venom_rush;
     gain_t* venomous_wounds;
     gain_t* venomous_wounds_death;
-    gain_t* vitality;
     gain_t* relentless_strikes;
     gain_t* shadow_satyrs_walk;
     gain_t* the_empty_crown;
@@ -359,11 +358,11 @@ struct rogue_t : public player_t
     // Outlaw
     const spell_data_t* blade_flurry;
     const spell_data_t* combat_potency;
+    const spell_data_t* combat_potency_reg;
     const spell_data_t* restless_blades;
     const spell_data_t* roll_the_bones;
     const spell_data_t* ruthlessness;
     const spell_data_t* saber_slash;
-    const spell_data_t* vitality;
 
     // Subtlety
     const spell_data_t* deepening_shadows;
@@ -5102,9 +5101,9 @@ void rogue_t::trigger_combat_potency( const action_state_t* state )
     return;
 
   double chance = spec.combat_potency -> effectN( 1 ).percent();
-  // Looks like CP proc chance is normalized by weapon speed again
+  // Looks like CP proc chance is normalized by weapon speed (i.e. penalty for using daggers)
   if ( state -> action != active_main_gauche )
-    chance *= state -> action -> weapon -> swing_time.total_seconds() / 1.4;
+    chance *= state -> action -> weapon -> swing_time.total_seconds() / 2.6;
   if ( ! rng().roll( chance ) )
     return;
 
@@ -6639,7 +6638,7 @@ void rogue_t::init_base_stats()
   resources.base[ RESOURCE_ENERGY ] += spec.assassination_rogue -> effectN( 5 ).base_value();
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
-  base_energy_regen_mods = 1.0 + spec.vitality -> effectN( 1 ).percent();
+  base_energy_regen_mods = 1.0 + spec.combat_potency_reg -> effectN( 1 ).percent();
   base_energy_regen_mods *= 1.0 + talent.vigor -> effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.0 );
@@ -6691,12 +6690,12 @@ void rogue_t::init_spells()
 
   // Outlaw
   spec.blade_flurry         = find_specialization_spell( "Blade Flurry" );
-  spec.combat_potency       = find_specialization_spell( "Combat Potency" );
+  spec.combat_potency       = find_specialization_spell( 35551 );
+  spec.combat_potency_reg   = find_specialization_spell( 61329 );
   spec.restless_blades      = find_specialization_spell( "Restless Blades" );
   spec.roll_the_bones       = find_specialization_spell( "Roll the Bones" );
   spec.ruthlessness         = find_specialization_spell( "Ruthlessness" );
   spec.saber_slash          = find_specialization_spell( "Saber Slash" );
-  spec.vitality             = find_specialization_spell( "Vitality" );
 
   // Subtlety
   spec.deepening_shadows    = find_specialization_spell( "Deepening Shadows" );
