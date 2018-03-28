@@ -396,22 +396,9 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
-    max_ilevel_allowed        = 875;
-    max_weapon_ilevel_allowed = 903;
+    max_ilevel_allowed        = 400;
+    max_weapon_ilevel_allowed = 400;
     tier_name                 = "PR";
-  }
-  else if ( p.report_information.save_str.find( "T19" ) != std::string::npos )
-  {
-    max_ilevel_allowed           = 910;
-    max_weapon_ilevel_allowed    = 933;
-    tier_name                    = "T19";
-  }
-  else if ( p.report_information.save_str.find( "T20" ) != std::string::npos )
-  {
-    legendary_items_allowed      = 2;
-    max_ilevel_allowed           = 940;
-    max_weapon_ilevel_allowed    = 960;
-    tier_name                    = "T20";
   }
   else if ( p.report_information.save_str.find( "T21" ) != std::string::npos )
   {
@@ -419,6 +406,13 @@ bool report::check_gear_ilevel( player_t& p, sim_t& sim )
     max_ilevel_allowed           = 1000;
     max_weapon_ilevel_allowed    = 999;
     tier_name                    = "T21";
+  }
+  else if ( p.report_information.save_str.find( "T22" ) != std::string::npos )
+  {
+    legendary_items_allowed      = 0;
+    max_ilevel_allowed           = 400; // TBD
+    max_weapon_ilevel_allowed    = 999;
+    tier_name                    = "T22";
   }
   else
   {
@@ -561,25 +555,14 @@ bool report::check_artifact_points( const player_t& p, sim_t& sim )
 
   if ( p.report_information.save_str.find( "PR" ) != std::string::npos )
   {
-    max_purchased = 19;
+    max_purchased = 0;
     tier_name     = "PR";
-  }
-  else if ( p.report_information.save_str.find( "T19" ) != std::string::npos )
-  {
-    max_purchased = 52;
-    tier_name     = "T19";
-  }
-  else if ( p.report_information.save_str.find( "T20" ) != std::string::npos )
-  {
-    max_purchased = 75;
-    tier_name     = "T20";
-    max_crucible  = 9;
   }
   else if ( p.report_information.save_str.find( "T21" ) != std::string::npos )
   {
-    max_purchased = 75;
+    max_purchased = 0;
     tier_name     = "T21";
-    max_crucible  = 9;
+    max_crucible  = 0;
   }
   else
   {
