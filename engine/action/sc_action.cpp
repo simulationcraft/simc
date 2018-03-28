@@ -1427,8 +1427,7 @@ void action_t::execute()
 #ifndef NDEBUG
   if ( ! initialized )
   {
-    sim -> errorf( "action_t::execute: action %s from player %s is not initialized.\n", name(), player -> name() );
-    assert( 0 );
+    throw std::runtime_error( fmt::format("action_t::execute: action {} from player {} is not initialized.\n", name(), player -> name() ) );
   }
 #endif
 
