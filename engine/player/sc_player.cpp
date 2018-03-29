@@ -11563,7 +11563,7 @@ namespace
 {
 bool tank_container_type( const player_t* for_actor, int target_statistics_level )
 {
-  if ( for_actor->primary_role() == ROLE_TANK && for_actor->level() == MAX_LEVEL )
+  if ( true ) // FIXME: cannot use virtual function calls here! if ( for_actor->primary_role() == ROLE_TANK )
   {
     return for_actor->sim->statistics_level < target_statistics_level;
   }
@@ -11956,7 +11956,7 @@ void player_collected_data_t::collect_data( const player_t& p )
 
   // Health Change Calculations - only needed for tanks
   double tank_metric = 0;
-  if ( !p.is_pet() && p.primary_role() == ROLE_TANK && p.level() == MAX_LEVEL )
+  if ( !p.is_pet() && p.primary_role() == ROLE_TANK )
   {
     double tmi       = 0;  // TMI result
     double etmi      = 0;  // ETMI result
