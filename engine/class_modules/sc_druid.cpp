@@ -6446,9 +6446,11 @@ struct starfall_t : public druid_spell_t
 
         if (p()->buff.oneths_overconfidence->up()) // benefit tracking
             p()->buff.oneths_overconfidence->decrement();
-
         p()->buff.oneths_intuition->trigger();
-        p()->buff.stellar_empowerment->trigger();
+        timespan_t duration = p()->buff.stellar_empowerment->buff_duration;
+        if (p()->bugs)
+            duration = timespan_t::from_millis(rng().range(9000, 10000));
+        p()->buff.stellar_empowerment->trigger(1,p()->buff.stellar_empowerment->data().effectN(1).percent(),1,duration);
     }
 };
 
