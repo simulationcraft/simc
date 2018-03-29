@@ -903,6 +903,8 @@ const help_box_t help_boxes[] = {
      "iteration. Calculated from TMI and MSD values."},
     {"Dynamic Buffs",
      "Temporary buffs received during combat, perhaps multiple times."},
+    {"Buff Benefit",
+     "The percentage of times the buff had a actual benefit for its mainly intended purpose, eg. damage buffed / spell executes."},
     {"Glance%", "Percentage of executes that resulted in glancing blows."},
     {"Block%", "Percentage of executes that resulted in blocking blows."},
     {"Id", "Associated spell-id for this ability."},
