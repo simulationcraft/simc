@@ -1446,9 +1446,7 @@ struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
-
-    // disabled for now since they'll probably institute this behavior later.
-    // druid.cooldown.warrior_of_elune -> start();
+    druid.cooldown.warrior_of_elune -> start();
   }
 };
 
@@ -6651,6 +6649,8 @@ struct warrior_of_elune_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
+
+    p()->cooldown.warrior_of_elune->reset(false);
 
     p() -> buff.warrior_of_elune -> trigger( p() -> talent.warrior_of_elune -> max_stacks() );
   }
