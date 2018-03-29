@@ -1325,7 +1325,6 @@ struct compare_name
 
 sim_t::sim_t() :
   event_mgr( this ),
-  out_std( *this, &std::cout, sim_ostream_t::no_close() ),
   out_log( *this, &std::cout, sim_ostream_t::no_close() ),
   out_debug(*this, &std::cout, sim_ostream_t::no_close() ),
   debug( false ),
@@ -1709,12 +1708,11 @@ void sim_t::combat_begin()
     o -> open( output_file_str );
     if ( o -> is_open() )
     {
-      out_std = o;
       out_debug = o;
       out_log = o;
 
-      out_std.printf( "------ Iteration #%i ------", current_iteration + 1 );
-      std::flush( *out_std.get_stream() );
+      fmt::print( "------ Iteration #{} ------", current_iteration + 1 );
+      std::fflush( stdout );
     }
     else
     {
@@ -1847,9 +1845,6 @@ void sim_t::combat_end()
   event_mgr.flush();
 
   analyze_error();
-
-  if ( debug_each && ! canceled )
-    static_cast<io::ofstream*>(out_std.get_stream()) -> close();
 
   if ( debug_seed.size() > 0 )
   {
@@ -3482,7 +3477,6 @@ void sim_t::setup( sim_control_t* c )
     o -> open( output_file_str );
     if ( o -> is_open() )
     {
-      out_std = o;
       out_debug = o;
       out_log = o;
     }
@@ -3789,12 +3783,11 @@ void sim_t::enable_debug_seed()
     o -> open( fname );
     if ( o -> is_open() )
     {
-      out_std = o;
       out_debug = o;
       out_log = o;
 
-      out_std.printf( "------ Iteration #%i (seed=%llu) ------", current_iteration, seed );
-      std::flush( *out_std.get_stream() );
+      fmt::print( "------ Iteration #{} (seed={}) ------", current_iteration, seed );
+      std::fflush( stdout );
     }
     else
     {
@@ -3830,7 +3823,6 @@ void sim_t::disable_debug_seed()
   {
     debug = false;
     log = 0;
-    static_cast<io::ofstream*>(out_std.get_stream()) -> close();
   }
 }
 

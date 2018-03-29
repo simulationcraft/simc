@@ -342,8 +342,7 @@ void progress_bar_t::output( bool finished )
   s << status;
   s << terminator;
 
-  std::cout << s.str();
-  fflush( stdout );
+  std::cout << s.str() << std::flush;
 }
 
 void progress_bar_t::progress()

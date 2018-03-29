@@ -45,8 +45,7 @@ struct player_ready_event_t : public player_event_t
         p()->schedule_ready( x, true );
 
         // Waiting Debug
-        if ( sim().debug )
-          sim().out_debug.print( "{} is waiting for {} resource={}", p()->name(), x,
+        sim().print_debug( "{} is waiting for {} resource={}", p()->name(), x,
                                   p()->resources.current[ p()->primary_resource() ] );
       }
       else

@@ -97,7 +97,7 @@ struct elixir_t : public action_t
       }
     }
 
-    if ( sim -> log ) sim -> out_log.print( "{} uses elixir {}.", p.name(), data -> name );
+    sim->print_log( "{} uses elixir {}.", p.name(), data -> name );
 
   }
   virtual bool ready() override
@@ -173,7 +173,7 @@ struct mana_potion_t : public action_t
 
   virtual void execute() override
   {
-    if ( sim -> log ) sim -> out_log.print( "{} uses Mana potion", player -> name() );
+    sim -> print_log( "{} uses Mana potion", player -> name() );
     double gain = rng().range( min, max );
     player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_potion );
     player -> potion_used = true;

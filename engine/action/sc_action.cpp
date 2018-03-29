@@ -190,8 +190,7 @@ struct action_execute_event_t : public player_event_t
       player_event_t( *a->player, time_to_execute ), action( a ),
         execute_state( state )
   {
-    if ( sim().debug )
-      sim().out_debug.print( "New Action Execute Event: {} {} {} (target={}, marker={})",
+    sim().print_debug( "New Action Execute Event: {} {} {} (target={}, marker={})",
                   p() -> name(), a -> name(), time_to_execute,
                   ( state ) ? state -> target -> name() : a -> target -> name(),
                   ( a -> marker ) ? a -> marker : '0' );

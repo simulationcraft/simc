@@ -900,7 +900,6 @@ struct sim_t : private sc_thread_t
   event_manager_t event_mgr;
 
   // Output
-  sim_ostream_t out_std;
   sim_ostream_t out_log;
   sim_ostream_t out_debug;
   bool debug;
@@ -1374,6 +1373,43 @@ struct sim_t : private sc_thread_t
   // Thread id of this sim_t object
   std::thread::id thread_id() const
   { return sc_thread_t::thread_id(); }
+
+  /**
+   * Convenient stdout print function using python-like formatting.
+   *
+   * Print to stdout
+   * Print using fmt libraries python-like formatting syntax.
+   */
+
+  /**
+   * Convenient debug function using python-like formatting.
+   *
+   * Checks if sim debug is enabled.
+   * Print using fmt libraries python-like formatting syntax.
+   */
+  template<typename... Args>
+  void print_debug(fmt::CStringRef format, Args&& ... args)
+  {
+    if ( ! debug )
+      return;
+
+    out_debug.print(format, std::forward<Args>(args)... );
+  }
+
+  /**
+   * Convenient log function using python-like formatting.
+   *
+   * Checks if sim logging is enabled.
+   * Print using fmt libraries python-like formatting syntax.
+   */
+  template<typename... Args>
+  void print_log(fmt::CStringRef format, Args&& ... args)
+  {
+    if ( ! log )
+      return;
+
+    out_log.print(format, std::forward<Args>(args)... );
+  }
 private:
   void do_pause();
   void print_spell_query();

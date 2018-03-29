@@ -138,10 +138,7 @@ void pet_t::reset()
 
 void pet_t::summon( timespan_t summon_duration )
 {
-  if ( sim -> log )
-  {
-    sim -> out_log.print( "{} summons {} for {}.", owner -> name(), name(), summon_duration );
-  }
+  sim -> print_log( "{} summons {} for {}.", owner -> name(), name(), summon_duration );
 
   current.distance = owner -> current.distance;
 
@@ -172,7 +169,7 @@ void pet_t::summon( timespan_t summon_duration )
 
 void pet_t::dismiss( bool expired )
 {
-  if ( sim -> log ) sim -> out_log.print( "{} dismisses {}", owner -> name(), name() );
+  sim -> print_log( "{} dismisses {}", owner -> name(), name() );
 
   // Remove from active_pets list
   auto it = range::find( owner -> active_pets, this );
@@ -217,8 +214,7 @@ void pet_t::create_buffs()
   }
   else
   {
-    if ( sim -> debug )
-      sim -> out_debug.print( "Creating Auras, Buffs, and Debuffs for pet '{}'.", name() );
+    sim -> print_debug( "Creating Auras, Buffs, and Debuffs for pet '{}'.", name() );
 
     buffs.stunned = buff_creator_t( this, "stunned" ).max_stack( 1 );
     buffs.movement = buff_creator_t( this, "movement" );

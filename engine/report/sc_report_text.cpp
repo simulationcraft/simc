@@ -1357,7 +1357,6 @@ namespace report
 {
 void print_text( sim_t* sim, bool detail )
 {
-  std::flush( *sim->out_std.get_stream() );
   FILE* text_out = stdout;
   io::cfile file;
   if ( !sim->output_file_str.empty() )

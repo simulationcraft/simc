@@ -68,11 +68,8 @@ void action_state_t::copy_state( const action_state_t* o )
 
   if ( typeid( this ) != typeid( const_cast<action_state_t*>( o ) ) )
   {
-    std::cout
-        << "action_state_t::operator=: state runtime types not equal! this= "
-        << typeid( this ).name()
-        << " o= " << typeid( const_cast<action_state_t*>( o ) ).name() << "\n";
-    assert( 0 );
+    throw std::runtime_error( fmt::format("action_state_t::operator=: state runtime types not equal! this={} o={}\n",
+        typeid( this ).name(), typeid( const_cast<action_state_t*>( o ) ).name() ) );
   }
 #endif
 

@@ -154,7 +154,7 @@ std::shared_ptr<xml_node_t> xml_node_t::create_node( sim_t*                  sim
       int start = std::min( 0, ( ( int ) index - 32 ) );
       sim -> errorf( "Unexpected character '%c' at index=%d node=%s context=%s\n",
                      c, ( int ) index, node -> name(), input.substr( start, index - start ).c_str() );
-      sim -> out_std.raw() << input << "\n";
+      fmt::print("{}\n", input);
       sim -> cancel();
     }
     return std::shared_ptr<xml_node_t>();

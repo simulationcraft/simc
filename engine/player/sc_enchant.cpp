@@ -620,10 +620,7 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
   double ilevel_value = item_database::curve_point_value( item.player -> dbc,
       RELIC_ILEVEL_BONUS_CURVE, relic.parsed.data.level );
 
-  if ( item.player -> sim -> debug )
-  {
-    item.player -> sim -> out_debug.print("relic: {} ilevel_increase=+{}", relic, util::floor( ilevel_value ));
-  }
+  item.player -> sim -> print_debug("relic: {} ilevel_increase=+{}", relic, util::floor( ilevel_value ));
 
   item.parsed.relic_bonus_ilevel[ relic_idx ] = util::floor( ilevel_value );
   item.parsed.data.level += util::floor( ilevel_value );

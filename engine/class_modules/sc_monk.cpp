@@ -8899,10 +8899,7 @@ void monk_t::stagger_damage_changed()
       break;
     }
   }
-  if ( sim->debug )
-  {
-    sim->out_debug.print("Previous stagger buff was {}.", previous_buff ? previous_buff->name() : "none");
-  }
+  sim->print_debug( "Previous stagger buff was {}.", previous_buff ? previous_buff->name() : "none");
 
   buff_t* new_buff = nullptr;
   dot_t* dot = nullptr;
@@ -8911,10 +8908,7 @@ void monk_t::stagger_damage_changed()
   if ( dot && dot->is_ticking() )
   {
     auto current_tick_dmg_per_max_health = current_stagger_tick_dmg() / resources.max[ RESOURCE_HEALTH ];
-    if ( sim->debug )
-    {
-      sim->out_debug.print("Stagger dmg: {} ({}%):", current_stagger_tick_dmg(), current_tick_dmg_per_max_health * 100.0 );
-    }
+    sim->print_debug( "Stagger dmg: {} ({}%):", current_stagger_tick_dmg(), current_tick_dmg_per_max_health * 100.0 );
     if ( current_tick_dmg_per_max_health > 0.06 )
     {
       new_buff = buff.heavy_stagger;
@@ -8928,10 +8922,7 @@ void monk_t::stagger_damage_changed()
       new_buff = buff.light_stagger;
     }
   }
-  if ( sim->debug )
-  {
-    sim->out_debug.print("Stagger new buff is {}.", new_buff ? new_buff->name() : "none");
-  }
+  sim->print_debug( "Stagger new buff is {}.", new_buff ? new_buff->name() : "none");
 
   if ( previous_buff && previous_buff != new_buff )
   {

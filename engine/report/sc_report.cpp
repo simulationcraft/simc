@@ -841,7 +841,7 @@ void report::print_suite( sim_t* sim )
 {
   if ( ! sim -> profileset_enabled )
   {
-    std::cout << "\nGenerating reports...";
+    std::cout << "\nGenerating reports...\n";
   }
 
   report::print_text( sim, sim->report_details != 0 );

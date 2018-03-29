@@ -1182,8 +1182,7 @@ bool special_effect::usable_proc( const special_effect_t& effect )
  */
 void dbc_proc_callback_t::initialize()
 {
-  if ( listener -> sim -> debug )
-    listener -> sim -> out_debug.print( "Initializing proc: {}", effect );
+  listener -> sim -> print_debug( "Initializing proc: {}", effect );
 
   // Initialize proc chance triggers. Note that this code only chooses one, and
   // prioritizes RPPM > PPM > proc chance.

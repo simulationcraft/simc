@@ -217,12 +217,11 @@ struct power_infusion_t final : public priest_spell_t
   void execute() override
   {
     priest_spell_t::execute();
+
     priest().buffs.power_infusion->trigger();
-    if ( sim->debug )
-    {
-      priest().sim->out_debug.print("{} used Power Infusion with {} Insanity drain stacks.",
-          priest().name(), priest().buffs.insanity_drain_stacks->value());
-    }
+
+    sim->print_debug("{} used Power Infusion with {} Insanity drain stacks.",
+        priest().name(), priest().buffs.insanity_drain_stacks->value());
   }
 };
 
@@ -583,11 +582,8 @@ void priest_td_t::reset()
 
 void priest_td_t::target_demise()
 {
-  if ( priest().sim->debug )
-  {
-    priest().sim->out_debug.print( "Player '{}' demised. Priest '{}' resets targetdata for him.", target->name(),
-                                    priest().name() );
-  }
+  priest().sim->print_debug( "Player '{}' demised. Priest '{}' resets targetdata for him.",
+      target->name(), priest().name() );
 
   reset();
 }
