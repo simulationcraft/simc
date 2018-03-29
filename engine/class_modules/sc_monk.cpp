@@ -7210,6 +7210,13 @@ void monk_t::create_buffs()
   buff.light_stagger = make_buff( this, "light_stagger", find_spell( 124275 ) );
   buff.moderate_stagger = make_buff( this, "moderate_stagger", find_spell( 124274 ) );
   buff.heavy_stagger = make_buff( this, "heavy_stagger", find_spell( 124273 ) );
+  if ( talent.high_tolerance -> ok() )
+  {
+    for ( auto&& b : { buff.light_stagger, buff.moderate_stagger, buff.heavy_stagger } )
+    {
+      b->add_invalidate( CACHE_HASTE );
+    }
+  }
 
   // Mistweaver
   buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal );
@@ -7562,23 +7569,46 @@ double monk_t::clear_stagger()
   return active_actions.stagger_self_damage -> clear_all_damage();
 }
 
+/**
+ * Haste modifiers affecting both melee_haste and spell_haste.
+ */
+double shared_composite_haste_modifiers( const monk_t& p, double h )
+{
+  if ( p.buff.sephuzs_secret -> check() )
+  {
+    h *= 1.0 / (1.0 + p.buff.sephuzs_secret -> stack_value());
+  }
+
+  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
+  // the fallback buff creator).
+  if ( p.legendary.sephuzs_secret && p.level() < 120 )
+  {
+    h *= 1.0 / ( 1.0 + p.legendary.sephuzs_secret -> effectN( 3 ).percent() );
+  }
+
+  if ( p.talent.high_tolerance -> ok() )
+  {
+    int effect_index = 2; // Effect index of HT affecting each stagger buff
+    for ( auto&& buff : { p.buff.light_stagger, p.buff.moderate_stagger, p.buff.heavy_stagger } )
+    {
+      if ( buff -> check() )
+      {
+        h *= 1.0 / ( 1.0 + p.talent.high_tolerance -> effectN( effect_index ).percent() );
+      }
+      ++effect_index;
+    }
+  }
+
+  return h;
+}
+
 // monk_t::composite_spell_haste =========================================
 
 double monk_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  if ( buff.sephuzs_secret -> check() )
-  {
-    h *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
-  }
-
-  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
-  // the fallback buff creator).
-  if ( legendary.sephuzs_secret && level() < 120 )
-  {
-    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
-  }
+  h = shared_composite_haste_modifiers( *this, h );
 
   return h;
 }
@@ -7589,17 +7619,7 @@ double monk_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  if ( buff.sephuzs_secret -> check() )
-  {
-    h *= 1.0 / (1.0 + buff.sephuzs_secret -> stack_value());
-  }
-
-  // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
-  // the fallback buff creator).
-  if ( legendary.sephuzs_secret && level() < 120 )
-  {
-    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
-  }
+  h = shared_composite_haste_modifiers( *this, h );
 
   return h;
 }
@@ -8870,13 +8890,12 @@ double monk_t::current_stagger_tick_dmg()
 
 void monk_t::stagger_damage_changed()
 {
-  auto stagger_buffs = { buff.light_stagger, buff.moderate_stagger, buff.heavy_stagger };
   buff_t* previous_buff = nullptr;
-  for ( auto& buff : stagger_buffs )
+  for ( auto& b : { buff.light_stagger, buff.moderate_stagger, buff.heavy_stagger } )
   {
-    if ( buff -> check() )
+    if ( b -> check() )
     {
-      previous_buff = buff;
+      previous_buff = b;
       break;
     }
   }
