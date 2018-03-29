@@ -257,6 +257,9 @@ public:
     buff_t* ironskin_brew;
     buff_t* keg_smash_talent;
     buff_t* zen_meditation;
+    buff_t* light_stagger;
+    buff_t* moderate_stagger;
+    buff_t* heavy_stagger;
 
     // Mistweaver
     absorb_buff_t* life_cocoon;
@@ -430,9 +433,6 @@ public:
     const spell_data_t* purifying_brew;
     const spell_data_t* stagger;
     const spell_data_t* zen_meditation;
-    const spell_data_t* light_stagger;
-    const spell_data_t* moderate_stagger;
-    const spell_data_t* heavy_stagger;
 
     // Mistweaver
     const spell_data_t* detox;
@@ -771,6 +771,7 @@ public:
   void apl_pre_windwalker();
 
   // Custom Monk Functions
+  void stagger_damage_changed();
   double current_stagger_tick_dmg();
   double current_stagger_tick_dmg_percent();
   double current_stagger_amount_remains();
@@ -5059,12 +5060,26 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
   stagger_self_damage_t( monk_t* p ):
     base_t( "stagger_self_damage", p, p -> passives.stagger_self_damage )
   {
-    dot_duration = p -> spec.heavy_stagger -> duration();
+    // Just get dot duration from heavy stagger spell data
+    auto s = p -> find_spell( 124273 );
+    assert( s );
+    dot_duration = s -> duration();
     base_tick_time = timespan_t::from_seconds( 1.0 );
     hasted_ticks = tick_may_crit = false;
     target = p;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    base_t::impact( s );
+    p()->stagger_damage_changed();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    base_t::last_tick( d );
+    p()->stagger_damage_changed();
+  }
   proc_types proc_type() const override
   {
     return PROC1_ANY_DAMAGE_TAKEN;
@@ -5106,6 +5121,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 
     d -> cancel();
     cancel();
+    p()->stagger_damage_changed();
 
     return damage_remaining;
   }
@@ -5124,6 +5140,8 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
       damage_remaining *= percent_amount;
       d -> state -> result_amount -= damage_remaining;
     }
+
+    p()->stagger_damage_changed();
 
     return damage_remaining;
   }
@@ -6936,9 +6954,6 @@ void monk_t::init_spells()
   spec.purifying_brew                = find_specialization_spell( "Purifying Brew" );
   spec.stagger                       = find_specialization_spell( "Stagger" );
   spec.zen_meditation                = find_specialization_spell( "Zen Meditation" );
-  spec.light_stagger                 = find_spell( 124275 );
-  spec.moderate_stagger              = find_spell( 124274 );
-  spec.heavy_stagger                 = find_spell( 124273 );
 
   // Mistweaver Specialization
   spec.detox                         = find_specialization_spell( "Detox" );
@@ -7191,6 +7206,10 @@ void monk_t::create_buffs()
                         -> set_duration( find_spell( 124503 ) -> duration() )
                         -> set_refresh_behavior( buff_refresh_behavior::NONE )
                         -> set_max_stack( 99 );
+
+  buff.light_stagger = make_buff( this, "light_stagger", find_spell( 124275 ) );
+  buff.moderate_stagger = make_buff( this, "moderate_stagger", find_spell( 124274 ) );
+  buff.heavy_stagger = make_buff( this, "heavy_stagger", find_spell( 124273 ) );
 
   // Mistweaver
   buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal );
@@ -8484,7 +8503,7 @@ void monk_t::apl_combat_brewmaster()
     if ( racial_actions[i] != "arcane_torrent" )
       def -> add_action( racial_actions[i] );
   }
-  def -> add_action( this, "Exploding Keg" );
+  //def -> add_action( this, "Exploding Keg" );
   def -> add_talent( this, "Invoke Niuzao, the Black Ox", "if=target.time_to_die>45" );
   def -> add_action( this, "Purifying Brew", "if=stagger.heavy|(stagger.moderate&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.5&buff.ironskin_brew.remains>=buff.ironskin_brew.duration*2.5)" );
   def -> add_action( this, "Ironskin Brew", "if=buff.blackout_combo.down&cooldown.brews.charges_fractional>=cooldown.brews.max_charges-0.1-(1+buff.ironskin_brew.remains<=buff.ironskin_brew.duration*0.5)&buff.ironskin_brew.remains<=buff.ironskin_brew.duration*2", "About charge management, by default while tanking (always true on SimC) we lower it by 1 and up to 1.5 if we are tanking with less than half of Ironskin base duration up." );
@@ -8846,6 +8865,63 @@ double monk_t::current_stagger_tick_dmg()
   if ( active_actions.stagger_self_damage )
     dmg = active_actions.stagger_self_damage -> tick_amount();
   return dmg;
+}
+
+
+void monk_t::stagger_damage_changed()
+{
+  auto stagger_buffs = { buff.light_stagger, buff.moderate_stagger, buff.heavy_stagger };
+  buff_t* previous_buff = nullptr;
+  for ( auto& buff : stagger_buffs )
+  {
+    if ( buff -> check() )
+    {
+      previous_buff = buff;
+      break;
+    }
+  }
+  if ( sim->debug )
+  {
+    sim->out_debug.print("Previous stagger buff was {}.", previous_buff ? previous_buff->name() : "none");
+  }
+
+  buff_t* new_buff = nullptr;
+  dot_t* dot = nullptr;
+  if ( active_actions.stagger_self_damage )
+    dot = active_actions.stagger_self_damage -> get_dot();
+  if ( dot && dot->is_ticking() )
+  {
+    auto current_tick_dmg_per_max_health = current_stagger_tick_dmg() / resources.max[ RESOURCE_HEALTH ];
+    if ( sim->debug )
+    {
+      sim->out_debug.print("Stagger dmg: {} ({}%):", current_stagger_tick_dmg(), current_tick_dmg_per_max_health * 100.0 );
+    }
+    if ( current_tick_dmg_per_max_health > 0.06 )
+    {
+      new_buff = buff.heavy_stagger;
+    }
+    else if ( current_tick_dmg_per_max_health > 0.03 )
+    {
+      new_buff = buff.moderate_stagger;
+    }
+    else if ( current_tick_dmg_per_max_health > 0.0 )
+    {
+      new_buff = buff.light_stagger;
+    }
+  }
+  if ( sim->debug )
+  {
+    sim->out_debug.print("Stagger new buff is {}.", new_buff ? new_buff->name() : "none");
+  }
+
+  if ( previous_buff && previous_buff != new_buff )
+  {
+    previous_buff -> expire();
+  }
+  if ( new_buff && previous_buff != new_buff )
+  {
+    new_buff -> trigger();
+  }
 }
 
 // monk_t::current_stagger_total ==================================================

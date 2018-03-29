@@ -1362,10 +1362,10 @@ std::string enemy_t::generate_action_list()
   level_mult = std::pow( level_mult, 0.16 );
 
   // this is the standard Fluffy Pillow action list
-  als += "/auto_attack,damage=" + util::to_string( 220e3 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
-  als += "/spell_dot,damage=" + util::to_string( 50e3 * level_mult ) + ",tick_time=2,dot_duration=20,cooldown=40,aoe_tanks=1,if=!ticking";
-  als += "/spell_nuke,damage=" + util::to_string( 110e3 * level_mult ) + ",cooldown=35,attack_speed=2,aoe_tanks=1";
-  als += "/melee_nuke,damage=" + util::to_string( 260e3 * level_mult ) + ",cooldown=27,attack_speed=2,aoe_tanks=1";
+  als += "/auto_attack,damage=" + util::to_string( 2000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
+  als += "/spell_dot,damage=" + util::to_string( 8000 * level_mult ) + ",tick_time=2,dot_duration=20,cooldown=40,aoe_tanks=1,if=!ticking";
+  als += "/spell_nuke,damage=" + util::to_string( 3000 * level_mult ) + ",cooldown=35,attack_speed=2,aoe_tanks=1";
+  als += "/melee_nuke,damage=" + util::to_string( 6000 * level_mult ) + ",cooldown=27,attack_speed=2,aoe_tanks=1";
 
   return als;
 }

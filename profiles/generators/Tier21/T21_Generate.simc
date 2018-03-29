@@ -30,7 +30,7 @@ T21_Generate_Hunter.simc
 T21_Generate_Mage.simc
 
 # Monk
-#T21_Generate_Monk.simc
+T21_Generate_Monk.simc
 
 # Paladin
 T21_Generate_Paladin.simc
