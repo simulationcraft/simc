@@ -1095,28 +1095,25 @@ struct erosion_t : public buff_t
     erosion_t* debuff;
     const spell_data_t* data;
 
-    static timespan_t delta_time( const spell_data_t* data,
-                                  bool player_triggered )
+    static timespan_t delta_time( const spell_data_t* data, bool triggered )
     {
-      // Erosion debuff decays 3 seconds after direct application by a player,
+      // Erosion debuff decays 3 seconds after direct application,
       // followed by a 1 stack every second
-      if ( player_triggered )
+      if ( triggered )
       {
         return data -> duration();
       }
       return data -> effectN( 1 ).period();
     }
 
-    erosion_event_t( actor_t& m, erosion_t* _debuff, const spell_data_t* _data,
-                     bool player_triggered = false )
-      : event_t( m, delta_time( _data, player_triggered ) ),
-        debuff( _debuff ),
-        data( _data )
+    erosion_event_t( actor_t& m, erosion_t* _debuff, const spell_data_t* _data, bool triggered = false ) :
+      event_t( m, delta_time( _data, triggered ) ),
+      debuff( _debuff ),
+      data( _data )
     { }
 
     virtual const char* name() const override
     { return "erosion_decay_event"; }
-
 
     virtual void execute() override
     {
@@ -1127,8 +1124,7 @@ struct erosion_t : public buff_t
       // can be cancelled upon a new application of the debuff
       if ( debuff -> check() > 0 )
       {
-        debuff -> decay_event = make_event<erosion_event_t>(
-            sim(), *debuff -> source, debuff, data );
+        debuff -> decay_event = make_event<erosion_event_t>( sim(), *debuff -> source, debuff, data );
       }
     }
   };
@@ -1144,18 +1140,12 @@ struct erosion_t : public buff_t
     set_default_value( data().effectN( 1 ).percent() );
   }
 
-  virtual bool trigger( int stacks, double value,
-                        double chance, timespan_t duration ) override
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     bool triggered = buff_t::trigger( stacks, value, chance, duration );
-
     if ( triggered )
     {
-      if ( decay_event )
-      {
-        event_t::cancel( decay_event );
-      }
-
+      event_t::cancel( decay_event );
       decay_event = make_event<erosion_event_t>( *sim, *source, this, erosion_event_data, true );
     }
 
