@@ -293,10 +293,12 @@ struct rogue_t : public player_t
     cooldown_t* sprint;
     cooldown_t* vanish;
     cooldown_t* between_the_eyes;
+    cooldown_t* blade_rush;
     cooldown_t* blind;
     cooldown_t* gouge;
     cooldown_t* cloak_of_shadows;
     cooldown_t* riposte;
+    cooldown_t* ghostly_strike;
     cooldown_t* grappling_hook;
     cooldown_t* marked_for_death;
     cooldown_t* death_from_above;
@@ -557,10 +559,12 @@ struct rogue_t : public player_t
     cooldowns.sprint                   = get_cooldown( "sprint"                   );
     cooldowns.vanish                   = get_cooldown( "vanish"                   );
     cooldowns.between_the_eyes         = get_cooldown( "between_the_eyes"         );
+    cooldowns.blade_rush               = get_cooldown( "blade_rush"               );
     cooldowns.blind                    = get_cooldown( "blind"                    );
     cooldowns.gouge                    = get_cooldown( "gouge"                    );
     cooldowns.cloak_of_shadows         = get_cooldown( "cloak_of_shadows"         );
     cooldowns.death_from_above         = get_cooldown( "death_from_above"         );
+    cooldowns.ghostly_strike           = get_cooldown( "ghostly_strike"           );
     cooldowns.grappling_hook           = get_cooldown( "grappling_hook"           );
     cooldowns.marked_for_death         = get_cooldown( "marked_for_death"         );
     cooldowns.riposte                  = get_cooldown( "riposte"                  );
@@ -5475,13 +5479,14 @@ void rogue_t::trigger_restless_blades( const action_state_t* state )
   // Abilities
   cooldowns.adrenaline_rush -> adjust( v, false );
   cooldowns.between_the_eyes -> adjust( v, false );
+  cooldowns.grappling_hook -> adjust( v, false );
   cooldowns.sprint -> adjust( v, false );
   cooldowns.vanish -> adjust( v, false );
   // Talents
-  cooldowns.grappling_hook -> adjust( v, false );
+  cooldowns.blade_rush -> adjust( v, false );
+  cooldowns.ghostly_strike -> adjust( v, false );
   cooldowns.killing_spree -> adjust( v, false );
   cooldowns.marked_for_death -> adjust( v, false );
-  cooldowns.death_from_above -> adjust( v, false );
 }
 
 void do_exsanguinate( dot_t* dot, double coeff )
