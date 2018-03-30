@@ -1296,22 +1296,10 @@ struct blade_flurry_attack_t : public rogue_attack_t
     aoe        = -1;
     radius     = 5;
     range      = -1.0;
-
-    snapshot_flags |= STATE_MUL_DA;
   }
 
   bool procs_main_gauche() const override
   { return false; }
-
-  double composite_da_multiplier( const action_state_t* ) const override
-  {
-    double multiplier = p() -> spec.blade_flurry -> effectN( 2 ).percent();
-    if ( p() -> buffs.shivarran_symmetry -> check() )
-    {
-      multiplier += p() -> buffs.shivarran_symmetry -> data().effectN( 1 ).percent();
-    }
-    return multiplier;
-  }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
   {
@@ -5213,9 +5201,25 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( state -> action -> n_targets() != 0 )
     return;
 
+  // Compute Blade Flurry modifier
+  double multiplier = 1.0;
+  if ( state -> action -> name_str == "killing_spree_mh" || state ->action -> name_str == "killing_spree_oh")
+  {
+    multiplier = talent.killing_spree -> effectN( 2 ).percent();
+  }
+  else
+  {
+    multiplier = spec.blade_flurry -> effectN( 2 ).percent();
+    if ( buffs.shivarran_symmetry -> check() )
+    {
+      multiplier += buffs.shivarran_symmetry -> data().effectN( 1 ).percent();
+    }
+  }
+
   // Note, unmitigated damage
-  active_blade_flurry -> base_dd_min = state -> result_total;
-  active_blade_flurry -> base_dd_max = state -> result_total;
+  double damage = state -> result_total * multiplier;
+  active_blade_flurry -> base_dd_min = damage;
+  active_blade_flurry -> base_dd_max = damage;
   active_blade_flurry -> set_target( state->target );
   active_blade_flurry -> execute();
 }
