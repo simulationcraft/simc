@@ -215,6 +215,7 @@ struct rogue_t : public player_t
     // Outlaw
     haste_buff_t* adrenaline_rush;
     buff_t* blade_flurry;
+    buff_t* blade_rush;
     buff_t* opportunity;
     buff_t* roll_the_bones;
     // Roll the bones buffs
@@ -309,6 +310,7 @@ struct rogue_t : public player_t
   struct gains_t
   {
     gain_t* adrenaline_rush;
+    gain_t* blade_rush;
     gain_t* combat_potency;
     gain_t* energy_refund;
     gain_t* master_of_shadows;
@@ -447,6 +449,7 @@ struct rogue_t : public player_t
     const spell_data_t* slice_and_dice;
 
     const spell_data_t* blade_fury;
+    const spell_data_t* blade_rush;
     const spell_data_t* killing_spree;
 
     // Subtlety
@@ -2368,6 +2371,35 @@ struct blade_flurry_t : public rogue_attack_t
     {
       p() -> buffs.shivarran_symmetry -> trigger();
     }
+  }
+};
+
+// Blade Rush ===============================================================
+
+struct blade_rush_t : public rogue_attack_t
+{
+  struct blade_rush_attack_t : public rogue_attack_t
+  {
+    blade_rush_attack_t( rogue_t* p ) :
+      rogue_attack_t( "blade_rush_attack", p, p -> find_spell( 271881 ) )
+    {
+    }
+  };
+
+  rogue_attack_t* blade_rush_attack;
+
+  blade_rush_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "blade_rush", p, p -> talent.blade_rush, options_str )
+  {
+    blade_rush_attack = new blade_rush_attack_t( p );
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    blade_rush_attack -> execute();
+    p() -> buffs.blade_rush -> trigger();
   }
 };
 
@@ -5205,9 +5237,13 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
 
   // Compute Blade Flurry modifier
   double multiplier = 1.0;
-  if ( state -> action -> name_str == "killing_spree_mh" || state ->action -> name_str == "killing_spree_oh")
+  if ( state -> action -> name_str == "killing_spree_mh" || state ->action -> name_str == "killing_spree_oh" )
   {
     multiplier = talent.killing_spree -> effectN( 2 ).percent();
+  }
+  else if ( state -> action -> name_str == "blade_rush_attack" )
+  {
+    multiplier = talent.blade_rush -> effectN( 1 ).percent();
   }
   else
   {
@@ -6073,6 +6109,7 @@ void rogue_t::init_action_list()
       // Reroll unless 3+ buffs or true bearing
     def -> add_action( this, "Roll the Bones", "if=!variable.ss_useable&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)" );
     def -> add_talent( this, "Killing Spree", "if=energy.time_to_max>5|energy<15" );
+    def -> add_talent( this, "Blade Rush" );
     def -> add_action( "call_action_list,name=build" );
     def -> add_action( "call_action_list,name=finish,if=!variable.ss_useable" );
     def -> add_action( this, "Gouge", "if=talent.dirty_tricks.enabled&combo_points.deficit>=1", "Gouge is used as a CP Generator while nothing else is available and you have Dirty Tricks talent. It's unlikely that you'll be able to do this optimally in-game since it requires to move in front of the target, but it's here so you can quantifiy its value." );
@@ -6260,6 +6297,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "backstab"            ) return new backstab_t           ( this, options_str );
   if ( name == "between_the_eyes"    ) return new between_the_eyes_t   ( this, options_str );
   if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
+  if ( name == "blade_rush"          ) return new blade_rush_t         ( this, options_str );
   if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( this, options_str );
   if ( name == "death_from_above"    ) return new death_from_above_t   ( this, options_str );
   if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
@@ -6785,6 +6823,7 @@ void rogue_t::init_spells()
   talent.slice_and_dice     = find_talent_spell( "Slice and Dice" );
 
   talent.blade_fury         = find_talent_spell( "Blade Fury" );
+  talent.blade_rush         = find_talent_spell( "Blade Rush" );
   talent.killing_spree      = find_talent_spell( "Killing Spree" );
 
   // Subtlety
@@ -6829,6 +6868,7 @@ void rogue_t::init_gains()
   player_t::init_gains();
 
   gains.adrenaline_rush          = get_gain( "Adrenaline Rush"          );
+  gains.blade_rush               = get_gain( "Blade Rush"               );
   gains.combat_potency           = get_gain( "Combat Potency"           );
   gains.energy_refund            = get_gain( "Energy Refund"            );
   gains.seal_fate                = get_gain( "Seal Fate"                );
@@ -6976,10 +7016,10 @@ void rogue_t::create_buffs()
                                 -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   buffs.vendetta              = make_buff( this, "vendetta_energy", find_spell( 256495 ) )
                                 -> set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
-                                  if ( new_ == 1 ) { resource_gain( RESOURCE_ENERGY, b->data().effectN( 1 ).resource( RESOURCE_ENERGY ), gains.vendetta ); }
+                                  if ( new_ == 1 ) { resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).resource( RESOURCE_ENERGY ), gains.vendetta ); }
                                 } )
                                 -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-                                  resource_gain( RESOURCE_ENERGY, b->data().effectN( 2 ).resource( RESOURCE_ENERGY ), gains.vendetta );
+                                  resource_gain( RESOURCE_ENERGY, b -> data().effectN( 2 ).resource( RESOURCE_ENERGY ), gains.vendetta );
                                 } );
 
   // Outlaw
@@ -6987,6 +7027,11 @@ void rogue_t::create_buffs()
   buffs.blade_flurry          = make_buff( this, "blade_flurry", spec.blade_flurry )
                                 -> set_cooldown( timespan_t::zero() )
                                 -> set_duration( spec.blade_flurry -> duration() + talent.blade_fury -> effectN( 2 ).time_value() );
+  buffs.blade_rush            = make_buff( this, "blade_rush", find_spell( 271896 ) )
+                                -> set_period( find_spell( 271896 ) -> effectN( 1 ).period() )
+                                -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                                  resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.blade_rush );
+                                } );
   buffs.opportunity           = make_buff( this, "opportunity", find_spell( 195627 ) );
   // Roll the bones buffs
   buffs.broadsides            = make_buff( this, "broadsides", find_spell( 193356 ) )
@@ -7061,8 +7106,8 @@ void rogue_t::create_buffs()
   // Subtlety
   buffs.master_of_shadows       = make_buff( this, "master_of_shadows", find_spell( 196980 ) )
                                   -> set_period( find_spell( 196980 ) -> effectN( 1 ).period() )
-                                  -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
-                                    resource_gain( RESOURCE_ENERGY, find_spell( 196980 ) -> effectN( 1 ).base_value(), gains.master_of_shadows );
+                                  -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                                    resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.master_of_shadows );
                                   } )
                                   -> set_refresh_behavior( buff_refresh_behavior::DURATION );
   buffs.death_from_above        = make_buff( this, "death_from_above", spell.death_from_above )
@@ -7098,8 +7143,8 @@ void rogue_t::create_buffs()
   // Assassination
   buffs.the_empty_crown                    = make_buff( this, "the_empty_crown", find_spell(248201) )
                                              -> set_period( find_spell(248201) -> effectN( 1 ).period() )
-                                             -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
-                                               resource_gain( RESOURCE_ENERGY, find_spell(248201) -> effectN( 1 ).base_value(), gains.the_empty_crown );
+                                             -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+                                               resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.the_empty_crown );
                                              } );
   // Outlaw
   buffs.greenskins_waterlogged_wristcuffs  = make_buff( this, "greenskins_waterlogged_wristcuffs", find_spell( 209423 ) );
