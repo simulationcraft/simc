@@ -879,13 +879,15 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 28 abilities
+    // Pet tree, 30 abilities
     {
        89766, // Axe Toss (Special Ability)
         6307, // Blood Pact (Special Ability)
       171011, // Burning Presence (Special Ability)
         3716, // Consuming Shadows (Basic Attack)
       170995, // Cripple
+      270481, // Demonfire
+      265279, // Demonfire Blast
        19505, // Devour Magic (Special Ability)
        85692, // Doom Bolt
       205231, // Eye Laser
