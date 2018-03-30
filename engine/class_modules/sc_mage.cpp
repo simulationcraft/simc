@@ -898,14 +898,7 @@ struct water_elemental_pet_t : public mage_pet_t
 
   virtual void init_action_list() override
   {
-    clear_action_priority_lists();
-
-    auto default_list = get_action_priority_list( "default" );
-    default_list -> add_action( this, find_pet_spell( "Waterbolt" ), "Waterbolt" );
-
-    // Default
-    use_default_action_list = true;
-
+    action_list_str = "waterbolt";
     mage_pet_t::init_action_list();
   }
 
@@ -945,7 +938,6 @@ struct freeze_t : public mage_pet_spell_t
   virtual void impact( action_state_t* s ) override
   {
     mage_pet_spell_t::impact( s );
-
     o() -> apply_crowd_control( s, MECHANIC_ROOT );
   }
 };
