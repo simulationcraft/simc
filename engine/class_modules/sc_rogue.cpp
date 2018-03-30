@@ -446,6 +446,7 @@ struct rogue_t : public player_t
     const spell_data_t* loaded_dice;
     const spell_data_t* slice_and_dice;
 
+    const spell_data_t* blade_fury;
     const spell_data_t* killing_spree;
 
     // Subtlety
@@ -2355,6 +2356,7 @@ struct blade_flurry_t : public rogue_attack_t
   {
     harmful = may_miss = may_crit = false;
     ignore_false_positive = true;
+    internal_cooldown -> duration += p -> talent.blade_fury -> effectN( 4 ).time_value();
   }
 
   void execute() override
@@ -5209,7 +5211,7 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   }
   else
   {
-    multiplier = spec.blade_flurry -> effectN( 2 ).percent();
+    multiplier = spec.blade_flurry -> effectN( 2 ).percent() + talent.blade_fury -> effectN( 3 ).percent();
     if ( buffs.shivarran_symmetry -> check() )
     {
       multiplier += buffs.shivarran_symmetry -> data().effectN( 1 ).percent();
@@ -6782,6 +6784,7 @@ void rogue_t::init_spells()
   talent.loaded_dice        = find_talent_spell( "Loaded Dice" );
   talent.slice_and_dice     = find_talent_spell( "Slice and Dice" );
 
+  talent.blade_fury         = find_talent_spell( "Blade Fury" );
   talent.killing_spree      = find_talent_spell( "Killing Spree" );
 
   // Subtlety
@@ -6982,7 +6985,8 @@ void rogue_t::create_buffs()
   // Outlaw
   buffs.adrenaline_rush       = new buffs::adrenaline_rush_t( this );
   buffs.blade_flurry          = make_buff( this, "blade_flurry", spec.blade_flurry )
-                                -> set_cooldown( timespan_t::zero() );
+                                -> set_cooldown( timespan_t::zero() )
+                                -> set_duration( spec.blade_flurry -> duration() + talent.blade_fury -> effectN( 2 ).time_value() );
   buffs.opportunity           = make_buff( this, "opportunity", find_spell( 195627 ) );
   // Roll the bones buffs
   buffs.broadsides            = make_buff( this, "broadsides", find_spell( 193356 ) )
