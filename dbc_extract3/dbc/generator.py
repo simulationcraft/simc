@@ -1418,6 +1418,8 @@ class SpellDataGenerator(DataGenerator):
           ( 243050, 0 ),        # Fire Rift
           ( 242922, 0 ),        # Jaws of Shadow
 		  ( 270569, 2 ),		# From the Shadows debuff
+		  ( 265279, 5 ),		# Demonic Tyrant - Demonfire Blast
+		  ( 270481, 5 ),		# Demonic Tyrant - Demonfire
         ),
 
         # Monk:
