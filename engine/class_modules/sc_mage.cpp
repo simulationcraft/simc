@@ -11,12 +11,6 @@ namespace { // UNNAMED NAMESPACE
 // Mage
 // ==========================================================================
 
-// BfA TODO:
-// - New Arcane talents (NYI in last row)
-//
-// - Glacial Spike seems to be double dipping on the updated damage mod effects
-//   (Rune of Power, etc).
-
 // Forward declarations
 struct mage_t;
 
@@ -1729,7 +1723,6 @@ struct fire_mage_spell_t : public mage_spell_t
           if ( guaranteed && hu_react )
             p -> buffs.hot_streak -> predict();
 
-          //TODO: Add proc tracking to this to track from talent or non-talent sources.
           if ( p -> sets -> has_set_bonus( MAGE_FIRE, T19, B4 ) &&
                rng().roll( p -> sets -> set( MAGE_FIRE, T19, B4) -> effectN( 1 ).percent() ) )
           {
@@ -1798,7 +1791,6 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( amount <= 0.0 )
       return;
 
-    // TODO: Use client data from hot streak
     amount *= composite_ignite_multiplier( state );
 
     bool ignite_exists = p() -> ignite -> get_dot( state -> target ) -> is_ticking();
@@ -2269,7 +2261,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     c *= 1.0 + p() -> buffs.rule_of_threes -> check_value();
 
-    //TODO: Find a work-around to remove hardcoding
     if ( p() -> buffs.rhonins_assaulting_armwraps -> check() )
     {
       c = 0;
