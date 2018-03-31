@@ -91,8 +91,6 @@ namespace warlock
     {
       double m = pet_t::composite_player_multiplier( school );
 
-      m *= 1.0;
-
       if ( buffs.rage_of_guldan->check() )
         m *= 1.0 + ( buffs.rage_of_guldan->default_value / 100 );
 
@@ -161,13 +159,19 @@ namespace warlock
       {
         shadow_bite_t( warlock_pet_t* p ) :
           warlock_pet_spell_t( p, "Shadow Bite" ) { }
+
+        double composite_spell_power() const override
+        {
+          return warlock_pet_spell_t::composite_spell_power() * (p()->find_spell(54049)->effectN(1).base_value() + p()->find_spell(54049)->effectN(1).sp_coeff());
+        }
       };
 
       felhunter_pet_t::felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
         warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
       {
         action_list_str = "shadow_bite";
-        owner_coeff.ap_from_sp *= 1.2;
+        owner_coeff.ap_from_sp = 0.9123;
+        owner_coeff.sp_from_sp = 0.9123;
       }
 
       void felhunter_pet_t::init_base_stats()
@@ -387,6 +391,14 @@ namespace warlock
         {
           p()->buffs.demonic_speed->trigger();
         }
+
+        if (p()->specialization() == WARLOCK_DEMONOLOGY && p()->talents.sacrificed_souls->ok())
+        {
+          for (int i = 0; i < last_resource_cost; i++)
+          {
+            p()->find_action("summon_demonic_tyrant")->cooldown->adjust( timespan_t::from_millis( -1 * p()->talents.sacrificed_souls->effectN(1).base_value() ) );
+          }
+        }
       }
     }
 
@@ -449,22 +461,21 @@ namespace warlock
 
           p()->warlock_pet_list.active->dismiss();
           p()->warlock_pet_list.active = nullptr;
-          p()->buffs.demonic_power->trigger();
+          p()->buffs.grimoire_of_sacrifice->trigger();
         }
       }
     };
 
-    struct demonic_power_damage_t : public warlock_spell_t
+    struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
     {
-      demonic_power_damage_t( warlock_t* p ) :
-        warlock_spell_t( "demonic_power", p, p -> find_spell( 196100 ) )
+      grimoire_of_sacrifice_damage_t( warlock_t* p ) :
+        warlock_spell_t( "grimoire_of_sacrifice", p, p -> find_spell( 196100 ) )
       {
         background = true;
         proc = true;
         destro_mastery = false;
       }
     };
-
   } // end actions namespace
 
   namespace buffs
@@ -586,6 +597,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   {
     cooldowns.haunt = get_cooldown( "haunt" );
     cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
+    cooldowns.call_dreadstalkers = get_cooldown("call_dreadstalkers");
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -889,7 +901,7 @@ void warlock_t::create_buffs()
   if ( specialization() == WARLOCK_DESTRUCTION )
     create_buffs_destruction();
 
-  buffs.demonic_power = make_buff( this, "demonic_power", talents.grimoire_of_sacrifice->effectN( 2 ).trigger() );
+  buffs.grimoire_of_sacrifice = make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice->effectN( 2 ).trigger() );
 
   //legendary buffs
   buffs.stretens_insanity = make_buff( this, "stretens_insanity", find_spell( 208822 ) )
@@ -957,7 +969,7 @@ void warlock_t::init_spells()
   talents.mortal_coil                   = find_talent_spell( "Mortal Coil" );
   talents.demonic_circle                = find_talent_spell( "Demonic Circle" );
   talents.grimoire_of_sacrifice         = find_talent_spell( "Grimoire of Sacrifice" ); // aff and destro
-  active.demonic_power_proc             = new actions::demonic_power_damage_t( this ); // grimoire of sacrifice
+  active.grimoire_of_sacrifice_proc     = new actions::grimoire_of_sacrifice_damage_t( this ); // grimoire of sacrifice
   talents.soul_conduit                  = find_talent_spell( "Soul Conduit" );
 }
 
@@ -970,7 +982,7 @@ void warlock_t::init_rng()
   if ( specialization() == WARLOCK_DESTRUCTION )
     init_rng_destruction();
 
-  demonic_power_rppm                    = get_rppm( "demonic_power", find_spell( 196099 ) );
+  grimoire_of_sacrifice_rppm     = get_rppm( "grimoire_of_sacrifice", find_spell( 196099 ) );
 
   player_t::init_rng();
 }

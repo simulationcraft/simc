@@ -84,7 +84,7 @@ namespace warlock
 
       struct active_t
       {
-        action_t* demonic_power_proc;
+        action_t* grimoire_of_sacrifice_proc;
         action_t* cry_havoc;
         action_t* tormented_agony;
         action_t* chaotic_flames;
@@ -126,7 +126,7 @@ namespace warlock
         const spell_data_t* creeping_death;
         const spell_data_t* siphon_life;
         // DEMO
-        const spell_data_t* riders;
+        const spell_data_t* dreadlash;
         const spell_data_t* demonic_strength;
         const spell_data_t* biliescourge_bombers;
 
@@ -196,9 +196,9 @@ namespace warlock
       //Procs and RNG
       propagate_const<real_ppm_t*> nightfall_rppm;
       propagate_const<real_ppm_t*> affliction_t20_2pc_rppm;
-      propagate_const<real_ppm_t*> demonic_power_rppm; // grimoire of sacrifice
+      propagate_const<real_ppm_t*> grimoire_of_sacrifice_rppm; // grimoire of sacrifice
 
-                                        // Cooldowns
+      // Cooldowns
       struct cooldowns_t
       {
         propagate_const<cooldown_t*> haunt;
@@ -244,6 +244,7 @@ namespace warlock
       struct buffs_t
       {
         propagate_const<buff_t*> demonic_power;
+        propagate_const<buff_t*> grimoire_of_sacrifice;
         propagate_const<buff_t*> soul_harvest;
 
         //affliction buffs
@@ -615,7 +616,7 @@ namespace warlock
         {
           school = SCHOOL_PHYSICAL;
           weapon = &( p->main_hand_weapon );
-          weapon_multiplier = 1.0;
+          weapon_multiplier = 0.76;
           base_execute_time = weapon->swing_time;
           may_crit = background = repeating = true;
 
@@ -963,13 +964,13 @@ namespace warlock
         {
           spell_t::execute();
 
-          if ( hit_any_target && result_is_hit( execute_state->result ) && p()->talents.grimoire_of_sacrifice->ok() && p()->buffs.demonic_power->up() )
+          if ( hit_any_target && result_is_hit( execute_state->result ) && p()->talents.grimoire_of_sacrifice->ok() && p()->buffs.grimoire_of_sacrifice->up() )
           {
-            bool procced = p()->demonic_power_rppm->trigger();
+            bool procced = p()->grimoire_of_sacrifice_rppm->trigger();
             if ( procced )
             {
-              p()->active.demonic_power_proc->target = execute_state->target;
-              p()->active.demonic_power_proc->execute();
+              p()->active.grimoire_of_sacrifice_proc->target = execute_state->target;
+              p()->active.grimoire_of_sacrifice_proc->execute();
             }
           }
 
@@ -1203,8 +1204,8 @@ namespace warlock
 
           p()->warlock_pet_list.active = p()->warlock_pet_list.last = pet;
 
-          if ( p()->buffs.demonic_power->check() )
-            p()->buffs.demonic_power->expire();
+          if ( p()->buffs.grimoire_of_sacrifice->check() )
+            p()->buffs.grimoire_of_sacrifice->expire();
         }
       };
     }
