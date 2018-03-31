@@ -13,6 +13,9 @@ namespace warlock
       namespace wild_imp {
         struct wild_imp_pet_t;
       }
+      namespace demonic_tyrant {
+        struct demonic_tyrant_t;
+      }
     }
 
     constexpr int MAX_UAS = 5;
@@ -71,8 +74,10 @@ namespace warlock
         pets::warlock_pet_t* last;
         static const int WILD_IMP_LIMIT = 40;
         static const int DREADSTALKER_LIMIT = 4;
+        static const int DEMONIC_TYRANT_LIMIT = 1;
         std::array<pets::wild_imp::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
         std::array<pets::dreadstalker::dreadstalker_t*, DREADSTALKER_LIMIT> dreadstalkers;
+        std::array<pets::demonic_tyrant::demonic_tyrant_t*, DEMONIC_TYRANT_LIMIT> demonic_tyrants;
       } warlock_pet_list;
 
       std::vector<std::string> pet_name_list;
@@ -445,9 +450,9 @@ namespace warlock
 
         struct buffs_t
         {
-          propagate_const<haste_buff_t*> demonic_empowerment;
           propagate_const<buff_t*> the_expendables;
           propagate_const<buff_t*> rage_of_guldan;
+          propagate_const<buff_t*> demonic_power;
         } buffs;
 
         bool is_grimoire_of_service = false;
@@ -472,6 +477,9 @@ namespace warlock
         double composite_spell_haste() const override;
         double composite_melee_speed() const override;
         double composite_spell_speed() const override;
+
+        void create_buffs_demonology();
+
         resource_e primary_resource() const override { return RESOURCE_ENERGY; }
 
         warlock_t* o()
@@ -676,6 +684,12 @@ namespace warlock
         {
           _init_warlock_pet_spell_t();
         }
+
+        double cost() const override
+        {
+          double c = spell_t::cost();
+          return c;
+        }
       };
 
       namespace felhunter
@@ -756,6 +770,14 @@ namespace warlock
           //void trigger(int timespan, bool isdoge = false) override;
         };
 
+      }
+      namespace demonic_tyrant {
+        struct demonic_tyrant_t : public warlock_pet_t
+        {
+          demonic_tyrant_t(sim_t* sim, warlock_t* owner, const std::string& name = "demonic_tyrant");
+          virtual void init_base_stats() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
+        };
       }
     }
 

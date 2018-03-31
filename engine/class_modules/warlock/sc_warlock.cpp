@@ -70,6 +70,9 @@ namespace warlock
     {
       pet_t::create_buffs();
 
+      if ( o() -> specialization() == WARLOCK_DEMONOLOGY)
+        create_buffs_demonology();
+
       buffs.rage_of_guldan = make_buff( this, "rage_of_guldan", find_spell( 257926 ) )->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ); //change spell id to 253014 when whitelisted
     }
 
@@ -100,6 +103,12 @@ namespace warlock
 
       m *= 1.0 + o()->buffs.sindorei_spite->check_stack_value();
       m *= 1.0 + o()->buffs.lessons_of_spacetime->check_stack_value();
+
+      if ( o()->specialization() == WARLOCK_DEMONOLOGY ) 
+      {
+        if ( buffs.demonic_power -> check() )
+          m *= 1.0 + ( buffs.demonic_power -> default_value );
+      }
 
       if ( o()->specialization() == WARLOCK_AFFLICTION ) {
         if ( o()->buffs.soul_harvest->check() )
@@ -656,7 +665,13 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( specialization() == WARLOCK_AFFLICTION ) {
     if ( buffs.soul_harvest->check() )
-      m *= 1.0 + buffs.soul_harvest->check_stack_value();
+      m *= 1.0 + buffs.soul_harvest -> check_stack_value();
+  }
+
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
+    if ( buffs.demonic_power -> check() )
+      m *= 1.0 + ( buffs.demonic_power -> default_value );
   }
 
   m *= 1.0 + buffs.sindorei_spite->check_stack_value();
@@ -850,6 +865,10 @@ void warlock_t::create_pets()
     for (size_t i = 0; i < warlock_pet_list.dreadstalkers.size(); i++)
     {
       warlock_pet_list.dreadstalkers[i] = new pets::dreadstalker::dreadstalker_t(sim, this);
+    }
+    for (size_t i = 0; i < warlock_pet_list.demonic_tyrants.size(); i++)
+    {
+      warlock_pet_list.demonic_tyrants[i] = new pets::demonic_tyrant::demonic_tyrant_t(sim, this);
     }
   }
 
