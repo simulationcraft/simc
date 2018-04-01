@@ -513,6 +513,11 @@ namespace warlock {
         {
           p()->buffs.dreaded_haste->trigger();
         }
+
+        if (p()->talents.from_the_shadows->ok())
+        {
+          td(target)->debuffs_from_the_shadows->trigger();
+        }
       }
     };
 
@@ -611,7 +616,6 @@ namespace warlock {
         }
       }
     };
-
 
     // Talents
     struct power_siphon_t : public warlock_spell_t {
@@ -809,22 +813,20 @@ namespace warlock {
     mastery_spells.master_demonologist      = find_mastery_spell(WARLOCK_DEMONOLOGY);
     // spells
     // Talents
-    talents.demonic_strength                = find_talent_spell("Demonic Strength");
-    talents.demonic_calling                 = find_talent_spell("Demonic Calling");
-    talents.doom                            = find_talent_spell("Doom");
     talents.dreadlash                       = find_talent_spell("Dreadlash");
+    talents.demonic_strength                = find_talent_spell("Demonic Strength");
+    talents.bilescourge_bombers             = find_talent_spell("Bilescourge Bombers");
+    talents.demonic_calling                 = find_talent_spell("Demonic Calling");
     talents.power_siphon                    = find_talent_spell("Power Siphon");
+    talents.doom                            = find_talent_spell("Doom");
+    talents.from_the_shadows                = find_talent_spell("From the Shadows");
     talents.soul_strike                     = find_talent_spell("Soul Strike");
     talents.summon_vilefiend                = find_talent_spell("Summon Vilefiend");
-    talents.demonic_strength                = find_talent_spell("Demonic Strength");
-    talents.biliescourge_bombers            = find_talent_spell("Biliescourge Bombers");
-    talents.demonic_consumption             = find_talent_spell("Demonic Consumption");
+    talents.inner_demons                    = find_talent_spell("Inner Demons");
     talents.grimoire_of_service             = find_talent_spell("Grimoire of Service");
     talents.sacrificed_souls                = find_talent_spell("Sacrificed Souls");
-    talents.inner_demons                    = find_talent_spell("Inner Demons");
+    talents.demonic_consumption             = find_talent_spell("Demonic Consumption");
     talents.nether_portal                   = find_talent_spell("Nether Portal");
-
-    //active.soul_strike                      = new pets::felguard::soul_strike_t(this->warlock_pet_list.active); 
   }
 
   void warlock_t::init_gains_demonology() {

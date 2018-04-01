@@ -45,6 +45,7 @@ namespace warlock
       propagate_const<buff_t*> debuffs_tormented_agony;
       propagate_const<buff_t*> debuffs_chaotic_flames;
       propagate_const<buff_t*> debuffs_shadow_embrace;
+      propagate_const<buff_t*> debuffs_from_the_shadows;
 
       int agony_stack;
       double soc_threshold;
@@ -129,7 +130,7 @@ namespace warlock
         // DEMO
         const spell_data_t* dreadlash;
         const spell_data_t* demonic_strength;
-        const spell_data_t* biliescourge_bombers;
+        const spell_data_t* bilescourge_bombers;
 
         const spell_data_t* demonic_calling;
         const spell_data_t* power_siphon;

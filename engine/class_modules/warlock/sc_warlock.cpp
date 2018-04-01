@@ -541,6 +541,7 @@ namespace warlock
     debuffs_jaws_of_shadow = make_buff( *this, "jaws_of_shadow", source->find_spell( 242922 ) );
     debuffs_tormented_agony = make_buff( *this, "tormented_agony", source->find_spell( 252938 ) );
     debuffs_chaotic_flames = make_buff( *this, "chaotic_flames", source->find_spell( 253092 ) );
+    debuffs_from_the_shadows = make_buff(*this, "from_the_shadows", source->find_spell(270569));
 
     debuffs_havoc = new buffs::debuff_havoc_t( *this );
 
@@ -671,6 +672,13 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
         m *= 1.0 + find_spell(30108)->effectN(3).percent();
         break;
       }
+    }
+  }
+
+  if (specialization() == WARLOCK_DEMONOLOGY) {
+    if (td->debuffs_from_the_shadows->check() && school == SCHOOL_SHADOWFLAME)
+    {
+      m *= 1.0 + find_spell(270569)->effectN(1).percent();
     }
   }
 
