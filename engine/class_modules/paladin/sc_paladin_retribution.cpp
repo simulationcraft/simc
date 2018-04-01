@@ -373,6 +373,13 @@ struct divine_storm_t: public holy_power_consumer_t
     }
   }
 
+  virtual void impact(action_state_t* state) override
+  {
+    holy_power_consumer_t::impact(state);
+    if ( p() -> talents.divine_judgment -> ok() )
+      p() -> buffs.divine_judgment -> trigger();
+  }
+
   void record_data( action_state_t* ) override {}
 };
 
@@ -640,9 +647,17 @@ struct hammer_of_wrath_t : public holy_power_generator_t
   }
 };
 
+struct zeal_t : public paladin_melee_attack_t
+{
+  zeal_t( paladin_t* p ) : paladin_melee_attack_t( "zeal", p, p -> find_spell( 269937 ) )
+  { background = true; }
+};
+
 // Initialization
 action_t* paladin_t::create_action_retribution( const std::string& name, const std::string& options_str )
 {
+  if ( !active_zeal ) active_zeal = new zeal_t( this );
+
   if ( name == "blade_of_justice"          ) return new blade_of_justice_t         ( this, options_str );
   if ( name == "crusade"                   ) return new crusade_t                  ( this, options_str );
   if ( name == "divine_storm"              ) return new divine_storm_t             ( this, options_str );
@@ -670,6 +685,7 @@ void paladin_t::create_buffs_retribution()
   buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
   buffs.shield_of_vengeance            = new buffs::shield_of_vengeance_buff_t( this );
   buffs.sacred_judgment                = make_buff( this, "sacred_judgment", find_spell( 246973 ) );
+  buffs.divine_judgment                = make_buff( this, "divine_judgment", find_spell( 271581 ) );
 
   buffs.scarlet_inquisitors_expurgation = make_buff( this, "scarlet_inquisitors_expurgation", find_spell( 248289 ) )
     ->set_default_value( find_spell( 248289 ) -> effectN( 1 ).percent() );
@@ -705,7 +721,7 @@ void paladin_t::init_spells_retribution()
   talents.fist_of_justice            = find_talent_spell( "Fist of Justice" );
   talents.repentance                 = find_talent_spell( "Repentance" );
   talents.blinding_light             = find_talent_spell( "Blinding Light" );
-  talents.divine_vengeance           = find_talent_spell( "Divine Vengeance" );
+  talents.divine_judgment            = find_talent_spell( "Divine Judgment" );
   talents.consecration               = find_talent_spell( "Consecration" );
   talents.wake_of_ashes              = find_talent_spell( "Wake of Ashes" );
   talents.justicars_vengeance        = find_talent_spell( "Justicar's Vengeance" );

@@ -50,6 +50,7 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   active_judgment_of_light_proc       = nullptr;
   active_sotr                         = nullptr;
   active_protector_of_the_innocent    = nullptr;
+  active_zeal                         = nullptr;
 
   cooldowns.avengers_shield           = get_cooldown( "avengers_shield" );
   cooldowns.judgment                  = get_cooldown("judgment");
@@ -312,7 +313,7 @@ struct consecration_t : public paladin_spell_t
         // spawn at feet of player
         .x( execute_state -> action -> player -> x_position )
         .y( execute_state -> action -> player -> y_position )
-        .n_pulses( 11 )
+        .duration( ground_effect_duration )
         .start_time( sim -> current_time()  )
         .action( damage_tick )
         .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
@@ -642,6 +643,9 @@ struct melee_t : public paladin_melee_attack_t
       }
       if ( p() -> buffs.zeal -> check() )
       {
+        if ( p() -> active_zeal ) {
+          p() -> active_zeal -> schedule_execute();
+        }
         p() -> buffs.zeal -> decrement();
       }
     }
@@ -854,6 +858,10 @@ struct judgment_t : public paladin_melee_attack_t
     {
       p() -> buffs.zeal -> trigger( p() -> talents.zeal -> effectN( 1 ).base_value() );
     }
+    if ( p() -> talents.divine_judgment -> ok() )
+    {
+      p() -> buffs.divine_judgment -> expire();
+    }
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
       p() -> buffs.sacred_judgment -> trigger();
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B4 ) )
@@ -863,6 +871,14 @@ struct judgment_t : public paladin_melee_attack_t
   proc_types proc_type() const override
   {
     return PROC1_MELEE_ABILITY;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+    if ( p() -> buffs.divine_judgment -> up() )
+      am *= 1.0 + p() -> buffs.divine_judgment -> data().effectN( 1 ).percent() * p() -> buffs.divine_judgment -> stack();
+    return am;
   }
 
   // Special things that happen when Judgment damages target

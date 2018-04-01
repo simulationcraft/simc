@@ -127,6 +127,7 @@ public:
   action_t* active_judgment_of_light_proc;
   action_t* active_sotr;
   heal_t*   active_protector_of_the_innocent;
+  action_t* active_zeal;
 
   const special_effect_t* whisper_of_the_nathrezim;
   const special_effect_t* liadrins_fury_unleashed;
@@ -175,6 +176,7 @@ public:
     buff_t* righteous_verdict;
     buff_t* zeal;
     buff_t* inquisition;
+    buff_t* divine_judgment;
 
     buff_t* divine_steed;
     buff_t* aegis_of_light;
@@ -372,7 +374,7 @@ public:
     const spell_data_t* fist_of_justice;
     const spell_data_t* repentance;
     const spell_data_t* blinding_light;
-    const spell_data_t* divine_vengeance;
+    const spell_data_t* divine_judgment;
     const spell_data_t* consecration;
     const spell_data_t* wake_of_ashes;
     // skip cavalier
