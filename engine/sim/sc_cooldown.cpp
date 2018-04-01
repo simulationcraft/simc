@@ -151,7 +151,7 @@ cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
 // cooldown. Actions are associated by start() calls.
 void cooldown_t::adjust_recharge_multiplier()
 {
-  if ( up() )
+  if ( ( charges == 1 && up() ) || ! recharge_event )
   {
     return;
   }
