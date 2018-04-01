@@ -15,11 +15,6 @@ namespace warlock {
           if (p()->special_action->get_dot()->is_ticking()) return false;
           return warlock_pet_melee_attack_t::ready();
         }
-
-        double composite_attack_power() const override
-        {
-          return warlock_pet_melee_attack_t::composite_attack_power() * p()->find_spell(30213)->effectN(1).ap_coeff();
-        }
       };
       struct axe_toss_t : public warlock_pet_spell_t {
         axe_toss_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_spell_t("Axe Toss", p, p -> find_spell(89766)) {
@@ -36,10 +31,6 @@ namespace warlock {
           aoe = -1;
           background = true;
           weapon = &(p->main_hand_weapon);
-        }
-        double composite_attack_power() const override
-        {
-          return melee_attack_t::composite_attack_power() * p()->find_spell(89753)->effectN(1).ap_coeff();
         }
       };
       struct felstorm_t : public warlock_pet_melee_attack_t {
@@ -69,10 +60,6 @@ namespace warlock {
           warlock_pet_melee_attack_t::last_tick(d);
           if (!p()->is_sleeping() && !p()->melee_attack->target->is_sleeping())
               p()->melee_attack->execute();
-        }
-        double composite_attack_power() const override
-        {
-          return melee_attack_t::composite_attack_power() * p()->find_spell(89753)->effectN(1).ap_coeff();
         }
       };
       struct soul_strike_t : public warlock_pet_melee_attack_t {
@@ -174,7 +161,7 @@ namespace warlock {
         action_list_str = "travel/dreadbite";
         regen_type = REGEN_DISABLED;
         owner_coeff.health = 0.4;
-        owner_coeff.ap_from_sp = 1.1; // HOTFIX
+        owner_coeff.ap_from_sp = 0.6;
       }
 
       void dreadstalker_t::init_base_stats()
@@ -235,14 +222,6 @@ namespace warlock {
             c += c * p()->find_spell(265273)->effectN(3).percent();
           }
           return c;
-        }
-
-        virtual double action_multiplier() const override
-        {
-          double m = warlock_pet_spell_t::action_multiplier();
-          m *= 1.1;
-
-          return m;
         }
       };
 
