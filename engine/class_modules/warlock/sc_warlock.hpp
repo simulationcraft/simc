@@ -457,11 +457,13 @@ namespace warlock
           propagate_const<buff_t*> the_expendables;
           propagate_const<buff_t*> rage_of_guldan;
           propagate_const<buff_t*> demonic_power;
+          propagate_const<buff_t*> demonic_strength;
         } buffs;
 
         struct active_t
         {
           melee_attack_t* soul_strike;
+          melee_attack_t* demonic_strength_felstorm;
         } active;
 
         bool is_grimoire_of_service = false;

@@ -32,6 +32,17 @@ namespace warlock {
           background = true;
           weapon = &(p->main_hand_weapon);
         }
+
+        virtual double action_multiplier() const override
+        {
+          double m = warlock_pet_melee_attack_t::action_multiplier();
+          if (p()->buffs.demonic_strength->check())
+          {
+            m *= p()->buffs.demonic_strength->default_value;
+          }
+
+          return m;
+        }
       };
       struct felstorm_t : public warlock_pet_melee_attack_t {
         felstorm_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_melee_attack_t("felstorm", p, p -> find_spell(89751)) {
@@ -46,6 +57,28 @@ namespace warlock {
           tick_action = new felstorm_tick_t(p, data());
         }
 
+        felstorm_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("demonic_strength_felstorm", p, p -> find_spell(89751)) {
+          tick_zero = true;
+          hasted_ticks = false;
+          may_miss = false;
+          may_crit = false;
+          weapon_multiplier = 0;
+
+          dynamic_tick_action = true;
+          tick_action = new felstorm_tick_t(p, data());
+        }
+
+        virtual double action_multiplier() const override
+        {
+          double m = warlock_pet_melee_attack_t::action_multiplier();
+          if (p()->buffs.demonic_strength->check())
+          {
+            m *= p()->buffs.demonic_strength->default_value;
+          }
+
+          return m;
+        }
+
         virtual void cancel() override {
           warlock_pet_melee_attack_t::cancel();
           get_dot()->cancel();
@@ -58,6 +91,10 @@ namespace warlock {
 
         virtual void last_tick(dot_t* d) override {
           warlock_pet_melee_attack_t::last_tick(d);
+
+          if(p()->buffs.demonic_strength->up())
+            p()->buffs.demonic_strength->expire();
+
           if (!p()->is_sleeping() && !p()->melee_attack->target->is_sleeping())
               p()->melee_attack->execute();
         }
@@ -315,10 +352,15 @@ namespace warlock {
         ->set_default_value(find_spell(265273)->effectN(1).percent())
         ->set_cooldown(timespan_t::from_seconds(0))
         ->set_duration(find_spell(265273)->duration());
+      buffs.demonic_strength = make_buff(this, "demonic_strength", find_spell(267171))
+        ->set_default_value(find_spell(267171)->effectN(2).percent())
+        ->set_cooldown(timespan_t::from_seconds(0))
+        ->set_duration(find_spell(267171)->duration());
     }
 
     void warlock_pet_t::init_spells_demonology() {
       active.soul_strike = new felguard::soul_strike_t(this);
+      active.demonic_strength_felstorm = new felguard::felstorm_t(this);
     }
   }
 
@@ -618,6 +660,26 @@ namespace warlock {
     };
 
     // Talents
+    struct demonic_strength_t : public warlock_spell_t
+    {
+      demonic_strength_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("demonic_strength", p, p->talents.demonic_strength)
+      {
+        parse_options(options_str);
+      }
+
+      void execute() override
+      {
+        warlock_spell_t::execute();
+        if (p()->warlock_pet_list.active->pet_type == PET_FELGUARD)
+        {
+          p()->warlock_pet_list.active->buffs.demonic_strength->trigger();
+          p()->warlock_pet_list.active->active.demonic_strength_felstorm->set_target(execute_state->target);
+          p()->warlock_pet_list.active->active.demonic_strength_felstorm->execute();
+        }
+      }
+    };
+
     struct bilescourge_bombers_t : public warlock_spell_t
     {
       struct bilescourge_bombers_tick_t : public warlock_spell_t
@@ -803,6 +865,7 @@ namespace warlock {
     if (action_name == "hand_of_guldan") return new         hand_of_guldan_t(this, options_str);
     if (action_name == "implosion") return new              implosion_t(this, options_str);
 
+    if (action_name == "demonic_strength") return new       demonic_strength_t(this, options_str);
     if (action_name == "bilescourge_bombers") return new    bilescourge_bombers_t(this, options_str);
     if (action_name == "doom")          return new          doom_t(this, options_str);
     if (action_name == "power_siphon") return new           power_siphon_t(this, options_str);
@@ -896,8 +959,11 @@ namespace warlock {
     def -> add_action("doom,if=talent.doom.enabled&refreshable");
     def -> add_action("call_dreadstalkers");
     def -> add_action("summon_demonic_tyrant,if=prev_gcd.1.hand_of_guldan");
+    def -> add_action("bilescourge_bombers");
     def -> add_action("hand_of_guldan,if=soul_shard>=3");
-    def -> add_action("demonbolt,if=buff.demonic_core.stack>0");
+    def -> add_action("soul_strike");
+    def -> add_action("demonbolt,if=buff.demonic_core.stack>0&!talent.from_the_shadows.enabled");
+    def -> add_action("demonbolt,if=talent.from_the_shadows.enabled&(debuff.from_the_shadows.remains|buff.demonic_core.stack=4)");
     def -> add_action("shadow_bolt");
   }
 
