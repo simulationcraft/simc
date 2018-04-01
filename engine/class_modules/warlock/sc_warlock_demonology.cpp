@@ -10,23 +10,15 @@ namespace warlock {
           aoe = -1;
           weapon = &(p->main_hand_weapon);
         }
+
         virtual bool ready() override {
           if (p()->special_action->get_dot()->is_ticking()) return false;
           return warlock_pet_melee_attack_t::ready();
         }
-        /*
-        virtual double action_multiplier() const override
-        {
-          double m = warlock_pet_melee_attack_t::action_multiplier();
-          m *= 0.925;
-
-          return m;
-        }
-        */
 
         double composite_attack_power() const override
         {
-          return melee_attack_t::composite_attack_power() * p()->find_spell(30213)->effectN(1).ap_coeff();
+          return warlock_pet_melee_attack_t::composite_attack_power() * p()->find_spell(30213)->effectN(1).ap_coeff();
         }
       };
       struct axe_toss_t : public warlock_pet_spell_t {
@@ -83,12 +75,22 @@ namespace warlock {
           return melee_attack_t::composite_attack_power() * p()->find_spell(89753)->effectN(1).ap_coeff();
         }
       };
+      struct soul_strike_t : public warlock_pet_melee_attack_t {
+        soul_strike_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("Soul Strike", p, p->find_spell(267964)) {
+        }
+
+        virtual bool ready() override {
+          if (p()->pet_type != PET_FELGUARD) return false;
+          if (p()->special_action->get_dot()->is_ticking()) return false;
+          return warlock_pet_melee_attack_t::ready();
+        }
+      };
 
       felguard_pet_t::felguard_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
         warlock_pet_t(sim, owner, name, PET_FELGUARD, name != "felguard") {
         action_list_str += "/felstorm";
         action_list_str += "/legion_strike,if=cooldown.felstorm.remains";
-        //owner_coeff.ap_from_sp = 0.76;
+        owner_coeff.ap_from_sp = 0.5;
       }
 
       void felguard_pet_t::init_base_stats() {
@@ -334,6 +336,10 @@ namespace warlock {
         ->set_default_value(find_spell(265273)->effectN(1).percent())
         ->set_cooldown(timespan_t::from_seconds(0))
         ->set_duration(find_spell(265273)->duration());
+    }
+
+    void warlock_pet_t::init_spells_demonology() {
+      active.soul_strike = new felguard::soul_strike_t(this);
     }
   }
 
@@ -690,6 +696,34 @@ namespace warlock {
       }
     };
 
+    struct soul_strike_t : public warlock_spell_t
+    {
+      soul_strike_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("Soul Strike", p, p->talents.soul_strike)
+      {
+        parse_options(options_str);
+        energize_type = ENERGIZE_ON_CAST;
+        energize_resource = RESOURCE_SOUL_SHARD;
+        energize_amount = 1;
+      }
+      void execute() override
+      {
+        warlock_spell_t::execute();
+        if (p()->warlock_pet_list.active->pet_type == PET_FELGUARD)
+        {
+          p()->warlock_pet_list.active->active.soul_strike->set_target(execute_state->target);
+          p()->warlock_pet_list.active->active.soul_strike->execute();
+        }
+      }
+      bool ready() override
+      {
+        if (p()->warlock_pet_list.active->pet_type == PET_FELGUARD) // Range check from the pet.
+          return warlock_spell_t::ready();
+
+        return false;
+      }
+    };
+
     struct grimoire_of_service_t : public summon_pet_t {
           grimoire_of_service_t(warlock_t* p, const std::string& pet_name, const std::string& options_str) :
               summon_pet_t("service_" + pet_name, p, p -> talents.grimoire_of_service -> ok() ? p -> find_class_spell("Grimoire: " + pet_name) : spell_data_t::not_found()) {
@@ -743,6 +777,7 @@ namespace warlock {
 
     if (action_name == "doom")          return new          doom_t(this, options_str);
     if (action_name == "power_siphon") return new           power_siphon_t(this, options_str);
+    if (action_name == "soul_strike") return new            soul_strike_t(this, options_str);
     if (action_name == "inner_demons") return new           inner_demons_t(this, options_str);
 
     if (action_name == "call_dreadstalkers") return new     call_dreadstalkers_t(this, options_str);
@@ -800,6 +835,7 @@ namespace warlock {
     talents.doom                            = find_talent_spell("Doom");
     talents.dreadlash                       = find_talent_spell("Dreadlash");
     talents.power_siphon                    = find_talent_spell("Power Siphon");
+    talents.soul_strike                     = find_talent_spell("Soul Strike");
     talents.summon_vilefiend                = find_talent_spell("Summon Vilefiend");
     talents.demonic_strength                = find_talent_spell("Demonic Strength");
     talents.biliescourge_bombers            = find_talent_spell("Biliescourge Bombers");
@@ -808,6 +844,8 @@ namespace warlock {
     talents.sacrificed_souls                = find_talent_spell("Sacrificed Souls");
     talents.inner_demons                    = find_talent_spell("Inner Demons");
     talents.nether_portal                   = find_talent_spell("Nether Portal");
+
+    //active.soul_strike                      = new pets::felguard::soul_strike_t(this->warlock_pet_list.active); 
   }
 
   void warlock_t::init_gains_demonology() {

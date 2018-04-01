@@ -90,6 +90,7 @@ namespace warlock
         action_t* chaotic_flames;
         spell_t* rain_of_fire;
         spell_t* corruption;
+        melee_attack_t* soul_strike;
       } active;
 
       // Talents
@@ -456,6 +457,11 @@ namespace warlock
           propagate_const<buff_t*> demonic_power;
         } buffs;
 
+        struct active_t
+        {
+          melee_attack_t* soul_strike;
+        } active;
+
         bool is_grimoire_of_service = false;
         bool is_demonbolt_enabled = true;
         bool is_lord_of_flames = false;
@@ -468,6 +474,7 @@ namespace warlock
         void init_base_stats() override;
         void init_action_list() override;
         void create_buffs() override;
+        void init_spells() override;
         bool create_actions() override;
         void schedule_ready( timespan_t delta_time = timespan_t::zero(),
           bool   waiting = false ) override;
@@ -480,6 +487,7 @@ namespace warlock
         double composite_spell_speed() const override;
 
         void create_buffs_demonology();
+        void init_spells_demonology();
 
         resource_e primary_resource() const override { return RESOURCE_ENERGY; }
 
@@ -615,8 +623,8 @@ namespace warlock
           warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() ), oh( nullptr )
         {
           school = SCHOOL_PHYSICAL;
-          weapon = &( p->main_hand_weapon );
-          weapon_multiplier = 0.76;
+          weapon = &(p->main_hand_weapon);
+          weapon_multiplier = 0.72;
           base_execute_time = weapon->swing_time;
           may_crit = background = repeating = true;
 

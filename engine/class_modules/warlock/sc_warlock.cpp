@@ -13,6 +13,133 @@ namespace warlock
       owner_coeff.health = 0.5;
     }
 
+    namespace felhunter
+    {
+      struct shadow_bite_t : public warlock_pet_spell_t
+      {
+        shadow_bite_t(warlock_pet_t* p) :
+          warlock_pet_spell_t(p, "Shadow Bite") { }
+
+        double composite_spell_power() const override
+        {
+          return warlock_pet_spell_t::composite_spell_power() * (p()->find_spell(54049)->effectN(1).base_value() + p()->find_spell(54049)->effectN(1).sp_coeff());
+        }
+      };
+
+      felhunter_pet_t::felhunter_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
+        warlock_pet_t(sim, owner, name, PET_FELHUNTER, name != "felhunter")
+      {
+        action_list_str = "shadow_bite";
+        owner_coeff.ap_from_sp = 0.9123;
+        owner_coeff.sp_from_sp = 0.9123;
+      }
+
+      void felhunter_pet_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+
+      action_t* felhunter_pet_t::create_action(const std::string& name, const std::string& options_str)
+      {
+        if (name == "shadow_bite") return new shadow_bite_t(this);
+        return warlock_pet_t::create_action(name, options_str);
+      }
+    }
+
+    namespace imp
+    {
+      struct firebolt_t : public warlock_pet_spell_t
+      {
+        firebolt_t(warlock_pet_t* p) :
+          warlock_pet_spell_t("Firebolt", p, p -> find_spell(3110)) { }
+      };
+
+      imp_pet_t::imp_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
+        warlock_pet_t(sim, owner, name, PET_IMP, name != "imp")
+      {
+        action_list_str = "firebolt";
+      }
+
+      action_t* imp_pet_t::create_action(const std::string& name, const std::string& options_str)
+      {
+        if (name == "firebolt") return new firebolt_t(this);
+        return warlock_pet_t::create_action(name, options_str);
+      }
+    }
+
+    namespace succubus
+    {
+      struct lash_of_pain_t : public warlock_pet_spell_t
+      {
+        lash_of_pain_t(warlock_pet_t* p) :
+          warlock_pet_spell_t(p, "Lash of Pain") { }
+      };
+
+      struct whiplash_t : public warlock_pet_spell_t
+      {
+        whiplash_t(warlock_pet_t* p) :
+          warlock_pet_spell_t(p, "Whiplash")
+        {
+          aoe = -1;
+        }
+      };
+
+      succubus_pet_t::succubus_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
+        warlock_pet_t(sim, owner, name, PET_SUCCUBUS, name != "succubus")
+      {
+        action_list_str = "lash_of_pain";
+        owner_coeff.ap_from_sp = 0.5;
+        owner_coeff.ap_from_sp *= 1.2;
+      }
+
+      void succubus_pet_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+
+        main_hand_weapon.swing_time = timespan_t::from_seconds(3.0);
+        melee_attack = new warlock_pet_melee_t(this);
+        if (!util::str_compare_ci(name_str, "service_succubus"))
+          special_action = new whiplash_t(this);
+      }
+
+      action_t* succubus_pet_t::create_action(const std::string& name, const std::string& options_str)
+      {
+        if (name == "lash_of_pain") return new lash_of_pain_t(this);
+
+        return warlock_pet_t::create_action(name, options_str);
+      }
+    }
+
+    namespace voidwalker
+    {
+      struct torment_t :
+        public warlock_pet_spell_t
+      {
+        torment_t(warlock_pet_t* p) :
+          warlock_pet_spell_t(p, "Torment") { }
+      };
+
+      voidwalker_pet_t::voidwalker_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
+        warlock_pet_t(sim, owner, name, PET_VOIDWALKER, name != "voidwalker")
+      {
+        action_list_str = "torment";
+        owner_coeff.ap_from_sp *= 1.2; // PTR
+      }
+
+      void voidwalker_pet_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+
+      action_t* voidwalker_pet_t::create_action(const std::string& name, const std::string& options_str)
+      {
+        if (name == "torment") return new torment_t(this);
+        return warlock_pet_t::create_action(name, options_str);
+      }
+    }
+
     void warlock_pet_t::init_base_stats()
     {
       pet_t::init_base_stats();
@@ -76,6 +203,14 @@ namespace warlock
       buffs.rage_of_guldan = make_buff( this, "rage_of_guldan", find_spell( 257926 ) )->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ); //change spell id to 253014 when whitelisted
     }
 
+    void warlock_pet_t::init_spells()
+    {
+      pet_t::init_spells();
+
+      if (o()->specialization() == WARLOCK_DEMONOLOGY)
+        init_spells_demonology();
+    }
+
     void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
     {
       dot_t* d;
@@ -90,6 +225,11 @@ namespace warlock
     double warlock_pet_t::composite_player_multiplier( school_e school ) const
     {
       double m = pet_t::composite_player_multiplier( school );
+
+      if (o()->specialization() == WARLOCK_DEMONOLOGY)
+      {
+        m *= 1.0 + o()->cache.mastery_value();
+      }
 
       if ( buffs.rage_of_guldan->check() )
         m *= 1.0 + ( buffs.rage_of_guldan->default_value / 100 );
@@ -151,133 +291,6 @@ namespace warlock
     {
       double css = pet_t::composite_spell_speed();
       return css;
-    }
-
-    namespace felhunter
-    {
-      struct shadow_bite_t : public warlock_pet_spell_t
-      {
-        shadow_bite_t( warlock_pet_t* p ) :
-          warlock_pet_spell_t( p, "Shadow Bite" ) { }
-
-        double composite_spell_power() const override
-        {
-          return warlock_pet_spell_t::composite_spell_power() * (p()->find_spell(54049)->effectN(1).base_value() + p()->find_spell(54049)->effectN(1).sp_coeff());
-        }
-      };
-
-      felhunter_pet_t::felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
-        warlock_pet_t( sim, owner, name, PET_FELHUNTER, name != "felhunter" )
-      {
-        action_list_str = "shadow_bite";
-        owner_coeff.ap_from_sp = 0.9123;
-        owner_coeff.sp_from_sp = 0.9123;
-      }
-
-      void felhunter_pet_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-        melee_attack = new warlock_pet_melee_t( this );
-      }
-
-      action_t* felhunter_pet_t::create_action( const std::string& name, const std::string& options_str )
-      {
-        if ( name == "shadow_bite" ) return new shadow_bite_t( this );
-        return warlock_pet_t::create_action( name, options_str );
-      }
-    }
-
-    namespace imp
-    {
-      struct firebolt_t : public warlock_pet_spell_t
-      {
-        firebolt_t( warlock_pet_t* p ) :
-          warlock_pet_spell_t( "Firebolt", p, p -> find_spell( 3110 ) ) { }
-      };
-
-      imp_pet_t::imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
-        warlock_pet_t( sim, owner, name, PET_IMP, name != "imp" )
-      {
-        action_list_str = "firebolt";
-      }
-
-      action_t* imp_pet_t::create_action( const std::string& name, const std::string& options_str )
-      {
-        if ( name == "firebolt" ) return new firebolt_t( this );
-        return warlock_pet_t::create_action( name, options_str );
-      }
-    }
-
-    namespace succubus
-    {
-      struct lash_of_pain_t : public warlock_pet_spell_t
-      {
-        lash_of_pain_t( warlock_pet_t* p ) :
-          warlock_pet_spell_t( p, "Lash of Pain" ) { }
-      };
-
-      struct whiplash_t : public warlock_pet_spell_t
-      {
-        whiplash_t( warlock_pet_t* p ) :
-          warlock_pet_spell_t( p, "Whiplash" )
-        {
-          aoe = -1;
-        }
-      };
-
-      succubus_pet_t::succubus_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
-        warlock_pet_t( sim, owner, name, PET_SUCCUBUS, name != "succubus" )
-      {
-        action_list_str = "lash_of_pain";
-        owner_coeff.ap_from_sp = 0.5;
-        owner_coeff.ap_from_sp *= 1.2;
-      }
-
-      void succubus_pet_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-
-        main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
-        melee_attack = new warlock_pet_melee_t( this );
-        if ( !util::str_compare_ci( name_str, "service_succubus" ) )
-          special_action = new whiplash_t( this );
-      }
-
-      action_t* succubus_pet_t::create_action( const std::string& name, const std::string& options_str )
-      {
-        if ( name == "lash_of_pain" ) return new lash_of_pain_t( this );
-
-        return warlock_pet_t::create_action( name, options_str );
-      }
-    }
-
-    namespace voidwalker
-    {
-      struct torment_t :
-        public warlock_pet_spell_t
-      {
-        torment_t( warlock_pet_t* p ) :
-          warlock_pet_spell_t( p, "Torment" ) { }
-      };
-
-      voidwalker_pet_t::voidwalker_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
-        warlock_pet_t( sim, owner, name, PET_VOIDWALKER, name != "voidwalker" )
-      {
-        action_list_str = "torment";
-        owner_coeff.ap_from_sp *= 1.2; // PTR
-      }
-
-      void voidwalker_pet_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-        melee_attack = new warlock_pet_melee_t( this );
-      }
-
-      action_t* voidwalker_pet_t::create_action( const std::string& name, const std::string& options_str )
-      {
-        if ( name == "torment" ) return new torment_t( this );
-        return warlock_pet_t::create_action( name, options_str );
-      }
     }
   } // end namespace pets
 
