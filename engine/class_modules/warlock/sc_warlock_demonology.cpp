@@ -618,6 +618,51 @@ namespace warlock {
     };
 
     // Talents
+    struct bilescourge_bombers_t : public warlock_spell_t
+    {
+      struct bilescourge_bombers_tick_t : public warlock_spell_t
+      {
+        bilescourge_bombers_tick_t(warlock_t* p) :
+          warlock_spell_t("bilescourge_bombers_tick", p, p -> find_spell(267213))
+        {
+          aoe = -1;
+          background = dual = direct_tick = true; // Legion TOCHECK
+          callbacks = false;
+          radius = p->find_spell(267211)->effectN(1).radius();
+        }
+      };
+
+      bilescourge_bombers_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("bilescourge_bombers", p, p -> find_spell(267211))
+      {
+        parse_options(options_str);
+        dot_duration = timespan_t::zero();
+        may_miss = may_crit = false;
+        base_tick_time = data().duration() / 12.0;
+        base_execute_time = timespan_t::zero();
+
+        if (!p->active.bilescourge_bombers)
+        {
+          p->active.bilescourge_bombers = new bilescourge_bombers_tick_t(p);
+          p->active.bilescourge_bombers->stats = stats;
+        }
+      }
+
+      virtual void execute() override
+      {
+        warlock_spell_t::execute();
+
+        make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
+          .target(execute_state->target)
+          .x(execute_state->target->x_position)
+          .y(execute_state->target->y_position)
+          .pulse_time(base_tick_time * player->cache.spell_haste())
+          .duration(data().duration() * player->cache.spell_haste())
+          .start_time(sim->current_time())
+          .action(p()->active.bilescourge_bombers));
+      }
+    };
+
     struct power_siphon_t : public warlock_spell_t {
       power_siphon_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("power_siphon", p, p -> talents.power_siphon) {
         parse_options(options_str);
@@ -758,6 +803,7 @@ namespace warlock {
     if (action_name == "hand_of_guldan") return new         hand_of_guldan_t(this, options_str);
     if (action_name == "implosion") return new              implosion_t(this, options_str);
 
+    if (action_name == "bilescourge_bombers") return new    bilescourge_bombers_t(this, options_str);
     if (action_name == "doom")          return new          doom_t(this, options_str);
     if (action_name == "power_siphon") return new           power_siphon_t(this, options_str);
     if (action_name == "soul_strike") return new            soul_strike_t(this, options_str);
