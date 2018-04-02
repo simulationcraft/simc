@@ -1214,7 +1214,7 @@ void warlock_t::combat_begin()
       if ( deaths_embrace_fixed_time )
       {
         sim->fixed_time = true;
-        sim->errorf( "To fix issues with the target exploding <20% range due to execute, fixed_time=1 has been enabled. This gives similar results" );
+        sim->errorf( "To fix issues with the target exploding <20%% range due to execute, fixed_time=1 has been enabled. This gives similar results" );
         sim->errorf( "to execute's usage in a raid sim, without taking an eternity to simulate. To disable this option, add warrior_fixed_time=0 to your sim." );
       }
     }
