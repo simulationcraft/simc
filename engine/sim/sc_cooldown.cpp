@@ -155,7 +155,7 @@ cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
  */
 void cooldown_t::adjust_recharge_multiplier()
 {
-  if ( ( charges == 1 && up() ) || ! recharge_event )
+  if ( ( charges == 1 && up() ) || ( charges != 1 && ! recharge_event ) )
   {
     return;
   }
