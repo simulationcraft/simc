@@ -1420,6 +1420,8 @@ class SpellDataGenerator(DataGenerator):
 		  ( 270569, 2 ),		# From the Shadows debuff
 		  ( 265279, 5 ),		# Demonic Tyrant - Demonfire Blast
 		  ( 270481, 5 ),		# Demonic Tyrant - Demonfire
+		  ( 267971, 5 ),		# Demonic Tyrant - Demonic Consumption
+		  ( 267972, 5 ),		# Demonic Tyrant - Demonic Consumption (not sure which is needed)
 		  ( 260641, 5 ),		# Vilefiend - Bile Spit
         ),
 
