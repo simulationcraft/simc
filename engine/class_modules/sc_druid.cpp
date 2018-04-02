@@ -350,6 +350,7 @@ public:
     buff_t* wax_and_wane;
     buff_t* solar_solstice; //T21 4P Balance
     buff_t* stellar_empowerment;
+    buff_t* starfall;
     haste_buff_t* astral_acceleration;
 
     // Feral
@@ -6449,6 +6450,7 @@ struct starfall_t : public druid_spell_t
         if (p()->bugs)
             duration = timespan_t::from_millis(rng().range(9000, 10000));
         p()->buff.stellar_empowerment->trigger(1,p()->buff.stellar_empowerment->data().effectN(1).percent(),1,duration);
+        p()->buff.starfall->trigger();
     }
 };
 
@@ -7513,6 +7515,10 @@ void druid_t::create_buffs()
   buff.stellar_empowerment = buff_creator_t(this, "stellar_empowerment", find_spell(197637))
                                 .default_value(spec.stellar_empowerment->effectN(1).percent())
                                 .duration(timespan_t::from_seconds(8)); //seems blizzard removed any useful spelldata, so hardcore this for now.
+
+  buff.starfall              = buff_creator_t(this, "starfall", find_spell(191034))
+                              .duration(timespan_t::from_seconds(8));
+                            
 
   // Feral
 
@@ -9127,7 +9133,8 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   }
   else if ( util::str_compare_ci( name_str, "new_moon" )
             || util::str_compare_ci( name_str, "half_moon" )
-            || util::str_compare_ci( name_str, "full_moon" )  )
+            || util::str_compare_ci( name_str, "full_moon" )
+            || util::str_compare_ci(name_str, "free_full_moon"))
   {
     struct moon_stage_expr_t : public druid_expr_t
     {
@@ -9142,6 +9149,8 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
           stage = 1;
         else if ( util::str_compare_ci( name_str, "full_moon" ) )
           stage = 2;
+        else if (util::str_compare_ci(name_str, "free_full_moon"))
+          stage = 3;
         else
         {
           assert( false && "Bad name_str passed to moon_stage_expr_t" );
