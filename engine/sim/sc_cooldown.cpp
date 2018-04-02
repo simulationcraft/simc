@@ -199,7 +199,10 @@ void cooldown_t::adjust_recharge_multiplier()
         remains.total_seconds(), old_multiplier, recharge_multiplier );
   }
 
-  ready = sim.current_time() + new_remains;
+  if ( ! up() )
+  {
+    ready = sim.current_time() + new_remains;
+  }
   if ( charges == 1 )
   {
     last_charged = ready;
