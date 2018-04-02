@@ -695,7 +695,7 @@ namespace warlock {
       };
 
       bilescourge_bombers_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("bilescourge_bombers", p, p -> find_spell(267211))
+        warlock_spell_t("bilescourge_bombers", p, p->talents.bilescourge_bombers)
       {
         parse_options(options_str);
         dot_duration = timespan_t::zero();
@@ -954,7 +954,8 @@ namespace warlock {
 
   void warlock_t::create_apl_demonology() {
     action_priority_list_t* def = get_action_priority_list("default");
-       
+    
+    def -> add_action("demonic_strength,if=!cooldown.summon_demonic_tyrant.remains<10");
     def -> add_action("power_siphon,if=talent.power_siphon.enabled");
     def -> add_action("doom,if=talent.doom.enabled&refreshable");
     def -> add_action("call_dreadstalkers");
