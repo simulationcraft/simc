@@ -1099,39 +1099,57 @@ class WDC1Parser(DBCParserBase):
         self.id_table = []
         self.dbc_id_table = [ None ] * (self.last_id + 1)
 
-        # Process ID block
-        unpacker = Struct('%dI' % self.records)
-        record_id = 0
-        for dbc_id in unpacker.unpack_from(self.data, self.id_block_offset):
-            data_offset = 0
-            size = self.record_size
+        # If there's an offset map, parse all relevant data from it
+        if self.has_offset_map():
+            for record_id in range(0, self.last_id - self.first_id + 1):
+                ofs = self.offset_map_offset + record_id * _ITEMRECORD.size
 
-            # If there is an offset map, the correct data offset and record
-            # size needs to be fetched from the offset map. The offset map
-            # contains sparse entries (i.e., it has last_id-first_id entries,
-            # some of which are zeros if there is no dbc id for a given item.
-            if self.has_offset_map():
-                record_index = dbc_id - self.first_id
-                record_data_offset = self.offset_map_offset + record_index * _ITEMRECORD.size
-                data_offset, size = _ITEMRECORD.unpack_from(self.data, record_data_offset)
-            else:
+                data_offset, size = _ITEMRECORD.unpack_from(self.data, ofs)
+
+                if data_offset == 0:
+                    continue
+
+                dbc_id = record_id + self.first_id
+
+                # If the db2 file has a key block, we need to grab the key at this
+                # point from the block, to record it into the data we have. Storing
+                # the information now associates with the correct dbc id, since the
+                # key block is record index based, not dbc id based.
+                if self.has_key_block():
+                    key_id, _ = _CLONE_INFO.unpack_from(self.data,
+                        self.key_block_offset + _WDC1_KEY_HEADER.size + _CLONE_INFO.size * record_id)
+                else:
+                    key_id = 0
+
+                #print(ofs, data_offset, dbc_id, key_id, size)
+                record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size, key_id)
+                self.id_table.append(record_info)
+                self.dbc_id_table[dbc_id] = record_info
+        else:
+            # Process ID block
+            unpacker = Struct('%dI' % self.records)
+            record_id = 0
+            for dbc_id in unpacker.unpack_from(self.data, self.id_block_offset):
+                data_offset = 0
+                size = self.record_size
+
                 data_offset = self.data_offset + record_id * self.record_size
 
-            # If the db2 file has a key block, we need to grab the key at this
-            # point from the block, to record it into the data we have. Storing
-            # the information now associates with the correct dbc id, since the
-            # key block is record index based, not dbc id based.
-            if self.has_key_block():
-                key_id, _ = _CLONE_INFO.unpack_from(self.data,
-                    self.key_block_offset + _WDC1_KEY_HEADER.size + _CLONE_INFO.size * record_id)
-            else:
-                key_id = 0
+                # If the db2 file has a key block, we need to grab the key at this
+                # point from the block, to record it into the data we have. Storing
+                # the information now associates with the correct dbc id, since the
+                # key block is record index based, not dbc id based.
+                if self.has_key_block():
+                    key_id, _ = _CLONE_INFO.unpack_from(self.data,
+                        self.key_block_offset + _WDC1_KEY_HEADER.size + _CLONE_INFO.size * record_id)
+                else:
+                    key_id = 0
 
-            record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size, key_id)
-            self.id_table.append(record_info)
-            self.dbc_id_table[dbc_id] = record_info
+                record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size, key_id)
+                self.id_table.append(record_info)
+                self.dbc_id_table[dbc_id] = record_info
 
-            record_id += 1
+                record_id += 1
 
         logging.debug('Parsed id block')
 
