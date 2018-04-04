@@ -2364,6 +2364,11 @@ struct arcane_explosion_t : public arcane_mage_spell_t
       p() -> buffs.clearcasting -> decrement();
     }
 
+    if ( hit_any_target )
+    {
+      trigger_arcane_charge();
+    }
+
     p() -> buffs.quick_thinker -> trigger();
   }
 };
