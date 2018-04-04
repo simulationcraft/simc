@@ -761,6 +761,7 @@ struct rogue_attack_t : public melee_attack_t
     bool broadsides;
     bool t21_2pc_assassination;
     bool master_assassin;
+    bool toxic_blade;
   } affected_by;
 
   rogue_attack_t( const std::string& token, rogue_t* p,
@@ -885,6 +886,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.broadsides = data().affected_by( p() -> buffs.broadsides -> data().effectN( 4 ) );
     affected_by.t21_2pc_assassination = data().affected_by( p()->sets->set( ROGUE_ASSASSINATION, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.master_assassin = data().affected_by( p() -> spec.master_assassin -> effectN( 1 ) );
+    affected_by.toxic_blade = data().affected_by( p() -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ) );
   }
 
   void snapshot_state( action_state_t* state, dmg_e rt ) override
@@ -1145,7 +1147,7 @@ struct rogue_attack_t : public melee_attack_t
       m *= 1.0 + tdata -> dots.nightblade -> current_action -> data().effectN( 6 ).percent();
     }
 
-    if ( tdata -> debuffs.toxic_blade -> up() && data().affected_by( tdata -> debuffs.toxic_blade -> data().effectN( 1 ) ) )
+    if ( affected_by.toxic_blade )
     {
       m *= 1.0 + tdata -> debuffs.toxic_blade -> value();
     }
