@@ -4376,18 +4376,6 @@ struct phoenix_flames_splash_t : public fire_mage_spell_t
 
     fire_mage_spell_t::impact( s );
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = fire_mage_spell_t::action_multiplier();
-
-    // Phoenix Flames splash deal 25% less damage compared to the
-    // spell data/tooltip values. As of build 25881, 2018-01-221.
-    if ( p() -> bugs )
-      am *= 0.75;
-
-    return am;
-  }
 };
 
 struct phoenix_flames_t : public fire_mage_spell_t
