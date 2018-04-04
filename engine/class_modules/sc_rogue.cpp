@@ -760,6 +760,7 @@ struct rogue_attack_t : public melee_attack_t
     bool lesser_adrenaline_rush_gcd;
     bool broadsides;
     bool t21_2pc_assassination;
+    bool master_assassin;
   } affected_by;
 
   rogue_attack_t( const std::string& token, rogue_t* p,
@@ -883,6 +884,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.lesser_adrenaline_rush_gcd = data().affected_by( p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ) );
     affected_by.broadsides = data().affected_by( p() -> buffs.broadsides -> data().effectN( 4 ) );
     affected_by.t21_2pc_assassination = data().affected_by( p()->sets->set( ROGUE_ASSASSINATION, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ) );
+    affected_by.master_assassin = data().affected_by( p() -> spec.master_assassin -> effectN( 1 ) );
   }
 
   void snapshot_state( action_state_t* state, dmg_e rt ) override
@@ -1182,6 +1184,19 @@ struct rogue_attack_t : public melee_attack_t
     }
 
     return m;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = melee_attack_t::composite_crit_chance();
+
+    if ( affected_by.master_assassin )
+    {
+      c += p() -> buffs.master_assassin -> stack_value();
+      c += p() -> buffs.master_assassin_aura -> stack_value();
+    }
+
+    return c;
   }
 
   double target_armor( player_t* target ) const override
@@ -5822,10 +5837,6 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += buffs.mantle_of_the_master_assassin_aura -> stack_value(); // 7.1.5 Legendary
 
-  crit += buffs.master_assassin_aura->stack_value();
-  
-  crit += buffs.master_assassin -> stack_value();
-
   crit += buffs.t20_2pc_outlaw -> stack_value();
 
   return crit;
@@ -7086,12 +7097,10 @@ void rogue_t::create_buffs()
   buffs.dispatch                = make_buff( this, "dispatch", talent.dispatch )
                                   -> set_duration( timespan_t::from_seconds( 10.0 ) ); // I see no buff spell in spell data yet, hardcode for now.
   buffs.master_assassin_aura    = make_buff(this, "master_assassin_aura", talent.master_assassin)
-                                  -> set_default_value( spec.master_assassin->effectN( 1 ).percent() )
-                                  -> add_invalidate(CACHE_CRIT_CHANCE);
+                                  -> set_default_value( spec.master_assassin -> effectN( 1 ).percent() );
   buffs.master_assassin         = make_buff( this, "master_assassin", talent.master_assassin )
-                                  -> set_default_value( spec.master_assassin->effectN( 1 ).percent() )
-                                  -> set_duration( timespan_t::from_seconds( talent.master_assassin->effectN( 1 ).base_value() ) )
-                                  -> add_invalidate( CACHE_CRIT_CHANCE );
+                                  -> set_default_value( spec.master_assassin -> effectN( 1 ).percent() )
+                                  -> set_duration( timespan_t::from_seconds( talent.master_assassin -> effectN( 1 ).base_value() ) );
   buffs.hidden_blades_driver    = make_buff( this, "hidden_blades_driver", talent.hidden_blades )
                                   -> set_period( talent.hidden_blades -> effectN( 1 ).period() )
                                   -> set_quiet( true )
