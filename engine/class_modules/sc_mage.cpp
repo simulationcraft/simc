@@ -6743,6 +6743,10 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s )
 {
   double m = player_t::composite_player_pet_damage_multiplier( s );
 
+  m *= 1.0 + spec.arcane_mage -> effectN( 3 ).percent();
+  m *= 1.0 + spec.fire_mage -> effectN( 3 ).percent();
+  m *= 1.0 + spec.frost_mage -> effectN( 3 ).percent();
+
   m *= 1.0 + buffs.bone_chilling -> check_stack_value();
   m *= 1.0 + buffs.incanters_flow -> check_stack_value();
   m *= 1.0 + buffs.rune_of_power -> check_value();
