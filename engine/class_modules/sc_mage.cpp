@@ -2155,7 +2155,6 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     mantle_of_the_first_kirin_tor_chance( 0.0 )
   {
     parse_options( options_str );
-    base_aoe_multiplier *= data().effectN( 2 ).percent();
     cooldown -> hasted = true;
     if ( p -> action.legendary_arcane_orb )
     {
