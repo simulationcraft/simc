@@ -5716,30 +5716,19 @@ void mage_t::datacollection_end()
 
 void mage_t::regen( timespan_t periodicity )
 {
-  if ( regen_type == REGEN_DYNAMIC && sim->debug )
-    sim->out_debug.printf( "%s dynamic regen, last=%.3f interval=%.3f", name(), last_regen.total_seconds(),
-                           periodicity.total_seconds() );
+  player_t::regen( periodicity );
 
-  for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
+  if ( resources.is_active( RESOURCE_MANA ) && buffs.evocation -> check() )
   {
-    if ( resources.is_active( r ) )
+    double base = resource_regen_per_second( RESOURCE_MANA );
+    gain_t* gain = player_t::gains.resource_regen[ RESOURCE_MANA ];
+
+    if ( gain && base )
     {
-      double base  = resource_regen_per_second( r );
-      gain_t* gain = player_t::gains.resource_regen[ r ];
-
-      if ( gain && base )
-      {
-        if ( r == RESOURCE_MANA && buffs.evocation -> check() )
-        {
-          double evocation_boost = buffs.evocation -> default_value;
-          double evocation_gain = base * evocation_boost / ( 1.0 + evocation_boost );
-          base -= evocation_gain;
-
-          resource_gain( r, evocation_gain * periodicity.total_seconds(), gains.evocation );
-        }
-
-        resource_gain( r, base * periodicity.total_seconds(), gain );
-      }
+      resource_gain(
+        RESOURCE_MANA,
+        buffs.evocation -> default_value * base * periodicity.total_seconds(),
+        gains.evocation );
     }
   }
 }
@@ -6627,8 +6616,6 @@ double mage_t::resource_regen_per_second( resource_e r ) const
     {
       reg *= 1.0 + cache.mastery() * spec.savant -> effectN( 1 ).mastery_value();
     }
-
-    reg *= 1.0 + buffs.evocation -> check_value();
   }
 
   return reg;
