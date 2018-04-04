@@ -318,7 +318,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       264263, // Sonic Blast (Special Ability)
        90361, // Spirit Mend (Exotic Ability)
       264265, // Spirit Shock (Special Ability)
-       90328, // Spirit Walk
+       90328, // Spirit Walk (Bonus Ability)
       264056, // Spore Cloud (Special Ability)
       263852, // Talon Rend (Special Ability)
       242735, // Talon Slash
@@ -893,7 +893,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        19505, // Devour Magic (Special Ability)
        85692, // Doom Bolt
       205231, // Eye Laser
-      104318, // Fel Firebolt
+      104318, // Fel Firebolt (Basic Attack)
        89751, // Felstorm (Special Ability)
         3110, // Firebolt (Basic Attack)
        89792, // Flee (Special Ability)
@@ -1782,7 +1782,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     },
     // Specialization abilities for Unholy
     {
-       86536, // Plate Specialization
+       86536, // Plate Specialization (Passive)
        55090, // Scourge Strike
        85948, // Festering Strike
        49530, // Sudden Doom
@@ -1816,7 +1816,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        51490, // Thunderstorm
        51505, // Lava Burst
        77756, // Lava Surge
-       86108, // Mail Specialization
+       86108, // Mail Specialization (Passive)
       137040, // Elemental Shaman
       162699, // Stat Negation Aura - Intellect DPS
         8042, // Earth Shock
@@ -1846,7 +1846,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        58875, // Spirit Walk
        77223, // Mastery: Enhanced Elements
       137041, // Enhancement Shaman
-      157444, // Critical Strikes
+      157444, // Critical Strikes (Passive)
       162697, // Stat Negation Aura - Agility DPS
       187837, // Lightning Bolt
       188070, // Healing Surge
@@ -2056,7 +2056,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       121253, // Keg Smash
       124502, // Gift of the Ox
       137023, // Brewmaster Monk
-      157445, // Critical Strikes
+      157445, // Critical Strikes (Passive)
       115176, // Zen Meditation
       162700, // Stat Negation Aura - Agility Tank
       115203, // Fortifying Brew
@@ -2106,7 +2106,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       101545, // Flying Serpent Kick
       107428, // Rising Sun Kick
       116092, // Afterlife
-      120227, // Leather Specialization
+      120227, // Leather Specialization (Passive)
       115636, // Mastery: Combo Strikes
       124146, // Dual Wield
       122470, // Touch of Karma
@@ -2115,7 +2115,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       137384, // Combo Breaker
       137639, // Storm, Earth, and Fire
       116095, // Disable
-      157445, // Critical Strikes
+      157445, // Critical Strikes (Passive)
       162697, // Stat Negation Aura - Agility DPS
       103985, // Stance of the Fierce Tiger (Stance)
       115080, // Touch of Death
@@ -2160,19 +2160,19 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        93402, // Sunfire (Solar)
         5215, // Prowl
       197524, // Astral Influence
-      197911, // Astral Power
+      197911, // Astral Power (Passive)
         2782, // Remove Corruption
       231021, // Starsurge (Rank 2)
       231042, // Moonkin Form (Rank 2)
       231049, // Starfall (Rank 2)
       231050, // Sunfire (Rank 2)
       159456, // Travel Form (Rank 2)
-      228545, // Shapeshift Form
+      228545, // Shapeshift Form (Shapeshift)
            0,
     },
     // Specialization abilities for Feral
     {
-      106733, // Feral Overrides Passive
+      106733, // Feral Overrides Passive (Passive)
         5217, // Tiger's Fury
        16949, // Feral Instinct
         1079, // Rip
@@ -2184,7 +2184,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        77493, // Mastery: Razor Claws
        48484, // Infected Wounds
       137011, // Feral Druid
-      157447, // Critical Strikes
+      157447, // Critical Strikes (Passive)
       162697, // Stat Negation Aura - Agility DPS
        22570, // Maim
         1822, // Rake
@@ -2195,11 +2195,11 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       106832, // Thrash
       159286, // Primal Fury
       131768, // Feline Swiftness
-      197692, // Feral Overrides Passive
+      197692, // Feral Overrides Passive (Passive)
       106951, // Berserk
         2782, // Remove Corruption
       213764, // Swipe
-      228545, // Shapeshift Form
+      228545, // Shapeshift Form (Shapeshift)
       231052, // Rake (Rank 2)
       231055, // Tiger's Fury (Rank 2)
       231056, // Ferocious Bite (Rank 2)
@@ -2210,7 +2210,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     },
     // Specialization abilities for Guardian
     {
-      106734, // Guardian Overrides Passive
+      106734, // Guardian Overrides Passive (Passive)
        33873, // Nurturing Instinct
        16931, // Thick Hide
        86096, // Leather Specialization
@@ -2218,7 +2218,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       155783, // Mastery: Nature's Guardian
       159195, // Mastery: Nature's Guardian
       137010, // Guardian Druid
-      157447, // Critical Strikes
+      157447, // Critical Strikes (Passive)
       162700, // Stat Negation Aura - Agility Tank
        22812, // Barkskin
         6807, // Maul
@@ -2236,7 +2236,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       231065, // Lightning Reflexes
       231070, // Ironfur (Rank 2)
       159456, // Travel Form (Rank 2)
-      228545, // Shapeshift Form
+      228545, // Shapeshift Form (Shapeshift)
       270100, // Bear Form (Rank 2)
       273048, // Frenzied Regeneration (Rank 2)
            0,
