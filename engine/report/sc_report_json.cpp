@@ -617,8 +617,8 @@ void to_json( JsonOutput root, const player_t& p,
                                  ? bs.attack_crit_chance
                                  : bs.spell_crit_chance);
 
-  double attack_haste_pct = 1 / bs.attack_haste - 1;
-  double spell_haste_pct = 1 / bs.spell_haste - 1;
+  double attack_haste_pct = bs.attack_haste != 0 ? 1 / bs.attack_haste - 1 : 0;
+  double spell_haste_pct = bs.spell_haste != 0 ? 1 / bs.spell_haste - 1 : 0;
   add_non_zero( root[ "stats" ], "haste_rating",
                                  p.composite_melee_haste_rating() > p.composite_spell_haste_rating()
                                  ? p.composite_melee_haste_rating()
@@ -1846,7 +1846,7 @@ void print_json2_pretty( FILE* o, const sim_t& sim )
     root[ "notifications" ] = sim.error_list;
   }
 
-  std::array<char, 65536> buffer;
+  std::array<char, 1024000> buffer;
   FileWriteStream b( o, buffer.data(), buffer.size() );
   PrettyWriter<FileWriteStream> writer( b );
   doc.Accept( writer );
