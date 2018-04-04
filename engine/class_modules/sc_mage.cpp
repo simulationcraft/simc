@@ -2567,7 +2567,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   virtual bool usable_moving() const override
   {
-    if ( p() -> talents.slipstream -> ok() )
+    if ( p() -> talents.slipstream -> ok() && p() -> buffs.clearcasting -> check() )
       return true;
 
     return arcane_mage_spell_t::usable_moving();
