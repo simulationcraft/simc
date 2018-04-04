@@ -1436,6 +1436,25 @@ public:
     return c;
   }
 
+  struct buff_delay_event_t : public event_t
+  {
+    buff_t* buff;
+
+    buff_delay_event_t( buff_t* b, timespan_t delay )
+      : event_t( *b -> player, delay ), buff( b )
+    { }
+
+    virtual const char* name() const override
+    {
+      return "buff_delay";
+    }
+
+    virtual void execute() override
+    {
+      buff -> trigger();
+    }
+  };
+
   virtual void consume_resource() override
   {
     mage_spell_base_t::consume_resource();
@@ -1451,7 +1470,18 @@ public:
 
     double cc_proc_chance = 0.01 * last_resource_cost / mana_step;
 
-    p() -> buffs.clearcasting -> trigger( 1, buff_t::DEFAULT_VALUE(), cc_proc_chance );
+    if ( rng().roll( cc_proc_chance ) )
+    {
+      if ( p() -> buffs.clearcasting -> check() )
+      {
+        // TODO: Check the timing on this
+        make_event<buff_delay_event_t>( *sim, p() -> buffs.clearcasting, timespan_t::from_seconds( 0.15 ) );
+      }
+      else
+      {
+        p() -> buffs.clearcasting -> trigger();
+      }
+    }
   }
 
   virtual void update_ready( timespan_t cd ) override
@@ -1881,25 +1911,6 @@ struct frost_mage_spell_t : public mage_spell_t
     return mage_spell_t::init_finished();
   }
 
-  struct brain_freeze_delay_event_t : public event_t
-  {
-    mage_t* mage;
-
-    brain_freeze_delay_event_t( mage_t* p, timespan_t delay )
-      : event_t( *p, delay ), mage( p )
-    { }
-
-    virtual const char* name() const override
-    {
-      return "brain_freeze_delay";
-    }
-
-    virtual void execute() override
-    {
-      mage -> buffs.brain_freeze -> trigger();
-    }
-  };
-
   void trigger_fof( double chance, int stacks = 1, proc_t* source = nullptr )
   {
     if ( ! source )
@@ -1929,7 +1940,7 @@ struct frost_mage_spell_t : public mage_spell_t
       if ( p() -> buffs.brain_freeze -> check() )
       {
         // Brain Freeze was already active, delay the new application
-        make_event<brain_freeze_delay_event_t>( *sim, p(), timespan_t::from_seconds( 0.15 ) );
+        make_event<buff_delay_event_t>( *sim, p() -> buffs.brain_freeze, timespan_t::from_seconds( 0.15 ) );
       }
       else
       {
