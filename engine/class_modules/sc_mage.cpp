@@ -1671,12 +1671,14 @@ struct fire_mage_spell_t : public mage_spell_t
 {
   bool triggers_hot_streak;
   bool triggers_ignite;
+  bool triggers_kindling;
 
   fire_mage_spell_t( const std::string& n, mage_t* p,
                      const spell_data_t* s = spell_data_t::nil() ) :
     mage_spell_t( n, p, s ),
     triggers_hot_streak( false ),
-    triggers_ignite( false )
+    triggers_ignite( false ),
+    triggers_kindling( false )
   { }
 
   // Use only after schedule_execute, which sets time_to_execute.
@@ -1702,6 +1704,11 @@ struct fire_mage_spell_t : public mage_spell_t
       if ( triggers_hot_streak )
       {
         handle_hot_streak( s );
+      }
+
+      if ( triggers_kindling && p() -> talents.kindling -> ok() && s -> result == RESULT_CRIT )
+      {
+        p() -> cooldowns.combustion -> adjust( -1000 * p() -> talents.kindling -> effectN( 1 ).time_value() );
       }
     }
   }
@@ -3083,6 +3090,7 @@ struct fireball_t : public fire_mage_spell_t
     parse_options( options_str );
     triggers_hot_streak = true;
     triggers_ignite = true;
+    triggers_kindling = true;
     if ( p -> specialization() == MAGE_FIRE && p -> action.unstable_magic_explosion )
     {
       add_child( p -> action.unstable_magic_explosion );
@@ -3119,13 +3127,6 @@ struct fireball_t : public fire_mage_spell_t
       else
       {
         p() -> buffs.enhanced_pyrotechnics -> trigger();
-      }
-
-      if ( p() -> talents.kindling -> ok() && s -> result == RESULT_CRIT )
-      {
-        p() -> cooldowns.combustion
-            -> adjust( -1000 * p() -> talents.kindling
-                                   -> effectN( 1 ).time_value() );
       }
 
       trigger_unstable_magic( s );
@@ -3986,6 +3987,7 @@ struct fire_blast_t : public fire_mage_spell_t
 
     triggers_hot_streak = true;
     triggers_ignite = true;
+    triggers_kindling = true;
 
     base_crit += p -> spec.fire_blast_2 -> effectN( 1 ).percent();
   }
@@ -3996,21 +3998,6 @@ struct fire_blast_t : public fire_mage_spell_t
 
     // update_ready() assumes the ICD is affected by haste
     internal_cooldown -> start( data().cooldown() );
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    fire_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
-      {
-        p() -> cooldowns.combustion
-            -> adjust( -1000 * p() -> talents.kindling
-                                   -> effectN( 1 ).time_value() );
-      }
-    }
   }
 };
 
@@ -4406,6 +4393,7 @@ struct phoenix_flames_t : public fire_mage_spell_t
 
     triggers_hot_streak = true;
     triggers_ignite = true;
+    triggers_kindling = true;
     add_child( phoenix_flames_splash );
   }
 
@@ -4450,6 +4438,7 @@ struct pyroblast_t : public fire_mage_spell_t
 
     triggers_ignite = true;
     triggers_hot_streak = true;
+    triggers_kindling = true;
   }
 
   virtual double action_multiplier() const override
@@ -4534,13 +4523,6 @@ struct pyroblast_t : public fire_mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( s -> result == RESULT_CRIT && p() -> talents.kindling -> ok() )
-      {
-        p() -> cooldowns.combustion
-            -> adjust( -1000 * p() -> talents.kindling
-                                   -> effectN( 1 ).time_value()  );
-      }
-
       if ( p() -> sets -> has_set_bonus( MAGE_FIRE, T20, B4 ) && s -> result == RESULT_CRIT )
       {
         p() -> buffs.critical_massive -> trigger();
