@@ -2404,6 +2404,19 @@ struct blade_rush_t : public rogue_attack_t
     blade_rush_attack_t( rogue_t* p ) :
       rogue_attack_t( "blade_rush_attack", p, p -> find_spell( 271881 ) )
     {
+      aoe = -1;
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = rogue_attack_t::composite_da_multiplier( state );
+
+      if ( state -> target == state -> action -> target )
+        m *= data().effectN( 2 ).percent();
+      else if ( p() -> buffs.blade_flurry -> up() )
+        m *= 1.0 + p() -> talent.blade_rush -> effectN( 1 ).percent();
+
+      return m;
     }
   };
 
@@ -5253,18 +5266,14 @@ void rogue_t::trigger_blade_flurry( const action_state_t* state )
   if ( sim -> active_enemies == 1 )
     return;
 
-  if ( state -> action -> n_targets() != 0 )
+  if ( state -> action -> is_aoe() )
     return;
 
   // Compute Blade Flurry modifier
   double multiplier = 1.0;
-  if ( state -> action -> name_str == "killing_spree_mh" || state ->action -> name_str == "killing_spree_oh" )
+  if ( state -> action -> name_str == "killing_spree_mh" || state -> action -> name_str == "killing_spree_oh" )
   {
     multiplier = talent.killing_spree -> effectN( 2 ).percent();
-  }
-  else if ( state -> action -> name_str == "blade_rush_attack" )
-  {
-    multiplier = talent.blade_rush -> effectN( 1 ).percent();
   }
   else
   {
