@@ -5721,9 +5721,7 @@ void mage_t::regen( timespan_t periodicity )
   if ( resources.is_active( RESOURCE_MANA ) && buffs.evocation -> check() )
   {
     double base = resource_regen_per_second( RESOURCE_MANA );
-    gain_t* gain = player_t::gains.resource_regen[ RESOURCE_MANA ];
-
-    if ( gain && base )
+    if ( base )
     {
       resource_gain(
         RESOURCE_MANA,
