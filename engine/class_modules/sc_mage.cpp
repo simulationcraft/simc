@@ -368,6 +368,7 @@ public:
     buff_t* arcane_charge;
     buff_t* arcane_power;
     buff_t* clearcasting;
+    buff_t* evocation;
     buff_t* presence_of_mind;
 
     buff_t* arcane_familiar;
@@ -664,6 +665,7 @@ public:
   virtual void        analyze( sim_t& ) override;
   virtual void        datacollection_begin() override;
   virtual void        datacollection_end() override;
+  virtual void        regen( timespan_t ) override;
 
   target_specific_t<mage_td_t> target_data;
 
@@ -3011,7 +3013,8 @@ struct evocation_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
 
-    base_tick_time    = timespan_t::from_seconds( 2.0 );
+    // TODO: Let the user select the granularity (for early interrupts).
+    base_tick_time    = timespan_t::from_seconds( 1.0 );
     channeled         = true;
     dot_duration      = data().duration();
     harmful           = false;
@@ -3022,13 +3025,16 @@ struct evocation_t : public arcane_mage_spell_t
     cooldown -> duration *= 1.0 + p -> spec.evocation_2 -> effectN( 1 ).percent();
   }
 
-
-  virtual void tick( dot_t* d ) override
+  virtual void execute() override
   {
-    arcane_mage_spell_t::tick( d );
+    arcane_mage_spell_t::execute();
+    p() -> buffs.evocation -> trigger();
+  }
 
-    double mana_gain = p() -> resources.max[ RESOURCE_MANA ] * data().effectN( 1 ).percent();
-    p() -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gains.evocation );
+  virtual void last_tick( dot_t* d ) override
+  {
+    arcane_mage_spell_t::last_tick( d );
+    p() -> buffs.evocation -> expire();
   }
 
   virtual bool usable_moving() const override
@@ -5724,6 +5730,38 @@ void mage_t::datacollection_end()
   range::for_each( proc_source_list, std::mem_fn( &proc_source_t::datacollection_end ) );
 }
 
+// mage_t::regen ==============================================================
+
+void mage_t::regen( timespan_t periodicity )
+{
+  if ( regen_type == REGEN_DYNAMIC && sim->debug )
+    sim->out_debug.printf( "%s dynamic regen, last=%.3f interval=%.3f", name(), last_regen.total_seconds(),
+                           periodicity.total_seconds() );
+
+  for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; r++ )
+  {
+    if ( resources.is_active( r ) )
+    {
+      double base  = resource_regen_per_second( r );
+      gain_t* gain = player_t::gains.resource_regen[ r ];
+
+      if ( gain && base )
+      {
+        if ( r == RESOURCE_MANA && buffs.evocation -> check() )
+        {
+          double evocation_boost = buffs.evocation -> default_value;
+          double evocation_gain = base * evocation_boost / ( 1.0 + evocation_boost );
+          base -= evocation_gain;
+
+          resource_gain( r, evocation_gain * periodicity.total_seconds(), gains.evocation );
+        }
+
+        resource_gain( r, base * periodicity.total_seconds(), gain );
+      }
+    }
+  }
+}
+
 // mage_t::create_pets ========================================================
 
 void mage_t::create_pets()
@@ -5874,6 +5912,10 @@ void mage_t::create_buffs()
                                                  + talents.overpowered -> effectN( 1 ).percent() );
   buffs.clearcasting     = make_buff( this, "clearcasting", find_spell( 263725 ) )
                              -> set_default_value( find_spell( 263725 ) -> effectN( 1 ).percent() );
+  buffs.evocation        = make_buff( this, "evocation", find_spell( 12051 ) )
+                             -> set_default_value( find_spell( 12051 ) -> effectN( 1 ).percent() )
+                             -> set_cooldown( timespan_t::zero() )
+                             -> set_affects_regen( true );
   buffs.presence_of_mind = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
                              -> set_cooldown( timespan_t::zero() )
                              -> set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
@@ -6603,6 +6645,8 @@ double mage_t::resource_regen_per_second( resource_e r ) const
     {
       reg *= 1.0 + cache.mastery() * spec.savant -> effectN( 1 ).mastery_value();
     }
+
+    reg *= 1.0 + buffs.evocation -> check_value();
   }
 
   return reg;
