@@ -485,7 +485,7 @@ Effects          :
 #2 (id=40418)    : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Self (1)
 #3 (id=40419)    : Apply Aura (6) | Threat (10)
-                   Base Value: 900 | Scaled Value: 900 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 700 | Scaled Value: 700 | Misc Value: 127 | Target: Self (1)
 #4 (id=139814)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
 #5 (id=139815)   : Apply Aura (6) | Modify Expertise% (240)
@@ -657,7 +657,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 222026 | Target: Enemy (6)
 #3 (id=308971)   : Trigger Spell (64): Frost Strike Off-Hand
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 66196 | Target: Enemy (6)
-Description      : Chill your weapons with icy power, and quickly strike the enemy with both weapons, dealing a total of ${$222026sw1+$66196sw1} Frost damage.
+Description      : Chill your weapons with icy power, and quickly strike the enemy with both weapons, dealing a total of ${$222026s1+$66196s1} Frost damage.
 
 Name             : Howling Blast (id=49184) [Spell Family (15)] 
 Class            : Frost Death Knight
@@ -1384,10 +1384,9 @@ Name             : Rime (id=59057) [Spell Family (15), Passive]
 Class            : Frost Death Knight
 School           : Physical
 Spell Level      : 59
-Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
-Proc Flags       : ....x... x...x... x....... ........ 
-                 : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
 Affecting spells : Item - Death Knight T19 Frost 2P Bonus (211042 effect#1), Item - Death Knight T19 Frost 4P Bonus (211045 effect#1), Decimate (265145 effect#1)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1451,6 +1450,7 @@ Tooltip          : Runic Power is being fed to the Gargoyle.
 Name             : Raise Ally (id=61999) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
+Resource         : 30 Runic Power (6) (id=191679)
 Spell Level      : 72
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -1604,11 +1604,9 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21), Requires off-hand weapon (120)
 Effects          :
-#1 (id=60368)    : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-#2 (id=60369)    : School Damage (2): frost
+#1 (id=60368)    : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33345 | Target: Enemy (6)
-Description      : Instantly strike the enemy with your off-hand weapon, causing $s2 Frost damage.
+Description      : $@spelldesc49143
 
 Name             : Obliterate Off-Hand (id=66198) [Scaling Spell (1), Spell Family (15)] 
 Class            : Death Knight
@@ -1948,7 +1946,7 @@ Resource         : -20 Runic Power (6) (id=10658)
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Rotten Touch (191442 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Rotten Touch (191442 effect#1), Master of Ghouls (246995 effect#1), Festering Doom (272741 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6044,11 +6042,9 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
 Effects          :
-#1 (id=331347)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
-#2 (id=331348)   : School Damage (2): frost
+#1 (id=331347)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.33345 | Target: Enemy (6)
-Description      : Instantly strike the enemy with your off-hand weapon, causing $s2 Frost damage.
+Description      : $@spelldesc49143
 
 Name             : Consumption (id=224685) [Spell Family (15)] 
 Class            : Death Knight
@@ -6254,7 +6250,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
@@ -6352,5 +6348,25 @@ Effects          :
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
+
+Name             : Reap Magic (id=264349) [Spell Family (3)] 
+Class            : Death Knight
+School           : Shadow
+Spell Level      : 73
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 10 seconds
+Attributes       : ........ ........ ..x..... ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=707706)   : Dispel (38)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Enemy (6)
+#2 (id=724063)   : Energize Power (30)
+                   Base Value: 250 | Scaled Value: 250 | Misc Value: runic_power | Target: Self (1)
+Description      : Reap $m1 beneficial Magic effect from the target, removing it and granting you ${$s2/10} Runic Power.
 
 

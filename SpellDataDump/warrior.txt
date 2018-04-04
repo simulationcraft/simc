@@ -178,7 +178,7 @@ Class            : Protection Warrior
 School           : Physical
 Spell Level      : 48
 Duration         : 8 seconds
-Cooldown         : 60 seconds
+Cooldown         : 45 seconds
 Proc Chance      : 101%
 Affecting spells : Bladestorm (46924 effect#3), Rumbling Voice (188651 effect#1), Morale Killer (199023 effect#2), Booming Voice (202743 effect#1), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
@@ -232,7 +232,7 @@ School           : Physical
 Resource         : 30 Rage (1) (id=135)
 Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
-Affecting spells : Demoralizing Shout (1160 effect#4), Recklessness (1719 effect#4), Warrior (137047 effect#2), Fervor of Battle (202316 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#4), Warrior (137047 effect#2), Fervor of Battle (202316 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -296,12 +296,9 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE friendly (30)
 #3 (id=298936)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self (1)
-#4 (id=341514)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Overpower (7384), Mortal Strike (12294), Improved Hamstring (24428), Whirlwind Off-Hand (44949), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Whirlwind (190411), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Colossus Smash (208086), Execute (260798)
-#5 (id=466520)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798)
+#4 (id=341514)   : Apply Aura (6) | Unknown(334)
+                   Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
+                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Odyn's Fury (205546), Odyn's Fury (205547), Warbreaker (209577), Rampage (218617), Devastator (236282), Helya's Scorn (243223), Odyn's Glory (243228), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161)
 Description      : Lets loose a battle cry, granting $s1% increased critical strike chance for $d.$?a202751[
 
 |cFFFFFFFFGenerates ${$202751s2/10} Rage.|r][]
@@ -310,7 +307,7 @@ Tooltip          : Critical strike chance increased by $w1%.
 Name             : Shield Block (id=2565) [Spell Family (4)] 
 Class            : Protection Warrior
 School           : Physical
-Resource         : 35 Rage (1) (id=10739)
+Resource         : 40 Rage (1) (id=10739)
 Spell Level      : 20
 Cooldown         : 1 seconds
 Charges          : 1 (13 seconds cooldown)
@@ -654,11 +651,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : Requires main-hand weapon (106)
 Effects          :
-#1 (id=5274)     : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-#2 (id=5275)     : School Damage (2): physical
+#1 (id=5274)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.10000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : A vicious strike that deals $s2 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
+Description      : A vicious strike that deals $s1 Physical damage and reduces the effectiveness of healing on the target by $115804s1% for $115804d.
 Variables        : $mult=${($max(0,$min($pl-5,15))*8+207)/327}
 
 Name             : Piercing Howl (id=12323) [Spell Family (4)] 
@@ -2357,7 +2352,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Heroic Throw (57755)
 #6 (id=261027)   : Apply Aura (6) | Threat (10)
-                   Base Value: 900 | Scaled Value: 900 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 700 | Scaled Value: 700 | Misc Value: 127 | Target: Self (1)
 #7 (id=261028)   : Apply Aura (6) | Unknown(213)
                    Base Value: -56 | Scaled Value: -56 | Target: Self (1)
 #8 (id=261029)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -2736,7 +2731,7 @@ Resource         : 20 - 40 Rage (1) (id=9491)
 Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Recklessness (1719 effect#4), Warrior (137047 effect#1), Death Sentence (144442 effect#1), Deathdealer (200846 effect#1), Sense Death (200979 effect#1), Juggernaut (201009 effect#1), Deathblow (209481 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Shattered Defenses (248625 effect#1), Deadly Calm (262228 effect#1), 
+Affecting spells : Warrior (137047 effect#1), Death Sentence (144442 effect#1), Deathdealer (200846 effect#1), Sense Death (200979 effect#1), Juggernaut (201009 effect#1), Deathblow (209481 effect#1), Precise Strikes (209493 effect#1), Shattered Defenses (209706 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Shattered Defenses (248625 effect#1), Deadly Calm (262228 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ....x... ........ ........ 
@@ -2973,7 +2968,7 @@ School           : Physical
 Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
 Category         : 891
-Affecting spells : Demoralizing Shout (1160 effect#4), Recklessness (1719 effect#4), Warrior (137047 effect#2), Fervor of Battle (202316 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#4), Warrior (137047 effect#2), Fervor of Battle (202316 effect#1), Wrecking Ball (215570 effect#1), Many Will Fall (216274 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -3287,7 +3282,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=323852)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Ignore Pain (258024)
 Description      : Increases your maximum health by $s1%.
 
 Name             : Second Wind (id=202147) [Spell Family (4), Passive] 
@@ -3425,42 +3419,6 @@ Effects          :
 Description      : $@spelldesc202224
 Tooltip          : Healing of your next Bloodthirst increased by $s1%.
 
-Name             : Renewed Fury (id=202288) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-School           : Physical
-Proc Chance      : 100%
-Proc Flags       : ........ ..x...x. ........ ........ 
-                 : AOE Heal, Heal
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=298157)   : Apply Aura (6) | Proc Trigger Spell (42): Renewed Fury
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 202289 | Target: Self (1)
-Description      : Ignore Pain also enrages you, increasing all damage you deal by $202289s1% for $202289d.
-
-Name             : Renewed Fury (id=202289) 
-Class            : Warrior
-School           : Physical
-Duration         : 6 seconds
-Triggered by     : Renewed Fury (202288)
-Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=298158)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
-Description      : $@spelldesc202288
-Tooltip          : Damage done increased by $s1%.
-
 Name             : Endless Rage (id=202296) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
@@ -3529,22 +3487,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Revenge deals $s1% more damage per target hit, up to $s2.
 
-Name             : Never Surrender (id=202561) [Spell Family (4), Passive, Hidden] 
-Class            : Warrior
-School           : Physical
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=298627)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Ignore Pain (258024)
-Description      : Ignore Pain will ignore an additional $s1% damage.
-
 Name             : Vengeance (id=202572) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
@@ -3604,7 +3546,6 @@ Effects          :
                    Affected Spells: Shield Block (2565)
 #2 (id=344800)   : Apply Aura (6) | Modify Max Cost (63)
                    Base Value: -140 | Scaled Value: -140 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Ignore Pain (258024)
 Description      : $@spelldesc202572
 Tooltip          : Rage cost of Shield Block reduced by $s1%.
 
@@ -3654,7 +3595,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=298923)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
-                   Base Value: 600 | Scaled Value: 600 | Misc Value: 33 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Demoralizing Shout (125565)
 #2 (id=298924)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Target: Self (1)
@@ -3806,7 +3747,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #4 (id=312629)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Spell Reflection (23920), Demoralizing Shout (125565), Ignore Pain (258024)
+                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Spell Reflection (23920), Demoralizing Shout (125565)
 Description      : Enter a defensive posture, critically blocking all attacks while a stream of shadowflame erupts from |cFFFFCC99Scale of the Earth-Warder|r, dealing ${6*$203526s1} Shadowflame over $d to all enemies in front of you. You can use defensive abilities while this is active.
 Tooltip          : Critically blocking all incoming attacks, and dealing $203526s1 Shadowflame damage to all enemies in a $203526A1 yard cone every $t2 sec.
 
@@ -3997,7 +3938,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
-Affecting spells : Recklessness (1719 effect#4), Mastery: Colossal Might (76838 effect#1), Focus in Battle (209554 effect#1), Deadly Calm (262228 effect#1)
+Affecting spells : Mastery: Colossal Might (76838 effect#1), Focus in Battle (209554 effect#1), Deadly Calm (262228 effect#1)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   .......x ..x..... x.x..... ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ...x.... 
@@ -5045,7 +4986,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
@@ -5170,27 +5111,6 @@ Effects          :
                    Affected Spells: Bloodthirst (23881)
 Description      : Causes your next Raging Blow or Rampage to strike up to $85739s1 additional targets for $s3% damage.
 Tooltip          : Your next Raging Blow or Rampage strikes up to $w1 additional targets for $w3% damage.
-
-Name             : Ignore Pain (id=258024) [Spell Family (4)] 
-Class            : Protection Warrior
-School           : Physical
-Spell Level      : 40
-Duration         : 4 seconds
-Cooldown         : 12 seconds
-Affecting spells : Shield Mastery (184927 effect#2), Indomitable (202095 effect#2), Never Surrender (202561 effect#1), Vengeance: Shield Block (202574 effect#2), Dragon Skin (203225 effect#1), Neltharion's Fury (203524 effect#4), Dragon Scales (203581 effect#1)
-Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ..xx.... ....x... 
-Effects          :
-#1 (id=481703)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 50000000 | Scaled Value: 5e+07 | Misc Value: 127 | Target: Self (1)
-#2 (id=481704)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
-Description      : Fight through the pain for the next $d, causing $s2% of damage taken to reduce your Rage instead.
-Tooltip          : Ignoring $s2% of damage using your Rage.
 
 Name             : Skullsplitter (id=260643) [Spell Family (4)] 
 Class            : Warrior
