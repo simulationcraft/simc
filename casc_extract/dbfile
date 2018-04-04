@@ -525,6 +525,7 @@ DBFilesClient\SpellMisc.db2
 DBFilesClient\SpellMiscDifficulty.db2
 DBFilesClient\SpellMissile.db2
 DBFilesClient\SpellMissileMotion.db2
+DBFilesClient\SpellName.db2
 DBFilesClient\SpellPower.db2
 DBFilesClient\SpellPowerDifficulty.db2
 DBFilesClient\SpellProceduralEffect.db2
@@ -699,9 +700,11 @@ GameTables\NpcTotalHpExp5.txt
 GameTables\NpcTotalHpExp6.txt
 GameTables\SandboxScaling.txt
 GameTables\SpellScaling.txt
+GameTables\StaminaMultByILvl.txt
 GameTables\artifactLevelXP.txt
 GameTables\battlePetXP.txt
 GameTables\xp.txt
+GameTables\ItemLevelByLevel.txt
 GameTables\ItemLevelSquish.txt
 GameTables\AzeriteLevelToItemLevel.txt
 GameTables\AzeriteBaseExperiencePerLevel.txt

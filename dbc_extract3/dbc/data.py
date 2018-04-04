@@ -342,7 +342,7 @@ class DBCRecord(RawDBCRecord):
             s = s[0:-1]
         return s
 
-class Spell(DBCRecord):
+class SpellName(DBCRecord):
     __slots__ = ( '_effects', 'max_effect_index' )
 
     def __init__(self, dbc_parser, dbc_id, data, record_id, key_id):
@@ -490,28 +490,29 @@ def initialize_data_model(options):
 
             cls._cd[cls._fi[fidx]] = fidx
 
-    if 'Spell' in dir(this_module):
-        Spell.link('level', SpellLevels)
-        Spell.link('power', SpellPower)
-        Spell.link('categories', SpellCategories)
-        Spell.link('cooldown', SpellCooldowns)
-        Spell.link('aura_option', SpellAuraOptions)
-        Spell.link('equipped_item', SpellEquippedItems)
-        Spell.link('class_option', SpellClassOptions)
-        Spell.link('shapeshift', SpellShapeshift)
-        Spell.link('scaling', SpellScaling)
-        Spell.link('artifact_power', ArtifactPowerRank)
-        Spell.link('label', SpellLabel)
-        Spell.link('misc', SpellMisc)
+    if 'SpellName' in dir(this_module):
+        SpellName.link('level', SpellLevels)
+        SpellName.link('power', SpellPower)
+        SpellName.link('categories', SpellCategories)
+        SpellName.link('cooldown', SpellCooldowns)
+        SpellName.link('aura_option', SpellAuraOptions)
+        SpellName.link('equipped_item', SpellEquippedItems)
+        SpellName.link('class_option', SpellClassOptions)
+        SpellName.link('shapeshift', SpellShapeshift)
+        SpellName.link('scaling', SpellScaling)
+        SpellName.link('artifact_power', ArtifactPowerRank)
+        SpellName.link('label', SpellLabel)
+        SpellName.link('misc', SpellMisc)
+        SpellName.link('text', Spell)
 
         if options.build >= 25600:
-            Spell.link('desc_var_link', SpellXDescriptionVariables)
+            SpellName.link('desc_var_link', SpellXDescriptionVariables)
 
     if 'SpellEffect' in dir(this_module) and options.build < 25600:
         SpellEffect.link('scaling', SpellEffectScaling)
 
     if 'SpellItemEnchantment' in dir(this_module):
-        SpellItemEnchantment.link('spells', Spell)
+        SpellItemEnchantment.link('spells', SpellName)
         SpellItemEnchantment.link('gem_property', GemProperties)
 
     if 'Item_sparse' in dir(this_module):
