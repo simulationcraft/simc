@@ -1474,7 +1474,6 @@ public:
     {
       if ( p() -> buffs.clearcasting -> check() )
       {
-        // TODO: Check the timing on this
         make_event<buff_delay_event_t>( *sim, p() -> buffs.clearcasting, timespan_t::from_seconds( 0.15 ) );
       }
       else
