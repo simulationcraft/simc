@@ -133,109 +133,6 @@ namespace warlock {
         return warlock_pet_t::create_action(name, options_str);
       }
     }
-    namespace dreadstalker {
-      struct dreadbite_t : public warlock_pet_melee_attack_t
-      {
-        timespan_t dreadstalker_duration;
-        double t21_4pc_increase;
-
-        dreadbite_t(warlock_pet_t* p) :
-          warlock_pet_melee_attack_t("Dreadbite", p, p -> find_spell(205196))
-        {
-          weapon = &(p->main_hand_weapon);
-          if (p->o()->talents.dreadlash->ok())
-          {
-            aoe = -1;
-            radius = 8;
-          }
-          dreadstalker_duration = p->find_spell(193332)->duration() +
-            (p->o()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T19, B4)
-              ? p->o()->sets->set(WARLOCK_DEMONOLOGY, T19, B4)->effectN(1).time_value()
-              : timespan_t::zero());
-          t21_4pc_increase = p->o()->sets->set(WARLOCK_DEMONOLOGY, T21, B4)->effectN(1).percent();
-        }
-
-        virtual bool ready() override
-        {
-          if (p()->dreadbite_executes <= 0)
-            return false;
-
-          return warlock_pet_melee_attack_t::ready();
-        }
-
-        virtual double action_multiplier() const override
-        {
-          double m = warlock_pet_melee_attack_t::action_multiplier();
-
-          if (p()->o()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B4) && p()->bites_executed == 1)
-            m *= 1.0 + t21_4pc_increase;
-
-          if (p()->o()->talents.dreadlash->ok())
-          {
-            m *= 1.0 + p()->o()->talents.dreadlash->effectN(1).percent();
-          }
-
-          return m;
-        }
-
-        void execute() override
-        {
-          warlock_pet_melee_attack_t::execute();
-
-          p()->dreadbite_executes--;
-        }
-
-        void impact(action_state_t* s) override
-        {
-          warlock_pet_melee_attack_t::impact(s);
-
-          p()->bites_executed++;
-        }
-      };
-
-      dreadstalker_t::dreadstalker_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "dreadstalker", PET_DREADSTALKER)
-      {
-        action_list_str = "travel/dreadbite";
-        regen_type = REGEN_DISABLED;
-        owner_coeff.health = 0.4;
-        owner_coeff.ap_from_sp = 0.6;
-      }
-
-      void dreadstalker_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-        resources.base[RESOURCE_ENERGY] = 0;
-        resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
-        melee_attack = new warlock_pet_melee_t(this);
-      }
-
-      void dreadstalker_t::arise()
-      {
-        warlock_pet_t::arise();
-
-        dreadbite_executes = 1;
-        bites_executed = 0;
-
-        if (o()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B4))
-          t21_4pc_reset = false;
-      }
-
-      void dreadstalker_t::demise() {
-        warlock_pet_t::demise();
-
-        if (rng().roll(find_spell(267102)->effectN(2).percent()))
-        {
-          o()->buffs.demonic_core->trigger();
-        }
-      }
-
-      action_t* dreadstalker_t::create_action(const std::string& name, const std::string& options_str) 
-      {
-        if (name == "dreadbite") return new dreadbite_t(this);
-
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
     namespace wild_imp {
       struct fel_firebolt_t : public warlock_pet_spell_t
       {
@@ -312,12 +209,176 @@ namespace warlock {
         }
       }
     }
+    namespace dreadstalker {
+      struct dreadbite_t : public warlock_pet_melee_attack_t
+      {
+        timespan_t dreadstalker_duration;
+        double t21_4pc_increase;
+
+        dreadbite_t(warlock_pet_t* p) :
+          warlock_pet_melee_attack_t("Dreadbite", p, p -> find_spell(205196))
+        {
+          weapon = &(p->main_hand_weapon);
+          if (p->o()->talents.dreadlash->ok())
+          {
+            aoe = -1;
+            radius = 8;
+          }
+          dreadstalker_duration = p->find_spell(193332)->duration() +
+            (p->o()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T19, B4)
+              ? p->o()->sets->set(WARLOCK_DEMONOLOGY, T19, B4)->effectN(1).time_value()
+              : timespan_t::zero());
+          t21_4pc_increase = p->o()->sets->set(WARLOCK_DEMONOLOGY, T21, B4)->effectN(1).percent();
+        }
+
+        virtual bool ready() override
+        {
+          if (p()->dreadbite_executes <= 0)
+            return false;
+
+          return warlock_pet_melee_attack_t::ready();
+        }
+
+        virtual double action_multiplier() const override
+        {
+          double m = warlock_pet_melee_attack_t::action_multiplier();
+
+          if (p()->o()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B4) && p()->bites_executed == 1)
+            m *= 1.0 + t21_4pc_increase;
+
+          if (p()->o()->talents.dreadlash->ok())
+          {
+            m *= 1.0 + p()->o()->talents.dreadlash->effectN(1).percent();
+          }
+
+          return m;
+        }
+
+        void execute() override
+        {
+          warlock_pet_melee_attack_t::execute();
+
+          p()->dreadbite_executes--;
+        }
+
+        void impact(action_state_t* s) override
+        {
+          warlock_pet_melee_attack_t::impact(s);
+
+          p()->bites_executed++;
+        }
+      };
+
+      dreadstalker_t::dreadstalker_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "dreadstalker", PET_DREADSTALKER)
+      {
+        action_list_str = "travel/dreadbite";
+        regen_type = REGEN_DISABLED;
+        owner_coeff.health = 0.4;
+        owner_coeff.ap_from_sp = 0.6;
+      }
+
+      void dreadstalker_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        resources.base[RESOURCE_ENERGY] = 0;
+        resources.base_regen_per_second[RESOURCE_ENERGY] = 0;
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+
+      void dreadstalker_t::arise()
+      {
+        warlock_pet_t::arise();
+
+        dreadbite_executes = 1;
+        bites_executed = 0;
+
+        if (o()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B4))
+          t21_4pc_reset = false;
+      }
+
+      void dreadstalker_t::demise() {
+        warlock_pet_t::demise();
+
+        if (rng().roll(find_spell(267102)->effectN(2).percent()))
+        {
+          o()->buffs.demonic_core->trigger();
+        }
+      }
+
+      action_t* dreadstalker_t::create_action(const std::string& name, const std::string& options_str)
+      {
+        if (name == "dreadbite") return new dreadbite_t(this);
+
+        return warlock_pet_t::create_action(name, options_str);
+      }
+    }
+    namespace vilefiend
+    {
+      struct bile_spit_t : public warlock_pet_spell_t
+      {
+        bile_spit_t(warlock_pet_t* p) : warlock_pet_spell_t("bile_spit", p, p -> find_spell(260641))
+        {
+          
+        }
+
+        virtual bool ready() override
+        {
+          if (p()->dreadbite_executes != 0)
+            return false;
+
+          return warlock_pet_spell_t::ready();
+        }
+
+        void execute() override
+        {
+          warlock_pet_spell_t::execute();
+
+          p()->dreadbite_executes++;
+        }
+      };
+
+      vilefiend_t::vilefiend_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "vilefiend", PET_VILEFIEND)
+      {
+        action_list_str = "bile_spit";
+      }
+
+      void vilefiend_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+
+      void vilefiend_t::demise() {
+        warlock_pet_t::demise();
+
+        dreadbite_executes--;
+      }
+      
+      action_t* vilefiend_t::create_action(const std::string& name, const std::string& options_str)
+      {
+        if (name == "bile_spit") return new bile_spit_t(this);
+
+        return warlock_pet_t::create_action(name, options_str);
+      }
+    }
     namespace demonic_tyrant {
       struct demonfire_blast_t : public warlock_pet_spell_t
       {
         demonfire_blast_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_spell_t("demonfire_blast", p, p -> find_spell(265279))
         {
           parse_options(options_str);
+        }
+
+        virtual double action_multiplier() const override
+        {
+          double m = warlock_pet_spell_t::action_multiplier();
+
+          if (p()->buffs.demonic_consumption->check())
+          {
+            m *= 1.0 + p()->buffs.demonic_consumption->check_stack_value();
+          }
+
+          return m;
         }
       };
 
@@ -326,6 +387,18 @@ namespace warlock {
         demonfire_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_spell_t("demonfire", p, p -> find_spell(270481))
         {
           parse_options(options_str);
+        }
+
+        virtual double action_multiplier() const override
+        {
+          double m = warlock_pet_spell_t::action_multiplier();
+
+          if (p()->buffs.demonic_consumption->check())
+          {
+            m *= 1.0 + p()->buffs.demonic_consumption->check_stack_value();
+          }
+
+          return m;
         }
       };
 
@@ -356,6 +429,9 @@ namespace warlock {
         ->set_default_value(find_spell(267171)->effectN(2).percent())
         ->set_cooldown(timespan_t::from_seconds(0))
         ->set_duration(find_spell(267171)->duration());
+      buffs.demonic_consumption = make_buff(this, "demonic_consumption", find_spell(267972))
+        ->set_default_value(find_spell(267972)->effectN(1).percent())
+        ->set_max_stack(100);
     }
 
     void warlock_pet_t::init_spells_demonology() {
@@ -383,6 +459,18 @@ namespace warlock {
         warlock_spell_t::execute();
         if (p()->talents.demonic_calling->ok() && rng().roll(p()->talents.demonic_calling->proc_chance()))
           p()->buffs.demonic_calling->trigger();
+      }
+
+      virtual double action_multiplier() const override
+      {
+        double m = warlock_spell_t::action_multiplier();
+
+        if (p()->buffs.sacrificed_souls->check())
+        {
+          m *= 1.0 + p()->buffs.sacrificed_souls->check_stack_value();
+        }
+
+        return m;
       }
     };
 
@@ -480,6 +568,18 @@ namespace warlock {
           p()->buffs.demonic_core->decrement();
         if (p()->talents.demonic_calling->ok() && rng().roll(p()->talents.demonic_calling->proc_chance()))
           p()->buffs.demonic_calling->trigger();
+      }
+
+      virtual double action_multiplier() const override
+      {
+        double m = warlock_spell_t::action_multiplier();
+
+        if (p()->buffs.sacrificed_souls->check())
+        {
+          m *= 1.0 + p()->buffs.sacrificed_souls->check_stack_value();
+        }
+
+        return m;
       }
     };
 
@@ -656,6 +756,27 @@ namespace warlock {
             }
           }
         }
+        if (p()->talents.demonic_consumption->ok())
+        {
+          for (auto imp : p()->warlock_pet_list.wild_imps)
+          {
+            if (!imp->is_sleeping())
+            {
+              double available = imp->resources.current[RESOURCE_ENERGY];
+              imp->resource_loss(RESOURCE_ENERGY,available);
+              for (auto dt : p()->warlock_pet_list.demonic_tyrants)
+              {
+                if (!dt->is_sleeping())
+                {
+                  for (int i = 0; i < (available/20*3); i++)
+                  {
+                    dt->buffs.demonic_consumption->trigger();
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     };
 
@@ -814,6 +935,28 @@ namespace warlock {
       }
     };
 
+    struct summon_vilefiend_t : public warlock_spell_t
+    {
+      summon_vilefiend_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("summon_vilefiend", p, p->talents.summon_vilefiend)
+      {
+        parse_options(options_str);
+        harmful = may_crit = false;
+      }
+
+      virtual void execute() override
+      {
+        warlock_spell_t::execute();
+        for (size_t i = 0; i < p()->warlock_pet_list.vilefiends.size(); i++)
+        {
+          if (p()->warlock_pet_list.vilefiends[i]->is_sleeping())
+          {
+            p()->warlock_pet_list.vilefiends[i]->summon(p()->find_spell(264119)->duration());
+          }
+        }
+      }
+    };
+
     struct grimoire_of_service_t : public summon_pet_t {
           grimoire_of_service_t(warlock_t* p, const std::string& pet_name, const std::string& options_str) :
               summon_pet_t("service_" + pet_name, p, p -> talents.grimoire_of_service -> ok() ? p -> find_class_spell("Grimoire: " + pet_name) : spell_data_t::not_found()) {
@@ -875,6 +1018,7 @@ namespace warlock {
     if (action_name == "call_dreadstalkers") return new     call_dreadstalkers_t(this, options_str);
     if (action_name == "summon_felguard") return new        summon_main_pet_t("felguard", this);
     if (action_name == "summon_demonic_tyrant") return new  summon_demonic_tyrant_t(this, options_str);
+    if (action_name == "summon_vilefiend") return new       summon_vilefiend_t(this, options_str);
     if (action_name == "service_felguard") return new       grimoire_of_service_t(this, "felguard", options_str);
     if (action_name == "service_felhunter") return new      grimoire_of_service_t(this, "felhunter", options_str);
     if (action_name == "service_imp") return new            grimoire_of_service_t(this, "imp", options_str);
@@ -907,6 +1051,9 @@ namespace warlock {
           }
         }
       });
+    buffs.sacrificed_souls = make_buff(this, "sacrificed_souls", find_spell(272591))
+      ->set_default_value(find_spell(272591)->effectN(1).percent())
+      ->set_refresh_behavior(buff_refresh_behavior::DURATION);
     //Tier
     buffs.rage_of_guldan = make_buff(this, "rage_of_guldan", sets->set(WARLOCK_DEMONOLOGY, T21, B2)->effectN(1).trigger())
       ->set_duration(find_spell(257926)->duration())
@@ -958,6 +1105,7 @@ namespace warlock {
     def -> add_action("demonic_strength,if=!cooldown.summon_demonic_tyrant.remains<10");
     def -> add_action("power_siphon,if=talent.power_siphon.enabled");
     def -> add_action("doom,if=talent.doom.enabled&refreshable");
+    def -> add_action("summon_vilefiend");
     def -> add_action("call_dreadstalkers");
     def -> add_action("summon_demonic_tyrant,if=prev_gcd.1.hand_of_guldan");
     def -> add_action("bilescourge_bombers");

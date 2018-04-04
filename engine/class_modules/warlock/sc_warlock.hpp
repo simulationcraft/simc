@@ -13,6 +13,9 @@ namespace warlock
       namespace wild_imp {
         struct wild_imp_pet_t;
       }
+      namespace vilefiend {
+        struct vilefiend_t;
+      }
       namespace demonic_tyrant {
         struct demonic_tyrant_t;
       }
@@ -75,9 +78,11 @@ namespace warlock
         pets::warlock_pet_t* last;
         static const int WILD_IMP_LIMIT = 40;
         static const int DREADSTALKER_LIMIT = 4;
+        static const int VILFIEND_LIMIT = 1;
         static const int DEMONIC_TYRANT_LIMIT = 1;
         std::array<pets::wild_imp::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
         std::array<pets::dreadstalker::dreadstalker_t*, DREADSTALKER_LIMIT> dreadstalkers;
+        std::array<pets::vilefiend::vilefiend_t*, VILFIEND_LIMIT> vilefiends;
         std::array<pets::demonic_tyrant::demonic_tyrant_t*, DEMONIC_TYRANT_LIMIT> demonic_tyrants;
       } warlock_pet_list;
 
@@ -259,6 +264,7 @@ namespace warlock
         propagate_const<buff_t*> demonic_core;
         propagate_const<buff_t*> demonic_calling;
         propagate_const<buff_t*> inner_demons;
+        propagate_const<buff_t*> sacrificed_souls;
         propagate_const<buff_t*> dreaded_haste; // t20 4pc
         propagate_const<buff_t*> rage_of_guldan; // t21 2pc
 
@@ -458,6 +464,7 @@ namespace warlock
           propagate_const<buff_t*> rage_of_guldan;
           propagate_const<buff_t*> demonic_power;
           propagate_const<buff_t*> demonic_strength;
+          propagate_const<buff_t*> demonic_consumption;
         } buffs;
 
         struct active_t
@@ -784,6 +791,16 @@ namespace warlock
         };
 
       }
+      namespace vilefiend
+      {
+        struct vilefiend_t : public warlock_pet_t
+        {
+          vilefiend_t(sim_t* sim, warlock_t* owner);
+          virtual void init_base_stats() override;
+          virtual void demise() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
+        };
+      }
       namespace demonic_tyrant {
         struct demonic_tyrant_t : public warlock_pet_t
         {
@@ -907,22 +924,17 @@ namespace warlock
           affected_by_flamelicked = false;
 
           affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p()->find_spell( 212173 )->effectN( 1 ) );
-          destruction_direct_increase = data().affected_by( p()->spec.destruction->effectN( 1 ) );
-          destruction_dot_increase = data().affected_by( p()->spec.destruction->effectN( 2 ) );
 
-          if ( destruction_direct_increase )
+          if ( data().affected_by(p()->spec.destruction->effectN(1)) )
             base_dd_multiplier *= 1.0 + p()->spec.destruction->effectN( 1 ).percent();
 
-          if ( destruction_dot_increase )
+          if ( data().affected_by(p()->spec.destruction->effectN(2)) )
             base_td_multiplier *= 1.0 + p()->spec.destruction->effectN( 2 ).percent();
 
-          affliction_direct_increase = data().affected_by( p()->spec.affliction->effectN( 1 ) );
-          affliction_dot_increase = data().affected_by( p()->spec.affliction->effectN( 2 ) );
-
-          if ( affliction_direct_increase )
+          if ( data().affected_by(p()->spec.affliction->effectN(1)) )
             base_dd_multiplier *= 1.0 + p()->spec.affliction->effectN( 1 ).percent();
 
-          if ( affliction_dot_increase )
+          if ( data().affected_by(p()->spec.affliction->effectN(2)) )
             base_td_multiplier *= 1.0 + p()->spec.affliction->effectN( 2 ).percent();
 
           if ( p()->talents.creeping_death->ok() )
@@ -1083,28 +1095,6 @@ namespace warlock
           if ( td->soc_threshold <= 0 )
             td->dots_seed_of_corruption->cancel();
         }
-
-        /*
-        static void trigger_wild_imp(warlock_t* p, bool doge = false, int duration = 12001)
-        {
-            for (size_t i = 0; i < p->warlock_pet_list.wild_imps.size(); i++)
-            {
-                if (p->warlock_pet_list.wild_imps[i]->is_sleeping())
-                {
-
-                    p->warlock_pet_list.wild_imps[i]->trigger(duration, doge);
-                    p->procs.wild_imp->occur();
-                    if (p->legendary.wilfreds_sigil_of_superior_summoning_flag && !p->talents.grimoire_of_supremacy->ok())
-                    {
-                        p->cooldowns.doomguard->adjust(p->legendary.wilfreds_sigil_of_superior_summoning);
-                        p->cooldowns.infernal->adjust(p->legendary.wilfreds_sigil_of_superior_summoning);
-                        p->procs.wilfreds_imp->occur();
-                    }
-                    return;
-                }
-            }
-        }
-        */
       };
 
       using residual_action_t = residual_action::residual_periodic_action_t<warlock_spell_t>;

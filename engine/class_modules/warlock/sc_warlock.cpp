@@ -409,7 +409,7 @@ namespace warlock
         {
           for (int i = 0; i < last_resource_cost; i++)
           {
-            p()->find_action("summon_demonic_tyrant")->cooldown->adjust( timespan_t::from_millis( -1 * p()->talents.sacrificed_souls->effectN(1).base_value() ) );
+            p()->buffs.sacrificed_souls->trigger();
           }
         }
       }
@@ -902,6 +902,13 @@ void warlock_t::create_pets()
     for (size_t i = 0; i < warlock_pet_list.demonic_tyrants.size(); i++)
     {
       warlock_pet_list.demonic_tyrants[i] = new pets::demonic_tyrant::demonic_tyrant_t(sim, this);
+    }
+    if (talents.summon_vilefiend->ok())
+    {
+      for (size_t i = 0; i < warlock_pet_list.vilefiends.size(); i++)
+      {
+        warlock_pet_list.vilefiends[i] = new pets::vilefiend::vilefiend_t(sim, this);
+      }
     }
   }
 
