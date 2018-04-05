@@ -471,6 +471,7 @@ namespace warlock
         {
           melee_attack_t* soul_strike;
           melee_attack_t* demonic_strength_felstorm;
+          spell_t*        bile_spit;
         } active;
 
         bool is_grimoire_of_service = false;
@@ -797,7 +798,6 @@ namespace warlock
         {
           vilefiend_t(sim_t* sim, warlock_t* owner);
           virtual void init_base_stats() override;
-          virtual void demise() override;
           virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }

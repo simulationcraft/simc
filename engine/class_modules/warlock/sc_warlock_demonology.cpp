@@ -320,38 +320,18 @@ namespace warlock {
         {
           
         }
-
-        virtual bool ready() override
-        {
-          if (p()->dreadbite_executes != 0)
-            return false;
-
-          return warlock_pet_spell_t::ready();
-        }
-
-        void execute() override
-        {
-          warlock_pet_spell_t::execute();
-
-          p()->dreadbite_executes++;
-        }
       };
 
       vilefiend_t::vilefiend_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "vilefiend", PET_VILEFIEND)
       {
-        action_list_str = "bile_spit";
+        action_list_str += "/travel";
+        owner_coeff.ap_from_sp = 1.14;
       }
 
       void vilefiend_t::init_base_stats()
       {
         warlock_pet_t::init_base_stats();
         melee_attack = new warlock_pet_melee_t(this);
-      }
-
-      void vilefiend_t::demise() {
-        warlock_pet_t::demise();
-
-        dreadbite_executes--;
       }
       
       action_t* vilefiend_t::create_action(const std::string& name, const std::string& options_str)
@@ -435,8 +415,9 @@ namespace warlock {
     }
 
     void warlock_pet_t::init_spells_demonology() {
-      active.soul_strike = new felguard::soul_strike_t(this);
-      active.demonic_strength_felstorm = new felguard::felstorm_t(this);
+      active.soul_strike                = new felguard::soul_strike_t(this);
+      active.demonic_strength_felstorm  = new felguard::felstorm_t(this);
+      active.bile_spit                  = new vilefiend::bile_spit_t(this);
     }
   }
 
@@ -952,6 +933,8 @@ namespace warlock {
           if (p()->warlock_pet_list.vilefiends[i]->is_sleeping())
           {
             p()->warlock_pet_list.vilefiends[i]->summon(p()->find_spell(264119)->duration());
+            p()->warlock_pet_list.vilefiends[i]->active.bile_spit->set_target(execute_state->target);
+            p()->warlock_pet_list.vilefiends[i]->active.bile_spit->execute();
           }
         }
       }
