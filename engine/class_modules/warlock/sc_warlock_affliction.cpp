@@ -17,7 +17,7 @@ namespace warlock
         parse_options(options_str);
       }
 
-      virtual timespan_t execute_time() const override
+      timespan_t execute_time() const override
       {
         if (p()->buffs.nightfall->check())
         {
@@ -37,7 +37,7 @@ namespace warlock
         }
       }
 
-      virtual double action_multiplier()const override
+      double action_multiplier()const override
       {
         double m = warlock_spell_t::action_multiplier();
 
@@ -64,15 +64,17 @@ namespace warlock
       double chance;
 
       agony_t( warlock_t* p, const std::string& options_str ) :
-        warlock_spell_t( p, "Agony" ), agony_action_id( 0 )
+        warlock_spell_t( p, "Agony" ),
+        agony_action_id( 0 ),
+        agony_max_stacks( 0 ),
+        chance( p->find_spell( 199282 )->proc_chance() )
       {
         parse_options( options_str );
         may_crit = false;
         affected_by_deaths_embrace = true;
-        chance = p->find_spell( 199282 )->proc_chance();
       }
 
-      virtual double action_multiplier() const override
+      double action_multiplier() const override
       {
         double m = warlock_spell_t::action_multiplier();
 
@@ -82,7 +84,7 @@ namespace warlock
         return m;
       }
 
-      virtual double composite_target_multiplier( player_t* target ) const override
+      double composite_target_multiplier( player_t* target ) const override
       {
         double m = warlock_spell_t::composite_target_multiplier( target );
         auto td = this->td( target );
@@ -92,7 +94,7 @@ namespace warlock
         return m;
       }
 
-      virtual void last_tick( dot_t* d ) override
+      void last_tick( dot_t* d ) override
       {
         td( d->state->target )->agony_stack = 1;
 
@@ -111,7 +113,7 @@ namespace warlock
         warlock_spell_t::init();
       }
 
-      virtual void execute() override
+      void execute() override
       {
         warlock_spell_t::execute();
 
@@ -121,13 +123,13 @@ namespace warlock
           td( execute_state->target )->agony_stack++;
       }
 
-      virtual void tick( dot_t* d ) override
+      void tick( dot_t* d ) override
       {
         td( d->state->target )->debuffs_agony->trigger();
 
         double tier_bonus = 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T19, B4 )->effectN( 1 ).percent();
         double active_agonies = p()->get_active_dots( internal_id );
-        double accumulator_increment = rng().range( 0.0, p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.32 * tier_bonus : 0.32 ) / sqrt( active_agonies );
+        double accumulator_increment = rng().range( 0.0, p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.32 * tier_bonus : 0.32 ) / std::sqrt( active_agonies );
 
         p()->agony_accumulator += accumulator_increment;
 
@@ -197,7 +199,7 @@ namespace warlock
         parse_options( options_str );
       }
 
-      virtual double action_multiplier() const override
+      double action_multiplier() const override
       {
         double m = warlock_spell_t::action_multiplier();
 
@@ -207,15 +209,13 @@ namespace warlock
         return m;
       }
 
-      virtual void tick( dot_t* d ) override
+      void tick( dot_t* d ) override
       {
         if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
         {
-          bool procced = p()->nightfall_rppm->trigger(); //check for RPPM
-
-          if ( procced )
+          auto success = p()->buffs.nightfall->trigger();
+          if ( success )
           {
-            p()->buffs.nightfall->trigger();
             p()->procs.nightfall->occur();
           }
         }
@@ -237,8 +237,10 @@ namespace warlock
       struct real_ua_t : public warlock_spell_t
       {
         int self;
+
         real_ua_t( warlock_t* p, int num ) :
-          warlock_spell_t( "unstable_affliction_" + std::to_string( num + 1 ), p, p -> find_spell( ua_spells[num] ) ), self( num )
+          warlock_spell_t( "unstable_affliction_" + std::to_string( num + 1 ), p, p -> find_spell( ua_spells[num] ) ),
+          self( num )
         {
           background = true;
           dual = true;
@@ -267,7 +269,7 @@ namespace warlock
           warlock_spell_t::last_tick( d );
         }
 
-        virtual double action_multiplier() const override
+        double action_multiplier() const override
         {
           double m = warlock_spell_t::action_multiplier();
 
@@ -300,7 +302,7 @@ namespace warlock
         snapshot_flags &= ~( STATE_CRIT | STATE_TGT_CRIT );
       }
 
-      virtual void impact( action_state_t* s ) override
+      void impact( action_state_t* s ) override
       {
         if ( result_is_hit( s->result ) )
         {
@@ -332,7 +334,7 @@ namespace warlock
         }
       }
 
-      virtual void execute() override
+      void execute() override
       {
         warlock_spell_t::execute();
 
@@ -378,14 +380,15 @@ namespace warlock
       seed_of_corruption_aoe_t* explosion;
 
       seed_of_corruption_t( warlock_t* p, const std::string& options_str ) :
-        warlock_spell_t( "seed_of_corruption", p, p -> find_spell( 27243 ) ), explosion( new seed_of_corruption_aoe_t( p ) )
+        warlock_spell_t( "seed_of_corruption", p, p -> find_spell( 27243 ) ),
+          threshold_mod( 3.0 ),
+          sow_the_seeds_targets( p->talents.sow_the_seeds->effectN( 1 ).base_value() ),
+          explosion( new seed_of_corruption_aoe_t( p ) )
       {
         parse_options( options_str );
         may_crit = false;
-        threshold_mod = 3.0;
         base_tick_time = dot_duration;
         hasted_ticks = false;
-        sow_the_seeds_targets = p->talents.sow_the_seeds->effectN( 1 ).base_value();
         add_child( explosion );
       }
 
@@ -596,7 +599,7 @@ namespace warlock
         affected_by_deaths_embrace = true;
       }
 
-      virtual double action_multiplier() const override
+      double action_multiplier() const override
       {
         double m = warlock_spell_t::action_multiplier();
 
@@ -606,7 +609,7 @@ namespace warlock
         return m;
       }
 
-      virtual double composite_target_multiplier( player_t* target ) const override
+      double composite_target_multiplier( player_t* target ) const override
       {
         double m = warlock_spell_t::composite_target_multiplier( target );
         auto td = this->td( target );
@@ -628,7 +631,8 @@ namespace warlock
       timespan_t max_duration;
 
       soul_harvest_t( warlock_t* p, const std::string& options_str ) :
-        warlock_spell_t( "soul_harvest", p, p -> talents.soul_harvest )
+        warlock_spell_t( "soul_harvest", p, p -> talents.soul_harvest ),
+        agony_action_id( -1 )
       {
         parse_options( options_str );
         harmful = may_crit = may_miss = false;
@@ -637,7 +641,7 @@ namespace warlock
         max_duration = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
       }
 
-      virtual void execute() override
+      void execute() override
       {
         warlock_spell_t::execute();
 
@@ -647,7 +651,7 @@ namespace warlock
         p()->buffs.soul_harvest->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, max_duration ) );
       }
 
-      virtual void init() override
+      void init() override
       {
         warlock_spell_t::init();
 
@@ -669,7 +673,7 @@ namespace warlock
           trigger_gcd = timespan_t::zero();
         }
 
-        virtual void impact( action_state_t* s ) override
+        void impact( action_state_t* s ) override
         {
           warlock_spell_t::impact( s );
 
@@ -681,7 +685,9 @@ namespace warlock
       tormented_agony_debuff_engine_t* tormented_agony;
 
       tormented_agony_t( warlock_t* p ) :
-        warlock_spell_t( "tormented agony", p, p -> find_spell( 256807 ) ), source_target( nullptr ), tormented_agony( new tormented_agony_debuff_engine_t( p ) )
+        warlock_spell_t( "tormented agony", p, p -> find_spell( 256807 ) ),
+        source_target( nullptr ),
+        tormented_agony( new tormented_agony_debuff_engine_t( p ) )
       {
         harmful = may_crit = callbacks = false;
         background = proc = true;
@@ -754,7 +760,8 @@ namespace warlock
       ->set_cooldown( timespan_t::zero() )
       ->set_default_value( talents.soul_harvest->effectN( 1 ).percent() );
     buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
-      ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() );
+      ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
+      ->set_trigger_spell( talents.nightfall );
     //tier
     buffs.demonic_speed = make_buff<haste_buff_t>( this, "demonic_speed", sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger() );
     buffs.demonic_speed
@@ -808,7 +815,6 @@ namespace warlock
   void warlock_t::init_rng_affliction()
   {
     affliction_t20_2pc_rppm             = get_rppm( "affliction_t20_2pc", sets->set( WARLOCK_AFFLICTION, T20, B2 ) );
-    nightfall_rppm                      = get_rppm( "nightfall", talents.nightfall );
   }
 
   void warlock_t::init_procs_affliction()

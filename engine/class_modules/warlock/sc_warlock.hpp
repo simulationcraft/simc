@@ -202,7 +202,6 @@ namespace warlock
       } mastery_spells;
 
       //Procs and RNG
-      propagate_const<real_ppm_t*> nightfall_rppm;
       propagate_const<real_ppm_t*> affliction_t20_2pc_rppm;
       propagate_const<real_ppm_t*> grimoire_of_sacrifice_rppm; // grimoire of sacrifice
 
