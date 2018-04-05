@@ -172,9 +172,6 @@ struct rogue_t : public player_t
   // Venom Rush poison tracking
   unsigned poisoned_enemies;
 
-  // Static mods to base energy regen per sec
-  double base_energy_regen_mods;
-
   // Active
   attack_t* active_blade_flurry;
   actions::rogue_poison_t* active_lethal_poison;
@@ -313,6 +310,7 @@ struct rogue_t : public player_t
   {
     gain_t* adrenaline_rush;
     gain_t* blade_rush;
+    gain_t* buried_treasure;
     gain_t* combat_potency;
     gain_t* energy_refund;
     gain_t* master_of_shadows;
@@ -526,7 +524,6 @@ struct rogue_t : public player_t
     df_counter( 0 ),
     shadow_techniques( 0 ),
     poisoned_enemies( 0 ),
-    base_energy_regen_mods( 1.0 ),
     active_blade_flurry( nullptr ),
     active_lethal_poison( nullptr ),
     active_nonlethal_poison( nullptr ),
@@ -6709,8 +6706,8 @@ void rogue_t::init_base_stats()
   resources.base[ RESOURCE_ENERGY ] += spec.assassination_rogue -> effectN( 5 ).base_value();
 
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
-  base_energy_regen_mods = 1.0 + spec.combat_potency_reg -> effectN( 1 ).percent();
-  base_energy_regen_mods *= 1.0 + talent.vigor -> effectN( 2 ).percent();
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + spec.combat_potency_reg -> effectN( 1 ).percent();
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.vigor -> effectN( 2 ).percent();
 
   base_gcd = timespan_t::from_seconds( 1.0 );
   min_gcd  = timespan_t::from_seconds( 1.0 );
@@ -6896,6 +6893,7 @@ void rogue_t::init_gains()
 
   gains.adrenaline_rush          = get_gain( "Adrenaline Rush"          );
   gains.blade_rush               = get_gain( "Blade Rush"               );
+  gains.buried_treasure          = get_gain( "Buried Treasure"          );
   gains.combat_potency           = get_gain( "Combat Potency"           );
   gains.energy_refund            = get_gain( "Energy Refund"            );
   gains.seal_fate                = get_gain( "Seal Fate"                );
@@ -7042,12 +7040,8 @@ void rogue_t::create_buffs()
                                 -> set_period( timespan_t::zero() )
                                 -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   buffs.vendetta              = make_buff( this, "vendetta_energy", find_spell( 256495 ) )
-                                -> set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
-                                  if ( new_ == 1 ) { resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).resource( RESOURCE_ENERGY ), gains.vendetta ); }
-                                } )
-                                -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-                                  resource_gain( RESOURCE_ENERGY, b -> data().effectN( 2 ).resource( RESOURCE_ENERGY ), gains.vendetta );
-                                } );
+                                -> set_default_value( find_spell( 256495 ) -> effectN( 1 ).base_value() / 5.0 )
+                                -> set_affects_regen( true );
 
   // Outlaw
   buffs.adrenaline_rush       = new buffs::adrenaline_rush_t( this );
@@ -7648,17 +7642,8 @@ double rogue_t::resource_regen_per_second( resource_e r ) const
 
   if ( r == RESOURCE_ENERGY )
   {
-    reg *= base_energy_regen_mods;
-
-    if ( buffs.buried_treasure -> up() )
-    {
-      reg *= 1.0 + buffs.buried_treasure -> check_value() / resources.base_regen_per_second[ r ];
-    }
-
     if ( buffs.slice_and_dice -> up() )
-    {
-      reg *= 1.0 + talent.slice_and_dice -> effectN( 3 ).percent() * buffs.slice_and_dice -> value();
-    }
+      reg *= 1.0 + talent.slice_and_dice -> effectN( 3 ).percent() * buffs.slice_and_dice -> check_value();
   }
 
   return reg;
@@ -7712,23 +7697,26 @@ void rogue_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
-  if ( buffs.adrenaline_rush -> up() )
+  // We handle some energy gain increases here instead of the resource_regen_per_second method in order to better track their benefits.
+  if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
   {
-    if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
+    // Adrenaline Rush and Lesser AR T20 bonus
+    if ( buffs.adrenaline_rush -> up() )
     {
       double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * buffs.adrenaline_rush -> data().effectN( 1 ).percent();
-
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
     }
-  }
-  else if (buffs.t20_4pc_outlaw -> up() )
-  {
-    if ( ! resources.is_infinite( RESOURCE_ENERGY ) )
+    else if (buffs.t20_4pc_outlaw -> up() )
     {
       double energy_regen = periodicity.total_seconds() * resource_regen_per_second( RESOURCE_ENERGY ) * buffs.t20_4pc_outlaw -> data().effectN( 1 ).percent();
-
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.t20_4pc_outlaw );
     }
+
+    // Additional energy gains
+    if ( buffs.buried_treasure -> up() )
+      resource_gain( RESOURCE_ENERGY, buffs.buried_treasure -> check_value() * periodicity.total_seconds(), gains.buried_treasure );
+    if ( buffs.vendetta -> up() )
+      resource_gain( RESOURCE_ENERGY, buffs.vendetta -> check_value() * periodicity.total_seconds(), gains.vendetta );
   }
 }
 
