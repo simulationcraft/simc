@@ -11,7 +11,7 @@ namespace warlock {
           weapon = &(p->main_hand_weapon);
         }
 
-        virtual bool ready() override {
+        bool ready() override {
           if (p()->special_action->get_dot()->is_ticking()) return false;
           return warlock_pet_melee_attack_t::ready();
         }
@@ -33,7 +33,7 @@ namespace warlock {
           weapon = &(p->main_hand_weapon);
         }
 
-        virtual double action_multiplier() const override
+        double action_multiplier() const override
         {
           double m = warlock_pet_melee_attack_t::action_multiplier();
           if (p()->buffs.demonic_strength->check())
@@ -68,7 +68,7 @@ namespace warlock {
           tick_action = new felstorm_tick_t(p, data());
         }
 
-        virtual double action_multiplier() const override
+        double action_multiplier() const override
         {
           double m = warlock_pet_melee_attack_t::action_multiplier();
           if (p()->buffs.demonic_strength->check())
@@ -79,21 +79,20 @@ namespace warlock {
           return m;
         }
 
-        virtual void cancel() override {
+        void cancel() override {
           warlock_pet_melee_attack_t::cancel();
           get_dot()->cancel();
         }
 
-        virtual void execute() override {
+        void execute() override {
           warlock_pet_melee_attack_t::execute();
           p()->melee_attack->cancel();
         }
 
-        virtual void last_tick(dot_t* d) override {
+        void last_tick(dot_t* d) override {
           warlock_pet_melee_attack_t::last_tick(d);
 
-          if(p()->buffs.demonic_strength->up())
-            p()->buffs.demonic_strength->expire();
+          p()->buffs.demonic_strength->expire();
 
           if (!p()->is_sleeping() && !p()->melee_attack->target->is_sleeping())
               p()->melee_attack->execute();
@@ -103,7 +102,7 @@ namespace warlock {
         soul_strike_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("Soul Strike", p, p->find_spell(267964)) {
         }
 
-        virtual bool ready() override {
+        bool ready() override {
           if (p()->pet_type != PET_FELGUARD) return false;
           if (p()->special_action->get_dot()->is_ticking()) return false;
           return warlock_pet_melee_attack_t::ready();
@@ -140,7 +139,7 @@ namespace warlock {
         {
         }
 
-        virtual bool ready() override
+        bool ready() override
         {
           if (!p()->resource_available(p()->primary_resource(), 20) & !p()->buffs.demonic_power->check())
             p()->demise();
@@ -159,9 +158,10 @@ namespace warlock {
         }
       };
 
-      wild_imp_pet_t::wild_imp_pet_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "wild_imp", PET_WILD_IMP)
+      wild_imp_pet_t::wild_imp_pet_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "wild_imp", PET_WILD_IMP),
+          firebolt(),
+          isnotdoge()
       {
-
       }
 
       void wild_imp_pet_t::init_base_stats()
@@ -183,6 +183,8 @@ namespace warlock {
       {
         if (name == "fel_firebolt")
         {
+          assert( firebolt == nullptr ); // TODO: Check if we really want a non-background action stored in a pet-level
+          // action?
           firebolt = new fel_firebolt_t(this);
           return firebolt;
         }
@@ -231,7 +233,7 @@ namespace warlock {
           t21_4pc_increase = p->o()->sets->set(WARLOCK_DEMONOLOGY, T21, B4)->effectN(1).percent();
         }
 
-        virtual bool ready() override
+        bool ready() override
         {
           if (p()->dreadbite_executes <= 0)
             return false;
@@ -239,7 +241,7 @@ namespace warlock {
           return warlock_pet_melee_attack_t::ready();
         }
 
-        virtual double action_multiplier() const override
+        double action_multiplier() const override
         {
           double m = warlock_pet_melee_attack_t::action_multiplier();
 
@@ -349,7 +351,7 @@ namespace warlock {
           parse_options(options_str);
         }
 
-        virtual double action_multiplier() const override
+        double action_multiplier() const override
         {
           double m = warlock_pet_spell_t::action_multiplier();
 
@@ -369,7 +371,7 @@ namespace warlock {
           parse_options(options_str);
         }
 
-        virtual double action_multiplier() const override
+        double action_multiplier() const override
         {
           double m = warlock_pet_spell_t::action_multiplier();
 
@@ -403,11 +405,11 @@ namespace warlock {
     void warlock_pet_t::create_buffs_demonology() {
       buffs.demonic_power = make_buff(this, "demonic_power", find_spell(265273))
         ->set_default_value(find_spell(265273)->effectN(1).percent())
-        ->set_cooldown(timespan_t::from_seconds(0))
+        ->set_cooldown(timespan_t::zero())
         ->set_duration(find_spell(265273)->duration());
       buffs.demonic_strength = make_buff(this, "demonic_strength", find_spell(267171))
         ->set_default_value(find_spell(267171)->effectN(2).percent())
-        ->set_cooldown(timespan_t::from_seconds(0))
+        ->set_cooldown(timespan_t::zero())
         ->set_duration(find_spell(267171)->duration());
       buffs.demonic_consumption = make_buff(this, "demonic_consumption", find_spell(267972))
         ->set_default_value(find_spell(267972)->effectN(1).percent())
@@ -441,7 +443,7 @@ namespace warlock {
         p()->buffs.demonic_calling->trigger();
       }
 
-      virtual double action_multiplier() const override
+      double action_multiplier() const override
       {
         double m = warlock_spell_t::action_multiplier();
 
@@ -465,19 +467,19 @@ namespace warlock {
               parse_effect_data(p->find_spell(86040)->effectN(1));
           }
 
-          virtual timespan_t travel_time() const override {
+          timespan_t travel_time() const override {
               return timespan_t::from_millis(700);
           }
 
-          virtual bool ready() override {
-              bool r = warlock_spell_t::ready();
-              if (p()->resources.current[RESOURCE_SOUL_SHARD] == 0.0)
-                  r = false;
-
-              return r;
+          bool ready() override {
+            if (p()->resources.current[RESOURCE_SOUL_SHARD] == 0.0)
+            {
+              return false;
+            }
+            return warlock_spell_t::ready();
           }
 
-          virtual double action_multiplier() const override
+          double action_multiplier() const override
           {
             double m = warlock_spell_t::action_multiplier();
 
@@ -499,7 +501,7 @@ namespace warlock {
                   p()->procs.three_shard_hog->occur();
           }
 
-          virtual void impact(action_state_t* s) override {
+          void impact(action_state_t* s) override {
               warlock_spell_t::impact(s);
 
               if (result_is_hit(s->result)) {
@@ -531,7 +533,7 @@ namespace warlock {
         energize_amount = 2;
       }
 
-      virtual timespan_t execute_time() const override
+      timespan_t execute_time() const override
       {
         if ( p()->buffs.demonic_core->check() )
         {
@@ -549,7 +551,7 @@ namespace warlock {
         p()->buffs.demonic_calling->trigger();
       }
 
-      virtual double action_multiplier() const override
+      double action_multiplier() const override
       {
         double m = warlock_spell_t::action_multiplier();
 
@@ -583,7 +585,7 @@ namespace warlock {
         return  warlock_spell_t::cost();
       }
 
-      virtual timespan_t execute_time() const override
+      timespan_t execute_time() const override
       {
         if (p()->buffs.demonic_calling->check())
         {
@@ -593,7 +595,7 @@ namespace warlock {
         return warlock_spell_t::execute_time();
       }
 
-      virtual void execute() override
+      void execute() override
       {
         warlock_spell_t::execute();
 
@@ -667,7 +669,7 @@ namespace warlock {
         add_child(explosion);
       }
 
-      virtual bool ready() override
+      bool ready() override
       {
         bool r = warlock_spell_t::ready();
 
@@ -682,7 +684,7 @@ namespace warlock {
         return false;
       }
 
-      virtual void execute() override
+      void execute() override
       {
         warlock_spell_t::execute();
         for (auto imp : p()->warlock_pet_list.wild_imps)
@@ -705,21 +707,21 @@ namespace warlock {
         harmful = may_crit = false;
       }
 
-      virtual void execute() override
+      void execute() override
       {
         warlock_spell_t::execute();
 
-        for (size_t i = 0; i < p()->warlock_pet_list.demonic_tyrants.size(); i++)
+        for ( auto& demonic_tyrant : p()->warlock_pet_list.demonic_tyrants)
         {
-          if (p()->warlock_pet_list.demonic_tyrants[i]->is_sleeping())
+          if (demonic_tyrant->is_sleeping())
           {
-            p()->warlock_pet_list.demonic_tyrants[i]->summon(p()->find_spell(265187)->duration());
+            demonic_tyrant->summon(data().duration());
           }
         }
         p()->buffs.demonic_power->trigger();
         for (auto& pet : p()->pet_list)
         {
-          pets::warlock_pet_t *lock_pet = static_cast<pets::warlock_pet_t*> (pet);
+          auto lock_pet = dynamic_cast<pets::warlock_pet_t*>(pet);
 
           if (lock_pet != nullptr)
           {
@@ -727,7 +729,7 @@ namespace warlock {
             {
               if ( lock_pet -> expiration && lock_pet->pet_type != PET_DEMONIC_TYRANT)
               {
-                timespan_t new_time = lock_pet->expiration->time + timespan_t::from_millis(p()->find_spell(265273)->effectN(2).base_value());
+                timespan_t new_time = lock_pet->expiration->time + lock_pet -> buffs.demonic_power->data().effectN(2).time_value();
                 lock_pet->expiration->reschedule_time = new_time;
               }
               lock_pet -> buffs.demonic_power -> trigger();
@@ -746,7 +748,7 @@ namespace warlock {
               {
                 if (!dt->is_sleeping())
                 {
-                  for (int i = 0; i < (available/20*3); i++)
+                  for (int i = 0; i < (available/20*3); i++) // TODO: check if hardcoded value can be replaced.
                   {
                     dt->buffs.demonic_consumption->trigger();
                   }
@@ -789,7 +791,7 @@ namespace warlock {
           aoe = -1;
           background = dual = direct_tick = true; // Legion TOCHECK
           callbacks = false;
-          radius = p->find_spell(267211)->effectN(1).radius();
+          radius = p->talents.bilescourge_bombers->effectN(1).radius();
         }
       };
 
@@ -809,7 +811,7 @@ namespace warlock {
         }
       }
 
-      virtual void execute() override
+      void execute() override
       {
         warlock_spell_t::execute();
 
@@ -831,7 +833,7 @@ namespace warlock {
         ignore_false_positive = true;
       }
 
-      virtual void execute() override
+      void execute() override
       {
         warlock_spell_t::execute();
 
@@ -852,8 +854,8 @@ namespace warlock {
       doom_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("doom", p, p -> talents.doom) {
           parse_options(options_str);
 
-          base_tick_time = p->find_spell(265412)->duration();
-          dot_duration = p->find_spell(265412)->duration();
+          base_tick_time = data().duration();
+          dot_duration = data().duration();
           spell_power_mod.tick = p->find_spell(265469)->effectN(1).sp_coeff();
 
           may_crit = true;
@@ -865,23 +867,13 @@ namespace warlock {
           return duration * p()->cache.spell_haste();
       }
 
-      virtual double action_multiplier()const override {
-          double m = warlock_spell_t::action_multiplier();
-          return m;
-      }
-
-      virtual void tick(dot_t* d) override {
+      void tick(dot_t* d) override {
           warlock_spell_t::tick(d);
 
           if (d->state->result == RESULT_HIT || result_is_hit(d->state->result)) {
               if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T19, B2) && rng().roll(p()->sets->set(WARLOCK_DEMONOLOGY, T19, B2)->effectN(1).percent()))
                   p()->resource_gain(RESOURCE_SOUL_SHARD, 1, p()->gains.t19_2pc_demonology);
           }
-      }
-
-      virtual void execute() override
-      {
-        warlock_spell_t::execute();
       }
     };
 
@@ -922,16 +914,16 @@ namespace warlock {
         harmful = may_crit = false;
       }
 
-      virtual void execute() override
+      void execute() override
       {
         warlock_spell_t::execute();
-        for (size_t i = 0; i < p()->warlock_pet_list.vilefiends.size(); i++)
+        for (auto& vilefiend : p()->warlock_pet_list.vilefiends)
         {
-          if (p()->warlock_pet_list.vilefiends[i]->is_sleeping())
+          if (vilefiend->is_sleeping())
           {
-            p()->warlock_pet_list.vilefiends[i]->summon(p()->find_spell(264119)->duration());
-            p()->warlock_pet_list.vilefiends[i]->active.bile_spit->set_target(execute_state->target);
-            p()->warlock_pet_list.vilefiends[i]->active.bile_spit->execute();
+            vilefiend->summon(data().duration());
+            vilefiend->active.bile_spit->set_target(execute_state->target);
+            vilefiend->active.bile_spit->execute();
           }
         }
       }
@@ -943,9 +935,9 @@ namespace warlock {
               parse_options(options_str);
               cooldown = p->get_cooldown("grimoire_of_service");
               cooldown->duration = data().cooldown();
-              summoning_duration = data().duration() + timespan_t::from_millis(1);
+              summoning_duration = data().duration() + timespan_t::from_millis(1); // TODO: why?
           }
-          virtual void execute() override {
+          void execute() override {
               pet->is_grimoire_of_service = true;
               summon_pet_t::execute();
           }
@@ -968,7 +960,7 @@ namespace warlock {
         action_skill = 1;
       }
 
-      virtual void execute() override
+      void execute() override
       {
         warlock_spell_t::execute();
         p()->buffs.inner_demons->trigger();
