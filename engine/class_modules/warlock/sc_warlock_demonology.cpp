@@ -1013,6 +1013,7 @@ namespace warlock {
       ->set_refresh_behavior(buff_refresh_behavior::DURATION);
     buffs.demonic_power = make_buff(this, "demonic_power", find_spell(265273))
       ->set_default_value(find_spell(265273)->effectN(1).percent())
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
       ->set_cooldown(timespan_t::zero());
     //Talents
     buffs.demonic_calling = make_buff(this, "demonic_calling", talents.demonic_calling->effectN(1).trigger())

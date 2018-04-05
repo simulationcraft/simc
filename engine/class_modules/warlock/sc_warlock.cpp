@@ -931,6 +931,7 @@ void warlock_t::create_buffs()
     ->set_cooldown( find_spell( 226262 )->duration() );
   buffs.alythesss_pyrogenics = make_buff( this, "alythesss_pyrogenics", find_spell( 205675 ) )
     ->set_default_value( find_spell( 205675 )->effectN( 1 ).percent() )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
   buffs.wakeners_loyalty = make_buff( this, "wakeners_loyalty", find_spell( 236200 ) )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
