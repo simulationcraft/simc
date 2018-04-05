@@ -205,10 +205,7 @@ namespace warlock {
       void wild_imp_pet_t::demise() {
         warlock_pet_t::demise();
 
-        if (rng().roll(find_spell(267102)->effectN(1).percent()))
-        {
-          o()->buffs.demonic_core->trigger();
-        }
+        o()->buffs.demonic_core->trigger(1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN(1).percent());
       }
     }
     namespace dreadstalker {
@@ -301,10 +298,7 @@ namespace warlock {
       void dreadstalker_t::demise() {
         warlock_pet_t::demise();
 
-        if (rng().roll(find_spell(267102)->effectN(2).percent()))
-        {
-          o()->buffs.demonic_core->trigger();
-        }
+        o()->buffs.demonic_core->trigger(1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN(2).percent());
       }
 
       action_t* dreadstalker_t::create_action(const std::string& name, const std::string& options_str)
@@ -535,19 +529,21 @@ namespace warlock {
 
       timespan_t execute_time() const override
       {
+        auto et = warlock_spell_t::execute_time();
+
         if ( p()->buffs.demonic_core->check() )
         {
-          return timespan_t::zero();
+          et *= 1.0 + p()->buffs.demonic_core -> data().effectN(1).percent();
         }
 
-        return warlock_spell_t::execute_time();
+        return et;
       }
 
       void execute() override
       {
         warlock_spell_t::execute();
-        if ( p()->buffs.demonic_core->check() )
-          p()->buffs.demonic_core->decrement();
+        p()->buffs.demonic_core->up(); // benefit tracking
+        p()->buffs.demonic_core->decrement();
         p()->buffs.demonic_calling->trigger();
       }
 
@@ -1001,8 +997,7 @@ namespace warlock {
   }
 
   void warlock_t::create_buffs_demonology() {
-    buffs.demonic_core = make_buff(this, "demonic_core", find_spell(264173))
-      ->set_refresh_behavior(buff_refresh_behavior::DURATION);
+    buffs.demonic_core = make_buff(this, "demonic_core", find_spell(264173));
     buffs.demonic_power = make_buff(this, "demonic_power", find_spell(265273))
       ->set_default_value(find_spell(265273)->effectN(1).percent())
       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )

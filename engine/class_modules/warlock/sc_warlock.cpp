@@ -965,6 +965,7 @@ void warlock_t::init_spells()
   spec.immolate                         = find_specialization_spell( "Immolate" );
   spec.nightfall                        = find_specialization_spell( "Nightfall" );
   spec.wild_imps                        = find_specialization_spell( "Wild Imps" );
+  spec.demonic_core                     = find_specialization_spell( "Demonic Core" );
   spec.shadow_bite                      = find_specialization_spell( "Shadow Bite" );
   spec.shadow_bite_2                    = find_specialization_spell( 231799 );
   spec.conflagrate                      = find_specialization_spell( "Conflagrate" );

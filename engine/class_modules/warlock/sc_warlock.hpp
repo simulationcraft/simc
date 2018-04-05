@@ -235,6 +235,7 @@ namespace warlock
         const spell_data_t* demonology;
         const spell_data_t* doom;
         const spell_data_t* wild_imps;
+        const spell_data_t* demonic_core;
 
         // Destruction only
         const spell_data_t* destruction;
