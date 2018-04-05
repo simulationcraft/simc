@@ -399,8 +399,8 @@ namespace warlock {
     void warlock_pet_t::create_buffs_demonology() {
       buffs.demonic_power = make_buff(this, "demonic_power", find_spell(265273))
         ->set_default_value(find_spell(265273)->effectN(1).percent())
-        ->set_cooldown(timespan_t::zero())
-        ->set_duration(find_spell(265273)->duration());
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+        ->set_cooldown(timespan_t::zero());
       buffs.demonic_strength = make_buff(this, "demonic_strength", find_spell(267171))
         ->set_default_value(find_spell(267171)->effectN(2).percent())
         ->set_cooldown(timespan_t::zero())
@@ -714,24 +714,28 @@ namespace warlock {
             demonic_tyrant->summon(data().duration());
           }
         }
+
         p()->buffs.demonic_power->trigger();
         for (auto& pet : p()->pet_list)
         {
           auto lock_pet = dynamic_cast<pets::warlock_pet_t*>(pet);
 
-          if (lock_pet != nullptr)
+          if (lock_pet == nullptr)
+            continue;
+          if (lock_pet->is_sleeping())
+            continue;
+
+          if ( lock_pet->pet_type == PET_DEMONIC_TYRANT )
+            continue;
+
+          if ( lock_pet -> expiration)
           {
-            if (!lock_pet->is_sleeping())
-            {
-              if ( lock_pet -> expiration && lock_pet->pet_type != PET_DEMONIC_TYRANT)
-              {
-                timespan_t new_time = lock_pet->expiration->time + lock_pet -> buffs.demonic_power->data().effectN(2).time_value();
-                lock_pet->expiration->reschedule_time = new_time;
-              }
-              lock_pet -> buffs.demonic_power -> trigger();
-            }
+            timespan_t new_time = lock_pet->expiration->time + lock_pet -> buffs.demonic_power->data().effectN(2).time_value();
+            lock_pet->expiration->reschedule_time = new_time;
           }
+          lock_pet -> buffs.demonic_power -> trigger();
         }
+
         if (p()->talents.demonic_consumption->ok())
         {
           for (auto imp : p()->warlock_pet_list.wild_imps)
@@ -1000,7 +1004,6 @@ namespace warlock {
     buffs.demonic_core = make_buff(this, "demonic_core", find_spell(264173));
     buffs.demonic_power = make_buff(this, "demonic_power", find_spell(265273))
       ->set_default_value(find_spell(265273)->effectN(1).percent())
-      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
       ->set_cooldown(timespan_t::zero());
     //Talents
     buffs.demonic_calling = make_buff(this, "demonic_calling", talents.demonic_calling->effectN(1).trigger())

@@ -231,9 +231,6 @@ namespace warlock
         m *= 1.0 + o()->cache.mastery_value();
       }
 
-      if ( pet_type != PET_DEMONIC_TYRANT && o()->buffs.demonic_power -> check() )
-        m *= 1.0 + ( o()->buffs.demonic_power -> default_value );
-
       if ( buffs.rage_of_guldan->check() )
         m *= 1.0 + ( buffs.rage_of_guldan->default_value / 100 );
 
@@ -245,11 +242,8 @@ namespace warlock
       m *= 1.0 + o()->buffs.sindorei_spite->check_stack_value();
       m *= 1.0 + o()->buffs.lessons_of_spacetime->check_stack_value();
 
-      if ( o()->specialization() == WARLOCK_DEMONOLOGY ) 
-      {
-        if ( buffs.demonic_power -> check() )
-          m *= 1.0 + ( buffs.demonic_power -> default_value );
-      }
+      if ( buffs.demonic_power -> check() )
+        m *= 1.0 + ( buffs.demonic_power -> default_value );
 
       if ( o()->buffs.soul_harvest->check() )
       {
