@@ -40,6 +40,7 @@ namespace warlock
       virtual double action_multiplier()const override
       {
         double m = warlock_spell_t::action_multiplier();
+
         if (p()->buffs.nightfall->check())
         {
           m *= 1.0 + p()->buffs.nightfall->default_value;
@@ -51,8 +52,7 @@ namespace warlock
       void execute() override
       {
         warlock_spell_t::execute();
-        if (p()->buffs.nightfall->check())
-          p()->buffs.nightfall->expire();
+        p()->buffs.nightfall->expire();
       }
     };
 
@@ -745,20 +745,16 @@ namespace warlock
   void warlock_t::create_buffs_affliction()
   {
     //spells
-    buffs.active_uas = buff_creator_t( this, "active_uas" )
-      .tick_behavior( buff_tick_behavior::NONE )
-      .refresh_behavior( buff_refresh_behavior::DURATION )
-      .max_stack( 20 );
+    buffs.active_uas = make_buff( this, "active_uas" )
+      ->set_max_stack( 20 );
     //talents
-    buffs.soul_harvest = buff_creator_t( this, "soul_harvest", find_spell( 196098 ) )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-      .refresh_behavior( buff_refresh_behavior::EXTEND )
-      .cd( timespan_t::zero() )
-      .default_value( find_spell( 196098 )->effectN( 1 ).percent() );
-    buffs.nightfall = buff_creator_t( this, "nightfall", find_spell( 264571 ) )
-      .default_value( find_spell( 264571 )->effectN( 2 ).percent() )
-      .refresh_behavior( buff_refresh_behavior::DURATION )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    buffs.soul_harvest = make_buff( this, "soul_harvest", talents.soul_harvest )
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      ->set_refresh_behavior( buff_refresh_behavior::EXTEND )
+      ->set_cooldown( timespan_t::zero() )
+      ->set_default_value( talents.soul_harvest->effectN( 1 ).percent() );
+    buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
+      ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() );
     //tier
     buffs.demonic_speed = make_buff<haste_buff_t>( this, "demonic_speed", sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger() );
     buffs.demonic_speed

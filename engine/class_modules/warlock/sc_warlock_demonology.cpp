@@ -438,8 +438,7 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
-        if (p()->talents.demonic_calling->ok() && rng().roll(p()->talents.demonic_calling->proc_chance()))
-          p()->buffs.demonic_calling->trigger();
+        p()->buffs.demonic_calling->trigger();
       }
 
       virtual double action_multiplier() const override
@@ -547,8 +546,7 @@ namespace warlock {
         warlock_spell_t::execute();
         if ( p()->buffs.demonic_core->check() )
           p()->buffs.demonic_core->decrement();
-        if (p()->talents.demonic_calling->ok() && rng().roll(p()->talents.demonic_calling->proc_chance()))
-          p()->buffs.demonic_calling->trigger();
+        p()->buffs.demonic_calling->trigger();
       }
 
       virtual double action_multiplier() const override
@@ -577,14 +575,12 @@ namespace warlock {
 
       double cost() const override
       {
-        double c = warlock_spell_t::cost();
-
         if (p()->buffs.demonic_calling->check())
         {
-          return 0;
+          return 0.0;
         }
 
-        return c;
+        return  warlock_spell_t::cost();
       }
 
       virtual timespan_t execute_time() const override
@@ -629,6 +625,7 @@ namespace warlock {
           }
         }
 
+        p()->buffs.demonic_calling->up(); // benefit tracking
         p()->buffs.demonic_calling->expire();
         p()->buffs.rage_of_guldan->expire();
 
@@ -1016,10 +1013,10 @@ namespace warlock {
       ->set_refresh_behavior(buff_refresh_behavior::DURATION);
     buffs.demonic_power = make_buff(this, "demonic_power", find_spell(265273))
       ->set_default_value(find_spell(265273)->effectN(1).percent())
-      ->set_cooldown(timespan_t::from_seconds(0))
-      ->set_duration(find_spell(265273)->duration());
+      ->set_cooldown(timespan_t::zero());
     //Talents
-    buffs.demonic_calling = make_buff(this, "demonic_calling", talents.demonic_calling->effectN(1).trigger());
+    buffs.demonic_calling = make_buff(this, "demonic_calling", talents.demonic_calling->effectN(1).trigger())
+        ->set_trigger_spell(talents.demonic_calling);
     buffs.inner_demons = make_buff(this, "inner_demons", find_spell(267216))
       ->set_period(timespan_t::from_seconds(talents.inner_demons->effectN(1).base_value()))
       ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
@@ -1035,6 +1032,7 @@ namespace warlock {
         }
       });
     buffs.sacrificed_souls = make_buff(this, "sacrificed_souls", find_spell(272591))
+      ->set_trigger_spell(talents.sacrificed_souls)
       ->set_default_value(find_spell(272591)->effectN(1).percent())
       ->set_refresh_behavior(buff_refresh_behavior::DURATION);
     //Tier

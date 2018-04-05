@@ -248,11 +248,11 @@ namespace warlock
           m *= 1.0 + ( buffs.demonic_power -> default_value );
       }
 
-      if ( o()->specialization() == WARLOCK_AFFLICTION ) {
-        if ( o()->buffs.soul_harvest->check() )
-          m *= 1.0 + o()->buffs.soul_harvest->check_stack_value();
-        m *= 1.0 + o()->spec.affliction->effectN( 3 ).percent();
+      if ( o()->buffs.soul_harvest->check() )
+      {
+        m *= 1.0 + o()->buffs.soul_harvest->check_stack_value();
       }
+      m *= 1.0 + o()->spec.affliction->effectN( 3 ).percent();
 
       return m;
     }
@@ -400,12 +400,9 @@ namespace warlock
           }
         }
 
-        if ( p()->specialization() == WARLOCK_AFFLICTION && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T20, B4 ) )
-        {
-          p()->buffs.demonic_speed->trigger();
-        }
+        p()->buffs.demonic_speed->trigger();
 
-        if (p()->specialization() == WARLOCK_DEMONOLOGY && p()->talents.sacrificed_souls->ok())
+        if (p()->talents.sacrificed_souls->ok())
         {
           for (int i = 0; i < last_resource_cost; i++)
           {
@@ -696,16 +693,11 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.alythesss_pyrogenics->check_stack_value();
   }
 
-  if ( specialization() == WARLOCK_AFFLICTION ) {
-    if ( buffs.soul_harvest->check() )
-      m *= 1.0 + buffs.soul_harvest -> check_stack_value();
-  }
+  if ( buffs.soul_harvest->check() )
+    m *= 1.0 + buffs.soul_harvest -> check_stack_value();
 
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-  {
-    if ( buffs.demonic_power -> check() )
-      m *= 1.0 + ( buffs.demonic_power -> default_value );
-  }
+  if ( buffs.demonic_power -> check() )
+    m *= 1.0 + ( buffs.demonic_power -> default_value );
 
   m *= 1.0 + buffs.sindorei_spite->check_stack_value();
   m *= 1.0 + buffs.lessons_of_spacetime->check_stack_value();
@@ -733,11 +725,8 @@ double warlock_t::composite_spell_haste() const
     h *= 1.0 / ( 1.0 + legendary.sephuzs_passive );
   }
 
-  if ( specialization() == WARLOCK_AFFLICTION )
-  {
-    if ( buffs.demonic_speed->check() )
-      h *= 1.0 / ( 1.0 + buffs.demonic_speed->check_value() );
-  }
+  if ( buffs.demonic_speed->check() )
+    h *= 1.0 / ( 1.0 + buffs.demonic_speed->check_value() );
 
   if (specialization() == WARLOCK_DEMONOLOGY)
   {
@@ -762,11 +751,9 @@ double warlock_t::composite_melee_haste() const
     h *= 1.0 / ( 1.0 + legendary.sephuzs_passive );
   }
 
-  if ( specialization() == WARLOCK_AFFLICTION )
-  {
-    if ( buffs.demonic_speed->check() )
-      h *= 1.0 / ( 1.0 + buffs.demonic_speed->check_value() );
-  }
+  if ( buffs.demonic_speed->check() )
+    h *= 1.0 / ( 1.0 + buffs.demonic_speed->check_value() );
+
   if (specialization() == WARLOCK_DEMONOLOGY)
   {
     if (buffs.dreaded_haste->check())
@@ -922,12 +909,9 @@ void warlock_t::create_buffs()
 {
   player_t::create_buffs();
 
-  if ( specialization() == WARLOCK_AFFLICTION )
-    create_buffs_affliction();
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-    create_buffs_demonology();
-  if ( specialization() == WARLOCK_DESTRUCTION )
-    create_buffs_destruction();
+  create_buffs_affliction();
+  create_buffs_demonology();
+  create_buffs_destruction();
 
   buffs.grimoire_of_sacrifice = make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice->effectN( 2 ).trigger() );
 
@@ -1317,13 +1301,13 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
 {
   if ( name_str == "shard_react" )
   {
-    return make_fn_expr( name_str, [this, a]()
+    return make_fn_expr( name_str, [this]()
         { return resources.current[RESOURCE_SOUL_SHARD] >= 1 && sim->current_time() >= shard_react; } );
   }
   else if ( name_str == "pet_count" )
   {
     return make_fn_expr(name_str,
-        [this, a]()
+        [this]()
         {
           double t = 0;
           for ( const auto& pet : pet_list )
