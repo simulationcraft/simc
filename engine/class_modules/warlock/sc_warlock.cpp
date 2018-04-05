@@ -231,6 +231,9 @@ namespace warlock
         m *= 1.0 + o()->cache.mastery_value();
       }
 
+      if ( pet_type != PET_DEMONIC_TYRANT && o()->buffs.demonic_power -> check() )
+        m *= 1.0 + ( o()->buffs.demonic_power -> default_value );
+
       if ( buffs.rage_of_guldan->check() )
         m *= 1.0 + ( buffs.rage_of_guldan->default_value / 100 );
 
@@ -695,9 +698,6 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.soul_harvest->check() )
     m *= 1.0 + buffs.soul_harvest -> check_stack_value();
-
-  if ( buffs.demonic_power -> check() )
-    m *= 1.0 + ( buffs.demonic_power -> default_value );
 
   m *= 1.0 + buffs.sindorei_spite->check_stack_value();
   m *= 1.0 + buffs.lessons_of_spacetime->check_stack_value();

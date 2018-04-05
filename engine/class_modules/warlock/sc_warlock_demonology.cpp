@@ -624,7 +624,7 @@ namespace warlock {
         }
 
         p()->buffs.demonic_calling->up(); // benefit tracking
-        p()->buffs.demonic_calling->expire();
+        p()->buffs.demonic_calling->decrement();
         p()->buffs.rage_of_guldan->expire();
 
         if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T20, B4))
@@ -1021,8 +1021,7 @@ namespace warlock {
       });
     buffs.sacrificed_souls = make_buff(this, "sacrificed_souls", find_spell(272591))
       ->set_trigger_spell(talents.sacrificed_souls)
-      ->set_default_value(find_spell(272591)->effectN(1).percent())
-      ->set_refresh_behavior(buff_refresh_behavior::DURATION);
+      ->set_default_value(find_spell(272591)->effectN(1).percent());
     //Tier
     buffs.rage_of_guldan = make_buff(this, "rage_of_guldan", sets->set(WARLOCK_DEMONOLOGY, T21, B2)->effectN(1).trigger())
       ->set_duration(find_spell(257926)->duration())
@@ -1071,8 +1070,8 @@ namespace warlock {
   void warlock_t::create_apl_demonology() {
     action_priority_list_t* def = get_action_priority_list("default");
     
-    def -> add_action("demonic_strength,if=!cooldown.summon_demonic_tyrant.remains<10");
-    def -> add_action("power_siphon,if=talent.power_siphon.enabled");
+    def -> add_talent(this, "Demonic Strength", "if=!cooldown.summon_demonic_tyrant.remains<10");
+    def -> add_talent(this, "Power Siphon", "if=talent.power_siphon.enabled");
     def -> add_action("doom,if=talent.doom.enabled&refreshable");
     def -> add_action("summon_vilefiend");
     def -> add_action("call_dreadstalkers");
