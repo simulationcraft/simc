@@ -174,7 +174,7 @@ namespace warlock
 
       struct legendary_t
       {
-        bool odr_shawl_of_the_ymirjar;
+        const spell_data_t* odr_shawl_of_the_ymirjar;
         bool feretory_of_souls;
         bool wilfreds_sigil_of_superior_summoning_flag;
         bool stretens_insanity;
@@ -465,6 +465,7 @@ namespace warlock
           propagate_const<buff_t*> demonic_power;
           propagate_const<buff_t*> demonic_strength;
           propagate_const<buff_t*> demonic_consumption;
+          propagate_const<buff_t*> grimoire_of_service;
         } buffs;
 
         struct active_t
@@ -474,7 +475,6 @@ namespace warlock
           spell_t*        bile_spit;
         } active;
 
-        bool is_grimoire_of_service = false;
         bool is_demonbolt_enabled = true;
         bool is_lord_of_flames = false;
         bool t21_4pc_reset = false;
@@ -1030,10 +1030,10 @@ namespace warlock
           auto td = this->td( t );
 
           if ( td->debuffs_eradication->check() )
-            m *= 1.0 + p()->find_spell( 196414 )->effectN( 1 ).percent();
+            m *= 1.0 + td->debuffs_eradication->data().effectN( 1 ).percent();
 
-          if ( target == p()->havoc_target && affected_by_odr_shawl_of_the_ymirjar && p()->legendary.odr_shawl_of_the_ymirjar )
-            m *= 1.0 + p()->find_spell( 212173 )->effectN( 1 ).percent();
+          if ( p()->legendary.odr_shawl_of_the_ymirjar && target == p()->havoc_target && affected_by_odr_shawl_of_the_ymirjar  )
+            m *= 1.0 + p()->legendary.odr_shawl_of_the_ymirjar->effectN( 1 ).percent();
 
           double deaths_embrace_health = p()->talents.deaths_embrace->effectN( 2 ).base_value();
 

@@ -233,9 +233,9 @@ namespace warlock
       if ( buffs.rage_of_guldan->check() )
         m *= 1.0 + ( buffs.rage_of_guldan->default_value / 100 );
 
-      if ( is_grimoire_of_service )
+      if ( buffs.grimoire_of_service->check() )
       {
-        m *= 1.0 + o()->find_spell( 216187 )->effectN( 1 ).percent();
+        m *= 1.0 + buffs.grimoire_of_service->data().effectN( 1 ).percent();
       }
 
       m *= 1.0 + o()->buffs.sindorei_spite->check_stack_value();
@@ -418,28 +418,6 @@ namespace warlock
         hasted_ticks = false;
         may_crit = false;
       }
-
-      virtual bool ready() override
-      {
-        if ( p()->specialization() == WARLOCK_AFFLICTION )
-          return false;
-
-        return warlock_spell_t::ready();
-      }
-
-      virtual double action_multiplier() const override
-      {
-        double m = warlock_spell_t::action_multiplier();
-
-        if ( p()->specialization() == WARLOCK_AFFLICTION )
-          m *= 1.0 + p()->find_spell( 205183 )->effectN( 1 ).percent();
-
-        return m;
-      }
-      virtual void tick( dot_t* d ) override
-      {
-        warlock_spell_t::tick( d );
-      }
     };
 
     struct grimoire_of_sacrifice_t : public warlock_spell_t
@@ -452,19 +430,19 @@ namespace warlock
         ignore_false_positive = true;
       }
 
-      virtual bool ready() override
+      bool ready() override
       {
         if ( !p()->warlock_pet_list.active ) return false;
 
         return warlock_spell_t::ready();
       }
 
-      virtual void execute() override
+      void execute() override
       {
+        warlock_spell_t::execute();
+
         if ( p()->warlock_pet_list.active )
         {
-          warlock_spell_t::execute();
-
           p()->warlock_pet_list.active->dismiss();
           p()->warlock_pet_list.active = nullptr;
           p()->buffs.grimoire_of_sacrifice->trigger();
@@ -486,7 +464,7 @@ namespace warlock
 
   namespace buffs
   {
-    struct debuff_havoc_t : public warlock_buff_t < buff_t >
+    struct debuff_havoc_t : public warlock_buff_t<buff_t>
     {
       debuff_havoc_t( warlock_td_t& p ) :
         base_t( p, "havoc", p.source -> find_spell( 80240 ) ) { }
@@ -557,10 +535,7 @@ namespace warlock
       {
         if ( current_ua->is_ticking() )
         {
-          if ( warlock.sim->log )
-          {
-            warlock.sim->out_debug.printf( "Player %s demised. Warlock %s gains a shard from unstable affliction.", target->name(), warlock.name() );
-          }
+          warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from unstable affliction.", target->name(), warlock.name() );
 
           warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.unstable_affliction_refund );
 
@@ -570,12 +545,9 @@ namespace warlock
       }
     }
 
-    if ( warlock.specialization() == WARLOCK_AFFLICTION && debuffs_haunt->check() )
+    if ( debuffs_haunt->check() )
     {
-      if ( warlock.sim->log )
-      {
-        warlock.sim->out_debug.printf( "Player %s demised. Warlock %s reset haunt's cooldown.", target->name(), warlock.name() );
-      }
+      warlock.sim->print_log( "Player {} demised. Warlock {} reset haunt's cooldown.", target->name(), warlock.name() );
 
       warlock.cooldowns.haunt->reset( true );
     }
@@ -654,25 +626,23 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 
   if (specialization() == WARLOCK_AFFLICTION) {
     if (td->debuffs_haunt->check())
-      m *= 1.0 + find_spell(48181)->effectN(2).percent();
+      m *= 1.0 + td->debuffs_haunt->data().effectN(2).percent();
     if (td->debuffs_shadow_embrace->check())
-      m *= 1.0 + (find_spell(32390)->effectN(1).percent() * td->debuffs_shadow_embrace->check());
+      m *= 1.0 + (td->debuffs_shadow_embrace->data().effectN(1).percent() * td->debuffs_shadow_embrace->check());
 
     for (auto& current_ua : td->dots_unstable_affliction)
     {
       if (current_ua->is_ticking())
       {
-        m *= 1.0 + find_spell(30108)->effectN(3).percent();
+        m *= 1.0 + spec.unstable_affliction->effectN(3).percent();
         break;
       }
     }
   }
 
-  if (specialization() == WARLOCK_DEMONOLOGY) {
-    if (td->debuffs_from_the_shadows->check() && school == SCHOOL_SHADOWFLAME)
-    {
-      m *= 1.0 + find_spell(270569)->effectN(1).percent();
-    }
+  if (td->debuffs_from_the_shadows->check() && school == SCHOOL_SHADOWFLAME)
+  {
+    m *= 1.0 + td->debuffs_from_the_shadows->data().effectN(1).percent();
   }
 
   return m;
@@ -1471,7 +1441,7 @@ struct odr_shawl_of_the_ymirjar_t : public scoped_actor_callback_t<warlock_t>
 
   void manipulate( warlock_t* a, const special_effect_t&  ) override
   {
-    a->legendary.odr_shawl_of_the_ymirjar = true;
+    a->legendary.odr_shawl_of_the_ymirjar = a -> find_spell( 212173 );
   }
 };
 

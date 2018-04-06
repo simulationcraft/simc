@@ -150,10 +150,12 @@ namespace warlock {
         double cost() const override
         {
           double c = warlock_pet_spell_t::cost();
+
           if (p()->buffs.demonic_power->check())
           {
-            c += c * p()->find_spell(265273)->effectN(3).percent();
+            c *= 1.0 + p()->buffs.demonic_power->data().effectN(3).percent();
           }
+
           return c;
         }
       };
@@ -407,6 +409,7 @@ namespace warlock {
       buffs.demonic_consumption = make_buff(this, "demonic_consumption", find_spell(267972))
         ->set_default_value(find_spell(267972)->effectN(1).percent())
         ->set_max_stack(100);
+      buffs.grimoire_of_service = make_buff(this, "grimoire_of_service", find_spell(216187) );
     }
 
     void warlock_pet_t::init_spells_demonology() {
@@ -937,8 +940,8 @@ namespace warlock {
               summoning_duration = data().duration() + timespan_t::from_millis(1); // TODO: why?
           }
           void execute() override {
-              pet->is_grimoire_of_service = true;
               summon_pet_t::execute();
+              pet->buffs.grimoire_of_service->trigger();
           }
           bool init_finished() override {
               if (pet) {
