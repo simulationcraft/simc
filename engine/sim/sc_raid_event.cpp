@@ -219,8 +219,8 @@ struct adds_event_t : public raid_event_t
         {
           if ( spawn_stacked == 0 || !offset_computed )
           {
-            double angle_start = spawn_angle_start * ( M_PI / 180 );
-            double angle_end = spawn_angle_end * ( M_PI / 180 );
+            double angle_start = spawn_angle_start * ( m_pi / 180 );
+            double angle_end = spawn_angle_end * ( m_pi / 180 );
             double angle = sim -> rng().range( angle_start, angle_end );
             double radius = sim -> rng().range( fabs( spawn_radius_min ), fabs( spawn_radius_max ) );
             x_offset = radius * cos(angle);

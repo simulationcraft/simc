@@ -742,7 +742,7 @@ struct soul_fragment_t
     // uniformity.
     double dist = sqrt( 2.0 * dh -> rng().real() / a + r_min * r_min );
     // Pick a random angle.
-    double theta = dh -> rng().range( 0.0, 2.0 * M_PI );
+    double theta = dh -> rng().range( 0.0, 2.0 * m_pi );
     // And finally, apply the offsets to x and y;
     x += dist * cos( theta );
     y += dist * sin( theta );

@@ -900,7 +900,7 @@ double stdnormal_cdf( double u )
     y = 2 / ( y * y );
     y = y * ( ( ( ( ( p[0] * y + p[1] ) * y + p[2] ) * y + p[3] ) * y + p[4] ) * y + p[5] )
         / ( ( ( ( ( q[0] * y + q[1] ) * y + q[2] ) * y + q[3] ) * y + q[4] ) * y + q[5] );
-    y = z * ( 1.0 / sqrt ( M_PI ) - y );
+    y = z * ( 1.0 / sqrt ( m_pi ) - y );
   }
 
   return ( u < 0.0 ? y : 1 - y );
@@ -983,7 +983,7 @@ double stdnormal_inv( double p )
      than 1.15e-9.  One iteration of Halley's rational method (third
      order) gives full machine precision... */
   t = stdnormal_cdf( u ) - q;    /* error */
-  t = t * 2.0 / sqrt( M_PI ) * exp( u * u / 2 ); /* f(u)/df(u) */
+  t = t * 2.0 / sqrt( m_pi ) * exp( u * u / 2 ); /* f(u)/df(u) */
   u = u - t / ( 1 + u * t / 2 );   /* Halley's method */
 
   return ( p > 0.5 ? -u : u );
@@ -1029,7 +1029,7 @@ static void test_seed( rng_t* rng, uint64_t n )
 
   for ( uint64_t i = 0; i < n; ++i )
   {
-    rng -> seed( uint64_t( M_PI ) * n );
+    rng -> seed( uint64_t( m_pi ) * n );
   }
 
   int64_t elapsed_cpu = milliseconds() - start_time;
@@ -1077,7 +1077,7 @@ int main( int /*argc*/, char** /*argv*/ )
   std::random_device rd;
   uint64_t seed  = uint64_t(rd()) | (uint64_t(rd()) << 32);
   std::cout << "Seed: " << seed << "\n\n";
-  //uint64_t seed = M_PI * 1000000;
+  //uint64_t seed = m_pi * 1000000;
 
   rng_mt_cxx11   -> seed( seed );
   rng_mt_cxx11_64   -> seed( seed );
@@ -1192,7 +1192,7 @@ int main( int /*argc*/, char** /*argv*/ )
   }
 
   std::cout << "\n";
-  std::cout << "M_PI=" << M_PI << "\n";
+  std::cout << "m_pi=" << m_pi << "\n";
   std::cout << "calls to rng::stdnormal_inv( double x )\n";
   std::cout << "x=0.975: " << rng::stdnormal_inv( 0.975 ) << " should be equal to 1.959964\n";
   std::cout << "x=0.995: " << rng::stdnormal_inv( 0.995 ) << " should be equal to 2.5758293\n";
