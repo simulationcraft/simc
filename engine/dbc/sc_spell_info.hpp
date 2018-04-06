@@ -5,7 +5,7 @@
 
 #pragma once
 
-struct dbc_t;
+class dbc_t;
 struct spell_data_t;
 struct xml_node_t;
 struct talent_data_t;

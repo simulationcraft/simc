@@ -16,12 +16,14 @@
 
 // Platform, compiler and general configuration
 #include "config.hpp"
+
 #include <algorithm>
 #include <cassert>
 #include <cctype>
 #include <cfloat>
 #include <cmath>
 #include <cstdarg>
+#include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>

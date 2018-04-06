@@ -5,6 +5,7 @@
 
 #pragma once
 #include "config.hpp"
+#include <cstdint>
 
 enum stopwatch_e
 {

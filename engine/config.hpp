@@ -6,14 +6,10 @@
 #define CONFIG_H
 
 /* This file contains platform, compiler and general macros and defines,
- * as well as pre-C++11 macros
+ * etc.
  */
 
-/* This header defines eleven macro constants with alternative spellings for those C++ operators
- * not supported by the ISO646 standard character set.
- * eg. and == &&, or == ||, etc.
- */
-#include <ciso646>
+
 
 // ==========================================================================
 // Platform
@@ -66,6 +62,7 @@
 // Last updated 2017-11-07: Support gcc4.8 with full C++11 support for now
 // Debian 8 (Jessie) with gcc 4.9 and clang3.5
 // Ubuntu 16.04: gcc 5.3, clang3.8
+// Debian 9 (Stretch): gcc 6.3 clang 3.8
 #if defined( SC_CLANG ) && SC_CLANG < 30500
 #  error "clang++ below version 3.5 not supported"
 #endif
@@ -78,10 +75,6 @@
 // Compiler Workarounds
 // ==========================================================================
 
-// Workaround for LLVM/Clang 3.2+ using glibc headers.
-#if defined( SC_CLANG ) && SC_CLANG >= 30200 && SC_CLANG < 30500
-# define __extern_always_inline extern __always_inline __attribute__(( __gnu_inline__ ))
-#endif
 
 // ==========================================================================
 // General Macros/Defines
@@ -93,46 +86,14 @@
 
 #define SC_PACKED_STRUCT      __attribute__((packed))
 
-#ifndef SC_LINT // false negatives are irritating
-#  define PRINTF_ATTRIBUTE(a,b) 
-#else
-#  if defined( SC_MINGW ) // printf wrongly points to vs_printf instead of gnu_printf on MinGW
-#    define PRINTF_ATTRIBUTE(a,b) __attribute__((format(gnu_printf,a,b)))
-#  else
-#    define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
-#  endif
-#endif
-
-// ==========================================================================
-// C99 fixed-width integral types & format specifiers
-// ==========================================================================
-
-#define __STDC_FORMAT_MACROS
-#include <stdint.h>
-#include <inttypes.h>
-
-#ifndef PRIu64
-#  if defined( SC_VS )
-#    define PRIu64 "I64"
-#    pragma message("C99 format specifiers not available")
-#  else
-#    define PRIu64 "zu"
-#    warning "C99 format specifiers not available"
-#  endif
-#endif
 
 // ==========================================================================
 // Floating Point
 // ==========================================================================
 
-/* Ensure _USE_MATH_DEFINES is defined before any inclusion of <cmath>, so that
- * math constants are defined
+/**
+ * Define our own m_pi since M_PI constant is actually only in POSIX math.h
  * */
-#define _USE_MATH_DEFINES
-#include <cmath>
-
-#ifndef M_PI
-#define M_PI ( 3.14159265358979323846 )
-#endif
+constexpr double m_pi = 3.14159265358979323846;
 
 #endif // CONFIG_H
