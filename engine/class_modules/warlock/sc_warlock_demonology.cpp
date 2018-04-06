@@ -403,8 +403,7 @@ namespace warlock {
         ->set_cooldown(timespan_t::zero());
       buffs.demonic_strength = make_buff(this, "demonic_strength", find_spell(267171))
         ->set_default_value(find_spell(267171)->effectN(2).percent())
-        ->set_cooldown(timespan_t::zero())
-        ->set_duration(find_spell(267171)->duration());
+        ->set_cooldown(timespan_t::zero());
       buffs.demonic_consumption = make_buff(this, "demonic_consumption", find_spell(267972))
         ->set_default_value(find_spell(267972)->effectN(1).percent())
         ->set_max_stack(100);

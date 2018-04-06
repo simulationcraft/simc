@@ -197,8 +197,7 @@ namespace warlock
     {
       pet_t::create_buffs();
 
-      if ( o() -> specialization() == WARLOCK_DEMONOLOGY)
-        create_buffs_demonology();
+      create_buffs_demonology();
 
       buffs.rage_of_guldan = make_buff( this, "rage_of_guldan", find_spell( 257926 ) )->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ); //change spell id to 253014 when whitelisted
     }
