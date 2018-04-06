@@ -683,6 +683,11 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
+  // The warlock benefits from demonic power as well, even though this is not mentioned in the tooltip/description.
+  // Confirmed 2018-04-05 by Pip.
+  if ( buffs.demonic_power -> check() )
+    m *= 1.0 + buffs.demonic_power -> default_value;
+
   if ( legendary.stretens_insanity )
     m *= 1.0 + buffs.stretens_insanity->check() * buffs.stretens_insanity->data().effectN( 1 ).percent();
 
