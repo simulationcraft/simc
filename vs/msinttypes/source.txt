@@ -1,3 +1,0 @@
-https://code.google.com/p/msinttypes/
-Last update: revision29 on 2014/11/05 by philoptik
-https://code.google.com/p/msinttypes/source/browse/?r=29#svn%2Ftrunk
