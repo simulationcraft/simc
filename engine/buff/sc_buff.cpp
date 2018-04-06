@@ -1781,9 +1781,9 @@ expr_t* buff_t::create_expression( std::string buff_name, action_t* action, cons
         buff = buff_t::find( action->target, buff_name, action->target );  // Raid debuffs
       if ( !buff )
       {
-        action->sim->errorf( "Reference to unknown buff/debuff %s by player %s", buff_name.c_str(),
-                             action->player->name() );
-        assert( 0 );
+        action->sim->error("Unable to build buff action expression for action '{}': "
+            "Reference to unknown buff/debuff '{}' by player {}.", action->name(), buff_name,
+            action->player->name());
         action->sim->cancel();
         // Prevent segfault
         buff = buff_creator_t( action->player, "dummy" );
