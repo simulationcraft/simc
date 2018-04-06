@@ -8,7 +8,7 @@
 #include "simulationcraft.hpp"
 #include "sc_profileset.hpp"
 
-namespace profileset
+namespace
 {
 std::string format_time( double seconds, bool milliseconds = true )
 {
@@ -71,7 +71,7 @@ std::string format_time( double seconds, bool milliseconds = true )
 
 // Deallocating profile_sim is the responsibility of the caller (i.e., profileset driver or
 // worker_t)
-void simulate_profileset( sim_t* parent, profile_set_t& set, sim_t*& profile_sim )
+void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*& profile_sim )
 {
   // Reset random seed for the profileset sims
   profile_sim -> seed = 0;
@@ -110,7 +110,7 @@ void simulate_profileset( sim_t* parent, profile_set_t& set, sim_t*& profile_sim
   auto progress = profile_sim -> progress( nullptr, 0 );
 
   range::for_each( parent -> profileset_metric, [ & ]( scale_metric_e metric ) {
-    auto data = metric_data( player, metric );
+    auto data = profileset::metric_data( player, metric );
 
     set.result( metric )
       .min( data.min )
@@ -129,7 +129,7 @@ void simulate_profileset( sim_t* parent, profile_set_t& set, sim_t*& profile_sim
 void insert_data( highchart::bar_chart_t&   chart,
                   const std::string&        name,
                   const color::rgb&         c,
-                  const statistical_data_t& data,
+                  const profileset::statistical_data_t& data,
                   bool                      baseline,
                   double                    baseline_median )
 {
@@ -185,6 +185,10 @@ bool in_player_scope( const option_tuple_t& opt )
   } ) != player_scope_opts.end();
 }
 
+}
+
+namespace profileset
+{
 size_t profilesets_t::done_profilesets() const
 {
   if ( m_work_index <= n_workers() )

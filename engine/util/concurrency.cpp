@@ -168,6 +168,7 @@ void computer_process::set_priority( priority_e p )
 #include <sys/time.h>
 #include <sys/resource.h>
 
+namespace {
 int translate_priority( computer_process::priority_e p )
 {
   switch ( p )
@@ -180,6 +181,7 @@ int translate_priority( computer_process::priority_e p )
   default: assert( false && "invalid process priority" ); break;
   }
   return 0;
+}
 }
 
 void computer_process::set_priority( priority_e p )

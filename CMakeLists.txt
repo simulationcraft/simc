@@ -30,6 +30,13 @@ add_subdirectory(engine)
 add_subdirectory(qt)
 add_dependencies(engine update_git_info)
 
+if ( CMAKE_COMPILER_IS_GNUCC )
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+endif()
+if ( MSVC )
+    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /W4")
+endif()
+
 # 'simc' command line interface target
 add_executable(simc engine/sc_main.cpp)
 target_link_libraries(simc engine)

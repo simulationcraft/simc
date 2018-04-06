@@ -9,10 +9,27 @@
 
 namespace cache {
 
-typedef int era_t;
-static const era_t INVALID_ERA = -1;
-static const era_t IN_THE_BEGINNING = 0;  // A time before any other possible era;
+enum class era_t {
+  INVALID_ERA = -1,
+  IN_THE_BEGINNING = 0  // A time before any other possible era;
 // used to mark persistent caches at load.
+};
+
+inline std::ostream& operator<<(std::ostream &os, const era_t& x)
+{
+  switch ( x )
+  {
+  case era_t::INVALID_ERA:
+    os << "invalid era";
+    break;
+  case era_t::IN_THE_BEGINNING:
+    os << "in the beginning";
+    break;
+  default:
+    break;
+  }
+  return os;
+}
 
 enum behavior_e
 {
@@ -30,7 +47,7 @@ private:
 
 public:
   cache_control_t() :
-    current_era( IN_THE_BEGINNING ),
+    current_era( era_t::IN_THE_BEGINNING ),
     player_cache_behavior( CURRENT ),
     item_cache_behavior( ANY )
   {}

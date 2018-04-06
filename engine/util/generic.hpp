@@ -71,7 +71,7 @@ template <typename T>
 inline typename enable_if<is_iterable_enum<T>::value, T&>::type operator--(
     T& s )
 {
-  return s = static_cast<T>( s - 1 );
+  return s = static_cast<T>( static_cast<typename std::underlying_type<T>::type>(s) - 1 );
 }
 
 template <typename T>
@@ -87,7 +87,7 @@ template <typename T>
 inline typename enable_if<is_iterable_enum<T>::value, T&>::type operator++(
     T& s )
 {
-  return s = static_cast<T>( s + 1 );
+  return s = static_cast<T>( static_cast<typename std::underlying_type<T>::type>(s) + 1 );
 }
 
 template <typename T>

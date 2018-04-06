@@ -5,6 +5,60 @@
 
 #include "simulationcraft.hpp"
 
+namespace {
+
+bool do_find_higher_priority_action( const action_priority_list_t::parent_t& parent )
+{
+  auto apl = std::get<0>( parent );
+  auto idx = std::get<1>( parent );
+
+  for ( size_t i = 0; i < apl -> foreground_action_list.size() && i < idx; ++i )
+  {
+    auto a = apl -> foreground_action_list[ i ];
+
+    if ( a -> ready() )
+    {
+      return true;
+    }
+  }
+
+  return range::find_if( apl -> parents, []( const action_priority_list_t::parent_t& p ) {
+    return do_find_higher_priority_action( p );
+  } ) != apl -> parents.end();
+}
+
+bool do_find_higher_priority_action( action_t* ca )
+{
+  auto apl = ca -> action_list;
+
+  for ( action_t* a : apl -> foreground_action_list )
+  {
+    if ( a == ca )
+    {
+      break;
+    }
+    // FIXME Why not interrupt a channel for the same spell higher up the action
+    // list?
+    // if ( a -> id == current_action -> id ) continue;
+    if ( a -> ready() )
+    {
+      return true;
+    }
+  }
+
+  if ( ca -> interrupt_global )
+  {
+    return range::find_if( apl -> parents, []( const action_priority_list_t::parent_t& p ) {
+      return do_find_higher_priority_action( p );
+    } ) != apl -> parents.end();
+  }
+  else
+  {
+    return false;
+  }
+}
+
+}
 // ==========================================================================
 // Dot
 // ==========================================================================
@@ -1171,57 +1225,6 @@ void dot_t::check_tick_zero()
       return;
     }
     time_to_tick = previous_ttt;
-  }
-}
-
-bool do_find_higher_priority_action( const action_priority_list_t::parent_t& parent )
-{
-  auto apl = std::get<0>( parent );
-  auto idx = std::get<1>( parent );
-
-  for ( size_t i = 0; i < apl -> foreground_action_list.size() && i < idx; ++i )
-  {
-    auto a = apl -> foreground_action_list[ i ];
-
-    if ( a -> ready() )
-    {
-      return true;
-    }
-  }
-
-  return range::find_if( apl -> parents, []( const action_priority_list_t::parent_t& p ) {
-    return do_find_higher_priority_action( p );
-  } ) != apl -> parents.end();
-}
-
-bool do_find_higher_priority_action( action_t* ca )
-{
-  auto apl = ca -> action_list;
-
-  for ( action_t* a : apl -> foreground_action_list )
-  {
-    if ( a == ca )
-    {
-      break;
-    }
-    // FIXME Why not interrupt a channel for the same spell higher up the action
-    // list?
-    // if ( a -> id == current_action -> id ) continue;
-    if ( a -> ready() )
-    {
-      return true;
-    }
-  }
-
-  if ( ca -> interrupt_global )
-  {
-    return range::find_if( apl -> parents, []( const action_priority_list_t::parent_t& p ) {
-      return do_find_higher_priority_action( p );
-    } ) != apl -> parents.end();
-  }
-  else
-  {
-    return false;
   }
 }
 

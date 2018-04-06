@@ -14,14 +14,14 @@ struct xml_cache_entry_t
 {
   std::shared_ptr<xml_node_t> root;
   cache::era_t era;
-  xml_cache_entry_t() : root(), era( cache::IN_THE_BEGINNING ) { }
+  xml_cache_entry_t() : root(), era( cache::era_t::IN_THE_BEGINNING ) { }
 };
 
 struct new_xml_cache_entry_t
 {
   std::shared_ptr<sc_xml_t> root;
   cache::era_t era;
-  new_xml_cache_entry_t() : root(), era( cache::IN_THE_BEGINNING ) { }
+  new_xml_cache_entry_t() : root(), era( cache::era_t::IN_THE_BEGINNING ) { }
 };
 
 typedef std::unordered_map<std::string, xml_cache_entry_t> xml_cache_t;

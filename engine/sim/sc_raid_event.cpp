@@ -1042,15 +1042,12 @@ void raid_event_t::start()
   _start();
 }
 
-bool filter_sleeping( const player_t* p )
-{
-  return p -> is_sleeping();
-}
 // raid_event_t::finish =====================================================
 
 void raid_event_t::finish()
 {
   // Make sure we dont have any players which were active on start, but are now sleeping
+  auto filter_sleeping = []( const player_t* p ) { return p -> is_sleeping(); };
   affected_players.erase( std::remove_if( affected_players.begin(), affected_players.end(), filter_sleeping ), affected_players.end() );
 
   _finish();

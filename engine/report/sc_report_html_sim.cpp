@@ -9,6 +9,9 @@
 #include "interfaces/sc_js.hpp"
 #include "util/git_info.hpp"
 
+namespace
+{  // UNNAMED NAMESPACE ==========================================
+
 // Experimental Raw Ability Output for Blizzard to do comparisons
 namespace raw_ability_summary
 {
@@ -212,9 +215,6 @@ void print( report::sc_html_stream& os, const sim_t& sim )
 }
 
 }  // raw_ability_summary
-
-namespace
-{  // UNNAMED NAMESPACE ==========================================
 
 /* Prints a array of strings line by line. Necessary because we can't have big
  * single text strings,

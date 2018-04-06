@@ -31,7 +31,7 @@ struct url_cache_entry_t
   cache::era_t modified, validated;
 
   url_cache_entry_t() :
-    modified( cache::INVALID_ERA ), validated( cache::INVALID_ERA )
+    modified( cache::era_t::INVALID_ERA ), validated( cache::era_t::INVALID_ERA )
   {}
 };
 
@@ -774,8 +774,8 @@ bool http::clear_cache( sim_t* sim,
 
 // http::cache_load =========================================================
 
-namespace cache {
-std::string get( std::istream& is )
+namespace {
+std::string cache_get( std::istream& is )
 {
   std::string result;
   while ( is )
@@ -788,12 +788,13 @@ std::string get( std::istream& is )
   return result;
 }
 
-void put( std::ostream& os, const std::string& s )
+void cache_put( std::ostream& os, const std::string& s )
 { os.write( s.c_str(), s.size() + 1 ); }
 
-void put( std::ostream& os, const char* s )
+void cache_put( std::ostream& os, const char* s )
 { os.write( s, std::strlen( s ) + 1 ); }
-}
+
+} // unnamed namespace
 
 void http::cache_load( const std::string& file_name )
 {
@@ -807,7 +808,7 @@ void http::cache_load( const std::string& file_name )
     file.exceptions( std::ios::eofbit | std::ios::failbit | std::ios::badbit );
     file.unsetf( std::ios::skipws );
 
-    if ( cache::get( file ) != SC_VERSION )
+    if ( cache_get( file ) != SC_VERSION )
     {
       // invalid version, GTFO
       return;
@@ -818,8 +819,8 @@ void http::cache_load( const std::string& file_name )
 
     while ( ! file.eof() )
     {
-      std::string url = cache::get( file );
-      std::string last_modified = cache::get( file );
+      std::string url = cache_get( file );
+      std::string last_modified = cache_get( file );
 
       uint32_t size;
       file.read( reinterpret_cast<char*>( &size ), sizeof( size ) );
@@ -829,7 +830,7 @@ void http::cache_load( const std::string& file_name )
       url_cache_entry_t& c = url_db[ url ];
       c.result = content;
       c.last_modified_header = last_modified;
-      c.modified = c.validated = cache::IN_THE_BEGINNING;
+      c.modified = c.validated = cache::era_t::IN_THE_BEGINNING;
     }
   }
   catch ( ... )
@@ -849,15 +850,15 @@ void http::cache_save( const std::string& file_name )
     if ( ! file ) return;
     file.exceptions( std::ios::eofbit | std::ios::failbit | std::ios::badbit );
 
-    cache::put( file, SC_VERSION );
+    cache_put( file, SC_VERSION );
 
     for ( url_db_t::const_iterator p = url_db.begin(), e = url_db.end(); p != e; ++p )
     {
-      if ( p -> second.validated == cache::INVALID_ERA )
+      if ( p -> second.validated == cache::era_t::INVALID_ERA )
         continue;
 
-      cache::put( file, p -> first );
-      cache::put( file, p -> second.last_modified_header );
+      cache_put( file, p -> first );
+      cache_put( file, p -> second.last_modified_header );
 
       uint32_t size = as<uint32_t>( p -> second.result.size() );
       file.write( reinterpret_cast<const char*>( &size ), sizeof( size ) );
@@ -896,7 +897,7 @@ bool http::get( std::string&       result,
     {
       http_log << cache::era() << ": get(\"" << cleanurl << "\") [";
 
-      if ( entry.validated != cache::INVALID_ERA )
+      if ( entry.validated != cache::era_t::INVALID_ERA )
       {
         if ( entry.validated >= cache::era() )
           http_log << "hot";
@@ -909,14 +910,14 @@ bool http::get( std::string&       result,
       else
         http_log << "miss";
       if ( caching != cache::ONLY &&
-           ( entry.validated == cache::INVALID_ERA ||
+           ( entry.validated == cache::era_t::INVALID_ERA ||
              ( caching == cache::CURRENT && entry.validated < cache::era() ) ) )
         http_log << " download";
       http_log << "]\n";
     }
   }
 
-  if ( entry.validated < cache::era() && ( caching == cache::CURRENT || entry.validated == cache::INVALID_ERA ) )
+  if ( entry.validated < cache::era() && ( caching == cache::CURRENT || entry.validated == cache::era_t::INVALID_ERA ) )
   {
     if ( caching == cache::ONLY )
       return false;

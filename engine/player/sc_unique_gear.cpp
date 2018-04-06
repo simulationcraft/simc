@@ -496,10 +496,12 @@ void enchants::jade_spirit( special_effect_t& effect )
 
   stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( effect.item -> player, effect.name() ) );
   if ( ! buff )
+  {
     buff = make_buff<stat_buff_t>( effect.item -> player, effect.name(), spell );
     buff->add_stat( STAT_INTELLECT, int_value )
         ->add_stat( STAT_SPIRIT, spi_value, jade_spirit_check_func() )
         ->set_activated( false );
+  }
 
   effect.custom_buff = buff;
 
@@ -3704,6 +3706,32 @@ void racial::entropic_embrace( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// Figure out if a given generic buff (associated with a trinket/item) is a
+// stat buff of the correct type
+bool buff_has_stat( const buff_t* buff, stat_e stat )
+{
+  if ( ! buff )
+    return false;
+
+  // Not a stat buff
+  const stat_buff_t* stat_buff = dynamic_cast< const stat_buff_t* >( buff );
+  if ( ! stat_buff )
+    return false;
+
+  // At this point, if "any" was specificed, we're satisfied
+  if ( stat == STAT_ALL )
+    return true;
+
+  for (auto & elem : stat_buff -> stats)
+  {
+    if ( elem.stat == stat )
+      return true;
+  }
+
+  return false;
+}
+
 } // UNNAMED NAMESPACE
 
 /*
@@ -3942,31 +3970,6 @@ void unique_gear::init( player_t* p )
 
     initialize_special_effect_2( effect );
   }
-}
-
-// Figure out if a given generic buff (associated with a trinket/item) is a
-// stat buff of the correct type
-bool buff_has_stat( const buff_t* buff, stat_e stat )
-{
-  if ( ! buff )
-    return false;
-
-  // Not a stat buff
-  const stat_buff_t* stat_buff = dynamic_cast< const stat_buff_t* >( buff );
-  if ( ! stat_buff )
-    return false;
-
-  // At this point, if "any" was specificed, we're satisfied
-  if ( stat == STAT_ALL )
-    return true;
-
-  for (auto & elem : stat_buff -> stats)
-  {
-    if ( elem.stat == stat )
-      return true;
-  }
-
-  return false;
 }
 
 // Base class for item effect expressions, finds all the special effects in the
@@ -4267,7 +4270,7 @@ bool cmp_dbitem( const special_effect_db_item_t& elem, unsigned id )
 { return elem.spell_id < id; }
 }
 
-unique_gear::special_effect_set_t do_find_special_effect_db_item(
+static unique_gear::special_effect_set_t do_find_special_effect_db_item(
     const std::vector<special_effect_db_item_t>& db, unsigned spell_id )
 {
   special_effect_set_t entries;
@@ -4305,7 +4308,7 @@ unique_gear::special_effect_set_t do_find_special_effect_db_item(
   return entries;
 }
 
-special_effect_set_t find_fallback_effect_db_item( unsigned spell_id )
+static special_effect_set_t find_fallback_effect_db_item( unsigned spell_id )
 { return do_find_special_effect_db_item( __fallback_effect_db, spell_id ); }
 
 special_effect_set_t unique_gear::find_special_effect_db_item( unsigned spell_id )

@@ -1572,7 +1572,7 @@ static int get_bonus_power_index( const std::vector<const item_bonus_entry_t*>& 
   return -1;
 }
 
-std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_stats(
+static std::vector< std::tuple< item_mod_type, double, double > > get_bonus_id_stats(
     const std::vector<const item_bonus_entry_t*>& entries )
 {
   double total = 0;

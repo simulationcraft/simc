@@ -5473,6 +5473,7 @@ void player_t::cost_reduction_loss( school_e school, double amount, action_t* /*
   }
 }
 
+namespace {
 namespace assess_dmg_helper_functions
 {
 void account_parry_haste( player_t& p, action_state_t* s )
@@ -5770,6 +5771,8 @@ bool try_guardian_spirit( player_t& p, double actual_amount )
 }
 
 }  // namespace assess_dmg_helper_functions
+
+}
 
 void player_t::assess_damage( school_e school, dmg_e type, action_state_t* s )
 {
@@ -8663,7 +8666,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   return true;
 }
 
-bool parse_min_gcd( sim_t* sim, const std::string& name, const std::string& value )
+static bool parse_min_gcd( sim_t* sim, const std::string& name, const std::string& value )
 {
   if ( name != "min_gcd" )
     return false;
