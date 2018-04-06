@@ -289,9 +289,9 @@ bool progress_bar_t::update_normal( const sim_progress_t& progress, bool finishe
     }
   }
 
-  if ( prev_size > status.size() )
+  if ( prev_size > new_status.size() )
   {
-    new_status.write("{:.{}}", ' ', prev_size - status.size() );
+    new_status.write("{:<{}}", " ", prev_size - new_status.size() );
   }
 
   status = new_status.str();
