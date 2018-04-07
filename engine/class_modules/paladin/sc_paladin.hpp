@@ -664,9 +664,9 @@ public:
     ret_mastery_direct( ab::data().affected_by( player -> passives.hand_of_light -> effectN( 1 ) ) || ab::data().affected_by( player -> passives.hand_of_light -> effectN( 2 ) ) )
   {
     // Aura buff to protection paladin added in 7.3
-    if ( this -> data().affected_by( p() -> passives.protection_paladin -> effectN( 10 ) ) && p() -> specialization() == PALADIN_PROTECTION )
+    if ( p() -> specialization() == PALADIN_PROTECTION && this -> data().affected_by( p() -> passives.protection_paladin -> effectN( 4 ) ) )
     {
-      this -> base_dd_multiplier *= 1.0 + p() -> passives.protection_paladin -> effectN( 10 ).percent();
+      this -> base_dd_multiplier *= 1.0 + p() -> passives.protection_paladin -> effectN( 4 ).percent();
     }
 
     if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
