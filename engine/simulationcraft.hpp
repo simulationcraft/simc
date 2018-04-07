@@ -121,6 +121,10 @@ namespace highchart {
 #include "util/fmt/ostream.h"
 #include "util/fmt/printf.h"
 
+// GSL-Lite: Guideline Support Library, light version
+// Lib to assist with CPP Core Guidelines.
+#include "util/gsl-lite/gsl-lite.hpp"
+
 // Time class representing ingame time
 #include "sc_timespan.hpp"
 
