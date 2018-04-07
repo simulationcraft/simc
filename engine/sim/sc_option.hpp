@@ -100,7 +100,7 @@ struct option_db_t : public std::vector<option_tuple_t>
   {
     push_back( option_tuple_t( scope, name, value ) );
   }
-  bool parse_file( FILE* file );
+  bool parse_file( std::istream& file );
   void parse_token( const std::string& token );
   void parse_line( const std::string& line );
   void parse_text( const std::string& text );

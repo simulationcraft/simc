@@ -19,28 +19,22 @@ bool is_white_space( char c )
   return ( c == ' ' || c == '\t' || c == '\n' || c == '\r' );
 }
 
-char* skip_white_space( char* s )
-{
-  while ( is_white_space( *s ) )
-    ++s;
-  return s;
-}
-
-io::cfile open_file( const std::vector<std::string>& splits, const std::string& name, std::string& actual_name )
+void open_file( io::ifstream& f, const std::vector<std::string>& splits, const std::string& name, std::string& actual_name )
 {
   for ( auto& split : splits )
   {
     auto file_path = split + "/" + name;
-    FILE* f = io::fopen( file_path, "r" );
-    if ( f )
+    f.open( file_path );
+    if ( f.is_open() )
     {
       actual_name = file_path;
-      return io::cfile(f);
+      return;
     }
   }
 
   actual_name = name;
-  return io::cfile( name, "r" );
+  f.open( name );
+  return;
 }
 
 std::string base_name( const std::string& file_path )
@@ -617,32 +611,38 @@ void opts::parse( sim_t*                 sim,
 
 // option_db_t::parse_file ==================================================
 
-bool option_db_t::parse_file( FILE* file )
+bool option_db_t::parse_file( std::istream& input )
 {
-  std::array<char, 1024> buffer;
+  std::string buffer;
   bool first = true;
-  while ( fgets( buffer.data(), buffer.size(), file ) )
+  while ( input.good() )
   {
-    char* b = buffer.data();
+    std::getline( input, buffer );
+    auto it = buffer.begin();
     if ( first )
     {
       first = false;
 
       // Skip the UTF-8 BOM, if any.
-      size_t len = strlen( b );
-      if ( len >= 3 && utf8::is_bom( b ) )
+      size_t len = buffer.size();
+      if ( len >= 3 && utf8::is_bom( it ) )
       {
-        b += 3;
+        it += 3;
       }
     }
 
-    b = skip_white_space( b );
-    if ( *b == '#' || *b == '\0' )
+    while ( is_white_space( *it ) )
+    {
+      ++it;
+    }
+
+    if ( *it == '#' || *it == '\0' )
     {
       continue;
     }
 
-    parse_line( io::maybe_latin1_to_utf8( b ) );
+    auto substring = buffer.substr(std::distance( it, buffer.begin() ));
+    parse_line( io::maybe_latin1_to_utf8( substring ) );
   }
   return true;
 }
@@ -706,7 +706,7 @@ void option_db_t::parse_token( const std::string& token )
 {
   if ( token == "-" )
   {
-    parse_file( stdin );
+    parse_file( std::cin );
     return;
   }
 
@@ -724,12 +724,13 @@ void option_db_t::parse_token( const std::string& token )
   if ( cut_pt == token.npos )
   {
     std::string actual_name;
-    io::cfile file = open_file( auto_path, parsed_token, actual_name );
-    if ( ! file )
+    io::ifstream input;
+    open_file( input, auto_path, parsed_token, actual_name );
+    if ( ! input.is_open() )
     {
       throw std::invalid_argument( fmt::format("Unexpected parameter '{}'. Expected format: name=value", parsed_token) );
     }
-    parse_file( file );
+    parse_file( input );
     return;
   }
 
@@ -759,18 +760,17 @@ void option_db_t::parse_token( const std::string& token )
     }
 
     std::string actual_name;
-    io::cfile file( open_file( auto_path, value, actual_name ) );
-    if ( ! file )
+    io::ifstream input;
+    open_file( input, auto_path, value, actual_name );
+    if ( ! input.is_open() )
     {
-      std::stringstream s;
-      s << "Unable to open input parameter file '" << value << "'";
-      throw std::invalid_argument( s.str() );
+      throw std::invalid_argument( fmt::format("Unable to open input parameter file '{}'.", value) );
     }
     else
     {
       var_map[ "current_base_name" ] = base_name( actual_name );
     }
-    parse_file( file );
+    parse_file( input );
 
     if ( base_name_it != var_map.end() )
     {
