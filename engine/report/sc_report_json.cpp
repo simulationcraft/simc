@@ -46,7 +46,7 @@ template <typename T>
 void add_non_zero( JsonOutput root, const char* name, const T& container )
 { add_non_default( root, name, container ); }
 
-void add_non_zero( JsonOutput root, const char* name, const timespan_t& v )
+void add_non_zero( JsonOutput root, const char* name, timespan_t v )
 { add_non_default( root, name, v, timespan_t::zero() ); }
 
 void add_non_zero( JsonOutput root, const char* name, double v )
@@ -55,11 +55,19 @@ void add_non_zero( JsonOutput root, const char* name, double v )
 void add_non_zero( JsonOutput root, const char* name, int v )
 { add_non_default( root, name, v, 0 ); }
 
+void add_non_zero( JsonOutput root, const char* name, unsigned v )
+{ add_non_default( root, name, v, 0u ); }
+
 void add_non_zero( JsonOutput root, const char* name, bool v )
 { add_non_default( root, name, v, false ); }
 
 void add_non_zero( JsonOutput root, const char* name, const std::string& v )
-{ add_non_default( root, name, v, std::string() ); }
+{
+  if ( !v.empty() )
+  {
+    root[ name ] = v;
+  }
+}
 
 bool has_resources( const gain_t* gain )
 {
@@ -79,10 +87,11 @@ void gain_to_json( JsonOutput root, const gain_t* g )
     {
       continue;
     }
+    auto node = root[ util::resource_type_string( r ) ];
 
-    root[ util::resource_type_string( r ) ][ "actual" ] = g -> actual[ r ];
-    root[ util::resource_type_string( r ) ][ "overflow" ] = g -> overflow[ r ];
-    root[ util::resource_type_string( r ) ][ "count" ] = g -> count[ r ];
+    node[ "actual" ] = g -> actual[ r ];
+    node[ "overflow" ] = g -> overflow[ r ];
+    node[ "count" ] = g -> count[ r ];
   }
 }
 
@@ -107,10 +116,7 @@ void gains_to_json( JsonOutput root, const player_t& p )
 void to_json( JsonOutput root, const buff_t* b )
 {
   root[ "name" ] = b -> name();
-  if ( b -> data().id() )
-  {
-    root[ "spell" ] = b -> data().id();
-  }
+  add_non_zero( root, "spell", b -> data().id() );
   if ( b -> item )
   {
     root[ "item" ][ "id" ] = b -> item -> parsed.data.id;
@@ -136,10 +142,8 @@ void to_json( JsonOutput root, const buff_t* b )
   add_non_zero( root, "overflow_stacks", b -> avg_overflow_count.mean() );
   add_non_zero( root, "overflow_total" , b -> avg_overflow_total.mean() );
   add_non_zero( root, "expire_count", b -> avg_expire.mean() );
-  if ( b -> default_value != buff_t::DEFAULT_VALUE() )
-  {
-    root[ "default_value" ] = b -> default_value;
-  }
+
+  add_non_default( root, "default_value", b -> default_value, buff_t::DEFAULT_VALUE() );
 
   if ( b -> sim -> buff_uptime_timeline != 0 && b -> uptime_array.mean() != 0 )
   {
@@ -151,7 +155,7 @@ void buffs_to_json( JsonOutput root, const player_t& p )
 {
   root.make_array();
   range::for_each( p.buff_list, [ &root]( const buff_t* b ) {
-    if ( b -> avg_start.mean() == 0 )
+    if ( b -> avg_start.sum() == 0 )
     {
       return;
     }
@@ -220,7 +224,7 @@ void stats_to_json( JsonOutput root, const player_t& p )
     add_non_zero( node, "actual_amount", s -> actual_amount );
     add_non_zero( node, "total_amount", s -> total_amount );
 
-    if ( s -> num_executes.mean() > 1 )
+    if ( s -> num_executes.mean() > 1.0 )
     {
       node[ "total_intervals" ] = s -> total_intervals;
     }
@@ -234,7 +238,7 @@ void stats_to_json( JsonOutput root, const player_t& p )
 
     for ( full_result_e r = FULLTYPE_NONE; r < FULLTYPE_MAX; ++r )
     {
-      if ( s -> direct_results[ r ].count.mean() != 0 )
+      if ( s -> direct_results[ r ].count.sum() != 0 )
       {
         to_json( node[ "direct_results" ][ util::full_result_type_string( r ) ],
                  s -> direct_results[ r ] );
@@ -243,7 +247,7 @@ void stats_to_json( JsonOutput root, const player_t& p )
 
     for ( result_e r = RESULT_NONE; r < RESULT_MAX; ++r )
     {
-      if ( s -> tick_results[ r ].count.mean() != 0 )
+      if ( s -> tick_results[ r ].count.sum() != 0 )
       {
         to_json( node[ "tick_results" ][ util::result_type_string( r ) ],
                  s -> tick_results[ r ] );
@@ -285,10 +289,7 @@ void to_json( JsonOutput root, const player_t& p,
 {
   for ( attribute_e a = ATTRIBUTE_NONE; a < ATTRIBUTE_MAX; ++a )
   {
-    if ( bs.attribute[ a ] != 0.0 )
-    {
-      root[ "attribute" ][ util::attribute_type_string( a ) ] = bs.attribute[ a ];
-    }
+    add_non_zero( root[ "attribute" ], util::attribute_type_string( a ), bs.attribute[ a ] );
   }
 
   range::for_each( relevant_resources, [ &root, &bs ]( resource_e r ) {
@@ -392,7 +393,7 @@ void to_json( JsonOutput root,
     }
 
     // Writing cooldown and debuffs data if asking for json full states
-    if ( sim.json_full_states && entry.cooldown_list.size() > 0 )
+    if ( sim.json_full_states && !entry.cooldown_list.empty() )
     {
       auto cooldowns = json[ "cooldowns" ];
       cooldowns.make_array();
@@ -405,7 +406,7 @@ void to_json( JsonOutput root,
       } );
     }
 
-    if ( sim.json_full_states && entry.target_list.size() > 0 )
+    if ( sim.json_full_states && !entry.target_list.empty() )
     {
       auto targets = json[ "targets" ];
       targets.make_array();

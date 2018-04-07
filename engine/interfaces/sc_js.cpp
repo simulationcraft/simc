@@ -130,7 +130,16 @@ sc_js_t& sc_js_t::add( const std::string& path, const char* value_ )
 
 sc_js_t& sc_js_t::add( const std::string& path, const std::string& value_ )
 {
-  return add( path, value_.c_str() );
+  if ( rapidjson::Value* obj = path_value( path ) )
+  {
+    if ( obj -> GetType() != rapidjson::kArrayType )
+      obj -> SetArray();
+
+    rapidjson::Value v( value_, js_.GetAllocator() );
+
+    obj -> PushBack( v, js_.GetAllocator() );
+  }
+  return *this;
 }
 
 sc_js_t& sc_js_t::add( const std::string& path, const rapidjson::Value& value_ )

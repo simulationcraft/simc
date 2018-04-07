@@ -5,6 +5,10 @@
 #ifndef SC_JS_HPP
 #define SC_JS_HPP
 
+#ifndef RAPIDJSON_HAS_STDSTRING
+#define RAPIDJSON_HAS_STDSTRING 1
+#endif
+
 #include "util/rapidjson/document.h"
 #include "util/rapidjson/stringbuffer.h"
 #include "util/rapidjson/prettywriter.h"
@@ -231,7 +235,7 @@ public:
   { v_.SetString( v, d_.GetAllocator() ); return *this; }
 
   JsonOutput operator=( const std::string& v )
-  { v_.SetString( v.c_str(), d_.GetAllocator() ); return *this; }
+  { v_.SetString( v, d_.GetAllocator() ); return *this; }
 
   // Assign an external RapidJSON Value to the current value (v_)
   JsonOutput operator=( rapidjson::Value& v )
