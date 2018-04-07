@@ -1192,13 +1192,12 @@ struct void_bolt_t final : public priest_spell_t
 {
   struct void_bolt_extension_t : public priest_spell_t
   {
-    const spell_data_t* rank2;
-    int dot_extension;
+    timespan_t dot_extension;
 
     void_bolt_extension_t( priest_t& player )
-      : priest_spell_t( "void_bolt_extension", player ), rank2( player.find_specialization_spell( 231688 ) )
+      : priest_spell_t( "void_bolt_extension", player, player.find_specialization_spell( 231688 ) )
     {
-      dot_extension = rank2->effectN( 1 ).base_value();
+      dot_extension = data().effectN( 1 ).time_value();
       aoe           = -1;
       radius        = player.find_spell( 234746 )->effectN( 1 ).radius();
       may_miss      = false;
@@ -1214,32 +1213,28 @@ struct void_bolt_t final : public priest_spell_t
     {
       priest_spell_t::impact( s );
 
-      if ( rank2->ok() )
+      if ( priest_td_t* td = find_td( s->target ) )
       {
-        if ( priest_td_t* td = find_td( s->target ) )
+        if ( td->dots.shadow_word_pain->is_ticking() )
         {
-          if ( td->dots.shadow_word_pain->is_ticking() )
-          {
-            td->dots.shadow_word_pain->extend_duration( timespan_t::from_millis( dot_extension ), true );
-          }
+          td->dots.shadow_word_pain->extend_duration( dot_extension, true );
+        }
 
-          if ( td->dots.vampiric_touch->is_ticking() )
-          {
-            td->dots.vampiric_touch->extend_duration( timespan_t::from_millis( dot_extension ), true );
-          }
+        if ( td->dots.vampiric_touch->is_ticking() )
+        {
+          td->dots.vampiric_touch->extend_duration( dot_extension, true );
         }
       }
     }
   };
 
   double insanity_gain;
-  const spell_data_t* rank2;
   void_bolt_extension_t* void_bolt_extension;
 
   void_bolt_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "void_bolt", player, player.find_spell( 205448 ) ),
       insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
-      rank2( player.find_specialization_spell( 231688 ) )
+      void_bolt_extension( nullptr )
   {
     parse_options( options_str );
     use_off_gcd                 = true;
@@ -1254,7 +1249,11 @@ struct void_bolt_t final : public priest_spell_t
 
     cooldown->hasted = true;
 
-    void_bolt_extension = new void_bolt_extension_t( player );
+    auto rank2 = player.find_specialization_spell( 231688 );
+    if ( rank2 -> ok() )
+    {
+      void_bolt_extension = new void_bolt_extension_t( player );
+    }
   }
 
   void execute() override
@@ -1311,7 +1310,7 @@ struct void_bolt_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( rank2->ok() )
+    if ( void_bolt_extension )
     {
       void_bolt_extension->target = s->target;
       void_bolt_extension->schedule_execute();
