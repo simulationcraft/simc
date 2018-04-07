@@ -121,7 +121,7 @@ namespace buffs {
   }
 
   avenging_wrath_buff_t::avenging_wrath_buff_t( player_t* p ) :
-      buff_t( p, "avenging_wrath", p -> specialization() == PALADIN_HOLY ? p -> find_spell( 31842 ) : p -> find_spell( 31884 ) ),
+      buff_t( p, "avenging_wrath", p -> find_spell( 31884 ) ),
       damage_modifier( 0.0 ),
       healing_modifier( 0.0 ),
       crit_bonus( 0.0 )
@@ -129,24 +129,16 @@ namespace buffs {
     // Map modifiers appropriately based on spec
     paladin_t* paladin = static_cast<paladin_t*>( player );
 
-    if ( p -> specialization() == PALADIN_HOLY )
-    {
-      healing_modifier = data().effectN( 1 ).percent();
-      crit_bonus = data().effectN( 2 ).percent();
-      damage_modifier = data().effectN( 3 ).percent();
-      // holy shock cooldown reduction handled in holy_shock_t
+    healing_modifier = data().effectN( 5 ).percent();
+    crit_bonus = data().effectN( 4 ).percent();
+    damage_modifier = data().effectN( 1 ).percent();
 
-      // invalidate crit
-      add_invalidate( CACHE_CRIT_CHANCE );
+    // invalidate crit
+    add_invalidate( CACHE_CRIT_CHANCE );
 
-      // Lengthen duration if Sanctified Wrath is taken
+    // Lengthen duration if Sanctified Wrath is taken
+    if ( paladin -> specialization() == PALADIN_HOLY )
       buff_duration *= 1.0 + paladin -> talents.sanctified_wrath -> effectN( 1 ).percent();
-    }
-    else // we're Ret or Prot
-    {
-      damage_modifier = data().effectN( 1 ).percent();
-      healing_modifier = data().effectN( 2 ).percent();
-    }
 
     // let the ability handle the cooldown
     cooldown -> duration = timespan_t::zero();
@@ -198,14 +190,12 @@ struct blessing_of_protection_t : public paladin_spell_t
 };
 
 // Avenging Wrath ===========================================================
-// AW is actually two spells (31884 for Ret/Prot, 31842 for Holy) and the effects are all jumbled.
-// Thus, we need to use some ugly hacks to get it to work seamlessly for both specs within the same spell.
-// Most of them can be found in buffs::avenging_wrath_buff_t, this spell just triggers the buff
+// Most of this can be found in buffs::avenging_wrath_buff_t, this spell just triggers the buff
 
 struct avenging_wrath_t : public paladin_spell_t
 {
   avenging_wrath_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "avenging_wrath", p, p -> specialization() == PALADIN_HOLY ? p -> find_spell( 31842 ) : p -> find_spell( 31884 ) )
+    : paladin_spell_t( "avenging_wrath", p, p -> find_spell( 31884 ) )
   {
     parse_options( options_str );
 
@@ -217,7 +207,6 @@ struct avenging_wrath_t : public paladin_spell_t
     }
 
     harmful = false;
-    trigger_gcd = timespan_t::zero();
 
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.avenging_wrath;
@@ -1480,7 +1469,7 @@ void paladin_t::init_spells()
   // Ret Passives
   passives.judgment             = find_spell( 231663 );
 
-  spells.avenging_wrath = find_spell( (specialization() == PALADIN_HOLY) ? 31842 : 31884 );
+  spells.avenging_wrath = find_spell( 31884 );
 
   if ( talents.judgment_of_light -> ok() )
     active_judgment_of_light_proc = new judgment_of_light_proc_t( this );

@@ -422,6 +422,13 @@ struct templars_verdict_t : public holy_power_consumer_t
     return am;
   }
 
+  virtual void impact( action_state_t* s ) override
+  {
+    holy_power_consumer_t::impact( s );
+    if ( p() -> talents.divine_judgment -> ok() )
+      p() -> buffs.divine_judgment -> trigger();
+  }
+
   virtual void execute() override
   {
     // store cost for potential refunding (see below)
