@@ -198,6 +198,7 @@ namespace warlock
       pet_t::create_buffs();
 
       create_buffs_demonology();
+      create_buffs_destruction();
 
       buffs.rage_of_guldan = make_buff( this, "rage_of_guldan", find_spell( 257926 ) )->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ); //change spell id to 253014 when whitelisted
     }
@@ -405,6 +406,17 @@ namespace warlock
             p()->buffs.sacrificed_souls->trigger();
           }
         }
+
+        if (p()->talents.grimoire_of_supremacy->ok())
+        {
+          for (auto& infernal : p()->warlock_pet_list.infernals)
+          {
+            if (!infernal->is_sleeping())
+            {
+              p()->buffs.grimoire_of_supremacy->trigger(last_resource_cost);
+            }
+          }
+        }
       }
     }
 
@@ -484,19 +496,18 @@ namespace warlock
     soc_threshold( 0.0 ),
     warlock( p )
   {
-    dots_corruption = target->get_dot( "corruption", &p );
-    for ( unsigned i = 0; i < dots_unstable_affliction.size(); ++i )
-    {
-      dots_unstable_affliction[i] = target->get_dot( "unstable_affliction_" + std::to_string( i + 1 ), &p );
-    }
-    dots_agony = target->get_dot( "agony", &p );
-    dots_doom = target->get_dot( "doom", &p );
     dots_drain_life = target->get_dot( "drain_life", &p );
-    dots_immolate = target->get_dot( "immolate", &p );
-    dots_seed_of_corruption = target->get_dot( "seed_of_corruption", &p );
-    dots_phantom_singularity = target->get_dot( "phantom_singularity", &p );
-    dots_siphon_life = target->get_dot( "siphon_life", &p );
-    dots_channel_demonfire = target->get_dot( "channel_demonfire", &p );
+    
+    //Aff
+    dots_corruption = target->get_dot("corruption", &p);
+    dots_agony = target->get_dot("agony", &p);
+    for (unsigned i = 0; i < dots_unstable_affliction.size(); ++i)
+    {
+      dots_unstable_affliction[i] = target->get_dot("unstable_affliction_" + std::to_string(i + 1), &p);
+    }
+    dots_phantom_singularity = target->get_dot("phantom_singularity", &p);
+    dots_siphon_life = target->get_dot("siphon_life", &p);
+    dots_seed_of_corruption = target->get_dot("seed_of_corruption", &p);
 
     debuffs_haunt = make_buff( *this, "haunt", source->find_spell( 48181 ) )->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
     debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", source->find_spell( 32390 ) )
@@ -505,19 +516,26 @@ namespace warlock
     debuffs_agony = make_buff( *this, "agony", source->find_spell( 980 ) )
       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
       ->set_max_stack( ( warlock.talents.writhe_in_agony->ok() ? warlock.talents.writhe_in_agony->effectN( 2 ).base_value() : 10 ) );
+    debuffs_tormented_agony = make_buff(*this, "tormented_agony", source->find_spell(252938));
+
+    //Destro
+    dots_immolate = target->get_dot("immolate", &p);
+    dots_roaring_blaze = target->get_dot("roaring_blaze", &p);
+    dots_channel_demonfire = target->get_dot("channel_demonfire", &p);
+
     debuffs_eradication = make_buff( *this, "eradication", source->find_spell( 196414 ) )
       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
     debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 205690 ) )
       ->set_max_stack( 100 );
+    debuffs_shadowburn = make_buff(*this, "shadowburn", source->find_spell(17877));
+    debuffs_havoc = new buffs::debuff_havoc_t(*this);
+    debuffs_chaotic_flames = make_buff(*this, "chaotic_flames", source->find_spell(253092));
+
+    //Demo
+    dots_doom = target->get_dot("doom", &p);
+
     debuffs_jaws_of_shadow = make_buff( *this, "jaws_of_shadow", source->find_spell( 242922 ) );
-    debuffs_tormented_agony = make_buff( *this, "tormented_agony", source->find_spell( 252938 ) );
-    debuffs_chaotic_flames = make_buff( *this, "chaotic_flames", source->find_spell( 253092 ) );
     debuffs_from_the_shadows = make_buff(*this, "from_the_shadows", source->find_spell(270569));
-
-    debuffs_havoc = new buffs::debuff_havoc_t( *this );
-
-    debuffs_flamelicked = make_buff( *this, "flamelicked" )
-      ->set_chance( 0 );
 
     target->callbacks_on_demise.push_back( [this]( player_t* ) { target_demise(); } );
   }
@@ -551,6 +569,13 @@ namespace warlock
 
       warlock.cooldowns.haunt->reset( true );
     }
+
+    if (debuffs_shadowburn->check())
+    {
+      warlock.sim->print_log("Player {} demised. Warlock {} reset haunt's cooldown.", target->name(), warlock.name());
+
+      warlock.cooldowns.shadowburn->reset(true);
+    }
   }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
@@ -575,6 +600,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     shard_react( timespan_t::zero() )
   {
     cooldowns.haunt = get_cooldown( "haunt" );
+    cooldowns.shadowburn = get_cooldown("shadowburn");
     cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
     cooldowns.call_dreadstalkers = get_cooldown("call_dreadstalkers");
 
@@ -676,6 +702,10 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 double warlock_t::composite_spell_crit_chance() const
 {
   double sc = player_t::composite_spell_crit_chance();
+
+  if (buffs.dark_soul->check())
+    sc *= 1.0 / (1.0 + buffs.dark_soul->check_value());
+
   return sc;
 }
 
@@ -695,6 +725,9 @@ double warlock_t::composite_spell_haste() const
 
   if ( buffs.demonic_speed->check() )
     h *= 1.0 / ( 1.0 + buffs.demonic_speed->check_value() );
+
+  if (buffs.reverse_entropy->check())
+    h *= 1.0 / (1.0 + buffs.reverse_entropy->check_value());
 
   if (specialization() == WARLOCK_DEMONOLOGY)
   {
@@ -722,6 +755,9 @@ double warlock_t::composite_melee_haste() const
   if ( buffs.demonic_speed->check() )
     h *= 1.0 / ( 1.0 + buffs.demonic_speed->check_value() );
 
+  if (buffs.reverse_entropy->check())
+    h *= 1.0 / (1.0 + buffs.reverse_entropy->check_value());
+
   if (specialization() == WARLOCK_DEMONOLOGY)
   {
     if (buffs.dreaded_haste->check())
@@ -734,6 +770,10 @@ double warlock_t::composite_melee_haste() const
 double warlock_t::composite_melee_crit_chance() const
 {
   double mc = player_t::composite_melee_crit_chance();
+
+  if (buffs.dark_soul->check())
+    mc *= 1.0 / (1.0 + buffs.dark_soul->check_value());
+
   return mc;
 }
 
@@ -813,6 +853,13 @@ action_t* warlock_t::create_action( const std::string& action_name, const std::s
       return demo_action;
   }
 
+  if ( specialization() == WARLOCK_DESTRUCTION )
+  {
+    action_t* destro_action = create_action_destruction(action_name, options_str);
+    if (destro_action)
+      return destro_action;
+  }
+
   return player_t::create_action( action_name, options_str );
 }
 
@@ -867,6 +914,14 @@ void warlock_t::create_pets()
     }
   }
 
+  if (specialization() == WARLOCK_DESTRUCTION)
+  {
+    for (size_t i = 0; i < warlock_pet_list.infernals.size(); i++)
+    {
+      warlock_pet_list.infernals[i] = new pets::infernal::infernal_t(sim, this);
+    }
+  }
+
   for ( auto& pet : pet_name_list )
   {
     create_pet( pet );
@@ -904,17 +959,6 @@ void warlock_t::create_buffs()
   buffs.wakeners_loyalty = make_buff( this, "wakeners_loyalty", find_spell( 236200 ) )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->set_default_value( find_spell( 236200 )->effectN( 1 ).percent() );
-
-  //demonology buffs
-
-  //destruction buffs
-  buffs.backdraft = make_buff( this, "backdraft", find_spell( 117828 ) );
-  buffs.embrace_chaos = make_buff( this, "embrace_chaos", sets->set( WARLOCK_DESTRUCTION, T19, B2 )->effectN( 1 ).trigger() )
-    ->set_chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 )->proc_chance() );
-  buffs.active_havoc = make_buff( this, "active_havoc" )
-    ->set_tick_behavior( buff_tick_behavior::NONE )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-    ->set_duration( timespan_t::from_seconds( 10 ) );
 }
 
 void warlock_t::init_spells()
@@ -936,8 +980,6 @@ void warlock_t::init_spells()
   spec.demonic_core                     = find_specialization_spell( "Demonic Core" );
   spec.shadow_bite                      = find_specialization_spell( "Shadow Bite" );
   spec.shadow_bite_2                    = find_specialization_spell( 231799 );
-  spec.conflagrate                      = find_specialization_spell( "Conflagrate" );
-  spec.conflagrate_2                    = find_specialization_spell( 231793 );
   spec.unending_resolve                 = find_specialization_spell( "Unending Resolve" );
   spec.unending_resolve_2               = find_specialization_spell( 231794 );
   spec.firebolt                         = find_specialization_spell( "Firebolt" );
@@ -980,25 +1022,15 @@ void warlock_t::init_gains()
   if ( specialization() == WARLOCK_DESTRUCTION )
     init_gains_destruction();
 
-  gains.conflagrate                     = get_gain( "conflagrate" );
-  gains.shadowburn                      = get_gain( "shadowburn" );
-  gains.immolate                        = get_gain( "immolate" );
-  gains.immolate_crits                  = get_gain( "immolate_crits" );
-  gains.shadowburn_shard                = get_gain( "shadowburn_shard" );
   gains.miss_refund                     = get_gain( "miss_refund" );
   gains.shadow_bolt                     = get_gain( "shadow_bolt" );
   gains.soul_conduit                    = get_gain( "soul_conduit" );
-  gains.reverse_entropy                 = get_gain( "reverse_entropy" );
+  
   gains.soulsnatcher                    = get_gain( "soulsnatcher" );
   gains.power_trip                      = get_gain( "power_trip" );
-  gains.t19_2pc_demonology              = get_gain( "t19_2pc_demonology" );
   gains.recurrent_ritual                = get_gain( "recurrent_ritual" );
   gains.feretory_of_souls               = get_gain( "feretory_of_souls" );
   gains.power_cord_of_lethtendris       = get_gain( "power_cord_of_lethtendris" );
-  gains.incinerate                      = get_gain( "incinerate" );
-  gains.incinerate_crits                = get_gain( "incinerate_crits" );
-  gains.dimensional_rift                = get_gain( "dimensional_rift" );
-  gains.destruction_t20_2pc             = get_gain( "destruction_t20_2pc" );
 }
 
 void warlock_t::init_procs()

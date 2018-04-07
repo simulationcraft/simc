@@ -402,7 +402,8 @@ namespace warlock {
       buffs.demonic_power = make_buff(this, "demonic_power", find_spell(265273))
         ->set_default_value(find_spell(265273)->effectN(1).percent())
         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-        ->set_cooldown(timespan_t::zero());
+        ->set_cooldown(timespan_t::zero())
+        ->set_quiet(this->pet_type == PET_WILD_IMP ? true : false);
       buffs.demonic_strength = make_buff(this, "demonic_strength", find_spell(267171))
         ->set_default_value(find_spell(267171)->effectN(2).percent())
         ->set_cooldown(timespan_t::zero());
@@ -1060,7 +1061,7 @@ namespace warlock {
   }
 
   void warlock_t::init_gains_demonology() {
-
+    gains.t19_2pc_demonology = get_gain("t19_2pc_demonology");
   }
 
   void warlock_t::init_rng_demonology() {
@@ -1079,6 +1080,7 @@ namespace warlock {
     def -> add_talent(this, "Demonic Strength", "if=!cooldown.summon_demonic_tyrant.remains<10");
     def -> add_talent(this, "Power Siphon", "if=talent.power_siphon.enabled");
     def -> add_action("doom,if=talent.doom.enabled&refreshable");
+    def -> add_action("service_felguard");
     def -> add_action("summon_vilefiend");
     def -> add_action("call_dreadstalkers");
     def -> add_action("summon_demonic_tyrant,if=prev_gcd.1.hand_of_guldan");

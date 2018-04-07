@@ -170,17 +170,15 @@ namespace warlock
 
     struct corruption_t : public warlock_spell_t
     {
-      double chance;
-
-      corruption_t( warlock_t* p ) :
+      corruption_t( warlock_t* p, const std::string& options_str) :
         warlock_spell_t( "Corruption", p, p -> find_spell( 172 ) )
       {
+        parse_options(options_str);
         may_crit = false;
         affected_by_deaths_embrace = true;
         dot_duration = data().effectN( 1 ).trigger()->duration();
         spell_power_mod.tick = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
         base_tick_time = data().effectN( 1 ).trigger()->effectN( 1 ).period();
-        base_multiplier *= 1.0 + p->spec.affliction->effectN( 2 ).percent();
 
         if ( p->talents.absolute_corruption->ok() )
         {
@@ -189,14 +187,6 @@ namespace warlock
             2 * sim->max_time * ( 1.0 + sim->vary_combat_length ); // "infinite" duration
           base_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
         }
-
-        chance = p->find_spell( 199282 )->proc_chance();
-      }
-
-      corruption_t( warlock_t* p, const std::string& options_str ) :
-        corruption_t( p )
-      {
-        parse_options( options_str );
       }
 
       double action_multiplier() const override
@@ -418,6 +408,9 @@ namespace warlock
         {
           td( s->target )->soc_threshold = s->composite_spell_power();
         }
+
+        p()->active.corruption->target = s->target;
+        p()->active.corruption->schedule_execute();
 
         warlock_spell_t::impact( s );
       }
@@ -763,8 +756,7 @@ namespace warlock
       ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
       ->set_trigger_spell( talents.nightfall );
     //tier
-    buffs.demonic_speed = make_buff<haste_buff_t>( this, "demonic_speed", sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger() );
-    buffs.demonic_speed
+    buffs.demonic_speed = make_buff<haste_buff_t>( this, "demonic_speed", sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger() )
       ->set_chance( sets->set( WARLOCK_AFFLICTION, T20, B4 )->proc_chance() )
       ->set_default_value( sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
     //legendary
@@ -796,9 +788,9 @@ namespace warlock
     active.tormented_agony              = new tormented_agony_t( this );
 
     // seed applies corruption
-    if ( specialization() == WARLOCK_AFFLICTION )
+    if (specialization() == WARLOCK_AFFLICTION)
     {
-      active.corruption = new corruption_t( this );
+      active.corruption = new corruption_t(this, "");
       active.corruption->background = true;
       active.corruption->aoe = -1;
     }

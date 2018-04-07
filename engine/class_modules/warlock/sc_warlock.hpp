@@ -19,36 +19,46 @@ namespace warlock
       namespace demonic_tyrant {
         struct demonic_tyrant_t;
       }
+      namespace infernal {
+        struct infernal_t;
+      }
     }
 
     constexpr int MAX_UAS = 5;
 
     struct warlock_td_t : public actor_target_data_t
     {
+      propagate_const<dot_t*> dots_drain_life;
+      
+      //Aff
       propagate_const<dot_t*> dots_agony;
       propagate_const<dot_t*> dots_corruption;
-      propagate_const<dot_t*> dots_doom;
-      propagate_const<dot_t*> dots_drain_life;
-      propagate_const<dot_t*> dots_immolate;
       propagate_const<dot_t*> dots_seed_of_corruption;
-      propagate_const<dot_t*> dots_shadowflame;
       std::array<propagate_const<dot_t*>, MAX_UAS> dots_unstable_affliction;
       propagate_const<dot_t*> dots_siphon_life;
       propagate_const<dot_t*> dots_phantom_singularity;
-      propagate_const<dot_t*> dots_channel_demonfire;
 
       propagate_const<buff_t*> debuffs_haunt;
-      propagate_const<buff_t*> debuffs_shadowflame;
       propagate_const<buff_t*> debuffs_agony;
-      propagate_const<buff_t*> debuffs_flamelicked;
+      propagate_const<buff_t*> debuffs_shadow_embrace;
+      propagate_const<buff_t*> debuffs_tormented_agony;
+
+      //Destro
+      propagate_const<dot_t*> dots_immolate;
+      propagate_const<dot_t*> dots_channel_demonfire;
+      propagate_const<dot_t*> dots_roaring_blaze;
+
+      propagate_const<buff_t*> debuffs_shadowburn;
       propagate_const<buff_t*> debuffs_eradication;
       propagate_const<buff_t*> debuffs_roaring_blaze;
       propagate_const<buff_t*> debuffs_havoc;
-      propagate_const<buff_t*> debuffs_jaws_of_shadow;
-      propagate_const<buff_t*> debuffs_tormented_agony;
       propagate_const<buff_t*> debuffs_chaotic_flames;
-      propagate_const<buff_t*> debuffs_shadow_embrace;
+      
+      //Demo
+      propagate_const<dot_t*> dots_doom;
+
       propagate_const<buff_t*> debuffs_from_the_shadows;
+      propagate_const<buff_t*> debuffs_jaws_of_shadow;
 
       int agony_stack;
       double soc_threshold;
@@ -80,10 +90,12 @@ namespace warlock
         static const int DREADSTALKER_LIMIT = 4;
         static const int VILFIEND_LIMIT = 1;
         static const int DEMONIC_TYRANT_LIMIT = 1;
+        static const int INFERNAL_LIMIT = 1;
         std::array<pets::wild_imp::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
         std::array<pets::dreadstalker::dreadstalker_t*, DREADSTALKER_LIMIT> dreadstalkers;
         std::array<pets::vilefiend::vilefiend_t*, VILFIEND_LIMIT> vilefiends;
         std::array<pets::demonic_tyrant::demonic_tyrant_t*, DEMONIC_TYRANT_LIMIT> demonic_tyrants;
+        std::array<pets::infernal::infernal_t*, INFERNAL_LIMIT> infernals;
       } warlock_pet_list;
 
       std::vector<std::string> pet_name_list;
@@ -94,8 +106,9 @@ namespace warlock
         action_t* cry_havoc;
         action_t* tormented_agony;
         action_t* chaotic_flames;
-        spell_t* rain_of_fire;
         spell_t* corruption;
+        spell_t* roaring_blaze;
+        spell_t* rain_of_fire;
         spell_t* bilescourge_bombers;
         melee_attack_t* soul_strike;
       } active;
@@ -153,17 +166,17 @@ namespace warlock
         const spell_data_t* demonic_consumption;
         const spell_data_t* nether_portal;
         // DESTRO
-        const spell_data_t* eradication;
         const spell_data_t* flashover;
+        const spell_data_t* eradication;
         const spell_data_t* soul_fire;
 
         const spell_data_t* reverse_entropy;
         const spell_data_t* internal_combustion;
         const spell_data_t* shadowburn;
 
+        const spell_data_t* inferno;
         const spell_data_t* fire_and_brimstone;
         const spell_data_t* cataclysm;
-        const spell_data_t* hellfire;
 
         const spell_data_t* roaring_blaze;
         const spell_data_t* grimoire_of_supremacy;
@@ -209,6 +222,7 @@ namespace warlock
       struct cooldowns_t
       {
         propagate_const<cooldown_t*> haunt;
+        propagate_const<cooldown_t*> shadowburn;
         propagate_const<cooldown_t*> sindorei_spite_icd;
         propagate_const<cooldown_t*> call_dreadstalkers;
       } cooldowns;
@@ -270,9 +284,11 @@ namespace warlock
 
         //destruction_buffs
         propagate_const<buff_t*> backdraft;
-        propagate_const<buff_t*> conflagration_of_chaos;
         propagate_const<buff_t*> embrace_chaos;
         propagate_const<buff_t*> active_havoc;
+        propagate_const<buff_t*> reverse_entropy;
+        propagate_const<buff_t*> grimoire_of_supremacy;
+        propagate_const<buff_t*> dark_soul;
 
         // legendary buffs
         buff_t* sindorei_spite;
@@ -287,11 +303,15 @@ namespace warlock
       struct gains_t
       {
         gain_t* agony;
+
         gain_t* conflagrate;
         gain_t* shadowburn;
         gain_t* immolate;
         gain_t* immolate_crits;
+        gain_t* infernal;
         gain_t* shadowburn_shard;
+        gain_t* inferno;
+
         gain_t* miss_refund;
         gain_t* seed_of_corruption;
         gain_t* unstable_affliction_refund;
@@ -307,7 +327,6 @@ namespace warlock
         gain_t* power_cord_of_lethtendris;
         gain_t* incinerate;
         gain_t* incinerate_crits;
-        gain_t* dimensional_rift;
         gain_t* affliction_t20_2pc;
         gain_t* destruction_t20_2pc;
       } gains;
@@ -333,6 +352,7 @@ namespace warlock
         proc_t* demonology_t20_2pc;
         //destro
         proc_t* t19_2pc_chaos_bolts;
+        proc_t* reverse_entropy;
       } procs;
 
       struct spells_t
@@ -420,14 +440,12 @@ namespace warlock
 
       // sc_warlock_demonology
       action_t* create_action_demonology( const std::string& action_name, const std::string& options_str );
-      //pet_t* create_pet_demonology( const std::string& pet_name, const std::string& );
       void create_buffs_demonology();
       void init_spells_demonology();
       void init_gains_demonology();
       void init_rng_demonology();
       void init_procs_demonology();
       void create_options_demonology();
-      //void create_precombat_demonology();
       void create_apl_demonology();
       void legendaries_demonology();
 
@@ -460,6 +478,8 @@ namespace warlock
 
         struct buffs_t
         {
+          propagate_const<buff_t*> embers;
+
           propagate_const<buff_t*> the_expendables;
           propagate_const<buff_t*> rage_of_guldan;
           propagate_const<buff_t*> demonic_power;
@@ -500,6 +520,8 @@ namespace warlock
 
         void create_buffs_demonology();
         void init_spells_demonology();
+
+        void create_buffs_destruction();
 
         resource_e primary_resource() const override { return RESOURCE_ENERGY; }
 
@@ -790,7 +812,6 @@ namespace warlock
           virtual void demise() override;
           //void trigger(int timespan, bool isdoge = false) override;
         };
-
       }
       namespace vilefiend
       {
@@ -806,6 +827,16 @@ namespace warlock
         {
           demonic_tyrant_t(sim_t* sim, warlock_t* owner, const std::string& name = "demonic_tyrant");
           virtual void init_base_stats() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
+        };
+      }
+      namespace infernal {
+        struct infernal_t : public warlock_pet_t
+        {
+          infernal_t(sim_t* sim, warlock_t* owner, const std::string& name = "infernal");
+          virtual void init_base_stats() override;
+          virtual void arise() override;
+          virtual void demise() override;
           virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
@@ -860,10 +891,6 @@ namespace warlock
         bool affected_by_flamelicked;
         bool affected_by_odr_shawl_of_the_ymirjar;
         bool affected_by_deaths_embrace;
-        bool affliction_direct_increase;
-        bool affliction_dot_increase;
-        bool destruction_direct_increase;
-        bool destruction_dot_increase;
         bool destro_mastery;
         bool can_feretory;
 
@@ -1021,11 +1048,20 @@ namespace warlock
           {
             accumulate_seed_of_corruption( td( s->target ), s->result_amount );
           }
+
+          if (p()->talents.reverse_entropy->ok())
+          {
+            auto success = p()->buffs.reverse_entropy->trigger();
+            if (success)
+            {
+              p()->procs.reverse_entropy->occur();
+            }
+          }
         }
 
         double composite_target_multiplier( player_t* t ) const override
         {
-          double m = 1.0;
+          double m = spell_t::composite_target_multiplier(t);
 
           auto td = this->td( t );
 
@@ -1040,7 +1076,7 @@ namespace warlock
           if ( p()->talents.deaths_embrace->ok() && target->health_percentage() <= deaths_embrace_health && affected_by_deaths_embrace )
             m *= 1.0 + p()->talents.deaths_embrace->effectN( 1 ).percent() * ( 1 - target->health_percentage() / deaths_embrace_health );
 
-          return spell_t::composite_target_multiplier( t ) * m;
+          return m;
         }
 
         double action_multiplier() const override
