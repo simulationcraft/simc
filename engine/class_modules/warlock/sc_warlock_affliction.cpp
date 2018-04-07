@@ -179,6 +179,7 @@ namespace warlock
         dot_duration = data().effectN( 1 ).trigger()->duration();
         spell_power_mod.tick = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
         base_tick_time = data().effectN( 1 ).trigger()->effectN( 1 ).period();
+        base_multiplier *= 1.0 + p->spec.affliction->effectN(2).percent();
 
         if ( p->talents.absolute_corruption->ok() )
         {
