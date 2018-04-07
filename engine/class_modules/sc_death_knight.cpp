@@ -2655,6 +2655,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       aoe = 2;
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
     }
+
+    int n_targets() const override
+    { return p() -> o() -> in_death_and_decay() ? 5 : 2; }
   };
 
   struct marrowrend_t : public drw_attack_t
