@@ -25,7 +25,7 @@ public:
   void mark();
   void accumulate();
   double elapsed();
-  double current();
+  double current() const;
   stopwatch_t( stopwatch_e sw_type );
 private:
   stopwatch_e type;

@@ -176,7 +176,7 @@ stopwatch_t::time_point_t stopwatch_t::now() const
 }
 
 /// Current time value
-double stopwatch_t::current()
+double stopwatch_t::current() const
 {
   return time_point_to_sec( _current );
 }
