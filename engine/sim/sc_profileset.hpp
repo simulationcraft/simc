@@ -188,11 +188,30 @@ public:
 
 class profile_output_data_t
 {
-  race_e                                  m_race;
-  std::vector<talent_data_t*>             m_talents;
-  std::string                             m_artifact;
-  std::string                             m_crucible;
-  std::vector<profile_output_data_item_t> m_gear;
+  race_e                                       m_race;
+  std::vector<talent_data_t*>                  m_talents;
+  std::string                                  m_artifact;
+  std::string                                  m_crucible;
+  std::vector<profile_output_data_item_t>      m_gear;
+
+  double    m_crit_rating,
+            m_crit_pct,
+            m_haste_rating,
+            m_haste_pct,
+            m_mastery_rating,
+            m_mastery_pct,
+            m_versatility_rating,
+            m_versatility_pct,
+            m_agility,
+            m_strength,
+            m_intellect,
+            m_stamina,
+            m_avoidance_rating,
+            m_avoidance_pct,
+            m_leech_rating,
+            m_leech_pct,
+            m_speed_rating,
+            m_speed_pct;
 
 public:
   profile_output_data_t() : m_race ( RACE_NONE )
@@ -227,6 +246,114 @@ public:
 
   profile_output_data_t& gear( const std::vector<profile_output_data_item_t>& v )
   { m_gear = v; return *this; }
+
+  double crit_rating() const
+  { return m_crit_rating; }
+
+  profile_output_data_t& crit_rating( double d )
+  { m_crit_rating = d; return *this; }
+
+  double haste_rating() const
+  { return m_haste_rating; }
+
+  profile_output_data_t& haste_rating( double d )
+  { m_haste_rating = d; return *this; }
+
+  double mastery_rating() const
+  { return m_mastery_rating; }
+
+  profile_output_data_t& mastery_rating( double d )
+  { m_mastery_rating = d; return *this; }
+
+  double versatility_rating() const
+  { return m_versatility_rating; }
+
+  profile_output_data_t& versatility_rating( double d )
+  { m_versatility_rating = d; return *this; }
+
+  double crit_pct() const
+  { return m_crit_pct; }
+
+  profile_output_data_t& crit_pct( double d )
+  { m_crit_pct = d; return *this; }
+
+  double haste_pct() const
+  { return m_haste_pct; }
+
+  profile_output_data_t& haste_pct( double d )
+  { m_haste_pct = d; return *this; }
+
+  double mastery_pct() const
+  { return m_mastery_pct; }
+
+  profile_output_data_t& mastery_pct( double d )
+  { m_mastery_pct = d; return *this; }
+
+  double versatility_pct() const
+  { return m_versatility_pct; }
+
+  profile_output_data_t& versatility_pct( double d )
+  { m_versatility_pct = d; return *this; }
+
+  double agility() const
+  { return m_agility; }
+
+  profile_output_data_t& agility( double d )
+  { m_agility = d; return *this; }
+
+  double strength() const
+  { return m_strength; }
+
+  profile_output_data_t& strength( double d )
+  { m_strength = d; return *this; }
+
+  double intellect() const
+  { return m_intellect; }
+
+  profile_output_data_t& intellect( double d )
+  { m_intellect = d; return *this; }
+
+  double stamina() const
+  { return m_stamina; }
+
+  profile_output_data_t& stamina( double d )
+  { m_stamina = d; return *this; }
+
+  double avoidance_rating() const
+  { return m_avoidance_rating; }
+
+  profile_output_data_t& avoidance_rating( double d )
+  { m_avoidance_rating = d; return *this; }
+
+  double avoidance_pct() const
+  { return m_avoidance_pct; }
+
+  profile_output_data_t& avoidance_pct( double d )
+  { m_avoidance_pct = d; return *this; }
+
+  double leech_rating() const
+  { return m_leech_rating; }
+
+  profile_output_data_t& leech_rating( double d )
+  { m_leech_rating = d; return *this; }
+
+  double leech_pct() const
+  { return m_leech_pct; }
+
+  profile_output_data_t& leech_pct( double d )
+  { m_leech_pct = d; return *this; }
+
+  double speed_rating() const
+  { return m_speed_rating; }
+
+  profile_output_data_t& speed_rating( double d )
+  { m_speed_rating = d; return *this; }
+
+  double speed_pct() const
+  { return m_speed_pct; }
+
+  profile_output_data_t& speed_pct( double d )
+  { m_speed_pct = d; return *this; }
 };
 
 class profile_set_t
@@ -418,7 +545,7 @@ void create_options( sim_t* sim );
 
 statistical_data_t collect( const extended_sample_data_t& c );
 statistical_data_t metric_data( const player_t* player, scale_metric_e metric );
-void save_output_data( std::unique_ptr<profile_set_t>& profileset, const player_t* parent_player, const player_t* player, std::string option );
+void save_output_data( profile_set_t& profileset, const player_t* parent_player, const player_t* player, std::string option );
 void fetch_output_data( const profile_output_data_t output_data, js::JsonOutput& ovr );
 
 // Filter non-profilest options into a new control object, caller is responsible for deleting the

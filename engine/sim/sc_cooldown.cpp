@@ -151,7 +151,7 @@ cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
 // cooldown. Actions are associated by start() calls.
 void cooldown_t::adjust_recharge_multiplier()
 {
-  if ( up() )
+  if ( ( charges == 1 && up() ) || ( charges != 1 && ! recharge_event ) )
   {
     return;
   }
@@ -195,7 +195,10 @@ void cooldown_t::adjust_recharge_multiplier()
         remains.total_seconds(), old_multiplier, recharge_multiplier );
   }
 
-  ready = sim.current_time() + new_remains;
+  if ( ! up() )
+  {
+    ready = sim.current_time() + new_remains;
+  }
   if ( charges == 1 )
   {
     last_charged = ready;

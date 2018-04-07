@@ -574,7 +574,8 @@ js::sc_js_t to_json(
   return node;
 }
 
-void to_json( JsonOutput root, const player_collected_data_t::buffed_stats_t& bs,
+void to_json( JsonOutput root, const player_t& p,
+                               const player_collected_data_t::buffed_stats_t& bs,
                                const std::vector<resource_e>& relevant_resources )
 {
   for ( attribute_e a = ATTRIBUTE_NONE; a < ATTRIBUTE_MAX; ++a )
@@ -603,9 +604,42 @@ void to_json( JsonOutput root, const player_collected_data_t::buffed_stats_t& bs
   add_non_zero( root[ "stats" ], "heal_versatility", bs.heal_versatility );
   add_non_zero( root[ "stats" ], "mitigation_versatility", bs.mitigation_versatility );
 
-  add_non_zero( root[ "stats" ], "leech", bs.leech );
-  add_non_zero( root[ "stats" ], "speed", bs.run_speed );
-  add_non_zero( root[ "stats" ], "avoidance", bs.avoidance );
+  // some of these secondaries are dupes from above. Duplication is intended to preserve backwards compatibility while
+  // making a few names more consistent with the game. they're intended to be a quicker/simpler reference to match paper
+  // doll stats in-game. crit and haste pick the max between melee/spell which seems to be the game logic
+
+  add_non_zero( root[ "stats" ], "crit_rating",
+                                p.composite_melee_crit_rating() > p.composite_spell_crit_rating()
+                                ? p.composite_melee_crit_rating()
+                                : p.composite_spell_crit_rating());
+  add_non_zero( root[ "stats" ], "crit_pct",
+                                 bs.attack_crit_chance > bs.spell_crit_chance
+                                 ? bs.attack_crit_chance
+                                 : bs.spell_crit_chance);
+
+  double attack_haste_pct = bs.attack_haste != 0 ? 1 / bs.attack_haste - 1 : 0;
+  double spell_haste_pct = bs.spell_haste != 0 ? 1 / bs.spell_haste - 1 : 0;
+  add_non_zero( root[ "stats" ], "haste_rating",
+                                 p.composite_melee_haste_rating() > p.composite_spell_haste_rating()
+                                 ? p.composite_melee_haste_rating()
+                                 : p.composite_spell_haste_rating());
+  add_non_zero( root[ "stats" ], "haste_pct",
+                                 attack_haste_pct > spell_haste_pct
+                                 ? attack_haste_pct
+                                 : spell_haste_pct);
+
+  add_non_zero( root[ "stats" ], "mastery_rating", p.composite_mastery_rating());
+  add_non_zero( root[ "stats" ], "mastery_pct", bs.mastery_value);
+
+  add_non_zero( root[ "stats" ], "versatility_rating", p.composite_damage_versatility_rating());
+  add_non_zero( root[ "stats" ], "versatility_pct", bs.damage_versatility);
+
+  add_non_zero( root[ "stats" ], "avoidance_rating", p.composite_avoidance_rating());
+  add_non_zero( root[ "stats" ], "avoidance_pct", bs.avoidance );
+  add_non_zero( root[ "stats" ], "leech_rating", p.composite_leech_rating());
+  add_non_zero( root[ "stats" ], "leech_pct", bs.leech );
+  add_non_zero( root[ "stats" ], "speed_rating", p.composite_speed_rating());
+  add_non_zero( root[ "stats" ], "speed_pct", bs.run_speed );
 
   add_non_zero( root[ "stats" ], "manareg_per_second", bs.manareg_per_second );
 
@@ -849,23 +883,27 @@ void collected_data_to_json( JsonOutput root, const player_t& p )
     root[ "target_metric" ] = cd.target_metric;
   }
 
+  // Key off of resource loss to figure out what resources are even relevant
+  std::vector<resource_e> relevant_resources;
+  for ( size_t i = 0, end = cd.resource_lost.size(); i < end; ++i )
+  {
+    auto r = static_cast<resource_e>( i );
+
+    if ( cd.resource_lost[ r ].mean() > 0 )
+    {
+      relevant_resources.push_back( r );
+    }
+  }
+
+  // always include buffed_stats in JSON
+  to_json( root[ "buffed_stats" ], p, cd.buffed_stats_snapshot, relevant_resources );
+
   if ( sim.report_details != 0 )
   {
-    // Key off of resource loss to figure out what resources are even relevant
-    std::vector<resource_e> relevant_resources;
-    for ( size_t i = 0, end = cd.resource_lost.size(); i < end; ++i )
-    {
-      auto r = static_cast<resource_e>( i );
-
-      if ( cd.resource_lost[ r ].mean() > 0 )
-      {
-        root[ "resource_lost" ][ util::resource_type_string( r ) ] = cd.resource_lost[ r ];
-        relevant_resources.push_back( r );
-      }
-    }
-
     // Rest of the resource summaries are printed only based on relevant resources
     range::for_each( relevant_resources, [ &root, &cd ]( resource_e r ) {
+      root[ "resource_lost" ][ util::resource_type_string( r ) ] = cd.resource_lost[ r ];
+
       if ( r < cd.combat_end_resource.size() )
       {
         // Combat ending resources
@@ -907,8 +945,6 @@ void collected_data_to_json( JsonOutput root, const player_t& p )
     {
       to_json( root[ "action_sequence" ], cd.action_sequence, relevant_resources, sim );
     }
-
-    to_json( root[ "buffed_stats" ], cd.buffed_stats_snapshot, relevant_resources );
   }
 }
 
@@ -1810,7 +1846,7 @@ void print_json2_pretty( FILE* o, const sim_t& sim )
     root[ "notifications" ] = sim.error_list;
   }
 
-  std::array<char, 65536> buffer;
+  std::array<char, 1024000> buffer;
   FileWriteStream b( o, buffer.data(), buffer.size() );
   PrettyWriter<FileWriteStream> writer( b );
   doc.Accept( writer );
