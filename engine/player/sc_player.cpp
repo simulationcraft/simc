@@ -811,8 +811,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
 
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
-    if ( sim->debug )
-      sim->out_debug.printf( "Creating Player %s", name() );
+    sim->print_debug( "Creating Player {}.", name_str );
     sim->player_list.push_back( this );
     if ( !is_pet() )
     {

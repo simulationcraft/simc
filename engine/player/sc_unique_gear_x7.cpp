@@ -831,6 +831,7 @@ struct icon_of_rot_driver_t : public dbc_proc_callback_t
   {
     actor_target_data_t* td = listener -> get_target_data( trigger_state -> target );
     assert( td );
+    (void) td;
 
     auto& tl = listener -> sim -> target_non_sleeping_list;
 

@@ -405,6 +405,8 @@ void dot_t::copy( player_t* other_target, dot_copy_e copy_type ) const
 // For duplicating a DoT (creating a 2nd instance) on one target.
 void dot_t::copy( dot_t* other_dot ) const
 {
+  assert( current_action );
+
   // Shared initialize for the target dot state, independent of the copying
   // method
   action_state_t* target_state = nullptr;
