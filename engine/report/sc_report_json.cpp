@@ -1849,7 +1849,11 @@ void print_json2_pretty( FILE* o, const sim_t& sim )
   std::array<char, 1024000> buffer;
   FileWriteStream b( o, buffer.data(), buffer.size() );
   PrettyWriter<FileWriteStream> writer( b );
-  doc.Accept( writer );
+  auto accepted = doc.Accept( writer );
+  if ( !accepted )
+  {
+    throw std::runtime_error("JSON Writer did not accept document.");
+  }
 }
 
 void print_json_pretty( FILE* o, const sim_t& sim )
