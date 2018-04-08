@@ -656,8 +656,8 @@ public:
     ab( n, player, s ),
     track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
     cd_waste( nullptr ), cd_waste_factory( nullptr ),
-    ret_damage_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 6 ) ) ),
-    ret_dot_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 7 ) ) ),
+    ret_damage_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 1 ) ) ),
+    ret_dot_increase( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 2 ) ) ),
     ret_damage_increase_two( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 11 ) ) ),
     ret_damage_increase_three( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 12 ) ) ),
     ret_damage_increase_four( ab::data().affected_by( player -> spec.retribution_paladin -> effectN( 13 ) ) ),
@@ -744,9 +744,9 @@ public:
       }
     }
     if ( ret_damage_increase )
-      ab::base_dd_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 6 ).percent();
+      ab::base_dd_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 1 ).percent();
     if ( ret_dot_increase )
-      ab::base_td_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 7 ).percent();
+      ab::base_td_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 2 ).percent();
     if ( ret_damage_increase_two )
       ab::base_dd_multiplier *= 1.0 + p() -> spec.retribution_paladin -> effectN( 11 ).percent();
     if ( ret_damage_increase_three )
