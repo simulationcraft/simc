@@ -942,7 +942,7 @@ void to_json( JsonOutput root, const sim_t& sim )
   }
 }
 
-void print_json2_pretty( FILE* o, const sim_t& sim )
+void print_json_pretty( FILE* o, const sim_t& sim )
 {
   Document doc;
   Value& v = doc;
@@ -984,14 +984,14 @@ namespace report
 {
 void print_json( sim_t& sim )
 {
-  if ( ! sim.json2_file_str.empty() )
+  if ( ! sim.json_file_str.empty() )
   {
     // Setup file stream and open file
-    io::cfile s( sim.json2_file_str, "w" );
+    io::cfile s( sim.json_file_str, "w" );
     if ( !s )
     {
       sim.errorf( "Failed to open JSON output file '%s'.",
-                  sim.json2_file_str.c_str() );
+                  sim.json_file_str.c_str() );
       return;
     }
 
@@ -1002,12 +1002,12 @@ void print_json( sim_t& sim )
       {
         std::cout << "\nReport will be generated with full state for each action.\n";
       }
-      Timer t( "JSON-New report" );
+      Timer t( "JSON report" );
       if ( ! sim.profileset_enabled )
       {
         t.start();
       }
-      print_json2_pretty( s, sim );
+      print_json_pretty( s, sim );
     }
     catch ( const std::exception& e )
     {
