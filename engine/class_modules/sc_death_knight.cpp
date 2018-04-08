@@ -13,7 +13,6 @@
 // - Heart Strike looks like it deals slightly too much damage
 // - Dancing Rune Weapon damage isn't completely accurate, could be AP inheritance ?
 // - Blood Feast
-// - Archimonde's Hatred Reborn when
 // Frost
 // - Implement Inexorable Assault ? maybe ? somehow ?
 
@@ -549,6 +548,7 @@ public:
     gain_t* start_of_combat_overflow;
     gain_t* shackles_of_bryndaor;
     gain_t* heartbreaker;
+    gain_t* drw_heart_strike;
   } gains;
 
   // Specialization
@@ -2658,6 +2658,15 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
     int n_targets() const override
     { return p() -> o() -> in_death_and_decay() ? 5 : 2; }
+
+    void impact( action_state_t* s ) override
+    {
+      drw_attack_t::impact( s );
+
+      p() -> o() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> o() -> spec.heart_strike -> effectN( 3 ).base_value(), 
+                                   p() -> o() -> gains.drw_heart_strike,
+                                   nullptr );
+    }
   };
 
   struct marrowrend_t : public drw_attack_t
@@ -4293,7 +4302,7 @@ struct blooddrinker_t : public death_knight_spell_t
   {
     parse_options( options_str );
     tick_may_crit = channeled = hasted_ticks = tick_zero = true;
-   
+
     base_tick_time = timespan_t::from_seconds( 1.0 );
   }
 
@@ -4671,6 +4680,18 @@ struct death_and_decay_base_t : public death_knight_spell_t
     }
 
     return death_knight_spell_t::cost();
+  }
+
+  double runic_power_generation_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::runic_power_generation_multiplier( state );
+
+    if ( p() -> buffs.crimson_scourge -> check() )
+    {
+      m *= 1.0 + p() -> buffs.crimson_scourge -> data().effectN( 2 ).percent();
+    }
+
+    return m;
   }
 
   void execute() override
@@ -8858,6 +8879,7 @@ void death_knight_t::init_gains()
   gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow"   );
   gains.shackles_of_bryndaor             = get_gain( "Shackles of Bryndaor"       );
   gains.heartbreaker                     = get_gain( "Heartbreaker"               );
+  gains.drw_heart_strike                 = get_gain( "Rune Weapon Heart Strike"   );
 }
 
 // death_knight_t::init_procs ===============================================
