@@ -19,7 +19,7 @@ void simplify_html( std::string& buffer )
 
 // print_text_action ========================================================
 
-void print_action( FILE* file, stats_t* s, size_t max_name_length,
+void print_action( std::ostream& file, stats_t* s, size_t max_name_length,
                         int max_dpe, int max_dpet, int max_dpr, int max_pdps )
 {
   if ( max_name_length == 0 )
@@ -114,7 +114,7 @@ void print_action( FILE* file, stats_t* s, size_t max_name_length,
   fmt::print( file, "\n" );
 }
 
-void print_player_actions( FILE* file, const player_t& p )
+void print_player_actions( std::ostream& file, const player_t& p )
 {
   for ( auto& alist : p.action_priority_list )
   {
@@ -207,7 +207,7 @@ void print_player_actions( FILE* file, const player_t& p )
   }
 }
 
-void print_constant_buffs( FILE* file, const player_processed_report_information_t& ri )
+void print_constant_buffs( std::ostream& file, const player_processed_report_information_t& ri )
 {
   bool first       = true;
   char prefix      = ' ';
@@ -234,7 +234,7 @@ void print_constant_buffs( FILE* file, const player_processed_report_information
   }
 }
 
-void print_dynamic_buffs( FILE* file, const player_processed_report_information_t& ri )
+void print_dynamic_buffs( std::ostream& file, const player_processed_report_information_t& ri )
 {
   // Get max name length
   size_t max_name_length = 0;
@@ -280,14 +280,14 @@ void print_dynamic_buffs( FILE* file, const player_processed_report_information_
   }
 }
 
-void print_player_buffs( FILE* file, const player_processed_report_information_t& ri )
+void print_player_buffs( std::ostream& file, const player_processed_report_information_t& ri )
 {
   print_constant_buffs( file, ri );
   fmt::print( file, "\n" );
   print_dynamic_buffs( file, ri );
 }
 
-void print_core_stats( FILE* file, const player_t& p )
+void print_core_stats( std::ostream& file, const player_t& p )
 {
   auto& buffed_stats = p.collected_data.buffed_stats_snapshot;
 
@@ -312,7 +312,7 @@ void print_core_stats( FILE* file, const player_t& p )
                  p.resources.max[ RESOURCE_MANA ] );
 }
 
-void print_generic_stats( FILE* file, const player_t& p )
+void print_generic_stats( std::ostream& file, const player_t& p )
 {
   auto& buffed_stats = p.collected_data.buffed_stats_snapshot;
 
@@ -331,7 +331,7 @@ void print_generic_stats( FILE* file, const player_t& p )
       buffed_stats.run_speed, p.composite_movement_speed(), p.composite_speed_rating() );
 }
 
-void print_spell_stats( FILE* file, const player_t& p )
+void print_spell_stats( std::ostream& file, const player_t& p )
 {
   auto& buffed_stats = p.collected_data.buffed_stats_snapshot;
 
@@ -359,7 +359,7 @@ void print_spell_stats( FILE* file, const player_t& p )
       0 );
 }
 
-void print_attack_stats( FILE* file, const player_t& p )
+void print_attack_stats( std::ostream& file, const player_t& p )
 {
   auto& buffed_stats = p.collected_data.buffed_stats_snapshot;
 
@@ -417,7 +417,7 @@ void print_attack_stats( FILE* file, const player_t& p )
   }
 }
 
-void print_defense_stats( FILE* file, const player_t& p )
+void print_defense_stats( std::ostream& file, const player_t& p )
 {
   auto& buffed_stats = p.collected_data.buffed_stats_snapshot;
 
@@ -448,7 +448,7 @@ void print_defense_stats( FILE* file, const player_t& p )
       p.composite_mitigation_versatility_rating() );
 }
 
-void print_gain( FILE* file, const gain_t& g, int max_name_length )
+void print_gain( std::ostream& file, const gain_t& g, int max_name_length )
 {
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
@@ -487,7 +487,7 @@ void gain_name_length( const std::vector<gain_t*>& gain_list, size_t& max_length
   }
 }
 
-void print_player_gains( FILE* file, const player_t& p )
+void print_player_gains( std::ostream& file, const player_t& p )
 {
   // Get max gain name length
   size_t max_name_length = 0;
@@ -522,7 +522,7 @@ void print_player_gains( FILE* file, const player_t& p )
   }
 }
 
-void print_procs( FILE* file, const player_t& p )
+void print_procs( std::ostream& file, const player_t& p )
 {
   bool first = true;
 
@@ -543,7 +543,7 @@ void print_procs( FILE* file, const player_t& p )
   }
 }
 
-void print_uptimes_benefits( FILE* file, const player_t& p )
+void print_uptimes_benefits( std::ostream& file, const player_t& p )
 {
   bool first = true;
 
@@ -580,7 +580,7 @@ void print_uptimes_benefits( FILE* file, const player_t& p )
 }
 
 // print_text_waiting ==========================================================
-void print_waiting_player( FILE* file, const player_t& p )
+void print_waiting_player( std::ostream& file, const player_t& p )
 {
   double wait_time = 0;
   if ( p.collected_data.fight_length.mean() > 0.0 )
@@ -595,7 +595,7 @@ void print_waiting_player( FILE* file, const player_t& p )
 // print_text_waiting_all
 // =======================================================
 
-void print_waiting_all( FILE* file, const sim_t& sim )
+void print_waiting_all( std::ostream& file, const sim_t& sim )
 {
   fmt::print( file, "\nWaiting:\n" );
 
@@ -623,7 +623,7 @@ void print_waiting_all( FILE* file, const sim_t& sim )
 
 // print_text_iteration_data ================================================
 
-void print_iteration_data( FILE* file, const sim_t& sim )
+void print_iteration_data( std::ostream& file, const sim_t& sim )
 {
   if ( !sim.deterministic || sim.report_iteration_data == 0 )
   {
@@ -734,7 +734,7 @@ void print_iteration_data( FILE* file, const sim_t& sim )
   }
 }
 
-void sim_summary_performance( FILE* file, sim_t* sim )
+void sim_summary_performance( std::ostream& file, sim_t* sim )
 {
   std::time_t cur_time = std::time( nullptr );
   auto date_str = fmt::format("{:%Y-%m-%d %H:%M:%S%z}", *std::localtime(&cur_time) );
@@ -851,7 +851,7 @@ void sim_summary_performance( FILE* file, sim_t* sim )
 #endif
 }
 
-void print_raid_scale_factors( FILE* file, sim_t* sim )
+void print_raid_scale_factors( std::ostream& file, sim_t* sim )
 {
   if ( !sim->scaling->has_scale_factors() )
     return;
@@ -907,7 +907,7 @@ void print_raid_scale_factors( FILE* file, sim_t* sim )
 
 // print_text_scale_factors =================================================
 
-void print_player_scale_factors( FILE* file, const player_t& p,
+void print_player_scale_factors( std::ostream& file, const player_t& p,
                                const player_processed_report_information_t& ri )
 {
   if ( !p.sim->scaling->has_scale_factors() )
@@ -957,7 +957,7 @@ void print_player_scale_factors( FILE* file, const player_t& p,
 
 // print_text_dps_plots =====================================================
 
-void print_dps_plots( FILE* file, const player_t& p )
+void print_dps_plots( std::ostream& file, const player_t& p )
 {
   sim_t& sim = *p.sim;
 
@@ -995,7 +995,7 @@ void print_dps_plots( FILE* file, const player_t& p )
 
 // print_text_reference_dps =================================================
 
-void print_reference_dps( FILE* file, sim_t& sim )
+void print_reference_dps( std::ostream& file, sim_t& sim )
 {
   if ( sim.reference_player_str.empty() )
     return;
@@ -1088,7 +1088,7 @@ struct sort_by_event_stopwatch
   }
 };
 
-void event_manager_infos( FILE* file, const sim_t& sim )
+void event_manager_infos( std::ostream& file, const sim_t& sim )
 {
 #if defined( ACTOR_EVENT_BOOKKEEPING )
   if ( !sim.event_mgr.monitor_cpu )
@@ -1117,7 +1117,7 @@ void event_manager_infos( FILE* file, const sim_t& sim )
 #endif  // ACTOR_EVENT_BOOKKEEPING
 }
 
-void print_collected_amount( FILE* file, const player_t& p, std::string name, const extended_sample_data_t& sd )
+void print_collected_amount( std::ostream& file, const player_t& p, std::string name, const extended_sample_data_t& sd )
 {
   if ( sd.sum() <= 0.0 )
     return;
@@ -1130,7 +1130,7 @@ void print_collected_amount( FILE* file, const player_t& p, std::string name, co
       name, ( sd.max() - sd.min() ) / 2.0, ( ( sd.max() - sd.min() ) / 2 ) * 100 / sd.mean() );
 }
 
-void print_player( FILE* file, player_t& p )
+void print_player( std::ostream& file, player_t& p )
 {
   report::generate_player_buff_lists( p, p.report_information );
   report::generate_player_charts( p, p.report_information ); // For WoWhead/Pawn String
@@ -1187,7 +1187,7 @@ void print_player( FILE* file, player_t& p )
   print_waiting_player( file, p );
 }
 
-void print_player_sequence( FILE* file, sim_t* sim, std::vector<player_t*> players, bool detail )
+void print_player_sequence( std::ostream& file, sim_t* sim, std::vector<player_t*> players, bool detail )
 {
   (void) detail;
   for ( auto& player : players )
@@ -1208,7 +1208,7 @@ void print_player_sequence( FILE* file, sim_t* sim, std::vector<player_t*> playe
   }
 }
 
-void print_text_report( FILE* file, sim_t* sim, bool detail )
+void print_text_report( std::ostream& file, sim_t* sim, bool detail )
 {
 #if SC_BETA
   fmt::print( file, "\n" );
@@ -1239,7 +1239,7 @@ void print_text_report( FILE* file, sim_t* sim, bool detail )
   if ( detail )
   {
     fmt::print( file, "\nDPS Ranking:\n" );
-    fmt::print( file, "{:7.0f} 100.0%%  Raid\n", sim->raid_dps.mean() );
+    fmt::print( file, "{:7.0f} 100.0%  Raid\n", sim->raid_dps.mean() );
     for ( auto& player : sim->players_by_dps )
     {
       if ( player->collected_data.dps.mean() <= 0 )
@@ -1303,24 +1303,24 @@ namespace report
 {
 void print_text( sim_t* sim, bool detail )
 {
-  FILE* text_out = stdout;
-  io::cfile file;
+  if ( sim->simulation_length.sum() == 0.0 )
+    return;
+
+  std::ostream* out = &std::cout;
+  io::ofstream file;
   if ( !sim->output_file_str.empty() )
   {
-    file = io::fopen( sim->output_file_str, "a" );
-    if ( !file )
+    file.open( sim->output_file_str, io::ofstream::app);
+    if ( !file.is_open() )
     {
       sim->errorf( "Failed to open text output file '%s'.\nUsing stdout.",
                    sim->output_file_str.c_str() );
     }
+    else
+    {
+      out = &file;
+    }
   }
-  if ( file )
-  {
-    text_out = file;
-  }
-
-  if ( sim->simulation_length.sum() == 0.0 )
-    return;
 
   try
   {
@@ -1330,7 +1330,7 @@ void print_text( sim_t* sim, bool detail )
       t.start();
     }
 
-    print_text_report( text_out, sim, detail );
+    print_text_report( *out, sim, detail );
   }
   catch ( const std::exception& e )
   {

@@ -903,7 +903,7 @@ void profilesets_t::output( const sim_t& sim, FILE* out ) const
   } );
 }
 
-void profilesets_t::output( const sim_t& sim, io::ofstream& out ) const
+void profilesets_t::output( const sim_t& sim, std::ostream& out ) const
 {
   if ( m_profilesets.size() == 0 )
   {
@@ -932,7 +932,7 @@ void profilesets_t::generate_sorted_profilesets( std::vector<const profile_set_t
   } );
 }
 
-bool profilesets_t::generate_chart( const sim_t& sim, io::ofstream& out ) const
+bool profilesets_t::generate_chart( const sim_t& sim, std::ostream& out ) const
 {
   size_t chart_id = 0;
 

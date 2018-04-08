@@ -473,7 +473,7 @@ class profilesets_t
 
   int max_name_length() const;
 
-  bool generate_chart( const sim_t& sim, io::ofstream& out ) const;
+  bool generate_chart( const sim_t& sim, std::ostream& out ) const;
   void generate_sorted_profilesets( std::vector<const profile_set_t*>& out ) const;
 
   void output_progressbar( const sim_t* ) const;
@@ -523,7 +523,7 @@ public:
 
   void output( const sim_t& sim, js::JsonOutput& root ) const;
   void output( const sim_t& sim, FILE* out ) const;
-  void output( const sim_t& sim, io::ofstream& out ) const;
+  void output( const sim_t& sim, std::ostream& out ) const;
 
   bool is_initializing() const
   { return m_state == INITIALIZING; }
