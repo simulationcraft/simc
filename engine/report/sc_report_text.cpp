@@ -17,15 +17,13 @@ void simplify_html( std::string& buffer )
   util::replace_all( buffer, "&amp;", "&" );
 }
 
-// print_text_action ========================================================
-
-void print_action( std::ostream& file, stats_t* s, size_t max_name_length,
+void print_action( std::ostream& os, stats_t* s, size_t max_name_length,
                         int max_dpe, int max_dpet, int max_dpr, int max_pdps )
 {
   if ( max_name_length == 0 )
     max_name_length = 20;
 
-  fmt::print( file, "    {:<{}}  Count={:6.1f}|{:7.3f}sec  DPE={:{}.0f}|{:5.2f}%  "
+  fmt::print( os, "    {:<{}}  Count={:6.1f}|{:7.3f}sec  DPE={:{}.0f}|{:5.2f}%  "
                     "DPET={:{}.0f}  DPR={:{}.0f}  pDPS={:{}.0f}",
                     s->name_str,
                     max_name_length,
@@ -43,20 +41,20 @@ void print_action( std::ostream& file, stats_t* s, size_t max_name_length,
 
   if ( s->num_direct_results.mean() > 0 )
   {
-    fmt::print( file, "  Miss={:5.2f}%",
+    fmt::print( os, "  Miss={:5.2f}%",
         s->direct_results[ FULLTYPE_MISS ].pct );
   }
 
   if ( s->direct_results[ FULLTYPE_HIT ].actual_amount.sum() > 0 )
   {
-    fmt::print( file, "  Hit={:6.0f}|{:6.0f}|{:6.0f}",
+    fmt::print( os, "  Hit={:6.0f}|{:6.0f}|{:6.0f}",
         s->direct_results[ FULLTYPE_HIT ].actual_amount.mean(),
         s->direct_results[ FULLTYPE_HIT ].actual_amount.min(),
         s->direct_results[ FULLTYPE_HIT ].actual_amount.max() );
   }
   if ( s->direct_results[ FULLTYPE_CRIT ].actual_amount.sum() > 0 )
   {
-    fmt::print( file, "  Crit={:6.0f}|{:6.0f}|{:6.0f}|{:5.2f}%",
+    fmt::print( os, "  Crit={:6.0f}|{:6.0f}|{:6.0f}|{:5.2f}%",
         s->direct_results[ FULLTYPE_CRIT ].actual_amount.mean(),
         s->direct_results[ FULLTYPE_CRIT ].actual_amount.min(),
         s->direct_results[ FULLTYPE_CRIT ].actual_amount.max(),
@@ -64,41 +62,41 @@ void print_action( std::ostream& file, stats_t* s, size_t max_name_length,
   }
   if ( s->direct_results[ FULLTYPE_GLANCE ].actual_amount.sum() > 0 )
   {
-    fmt::print( file, "  Glance={:6.0f}|{:5.2f}%",
+    fmt::print( os, "  Glance={:6.0f}|{:5.2f}%",
         s->direct_results[ FULLTYPE_GLANCE ].actual_amount.mean(),
         s->direct_results[ FULLTYPE_GLANCE ].pct );
   }
   if ( s->direct_results[ FULLTYPE_DODGE ].count.sum() > 0 )
   {
-    fmt::print( file, "  Dodge={:5.2f}%",
+    fmt::print( os, "  Dodge={:5.2f}%",
                    s->direct_results[ FULLTYPE_DODGE ].pct );
   }
   if ( s->direct_results[ FULLTYPE_PARRY ].count.sum() > 0 )
   {
-    fmt::print( file, "  Parry={:5.2f}%",
+    fmt::print( os, "  Parry={:5.2f}%",
                    s->direct_results[ FULLTYPE_PARRY ].pct );
   }
 
   if ( s->num_ticks.sum() > 0 )
-    fmt::print( file, "  TickCount={:6.0f}", s->num_ticks.mean() );
+    fmt::print( os, "  TickCount={:6.0f}", s->num_ticks.mean() );
 
   if ( s->tick_results[ RESULT_HIT ].actual_amount.sum() > 0 ||
        s->tick_results[ RESULT_CRIT ].actual_amount.sum() > 0 )
   {
-    fmt::print( file, "  MissTick={:5.2f}%",
+    fmt::print( os, "  MissTick={:5.2f}%",
                    s->tick_results[ RESULT_MISS ].pct );
   }
 
   if ( s->tick_results[ RESULT_HIT ].avg_actual_amount.sum() > 0 )
   {
-    fmt::print( file, "  Tick={:6.0f}|{:6.0f}|{:6.0f}",
+    fmt::print( os, "  Tick={:6.0f}|{:6.0f}|{:6.0f}",
                    s->tick_results[ RESULT_HIT ].actual_amount.mean(),
                    s->tick_results[ RESULT_HIT ].actual_amount.min(),
                    s->tick_results[ RESULT_HIT ].actual_amount.max() );
   }
   if ( s->tick_results[ RESULT_CRIT ].avg_actual_amount.sum() > 0 )
   {
-    fmt::print( file, "  CritTick={:6.0f}|{:6.0f}|{:6.0f}|{:5.2f}%",
+    fmt::print( os, "  CritTick={:6.0f}|{:6.0f}|{:6.0f}|{:5.2f}%",
                    s->tick_results[ RESULT_CRIT ].actual_amount.mean(),
                    s->tick_results[ RESULT_CRIT ].actual_amount.min(),
                    s->tick_results[ RESULT_CRIT ].actual_amount.max(),
@@ -107,20 +105,20 @@ void print_action( std::ostream& file, stats_t* s, size_t max_name_length,
 
   if ( s->total_tick_time.sum() > 0.0 )
   {
-    fmt::print( file, "  UpTime={:6.2f}%",
+    fmt::print( os, "  UpTime={:6.2f}%",
         100.0 * s->total_tick_time.mean() / s->player->collected_data.fight_length.mean() );
   }
 
-  fmt::print( file, "\n" );
+  fmt::print( os, "\n" );
 }
 
-void print_player_actions( std::ostream& file, const player_t& p )
+void print_player_actions( std::ostream& os, const player_t& p )
 {
   for ( auto& alist : p.action_priority_list )
   {
     if ( alist->used )
     {
-      fmt::print( file, "  Priorities{}:\n",
+      fmt::print( os, "  Priorities{}:\n",
           ( " (actions." + alist->name_str + ")" ) );
 
       size_t length = 0;
@@ -129,19 +127,19 @@ void print_player_actions( std::ostream& file, const player_t& p )
       {
         if ( length > max_length || ( length > 0 && ( length + ap.action_.size() ) > max_length ) )
         {
-          fmt::print( file, "\n" );
+          fmt::print( os, "\n" );
           length = 0;
         }
-        fmt::print( file, "{}{}",
+        fmt::print( os, "{}{}",
             ( ( length > 0 ) ? "/" : "    " ),
             ap.action_ );
         length += ap.action_.size();
       }
-      fmt::print( file, "\n" );
+      fmt::print( os, "\n" );
     }
   }
 
-  fmt::print( file, "  Actions:\n" );
+  fmt::print( os, "  Actions:\n" );
 
   size_t max_length = 0;
   int max_dpe = 0, max_dpet = 0, max_dpr = 0, max_pdps = 0;
@@ -181,7 +179,7 @@ void print_player_actions( std::ostream& file, const player_t& p )
   {
     if ( s->num_executes.mean() > 1 || s->compound_amount > 0 )
     {
-      print_action( file, s, max_length, max_dpe, max_dpet, max_dpr,
+      print_action( os, s, max_length, max_dpe, max_dpet, max_dpr,
                          max_pdps );
     }
   }
@@ -195,19 +193,19 @@ void print_player_actions( std::ostream& file, const player_t& p )
       {
         if ( first )
         {
-          fmt::print( file, "   {} (DPS={})\n",
+          fmt::print( os, "   {} (DPS={})\n",
               pet->name_str,
               pet->collected_data.dps.mean() );
           first = false;
         }
-        print_action( file, s, max_length, max_dpe, max_dpet, max_dpr,
+        print_action( os, s, max_length, max_dpe, max_dpet, max_dpr,
                            max_pdps );
       }
     }
   }
 }
 
-void print_constant_buffs( std::ostream& file, const player_processed_report_information_t& ri )
+void print_constant_buffs( std::ostream& os, const player_processed_report_information_t& ri )
 {
   bool first       = true;
   char prefix      = ' ';
@@ -218,23 +216,23 @@ void print_constant_buffs( std::ostream& file, const player_processed_report_inf
   {
     if ( first )
     {
-      fmt::print( file, "\n  Constant Buffs:\n   " );
+      fmt::print( os, "\n  Constant Buffs:\n   " );
       first = false;
     }
     auto length = b->name_str.length();
     if ( ( total_length + length ) > max_line_length )
     {
-      fmt::print( file, "\n   " );
+      fmt::print( os, "\n   " );
       prefix       = ' ';
       total_length = 0;
     }
-    fmt::print( file, "{}{}", prefix, b->name_str );
+    fmt::print( os, "{}{}", prefix, b->name_str );
     prefix = '/';
     total_length += length;
   }
 }
 
-void print_dynamic_buffs( std::ostream& file, const player_processed_report_information_t& ri )
+void print_dynamic_buffs( std::ostream& os, const player_processed_report_information_t& ri )
 {
   // Get max name length
   size_t max_name_length = 0;
@@ -252,7 +250,7 @@ void print_dynamic_buffs( std::ostream& file, const player_processed_report_info
   }
 
   if ( !ri.dynamic_buffs.empty() )
-    fmt::print( file, "  Dynamic Buffs:\n" );
+    fmt::print( os, "  Dynamic Buffs:\n" );
 
   for ( auto& b : ri.dynamic_buffs )
   {
@@ -262,7 +260,7 @@ void print_dynamic_buffs( std::ostream& file, const player_processed_report_info
     else
       full_name = b->name_str;
 
-    fmt::print( file, "    {:<{}} : start={:5.1f} refresh={:5.1f} interval={:5.1f} trigger={:5.1f} uptime={:6.2f}%",
+    fmt::print( os, "    {:<{}} : start={:5.1f} refresh={:5.1f} interval={:5.1f} trigger={:5.1f} uptime={:6.2f}%",
         full_name,
         max_name_length,
         b->avg_start.mean(),
@@ -273,25 +271,25 @@ void print_dynamic_buffs( std::ostream& file, const player_processed_report_info
 
     if ( b->benefit_pct.sum() > 0 && b->benefit_pct.mean() < 100 )
     {
-      fmt::print( file, "  benefit={:6.2f}%", b->benefit_pct.mean() );
+      fmt::print( os, "  benefit={:6.2f}%", b->benefit_pct.mean() );
     }
 
-    fmt::print( file, "\n" );
+    fmt::print( os, "\n" );
   }
 }
 
-void print_player_buffs( std::ostream& file, const player_processed_report_information_t& ri )
+void print_player_buffs( std::ostream& os, const player_processed_report_information_t& ri )
 {
-  print_constant_buffs( file, ri );
-  fmt::print( file, "\n" );
-  print_dynamic_buffs( file, ri );
+  print_constant_buffs( os, ri );
+  fmt::print( os, "\n" );
+  print_dynamic_buffs( os, ri );
 }
 
-void print_core_stats( std::ostream& file, const player_t& p )
+void print_core_stats( std::ostream& os, const player_t& p )
 {
   auto& buffed_stats = p.collected_data.buffed_stats_snapshot;
 
-  fmt::print( file,
+  fmt::print( os,
                  "  Core Stats:    strength={:.0f}|{:.0f}({:.0f})  "
                  "agility={:.0f}|{:.0f}({:.0f})  stamina={:.0f}|{:.0f}({:.0f})  "
                  "intellect={:.0f}|{:.0f}({:.0f})  spirit={:.0f}|{:.0f}({:.0f})  "
@@ -312,12 +310,12 @@ void print_core_stats( std::ostream& file, const player_t& p )
                  p.resources.max[ RESOURCE_MANA ] );
 }
 
-void print_generic_stats( std::ostream& file, const player_t& p )
+void print_generic_stats( std::ostream& os, const player_t& p )
 {
   auto& buffed_stats = p.collected_data.buffed_stats_snapshot;
 
   fmt::print(
-      file,
+      os,
       "  Generic Stats: "
       "mastery={:.2f}%|{:.2f}%({:.0f})  "
       "versatility={:.2f}%|{:.2f}%({:.0f})  "
@@ -331,12 +329,12 @@ void print_generic_stats( std::ostream& file, const player_t& p )
       buffed_stats.run_speed, p.composite_movement_speed(), p.composite_speed_rating() );
 }
 
-void print_spell_stats( std::ostream& file, const player_t& p )
+void print_spell_stats( std::ostream& os, const player_t& p )
 {
   auto& buffed_stats = p.collected_data.buffed_stats_snapshot;
 
   fmt::print(
-      file,
+      os,
       "  Spell Stats:   power={:.0f}|{:.0f}({:.0f})  hit={:.2f}%|{:.2f}%({:.0f})  "
       "crit={:.2f}%|{:.2f}%({:.0f})  haste={:.2f}%|{:.2f}%({:.0f})  "
       "speed={:.2f}%|{:.2f}%  manareg={:.0f}|{:.0f}({})\n",
@@ -359,14 +357,14 @@ void print_spell_stats( std::ostream& file, const player_t& p )
       0 );
 }
 
-void print_attack_stats( std::ostream& file, const player_t& p )
+void print_attack_stats( std::ostream& os, const player_t& p )
 {
   auto& buffed_stats = p.collected_data.buffed_stats_snapshot;
 
   if ( p.dual_wield() )
   {
     fmt::print(
-        file,
+        os,
         "  Attack Stats:  power={:.0f}|{:.0f}({:.0f})  hit={:.2f}%|{:.2f}%({:.0f})  "
         "crit={:.2f}%|{:.2f}%({:.0f})  expertise={:.2f}%/{:.2f}%|{:.2f}%/{:.2f}%({:.0f}) "
         " haste={:.2f}%|{:.2f}%({:.0f})  speed={:.2f}%|{:.2f}%\n",
@@ -393,7 +391,7 @@ void print_attack_stats( std::ostream& file, const player_t& p )
   else
   {
     fmt::print(
-        file,
+        os,
         "  Attack Stats:  power={:.0f}|{:.0f}({:.0f})  hit={:.2f}%|{:.2f}%({:.0f})  "
         "crit={:.2f}%|{:.2f}%({:.0f})  expertise={:.2f}%|{:.2f}%({:.0f})  "
         "haste={:.2f}%|{:.2f}%({:.0f})  speed={:.2f}%|{:.2f}%\n",
@@ -417,12 +415,12 @@ void print_attack_stats( std::ostream& file, const player_t& p )
   }
 }
 
-void print_defense_stats( std::ostream& file, const player_t& p )
+void print_defense_stats( std::ostream& os, const player_t& p )
 {
   auto& buffed_stats = p.collected_data.buffed_stats_snapshot;
 
   fmt::print(
-      file,
+      os,
       "  Defense Stats: armor={:.0f}|{:.0f}({:.0f}) miss={:.2f}%|{:.2f}%  "
       "dodge={:.2f}%|{:.2f}%({:.0f})  parry={:.2f}%|{:.2f}%({:.0f})  "
       "block={:.2f}%|{:.2f}%({:.0f}) crit={:.2f}%|{:.2f}%  "
@@ -448,13 +446,13 @@ void print_defense_stats( std::ostream& file, const player_t& p )
       p.composite_mitigation_versatility_rating() );
 }
 
-void print_gain( std::ostream& file, const gain_t& g, int max_name_length )
+void print_gain( std::ostream& os, const gain_t& g, int max_name_length )
 {
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( g.actual[ i ] > 0 || g.overflow[ i ] > 0 )
     {
-      fmt::print( file, "    {:8.1f} : {:<{}} {:<15}",
+      fmt::print( os, "    {:8.1f} : {:<{}} {:<15}",
           g.actual[ i ],
           g.name(),
           max_name_length,
@@ -464,9 +462,9 @@ void print_gain( std::ostream& file, const gain_t& g, int max_name_length )
 
       if ( overflow_pct > 1.0 )
       {
-        fmt::print( file, "  (overflow={:.2f}%)", overflow_pct );
+        fmt::print( os, "  (overflow={:.2f}%)", overflow_pct );
       }
-      fmt::print( file, "\n" );
+      fmt::print( os, "\n" );
     }
   }
 }
@@ -487,7 +485,7 @@ void gain_name_length( const std::vector<gain_t*>& gain_list, size_t& max_length
   }
 }
 
-void print_player_gains( std::ostream& file, const player_t& p )
+void print_player_gains( std::ostream& os, const player_t& p )
 {
   // Get max gain name length
   size_t max_name_length = 0;
@@ -501,11 +499,11 @@ void print_player_gains( std::ostream& file, const player_t& p )
   if ( max_name_length == 0 )
     return;
 
-  fmt::print( file, "  Gains:\n" );
+  fmt::print( os, "  Gains:\n" );
 
   for ( auto& g : p.gain_list )
   {
-    print_gain( file, *g, max_name_length );
+    print_gain( os, *g, max_name_length );
   }
 
   for ( auto& pet : p.pet_list )
@@ -513,16 +511,16 @@ void print_player_gains( std::ostream& file, const player_t& p )
     if ( pet->collected_data.dmg.sum() <= 0 )
       continue;
 
-    fmt::print( file, "    Pet \"{}\" Gains:\n", pet->name_str );
+    fmt::print( os, "    Pet \"{}\" Gains:\n", pet->name_str );
 
     for ( auto& g : pet->gain_list )
     {
-      print_gain( file, *g, max_name_length );
+      print_gain( os, *g, max_name_length );
     }
   }
 }
 
-void print_procs( std::ostream& file, const player_t& p )
+void print_procs( std::ostream& os, const player_t& p )
 {
   bool first = true;
 
@@ -532,10 +530,10 @@ void print_procs( std::ostream& file, const player_t& p )
     {
       if ( first )
       {
-        fmt::print( file, "  Procs:\n" );
+        fmt::print( os, "  Procs:\n" );
         first = false;
       }
-      fmt::print( file, "    {} | {}sec : {}\n",
+      fmt::print( os, "    {} | {}sec : {}\n",
           proc->count.mean(),
           proc->interval_sum.pretty_mean(),
           proc->name() );
@@ -543,7 +541,7 @@ void print_procs( std::ostream& file, const player_t& p )
   }
 }
 
-void print_uptimes_benefits( std::ostream& file, const player_t& p )
+void print_uptimes_benefits( std::ostream& os, const player_t& p )
 {
   bool first = true;
 
@@ -553,10 +551,10 @@ void print_uptimes_benefits( std::ostream& file, const player_t& p )
     {
       if ( first )
       {
-        fmt::print( file, "  Benefits:\n" );
+        fmt::print( os, "  Benefits:\n" );
         first = false;
       }
-      fmt::print( file, "    {:6.2f}% : {:<30}\n",
+      fmt::print( os, "    {:6.2f}% : {:<30}\n",
           b->ratio.mean(),
           b->name() );
     }
@@ -569,18 +567,17 @@ void print_uptimes_benefits( std::ostream& file, const player_t& p )
     {
       if ( first )
       {
-        fmt::print( file, "  Up-Times:\n" );
+        fmt::print( os, "  Up-Times:\n" );
         first = false;
       }
-      fmt::print( file, "    {:6.2f}% : {:<30}\n",
+      fmt::print( os, "    {:6.2f}% : {:<30}\n",
           u->uptime_sum.mean() * 100.0,
           u->name() );
     }
   }
 }
 
-// print_text_waiting ==========================================================
-void print_waiting_player( std::ostream& file, const player_t& p )
+void print_waiting_player( std::ostream& os, const player_t& p )
 {
   double wait_time = 0;
   if ( p.collected_data.fight_length.mean() > 0.0 )
@@ -589,15 +586,12 @@ void print_waiting_player( std::ostream& file, const player_t& p )
                 p.collected_data.fight_length.mean();
   }
 
-  fmt::print( file, "  Waiting: {:5.2f}%\n", 100.0 * wait_time );
+  fmt::print( os, "  Waiting: {:5.2f}%\n", 100.0 * wait_time );
 }
 
-// print_text_waiting_all
-// =======================================================
-
-void print_waiting_all( std::ostream& file, const sim_t& sim )
+void print_waiting_all( std::ostream& os, const sim_t& sim )
 {
-  fmt::print( file, "\nWaiting:\n" );
+  fmt::print( os, "\nWaiting:\n" );
 
   bool nobody_waits = true;
 
@@ -609,7 +603,7 @@ void print_waiting_all( std::ostream& file, const sim_t& sim )
     if ( p->collected_data.waiting_time.mean() > 0.0)
     {
       nobody_waits = false;
-      fmt::print( file, "    {:5.2f}% : {}\n",
+      fmt::print( os, "    {:5.2f}% : {}\n",
           100.0 * p->collected_data.waiting_time.mean() / p->collected_data.fight_length.mean(),
           p->name() );
     }
@@ -617,13 +611,11 @@ void print_waiting_all( std::ostream& file, const sim_t& sim )
 
   if ( nobody_waits )
   {
-    fmt::print( file, "    All players active 100% of the time.\n" );
+    fmt::print( os, "    All players active 100% of the time.\n" );
   }
 }
 
-// print_text_iteration_data ================================================
-
-void print_iteration_data( std::ostream& file, const sim_t& sim )
+void print_iteration_data( std::ostream& os, const sim_t& sim )
 {
   if ( !sim.deterministic || sim.report_iteration_data == 0 )
   {
@@ -633,31 +625,31 @@ void print_iteration_data( std::ostream& file, const sim_t& sim )
   size_t n_spacer = ( sim.target_list.size() - 1 ) * 10 + ( sim.target_list.size() - 2 ) * 2 + 2;
   std::string spacer_str_1( n_spacer, '-' ), spacer_str_2( n_spacer, ' ' );
 
-  fmt::print( file, "\nIteration data:\n" );
+  fmt::print( os, "\nIteration data:\n" );
   if ( sim.low_iteration_data.size() && sim.high_iteration_data.size() )
   {
     fmt::print(
-        file,
+        os,
         ".--------------------------------------------------------{}. "
         ".--------------------------------------------------------{}.\n",
         spacer_str_1, spacer_str_1 );
     fmt::print(
-        file,
+        os,
         "| Low Iteration Data                                     {}| | High "
         "Iteration Data                                    {}|\n",
         spacer_str_2, spacer_str_2 );
     fmt::print(
-        file,
+        os,
         "+--------+-----------+----------------------+------------{}+ "
         "+--------+-----------+----------------------+------------{}+\n",
         spacer_str_1, spacer_str_1 );
-    fmt::print( file,
+    fmt::print( os,
                    "|  Iter# |    Metric |                 Seed |  {}Health(s) "
                    "| |  Iter# |    "
                    "Metric |                 Seed |  {}Health(s) |\n",
                    spacer_str_2, spacer_str_2 );
     fmt::print(
-        file,
+        os,
         "+--------+-----------+----------------------+------------{}+ "
         "+--------+-----------+----------------------+------------{}+\n",
         spacer_str_1, spacer_str_1 );
@@ -682,7 +674,7 @@ void print_iteration_data( std::ostream& file, const sim_t& sim )
         }
       }
 
-      fmt::print( file, "| {:6} | {:9.1f} | {:20} | {} | | {:6} | {:9.1f} | {:20} | {} |\n",
+      fmt::print( os, "| {:6} | {:9.1f} | {:20} | {} | | {:6} | {:9.1f} | {:20} | {} |\n",
           sim.low_iteration_data[ i ].iteration,
           sim.low_iteration_data[ i ].metric,
           sim.low_iteration_data[ i ].seed, low_health_s.str(),
@@ -691,22 +683,22 @@ void print_iteration_data( std::ostream& file, const sim_t& sim )
           sim.high_iteration_data[ i ].seed, high_health_s.str() );
     }
     fmt::print(
-        file,
+        os,
         "'--------+-----------+----------------------+------------{}' "
         "'--------+-----------+----------------------+------------{}'\n",
         spacer_str_1, spacer_str_1 );
   }
   else
   {
-    fmt::print( file, ".--------------------------------------------------------{}.\n",
+    fmt::print( os, ".--------------------------------------------------------{}.\n",
                    spacer_str_1 );
-    fmt::print( file, "| Iteration Data                                         {}|\n",
+    fmt::print( os, "| Iteration Data                                         {}|\n",
                    spacer_str_2 );
-    fmt::print( file, "+--------+-----------+----------------------+------------{}+\n",
+    fmt::print( os, "+--------+-----------+----------------------+------------{}+\n",
                    spacer_str_1 );
-    fmt::print( file, "|  Iter# |    Metric |                 Seed |  {}Health(s) |\n",
+    fmt::print( os, "|  Iter# |    Metric |                 Seed |  {}Health(s) |\n",
                    spacer_str_2 );
-    fmt::print( file, "+--------+-----------+----------------------+------------{}+\n",
+    fmt::print( os, "+--------+-----------+----------------------+------------{}+\n",
                    spacer_str_1 );
 
     for ( auto& data : sim.iteration_data )
@@ -724,17 +716,17 @@ void print_iteration_data( std::ostream& file, const sim_t& sim )
         }
       }
 
-      fmt::print( file, "| {:6} | {:9.1f} | {:20} | {} |\n",
+      fmt::print( os, "| {:6} | {:9.1f} | {:20} | {} |\n",
           data.iteration,
           data.metric,
           data.seed, health_s.str().c_str() );
     }
-    fmt::print( file, "'--------+-----------+----------------------+------------{}'\n",
+    fmt::print( os, "'--------+-----------+----------------------+------------{}'\n",
                    spacer_str_1 );
   }
 }
 
-void sim_summary_performance( std::ostream& file, sim_t* sim )
+void sim_summary_performance( std::ostream& os, sim_t* sim )
 {
   std::time_t cur_time = std::time( nullptr );
   auto date_str = fmt::format("{:%Y-%m-%d %H:%M:%S%z}", *std::localtime(&cur_time) );
@@ -756,7 +748,7 @@ void sim_summary_performance( std::ostream& file, sim_t* sim )
   }
 
   fmt::print(
-      file,
+      os,
       "\n\nBaseline Performance:\n"
       "  RNG Engine    = {}{}\n"
       "  Iterations    = {}{}\n"
@@ -812,18 +804,18 @@ void sim_summary_performance( std::ostream& file, sim_t* sim )
     double p = 100.0 * static_cast<double>( sample.first ) / sim->event_mgr.events_added;
     double p2 = 100.0 * static_cast<double>( sample.second ) / sample.first;
     total_p += p;
-    fmt::print( file, "Depth: {:4} Samples: {:9} ({:6.3f}% / {:7.3f}%) tail-inserts: {:9} ({:7.3f}%)\n",
+    fmt::print( os, "Depth: {:4} Samples: {:9} ({:6.3f}% / {:7.3f}%) tail-inserts: {:9} ({:7.3f}%)\n",
         i,
         sample.first, p, total_p,
         sample.second, p2 );
 
 
   }
-  fmt::print( file, "Total: {:.3f}% Samples: {}\n",
+  fmt::print( os, "Total: {:.3f}% Samples: {}\n",
       total_p,
       sim->event_mgr.events_added );
 
-  fmt::print( file, "\nEvent Queue Allocation:\n" );
+  fmt::print( os, "\nEvent Queue Allocation:\n" );
   double total_a = 0;
   for ( size_t i = 0; i < sim->event_mgr.event_requested_size_count.size();
         ++i )
@@ -835,7 +827,7 @@ void sim_summary_performance( std::ostream& file, sim_t* sim )
     }
 
     double p = 100.0 * static_cast<double>( count ) / sim->event_mgr.n_requested_events;
-    fmt::print( file, "Alloc-Size: {:4} Samples: {:7} ({:6.3f}%)\n",
+    fmt::print( os, "Alloc-Size: {:4} Samples: {:7} ({:6.3f}%)\n",
         i,
         count,
         p );
@@ -843,20 +835,20 @@ void sim_summary_performance( std::ostream& file, sim_t* sim )
     total_a += p;
   }
 
-  fmt::print( file, "Total: {:.3f}% Alloc Samples: {}\n",
+  fmt::print( os, "Total: {:.3f}% Alloc Samples: {}\n",
       total_p,
       sim->event_mgr.n_requested_events );
-  fmt::print( file, "Alloc size used for event_t: {}\n",
+  fmt::print( os, "Alloc size used for event_t: {}\n",
       util::next_power_of_two( 2 * sizeof( event_t ) ) );
 #endif
 }
 
-void print_raid_scale_factors( std::ostream& file, sim_t* sim )
+void print_raid_scale_factors( std::ostream& os, sim_t* sim )
 {
   if ( !sim->scaling->has_scale_factors() )
     return;
 
-  fmt::print( file, "\nScale Factors:\n" );
+  fmt::print( os, "\nScale Factors:\n" );
 
   size_t max_name_length  = 0;
 
@@ -869,7 +861,7 @@ void print_raid_scale_factors( std::ostream& file, sim_t* sim )
 
   for ( auto& p : sim->players_by_name )
   {
-    fmt::print( file, "  {:<{}}", p->name(), max_name_length );
+    fmt::print( os, "  {:<{}}", p->name(), max_name_length );
 
     scale_metric_e sm = p->sim->scaling->scaling_metric;
     gear_stats_t& sf  = ( sim->scaling->normalize_scale_factors )
@@ -880,7 +872,7 @@ void print_raid_scale_factors( std::ostream& file, sim_t* sim )
     {
       if ( p->scaling->scales_with[ j ] )
       {
-        fmt::print( file, "  {}={:f}({:f})",
+        fmt::print( os, "  {}={:f}({:f})",
             util::stat_type_abbrev( j ),
             sf.get_stat( j ),
             p->scaling->scaling_error[ sm ].get_stat( j ));
@@ -889,25 +881,23 @@ void print_raid_scale_factors( std::ostream& file, sim_t* sim )
 
     if ( sim->scaling->normalize_scale_factors )
     {
-      fmt::print( file, "  DPS/{}={:f}",
+      fmt::print( os, "  DPS/{}={:f}",
           util::stat_type_abbrev( p->normalize_by() ),
           p->scaling->scaling[ sm ].get_stat( p->normalize_by() ) );
     }
 
     if ( p->sim->scaling->scale_lag )
     {
-      fmt::print( file, "  ms Lag={:f}({:f})",
+      fmt::print( os, "  ms Lag={:f}({:f})",
           p->scaling->scaling_lag[ sm ],
           p->scaling->scaling_lag_error[ sm ] );
     }
 
-    fmt::print( file, "\n" );
+    fmt::print( os, "\n" );
   }
 }
 
-// print_text_scale_factors =================================================
-
-void print_player_scale_factors( std::ostream& file, const player_t& p,
+void print_player_scale_factors( std::ostream& os, const player_t& p,
                                const player_processed_report_information_t& ri )
 {
   if ( !p.sim->scaling->has_scale_factors() )
@@ -916,19 +906,19 @@ void print_player_scale_factors( std::ostream& file, const player_t& p,
   if ( p.scaling == nullptr )
     return;
 
-  fmt::print( file, "  Scale Factors:\n" );
+  fmt::print( os, "  Scale Factors:\n" );
 
   scale_metric_e sm = p.sim->scaling->scaling_metric;
   gear_stats_t& sf  = ( p.sim->scaling->normalize_scale_factors )
                          ? p.scaling->scaling_normalized[ sm ]
                          : p.scaling->scaling[ sm ];
 
-  fmt::print( file, "    Weights :" );
+  fmt::print( os, "    Weights :" );
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( p.scaling->scales_with[ i ] )
     {
-      fmt::print( file, "  {}={}({})",
+      fmt::print( os, "  {}={}({})",
           util::stat_type_abbrev( i ),
           sf.get_stat( i ),
           p.scaling->scaling_error[ sm ].get_stat( i ) );
@@ -936,28 +926,26 @@ void print_player_scale_factors( std::ostream& file, const player_t& p,
   }
   if ( p.sim->scaling->normalize_scale_factors )
   {
-    fmt::print( file, "  DPS/{}={}",
+    fmt::print( os, "  DPS/{}={}",
         util::stat_type_abbrev( p.normalize_by() ),
         p.scaling->scaling[ sm ].get_stat( p.normalize_by() ) );
   }
   if ( p.sim->scaling->scale_lag )
   {
-    fmt::print( file, "  ms Lag={}({})",
+    fmt::print( os, "  ms Lag={}({})",
         p.scaling->scaling_lag[ sm ],
         p.scaling->scaling_lag_error[ sm ] );
   }
 
-  fmt::print( file, "\n" );
+  fmt::print( os, "\n" );
 
   std::string wowhead_std = ri.gear_weights_wowhead_std_link[ sm ];
   simplify_html( wowhead_std );
 
-  fmt::print( file, "    Wowhead : {}\n", wowhead_std );
+  fmt::print( os, "    Wowhead : {}\n", wowhead_std );
 }
 
-// print_text_dps_plots =====================================================
-
-void print_dps_plots( std::ostream& file, const player_t& p )
+void print_dps_plots( std::ostream& os, const player_t& p )
 {
   sim_t& sim = *p.sim;
 
@@ -971,7 +959,7 @@ void print_dps_plots( std::ostream& file, const player_t& p )
 
   int points = 1 + range * 2;
 
-  fmt::print( file, "  DPS Plot Data ( min={} max={} points={} )\n",
+  fmt::print( os, "  DPS Plot Data ( min={} max={} points={} )\n",
       min,
       max,
       points );
@@ -982,25 +970,23 @@ void print_dps_plots( std::ostream& file, const player_t& p )
 
     if ( !pd.empty() )
     {
-      fmt::print( file, "    DPS({})=", util::stat_type_abbrev( i ) );
+      fmt::print( os, "    DPS({})=", util::stat_type_abbrev( i ) );
       size_t num_points = pd.size();
       for ( size_t j = 0; j < num_points; j++ )
       {
-        fmt::print( file, "{}{}", ( j ? "|" : "" ), pd[ j ].value );
+        fmt::print( os, "{}{}", ( j ? "|" : "" ), pd[ j ].value );
       }
-      fmt::print( file, "\n" );
+      fmt::print( os, "\n" );
     }
   }
 }
 
-// print_text_reference_dps =================================================
-
-void print_reference_dps( std::ostream& file, sim_t& sim )
+void print_reference_dps( std::ostream& os, sim_t& sim )
 {
   if ( sim.reference_player_str.empty() )
     return;
 
-  fmt::print( file, "\nReference DPS:\n" );
+  fmt::print( os, "\nReference DPS:\n" );
 
   const player_t* ref_p = sim.find_player( sim.reference_player_str );
 
@@ -1022,8 +1008,8 @@ void print_reference_dps( std::ostream& file, sim_t& sim )
       max_length = length;
   }
 
-  fmt::print( file, "  {:<{}}", ref_p->name(), max_length );
-  fmt::print( file, "  {}", ref_p->collected_data.dps.mean() );
+  fmt::print( os, "  {:<{}}", ref_p->name(), max_length );
+  fmt::print( os, "  {}", ref_p->collected_data.dps.mean() );
 
   if ( sim.scaling->has_scale_factors() )
   {
@@ -1031,7 +1017,7 @@ void print_reference_dps( std::ostream& file, sim_t& sim )
     {
       if ( ref_p->scaling->scales_with[ j ] )
       {
-        fmt::print( file, "  {}={:{}.0f}",
+        fmt::print( os, "  {}={:{}.0f}",
             util::stat_type_abbrev( j ),
             ref_p->scaling->scaling[ sm ].get_stat( j ),
             sim.report_precision );
@@ -1039,20 +1025,20 @@ void print_reference_dps( std::ostream& file, sim_t& sim )
     }
   }
 
-  fmt::print( file, "\n" );
+  fmt::print( os, "\n" );
 
   for ( auto& p : sim.players_by_dps )
   {
     if ( p != ref_p )
     {
-      fmt::print( file, "  {:<{}}", p->name(), max_length );
+      fmt::print( os, "  {:<{}}", p->name(), max_length );
 
       bool over = ( p->collected_data.dps.mean() > ref_p->collected_data.dps.mean() );
 
       double ratio = 100.0 * std::fabs( p->collected_data.dps.mean() - ref_p->collected_data.dps.mean() ) /
                      ref_p->collected_data.dps.mean();
 
-      fmt::print( file, "  {}{:5.2f}%", ( over ? '+' : '-' ), ratio );
+      fmt::print( os, "  {}{:5.2f}%", ( over ? '+' : '-' ), ratio );
 
       if ( sim.scaling->has_scale_factors() )
       {
@@ -1067,7 +1053,7 @@ void print_reference_dps( std::ostream& file, sim_t& sim )
 
             ratio = 100.0 * std::fabs( sf - ref_sf ) / ref_sf;
 
-            fmt::print( file, "  {}={}{:5.2f}%",
+            fmt::print( os, "  {}={}{:5.2f}%",
                 util::stat_type_abbrev( j ),
                 ( over ? '+' : '-' ),
                 ratio );
@@ -1075,7 +1061,7 @@ void print_reference_dps( std::ostream& file, sim_t& sim )
         }
       }
 
-      fmt::print( file, "\n" );
+      fmt::print( os, "\n" );
     }
   }
 }
@@ -1088,13 +1074,13 @@ struct sort_by_event_stopwatch
   }
 };
 
-void event_manager_infos( std::ostream& file, const sim_t& sim )
+void event_manager_infos( std::ostream& os, const sim_t& sim )
 {
 #if defined( ACTOR_EVENT_BOOKKEEPING )
   if ( !sim.event_mgr.monitor_cpu )
     return;
 
-  fmt::print( file, "\nEvent Manager CPU Report:\n" );
+  fmt::print( os, "\nEvent Manager CPU Report:\n" );
   std::vector<player_t*> sorted_p = sim.player_list.data();
 
   double total_event_time = sim.event_mgr.event_stopwatch.current();
@@ -1102,14 +1088,14 @@ void event_manager_infos( std::ostream& file, const sim_t& sim )
   {
     total_event_time += player->event_stopwatch.current();
   }
-  fmt::print( file, "{:10.2f}sec / {:5.2f}% : Global Events\n",
+  fmt::print( os, "{:10.2f}sec / {:5.2f}% : Global Events\n",
       sim.event_mgr.event_stopwatch.current(),
       sim.event_mgr.event_stopwatch.current() / total_event_time * 100.0 );
 
   range::sort( sorted_p, sort_by_event_stopwatch() );
   for ( const auto& p : sorted_p )
   {
-    fmt::print( file, "{:10.3f}sec / {:5.2f}% : {}\n",
+    fmt::print( os, "{:10.3f}sec / {:5.2f}% : {}\n",
         p->event_stopwatch.current(),
         p->event_stopwatch.current() / total_event_time * 100.0,
         p->name() );
@@ -1117,27 +1103,27 @@ void event_manager_infos( std::ostream& file, const sim_t& sim )
 #endif  // ACTOR_EVENT_BOOKKEEPING
 }
 
-void print_collected_amount( std::ostream& file, const player_t& p, std::string name, const extended_sample_data_t& sd )
+void print_collected_amount( std::ostream& os, const player_t& p, std::string name, const extended_sample_data_t& sd )
 {
   if ( sd.sum() <= 0.0 )
     return;
 
   double error =
       sim_t::distribution_mean_error( *p.sim, sd );
-  fmt::print( file, "  {}={} {}-Error={}/{:.2f}% {}-Range={}/{:.2f}%\n",
+  fmt::print( os, "  {}={} {}-Error={}/{:.2f}% {}-Range={}/{:.2f}%\n",
       name, sd.mean(),
       name, error, error * 100 / sd.mean(),
       name, ( sd.max() - sd.min() ) / 2.0, ( ( sd.max() - sd.min() ) / 2 ) * 100 / sd.mean() );
 }
 
-void print_player( std::ostream& file, player_t& p )
+void print_player( std::ostream& os, player_t& p )
 {
   report::generate_player_buff_lists( p, p.report_information );
   report::generate_player_charts( p, p.report_information ); // For WoWhead/Pawn String
 
   const player_collected_data_t& cd = p.collected_data;
 
-  fmt::print( file, "\n{}: {} {} {} {} {}\n",
+  fmt::print( os, "\n{}: {} {} {} {} {}\n",
       p.is_enemy() ? "Target" : p.is_add() ? "Add" : "Player",
       p.name(),
       p.race_str,
@@ -1145,14 +1131,14 @@ void print_player( std::ostream& file, player_t& p )
       dbc::specialization_string( p.specialization() ),
       p.true_level );
 
-  print_collected_amount(file, p, "DPS", cd.dps );
-  print_collected_amount(file, p, "HPS", cd.hps );
-  print_collected_amount(file, p, "DTPS", cd.dtps );
-  print_collected_amount(file, p, "TMI", cd.theck_meloree_index );
+  print_collected_amount(os, p, "DPS", cd.dps );
+  print_collected_amount(os, p, "HPS", cd.hps );
+  print_collected_amount(os, p, "DTPS", cd.dtps );
+  print_collected_amount(os, p, "TMI", cd.theck_meloree_index );
 
   if ( p.rps_loss > 0.0 )
   {
-    fmt::print( file, "  DPR={} RPS-Out={} RPS-In={} Resource={} Waiting={} ApM={}",
+    fmt::print( os, "  DPR={} RPS-Out={} RPS-In={} Resource={} Waiting={} ApM={}",
         p.dpr,
         p.rps_loss,
         p.rps_gain,
@@ -1161,38 +1147,38 @@ void print_player( std::ostream& file, player_t& p )
         60.0 * p.collected_data.executed_foreground_actions.mean() / p.collected_data.fight_length.mean() );
   }
 
-  fmt::print( file, "\n" );
+  fmt::print( os, "\n" );
 
   if ( !p.origin_str.empty() )
-    fmt::print( file, "  Origin: {}\n", p.origin_str );
+    fmt::print( os, "  Origin: {}\n", p.origin_str );
   if ( !p.talents_str.empty() )
-    fmt::print( file, "  Talents: {}\n", p.talents_str );
+    fmt::print( os, "  Talents: {}\n", p.talents_str );
   if ( p.artifact && !p.artifact->artifact_option_string().empty() )
-    fmt::print( file, "  Artifact: {}\n", p.artifact->crucible_option_string() );
+    fmt::print( os, "  Artifact: {}\n", p.artifact->crucible_option_string() );
   if ( p.artifact && !p.artifact->crucible_option_string().empty() )
-    fmt::print( file, "  Crucible: {}\n", p.artifact->crucible_option_string() );
-  print_core_stats( file, p );
-  print_generic_stats( file, p );
-  print_spell_stats( file, p );
-  print_attack_stats( file, p );
-  print_defense_stats( file, p );
-  print_player_actions( file, p );
+    fmt::print( os, "  Crucible: {}\n", p.artifact->crucible_option_string() );
+  print_core_stats( os, p );
+  print_generic_stats( os, p );
+  print_spell_stats( os, p );
+  print_attack_stats( os, p );
+  print_defense_stats( os, p );
+  print_player_actions( os, p );
 
-  print_player_buffs( file, p.report_information );
-  print_uptimes_benefits( file, p );
-  print_procs( file, p );
-  print_player_gains( file, p );
-  print_player_scale_factors( file, p, p.report_information );
-  print_dps_plots( file, p );
-  print_waiting_player( file, p );
+  print_player_buffs( os, p.report_information );
+  print_uptimes_benefits( os, p );
+  print_procs( os, p );
+  print_player_gains( os, p );
+  print_player_scale_factors( os, p, p.report_information );
+  print_dps_plots( os, p );
+  print_waiting_player( os, p );
 }
 
-void print_player_sequence( std::ostream& file, sim_t* sim, std::vector<player_t*> players, bool detail )
+void print_player_sequence( std::ostream& os, sim_t* sim, std::vector<player_t*> players, bool detail )
 {
   (void) detail;
   for ( auto& player : players )
   {
-    print_player( file, *player );
+    print_player( os, *player );
 
     // Pets
     if ( sim->report_pets_separately )
@@ -1201,66 +1187,66 @@ void print_player_sequence( std::ostream& file, sim_t* sim, std::vector<player_t
       {
         if ( pet->summoned && !pet->quiet )
         {
-          print_player( file, *pet );
+          print_player( os, *pet );
         }
       }
     }
   }
 }
 
-void print_text_report( std::ostream& file, sim_t* sim, bool detail )
+void print_text_report( std::ostream& os, sim_t* sim, bool detail )
 {
 #if SC_BETA
-  fmt::print( file, "\n" );
+  fmt::print( os, "\n" );
   auto beta_warnings = report::beta_warnings();
   for ( const auto& line : beta_warnings )
   {
-    fmt::print( file, " * {} \n", line );
+    fmt::print( os, " * {} \n", line );
   }
 #endif
 
   // Raid Events
   if ( !sim->raid_events_str.empty() )
   {
-    fmt::print( file, "\n\nRaid Events:\n" );
+    fmt::print( os, "\n\nRaid Events:\n" );
     auto raid_event_names = util::string_split( sim->raid_events_str, "/" );
     if ( !raid_event_names.empty() )
     {
-      fmt::print( file, "  raid_event=/{}\n", raid_event_names[ 0 ] );
+      fmt::print( os, "  raid_event=/{}\n", raid_event_names[ 0 ] );
     }
     for ( size_t i = 1; i < raid_event_names.size(); i++ )
     {
-      fmt::print( file, "  raid_event+=/{}\n", raid_event_names[ i ] );
+      fmt::print( os, "  raid_event+=/{}\n", raid_event_names[ i ] );
     }
-    fmt::print( file, "\n" );
+    fmt::print( os, "\n" );
   }
 
   // DPS & HPS Rankings
   if ( detail )
   {
-    fmt::print( file, "\nDPS Ranking:\n" );
-    fmt::print( file, "{:7.0f} 100.0%  Raid\n", sim->raid_dps.mean() );
+    fmt::print( os, "\nDPS Ranking:\n" );
+    fmt::print( os, "{:7.0f} 100.0%  Raid\n", sim->raid_dps.mean() );
     for ( auto& player : sim->players_by_dps )
     {
       if ( player->collected_data.dps.mean() <= 0 )
         continue;
 
-      fmt::print( file, "{:7.0f}  {:4.1f}%  {}\n", player->collected_data.dps.mean(),
+      fmt::print( os, "{:7.0f}  {:4.1f}%  {}\n", player->collected_data.dps.mean(),
           sim->raid_dps.mean() ? 100 * player->collected_data.dpse.mean() / sim->raid_dps.mean() : 0.0,
           player->name() );
     }
 
     if ( !sim->players_by_hps.empty() )
     {
-      fmt::print( file, "\nHPS Ranking:\n" );
-      fmt::print( file, "{:7.0f} 100.0%%  Raid\n",
+      fmt::print( os, "\nHPS Ranking:\n" );
+      fmt::print( os, "{:7.0f} 100.0%%  Raid\n",
                      sim->raid_hps.mean() + sim->raid_aps.mean() );
       for ( auto& p : sim->players_by_hps )
       {
         if ( p->collected_data.hps.mean() <= 0 && p->collected_data.aps.mean() <= 0 )
           continue;
 
-        fmt::print( file, "{:7.0f}  {:4.1f}%  {}\n",
+        fmt::print( os, "{:7.0f}  {:4.1f}%  {}\n",
             p->collected_data.hps.mean() + p->collected_data.aps.mean(),
             sim->raid_hps.mean()
                 ? 100 * p->collected_data.hpse.mean() / sim->raid_hps.mean()
@@ -1271,31 +1257,31 @@ void print_text_report( std::ostream& file, sim_t* sim, bool detail )
   }
 
   // Report Players
-  print_player_sequence( file, sim, sim->players_by_name, detail );
+  print_player_sequence( os, sim, sim->players_by_name, detail );
 
 
   // Report Targets
   if ( sim->report_targets )
   {
-    fmt::print( file, "\n\n *** Targets *** \n" );
+    fmt::print( os, "\n\n *** Targets *** \n" );
 
-    print_player_sequence( file, sim, sim->targets_by_name, detail );
+    print_player_sequence( os, sim, sim->targets_by_name, detail );
   }
 
-  sim -> profilesets.output( *sim, file );
+  sim -> profilesets.output( *sim, os );
 
-  sim_summary_performance( file, sim );
+  sim_summary_performance( os, sim );
 
   if ( detail )
   {
-    print_waiting_all( file, *sim );
-    print_iteration_data( file, *sim );
-    print_raid_scale_factors( file, sim );
-    print_reference_dps( file, *sim );
-    event_manager_infos( file, sim );
+    print_waiting_all( os, *sim );
+    print_iteration_data( os, *sim );
+    print_raid_scale_factors( os, sim );
+    print_reference_dps( os, *sim );
+    event_manager_infos( os, sim );
   }
 
-  fmt::print( file, "\n" );
+  fmt::print( os, "\n" );
 }
 }  // UNNAMED NAMESPACE ====================================================
 
