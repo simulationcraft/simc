@@ -4316,9 +4316,6 @@ struct blooddrinker_t : public death_knight_spell_t
       heal -> execute();
     }
   }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  { return base_tick_time; }
 };
 
 // Bloodworms ================================================================
