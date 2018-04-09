@@ -1,4 +1,4 @@
-SimulationCraft 735-01 for World of Warcraft 7.3.5 Live (wow build 25901)
+SimulationCraft 735-02 for World of Warcraft 7.3.5 Live (wow build 25901)
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -6751,19 +6751,19 @@ Description      : Call down a strike of Holy energy, dealing $<damage> Holy dam
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
 
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Max Scaling Level: 120
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
