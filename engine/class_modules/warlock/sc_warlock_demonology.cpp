@@ -100,11 +100,11 @@ namespace warlock {
       };
       struct soul_strike_t : public warlock_pet_melee_attack_t {
         soul_strike_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("Soul Strike", p, p->find_spell(267964)) {
+          background = true;
         }
 
         bool ready() override {
           if (p()->pet_type != PET_FELGUARD) return false;
-          if (p()->special_action->get_dot()->is_ticking()) return false;
           return warlock_pet_melee_attack_t::ready();
         }
       };

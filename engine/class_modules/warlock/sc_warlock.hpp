@@ -108,6 +108,7 @@ namespace warlock
         action_t* chaotic_flames;
         spell_t* corruption;
         spell_t* roaring_blaze;
+        spell_t* internal_combustion;
         spell_t* rain_of_fire;
         spell_t* bilescourge_bombers;
         melee_attack_t* soul_strike;

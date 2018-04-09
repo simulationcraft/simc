@@ -106,7 +106,118 @@ namespace warlock {
         school = SCHOOL_CHROMATIC;
       }
     };
+    //Talents
+    struct soul_fire_t : public warlock_spell_t
+    {
+      soul_fire_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("soul_fire", p, p -> talents.soul_fire)
+      {
+        parse_options(options_str);
+      }
 
+      double composite_crit_chance() const override
+      {
+        return 1.0;
+      }
+
+      double calculate_direct_amount(action_state_t* state) const override
+      {
+        warlock_spell_t::calculate_direct_amount(state);
+
+        // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
+        // player spell crit instead. The state target crit chance of the state object is correct.
+        // Targeted Crit debuffs function as a separate multiplier.
+        state->result_total *= 1.0 + player->cache.spell_crit_chance() + state->target_crit_chance;
+
+        return state->result_total;
+      }
+    };
+    struct internal_combustion_t : public warlock_spell_t
+    {
+      internal_combustion_t(warlock_t* p) :
+        warlock_spell_t("Internal Combustion", p, p->talents.internal_combustion)
+      {
+        background = true;
+        destro_mastery = false;
+      }
+
+      void init() override
+      {
+        warlock_spell_t::init();
+
+        snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+      }
+
+      void execute() override
+      {
+        warlock_td_t* td = this->td(target);
+        dot_t* dot = td->dots_immolate;
+
+        action_state_t* state = dot->current_action->get_state(dot->state);
+        dot->current_action->calculate_tick_amount(state, 1.0);
+        double tick_base_damage = state->result_raw;
+        timespan_t remaining = std::min(dot->remains(), timespan_t::from_seconds(data().effectN(1).base_value()));
+        timespan_t dot_tick_time = dot->current_action->tick_time(state);
+        double ticks_left = remaining / dot_tick_time;
+
+        double total_damage = ticks_left * tick_base_damage;
+
+        action_state_t::release(state);
+        this->base_dd_min = this->base_dd_max = total_damage;
+
+        warlock_spell_t::execute();
+        td->dots_immolate->reduce_duration(remaining);
+      }
+    };
+    struct shadowburn_t : public warlock_spell_t
+    {
+      shadowburn_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("shadowburn", p, p -> talents.shadowburn)
+      {
+        parse_options(options_str);
+
+        can_havoc = true;
+      }
+
+      virtual void impact(action_state_t* s) override
+      {
+        warlock_spell_t::impact(s);
+
+        if (result_is_hit(s->result))
+        {
+          td(s->target)->debuffs_shadowburn->trigger();
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.3, p()->gains.shadowburn);
+        }
+      }
+    };
+    struct roaring_blaze_t : public warlock_spell_t {
+      roaring_blaze_t(warlock_t* p) :
+        warlock_spell_t("roaring_blaze", p, p -> find_spell(265931))
+      {
+        background = true;
+        base_tick_time = timespan_t::from_seconds(2.0);
+        dot_duration = data().duration();
+        spell_power_mod.tick = data().effectN(1).sp_coeff();
+        destro_mastery = false;
+        hasted_ticks = true;
+      }
+    }; //damage is not correct
+    struct dark_soul_t : public warlock_spell_t
+    {
+      dark_soul_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("soul_harvest", p, p -> talents.dark_soul)
+      {
+        parse_options(options_str);
+        harmful = may_crit = may_miss = false;
+      }
+
+      void execute() override
+      {
+        warlock_spell_t::execute();
+        p()->buffs.dark_soul->trigger();
+      }
+    };
+    //Spells
     struct havoc_t : public warlock_spell_t
     {
       timespan_t havoc_duration;
@@ -165,8 +276,10 @@ namespace warlock {
     {
       timespan_t total_duration;
       timespan_t base_duration;
+      roaring_blaze_t* roaring_blaze;
+
       conflagrate_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("Conflagrate", p, p -> find_spell(17962))
+        warlock_spell_t("Conflagrate", p, p -> find_spell(17962)), roaring_blaze(new roaring_blaze_t(p))
       {
         parse_options(options_str);
         energize_type = ENERGIZE_NONE;
@@ -177,6 +290,8 @@ namespace warlock {
 
         cooldown->charges += p->sets->set(WARLOCK_DESTRUCTION, T19, B4)->effectN(1).base_value();
         cooldown->duration += p->sets->set(WARLOCK_DESTRUCTION, T19, B4)->effectN(2).time_value();
+
+        add_child(roaring_blaze);
       }
 
       void init() override
@@ -194,11 +309,8 @@ namespace warlock {
 
         if (result_is_hit(s->result))
         {
-          if (p()->talents.roaring_blaze->ok() )
-          {
-            p()->active.roaring_blaze->target = s->target;
-            p()->active.roaring_blaze->schedule_execute();
-          }
+          if (p()->talents.roaring_blaze->ok())
+            roaring_blaze->execute();
 
           p()->resource_gain(RESOURCE_SOUL_SHARD, 0.5, p()->gains.conflagrate);
         }
@@ -380,12 +492,13 @@ namespace warlock {
       double backdraft_cast_time;
       double refund;
       duplicate_chaos_bolt_t* duplicate;
+      internal_combustion_t* internal_combustion;
       double duplicate_chance;
       flames_of_argus_t* flames_of_argus;
 
       chaos_bolt_t(warlock_t* p, const std::string& options_str) :
         warlock_spell_t(p, "Chaos Bolt"),
-        refund(0), duplicate(nullptr), duplicate_chance(0), flames_of_argus(nullptr)
+        refund(0), duplicate(nullptr), duplicate_chance(0), flames_of_argus(nullptr), internal_combustion(new internal_combustion_t(p))
       {
         parse_options(options_str);
         can_havoc = true;
@@ -398,6 +511,7 @@ namespace warlock {
         duplicate_chance = p->find_spell(213014)->proc_chance();
         duplicate->travel_speed = travel_speed;
         add_child(duplicate);
+        add_child(internal_combustion);
 
         if (p->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B4))
         {
@@ -449,6 +563,8 @@ namespace warlock {
         warlock_spell_t::impact(s);
         if (p()->talents.eradication->ok() && result_is_hit(s->result))
           td(s->target)->debuffs_eradication->trigger();
+        if (p()->talents.internal_combustion->ok() && result_is_hit(s->result))
+          internal_combustion->execute();
         if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B2))
           td(s->target)->debuffs_chaotic_flames->trigger();
         if (p()->legendary.magistrike && rng().roll(duplicate_chance))
@@ -645,7 +761,6 @@ namespace warlock {
         }
       }
     };
-
     //AOE
     struct rain_of_fire_t : public warlock_spell_t
     {
@@ -706,73 +821,14 @@ namespace warlock {
           p()->buffs.alythesss_pyrogenics->trigger(1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() * player->cache.spell_haste());
       }
     };
-
-    //Talents
-    struct soul_fire_t : public warlock_spell_t
-    {
-      soul_fire_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("soul_fire", p, p -> talents.soul_fire)
-      {
-        parse_options(options_str);
-      }
-
-      double composite_crit_chance() const override
-      {
-        return 1.0;
-      }
-
-      double calculate_direct_amount(action_state_t* state) const override
-      {
-        warlock_spell_t::calculate_direct_amount(state);
-
-        // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
-        // player spell crit instead. The state target crit chance of the state object is correct.
-        // Targeted Crit debuffs function as a separate multiplier.
-        state->result_total *= 1.0 + player->cache.spell_crit_chance() + state->target_crit_chance;
-
-        return state->result_total;
-      }
-    };
-    struct shadowburn_t : public warlock_spell_t
-    {
-      shadowburn_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("shadowburn", p, p -> talents.shadowburn)
-      {
-        parse_options(options_str);
-
-        can_havoc = true;
-      }
-
-      virtual void impact(action_state_t* s) override
-      {
-        warlock_spell_t::impact(s);
-
-        if (result_is_hit(s->result))
-        {
-          td(s->target)->debuffs_shadowburn->trigger();
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.3, p()->gains.shadowburn);
-        }
-      }
-    };
-    struct roaring_blaze_t : public warlock_spell_t {
-      roaring_blaze_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("roaring_blaze", p, p -> find_spell(265931))
-      {
-        parse_options(options_str);
-        base_tick_time = timespan_t::from_seconds(2.0);
-        dot_duration = data().duration();
-        spell_power_mod.tick = data().effectN(1).sp_coeff();
-        destro_mastery = false;
-        hasted_ticks = true;
-      }
-    }; //damage is not correct
+    //AOE talents
     struct cataclysm_t : public warlock_spell_t
     {
       immolate_t* immolate;
 
       cataclysm_t(warlock_t* p, const std::string& options_str) :
         warlock_spell_t("cataclysm", p, p -> talents.cataclysm),
-        immolate(new immolate_t(p,""))
+        immolate(new immolate_t(p, ""))
       {
         parse_options(options_str);
         aoe = -1;
@@ -791,22 +847,6 @@ namespace warlock {
           immolate->target = s->target;
           immolate->execute();
         }
-      }
-    };
-    
-    struct dark_soul_t : public warlock_spell_t
-    {
-      dark_soul_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("soul_harvest", p, p -> talents.dark_soul)
-      {
-        parse_options(options_str);
-        harmful = may_crit = may_miss = false;
-      }
-
-      void execute() override
-      {
-        warlock_spell_t::execute();
-        p()->buffs.dark_soul->trigger();
       }
     };
   } // end actions namespace
@@ -886,11 +926,13 @@ namespace warlock {
     talents.channel_demonfire           = find_talent_spell("Channel Demonfire");
     talents.dark_soul                   = find_talent_spell("Dark Soul");
 
+    /*
     if (specialization() == WARLOCK_DESTRUCTION)
     {
-      active.roaring_blaze              = new roaring_blaze_t(this, "");
-      active.roaring_blaze->background  = true;
+      active.roaring_blaze              = new roaring_blaze_t(this);
+      active.internal_combustion        = new internal_combustion_t(this);
     }
+    */
   }
   void warlock_t::init_gains_destruction() {
     gains.conflagrate                   = get_gain("conflagrate");
@@ -919,8 +961,9 @@ namespace warlock {
       def -> add_action("immolate,if=refreshable");
       def -> add_action("summon_infernal");
       def -> add_action("dark_soul,if=soul_shard>=4");
-      def -> add_action("chaos_bolt,if=soul_shard>=4|(talent.eradication.enabled&debuff.eradication.remains<=cast_time)|buff.dark_soul.remains>cast_time");
       def -> add_action("channel_demonfire");
+      def -> add_action("chaos_bolt,if=!talent.internal_combustion.enabled&soul_shard>=4|(talent.eradication.enabled&debuff.eradication.remains<=cast_time)|buff.dark_soul.remains>cast_time");
+      def -> add_action("chaos_bolt,if=talent.internal_combustion.enabled&dot.immolate.remains>8|soul_shard=5");
       def -> add_action("soul_fire");
       def -> add_action("shadowburn,if=soul_shard<=4");
       def -> add_action("conflagrate,if=(talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2)");
