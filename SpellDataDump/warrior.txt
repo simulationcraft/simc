@@ -1,4 +1,4 @@
-SimulationCraft 735-01 for World of Warcraft 7.3.5 Live (wow build 25901)
+SimulationCraft 735-02 for World of Warcraft 7.3.5 Live (wow build 25901)
 
 Name             : Defensive Stance (id=71) [Spell Family (4), Passive, Hidden] 
 Class            : Protection Warrior
@@ -3275,8 +3275,9 @@ Effects          :
 #1 (id=292876)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=344340)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -30000 | Scaled Value: -30000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -10000 | Scaled Value: -10000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Demoralizing Shout (125565)
+                   Hotfixed: Base Value (-30000 -> -10000), Chain Multiplier (0 -> 1)
 Description      : Reduces the cooldown of Demoralizing Shout by ${($m2/1000)*-1} sec, and Demoralizing Shout now reduces the damage enemies deal to all targets, not just you.
 
 Name             : Thunderstruck (Honor Talent) (id=199042) [Spell Family (4)] 
@@ -3929,12 +3930,15 @@ Effects          :
 #1 (id=298923)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(33)
                    Base Value: 600 | Scaled Value: 600 | Misc Value: 33 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Demoralizing Shout (125565)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=298924)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Demoralizing Shout (125565)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #3 (id=298925)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Demoralizing Shout (1160), Demoralizing Shout (125565)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Demoralizing Shout also generates ${$m1/10} Rage, and increases damage you deal to affected targets by $s2%.
 
 Name             : Reckless Abandon (id=202751) [Spell Family (4), Passive, Hidden] 
@@ -5502,19 +5506,19 @@ Description      : Call down a strike of Holy energy, dealing $<damage> Holy dam
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
 
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Max Scaling Level: 120
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)

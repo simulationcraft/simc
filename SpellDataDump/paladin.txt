@@ -1,4 +1,46 @@
-SimulationCraft 735-01 for World of Warcraft 7.3.5 Live (wow build 25901)
+SimulationCraft 735-02 for World of Warcraft 7.3.5 Live (wow build 25901)
+
+Name             : Haste (id=65) [Scaling Spell (-1)] 
+Class            : Paladin
+School           : Nature
+Max Scaling Level: 12
+Duration         : 30 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=38)       : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 20 | Scaled Value: 19.8 (avg=2.2) | Value Multiplier: 1 | Misc Value: 917504 | Target: Self (1)
+Description      : Increases your melee haste by $s1 for $d.
+
+Name             : Invisibility (id=66) [Spell Family (3)] 
+Class            : Arcane Fire Frost Paladin, Mage
+School           : Arcane
+Resource         : 3% Base Mana (0) (id=16)
+Spell Level      : 42
+GCD              : 1.5 seconds
+Duration         : 3 seconds
+Cooldown         : 300 seconds
+Category         : 1162
+Category Cooldown: 300 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
+Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : Stop attacks (20)
+Effects          :
+#2 (id=39)       : Apply Aura (6) | Periodic Trigger Spell (23): (35009)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 35009 | Target: Self (1)
+#3 (id=40)       : None (0)
+                   Base Value: 100 | Scaled Value: 100
+Description      : Turns you invisible over $66d, reducing threat each second. While invisible, you are untargetable by enemies. Lasts $32612d. Taking any action cancels the effect.
+Tooltip          : Fading.
 
 Name             : Block (Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
@@ -639,6 +681,31 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Increases your mounted speed by $s1%. This does not stack with other movement speed increasing effects.
 Tooltip          : Mounted speed increased by $w1%.  This does not stack with other movement speed increasing effects.
+
+Name             : Invisibility (id=32612) [Spell Family (3)] 
+Class            : Paladin, Mage
+School           : Arcane
+Spell Level      : 42
+Duration         : 20 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Not a proc (105)
+Effects          :
+#1 (id=22383)    : Unknown(176)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=22384)    : Apply Aura (6) | Invisibility (18)
+                   Base Value: 340 | Scaled Value: 680 | Points Per Level: 5 | Target: Self (1)
+#3 (id=22385)    : Apply Aura (6) | Unknown(335)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#4 (id=470432)   : Apply Aura (6) | Unknown(260)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1422
+Description      : $@spelldesc66
+Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
 
 Name             : Interrupt (id=32747) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
@@ -1426,6 +1493,21 @@ Effects          :
 #1 (id=88405)    : School Damage (2): holy
                    Base Value: 100 | Scaled Value: 0 (avg=0.2366, dl=0.3) | SP Coefficient: 0.10700 | Radius: 10 yards | Target: AOE enemy (15)
 Description      : Unleash the fury of ancient kings, causing $s1 Holy damage per application of Ancient Power, divided evenly among all targets within $a1 yards.
+
+Name             : Invisibility Speed (id=87833) [Spell Family (3), Hidden] 
+Class            : Paladin, Mage
+School           : Physical
+Duration         : Aura (infinite)
+Attributes       : .......x x....... ..x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7), Not a proc (105)
+Effects          :
+#1 (id=89935)    : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 
 Name             : Hammer of the Righteous (id=88263) [Scaling Spell (7), Spell Family (10)] 
 Class            : Paladin
@@ -5047,19 +5129,19 @@ Description      : Call down a strike of Holy energy, dealing $<damage> Holy dam
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
 
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Max Scaling Level: 120
 Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
