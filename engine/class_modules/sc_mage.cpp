@@ -5613,9 +5613,7 @@ struct phoenixs_flames_splash_t : public fire_mage_spell_t
   {
     double am = fire_mage_spell_t::action_multiplier();
 
-    // Phoenix's Flames splash deal 25% less damage compared to the
-    // spell data/tooltip values. As of build 25881, 2018-01-221.
-    am *= std::pow( strafing_run_multiplier, p() -> bugs ? chain_number + 1 : chain_number );
+    am *= std::pow( strafing_run_multiplier, chain_number );
 
     return am;
   }
