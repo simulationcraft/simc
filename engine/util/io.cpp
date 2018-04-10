@@ -5,6 +5,7 @@
 
 #include "io.hpp"
 #include "utf8.h"
+#include "util/gsl-lite/gsl-lite.hpp"
 #include <cassert>
 #include <cstring>
 #include <cstdarg>
@@ -18,25 +19,28 @@ namespace io { // ===========================================================
 
 namespace { // anonymous namespace ==========================================
 
-std::wstring widen( const char* first, const char* last )
+std::wstring _widen( gsl::cstring_span s )
 {
   std::wstring result;
+  result.reserve( s.size() / 2 + 1);
 
   if ( sizeof( wchar_t ) == 2 )
-    utf8::utf8to16( first, last, std::back_inserter( result ) );
+    utf8::utf8to16( s.begin(), s.end(), std::back_inserter( result ) );
   else
   {
     assert( sizeof( wchar_t ) == 4 );
-    utf8::utf8to32( first, last, std::back_inserter( result ) );
+    utf8::utf8to32( s.begin(), s.end(), std::back_inserter( result ) );
   }
 
   return result;
 }
 
-std::string narrow( const wchar_t* first, const wchar_t* last )
+std::string _narrow( gsl::cwstring_span s )
 {
   std::string result;
-  utf8::utf16to8( first, last, std::back_inserter( result ) );
+  result.reserve(s.size() * 2 );
+
+  utf8::utf16to8( s.begin(), s.end(), std::back_inserter( result ) );
   return result;
 }
 
@@ -45,7 +49,7 @@ bool contains_non_ascii( const std::string& s )
 {
   for (const auto & elem : s)
   {
-    if ( elem < 0 || ! isprint( elem ) )
+    if ( elem < 0 || ! std::isprint( elem ) )
       return true;
   }
 
@@ -56,75 +60,22 @@ bool contains_non_ascii( const std::string& s )
 } // anonymous namespace ====================================================
 
 std::string narrow( const wchar_t* wstr )
-{ return narrow( wstr, wstr + wcslen( wstr ) ); }
+{ return _narrow( wstr ); }
 
 std::wstring widen( const char* str )
-{ return widen( str, str + std::strlen( str ) ); }
+{ return _widen( str ); }
 
 std::wstring widen( const std::string& str )
-{ return widen( str.c_str(), str.c_str() + str.size() ); }
-
-// Unicode codepoints up to 0xFF are basically identical to Latin-1
-// (and vaguely Windows codepage 1252) and codepoints up to 0x7F
-// are identical to ASCII. In other words, ASCII is a subset of
-// Latin-1 which is a subset of Unicode.
-
-#if 0
-
-bool contains_non_ascii( const std::string& s )
-{
-  for (const auto & elem : s)
-  {
-    if ( elem < 0 || ! isprint( elem ) )
-      return true;
-  }
-
-  return false;
-}
-
-static const uint32_t invalid_character_replacement = '?';
-
-std::string latin1_to_utf8( const std::string& str )
-{
-  std::string result;
-
-  // Since the codepoints are identical, transcoding Latin-1 to UTF-8
-  // only requires recoding each input byte as a UTF-8 sequence.
-  for ( std::string::const_iterator i = str.begin(), e = str.end(); i != e; ++i )
-    utf8::append( static_cast<unsigned char>( *i ), std::back_inserter( result ) );
-
-  return result;
-}
-
-std::string utf8_to_latin1( const std::string& str )
-{
-  std::string result;
-
-  std::string::const_iterator first = str.begin(), last = str.end();
-  while ( first != last )
-  {
-    uint32_t codepoint = utf8::next( first, last );
-    if ( codepoint > 0xFF )
-    {
-      // Codepoints > 0xFF aren't in Latin-1.
-      codepoint = invalid_character_replacement;
-    }
-    result += static_cast<unsigned char>( codepoint );
-  }
-
-  return result;
-}
-#endif
+{ return _widen( str ); }
 
 std::string maybe_latin1_to_utf8( const std::string& str )
 {
-  typedef std::string::const_iterator iterator;
   std::string result;
 
   try
   {
     // Validate input as UTF-8 while we copy.
-    for ( iterator first = str.begin(), last = str.end(); first != last ; )
+    for ( auto first = str.begin(), last = str.end(); first != last ; )
       utf8::append( utf8::next( first, last ), std::back_inserter( result ) );
   }
   catch ( utf8::exception& )
@@ -161,8 +112,7 @@ void ofstream::open( const char* name, openmode mode )
 #elif defined( SC_MINGW )
   if ( contains_non_ascii( name ) )
   {
-    assert( false && "File Names with non-ascii characters cannot be opened when built with MinGW." );
-    return;
+    throw std::invalid_argument("File '{}' with non-ascii characters cannot be opened when built with MinGW.", name );
   }
   std::ofstream::open( name, mode );
 #else
@@ -175,9 +125,9 @@ void ofstream::open( const char* name, openmode mode )
  */
 bool ofstream::open( const std::string& filename, const std::vector<std::string>& prefix_list, openmode mode )
 {
-  for( size_t i = 0; i < prefix_list.size(); ++i )
+  for( auto& prefix : prefix_list )
   {
-    open( prefix_list[ i ] + filename, mode );
+    open( prefix + filename, mode );
     if ( !fail() )
       return true;
   }
@@ -199,8 +149,7 @@ void ifstream::open( const char* name, openmode mode )
 #elif defined( SC_MINGW )
   if ( contains_non_ascii( name ) )
   {
-    assert( false && "File Names with non-ascii characters cannot be opened when built with MinGW." );
-    return;
+    throw std::invalid_argument("File '{}' with non-ascii characters cannot be opened when built with MinGW.", name );
   }
   std::ifstream::open( name, mode );
 #else
@@ -213,9 +162,9 @@ void ifstream::open( const char* name, openmode mode )
  */
 bool ifstream::open( const std::string& filename, const std::vector<std::string>& prefix_list, openmode mode )
 {
-  for( size_t i = 0; i < prefix_list.size(); ++i )
+  for( auto& prefix : prefix_list )
   {
-    open( prefix_list[ i ] + filename, mode );
+    open( prefix + filename, mode );
     if ( !fail() )
       return true;
   }
@@ -238,21 +187,6 @@ utf8_args::utf8_args( int argc, char** argv ) :
   std::vector<std::string>( argv + 1, argv + argc ) {}
 #endif
 
-/* Collects each character in the file until EOF
- * and returns it as a string
- */
-std::string read_file_content( FILE* file )
-{
-  std::string buffer;
-  assert( file );
-  char c;
 
-  while ( ( c = fgetc( file ) ) != EOF )
-  {
-    buffer += c;
-  }
-
-  return buffer;
-}
 
 } // namespace io ===========================================================
