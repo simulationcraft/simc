@@ -1424,6 +1424,24 @@ class SpellDataGenerator(DataGenerator):
 		  ( 267971, 5 ),		# Demonic Tyrant - Demonic Consumption
 		  ( 267972, 5 ),		# Demonic Tyrant - Demonic Consumption (not sure which is needed)
 		  ( 260641, 5 ),		# Vilefiend - Bile Spit
+		  ( 267994, 2 ),		# Summon Shivarra
+		  ( 267996, 2 ),		# Summon Darkhound
+		  ( 267992, 2 ),		# Summon Bilescourge
+		  ( 268001, 2 ),		# Summon Ur'zul
+		  ( 267991, 2 ),		# Summon Void Terror
+		  ( 267995, 2 ),		# Summon Wrathguard
+		  ( 267988, 2 ),		# Summon Vicious Hellhound
+		  ( 267987, 2 ),		# Summon Illidari Satyr
+		  ( 267989, 2 ),		# Summon Eyes of Gul'dan
+		  ( 272172, 5 ),		# Shivarra - Multi-Slash
+		  ( 272435, 5 ),		# Darkhound - Fel Bite
+		  ( 272167, 5 ),		# Bilescourge - Toxic Bile
+		  ( 272439, 5 ),		# Ur'zul - Many Faced Bite
+		  ( 272156, 5 ),		# Void Terror - Double Breath
+		  ( 272432, 5 ),		# Wrathguard - Overhead Assault
+		  ( 272013, 5 ),		# Vicious Hellhound - Demon Fangs
+		  ( 272012, 5 ),		# Illidari Satyr - Shadow Slash
+		  ( 272131, 5 ),		# Eye of Gul'dan - Eye of Gul'dan
         ),
 
         # Monk:
