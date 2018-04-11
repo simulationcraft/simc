@@ -28,6 +28,8 @@ struct warrior_td_t: public actor_target_data_t
 
   warrior_t& warrior;
   warrior_td_t( player_t* target, warrior_t& p );
+
+  void target_demise();
 };
 
 using data_t = std::pair<std::string, simple_sample_data_with_min_max_t>;
@@ -172,6 +174,7 @@ public:
     buff_t* revenge;
     buff_t* vengeance_revenge;
     buff_t* vengeance_ignore_pain;
+    haste_buff_t* war_machine;
     buff_t* wrecking_ball;
     buff_t* scales_of_earth;
 
@@ -2026,7 +2029,7 @@ struct colossus_smash_t: public warrior_attack_t
       p() -> buff.shattered_defenses -> trigger();
       p() -> buff.precise_strikes -> trigger();
       p() -> buff.in_for_the_kill -> trigger();
-    p() -> buff.war_veteran -> trigger();
+      p() -> buff.war_veteran -> trigger();
 
       if ( p() -> talents.ravager -> ok() )
         p() -> cooldown.ravager -> adjust( t20_2p_reduction );
@@ -5723,6 +5726,29 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ):
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
   debuffs_taunt = buff_creator_t( static_cast<actor_pair_t>(*this), "taunt", p.find_class_spell( "Taunt" ) );
+
+  target -> callbacks_on_demise.push_back( std::bind( &warrior_td_t::target_demise, this ) );
+}
+
+void warrior_td_t::target_demise()
+{
+  if ( !( target -> is_enemy() ) )
+  {
+    return;
+  }
+
+  warrior_t* p = static_cast<warrior_t*>( source );
+
+  if ( p -> talents.war_machine -> ok() )
+  {
+    if ( warrior.sim -> log )
+    {
+      warrior.sim -> out_debug.printf( "Player %s demised. Warrior %s gains War Machine.", target -> name(), warrior.name() );
+    }
+    // Assume we're really good and have hit everything.
+    // TODO: determine if we actually hit the target in question and only activate then
+    warrior.buff.war_machine -> trigger();
+  }
 }
 
 // warrior_t::init_buffs ====================================================
@@ -5833,6 +5859,13 @@ void warrior_t::create_buffs()
 
   buff.overpower = buff_creator_t( this, "overpower", spell.overpower_driver -> effectN( 1 ).trigger() )
     .trigger_spell( spell.overpower_driver );
+
+  buff.war_machine = haste_buff_creator_t( this, "war_machine", find_spell( 215562 ) )
+    .default_value( find_spell( 215562 ) -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_HASTE )
+    .duration ( find_spell( 215562 ) -> duration() )
+    .refresh_behavior( BUFF_REFRESH_DURATION )
+    .max_stack( 1 );
 
   buff.wrecking_ball = buff_creator_t( this, "wrecking_ball", talents.wrecking_ball -> effectN( 1 ).trigger() )
     .trigger_spell( talents.wrecking_ball );
@@ -6394,6 +6427,8 @@ double warrior_t::composite_melee_haste() const
 
   a *= 1.0 / ( 1.0 + buff.in_for_the_kill -> check_value() );
 
+  a *= 1.0 / ( 1.0 + buff.war_machine -> check_value() );
+
   return a;
 }
 
@@ -6680,6 +6715,11 @@ double warrior_t::temporary_movement_modifier() const
   {
     temporary = std::max( buff.frothing_berserker -> data().effectN( 2 ).percent(), temporary );
   }
+  else if ( buff.war_machine -> up() ) // war machine is the same as frothing berserker
+  {
+    temporary = std::max( buff.war_machine -> data().effectN( 2 ).percent(), temporary );
+  }
+
   return temporary;
 }
 
