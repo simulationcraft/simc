@@ -842,7 +842,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 12 abilities
+    // Demonology tree, 21 abilities
     {
       104316, // Call Dreadstalkers
       264178, // Demonbolt
@@ -854,8 +854,17 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          686, // Shadow Bolt
        30283, // Shadowfury
       196606, // Shadowy Inspiration
+      267992, // Summon Bilescourge
+      267996, // Summon Darkhound
       265187, // Summon Demonic Tyrant
+      267989, // Summon Eyes of Gul'dan
        30146, // Summon Felguard (Summon)
+      267987, // Summon Illidari Satyr
+      267994, // Summon Shivarra
+      268001, // Summon Ur'zul
+      267988, // Summon Vicious Hellhound
+      267991, // Summon Void Terror
+      267995, // Summon Wrathguard
            0,
     },
     // Destruction tree, 13 abilities
@@ -878,7 +887,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 33 abilities
+    // Pet tree, 42 abilities
     {
        89766, // Axe Toss (Special Ability)
       260641, // Bile Spit
@@ -886,13 +895,17 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       171011, // Burning Presence (Special Ability)
         3716, // Consuming Shadows (Basic Attack)
       170995, // Cripple
+      272013, // Demon Fangs
       270481, // Demonfire
       265279, // Demonfire Blast
       267971, // Demonic Consumption
       267972, // Demonic Consumption
        19505, // Devour Magic (Special Ability)
        85692, // Doom Bolt
+      272156, // Double Breath
       205231, // Eye Laser
+      272131, // Eye of Gul'dan
+      272435, // Fel Bite
       104318, // Fel Firebolt (Basic Attack)
        89751, // Felstorm (Special Ability)
         3110, // Firebolt (Basic Attack)
@@ -901,17 +914,22 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         7814, // Lash of Pain (Basic Attack)
        30213, // Legion Strike (Basic Attack)
         7870, // Lesser Invisibility (Special Ability)
+      272439, // Many Faced Bite
+      272172, // Multi-Slash
+      272432, // Overhead Assault
        30151, // Pursuit (Special Ability)
         6358, // Seduction (Command Demon Ability)
       171014, // Seethe (Special Ability)
        54049, // Shadow Bite (Basic Attack)
       171138, // Shadow Lock (Special Ability)
+      272012, // Shadow Slash
        89808, // Singe Magic (Command Demon Ability)
        19647, // Spell Lock (Command Demon Ability)
        17735, // Suffering (Special Ability)
       112042, // Threatening Presence (Special Ability)
       134477, // Threatening Presence (Special Ability)
       171021, // Torch Magic (Special Ability)
+      272167, // Toxic Bile
         6360, // Whiplash (Special Ability)
            0,
     },
