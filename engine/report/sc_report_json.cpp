@@ -1846,7 +1846,7 @@ void print_json2_pretty( FILE* o, const sim_t& sim )
     root[ "notifications" ] = sim.error_list;
   }
 
-  std::array<char, 1024000> buffer;
+  std::array<char, 16384> buffer;
   FileWriteStream b( o, buffer.data(), buffer.size() );
   PrettyWriter<FileWriteStream> writer( b );
   auto accepted = doc.Accept( writer );
