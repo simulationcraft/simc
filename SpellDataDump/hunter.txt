@@ -42,10 +42,10 @@ Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Physical
 Spell Level      : 8
 Range            : 50000 yards
+GCD              : 0.5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1449
-Category Cooldown: 0.5 seconds
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ xx...... ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -421,7 +421,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 3 seconds
-Affecting spells : Blink Strikes (130392 effect#1), Mastery: Spirit Bond (263135 effect#1), 
+Affecting spells : Blink Strikes (130392 effect#1), Aspect of the Beast (191384 effect#1), Mastery: Spirit Bond (263135 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -431,11 +431,12 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=8519)     : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy (6)
-Description      : Claw the enemy, causing ${$<damage>} damage.  Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
-Variables        : $ce=$?s152244[${1.7}][${1.5}]
+Description      : Claw the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
+Variables        : $aotb=$?s191384[${1.3}][${1.0}]
+$ce=$?s152244[${1.7}][${1.5}]
 $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
-$damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
+$damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
 Name             : Bite (Basic Attack) (id=17253) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter, Death Knight
@@ -446,7 +447,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 3 seconds
 Category         : 19
-Affecting spells : Blink Strikes (130392 effect#1), Mastery: Spirit Bond (263135 effect#1), 
+Affecting spells : Blink Strikes (130392 effect#1), Aspect of the Beast (191384 effect#1), Mastery: Spirit Bond (263135 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -457,10 +458,11 @@ Effects          :
 #1 (id=8994)     : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy (6)
 Description      : Bite the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
-Variables        : $ce=$?s152244[${1.7}][${1.5}]
+Variables        : $aotb=$?s191384[${1.3}][${1.0}]
+$ce=$?s152244[${1.7}][${1.5}]
 $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
-$damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
+$damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
 Name             : Aimed Shot (id=19434) [Scaling Spell (4), Spell Family (9)] 
 Class            : Marksmanship Hunter
@@ -765,6 +767,7 @@ Range            : 5 yards
 Cooldown         : 6 seconds
 Category         : 36
 Proc Chance      : 101%
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -791,6 +794,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x...x... x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic, Trap Triggered
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x.x.x... .x.xx...   ....x... ..x..... ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -908,6 +912,7 @@ Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -928,7 +933,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 3 seconds
-Affecting spells : Blink Strikes (130392 effect#1), Mastery: Spirit Bond (263135 effect#1), 
+Affecting spells : Blink Strikes (130392 effect#1), Aspect of the Beast (191384 effect#1), Mastery: Spirit Bond (263135 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -938,11 +943,12 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=42080)    : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy (6)
-Description      : Smack the enemy, causing ${$<damage>} damage.  Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
-Variables        : $ce=$?s152244[${1.7}][${1.5}]
+Description      : Smack the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
+Variables        : $aotb=$?s191384[${1.3}][${1.0}]
+$ce=$?s152244[${1.7}][${1.5}]
 $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
-$damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
+$damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
 Name             : Pin (Special Ability) (id=50245) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -955,6 +961,7 @@ Proc Chance      : 100%
 Mechanic         : Root
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ ........ ......x.   ..x..... .x...... ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ........ 
@@ -976,6 +983,7 @@ Spell Level      : 20
 Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 25 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -996,6 +1004,7 @@ Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
 Mechanic         : Snare
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1129,6 +1138,7 @@ Class            : Tenacity Hunter Pet
 School           : Physical
 Duration         : 20 seconds
 Cooldown         : 360 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1165,6 +1175,7 @@ School           : Physical
 GCD              : 1.5 seconds
 Duration         : 0.1 seconds
 Cooldown         : 180 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -1229,6 +1240,7 @@ Cooldown         : 10 seconds
 Category         : 1247
 Category Cooldown: 10 seconds
 Mechanic         : Snare
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1250,6 +1262,7 @@ School           : Physical
 Spell Level      : 20
 Range            : 5 yards
 Cooldown         : 8 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1271,6 +1284,7 @@ Class            : Hunter
 School           : Frost
 Spell Level      : 1
 Range            : 30 yards
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Frost Breath (54644)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1325,7 +1339,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Velocity         : 40 yards/sec
+Velocity         : 80 yards/sec
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Steady Focus (193534 effect#1), Bullseye (204090 effect#1), Mongoose Power (211362 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -1368,7 +1382,7 @@ Effects          :
 
 Name             : Sated (id=57724) 
 Class            : Hunter, Shaman, Mage
-Race             : Orc, Tauren, Troll, Goblin, Highmountain Tauren (0xa0001a2)
+Race             : Orc, Tauren, Troll, Goblin, Highmountain Tauren (0xa0021a2)
 School           : Physical
 Range            : 50000 yards
 Duration         : 600 seconds
@@ -1466,6 +1480,7 @@ School           : Physical
 Spell Level      : 10
 Duration         : 10 seconds
 Cooldown         : 20 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1490,6 +1505,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x.x..... .....x..   ........ ..x..... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1564,6 +1580,7 @@ Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   .......x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1791,6 +1808,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ..x.x.x. x...x... x.x..x.. ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic, Trap Triggered
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x.x.x... .x.xx...   ....x... ..x..... ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1816,6 +1834,7 @@ School           : Nature
 Spell Level      : 20
 GCD              : 1.5 seconds
 Duration         : 15 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ ........ ....x...   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1838,6 +1857,7 @@ Range            : 25 yards
 Duration         : 10 seconds
 Cooldown         : 30 seconds
 Stance Mask      : 0x80000000
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ x....... ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1858,6 +1878,7 @@ School           : Froststorm
 Resource         : 10 Focus (2) and 5 Focus (2) per tick (id=4257)
 Spell Level      : 20
 Duration         : 8 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ x....... ........   ..x...xx ..x..... .x...... .....x.. 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1926,6 +1947,7 @@ Resource         : 10 Focus (2) and 5 Focus (2) per tick (id=4304)
 Spell Level      : 20
 Duration         : 8 seconds
 Cooldown         : 14 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ ........ ........   ..x...x. ..x..... .x...... .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1947,6 +1969,7 @@ School           : Nature
 Spell Level      : 20
 GCD              : 1.5 seconds
 Duration         : 12 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ ........ ....x...   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1967,6 +1990,7 @@ Class            : Hunter
 School           : Nature
 Spell Level      : 20
 GCD              : 1.5 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ ........ ....x...   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2017,6 +2041,7 @@ Name             : Froststorm Breath (Exotic Ability) (id=95725) [Scaling Spell 
 Class            : Hunter
 School           : Froststorm
 Spell Level      : 20
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Froststorm Breath (92380)
 Attributes       : ........ ........ x....x.. ........   .......x ........ .x...... ........ 
                  : ........ ........ ...x.... ......x.   x....... ........ ........ ........ 
@@ -2982,6 +3007,7 @@ School           : Physical
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3003,6 +3029,7 @@ Internal Cooldown: 120 seconds
 Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ......x. ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3026,6 +3053,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 20
 Duration         : 12 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Thick Hide (160057)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3047,6 +3075,7 @@ Range            : 5 yards
 Cooldown         : 6 seconds
 Category         : 36
 Proc Chance      : 101%
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3069,6 +3098,7 @@ Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
 Mechanic         : Snare
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3089,6 +3119,7 @@ Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
 Mechanic         : Snare
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3322,7 +3353,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 70 yards/sec
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Bullseye (204090 effect#1), Mongoose Power (211362 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Coordinated Assault (266779 effect#1), Master Marksman (269576 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Bullseye (204090 effect#1), Mongoose Power (211362 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Precise Shots (260242 effect#1), Coordinated Assault (266779 effect#1), Master Marksman (269576 effect#1), Arcane Flurry (273267 effect#1)
 Triggered by     : Precise Shots (260242)
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -3733,7 +3764,7 @@ Class            : Survival Hunter
 School           : Physical
 Spell Level      : 14
 Range            : 5 - 30 yards
-GCD              : 1.5 seconds
+GCD              : 0.5 seconds
 Velocity         : 70 yards/sec
 Cooldown         : 1 seconds
 Charges          : 1 (30 seconds cooldown)
@@ -3832,83 +3863,33 @@ Effects          :
 Description      : $@spelldesc191048
 
 Name             : Aspect of the Beast (id=191384) [Spell Family (9), Passive] 
-Class            : Hunter
+Class            : Hunter, Death Knight
 School           : Physical
 Spell Level      : 1
+Range            : 50000 yards
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=280739)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : $?c1[Kill Command causes]?c3[Flanking Strike causes][Kill Command and Flanking Strike cause] an additional effect, based on your pet's Specialization.
+#1 (id=280739)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | Target: Unknown(120)
+                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Last Stand (53478), Bullheaded (53490), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Dash (61684), Charge (61685), Thunderstomp (63900), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Talon Slash (242735), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
+#2 (id=725119)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Unknown(120)
+                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Last Stand (53478), Bullheaded (53490), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Dash (61684), Charge (61685), Thunderstomp (63900), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Talon Slash (242735), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
+#3 (id=725122)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Pathfinding (264656), Endurance Training (264662), Predator's Thirst (264663)
+#4 (id=725606)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Pathfinding (264656), Endurance Training (264662), Predator's Thirst (264663)
+Description      : Increases the damage of your pet's abilities by $s1%.
 
-|CFFFFFFF0Ferocity|R
-The target also bleeds for $191413o2 Physical damage over $191413d.
-
-|CFFFFFFF0Tenacity|R
-Your pet also takes $191414s% reduced damage for $191414d.
-
-|CFFFFFFF0Cunning|R
-The target's movement speed is also reduced by $191397s1% for $191397d.
-
-Name             : Bestial Cunning (id=191397) [Spell Family (9)] 
-Class            : Hunter
-School           : Physical
-Spell Level      : 1
-Range            : 100 yards
-Duration         : 4 seconds
-Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=280760)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
-Description      : $@spelldesc191384
-Tooltip          : Movement slowed by $s1%.
-
-Name             : Bestial Ferocity (id=191413) [Spell Family (9)] 
-Class            : Hunter
-School           : Physical
-Spell Level      : 1
-Range            : 100 yards
-Duration         : 6 seconds
-Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=280784)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.14742 | Target: Enemy (6)
-Description      : $@spelldesc191384
-Tooltip          : Bleeding for $w1 damage every $t1 sec.
-
-Name             : Bestial Tenacity (id=191414) [Spell Family (9)] 
-Class            : Hunter
-School           : Physical
-Spell Level      : 1
-Range            : 100 yards
-Duration         : 6 seconds
-Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=280786)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)
-Description      : $@spelldesc191384
-Tooltip          : Damage taken reduced by $s2%.
+Increases the effectiveness of your pet's Predator's Thirst, Endurance Training, and Pathfinding passives by $s3%.
 
 Name             : Cobra Shot (id=193455) [Spell Family (9)] 
 Class            : Beast Mastery Hunter
@@ -3984,8 +3965,8 @@ Effects          :
 #1 (id=283917)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #2 (id=717950)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2
-Description      : Immediately gain $s2 charges of Aimed Shot, and gain $s1% Haste for $d.
+                   Base Value: 1 | Scaled Value: 1
+Description      : Immediately gain $s2 charge of Aimed Shot, and gain $s1% Haste for $d.
 Tooltip          : Haste increased by $s1% for $d.
 
 Name             : Aspect of the Wild (id=193530) [Spell Family (9)] 
@@ -4058,7 +4039,7 @@ Name             : Steady Focus (id=193534) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Duration         : 12 seconds
-Stacks           : 3 maximum
+Stacks           : 2 maximum
 Proc Chance      : 101%
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4068,10 +4049,10 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=283928)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -12 | Scaled Value: -12 | Misc Value: 10 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Steady Shot (56641)
 Description      : $@spelldesc193533
-Tooltip          : Cast time of Steady Shot reduced by ${$193533m1/1000}.2 sec.
+Tooltip          : Cast time of Steady Shot reduced by $s1%.
 
 Name             : Spitting Cobra (id=194407) [Spell Family (9)] 
 Class            : Hunter
@@ -4461,24 +4442,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: focus | Target: Self (1)
 Description      : $@spelldesc53209
 
-Name             : Big Game Hunter (id=204308) [Spell Family (9), Passive] 
-Class            : Hunter
-School           : Physical
-Spell Level      : 1
-Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=301546)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 60 | Scaled Value: 60 | Misc Value: 3 | Target: Self (1)
-#2 (id=301547)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 80 | Scaled Value: 80 | Target: Self (1)
-Description      : Increases the critical strike chance of your auto shot and Cobra Shot by $s1% on targets who are above $s2% health.
-
 Name             : Windburst (id=204475) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4756,7 +4719,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | Target: Enemy (6)
 #2 (id=323303)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Target: Enemy (6)
-Description      : Shoots the enemy for $s1 Physical damage and causes your pet to enter a frenzy, performing a flurry of attacks on the target and gaining $272790s1% increased attack speed for $272790d, stacking up to $272790u times.
+Description      : Fire a shot that tears through your enemy, causing them to bleed for $s1 damage over $272790d, sending your pet into a frenzy, increasing their attack speed by $272790s1%. 
+Stacks up to $272790u times.
 
 |cFFFFFFFFGenerates ${$246152s1*$246152d/$246152t1} Focus over $246152d.|r
 
@@ -4936,7 +4900,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 10
 Range            : 5 yards
-Affecting spells : Blink Strikes (130392 effect#1), Mastery: Spirit Bond (263135 effect#1), 
+Affecting spells : Blink Strikes (130392 effect#1), Aspect of the Beast (191384 effect#1), Mastery: Spirit Bond (263135 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4947,10 +4911,11 @@ Effects          :
 #1 (id=368573)   : School Damage (2): physical
                    Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy (6)
 Description      : Slash the enemy, dealing ${$<damage>} Physical damage. 
-Variables        : $ce=$?s152244[${1.7}][${1.5}]
+Variables        : $aotb=$?s191384[${1.3}][${1.0}]
+$ce=$?s152244[${1.7}][${1.5}]
 $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
-$damage=${$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
+$damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
 Name             : Deathstrike Venom (id=243120) [Spell Family (9)] 
 Class            : Hunter
@@ -5196,7 +5161,7 @@ Velocity         : 40 yards/sec
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Bullseye (204090 effect#1), Mongoose Power (211362 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Triggered by     : Rapid Fire (257044)
 Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -5212,8 +5177,8 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 25
 Range            : 60 yards
+GCD              : 1.5 seconds
 Duration         : Aura (infinite)
-Cooldown         : 0.5 seconds
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .....x.. ........ ........ ...x.... 
@@ -6023,6 +5988,7 @@ Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
 Mechanic         : Snare
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6043,6 +6009,7 @@ Range            : 30 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
 Mechanic         : Snare
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6080,6 +6047,7 @@ Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
 Mechanic         : Snare
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6100,6 +6068,7 @@ Range            : 5 yards
 Duration         : 6 seconds
 Cooldown         : 10 seconds
 Mechanic         : Snare
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6120,6 +6089,7 @@ Range            : 5 yards
 Cooldown         : 6 seconds
 Category         : 36
 Proc Chance      : 101%
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6142,6 +6112,7 @@ Range            : 5 yards
 Cooldown         : 6 seconds
 Category         : 36
 Proc Chance      : 101%
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6164,6 +6135,7 @@ Range            : 5 yards
 Cooldown         : 6 seconds
 Category         : 36
 Proc Chance      : 101%
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6186,6 +6158,7 @@ Range            : 5 yards
 Cooldown         : 6 seconds
 Category         : 36
 Proc Chance      : 101%
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x.x..... ..x.....   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6206,6 +6179,7 @@ School           : Physical
 Spell Level      : 20
 Duration         : 12 seconds
 Cooldown         : 60 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6224,6 +6198,7 @@ School           : Physical
 Spell Level      : 20
 Duration         : 12 seconds
 Cooldown         : 60 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6242,6 +6217,7 @@ School           : Physical
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6261,6 +6237,7 @@ School           : Physical
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6279,6 +6256,7 @@ School           : Physical
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6297,6 +6275,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 20
 Duration         : 12 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Thick Fur (263934)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6319,6 +6298,7 @@ Internal Cooldown: 120 seconds
 Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ......x. ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6342,6 +6322,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 20
 Duration         : 12 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Silverback (263939)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6364,6 +6345,7 @@ Internal Cooldown: 120 seconds
 Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ......x. ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6389,6 +6371,7 @@ Spell Level      : 35
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6409,6 +6392,7 @@ Spell Level      : 35
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6429,6 +6413,7 @@ Spell Level      : 35
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6449,6 +6434,7 @@ Spell Level      : 35
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6469,6 +6455,7 @@ Spell Level      : 35
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6507,6 +6494,7 @@ School           : Physical
 Spell Level      : 8
 Duration         : 20 seconds
 Cooldown         : 90 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6524,8 +6512,9 @@ Name             : Pathfinding (id=264656) [Spell Family (9), Passive]
 Class            : Cunning Hunter Pet
 School           : Physical
 Range            : 50000 yards
+Affecting spells : Aspect of the Beast (191384 effect#3), 
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6537,13 +6526,15 @@ Effects          :
 #2 (id=708349)   : Apply Owner Area Aura (143) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 8 | Scaled Value: 8 | Radius: 100 yards | Target: Self (1)
 Description      : You and your pet gain $s1% increased movement speed.
+Tooltip          : Movement speed increased by $s1%.
 
 Name             : Endurance Training (id=264662) [Spell Family (9), Passive] 
 Class            : Tenacity Hunter Pet
 School           : Physical
 Range            : 50000 yards
+Affecting spells : Aspect of the Beast (191384 effect#3), 
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6555,13 +6546,15 @@ Effects          :
 #2 (id=708366)   : Apply Owner Area Aura (143) | Modify Max Health% (133)
                    Base Value: 8 | Scaled Value: 8 | Radius: 100 yards | Target: Self (1)
 Description      : You and your pet gain $s1% increased maximum health.
+Tooltip          : Maximum health increased by $s1%.
 
 Name             : Predator's Thirst (id=264663) [Spell Family (9), Passive] 
 Class            : Ferocity Hunter Pet
 School           : Physical
 Range            : 50000 yards
+Affecting spells : Aspect of the Beast (191384 effect#3), 
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6569,10 +6562,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=708367)   : Apply Aura (6) | Modify Leech% (443)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #2 (id=708368)   : Apply Owner Area Aura (143) | Modify Leech% (443)
                    Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: Self (1)
 Description      : You and your pet gain $s1% Leech.
+Tooltip          : Leech increased by $s1%.
 
 Name             : Primal Rage (Ferocity Ability) (id=264667) [Spell Family (9)] 
 Class            : Ferocity Hunter Pet
@@ -6581,6 +6575,7 @@ Resource         : 50 Focus (2) (id=191681)
 Spell Level      : 65
 Duration         : 40 seconds
 Cooldown         : 360 seconds
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ..xx.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ x....... ........   ........ x....... ........ ........ 
@@ -6782,8 +6777,8 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=713555)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#1 (id=713555)   : Apply Aura (6) | Unknown(493)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273277 | Target: Self (1)
 Description      : Your Call Pet additionally summons the first pet from your stable. This pet will obey your Kill Command, but cannot use pet family abilities.
 
 Name             : Chakrams (id=267605) [Spell Family (9)] 
@@ -7276,5 +7271,40 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Friend (21)
 Description      : $@spelldesc217200
 Tooltip          : Attack speed increased by $s1%.
+
+Name             : Summon Animal Companion (id=273277) 
+Class            : Hunter
+School           : Physical
+Spell Level      : 1
+Triggered by     : Animal Companion [NYI] (267116)
+Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=724776)   : Unknown(260)
+                   Base Value: 0 | Scaled Value: 0
+
+Name             : Killer Instinct (id=273887) [Spell Family (9), Passive] 
+Class            : Hunter
+School           : Physical
+Proc Chance      : 100%
+Proc Flags       : ......x. x....... ........ ........ 
+                 : White Ranged, Yellow Ranged
+Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=725856)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#2 (id=725857)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+Description      : Kill Command deals $s1% increased damage against enemies below $s2% health.
 
 

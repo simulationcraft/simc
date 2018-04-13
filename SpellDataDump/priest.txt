@@ -24,7 +24,8 @@ Description      : Shields an ally for $d, absorbing $<shield> damage, and preve
 Tooltip          : Absorbs $w1 damage.
 Variables        : $mastery=$?a271534[${(1+$271534s2/100)}][${1}]
 $rapture=$?a47536[${(1+$47536s1/100)}][${1}]
-$shield=${$SP*1*(1+$@versadmg)*$<mastery>*$<rapture>}
+$shadow=$?a137033[${1.4}][${1}]
+$shield=${$SP*1*(1+$@versadmg)*$<mastery>*$<rapture>*$<shadow>}
 
 Name             : Renew (id=139) [Spell Family (6)] 
 Class            : Holy Priest
@@ -143,7 +144,7 @@ Resource         : 2.2% Base Mana (0) (id=10512) w/ Discipline Priest (id=137032
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 14 seconds
+Duration         : 16 seconds
 Proc Chance      : 100%
 Stance Mask      : 0x08000000
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Discipline Priest (137032 effect#2), Shadow Priest (137033 effect#1), To the Pain (193644 effect#1), Voidform (194249 effect#1), The Edge of Dark and Light (197715 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Torment of Torments (269555 effect#1), 
@@ -363,7 +364,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 1 (7.5 seconds cooldown)
 Category         : 1602: Priest (137030 effect#2)
-Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Shadowy Insight (124430 effect#1), Priest (137030 effect#2), Shadow Priest (137033 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#2), Mind Shattering (193643 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Empty Mind (247226 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Shadowy Insight (124430 effect#1), Priest (137030 effect#2), Shadow Priest (137033 effect#1), Mental Fatigue (185104 effect#1), Fortress of the Mind (193195 effect#2), Mind Shattering (193643 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Empty Mind (247226 effect#1), Item - Priest T21 Shadow 2P Bonus (251845 effect#1), Overwhelming Darkness (252909 effect#1), Twist of Fate (265258 effect#1), Harvested Thoughts (273321 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -503,7 +504,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=7216)     : Apply Aura (6) | Periodic Dummy (226): every 0.5 seconds
-                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 Description      : Fills you with the embrace of Shadow energy for $d, causing you to heal a nearby ally for $15286s1% of any single-target Shadow spell damage you deal.
 Tooltip          : $15286s1% of any single-target Shadow spell damage you deal heals a nearby ally.
 
@@ -584,7 +585,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #3 (id=332014)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Increases maximum health by $s1% for $d, and instantly heals you for $s2%.
+Description      : Increases maximum health by $s1% for $d, and instantly heals you for that amount.
 Tooltip          : Maximum health increased by $w1%.
 
 Name             : Expansive Mind (Racial Passive) (id=20591) [Passive] 
@@ -971,17 +972,17 @@ Duration         : 21 seconds
 Proc Chance      : 101%
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Shadow Priest (137033 effect#1), Touch of Darkness (194007 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ x....... ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.3 | SP Coefficient: 0.23000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.5 | SP Coefficient: 0.25000 | Target: Enemy (6)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 600 | Scaled Value: 600 | Misc Value: insanity | Target: Self (1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals you for ${$e2*100}% of damage dealt.
@@ -1132,8 +1133,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
 #7 (id=342505)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
-Description      : Disperse into pure Shadow energy for $d, reducing all damage you take by $47585s1%, but you are unable to attack or cast spells. Castable while stunned, feared, or silenced. Clears all snare and movement impairing effects when cast, and makes you immune to them while dispersed. Voidform does not drain Insanity while dispersed.
-Tooltip          : Reduces all damage taken by $s1%.  Cannot attack or cast spells. Immune to snare and movement impairing effects.
+Description      : Disperse into pure shadow energy, reducing all damage you take by $47585s1% for $d, but you are unable to attack or cast spells.
+
+Clears all movement impairing effects and makes you immune to them while dispersed.
+
+Voidform does not drain Insanity while dispersed.
+
+Castable while stunned, feared, or silenced. 
+Tooltip          : Reduces all damage taken by $s1%.
+Immune to all movement impairing effects.
+Cannot attack or cast spells.
 
 Name             : Penance (id=47666) [Spell Family (6)] 
 Class            : Priest
@@ -1439,6 +1448,7 @@ Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
+Affecting spells : Mastery: Madness (77486 effect#1), Priest (137030 effect#1), Shadow Priest (137033 effect#9), Legacy of the Void (193225 effect#1), Voidform (194249 effect#12), Heart of the Void (248296 effect#1)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1449,7 +1459,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=58348)    : Apply Aura (6) | Proc Trigger Spell (42): Body and Soul
                    Base Value: 8 | Scaled Value: 8 | Trigger Spell: 65081 | Target: Self (1)
-Description      : Power Word: Shield $?s137033[increases][and Leap of Faith increase] your target's movement speed by $65081s1% for $65081d.  Can occur once every $proccooldown sec.
+Description      : Power Word: Shield $?s137033[increases][and Leap of Faith increase] your target's movement speed by $65081s1% for $65081d.$?s137032][ Can occur once every $proccooldown sec.][]
 
 Name             : Divine Hymn (id=64843) [Spell Family (6)] 
 Class            : Holy Priest
@@ -1705,10 +1715,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68105)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Mind Flay (15407), Vampiric Touch (34914), Mind Sear (48045), Mind Sear (49821), Shadow Word: Void (205351), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Mind Flay (15407), Vampiric Touch (34914), Mind Sear (48045), Mind Sear (49821), Body and Soul (64129), Shadow Word: Void (205351), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
 #2 (id=224463)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Mind Flay (15407), Vampiric Touch (34914), Mind Sear (48045), Mind Sear (49821), Shadow Word: Void (205351), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Mind Flay (15407), Vampiric Touch (34914), Mind Sear (48045), Mind Sear (49821), Body and Soul (64129), Shadow Word: Void (205351), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
 Description      : Increases the damage of your Shadow Word: Pain, Vampiric Touch, $?s205351[Shadow Word: Void][Mind Blast], Mind Flay, Mind Sear, Void Eruption, and Void Bolt by ${$m1}.1%.
 
 Name             : Echo of Light (id=77489) [Spell Family (6)] 
@@ -2305,10 +2315,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=155428)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Body and Mind (214121), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Holy Word: Salvation (265202), Contrition (270501), Orison (271532), Moment of Repose (272776)
+                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Body and Mind (214121), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Holy Word: Salvation (265202), Contrition (270501), Orison (271532), Moment of Repose (272776)
 #2 (id=155429)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Body and Mind (214121), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Holy Word: Salvation (265202), Contrition (270501), Orison (271532), Moment of Repose (272776)
+                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Body and Mind (214121), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Holy Word: Salvation (265202), Contrition (270501), Orison (271532), Moment of Repose (272776)
 Description      : $@spelldesc109142
 Tooltip          : Increases damage and healing by $s1%.
 
@@ -2433,7 +2443,7 @@ Effects          :
 Description      : When your Vampiric Touch is dispelled, the dispeller is instantly feared in horror for $87204d.
 
 Name             : Holy Nova (id=132157) [Spell Family (6)] 
-Class            : Holy Priest
+Class            : Discipline Holy Priest
 School           : Holy
 Resource         : 1.6% Base Mana (0) (id=7897)
 Spell Level      : 26
@@ -2465,7 +2475,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179714)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-                   Affected Spells: Power Word: Shield (17), Shadow Word: Death (32379), Prayer of Mending (33076), Power Word: Solace (129250), Shadow Word: Death (199911), Circle of Healing (204883), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
+                   Affected Spells: Power Word: Shield (17), Shadow Word: Death (32379), Prayer of Mending (33076), Body and Soul (64129), Power Word: Solace (129250), Shadow Word: Death (199911), Circle of Healing (204883), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
 #2 (id=191080)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1602 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Bolt (205448)
@@ -2483,7 +2493,7 @@ Effects          :
                    Affected Spells (Label): Fel-Crazed Rage (225777), Colossal Slam (232044), Dread Torrent (246464), Ceaseless Toxin (242497), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Infernal Cinders (242218), Shadow Strike (253324), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #7 (id=260688)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
-                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
+                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Lightning Arc (255586), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
 #8 (id=260689)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #9 (id=260690)   : Apply Aura (6) | Dummy (4)
@@ -2531,10 +2541,10 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 300 (Label) | Target: Self (1)
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
 #4 (id=191078)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Smite (585), Holy Fire (14914), Holy Word: Chastise (88625), Power Word: Solace (129250), Holy Nova (132157), Holy Word: Chastise (200196), Holy Word: Chastise (200200), Purge the Wicked (204197), Purge the Wicked (204213)
 #5 (id=191079)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Holy Fire (14914), Holy Word: Chastise (88625), Power Word: Solace (129250), Holy Nova (132157), Holy Word: Chastise (200196), Holy Word: Chastise (200200), Purge the Wicked (204197), Purge the Wicked (204213)
 #6 (id=260947)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2596,7 +2606,7 @@ Effects          :
                    Affected Spells (Label): 
 #9 (id=260960)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -65 | Scaled Value: -65 | Misc Value 2: 230 (Label) | Target: Self (1)
-                   Affected Spells (Label): Nightfall (213786), Fel Meteor (214052), Orb of Destruction (229700), Solar Collapse (229737), Nether Meteor (225764), Kil'jaeden's Burning Wish (235999), Crystalline Shockwave (225716), Arcane Swipe (225721), Colossal Slam (232044), Dread Torrent (246464), Piercing Anguish (246751), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Void Tendril (250834), Legion Bombardment (253248), Gorshalach's Legacy (253329), Sorrow (253022), Prototype Personnel Decimator (255629), Echo of Gorshalach (255672), Gorshalach's Legacy (255673), Legion Bombardment (255713), Legion Bombardment (255724), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430), Legion Bombardment (257376)
+                   Affected Spells (Label): Nightfall (213786), Fel Meteor (214052), Orb of Destruction (229700), Solar Collapse (229737), Nether Meteor (225764), Kil'jaeden's Burning Wish (235999), Crystalline Shockwave (225716), Arcane Swipe (225721), Colossal Slam (232044), Dread Torrent (246464), Piercing Anguish (246751), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Void Tendril (250834), Legion Bombardment (253248), Gorshalach's Legacy (253329), Sorrow (253022), Prototype Personnel Decimator (255629), Echo of Gorshalach (255672), Gorshalach's Legacy (255673), Legion Bombardment (255713), Legion Bombardment (255724), Lightning Arc (255586), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430), Legion Bombardment (257376)
 #10 (id=260961)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -65 | Scaled Value: -65 | Misc Value: 3 | Misc Value 2: 232 (Label) | Target: Self (1)
                    Affected Spells (Label): Dark Blast (215444), Mechanical Bomb Squirrel (216085), Tormenting Cyclone (221845), Volatile Ichor (222187), Poisoned Dreams (222705), Flame Wreath (230257), Volatile Energy (230236), Carrion Swarm (225131), Terror From Below (242524), Spear of Anguish (242605), Shadow Wave (215089), Pool of Pure Void (250766)
@@ -2639,13 +2649,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179717)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
-                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165)
+                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346)
 #2 (id=191068)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165)
+                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346)
 #3 (id=191069)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -20 | Scaled Value: -20 | Target: Self (1)
-                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165)
+                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346)
 #4 (id=191070)   : Apply Aura (6) | Modify Mana Pool% (419)
                    Base Value: -80 | Scaled Value: -80 | Target: Self (1)
 #5 (id=191071)   : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
@@ -2659,9 +2669,9 @@ Effects          :
 #8 (id=260939)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 6000 | Scaled Value: 6000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Power Word: Shield (17)
-#9 (id=260940)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Shadow Mend (186263), Shadow Mend (187464)
+#9 (id=260940)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(38)
+                   Base Value: -6000 | Scaled Value: -6000 | Misc Value: 38 | Target: Self (1)
+                   Affected Spells: Body and Soul (64129), Void Eruption (228260), Void Eruption (228360)
 #10 (id=260941)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
@@ -3148,13 +3158,13 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283483)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Void Eruption (228260), Void Eruption (228360)
+                   Affected Spells: Body and Soul (64129), Void Eruption (228260), Void Eruption (228360)
 #2 (id=325209)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Voidform (185916)
 #3 (id=361454)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Void Eruption (228260), Void Eruption (228360)
+                   Affected Spells: Body and Soul (64129), Void Eruption (228260), Void Eruption (228360)
 #4 (id=361455)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -35 | Scaled Value: -35 | Misc Value: 12 | Target: Self (1)
 #5 (id=371747)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
@@ -3204,10 +3214,10 @@ Attributes       : ........ ........ ..x..... x..x.x.x   .....x.. ..x..... .....
 Effects          :
 #1 (id=285130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165)
+                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346)
 #2 (id=285131)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165)
+                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346)
 #3 (id=285132)   : Apply Aura (6) | Restore Power (85)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 13 | Target: Self (1)
 #4 (id=285141)   : Apply Aura (6) | Modify All Haste% (193)
@@ -3228,7 +3238,7 @@ Effects          :
                    Base Value: 218413 | Scaled Value: 218413 | Trigger Spell: 218413 | Target: Self (1)
 #12 (id=343559)   : Apply Aura (6) | Unknown(332)
                    Base Value: 205448 | Scaled Value: 205448 | Target: Self (1)
-                   Affected Spells: Void Eruption (228260), Void Eruption (228360)
+                   Affected Spells: Body and Soul (64129), Void Eruption (228260), Void Eruption (228360)
 #13 (id=352180)   : Apply Aura (6) | Unknown(332)
                    Base Value: 194249 | Scaled Value: 194249 | Misc Value: 232698 | Target: Self (1)
 #14 (id=469640)   : Apply Aura (6) | Unknown(235)
@@ -3880,7 +3890,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 2 (9 seconds cooldown)
 Category         : 1590: Shadow Priest (137033 effect#11)
-Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Harvested Thoughts (273321 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4213,7 +4223,7 @@ Tooltip          : Healing for $w1 every $t1 sec and movement speed increased by
 Name             : Schism (id=214621) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
-Resource         : 2.5% Base Mana (0) (id=11237)
+Resource         : 0.5% Base Mana (0) (id=11237)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -4229,7 +4239,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=318771)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.30000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Enemy (6)
 #2 (id=318779)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 127 | Target: Enemy (6)
 Description      : Attack the enemy's soul with a surge of Shadow energy, dealing $s1 Shadow damage and increasing damage that you deal to the target by $s2% for $d.
@@ -4344,7 +4354,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Category         : 1660
-Affecting spells : Mastery: Madness (77486 effect#1), Priest (137030 effect#1), Legacy of the Void (193225 effect#1), Voidform (194249 effect#12), Heart of the Void (248296 effect#1)
+Affecting spells : Mastery: Madness (77486 effect#1), Priest (137030 effect#1), Shadow Priest (137033 effect#9), Legacy of the Void (193225 effect#1), Voidform (194249 effect#12), Heart of the Void (248296 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4405,7 +4415,7 @@ Class            : Priest
 School           : Shadow
 Spell Level      : 10
 Range            : 100 yards
-Velocity         : 30 yards/sec
+Velocity         : 27 yards/sec
 Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Priest (137030 effect#1), Shadow Priest (137033 effect#1), Legacy of the Void (193225 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Heart of the Void (248296 effect#1), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -4415,7 +4425,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=343748)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.80000 | Target: Enemy (6)
 Description      : $@spelldesc228260
 
 Name             : Smite (Rank 2) (id=231682) [Spell Family (6), Passive] 
@@ -4511,7 +4521,7 @@ Attributes       : ........ ........ ........ x.......   ........ ........ .....
 Effects          :
 #1 (id=351199)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165)
+                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346)
 #2 (id=351200)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x1 | Target: Self (1)
 #3 (id=351464)   : Apply Aura (6) | Shapeshift (36)
@@ -4520,7 +4530,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210195
 #5 (id=479972)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165)
+                   Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346)
 Description      : Assume a Shadowform, increasing your spell damage dealt by $s1%, and reducing your Physical damage taken by $s2%.
 Tooltip          : Spell damage dealt increased by $s1%.
 Physical damage taken reduced by $s2%.
@@ -4873,20 +4883,28 @@ Tooltip          : Dealing $s1 Shadow damage to the target every $t sec.
 
 Insanity drain temporarily stopped.
 
-Name             : Dark Void (id=263346) [Spell Family (6), Passive] 
+Name             : Dark Void (id=263346) [Spell Family (6)] 
 Class            : Priest
 School           : Shadow
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Range            : 40 yards
+Cast Time        : 2 seconds
+GCD              : 1.5 seconds
+Cooldown         : 30 seconds
+Affecting spells : Twist of Fate (123254 effect#1), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=706056)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Void Eruption applies Shadow Word: Pain to all targets hit.
+#1 (id=706056)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+#2 (id=725320)   : Energize Power (30)
+                   Base Value: 3000 | Scaled Value: 3000 | Misc Value: insanity | Target: Self (1)
+Description      : Unleashes an explosion of dark energy around the target, dealing $s1 Shadow damage and applying Shadow Word: Pain to all nearby enemies.
+
+|cFFFFFFFFGenerates ${$s2/100} Insanity.|r
 
 Name             : Surrendered to Madness (id=263406) [Spell Family (6)] 
 Class            : Priest
@@ -4980,10 +4998,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=709293)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Body and Mind (214121), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Holy Word: Salvation (265202), Contrition (270501), Orison (271532), Moment of Repose (272776)
+                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Body and Mind (214121), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Holy Word: Salvation (265202), Contrition (270501), Orison (271532), Moment of Repose (272776)
 #2 (id=709294)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Body and Mind (214121), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Holy Word: Salvation (265202), Contrition (270501), Orison (271532), Moment of Repose (272776)
+                   Affected Spells: Renew (139), Smite (585), Shadow Word: Pain (589), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Vampiric Touch (34914), Penance (47666), Penance (47750), Mind Sear (48045), Mind Sear (49821), Divine Hymn (64844), Holy Word: Chastise (88625), Divine Star (110745), Halo (120692), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Mend (186263), Power Word: Radiance (194509), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Circle of Healing (204883), Void Torrent (205065), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Light's Wrath (207946), Body and Mind (214121), Schism (214621), Void Eruption (228360), Cosmic Ripple (243241), Void Torrent (263165), Dark Void (263346), Holy Word: Salvation (265202), Contrition (270501), Orison (271532), Moment of Repose (272776)
 Description      : $@spelldesc265259
 Tooltip          : Increases damage and healing by $s1%.
 

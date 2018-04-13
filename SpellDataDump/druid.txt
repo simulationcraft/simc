@@ -104,6 +104,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
 #3 (id=308)      : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 40 | Scaled Value: 40 | SP Coefficient: 0.25000 | Target: Self (1)
+#4 (id=725521)   : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
+                   Base Value: -100 | Scaled Value: -100 | SP Coefficient: 0.25000 | Misc Value: 21 | Target: Self (1)
+                   Affected Spells: Dash (1850), Tiger Dash (252216)
 Description      : Shapeshift into Cat Form, increasing auto-attack damage by $s3%, movement speed by $113636s1%, granting protection from Polymorph effects, and reducing falling damage.
 
 The act of shapeshifting frees you from movement impairing effects.
@@ -266,10 +269,12 @@ Name             : Dash (id=1850) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Level      : 8
+GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Category         : 44
 Category Cooldown: 120 seconds
+Affecting spells : Cat Form (768 effect#4)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -332,7 +337,7 @@ Effects          :
 Description      : Nullifies corrupting effects on the friendly target, removing all Curse and Poison effects.
 
 Name             : Soothe (id=2908) [Spell Family (7)] 
-Class            : Druid
+Class            : Balance Feral Restoration Druid
 School           : Nature
 Resource         : 5.6% Base Mana (0) (id=186)
 Spell Level      : 60
@@ -455,9 +460,9 @@ Name             : Tiger's Fury (id=5217) [Spell Family (7)]
 Class            : Feral Druid
 School           : Physical
 Spell Level      : 13
+GCD              : 1 seconds
 Duration         : 8 seconds
 Cooldown         : 30 seconds
-Category Cooldown: 30 seconds
 Affecting spells : Wildcat Celerity (184877 effect#1), Predator (202021 effect#1), Tiger's Fury (231055 effect#1)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -977,7 +982,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=12001)    : Apply Aura (6) | Threat (10)
-                   Base Value: 700 | Scaled Value: 700 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 650 | Scaled Value: 650 | Misc Value: 127 | Target: Self (1)
 #2 (id=12002)    : Apply Aura (6) | Unknown(332)
                    Base Value: 16979 | Scaled Value: 16979 | Misc Value 2: 0x3 | Target: Self (1)
                    Affected Spells: Wild Charge (102401)
@@ -1007,7 +1012,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x00000001
-Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Powerful Bite (210575 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Apex Predator (252752 effect#1), 
+Affecting spells : Tiger's Fury (5217 effect#1), Savage Roar (62071 effect#1), Incarnation: King of the Jungle (102543 effect#1), Berserk (106951 effect#1), Feral Druid (137011 effect#1), Restoration Druid (137012 effect#8), Bloodtalons (145152 effect#1), Soul of the Forest (158476 effect#2), Thrash (192090 effect#2), Feral Affinity (197490 effect#4), Astral Influence (197524 effect#1), Sabertooth (202031 effect#1), Feral Affinity (202155 effect#4), Feral Affinity (202157 effect#4), Powerful Bite (210575 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Ashamane's Frenzy (210723 effect#4), Apex Predator (252752 effect#1), Raking Ferocity (273340 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1171,6 +1176,7 @@ Class            : Balance Restoration Druid
 School           : Nature
 Spell Level      : 50
 Range            : 40 yards
+GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 180 seconds
 Stance Mask      : 0x40000002
@@ -1333,7 +1339,7 @@ Category         : 1237
 Category Cooldown: 10 seconds
 Affecting spells : Incarnation: Tree of Life (5420 effect#1), Ironbark (102342 effect#3), Restoration Druid (137012 effect#1), Nature's Wisdom (167715 effect#1), Grovewalker (186320 effect#1), Infusion of Nature (189757 effect#1), Thrash (192090 effect#2), Restoration Affinity (197492 effect#5), Astral Influence (197524 effect#1), Flourish (197721 effect#2), Essence of G'Hanir (208253 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ...x.... ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ......x. ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ .x..x... ........ x.......   ........ ........ ........ ........ 
@@ -2207,6 +2213,7 @@ Name             : Wild Charge (id=102401) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Range            : 5 - 25 yards
+GCD              : 0.5 seconds
 Duration         : 0.5 seconds
 Cooldown         : 15 seconds
 Category         : 1205
@@ -3136,7 +3143,7 @@ Effects          :
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
 #18 (id=368361)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
-                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
+                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Lightning Arc (255586), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
 #19 (id=474886)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #20 (id=477116)   : Apply Aura (6) | Dummy (4)
@@ -3197,10 +3204,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179695)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -4 | Scaled Value: -4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Nature's Essence (189800), Dreamwalker (189853), Cultivation (200389), Spring Blossoms (207386), Mark of Shifting (224392)
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -4 | Scaled Value: -4 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Efflorescence (81269), Cenarion Ward (102352), Germination (155675), Tranquility (157982), Nature's Essence (189800), Dreamwalker (189853), Cultivation (200389), Spring Blossoms (207386), Mark of Shifting (224392)
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
@@ -3237,7 +3244,7 @@ Effects          :
                    Affected Spells (Label): Insidious Corruption (243941), Spectral Bolt (242571), Spectral Blast (246442), Legion Bombardment (253248), Prototype Personnel Decimator (255629), Legion Bombardment (255713), Legion Bombardment (255724), Legion Bombardment (257376)
 #15 (id=260756)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
-                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
+                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Lightning Arc (255586), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
 #16 (id=290658)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #17 (id=474887)   : Apply Aura (6) | Dummy (4)
@@ -3291,7 +3298,7 @@ Effects          :
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
 #12 (id=260783)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
-                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
+                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Lightning Arc (255586), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
 #13 (id=260784)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=260785)   : Apply Aura (6) | Dummy (4)
@@ -3688,6 +3695,7 @@ Also increases your attack power by ${$159195s1}.1%.
 Name             : Bristling Fur (id=155835) 
 Class            : Druid
 School           : Nature
+GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 40 seconds
 Proc Chance      : 100%
@@ -5253,6 +5261,7 @@ Name             : Elune's Guidance (id=202060) [Spell Family (8)]
 Class            : Druid
 School           : Physical
 Spell Level      : 1
+GCD              : 1 seconds
 Duration         : 5 seconds
 Cooldown         : 30 seconds
 Attributes       : ....x... ........ ..x..... .....x..   .....x.. ..x..... ........ ..x..... 
@@ -5444,6 +5453,7 @@ Name             : Astral Communion (id=202359) [Spell Family (7)]
 Class            : Druid
 School           : Astral
 Spell Level      : 1
+GCD              : 1.5 seconds
 Cooldown         : 80 seconds
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5872,6 +5882,7 @@ Class            : Druid
 School           : Nature
 Spell Level      : 1
 Range            : 40 yards
+GCD              : 1.5 seconds
 Duration         : 8.5 seconds
 Cooldown         : 75 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7063,10 +7074,12 @@ Tooltip          : Allows the use of Prowl even while in combat.
 Name             : Tiger Dash (id=252216) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
+GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 45 seconds
 Category         : 44
 Category Cooldown: 45 seconds
+Affecting spells : Cat Form (768 effect#4)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

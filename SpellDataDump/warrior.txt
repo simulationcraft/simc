@@ -20,8 +20,6 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 #2 (id=217521)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
-#3 (id=217522)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
 Description      : A tanking combat stance that increases Stamina by $s2% and increases armor by $s1% of your Strength.
 
 Name             : Charge (id=100) [Spell Family (4)] 
@@ -29,6 +27,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 3
 Range            : 8 - 25 yards
+GCD              : 0.5 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1386
@@ -177,6 +176,7 @@ Name             : Demoralizing Shout (id=1160) [Spell Family (4)]
 Class            : Protection Warrior
 School           : Physical
 Spell Level      : 48
+GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 101%
@@ -247,7 +247,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 200 | Trigger Spell: 199850 | Target: Self (1)
 #3 (id=293811)   : Trigger Spell (64): Whirlwind
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 400 | Trigger Spell: 199850 | Target: Self (1)
-Description      : Unleashes a whirlwind of steel, $?s202316[hitting your primary target with Slam and striking all other][striking all] enemies within $199658A1 yards for $<baseDmg> Physical damage.
+Description      : Unleashes a whirlwind of steel, $?s202316[hitting your primary target with Slam and ][]striking all enemies within $199658A1 yards for $<baseDmg> Physical damage.
 Variables        : $baseDmg=${3*$199658s1}
 $fervorDmg=${(3*$199658s1)*((100+$202316s1)/100)}
 
@@ -299,10 +299,10 @@ Effects          :
 #4 (id=341514)   : Apply Aura (6) | Unknown(334)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Odyn's Fury (205546), Odyn's Fury (205547), Warbreaker (209577), Rampage (218617), Devastator (236282), Helya's Scorn (243223), Odyn's Glory (243228), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161)
-Description      : Lets loose a battle cry, granting $s1% increased critical strike chance for $d.$?a202751[
+Description      : Lets loose a battle cry, granting your abilities $s1% increased critical strike chance for $d.$?a202751[
 
 |cFFFFFFFFGenerates ${$202751s2/10} Rage.|r][]
-Tooltip          : Critical strike chance increased by $w1%.
+Tooltip          : Critical strike chance of your abilities increased by $w1%.
 
 Name             : Shield Block (id=2565) [Spell Family (4)] 
 Class            : Protection Warrior
@@ -476,6 +476,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 26
 Range            : 8 - 40 yards
+GCD              : 0.5 seconds
 Cooldown         : 0.8 seconds
 Charges          : 1 (45 seconds cooldown)
 Category         : 1211
@@ -715,7 +716,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...
 Effects          :
 #1 (id=5787)     : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : Increases current and maximum health by $s1% for $d.
+#2 (id=725599)   : Direct Heal% (136)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Description      : Increases maximum health by $s1% for $d, and instantly heals you for that amount.
 Tooltip          : Maximum health increased by $s1%.
 
 Name             : Berserker Rage (id=18499) [Spell Family (4)] 
@@ -1088,7 +1091,7 @@ GCD              : 1.5 seconds
 Velocity         : 10 yards/sec
 Duration         : 6 seconds
 Cooldown         : 90 seconds
-Affecting spells : Demoralizing Shout (1160 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Storm of Swords (238075 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Storm of Swords (238075 effect#1), Gathering Storm (273415 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -1143,7 +1146,7 @@ Name             : Bladestorm (id=50622) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Storm of Swords (238075 effect#1), In For The Kill (248622 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Storm of Swords (238075 effect#1), In For The Kill (248622 effect#1), Gathering Storm (273415 effect#1), 
 Triggered by     : Bladestorm (46924), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1609,7 +1612,7 @@ Name             : Bladestorm Off-Hand (id=95738) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Storm of Swords (238075 effect#1), In For The Kill (248622 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Storm of Swords (238075 effect#1), In For The Kill (248622 effect#1), Gathering Storm (273415 effect#1), 
 Triggered by     : Bladestorm (50622)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -1651,9 +1654,8 @@ Name             : Rallying Cry (id=97462) [Spell Family (4)]
 Class            : Arms Fury Protection Warrior
 School           : Physical
 Spell Level      : 80
+GCD              : 1.5 seconds
 Cooldown         : 180 seconds
-Category         : 1251
-Category Cooldown: 10 seconds
 Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1663,8 +1665,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=104012)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15 | Radius: 30 yards | Target: Raid Members (56)
-Description      : Lets loose a rallying cry, granting all party or raid members within $97462a1 yards $97462s1% increased maximum health for $97463d. After this effect expires, the health is lost.
+                   Base Value: 15 | Scaled Value: 15 | Radius: 40 yards | Target: Raid Members (56)
+Description      : Lets loose a rallying cry, granting all party or raid members within $a1 yards $s1% temporary and maximum health for $97463d.
 
 Name             : Rallying Cry (id=97463) [Spell Family (4)] 
 Class            : Warrior
@@ -2352,7 +2354,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Heroic Throw (57755)
 #6 (id=261027)   : Apply Aura (6) | Threat (10)
-                   Base Value: 700 | Scaled Value: 700 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 650 | Scaled Value: 650 | Misc Value: 127 | Target: Self (1)
 #7 (id=261028)   : Apply Aura (6) | Unknown(213)
                    Base Value: -56 | Scaled Value: -56 | Target: Self (1)
 #8 (id=261029)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -2380,7 +2382,7 @@ Effects          :
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
 #17 (id=368363)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
-                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
+                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Lightning Arc (255586), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
 #18 (id=474888)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
@@ -2460,7 +2462,7 @@ Effects          :
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
 #5 (id=191013)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 301 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Cinders (242218), Dread Torrent (246464), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Ceaseless Toxin (242497), Shadow Strike (253324), Isolated Strike (255609), Fire Mines (253321), Sorrow (253022), Torment the Weak (252907), Chaotic Darkness (252896), Shadowbind (252879), Secure in the Light (253073), Infusion of Light (253098), Norgannon's Fireball (257241), Norgannon's Frostbolt (257242), Norgannon's Arcane Missile (257243), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430), Norgannon's Divine Smite (257532), Norgannon's Wrath (257533), Norgannon's Shadow Bolt (257534), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
+                   Affected Spells (Label): Infernal Cinders (242218), Dread Torrent (246464), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Ceaseless Toxin (242497), Shadow Strike (253324), Isolated Strike (255609), Lightning Arc (255586), Fire Mines (253321), Sorrow (253022), Torment the Weak (252907), Chaotic Darkness (252896), Shadowbind (252879), Secure in the Light (253073), Infusion of Light (253098), Norgannon's Fireball (257241), Norgannon's Frostbolt (257242), Norgannon's Arcane Missile (257243), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430), Norgannon's Divine Smite (257532), Norgannon's Wrath (257533), Norgannon's Shadow Bolt (257534), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
 #6 (id=261037)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 3 | Misc Value 2: 313 (Label) | Target: Self (1)
                    Affected Spells (Label): Fel-Crazed Rage (225777)
@@ -2612,7 +2614,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 7 seconds
 Cooldown         : 60 seconds
-Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Storm of Swords (238075 effect#1)
+Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Storm of Swords (238075 effect#1), Gathering Storm (273415 effect#1), 
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -2676,7 +2678,7 @@ Name             : Ravager (id=156287) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Range            : 100 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Storm of Swords (238075 effect#1), In For The Kill (248622 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Storm of Swords (238075 effect#1), In For The Kill (248622 effect#1), Gathering Storm (273415 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3027,6 +3029,7 @@ Class            : Protection Warrior
 School           : Physical
 Spell Level      : 28
 Range            : 8 - 25 yards
+GCD              : 0.5 seconds
 Cooldown         : 1.5 seconds
 Charges          : 1 (20 seconds cooldown)
 Category         : 1386
@@ -3042,11 +3045,11 @@ Effects          :
                    Base Value: 8 | Scaled Value: 8 | Target: Unknown(25)
 #2 (id=291445)   : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: rage | Target: Self (1)
-Description      : Run at high speed toward an ally or enemy.
+Description      : Run at high speed toward an enemy or ally.
 
-When targeting an enemy, Intercept deals $126664s2 Physical damage, roots the target for $105771d and then reduces the target's movement speed by $236027s1% for $236027d, but has a minimum range of $s1 yds.
+When targeting an enemy, deals $126664s2 Physical damage, roots the target for $105771d, and then reduces the target's movement speed by $236027s1% for $236027d.
 
-When targeting an ally, Intercept will intercept the next melee or ranged attack against the ally within $147833d while the target remains within $147833A2 yards.
+When targeting an ally, intercepts the next melee or ranged attack against them within $147833d while the ally remains within $147833A2 yards.
 
 |cFFFFFFFFGenerates $/10;s2 Rage.|r
 
@@ -4563,7 +4566,7 @@ School           : Physical
 Range            : 40 yards
 Velocity         : 30 yards/sec
 Duration         : 12 seconds
-Affecting spells : Protection Warrior (137048 effect#8), Storm of Swords (238075 effect#1)
+Affecting spells : Protection Warrior (137048 effect#8), Storm of Swords (238075 effect#1), Gathering Storm (273415 effect#1), 
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4585,7 +4588,7 @@ GCD              : 1.5 seconds
 Velocity         : 10 yards/sec
 Duration         : 6 seconds
 Cooldown         : 90 seconds
-Affecting spells : Demoralizing Shout (1160 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Storm of Swords (238075 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#4), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Storm of Swords (238075 effect#1), Gathering Storm (273415 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -4615,7 +4618,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 7 seconds
 Cooldown         : 60 seconds
-Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Storm of Swords (238075 effect#1)
+Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Storm of Swords (238075 effect#1), Gathering Storm (273415 effect#1), 
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4690,7 +4693,6 @@ Name             : Shield Slam (Rank 2) (id=231834) [Spell Family (4), Passive]
 Class            : Protection Warrior
 School           : Physical
 Spell Level      : 34
-Affecting spells : Battering Ram (269244 effect#1)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
