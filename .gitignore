@@ -11,6 +11,7 @@
 *.[Dd]ebug
 moc_*.cpp
 *.pro.user.*
+*.pro.user
 *.opensdf
 *.vcxproj.user
 *.pdb
