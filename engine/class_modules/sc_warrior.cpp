@@ -1057,12 +1057,12 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
         }
       } );
 
-      auto random_idx = static_cast<size_t>( rng().range( 0, targets.size() ) );
+      auto random_idx = rng().range(targets.size());
       return targets.size() ? targets[random_idx] : nullptr;
     }
     else
     {
-      auto random_idx = static_cast<size_t>( rng().range( 0, sim -> target_non_sleeping_list.size() ) );
+      auto random_idx = rng().range( size_t(), sim -> target_non_sleeping_list.size() );
       return sim -> target_non_sleeping_list[random_idx];
     }
   }
@@ -5080,7 +5080,7 @@ void warrior_t::init_base_stats()
 
       average_itemlevel = avg_weighted_ilevel / divisor;
 
-      const auto& data = dbc.random_property( average_itemlevel );
+      const auto& data = dbc.random_property( static_cast<int>(average_itemlevel) );
 
       expected_max_health = data.p_epic[0] * 8.484262;
       expected_max_health += base.stats.attribute[ATTR_STAMINA];

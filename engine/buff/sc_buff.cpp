@@ -1228,7 +1228,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
 
     if ( tick_zero && tick_callback )
     {
-      tick_callback( this, expiration.empty() ? -1 : remains() / period, timespan_t::zero() );
+      tick_callback( this, expiration.empty() ? -1 : static_cast<int>(remains() / period), timespan_t::zero() );
     }
   }
 }
@@ -1299,7 +1299,7 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
 
     if ( tick_zero && tick_callback )
     {
-      tick_callback( this, expiration.empty() ? -1 : remains() / tick_time(), timespan_t::zero() );
+      tick_callback( this, expiration.empty() ? -1 : static_cast<int>(remains() / tick_time()), timespan_t::zero() );
     }
   }
 }

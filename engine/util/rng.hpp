@@ -44,6 +44,20 @@ struct rng_t
 
   bool roll( double chance );
   double range( double min, double max );
+
+  template<class T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  T range(T min, T max)
+  {
+	  return static_cast<T>(range(static_cast<double>(min), static_cast<double>(max)));
+  }
+
+  template<class T, typename = typename std::enable_if<std::is_integral<T>::value>::type>
+  T range(T max)
+  {
+	  return static_cast<T>(range(T{}, static_cast<double>(max)));
+  }
+
+
   double gauss( double mean, double stddev, bool truncate_low_end = false );
   double exponential( double nu );
   double exgauss( double gauss_mean, double gauss_stddev, double exp_nu );

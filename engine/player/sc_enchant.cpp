@@ -622,8 +622,8 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
 
   item.player -> sim -> print_debug("relic: {} ilevel_increase=+{}", relic, util::floor( ilevel_value ));
 
-  item.parsed.relic_bonus_ilevel[ relic_idx ] = util::floor( ilevel_value );
-  item.parsed.data.level += util::floor( ilevel_value );
+  item.parsed.relic_bonus_ilevel[ relic_idx ] = as<unsigned>(util::floor( ilevel_value ));
+  item.parsed.data.level += as<int>(util::floor( ilevel_value ));
 
   return SOCKET_COLOR_RELIC;
 }

@@ -229,7 +229,7 @@ uint64_t race_str_to_mask( const std::string& str )
     break;
   }
 
-  return 1LLU << ( ( race_id < 1 ) ? 0 : race_id - 1 );
+  return ( uint64_t(1) << ( ( race_id < 1 ) ? 0 : race_id - 1 ) );
 }
 
 unsigned school_str_to_mask( const std::string& str )
@@ -525,7 +525,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
     spell_list_expr_t( sim, f_name, type, eq ), offset( 0 ), field_type( SD_TYPE_INT )
   {
     const sdata_field_t      * fields = nullptr;
-    unsigned             fsize;
+    size_t             fsize;
     if ( type == DATA_TALENT )
     {
       fields = _talent_data_fields;
@@ -921,7 +921,7 @@ struct spell_race_expr_t : public spell_list_expr_t
   virtual std::vector<uint32_t> operator==( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
-    uint32_t              race_mask;
+    uint64_t              race_mask;
 
     // Talents are not race specific
     if ( data_type == DATA_TALENT )
@@ -950,7 +950,7 @@ struct spell_race_expr_t : public spell_list_expr_t
   virtual std::vector<uint32_t> operator!=( const spell_data_expr_t& other ) override
   {
     std::vector<uint32_t> res;
-    uint32_t              class_mask;
+    uint64_t              class_mask;
 
     // Talents are not race specific
     if ( data_type == DATA_TALENT )
@@ -1152,7 +1152,7 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
     return new spell_school_expr_t( sim, data_type );
 
   const sdata_field_t* fields;
-  unsigned fsize;
+  size_t fsize;
   if ( data_type == DATA_TALENT )
   {
     fields = _talent_data_fields;
@@ -1169,7 +1169,7 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
     fsize  = sizeof_array( _spell_data_fields );
   }
 
-  for ( unsigned int i = 0; i < fsize; i++ )
+  for ( size_t i = 0; i < fsize; i++ )
   {
     if ( ! fields[ i ].name.empty() && util::str_compare_ci( splits[ 1 ], fields[ i ].name ) )
     {

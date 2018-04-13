@@ -576,7 +576,7 @@ namespace warlock {
           duplicate->target_cache.is_valid = true;
           if (duplicate->target_cache.list.size() > 0)
           {
-            size_t target_to_strike = static_cast<size_t>(rng().range(0.0, duplicate->target_cache.list.size()));
+            size_t target_to_strike = rng().range(size_t(), duplicate->target_cache.list.size());
             duplicate->target = duplicate->target_cache.list[target_to_strike];
             duplicate->execute();
           }
@@ -693,7 +693,7 @@ namespace warlock {
 
         if (targets.size() > 0)
         {
-          channel_demonfire->set_target(targets[rng().range(0, targets.size())]);
+          channel_demonfire->set_target(targets[rng().range(size_t(), targets.size())]);
           channel_demonfire->execute();
         }
 

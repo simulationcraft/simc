@@ -1212,7 +1212,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
     for ( unsigned int i = 0; i < sizeof( spell -> race_mask() ) * 8; i++ )
     {
-      uint64_t mask = ( 1 << i );
+      uint64_t mask = (uint64_t(1) << i );
       if ( ( spell -> race_mask() & mask ) && _race_map.find( i ) != _race_map.end() )
       {
         auto it = _race_map.find( i );
@@ -2020,7 +2020,7 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
   {
     for ( unsigned int i = 0; i < sizeof( spell -> race_mask() ) * 8; i++ )
     {
-      uint64_t mask = ( 1 << i );
+      uint64_t mask = (uint64_t(1) << i );
       if ( ( spell -> race_mask() & mask ) )
       {
         auto it = _race_map.find( i );

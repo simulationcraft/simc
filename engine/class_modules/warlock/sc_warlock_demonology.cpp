@@ -488,7 +488,7 @@ namespace warlock {
           void consume_resource() override {
               warlock_spell_t::consume_resource();
 
-              shards_used = last_resource_cost;
+              shards_used = as<int>(last_resource_cost);
 
               if (last_resource_cost == 1.0)
                   p()->procs.one_shard_hog->occur();

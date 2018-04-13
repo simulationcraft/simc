@@ -1749,8 +1749,8 @@ struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
 
     // Calculate the amount of stacks lost per second based on the amount of haste lost per second
     // divided by the amount of haste gained per Voidform stack
-    hidden_lingering_insanity = p.find_spell( 199849 )->effectN( 1 ).base_value() /
-                                ( p.find_spell( 228264 )->effectN( 2 ).base_value() / 10.0 );
+    hidden_lingering_insanity = as<int>(p.find_spell( 199849 )->effectN( 1 ).base_value() /
+                                ( p.find_spell( 228264 )->effectN( 2 ).base_value() / 10.0 ));
   }
 
   void decrement( int, double ) override

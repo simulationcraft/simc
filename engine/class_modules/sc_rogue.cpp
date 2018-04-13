@@ -5610,7 +5610,7 @@ void rogue_t::spend_combo_points( const action_state_t* state )
 
   if ( buffs.t21_4pc_subtlety -> up() )
   {
-    trigger_combo_point_gain( max_spend, gains.t21_4pc_subtlety, state -> action );
+    trigger_combo_point_gain( static_cast<int>(max_spend), gains.t21_4pc_subtlety, state -> action );
     buffs.t21_4pc_subtlety -> expire();
   }
 }

@@ -627,7 +627,7 @@ bool download_item_data( item_t& item, cache::behavior_e caching )
     if ( js.HasMember( "allowableRaces" ) )
     {
       for ( rapidjson::SizeType i = 0, n = js[ "allowableRaces" ].Size(); i < n; ++i )
-        item.parsed.data.race_mask |= ( 1 << ( js[ "allowableRaces" ][ i ].GetInt() - 1 ) );
+        item.parsed.data.race_mask |= ( uint64_t(1) << ( js[ "allowableRaces" ][ i ].GetInt() - 1 ) );
     }
     else
       item.parsed.data.race_mask = -1;

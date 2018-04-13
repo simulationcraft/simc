@@ -1291,7 +1291,7 @@ public:
       return;
     }
 
-    size_t spell_idx = ab::rng().range( 0, static_cast<double>( p()->action.unleash_doom.size() ) );
+    size_t spell_idx = ab::rng().range( size_t(), p()->action.unleash_doom.size() );
     p()->action.unleash_doom[ spell_idx ]->set_target( state->target );
     p()->action.unleash_doom[ spell_idx ]->schedule_execute();
     proc_ud->occur();
@@ -3116,7 +3116,7 @@ struct storm_tempests_zap_t : public melee_attack_t
     if ( target_list().size() > 0 )
     {
       // Pick a random "nearby" target
-      size_t target_idx = static_cast<size_t>( rng().range( 0, target_list().size() ) );
+      size_t target_idx = rng().range( size_t(), target_list().size() );
       target            = target_list()[ target_idx ];
 
       melee_attack_t::execute();
@@ -4835,7 +4835,7 @@ struct feral_spirit_spell_t : public shaman_spell_t
       size_t n = 2;
       while ( n )
       {
-        size_t idx = static_cast<size_t>( rng().range( 0, p()->pet.doom_wolves.size() ) );
+        size_t idx = rng().range( size_t(), p()->pet.doom_wolves.size() );
         if ( !p()->pet.doom_wolves[ idx ]->is_sleeping() )
         {
           continue;

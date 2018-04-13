@@ -371,7 +371,7 @@ namespace warlock
               }
             };
 
-            make_event<demo_sc_event>( *p()->sim, p(), last_resource_cost );
+            make_event<demo_sc_event>( *p()->sim, p(), as<int>(last_resource_cost) );
           }
 
           else
@@ -413,7 +413,7 @@ namespace warlock
           {
             if (!infernal->is_sleeping())
             {
-              p()->buffs.grimoire_of_supremacy->trigger(last_resource_cost);
+              p()->buffs.grimoire_of_supremacy->trigger(as<int>(last_resource_cost));
             }
           }
         }

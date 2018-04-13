@@ -5309,7 +5309,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      unsigned n = static_cast<unsigned>( rng().range( 0, fw_proc_stacks.size() ) );
+      size_t n = rng().range( size_t(), fw_proc_stacks.size() );
       unsigned n_stacks = fw_proc_stacks[ n ];
       if ( s -> result == RESULT_CRIT && p() -> talent.castigator -> ok() )
       {
@@ -7086,8 +7086,8 @@ struct hungering_rune_weapon_buff_t : public buff_t
                             p -> gains.hungering_rune_weapon );
       }
     } ) ),
-    rune_divisor( p -> talent.hungering_rune_weapon -> ok() ? p -> talent.hungering_rune_weapon -> effectN( 1 ).period() / buff_period : 1 ),
-    rp_divisor( p -> talent.hungering_rune_weapon -> ok() ? p -> talent.hungering_rune_weapon -> effectN( 2 ).period() / buff_period : 1)
+    rune_divisor( p -> talent.hungering_rune_weapon -> ok() ? as<int>(p -> talent.hungering_rune_weapon -> effectN( 1 ).period() / buff_period) : 1 ),
+    rp_divisor( p -> talent.hungering_rune_weapon -> ok() ? as<int>(p -> talent.hungering_rune_weapon -> effectN( 2 ).period() / buff_period) : 1)
   {
 
   }
@@ -7149,7 +7149,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
   double actual_amount = player_t::resource_loss( resource_type, amount, g, a );
   if ( resource_type == RESOURCE_RUNE )
   {
-    _runes.consume( amount );
+    _runes.consume(as<int>(amount) );
     // Ensure rune state is consistent with the actor resource state for runes
     assert( _runes.runes_full() == resources.current[ RESOURCE_RUNE ] );
 
@@ -7194,7 +7194,7 @@ void death_knight_t::trigger_t20_2pc_frost( double consumed )
     return;
   }
 
-  t20_2pc_frost += consumed;
+  t20_2pc_frost += as<int>(consumed);
 
   if ( sim -> debug )
   {
@@ -7222,7 +7222,7 @@ void death_knight_t::trigger_t20_4pc_frost( double consumed )
     return;
   }
 
-  t20_4pc_frost += consumed;
+  t20_4pc_frost += as<int>(consumed);
 
   if ( sim -> debug )
   {

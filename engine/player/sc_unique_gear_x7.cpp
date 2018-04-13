@@ -1826,7 +1826,7 @@ struct norgannons_command_t : public dbc_proc_callback_t
   void execute( action_t* /* a */, action_state_t* state ) override
   {
     // Pick a random nuke from the list and shoot
-    size_t nuke_idx = static_cast<size_t>( rng().range( 0, nukes.size() ) );
+    size_t nuke_idx =  rng().range( size_t(), nukes.size() );
     nukes[ nuke_idx ] -> set_target( state -> target );
     nukes[ nuke_idx ] -> execute();
 
@@ -3587,7 +3587,7 @@ struct dreadstone_proc_cb_t : public dbc_proc_callback_t
 
   void execute( action_t* /* a */, action_state_t* /* state */ ) override
   {
-    size_t buff_index = static_cast<size_t>( rng().range( 0, buffs.size() ) );
+    size_t buff_index = rng().range( size_t(), buffs.size() );
     buffs[ buff_index ] -> trigger();
   }
 };
@@ -4171,12 +4171,12 @@ void item::draught_of_souls( special_effect_t& effect )
           }
         } );
 
-        auto random_idx = static_cast<size_t>( rng().range( 0, targets.size() ) );
+        auto random_idx = rng().range(size_t(), targets.size() );
         return targets.size() ? targets[ random_idx ] : nullptr;
       }
       else
       {
-        auto random_idx = static_cast<size_t>( rng().range( 0, sim -> target_non_sleeping_list.size() ) );
+        auto random_idx = rng().range( size_t(), sim -> target_non_sleeping_list.size() );
         return sim -> target_non_sleeping_list[ random_idx ];
       }
     }
@@ -4634,7 +4634,7 @@ struct darkmoon_deck_t
     if ( top_card )
       top_card -> expire();
 
-    top_card = cards[ static_cast<size_t>( player -> rng().range( 0, cards.size() ) ) ];
+    top_card = cards[ player -> rng().range( size_t(), cards.size() ) ];
 
     top_card -> trigger();
   }
@@ -6120,8 +6120,8 @@ struct pepper_breath_driver_t : public proc_spell_t
 
   pepper_breath_driver_t( const special_effect_t& effect, unsigned trigger_id ) :
     proc_spell_t( "pepper_breath", effect.player, effect.trigger() ),
-    balls_min( effect.trigger() -> effectN( 1 ).min( effect.player ) ),
-    balls_max( effect.trigger() -> effectN( 1 ).max( effect.player ) )
+    balls_min( as<size_t>(effect.trigger() -> effectN( 1 ).min( effect.player )) ),
+    balls_max( as<size_t>(effect.trigger() -> effectN( 1 ).max( effect.player )) )
   {
     assert( balls_min > 0 && balls_max > 0 );
     background = true;
@@ -6425,7 +6425,7 @@ struct eyasus_driver_t : public spell_t
 {
   std::array<stat_buff_t*, 4> stat_buffs;
   std::array<buff_t*, 4> mulligan_buffs;
-  unsigned current_roll;
+  size_t current_roll;
   cooldown_t* base_cd;
   bool first_roll, used_mulligan;
 
@@ -6484,7 +6484,7 @@ struct eyasus_driver_t : public spell_t
 
     // Choose a buff and trigger the mulligan one
     range::for_each( mulligan_buffs, []( buff_t* b ) { b -> expire(); } );
-    current_roll = static_cast<unsigned>( rng().range( 0, mulligan_buffs.size() ) );
+    current_roll = rng().range( mulligan_buffs.size() );
     mulligan_buffs[ current_roll ] -> trigger();
     if ( ! first_roll )
     {

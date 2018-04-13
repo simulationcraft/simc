@@ -446,7 +446,7 @@ void print_defense_stats( std::ostream& os, const player_t& p )
       p.composite_mitigation_versatility_rating() );
 }
 
-void print_gain( std::ostream& os, const gain_t& g, int max_name_length )
+void print_gain( std::ostream& os, const gain_t& g, size_t max_name_length )
 {
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {

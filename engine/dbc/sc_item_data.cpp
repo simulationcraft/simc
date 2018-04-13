@@ -1261,7 +1261,7 @@ bool item_database::parse_item_spell_enchant( item_t& item,
                es -> effectN( j + 1 ).subtype() == A_MOD_STAT &&
                es -> effectN( j + 1 ).misc_value1() == -1 )
           {
-            stats.push_back( stat_pair_t( STAT_ALL, es -> effectN( j + 1 ).average( item.player ) ) );
+            stats.push_back( stat_pair_t( STAT_ALL, static_cast<int>(es -> effectN( j + 1 ).average( item.player ) )) );
             break;
           }
         }

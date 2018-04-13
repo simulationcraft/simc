@@ -3056,8 +3056,7 @@ struct flanking_strike_t: hunter_melee_attack_t
 
       if ( !p() -> animal_instincts_cds.empty() )
       {
-        unsigned roll =
-          static_cast<unsigned>( p() -> rng().range( 0, p() -> animal_instincts_cds.size() ) );
+        size_t roll = p() -> rng().range( size_t(), p() -> animal_instincts_cds.size() );
 
         p() -> animal_instincts_cds[roll].first -> adjust( animal_instincts );
         p() -> animal_instincts_cds[roll].second -> occur();

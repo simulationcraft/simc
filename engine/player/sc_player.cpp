@@ -6288,7 +6288,7 @@ int player_t::get_action_id( const std::string& name )
   }
 
   action_map.push_back( name );
-  return action_map.size() - 1;
+  return static_cast<int>(action_map.size() - 1);
 }
 
 wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const std::string& cd_name ) :

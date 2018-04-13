@@ -282,8 +282,8 @@ public:
 
   // Add purchased artifact power
   bool     add_power( unsigned power_id, unsigned rank );
-  void     add_relic( unsigned index, unsigned item_id, unsigned power_id, unsigned rank );
-  void     remove_relic( unsigned index );
+  void     add_relic( size_t index, unsigned item_id, unsigned power_id, unsigned rank );
+  void     remove_relic( size_t index );
   bool     add_crucible_power( unsigned power_id, unsigned rank, power_op = OP_SET );
   // Override an artifact power, used for artifact_override= option
   void     override_power( const std::string& name_str, unsigned rank );

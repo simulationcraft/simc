@@ -157,7 +157,7 @@ void player_artifact_data_t::set_artifact_slot( slot_e slot )
 
 int player_artifact_data_t::ilevel_increase() const
 {
-  return player() -> find_artifact_spell( CRUCIBLE_ILEVEL_POWER_ID ).value();
+  return static_cast<int>(player() -> find_artifact_spell( CRUCIBLE_ILEVEL_POWER_ID ).value());
 }
 
 slot_e player_artifact_data_t::slot() const
@@ -309,7 +309,7 @@ void player_artifact_data_t::override_power( const std::string& name_str, unsign
   }
 }
 
-void player_artifact_data_t::remove_relic( unsigned index )
+void player_artifact_data_t::remove_relic( size_t index )
 {
   if ( index >= MAX_ARTIFACT_RELIC )
   {
@@ -341,7 +341,7 @@ void player_artifact_data_t::remove_relic( unsigned index )
   }
 }
 
-void player_artifact_data_t::add_relic( unsigned index,
+void player_artifact_data_t::add_relic( size_t index,
                                         unsigned item_id,
                                         unsigned power_id,
                                         unsigned rank )
