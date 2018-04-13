@@ -5311,7 +5311,7 @@ public:
   virtual double composite_attack_power() const
   {
     // BfA has added inherited attack power from WDPS for almost all attacks in the game
-    // This bonus is equal to 7x the WDPS of the weapon, and applies to anything using AP
+    // This bonus is equal to 6x the WDPS of the weapon, and applies to anything using AP
     // However, WDPS-based attacks or auto-attacks do not benefit from this bonus AP
     if ( weapon_multiplier == 0 )
     {

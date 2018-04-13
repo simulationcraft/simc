@@ -135,21 +135,12 @@ namespace monk_util
 
     double mhdps = 0;
     double ohdps = 0; 
-    double cdps = 0;
     // Main Hand
     if ( mh && mh -> type != WEAPON_NONE  )
     {
       assert( mh -> slot != SLOT_OFF_HAND );
       
-      mhdps += ( mh -> min_dmg + mh -> max_dmg ) / ( 2 * mh -> swing_time.total_seconds() );
-
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "%s main hand weapon damage portion for %s: td=%.3f min_dmg=%.0f max_dmg=%.0f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
-                                 player -> name(), action -> name(),
-                                 mhdps, mh -> min_dmg, mh -> max_dmg, mhdps,
-                                 mh -> bonus_dmg, mh -> swing_time.total_seconds(), ap );
-      }
+      mhdps += ap + ( mh -> dps + WEAPON_POWER_COEFFICIENT );
     }
 
     // Off Hand
@@ -157,18 +148,10 @@ namespace monk_util
     {
       assert( oh -> slot == SLOT_OFF_HAND );
       
-      ohdps += ( oh -> min_dmg + oh -> max_dmg ) / ( 2 * oh -> swing_time.total_seconds() );
-
-      if ( sim -> debug )
-      {
-        sim -> out_debug.printf( "%s off-hand weapon damage portion for %s: td=%.3f min_dmg=%.0f max_dmg=%.0f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
-                                player -> name(), action -> name(), ( mhdps + ohdps ), oh -> min_dmg, oh -> max_dmg, ohdps, oh -> bonus_dmg, oh -> swing_time.total_seconds(), ap );
-      }
+      ohdps += ap + ( oh -> dps + WEAPON_POWER_COEFFICIENT );
+      ohdps /= 2;
     }
-
-    cdps += ( ( 2 * mhdps ) + ohdps ) / 3;
-
-    return ap + ( cdps * WEAPON_POWER_COEFFICIENT );
+    return ( mhdps + ohdps ) * 2 / 3;;
   }
 }
 
