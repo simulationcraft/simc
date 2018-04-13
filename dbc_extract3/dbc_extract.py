@@ -155,7 +155,7 @@ elif options.type == 'view':
         replaced_ids = []
         # If cache has entries for the dbc_file, grab cache values into a database
         for record in dbc_file:
-            if record.id in entries:
+            if not options.raw and record.id in entries:
                 print('{}'.format(str(entries[record.id])))
                 replaced_ids.append(record.id)
             else:
@@ -204,7 +204,7 @@ elif options.type == 'csv':
             if first:
                 print('{}'.format(record.field_names(options.delim)))
 
-            if record.id in entries:
+            if not options.raw and record.id in entries:
                 print('{}'.format(entries[record.id].csv(options.delim, first)))
                 replaced_ids.append(record.id)
             else:

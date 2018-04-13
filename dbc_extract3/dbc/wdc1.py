@@ -42,6 +42,9 @@ COLUMN_TYPE_INDEXED = 3
 # Contents of the column is an array of values, array entries are 4 bytes each
 COLUMN_TYPE_ARRAY   = 4
 
+# A signed bitpacked column
+COLUMN_TYPE_BIT_S   = 5
+
 # Values from bitarray come as unsigned, transform to twos complement signed
 # value if the data format indicates a signed column
 def transform_sign(value, mask, bit_size):
@@ -82,6 +85,8 @@ def get_decoder(column):
         return WDC1ColumnDataValue(column)
     elif column.field_ext_type() == COLUMN_TYPE_ARRAY:
         return WDC1ArrayDataValue(column)
+    elif column.field_ext_type() == COLUMN_TYPE_BIT_S:
+        return WDC1BitPackedValue(column)
 
     return None
 
@@ -630,6 +635,10 @@ class WDC1Column:
 
             self.__field_size = ext_data[5]
             self.__elements   = ext_data[6]
+        elif self.__block_type == COLUMN_TYPE_BIT_S:
+            self.__packed_bit_offset = ext_data[4]
+            self.__value_size = ext_data[5]
+            self.__is_signed = True
 
     def field_base_type(self):
         return self.__size_type
@@ -666,7 +675,7 @@ class WDC1Column:
     def value_bit_size(self):
         if self.__size_type in [0, 8, 16, 24, -32]:
             return (32 - self.__size_type)
-        elif self.__block_type == COLUMN_TYPE_BIT:
+        elif self.__block_type in [COLUMN_TYPE_BIT, COLUMN_TYPE_BIT_S]:
             return self.__value_size
         else:
             format_bit_size = self.format_bit_size()
@@ -704,6 +713,8 @@ class WDC1Column:
     def is_signed(self):
         if self.__block_type == COLUMN_TYPE_BIT:
             return self.__is_signed
+        elif self.__block_type == COLUMN_TYPE_BIT_S:
+            return True
         else:
             if self.__format:
                 return self.__format.data_type in ['b', 'h', 'i', 'q']
@@ -741,17 +752,22 @@ class WDC1Column:
             fields.append('type={:<6s}'.format('index'))
         elif self.__block_type == COLUMN_TYPE_ARRAY:
             fields.append('type={:<6s}'.format('array'))
+        elif self.__block_type == COLUMN_TYPE_BIT_S:
+            fields.append('type={:<6s}'.format('sbits'))
         else:
             fields.append('type={:<6s}'.format('bytes'))
         fields.append('{:<10s}'.format('({})'.format(self.short_type())))
 
         fields.append('bit_offset={:<3d}'.format(self.field_bit_offset()))
 
-        if self.__block_type in [COLUMN_TYPE_BIT, COLUMN_TYPE_INDEXED, COLUMN_TYPE_ARRAY]:
+        if self.__block_type in [COLUMN_TYPE_BIT, COLUMN_TYPE_INDEXED, COLUMN_TYPE_ARRAY, COLUMN_TYPE_BIT_S]:
             fields.append('packed_bit_offset={:<3d}'.format(self.__packed_bit_offset))
 
         if self.__block_type in [COLUMN_TYPE_BIT]:
             fields.append('signed={!s:<5}'.format(self.__is_signed))
+
+        if self.__block_type in [COLUMN_TYPE_BIT_S]:
+            fields.append('signed=True')
 
         if self.__block_type in [COLUMN_TYPE_ARRAY]:
             fields.append('elements={:<2d}'.format(self.__elements))
