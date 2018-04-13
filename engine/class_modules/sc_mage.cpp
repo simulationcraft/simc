@@ -3035,7 +3035,12 @@ struct evocation_t : public arcane_mage_spell_t
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
-    p() -> buffs.evocation -> trigger();
+
+    double mana_regen_multiplier = 1.0;
+    mana_regen_multiplier += p() -> buffs.evocation -> default_value;
+    mana_regen_multiplier /= execute_state -> haste;
+
+    p() -> buffs.evocation -> trigger( 1, mana_regen_multiplier );
   }
 
   virtual void last_tick( dot_t* d ) override
@@ -5728,9 +5733,11 @@ void mage_t::regen( timespan_t periodicity )
     double base = resource_regen_per_second( RESOURCE_MANA );
     if ( base )
     {
+      // Base regen was already done, subtract 1.0 from Evocation's mana regen multiplier to make
+      // sure we don't apply it twice.
       resource_gain(
         RESOURCE_MANA,
-        buffs.evocation -> default_value * base * periodicity.total_seconds(),
+        ( buffs.evocation -> check_value() - 1.0 ) * base * periodicity.total_seconds(),
         gains.evocation );
     }
   }
