@@ -235,7 +235,7 @@ struct rogue_t : public player_t
     buff_t* subterfuge;
     // Assassination
     buff_t* elaborate_planning;
-    buff_t* dispatch;
+    buff_t* blindside;
     buff_t* master_assassin;
     buff_t* master_assassin_aura;
     buff_t* hidden_blades_driver;
@@ -364,7 +364,7 @@ struct rogue_t : public player_t
     const spell_data_t* restless_blades;
     const spell_data_t* roll_the_bones;
     const spell_data_t* ruthlessness;
-    const spell_data_t* saber_slash;
+    const spell_data_t* sinister_strike;
 
     // Subtlety
     const spell_data_t* deepening_shadows;
@@ -421,7 +421,7 @@ struct rogue_t : public player_t
     // Assassination
     const spell_data_t* master_poisoner;
     const spell_data_t* elaborate_planning;
-    const spell_data_t* dispatch;
+    const spell_data_t* blindside;
 
     const spell_data_t* master_assassin;
 
@@ -2434,6 +2434,43 @@ struct blade_rush_t : public rogue_attack_t
   }
 };
 
+// Blindside ================================================================
+
+struct blindside_t: public rogue_attack_t
+{
+  blindside_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "blindside", p, p -> talent.blindside, options_str )
+  {
+    requires_weapon = WEAPON_DAGGER;
+  }
+
+  bool ready() override
+  {
+    if ( ! p() -> buffs.blindside -> check() && target -> health_percentage() >= data().effectN( 4 ).percent() )
+      return false;
+
+    return rogue_attack_t::ready();
+  }
+
+  double cost() const override
+  {
+    double c = rogue_attack_t::cost();
+
+    if ( p() -> buffs.blindside -> check() )
+      c = 0;
+
+    return c;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( p() -> buffs.blindside -> up() )
+      p() -> buffs.blindside -> expire();
+  }
+};
+
 // Crimson Tempest ==========================================================
 
 struct crimson_tempest_t : public rogue_attack_t
@@ -2470,24 +2507,41 @@ struct crimson_tempest_t : public rogue_attack_t
 struct dispatch_t: public rogue_attack_t
 {
   dispatch_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "dispatch", p, p -> talent.dispatch, options_str )
+    rogue_attack_t( "dispatch", p, p -> find_specialization_spell( "Dispatch" ), options_str )
   {
-    requires_weapon = WEAPON_DAGGER;
   }
 
-  bool ready() override
+  bool procs_main_gauche() const override
   {
-    if ( ! p() -> buffs.dispatch -> check() && target -> health_percentage() >= data().effectN( 4 ).percent() )
-      return false;
+    return false;
+  }
 
-    return rogue_attack_t::ready();
+  double action_multiplier() const override
+  {
+    double m = rogue_attack_t::action_multiplier();
+
+    if ( p() -> buffs.death_from_above -> up() )
+      m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
+
+    if ( p() -> legendary.thraxis_tricksy_treads )
+    {
+      const double increased_speed = ( p() -> cache.run_speed() / p() -> base_movement_speed ) - 1.0;
+      m *= 1.0 + increased_speed * p() -> legendary.thraxis_tricksy_treads -> effectN( 1 ).percent();
+    }
+
+    if ( p() -> buffs.t21_2pc_outlaw -> up() )
+    {
+      m *= 1.0 + p() -> buffs.t21_2pc_outlaw -> stack_value();
+    }
+
+    return m;
   }
 
   double cost() const override
   {
     double c = rogue_attack_t::cost();
 
-    if ( p() -> buffs.dispatch -> check() )
+    if ( p() -> buffs.death_from_above -> check() )
       c = 0;
 
     return c;
@@ -2497,8 +2551,21 @@ struct dispatch_t: public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( p() -> buffs.dispatch -> up() )
-      p() -> buffs.dispatch -> expire();
+    p() -> trigger_restless_blades( execute_state );
+
+    if ( p() -> buffs.true_bearing -> up() )
+    {
+      p() -> trigger_true_bearing( execute_state );
+    }
+
+    p() -> buffs.t19_4pc_outlaw -> trigger();
+
+    if ( p() -> buffs.t21_2pc_outlaw -> check() )
+    {
+      p() -> buffs.t21_2pc_outlaw -> expire();
+    }
+
+    p() -> trigger_t21_4pc_outlaw( execute_state );
   }
 };
 
@@ -3070,74 +3137,6 @@ struct pistol_shot_t : public rogue_attack_t
   }
 };
 
-// Run Through ==============================================================
-
-struct run_through_t: public rogue_attack_t
-{
-  run_through_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "run_through", p, p -> find_specialization_spell( "Run Through" ), options_str )
-  {
-  }
-
-  bool procs_main_gauche() const override
-  {
-    return false;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( p() -> buffs.death_from_above -> up() )
-      m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
-
-    if ( p() -> legendary.thraxis_tricksy_treads )
-    {
-      const double increased_speed = ( p() -> cache.run_speed() / p() -> base_movement_speed ) - 1.0;
-      m *= 1.0 + increased_speed * p() -> legendary.thraxis_tricksy_treads -> effectN( 1 ).percent();
-    }
-
-    if ( p() -> buffs.t21_2pc_outlaw -> up() )
-    {
-      m *= 1.0 + p() -> buffs.t21_2pc_outlaw -> stack_value();
-    }
-
-    return m;
-  }
-
-  double cost() const override
-  {
-    double c = rogue_attack_t::cost();
-
-    if ( p() -> buffs.death_from_above -> check() )
-      c = 0;
-
-    return c;
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    p() -> trigger_restless_blades( execute_state );
-
-    if ( p() -> buffs.true_bearing -> up() )
-    {
-      p() -> trigger_true_bearing( execute_state );
-    }
-
-    p() -> buffs.t19_4pc_outlaw -> trigger();
-
-    if ( p() -> buffs.t21_2pc_outlaw -> check() )
-    {
-      p() -> buffs.t21_2pc_outlaw -> expire();
-    }
-
-    p() -> trigger_t21_4pc_outlaw( execute_state );
-  }
-};
-
-
 // Marked for Death =========================================================
 
 struct marked_for_death_t : public rogue_attack_t
@@ -3247,8 +3246,8 @@ struct mutilate_t : public rogue_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> talent.dispatch -> ok() && rng().roll( p() -> talent.dispatch -> effectN( 5 ).percent() ) )
-        p() -> buffs.dispatch -> trigger();
+      if ( p() -> talent.blindside -> ok() && rng().roll( p() -> talent.blindside -> effectN( 5 ).percent() ) )
+        p() -> buffs.blindside -> trigger();
 
       mh_strike -> set_target( execute_state -> target );
       mh_strike -> execute();
@@ -3404,110 +3403,6 @@ struct rupture_t : public rogue_attack_t
     }
 
     return rogue_attack_t::create_expression( name );
-  }
-};
-
-// Saber Slash ==========================================================
-
-struct saber_slash_t : public rogue_attack_t
-{
-  struct saberslash_proc_event_t : public event_t
-  {
-    rogue_t* rogue;
-    saber_slash_t* spell;
-    player_t* target;
-
-    saberslash_proc_event_t( rogue_t* p, saber_slash_t* s, player_t* t ) :
-      event_t( *p, s -> delay ), rogue( p ), spell( s ), target( t )
-    {
-    }
-
-    const char* name() const override
-    { return "saberslash_proc_execute"; }
-
-    void execute() override
-    {
-      spell -> set_target( target );
-      spell -> execute();
-      spell -> saberslash_proc_event = nullptr;
-
-      if ( rogue -> sets -> has_set_bonus( ROGUE_OUTLAW, T21, B2 ) )
-      {
-        rogue -> buffs.t21_2pc_outlaw -> trigger();
-      }
-    }
-  };
-
-  saberslash_proc_event_t* saberslash_proc_event;
-  timespan_t delay;
-
-  saber_slash_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "saber_slash", p, p -> find_specialization_spell( "Saber Slash" ), options_str ),
-    saberslash_proc_event( nullptr ), delay( data().duration() )
-  {
-  }
-
-  double proc_chance_main_gauche() const override
-  {
-    return rogue_attack_t::proc_chance_main_gauche() +
-           p() -> sets -> set( ROGUE_OUTLAW, T19, B2 ) -> effectN( 1 ).percent();
-  }
-
-  void reset() override
-  {
-    rogue_attack_t::reset();
-    saberslash_proc_event = nullptr;
-  }
-
-  double cost() const override
-  {
-    if ( p() -> buffs.t19_4pc_outlaw -> check() || saberslash_proc_event )
-    {
-      return 0;
-    }
-
-    return rogue_attack_t::cost();
-  }
-
-  double composite_energize_amount( const action_state_t* state ) const override
-  {
-    // Do not grant CP on extra proc event
-    if ( saberslash_proc_event )
-      return 0;
-
-    return rogue_attack_t::composite_energize_amount( state );
-  }
-
-  double saber_slash_proc_chance() const
-  {
-    double opportunity_proc_chance = data().effectN( 3 ).percent();
-    opportunity_proc_chance += p() -> talent.swordmaster -> effectN( 1 ).percent();
-    opportunity_proc_chance += p() -> buffs.jolly_roger -> stack_value();
-    return opportunity_proc_chance;
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    if ( ! result_is_hit( execute_state -> result ) )
-    {
-      return;
-    }
-
-    if ( ! saberslash_proc_event &&
-         ( p() -> buffs.opportunity -> trigger( 1, buff_t::DEFAULT_VALUE(), saber_slash_proc_chance() ) ) )
-    {
-      saberslash_proc_event = make_event<saberslash_proc_event_t>( *sim, p(), this, execute_state -> target );
-    }
-
-    p() -> buffs.t19_4pc_outlaw -> decrement();
-
-    if ( ! saberslash_proc_event && p() -> buffs.broadsides -> up() )
-    {
-      p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 1 ).base_value(),
-          p() -> gains.broadsides, this );
-    }
   }
 };
 
@@ -3779,6 +3674,110 @@ struct shuriken_toss_t : public rogue_attack_t
   // 1/15/2018 - Confirmed Shuriken Toss procs Insignia hits in-game, although Poisoned Knife does not
 };
 
+// Sinister Strike ==========================================================
+
+struct sinister_strike_t : public rogue_attack_t
+{
+  struct sinister_strike_proc_event_t : public event_t
+  {
+    rogue_t* rogue;
+    sinister_strike_t* spell;
+    player_t* target;
+
+    sinister_strike_proc_event_t( rogue_t* p, sinister_strike_t* s, player_t* t ) :
+      event_t( *p, s -> delay ), rogue( p ), spell( s ), target( t )
+    {
+    }
+
+    const char* name() const override
+    { return "sinister_strike_proc_execute"; }
+
+    void execute() override
+    {
+      spell -> set_target( target );
+      spell -> execute();
+      spell -> sinister_strike_proc_event = nullptr;
+
+      if ( rogue -> sets -> has_set_bonus( ROGUE_OUTLAW, T21, B2 ) )
+      {
+        rogue -> buffs.t21_2pc_outlaw -> trigger();
+      }
+    }
+  };
+
+  sinister_strike_proc_event_t* sinister_strike_proc_event;
+  timespan_t delay;
+
+  sinister_strike_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "sinister_strike", p, p -> find_specialization_spell( "Sinister Strike" ), options_str ),
+    sinister_strike_proc_event( nullptr ), delay( data().duration() )
+  {
+  }
+
+  double proc_chance_main_gauche() const override
+  {
+    return rogue_attack_t::proc_chance_main_gauche() +
+           p() -> sets -> set( ROGUE_OUTLAW, T19, B2 ) -> effectN( 1 ).percent();
+  }
+
+  void reset() override
+  {
+    rogue_attack_t::reset();
+    sinister_strike_proc_event = nullptr;
+  }
+
+  double cost() const override
+  {
+    if ( p() -> buffs.t19_4pc_outlaw -> check() || sinister_strike_proc_event )
+    {
+      return 0;
+    }
+
+    return rogue_attack_t::cost();
+  }
+
+  double composite_energize_amount( const action_state_t* state ) const override
+  {
+    // Do not grant CP on extra proc event
+    if ( sinister_strike_proc_event )
+      return 0;
+
+    return rogue_attack_t::composite_energize_amount( state );
+  }
+
+  double sinister_strike_proc_chance() const
+  {
+    double opportunity_proc_chance = data().effectN( 3 ).percent();
+    opportunity_proc_chance += p() -> talent.swordmaster -> effectN( 1 ).percent();
+    opportunity_proc_chance += p() -> buffs.jolly_roger -> stack_value();
+    return opportunity_proc_chance;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( ! result_is_hit( execute_state -> result ) )
+    {
+      return;
+    }
+
+    if ( ! sinister_strike_proc_event &&
+         ( p() -> buffs.opportunity -> trigger( 1, buff_t::DEFAULT_VALUE(), sinister_strike_proc_chance() ) ) )
+    {
+      sinister_strike_proc_event = make_event<sinister_strike_proc_event_t>( *sim, p(), this, execute_state -> target );
+    }
+
+    p() -> buffs.t19_4pc_outlaw -> decrement();
+
+    if ( ! sinister_strike_proc_event && p() -> buffs.broadsides -> up() )
+    {
+      p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 1 ).base_value(),
+          p() -> gains.broadsides, this );
+    }
+  }
+};
+
 // Slice and Dice ===========================================================
 
 struct slice_and_dice_t : public rogue_attack_t
@@ -4009,8 +4008,8 @@ struct death_from_above_t : public rogue_attack_t
       }
       case ROGUE_OUTLAW:
       {
-        finisher = new run_through_t( p, "" );
-        finisher -> stats = player -> get_stats( "run_through_dfa", finisher );
+        finisher = new dispatch_t( p, "" );
+        finisher -> stats = player -> get_stats( "dispatch_dfa", finisher );
         stats -> add_child( finisher->stats );
         break;
       }
@@ -6069,7 +6068,7 @@ void rogue_t::init_action_list()
     
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_talent( this, "Dispatch" );
+    build -> add_talent( this, "Blindside" );
     build -> add_action( this, "Fan of Knives", "if=buff.the_dreadlords_deceit.stack>=29|buff.hidden_blades.stack>=19" );
     build -> add_action( this, "Mutilate", "if=talent.exsanguinate.enabled&(debuff.vendetta.up|combo_points<=2)", "Mutilate is worth using over FoK for Exsanguinate builds in some 2T scenarios." );
     build -> add_action( this, "Fan of Knives", "if=spell_targets>1+equipped.insignia_of_ravenholdt" );
@@ -6121,8 +6120,8 @@ void rogue_t::init_action_list()
 
     // Main Rotation
     def -> add_action( "variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&buff.loaded_dice.up&(rtb_buffs<2|(rtb_buffs<4&!buff.true_bearing.up))", "Reroll when Loaded Dice is up and if you have less than 2 buffs or less than 4 and no True Bearing. With SnD, consider that we never have to reroll." );
-    def -> add_action( "variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled)", "Condition to use Saber Slash when not rerolling RtB or when using SnD" );
-    def -> add_action( "variable,name=ss_useable,value=variable.rtb_reroll&combo_points<5+talent.deeper_stratagem.enabled|!variable.rtb_reroll&variable.ss_useable_noreroll", "Condition to use Saber Slash, when you have RtB or not" );
+    def -> add_action( "variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled)", "Condition to use Sinister Strike when not rerolling RtB or when using SnD" );
+    def -> add_action( "variable,name=ss_useable,value=variable.rtb_reroll&combo_points<5+talent.deeper_stratagem.enabled|!variable.rtb_reroll&variable.ss_useable_noreroll", "Condition to use Sinister Strike, when you have RtB or not" );
     def -> add_action( "call_action_list,name=bf", "Normal rotation" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "call_action_list,name=stealth,if=stealthed.rogue|cooldown.vanish.up|cooldown.shadowmeld.up", "Conditions are here to avoid worthless check if nothing is available" );
@@ -6143,7 +6142,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
     build -> add_talent( this, "Ghostly Strike", "if=combo_points.deficit>=1+buff.broadsides.up&refreshable" );
     build -> add_action( this, "Pistol Shot", "if=combo_points.deficit>=1+buff.broadsides.up+talent.quick_draw.enabled&buff.opportunity.up&(energy.time_to_max>2-talent.quick_draw.enabled|(buff.greenskins_waterlogged_wristcuffs.up&buff.greenskins_waterlogged_wristcuffs.remains<2))" );
-    build -> add_action( this, "Saber Slash", "if=variable.ss_useable" );
+    build -> add_action( this, "Sinister Strike", "if=variable.ss_useable" );
 
     // Blade Flurry
     action_priority_list_t* bf = get_action_priority_list( "bf", "Blade Flurry" );
@@ -6183,7 +6182,7 @@ void rogue_t::init_action_list()
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_action( this, "Between the Eyes", "if=equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up", "BTE in mantle used to be DPS neutral but is a loss due to t21" );
-    finish -> add_action( this, "Run Through", "if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5" );
+    finish -> add_action( this, "Dispatch", "if=!talent.death_from_above.enabled|energy.time_to_max<cooldown.death_from_above.remains+3.5" );
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
@@ -6322,6 +6321,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "between_the_eyes"    ) return new between_the_eyes_t   ( this, options_str );
   if ( name == "blade_flurry"        ) return new blade_flurry_t       ( this, options_str );
   if ( name == "blade_rush"          ) return new blade_rush_t         ( this, options_str );
+  if ( name == "blindside"           ) return new blindside_t          ( this, options_str );
   if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( this, options_str );
   if ( name == "death_from_above"    ) return new death_from_above_t   ( this, options_str );
   if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
@@ -6343,15 +6343,14 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "pistol_shot"         ) return new pistol_shot_t        ( this, options_str );
   if ( name == "poisoned_knife"      ) return new poisoned_knife_t     ( this, options_str );
   if ( name == "roll_the_bones"      ) return new roll_the_bones_t     ( this, options_str );
-  if ( name == "run_through"         ) return new run_through_t        ( this, options_str );
   if ( name == "rupture"             ) return new rupture_t            ( this, options_str );
-  if ( name == "saber_slash"         ) return new saber_slash_t        ( this, options_str );
   if ( name == "shadow_blades"       ) return new shadow_blades_t      ( this, options_str );
   if ( name == "shadow_dance"        ) return new shadow_dance_t       ( this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
   if ( name == "shadowstrike"        ) return new shadowstrike_t       ( this, options_str );
   if ( name == "shuriken_storm"      ) return new shuriken_storm_t     ( this, options_str );
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( this, options_str );
+  if ( name == "sinister_strike"     ) return new sinister_strike_t    ( this, options_str );
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
   if ( name == "sprint"              ) return new sprint_t             ( this, options_str );
   if ( name == "stealth"             ) return new stealth_t            ( this, options_str );
@@ -6763,7 +6762,7 @@ void rogue_t::init_spells()
   spec.restless_blades      = find_specialization_spell( "Restless Blades" );
   spec.roll_the_bones       = find_specialization_spell( "Roll the Bones" );
   spec.ruthlessness         = find_specialization_spell( "Ruthlessness" );
-  spec.saber_slash          = find_specialization_spell( "Saber Slash" );
+  spec.sinister_strike      = find_specialization_spell( "Sinister Strike" );
 
   // Subtlety
   spec.deepening_shadows    = find_specialization_spell( "Deepening Shadows" );
@@ -6819,7 +6818,7 @@ void rogue_t::init_spells()
   // Assassination
   talent.master_poisoner    = find_talent_spell( "Master Poisoner" );
   talent.elaborate_planning = find_talent_spell( "Elaborate Planning" );
-  talent.dispatch           = find_talent_spell( "Dispatch" );
+  talent.blindside          = find_talent_spell( "Blindside" );
 
   talent.master_assassin    = find_talent_spell( "Master Assassin" );
 
@@ -7099,7 +7098,7 @@ void rogue_t::create_buffs()
   buffs.elaborate_planning      = make_buff( this, "elaborate_planning", talent.elaborate_planning -> effectN( 1 ).trigger() )
                                   -> set_default_value( 1.0 + talent.elaborate_planning -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
                                   -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.dispatch                = make_buff( this, "dispatch", talent.dispatch )
+  buffs.blindside                = make_buff( this, "blindside", talent.blindside )
                                   -> set_duration( timespan_t::from_seconds( 10.0 ) ); // I see no buff spell in spell data yet, hardcode for now.
   buffs.master_assassin_aura    = make_buff(this, "master_assassin_aura", talent.master_assassin)
                                   -> set_default_value( spec.master_assassin -> effectN( 1 ).percent() );
@@ -7843,7 +7842,7 @@ struct toxic_mutilator_t : public unique_gear::scoped_action_callback_t<actions:
 
 struct eviscerating_blade_t : public unique_gear::scoped_action_callback_t<>
 {
-  eviscerating_blade_t() : super( ROGUE, "run_through" ) { }
+  eviscerating_blade_t() : super( ROGUE, "dispatch" ) { }
 
   void manipulate( action_t* action, const special_effect_t& effect ) override
   { action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 2 ).average( effect.item ) / 100.0; }
