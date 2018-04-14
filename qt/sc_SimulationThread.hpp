@@ -10,7 +10,7 @@ class SC_SimulateThread : public QThread
 {
   Q_OBJECT
   SC_MainWindow* mainWindow;
-  sim_t* sim;
+  std::shared_ptr<sim_t> sim;
   QByteArray utf8_options;
   QString tabName;
   QString error_category;
@@ -19,7 +19,7 @@ class SC_SimulateThread : public QThread
 public:
   bool success;
   SC_SimulateThread( SC_MainWindow* );
-  void start( sim_t* s, const QByteArray& o, QString tab_name );
+  void start( std::shared_ptr<sim_t> s, const QByteArray& o, QString tab_name );
   void run() override;
   QByteArray getOptions() const
   { return utf8_options; }
@@ -35,5 +35,5 @@ private slots:
   { emit simulationFinished( sim ); }
 
 signals:
-  void simulationFinished( sim_t* s );
+  void simulationFinished( std::shared_ptr<sim_t> s );
 };
