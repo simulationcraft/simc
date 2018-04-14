@@ -388,7 +388,8 @@ void SC_MainWindow::createImportTab()
   mainTab -> addTab( importTab, tr( "Import" ) );
 
   newBattleNetView = new BattleNetImportWindow( this, true );
-  importTab -> addTab( newBattleNetView, tr( "Import" ) );
+  importTab -> addTab( newBattleNetView, tr( "Battle.net" ) );
+  importTab -> addTab( importTab -> addonTab, tr("Simc Addon") );
 
   SC_SampleProfilesTab* bisTab = new SC_SampleProfilesTab( this );
   connect( bisTab -> tree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( bisDoubleClicked( QTreeWidgetItem*, int ) ) );
@@ -399,7 +400,6 @@ void SC_MainWindow::createImportTab()
   importTab -> addTab( recentlyClosedTabImport, tr( "Recently Closed" ) );
 
   importTab -> addTab( importTab -> automationTab, tr( "Automation" ) );
-  importTab -> addTab( importTab -> addonTab, tr("Simc Addon") );
   connect( importTab, SIGNAL( currentChanged( int ) ), this, SLOT( importTabChanged( int ) ) );
   connect( recentlyClosedTabImport, SIGNAL( restoreTab( QWidget*, const QString&, const QString&, const QIcon& ) ),
            this, SLOT( simulateTabRestored( QWidget*, const QString&, const QString&, const QIcon& ) ) );
