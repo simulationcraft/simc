@@ -227,9 +227,3 @@ unix:!mac {
   locale.files += locale/*.qm
   locale.commands = @echo Installing localizations to $$SHAREPATH/locale
 }
-  
-CONFIG(paperdoll) {
-  DEFINES += SC_PAPERDOLL
-  HEADERS += qt/sc_PaperDoll.hpp
-  SOURCES += qt/sc_PaperDoll.cpp
-}

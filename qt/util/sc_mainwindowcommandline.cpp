@@ -580,13 +580,6 @@ void SC_MainWindowCommandLine::emitSignal( QString* text )
       emit( resumeClicked() );
     else if ( text == text_simulate )
     {
-#ifdef SC_PAPERDOLL
-      if ( current_tab == TAB_PAPERDOLL )
-      {
-        emit( simulatePaperdollClicked() );
-      }
-      else
-#endif
       {
         emit( simulateClicked() );
       }

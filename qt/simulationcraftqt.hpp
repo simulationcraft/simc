@@ -29,11 +29,6 @@ class SC_SearchBox;
 class SC_TextEdit;
 class SC_RelativePopup;
 class SC_MainWindowCommandLine;
-#ifdef SC_PAPERDOLL
-#include "sc_PaperDoll.hpp"
-class Paperdoll;
-class PaperdollProfile;
-#endif
 
 #include "util/sc_recentlyclosed.hpp" // remove once implementations are moved to source files
 #include "util/sc_searchbox.hpp" // remove once implementations are moved to source files
@@ -56,9 +51,6 @@ enum main_tabs_e
   TAB_HELP,
   TAB_LOG,
   TAB_SPELLQUERY
-#ifdef SC_PAPERDOLL
-  , TAB_PAPERDOLL
-#endif
   , TAB_COUNT
 };
 
@@ -78,9 +70,6 @@ class SC_CommandLine;
 class SC_SimulateThread;
 class SC_AutomationTab;
 class SC_AddonImportTab;
-#ifdef SC_PAPERDOLL
-class PaperdollThread;
-#endif
 class SC_ImportThread;
 
 #if defined( SC_USE_WEBENGINE )
@@ -700,11 +689,6 @@ public:
   SC_ResultTab* resultsTab;
   SC_SpellQueryTab* spellQueryTab;
   QTabWidget* createCustomProfileDock;
-#ifdef SC_PAPERDOLL
-  QTabWidget* paperdollTab;
-  Paperdoll* paperdoll;
-  PaperdollProfile* paperdollProfile;
-#endif
 
   BattleNetImportWindow* newBattleNetView;
   SC_WebView* helpView;
@@ -728,13 +712,9 @@ public:
 
   QSignalMapper mainTabSignalMapper;
   QList< QShortcut* > shortcuts;
-#ifdef SC_PAPERDOLL
-  PaperdollThread* paperdollThread;
-#endif
 
   std::shared_ptr<sim_t> sim;
   std::shared_ptr<sim_t> import_sim;
-  std::shared_ptr<sim_t> paperdoll_sim;
   std::string simPhase;
   std::string importSimPhase;
   int simProgress;
@@ -776,10 +756,6 @@ public:
   void createSpellQueryTab();
   void createTabShortcuts();
   void createCustomTab();
-
-#ifdef SC_PAPERDOLL
-  void createPaperdoll();
-#endif
   void updateWebView( SC_WebView* );
 
   void toggle_pause()
@@ -807,12 +783,6 @@ private slots:
   void itemWasEnqueuedTryToSim();
   void importFinished();
   void simulateFinished( std::shared_ptr<sim_t> );
-#ifdef SC_PAPERDOLL
-  void paperdollFinished();
-  player_t* init_paperdoll_sim( sim_t*& );
-  void start_intermediate_paperdoll_sim();
-  void start_paperdoll_sim();
-#endif
   void updateSimProgress();
   void cmdLineReturnPressed();
   void cmdLineTextEdited( const QString& );
@@ -1275,24 +1245,5 @@ public:
         setPlainText( tr("# User-specified persistent global and player parameters will be set here.\n") );
     }
 };
-
-#ifdef SC_PAPERDOLL
-
-class PaperdollThread : public QThread
-{
-  Q_OBJECT
-  SC_MainWindow* mainWindow;
-  sim_t* sim;
-  QString options;
-  bool success;
-
-public:
-  player_t* player;
-
-  void start( sim_t* s, player_t* p, const QString& o ) { sim = s; player = p; options = o; success = false; QThread::start(); }
-  virtual void run();
-  PaperdollThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), success( false ), player( 0 ) {}
-};
-#endif
 
 #endif // SIMULATIONCRAFTQT_H

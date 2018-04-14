@@ -7,9 +7,6 @@
 #include "simulationcraftqt.hpp"
 #include "sc_OptionsTab.hpp"
 
-#ifdef SC_PAPERDOLL
-#include "sc_PaperDoll.hpp"
-#endif
 #ifdef Q_OS_MAC
 #include <CoreFoundation/CoreFoundation.h>
 #endif

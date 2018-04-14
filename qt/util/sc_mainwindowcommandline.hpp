@@ -36,9 +36,6 @@ public:
     CMDLINE_TAB_HELP,
     CMDLINE_TAB_LOG,
     CMDLINE_TAB_SPELLQUERY,
-#ifdef SC_PAPERDOLL
-    CMDLINE_TAB_PAPERDOLL,
-#endif
     CMDLINE_TAB_IMPORT_NEW,
     CMDLINE_TAB_BIS,
     CMDLINE_TAB_RECENT,
@@ -209,7 +206,4 @@ signals:
   void commandLineReturnPressed();
   void commandLineTextEdited( const QString& );
   void queryClicked();
-#ifdef SC_PAPERDOLL
-  void simulatePaperdollClicked();
-#endif
 };

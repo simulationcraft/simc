@@ -15,9 +15,6 @@
 #include "sc_AddonImportTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
 #include "util/git_info.hpp"
-#ifdef SC_PAPERDOLL
-#include "sc_PaperDoll.hpp"
-#endif
 #if defined( Q_OS_MAC )
 #include <CoreFoundation/CoreFoundation.h>
 #endif
@@ -88,15 +85,7 @@ QString SC_PATHS::getDataPath()
 
 void SC_MainWindow::updateSimProgress()
 {
-  sim_t* sim = 0;
-
-#ifdef SC_PAPERDOLL
-  // If we're in the paperdoll tab, check progress on the current sim running
-  if ( mainTab -> currentTab() == TAB_PAPERDOLL )
-    sim = paperdoll_sim ? paperdoll_sim : SC_MainWindow::sim;
-  else
-#endif
-    sim = SC_MainWindow::sim.get();
+  sim_t* sim = SC_MainWindow::sim.get();
 
   std::string progressBarToolTip;
 
@@ -243,7 +232,6 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   recentlyClosedTabModel( 0 ),
   sim( 0 ),
   import_sim( 0 ),
-  paperdoll_sim( 0 ),
   simPhase( "%p%" ),
   importSimPhase( "%p%" ),
   simProgress( 100 ),
@@ -299,9 +287,6 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 #if defined( Q_OS_MAC )
   createTabShortcuts();
 #endif
-#ifdef SC_PAPERDOLL
-  createPaperdoll();
-#endif
 
   connect( mainTab, SIGNAL( currentChanged( int ) ), this, SLOT( mainTabChanged( int ) ) );
 
@@ -323,12 +308,6 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   simulateThread = new SC_SimulateThread( this );
   connect( simulateThread, &SC_SimulateThread::simulationFinished, this, &SC_MainWindow::simulateFinished );
 
-#ifdef SC_PAPERDOLL
-  paperdollThread = new PaperdollThread( this );
-  connect( paperdollThread, SIGNAL( finished() ), this, SLOT( paperdollFinished() ) );
-  connect( paperdollProfile,    SIGNAL( profileChanged() ), this, SLOT( start_intermediate_paperdoll_sim() ) );
-  connect( optionsTab,          SIGNAL( optionsChanged() ), this, SLOT( start_intermediate_paperdoll_sim() ) );
-#endif
   setAcceptDrops( true );
   loadHistory();
 
@@ -355,9 +334,6 @@ void SC_MainWindow::createCmdLine()
   connect( cmdLine, SIGNAL( cancelSimulationClicked() ), this, SLOT( stopSim() ) );
   connect( cmdLine, SIGNAL( cancelAllSimulationClicked() ), this, SLOT( stopAllSim() ) );
   connect( cmdLine, SIGNAL( cancelImportClicked() ), this, SLOT( stopImport() ) );
-#ifdef SC_PAPERDOLL
-  connect( cmdLine, SIGNAL( simulatePaperdollClicked() ), this, SLOT( start_paperdoll_sim() ) );
-#endif
   connect( cmdLine, SIGNAL( commandLineReturnPressed() ), this, SLOT( cmdLineReturnPressed() ) );
   connect( cmdLine, SIGNAL( commandLineTextEdited( const QString& ) ), this, SLOT( cmdLineTextEdited( const QString& ) ) );
   connect( cmdLine, SIGNAL( switchToLeftSubTab() ), this, SLOT( switchToLeftSubTab() ) );
@@ -747,7 +723,7 @@ void SC_MainWindow::importFinished()
       label.replace( QString( ".api" ), QString( "" ) );
       label.replace( QString( "https"), QString( "http" ) );
     }
-    deleteSim( import_sim ); import_sim = 0;
+    deleteSim( import_sim );
   }
   else
   {
@@ -757,7 +733,7 @@ void SC_MainWindow::importFinished()
     {
         simulateTab -> append_Text( QString( "# ") + QString::fromStdString( import_sim -> error_list[ i ] ) );
     }
-    deleteSim( import_sim, simulateTab -> current_Text() ); import_sim = 0;
+    deleteSim( import_sim, simulateTab -> current_Text() );
   }
 
   if ( !simRunning() )
@@ -864,167 +840,6 @@ bool SC_MainWindow::simRunning()
 {
   return ( sim != 0 );
 }
-
-#if defined(SC_PAPERDOLL)
-void SC_MainWindow::createPaperdoll()
-{
-  QWidget* paperdollTab = new QWidget( this );
-  QHBoxLayout* paperdollMainLayout = new QHBoxLayout();
-  paperdollMainLayout -> setAlignment( Qt::AlignLeft | Qt::AlignTop );
-  paperdollTab -> setLayout( paperdollMainLayout );
-
-  paperdollProfile = new PaperdollProfile();
-  paperdoll = new Paperdoll( this, paperdollProfile, paperdollTab );
-  ItemSelectionWidget* items = new ItemSelectionWidget( paperdollProfile, paperdollTab );
-
-  paperdollMainLayout -> addWidget( items );
-  paperdollMainLayout -> addWidget( paperdoll );
-
-  mainTab -> addTab( paperdollTab, tr("Paperdoll") );
-}
-
-player_t* SC_MainWindow::init_paperdoll_sim( sim_t*& sim )
-{
-  sim = initSim();
-
-  PaperdollProfile* profile = paperdollProfile;
-  const module_t* module = module_t::get( profile -> currentClass() );
-  player_t* player = module ? module -> create_player( sim, tr("Paperdoll Player"), profile -> currentRace() ) : NULL;
-
-  if ( player )
-  {
-    player -> role = util::parse_role_type( optionsTab -> choice.default_role -> currentText().toUtf8().constData() );
-
-    player -> _spec = profile -> currentSpec();
-
-    profession_e p1 = profile -> currentProfession( 0 );
-    profession_e p2 = profile -> currentProfession( 1 );
-    player -> professions_str = std::string();
-    if ( p1 != PROFESSION_NONE )
-      player -> professions_str += std::string( util::profession_type_string( p1 ) );
-    if ( p1 != PROFESSION_NONE && p2 != PROFESSION_NONE )
-      player -> professions_str += "/";
-    if ( p2 != PROFESSION_NONE )
-      player -> professions_str += util::profession_type_string( p2 );
-
-    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
-    {
-      const item_data_t* profile_item = profile -> slotItem( i );
-
-      if ( profile_item )
-      {
-        player -> items.push_back( item_t( player, std::string() ) );
-        item_t& item = player -> items.back();
-        item.options_str += "id=" + util::to_string( profile_item -> id );
-      }
-    }
-  }
-  return player;
-}
-
-void SC_MainWindow::start_intermediate_paperdoll_sim()
-{
-  if ( paperdoll_sim )
-  {
-    paperdoll_sim -> cancel();
-    paperdollThread -> wait( 100 );
-    deleteSim( paperdoll_sim );
-  }
-
-  player_t* player = init_paperdoll_sim( paperdoll_sim );
-
-  if ( player )
-  {
-    paperdoll -> setCurrentDPS( "", 0, 0 );
-
-    paperdollThread -> start( paperdoll_sim, player, optionsTab -> get_globalSettings() );
-
-    timer -> start( 100 );
-    simProgress = 0;
-  }
-}
-
-void SC_MainWindow::start_paperdoll_sim()
-{
-  if ( sim )
-  {
-    return;
-  }
-  if ( paperdoll_sim )
-  {
-    paperdoll_sim -> cancel();
-    paperdollThread -> wait( 1000 );
-    deleteSim( paperdoll_sim ); paperdoll_sim = 0;
-  }
-
-  player_t* player = init_paperdoll_sim( sim );
-
-  if ( player )
-  {
-
-
-    optionsHistory.add( optionsTab -> encodeOptions() );
-    optionsHistory.current_index = 0;
-    if ( simulateTab -> current_Text() -> toPlainText() != defaultSimulateText )
-    {
-      //simulateTextHistory.add( simulateText -> toPlainText() );
-    }
-    overridesTextHistory.add( overridesText -> toPlainText() );
-    simulateCmdLineHistory.add( cmdLine -> text() );
-    simProgress = 0;
-    simulateThread -> start( sim, optionsTab -> get_globalSettings() );
-    // simulateText -> setPlainText( defaultSimulateText() );
-    cmdLineText = "";
-    cmdLine -> setText( cmdLineText );
-    timer -> start( 100 );
-    simProgress = 0;
-  }
-}
-
-void SC_MainWindow::paperdollFinished()
-{
-  timer -> stop();
-  simPhase = "%p%";
-  simProgress = 100;
-  progressBar -> setFormat( simPhase.c_str() );
-  progressBar -> setValue( simProgress );
-
-  simProgress = 100;
-
-  timer -> start( 100 );
-}
-
-void PaperdollThread::run()
-{
-  cache::advance_era();
-
-  sim -> iterations = 100;
-
-  QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
-
-  std::vector<std::string> args;
-  for ( int i = 0; i < stringList.count(); ++i )
-    args.push_back( stringList[ i ].toUtf8().constData() );
-  sim_control_t description;
-
-  success = description.options.parse_args( args );
-
-  if ( success )
-  {
-    success = sim -> setup( &description );
-  }
-  if ( success )
-  {
-    for ( unsigned int i = 0; i < 10; ++i )
-    {
-      sim -> current_iteration = 0;
-      sim -> execute();
-      player_t::scales_over_t s = player -> scales_over();
-      mainWindow -> paperdoll -> setCurrentDPS( s.name, s.value, s.stddev * sim -> confidence_estimator );
-    }
-  }
-}
-#endif // SC_PAPERDOLL
 
 void SC_MainWindow::simulateFinished( std::shared_ptr<sim_t> sim )
 {
@@ -1281,9 +1096,6 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
   case TAB_LOG: saveLog(); break;
   case TAB_RESULTS: saveResults(); break;
   case TAB_SPELLQUERY: spellQueryTab -> run_spell_query(); break;
-#ifdef SC_PAPERDOLL
-  case TAB_PAPERDOLL: start_paperdoll_sim(); break;
-#endif
   case TAB_COUNT:
     break;
   }
@@ -1413,9 +1225,6 @@ void SC_MainWindow::mainTabChanged( int index )
   case TAB_OPTIONS:
   case TAB_SIMULATE:
   case TAB_OVERRIDES:
-#ifdef SC_PAPERDOLL
-  case TAB_PAPERDOLL:
-#endif
   case TAB_HELP:      break;
   case TAB_LOG:       cmdLine -> setCommandLineText( TAB_LOG, logFileText ); break;
   case TAB_IMPORT:
