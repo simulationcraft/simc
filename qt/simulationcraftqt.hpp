@@ -982,7 +982,7 @@ public:
     progress( 0 ),
     html_str( h )
   {
-    searchBox = new SC_SearchBox( this );
+    searchBox = new SC_SearchBox();
     searchBox -> hide();
     QShortcut* ctrlF = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
     QShortcut* escape = new QShortcut( QKeySequence( Qt::Key_Escape ), this );

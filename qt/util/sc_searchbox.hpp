@@ -9,6 +9,21 @@
 #include <QtWidgets/QtWidgets>
 #include <QtGui/QtGui>
 
+class SC_SearchBoxLineEdit : public QLineEdit
+{
+    Q_OBJECT
+public:
+    SC_SearchBoxLineEdit(QWidget* parent = nullptr ) :
+        QLineEdit( parent )
+    {
+
+    }
+signals:
+  void lostFocus();
+protected:
+  void focusOutEvent( QFocusEvent* e ) override;
+};
+
 // ============================================================================
 // SC_SearchBox
 // ============================================================================
@@ -16,7 +31,7 @@
 class SC_SearchBox : public QWidget
 {
   Q_OBJECT
-  QLineEdit* searchBox;
+  SC_SearchBoxLineEdit* searchBox;
   QMenu* searchBoxContextMenu;
   QToolButton* searchBoxPrev;
   QToolButton* searchBoxNext;
@@ -41,7 +56,7 @@ public:
 
   void setFocus()
   {
-    searchBox -> setFocus();
+    searchBox -> setFocus( Qt::MouseFocusReason );
   }
   QString text() const
   {
@@ -81,6 +96,7 @@ public slots:
   void setReverseSearch( bool reversed );
   void setWrapSearch( bool wrapped );
   void setHideArrows( bool hideArrows );
+  void focusLostOnChild();
 protected:
   void keyPressEvent( QKeyEvent* e ) override;
   void showEvent( QShowEvent* e ) override;

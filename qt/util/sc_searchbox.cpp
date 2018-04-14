@@ -5,6 +5,13 @@
 
 #include "sc_searchbox.hpp"
 
+
+void SC_SearchBoxLineEdit::focusOutEvent( QFocusEvent* e )
+{
+  QLineEdit::focusOutEvent( e );
+  emit(lostFocus());
+}
+
 // ============================================================================
 // SC_SearchBox
 // ============================================================================
@@ -14,7 +21,7 @@ SC_SearchBox::SC_SearchBox( QWidget* parent,
                             bool show_arrows,
                             QBoxLayout::Direction direction ) :
   QWidget( parent ),
-  searchBox( new QLineEdit ),
+  searchBox( new SC_SearchBoxLineEdit( this ) ),
   searchBoxContextMenu( 0 ),
   searchBoxPrev( new QToolButton( this ) ),
   searchBoxNext( new QToolButton( this ) ),
@@ -90,6 +97,7 @@ SC_SearchBox::SC_SearchBox( QWidget* parent,
   connect( altDown,       SIGNAL( activated() ),                   this, SIGNAL( findNext() ) );
   connect( searchBoxPrev, SIGNAL( pressed() ),                     this, SIGNAL( findPrev() ) );
   connect( searchBoxNext, SIGNAL( pressed() ),                     this, SIGNAL( findNext() ) );
+  connect( searchBox,     SIGNAL( lostFocus() ),                   this,   SLOT( focusLostOnChild() ) );
 
   QIcon searchPrevIcon(":/icon/leftarrow.png");
   QIcon searchNextIcon(":/icon/rightarrow.png");
@@ -218,6 +226,7 @@ void SC_SearchBox::showEvent( QShowEvent* e )
   }
 }
 
+
 // public slots
 
 void SC_SearchBox::find()
@@ -259,6 +268,22 @@ void SC_SearchBox::setHideArrows( bool hideArrows )
   {
     hideArrowsAction -> setChecked( hideArrows );
   }
+}
+
+void SC_SearchBox::focusLostOnChild()
+{
+    bool any_focus = false;
+    for( QWidget* child : {(QWidget*)searchBox, (QWidget*)searchBoxPrev, (QWidget*)searchBoxNext} )
+    {
+        if ( child->hasFocus())
+        {
+            any_focus = true;
+        }
+    }
+    if ( !any_focus )
+    {
+        hide();
+    }
 }
 
 // private slots
