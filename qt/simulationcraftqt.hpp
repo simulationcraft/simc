@@ -998,7 +998,7 @@ public:
     connect( this,      SIGNAL( linkClicked( const QUrl& ) ),    this,      SLOT( linkClickedSlot( const QUrl& ) ) );
 #endif
 
-    SC_WebPage* page = new SC_WebPage( parent );
+    SC_WebPage* page = new SC_WebPage( this );
     setPage( page );
 #if defined( SC_USE_WEBKIT )
     page -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
@@ -1021,7 +1021,7 @@ public:
     }
     else
     {
-      qDebug() << "Can't write webcache! sucks";
+      qWarning() << "Can't create/write webcache.";
     }
   }
 
