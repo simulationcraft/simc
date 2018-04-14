@@ -21,9 +21,10 @@
 #include <QStandardPaths>
 #include <QDateTime>
 
-static int SC_GUI_HISTORY_VERSION = 715;
 
 namespace { // UNNAMED NAMESPACE
+
+constexpr int SC_GUI_HISTORY_VERSION = 801;
 
 #if ! defined( SC_USE_WEBKIT )
 struct HtmlOutputFunctor
@@ -85,8 +86,6 @@ QString SC_PATHS::getDataPath()
 
 void SC_MainWindow::updateSimProgress()
 {
-  sim_t* sim = SC_MainWindow::sim.get();
-
   std::string progressBarToolTip;
 
   if ( simRunning() )
@@ -112,8 +111,8 @@ void SC_MainWindow::updateSimProgress()
   }
 #endif
 
-  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str(), progressBarToolTip.c_str() );
-  cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str(), progressBarToolTip.c_str() );
+  cmdLine -> setSimulatingProgress( simProgress, QString::fromStdString(simPhase), QString::fromStdString(progressBarToolTip) );
+  cmdLine -> setImportingProgress( importSimProgress, QString::fromStdString(importSimPhase), QString::fromStdString(progressBarToolTip) );
 }
 
 void SC_MainWindow::loadHistory()
@@ -125,10 +124,8 @@ void SC_MainWindow::loadHistory()
   QVariant simulateHistory = settings.value( "user_data/simulateHistory" );
   if ( simulateHistory.isValid() )
   {
-    QList<QVariant> a = simulateHistory.toList();
-    for ( int i = 0; i < a.size(); ++i )
+    for ( auto& entry : simulateHistory.toList() )
     {
-      const QVariant& entry = a.at( i );
       if ( entry.isValid() )
       {
         QStringList sl = entry.toStringList();
@@ -139,14 +136,13 @@ void SC_MainWindow::loadHistory()
       }
     }
   }
-  QVariant gui_version_number = settings.value( "gui/gui_version_number", 0 );
-  if ( gui_version_number.toInt() < SC_GUI_HISTORY_VERSION )
+  int gui_version_number = settings.value( "gui/gui_version_number", 0 ).toInt();
+  if ( gui_version_number < SC_GUI_HISTORY_VERSION )
   {
     settings.clear();
     settings.setValue( "options/apikey", saveApiKey );
-    QMessageBox msgBox;
-    msgBox.setText( tr("We have reset your configuration settings due to major changes to the GUI") );
-    msgBox.exec();
+    QMessageBox::information( this, tr("GUI settings reset"),
+                              tr("We have reset your configuration settings due to major changes to the GUI") );
   }
 
   QVariant size = settings.value( "gui/size" );
@@ -172,8 +168,7 @@ void SC_MainWindow::loadHistory()
     showMaximized();
 
   QString cache_file = QDir::toNativeSeparators( TmpDir + "/simc_cache.dat" );
-  std::string cache_file_str = cache_file.toStdString();
-  http::cache_load( cache_file_str.c_str() );
+  http::cache_load( cache_file.toStdString() );
 
   optionsTab -> decodeOptions();
   importTab -> automationTab -> decodeSettings();
@@ -196,8 +191,7 @@ void SC_MainWindow::saveHistory()
   settings.endGroup();
 
   QString cache_file = QDir::toNativeSeparators( TmpDir + "/simc_cache.dat" );
-  std::string cache_file_str = cache_file.toStdString();
-  http::cache_save( cache_file_str.c_str() );
+  http::cache_save( cache_file.toStdString() );
 
   settings.beginGroup( "user_data" );
 
@@ -212,9 +206,8 @@ void SC_MainWindow::saveHistory()
     simulateHist.append( QVariant( entry ) );
   }
   settings.setValue( "simulateHistory", simulateHist );
-  // end simulate tab history
 
-  settings.endGroup();
+  settings.endGroup();// end user_data
 
   optionsTab -> encodeOptions();
   importTab -> automationTab -> encodeSettings();
@@ -227,11 +220,11 @@ void SC_MainWindow::saveHistory()
 
 SC_MainWindow::SC_MainWindow( QWidget *parent )
   : QWidget( parent ),
-  visibleWebView( 0 ),
-  cmdLine( 0 ), // segfault in updateWebView() if not null
-  recentlyClosedTabModel( 0 ),
-  sim( 0 ),
-  import_sim( 0 ),
+  visibleWebView(),
+  cmdLine(),
+  recentlyClosedTabModel(),
+  sim(),
+  import_sim(),
   simPhase( "%p%" ),
   importSimPhase( "%p%" ),
   simProgress( 100 ),
@@ -249,11 +242,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 #if defined( Q_OS_WIN )
   AppDataDir = QCoreApplication::applicationDirPath();
 #else
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 4, 0 )
   QStringList q = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation );
-#else
-  QStringList q = QStandardPaths::standardLocations( QStandardPaths::DataLocation );
-#endif
   assert( !q.isEmpty() );
   AppDataDir = q.first();
   QDir::home().mkpath( AppDataDir );
@@ -715,9 +704,9 @@ void SC_MainWindow::importFinished()
     simulateTab -> set_Text( importThread -> profile );
     simulateTab->setTabText( simulateTab -> currentIndex(), QString::fromUtf8( importThread -> player -> name_str.c_str() ) );
 
-    QString label = QString::fromUtf8( importThread -> player -> name_str.c_str() );
+    QString label = QString::fromStdString( importThread -> player -> name_str );
     while ( label.size() < 20 ) label += ' ';
-    label += QString::fromUtf8( importThread -> player -> origin_str.c_str() );
+    label += QString::fromStdString( importThread -> player -> origin_str );
     if ( label.contains( ".api." ) )
     { // Strip the s out of https and the api. out of the string so that it is a usable link.
       label.replace( QString( ".api" ), QString( "" ) );
@@ -729,9 +718,9 @@ void SC_MainWindow::importFinished()
   {
     simulateTab -> setTabText( simulateTab -> currentIndex(), tr( "Import Failed" ) );
     simulateTab -> append_Text( tr("# Unable to generate profile from: ") + importThread -> url + "\n" );
-    for( size_t i = 0; i < import_sim -> error_list.size(); ++i )
+    for( const std::string& error : import_sim -> error_list )
     {
-        simulateTab -> append_Text( QString( "# ") + QString::fromStdString( import_sim -> error_list[ i ] ) );
+        simulateTab -> append_Text( QString( "# ") + QString::fromStdString( error ) );
     }
     deleteSim( import_sim, simulateTab -> current_Text() );
   }
@@ -773,21 +762,26 @@ void SC_MainWindow::startSim()
   auto value = simulationQueue.dequeue();
 
   QString tab_name = std::get<0>( value );
+
+  // Build combined input profile
   auto simc_gui_profile = std::get<1>( value );
   QString simc_version;
   if ( !git_info::available())
   {
-    simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4) ###\n\n").
+    simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4) ###\n").
         arg(SC_VERSION).arg(sim->dbc.wow_version()).arg(sim->dbc.wow_ptr_status()).arg(sim->dbc.build_level());
   }
   else
   {
-    simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4, git build %5 %6) ###\n\n").
+    simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4, git build %5 %6) ###\n").
             arg(SC_VERSION).arg(sim->dbc.wow_version()).arg(sim->dbc.wow_ptr_status()).arg(sim->dbc.build_level()).
             arg(git_info::branch()).arg(git_info::revision());
   }
-  simc_gui_profile = simc_version + simc_gui_profile;
+  QString gui_version = QString("### Using QT %1 with %2 ###\n\n").arg(QTCORE_VERSION_STR).arg(webEngineName());
+  simc_gui_profile = simc_version + gui_version + simc_gui_profile;
   QByteArray utf8_profile = simc_gui_profile.toUtf8();
+
+  // Save profile to simc_gui.simc
   QFile file( AppDataDir + QDir::separator() + "simc_gui.simc" );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
@@ -845,7 +839,7 @@ void SC_MainWindow::simulateFinished( std::shared_ptr<sim_t> sim )
 {
   simPhase = "%p%";
   simProgress = 100;
-  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str(), tr( "Finished!" ) );
+  cmdLine -> setSimulatingProgress( simProgress, QString::fromStdString(simPhase), tr( "Finished!" ) );
   bool sim_was_debug = sim -> debug || sim -> log;
 
   logText -> clear();
@@ -883,9 +877,9 @@ void SC_MainWindow::simulateFinished( std::shared_ptr<sim_t> sim )
         errorText += "<br><br>";
         errorText += "<i>" + simulateThread -> getErrorCategory() + ":</i>";
         errorText += "<br>";
-        errorText += "<b>" + simulateThread -> getError() + "</b>";
+        errorText += "<b>" + simulateThread -> getError().replace("\n", "<br>") + "</b>";
         errorText += "<br><br>";
-        errorText += tr("Please open a ticket, copying the detailed text below.<br>"
+        errorText += tr("If you think this is a bug, please open a ticket, copying the detailed text below.<br>"
                         "It contains all the input options of the last simulation"
                         " and helps us reproduce the issue.<br>");
 
@@ -915,6 +909,7 @@ void SC_MainWindow::simulateFinished( std::shared_ptr<sim_t> sim )
   else
   {
     QDateTime now = QDateTime::currentDateTime();
+    now.setOffsetFromUtc(now.offsetFromUtc());
     QString datetime = now.toString(Qt::ISODate);
     QString resultsName = simulateThread -> getTabName();
     SC_SingleResultTab* resultsEntry = new SC_SingleResultTab( this, resultsTab );
@@ -1490,8 +1485,8 @@ void SC_SingleResultTab::save_result()
     defaultDestination = "results_html.html"; extension = "html"; break;
   case TAB_TEXT:
     defaultDestination = "results_text.txt"; extension = "txt"; break;
-  case TAB_XML:
-    defaultDestination = "results_xml.xml"; extension = "xml"; break;
+  case TAB_JSON:
+    defaultDestination = "results_json.json"; extension = "json"; break;
   case TAB_PLOTDATA:
     defaultDestination = "results_plotdata.csv"; extension = "csv"; break;
   default: break;
@@ -1540,7 +1535,7 @@ void SC_SingleResultTab::save_result()
       break;
     }
       case TAB_TEXT:
-      case TAB_XML:
+      case TAB_JSON:
       case TAB_PLOTDATA:
       case TAB_CSV:
       {
@@ -1565,8 +1560,8 @@ void SC_SingleResultTab::TabChanged( int /* index */ )
 }
 
 SC_ResultTab::SC_ResultTab( SC_MainWindow* mw ):
-SC_RecentlyClosedTab( mw ),
-mainWindow( mw )
+  SC_RecentlyClosedTab( mw ),
+  mainWindow( mw )
 {
 
   setTabsClosable( true );

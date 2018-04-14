@@ -468,7 +468,7 @@ enum result_tabs_e
 {
   TAB_HTML = 0,
   TAB_TEXT,
-  TAB_XML,
+  TAB_JSON,
   TAB_PLOTDATA,
   TAB_CSV
 };
