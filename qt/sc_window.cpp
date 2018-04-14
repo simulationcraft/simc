@@ -521,6 +521,7 @@ std::shared_ptr<sim_t> SC_MainWindow::initSim()
   sim -> parse_option( "ptr", ( ( optionsTab -> choice.version -> currentIndex() == 1 ) ? "1" : "0" ) );
 #endif
   sim -> parse_option( "debug", ( ( optionsTab -> choice.debug -> currentIndex() == 2 ) ? "1" : "0" ) );
+  sim -> cleanup_threads = true;
 
   return sim;
 }
@@ -1462,7 +1463,9 @@ void SC_MainWindow::resultsTabCloseRequest( int index )
   int confirm = QMessageBox::question( this, tr( "Close Result Tab" ), tr( "Do you really want to close this result?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
   if ( confirm == QMessageBox::Yes )
   {
+    auto tab = static_cast <SC_SingleResultTab*>(resultsTab -> widget( index ));
     resultsTab -> removeTab( index );
+    tab->deleteLater();
     if ( resultsTab -> count() == 1 )
     {
       SC_SingleResultTab* tab = static_cast <SC_SingleResultTab*>(resultsTab -> widget( 0 ));
