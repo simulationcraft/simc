@@ -1244,7 +1244,7 @@ struct sim_t : private sc_thread_t
   unsigned           spell_query_level;
   std::string        spell_query_xml_output_file_str;
 
-  mutex_t* pause_mutex; // External pause mutex, instantiated an external entity (in our case the GUI).
+  std::unique_ptr<mutex_t> pause_mutex; // External pause mutex, instantiated an external entity (in our case the GUI).
   bool paused;
 
   // Highcharts stuff

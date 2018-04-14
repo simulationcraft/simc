@@ -96,7 +96,7 @@ void SC_MainWindow::updateSimProgress()
     sim = paperdoll_sim ? paperdoll_sim : SC_MainWindow::sim;
   else
 #endif
-    sim = SC_MainWindow::sim;
+    sim = SC_MainWindow::sim.get();
 
   std::string progressBarToolTip;
 
@@ -321,7 +321,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   connect( importThread, SIGNAL( finished() ), this, SLOT( importFinished() ) );
 
   simulateThread = new SC_SimulateThread( this );
-  connect( simulateThread, SIGNAL( simulationFinished( sim_t* ) ), this, SLOT( simulateFinished( sim_t* ) ) );
+  connect( simulateThread, &SC_SimulateThread::simulationFinished, this, &SC_MainWindow::simulateFinished );
 
 #ifdef SC_PAPERDOLL
   paperdollThread = new PaperdollThread( this );
@@ -512,10 +512,10 @@ void SC_MainWindow::updateWebView( SC_WebView* wv )
 // Sim Initialization
 // ==========================================================================
 
-sim_t* SC_MainWindow::initSim()
+std::shared_ptr<sim_t> SC_MainWindow::initSim()
 {
-  sim_t* sim = new sim_t();
-  sim -> pause_mutex = new mutex_t();
+  auto sim = std::make_shared<sim_t>();
+  sim -> pause_mutex = std::unique_ptr<mutex_t>(new mutex_t());
   sim -> report_progress = 0;
 #if SC_USE_PTR
   sim -> parse_option( "ptr", ( ( optionsTab -> choice.version -> currentIndex() == 1 ) ? "1" : "0" ) );
@@ -525,7 +525,7 @@ sim_t* SC_MainWindow::initSim()
   return sim;
 }
 
-void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
+void SC_MainWindow::deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_error_message )
 {
   if ( sim )
   {
@@ -540,8 +540,7 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
     std::string output_file_str = sim -> output_file_str;
     bool sim_control_was_not_zero = sim -> control != 0;
 
-    delete sim -> pause_mutex;
-    delete sim;
+    sim = nullptr;
 
     QString contents;
     bool logFileOpenedSuccessfully = false;
@@ -1027,7 +1026,7 @@ void PaperdollThread::run()
 }
 #endif // SC_PAPERDOLL
 
-void SC_MainWindow::simulateFinished( sim_t* sim )
+void SC_MainWindow::simulateFinished( std::shared_ptr<sim_t> sim )
 {
   simPhase = "%p%";
   simProgress = 100;

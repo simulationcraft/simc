@@ -35,7 +35,7 @@ void SC_SimulateThread::run()
   try
   {
     sim -> setup( &description );
-    workaround::apply_workarounds( sim );
+    workaround::apply_workarounds( sim.get() );
   }
   catch ( const std::exception& e )
   {
@@ -62,7 +62,7 @@ void SC_SimulateThread::run()
       sim -> scaling -> analyze();
       sim -> plot -> analyze();
       sim -> reforge_plot -> analyze();
-      report::print_suite( sim );
+      report::print_suite( sim.get() );
     }
     else
     {
@@ -85,7 +85,7 @@ void SC_SimulateThread::run()
   }
 }
 
-void SC_SimulateThread::start( sim_t* s, const QByteArray& o, QString t )
+void SC_SimulateThread::start( std::shared_ptr<sim_t> s, const QByteArray& o, QString t )
 {
     sim = s;
     utf8_options = o;

@@ -18,7 +18,7 @@
 // Import
 // ==========================================================================
 
-void SC_ImportThread::start( sim_t* s, const QString& reg, const QString& rea, const QString& cha, const QString& spe )
+void SC_ImportThread::start( std::shared_ptr<sim_t> s, const QString& reg, const QString& rea, const QString& cha, const QString& spe )
 {
   mainWindow -> soloChar -> start( 50 );
 
@@ -44,7 +44,7 @@ void SC_ImportThread::importWidget()
   std::string cpp_s   = realm.toUtf8().constData();
   std::string cpp_c   = character.toUtf8().constData();
   std::string cpp_sp  = spec.toUtf8().constData();
-  player = bcp_api::download_player( sim, cpp_r, cpp_s, cpp_c, cpp_sp );
+  player = bcp_api::download_player( sim.get(), cpp_r, cpp_s, cpp_c, cpp_sp );
 }
 
 void SC_ImportThread::run()
