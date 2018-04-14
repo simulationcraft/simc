@@ -12,7 +12,6 @@
 //    Implement rattlegore's RP cap increase
 // - Heart Strike looks like it deals slightly too much damage
 // - Dancing Rune Weapon damage isn't completely accurate, could be AP inheritance ?
-// - Blood Feast
 // Frost
 // - Implement Inexorable Assault
 
@@ -545,6 +544,7 @@ public:
     gain_t* start_of_combat_overflow;
     gain_t* shackles_of_bryndaor;
     gain_t* heartbreaker;
+    gain_t* drw_heart_strike;
   } gains;
 
   // Specialization
@@ -2620,6 +2620,19 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       aoe = 2;
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
     }
+
+    int n_targets() const override
+    {
+      return p() -> o() -> in_death_and_decay() ? 5 : 2;
+    }
+    
+    void impact( action_state_t* s ) override
+    {
+      drw_attack_t::impact( s );
+      p() -> o() -> resource_gain( RESOURCE_RUNIC_POWER, p() -> o() -> spec.heart_strike -> effectN( 3 ).base_value(), 
+                                  p() -> o() -> gains.drw_heart_strike,
+                                  nullptr );
+    }
   };
 
   struct marrowrend_t : public drw_attack_t
@@ -4231,9 +4244,6 @@ struct blooddrinker_t : public death_knight_spell_t
       heal -> execute();
     }
   }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  { return base_tick_time; }
 };
 
 // Bloodworms ================================================================
@@ -4523,6 +4533,18 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
     {
       base_multiplier *= 1.0 + p() -> artifact.allconsuming_rot.percent();
     }
+  }
+
+  double runic_power_generation_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::runic_power_generation_multiplier( state );
+
+    if ( p() -> buffs.crimson_scourge -> check() )
+    {
+      m *= 1.0 + p() -> buffs.crimson_scourge -> data().effectN( 2 ).percent();
+    }
+
+    return m;
   }
 
   void impact( action_state_t* s ) override
@@ -6524,7 +6546,6 @@ struct tombstone_t : public death_knight_spell_t
       p() -> cooldown.dancing_rune_weapon -> adjust( 
         charges * timespan_t::from_millis( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
     }
-    p() -> cooldown.blood_tap -> adjust( timespan_t::from_seconds( -2.0 * charges ), false );
   }
 };
 
@@ -6550,7 +6571,7 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
     {
       double damage = s -> result_amount;
       damage /= execute_state -> n_targets;
-      s -> result_amount = damage;
+      s -> result_amount = s -> result_total = damage;
       death_knight_spell_t::impact( s );
     }
   }
@@ -8677,6 +8698,7 @@ void death_knight_t::init_gains()
   gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow"   );
   gains.shackles_of_bryndaor             = get_gain( "Shackles of Bryndaor"       );
   gains.heartbreaker                     = get_gain( "Heartbreaker"               );
+  gains.drw_heart_strike                 = get_gain( "Rune Weapon Heart Strike"   );
 }
 
 // death_knight_t::init_procs ===============================================
