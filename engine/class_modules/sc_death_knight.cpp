@@ -8,10 +8,11 @@
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
 // Blood
 // - Bloodworms
-// - Support some legendaries :
-//    Implement rattlegore's RP cap increase
+// - BFA blood talents (new and reworked)
+// - New bone shield (armor based on strength buff)
 // - Heart Strike looks like it deals slightly too much damage
 // - Dancing Rune Weapon damage isn't completely accurate, could be AP inheritance ?
+// - Fix blood so it doesn't crash ?
 // Frost
 // - Implement Inexorable Assault
 
@@ -41,7 +42,6 @@ namespace runeforge {
 // ==========================================================================
 // Death Knight Runes
 // ==========================================================================
-
 
 enum disease_type { DISEASE_NONE = 0, DISEASE_BLOOD_PLAGUE, DISEASE_FROST_FEVER, DISEASE_VIRULENT_PLAGUE = 4 };
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
@@ -725,7 +725,6 @@ public:
 
     // Blood
     const spell_data_t* lanathels_lament;
-    const spell_data_t* rattlegore_bone_legplates;
     const spell_data_t* soulflayers_corruption;
     const spell_data_t* shackles_of_bryndaor;
 
@@ -745,7 +744,6 @@ public:
       perseverance_of_the_ebon_martyr( spell_data_t::not_found() ),
       toravons( 0 ),
       lanathels_lament( spell_data_t::not_found() ),
-      rattlegore_bone_legplates( spell_data_t::not_found() ),
       soulflayers_corruption( spell_data_t::not_found() ),
       shackles_of_bryndaor( spell_data_t::not_found() ),
       the_instructors_fourth_lesson( 0 ),
@@ -2647,7 +2645,7 @@ struct death_knight_action_t : public Base
       {
         p() -> pets.dark_arbiter -> increase_power( this -> last_resource_cost );
       }
-
+      
       if ( p() -> talent.red_thirst -> ok() )
       {
         timespan_t sec = timespan_t::from_seconds( p() -> talent.red_thirst -> effectN( 1 ).base_value() ) *
@@ -3589,7 +3587,7 @@ struct blood_boil_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-
+    
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.blood_boil -> set_target( execute_state -> target );
@@ -3607,7 +3605,7 @@ struct blood_boil_t : public death_knight_spell_t
 
       p() -> apply_diseases( state, DISEASE_BLOOD_PLAGUE );		
     }
-
+    
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T20, B2 ) )
     {
       p() -> buffs.t20_blood -> trigger();
@@ -3999,14 +3997,14 @@ struct death_and_decay_base_t : public death_knight_spell_t
     {
       return 0;
     }
-
+    
     return death_knight_spell_t::cost();
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
   {
     double m = death_knight_spell_t::runic_power_generation_multiplier( state );
-
+    
     if ( p() -> buffs.crimson_scourge -> check() )
     {
       m *= 1.0 + p() -> buffs.crimson_scourge -> data().effectN( 2 ).percent();
@@ -4115,7 +4113,7 @@ struct deaths_caress_t : public death_knight_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
       p() -> apply_diseases( execute_state, DISEASE_BLOOD_PLAGUE );
-
+    
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> set_target( execute_state -> target );
@@ -4429,7 +4427,7 @@ struct death_strike_heal_t : public death_knight_heal_t
     {
       // Last resource cost doesn't return anything so we have to get the cost of Death Strike
       double c = p() -> find_action( "death_strike" ) -> cost();
-            
+          
       // T20 4P doesn't actually reduce shackles of bryndaor's rp refund, even though it reduces the cost so we're adding it to the base cost
       if ( p() -> buffs.t20_blood -> check() && p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T20, B4 ) )
       {
@@ -4442,7 +4440,7 @@ struct death_strike_heal_t : public death_knight_heal_t
 
     trigger_blood_shield( state );
   }
-
+  
   void trigger_blood_shield( action_state_t* state )
   {
     if ( p() -> specialization() != DEATH_KNIGHT_BLOOD )
@@ -4510,13 +4508,13 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     if ( oh_attack )
       oh_attack -> execute();
-
+    
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.death_strike -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon_pet -> ability.death_strike -> execute();
     }
-
+    
     if ( result_is_hit( execute_state -> result ) )
     {
       heal -> execute();
@@ -4926,7 +4924,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
-
+    
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> set_target( execute_state -> target );
@@ -5224,11 +5222,13 @@ struct marrowrend_t : public death_knight_melee_attack_t
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.marrowrend -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon_pet -> ability.marrowrend -> execute();
-    }    
+    }
   }
 
   void impact( action_state_t* s ) override
   {
+    death_knight_melee_attack_t::impact( s );
+
     int stack_gain = data().effectN( 3 ).base_value();
 
     p() -> buffs.bone_shield -> trigger(stack_gain);
@@ -6877,7 +6877,7 @@ void death_knight_t::create_pets()
       }
     }
   }
-
+  
   if ( find_action( "dancing_rune_weapon" ) && specialization() == DEATH_KNIGHT_BLOOD )
   {
     pets.dancing_rune_weapon_pet = new pets::dancing_rune_weapon_pet_t( this );
@@ -6895,12 +6895,12 @@ double death_knight_t::composite_melee_haste() const
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
 	
   haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );    
-
+  
   if ( buffs.bone_shield -> up() )
   {
     haste *= buffs.bone_shield -> value();
   }
-
+  
   if ( legendary.sephuzs_secret )
   {
     haste *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
@@ -6920,7 +6920,7 @@ double death_knight_t::composite_spell_haste() const
   haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
 	
   haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );
-
+  
   if ( buffs.bone_shield -> up() )
   {
     haste *= buffs.bone_shield -> value();
@@ -7181,28 +7181,23 @@ void death_knight_t::default_apl_blood()
 
   // On-use items
   def -> add_action( "use_items" );
-  def -> add_action( "use_item,name=archimondes_hatred_reborn,if=buff.vampiric_blood.up" );
 
   // Cooldowns
   def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
-  def -> add_action( this, "Dancing Rune Weapon", "if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)&!cooldown.death_and_decay.ready" );
-  def -> add_action( this, "Vampiric Blood", "if=!equipped.archimondes_hatred_reborn|cooldown.trinket.ready" );
+  def -> add_action( this, "Dancing Rune Weapon", "if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)" );
   def -> add_talent( this, "Tombstone", "if=buff.bone_shield.stack>=7" );
   def -> add_action( "call_action_list,name=standard" );
 
   // Single Target Rotation
   standard -> add_action( this, "Death Strike", "if=runic_power.deficit<10" );
-  standard -> add_action( this, "Death and Decay", "if=talent.rapid_decomposition.enabled&!buff.dancing_rune_weapon.up" );
   standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.remains<=gcd*2" );
   standard -> add_action( this, "Blood Boil", "if=charges_fractional>=1.8&buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)" );
   standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.stack<5&talent.ossuary.enabled)|buff.bone_shield.remains<gcd*3" );
   standard -> add_talent( this, "Bonestorm", "if=runic_power>=100&spell_targets.bonestorm>=3" );
   standard -> add_action( this, "Death Strike", "if=buff.blood_shield.up|(runic_power.deficit<15&(runic_power.deficit<25|!buff.dancing_rune_weapon.up))" );
-  standard -> add_talent( this, "Consumption" );
   standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up" );
   standard -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up" );
-  standard -> add_action( this, "Blood Boil", "if=buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)" );
   standard -> add_action( this, "Death and Decay" );
   standard -> add_action( this, "Heart Strike", "if=rune.time_to_3<gcd|buff.bone_shield.stack>6" );
 }
@@ -7643,7 +7638,6 @@ void death_knight_t::create_buffs()
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", spec.sudden_doom -> effectN( 1 ).trigger() )
                               .rppm_scale( RPPM_ATTACK_SPEED ) // 2016-08-08: Hotfixed, not in spell data
-                              .max_stack( spec.sudden_doom -> effectN( 1 ).trigger() -> initial_stacks() )
                               .trigger_spell( spec.sudden_doom );
 
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
@@ -7785,11 +7779,9 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
   }
 
   double absorbed = 0;
-  double absorb_pct = buffs.bone_shield -> data().effectN( 5 ).percent();
+  double absorb_pct = 0; // TODO turn absorb into armor
 
   // Legendary pants increase the absorbed amount by 2%
-  absorb_pct += legendary.rattlegore_bone_legplates -> effectN( 2 ).percent();
-
   absorbed = absorb_pct * state -> result_amount;
   
   return absorbed;
@@ -7798,7 +7790,7 @@ double death_knight_t::bone_shield_handler( const action_state_t* state ) const
 void death_knight_t::init_absorb_priority()
 {
   player_t::init_absorb_priority();
-
+  
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
     instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
@@ -7912,7 +7904,7 @@ void death_knight_t::assess_damage( school_e     school,
 void death_knight_t::do_damage( action_state_t* state )
 {
   player_t::do_damage( state );
-
+  
   if ( state -> result_amount > 0 && talent.mark_of_blood -> ok() && ! state -> action -> special &&
        get_target_data( state -> action -> player ) -> debuff.mark_of_blood -> up() )
   {
@@ -8028,10 +8020,10 @@ double death_knight_t::composite_parry_rating() const
 double death_knight_t::composite_parry() const
 {
   double parry = player_t::composite_parry();
-
+  
   if ( buffs.dancing_rune_weapon -> up() )
     parry += buffs.dancing_rune_weapon -> data().effectN( 1 ).percent();
-
+    
   return parry;
 }
 
@@ -8341,7 +8333,7 @@ inline double death_knight_t::runes_per_second() const
   {
     rps *= 1.0 + spell.runic_corruption -> effectN( 1 ).percent();
   }
-
+  
   if ( buffs.t21_4p_blood -> check() )
   {
     rps *= 1.0 + spell.rune_master -> effectN( 1 ).percent();
@@ -8358,7 +8350,7 @@ inline double death_knight_t::rune_regen_coefficient() const
   {
     coeff /= 1.0 + spell.runic_corruption -> effectN( 1 ).percent();
   }
-
+  
   if ( buffs.t21_4p_blood -> check() )
   {
     coeff /= 1.0 + spell.rune_master -> effectN( 1 ).percent();
@@ -8744,15 +8736,6 @@ struct lanathels_lament_t : public scoped_actor_callback_t<death_knight_t>
   { p -> legendary.lanathels_lament = p -> find_spell( 212975 ); }
 };
 
-struct rattlegore_bone_legplates_t : public scoped_actor_callback_t<death_knight_t>
-{
-  rattlegore_bone_legplates_t() : super( DEATH_KNIGHT )
-  { }
-
-  void manipulate( death_knight_t* p, const special_effect_t& e ) override
-  { p -> legendary.rattlegore_bone_legplates = e.driver(); }
-};
-
 struct soulflayers_corruption_t : public scoped_actor_callback_t<death_knight_t>
 {
   soulflayers_corruption_t() : super( DEATH_KNIGHT )
@@ -8795,7 +8778,6 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 212216, seal_of_necrofantasia_t() );
     unique_gear::register_special_effect( 216059, perseverance_of_the_ebon_martyr_t() );
     unique_gear::register_special_effect( 212974, lanathels_lament_t() );
-    unique_gear::register_special_effect( 205816, rattlegore_bone_legplates_t() );
     unique_gear::register_special_effect( 209228, shackles_of_bryndaor_t() );
     // 7.1.5
     unique_gear::register_special_effect( 235556, death_march_t() );

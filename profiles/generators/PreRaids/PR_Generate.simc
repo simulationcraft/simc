@@ -10,7 +10,7 @@
 # * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
 
 # Death Knight
-#PR_Generate_Death_Knight.simc
+PR_Generate_Death_Knight.simc
 
 # Demon Hunter
 #PR_Generate_Demon_Hunter.simc
