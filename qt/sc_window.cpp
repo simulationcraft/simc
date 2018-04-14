@@ -533,6 +533,7 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
     std::vector< std::string > errorListCopy( sim -> error_list );
     files.push_back( sim -> output_file_str );
     files.push_back( sim -> html_file_str );
+    files.push_back( sim -> json_file_str );
     files.push_back( sim -> xml_file_str );
     files.push_back( sim -> reforge_plot_output_file_str );
 
@@ -822,6 +823,7 @@ void SC_MainWindow::startSim()
   QString reportFileBase = QDir::toNativeSeparators( optionsTab -> getReportlDestination() );
   sim -> output_file_str = (reportFileBase + ".txt").toStdString();
   sim -> html_file_str = (reportFileBase + ".html").toStdString();
+  sim -> json_file_str = (reportFileBase + ".json").toStdString();
 
   //sim -> xml_file_str = (reportFileBase + ".xml").toStdString();
   sim -> reforge_plot_output_file_str = (reportFileBase + "_plotdata.csv").toStdString();
@@ -1153,22 +1155,20 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
         resultsTextView -> setPlainText( tr( "Error opening %1. %2" ).arg( sim -> output_file_str.c_str(), logFile.errorString() ) );
     }
 
-    // XML
-    /*
-    SC_TextEdit* resultsXmlView = new SC_TextEdit( resultsEntry );
-    resultsEntry -> addTab( resultsXmlView, "xml" );
+    // JSON
+    SC_TextEdit* resultsJSONView = new SC_TextEdit( resultsEntry );
+    resultsEntry -> addTab( resultsJSONView, "JSON" );
 
-    QFile xml_file( sim -> xml_file_str.c_str() );
-    if ( xml_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    QFile json_file( sim -> json_file_str.c_str() );
+    if ( json_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-      resultsXmlView -> appendPlainText( xml_file.readAll() );
-      xml_file.close();
+      resultsJSONView -> appendPlainText( json_file.readAll() );
+      json_file.close();
     }
     else
     {
-      resultsXmlView -> setPlainText( tr( "Error opening %1. %2" ).arg( sim -> xml_file_str.c_str(), xml_file.errorString() ) );
+      resultsJSONView -> setPlainText( tr( "Error opening %1. %2" ).arg( sim -> json_file_str.c_str(), json_file.errorString() ) );
     }
-    */
 
     // Plot Data
     SC_TextEdit* resultsPlotView = new SC_TextEdit( resultsEntry );
