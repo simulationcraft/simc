@@ -619,6 +619,7 @@ bool option_db_t::parse_file( std::istream& input )
   {
     std::getline( input, buffer );
     auto it = buffer.begin();
+    auto end = buffer.end();
     if ( first )
     {
       first = false;
@@ -631,17 +632,12 @@ bool option_db_t::parse_file( std::istream& input )
       }
     }
 
-    if ( buffer.empty() )
-    {
-      continue;
-    }
-
-    while ( is_white_space( *it ) )
+    while ( it != end && is_white_space( *it ) )
     {
       ++it;
     }
 
-    if ( *it == '#' )
+    if ( it == end || *it == '#' )
     {
       continue;
     }
