@@ -631,12 +631,17 @@ bool option_db_t::parse_file( std::istream& input )
       }
     }
 
+    if ( buffer.empty() )
+    {
+      continue;
+    }
+
     while ( is_white_space( *it ) )
     {
       ++it;
     }
 
-    if ( *it == '#' || *it == '\0' )
+    if ( *it == '#' )
     {
       continue;
     }
