@@ -1460,12 +1460,14 @@ void SC_MainWindow::resultsTabChanged( int /* index */ )
 
 void SC_MainWindow::resultsTabCloseRequest( int index )
 {
-  int confirm = QMessageBox::question( this, tr( "Close Result Tab" ), tr( "Do you really want to close this result?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
-  if ( confirm == QMessageBox::Yes )
+  QMessageBox msgBox( QMessageBox::Question, tr( "Close Result Tab" ), tr( "Do you really want to close this result?" ), QMessageBox::Yes | QMessageBox::No );
+  auto close_all_button = msgBox.addButton(tr("Close permanently"), QMessageBox::YesRole);
+  int confirm = msgBox.exec();
+  bool close_permanently = msgBox.clickedButton() == close_all_button;
+  if ( confirm == QMessageBox::Yes || close_permanently )
   {
     auto tab = static_cast <SC_SingleResultTab*>(resultsTab -> widget( index ));
-    resultsTab -> removeTab( index );
-    tab->deleteLater();
+    resultsTab -> removeTab( index, close_permanently );
     if ( resultsTab -> count() == 1 )
     {
       SC_SingleResultTab* tab = static_cast <SC_SingleResultTab*>(resultsTab -> widget( 0 ));
