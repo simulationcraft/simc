@@ -2616,6 +2616,7 @@ bool util::is_combat_rating( item_mod_type t )
     case ITEM_MOD_LEECH_RATING:
     case ITEM_MOD_AVOIDANCE_RATING:
     case ITEM_MOD_VERSATILITY_RATING:
+    case ITEM_MOD_EXTRA_ARMOR:
       return true;
     default:
       return false;
