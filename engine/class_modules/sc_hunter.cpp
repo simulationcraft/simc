@@ -3803,7 +3803,7 @@ struct dire_frenzy_t: public dire_spell_t<hunter_ranged_attack_t>
 
     if ( auto pet = p() -> active.pet )
     {
-      if ( p() -> talents.stomp )
+      if ( p() -> talents.stomp -> ok() )
         pet -> active.stomp -> execute();
 
       // Execute number of attacks listed in spell data
