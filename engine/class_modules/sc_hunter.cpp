@@ -1046,9 +1046,8 @@ public:
         -> set_default_value( o() -> specs.beast_cleave -> effectN( 1 ).percent() );
 
     buffs.dire_frenzy =
-      make_buff( this, "dire_frenzy", o() -> specs.dire_frenzy )
-        -> set_cooldown( timespan_t::zero() )
-        -> set_default_value ( o() -> specs.dire_frenzy -> effectN( 2 ).percent() )
+      make_buff( this, "dire_frenzy", o() -> find_spell( 272790 ) )
+        -> set_default_value ( o() -> find_spell( 272790 ) -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_ATTACK_HASTE );
 
     buffs.tier19_2pc_bm =
@@ -3570,21 +3569,25 @@ struct counter_shot_t: public interrupt_base_t
 // Dire Spell ===============================================================
 // Base class for Dire Beast & Dire Frenzy
 
-struct dire_spell_t: public hunter_spell_t
+template <typename Base>
+struct dire_spell_t: public Base
 {
+private:
+  typedef Base ab;
+public:
+  typedef dire_spell_t base_t;
+
   dire_spell_t( const std::string& n, hunter_t* p, const spell_data_t* s ) :
-    hunter_spell_t( n, p, s )
+    ab( n, p, s )
   {
-    harmful = may_hit = false;
-    dot_duration = timespan_t::zero();
   }
 
   void execute() override
   {
-    hunter_spell_t::execute();
+    ab::execute();
 
     // Trigger buffs
-    for ( buff_t* buff : p() -> buffs.dire_regen )
+    for ( buff_t* buff : ab::p() -> buffs.dire_regen )
     {
       if ( ! buff -> check() )
       {
@@ -3593,43 +3596,46 @@ struct dire_spell_t: public hunter_spell_t
       }
     }
 
-    if ( p() -> talents.thrill_of_the_hunt -> ok() )
-      p() -> buffs.thrill_of_the_hunt -> trigger();
+    if ( ab::p() -> talents.thrill_of_the_hunt -> ok() )
+      ab::p() -> buffs.thrill_of_the_hunt -> trigger();
 
     // Adjust BW cd
-    timespan_t t = timespan_t::from_seconds( p() -> specs.bestial_wrath -> effectN( 3 ).base_value() );
-    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
-      t += timespan_t::from_seconds( p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B4 ) -> effectN( 1 ).base_value() );
-    p() -> cooldowns.bestial_wrath -> adjust( -t );
+    timespan_t t = timespan_t::from_seconds( ab::p() -> specs.bestial_wrath -> effectN( 3 ).base_value() );
+    if ( ab::p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
+      t += timespan_t::from_seconds( ab::p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B4 ) -> effectN( 1 ).base_value() );
+    ab::p() -> cooldowns.bestial_wrath -> adjust( -t );
 
-    if ( p() -> legendary.bm_feet -> ok() )
-      p() -> cooldowns.kill_command -> adjust( p() -> legendary.bm_feet -> effectN( 1 ).time_value() );
+    if ( ab::p() -> legendary.bm_feet -> ok() )
+      ab::p() -> cooldowns.kill_command -> adjust( ab::p() -> legendary.bm_feet -> effectN( 1 ).time_value() );
 
-    if ( p() -> legendary.bm_shoulders -> ok() )
-      p() -> buffs.the_mantle_of_command -> trigger();
+    if ( ab::p() -> legendary.bm_shoulders -> ok() )
+      ab::p() -> buffs.the_mantle_of_command -> trigger();
   }
 };
 
 // Dire Beast ===============================================================
 
-struct dire_beast_t: public dire_spell_t
+struct dire_beast_t: public dire_spell_t<hunter_spell_t>
 {
   dire_beast_t( hunter_t* player, const std::string& options_str ):
-    dire_spell_t( "dire_beast", player, player -> talents.dire_beast )
+    base_t( "dire_beast", player, player -> talents.dire_beast )
   {
     parse_options( options_str );
+
+    harmful = may_hit = false;
+    dot_duration = timespan_t::zero();
   }
 
   bool init_finished() override
   {
     add_pet_stats( p() -> pets.dire_beasts[ 0 ], { "dire_beast_melee", "stomp" } );
 
-    return dire_spell_t::init_finished();
+    return base_t::init_finished();
   }
 
   void execute() override
   {
-    dire_spell_t::execute();
+    base_t::execute();
 
     pet_t* beast = nullptr;
     for( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
@@ -3673,7 +3679,7 @@ struct dire_beast_t: public dire_spell_t
 
   bool ready() override
   {
-    return p() -> talents.dire_beast -> ok() && dire_spell_t::ready();
+    return p() -> talents.dire_beast -> ok() && base_t::ready();
   }
 };
 
@@ -3775,10 +3781,10 @@ struct kill_command_t: public hunter_spell_t
 
 // Dire Frenzy ==============================================================
 
-struct dire_frenzy_t: public dire_spell_t
+struct dire_frenzy_t: public dire_spell_t<hunter_ranged_attack_t>
 {
   dire_frenzy_t( hunter_t* p, const std::string& options_str ):
-    dire_spell_t( "dire_frenzy", p, p -> specs.dire_frenzy )
+    base_t( "dire_frenzy", p, p -> specs.dire_frenzy )
   {
     parse_options( options_str );
   }
@@ -3788,12 +3794,12 @@ struct dire_frenzy_t: public dire_spell_t
     for ( auto pet : p() -> pet_list )
       add_pet_stats( pet, { "dire_frenzy", "stomp" } );
 
-    return dire_spell_t::init_finished();
+    return base_t::init_finished();
   }
 
   void execute() override
   {
-    dire_spell_t::execute();
+    base_t::execute();
 
     if ( auto pet = p() -> active.pet )
     {
@@ -3801,7 +3807,7 @@ struct dire_frenzy_t: public dire_spell_t
         pet -> active.stomp -> execute();
 
       // Execute number of attacks listed in spell data
-      for ( int i = 0; i < data().effectN( 1 ).base_value(); i++ )
+      for ( int i = 0; i < data().effectN( 2 ).base_value(); i++ )
         pet -> active.dire_frenzy -> schedule_execute();
 
       pet -> buffs.dire_frenzy -> trigger();
@@ -3810,7 +3816,7 @@ struct dire_frenzy_t: public dire_spell_t
 
   bool ready() override
   {
-    return ! p() -> talents.dire_beast -> ok() && dire_spell_t::ready();
+    return ! p() -> talents.dire_beast -> ok() && base_t::ready();
   }
 };
 
