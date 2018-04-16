@@ -5015,6 +5015,7 @@ void hunter_t::apl_bm()
 
   // Generic APL
   default_list -> add_talent( this, "A Murder of Crows", "if=cooldown.bestial_wrath.remains<3|target.time_to_die<16" );
+  default_list -> add_talent( this, "Spitting Cobra", "if=target.time_to_die>=cooldown+duration|target.time_to_die<21" );
   default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
   default_list -> add_action( this, "Bestial Wrath", "if=!buff.bestial_wrath.up" );
   default_list -> add_action( this, "Aspect of the Wild", "if=(equipped.call_of_the_wild&equipped.convergence_of_fates&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12",
