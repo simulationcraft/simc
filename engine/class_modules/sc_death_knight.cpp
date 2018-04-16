@@ -7978,6 +7978,7 @@ void death_knight_t::init_base_stats()
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
   resources.base[ RESOURCE_RUNIC_POWER ] += spec.veteran_of_the_third_war -> effectN( 10 ).resource( RESOURCE_RUNIC_POWER );
+  resources.base[ RESOURCE_RUNIC_POWER ] += talent.ossuary -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
   resources.base[ RESOURCE_RUNIC_POWER ] += artifact.runic_tattoos.data().effectN( 2 ).base_value() / 10.0;
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
 
