@@ -6956,7 +6956,11 @@ void death_knight_t::init_base_stats()
   base.attack_power_per_agility = 0.0;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
-  resources.base[ RESOURCE_RUNIC_POWER ] += (spec.veteran_of_the_third_war -> effectN( 8 ).base_value()) / 10.0;
+  resources.base[ RESOURCE_RUNIC_POWER ] += ( spec.veteran_of_the_third_war -> effectN( 8 ).resource( RESOURCE_RUNIC_POWER ) );
+  if ( talent.ossuary -> ok() )
+    resources.base [ RESOURCE_RUNIC_POWER ] += ( talent.ossuary -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) );
+
+
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
 
   base_gcd = timespan_t::from_seconds( 1.0 );
@@ -7114,7 +7118,6 @@ void death_knight_t::init_spells()
   talent.red_thirst            = find_talent_spell( "Red Thirst" );
   talent.bonestorm             = find_talent_spell( "Bonestorm"  );
 
-  
   // Generic spells
   // Shared
   spell.antimagic_shell        = find_class_spell( "Anti-Magic Shell" );
@@ -7589,15 +7592,16 @@ void death_knight_t::create_buffs()
 
   buffs.sephuzs_secret = new sephuzs_secret_buff_t( this );
 
-  buffs.bone_shield         = make_buff<haste_buff_t>( this, "bone_shield", spell.bone_shield );
+  buffs.bone_shield   = make_buff<haste_buff_t>( this, "bone_shield", spell.bone_shield );
   buffs.bone_shield -> set_default_value( 1.0 / ( 1.0 + spell.bone_shield -> effectN( 4 ).percent() ) )
-                              ->set_stack_change_callback( talent.foul_bulwark -> ok() ? [ this ]( buff_t*, int old_stacks, int new_stacks ) {
+                              -> set_stack_change_callback( talent.foul_bulwark -> ok() ? [ this ]( buff_t*, int old_stacks, int new_stacks ) {
                                 double old_buff = old_stacks * talent.foul_bulwark -> effectN( 1 ).percent();
                                 double new_buff = new_stacks * talent.foul_bulwark -> effectN( 1 ).percent();
                                 resources.initial_multiplier[ RESOURCE_HEALTH ] /= 1.0 + old_buff;
                                 resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + new_buff;
                                 recalculate_resource_max( RESOURCE_HEALTH );
-                              } : buff_stack_change_callback_t() );
+                              } : buff_stack_change_callback_t() )
+                              -> set_max_stack( spell.bone_shield -> max_stacks() + talent.ossuary -> effectN( 1 ).base_value() );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge", find_spell( 81141 ) )
                               .trigger_spell( spec.crimson_scourge );
   buffs.dancing_rune_weapon = new dancing_rune_weapon_buff_t( this );
