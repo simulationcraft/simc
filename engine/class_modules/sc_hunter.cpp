@@ -255,7 +255,7 @@ public:
   struct talents_t
   {
     // tier 15
-    spell_data_ptr_t big_game_hunter;
+    spell_data_ptr_t killer_instinct;
     spell_data_ptr_t animal_companion; // NYI in-game
     spell_data_ptr_t dire_beast;
 
@@ -749,29 +749,6 @@ void trigger_sephuzs_secret( hunter_t* p, const action_state_t* state, spell_mec
     p -> buffs.sephuzs_secret -> trigger();
   }
 }
-
-struct big_game_hunter_tracker_t
-{
-  benefit_t *const benefit;
-  const int threshold;
-  const double crit_chance;
-
-  big_game_hunter_tracker_t( hunter_t* p, const std::string& n ):
-    benefit( p -> talents.big_game_hunter -> ok() ? p -> get_benefit( n ) : nullptr ),
-    threshold( p -> talents.big_game_hunter -> effectN( 2 ).base_value() ),
-    crit_chance( p -> talents.big_game_hunter -> effectN( 1 ).percent() )
-  {}
-
-  bool up( player_t *const t ) const
-  {
-    if ( !benefit )
-      return false;
-
-    const bool bgh_active = t -> health_percentage() > threshold;
-    benefit -> update( bgh_active );
-    return bgh_active;
-  }
-};
 
 struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
@@ -1544,8 +1521,11 @@ struct bestial_ferocity_t: public hunter_main_pet_attack_t
 
 struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 {
+  benefit_t *const killer_instinct;
+
   kill_command_t( hunter_pet_t* p ):
-    base_t( "kill_command", p, p -> find_spell( 83381 ) )
+    base_t( "kill_command", p, p -> find_spell( 83381 ) ),
+    killer_instinct( p -> o() -> talents.killer_instinct -> ok() ? p -> o() -> get_benefit( "killer_instinct" ) : nullptr )
   {
     background = true;
     may_crit = true;
@@ -1570,6 +1550,21 @@ struct kill_command_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 
     if ( o() -> buffs.t20_4p_bestial_rage -> up() )
       am *= 1.0 + o() -> buffs.t20_4p_bestial_rage -> check_value();
+
+    return am;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double am = base_t::composite_target_multiplier( t );
+
+    if ( killer_instinct )
+    {
+      const bool active = t -> health_percentage() < o() -> talents.killer_instinct -> effectN( 2 ).base_value();
+      killer_instinct -> update( active );
+      if ( active )
+        am *= 1.0 + o() -> talents.killer_instinct -> effectN( 1 ).percent();
+    }
 
     return am;
   }
@@ -2021,11 +2016,9 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
   volley_tick_t* volley_tick;
   double volley_tick_cost;
   bool first_shot;
-  big_game_hunter_tracker_t big_game_hunter;
 
   auto_shot_t( hunter_t* p ): base_t( "auto_shot", p, spell_data_t::nil() ), volley_tick( nullptr ),
-    volley_tick_cost( 0 ), first_shot( true ),
-    big_game_hunter( p, "auto_in_big_game_hunter" )
+    volley_tick_cost( 0 ), first_shot( true )
   {
     school = SCHOOL_PHYSICAL;
     background = true;
@@ -2102,16 +2095,6 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
         p() -> procs.wild_call -> occur();
       }
     }
-  }
-
-  double composite_target_crit_chance( player_t* t ) const override
-  {
-    double cc = base_t::composite_target_crit_chance( t );
-
-    if ( big_game_hunter.up( t ) )
-      cc += big_game_hunter.crit_chance;
-
-    return cc;
   }
 };
 
@@ -2354,13 +2337,11 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
 
 struct cobra_shot_t: public hunter_ranged_attack_t
 {
-  big_game_hunter_tracker_t big_game_hunter;
   const timespan_t kill_command_reduction;
   const timespan_t venomous_bite_reduction;
 
   cobra_shot_t( hunter_t* player, const std::string& options_str ):
     hunter_ranged_attack_t( "cobra_shot", player, player -> find_specialization_spell( "Cobra Shot" ) ),
-    big_game_hunter( player, "cobra_in_big_game_hunter" ),
     kill_command_reduction( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) ),
     venomous_bite_reduction( timespan_t::from_millis( player -> talents.venomous_bite -> effectN( 1 ).base_value() * 100 ) )
   {
@@ -2387,16 +2368,6 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B2 ) )
       trigger_t20_2pc_bm( p() );
-  }
-
-  double composite_target_crit_chance( player_t* t ) const override
-  {
-    double cc = hunter_ranged_attack_t::composite_target_crit_chance( t );
-
-    if ( big_game_hunter.up( t ) )
-      cc += big_game_hunter.crit_chance;
-
-    return cc;
   }
 
   double action_multiplier() const override
@@ -4563,7 +4534,7 @@ void hunter_t::init_spells()
   player_t::init_spells();
 
   // tier 15
-  talents.big_game_hunter                   = find_talent_spell( "Big Game Hunter" );
+  talents.killer_instinct                   = find_talent_spell( "Killer Instinct" );
   talents.animal_companion                  = find_talent_spell( "Animal Companion" );
   talents.dire_beast                        = find_talent_spell( "Dire Beast" );
 
