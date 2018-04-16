@@ -1421,6 +1421,7 @@ public:
   struct {
     // bm
     bool aotw_crit_chance;
+    bool aspect_of_the_beast;
     bool bestial_wrath;
     bool thrill_of_the_hunt;
   } affected_by;
@@ -1434,6 +1435,7 @@ public:
     affected_by.aotw_crit_chance = ab::data().affected_by( ab::o() -> specs.aspect_of_the_wild -> effectN( 1 ) );
     affected_by.bestial_wrath = ab::data().affected_by( ab::o() -> specs.bestial_wrath -> effectN( 1 ) );
     affected_by.thrill_of_the_hunt = ab::data().affected_by( ab::o() -> talents.thrill_of_the_hunt -> effectN( 1 ) );
+    affected_by.aspect_of_the_beast = ab::data().affected_by( ab::o() -> talents.aspect_of_the_beast -> effectN( 1 ) );
   }
 
   hunter_main_pet_td_t* td( player_t* t = nullptr ) const
@@ -1467,6 +1469,9 @@ public:
     if ( affected_by.bestial_wrath )
       am *= 1.0 + ab::o() -> buffs.bestial_wrath -> check_value();
 
+    if ( affected_by.aspect_of_the_beast )
+      am *= 1.0 + ab::o() -> talents.aspect_of_the_beast -> effectN( 1 ).percent();
+
     return am;
   }
 
@@ -1490,32 +1495,6 @@ using hunter_main_pet_spell_t = hunter_main_pet_action_t< spell_t >;
 // ==========================================================================
 // Hunter Pet Attacks
 // ==========================================================================
-
-// Bestial Ferocity (Aspect of the Beast) ===================================
-
-struct bestial_ferocity_t: public hunter_main_pet_attack_t
-{
-  bestial_ferocity_t( hunter_main_pet_t* p ):
-    hunter_main_pet_attack_t( "bestial_ferocity", p, p -> find_spell( 191413 ) )
-  {
-    background = true;
-    can_hunting_companion = false;
-    tick_may_crit = true;
-  }
-
-  void execute() override
-  {
-    // we can't use KCs state for this as it will do a direct hit otherwise
-    action_state_t::release( pre_execute_state );
-    base_t::execute();
-  }
-
-  // does not pandemic
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-    return dot -> time_to_next_tick() + triggered_duration;
-  }
-};
 
 // Kill Command (pet) =======================================================
 
@@ -1744,9 +1723,6 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
 
     if ( p -> o() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T19, B2 ) )
       hunting_companion_multiplier *= p -> o() -> sets -> set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).base_value();
-
-    if ( p -> o() -> talents.aspect_of_the_beast -> ok() )
-      impact_action = new bestial_ferocity_t( p );
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -1894,8 +1870,6 @@ void hunter_main_pet_t::init_spells()
   specs.combat_experience = spell_data_t::not_found(); // find_specialization_spell( "Combat Experience" );
 
   active.kill_command = new actions::kill_command_t( this );
-  if ( o() -> talents.aspect_of_the_beast -> ok() )
-    active.kill_command -> impact_action = new actions::bestial_ferocity_t( this );
 
   if ( o() -> specs.beast_cleave -> ok() )
     active.beast_cleave = new actions::beast_cleave_attack_t( this );
@@ -2994,7 +2968,7 @@ struct flanking_strike_t: hunter_melee_attack_t
   bool init_finished() override
   {
     for ( auto pet : p() -> pet_list )
-      add_pet_stats( pet, { "flanking_strike", "bestial_ferocity" } );
+      add_pet_stats( pet, { "flanking_strike" } );
 
     return hunter_melee_attack_t::init_finished();
   }
@@ -3765,7 +3739,7 @@ struct kill_command_t: public hunter_spell_t
   bool init_finished() override
   {
     for (auto pet : p() -> pet_list)
-      add_pet_stats( pet, { "kill_command", "bestial_ferocity" } );
+      add_pet_stats( pet, { "kill_command" } );
 
     return hunter_spell_t::init_finished();
   }
@@ -3796,35 +3770,6 @@ struct kill_command_t: public hunter_spell_t
       return hunter_spell_t::ready();
 
     return false;
-  }
-
-  // this is somewhat unfortunate but we can't get at the
-  // pets dot in any other way
-  template <typename F>
-  expr_t* make_aotb_expr( const std::string& name, F&& fn ) const
-  {
-    target_specific_t<dot_t> specific_dot(false);
-    return make_fn_expr( name, [ this, specific_dot, fn ] () {
-      player_t* pet = p() -> active.pet;
-      assert( pet );
-      pet -> get_target_data( target );
-      dot_t*& dot = specific_dot[ target ];
-      if ( !dot )
-        dot = target -> get_dot( "bestial_ferocity", pet );
-      return fn( dot );
-    } );
-  }
-
-  expr_t* create_expression(const std::string& expression_str) override
-  {
-    auto splits = util::string_split( expression_str, "." );
-    if ( splits.size() == 2 && splits[ 0 ] == "bestial_ferocity" )
-    {
-      if ( splits[ 1 ] == "remains" )
-        return make_aotb_expr( "aotb_remains", []( dot_t* dot ) { return dot -> remains(); } );
-    }
-
-    return hunter_spell_t::create_expression( expression_str );
   }
 };
 
@@ -5068,8 +5013,6 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Bestial Wrath", "if=!buff.bestial_wrath.up" );
   default_list -> add_action( this, "Aspect of the Wild", "if=(equipped.call_of_the_wild&equipped.convergence_of_fates&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12",
                                     "With both AotW cdr sources and OwtP, use it on cd. Otherwise pair it with Bestial Wrath." );
-  default_list -> add_action( this, "Kill Command", "target_if=min:bestial_ferocity.remains,if=!talent.dire_frenzy.enabled|(pet.cat.buff.dire_frenzy.remains>gcd.max*1.2|(!pet.cat.buff.dire_frenzy.up&!talent.one_with_the_pack.enabled))",
-                                    "With legendary boots it's possible and beneficial to multidot the Bestial Ferocity bleed." );
   default_list -> add_action( this, "Cobra Shot", "if=set_bonus.tier20_2pc&spell_targets.multishot=1&!equipped.qapla_eredun_war_order&(buff.bestial_wrath.up&buff.bestial_wrath.remains<gcd.max*2)&(!talent.dire_frenzy.enabled|pet.cat.buff.dire_frenzy.remains>gcd.max*1.2)",
                                     "Without legendary boots, take advantage of the t20 2pc bonus by casting Cobra Shot over DB in the last couple seconds of BW." );
   default_list -> add_talent( this, "Dire Beast", "if=cooldown.bestial_wrath.remains>2&((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=1)|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1)" );
