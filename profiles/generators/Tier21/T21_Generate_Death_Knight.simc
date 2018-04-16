@@ -52,27 +52,27 @@ food=azshari_salad
 
 save=T21_Death_Knight_Unholy.simc
 
-#deathknight="T21_Death_Knight_Blood"
-#level=110
-#race=blood_elf
-#role=tank
-#talents=3112033
-#spec=blood
+deathknight="T21_Death_Knight_Blood"
+level=110
+race=blood_elf
+role=tank
+talents=3112033
+spec=blood
 
-#head=dreadwake_helm,id=152115,bonus_id=3612/1502
-#neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
-#shoulder=skullflowers_haemostasis,id=144281,bonus_id=3630
-#back=gravewarden_cloak,id=147122,bonus_id=3563/1512,enchant=binding_of_strength
-#chest=soulflayers_corruption,id=151795,bonus_id=3630
-#wrist=varimathras_shattered_manacles,id=152281,bonus_id=3612/1502
-#hands=gravewarden_handguards,id=147123,bonus_id=3563/1512
-#waist=flamelicked_girdle,id=152021,bonus_id=3612/1502
-#legs=dreadwake_legplates,id=152116,bonus_id=3612/1502
-#feet=doomwalker_warboots,id=152009,bonus_id=3612/1502
-#finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
-#finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_haste
-#trinket1=aggramars_conviction,id=154173,bonus_id=3997
-#trinket2=astral_alchemist_stone,id=151607,bonus_id=3609/601/3608
-#main_hand=maw_of_the_damned,id=128402,enchant=rune_of_the_fallen_crusader,gem_id=155847/155855/155852,relic_id=3612:1512/3612:1512/3612:1512
+head=dreadwake_helm,id=152115,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+shoulder=skullflowers_haemostasis,id=144281,bonus_id=3630
+back=gravewarden_cloak,id=147122,bonus_id=3563/1512,enchant=binding_of_strength
+chest=soulflayers_corruption,id=151795,bonus_id=3630
+wrist=varimathras_shattered_manacles,id=152281,bonus_id=3612/1502
+hands=gravewarden_handguards,id=147123,bonus_id=3563/1512
+waist=flamelicked_girdle,id=152021,bonus_id=3612/1502
+legs=dreadwake_legplates,id=152116,bonus_id=3612/1502
+feet=doomwalker_warboots,id=152009,bonus_id=3612/1502
+finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
+finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_haste
+trinket1=aggramars_conviction,id=154173,bonus_id=3997
+trinket2=astral_alchemist_stone,id=151607,bonus_id=3609/601/3608
+main_hand=maw_of_the_damned,id=128402,enchant=rune_of_the_fallen_crusader,gem_id=155847/155855/155852,relic_id=3612:1512/3612:1512/3612:1512
 
-#save=T21_Death_Knight_Blood.simc
+save=T21_Death_Knight_Blood.simc
