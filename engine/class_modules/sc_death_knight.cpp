@@ -7642,7 +7642,7 @@ void death_knight_t::create_buffs()
                               .default_value( spec.pillar_of_frost -> effectN( 1 ).percent() )
                               .add_invalidate( CACHE_STRENGTH );
   buffs.toravons            = buff_creator_t( this, "toravons_whiteout_bindings", find_spell( 205658 ) )
-                              .default_value( find_spell( 205658 ) -> effectN( 1 ).base_value() )
+                              .default_value( find_spell( 205658 ) -> effectN( 1 ).percent() )
                               .duration( spec.pillar_of_frost -> duration() )
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.rime                = buff_creator_t( this, "rime", spec.rime -> effectN( 1 ).trigger() )
