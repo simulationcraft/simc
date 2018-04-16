@@ -445,6 +445,7 @@ public:
     buff_t* skullflowers_haemostasis;
     haste_buff_t* sephuzs_secret;
     buff_t* cold_heart;
+    buff_t* toravons;
   } buffs;
 
   struct runeforge_t {
@@ -4111,14 +4112,19 @@ struct deaths_caress_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-      p() -> apply_diseases( execute_state, DISEASE_BLOOD_PLAGUE );
-    
     if ( p() -> buffs.dancing_rune_weapon -> check() )
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> execute();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      p() -> apply_diseases( execute_state, DISEASE_BLOOD_PLAGUE );
   }
 };
 
@@ -5482,6 +5488,8 @@ struct pillar_of_frost_t : public death_knight_spell_t
         p() -> buffs.pillar_of_frost -> default_value +
         p() -> buffs.t20_4pc_frost -> stack_value() );
     p() -> buffs.t20_4pc_frost -> expire();
+    if ( p() -> legendary.toravons ) 
+      p() -> buffs.toravons -> trigger();
   }
 };
 
@@ -6428,6 +6436,8 @@ void death_knight_t::trigger_t20_2pc_frost( double consumed )
   if ( t20_2pc_frost >= sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).base_value() )
   {
     buffs.pillar_of_frost -> extend_duration( this, timespan_t::from_seconds(
+      sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 2 ).base_value() / 10.0 ) );
+    buffs.toravons -> extend_duration( this, timespan_t::from_seconds(
       sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 2 ).base_value() / 10.0 ) );
     t20_2pc_frost -= sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).base_value();
   }
@@ -7627,11 +7637,14 @@ void death_knight_t::create_buffs()
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() );
   buffs.obliteration        = buff_creator_t( this, "obliteration", talent.obliteration )
                               .cd( timespan_t::zero() ); // Handled by action
-  buffs.pillar_of_frost = buff_creator_t(this, "pillar_of_frost", spec.pillar_of_frost )
-                              .cd(timespan_t::zero())
+  buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", spec.pillar_of_frost )
+                              .cd( timespan_t::zero() )
                               .default_value( spec.pillar_of_frost -> effectN( 1 ).percent() )
-                              .add_invalidate(CACHE_STRENGTH)
-                              .add_invalidate(legendary.toravons ? CACHE_PLAYER_DAMAGE_MULTIPLIER : CACHE_NONE);
+                              .add_invalidate( CACHE_STRENGTH );
+  buffs.toravons            = buff_creator_t( this, "toravons_whiteout_bindings", find_spell( 205658 ) )
+                              .default_value( find_spell( 205658 ) -> effectN( 1 ).base_value() )
+                              .duration( spec.pillar_of_frost -> duration() )
+                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.rime                = buff_creator_t( this, "rime", spec.rime -> effectN( 1 ).trigger() )
                               .trigger_spell( spec.rime )
                               .chance( spec.rime -> effectN( 2 ).percent() + sets -> set( DEATH_KNIGHT_FROST, T19, B2 ) -> effectN( 1 ).percent() );
@@ -8059,9 +8072,9 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     if ( mastery.frozen_heart -> ok() )
       m *= 1.0 + cache.mastery_value();
 
-    if ( buffs.pillar_of_frost -> up() )
+    if ( buffs.toravons -> up() )
     {
-      m *= 1.0 + legendary.toravons;
+      m *= 1.0 + buffs.toravons -> default_value;
     }
   }
 
