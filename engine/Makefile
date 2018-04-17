@@ -59,7 +59,6 @@ CPP_FLAGS  = -Wall -Wextra -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++1
 -Wpedantic \
 -Wcast-qual \
 -Wconversion-null \
--Wno-noexcept-type \
 -Wno-implicit-fallthrough # Since we can not yet mark things with [[fallthrough]], disable to avoid false positives.
 
 OPTS       =
