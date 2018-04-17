@@ -3422,7 +3422,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
     if ( ! p() -> in_combat )
     {
       double precombat_army = 6.0;
-      timespan_t precombat_time = timespan_t::from_seconds( - precombat_army );
+      timespan_t precombat_time = timespan_t::from_seconds( precombat_army );
       timespan_t army_duration = p() -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration();
 
       // If used during precombat, army is casted around 6s before the fight begins
@@ -3434,14 +3434,14 @@ struct army_of_the_dead_t : public death_knight_spell_t
         p() -> buffs.t20_2pc_unholy -> trigger();
       }
 
-      p() -> buffs.t20_2pc_unholy -> extend_duration( p(), precombat_time );
-      p() -> cooldown.army_of_the_dead -> adjust( precombat_time, false );
+      p() -> buffs.t20_2pc_unholy -> extend_duration( p(), - precombat_time );
+      p() -> cooldown.army_of_the_dead -> adjust( - precombat_time, false );
 
       //simulate RP decay for that 6 seconds
       p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * precombat_army, nullptr, nullptr );
 
       // Simulate rune regeneration for 6 seconds
-      p() -> _runes.regenerate_immediate( timespan_t::from_seconds( precombat_army ) );
+      p() -> _runes.regenerate_immediate( precombat_time );
     }
     else
     {
