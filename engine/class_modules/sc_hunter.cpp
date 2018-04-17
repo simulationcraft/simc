@@ -82,7 +82,7 @@ void parse_affecting_aura( action_t *const action, const spell_data_t *const spe
 // Hunter
 // ==========================================================================
 
-enum { DIRE_BEASTS_MAX = 10 };
+constexpr unsigned DIRE_BEASTS_MAX = 10;
 
 struct hunter_t;
 
@@ -120,7 +120,7 @@ struct hunter_t: public player_t
 public:
 
   // Active
-  std::vector<std::pair<cooldown_t*, proc_t*>> animal_instincts_cds;
+
   struct actives_t
   {
     pets::hunter_main_pet_t* pet;
@@ -131,9 +131,9 @@ public:
 
   struct pets_t
   {
-    std::array< pets::dire_critter_t*, DIRE_BEASTS_MAX >  dire_beasts;
+    std::array<pets::dire_critter_t*, DIRE_BEASTS_MAX>  dire_beasts;
     pet_t* spitting_cobra;
-    std::array< pet_t*, 2 > dark_minions;
+    std::array<pet_t*, 2> dark_minions;
   } pets;
 
   struct legendary_t
@@ -172,7 +172,7 @@ public:
     buff_t* bestial_wrath;
     buff_t* bombardment;
     buff_t* careful_aim;
-    std::array<buff_t*, DIRE_BEASTS_MAX > dire_regen;
+    std::array<buff_t*, DIRE_BEASTS_MAX> dire_regen;
     buff_t* thrill_of_the_hunt;
     buff_t* steady_focus;
     buff_t* pre_steady_focus;
@@ -382,16 +382,18 @@ public:
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
     player_t( sim, HUNTER, name, r ),
-    active( actives_t() ),
-    pets( pets_t() ),
-    legendary( legendary_t() ),
-    buffs( buffs_t() ),
-    cooldowns( cooldowns_t() ),
-    gains( gains_t() ),
-    procs( procs_t() ),
-    talents( talents_t() ),
-    specs( specs_t() ),
-    mastery( mastery_spells_t() ),
+    active(),
+    pets(),
+    legendary(),
+    buffs(),
+    cooldowns(),
+    summon_pet_str( "cat" ),
+    hunter_fixed_time( true ),
+    gains(),
+    procs(),
+    talents(),
+    specs(),
+    mastery(),
     last_true_aim_target( nullptr )
   {
     // Cooldowns
@@ -407,9 +409,6 @@ public:
     cooldowns.aspect_of_the_eagle = get_cooldown( "aspect_of_the_eagle" );
     cooldowns.aspect_of_the_wild  = get_cooldown( "aspect_of_the_wild" );
     cooldowns.a_murder_of_crows   = get_cooldown( "a_murder_of_crows" );
-
-    summon_pet_str = "cat";
-    hunter_fixed_time = true;
 
     base_gcd = timespan_t::from_seconds( 1.5 );
 
@@ -500,6 +499,11 @@ public:
     if ( !td ) td = new hunter_td_t( target, const_cast<hunter_t*>( this ) );
     return td;
   }
+
+  const hunter_td_t* find_target_data( player_t* target ) const
+  {
+    return target_data[target];
+  }
 };
 
 // Template for common hunter action code.
@@ -552,7 +556,7 @@ public:
   const hunter_t* p() const { return static_cast<hunter_t*>( ab::player ); }
 
   hunter_td_t* td( player_t* t )             { return p() -> get_target_data( t ); }
-  const hunter_td_t* td( player_t* t ) const { return p() -> get_target_data( t ); }
+  const hunter_td_t* find_td( player_t* t ) const { return p() -> find_target_data( t ); }
 
   void init() override
   {
@@ -624,7 +628,12 @@ public:
     double cc = ab::composite_target_crit_chance( t );
 
     if ( affected_by.sv_legendary_cloak )
-      cc += td( t ) -> debuffs.unseen_predators_cloak -> check_value();
+    {
+      if ( auto td = find_td( t ) )
+      {
+        cc += td -> debuffs.unseen_predators_cloak -> check_value();
+      }
+    }
 
     return cc;
   }
@@ -713,27 +722,18 @@ void trigger_true_aim( hunter_t* p, player_t* t, int stacks = 1 )
       p -> last_true_aim_target = t;
     else
     {
-      // Grab info about the previous target
-      hunter_td_t* td_prev = p -> get_target_data( p -> last_true_aim_target );
-
       // Attacking a different target, reset the stacks, store current target for later
       if ( p -> last_true_aim_target != t )
       {
-        td_prev -> debuffs.true_aim -> expire();
+        if ( auto td_prev = p -> find_target_data( p -> last_true_aim_target ) )
+        {
+          td_prev -> debuffs.true_aim -> expire();
+        }
         p -> last_true_aim_target = t;
       }
     }
 
     td_curr -> debuffs.true_aim -> trigger( stacks );
-  }
-}
-
-void trigger_mm_feet( hunter_t* p )
-{
-  if ( p -> legendary.mm_feet -> ok() )
-  {
-    double ms = p -> legendary.mm_feet -> effectN( 1 ).base_value();
-    p -> cooldowns.trueshot -> adjust( timespan_t::from_millis( ms ) );
   }
 }
 
@@ -750,10 +750,12 @@ void trigger_sephuzs_secret( hunter_t* p, const action_state_t* state, spell_mec
   }
 }
 
+
 struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
   bool may_proc_mm_feet;
   bool may_proc_bullseye;
+
   hunter_ranged_attack_t( const std::string& n, hunter_t* player,
                           const spell_data_t* s = spell_data_t::nil() ):
                           base_t( n, player, s ),
@@ -781,7 +783,12 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
     try_t20_2p_mm();
 
     if ( may_proc_mm_feet )
-      trigger_mm_feet( p() );
+    {
+      if ( p() -> legendary.mm_feet -> ok() )
+      {
+        p() -> cooldowns.trueshot -> adjust( p() -> legendary.mm_feet -> effectN( 1 ).time_value() );
+      }
+    }
   }
 
   virtual void trigger_steady_focus( bool require_pre )
@@ -994,11 +1001,11 @@ public:
 
   hunter_main_pet_t( hunter_t* owner, const std::string& pet_name, pet_e pt ):
     base_t( owner, pet_name, pt ),
-    active( actives_t() ),
-    specs( specs_t() ),
-    buffs( buffs_t() ),
-    gains( gains_t() ),
-    benefits( benefits_t() )
+    active(),
+    specs(),
+    buffs(),
+    gains(),
+    benefits()
   {
     stamina_per_owner = 0.7;
 
@@ -1088,6 +1095,7 @@ public:
   double composite_melee_crit_chance() const override
   {
     double ac = base_t::composite_melee_crit_chance();
+
     ac += specs.spiked_collar -> effectN( 3 ).percent();
 
     if ( o() -> buffs.aspect_of_the_eagle -> up() )
@@ -1099,6 +1107,7 @@ public:
   void regen( timespan_t periodicity ) override
   {
     player_t::regen( periodicity );
+
     if ( o() -> buffs.steady_focus -> up() )
     {
       double base = resource_regen_per_second( RESOURCE_FOCUS ) * o() -> buffs.steady_focus -> check_value();
@@ -1365,6 +1374,7 @@ struct spitting_cobra_t: public hunter_pet_t
   {
     if ( name == "cobra_spit" )
       return new cobra_spit_t( this, options_str );
+
     return hunter_pet_t::create_action( name, options_str );
   }
 
@@ -2382,7 +2392,13 @@ struct black_arrow_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> pets.dark_minions[ p() -> pets.dark_minions[ 0 ] -> is_sleeping() ? 0 : 1 ] -> summon( dot_duration );
+    for ( auto& dark_minion : p() -> pets.dark_minions )
+    {
+      if ( !dark_minion-> is_sleeping() )
+        continue;
+
+      dark_minion -> summon( dot_duration );
+    }
   }
 };
 
@@ -2452,10 +2468,11 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
-    const hunter_td_t* td = this -> td( t );
-
-    if ( td -> debuffs.true_aim -> up() )
-      m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
+    if ( auto td = find_td( t ) )
+    {
+      if ( td -> debuffs.true_aim -> check() )
+        m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
+    }
 
     return m;
   }
@@ -2671,10 +2688,11 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
-    const hunter_td_t* td = this -> td( t );
-
-    if ( td -> debuffs.true_aim -> up() )
-      m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
+    if ( auto td = find_td( t ) )
+    {
+      if ( td -> debuffs.true_aim -> check() )
+        m *= 1.0 + td -> debuffs.true_aim -> check_stack_value();
+    }
 
     return m;
   }
@@ -2921,6 +2939,15 @@ struct mongoose_bite_t: hunter_melee_attack_t
 
     if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T21, B4 ) )
       p() -> buffs.t21_4p_in_for_the_kill -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B4 ) )
+    {
+      auto td = find_td( target );
+      if ( !td || ! td -> dots.lacerate -> is_ticking() )
+      {
+        stats_.t20_4p_no_lac -> occur();
+      }
+    }
   }
 
   double action_multiplier() const override
@@ -2939,10 +2966,11 @@ struct mongoose_bite_t: hunter_melee_attack_t
 
     if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B4 ) )
     {
-      if ( td( t ) -> dots.lacerate -> is_ticking() )
-        tm *= 1.0 + p() -> sets -> set( HUNTER_SURVIVAL, T20, B4 ) -> effectN( 1 ).percent();
-      else
-        stats_.t20_4p_no_lac -> occur();
+      if ( auto td = find_td( t ) )
+      {
+        if ( td -> dots.lacerate -> is_ticking() )
+          tm *= 1.0 + p() -> sets -> set( HUNTER_SURVIVAL, T20, B4 ) -> effectN( 1 ).percent();
+      }
     }
 
     return tm;
@@ -2954,6 +2982,7 @@ struct mongoose_bite_t: hunter_melee_attack_t
 struct flanking_strike_t: hunter_melee_attack_t
 {
   timespan_t base_animal_instincts_cdr;
+  std::vector<std::pair<cooldown_t*, proc_t*>> animal_instincts_cds; // Used as a buffer to avoid allocations during sim
 
   flanking_strike_t( hunter_t* p, const std::string& options_str ):
     hunter_melee_attack_t( "flanking_strike", p, p -> specs.flanking_strike )
@@ -2961,7 +2990,10 @@ struct flanking_strike_t: hunter_melee_attack_t
     parse_options( options_str );
 
     if ( p -> talents.animal_instincts -> ok() )
+    {
       base_animal_instincts_cdr = -p -> find_spell( 232646 ) -> effectN( 1 ).time_value() * 1000;
+      animal_instincts_cds.reserve( 10 ); // Should be enough for all cases.
+    }
   }
 
   bool init_finished() override
@@ -2983,27 +3015,27 @@ struct flanking_strike_t: hunter_melee_attack_t
     {
       const timespan_t animal_instincts = base_animal_instincts_cdr * p() -> cache.spell_haste();
 
-      p() -> animal_instincts_cds.clear();
+      animal_instincts_cds.clear();
 
       if ( !p() -> cooldowns.flanking_strike -> up() )
-        p() -> animal_instincts_cds.push_back( std::make_pair( p() -> cooldowns.flanking_strike,
-                                                               p() -> procs.animal_instincts_flanking ) );
+        animal_instincts_cds.emplace_back( p() -> cooldowns.flanking_strike,
+                                                               p() -> procs.animal_instincts_flanking );
       if ( p() -> cooldowns.mongoose_bite -> current_charge != p() -> cooldowns.mongoose_bite -> charges )
-        p() -> animal_instincts_cds.push_back( std::make_pair( p() -> cooldowns.mongoose_bite,
-                                                               p() -> procs.animal_instincts_mongoose ) );
+        animal_instincts_cds.emplace_back( p() -> cooldowns.mongoose_bite,
+                                                               p() -> procs.animal_instincts_mongoose );
       if ( !p() -> cooldowns.aspect_of_the_eagle -> up() )
-        p() -> animal_instincts_cds.push_back( std::make_pair( p() -> cooldowns.aspect_of_the_eagle,
-                                                               p() -> procs.animal_instincts_aspect ) );
+        animal_instincts_cds.emplace_back( p() -> cooldowns.aspect_of_the_eagle,
+                                                               p() -> procs.animal_instincts_aspect );
       if ( !p() -> cooldowns.harpoon -> up() )
-        p() -> animal_instincts_cds.push_back( std::make_pair( p() -> cooldowns.harpoon,
-                                                               p() -> procs.animal_instincts_harpoon ) );
+        animal_instincts_cds.emplace_back( p() -> cooldowns.harpoon,
+                                                               p() -> procs.animal_instincts_harpoon );
 
-      if ( !p() -> animal_instincts_cds.empty() )
+      if ( !animal_instincts_cds.empty() )
       {
-        size_t roll = p() -> rng().range( size_t(), p() -> animal_instincts_cds.size() );
+        size_t roll = p() -> rng().range( animal_instincts_cds.size() );
 
-        p() -> animal_instincts_cds[roll].first -> adjust( animal_instincts );
-        p() -> animal_instincts_cds[roll].second -> occur();
+        animal_instincts_cds[roll].first -> adjust( animal_instincts );
+        animal_instincts_cds[roll].second -> occur();
       }
     }
 
@@ -3637,17 +3669,12 @@ struct dire_beast_t: public dire_spell_t<hunter_spell_t>
   {
     base_t::execute();
 
-    pet_t* beast = nullptr;
-    for( size_t i = 0; i < p() -> pets.dire_beasts.size(); i++ )
+    auto it = range::find_if(p() -> pets.dire_beasts, [](pets::dire_critter_t* p) { return p->is_sleeping(); });
+    if ( it == p() -> pets.dire_beasts.end() )
     {
-      if ( p() -> pets.dire_beasts[i] -> is_sleeping() )
-      {
-        beast = p() -> pets.dire_beasts[i];
-        break;
-      }
+      std::runtime_error(fmt::format("{} could not find any sleeping dire beast.", p()->name()));
     }
-
-    assert( beast );
+    auto beast = *it;
 
     // Dire beast gets a chance for an extra attack based on haste
     // rather than discrete plateaus.  At integer numbers of attacks,
@@ -4273,13 +4300,9 @@ struct hunters_mark_exists_buff_t: public buff_t
 
 hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   actor_target_data_t( target, p ),
-  dots( dots_t() )
+  debuffs(),
+  dots()
 {
-  dots.serpent_sting = target -> get_dot( "serpent_sting", p );
-  dots.piercing_shots = target -> get_dot( "piercing_shots", p );
-  dots.lacerate = target -> get_dot( "lacerate", p );
-  dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
-
   debuffs.true_aim =
     buff_creator_t( *this, "true_aim", p -> find_spell( 199803 ) )
         .default_value( p -> find_spell( 199803 ) -> effectN( 1 ).percent() );
@@ -4291,6 +4314,11 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   debuffs.unseen_predators_cloak =
     buff_creator_t( *this, "unseen_predators_cloak", p -> find_spell( 248212 ) )
       .default_value( p -> find_spell( 248212 ) -> effectN( 1 ).percent() );
+
+  dots.serpent_sting = target -> get_dot( "serpent_sting", p );
+  dots.piercing_shots = target -> get_dot( "piercing_shots", p );
+  dots.lacerate = target -> get_dot( "lacerate", p );
+  dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
 
   target -> callbacks_on_demise.push_back( std::bind( &hunter_td_t::target_demise, this ) );
 }
@@ -4447,7 +4475,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
   pet_e type = util::parse_pet_type( pet_type );
   if ( type > PET_NONE && type < PET_HUNTER )
     return new pets::hunter_main_pet_t( this, pet_name, type );
-  else if ( pet_type != "" )
+  else if ( !pet_type.empty() )
   {
     sim -> errorf( "Player %s with pet %s has unknown type %s\n", name(), pet_name.c_str(), pet_type.c_str() );
     sim -> cancel();
@@ -4464,14 +4492,18 @@ void hunter_t::create_pets()
 
   if ( talents.dire_beast -> ok() )
   {
-    for ( size_t i = 0; i < pets.dire_beasts.size(); ++i )
-      pets.dire_beasts[ i ] = new pets::dire_critter_t( this  );
+    for ( auto& dire_beast : pets.dire_beasts )
+    {
+      dire_beast = new pets::dire_critter_t( this  );
+    }
   }
 
   if ( talents.black_arrow -> ok() )
   {
-    pets.dark_minions[ 0 ] = new pets::dark_minion_t( this );
-    pets.dark_minions[ 1 ] = new pets::dark_minion_t( this );
+    for ( auto & dark_minion : pets.dark_minions )
+    {
+      dark_minion = new pets::dark_minion_t( this );
+    }
   }
 
   if ( talents.spitting_cobra -> ok() )
@@ -5273,9 +5305,8 @@ void hunter_t::combat_begin()
   {
     if ( hunter_fixed_time )
     {
-      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+      for ( auto& p : sim -> player_list )
       {
-        player_t* p = sim -> player_list[ i ];
         if ( p -> specialization() != HUNTER_MARKSMANSHIP && p -> type != PLAYER_PET )
         {
           hunter_fixed_time = false;
