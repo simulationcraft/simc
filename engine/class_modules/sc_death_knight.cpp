@@ -402,7 +402,6 @@ public:
 
   // Buffs
   struct buffs_t {
-    buff_t* army_of_the_dead;
     buff_t* antimagic_shell;
     haste_buff_t* bone_shield;
     buff_t* crimson_scourge;
@@ -2595,26 +2594,26 @@ struct death_knight_action_t : public Base
 
     if ( this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) ) && p -> mastery.frozen_heart -> ok() )
     {
-      this -> base_dd_multiplier *= 1.0 + p -> cache.mastery_value() 
+      this -> base_dd_multiplier *= 1.0 + p -> cache.mastery_value();
     }
 
     if ( this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 2 ) ) && p -> mastery.frozen_heart -> ok() )
     {
-      this -> base_td_multiplier *= 1.0 + p -> cache.mastery_value() 
+      this -> base_td_multiplier *= 1.0 + p -> cache.mastery_value();
     }
 
     // T20 2P bonus, hopefully it's disabled at 120
 
-    if ( this -> data().affected_by( p -> buffs.t20_2pc_unholy -> data().effectN( 1 ) )
+    if ( this -> data().affected_by( p -> buffs.t20_2pc_unholy -> data().effectN( 1 ) ) )
     {
-      this -> base_dd_multiplier *= 1.0 + buffs.t20_2pc_unholy -> stack_value();
+      this -> base_dd_multiplier *= 1.0 + p -> buffs.t20_2pc_unholy -> stack_value();
     }
 
-    if ( this -> data().affected_by( p -> buffs.t20_2pc_unholy -> data().effectN( 2 ) )
+    if ( this -> data().affected_by( p -> buffs.t20_2pc_unholy -> data().effectN( 2 ) ) )
     {
-      this -> base_td_multiplier *= 1.0 + buffs.t20_2pc_unholy -> stack_value();
+      this -> base_td_multiplier *= 1.0 + p -> buffs.t20_2pc_unholy -> stack_value();
     }
-}
+  }
 
   death_knight_t* p() const
   { return static_cast< death_knight_t* >( this -> player ); }
@@ -3410,8 +3409,6 @@ struct army_of_the_dead_t : public death_knight_spell_t
   void schedule_execute( action_state_t* s ) override
   {
     death_knight_spell_t::schedule_execute( s );
-
-    p() -> buffs.army_of_the_dead -> trigger( 1, p() -> cache.dodge() + p() -> cache.parry() );
   }
 
   // Army of the Dead should always cost resources
@@ -3424,38 +3421,33 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
     if ( ! p() -> in_combat )
     {
-      // Because of the new rune regen system in 4.0, it only makes
-      // sense to cast ghouls 7-10s before a fight begins so you don't
-      // waste rune regen and enter the fight depleted.  So, the time
-      // you get for ghouls is 4-6 seconds less.
-      // TODO: DBC
+      double precombat_army = 6.0;
+      timespan_t precombat_time = timespan_t::from_seconds( - precombat_army );
+      timespan_t army_duration = p() -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration();
+
+      // If used during precombat, army is casted around 6s before the fight begins
+      // so you don'twaste rune regen and enter the fight depleted.
+      // The time you get for ghouls is 4-6 seconds less.
       for ( int i = 0; i < 8; i++ )
       {
-        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 34 ) );
+        p() -> pets.army_ghoul[ i ] -> summon( army_duration - precombat_time );
         p() -> buffs.t20_2pc_unholy -> trigger();
       }
 
-      p() -> buffs.t20_2pc_unholy -> extend_duration( p(), timespan_t::from_seconds( -6 ) );
-      p() -> cooldown.army_of_the_dead -> adjust( - timespan_t::from_seconds( 6.0 ), false );
+      p() -> buffs.t20_2pc_unholy -> extend_duration( p(), precombat_time );
+      p() -> cooldown.army_of_the_dead -> adjust( precombat_time, false );
 
-      // Simulate rune regen for 6 seconds for the consumed runes. Ugly but works
-      // Note that this presumes no other rune-using abilities are used
-      // precombat
-      //for ( size_t i = 0; i < MAX_RUNES; ++i )
-      //  p() -> _runes.slot[ i ].regen_rune( timespan_t::from_seconds( 6.0 ) );
-
-      //simulate RP decay for that 5 seconds
-      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 6, nullptr, nullptr );
+      //simulate RP decay for that 6 seconds
+      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * precombat_army, nullptr, nullptr );
 
       // Simulate rune regeneration for 6 seconds
-      p() -> _runes.regenerate_immediate( timespan_t::from_seconds( 6 ) );
+      p() -> _runes.regenerate_immediate( timespan_t::from_seconds( precombat_army ) );
     }
     else
     {
-      // TODO: DBC
       for ( int i = 0; i < 8; i++ )
       {
-        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 40 ) );
+        p() -> pets.army_ghoul[ i ] -> summon( p() -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() );
         p() -> buffs.t20_2pc_unholy -> trigger();
       }
     }
@@ -7620,8 +7612,6 @@ void death_knight_t::create_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
-  buffs.army_of_the_dead    = buff_creator_t( this, "army_of_the_dead", spec.army_of_the_dead )
-                              .cd( timespan_t::zero() );
   buffs.blood_shield        = new blood_shield_buff_t( this );
   buffs.rune_tap            = buff_creator_t( this, "rune_tap", talent.rune_tap )
                               .cd( timespan_t::zero() );
@@ -7968,9 +7958,6 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
   if ( buffs.icebound_fortitude -> up() )
     state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent() +
       specialization() == DEATH_KNIGHT_BLOOD ? spec.blood_death_knight -> effectN( 6 ).percent() : 0;
-
-  if ( buffs.army_of_the_dead -> check() )
-    state -> result_amount *= 1.0 - buffs.army_of_the_dead -> value();
 
   player_t::target_mitigation( school, type, state );
 }
