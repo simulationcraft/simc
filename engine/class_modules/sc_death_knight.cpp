@@ -416,7 +416,6 @@ public:
 
   // Buffs
   struct buffs_t {
-    buff_t* army_of_the_dead;
     buff_t* antimagic_shell;
     haste_buff_t* bone_shield;
     buff_t* crimson_scourge;
@@ -3895,13 +3894,6 @@ struct army_of_the_dead_t : public death_knight_spell_t
     parse_options( options_str );
 
     harmful = false;
-  }
-
-  void schedule_execute( action_state_t* s ) override
-  {
-    death_knight_spell_t::schedule_execute( s );
-
-    p() -> buffs.army_of_the_dead -> trigger( 1, p() -> cache.dodge() + p() -> cache.parry() );
   }
 
   // Army of the Dead should always cost resources
@@ -7998,8 +7990,7 @@ void death_knight_t::init_base_stats()
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here.
 
-  base.dodge += 0.030 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
-
+  base.dodge += 0.030;
 }
 
 // death_knight_t::init_spells ==============================================
@@ -8691,8 +8682,6 @@ void death_knight_t::create_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
-  buffs.army_of_the_dead    = buff_creator_t( this, "army_of_the_dead", spec.army_of_the_dead )
-                              .cd( timespan_t::zero() );
   buffs.blood_shield        = new blood_shield_buff_t( this );
   buffs.rune_tap            = buff_creator_t( this, "rune_tap", talent.rune_tap )
                               .cd( timespan_t::zero() );
@@ -8840,8 +8829,7 @@ void death_knight_t::create_buffs()
   buffs.vampiric_aura = buff_creator_t( this, "vampiric_aura" )
     .spell( spell.vampiric_aura )
     .add_invalidate( CACHE_LEECH );
-  buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls" )
-    .spell( find_spell( 246995 ) )
+  buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls", find_spell( 246995 ) )
     .trigger_spell( sets -> set( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
     .default_value( find_spell( 246995 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -9106,10 +9094,8 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
     state -> result_amount *= 1.0 + buffs.rune_tap -> data().effectN( 1 ).percent();
 
   if ( buffs.icebound_fortitude -> up() )
-    state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent();
-
-  if ( buffs.army_of_the_dead -> check() )
-    state -> result_amount *= 1.0 - buffs.army_of_the_dead -> value();
+    state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent() + 
+      specialization() == DEATH_KNIGHT_BLOOD ? spec.blood_death_knight -> effectN ( 7 ).percent() ;
 
   player_t::target_mitigation( school, type, state );
 }
