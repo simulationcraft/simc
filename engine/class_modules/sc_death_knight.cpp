@@ -3906,11 +3906,9 @@ struct army_of_the_dead_t : public death_knight_spell_t
 
     if ( ! p() -> in_combat )
     {
-      // Because of the new rune regen system in 4.0, it only makes
-      // sense to cast ghouls 7-10s before a fight begins so you don't
-      // waste rune regen and enter the fight depleted.  So, the time
-      // you get for ghouls is 4-6 seconds less.
-      // TODO: DBC
+      // If used during precombat, army is casted around 6s before the fight begins
+      // so you don'twaste rune regen and enter the fight depleted.
+      // The time you get for ghouls is 4-6 seconds less.
       for ( int i = 0; i < 8; i++ )
       {
         p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 34 ) );
@@ -3920,24 +3918,17 @@ struct army_of_the_dead_t : public death_knight_spell_t
       p() -> buffs.t20_2pc_unholy -> extend_duration( p(), timespan_t::from_seconds( -6 ) );
       p() -> cooldown.army_of_the_dead -> adjust( - timespan_t::from_seconds( 6.0 ), false );
 
-      // Simulate rune regen for 5 seconds for the consumed runes. Ugly but works
-      // Note that this presumes no other rune-using abilities are used
-      // precombat
-      //for ( size_t i = 0; i < MAX_RUNES; ++i )
-      //  p() -> _runes.slot[ i ].regen_rune( timespan_t::from_seconds( 6.0 ) );
-
-      //simulate RP decay for that 5 seconds
+      // simulate RP decay for that 6 seconds
       p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 6, nullptr, nullptr );
 
-      // Simulate rune regeneration for 5 seconds
+      // Simulate rune regeneration for 6 seconds
       p() -> _runes.regenerate_immediate( timespan_t::from_seconds( 6 ) );
     }
     else
     {
-      // TODO: DBC
       for ( int i = 0; i < 8; i++ )
       {
-        p() -> pets.army_ghoul[ i ] -> summon( timespan_t::from_seconds( 40 ) );
+        p() -> pets.army_ghoul[ i ] -> summon( p() -> spec.army_of_the_dead -> effectN( 1 ).trigger() -> duration() );
         p() -> buffs.t20_2pc_unholy -> trigger();
       }
     }
@@ -9095,7 +9086,7 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
 
   if ( buffs.icebound_fortitude -> up() )
     state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent() + 
-      specialization() == DEATH_KNIGHT_BLOOD ? spec.blood_death_knight -> effectN ( 7 ).percent() ;
+      specialization() == DEATH_KNIGHT_BLOOD ? spec.blood_death_knight -> effectN ( 7 ).percent() : 0;
 
   player_t::target_mitigation( school, type, state );
 }
