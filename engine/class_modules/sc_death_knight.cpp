@@ -2375,8 +2375,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       cooldown -> charges = 0;
 
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
-      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 6 ).percent();
-
     }
 
     void impact( action_state_t* s ) override
@@ -2552,7 +2550,7 @@ struct death_knight_action_t : public Base
       this -> base_costs[ RESOURCE_RUNIC_POWER ] = 0;
     }
 
-    // Added specialization checks because of shared abilities like death and decay or death strike
+    // Spec Auras
     if ( this -> data().affected_by( p -> spec.unholy_death_knight -> effectN( 1 ) ) && p -> specialization() == DEATH_KNIGHT_UNHOLY )
     {
       this -> base_dd_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
@@ -2581,6 +2579,40 @@ struct death_knight_action_t : public Base
     if ( this -> data().affected_by( p -> spec.blood_death_knight -> effectN( 2 ) ) && p -> specialization() == DEATH_KNIGHT_BLOOD )
     {
       this -> base_td_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 2 ).percent();
+    }
+
+    // DPS Spec Masteries
+
+    if ( this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) ) && p -> mastery.dreadblade -> ok() )
+    {
+      this -> base_dd_multiplier *= 1.0 + p -> cache.mastery_value();
+    }
+
+    if ( this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 2 ) ) && p -> mastery.dreadblade -> ok() )
+    {
+      this -> base_td_multiplier *= 1.0 + p -> cache.mastery_value();
+    }
+
+    if ( this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) ) && p -> mastery.frozen_heart -> ok() )
+    {
+      this -> base_dd_multiplier *= 1.0 + p -> cache.mastery_value() 
+    }
+
+    if ( this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 2 ) ) && p -> mastery.frozen_heart -> ok() )
+    {
+      this -> base_td_multiplier *= 1.0 + p -> cache.mastery_value() 
+    }
+
+    // T20 2P bonus, hopefully it's disabled at 120
+
+    if ( this -> data().affected_by( p -> buffs.t20_2pc_unholy -> data().effectN( 1 ) )
+    {
+      this -> base_dd_multiplier *= 1.0 + buffs.t20_2pc_unholy -> stack_value();
+    }
+
+    if ( this -> data().affected_by( p -> buffs.t20_2pc_unholy -> data().effectN( 2 ) )
+    {
+      this -> base_td_multiplier *= 1.0 + buffs.t20_2pc_unholy -> stack_value();
     }
 }
 
@@ -3582,7 +3614,6 @@ struct blood_boil_t : public death_knight_spell_t
 
     aoe = -1;
     cooldown -> hasted = true;
-    base_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 6 ).percent();
   }
 
   void execute() override
@@ -4351,7 +4382,6 @@ struct death_strike_offhand_t : public death_knight_melee_attack_t
   {
     background       = true;
     weapon           = &( p -> off_hand_weapon );
-    base_multiplier *= 1.0 + p -> spec.veteran_of_the_third_war -> effectN( 7 ).percent();
   }
 };
 
@@ -6979,8 +7009,7 @@ void death_knight_t::init_base_stats()
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here.
 
-  base.dodge += 0.030 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
-
+  base.dodge += 0.030;
 }
 
 // death_knight_t::init_spells ==============================================
@@ -7710,8 +7739,7 @@ void death_knight_t::create_buffs()
 	buffs.hungering_rune_weapon_haste->set_default_value( talent.hungering_rune_weapon -> effectN( 3 ).percent() )
 	  ->set_trigger_spell( talent.hungering_rune_weapon );
   
-  buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls" )
-    .spell( find_spell( 246995 ) )
+  buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls", find_spell( 246995 ) )
     .trigger_spell( sets -> set( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
     .default_value( find_spell( 246995 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -7938,7 +7966,8 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
     state -> result_amount *= 1.0 + buffs.rune_tap -> data().effectN( 1 ).percent();
 
   if ( buffs.icebound_fortitude -> up() )
-    state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent();
+    state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent() +
+      specialization() == DEATH_KNIGHT_BLOOD ? spec.blood_death_knight -> effectN( 6 ).percent() : 0;
 
   if ( buffs.army_of_the_dead -> check() )
     state -> result_amount *= 1.0 - buffs.army_of_the_dead -> value();
@@ -7952,7 +7981,7 @@ double death_knight_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
-  a *= 1.0 + spec.veteran_of_the_third_war -> effectN( 3 ).percent();
+  a *= 1.0 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
 
   if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
     a *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 1 ).percent();
@@ -7976,7 +8005,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
   }
   else if ( attr == ATTR_STAMINA )
   {
-    m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 5 ).percent();
+    m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 4 ).percent();
     if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
   }
@@ -8014,7 +8043,7 @@ double death_knight_t::composite_melee_expertise( const weapon_t* ) const
 {
   double expertise = player_t::composite_melee_expertise( nullptr );
 
-  expertise += spec.veteran_of_the_third_war -> effectN( 7 ).percent();
+  expertise += spec.veteran_of_the_third_war -> effectN( 5 ).percent();
 
   return expertise;
 }
@@ -8059,26 +8088,10 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( dbc::is_school( school, SCHOOL_SHADOW ) )
+  if ( dbc::is_school( school, SCHOOL_FROST ) && buffs.toravons -> up() )
   {
-    if ( mastery.dreadblade -> ok() )
-    {
-      m *= 1.0 + cache.mastery_value();
-    }
+    m *= 1.0 + buffs.toravons -> default_value;
   }
-
-  if ( dbc::is_school( school, SCHOOL_FROST ) )
-  {
-    if ( mastery.frozen_heart -> ok() )
-      m *= 1.0 + cache.mastery_value();
-
-    if ( buffs.toravons -> up() )
-    {
-      m *= 1.0 + buffs.toravons -> default_value;
-    }
-  }
-
-  m *= 1.0 + buffs.t20_2pc_unholy -> stack_value();
 
   return m;
 }
@@ -8205,7 +8218,7 @@ double death_knight_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += spec.veteran_of_the_third_war -> effectN( 2 ).percent();
+  c += spec.veteran_of_the_third_war -> effectN( 1 ).percent();
 
   return c;
 }
