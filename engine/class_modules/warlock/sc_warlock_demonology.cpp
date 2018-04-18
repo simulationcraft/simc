@@ -1078,15 +1078,15 @@ namespace warlock {
     action_priority_list_t* def = get_action_priority_list("default");
     
     def -> add_talent(this, "Demonic Strength", "if=!cooldown.summon_demonic_tyrant.remains<10");
-    def -> add_talent(this, "Power Siphon", "if=talent.power_siphon.enabled");
-    def -> add_action("doom,if=talent.doom.enabled&refreshable");
+    def -> add_talent(this, "Power Siphon");
+    def -> add_talent(this, "Doom", "if=talent.doom.enabled&refreshable");
     def -> add_action("service_felguard");
-    def -> add_action("summon_vilefiend");
+    def -> add_talent(this, "Summon Vilefiend");
     def -> add_action("call_dreadstalkers");
     def -> add_action("summon_demonic_tyrant,if=prev_gcd.1.hand_of_guldan");
-    def -> add_action("bilescourge_bombers");
+    def -> add_talent(this, "Bilescourge Bombers");
     def -> add_action("hand_of_guldan,if=soul_shard>=3");
-    def -> add_action("soul_strike");
+    def -> add_talent(this, "Soul Strike");
     def -> add_action("demonbolt,if=buff.demonic_core.stack>0&!talent.from_the_shadows.enabled");
     def -> add_action("demonbolt,if=talent.from_the_shadows.enabled&(debuff.from_the_shadows.remains|buff.demonic_core.stack=4)");
     def -> add_action("shadow_bolt");

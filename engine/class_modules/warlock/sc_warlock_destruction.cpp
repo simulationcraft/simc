@@ -960,12 +960,12 @@ namespace warlock {
 
       def -> add_action("immolate,if=refreshable");
       def -> add_action("summon_infernal");
-      def -> add_action("dark_soul,if=soul_shard>=4");
-      def -> add_action("channel_demonfire");
+      def -> add_talent(this, "Dark SOul", "if=soul_shard>=4");
+      def -> add_talent(this, "Channel Demonfire");
       def -> add_action("chaos_bolt,if=!talent.internal_combustion.enabled&soul_shard>=4|(talent.eradication.enabled&debuff.eradication.remains<=cast_time)|buff.dark_soul.remains>cast_time");
       def -> add_action("chaos_bolt,if=talent.internal_combustion.enabled&dot.immolate.remains>8|soul_shard=5");
-      def -> add_action("soul_fire");
-      def -> add_action("shadowburn,if=soul_shard<=4");
+      def -> add_talent(this, "Soul Fire");
+      def -> add_talent(this, "Shadowburn", "if=soul_shard<=4");
       def -> add_action("conflagrate,if=(talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2)");
       def -> add_action("incinerate");
   }
