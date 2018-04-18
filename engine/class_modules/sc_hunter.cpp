@@ -1883,9 +1883,9 @@ void trigger_t20_2pc_bm( hunter_t* p )
 
     if ( p -> sim -> debug )
     {
-      p -> sim -> out_debug.printf( "%s triggers t20 2pc: %s ( value=.3f )",
-                                    p -> name(), p -> buffs.bestial_wrath -> name(),
-                                    p -> buffs.bestial_wrath -> check_value() );
+      p -> sim -> out_debug.print( "{} triggers t20 2pc: {} ( value={:.3f} )",
+                                   p -> name(), p -> buffs.bestial_wrath -> name(),
+                                   p -> buffs.bestial_wrath -> check_value() );
     }
   }
 }
@@ -3513,7 +3513,7 @@ struct summon_pet_t: public hunter_spell_t
 
     if ( ! pet && p() -> specialization() != HUNTER_MARKSMANSHIP )
     {
-      sim -> errorf( "Player %s unable to find pet %s for summons.\n", p() -> name(), pet_name.c_str() );
+      sim -> error( "Player {} unable to find pet {} for summons.\n", p() -> name(), pet_name );
       sim -> cancel();
     }
 
@@ -4223,8 +4223,7 @@ void hunter_td_t::target_demise()
   hunter_t* p = static_cast<hunter_t*>( source );
   if ( p -> talents.a_murder_of_crows -> ok() && dots.a_murder_of_crows -> is_ticking() )
   {
-    if ( p -> sim -> debug )
-      p -> sim -> out_debug.printf( "%s a_murder_of_crows cooldown reset on target death.", p -> name() );
+    p -> sim -> print_debug( "{} a_murder_of_crows cooldown reset on target death.", p -> name() );
 
     p -> cooldowns.a_murder_of_crows -> reset( true );
   }
@@ -4368,7 +4367,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
     return new pets::hunter_main_pet_t( this, pet_name, type );
   else if ( !pet_type.empty() )
   {
-    sim -> errorf( "Player %s with pet %s has unknown type %s\n", name(), pet_name.c_str(), pet_type.c_str() );
+    sim -> error( "Player {} with pet {} has unknown type {}\n", name(), pet_name, pet_type );
     sim -> cancel();
   }
 
@@ -4753,8 +4752,7 @@ void hunter_t::init_position()
     }
   }
 
-  if ( sim -> debug )
-    sim -> out_debug.printf( "%s: Position adjusted to %s", name(), position_str.c_str() );
+  sim -> print_debug( "{}: Position adjusted to {}", name(), position_str );
 }
 
 // hunter_t::init_procs =====================================================
@@ -4839,7 +4837,7 @@ void hunter_t::init_action_list()
 {
   if ( specialization() != HUNTER_SURVIVAL && main_hand_weapon.group() != WEAPON_RANGED )
   {
-    sim -> errorf( "Player %s does not have a ranged weapon at the Main Hand slot.", name() );
+    sim -> error( "Player {} does not have a ranged weapon at the Main Hand slot.", name() );
   }
 
   if ( action_list_str.empty() )
@@ -5186,8 +5184,8 @@ void hunter_t::combat_begin()
       if ( hunter_fixed_time )
       {
         sim -> fixed_time = true;
-        sim -> errorf( "To fix issues with the target exploding <20% range due to execute, fixed_time=1 has been enabled. This gives similar results" );
-        sim -> errorf( "to execute's usage in a raid sim, without taking an eternity to simulate. To disable this option, add hunter_fixed_time=0 to your sim." );
+        sim -> error( "To fix issues with the target exploding <20% range due to execute, fixed_time=1 has been enabled. This gives similar results" );
+        sim -> error( "to execute's usage in a raid sim, without taking an eternity to simulate. To disable this option, add hunter_fixed_time=0 to your sim." );
       }
     }
   }
