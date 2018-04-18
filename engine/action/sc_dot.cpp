@@ -1272,3 +1272,46 @@ void dot_t::adjust( double coefficient )
   //end_event        = new ( *sim ) dot_end_event_t( this, new_dot_remains );
   end_event = make_event<dot_end_event_t>(*sim, this, new_dot_remains );
 }
+
+void dot_t::exsanguinate( double coefficient )
+{
+  if ( !is_ticking() )
+  {
+    return;
+  }
+
+  sim_t* sim = current_action->sim;
+  int rounded_full_ticks_left = static_cast<int>( std::round( current_duration / time_to_tick ) ) - current_tick;
+
+  timespan_t new_dot_remains  = end_event->remains() * coefficient;
+  timespan_t new_duration     = current_duration * coefficient;
+  timespan_t new_time_to_tick = time_to_tick * coefficient;
+  timespan_t new_tick_remains = new_dot_remains - ( rounded_full_ticks_left - 1 ) * new_time_to_tick;
+  if (new_tick_remains <= timespan_t::zero() )
+  {
+    current_tick++;
+    tick();
+    new_tick_remains += new_time_to_tick;
+  }
+
+  if ( sim->debug )
+  {
+    sim->out_debug.printf(
+        "%s exsanguinates dot %s (on %s): duration=%.3f -> %.3f, next_tick=%.3f -> "
+        "%.3f, ends=%.3f -> %.3f",
+        current_action->player->name(), current_action->name(), target->name(),
+        current_duration.total_seconds(), new_duration.total_seconds(),
+        tick_event->occurs().total_seconds(),
+        ( sim->current_time() + new_tick_remains ).total_seconds(),
+        end_event->occurs().total_seconds(),
+        ( sim->current_time() + new_dot_remains ).total_seconds() );
+  }
+
+  event_t::cancel( tick_event );
+  event_t::cancel( end_event );
+
+  current_duration = new_duration;
+  time_to_tick     = new_time_to_tick;
+  tick_event       = make_event<dot_tick_event_t>( *sim, this, new_tick_remains );
+  end_event        = make_event<dot_end_event_t>( *sim, this, new_dot_remains );
+}

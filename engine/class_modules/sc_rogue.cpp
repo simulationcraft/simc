@@ -1217,6 +1217,16 @@ struct rogue_attack_t : public melee_attack_t
     return tt;
   }
 
+  void snapshot_internal( action_state_t* state, unsigned flags, dmg_e rt ) override
+  {
+    // Exsanguinated bleeds snapshot hasted tick time when the ticks are rescheduled.
+    // This will make snapshot_internal on haste updates discard the new value.
+    if ( cast_state( state ) -> exsanguinated )
+      flags &= ~STATE_HASTE;
+
+    melee_attack_t::snapshot_internal( state, flags, rt );
+  }
+
   virtual double composite_poison_flat_modifier( const action_state_t* ) const
   { return 0.0; }
 
@@ -5514,7 +5524,10 @@ void do_exsanguinate( dot_t* dot, double coeff )
     return;
   }
 
-  dot -> adjust( coeff );
+  // Original and logical implementation. Since the advent of hasted bleed exsanguinate works differently though.
+  // dot -> adjust( coeff );
+  dot -> exsanguinate( coeff );
+
   actions::rogue_attack_t::cast_state( dot -> state ) -> exsanguinated = true;
 }
 
