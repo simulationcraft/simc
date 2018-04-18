@@ -6,6 +6,7 @@
 // TODO:
 // Unholy
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
+// - Army of the dead ghouls should spawn once every 0.5s for 4s rather than all at once
 // Blood
 // - Bloodworms
 // - BFA blood talents (new and reworked)
@@ -2579,40 +2580,6 @@ struct death_knight_action_t : public Base
     {
       this -> base_td_multiplier *= 1.0 + p -> spec.blood_death_knight -> effectN( 2 ).percent();
     }
-
-    // DPS Spec Masteries
-
-    if ( this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) ) && p -> mastery.dreadblade -> ok() )
-    {
-      this -> base_dd_multiplier *= 1.0 + p -> cache.mastery_value();
-    }
-
-    if ( this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 2 ) ) && p -> mastery.dreadblade -> ok() )
-    {
-      this -> base_td_multiplier *= 1.0 + p -> cache.mastery_value();
-    }
-
-    if ( this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 1 ) ) && p -> mastery.frozen_heart -> ok() )
-    {
-      this -> base_dd_multiplier *= 1.0 + p -> cache.mastery_value();
-    }
-
-    if ( this -> data().affected_by( p -> mastery.frozen_heart -> effectN( 2 ) ) && p -> mastery.frozen_heart -> ok() )
-    {
-      this -> base_td_multiplier *= 1.0 + p -> cache.mastery_value();
-    }
-
-    // T20 2P bonus, hopefully it's disabled at 120
-
-    if ( this -> data().affected_by( p -> buffs.t20_2pc_unholy -> data().effectN( 1 ) ) )
-    {
-      this -> base_dd_multiplier *= 1.0 + p -> buffs.t20_2pc_unholy -> stack_value();
-    }
-
-    if ( this -> data().affected_by( p -> buffs.t20_2pc_unholy -> data().effectN( 2 ) ) )
-    {
-      this -> base_td_multiplier *= 1.0 + p -> buffs.t20_2pc_unholy -> stack_value();
-    }
   }
 
   death_knight_t* p() const
@@ -2624,6 +2591,42 @@ struct death_knight_action_t : public Base
   virtual double runic_power_generation_multiplier( const action_state_t* /* s */ ) const
   {
     return 1.0;
+  }
+
+  virtual double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = Base::composite_da_multiplier( state );
+
+    if ( ( this -> data().affected_by( p() -> mastery.frozen_heart -> effectN( 1 ) ) && p() -> mastery.frozen_heart -> ok() ) ||
+         ( this -> data().affected_by( p() -> mastery.dreadblade   -> effectN( 1 ) ) && p() -> mastery.dreadblade   -> ok() ) )
+    {
+      m *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    if ( this -> data().affected_by( p() -> buffs.t20_2pc_unholy -> data().effectN( 1 ) ) )
+    {
+      m *= 1.0 + p() -> buffs.t20_2pc_unholy -> stack_value();
+    }
+
+    return m;
+  }
+
+  virtual double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double m = Base::composite_ta_multiplier( state );
+
+    if ( ( this -> data().affected_by( p() -> mastery.frozen_heart -> effectN( 2 ) ) && p() -> mastery.frozen_heart -> ok() ) ||
+         ( this -> data().affected_by( p() -> mastery.dreadblade   -> effectN( 2 ) ) && p() -> mastery.dreadblade   -> ok() ) )
+    {
+      m *= 1.0 + p() -> cache.mastery_value();
+    }
+
+    if ( this -> data().affected_by( p() -> buffs.t20_2pc_unholy -> data().effectN( 2 ) ) )
+    {
+      m *= 1.0 + p ()-> buffs.t20_2pc_unholy -> stack_value();
+    }
+
+    return m;
   }
 
   double composite_energize_amount( const action_state_t* s ) const override
@@ -8252,7 +8255,6 @@ void death_knight_t::invalidate_cache( cache_e c )
         player_t::invalidate_cache( CACHE_PARRY );
       break;
     case CACHE_MASTERY:
-      player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       if ( specialization() == DEATH_KNIGHT_BLOOD )
         player_t::invalidate_cache( CACHE_ATTACK_POWER );
       break;
