@@ -1214,25 +1214,14 @@ class SpellDataGenerator(DataGenerator):
 
         # Hunter:
         (
-          ( 82928, 0 ), # Aimed Shot Master Marksman
           ( 131900, 0 ), # Murder of Crows damage spell
-          ( 138374, 5 ), # T15 2pc nuke
-          ( 168811, 0 ), # Sniper Training
           ( 171457, 0 ), # Chimaera Shot - Nature
-          ( 90967, 0 ),  # Kill Command cooldown
-          ( 157708, 2 ), # Marks Kill Shot
-          ( 178875, 0 ), # BM T17 4P
-          ( 188507, 0 ), # BM T18 4P
-          ( 188402, 0 ), # SV T18 4P
-          ( 185365, 0 ), # Hunter's Mark debuff
-          ( 191043, 0 ), # MM Artifact proc
-          ( 204740, 0 ), # Flanking Strike
-          ( 191070, 0 ), # Call of the Hunter
           ( 217207, 0 ), # Dire Frenzy (pet)
           ( 201594, 0 ), # Stampede
           ( 118459, 5 ), # Beast Cleave
-          ( 243120, 5 ), ( 243121, 5 ), # Deathstrike Venom (Cobra Commander snakes)
-          ( 242735, 5 ), # Talon Slash (Talon Bond attack)
+          (  77443, 2 ), # Steady Shot energize effect
+          ( 257622, 2 ), # Trick Shots buff
+          ( 269502, 2 ), ( 260395, 2 ), # Lethal Shots buffs
         ),
 
         # Rogue:
