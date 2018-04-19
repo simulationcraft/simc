@@ -955,7 +955,7 @@ std::string special_effect_t::to_string() const
   if ( ppm() > 0 )
     s << " ppm=" << ppm();
 
-  if ( rppm() > 0 )
+  if ( rppm() > 0 && rppm_scale() != RPPM_DISABLE )
   {
     s << " rppm=" << rppm() * rppm_modifier();
     if ( rppm_scale() & RPPM_HASTE )
@@ -1221,7 +1221,7 @@ void dbc_proc_callback_t::initialize()
 
   // Initialize proc chance triggers. Note that this code only chooses one, and
   // prioritizes RPPM > PPM > proc chance.
-  if ( effect.rppm() > 0 && effect.rppm() != RPPM_DISABLE )
+  if ( effect.rppm() > 0 && effect.rppm_scale() != RPPM_DISABLE )
     rppm = listener -> get_rppm( effect.name(), effect.rppm(), effect.rppm_modifier(), effect.rppm_scale() );
   else if ( effect.ppm() > 0 )
     ppm = effect.ppm();
