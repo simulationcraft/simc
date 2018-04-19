@@ -930,7 +930,7 @@ inline std::ostream& operator<<(std::ostream &os, const special_effect_t& se)
   if ( se.ppm() > 0 )
     os << " ppm=" << se.ppm();
 
-  if ( se.rppm() > 0 )
+  if ( se.rppm() > 0 && se.rppm_scale() != RPPM_DISABLE )
   {
     os << " rppm=" << se.rppm() * se.rppm_modifier();
     if ( se.rppm_scale() & RPPM_HASTE )
@@ -1196,7 +1196,7 @@ void dbc_proc_callback_t::initialize()
 
   // Initialize proc chance triggers. Note that this code only chooses one, and
   // prioritizes RPPM > PPM > proc chance.
-  if ( effect.rppm() > 0 && effect.rppm() != RPPM_DISABLE )
+  if ( effect.rppm() > 0 && effect.rppm_scale() != RPPM_DISABLE )
     rppm = listener -> get_rppm( effect.name(), effect.rppm(), effect.rppm_modifier(), effect.rppm_scale() );
   else if ( effect.ppm() > 0 )
     ppm = effect.ppm();
