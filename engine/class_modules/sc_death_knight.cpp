@@ -2362,6 +2362,11 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 2 ).percent();
       base_multiplier *= 1.0 + p -> o() -> legendary.soulflayers_corruption -> effectN( 1 ).percent();
+
+      // DRW usually behaves the same regardless of talents, but BP ticks are affected by rapid decomposition
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/240
+      if ( p -> o() -> bugs )
+        base_tick_time *= 1.0 + p -> o() -> talent.rapid_decomposition -> effectN( 1 ).percent();
     }
   };
 
@@ -3486,7 +3491,9 @@ struct blood_plague_t : public disease_t
 {
   blood_plague_t( death_knight_t* p ) :
     disease_t( p, "blood_plague", 55078 )
-  { }
+  {
+    base_tick_time *= 1.0 + p -> talent.rapid_decomposition -> effectN( 1 ).percent();
+  }
 
   double action_multiplier() const override
   {
@@ -4079,7 +4086,7 @@ private:
   timespan_t compute_tick_time() const
   {
     auto base = data().effectN( 3 ).period();
-    base += timespan_t::from_millis( p() -> talent.rapid_decomposition -> effectN( 1 ).base_value() * 10 );
+    base *= 1.0 + p() -> talent.rapid_decomposition -> effectN( 1 ).percent();
     
     return base;
   }
