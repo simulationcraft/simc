@@ -517,6 +517,7 @@ public:
     gain_t* shackles_of_bryndaor;
     gain_t* heartbreaker;
     gain_t* drw_heart_strike;
+    gain_t* rune_strike;
   } gains;
 
   // Specialization
@@ -635,7 +636,7 @@ public:
     // Tier 1
     const spell_data_t* heartbreaker;
     const spell_data_t* blooddrinker;
-    const spell_data_t* rune_strike; // NYI
+    const spell_data_t* rune_strike;
 
     // Tier 2
     const spell_data_t* rapid_decomposition; // Needs update
@@ -5588,6 +5589,24 @@ struct remorseless_winter_t : public death_knight_spell_t
   }
 };
 
+// Rune Strike 
+
+struct rune_strike_t : public death_knight_melee_attack_t
+{
+  rune_strike_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_melee_attack_t( "rune_strike", p, p -> talent.rune_strike )
+  {
+    energize_type = ENERGIZE_NONE;
+  }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+
+    p() -> replenish_rune( data().effectN( 2 ).base_value(), p() -> gains.rune_strike );
+  }
+};
+
 // Scourge Strike and Clawing Shadows =======================================
 
 struct scourge_strike_base_t : public death_knight_melee_attack_t
@@ -6766,6 +6785,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "bonestorm"                ) return new bonestorm_t                ( this, options_str );
   if ( name == "consumption"              ) return new consumption_t              ( this, options_str );
   if ( name == "mark_of_blood"            ) return new mark_of_blood_t            ( this, options_str );
+  if ( name == "rune_strike"              ) return new rune_strike_t              ( this, options_str );
   if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
   if ( name == "tombstone"                ) return new tombstone_t                ( this, options_str );
 
@@ -7129,7 +7149,7 @@ void death_knight_t::init_spells()
 
   talent.heartbreaker           = find_talent_spell( "Heartbreaker" );
   talent.blooddrinker           = find_talent_spell( "Blooddrinker" );
-  talent.rune_strike            = find_talent_spell( "Rune Strike"  ); // NYI
+  talent.rune_strike            = find_talent_spell( "Rune Strike"  );
 
   // Tier 2
   talent.rapid_decomposition    = find_talent_spell( "Rapid Decomposition" );
@@ -7784,6 +7804,7 @@ void death_knight_t::init_gains()
   gains.shackles_of_bryndaor             = get_gain( "Shackles of Bryndaor"       );
   gains.heartbreaker                     = get_gain( "Heartbreaker"               );
   gains.drw_heart_strike                 = get_gain( "Rune Weapon Heart Strike"   );
+  gains.rune_strike                      = get_gain( "Rune Strike"                );
 }
 
 // death_knight_t::init_procs ===============================================
