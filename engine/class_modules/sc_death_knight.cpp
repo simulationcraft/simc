@@ -5963,6 +5963,7 @@ struct antimagic_shell_buff_t : public buff_t
   {
     death_knight_t* p = debug_cast< death_knight_t* >( player );
     p -> antimagic_shell_absorbed = 0.0;
+    duration *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
     buff_t::execute( stacks, value, duration );
   }
 };
@@ -5979,6 +5980,7 @@ struct antimagic_shell_t : public death_knight_spell_t
     interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
   {
     cooldown = p -> cooldown.antimagic_shell;
+    cooldown -> duration += timespan_t::from_millis( p -> talent.antimagic_barrier -> effectN( 1 ).base_value() );
     harmful = may_crit = may_miss = false;
     base_dd_min = base_dd_max = 0;
     target = player;
@@ -7903,9 +7905,9 @@ void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_stat
 
       double max_hp_absorb = resources.max[RESOURCE_HEALTH] * 0.4;
 
-      if ( talent.volatile_shielding -> ok() )
-        max_hp_absorb *= 1.0 + talent.volatile_shielding -> effectN( 1 ).percent();
-            
+      max_hp_absorb *= 1.0 + talent.volatile_shielding -> effectN( 1 ).percent();
+      max_hp_absorb *= 1.0 + talent.antimagic_barrier -> effectN( 3 ).percent();
+
       if ( antimagic_shell_absorbed > max_hp_absorb )
       {
         absorbed = antimagic_shell_absorbed - max_hp_absorb;
