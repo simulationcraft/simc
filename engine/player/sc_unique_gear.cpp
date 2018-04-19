@@ -2180,8 +2180,6 @@ void item::orb_of_voidsight( special_effect_t& effect )
   effect.custom_buff = buff;
   effect.player -> buffs.demon_damage_buff = buff;
 
-  effect.rppm_scale_ = RPPM_DISABLE;
-
   new dbc_proc_callback_t( effect.item, effect );
 }
 
