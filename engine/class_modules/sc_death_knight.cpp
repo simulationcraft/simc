@@ -427,6 +427,7 @@ public:
     buff_t* t20_blood;
     buff_t* t21_4p_blood;
     buff_t* hemostasis;
+    buff_t* voracious;
 
     absorb_buff_t* blood_shield;
     buff_t* rune_tap;
@@ -4397,7 +4398,6 @@ struct blood_shield_buff_t : public absorb_buff_t
   blood_shield_buff_t( death_knight_t* player ) :
     absorb_buff_t( player, "blood_shield", player -> spell.blood_shield )
   {
-    add_invalidate( CACHE_LEECH );
     set_absorb_school( SCHOOL_PHYSICAL );
     set_absorb_source( player -> get_stats( "blood_shield" ) );
   }
@@ -4593,6 +4593,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     p() -> trigger_death_march( execute_state );
     p() -> buffs.skullflowers_haemostasis -> expire();
     p() -> buffs.hemostasis -> expire();
+    p() -> buffs.voracious -> trigger();
   }
 
   bool ready() override
@@ -7705,6 +7706,7 @@ void death_knight_t::create_buffs()
                               .trigger_spell( talent.gathering_storm )
                               .default_value( find_spell( 211805 ) -> effectN( 1 ).percent() );
   buffs.hemostasis          = buff_creator_t( this, "hemostasis", talent.hemostasis -> effectN( 1 ).trigger() )
+                              .trigger_spell( talent.hemostasis )
                               .default_value( talent.hemostasis -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.icebound_fortitude  = buff_creator_t( this, "icebound_fortitude", spec.icebound_fortitude )
                               .duration( spec.icebound_fortitude -> duration() )
@@ -7737,8 +7739,10 @@ void death_knight_t::create_buffs()
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", spec.sudden_doom -> effectN( 1 ).trigger() )
                               .rppm_scale( RPPM_ATTACK_SPEED ) // 2016-08-08: Hotfixed, not in spell data
                               .trigger_spell( spec.sudden_doom );
-
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
+  buffs.voracious           = buff_creator_t( this, "voracious", find_spell( 274009 ) )
+                              .trigger_spell( talent.voracious )
+                              .add_invalidate( CACHE_LEECH );
   buffs.will_of_the_necropolis = buff_creator_t( this, "will_of_the_necropolis", find_spell( 157335 ) )
                                  .cd( find_spell( 157335 ) -> duration() );
 
@@ -8084,7 +8088,11 @@ double death_knight_t::matching_gear_multiplier( attribute_e attr ) const
 
 double death_knight_t::composite_leech() const
 {
-  return player_t::composite_leech();
+  double m = player_t::composite_leech();
+
+  m += buffs.voracious -> data().effectN( 1 ).percent();
+
+  return m;
 }
 
 // death_knight_t::composite_melee_expertise ===============================
