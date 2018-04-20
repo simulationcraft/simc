@@ -2598,7 +2598,14 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 6 ).percent();
+    }
 
+    void execute() override
+    {
+      drw_spell_t::execute();
+
+      if ( result_is_hit( execute_state -> result ) )
+        p() -> o() -> buffs.skullflowers_haemostasis -> trigger();
     }
 
     void impact( action_state_t* s ) override
@@ -2609,8 +2616,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       {
         p() -> ability.blood_plague -> set_target( s -> target );
         p() -> ability.blood_plague -> execute();
-
-        p() -> o() -> buffs.skullflowers_haemostasis -> trigger();
       }
     }
   };
@@ -4141,16 +4146,17 @@ struct blood_boil_t : public death_knight_spell_t
         p() -> pets.dancing_rune_weapon[ i ] -> ability.blood_boil -> execute();
       }
     }
+
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> o() -> buffs.skullflowers_haemostasis -> trigger();
   }
-  
+
   void impact( action_state_t* state ) override		
   {		
     death_knight_spell_t::impact( state );		
  		
     if ( result_is_hit( state -> result ) )		
-    {		
-      p() -> buffs.skullflowers_haemostasis -> trigger();
-
+    {	
       p() -> apply_diseases( state, DISEASE_BLOOD_PLAGUE );		
     }
 
