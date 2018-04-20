@@ -2080,6 +2080,8 @@ struct icicle_t : public frost_mage_spell_t
   {
     proc = background = true;
 
+    base_dd_min = base_dd_max = 1;
+
     if ( p -> talents.splitting_ice -> ok() )
     {
       aoe                  =   1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
