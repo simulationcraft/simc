@@ -318,6 +318,9 @@ public:
   action_t* ignite;
   event_t* ignite_spread_event;
 
+  // Evocation
+  event_t* temporal_flux_event;
+
   // Active
   player_t* last_bomb_target;
 
@@ -2165,6 +2168,7 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     cooldown -> hasted = true;
+    base_aoe_multiplier *= data().effectN( 2 ).percent();
     if ( p -> action.legendary_arcane_orb )
     {
       add_child( p -> action.legendary_arcane_orb );
@@ -3032,21 +3036,55 @@ struct evocation_t : public arcane_mage_spell_t
     cooldown -> duration *= 1.0 + p -> spec.evocation_2 -> effectN( 1 ).percent();
   }
 
+  static void trigger_evocation_buff( mage_t* mage )
+  {
+    double mana_regen_multiplier = 1.0 + mage -> buffs.evocation -> default_value;
+    mana_regen_multiplier /= mage -> cache.spell_speed();
+
+    timespan_t duration = mage -> buffs.evocation -> buff_duration;
+    duration *= mage -> cache.spell_speed();
+
+    mage -> buffs.evocation -> trigger( 1, mana_regen_multiplier, -1.0, duration );
+  }
+
+  struct temporal_flux_event_t : public event_t
+  {
+    mage_t* mage;
+
+    temporal_flux_event_t( mage_t* m, timespan_t delay )
+      : event_t( *m, delay ), mage( m )
+    { }
+
+    virtual const char* name() const override
+    {
+      return "temporal_flux_event";
+    }
+
+    virtual void execute() override
+    {
+      mage -> temporal_flux_event = nullptr;
+      trigger_evocation_buff( mage );
+    }
+  };
+
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
 
-    double mana_regen_multiplier = 1.0;
-    mana_regen_multiplier += p() -> buffs.evocation -> default_value;
-    mana_regen_multiplier /= execute_state -> haste;
-
-    p() -> buffs.evocation -> trigger( 1, mana_regen_multiplier );
+    trigger_evocation_buff( p() );
   }
 
   virtual void last_tick( dot_t* d ) override
   {
     arcane_mage_spell_t::last_tick( d );
+
     p() -> buffs.evocation -> expire();
+
+    if ( p() -> talents.temporal_flux -> ok() )
+    {
+      timespan_t delay = 1000 * p() -> talents.temporal_flux -> effectN( 1 ).time_value();
+      p() -> temporal_flux_event = make_event<temporal_flux_event_t>( *sim, p(), delay );
+    }
   }
 
   virtual bool usable_moving() const override
@@ -6824,6 +6862,7 @@ void mage_t::reset()
   icicles.clear();
   event_t::cancel( icicle_event );
   event_t::cancel( ignite_spread_event );
+  event_t::cancel( temporal_flux_event );
 
   if ( spec.savant -> ok() )
   {
