@@ -711,9 +711,20 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
       spell_power_mod.direct  = spelleffect_data.sp_coeff();
       attack_power_mod.direct = spelleffect_data.ap_coeff();
       amount_delta            = spelleffect_data.m_delta();
-      base_dd_min      = item_scaling ? spelleffect_data.min( item ) : spelleffect_data.min( player, player -> level() );
-      base_dd_max      = item_scaling ? spelleffect_data.max( item ) : spelleffect_data.max( player, player -> level() );
-      radius           = spelleffect_data.radius_max();
+      if ( ! item_scaling )
+      {
+        if ( ! spelleffect_data.sp_coeff() && ! spelleffect_data.ap_coeff() )
+        {
+          base_dd_min = spelleffect_data.min( player, player -> level() );
+          base_dd_max = spelleffect_data.max( player, player -> level() );
+        }
+      }
+      else
+      {
+        base_dd_min = spelleffect_data.min( item );
+        base_dd_max = spelleffect_data.max( item );
+      }
+      radius = spelleffect_data.radius_max();
       break;
 
     case E_NORMALIZED_WEAPON_DMG:
@@ -751,8 +762,18 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         case A_PERIODIC_HEAL:
           spell_power_mod.tick  = spelleffect_data.sp_coeff();
           attack_power_mod.tick = spelleffect_data.ap_coeff();
-          radius           = spelleffect_data.radius_max();
-          base_td          = item_scaling ? spelleffect_data.average( item ) : spelleffect_data.average( player, player -> level() );
+          if ( ! item_scaling )
+          {
+            if ( ! spelleffect_data.sp_coeff() && ! spelleffect_data.ap_coeff() )
+            {
+              base_td = spelleffect_data.average( player, player -> level() );
+            }
+          }
+          else
+          {
+            base_td = spelleffect_data.average( item );
+          }
+          radius = spelleffect_data.radius_max();
         case A_PERIODIC_ENERGIZE:
         case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
         case A_PERIODIC_HEALTH_FUNNEL:
