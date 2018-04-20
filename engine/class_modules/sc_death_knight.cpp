@@ -469,6 +469,7 @@ public:
     cooldown_t* hungering_rune_weapon;
     cooldown_t* icecap;
     cooldown_t* pillar_of_frost;
+    cooldown_t* rune_strike;
     cooldown_t* vampiric_blood;
   } cooldown;
 
@@ -800,6 +801,7 @@ public:
     cooldown.hungering_rune_weapon = get_cooldown( "hungering_rune_weapon" );
     cooldown.icecap          = get_cooldown( "icecap" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
+    cooldown.rune_strike     = get_cooldown( "rune_strike" );
     cooldown.vampiric_blood  = get_cooldown( "vampiric_blood" );
 
     talent_points.register_validity_fn( [ this ] ( const spell_data_t* spell )
@@ -1258,6 +1260,8 @@ inline rune_t* rune_t::consume()
   {
     runes -> dk -> buffs.t19oh_8pc -> trigger();
   }
+
+  runes -> dk -> cooldown.rune_strike -> adjust( timespan_t::from_seconds( -1.0 * runes -> dk -> talent.rune_strike -> effectN( 3 ).base_value() ), false );
 
   return new_regenerating_rune;
 }
