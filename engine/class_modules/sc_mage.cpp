@@ -2084,9 +2084,9 @@ struct icicle_t : public frost_mage_spell_t
 
     if ( p -> talents.splitting_ice -> ok() )
     {
-      aoe                  =   1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
-      base_multiplier     *= 1.0 + p -> talents.splitting_ice -> effectN( 3 ).percent();
-      base_aoe_multiplier *=       p -> talents.splitting_ice -> effectN( 2 ).percent();
+      aoe = as<int>( 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value() );
+      base_multiplier *= 1.0 + p -> talents.splitting_ice -> effectN( 3 ).percent();
+      base_aoe_multiplier *= p -> talents.splitting_ice -> effectN( 2 ).percent();
     }
   }
 
@@ -3110,8 +3110,8 @@ struct ebonbolt_t : public frost_mage_spell_t
 
     if ( p -> talents.splitting_ice -> ok() )
     {
-      aoe                  = 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
-      base_aoe_multiplier *=     p -> talents.splitting_ice -> effectN( 2 ).percent();
+      aoe = as<int>( 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value() );
+      base_aoe_multiplier *= p -> talents.splitting_ice -> effectN( 2 ).percent();
     }
 
     calculate_on_impact = true;
@@ -3453,7 +3453,7 @@ struct flurry_t : public frost_mage_spell_t
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .pulse_time( pulse_time * s -> haste )
       .target( s -> target )
-      .n_pulses( data().effectN( 1 ).base_value() )
+      .n_pulses( as<int>( data().effectN( 1 ).base_value() ) )
       .action( flurry_bolt ), true );
   }
 };
@@ -3523,7 +3523,7 @@ struct frost_nova_t : public mage_spell_t
 
     affected_by.shatter = true;
 
-    cooldown -> charges += p -> talents.ice_ward -> effectN( 1 ).base_value();
+    cooldown -> charges += as<int>( p -> talents.ice_ward -> effectN( 1 ).base_value() );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3682,8 +3682,8 @@ struct glacial_spike_t : public frost_mage_spell_t
     parse_effect_data( p -> find_spell( 228600 ) -> effectN( 1 ) );
     if ( p -> talents.splitting_ice -> ok() )
     {
-      aoe                  = 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
-      base_aoe_multiplier *=     p -> talents.splitting_ice -> effectN( 2 ).percent();
+      aoe = as<int>( 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value() );
+      base_aoe_multiplier *= p -> talents.splitting_ice -> effectN( 2 ).percent();
     }
     calculate_on_impact = true;
     track_shatter = true;
@@ -3796,9 +3796,9 @@ struct ice_lance_t : public frost_mage_spell_t
     // TODO: Cleave distance for SI seems to be 8 + hitbox size.
     if ( p -> talents.splitting_ice -> ok() )
     {
-      aoe                  =   1 + p -> talents.splitting_ice -> effectN( 1 ).base_value();
-      base_multiplier     *= 1.0 + p -> talents.splitting_ice -> effectN( 3 ).percent();
-      base_aoe_multiplier *=       p -> talents.splitting_ice -> effectN( 2 ).percent();
+      aoe = as<int>( 1 + p -> talents.splitting_ice -> effectN( 1 ).base_value() );
+      base_multiplier *= 1.0 + p -> talents.splitting_ice -> effectN( 3 ).percent();
+      base_aoe_multiplier *= p -> talents.splitting_ice -> effectN( 2 ).percent();
     }
     calculate_on_impact = true;
     track_shatter = true;
@@ -4022,8 +4022,8 @@ struct fire_blast_t : public fire_mage_spell_t
     trigger_gcd = timespan_t::zero();
 
     cooldown -> charges = data().charges();
-    cooldown -> charges += p -> spec.fire_blast_3 -> effectN( 1 ).base_value();
-    cooldown -> charges += p -> talents.flame_on -> effectN( 1 ).base_value();
+    cooldown -> charges += as<int>( p -> spec.fire_blast_3 -> effectN( 1 ).base_value() );
+    cooldown -> charges += as<int>( p -> talents.flame_on -> effectN( 1 ).base_value() );
 
     cooldown -> duration = data().charge_cooldown();
     cooldown -> duration -= 1000 * p -> talents.flame_on -> effectN( 3 ).time_value();
@@ -5794,7 +5794,7 @@ void mage_t::create_pets()
 
   if ( talents.mirror_image -> ok() && find_action( "mirror_image" ) )
   {
-    int image_num = talents.mirror_image -> effectN( 2 ).base_value();
+    int image_num = as<int>( talents.mirror_image -> effectN( 2 ).base_value() );
     for ( int i = 0; i < image_num; i++ )
     {
       pets.mirror_images.push_back( new pets::mirror_image::mirror_image_pet_t( sim, this ) );
@@ -7786,7 +7786,7 @@ struct gravity_spiral_t : public scoped_actor_callback_t<mage_t>
   { }
 
   virtual void manipulate( mage_t* actor, const special_effect_t& e ) override
-  { actor -> cooldowns.evocation -> charges += e.driver() -> effectN( 1 ).base_value(); }
+  { actor -> cooldowns.evocation -> charges += as<int>( e.driver() -> effectN( 1 ).base_value() ); }
 };
 
 struct mantle_of_the_first_kirin_tor_t : public scoped_action_callback_t<arcane_barrage_t>
