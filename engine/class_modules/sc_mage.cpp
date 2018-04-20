@@ -7101,7 +7101,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
   // Firestarter expressions ==================================================
-  if ( splits.size() == 2 && util::str_compare_ci( splits[0], "firestarter" ) )
+  if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "firestarter" ) )
   {
     enum expr_type_e
     {
@@ -7146,22 +7146,67 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       }
     };
 
-    if ( util::str_compare_ci( splits[1], "active" ) )
+    if ( util::str_compare_ci( splits[ 1 ], "active" ) )
     {
       return new firestarter_expr_t( *this, name_str, a, FIRESTARTER_ACTIVE );
     }
-    else if ( util::str_compare_ci( splits[1], "remains" ) )
+    else if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
     {
       return new firestarter_expr_t( *this, name_str, a, FIRESTARTER_REMAINS );
     }
     else
     {
-      sim -> errorf( "Player %s firestarer expression: unknown operation '%s'", name(), splits[1].c_str() );
+      sim -> errorf( "Player %s firestarer expression: unknown operation '%s'", name(), splits[ 1 ].c_str() );
+    }
+  }
+
+  // Temporal Flux expressions ================================================
+  if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "temporal_flux_delay" ) )
+  {
+    enum expr_type_e
+    {
+      DELAY_ACTIVE,
+      DELAY_REMAINS
+    };
+
+    struct temporal_flux_expr_t : public mage_expr_t
+    {
+      expr_type_e type;
+
+      temporal_flux_expr_t( mage_t& m, const std::string& name, expr_type_e type ) :
+        mage_expr_t( name, m ), type( type )
+      { }
+
+      virtual double evaluate() override
+      {
+        switch ( type )
+        {
+          case DELAY_ACTIVE:
+            return mage.temporal_flux_event ? 1.0 : 0.0;
+          case DELAY_REMAINS:
+            return mage.temporal_flux_event ? mage.temporal_flux_event -> remains().total_seconds() : 0.0;
+          default:
+            return 0.0;
+        }
+      }
+    };
+
+    if ( util::str_compare_ci( splits[ 1 ], "active" ) )
+    {
+      return new temporal_flux_expr_t( *this, name_str, DELAY_ACTIVE );
+    }
+    else if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
+    {
+      return new temporal_flux_expr_t( *this, name_str, DELAY_REMAINS );
+    }
+    else
+    {
+      sim -> errorf( "Player %s temporal_flux_delay expression: unknown operation '%s'", name(), splits[ 1 ].c_str() );
     }
   }
 
   // Ground AoE expressions ===================================================
-  if ( splits.size() == 3 && util::str_compare_ci( splits[0], "ground_aoe" ) )
+  if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
   {
     struct ground_aoe_expr_t : public mage_expr_t
     {
@@ -7188,13 +7233,13 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       }
     };
 
-    if ( util::str_compare_ci( splits[2], "remains" ) )
+    if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
     {
-      return new ground_aoe_expr_t( *this, name_str, splits[1] );
+      return new ground_aoe_expr_t( *this, name_str, splits[ 1 ] );
     }
     else
     {
-      sim -> errorf( "Player %s ground_aoe expression: unknown operation '%s'", name(), splits[2].c_str() );
+      sim -> errorf( "Player %s ground_aoe expression: unknown operation '%s'", name(), splits[ 2 ].c_str() );
     }
   }
 
