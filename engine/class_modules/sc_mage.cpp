@@ -5411,6 +5411,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   icicle( icicles_t() ),
   ignite( nullptr ),
   ignite_spread_event( nullptr ),
+  temporal_flux_event( nullptr ),
   last_bomb_target( nullptr ),
   distance_from_rune( 0.0 ),
   firestarter_time( timespan_t::zero() ),
