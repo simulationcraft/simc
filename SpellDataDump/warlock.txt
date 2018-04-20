@@ -65,7 +65,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : Cannot cancel aura (31), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=145)      : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=371976)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 Description      : Burns the enemy, causing $s1 Fire damage immediately and an additional $157736o1 Fire damage over $157736d.
@@ -91,7 +91,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=267)      : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45000 | Target: Enemy (6)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
@@ -266,7 +266,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.00800 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.00800 | Target: Enemy (6)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$o1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -319,7 +319,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : ......x. .....x.. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=402)      : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 47319 | Misc Value 2: 0x759 | Target: Unknown(87)
+                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=1) | Misc Value: 47319 | Misc Value 2: 0x759 | Target: Unknown(87)
 #2 (id=403)      : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 22703 | Radius: 10 yards | Target: Unknown(87)
 #3 (id=268271)   : Trigger Missiles (32)
@@ -361,7 +361,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=929)      : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | Target: Enemy (6)
 Description      : Deals $s1 Fire damage to a target.
 
 |cFF777777(Right-Click to toggle)|r
@@ -488,7 +488,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2131)     : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.25) | Target: Unknown(25)
 Description      : $@spelldesc20707
 
 Name             : Healthstone (id=6262) [Scaling Spell (-2), Spell Family (5)] 
@@ -550,7 +550,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=2210)     : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Enemy (6)
 Description      : Burns the enemy's soul, dealing a critical strike for ${2*$s1} Fire damage. Damage is further increased by your critical strike chance.
 
 Name             : Seduction (Command Demon Ability) (id=6358) [Spell Family (57)] 
@@ -648,7 +648,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=3106)     : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 0 (avg=0.907) | SP Coefficient: 0.30000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.907) | SP Coefficient: 0.30000 | Target: Enemy (6)
 #2 (id=113763)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Lashes the target, dealing $s1 Shadow damage.
@@ -707,7 +707,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=9346)     : Unknown(114)
-                   Base Value: 40 | Scaled Value: 0 (avg=1.943) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.943) | Target: Enemy (6)
 #2 (id=9347)     : Apply Aura (6) | Taunt (11)
                    Base Value: 400 | Scaled Value: 400 | Target: Enemy (6)
 Description      : The $?s108499[Voidlord][Voidwalker] taunts the target to attack it for $d, and increases its threat against the target.
@@ -807,7 +807,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=9553)     : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.90000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Triggers an explosion on the target, dealing $s1 Fire damage.$?s196406[
 
 Reduces the cast time of your next Incinerate or Chaos Bolt by $117828s1% for $117828d.][]
@@ -892,7 +892,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=10879)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 0 (avg=1.98) | SP Coefficient: 0.80000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.98) | SP Coefficient: 0.80000 | Target: Unknown(25)
 #2 (id=113505)   : Energize Power (30)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: energy | Target: Unknown(25)
 Description      : Heals and energizes when an effect is dispelled.
@@ -910,7 +910,7 @@ Attributes       : ....x... ........ x.x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=11232)    : School Damage (2): fire
-                   Base Value: 25 | Scaled Value: 0 (avg=0.1) | Points Per Level: 0.5 | SP Coefficient: 0.50000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.1) | Points Per Level: 0.5 | SP Coefficient: 0.50000 | Radius: 0 - 12 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=242870)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Deals Fire damage to all nearby enemies.
@@ -993,7 +993,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=12912)    : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 0.60000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (avg=1) | SP Coefficient: 0.60000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=12913)    : Apply Aura (6) | Stun (12)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : An infernal falls from the sky, dealing $s1 Fire damage to all targets, stunning them for $d.
@@ -1033,7 +1033,7 @@ Tooltip          : Embeded with a demon seed that will soon explode, dealing Sha
 
 The seed will detonate early if the target is hit by other detonations, or takes $w3 damage from your spells.
 
-Name             : Seed of Corruption (id=27285) [Scaling Spell (11), Spell Family (5)] 
+Name             : Seed of Corruption (id=27285) [Scaling Spell (-1), Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Level      : 72
@@ -1048,29 +1048,27 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=16922)    : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 0 (avg=0.91, dl=0.15) | SP Coefficient: 0.35000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 283.01 (avg=0.91) | SP Coefficient: 0.35000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc27243
 
 Name             : Arcane Torrent (Racial) (id=28730) 
 Class            : Mage, Warlock
 Race             : Blood Elf (0x200)
 School           : Arcane
-Duration         : 1 seconds
+GCD              : 1.5 seconds
 Cooldown         : 150 seconds
-Mechanic         : Silence
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=18193)    : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+#1 (id=18193)    : Dispel (38)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=18194)    : Energize Power% (137)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
-Description      : Silence all enemies within $A1 yards for $d and restore $s2% of your Mana.  Non-player victim spellcasting is also interrupted for $32747d.
-Tooltip          : Silenced.
+Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore $s2% of your Mana.
 
 Name             : Incinerate (id=29722) [Spell Family (5)] 
 Replaces         : Shadow Bolt (id=686)
@@ -1312,26 +1310,7 @@ Effects          :
 Description      : $@spelldesc32388
 Tooltip          : Damage taken increased by $s1%.
 
-Name             : Arcane Torrent (id=32747) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
-Race             : Blood Elf (0x200)
-School           : Physical
-Spell Level      : 10
-Range            : 100 yards
-Duration         : 3 seconds
-Mechanic         : Interrupt
-Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=22529)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Interrupts casting for $d.
-
-Name             : Blood Fury (Racial) (id=33702) [Scaling Spell (-1)] 
+Name             : Blood Fury (Racial) (id=33702) 
 Class            : Mage, Warlock
 Race             : Orc (0x2)
 School           : Physical
@@ -1347,9 +1326,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=118955)   : Apply Aura (6) | Modify Healing Power (135)
-                   Base Value: 5 | Scaled Value: 340.56 (avg=1.32) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.32) | Target: Self (1)
 #2 (id=23584)    : Apply Aura (6) | Damage Done (13)
-                   Base Value: 5 | Scaled Value: 340.56 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 238 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self (1)
 Description      : Increases your spell power by $s2 for $d.
 Tooltip          : Spell power increased by $s2.
 
@@ -1643,7 +1622,7 @@ Effects          :
 #2 (id=318370)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.66600 | Target: Self (1)
 #3 (id=318371)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1000000000 | Scaled Value: 1e+09 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0xfffffff6 | Target: Self (1)
 Description      : Your spells deal ${$s1/2}.1% increased damage, plus a random amount of up to ${$s1/2}.1% additional increased damage.
 
 You take ${$s2/3}.1% reduced damage, plus a random amount of up to ${$s2/3}.1% additional reduced damage.
@@ -2002,7 +1981,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=113740)   : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 0 (avg=0.242, dl=0.05) | SP Coefficient: 0.07000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.242) | SP Coefficient: 0.07000 | Target: Enemy (6)
 #2 (id=113741)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : Deals $s1 Fire damage to a target.
@@ -2501,7 +2480,7 @@ Attributes       : ........ ........ .......x x.xx.x..   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=127009)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -1000000000 | Scaled Value: -1e+09 | Misc Value: 893 | Target: Self (1)
+                   Base Value: -1e+09 | Scaled Value: -1e+09 | Misc Value: 893 | Target: Self (1)
 Description      : Faded into the nether and unable to use another Demonic Gateway.
 Tooltip          : Faded into the nether and unable to use another Demonic Gateway.
 
@@ -2664,7 +2643,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=175237)   : Apply Aura (6) | Threat (10)
-                   Base Value: 700 | Scaled Value: 700 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 650 | Scaled Value: 650 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
 Description      : Intimidates any target the Felguard attacks, increasing threat generation.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -3006,7 +2985,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242701)   : Apply Aura (6) | Threat (10)
-                   Base Value: 700 | Scaled Value: 700 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 650 | Scaled Value: 650 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
 #2 (id=242702)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #3 (id=242703)   : Apply Aura (6) | Modify Parry% (47)
@@ -3045,7 +3024,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242711)   : Unknown(114)
-                   Base Value: 40 | Scaled Value: 0 (avg=1.943) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.943) | Target: Enemy (6)
 #2 (id=242712)   : Apply Aura (6) | Taunt (11)
                    Base Value: 400 | Scaled Value: 400 | Target: Enemy (6)
 Description      : The $?s108499[Abyssal][Infernal] taunts the target to attack it, and increases threat that it generates against the target by for $d.
@@ -3071,7 +3050,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242715)   : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 0 (avg=1, dl=0.12) | SP Coefficient: 0.12500 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (avg=1) | SP Coefficient: 0.12500 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=242716)   : Apply Aura (6) | Stun (12)
                    Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : The infernal releases a powerful burst of flames, dealing $s1 Fire damage to nearby targets, and stunning them for $d.
@@ -4019,7 +3998,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ......x. ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=316299)   : School Damage (2): chromatic
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.40000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0.0001 | Scaled Value: 0.0001 | SP Coefficient: 1.40000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=316300)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
 #3 (id=316301)   : Energize Power% (137)
@@ -4741,9 +4720,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 100000 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -4770,7 +4749,7 @@ Effects          :
 #1 (id=485932)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=485933)   : Apply Aura (6) | Periodic Damage (3): nature every 3 seconds
-                   Base Value: 100 | Scaled Value: 100 | Target: Unknown(25)
+                   Base Value: 0.2453 | Scaled Value: 0.2453 | Target: Unknown(25)
 Description      : The caster spits a glob of bile at the target, inflicting Nature damage on impact and coating them in bile. The victim continues to take Nature damage for $d.
 Tooltip          : Nature damage every $t2 sec.
 
@@ -4872,7 +4851,7 @@ Resource         : 2% Base Mana (0) (id=191485)
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Velocity         : 25 yards/sec
+Velocity         : 30 yards/sec
 Cooldown         : 25 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4883,7 +4862,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=707289)   : School Damage (2): chaos
-                   Base Value: 1 | Scaled Value: 1 | Target: Enemy (6)
+                   Base Value: 0.0025 | Scaled Value: 0.0025 | Target: Enemy (6)
 #2 (id=707290)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=707411)   : Dummy (3)
@@ -4970,7 +4949,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.90000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.90000 | Target: Enemy (6)
 Description      : Send the fiery soul of a fallen demon at the enemy, causing $s1 Shadowflame damage.$?c2[
 
 |cFFFFFFFFGenerates 2 Soul Shards.|r][]
@@ -5135,7 +5114,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=709327)   : School Damage (2): shadowflame
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deal $s1 Shadowflame damage to your enemy target.
 
 Name             : Doom (id=265412) [Spell Family (5)] 
@@ -5150,7 +5129,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=709547)   : Apply Aura (6) | Dummy (4)
@@ -5191,7 +5170,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=710538)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.16000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc205184
 Tooltip          : Suffering $s1 Fire damage every $t1 sec.
 Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
@@ -5382,7 +5361,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=713715)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.15000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc267211
 
 Name             : Sacrificed Souls (id=267214) [Spell Family (5), Passive, Hidden] 
@@ -5476,7 +5455,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=714972)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc264057
 
 Name             : Demonic Consumption (id=267971) [Spell Family (5)] 
@@ -5723,7 +5702,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=719405)   : School Damage (2): shadowflame
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deal $s1 Shadowflame damage to your enemy target.
 
 Name             : Inferno (id=270545) [Spell Family (5), Passive] 

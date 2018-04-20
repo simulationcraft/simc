@@ -24,8 +24,8 @@ Description      : Shields an ally for $d, absorbing $<shield> damage, and preve
 Tooltip          : Absorbs $w1 damage.
 Variables        : $mastery=$?a271534[${(1+$271534s2/100)}][${1}]
 $rapture=$?a47536[${(1+$47536s1/100)}][${1}]
-$shadow=$?a137033[${1.4}][${1}]
-$shield=${$SP*1*(1+$@versadmg)*$<mastery>*$<rapture>*$<shadow>}
+$shadow=$?a137033[${1.5}][${1}]
+$shield=${$SP*0.9*(1+$@versadmg)*$<mastery>*$<rapture>*$<shadow>}
 
 Name             : Renew (id=139) [Spell Family (6)] 
 Class            : Holy Priest
@@ -36,7 +36,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Stance Mask      : 0x88000000
-Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Hands (196422 effect#1), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Holy Hands (196422 effect#1), An'juna's Trance (207555 effect#1), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ...x.... x....... ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -46,7 +46,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=95)       : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.18000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18000 | Target: Friend (21)
 #2 (id=256131)   : Direct Heal (10)
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.18000 | Target: Friend (21)
 #3 (id=355489)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -133,14 +133,14 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=237)      : Apply Aura (6) | Temporary Thread Reduction (103)
-                   Base Value: -90000000 | Scaled Value: -9e+07 | Target: Self (1)
+                   Base Value: -9e+07 | Scaled Value: -9e+07 | Target: Self (1)
 Description      : Fade out, removing all your threat for $d.
 Tooltip          : Reduced threat level.
 
 Name             : Shadow Word: Pain (id=589) [Spell Family (6)] 
 Class            : Discipline Shadow Priest
 School           : Shadow
-Resource         : 2.2% Base Mana (0) (id=10512) w/ Discipline Priest (id=137032)
+Resource         : 1.8% Base Mana (0) (id=10512) w/ Discipline Priest (id=137032)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -176,7 +176,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Holy Guidance (196434 effect#1), Power of the Naaru (196490 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Everlasting Hope (253443 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Holy Guidance (196434 effect#1), Power of the Naaru (196490 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Everlasting Hope (253443 effect#1), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -249,7 +249,7 @@ GCD              : 1.5 seconds
 Charges          : 1 (60 seconds cooldown)
 Category         : 1673
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Serenity Now (196416 effect#1), Words of Healing (196430 effect#1), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Rammal's Ulterior Motive (234711 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Serenity Now (196416 effect#1), Words of Healing (196430 effect#1), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Rammal's Ulterior Motive (234711 effect#1), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -258,7 +258,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=611)      : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 5.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 5.00000 | Target: Friend (21)
 #2 (id=709474)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 Description      : Perform a miracle, healing an ally for $s1.$?s63733[
@@ -274,7 +274,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Complete Healing (184914 effect#1), Reverence (196418 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Bindings of Fate (269561 effect#2)
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Complete Healing (184914 effect#1), Atonement (194384 effect#2), Reverence (196418 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), Bindings of Fate (269561 effect#2)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -283,7 +283,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=612)      : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 1.50000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 1.50000 | Target: Friend (21)
 Description      : An efficient spell that heals an ally for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
@@ -295,7 +295,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Spirit Shell (109964 effect#1), Surge of Light (114255 effect#1), Twist of Fate (123254 effect#1), Complete Healing (184914 effect#1), Reverence (196418 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Rapid Healing (24546 effect#2), Healing Trance (37706 effect#1), Spirit Shell (109964 effect#1), Surge of Light (114255 effect#1), Twist of Fate (123254 effect#1), Complete Healing (184914 effect#1), Atonement (194384 effect#2), Reverence (196418 effect#1), Light of T'uure (208065 effect#1), Muze's Unwavering Will (210632 effect#1), Rammal's Ulterior Motive (234711 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), 
 Triggered by     : Surge of Light (114255)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -305,7 +305,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=613)      : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 1.18750 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 1.18750 | Target: Friend (21)
 Description      : A fast spell that heals an ally for $s1.
 
 Name             : Mind Vision (id=2096) [Spell Family (6)] 
@@ -432,31 +432,9 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : Stop attacks (20)
 Effects          :
 #1 (id=4041)     : Apply Aura (6) | Stun (12)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.25) | Target: Enemy (6)
 Description      : Shackles the target undead enemy for $d, preventing all actions and movement. Damage will cancel the effect. Limit 1.
 Tooltip          : Shackled.
-
-Name             : Power Infusion (id=10060) [Spell Family (6)] 
-Class            : Priest
-School           : Holy
-Spell Level      : 1
-GCD              : 1.5 seconds
-Duration         : 20 seconds
-Cooldown         : 120 seconds
-Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=4249)     : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 25 | Scaled Value: 25 | SP Coefficient: 0.25000 | Misc Value: 126 | Target: Self (1)
-#2 (id=4250)     : Apply Aura (6) | Modify Resource Generation% (329)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 13 | Target: Self (1)
-Description      : Infuses you with power for $d, increasing Haste by $s1% and Insanity generation by $s2%.
-Tooltip          : Haste increased by $w1%.
-Insanity generation increased by $w2%.
 
 Name             : Holy Fire (id=14914) [Spell Family (6)] 
 Class            : Holy Priest
@@ -527,7 +505,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : Channeled (34), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=7301)     : Apply Aura (6) | Periodic Damage (3): shadow every 0.75 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.33750 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.33750 | Target: Enemy (6)
 #2 (id=7302)     : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 #3 (id=303457)   : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
@@ -618,7 +596,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=11689)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1500000000 | Scaled Value: 1.5e+09 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x32 | Target: Self (1)
 Description      : Upon death, you become the Spirit of Redemption for $27827d. You cannot move, attack, be attacked, or be targeted by any spells or effects, and your healing spells cost no mana. When the effect ends, you die.
 
 Name             : Power Word: Fortitude (id=21562) [Spell Family (6)] 
@@ -753,7 +731,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=22171)    : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.87500 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.87500 | Target: Enemy (6)
 #2 (id=165318)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=340366)   : Dummy (3)
@@ -773,7 +751,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Light of T'uure (208065 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Answered Prayers (253437 effect#1), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ...x.... ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -789,7 +767,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | Target: Self (1)
 #4 (id=325998)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
-Description      : Heals you, another friendly target, and a third friendly target within 20 yards for $s2.$?s32546[][
+Description      : Heals you, your target, and another friendly target within 20 yards for $s2.$?s32546[][
 
 |cFFFFFFFFReduces the remaining cooldown on both Holy Word: Serenity and Holy Word: Sanctify by $s4 sec|r]
 
@@ -811,25 +789,6 @@ Effects          :
 #1 (id=22365)    : Dispel (38)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Radius: 15 yards | Target: AOE enemy (instant) (16)
 Description      : Dispels magic in a $32375a1 yard radius, removing all harmful spells from each friendly target and $32592m1 beneficial $lspell:spells; from each enemy target.  This dispel is potent enough to remove Magic effects that are normally undispellable.
-
-Name             : Arcane Torrent (id=32747) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
-Race             : Blood Elf (0x200)
-School           : Physical
-Spell Level      : 10
-Range            : 100 yards
-Duration         : 3 seconds
-Mechanic         : Interrupt
-Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=22529)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Interrupts casting for $d.
 
 Name             : Prayer of Mending (id=33076) [Spell Family (6)] 
 Class            : Holy Priest
@@ -865,7 +824,7 @@ Class            : Priest
 School           : Holy
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Twist of Fate (123254 effect#1), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ ..x..... ...x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -874,7 +833,7 @@ Attributes       : ........ ........ ..x..... ...x....   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=22918)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.43750 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.43750 | Target: Friend (21)
 Description      : $@spelldesc33076
 
 Name             : Pain Suppression (id=33206) [Spell Family (6)] 
@@ -884,7 +843,7 @@ Resource         : 1.6% Base Mana (0) (id=1403)
 Spell Level      : 48
 Range            : 40 yards
 Duration         : 8 seconds
-Cooldown         : 240 seconds
+Cooldown         : 180 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
@@ -941,7 +900,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Hallowed Ground (196429 effect#1), Words of Healing (196430 effect#1), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Healing Trance (37706 effect#1), Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Hallowed Ground (196429 effect#1), Words of Healing (196430 effect#1), Apotheosis (200183 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ......x. ........ 
@@ -950,7 +909,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=24949)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 81 | Points Per Level: 1 | SP Coefficient: 1.50000 | Radius: 10 yards | Target: AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 80 | Points Per Level: 1 | SP Coefficient: 1.50000 | Radius: 10 yards | Target: AOE friendly (31)
 #2 (id=288932)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
 #3 (id=709475)   : Dummy (3)
@@ -982,7 +941,7 @@ Effects          :
 #1 (id=25009)    : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53)
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 0.5 | SP Coefficient: 0.25000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.25000 | Target: Enemy (6)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 600 | Scaled Value: 600 | Misc Value: insanity | Target: Self (1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals you for ${$e2*100}% of damage dealt.
@@ -1121,8 +1080,8 @@ Attributes       : ........ ........ ..x..... x.......   .....x.. ..x....x .x...
 Effects          :
 #1 (id=39811)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -60 | Scaled Value: -60 | Misc Value: 0x7f | Target: Self (1)
-#2 (id=39812)    : None (0)
-                   Base Value: 6 | Scaled Value: 6
+#2 (id=39812)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 23 | Target: Self (1)
 #3 (id=39813)    : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=223570)   : Apply Aura (6) | Increase Speed% (31)
@@ -1133,14 +1092,14 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
 #7 (id=342505)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
-Description      : Disperse into pure shadow energy, reducing all damage you take by $47585s1% for $d, but you are unable to attack or cast spells.
+Description      : Disperse into pure shadow energy, reducing all damage taken by $47585s1% for $d, but you are unable to attack or cast spells.
 
 Clears all movement impairing effects and makes you immune to them while dispersed.
 
-Voidform does not drain Insanity while dispersed.
+Voidform's Insanity drain is temporarily reduced by $s2% while dispersed.
 
 Castable while stunned, feared, or silenced. 
-Tooltip          : Reduces all damage taken by $s1%.
+Tooltip          : Damage taken reduced by $s1%.
 Immune to all movement impairing effects.
 Cannot attack or cast spells.
 
@@ -1229,7 +1188,7 @@ Resource         : 0.9% Base Mana (0) (id=2205)
 Spell Level      : 48
 Range            : 40 yards
 Duration         : 10 seconds
-Cooldown         : 240 seconds
+Cooldown         : 180 seconds
 Stance Mask      : 0x88000000
 Affecting spells : Item - Priest WoD PvP Holy4P Bonus (171142 effect#1), Phyrix's Embrace (234689 effect#1), 
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
@@ -1240,11 +1199,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .x...
                  : ........ .....x.. ........ ....x...   ........ ........ ..xx.... ..x.x... 
 Effects          :
 #1 (id=40042)    : Apply Aura (6) | Modify Healing Recevied% (118)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 127 | Target: Friend (21)
+                   Base Value: 60 | Scaled Value: 60 | Misc Value: 127 | Target: Friend (21)
 #2 (id=40043)    : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=188025)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 50000008 | Scaled Value: 5.000001e+07 | Misc Value: 127 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x14 | Target: Friend (21)
 Description      : Calls upon a guardian spirit to watch over the friendly target for $d, increasing healing received by $s1%$?s159599[][ and preventing the target from dying by sacrificing itself.  This sacrifice terminates the effect and heals the target for $s2% of maximum health]. Castable while stunned.
 
 Massive damage amounts will kill the target despite this effect.
@@ -1291,9 +1250,9 @@ Attributes       : ........ ........ ........ ........   ...x...x .x...... .....
                  : Not a proc (105)
 Effects          :
 #1 (id=41944)    : Dummy (3)
-                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.15) | Target: Unknown(77)
 #2 (id=326288)   : School Damage (2): shadow
-                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | SP Coefficient: 0.16500 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.15) | SP Coefficient: 0.16500 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant) (16)
 Description      : $@spelldesc48045
 Tooltip          : Causing shadow damage to all targets within $a2 yards.
 
@@ -1381,7 +1340,6 @@ School           : Shadow
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 5 seconds
 Cooldown         : 6 seconds
 Attributes       : ....x... ........ x....... .....x..   ........ .xx..... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1392,9 +1350,6 @@ Attributes       : ....x... ........ x....... .....x..   ........ .xx..... .....
 Effects          :
 #1 (id=57790)    : Trigger Spell (64): (35779)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 35779 | Target: Enemy (6)
-#2 (id=57791)    : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Target: Self (1)
-                   Affected School(s): All
 Description      : Crawls through the shadows to the target enemy, and increases damage done by $s2% for $d.
 Tooltip          : Damage increased by $s2%.
 
@@ -1496,7 +1451,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 8 seconds
-Affecting spells : Twist of Fate (123254 effect#1), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
 Triggered by     : Divine Hymn (64843)
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ .x...... ........ ........ 
@@ -1945,7 +1900,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=118849)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 5 | Target: Self (1)
-Description      : Alters the appearance of your innate shadowy form to be less transparent.
+Description      : Reduces the effects of your Shadowform.
 
 Name             : Twist of Fate (id=109142) [Spell Family (6), Passive] 
 Class            : Priest
@@ -2015,7 +1970,7 @@ Cooldown         : 15 seconds
 Category         : 1380
 Category Cooldown: 15 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1)
+Affecting spells : Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -2041,7 +1996,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=122873)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000 | Target: Friend (21)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Target: Friend (21)
 Description      : $@spelldesc110744
 
 Name             : Levitate (id=111759) [Spell Family (6)] 
@@ -2141,7 +2096,7 @@ Cooldown         : 40 seconds
 Category         : 1366
 Category Cooldown: 40 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1)
+Affecting spells : Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1)
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2184,14 +2139,14 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=140516)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.87500 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | Target: Friend (21)
 Description      : $@spelldesc120517
 
 Name             : Halo (id=120696) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
 Range            : 100 yards
-Affecting spells : Twist of Fate (123254 effect#1), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ .......x x..x....   .....x.x ........ ........ ........ 
                  : .......x ......x. ........ ........   ........ .x...... ........ ......xx 
                  : x......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -2201,7 +2156,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=140527)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.87500 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.10000 | Target: Enemy (6)
 Description      : $@spelldesc120517
 
 Name             : Angelic Feather (id=121536) [Spell Family (6)] 
@@ -2246,7 +2201,7 @@ Name             : Divine Star (id=122128) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Range            : 100 yards
-Affecting spells : Twist of Fate (123254 effect#1), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Shadow Priest (137033 effect#1), Voidform (194249 effect#1), Light of T'uure (208065 effect#1), Power Word: Shield (211558 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : x......x .......x ........ ........   ...x.... .......x .xx..... ........ 
@@ -2256,7 +2211,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. .....x.. .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=153526)   : School Damage (2): holy
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.30000 | Target: Enemy (6)
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.40000 | Target: Enemy (6)
 Description      : $@spelldesc110744
 
 Name             : Mindbender (id=123040) [Spell Family (6)] 
@@ -2592,47 +2547,6 @@ Effects          :
 #4 (id=191074)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
-#5 (id=191075)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: -55 | Scaled Value: -55 | Misc Value 2: 229 (Label) | Target: Self (1)
-                   Affected Spells (Label): Nightmare Essence (214350), Withering Consumption (215884), Plague Swarm (221812), Devilsaur Shock Leash (224078), Deadly Grace (188091), Rancid Maw (215405), Thunder Ritual (230224), Pepper Breath (201573), Pepper Breath (225623), Pepper Breath (225624), Recursive Strikes (225739), Fel-Crazed Rage (225777), Cruel Garrote (230011), Fel Barbs (238523), Infernal Cinders (242218), Ceaseless Toxin (242497), Unending Hunger (242536), Spectral Bolt (242571), Fevered Touch (242650), Fel Lash (188505), Wind Bolt (227870), Spectral Blast (246442), Felshield (253278), Void Slash (251034), Torment the Weak (252907), Chaotic Darkness (252896), Secure in the Light (253073), Infusion of Light (253098), Shadow Strike (253324), Isolated Strike (255609), Shadowbind (252879), Norgannon's Fireball (257241), Norgannon's Frostbolt (257242), Norgannon's Arcane Missile (257243), Norgannon's Divine Smite (257532), Norgannon's Wrath (257533), Norgannon's Shadow Bolt (257534), Worldforger's Flame (257244)
-#6 (id=260957)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
-                   Base Value: -55 | Scaled Value: -55 | Misc Value: 22 | Misc Value 2: 229 (Label) | Target: Self (1)
-                   Affected Spells (Label): Nightmare Essence (214350), Withering Consumption (215884), Plague Swarm (221812), Devilsaur Shock Leash (224078), Deadly Grace (188091), Rancid Maw (215405), Thunder Ritual (230224), Pepper Breath (201573), Pepper Breath (225623), Pepper Breath (225624), Recursive Strikes (225739), Fel-Crazed Rage (225777), Cruel Garrote (230011), Fel Barbs (238523), Infernal Cinders (242218), Ceaseless Toxin (242497), Unending Hunger (242536), Spectral Bolt (242571), Fevered Touch (242650), Fel Lash (188505), Wind Bolt (227870), Spectral Blast (246442), Felshield (253278), Void Slash (251034), Torment the Weak (252907), Chaotic Darkness (252896), Secure in the Light (253073), Infusion of Light (253098), Shadow Strike (253324), Isolated Strike (255609), Shadowbind (252879), Norgannon's Fireball (257241), Norgannon's Frostbolt (257242), Norgannon's Arcane Missile (257243), Norgannon's Divine Smite (257532), Norgannon's Wrath (257533), Norgannon's Shadow Bolt (257534), Worldforger's Flame (257244)
-#7 (id=260958)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: -55 | Scaled Value: -55 | Misc Value: 3 | Misc Value 2: 231 (Label) | Target: Self (1)
-                   Affected Spells (Label): Taint of the Sea (215672), Recursive Strikes (225736), Insidious Corruption (243941), Refreshing Agony (253284), Shadow Blades (257702)
-#8 (id=260959)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
-                   Base Value: -55 | Scaled Value: -55 | Misc Value: 12 | Misc Value 2: 358 (Label) | Target: Self (1)
-                   Affected Spells (Label): 
-#9 (id=260960)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
-                   Base Value: -65 | Scaled Value: -65 | Misc Value 2: 230 (Label) | Target: Self (1)
-                   Affected Spells (Label): Nightfall (213786), Fel Meteor (214052), Orb of Destruction (229700), Solar Collapse (229737), Nether Meteor (225764), Kil'jaeden's Burning Wish (235999), Crystalline Shockwave (225716), Arcane Swipe (225721), Colossal Slam (232044), Dread Torrent (246464), Piercing Anguish (246751), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Void Tendril (250834), Legion Bombardment (253248), Gorshalach's Legacy (253329), Sorrow (253022), Prototype Personnel Decimator (255629), Echo of Gorshalach (255672), Gorshalach's Legacy (255673), Legion Bombardment (255713), Legion Bombardment (255724), Lightning Arc (255586), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430), Legion Bombardment (257376)
-#10 (id=260961)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: -65 | Scaled Value: -65 | Misc Value: 3 | Misc Value 2: 232 (Label) | Target: Self (1)
-                   Affected Spells (Label): Dark Blast (215444), Mechanical Bomb Squirrel (216085), Tormenting Cyclone (221845), Volatile Ichor (222187), Poisoned Dreams (222705), Flame Wreath (230257), Volatile Energy (230236), Carrion Swarm (225131), Terror From Below (242524), Spear of Anguish (242605), Shadow Wave (215089), Pool of Pure Void (250766)
-#11 (id=260962)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 2 (12)
-                   Base Value: -65 | Scaled Value: -65 | Misc Value: 12 | Misc Value 2: 243 (Label) | Target: Self (1)
-                   Affected Spells (Label): Flame Gale (230213)
-#12 (id=260963)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#13 (id=260964)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#14 (id=260965)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#15 (id=260966)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#16 (id=290693)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#17 (id=291037)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#18 (id=341750)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#19 (id=353145)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#20 (id=353146)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#21 (id=484060)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Discipline Priest core passive
 
 Name             : Shadow Priest (id=137033) [Spell Family (6), Passive, Hidden] 
@@ -2758,7 +2672,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.x ..x..... .....
                  : Does not break stealth (37), Cannot crit (93)
 Effects          :
 #1 (id=203471)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 0 (avg=0.375) | SP Coefficient: 0.25000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.375) | SP Coefficient: 0.25000 | Target: Enemy (6)
 #2 (id=315217)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: insanity | Target: Self (1)
 Description      : $@spelldesc78203
@@ -2918,7 +2832,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=271185)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 1.87500 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 1.60000 | Target: Friend (21)
 Description      : Wraps an ally in shadows which heal for $m1, but at a price.
 
 The ally will take ${$m1/20} damage every $187464t1 sec, until they have taken ${$m1/2} total damage from all sources, or leave combat.
@@ -2950,7 +2864,7 @@ Duration         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Shadow Priest (137033 effect#6), Thoughts of Insanity (193647 effect#1), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Darkest Shadows (216212 effect#1), Mastery: Reverence (271534 effect#1)
+Affecting spells : Shadow Priest (137033 effect#6), Thoughts of Insanity (193647 effect#1), Power Word: Shield (211558 effect#1), Darkest Shadows (216212 effect#1), Mastery: Reverence (271534 effect#1)
 Attributes       : ........ ........ x....... ..x....x   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3286,7 +3200,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Friend (21)
 #2 (id=294886)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
-                   Affected Spells: Penance (47750), Divine Star (110744), Divine Star (110745), Halo (120517), Halo (120692), Halo (120696), Divine Star (122128), Shadow Mend (186263), Shadow Mend (187464), Power Word: Radiance (194509)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Circle of Healing (204883), Body and Mind (214121), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Orison (271532), Moment of Repose (272776)
 #3 (id=325533)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Friend (21)
 #4 (id=362006)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -3764,7 +3678,7 @@ Tooltip          : Switch to your Primary Talent Specialization.
 Name             : Purge the Wicked (id=204197) [Spell Family (6)] 
 Class            : Priest
 School           : Fire
-Resource         : 2% Base Mana (0) (id=10913)
+Resource         : 1.8% Base Mana (0) (id=10913)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
@@ -3778,7 +3692,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=301365)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Target: Enemy (6)
 #2 (id=301387)   : Trigger Spell (64): Purge the Wicked
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 204213 | Target: Enemy (6)
 Description      : Cleanses the target with fire, causing $s1 Fire damage and an additional $204213o1 Fire damage over $204213d. Spreads to an additional nearby enemy when you cast Penance on the target.
@@ -3801,7 +3715,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=301385)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16500 | Target: Enemy (6)
 Description      : $@spelldesc204197
 Tooltip          : $w1 Fire damage every $t1 seconds.
 
@@ -3837,7 +3751,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Priest (137030 effect#1), Atonement (194384 effect#2), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4205,7 +4119,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 10 seconds
 Proc Chance      : 101%
-Affecting spells : Twist of Fate (123254 effect#1), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4277,7 +4191,7 @@ Effects          :
 #11 (id=320871)   : Apply Aura (6) | Damage Immunity (40)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
 #12 (id=320872)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 145000000 | Scaled Value: 1.45e+08 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 Description      : The Priest becomes the Spirit of Redemption for $d. The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects. While in this form the Priest can cast any healing spell free of cost. 
 Tooltip          : You have become more powerful than anyone can possibly imagine.
 
@@ -4441,7 +4355,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=349526)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 56 | Scaled Value: 56 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 12 | Target: Self (1)
 Description      : Smite absorbs the next $<shield> damage dealt by the enemy.
 Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
@@ -4486,24 +4400,22 @@ Name             : Arcane Torrent (Racial) (id=232633)
 Class            : Priest
 Race             : Blood Elf (0x200)
 School           : Arcane
-Duration         : 1 seconds
-Cooldown         : 150 seconds
-Mechanic         : Silence
+GCD              : 1.5 seconds
+Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=351093)   : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+#1 (id=351093)   : Dispel (38)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=351094)   : Energize Power% (137)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #3 (id=351095)   : Energize Power (30)
                    Base Value: 1500 | Scaled Value: 1500 | Misc Value: insanity | Target: Self (1)
-Description      : Silence all enemies within $A1 yards for $d and restore $?s137033[${$s3/100} Insanity][$s2% of your mana].  Non-player victim spellcasting is also interrupted for $32747d.
-Tooltip          : Silenced.
+Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore $?s137033[${$s3/100} Insanity][$s2% of your mana].
 
 Name             : Shadowform (id=232698) [Spell Family (6)] 
 Class            : Shadow Priest
@@ -4620,7 +4532,7 @@ Name             : Cosmic Ripple (id=243241) [Spell Family (6)]
 Class            : Priest
 School           : Holy
 Spell Level      : 1
-Affecting spells : Twist of Fate (123254 effect#1), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Light of T'uure (208065 effect#1), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -4791,9 +4703,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 100000 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -4873,7 +4785,7 @@ Attributes       : ........ ........ ........ ..x.....   ..x..... ......x. .....
                  : Channeled (34), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=651860)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.75000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | Target: Enemy (6)
 #2 (id=651861)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 Description      : Channel a torrent of void energy into the target, dealing $o Shadow damage over $d. Insanity does not drain during this channel.
@@ -4965,7 +4877,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 720 seconds
 Stance Mask      : 0x80000000
-Affecting spells : Twist of Fate (123254 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5025,13 +4937,13 @@ Description      : After healing a target below $s1% health, you deal $265258s2%
 
 Name             : Contrition (id=270501) [Spell Family (6)] 
 Class            : Priest
-School           : Physical
+School           : Holy
 Spell Level      : 1
 Range            : 100 yards
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
-Affecting spells : Twist of Fate (123254 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Twist of Fate (265258 effect#1), Mastery: Reverence (271534 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5061,7 +4973,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=721739)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Radius: 40 yards | Target: Raid Members (56)
 Description      : Create a shield on all allies within $A1 yards, absorbing $<shield> damage on each of them for $d.
 Tooltip          : Absorbs $w1 damage.
 Variables        : $shield=${$SP*1.5*(1+$@versadmg)}
@@ -5093,7 +5005,7 @@ Range            : 100 yards
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
-Affecting spells : Twist of Fate (123254 effect#1), Twist of Fate (265258 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5119,10 +5031,25 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721830)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Target: Self (1)
-                   Affected Spells: Penance (47666), Shadow Mend (186263), Shadow Mend (187464)
+                   Affected Spells: Penance (47666), Shadow Mend (186263), Shadow Mend (187464), Contrition (270501)
 #2 (id=721831)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Target: Self (1)
                    Affected Spells: Penance (47666)
 Description      : Increases the damage of Penance, the absorption of Power Word: Shield, and the healing of Shadow Mend by ${$s1}.1%.
+
+Name             : Coming Soon! (id=274960) 
+Class            : Priest
+School           : Physical
+GCD              : 1.5 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ...x.... ........ ........ ........ 
+Effects          :
+#1 (id=727670)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : This talent is lost in the void but will be found soon!
 
 

@@ -32,7 +32,9 @@ Attributes       : ....x... ........ ..x..... x..x....   ........ ..x..... .x...
 Effects          :
 #2 (id=1295)     : Apply Aura (6) | Periodic Dummy (226): every 0.25 seconds
                    Base Value: 60068 | Scaled Value: 60068 | Target: Self (1)
-Description      : Activates a freezing aura for $d that creates ice beneath your feet, allowing party or raid members within $a1 yards to walk on water. Usable while mounted, but being attacked or damaged will cancel the effect.
+Description      : Activates a freezing aura for $d that creates ice beneath your feet, allowing party or raid members within $a1 yards to walk on water.
+
+Usable while mounted, but being attacked or damaged will cancel the effect.
 Tooltip          : Grants the ability to walk across water.
 
 Name             : Bite (Basic Attack) (id=17253) [Scaling Spell (4), Spell Family (9)] 
@@ -53,7 +55,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=8994)     : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 0 (avg=0.114, dl=0.35) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.114) | Target: Enemy (6)
 Description      : Bite the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
 Variables        : $aotb=$?s191384[${1.3}][${1.0}]
 $ce=$?s152244[${1.7}][${1.5}]
@@ -77,9 +79,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 3 | Scaled Value: 340.56 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
-                   Base Value: 3 | Scaled Value: 340.56 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
 Description      : Increases attack power by $s1 for $d.
 Tooltip          : Attack power increased by $s1.
 
@@ -141,25 +143,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 Description      : Heals the target for $s2% of the caster's total health over $d.
 Tooltip          : Healing $/5;s2% every $t1 seconds.
-
-Name             : Arcane Torrent (id=32747) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Mage, Warlock, Monk, Demon Hunter
-Race             : Blood Elf (0x200)
-School           : Physical
-Spell Level      : 10
-Range            : 100 yards
-Duration         : 3 seconds
-Mechanic         : Interrupt
-Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=22529)    : Interrupt Cast (68)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Interrupts casting for $d.
 
 Name             : Army of the Dead (id=42650) [Spell Family (15)] 
 Class            : Unholy Death Knight
@@ -224,7 +207,7 @@ Effects          :
 #1 (id=34958)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=105194)   : Dummy (3)
-                   Base Value: 26 | Scaled Value: 0 (avg=0.041) | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (28)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.041) | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (28)
 #3 (id=129192)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=274827)   : Unknown(179)
@@ -272,7 +255,7 @@ Effects          :
 #3 (id=83376)    : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Shackles the target with frozen chains, reducing movement speed by $s1% for $d.
-Tooltip          : Slowed by frozen chains.
+Tooltip          : Movement slowed $s1% by frozen chains.
 
 Name             : Raise Dead (id=46584) [Spell Family (15)] 
 Class            : Unholy Death Knight
@@ -417,7 +400,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .xx..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=39752)    : Dummy (3)
-                   Base Value: 167 | Scaled Value: 0 (avg=3) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=3) | Target: Enemy (6)
 Description      : Fires a blast of unholy energy at the target, causing $47632s1 Shadow damage to an enemy$?s137007[ and restoring $196263s1 Energy to your ][]$?s137007&?s207313[abomination]?s137007[ghoul][].
 Variables        : $mastery=$?s55090[${((100+$77515m1)/100)}][${1.00}]
 $blood=$?a48263[${1.2}][${1.0}]
@@ -801,22 +784,20 @@ Name             : Arcane Torrent (Racial) (id=50613)
 Class            : Death Knight
 Race             : Blood Elf (0x200)
 School           : Arcane
-Duration         : 1 seconds
-Cooldown         : 150 seconds
-Mechanic         : Silence
+GCD              : 1.5 seconds
+Cooldown         : 90 seconds
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=42836)    : Apply Aura (6) | Silence (27)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+#1 (id=42836)    : Dispel (38)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=42837)    : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: runic_power | Target: Self (1)
-Description      : Silence all enemies within $A1 yards for $d and restore ${$m2/10} Runic Power.  Non-player victim spellcasting is also interrupted for $32747d.
-Tooltip          : Silenced.
+Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore ${$m2/10} Runic Power.
 
 Name             : Blood Boil (id=50842) [Spell Family (15)] 
 Class            : Blood Death Knight
@@ -1024,7 +1005,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44400)    : School Damage (2): shadowstorm
-                   Base Value: 1 | Scaled Value: 0 (avg=0.5, dl=0.15) | Value Multiplier: 1 | AP Coefficient: 0.22932 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.5) | Value Multiplier: 1 | AP Coefficient: 0.22932 | Target: Enemy (6)
 Description      : Inflicts Plague (Nature and Shadow) damage to an enemy.
 
 Name             : On a Pale Horse (id=51986) [Spell Family (15), Passive] 
@@ -1589,7 +1570,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Requires off-hand weapon (120)
 Effects          :
 #1 (id=60359)    : Dummy (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.2) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.2) | Target: Enemy (6)
 #2 (id=60360)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29835 | Target: Enemy (6)
 Description      : $@spelldesc49998
@@ -1941,7 +1922,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=81808)    : Parry (22)
-                   Base Value: 0 | Scaled Value: 1 - 6 | Value Range: 6 | Value Multiplier: 1 | SP Coefficient: 1.00000 | Misc Value: 90
+                   Base Value: 3.5 | Scaled Value: 3.5 (avg=0, dl=0.25) | Value Multiplier: 1 | SP Coefficient: 1.00000 | Misc Value: 90
 Description      : Gives a chance to parry enemy melee attacks.
 
 Name             : Festering Strike (id=85948) [Scaling Spell (1), Spell Family (15)] 
@@ -1962,11 +1943,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=87374)    : Dummy (3)
-                   Base Value: 1 | Scaled Value: 0 (avg=0.433) | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.433) | Target: Enemy (6)
 #2 (id=87375)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.01088 | Target: Enemy (6)
 #3 (id=333923)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 2 - 4 | Value Range: 3 | Target: Enemy (6)
+                   Base Value: 3 | Scaled Value: 3 (avg=0, dl=0.666667) | Target: Enemy (6)
 Description      : Deals $s2 Physical damage and infects the target with $m3 to $M3 Festering Wounds.
 
 |Tinterface\icons\spell_yorsahj_bloodboil_purpleoil.blp:24|t |cFFFFFFFFFestering Wound|r
@@ -2357,7 +2338,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=127901)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 300000000 | Scaled Value: 3e+08 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x1e | Target: Self (1)
 Description      : An unholy pact that prevents fatal damage, instead absorbing incoming healing equal to the damage prevented, lasting $116888d.
 
 If any healing absorption remains when this effect expires, you will die. This effect may only occur every $123981d.
@@ -2850,7 +2831,7 @@ Description      : Your Raise Dead spell summons a skeleton instead of a ghoul.
 
 $?s207313 [Disabled while talented into Sludge Belcher.][]
 
-Name             : Frozen Power (id=147620) [Scaling Spell (-1), Spell Family (15)] 
+Name             : Frozen Power (id=147620) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
 Max Scaling Level: 85
@@ -2865,7 +2846,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=200387)   : School Damage (2): frost
-                   Base Value: 500 | Scaled Value: 461.5385 (avg=9.615385) | AP Coefficient: 0.16000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=9.615385) | AP Coefficient: 0.16000 | Target: Enemy (6)
 Description      : $@spelldesc144907
 
 Name             : Skeleton (id=147963) 
@@ -2961,7 +2942,7 @@ Effects          :
 #3 (id=215543)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #4 (id=216897)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0xffffffec | Target: Self (1)
 Description      : Defile the targeted ground, dealing ${($156000s1*($d+1)/$t3)} Shadowfrost damage to all enemies over $d.
 
 Every $t3 sec, if any enemies are standing in the Defile, it grows in size and increases your Mastery by $218100s1, stacking up to $218100u times.
@@ -3410,7 +3391,7 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Disable player procs (112)
 Effects          :
 #1 (id=279728)   : School Damage (2): frost
-                   Base Value: -1 | Scaled Value: 0 | Value Range: 1 | AP Coefficient: 4.20000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.15) | AP Coefficient: 4.20000 | Target: Enemy (6)
 #2 (id=279729)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25000 | Mechanic: Snare | Target: Enemy (6)
 Description      : $@spelldesc190778
@@ -3622,14 +3603,14 @@ Effects          :
                    Affected Spells: Death and Decay (43265), Blood Plague (55078), Defile (152280)
 #2 (id=725985)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Description      : Your Blood Plague and Death and Decay deals damage $s2% more often.
+Description      : Your Blood Plague and Death and Decay deal damage $s2% more often.
 
 Name             : Rune Tap (id=194679) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Resource         : 1 Rune (5) (id=10602)
 Resource         : -10 Runic Power (6) (id=10667)
-Duration         : 3 seconds
+Duration         : 4 seconds
 Cooldown         : 1.5 seconds
 Charges          : 2 (25 seconds cooldown)
 Category         : 1645
@@ -3642,7 +3623,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=285811)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -30 | Scaled Value: -30 | Misc Value: 0x7f | Target: Self (1)
 Description      : Reduces all damage taken by $s1% for $d.
 Tooltip          : Damage taken reduced by $s1%.
 
@@ -3838,7 +3819,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ....x...   ........ ........ ........ ....x... 
 Effects          :
 #1 (id=286506)   : Apply Aura (6) | Modify Armor by Primary Stat% (268)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #2 (id=293376)   : Apply Aura (6) | Unknown(408)
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 195182 | Target: Self (1)
 #3 (id=306110)   : Apply Aura (6) | Modify Max Health% (133)
@@ -3898,7 +3879,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=286689)   : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 0 (avg=0.3, dl=0.083) | AP Coefficient: 0.14742 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.3) | AP Coefficient: 0.14742 | Target: Enemy (6)
 #2 (id=293371)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 55078 | Target: Enemy (6)
 Description      : Reach out with necrotic tendrils, dealing $s1 Shadow damage and applying Blood Plague to your target.
@@ -4041,7 +4022,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.61425 | Radius: 0 - 1.5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Summon glacial spikes from the ground that advance forward, damaging enemies near their eruption point for $s1 frost damage.
 
-Name             : Unholy Vigor (id=196263) [Scaling Spell (1)] 
+Name             : Unholy Vigor (id=196263) [Scaling Spell (-1)] 
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 55
@@ -4397,7 +4378,7 @@ Description      : $@spelldesc205223
 
 Name             : Red Thirst (id=205723) [Spell Family (15), Passive] 
 Class            : Death Knight
-School           : None
+School           : Physical
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4406,9 +4387,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=303972)   : Dummy (3)
+#1 (id=303972)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-#2 (id=303973)   : Dummy (3)
+#2 (id=303973)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Reduces the cooldown on Vampiric Blood by $s1 sec per $s2 Runic Power spent.
 
@@ -4546,7 +4527,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=306100)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 145000000 | Scaled Value: 1.45e+08 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0xfffffff6 | Target: Self (1)
 #2 (id=306101)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 #3 (id=306102)   : Apply Aura (6) | Dummy (4)
@@ -4604,7 +4585,7 @@ Effects          :
 #1 (id=306116)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 127 | Target: Enemy (6)
 #2 (id=306164)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0xffffffe2 | Target: Self (1)
 Description      : Afflict an enemy with Blood Mirror for $d.  While active, $s2% of any damage dealt to you is redirected to the target.
 Tooltip          : Redirecting $s2% of damage taken by the Death Knight to the linked target.
 
@@ -5210,8 +5191,10 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=306614)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0xfffffff6 | Target: Self (1)
+#2 (id=727826)   : Apply Aura (6) | Dummy (4)
                    Base Value: 90 | Scaled Value: 90 | Misc Value: 127 | Target: Self (1)
-Description      : For the next $d, $s1% of all damage you take is transferred to your $?s207313[abomination]?s58640[geist][ghoul].
+Description      : For the next $d, $s2% of all damage you take is transferred to your $?s207313[abomination]?s58640[geist][ghoul].
 
 If your $?s207313[abomination]?s58640[geist][ghoul] is slain while this spell is active, it cannot be resummoned for 30 seconds.
 Tooltip          : $s1% of all damage you take is being redirected to your pet.
@@ -5321,7 +5304,7 @@ Class            : Death Knight
 School           : Physical
 Range            : 5 yards
 GCD              : 1.5 seconds
-Charges          : 2 (45 seconds cooldown)
+Charges          : 2 (60 seconds cooldown)
 Category         : 1726
 Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ...x.... 
@@ -5333,10 +5316,14 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
 Effects          :
 #1 (id=312207)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.60000 | Target: Enemy (6)
 #2 (id=726107)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: rune | Target: Self (1)
+#3 (id=727293)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Strike the target for $s1 Physical damage.
+
+Cooldown reduced by $s2 sec for every Rune you spend.
 
 |cFFFFFFFFGenerates $s2 Rune.|r
 
@@ -5612,7 +5599,9 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5
 #7 (id=368591)   : None (0)
                    Base Value: 100 | Scaled Value: 100
-Description      : Sidestep into the Shadowlands, removing all root effects and increasing your movement speed by $s1%. While active, your movement speed cannot be reduced below $m2%. Lasts $d. Any action will cancel the effect.
+Description      : Sidestep into the Shadowlands, removing all root effects and increasing your movement speed by $s1% for $d. Any action will cancel the effect.
+
+While active, your movement speed cannot be reduced below $m2%.
 Tooltip          : Movement speed increased by $w1%.
 Cannot be slowed below $s2% of normal movement speed.
 Cannot attack.
@@ -5747,7 +5736,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=324699)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 1 | Scaled Value: 45.52926 (avg=0.17647) | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 54.88217 (avg=0.17647) | Misc Value: 33554432 | Target: Self (1)
 Description      : $@spelldesc152280
 Tooltip          : Mastery increased by $s1.
 
@@ -6227,9 +6216,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 100000 | Scaled Value: 16306.79 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -6352,7 +6341,7 @@ Class            : Death Knight
 School           : Physical
 Range            : 5 yards
 GCD              : 1.5 seconds
-Cooldown         : 60 seconds
+Cooldown         : 45 seconds
 Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -6363,7 +6352,25 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=726306)   : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.60000 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.40000 | Radius: 8 yards | Target: Cone Front (104)
+#2 (id=727527)   : Trigger Spell (64): Consumption
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 274893 | Target: Self (1)
 Description      : Strikes all enemies in front of you with a hungering attack that deals $sw1 Physical damage and heals you for ${$e1*100}% of that damage.
+
+Name             : Consumption (id=274893) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Range            : 30 yards
+Velocity         : 1.2 yards/sec
+Triggered by     : Consumption (274156)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=727526)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front (104)
 
 
