@@ -426,6 +426,7 @@ public:
     buff_t* t20_4pc_frost;
     buff_t* t20_blood;
     buff_t* t21_4p_blood;
+    buff_t* hemostasis;
 
     absorb_buff_t* blood_shield;
     buff_t* rune_tap;
@@ -2436,6 +2437,17 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 3 ).percent();
     }
+
+    double action_multiplier() const override
+    {
+      double m = drw_attack_t::action_multiplier();
+
+      // DRW isn't usually affected by talents, and doesn't proc hemostasis, yet its death strike damage are increased by hemostasis
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/241
+      m *= 1.0 + p() -> o() -> buffs.hemostasis -> stack_value();
+
+      return m;
+    }
   };
 
   struct heart_strike_t : public drw_attack_t
@@ -3656,6 +3668,8 @@ struct blood_boil_t : public death_knight_spell_t
     {
       p() -> buffs.t20_blood -> trigger();
     }
+
+    p() -> buffs.hemostasis -> trigger();
   }
 
 };
@@ -4461,6 +4475,7 @@ struct death_strike_heal_t : public death_knight_heal_t
     double m = death_knight_heal_t::action_multiplier();
 
     m *= 1.0 + p() -> buffs.skullflowers_haemostasis -> stack_value();
+    m *= 1.0 + p() -> buffs.hemostasis -> stack_value();
 
     return m;
   }
@@ -4536,6 +4551,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     double m = death_knight_melee_attack_t::action_multiplier();
 
     m *= 1.0 + p() -> buffs.skullflowers_haemostasis -> stack_value();
+    m *= 1.0 + p() -> buffs.hemostasis -> stack_value();
 
     return m;
   }
@@ -4576,6 +4592,7 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     p() -> trigger_death_march( execute_state );
     p() -> buffs.skullflowers_haemostasis -> expire();
+    p() -> buffs.hemostasis -> expire();
   }
 
   bool ready() override
@@ -5201,7 +5218,7 @@ struct hungering_rune_weapon_t : public death_knight_spell_t
   {
     death_knight_spell_t::init();
 
-    cooldown -> charges = data().charges() +
+    cooldown -> charges = data().charges() + 
       p() -> legendary.seal_of_necrofantasia -> effectN( 1 ).base_value();
     cooldown -> duration = data().charge_cooldown() *
       ( 1.0 + p() -> legendary.seal_of_necrofantasia -> effectN( 2 ).percent() );
@@ -5281,7 +5298,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
 
     int stack_gain = data().effectN( 3 ).base_value();
 
-    p() -> buffs.bone_shield -> trigger(stack_gain);
+    p() -> buffs.bone_shield -> trigger( stack_gain );
   }
 };
 
@@ -7687,6 +7704,8 @@ void death_knight_t::create_buffs()
   buffs.gathering_storm     = buff_creator_t( this, "gathering_storm", find_spell( 211805 ) )
                               .trigger_spell( talent.gathering_storm )
                               .default_value( find_spell( 211805 ) -> effectN( 1 ).percent() );
+  buffs.hemostasis          = buff_creator_t( this, "hemostasis", talent.hemostasis -> effectN( 1 ).trigger() )
+                              .default_value( talent.hemostasis -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
   buffs.icebound_fortitude  = buff_creator_t( this, "icebound_fortitude", spec.icebound_fortitude )
                               .duration( spec.icebound_fortitude -> duration() )
                               .cd( timespan_t::zero() );
