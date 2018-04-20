@@ -172,7 +172,7 @@ public:
     buff_t* bestial_wrath;
     buff_t* bombardment;
     buff_t* careful_aim;
-    std::array<buff_t*, DIRE_BEASTS_MAX> dire_regen;
+    std::array<buff_t*, DIRE_BEASTS_MAX> dire_frenzy;
     buff_t* thrill_of_the_hunt;
     buff_t* steady_focus;
     buff_t* pre_steady_focus;
@@ -211,8 +211,7 @@ public:
     cooldown_t* sidewinders;
     cooldown_t* bestial_wrath;
     cooldown_t* trueshot;
-    cooldown_t* dire_beast;
-    cooldown_t* dire_frenzy;
+    cooldown_t* barbed_shot;
     cooldown_t* kill_command;
     cooldown_t* mongoose_bite;
     cooldown_t* flanking_strike;
@@ -230,7 +229,7 @@ public:
   struct gains_t
   {
     gain_t* steady_focus;
-    gain_t* dire_regen;
+    gain_t* dire_frenzy;
     gain_t* aspect_of_the_wild;
     gain_t* spitting_cobra;
     gain_t* nesingwarys_trapping_treads;
@@ -342,7 +341,7 @@ public:
     // Beast Mastery
     const spell_data_t* cobra_shot;
     const spell_data_t* kill_command;
-    const spell_data_t* dire_frenzy;
+    const spell_data_t* barbed_shot;
     const spell_data_t* aspect_of_the_wild;
     const spell_data_t* beast_cleave;
     const spell_data_t* wild_call;
@@ -400,8 +399,7 @@ public:
     cooldowns.sidewinders     = get_cooldown( "sidewinders" );
     cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
     cooldowns.trueshot        = get_cooldown( "trueshot" );
-    cooldowns.dire_beast      = get_cooldown( "dire_beast" );
-    cooldowns.dire_frenzy     = get_cooldown( "dire_frenzy" );
+    cooldowns.barbed_shot     = get_cooldown( "barbed_shot" );
     cooldowns.kill_command    = get_cooldown( "kill_command" );
     cooldowns.mongoose_bite   = get_cooldown( "mongoose_bite" );
     cooldowns.flanking_strike = get_cooldown( "flanking_strike" );
@@ -1132,7 +1130,7 @@ public:
 
     ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent() );
 
-    if ( o() -> specs.dire_frenzy -> ok() )
+    if ( o() -> specs.barbed_shot -> ok() )
       ah *= 1.0 / ( 1.0 + buffs.dire_frenzy -> check_stack_value() );
 
     return ah;
@@ -1883,7 +1881,7 @@ void hunter_main_pet_t::init_spells()
   if ( o() -> specs.beast_cleave -> ok() )
     active.beast_cleave = new actions::beast_cleave_attack_t( this );
 
-  if ( o() -> specs.dire_frenzy -> ok() )
+  if ( o() -> specs.barbed_shot -> ok() )
     active.dire_frenzy = new actions::dire_frenzy_t( this );
 
   if ( o() -> specialization() == HUNTER_SURVIVAL )
@@ -2073,8 +2071,7 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
 
       if ( rng().roll( wild_call_chance ) )
       {
-        p() -> cooldowns.dire_frenzy -> reset( true );
-        p() -> cooldowns.dire_beast -> reset( true );
+        p() -> cooldowns.barbed_shot -> reset( true );
         p() -> procs.wild_call -> occur();
       }
     }
@@ -2361,6 +2358,62 @@ struct cobra_shot_t: public hunter_ranged_attack_t
       am *= 1.0 + p() -> buffs.t20_4p_bestial_rage -> check_value();
 
     return am;
+  }
+};
+
+// Barbed Shot ===============================================================
+
+struct barbed_shot_t: public hunter_ranged_attack_t
+{
+  barbed_shot_t( hunter_t* p, const std::string& options_str ) :
+    hunter_ranged_attack_t( "barbed_shot", p, p -> specs.barbed_shot )
+  {
+    parse_options(options_str);
+  }
+
+  bool init_finished() override
+  {
+    for ( auto pet : p() -> pet_list )
+      add_pet_stats( pet, { "dire_frenzy", "stomp" } );
+
+    return hunter_ranged_attack_t::init_finished();
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    // trigger regen buff
+    auto it = range::find_if( p() -> buffs.dire_frenzy, []( buff_t* b ) { return !b -> check(); } );
+    if ( it != p() -> buffs.dire_frenzy.end() )
+      (*it) -> trigger(); // TODO: error when don't have enough buffs?
+
+    if ( p() -> talents.thrill_of_the_hunt -> ok() )
+      p() -> buffs.thrill_of_the_hunt -> trigger();
+
+    // Adjust BW cd
+    timespan_t t = timespan_t::from_seconds( p() -> specs.bestial_wrath -> effectN( 3 ).base_value() );
+    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
+      t += timespan_t::from_seconds( p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B4 ) -> effectN( 1 ).base_value() );
+    p() -> cooldowns.bestial_wrath -> adjust( -t );
+
+    if ( p() -> legendary.bm_feet -> ok() )
+      p() -> cooldowns.kill_command -> adjust( p() -> legendary.bm_feet -> effectN( 1 ).time_value() );
+
+    if ( p() -> legendary.bm_shoulders -> ok() )
+      p() -> buffs.the_mantle_of_command -> trigger();
+
+    if ( auto pet = p() -> active.pet )
+    {
+      if ( p() -> talents.stomp -> ok() )
+        pet -> active.stomp -> execute();
+
+      // XXX: contrary to what the tooltip says this still performs Dire Frenzy attacks
+      for ( int i = 0; i < data().effectN( 2 ).base_value(); i++ )
+        pet -> active.dire_frenzy -> schedule_execute();
+
+      pet -> buffs.dire_frenzy -> trigger();
+    }
   }
 };
 
@@ -3598,59 +3651,12 @@ struct counter_shot_t: public interrupt_base_t
 // Beast Mastery spells
 //==============================
 
-// Dire Spell ===============================================================
-// Base class for Dire Beast & Dire Frenzy
-
-template <typename Base>
-struct dire_spell_t: public Base
-{
-private:
-  typedef Base ab;
-public:
-  typedef dire_spell_t base_t;
-
-  dire_spell_t( const std::string& n, hunter_t* p, const spell_data_t* s ) :
-    ab( n, p, s )
-  {
-  }
-
-  void execute() override
-  {
-    ab::execute();
-
-    // Trigger buffs
-    for ( buff_t* buff : ab::p() -> buffs.dire_regen )
-    {
-      if ( ! buff -> check() )
-      {
-        buff -> trigger();
-        break;
-      }
-    }
-
-    if ( ab::p() -> talents.thrill_of_the_hunt -> ok() )
-      ab::p() -> buffs.thrill_of_the_hunt -> trigger();
-
-    // Adjust BW cd
-    timespan_t t = timespan_t::from_seconds( ab::p() -> specs.bestial_wrath -> effectN( 3 ).base_value() );
-    if ( ab::p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
-      t += timespan_t::from_seconds( ab::p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B4 ) -> effectN( 1 ).base_value() );
-    ab::p() -> cooldowns.bestial_wrath -> adjust( -t );
-
-    if ( ab::p() -> legendary.bm_feet -> ok() )
-      ab::p() -> cooldowns.kill_command -> adjust( ab::p() -> legendary.bm_feet -> effectN( 1 ).time_value() );
-
-    if ( ab::p() -> legendary.bm_shoulders -> ok() )
-      ab::p() -> buffs.the_mantle_of_command -> trigger();
-  }
-};
-
 // Dire Beast ===============================================================
 
-struct dire_beast_t: public dire_spell_t<hunter_spell_t>
+struct dire_beast_t: public hunter_spell_t
 {
   dire_beast_t( hunter_t* player, const std::string& options_str ):
-    base_t( "dire_beast", player, player -> talents.dire_beast )
+    hunter_spell_t( "dire_beast", player, player -> talents.dire_beast )
   {
     parse_options( options_str );
 
@@ -3662,12 +3668,12 @@ struct dire_beast_t: public dire_spell_t<hunter_spell_t>
   {
     add_pet_stats( p() -> pets.dire_beasts[ 0 ], { "dire_beast_melee", "stomp" } );
 
-    return base_t::init_finished();
+    return hunter_spell_t::init_finished();
   }
 
   void execute() override
   {
-    base_t::execute();
+    hunter_spell_t::execute();
 
     auto it = range::find_if(p() -> pets.dire_beasts, [](pets::dire_critter_t* p) { return p->is_sleeping(); });
     if ( it == p() -> pets.dire_beasts.end() )
@@ -3696,17 +3702,9 @@ struct dire_beast_t: public dire_spell_t<hunter_spell_t>
 
     timespan_t summon_duration = base_attacks_per_summon * swing_time;
 
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "Dire Beast summoned with %4.1f autoattacks", base_attacks_per_summon );
-    }
+    sim -> print_debug( "Dire Beast summoned with {:4.1f} autoattacks", base_attacks_per_summon );
 
     beast -> summon( summon_duration );
-  }
-
-  bool ready() override
-  {
-    return p() -> talents.dire_beast -> ok() && base_t::ready();
   }
 };
 
@@ -3803,47 +3801,6 @@ struct kill_command_t: public hunter_spell_t
       return hunter_spell_t::ready();
 
     return false;
-  }
-};
-
-// Dire Frenzy ==============================================================
-
-struct dire_frenzy_t: public dire_spell_t<hunter_ranged_attack_t>
-{
-  dire_frenzy_t( hunter_t* p, const std::string& options_str ):
-    base_t( "dire_frenzy", p, p -> specs.dire_frenzy )
-  {
-    parse_options( options_str );
-  }
-
-  bool init_finished() override
-  {
-    for ( auto pet : p() -> pet_list )
-      add_pet_stats( pet, { "dire_frenzy", "stomp" } );
-
-    return base_t::init_finished();
-  }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    if ( auto pet = p() -> active.pet )
-    {
-      if ( p() -> talents.stomp -> ok() )
-        pet -> active.stomp -> execute();
-
-      // Execute number of attacks listed in spell data
-      for ( int i = 0; i < data().effectN( 2 ).base_value(); i++ )
-        pet -> active.dire_frenzy -> schedule_execute();
-
-      pet -> buffs.dire_frenzy -> trigger();
-    }
-  }
-
-  bool ready() override
-  {
-    return ! p() -> talents.dire_beast -> ok() && base_t::ready();
   }
 };
 
@@ -4430,7 +4387,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "counter_shot"          ) return new           counter_shot_t( this, options_str );
   if ( name == "dire_beast"            ) return new             dire_beast_t( this, options_str );
-  if ( name == "dire_frenzy"           ) return new            dire_frenzy_t( this, options_str );
+  if ( name == "barbed_shot"           ) return new            barbed_shot_t( this, options_str );
   if ( name == "dragonsfire_grenade"   ) return new    dragonsfire_grenade_t( this, options_str );
   if ( name == "explosive_shot"        ) return new         explosive_shot_t( this, options_str );
   if ( name == "explosive_trap"        ) return new         explosive_trap_t( this, options_str );
@@ -4611,7 +4568,7 @@ void hunter_t::init_spells()
   specs.kill_command         = find_specialization_spell( "Kill Command" );
   specs.trueshot             = find_specialization_spell( "Trueshot" );
   specs.survivalist          = find_specialization_spell( "Survivalist" );
-  specs.dire_frenzy          = find_specialization_spell( "Dire Frenzy" );
+  specs.barbed_shot          = find_specialization_spell( "Barbed Shot" );
   specs.wild_call            = find_specialization_spell( "Wild Call" );
   specs.aspect_of_the_wild   = find_specialization_spell( "Aspect of the Wild" );
   specs.flanking_strike      = find_specialization_spell( "Flanking Strike" );
@@ -4680,15 +4637,15 @@ void hunter_t::create_buffs()
       -> set_activated( true )
       -> set_default_value( specs.bestial_wrath -> effectN( 1 ).percent() );
 
-  const spell_data_t* dire_spell = find_spell( talents.dire_beast -> ok() ? 120694 : 246152 );
-  for ( size_t i = 0; i < buffs.dire_regen.size(); i++ )
+  const spell_data_t* dire_frenzy = find_spell( 246152 );
+  for ( size_t i = 0; i < buffs.dire_frenzy.size(); i++ )
   {
-    buffs.dire_regen[ i ] =
-      make_buff( this, util::tokenize_fn( dire_spell -> name_cstr() ) + "_" + util::to_string( i + 1 ), dire_spell )
-        -> set_default_value( dire_spell -> effectN( 1 ).resource( RESOURCE_FOCUS ) +
+    buffs.dire_frenzy[ i ] =
+      make_buff( this, util::tokenize_fn( dire_frenzy -> name_cstr() ) + "_" + util::to_string( i + 1 ), dire_frenzy )
+        -> set_default_value( dire_frenzy -> effectN( 1 ).resource( RESOURCE_FOCUS ) +
                               talents.dire_stable -> effectN( 1 ).base_value() )
         -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-                          resource_gain( RESOURCE_FOCUS, b -> default_value, gains.dire_regen );
+                          resource_gain( RESOURCE_FOCUS, b -> default_value, gains.dire_frenzy );
                         } );
   }
 
@@ -4843,7 +4800,7 @@ void hunter_t::init_gains()
   player_t::init_gains();
 
   gains.steady_focus         = get_gain( "steady_focus" );
-  gains.dire_regen           = get_gain( talents.dire_beast -> ok() ? "dire_beast" : "dire_frenzy" );
+  gains.dire_frenzy          = get_gain( "dire_frenzy" );
   gains.aspect_of_the_wild   = get_gain( "aspect_of_the_wild" );
   gains.spitting_cobra       = get_gain( "spitting_cobra" );
   gains.nesingwarys_trapping_treads = get_gain( "nesingwarys_trapping_treads" );
@@ -5052,10 +5009,8 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Bestial Wrath", "if=!buff.bestial_wrath.up" );
   default_list -> add_action( this, "Aspect of the Wild", "if=(equipped.call_of_the_wild&equipped.convergence_of_fates&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12",
                                     "With both AotW cdr sources and OwtP, use it on cd. Otherwise pair it with Bestial Wrath." );
-  default_list -> add_action( this, "Cobra Shot", "if=set_bonus.tier20_2pc&spell_targets.multishot=1&!equipped.qapla_eredun_war_order&(buff.bestial_wrath.up&buff.bestial_wrath.remains<gcd.max*2)&(!talent.dire_frenzy.enabled|pet.cat.buff.dire_frenzy.remains>gcd.max*1.2)",
-                                    "Without legendary boots, take advantage of the t20 2pc bonus by casting Cobra Shot over DB in the last couple seconds of BW." );
   default_list -> add_talent( this, "Dire Beast", "if=cooldown.bestial_wrath.remains>2&((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=1)|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1)" );
-  default_list -> add_action( this, "Dire Frenzy", "if=pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2|(talent.one_with_the_pack.enabled&(cooldown.bestial_wrath.remains>3&charges_fractional>1.2))|full_recharge_time<gcd.max|target.time_to_die<9" );
+  default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.dire_frenzy.remains<=gcd.max*1.2|(talent.one_with_the_pack.enabled&(cooldown.bestial_wrath.remains>3&charges_fractional>1.2))|full_recharge_time<gcd.max|target.time_to_die<9" );
   default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets>4&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)" );
   default_list -> add_action( this, "Kill Command" );
