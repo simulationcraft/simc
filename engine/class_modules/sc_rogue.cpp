@@ -409,6 +409,8 @@ struct rogue_t : public player_t
   struct talents_t
   {
     // Shared
+    const spell_data_t* weaponmaster;
+
     const spell_data_t* nightstalker;
     const spell_data_t* subterfuge;
 
@@ -438,7 +440,6 @@ struct rogue_t : public player_t
 
     // Outlaw
     const spell_data_t* ghostly_strike;
-    const spell_data_t* swordmaster;
     const spell_data_t* quick_draw;
 
     const spell_data_t* hit_and_run;
@@ -453,7 +454,6 @@ struct rogue_t : public player_t
     const spell_data_t* killing_spree;
 
     // Subtlety
-    const spell_data_t* weaponmaster;
     const spell_data_t* find_weakness;
     const spell_data_t* gloomblade;
 
@@ -3758,7 +3758,7 @@ struct sinister_strike_t : public rogue_attack_t
   double sinister_strike_proc_chance() const
   {
     double opportunity_proc_chance = data().effectN( 3 ).percent();
-    opportunity_proc_chance += p() -> talent.swordmaster -> effectN( 1 ).percent();
+    opportunity_proc_chance += p() -> talent.weaponmaster -> effectN( 1 ).percent();
     opportunity_proc_chance += p() -> buffs.jolly_roger -> stack_value();
     return opportunity_proc_chance;
   }
@@ -6815,6 +6815,8 @@ void rogue_t::init_spells()
 
   // Talents
   // Shared
+  talent.weaponmaster       = find_talent_spell( "Weaponmaster" ); // Note: this will return a different spell depending on the spec.
+
   talent.nightstalker       = find_talent_spell( "Nightstalker" );
   talent.subterfuge         = find_talent_spell( "Subterfuge" );
 
@@ -6843,7 +6845,6 @@ void rogue_t::init_spells()
   talent.crimson_tempest    = find_talent_spell( "Crimson Tempest" );
 
   // Outlaw
-  talent.swordmaster        = find_talent_spell( "Swordmaster" );
   talent.quick_draw         = find_talent_spell( "Quick Draw" );
   talent.ghostly_strike     = find_talent_spell( "Ghostly Strike" );
 
@@ -6859,7 +6860,6 @@ void rogue_t::init_spells()
   talent.killing_spree      = find_talent_spell( "Killing Spree" );
 
   // Subtlety
-  talent.weaponmaster       = find_talent_spell( "Weaponmaster" );
   talent.find_weakness      = find_talent_spell( "Find Weakness" );
   talent.gloomblade         = find_talent_spell( "Gloomblade" );
 
