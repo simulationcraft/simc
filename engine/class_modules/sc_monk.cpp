@@ -131,7 +131,6 @@ namespace monk_util
                              double ap )
   {
     player_t* player = action -> player;
-    sim_t* sim = player -> sim;
 
     double mhdps = 0;
     double ohdps = 0; 

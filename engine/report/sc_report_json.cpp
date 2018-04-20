@@ -397,7 +397,7 @@ void to_json( JsonOutput root,
     {
       auto cooldowns = json[ "cooldowns" ];
       cooldowns.make_array();
-      range::for_each( entry.cooldown_list, [ &cooldowns, &sim ]( const std::pair< cooldown_t*, std::vector<double> > data ) {
+      range::for_each( entry.cooldown_list, [ &cooldowns ]( const std::pair< cooldown_t*, std::vector<double> > data ) {
         auto entry = cooldowns.add();
 
         entry[ "name" ] = data.first -> name();
@@ -410,13 +410,13 @@ void to_json( JsonOutput root,
     {
       auto targets = json[ "targets" ];
       targets.make_array();
-      range::for_each( entry.target_list, [ json, &targets, &sim ]
+      range::for_each( entry.target_list, [ &targets ]
           ( const std::pair< player_t*, std::vector< std::pair< buff_t*, std::vector<double> > > > target_data ) {
         auto target_entry = targets.add();
         target_entry[ "name" ] = target_data.first -> name();
         auto debuffs = target_entry[ "debuffs" ];
         debuffs.make_array();
-        range::for_each( target_data.second, [ &debuffs, &sim ]( const std::pair< buff_t*, std::vector<double> > data ) {
+        range::for_each( target_data.second, [ &debuffs ]( const std::pair< buff_t*, std::vector<double> > data ) {
           auto entry = debuffs.add();
           entry[ "name" ] = data.first -> name();
           entry[ "stack" ] = data.second[ 0 ];

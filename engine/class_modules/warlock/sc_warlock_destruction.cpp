@@ -492,13 +492,17 @@ namespace warlock {
       double backdraft_cast_time;
       double refund;
       duplicate_chaos_bolt_t* duplicate;
-      internal_combustion_t* internal_combustion;
       double duplicate_chance;
       flames_of_argus_t* flames_of_argus;
+      internal_combustion_t* internal_combustion;
 
       chaos_bolt_t(warlock_t* p, const std::string& options_str) :
         warlock_spell_t(p, "Chaos Bolt"),
-        refund(0), duplicate(nullptr), duplicate_chance(0), flames_of_argus(nullptr), internal_combustion(new internal_combustion_t(p))
+        refund(0),
+        duplicate(nullptr),
+        duplicate_chance(0),
+        flames_of_argus(nullptr),
+        internal_combustion(new internal_combustion_t(p))
       {
         parse_options(options_str);
         can_havoc = true;
