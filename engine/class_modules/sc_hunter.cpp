@@ -447,7 +447,6 @@ public:
   void      init_rng() override;
   void      init_scaling() override;
   void      init_action_list() override;
-  void      arise() override;
   void      reset() override;
   void      combat_begin() override;
 
@@ -458,7 +457,6 @@ public:
   double    composite_melee_haste() const override;
   double    composite_spell_haste() const override;
   double    composite_player_critical_damage_multiplier( const action_state_t* ) const override;
-  double    composite_rating_multiplier( rating_e rating ) const override;
   double    composite_player_multiplier( school_e school ) const override;
   double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double    composite_player_pet_damage_multiplier( const action_state_t* ) const override;
@@ -5262,22 +5260,6 @@ void hunter_t::combat_begin()
     }
   }
   player_t::combat_begin();
-}
-
-// hunter_t::arise ==========================================================
-
-void hunter_t::arise()
-{
-  player_t::arise();
-}
-
-// hunter_t::composite_rating_multiplier =====================================
-
-double hunter_t::composite_rating_multiplier( rating_e rating ) const
-{
-  double m = player_t::composite_rating_multiplier( rating );
-
-  return m;
 }
 
 // hunter_t::regen ===========================================================
