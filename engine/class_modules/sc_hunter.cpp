@@ -82,7 +82,8 @@ void parse_affecting_aura( action_t *const action, const spell_data_t *const spe
 // Hunter
 // ==========================================================================
 
-constexpr unsigned DIRE_BEASTS_MAX = 10;
+// somewhat arbitrary number of the maximum count of dire frenzy buffs possible simultaneously
+constexpr unsigned DIRE_FRENZY_BUFFS_MAX = 10;
 
 struct hunter_t;
 
@@ -131,7 +132,7 @@ public:
 
   struct pets_t
   {
-    std::array<pets::dire_critter_t*, DIRE_BEASTS_MAX>  dire_beasts;
+    pets::dire_critter_t* dire_beast;
     pet_t* spitting_cobra;
     std::array<pet_t*, 2> dark_minions;
   } pets;
@@ -172,7 +173,7 @@ public:
     buff_t* bestial_wrath;
     buff_t* bombardment;
     buff_t* careful_aim;
-    std::array<buff_t*, DIRE_BEASTS_MAX> dire_frenzy;
+    std::array<buff_t*, DIRE_FRENZY_BUFFS_MAX> dire_frenzy;
     buff_t* thrill_of_the_hunt;
     buff_t* steady_focus;
     buff_t* pre_steady_focus;
@@ -3666,7 +3667,7 @@ struct dire_beast_t: public hunter_spell_t
 
   bool init_finished() override
   {
-    add_pet_stats( p() -> pets.dire_beasts[ 0 ], { "dire_beast_melee", "stomp" } );
+    add_pet_stats( p() -> pets.dire_beast, { "dire_beast_melee", "stomp" } );
 
     return hunter_spell_t::init_finished();
   }
@@ -3674,13 +3675,6 @@ struct dire_beast_t: public hunter_spell_t
   void execute() override
   {
     hunter_spell_t::execute();
-
-    auto it = range::find_if(p() -> pets.dire_beasts, [](pets::dire_critter_t* p) { return p->is_sleeping(); });
-    if ( it == p() -> pets.dire_beasts.end() )
-    {
-      std::runtime_error(fmt::format("{} could not find any sleeping dire beast.", p()->name()));
-    }
-    auto beast = *it;
 
     // Dire beast gets a chance for an extra attack based on haste
     // rather than discrete plateaus.  At integer numbers of attacks,
@@ -3691,6 +3685,7 @@ struct dire_beast_t: public hunter_spell_t
     // isn't important and combat log testing shows some variation in
     // attack speeds.  This is not quite perfect but more accurate
     // than plateaus.
+    auto beast = p() -> pets.dire_beast;
     const timespan_t base_duration = data().duration();
     const timespan_t swing_time = beast -> main_hand_weapon.swing_time * beast -> composite_melee_speed();
     double partial_attacks_per_summon = base_duration / swing_time;
@@ -3731,16 +3726,11 @@ struct bestial_wrath_t: public hunter_spell_t
       // 2017-02-06 hotfix: "With the Dire Frenzy talent, the Eagletalon Battlegear Beast Mastery 2-piece bonus should now grant your pet 10% increased damage for 15 seconds."
       if ( p() -> talents.dire_beast -> ok() )
       {
-        for ( auto dire_beast : p() -> pets.dire_beasts )
-        {
-          if ( ! dire_beast -> is_sleeping() )
-            dire_beast -> buffs.bestial_wrath -> trigger();
-        }
+        if ( ! p() -> pets.dire_beast -> is_sleeping() )
+          p() -> pets.dire_beast -> buffs.bestial_wrath -> trigger();
       }
-      else
-      {
-        p() -> active.pet -> buffs.tier19_2pc_bm -> trigger();
-      }
+
+      p() -> active.pet -> buffs.tier19_2pc_bm -> trigger();
     }
 
     hunter_spell_t::execute();
@@ -4448,12 +4438,7 @@ void hunter_t::create_pets()
   create_pet( summon_pet_str, summon_pet_str );
 
   if ( talents.dire_beast -> ok() )
-  {
-    for ( auto& dire_beast : pets.dire_beasts )
-    {
-      dire_beast = new pets::dire_critter_t( this  );
-    }
-  }
+    pets.dire_beast = new pets::dire_critter_t( this  );
 
   if ( talents.black_arrow -> ok() )
   {
