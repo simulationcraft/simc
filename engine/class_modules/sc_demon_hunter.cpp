@@ -2996,7 +2996,9 @@ struct demons_bite_t : public demon_hunter_attack_t
   demons_bite_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "demons_bite", p, p -> find_class_spell( "Demon's Bite" ), options_str )
   {
-    energize_die_sides = data().effectN(3).die_sides();
+    // TODO: Die sides (old style randomization) is now gone, replaced by base value + "delta"
+    // coefficient
+    //energize_die_sides = data().effectN(3).die_sides();
 
     if ( p->talent.insatiable_hunger->ok() )
     {
@@ -3039,7 +3041,9 @@ struct demon_blades_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( "demon_blades", p, p -> find_spell( 203796 ) )
   {
     background = true;
-    energize_die_sides = data().effectN(3).die_sides();
+    // TODO: Die sides (old style randomization) is now gone, replaced by base value + "delta"
+    // coefficient
+    //energize_die_sides = data().effectN(3).die_sides();
   }
 
   void impact( action_state_t* s ) override

@@ -2679,23 +2679,23 @@ class SpellDataGenerator(DataGenerator):
             #hotfix_data += hfd
 
             # 19, 20, 21, 22, 23
-            fields += effect.field('trigger_spell', 'dmg_multiplier', 'points_per_combo_points', 'real_ppl', 'die_sides')
+            fields += effect.field('trigger_spell', 'dmg_multiplier', 'points_per_combo_points', 'real_ppl')
             f, hfd = effect.get_hotfix_info(('trigger_spell', 18), ('dmg_multiplier', 19),
-                ('points_per_combo_points', 20), ('real_ppl', 21), ('die_sides', 22))
+                ('points_per_combo_points', 20), ('real_ppl', 21))
             hotfix_flags |= f
             hotfix_data += hfd
 
             # 24
             mechanic = self._spellmechanic_db[effect.id_mechanic]
             fields += mechanic.field('mechanic')
-            f, hfd = mechanic.get_hotfix_info(('mechanic', 23))
+            f, hfd = mechanic.get_hotfix_info(('mechanic', 22))
             hotfix_flags |= f
             hotfix_data += hfd
 
             # 25, 26, 27, 28
             fields += effect.field('chain_target', 'implicit_target_1', 'implicit_target_2', 'val_mul')
-            f, hfd = effect.get_hotfix_info(('chain_target', 24), ('implicit_target_1', 25),
-                ('implicit_target_2', 26), ('val_mul', 27))
+            f, hfd = effect.get_hotfix_info(('chain_target', 23), ('implicit_target_1', 24),
+                ('implicit_target_2', 25), ('val_mul', 26))
             hotfix_flags |= f
             hotfix_data += hfd
 

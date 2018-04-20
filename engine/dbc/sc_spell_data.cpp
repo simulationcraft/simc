@@ -60,7 +60,6 @@ const sdata_field_t _effect_data_fields[] =
   { SD_TYPE_DOUBLE,   "m_chain",        O_SED( _m_chain )         },
   { SD_TYPE_DOUBLE,   "p_combo_points", O_SED( _pp_combo_points ) },
   { SD_TYPE_DOUBLE,   "p_level",        O_SED( _real_ppl )        },
-  { SD_TYPE_INT,      "damage_range",   O_SED( _die_sides )       },
   { SD_TYPE_UNSIGNED, "mechanic",       O_SED( _mechanic )        },
   { SD_TYPE_UNSIGNED, "chain_target",   O_SED( _chain_target )    },
   { SD_TYPE_UNSIGNED, "target_1",       O_SED( _targeting_1 )     },

@@ -5807,7 +5807,7 @@ struct capacitor_totem_pulse_t : public totem_pulse_action_t
       // This implementation assumes that every hit target counts. Ingame boss dummy testing showed that only
       // stunned targets count. TODO: check every hit target for whether it is stunned, or not.
       int cd_reduction = num_targets_hit * ( totem->o()->talent.static_charge->effectN( 1 ).base_value() );
-      cd_reduction     = -std::min( cd_reduction, totem->o()->talent.static_charge->effectN( 2 ).base_value() );
+      cd_reduction     = -std::min( cd_reduction, as<int>( totem->o()->talent.static_charge->effectN( 2 ).base_value() ) );
       totem_cooldown->adjust( timespan_t::from_seconds( cd_reduction ) );
     }
   }

@@ -1042,7 +1042,7 @@ class WDC1Parser(DBCParserBase):
         return self.key_block_offset + self.key_block_size
 
     # Parse column information (right after static header)
-    def parse_basic_column_info(self):
+    def parse_column_info(self):
         if not self.options.raw:
             formats = self.fmt.objs(self.class_name(), True)
         else:
@@ -1312,7 +1312,7 @@ class WDC1Parser(DBCParserBase):
         return self.key_block_size > 0
 
     def n_records(self):
-        return len(self.id_table)
+        return self.records > 0 and len(self.id_table) or 0
 
     def build_parser(self):
         if self.options.raw:
@@ -1321,16 +1321,6 @@ class WDC1Parser(DBCParserBase):
             self.record_parser = self.create_formatted_parser()
 
         return self.record_parser != None
-
-    def parse_header(self):
-        if not super().parse_header():
-            return False
-
-        # Basic column information is included in all files
-        if not self.parse_basic_column_info():
-            return False
-
-        return True
 
     def parse_blocks(self):
         if self.has_extended_column_info_block() and not self.parse_extended_column_info_block():
@@ -1357,6 +1347,9 @@ class WDC1Parser(DBCParserBase):
     def open(self):
         if not super().open():
             return False
+
+        if self.records == 0:
+            return True
 
         if not self.build_parser():
             return False

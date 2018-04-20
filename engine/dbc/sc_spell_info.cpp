@@ -958,11 +958,6 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << " | Points Per Level: " << e -> real_ppl();
   }
 
-  if ( e -> die_sides() != 0 )
-  {
-    s << " | Value Range: " << e -> die_sides();
-  }
-
   if ( e -> m_value() != 0 )
   {
     s << " | Value Multiplier: " << e -> m_value();
@@ -1911,11 +1906,6 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
   if ( e -> real_ppl() != 0 )
   {
     node -> add_parm( "points_per_level", e -> real_ppl() );
-  }
-
-  if ( e -> die_sides() != 0 )
-  {
-    node -> add_parm( "value_range", e -> die_sides() );
   }
 
   if ( e -> sp_coeff() != 0 )

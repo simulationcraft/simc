@@ -144,8 +144,6 @@ bool spelleffect_data_t::override_field( const std::string& field, double value 
     _pp_combo_points = value;
   else if ( util::str_compare_ci( field, "points_per_level" ) )
     _real_ppl = value;
-  else if ( util::str_compare_ci( field, "die_sides" ) )
-    _die_sides = ( int ) value;
   else if ( util::str_compare_ci( field, "radius" ) )
     _radius = value;
   else if ( util::str_compare_ci( field, "max_radius" ) )
@@ -183,8 +181,6 @@ double spelleffect_data_t::get_field( const std::string& field ) const
     return _pp_combo_points;
   else if ( util::str_compare_ci( field, "points_per_level" ) )
     return _real_ppl;
-  else if ( util::str_compare_ci( field, "die_sides" ) )
-    return static_cast<double>( _die_sides );
   else if ( util::str_compare_ci( field, "radius" ) )
     return _radius;
   else if ( util::str_compare_ci( field, "max_radius" ) )

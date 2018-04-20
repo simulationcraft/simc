@@ -218,7 +218,7 @@ class DBCRecord(RawDBCRecord):
         for field in args:
             field_idx = 0
             try:
-                if field == 'id' and self._id_block and self._id > -1:
+                if field == 'id':
                     f.append(self._id_format % self._id)
                     continue
                 elif field == 'id_parent':

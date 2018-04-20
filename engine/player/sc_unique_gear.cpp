@@ -2711,13 +2711,14 @@ struct felmouth_frenzy_driver_t : public spell_t
     }
   };
 
-  size_t bolt_min, bolt_range;
+  size_t bolt_avg, bolt_magnitude;
   player_t* p;
+  std::vector<unsigned> n_ticks;
 
   felmouth_frenzy_driver_t( const special_effect_t& effect ) :
     spell_t( "felmouth_frenzy", effect.player, effect.player -> find_spell( 188512 ) ),
-    bolt_min( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) + 1 ),
-    bolt_range( static_cast<size_t>( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).die_sides() ) ),
+    bolt_avg( effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() ),
+    bolt_magnitude( bolt_avg * effect.player -> find_spell( 188534 ) -> effectN( 1 ).trigger() -> effectN( 1 ).m_delta() / 2.0 ),
     p( effect.player )
   {
     background = true;
@@ -2737,6 +2738,14 @@ struct felmouth_frenzy_driver_t : public spell_t
     {
       tick_action = new felmouth_frenzy_damage_t( effect );
     }
+
+    double min_ticks = std::floor( bolt_avg - bolt_magnitude );
+    double max_ticks = std::ceil( bolt_avg + bolt_magnitude );
+    double tick_steps = max_ticks - min_ticks + 1;
+    for ( size_t i = 0; i < as<size_t>( tick_steps ); ++i )
+    {
+      n_ticks.push_back( min_ticks + i );
+    }
   }
 
   bool init_finished() override
@@ -2753,9 +2762,9 @@ struct felmouth_frenzy_driver_t : public spell_t
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
-    size_t n_ticks = bolt_min + static_cast<size_t>( rng().real() * bolt_range );
-    assert( n_ticks >= 4 && n_ticks <= 6 );
-    return base_tick_time * n_ticks;
+    size_t ticks = n_ticks[ rng().range( 0.0, as<double>( n_ticks.size() ) ) ];
+    assert( ticks >= 4 && ticks <= 6 );
+    return base_tick_time * ticks;
   }
 
   double composite_spell_power() const override

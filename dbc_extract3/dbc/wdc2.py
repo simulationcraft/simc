@@ -1,4 +1,4 @@
-import logging
+import logging, struct
 
 from dbc import HeaderFieldInfo
 
@@ -25,7 +25,10 @@ class WDC2Parser(WDC1Parser):
         HeaderFieldInfo('column_info_block_size', 'I' ),
         HeaderFieldInfo('sparse_block_size',      'I' ),
         HeaderFieldInfo('column_data_block_size', 'I' ),
-        HeaderFieldInfo('wdc2_unk5',              'I' ),
+        HeaderFieldInfo('extended_fields',        'I' )
+    ]
+
+    EXTENDED_FIELDS = [
         HeaderFieldInfo('wdc2_unk6',              'I' ),
         HeaderFieldInfo('wdc2_unk7',              'I' ),
         HeaderFieldInfo('offset_records',         'I' ),
@@ -44,6 +47,32 @@ class WDC2Parser(WDC1Parser):
 
         # Set heder format
         self.header_format = self.__WDC2_HEADER_FIELDS
+
+    def parse_header(self):
+        if not super().parse_header():
+            return False
+
+        if self.extended_fields == 0:
+            return True
+
+        # WDC2 has some conditional header information that depends on the "extended_fields" value
+        parser_str = '<'
+        for info in self.EXTENDED_FIELDS:
+            parser_str += info.format
+
+        parser = struct.Struct(parser_str)
+
+        data = parser.unpack_from(self.data, self.parse_offset)
+        if len(data) != len(self.EXTENDED_FIELDS):
+            logging.error('%s: Header field count mismatch', self.class_name())
+            return False
+
+        for index in range(0, len(data)):
+            setattr(self, self.EXTENDED_FIELDS[index].attr, data[index])
+
+        self.parse_offset += parser.size
+
+        return True
 
     # WDC2 string field offsets are not relative to the string block, but
     # rather relative to the position of the (data, field index) tuple of the
@@ -137,26 +166,29 @@ class WDC2Parser(WDC1Parser):
         fields.append('column_info_block_size={}'.format(self.column_info_block_size))
         fields.append('sparse_block_size={}'.format(self.sparse_block_size))
         fields.append('column_data_block_size={}'.format(self.column_data_block_size))
-        fields.append('wdc2_unk5={}'.format(self.wdc2_unk5))
-        fields.append('wdc2_unk6={}'.format(self.wdc2_unk6))
-        fields.append('wdc2_unk7={}'.format(self.wdc2_unk7))
-        fields.append('offset_records={}'.format(self.offset_records))
-        fields.append('total_records={}'.format(self.total_records))
-        fields.append('unk_string_block_size={}'.format(self.unk_string_block_size))
-        fields.append('clone_block_size={}'.format(self.clone_block_size))
-        fields.append('ofs_offset_map={}'.format(self.offset_map_offset))
-        fields.append('id_block_size={}'.format(self.id_block_size))
-        fields.append('key_block_size={}'.format(self.key_block_size))
+        fields.append('extended_fields={}'.format(self.extended_fields))
 
-        if self.column_info_block_size > 0: fields.append('ofs_column_info_block={}'.format(self.column_info_block_offset))
-        if not self.has_offset_map():       fields.append('ofs_data={}'.format(self.data_offset))
-        # Offsets to blocks
-        if self.string_block_size > 0:      fields.append('ofs_string_block={}'.format(self.string_block_offset))
-        if self.has_id_block():             fields.append('ofs_id_block={}'.format(self.id_block_offset))
-        if self.clone_block_size > 0:       fields.append('ofs_clone_block={}'.format(self.clone_block_offset))
-        if self.column_data_block_size > 0: fields.append('ofs_column_data_block={}'.format(self.column_data_block_offset))
-        if self.sparse_block_size > 0:      fields.append('ofs_sparse_block={}'.format(self.sparse_block_offset))
-        if self.has_key_block():            fields.append('ofs_key_block={}'.format(self.key_block_offset))
+        if self.extended_fields:
+            fields.append('wdc2_unk6={}'.format(self.wdc2_unk6))
+            fields.append('wdc2_unk7={}'.format(self.wdc2_unk7))
+            fields.append('offset_records={}'.format(self.offset_records))
+            fields.append('total_records={}'.format(self.total_records))
+            fields.append('unk_string_block_size={}'.format(self.unk_string_block_size))
+            fields.append('clone_block_size={}'.format(self.clone_block_size))
+            fields.append('ofs_offset_map={}'.format(self.offset_map_offset))
+            fields.append('id_block_size={}'.format(self.id_block_size))
+            fields.append('key_block_size={}'.format(self.key_block_size))
+
+        if self.records != 0:
+            if self.column_info_block_size > 0: fields.append('ofs_column_info_block={}'.format(self.column_info_block_offset))
+            if not self.has_offset_map():       fields.append('ofs_data={}'.format(self.data_offset))
+            # Offsets to blocks
+            if self.string_block_size > 0:      fields.append('ofs_string_block={}'.format(self.string_block_offset))
+            if self.has_id_block():             fields.append('ofs_id_block={}'.format(self.id_block_offset))
+            if self.clone_block_size > 0:       fields.append('ofs_clone_block={}'.format(self.clone_block_offset))
+            if self.column_data_block_size > 0: fields.append('ofs_column_data_block={}'.format(self.column_data_block_offset))
+            if self.sparse_block_size > 0:      fields.append('ofs_sparse_block={}'.format(self.sparse_block_offset))
+            if self.has_key_block():            fields.append('ofs_key_block={}'.format(self.key_block_offset))
 
         return fields
 

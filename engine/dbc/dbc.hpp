@@ -611,7 +611,7 @@ public:
   double           _radius;          // 13 Minimum spell radius
   double           _radius_max;      // 14 Maximum spell radius
   //
-  int              _base_value;      // 15 Effect value
+  double           _base_value;      // 15 Effect value
   int              _misc_value;      // 16 Effect miscellaneous value
   int              _misc_value_2;    // 17 Effect miscellaneous value 2
   unsigned         _class_flags[NUM_CLASS_FAMILY_FLAGS]; // 18 Class family flags
@@ -619,12 +619,11 @@ public:
   double           _m_chain;         // 20 Effect chain multiplier
   double           _pp_combo_points; // 21 Effect points per combo points
   double           _real_ppl;        // 22 Effect real points per level
-  int              _die_sides;       // 23 Effect damage range
-  unsigned         _mechanic;        // 24 Effect Mechanic
-  int              _chain_target;    // 25 Number of targets (for chained spells)
-  unsigned         _targeting_1;     // 26 Targeting related field 1
-  unsigned         _targeting_2;     // 27 Targeting related field 2
-  double           _m_value;         // 28 Misc multiplier used for some spells(?)
+  unsigned         _mechanic;        // 23 Effect Mechanic
+  int              _chain_target;    // 24 Number of targets (for chained spells)
+  unsigned         _targeting_1;     // 25 Targeting related field 1
+  unsigned         _targeting_2;     // 26 Targeting related field 2
+  double           _m_value;         // 27 Misc multiplier used for some spells(?)
 
   // Pointers for runtime linking
   spell_data_t* _spell;
@@ -658,7 +657,7 @@ public:
   unsigned raw_subtype() const
   { return _subtype; }
 
-  int base_value() const
+  double base_value() const
   { return _base_value; }
 
   double percent() const
@@ -735,9 +734,6 @@ public:
 
   double real_ppl() const
   { return _real_ppl; }
-
-  int die_sides() const
-  { return _die_sides; }
 
   // TODO: Enumize
   unsigned mechanic() const

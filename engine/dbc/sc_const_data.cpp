@@ -1686,8 +1686,6 @@ double spelleffect_data_t::scaled_delta( double budget ) const
 {
   if ( _m_delta != 0 && budget > 0 )
     return _m_avg * _m_delta * budget;
-  else if ( _m_avg == 0.0 && _m_delta == 0.0 && _die_sides != 0 )
-    return _die_sides;
   else
     return 0;
 }
@@ -1740,12 +1738,7 @@ double spelleffect_data_t::scaled_min( double avg, double delta ) const
     result = avg - ( delta / 2 );
   else
   {
-    if ( _die_sides == 0 )
-      result = avg;
-    else if ( _die_sides == 1 )
-      result =  avg + _die_sides;
-    else
-      result = avg + ( _die_sides > 1  ? 1 : _die_sides );
+    result = avg;
   }
 
   switch ( _type )
@@ -1768,12 +1761,7 @@ double spelleffect_data_t::scaled_max( double avg, double delta ) const
     result = avg + ( delta / 2 );
   else
   {
-    if ( _die_sides == 0 )
-      result = avg;
-    else if ( _die_sides == 1 )
-      result = avg + _die_sides;
-    else
-      result = avg + ( _die_sides > 1  ? _die_sides : -1 );
+    result = avg;
   }
 
   switch ( _type )
@@ -2105,8 +2093,6 @@ double dbc_t::effect_delta( const spelleffect_data_t* e, unsigned level ) const
 
     return e -> m_average() * e -> m_delta() * m_scale;
   }
-  else if ( ( e -> m_average() == 0.0 ) && ( e -> m_delta() == 0.0 ) && ( e -> die_sides() != 0 ) )
-    return e -> die_sides();
 
   return 0;
 }
@@ -2163,13 +2149,7 @@ double dbc_t::effect_min( const spelleffect_data_t* e, unsigned level ) const
   }
   else
   {
-    int die_sides = e -> die_sides();
-    if ( die_sides == 0 )
-      result = avg;
-    else if ( die_sides == 1 )
-      result =  avg + die_sides;
-    else
-      result = avg + ( die_sides > 1  ? 1 : die_sides );
+    result = avg;
 
     switch ( e -> type() )
     {
@@ -2206,13 +2186,7 @@ double dbc_t::effect_max( const spelleffect_data_t* e, unsigned level ) const
   }
   else
   {
-    int die_sides = e -> die_sides();
-    if ( die_sides == 0 )
-      result = avg;
-    else if ( die_sides == 1 )
-      result = avg + die_sides;
-    else
-      result = avg + ( die_sides > 1  ? die_sides : -1 );
+    result = avg;
 
     switch ( e -> type() )
     {

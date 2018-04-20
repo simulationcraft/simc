@@ -71,6 +71,9 @@ class DBCParserBase:
 
         return True
 
+    def parse_column_info(self):
+        return True
+
     def fields_str(self):
         return []
 
@@ -90,8 +93,14 @@ class DBCParserBase:
         if not self.parse_header():
             return False
 
+        if self.records == 0:
+            return True
+
         if not self.is_magic():
             logging.error('%s: Invalid data file format %s', self.class_name(), self.magic)
+            return False
+
+        if not self.parse_column_info():
             return False
 
         # Compute offsets to various blocks and such, warn if all data is not consumed
