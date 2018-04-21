@@ -466,7 +466,6 @@ public:
     const spell_data_t* primal_elementalist;
     const spell_data_t* master_of_the_elements;
 
-    const spell_data_t* elemental_attunement;
     const spell_data_t* stormkeeper;
 
     // Enhancement
@@ -3953,9 +3952,6 @@ struct fire_elemental_t : public shaman_spell_t
       base_spell( player->find_spell( 188592 ) )
   {
     harmful = may_crit = false;
-
-    if ( p()->talent.elemental_attunement->ok() )
-      cooldown->duration += p()->talent.elemental_attunement->effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -3995,9 +3991,6 @@ struct storm_elemental_t : public shaman_spell_t
       summon_spell( player->find_spell( 157299 ) )
   {
     harmful = may_crit = false;
-
-    if ( p()->talent.elemental_attunement->ok() )
-      cooldown->duration += p()->talent.elemental_attunement->effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -6396,7 +6389,6 @@ void shaman_t::init_spells()
   talent.primal_elementalist    = find_talent_spell( "Primal Elementalist" );
   talent.master_of_the_elements = find_talent_spell( "Master of the Elements" );
 
-  talent.elemental_attunement = find_talent_spell( "Elemental Attunement" );
   talent.stormkeeper          = find_talent_spell( "Stormkeeper" );
 
   // Enhancement
