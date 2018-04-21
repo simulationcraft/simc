@@ -974,7 +974,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   // Elemental
   dot.flame_shock         = target->get_dot( "flame_shock", p );
   debuff.exposed_elements = buff_creator_t( *this, "exposed_elements", p->talent.exposed_elements )
-                                .cd( timespan_t::zero() );  // Handled by the action
+                                .default_value( p->find_spell( 269808 )->effectN( 1 ).base_value() )
+                                .duration( p->find_spell( 269808 )->duration() );
 
   // Enhancement
   debuff.earthen_spike = buff_creator_t( *this, "earthen_spike", p->talent.earthen_spike )
@@ -4610,7 +4611,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( player->talent.exposed_elements->ok() && td( target )->debuff.exposed_elements->up() )
     {
-      m_exposed_elements = player->talent.exposed_elements->effectN( 1 ).percent();
+      m_exposed_elements = player->find_spell( 269808 )->effectN( 1 ).percent();
     }
 
     if ( player->talent.overcharge->ok() )
