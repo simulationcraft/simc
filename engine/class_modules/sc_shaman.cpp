@@ -311,6 +311,7 @@ public:
     buff_t* icefury;
     buff_t* liquid_magma;
     buff_t* master_of_the_elements;
+    buff_t* unlimited_power;
     buff_t* stormkeeper;
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
@@ -470,6 +471,7 @@ public:
     const spell_data_t* primal_elementalist;
     const spell_data_t* icefury;
 
+    const spell_data_t* unlimited_power;
     const spell_data_t* stormkeeper;
 
     // Enhancement
@@ -3154,6 +3156,16 @@ struct elemental_overload_spell_t : public shaman_spell_t
 
     base_multiplier *= p->mastery.elemental_overload->effectN( 2 ).percent();
   }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    if ( p()->talent.unlimited_power->ok() )
+    {
+      p()->buff.unlimited_power->trigger();
+    }
+  }
 };
 
 // shaman_heal_t::impact ====================================================
@@ -4625,21 +4637,14 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
 struct lightning_bolt_t : public shaman_spell_t
 {
   double m_overcharge;
-  double m_exposed_elements;
 
   lightning_bolt_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "lightning_bolt", player, player->find_specialization_spell( "Lightning Bolt" ), options_str ),
-      m_overcharge( 0 ),
-      m_exposed_elements( 0 )
+      m_overcharge( 0 )
   {
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       maelstrom_gain = player->find_spell( 190493 )->effectN( 1 ).resource( RESOURCE_MAELSTROM );
-    }
-
-    if ( player->talent.exposed_elements->ok() && td( target )->debuff.exposed_elements->up() )
-    {
-      m_exposed_elements = player->find_spell( 269808 )->effectN( 1 ).percent();
     }
 
     if ( player->talent.overcharge->ok() )
@@ -4689,9 +4694,19 @@ struct lightning_bolt_t : public shaman_spell_t
     return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    auto m = shaman_spell_t::composite_target_multiplier( target );
+    if ( td( target )->debuff.exposed_elements->up() )
+    {
+      m *= 1.0 + td( target )->debuff.exposed_elements->default_value / 100.0;
+    }
+    return m;
+  }
+
   double spell_direct_power_coefficient( const action_state_t* /* state */ ) const override
   {
-    return spell_power_mod.direct * ( 1.0 + m_exposed_elements ) * ( 1.0 + m_overcharge * cost() );
+    return spell_power_mod.direct * ( 1.0 + m_overcharge * cost() );
   }
 
   timespan_t execute_time() const override
@@ -4767,8 +4782,7 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
     // Trigger buff before executing the spell, because apparently the buffs affect the cast result
     // itself.
     trigger_elemental_blast_proc( p() );
-
-    shaman_spell_t::execute();
+    elemental_overload_spell_t::execute();
   }
 };
 
@@ -6447,7 +6461,8 @@ void shaman_t::init_spells()
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
   talent.icefury             = find_talent_spell( "Icefury" );
 
-  talent.stormkeeper = find_talent_spell( "Stormkeeper" );
+  talent.unlimited_power = find_talent_spell( "Unlimited Power" );
+  talent.stormkeeper     = find_talent_spell( "Stormkeeper" );
 
   // Enhancement
   talent.windsong    = find_talent_spell( "Windsong" );
@@ -7043,6 +7058,10 @@ void shaman_t::create_buffs()
                      ->set_default_value( talent.icefury->effectN( 3 ).percent() );
   buff.master_of_the_elements = make_buff( this, "master_of_the_elements", find_spell( 260734 ) )
                                     ->set_default_value( find_spell( 260734 )->effectN( 1 ).percent() );
+  buff.unlimited_power = make_buff<haste_buff_t>( this, "unlimited_power", find_spell( 272737 ) );
+  buff.unlimited_power->add_invalidate( CACHE_HASTE )
+      ->set_default_value( 1.0 / ( 1.0 + find_spell( 272737 )->effectN( 1 ).percent() ) )
+      ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
   // Tier
   buff.t21_2pc_elemental =
       make_buff( this, "earthen_strength", sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger() )
@@ -7653,6 +7672,9 @@ double shaman_t::composite_spell_haste() const
 
   if ( buff.tailwind_totem->up() )
     h *= buff.tailwind_totem->check_value();
+
+  if ( buff.unlimited_power->up() )
+    h *= buff.unlimited_power->check_value();
 
   if ( buff.sephuzs_secret->check() )
     h *= 1.0 / ( 1.0 + buff.sephuzs_secret->stack_value() );
