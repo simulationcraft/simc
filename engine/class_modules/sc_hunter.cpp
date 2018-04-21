@@ -1052,9 +1052,9 @@ public:
         -> add_invalidate( CACHE_ATTACK_HASTE );
 
     buffs.tier19_2pc_bm =
-      buff_creator_t( this, "tier19_2pc_bm", find_spell(211183) )
-        .default_value( owner -> find_spell( 211183 ) -> effectN( 2 ).percent() )
-        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      make_buff( this, "tier19_2pc_bm", find_spell(211183) )
+      ->set_default_value( owner -> find_spell( 211183 ) -> effectN( 2 ).percent() )
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void init_gains() override
@@ -4167,8 +4167,9 @@ struct hunters_mark_exists_buff_t: public buff_t
   proc_t* wasted;
 
   hunters_mark_exists_buff_t( hunter_t* p ):
-    buff_t( buff_creator_t( p, "hunters_mark_exists", p -> find_spell(185365) ).quiet( true ) )
+    buff_t( p, "hunters_mark_exists", p -> find_spell(185365) )
   {
+    set_quiet( true );
     wasted = p -> get_proc( "wasted_hunters_mark" );
   }
 
@@ -4194,16 +4195,16 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   dots()
 {
   debuffs.true_aim =
-    buff_creator_t( *this, "true_aim", p -> find_spell( 199803 ) )
-        .default_value( p -> find_spell( 199803 ) -> effectN( 1 ).percent() );
+    make_buff( *this, "true_aim", p -> find_spell( 199803 ) )
+    ->set_default_value( p -> find_spell( 199803 ) -> effectN( 1 ).percent() );
 
   debuffs.mark_of_helbrine =
-    buff_creator_t( *this, "mark_of_helbrine", p -> find_spell( 213156 ) )
-        .default_value( p -> find_spell( 213154 ) -> effectN( 1 ).percent() );
+    make_buff( *this, "mark_of_helbrine", p -> find_spell( 213156 ) )
+    ->set_default_value( p -> find_spell( 213154 ) -> effectN( 1 ).percent() );
 
   debuffs.unseen_predators_cloak =
-    buff_creator_t( *this, "unseen_predators_cloak", p -> find_spell( 248212 ) )
-      .default_value( p -> find_spell( 248212 ) -> effectN( 1 ).percent() );
+    make_buff( *this, "unseen_predators_cloak", p -> find_spell( 248212 ) )
+    ->set_default_value( p -> find_spell( 248212 ) -> effectN( 1 ).percent() );
 
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.piercing_shots = target -> get_dot( "piercing_shots", p );
@@ -4546,7 +4547,7 @@ void hunter_t::create_buffs()
   // General
 
   buffs.volley =
-    buff_creator_t( this, "volley", talents.volley );
+    make_buff( this, "volley", talents.volley );
 
   // Beast Mastery
 
@@ -4583,30 +4584,24 @@ void hunter_t::create_buffs()
 
   // Marksmanship
 
-  buffs.bombardment =
-    buff_creator_t( this, "bombardment", specs.bombardment -> effectN( 1 ).trigger() );
+  buffs.bombardment = make_buff( this, "bombardment", specs.bombardment -> effectN( 1 ).trigger() );
 
-  buffs.careful_aim
-    = buff_creator_t( this, "careful_aim", talents.careful_aim )
-        .activated( true )
-        .default_value( talents.careful_aim -> effectN( 1 ).percent() );
+  buffs.careful_aim = make_buff( this, "careful_aim", talents.careful_aim )
+        ->set_activated( true )
+        ->set_default_value( talents.careful_aim -> effectN( 1 ).percent() );
 
-  buffs.lock_and_load =
-    buff_creator_t( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
-      .max_stack( find_spell( 194594 ) -> initial_stacks() );
+  buffs.lock_and_load = make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
+    ->set_max_stack( find_spell( 194594 ) -> initial_stacks() );
 
-  buffs.pre_steady_focus =
-    buff_creator_t( this, "pre_steady_focus" )
-      .max_stack( 2 )
-      .quiet( true );
+  buffs.pre_steady_focus = make_buff( this, "pre_steady_focus" )
+    ->set_max_stack( 2 )
+    ->set_quiet( true );
 
-  buffs.steady_focus
-    = buff_creator_t( this, "steady_focus", find_spell(193534) )
-        .chance( talents.steady_focus -> ok() );
+  buffs.steady_focus = make_buff( this, "steady_focus", find_spell(193534) )
+    ->set_chance( talents.steady_focus -> ok() );
 
-  buffs.trick_shot =
-    buff_creator_t( this, "trick_shot", find_spell(227272) )
-      .default_value( find_spell( 227272 ) -> effectN( 1 ).percent() );
+  buffs.trick_shot = make_buff( this, "trick_shot", find_spell(227272) )
+    ->set_default_value( find_spell( 227272 ) -> effectN( 1 ).percent() );
 
   buffs.trueshot =
     make_buff<haste_buff_t>( this, "trueshot", specs.trueshot )
@@ -4615,88 +4610,87 @@ void hunter_t::create_buffs()
 
   // Survival
 
-  buffs.aspect_of_the_eagle =
-    buff_creator_t( this, "aspect_of_the_eagle", specs.aspect_of_the_eagle )
-      .cd( timespan_t::zero() )
-      .add_invalidate( CACHE_CRIT_CHANCE )
-      .default_value( specs.aspect_of_the_eagle -> effectN( 1 ).percent() +
+  buffs.aspect_of_the_eagle = make_buff( this, "aspect_of_the_eagle", specs.aspect_of_the_eagle )
+    ->set_cooldown( timespan_t::zero() )
+    ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_default_value( specs.aspect_of_the_eagle -> effectN( 1 ).percent() +
                       find_specialization_spell( 231555 ) -> effectN( 1 ).percent() +
                       find_specialization_spell( 237327 ) -> effectN( 1 ).percent() );
 
   buffs.moknathal_tactics =
-    buff_creator_t( this, "moknathal_tactics", talents.way_of_the_moknathal -> effectN( 1 ).trigger() )
-      .default_value( find_spell( 201081 ) -> effectN( 1 ).percent() )
-      .max_stack( find_spell( 201081 ) -> max_stacks() );
+    make_buff( this, "moknathal_tactics", talents.way_of_the_moknathal -> effectN( 1 ).trigger() )
+    ->set_default_value( find_spell( 201081 ) -> effectN( 1 ).percent() )
+    ->set_max_stack( find_spell( 201081 ) -> max_stacks() );
 
   buffs.mongoose_fury =
-    buff_creator_t( this, "mongoose_fury", find_spell( 190931 ) )
-      .default_value( find_spell( 190931 ) -> effectN( 1 ).percent() )
-      .refresh_behavior( buff_refresh_behavior::DISABLED )
-      .max_stack( find_spell( 190931 ) -> max_stacks() );
+    make_buff( this, "mongoose_fury", find_spell( 190931 ) )
+    ->set_default_value( find_spell( 190931 ) -> effectN( 1 ).percent() )
+    ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+    ->set_max_stack( find_spell( 190931 ) -> max_stacks() );
 
   buffs.sentinels_sight =
-    buff_creator_t( this, "sentinels_sight", find_spell( 208913 ) )
-      .default_value( find_spell( 208913 ) -> effectN( 1 ).percent() )
-      .max_stack( find_spell( 208913 ) -> max_stacks() );
+    make_buff( this, "sentinels_sight", find_spell( 208913 ) )
+    ->set_default_value( find_spell( 208913 ) -> effectN( 1 ).percent() )
+    ->set_max_stack( find_spell( 208913 ) -> max_stacks() );
 
   buffs.spitting_cobra =
-    buff_creator_t( this, "spitting_cobra", talents.spitting_cobra )
-      .default_value( find_spell( 194407 ) -> effectN( 2 ).resource( RESOURCE_FOCUS ) )
-      .tick_callback( [ this ]( buff_t *buff, int, const timespan_t& ){
+    make_buff( this, "spitting_cobra", talents.spitting_cobra )
+    ->set_default_value( find_spell( 194407 ) -> effectN( 2 ).resource( RESOURCE_FOCUS ) )
+    ->set_tick_callback( [ this ]( buff_t *buff, int, const timespan_t& ){
                         resource_gain( RESOURCE_FOCUS, buff -> default_value, gains.spitting_cobra );
                       } );
 
   buffs.t19_4p_mongoose_power =
-    buff_creator_t( this, "mongoose_power", find_spell( 211362 ) )
-      .default_value( find_spell( 211362 ) -> effectN( 1 ).percent() )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    make_buff( this, "mongoose_power", find_spell( 211362 ) )
+    ->set_default_value( find_spell( 211362 ) -> effectN( 1 ).percent() )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.butchers_bone_apron =
-    buff_creator_t( this, "butchers_bone_apron", find_spell( 236446 ) )
-      .default_value( find_spell( 236446 ) -> effectN( 1 ).percent() );
+    make_buff( this, "butchers_bone_apron", find_spell( 236446 ) )
+    ->set_default_value( find_spell( 236446 ) -> effectN( 1 ).percent() );
 
   buffs.gyroscopic_stabilization =
-    buff_creator_t( this, "gyroscopic_stabilization", find_spell( 235712 ) )
-      .default_value( find_spell( 235712 ) -> effectN( 2 ).percent() );
+    make_buff( this, "gyroscopic_stabilization", find_spell( 235712 ) )
+    ->set_default_value( find_spell( 235712 ) -> effectN( 2 ).percent() );
 
   buffs.the_mantle_of_command =
-    buff_creator_t( this, "the_mantle_of_command", find_spell( 247993 ) )
-      .default_value( find_spell( 247993 ) -> effectN( 1 ).percent() );
+    make_buff( this, "the_mantle_of_command", find_spell( 247993 ) )
+    ->set_default_value( find_spell( 247993 ) -> effectN( 1 ).percent() );
 
   buffs.celerity_of_the_windrunners =
     make_buff<haste_buff_t>( this, "celerity_of_the_windrunners", find_spell( 248088 ) )
       -> set_default_value( find_spell( 248088 ) -> effectN( 1 ).percent() );
 
   buffs.parsels_tongue =
-    buff_creator_t( this, "parsels_tongue", find_spell( 248085 ) )
-      .default_value( find_spell( 248085 ) -> effectN( 1 ).percent() )
-      .max_stack( find_spell( 248085 ) -> max_stacks() )
-      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    make_buff( this, "parsels_tongue", find_spell( 248085 ) )
+    ->set_default_value( find_spell( 248085 ) -> effectN( 1 ).percent() )
+    ->set_max_stack( find_spell( 248085 ) -> max_stacks() )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.t20_4p_precision =
-    buff_creator_t( this, "t20_4p_precision", find_spell( 246153 ) )
-      .default_value( find_spell( 246153 ) -> effectN( 2 ).percent() );
+    make_buff( this, "t20_4p_precision", find_spell( 246153 ) )
+    ->set_default_value( find_spell( 246153 ) -> effectN( 2 ).percent() );
 
   buffs.pre_t20_2p_critical_aimed_damage =
-    buff_creator_t( this, "pre_t20_2p_critical_aimed_damage" )
-      .max_stack( 2 )
-      .quiet( true );
+    make_buff( this, "pre_t20_2p_critical_aimed_damage" )
+    ->set_max_stack( 2 )
+    ->set_quiet( true );
 
   buffs.t20_2p_critical_aimed_damage =
-    buff_creator_t( this, "t20_2p_critical_aimed_damage", find_spell( 242243 ) )
-      .default_value( find_spell( 242243 ) -> effectN( 1 ).percent() );
+    make_buff( this, "t20_2p_critical_aimed_damage", find_spell( 242243 ) )
+    ->set_default_value( find_spell( 242243 ) -> effectN( 1 ).percent() );
 
   buffs.t20_4p_bestial_rage =
-    buff_creator_t( this, "t20_4p_bestial_rage", find_spell( 246116 ) )
-      .default_value( find_spell( 246116 ) -> effectN( 1 ).percent() );
+    make_buff( this, "t20_4p_bestial_rage", find_spell( 246116 ) )
+    ->set_default_value( find_spell( 246116 ) -> effectN( 1 ).percent() );
 
   buffs.t21_2p_exposed_flank =
-    buff_creator_t( this, "t21_2p_exposed_flank", find_spell( 252094 ) )
-      .default_value( find_spell( 252094 ) -> effectN( 1 ).percent() );
+    make_buff( this, "t21_2p_exposed_flank", find_spell( 252094 ) )
+    ->set_default_value( find_spell( 252094 ) -> effectN( 1 ).percent() );
 
   buffs.t21_4p_in_for_the_kill =
-    buff_creator_t( this, "t21_4p_in_for_the_kill", find_spell( 252095 ) )
-      .default_value( find_spell( 252095 ) -> effectN( 1 ).percent() );
+    make_buff( this, "t21_4p_in_for_the_kill", find_spell( 252095 ) )
+    ->set_default_value( find_spell( 252095 ) -> effectN( 1 ).percent() );
 
   buffs.sephuzs_secret =
     make_buff<haste_buff_t>( this, "sephuzs_secret", find_spell( 208052 ) )
