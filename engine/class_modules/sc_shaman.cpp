@@ -5062,7 +5062,7 @@ struct earthquake_damage_t : public shaman_spell_t
     aoe        = -1;
     ground_aoe = background = true;
     school                  = SCHOOL_PHYSICAL;
-    spell_power_mod.direct  = 0.92;  // still cool to hardcode the SP% into tooltip
+    spell_power_mod.direct  = 0.125;  // still cool to hardcode the SP% into tooltip
   }
 
   double target_armor( player_t* ) const override
