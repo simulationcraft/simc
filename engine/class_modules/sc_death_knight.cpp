@@ -4148,7 +4148,7 @@ struct blood_boil_t : public death_knight_spell_t
     }
 
     if ( result_is_hit( execute_state -> result ) )
-      p() -> o() -> buffs.skullflowers_haemostasis -> trigger();
+      p() -> buffs.skullflowers_haemostasis -> trigger();
   }
 
   void impact( action_state_t* state ) override		
