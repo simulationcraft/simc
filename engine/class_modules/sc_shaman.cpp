@@ -4192,7 +4192,7 @@ struct chain_lightning_overload_t : public chained_overload_base_t
 {
   chain_lightning_overload_t( shaman_t* p )
     : chained_overload_base_t( p, "chain_lightning_overload", p->find_spell( 45297 ),
-                               player->find_spell( 190493 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
+                               p->find_spell( 190493 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
   {
   }
 };
@@ -4201,7 +4201,7 @@ struct lava_beam_overload_t : public chained_overload_base_t
 {
   lava_beam_overload_t( shaman_t* p )
     : chained_overload_base_t( p, "lava_beam_overload", p->find_spell( 114738 ),
-                               player->find_spell( 190493 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
+                               p->find_spell( 190493 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
   {
   }
 };
@@ -4320,7 +4320,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 {
   lava_burst_overload_t( shaman_t* p ) : elemental_overload_spell_t( p, "lava_burst_overload", p->find_spell( 77451 ) )
   {
-    maelstrom_gain = player->find_spell( 190493 )->effectN( 5 ).resource( RESOURCE_MAELSTROM );
+    maelstrom_gain = p->find_spell( 190493 )->effectN( 5 ).resource( RESOURCE_MAELSTROM );
   }
 
   double action_multiplier() const override
