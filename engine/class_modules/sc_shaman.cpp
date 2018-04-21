@@ -377,7 +377,6 @@ public:
     gain_t* ascendance;
     gain_t* resurgence;
     gain_t* feral_spirit;
-    gain_t* molten_fury;
     gain_t* spirit_of_the_maelstrom;
     gain_t* resonance_totem;
     gain_t* wind_gust;
@@ -453,7 +452,6 @@ public:
 
     // Elemental
     const spell_data_t* earthen_rage;
-    const spell_data_t* molten_fury;
     const spell_data_t* totem_mastery;
 
     const spell_data_t* echo_of_the_elements;
@@ -4552,11 +4550,6 @@ struct lava_burst_t : public shaman_spell_t
     if ( p()->talent.master_of_the_elements->ok() )
       p()->buff.master_of_the_elements->trigger();
 
-    // Molten Fury benefits only the main cast. Alpha 8.0.1.26032
-    if ( p()->buff.lava_surge->up() )
-      p()->resource_gain( RESOURCE_MAELSTROM, maelstrom_gain * p()->talent.molten_fury->effectN( 1 ).percent(),
-                          p()->gain.molten_fury, this );
-
     // Lava Surge buff does not get eaten, if the Lava Surge proc happened
     // during the Lava Burst cast
     if ( !p()->lava_surge_during_lvb && p()->buff.lava_surge->check() )
@@ -6389,7 +6382,6 @@ void shaman_t::init_spells()
 
   // Elemental
   talent.earthen_rage  = find_talent_spell( "Earthen Rage" );
-  talent.molten_fury   = find_talent_spell( "Molten Fury" );
   talent.totem_mastery = find_talent_spell( "Totem Mastery" );
 
   talent.echo_of_the_elements = find_talent_spell( "Echo of the Elements" );
@@ -7088,7 +7080,6 @@ void shaman_t::init_gains()
   gain.ascendance              = get_gain( "Ascendance" );
   gain.resurgence              = get_gain( "resurgence" );
   gain.feral_spirit            = get_gain( "Feral Spirit" );
-  gain.molten_fury             = get_gain( "Molten Fury" );
   gain.spirit_of_the_maelstrom = get_gain( "Spirit of the Maelstrom" );
   gain.resonance_totem         = get_gain( "Resonance Totem" );
   gain.wind_gust               = get_gain( "Wind Gust" );
