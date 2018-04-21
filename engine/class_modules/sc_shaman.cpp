@@ -170,6 +170,9 @@ struct shaman_td_t : public actor_target_data_t
 
   struct debuffs
   {
+    // Elemental
+    buff_t* exposed_elements;
+
     // Enhancement
     buff_t* earthen_spike;
     buff_t* storm_tempests;  // 7.0 Legendary
@@ -451,6 +454,7 @@ public:
     const spell_data_t* static_charge;
 
     // Elemental
+    const spell_data_t* exposed_elements;
     const spell_data_t* echo_of_the_elements;
     const spell_data_t* elemental_blast;
 
@@ -967,8 +971,12 @@ struct stormlash_buff_t : public buff_t
 
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t( target, p )
 {
-  dot.flame_shock = target->get_dot( "flame_shock", p );
+  // Elemental
+  dot.flame_shock         = target->get_dot( "flame_shock", p );
+  debuff.exposed_elements = buff_creator_t( *this, "exposed_elements", p->talent.exposed_elements )
+                                .cd( timespan_t::zero() );  // Handled by the action
 
+  // Enhancement
   debuff.earthen_spike = buff_creator_t( *this, "earthen_spike", p->talent.earthen_spike )
                              .cd( timespan_t::zero() )  // Handled by the action
                              // -10% resistance in spell data, treat it as a multiplier instead
@@ -4586,14 +4594,21 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
 struct lightning_bolt_t : public shaman_spell_t
 {
   double m_overcharge;
+  double m_exposed_elements;
 
   lightning_bolt_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "lightning_bolt", player, player->find_specialization_spell( "Lightning Bolt" ), options_str ),
-      m_overcharge( 0 )
+      m_overcharge( 0 ),
+      m_exposed_elements( 0 )
   {
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       maelstrom_gain = player->find_spell( 214815 )->effectN( 1 ).resource( RESOURCE_MAELSTROM );
+    }
+
+    if ( player->talent.exposed_elements->ok() && td( target )->debuff.exposed_elements->up() )
+    {
+      m_exposed_elements = player->talent.exposed_elements->effectN( 1 ).percent();
     }
 
     if ( player->talent.overcharge->ok() )
@@ -4643,7 +4658,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
   double spell_direct_power_coefficient( const action_state_t* /* state */ ) const override
   {
-    return spell_power_mod.direct * ( 1.0 + m_overcharge * cost() );
+    return spell_power_mod.direct * ( 1.0 + m_exposed_elements ) * ( 1.0 + m_overcharge * cost() );
   }
 
   timespan_t execute_time() const override
@@ -4661,6 +4676,7 @@ struct lightning_bolt_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.stormkeeper->decrement();
+    td( target )->debuff.exposed_elements->expire();
 
     // Additional check here for lightning bolt
     if ( p()->talent.overcharge->ok() )
@@ -5098,6 +5114,11 @@ struct earth_shock_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
+
+    if ( p()->talent.exposed_elements->ok() )
+    {
+      td( target )->debuff.exposed_elements->trigger();
+    }
 
     p()->buff.t21_2pc_elemental->expire();
   }
@@ -6374,7 +6395,7 @@ void shaman_t::init_spells()
   talent.static_charge = find_talent_spell( "Static Charge" );
 
   // Elemental
-  talent.earthen_rage         = find_talent_spell( "Exposed Elements" );
+  talent.exposed_elements     = find_talent_spell( "Earthen Rage" );
   talent.echo_of_the_elements = find_talent_spell( "Echo of the Elements" );
   talent.elemental_blast      = find_talent_spell( "Elemental Blast" );
 
