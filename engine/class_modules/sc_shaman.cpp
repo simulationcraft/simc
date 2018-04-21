@@ -6395,7 +6395,7 @@ void shaman_t::init_spells()
   talent.static_charge = find_talent_spell( "Static Charge" );
 
   // Elemental
-  talent.exposed_elements     = find_talent_spell( "Earthen Rage" );
+  talent.exposed_elements     = find_talent_spell( "Exposed Elements" );
   talent.echo_of_the_elements = find_talent_spell( "Echo of the Elements" );
   talent.elemental_blast      = find_talent_spell( "Elemental Blast" );
 
