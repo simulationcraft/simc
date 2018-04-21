@@ -1,0 +1,107 @@
+shaman="PR_Shaman_Elemental"
+spec=elemental
+level=110
+race=tauren
+role=spell
+position=ranged_back
+talents=1121211
+
+# Default consumables
+potion=prolonged_power
+flask=whispered_pact
+food=lemon_herb_filet
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/totem_mastery
+actions.precombat+=/fire_elemental
+actions.precombat+=/potion
+actions.precombat+=/elemental_blast
+
+# Executed every time the actor is available.
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
+actions=bloodlust,if=target.health.pct<25|time>0.500
+# In-combat potion is preferentially linked to your Elemental, unless combat will end shortly
+actions+=/potion
+# Interrupt of casts and is reliable trigger of Sephuz Secret.
+actions+=/wind_shear
+actions+=/totem_mastery,if=buff.resonance_totem.remains<2
+actions+=/fire_elemental
+actions+=/storm_elemental
+actions+=/use_items
+actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
+actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
+actions+=/run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_lightning>2|spell_targets.lava_beam>2)
+actions+=/run_action_list,name=single_target
+
+# Multi target action priority list
+actions.aoe=stormkeeper
+actions.aoe+=/ascendance
+actions.aoe+=/liquid_magma_totem
+actions.aoe+=/flame_shock,if=spell_targets.chain_lightning<4,target_if=refreshable
+actions.aoe+=/earthquake
+# Only cast Lava Burst on three targets if it is an instant.
+actions.aoe+=/lava_burst,if=dot.flame_shock.remains>cast_time&buff.lava_surge.up&spell_targets.chain_lightning<4
+actions.aoe+=/elemental_blast,if=spell_targets.chain_lightning<4
+actions.aoe+=/lava_beam
+actions.aoe+=/chain_lightning
+actions.aoe+=/lava_burst,moving=1
+actions.aoe+=/flame_shock,moving=1,target_if=refreshable
+
+# Single Target Action Priority List
+actions.single_target=flame_shock,if=!ticking|dot.flame_shock.remains<=gcd
+actions.single_target+=/ascendance,if=(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0
+actions.single_target+=/elemental_blast
+actions.single_target+=/icefury
+# Keep SK for large or soon add waves.
+actions.single_target+=/stormkeeper,if=raid_event.adds.count<3|raid_event.adds.in>50
+actions.single_target+=/liquid_magma_totem,if=raid_event.adds.count<3|raid_event.adds.in>50
+actions.single_target+=/frost_shock,if=buff.icefury.up&maelstrom>=20
+actions.single_target+=/earth_shock
+actions.single_target+=/lava_burst,if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)
+actions.single_target+=/flame_shock,if=maelstrom>=20,target_if=refreshable
+actions.single_target+=/totem_mastery,if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+cooldown.ascendance.remains)&cooldown.ascendance.remains<15)
+actions.single_target+=/lava_beam,if=active_enemies>1&spell_targets.lava_beam>1
+actions.single_target+=/chain_lightning,if=active_enemies>1&spell_targets.chain_lightning>1
+actions.single_target+=/lightning_bolt
+actions.single_target+=/flame_shock,moving=1,target_if=refreshable
+actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
+
+head=saurscale_coif,id=154955,ilevel=185
+neck=shaleshell_pendant,id=154970,ilevel=185
+shoulders=saurscale_spaulders,id=154959,ilevel=185
+back=drape_of_the_golden_city,id=154968,ilevel=185
+chest=saurscale_chestguard,id=154958,ilevel=185
+wrists=saurscale_wristguards,id=154952,ilevel=185
+hands=saurscale_gloves,id=154953,ilevel=185
+waist=saurscale_girdle,id=154957,ilevel=185
+legs=saurscale_leggings,id=154954,ilevel=185
+feet=saurscale_boots,id=154956,ilevel=185
+finger1=beaten_copper_loop,id=154987,bonus_id=1751,ilevel=185
+finger2=sea_sapphire_band,id=154969,ilevel=185
+trinket1=bijou_of_the_golden_city,id=154983,bonus_id=607,ilevel=185
+trinket2=shimmering_rune,id=154981,bonus_id=604,ilevel=185
+main_hand=dinomancy_cudgel,id=154978,ilevel=185
+off_hand=golden_protectorate,id=154985,ilevel=185
+
+# Gear Summary
+# gear_ilvl=185.00
+# gear_strength=29
+# gear_stamina=759
+# gear_intellect=697
+# gear_crit_rating=263
+# gear_haste_rating=210
+# gear_mastery_rating=248
+# gear_versatility_rating=239
+# gear_armor=809

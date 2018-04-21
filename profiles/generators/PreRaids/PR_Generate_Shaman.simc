@@ -25,30 +25,30 @@ off_hand=fury_of_the_stonemother,id=128873
 
 save=PR_Shaman_Enhancement.simc
 
-
+# Based off new character gear on Alpha ATM -- update once all dungeon gear is finalized
 shaman="PR_Shaman_Elemental"
-level=120
-race=orc
+level=110
+race=tauren
 role=attack
 position=ranged_back
-talents=2112333
+talents=1121211
 spec=elemental
 
-head=shadow_archers_helm,id=139244,bonus_id=1492/1727
-neck=breathless_choker,id=137461,bonus_id=1492/1727,enchant=mark_of_the_hidden_satyr
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1492/1727
-back=cloak_of_fading_echoes,id=134405,bonus_id=1492/1727,enchant=binding_of_intellect
-chest=tunic_of_screaming_earth,id=137354,bonus_id=1492/1727
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1492/1727
-hands=gloves_of_fleshshaping,id=134468,bonus_id=1492/1727
-waist=permafrost_waistband,id=137520,bonus_id=1492/1727
-legs=leggings_of_acidic_venom,id=137450,bonus_id=1492/1727
-feet=striders_of_furious_flight,id=137517,bonus_id=1492/1727
-finger1=band_of_callous_dominance,id=134528,bonus_id=1492/1727,enchant_id=5427
-finger2=seal_of_the_nazjatar_empire,id=134525,bonus_id=1492/1727,enchant_id=5427
-trinket1=oakheart's_gnarled_root,id=137306,bonus_id=1492/1727
-trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1492/1727
-main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=137365/137272/137365,relic_id=1492:3412/1492:3412/1492:3412
-off_hand=the_highkeepers_ward,id=128936,ilevel=870
+head=saurscale_coif,id=154955,ilevel=185
+neck=shaleshell_pendant,id=154970,ilevel=185
+shoulder=saurscale_spaulders,id=154959,ilevel=185
+back=drape_of_the_golden_city,id=154968,ilevel=185
+chest=saurscale_chestguard,id=154958,ilevel=185
+wrist=saurscale_wristguards,id=154952,ilevel=185
+hands=saurscale_gloves,id=154953,ilevel=185
+waist=saurscale_girdle,id=154957,ilevel=185
+legs=saurscale_leggings,id=154954,ilevel=185
+feet=saurscale_boots,id=154956,ilevel=185
+finger1=beaten_copper_loop,id=154987,bonus_id=1751,ilevel=185
+finger2=sea_sapphire_band,id=154969,ilevel=185
+trinket1=bijou_of_the_golden_city,id=154983,bonus_id=607,ilevel=185
+trinket2=shimmering_rune,id=154981,bonus_id=604,ilevel=185
+main_hand=dinomancy_cudgel,id=154978,ilevel=185
+off_hand=golden_protectorate,id=154985,ilevel=185
 
 save=PR_Shaman_Elemental.simc
