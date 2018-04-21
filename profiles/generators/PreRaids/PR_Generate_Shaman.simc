@@ -27,28 +27,28 @@ save=PR_Shaman_Enhancement.simc
 
 # Based off new character gear on Alpha ATM -- update once all dungeon gear is finalized
 shaman="PR_Shaman_Elemental"
-level=120
+level=110
 race=tauren
 role=attack
 position=ranged_back
 talents=1121211
 spec=elemental
 
-head=saurscale_coif,id=154955
-neck=shaleshell_pendant,id=154970
-shoulder=saurscale_spaulders,id=154959
-back=drape_of_the_golden_city,id=154968
-chest=saurscale_chestguard,id=154958
-wrist=saurscale_wristguards,id=154952
-hands=saurscale_gloves,id=154953
-waist=saurscale_girdle,id=154957
-legs=saurscale_leggings,id=154954
-feet=saurscale_boots,id=154956
-finger1=beaten_copper_loop,id=154987,bonus_id=1751
-finger2=sea_sapphire_band,id=154969
-trinket1=bijou_of_the_golden_city,id=154983,bonus_id=607
-trinket2=shimmering_rune,id=154981,bonus_id=604
-main_hand=dinomancy_cudgel,id=154978
-off_hand=golden_protectorate,id=154985
+head=saurscale_coif,id=154955,ilevel=185
+neck=shaleshell_pendant,id=154970,ilevel=185
+shoulder=saurscale_spaulders,id=154959,ilevel=185
+back=drape_of_the_golden_city,id=154968,ilevel=185
+chest=saurscale_chestguard,id=154958,ilevel=185
+wrist=saurscale_wristguards,id=154952,ilevel=185
+hands=saurscale_gloves,id=154953,ilevel=185
+waist=saurscale_girdle,id=154957,ilevel=185
+legs=saurscale_leggings,id=154954,ilevel=185
+feet=saurscale_boots,id=154956,ilevel=185
+finger1=beaten_copper_loop,id=154987,bonus_id=1751,ilevel=185
+finger2=sea_sapphire_band,id=154969,ilevel=185
+trinket1=bijou_of_the_golden_city,id=154983,bonus_id=607,ilevel=185
+trinket2=shimmering_rune,id=154981,bonus_id=604,ilevel=185
+main_hand=dinomancy_cudgel,id=154978,ilevel=185
+off_hand=golden_protectorate,id=154985,ilevel=185
 
 save=PR_Shaman_Elemental.simc
