@@ -1408,10 +1408,8 @@ struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
-
-    // disabled for now since they'll probably institute this behavior later.
-    // druid.cooldown.warrior_of_elune -> start();
+    druid_buff_t<buff_t>::expire_override(expiration_stacks, remaining_duration);
+    p().cooldown.warrior_of_elune -> start();
   }
 };
 
@@ -1941,14 +1939,14 @@ public:
 
   virtual double composite_ta_multiplier(const action_state_t* s) const override
   {
-      double tm = base_t::composite_ta_multiplier(s);
+    double tm = base_t::composite_ta_multiplier(s);
 
-      if (p()->buff.stellar_empowerment->check())
-      {
-          tm *= 1.0 + composite_stellar_empowerment(s->target);
-      }
+    if (p()->buff.stellar_empowerment->check())
+    {
+        tm *= 1.0 + composite_stellar_empowerment(s->target);
+    }
 
-      return tm;
+    return tm;
   }
 
   virtual void execute() override
@@ -6344,12 +6342,13 @@ struct warrior_of_elune_t : public druid_spell_t
     druid_spell_t( "warrior_of_elune", player, player -> talent.warrior_of_elune, options_str )
   {
     harmful = false;
-
   }
 
   void execute() override
   {
     druid_spell_t::execute();
+
+    p()->cooldown.warrior_of_elune->reset(false);
 
     p() -> buff.warrior_of_elune -> trigger( p() -> talent.warrior_of_elune -> max_stacks() );
   }
