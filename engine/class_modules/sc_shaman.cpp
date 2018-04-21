@@ -451,20 +451,20 @@ public:
     const spell_data_t* static_charge;
 
     // Elemental
-    const spell_data_t* earthen_rage;
-    const spell_data_t* totem_mastery;
-
     const spell_data_t* echo_of_the_elements;
     const spell_data_t* elemental_blast;
-    const spell_data_t* icefury;
 
     const spell_data_t* aftershock;
+    const spell_data_t* master_of_the_elements;
+    const spell_data_t* totem_mastery;
+
+    const spell_data_t* high_voltage;
     const spell_data_t* storm_elemental;
     const spell_data_t* liquid_magma_totem;
 
-    const spell_data_t* high_voltage;
+    const spell_data_t* earthen_rage;
     const spell_data_t* primal_elementalist;
-    const spell_data_t* master_of_the_elements;
+    const spell_data_t* icefury;
 
     const spell_data_t* stormkeeper;
 
@@ -6374,22 +6374,23 @@ void shaman_t::init_spells()
   talent.static_charge = find_talent_spell( "Static Charge" );
 
   // Elemental
-  talent.earthen_rage  = find_talent_spell( "Earthen Rage" );
-  talent.totem_mastery = find_talent_spell( "Totem Mastery" );
-
+  talent.earthen_rage         = find_talent_spell( "Exposed Elements" );
   talent.echo_of_the_elements = find_talent_spell( "Echo of the Elements" );
   talent.elemental_blast      = find_talent_spell( "Elemental Blast" );
-  talent.icefury              = find_talent_spell( "Icefury" );
 
-  talent.aftershock         = find_talent_spell( "Aftershock" );
+  talent.aftershock             = find_talent_spell( "Aftershock" );
+  talent.master_of_the_elements = find_talent_spell( "Master of the Elements" );
+  talent.totem_mastery          = find_talent_spell( "Totem Mastery" );
+
+  talent.high_voltage       = find_talent_spell( "High Voltage" );
   talent.storm_elemental    = find_talent_spell( "Storm Elemental" );
   talent.liquid_magma_totem = find_talent_spell( "Liquid Magma Totem" );
 
-  talent.high_voltage           = find_talent_spell( "High Voltage" );
-  talent.primal_elementalist    = find_talent_spell( "Primal Elementalist" );
-  talent.master_of_the_elements = find_talent_spell( "Master of the Elements" );
+  talent.earthen_rage        = find_talent_spell( "Earthen Rage" );
+  talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
+  talent.icefury             = find_talent_spell( "Icefury" );
 
-  talent.stormkeeper          = find_talent_spell( "Stormkeeper" );
+  talent.stormkeeper     = find_talent_spell( "Stormkeeper" );
 
   // Enhancement
   talent.windsong    = find_talent_spell( "Windsong" );
