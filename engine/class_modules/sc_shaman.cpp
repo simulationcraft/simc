@@ -4597,21 +4597,14 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
 struct lightning_bolt_t : public shaman_spell_t
 {
   double m_overcharge;
-  double m_exposed_elements;
 
   lightning_bolt_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "lightning_bolt", player, player->find_specialization_spell( "Lightning Bolt" ), options_str ),
-      m_overcharge( 0 ),
-      m_exposed_elements( 0 )
+      m_overcharge( 0 )
   {
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       maelstrom_gain = player->find_spell( 190493 )->effectN( 1 ).resource( RESOURCE_MAELSTROM );
-    }
-
-    if ( player->talent.exposed_elements->ok() && td( target )->debuff.exposed_elements->up() )
-    {
-      m_exposed_elements = player->find_spell( 269808 )->effectN( 1 ).percent();
     }
 
     if ( player->talent.overcharge->ok() )
@@ -4659,9 +4652,19 @@ struct lightning_bolt_t : public shaman_spell_t
     return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    auto m = shaman_spell_t::composite_target_multiplier( target );
+    if ( td( target )->debuff.exposed_elements->up() )
+    {
+      m *= 1.0 + td( target )->debuff.exposed_elements->default_value / 100.0;
+    }
+    return m;
+  }
+
   double spell_direct_power_coefficient( const action_state_t* /* state */ ) const override
   {
-    return spell_power_mod.direct * ( 1.0 + m_exposed_elements ) * ( 1.0 + m_overcharge * cost() );
+    return spell_power_mod.direct * ( 1.0 + m_overcharge * cost() );
   }
 
   timespan_t execute_time() const override
@@ -5818,7 +5821,7 @@ struct capacitor_totem_pulse_t : public totem_pulse_action_t
       // This implementation assumes that every hit target counts. Ingame boss dummy testing showed that only
       // stunned targets count. TODO: check every hit target for whether it is stunned, or not.
       int cd_reduction = num_targets_hit * ( totem->o()->talent.static_charge->effectN( 1 ).base_value() );
-      cd_reduction     = -std::min( cd_reduction, as<int>( totem->o()->talent.static_charge->effectN( 2 ).base_value() ) );
+      cd_reduction = -std::min( cd_reduction, as<int>( totem->o()->talent.static_charge->effectN( 2 ).base_value() ) );
       totem_cooldown->adjust( timespan_t::from_seconds( cd_reduction ) );
     }
   }
@@ -6417,7 +6420,7 @@ void shaman_t::init_spells()
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
   talent.icefury             = find_talent_spell( "Icefury" );
 
-  talent.stormkeeper     = find_talent_spell( "Stormkeeper" );
+  talent.stormkeeper = find_talent_spell( "Stormkeeper" );
 
   // Enhancement
   talent.windsong    = find_talent_spell( "Windsong" );
@@ -6500,7 +6503,6 @@ void shaman_t::init_base_stats()
 
   if ( spec.enhancement_shaman->ok() )
     resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman->effectN( 7 ).base_value();
-
 
   // if ( specialization() == SHAMAN_ENHANCEMENT )
   //  ready_type = READY_TRIGGER;
