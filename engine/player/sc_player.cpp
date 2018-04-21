@@ -2744,9 +2744,9 @@ void player_t::create_buffs()
     buffs.berserking = make_buff<haste_buff_t>( this, "berserking", find_spell( 26297 ) );
     buffs.berserking->add_invalidate( CACHE_HASTE );
     buffs.stoneform  = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
-    buffs.blood_fury = stat_buff_creator_t( this, "blood_fury", find_racial_spell( "Blood Fury" ) )
-                           .add_invalidate( CACHE_SPELL_POWER )
-                           .add_invalidate( CACHE_ATTACK_POWER );
+    buffs.blood_fury = make_buff<stat_buff_t>( this, "blood_fury", find_racial_spell( "Blood Fury" ) )
+                           ->add_invalidate( CACHE_SPELL_POWER )
+                           ->add_invalidate( CACHE_ATTACK_POWER );
     buffs.fortitude  = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).activated( false );
     buffs.shadowmeld = buff_creator_t( this, "shadowmeld", find_spell( 58984 ) ).cd( timespan_t::zero() );
 
@@ -12505,9 +12505,9 @@ void expansion::legion::initialize_concordance( player_t& player )
   // Unconditionally initialize 7.2 "infinite" buff
   artifact_power_t concordance = player.find_artifact_spell( "Concordance of the Legionfall" );
 
-  stat_buff_t* buff = stat_buff_creator_t( &( player ), "concordance_of_the_legionfall" )
-                          .spell( player.find_spell( 242583 ) )
-                          .add_stat( concordance_stat_type( player ), concordance.value() );
+  stat_buff_t* buff =
+      make_buff<stat_buff_t>( &( player ), "concordance_of_the_legionfall", player.find_spell( 242583 ) )
+      ->add_stat( concordance_stat_type( player ), concordance.value() );
 
   // Install a callback handler only if the player has the relevant artifact-related attributes
   auto artifact_id = player.dbc.artifact_by_spec( player.specialization() );

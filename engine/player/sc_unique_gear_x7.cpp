@@ -2804,17 +2804,22 @@ void item::memento_of_angerboda( special_effect_t& effect )
     }
   };
 
-  std::vector<buff_t*> buffs;
+  auto howl_of_ingvar =
+      make_buff<stat_buff_t>( effect.player, "howl_of_ingvar", effect.player -> find_spell( 214802 ) )
+      -> add_stat( STAT_CRIT_RATING, rating_amount );
+  howl_of_ingvar->set_activated( false );
 
-  buffs.push_back( stat_buff_creator_t( effect.player, "howl_of_ingvar", effect.player -> find_spell( 214802 ) )
-      .activated( false )
-      .add_stat( STAT_CRIT_RATING, rating_amount ) );
-  buffs.push_back( stat_buff_creator_t( effect.player, "wail_of_svala", effect.player -> find_spell( 214803 ) )
-     .activated( false )
-      .add_stat( STAT_HASTE_RATING, rating_amount ) );
-  buffs.push_back( stat_buff_creator_t( effect.player, "dirge_of_angerboda", effect.player -> find_spell( 214807 ) )
-      .activated( false )
-      .add_stat( STAT_MASTERY_RATING, rating_amount ) );
+  auto wail_of_svala =
+      make_buff<stat_buff_t>( effect.player, "wail_of_svala", effect.player -> find_spell( 214803 ) )
+      ->add_stat( STAT_HASTE_RATING, rating_amount );
+  wail_of_svala->set_activated( false );
+
+  auto dirge_of_angerboda =
+      make_buff<stat_buff_t>( effect.player, "dirge_of_angerboda", effect.player -> find_spell( 214807 ) )
+      ->add_stat( STAT_MASTERY_RATING, rating_amount );
+  dirge_of_angerboda->set_activated( false );
+
+  std::vector<buff_t*> buffs = {howl_of_ingvar, wail_of_svala, dirge_of_angerboda};
 
   new memento_callback_t( effect, buffs );
 }
@@ -2823,20 +2828,20 @@ void item::memento_of_angerboda( special_effect_t& effect )
 
 void item::obelisk_of_the_void( special_effect_t& effect )
 {
-  effect.custom_buff = stat_buff_creator_t( effect.player, "collapsing_shadow", effect.player -> find_spell( 215476 ), effect.item )
-    .add_stat( effect.player -> convert_hybrid_stat( STAT_AGI_INT ), effect.driver() -> effectN( 2 ).average( effect.item ) );
+  effect.custom_buff = make_buff<stat_buff_t>( effect.player, "collapsing_shadow", effect.player -> find_spell( 215476 ), effect.item )
+    ->add_stat( effect.player -> convert_hybrid_stat( STAT_AGI_INT ), effect.driver() -> effectN( 2 ).average( effect.item ) );
 }
 
 // Shivermaws Jawbone =======================================================
 
 struct ice_bomb_t : public proc_spell_t
 {
-  buff_t* buff;
+  stat_buff_t* buff;
 
   ice_bomb_t( special_effect_t& effect ) :
     proc_spell_t( "ice_bomb", effect.player, effect.driver(), effect.item )
   {
-    buff = stat_buff_creator_t( effect.player, "frigid_armor", effect.player -> find_spell( 214589 ), effect.item );
+    buff = make_buff<stat_buff_t>( effect.player, "frigid_armor", effect.player -> find_spell( 214589 ), effect.item );
   }
 
   void execute() override
@@ -3191,8 +3196,7 @@ void item::tome_of_unraveling_sanity( special_effect_t& effect )
   stat_buff_t* b = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "extracted_sanity" ) );
   if ( ! b )
   {
-    b = stat_buff_creator_t( effect.player, "extracted_sanity", nullptr, effect.item )
-      .spell( effect.player -> find_spell( 243942 ) );
+    b = make_buff<stat_buff_t>( effect.player, "extracted_sanity", effect.player -> find_spell( 243942 ), effect.item );
   }
 
   effect.execute_action = create_proc_action<insidious_corruption_t>( "insidious_corruption", effect, b );
@@ -3603,22 +3607,22 @@ void item::dreadstone_of_endless_shadows( special_effect_t& effect )
   auto crit = debug_cast<stat_buff_t*>( buff_t::find( p, "shadows_strike" ) );
   if ( crit == nullptr )
   {
-    crit = stat_buff_creator_t( p, "shadows_strike", p -> find_spell( 238499 ), effect.item )
-      .add_stat( STAT_CRIT_RATING, amount );
+    crit = make_buff<stat_buff_t>( p, "shadows_strike", p -> find_spell( 238499 ), effect.item )
+      ->add_stat( STAT_CRIT_RATING, amount );
   }
 
   auto mastery = debug_cast<stat_buff_t*>( buff_t::find( p, "shadow_master" ) );
   if ( mastery == nullptr )
   {
-    mastery = stat_buff_creator_t( p, "shadow_master", p -> find_spell( 238500 ), effect.item )
-      .add_stat( STAT_MASTERY_RATING, amount );
+    mastery = make_buff<stat_buff_t>( p, "shadow_master", p -> find_spell( 238500 ), effect.item )
+      ->add_stat( STAT_MASTERY_RATING, amount );
   }
 
   auto haste = debug_cast<stat_buff_t*>( buff_t::find( p, "swarming_shadows" ) );
   if ( haste == nullptr )
   {
-    haste = stat_buff_creator_t( p, "swarming_shadows", p -> find_spell( 238501 ), effect.item )
-      .add_stat( STAT_HASTE_RATING, amount );
+    haste = make_buff<stat_buff_t>( p, "swarming_shadows", p -> find_spell( 238501 ), effect.item )
+      ->add_stat( STAT_HASTE_RATING, amount );
   }
 
   new dreadstone_proc_cb_t( effect, { crit, mastery, haste } );
@@ -4231,17 +4235,19 @@ void item::entwined_elemental_foci( special_effect_t& effect )
     entwined_elemental_foci_cb_t( const special_effect_t& effect, double amount ) :
       dbc_proc_callback_t( effect.item, effect ),
       buffs( {
-        stat_buff_creator_t( effect.player, "fiery_enchant", effect.player -> find_spell( 225726 ), effect.item )
-          .cd( timespan_t::zero() )
-          .add_stat( STAT_CRIT_RATING, amount ),
-        stat_buff_creator_t( effect.player, "frost_enchant", effect.player -> find_spell( 225729 ), effect.item )
-          .cd( timespan_t::zero() )
-          .add_stat( STAT_MASTERY_RATING, amount ),
-        stat_buff_creator_t( effect.player, "arcane_enchant", effect.player -> find_spell( 225730 ), effect.item )
-          .cd( timespan_t::zero() )
-          .add_stat( STAT_HASTE_RATING, amount )
+      make_buff<stat_buff_t>( effect.player, "fiery_enchant", effect.player -> find_spell( 225726 ), effect.item )
+          ->add_stat( STAT_CRIT_RATING, amount ),
+      make_buff<stat_buff_t>( effect.player, "frost_enchant", effect.player -> find_spell( 225729 ), effect.item )
+          ->add_stat( STAT_MASTERY_RATING, amount ),
+      make_buff<stat_buff_t>( effect.player, "arcane_enchant", effect.player -> find_spell( 225730 ), effect.item )
+          ->add_stat( STAT_HASTE_RATING, amount )
       } )
-    { }
+    {
+      for (auto& buff : buffs )
+      {
+        buff->set_cooldown(timespan_t::zero());
+      }
+    }
 
     void execute( action_t*, action_state_t* )
     {
@@ -4279,8 +4285,8 @@ void item::entwined_elemental_foci( special_effect_t& effect )
 
 void item::horn_of_valor( special_effect_t& effect )
 {
-  effect.custom_buff = stat_buff_creator_t( effect.player, "valarjars_path", effect.driver(), effect.item )
-    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver() -> effectN( 1 ).average( effect.item ) );
+  effect.custom_buff = make_buff<stat_buff_t>( effect.player, "valarjars_path", effect.driver(), effect.item )
+    ->add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver() -> effectN( 1 ).average( effect.item ) );
 }
 
 // Tiny Oozeling in a Jar ===================================================
@@ -4548,9 +4554,9 @@ void item::chaos_talisman( special_effect_t& effect )
   effect.proc_flags_ = PF_MELEE;
   effect.proc_flags2_ = PF_ALL_DAMAGE;
   const spell_data_t* buff_spell = effect.driver() -> effectN( 1 ).trigger();
-  effect.custom_buff = stat_buff_creator_t( effect.player, "chaotic_energy", buff_spell, effect.item )
-    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI ), buff_spell -> effectN( 1 ).average( effect.item ) )
-    .period( timespan_t::zero() ); // disable ticking
+  effect.custom_buff = make_buff<stat_buff_t>( effect.player, "chaotic_energy", buff_spell, effect.item )
+    ->add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI ), buff_spell -> effectN( 1 ).average( effect.item ) )
+    ->set_period( timespan_t::zero() ); // disable ticking
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -4625,7 +4631,7 @@ struct darkmoon_deck_t
       std::string n = s -> name_cstr();
       ::util::tokenize( n );
 
-      cards.push_back( stat_buff_creator_t( player, n, s, effect.item ) );
+      cards.push_back( make_buff<stat_buff_t>( player, n, s, effect.item ) );
     }
   }
 
@@ -4924,17 +4930,19 @@ void item::natures_call( special_effect_t& effect )
   std::vector<natures_call_proc_t*> procs;
 
   procs.push_back( new natures_call_proc_t(
-    stat_buff_creator_t( effect.player, "cleansed_ancients_blessing", effect.player -> find_spell( 222517 ) )
-    .activated( false )
-    .add_stat( STAT_CRIT_RATING, rating_amount ) ) );
+      make_buff<stat_buff_t>( effect.player, "cleansed_ancients_blessing", effect.player -> find_spell( 222517 ) )
+    ->add_stat( STAT_CRIT_RATING, rating_amount ) ) );
   procs.push_back( new natures_call_proc_t(
-    stat_buff_creator_t( effect.player, "cleansed_sisters_blessing", effect.player -> find_spell( 222519 ) )
-    .activated( false )
-    .add_stat( STAT_HASTE_RATING, rating_amount ) ) );
+      make_buff<stat_buff_t>( effect.player, "cleansed_sisters_blessing", effect.player -> find_spell( 222519 ) )
+      ->add_stat( STAT_HASTE_RATING, rating_amount ) ) );
   procs.push_back( new natures_call_proc_t(
-    stat_buff_creator_t( effect.player, "cleansed_wisps_blessing", effect.player -> find_spell( 222518 ) )
-    .activated( false )
-    .add_stat( STAT_MASTERY_RATING, rating_amount ) ) );
+      make_buff<stat_buff_t>( effect.player, "cleansed_wisps_blessing", effect.player -> find_spell( 222518 ) )
+      ->add_stat( STAT_MASTERY_RATING, rating_amount ) ) );
+
+  for (auto& proc : procs )
+  {
+    proc->buff->set_activated( false );
+  }
 
   // Set trigger spell so we can automatically create the breath action.
   effect.trigger_spell_id = 222520;
@@ -4966,10 +4974,10 @@ void item::moonlit_prism( special_effect_t& effect )
   dbc_proc_callback_t* callback = new dbc_proc_callback_t( effect.player, *effect2 );
 
   // Create buff.
-  effect.custom_buff = stat_buff_creator_t( effect.player, "elunes_light", effect.driver(), effect.item )
-    .cd( timespan_t::zero() )
-    .refresh_behavior( buff_refresh_behavior::DISABLED )
-    .stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
+  effect.custom_buff = make_buff<stat_buff_t>( effect.player, "elunes_light", effect.driver(), effect.item )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+    ->set_stack_change_callback( [ callback ]( buff_t*, int old, int new_ )
     {
       if ( old == 0 ) {
         assert( ! callback -> active );
@@ -5068,9 +5076,10 @@ void item::stabilized_energy_pendant( special_effect_t& effect )
 struct focused_lightning_t : public stat_buff_t
 {
   focused_lightning_t( const special_effect_t& effect ) :
-    stat_buff_t( stat_buff_creator_t( effect.player, "focused_lightning", effect.trigger() -> effectN( 1 ).trigger(), effect.item )
-      .duration( timespan_t::from_seconds( 20.0 ) ) )
-  { }
+    stat_buff_t( effect.player, "focused_lightning", effect.trigger() -> effectN( 1 ).trigger(), effect.item )
+  {
+    set_duration( timespan_t::from_seconds( 20.0 ) );
+  }
 
   void bump( int stacks, double value ) override
   {
@@ -5272,10 +5281,10 @@ void item::infernal_alchemist_stone( special_effect_t& effect )
 {
   const spell_data_t* stat_spell = effect.player -> find_spell( 60229 );
 
-  effect.custom_buff = stat_buff_creator_t( effect.player, "infernal_alchemist_stone", effect.driver(), effect.item )
-    .duration( stat_spell -> duration() )
-    .add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver() -> effectN( 1 ).average( effect.item ) )
-    .chance( 1 ); // RPPM is handled by the special effect, so make the buff always go up
+  effect.custom_buff = make_buff<stat_buff_t>( effect.player, "infernal_alchemist_stone", effect.driver(), effect.item )
+    ->add_stat( effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver() -> effectN( 1 ).average( effect.item ) )
+    ->set_duration( stat_spell -> duration() )
+    ->set_chance( 1 ); // RPPM is handled by the special effect, so make the buff always go up
 
   new dbc_proc_callback_t( effect.item, effect );
 }
@@ -5328,9 +5337,10 @@ void item::leyspark( special_effect_t& effect )
     }
   };
 
-  stat_buff_t* sparking = stat_buff_creator_t( effect.player, "sparking", effect.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() )
-    .default_value( effect.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).average( effect.item ) )
-    .add_invalidate( CACHE_AGILITY );
+  stat_buff_t* sparking =
+      make_buff<stat_buff_t>( effect.player, "sparking", effect.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() );
+  sparking->set_default_value( effect.driver() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() -> effectN( 1 ).average( effect.item ) )
+    ->add_invalidate( CACHE_AGILITY );
 
   effect.custom_buff = new sparking_driver_t( effect, sparking );
 
@@ -5770,8 +5780,9 @@ void item::ravaged_seed_pod( special_effect_t& effect )
   }
 
   // FIXME: Only while in the area of effect.
-  effect.custom_buff = stat_buff_creator_t( effect.player, "leeching_pestilence", effect.player -> find_spell( 221805 ), effect.item )
-    .add_stat( STAT_LEECH_RATING, effect.driver() -> effectN( 3 ).average( effect.item ) );
+  effect.custom_buff =
+      make_buff<stat_buff_t>( effect.player, "leeching_pestilence", effect.player -> find_spell( 221805 ), effect.item )
+      ->add_stat( STAT_LEECH_RATING, effect.driver() -> effectN( 3 ).average( effect.item ) );
 }
 
 // March of the Legion ======================================================
@@ -6444,18 +6455,18 @@ struct eyasus_driver_t : public spell_t
       effect.driver() -> effectN( 1 ).average( effect.item ) );
 
     // Initialize stat buffs
-    stat_buffs[ 0 ] = stat_buff_creator_t( effect.player, "lethal_on_board",
+    stat_buffs[ 0 ] = make_buff<stat_buff_t>( effect.player, "lethal_on_board",
       effect.player -> find_spell( 227390 ), effect.item )
-      .add_stat( STAT_CRIT_RATING, amount );
-    stat_buffs[ 1 ] = stat_buff_creator_t( effect.player, "the_coin",
+      ->add_stat( STAT_CRIT_RATING, amount );
+    stat_buffs[ 1 ] = make_buff<stat_buff_t>( effect.player, "the_coin",
       effect.player -> find_spell( 227392 ), effect.item )
-      .add_stat( STAT_HASTE_RATING, amount );
-    stat_buffs[ 2 ] = stat_buff_creator_t( effect.player, "top_decking",
+      ->add_stat( STAT_HASTE_RATING, amount );
+    stat_buffs[ 2 ] = make_buff<stat_buff_t>( effect.player, "top_decking",
       effect.player -> find_spell( 227393 ), effect.item )
-      .add_stat( STAT_MASTERY_RATING, amount );
-    stat_buffs[ 3 ] = stat_buff_creator_t( effect.player, "full_hand",
+      ->add_stat( STAT_MASTERY_RATING, amount );
+    stat_buffs[ 3 ] = make_buff<stat_buff_t>( effect.player, "full_hand",
       effect.player -> find_spell( 227394 ), effect.item )
-      .add_stat( STAT_VERSATILITY_RATING, amount );
+      ->add_stat( STAT_VERSATILITY_RATING, amount );
 
     // Initialize mulligan buffs
     mulligan_buffs[ 0 ] = buff_creator_t( effect.player, "lethal_on_board_mulligan",

@@ -284,45 +284,46 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
     return debug_cast<stat_buff_t*>( b );
   }
 
-  stat_buff_creator_t creator( player, name(), spell_data_t::nil(),
-                               source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
-
+  const spell_data_t* spell_data = spell_data_t::nil();
   // Setup the spell for the stat buff
   if ( trigger() -> id() > 0 )
-    creator.spell( trigger() );
+    spell_data = trigger();
   else if ( driver() -> id() > 0 )
-    creator.spell( driver() );
+    spell_data = driver();
+
+  stat_buff_t* buff = make_buff<stat_buff_t>( player, name(), spell_data,
+                               source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
 
   // Setup user option overrides. Note that if there are no user set overrides,
   // the buff will automagically deduce correct options from the spell data,
   // the special_effect_t object should not issue overrides to the creator
   // object.
   if ( max_stacks > 0 )
-    creator.max_stack( max_stacks );
+    buff->set_max_stack( max_stacks );
 
   if ( duration_ > timespan_t::zero() )
-    creator.duration( duration_ );
+    buff->set_duration( duration_ );
 
   if ( reverse )
-    creator.reverse( true );
+    buff->set_reverse( true );
 
   if ( tick > timespan_t::zero() )
   {
-    creator.period( tick );
-    creator.tick_behavior( buff_tick_behavior::CLIP );
+    buff->set_period( tick );
+    buff->set_tick_behavior( buff_tick_behavior::CLIP );
   }
 
   // Make the buff always proc. The proc chance is handled by the proc callback, so the buff should
   // always trigger.
-  creator.chance( 1 );
+  buff->set_chance( 1 );
 
-  creator.refresh_behavior( buff_refresh_behavior::DURATION );
+  buff->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // If user given stat is defined, override whatever the spell would contain
   if ( stat != STAT_NONE )
-    creator.add_stat( stat, stat_amount );
+    buff->add_stat( stat, stat_amount );
 
-  return creator;
+  return buff;
 }
 
 bool special_effect_t::is_absorb_buff() const
