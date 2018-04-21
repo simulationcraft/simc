@@ -1541,6 +1541,7 @@ public:
   bool may_proc_stormbringer = false;
   proc_t* proc_sb;
   bool affected_by_master_of_the_elements = false;
+  bool affected_by_stormkeeper            = false;
 
   shaman_spell_t( const std::string& token, shaman_t* p, const spell_data_t* s = spell_data_t::nil(),
                   const std::string& options = std::string() )
@@ -1561,6 +1562,11 @@ public:
     if ( data().affected_by( p->find_spell( 260734 )->effectN( 1 ) ) )
     {
       affected_by_master_of_the_elements = true;
+    }
+
+    if ( data().affected_by( p->find_spell( 191634 )->effectN( 1 ) ) )
+    {
+      affected_by_stormkeeper = true;
     }
 
     may_proc_stormbringer = false;
@@ -1670,7 +1676,14 @@ public:
       return;
     }
 
+    /* Hacky to recreate ingame behavior. Stormkeeper forces only the first overload to happen. High Voltage overloads
+     * (a second chance to overload for Lightning Bolt and Chain Lightning) roll like normal. */
     unsigned overloads = rng().roll( overload_chance( source_state ) );
+
+    if ( p()->buff.stormkeeper->up() && affected_by_stormkeeper )
+    {
+      overloads = 1;
+    }
 
     // roll for overload for each additional chance to trigger an overload
     for ( size_t i = 0; i < (unsigned)n_overload_chances( source_state ); i++ )
@@ -4236,10 +4249,11 @@ struct chained_base_t : public shaman_spell_t
 
   double overload_chance( const action_state_t* s ) const override
   {
+    /*
     if ( p()->buff.stormkeeper->check() )
     {
       return 1.0;
-    }
+    }*/
 
     double base_chance = shaman_spell_t::overload_chance( s );
     base_chance += p()->buff.storm_totem->value();
@@ -4291,6 +4305,12 @@ struct chain_lightning_t : public chained_base_t
 
     return shaman_spell_t::ready();
   }
+
+  /* Number of potential overloads */
+  size_t n_overload_chances( const action_state_t* ) const override
+  {
+    return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
+  }
 };
 
 struct lava_beam_t : public chained_base_t
@@ -4312,6 +4332,14 @@ struct lava_beam_t : public chained_base_t
       return false;
 
     return shaman_spell_t::ready();
+  }
+
+  /* Number of potential overloads */
+  size_t n_overload_chances( const action_state_t* ) const override
+  {
+    if ( !player->bugs )
+      return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
+    return (size_t)0;
   }
 };
 
@@ -4646,14 +4674,16 @@ struct lightning_bolt_t : public shaman_spell_t
     double chance = shaman_spell_t::overload_chance( s );
     chance += p()->buff.storm_totem->value();
 
+    /*
     if ( p()->buff.stormkeeper->check() )
     {
       chance = 1.0;
-    }
+    }*/
 
     return chance;
   }
 
+  /* Number of potential overloads */
   size_t n_overload_chances( const action_state_t* ) const override
   {
     return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
@@ -5818,7 +5848,7 @@ struct capacitor_totem_pulse_t : public totem_pulse_action_t
       // This implementation assumes that every hit target counts. Ingame boss dummy testing showed that only
       // stunned targets count. TODO: check every hit target for whether it is stunned, or not.
       int cd_reduction = num_targets_hit * ( totem->o()->talent.static_charge->effectN( 1 ).base_value() );
-      cd_reduction     = -std::min( cd_reduction, as<int>( totem->o()->talent.static_charge->effectN( 2 ).base_value() ) );
+      cd_reduction = -std::min( cd_reduction, as<int>( totem->o()->talent.static_charge->effectN( 2 ).base_value() ) );
       totem_cooldown->adjust( timespan_t::from_seconds( cd_reduction ) );
     }
   }
@@ -6417,7 +6447,7 @@ void shaman_t::init_spells()
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
   talent.icefury             = find_talent_spell( "Icefury" );
 
-  talent.stormkeeper     = find_talent_spell( "Stormkeeper" );
+  talent.stormkeeper = find_talent_spell( "Stormkeeper" );
 
   // Enhancement
   talent.windsong    = find_talent_spell( "Windsong" );
@@ -6500,7 +6530,6 @@ void shaman_t::init_base_stats()
 
   if ( spec.enhancement_shaman->ok() )
     resources.base[ RESOURCE_MAELSTROM ] += spec.enhancement_shaman->effectN( 7 ).base_value();
-
 
   // if ( specialization() == SHAMAN_ENHANCEMENT )
   //  ready_type = READY_TRIGGER;
