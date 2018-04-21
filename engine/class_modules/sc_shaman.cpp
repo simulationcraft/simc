@@ -1521,7 +1521,7 @@ public:
     ab::p()->buff.spiritwalkers_grace->up();
 
     if ( ab::p()->talent.aftershock->ok() && ab::current_resource() == RESOURCE_MAELSTROM &&
-         ab::last_resource_cost > 0 && rng.roll( ab::p()->talent.aftershock->effectN( 1 ).percent() ) )
+         ab::last_resource_cost > 0 && ab::rng().roll( ab::p()->talent.aftershock->effectN( 1 ).percent() ) )
     {
       ab::p()->resource_gain( RESOURCE_MAELSTROM, ab::last_resource_cost, ab::p()->gain.aftershock, nullptr );
     }
