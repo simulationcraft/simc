@@ -4192,7 +4192,7 @@ struct chain_lightning_overload_t : public chained_overload_base_t
 {
   chain_lightning_overload_t( shaman_t* p )
     : chained_overload_base_t( p, "chain_lightning_overload", p->find_spell( 45297 ),
-                               p->find_spell( 218558 )->effectN( 1 ).resource( RESOURCE_MAELSTROM ) )
+                               player->find_spell( 190493 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
   {
   }
 };
@@ -4201,7 +4201,7 @@ struct lava_beam_overload_t : public chained_overload_base_t
 {
   lava_beam_overload_t( shaman_t* p )
     : chained_overload_base_t( p, "lava_beam_overload", p->find_spell( 114738 ),
-                               p->find_spell( 218559 )->effectN( 1 ).resource( RESOURCE_MAELSTROM ) )
+                               player->find_spell( 190493 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
   {
   }
 };
@@ -4263,7 +4263,7 @@ struct chain_lightning_t : public chained_base_t
 {
   chain_lightning_t( shaman_t* player, const std::string& options_str )
     : chained_base_t( player, "chain_lightning", player->find_specialization_spell( "Chain Lightning" ),
-                      player->find_specialization_spell( "Chain Lightning" )->effectN( 2 ).base_value(), options_str )
+                      player->find_spell( 190493 )->effectN( 3 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
     if ( player->mastery.elemental_overload->ok() )
     {
@@ -4320,6 +4320,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 {
   lava_burst_overload_t( shaman_t* p ) : elemental_overload_spell_t( p, "lava_burst_overload", p->find_spell( 77451 ) )
   {
+    maelstrom_gain = player->find_spell( 190493 )->effectN( 5 ).resource( RESOURCE_MAELSTROM );
   }
 
   double action_multiplier() const override
@@ -4484,6 +4485,7 @@ struct lava_burst_t : public shaman_spell_t
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
       base_costs[ RESOURCE_MANA ] = 0;
+      maelstrom_gain              = player->find_spell( 190493 )->effectN( 2 ).resource( RESOURCE_MAELSTROM );
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -4587,7 +4589,7 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   lightning_bolt_overload_t( shaman_t* p )
     : elemental_overload_spell_t( p, "lightning_bolt_overload", p->find_spell( 45284 ) )
   {
-    maelstrom_gain = player->find_spell( 214816 )->effectN( 1 ).resource( RESOURCE_MAELSTROM );
+    maelstrom_gain = player->find_spell( 190493 )->effectN( 4 ).resource( RESOURCE_MAELSTROM );
   }
 };
 
@@ -4603,7 +4605,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
-      maelstrom_gain = player->find_spell( 214815 )->effectN( 1 ).resource( RESOURCE_MAELSTROM );
+      maelstrom_gain = player->find_spell( 190493 )->effectN( 1 ).resource( RESOURCE_MAELSTROM );
     }
 
     if ( player->talent.exposed_elements->ok() && td( target )->debuff.exposed_elements->up() )
@@ -4764,6 +4766,7 @@ struct icefury_overload_t : public elemental_overload_spell_t
 {
   icefury_overload_t( shaman_t* p ) : elemental_overload_spell_t( p, "icefury_overload", p->find_spell( 219271 ) )
   {
+    maelstrom_gain = player->find_spell( 190493 )->effectN( 8 ).resource( RESOURCE_MAELSTROM );
   }
 };
 
@@ -4772,6 +4775,8 @@ struct icefury_t : public shaman_spell_t
   icefury_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "icefury", player, player->talent.icefury, options_str )
   {
+    maelstrom_gain = player->find_spell( 190493 )->effectN( 7 ).resource( RESOURCE_MAELSTROM );
+
     if ( player->mastery.elemental_overload->ok() )
     {
       overload = new icefury_overload_t( player );
