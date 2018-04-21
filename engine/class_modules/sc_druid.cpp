@@ -340,7 +340,6 @@ public:
     buff_t* the_emerald_dreamcatcher; // Legion Legendary
     buff_t* warrior_of_elune;
     buff_t* balance_tier18_4pc; // T18 4P Balance
-    buff_t* wax_and_wane;
     buff_t* solar_solstice; //T21 4P Balance
     haste_buff_t* astral_acceleration;
 
@@ -2146,15 +2145,6 @@ struct moonfire_t : public druid_spell_t
       }
 
       return tdm;
-    }
-
-    virtual double action_da_multiplier() const override
-    {
-      double adm = druid_spell_t::action_da_multiplier();
-
-      adm *= 1.0 + p() -> buff.wax_and_wane -> stack_value();
-
-      return adm;
     }
 
     void tick( dot_t* d ) override
@@ -5200,21 +5190,12 @@ struct fury_of_elune_t : public druid_spell_t
     ground_aoe = true;
     add_child( fury_of_elune );
 
-    dot_duration = sim -> expected_iteration_time > timespan_t::zero() ?
-      2 * sim -> expected_iteration_time :
-      2 * sim -> max_time * ( 1.0 + sim -> vary_combat_length ); // "infinite" duration
-
-    // Tick cost is proportional to base tick time.
-    base_costs_per_tick[ RESOURCE_ASTRAL_POWER ] *= base_tick_time.total_seconds();
+    dot_duration = timespan_t::from_millis(8000);
   }
 
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    bool refresh = get_dot( s -> target ) -> is_ticking();
-
-    druid_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) && ! refresh )
+      druid_spell_t::execute();
       p() -> buff.fury_of_elune -> trigger();
   }
 
@@ -5223,36 +5204,6 @@ struct fury_of_elune_t : public druid_spell_t
     druid_spell_t::tick( d );
 
     fury_of_elune -> execute();
-  }
-
-  void cancel() override
-  {
-    druid_spell_t::cancel();
-
-    if ( dot_t* dot = find_dot( target ) )
-      dot -> cancel();
-
-    p() -> buff.fury_of_elune -> decrement();
-  }
-};
-
-struct fury_of_elune_move_t : public druid_spell_t
-{
-  fury_of_elune_move_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "move_fury_of_elune", player, player -> find_spell( 211547 ), options_str )
-  {}
-
-  bool ready() override
-  {
-    if ( ! p() -> buff.fury_of_elune -> check() )
-      return false;
-
-    if ( ! sim -> distance_targeting_enabled )
-      return false;
-
-    bool r = druid_spell_t::ready();
-
-    return r;
   }
 };
 
@@ -5863,15 +5814,6 @@ struct sunfire_t : public druid_spell_t
       trigger_shooting_stars( d -> state );
 
       trigger_balance_tier18_2pc();
-    }
-
-    virtual double action_da_multiplier() const override
-    {
-      double adm = druid_spell_t::action_da_multiplier();
-
-      adm *= 1.0 + p()->buff.wax_and_wane->stack_value();
-
-      return adm;
     }
   };
 
@@ -6709,7 +6651,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
   if ( name == "moonfire_cat" ||
        name == "lunar_inspiration" )      return new      lunar_inspiration_t( this, options_str );
-  if ( name == "move_fury_of_elune"     ) return new     fury_of_elune_move_t( this, options_str );
   if ( name == "new_moon"               ) return new               new_moon_t( this, options_str );
   if ( name == "proc_sephuz"            ) return new            proc_sephuz_t( this, options_str );
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
@@ -7200,7 +7141,7 @@ void druid_t::create_buffs()
   buff.celestial_alignment   = new celestial_alignment_buff_t( *this );
 
   buff.fury_of_elune      = buff_creator_t( this, "fury_of_elune", spell_data_t::nil() )
-                               .max_stack( 10 ); // Tracking buff for APL use
+                               .duration(timespan_t::from_millis(8000)); // Tracking buff for APL use
 
   buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
                                .default_value( find_spell( 164547 ) -> effectN( 1 ).percent()
@@ -7217,9 +7158,6 @@ void druid_t::create_buffs()
                                .max_stack( find_spell( 164545 ) -> max_stacks() + spec.starsurge_2 -> effectN( 1 ).base_value() );
 
   buff.warrior_of_elune      = new warrior_of_elune_buff_t( *this );
-
-  buff.wax_and_wane          = buff_creator_t( this, "wax_and_wane", find_spell( 239952 ) )
-                                .default_value(  find_spell( 239952 ) -> effectN(1).percent() );
 
   buff.astral_acceleration   = make_buff<haste_buff_t>(this, "astral_acceleration", find_spell(242232));
   buff.astral_acceleration->set_cooldown(timespan_t::zero())
@@ -8458,7 +8396,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buff.balance_tier18_4pc -> check_value();
 
     if ( buff.moonkin_form -> check() )
-      m *= 1.0 + buff.moonkin_form -> data().effectN( 8 ).percent();
+      m *= 1.0 + buff.moonkin_form -> data().effectN( 9 ).percent();
   }
 
   // Tiger's Fury and Savage Roar are player multipliers. Their "snapshotting" for cat abilities is handled in cat_attack_t.
