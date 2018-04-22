@@ -12,7 +12,7 @@ set simcversion=735-02
 set SIMCAPPFULLVERSION=7.3.5.02
 :: For bumping the minor version, just change the above lines. 
 
-set qt_dir=C:\Qt\5.10.1\
+set qt_dir=C:\Qt\5.9.5\
 set visualstudio=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\
 set MSBUILDDIR=C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\
 cd ..
