@@ -5284,7 +5284,7 @@ struct full_moon_t : public druid_spell_t
 {
   bool radiant_moonlight;
   full_moon_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "full_moon", player, player -> find_spell( 202771 ), options_str ), radiant_moonlight(false)
+    druid_spell_t( "full_moon", player, player -> find_spell(274283), options_str ), radiant_moonlight(false)
   {
     aoe = -1;
     split_aoe_damage = true;
@@ -5340,7 +5340,7 @@ struct full_moon_t : public druid_spell_t
 struct half_moon_t : public druid_spell_t
 {
   half_moon_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "half_moon", player, player -> find_spell( 202768 ), options_str )
+    druid_spell_t( "half_moon", player, player -> find_spell(274282), options_str )
   {
     cooldown = player -> cooldown.moon_cd;
   }
