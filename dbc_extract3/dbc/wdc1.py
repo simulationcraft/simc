@@ -468,8 +468,8 @@ class RecordParser:
 
         # Sanity check parsing when offset map is not used
         if not self.parser().has_offset_map() and (unparsed_bytes < 0 or unparsed_bytes > 3):
-            raise ValueError('Parse error: parsed_bytes={}, bytes_left={}, record={}, data={}, remains={}'.format(
-                record_offset, unparsed_bytes, size, parsed_data,
+            raise ValueError('Parse error: file={}, parsed_bytes={}, bytes_left={}, record={}, data={}, remains={}'.format(
+                self.parser().file_name(), record_offset, unparsed_bytes, size, parsed_data,
                 binascii.hexlify(data[offset + record_offset:offset + size])))
 
         return parsed_data
@@ -1348,7 +1348,7 @@ class WDC1Parser(DBCParserBase):
         if not super().open():
             return False
 
-        if self.records == 0:
+        if self.empty_file():
             return True
 
         if not self.build_parser():

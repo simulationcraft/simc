@@ -179,7 +179,7 @@ class WDC2Parser(WDC1Parser):
             fields.append('id_block_size={}'.format(self.id_block_size))
             fields.append('key_block_size={}'.format(self.key_block_size))
 
-        if self.records != 0:
+        if not self.empty_file():
             if self.column_info_block_size > 0: fields.append('ofs_column_info_block={}'.format(self.column_info_block_offset))
             if not self.has_offset_map():       fields.append('ofs_data={}'.format(self.data_offset))
             # Offsets to blocks

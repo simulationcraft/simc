@@ -26,7 +26,10 @@ class XFTHParser(DBCParserBase):
         self.entries = {}
         self.parsers = {}
 
-        # See that file exists already
+    # Never consider hotfix cache "empty"
+    def empty_file(self):
+        return False
+
     def get_string(self, offset, record_id, field_index):
         if offset == 0:
             return None

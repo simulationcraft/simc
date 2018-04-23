@@ -47,6 +47,9 @@ class DBCParserBase:
     def name(self):
         return os.path.basename(self.file.name).split('.')[0].replace('-', '_').lower()
 
+    def empty_file(self):
+        return self.records == 0
+
     def parse_header(self):
         if not self.header_format:
             logging.error('%s: No header format defined', self.full_name())
@@ -93,7 +96,7 @@ class DBCParserBase:
         if not self.parse_header():
             return False
 
-        if self.records == 0:
+        if self.empty_file():
             return True
 
         if not self.is_magic():
