@@ -1065,15 +1065,17 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       114282, // Treant Form (Shapeshift)
            0,
     },
-    // Balance tree, 20 abilities
+    // Balance tree, 22 abilities
     {
        22812, // Barkskin
       194223, // Celestial Alignment
       122114, // Chosen of Elune
       202771, // Full Moon (Artifact)
+      274283, // Full Moon
       211547, // Fury of Elune
       203001, // Goldrinn's Fang
       202768, // Half Moon (Artifact)
+      274282, // Half Moon
        29166, // Innervate
       194153, // Lunar Strike (Lunar)
        24858, // Moonkin Form
