@@ -337,7 +337,8 @@ Attributes       : ....x... ........ ....x... ........   ...x...x ........ .....
                  : Stop attacks (20)
 Effects          :
 #2 (id=267052)   : School Damage (2): chromatic
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.20475 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20475 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : Unleash an eruption of fel energy, dealing $s2 Chaos damage and disorienting all nearby enemies for $d. Damage will cancel the effect.
 
 Each enemy disoriented by Chaos Nova has a $s1% chance to generate a Lesser Soul Fragment.

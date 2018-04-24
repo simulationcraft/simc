@@ -2311,7 +2311,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=140699)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.08518 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08518 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=150546)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards | Mechanic: Snare | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc117050
@@ -2330,7 +2331,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=150477)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.08518 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08518 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=150547)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 0 - 50 yards | Mechanic: Snare | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc117050
@@ -2454,7 +2456,8 @@ Attributes       : ........ ........ x....x.x ........   ........ ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=170318)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.26536 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26536 | Target: Unknown(25)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : Deals $s1 physical damage.
 
 Name             : Flare (id=132950) [Spell Family (9)] 
@@ -3102,7 +3105,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=224434)   : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 1 (avg=0, dl=0.15) | AP Coefficient: 0.08190 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (avg=0, dl=0.15) | AP Coefficient: 0.08190 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc159788
 
 Name             : Steel Trap (id=162480) [Spell Family (9)] 
@@ -4466,7 +4470,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=305648)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.31200 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.31200 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : Deals poison damage to the target.
 
 Name             : Titan's Thunder (Artifact) (id=207068) [Spell Family (9)] 

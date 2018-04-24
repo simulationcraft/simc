@@ -268,7 +268,8 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=126904)   : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=630)      : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Radius: 8 yards | Mechanic: Snare | Target: AOE enemy (instant) (16)
 Description      : Calls down a pillar of fire, burning all enemies within the area for $s1 Fire damage and reducing their movement speed by $s2% for $d.
@@ -912,7 +913,8 @@ Effects          :
 Description      : Blasts enemies in a $a1 yard radius with frost, freezing them in place for up to $d. Damage caused may interrupt the effect.
 Tooltip          : Frozen in place.
 
-Name             : Blood Fury (Racial) (id=33702) 
+Name             : Blood Fury (Racial) (id=33702) [Scaling Spell (-1)] 
+Hotfixed         : Scaling Spell (-8 -> -1)
 Class            : Mage, Warlock
 Race             : Orc (0x2)
 School           : Physical
@@ -928,9 +930,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=118955)   : Apply Aura (6) | Modify Healing Power (135)
-                   Base Value: 0 | Scaled Value: 0 (avg=1.32) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Target: Self (1)
 #2 (id=23584)    : Apply Aura (6) | Damage Done (13)
-                   Base Value: 0 | Scaled Value: 238 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self (1)
 Description      : Increases your spell power by $s2 for $d.
 Tooltip          : Spell power increased by $s2.
 
@@ -1082,7 +1084,8 @@ Effects          :
 #1 (id=36375)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=324006)   : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.14000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc44457
 
 Name             : Fingers of Frost (id=44544) [Spell Family (3)] 
@@ -1709,7 +1712,8 @@ Attributes       : ........ ........ x......x x..x....   .....x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=85629)    : School Damage (2): frost
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.10000 | Radius: 10 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | Radius: 10 yards | Target: AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc84714
 Tooltip          : Movement slowed by $s1%.
 
@@ -2068,7 +2072,8 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=128479)   : Apply Aura (6) | Periodic Damage (3): arcane every 1 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.01422 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01422 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=220453)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Enemy (6)
 Description      : Places a Nether Tempest on the target which deals $114923o1 Arcane damage over $114923d to the target and ${$114954m1*12/$t1} to all enemies within 10 yards. Limit 1 target.
@@ -2092,7 +2097,8 @@ Attributes       : ........ ........ x.x....x x..x....   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=128532)   : School Damage (2): arcane
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.01125 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.01125 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc114923
 
 Name             : Rune of Power (id=116011) [Spell Family (3)] 
@@ -2612,7 +2618,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=201127)   : School Damage (2): frost
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.00100 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.00100 | Chain Multiplier: 0.8 | Chain Targets: 1 | Target: Unknown(25)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc76613
 
 Name             : Meteor (id=153561) [Spell Family (3)] 
@@ -2648,7 +2655,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic effect affected by haste (173), Requires line of sight (186)
 Effects          :
 #1 (id=212829)   : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 2.60000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.60000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=215527)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 175396 | Target: Unknown(87)
 Description      : $@spelldesc153561
@@ -2966,7 +2974,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220362)   : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.45000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=220363)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Radius: 0 - 8 yards | Mechanic: Snare | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Causes an explosion around yourself, dealing $s1 Fire damage to all enemies within $A1 yards, knocking them back, and reducing movement speed by $s2% for $d.
@@ -2992,7 +3001,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=220383)   : School Damage (2): frost
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=220384)   : Apply Aura (6) | Root (455)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Root | Target: Unknown(63) -> AOE enemy (instant) (16)
 #3 (id=220385)   : Dummy (3)
@@ -3976,7 +3986,8 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=303428)   : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.06000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : Burning enemies for $s1 Fire damage.
 
 Name             : Icicles (id=205473) [Spell Family (3)] 
@@ -4422,7 +4433,8 @@ Attributes       : ........ ........ x....... ..x.....   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=324014)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.06000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.06000 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=324015)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc44457
@@ -4545,7 +4557,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=337222)   : School Damage (2): arcane
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.08750 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.08750 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : Launches bolts of arcane energy at the enemy target, causing $s1 Arcane damage. 
 
 Name             : Flurry (id=228354) [Spell Family (3)] 
@@ -4567,7 +4580,8 @@ Effects          :
 #1 (id=343734)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=343735)   : School Damage (2): frost
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.34000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34000 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc44614
 Tooltip          : Movement slowed by $s1%.
 
@@ -4605,7 +4619,8 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344284)   : School Damage (2): frost
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.55000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55000 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc116
 
 Name             : Ice Lance (id=228598) [Scaling Spell (5), Spell Family (3)] 

@@ -815,7 +815,8 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=43101)    : School Damage (2): shadow
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.30000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : Deals $s1 Shadow damage$?s212744[ to all enemies within $A1 yds.][ and infects all enemies within $A1 yds with Blood Plague.
 
 |Tinterface\icons\spell_deathknight_bloodplague.blp:24|t |cFFFFFFFFBlood Plague|r
@@ -2985,7 +2986,8 @@ Effects          :
 #1 (id=215544)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | Radius: 12 yards | Target: Cone Front (104)
 #2 (id=215545)   : School Damage (2): shadowfrost
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.51761 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.51761 | Radius: 12 yards | Target: Cone Front (104)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc152279
 
 Name             : Defile (id=156000) [Spell Family (15)] 
@@ -3001,7 +3003,8 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=216887)   : School Damage (2): shadowfrost
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.09173 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09173 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=322756)   : Dummy (3)
                    Base Value: 66 | Scaled Value: 66
 Description      : $@spelldesc152280
@@ -3969,7 +3972,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=287339)   : School Damage (2): frost
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.05242 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05242 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc194909
 
 Name             : Festering Wound (id=195757) [Spell Family (15)] 
@@ -4759,7 +4763,8 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=306367)   : School Damage (2): frost
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.08190 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08190 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc207142
 
 Name             : Abomination's Might (id=207161) [Spell Family (15), Passive] 

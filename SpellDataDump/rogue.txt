@@ -1500,7 +1500,8 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=44107)    : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.20500 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20500 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=150470)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Sprays knives at all targets within $A1 yards, dealing $s1 Physical damage and applying your active poisons at their normal rate.
@@ -2721,7 +2722,8 @@ Effects          :
 #1 (id=210639)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=217580)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.57330 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.57330 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 #3 (id=217591)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=217594)   : Apply Aura (6) | Unknown(288)
@@ -3524,7 +3526,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=286896)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.12613 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12613 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=286897)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | Mechanic: Bleed | Target: Enemy (6)
 #3 (id=331338)   : Trigger Spell (64): Nightblade
@@ -3985,9 +3988,11 @@ Attributes       : ....x... ........ x....... ........   ....x... .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290720)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.18000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=290721)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.05733 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05733 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: Base Value (1 -> 0)
 #3 (id=344592)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Sprays shurikens at all targets within $A1 yards, dealing $s1 Physical damage.

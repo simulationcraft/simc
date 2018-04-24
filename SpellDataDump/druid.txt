@@ -1739,7 +1739,8 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68168)    : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.06224 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06224 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=312099)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self (1)
 Description      : Strikes all nearby enemies, dealing $s1 Bleed damage and an additional $192090o1 Bleed damage over $192090d. When applied from Bear Form, this effect can stack up to $192090u times.
@@ -1764,7 +1765,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=68268)    : School Damage (2): astral
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=289864)   : Trigger Spell (64): Lunar Empowerment
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164547 | Target: Self (1)
 #3 (id=289865)   : Trigger Spell (64): Solar Empowerment
@@ -2520,9 +2522,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=117262)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.06552 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06552 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=117263)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.03931 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03931 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an additional $o2 Bleed damage over $d.
 
 |cFFFFFFFFAwards $211141s1 combo $lpoint:points;.|r
@@ -3602,7 +3606,8 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=216427)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.15561 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15561 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc1822
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
@@ -4370,7 +4375,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=280098)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.60000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=280099)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: astral_power | Target: Self (1)
 Description      : Hurl a ball of solar energy at the target, dealing $s1 Nature damage.$?a197911[
@@ -4466,7 +4472,8 @@ Attributes       : ....x... ........ .....x.. ........   ........ .x...... .....
                  : Cannot dodge/parry/block (21), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=281782)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.02500 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.02500 | Mechanic: Bleed | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=301092)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Rejuvenation (774), Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Maul (6807), Moonfire (8921), Regrowth (8936), Swiftmend (18562), Ferocious Bite (22568), Maim (22570), Lifebloom (33763), Lifebloom (33778), Mangle (33917), Wild Growth (48438), Thrash (77758), Starsurge (78674), Pulverize (80313), Efflorescence (81269), Sunfire (93402), Cenarion Ward (102352), Germination (155675), Rake (155722), Tranquility (157982), Pulverize (158792), Moonfire (164812), Sunfire (164815), Maim (168877), Maim (168878), Maim (168879), Maim (168880), Maim (168881), Nature's Essence (189800), Dreamwalker (189853), Solar Wrath (190984), Starfall (191034), Starfall (191037), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Cultivation (200389), Brutal Slash (202028), Enraged Mangle (202085), Spring Blossoms (207386), Ashamane's Rip (210705), Swipe (213771), Mark of Shifting (224392), Echoing Stars (226104), Enraged Maul (236716)
@@ -4814,7 +4821,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=290376)   : School Damage (2): astral
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.25000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.25000 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=290377)   : Trigger Spell (64): Lunar Empowerment
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 164547 | Target: Self (1)
 #3 (id=290378)   : Trigger Spell (64): Solar Empowerment
@@ -5336,9 +5344,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=298295)   : School Damage (2): astral
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.52500 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.52500 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=298296)   : Apply Aura (6) | Periodic Damage (3): astral every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.17500 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.17500 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : Burns the target for $s1 Astral damage, and then an additional $o2 damage over $d.
 
 Stellar Flare benefits from Starfall's Stellar Empowerment.

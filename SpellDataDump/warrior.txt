@@ -459,7 +459,8 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=2203)     : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.39312 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.39312 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=357188)   : Dummy (3)
@@ -1161,7 +1162,8 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=44600)    : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.10221 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10221 | Radius: 8 yards | Target: AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc6544
 
 Name             : Heroic Throw (id=57755) [Spell Family (4)] 
@@ -1869,7 +1871,8 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=129821)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.14000 | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14000 | Mechanic: Bleed | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc115768
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -2185,7 +2188,8 @@ Effects          :
 #1 (id=160971)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=362434)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.11466 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11466 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc100
 
 Name             : Shockwave (id=132168) [Spell Family (4)] 
@@ -2669,7 +2673,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=217505)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.44226 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.44226 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc152277
 
 Name             : Stat Negation Aura - Strength DPS (id=162698) [Passive, Hidden] 
@@ -3362,7 +3367,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=297955)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.39312 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.39312 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : Instantly attack the target, causing $s1 damage and healing you for $202166s1% of your maximum health.
 
 Killing an enemy that yields experience or honor resets the cooldown of Impending Victory.

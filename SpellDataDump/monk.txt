@@ -198,7 +198,8 @@ Effects          :
 Description      : Heals the target for $s2% of the caster's total health over $d.
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
-Name             : Blood Fury (Racial) (id=33697) 
+Name             : Blood Fury (Racial) (id=33697) [Scaling Spell (-1)] 
+Hotfixed         : Scaling Spell (-8 -> -1)
 Class            : Shaman, Monk
 Race             : Orc (0x2)
 School           : Physical
@@ -214,11 +215,11 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 0 | Scaled Value: 476 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
 #2 (id=23582)    : Apply Aura (6) | Damage Done (13)
-                   Base Value: 0 | Scaled Value: 0 (avg=1.32) | Misc Value: 0x7e | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Misc Value: 0x7e | Target: Self (1)
 #3 (id=116811)   : Apply Aura (6) | Modify Healing Power (135)
-                   Base Value: 0 | Scaled Value: 0 (avg=1.32) | Misc Value: 126 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Misc Value: 126 | Target: Self (1)
 Description      : Increases your melee attack power by $s1 and your spell power by $s2 for $d.
 Tooltip          : Melee attack power increased by $s1.
 Spell power increased by $s2.
@@ -313,7 +314,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=108857)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.27027 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.27027 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=134420)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: chi | Target: Self (1)
 #3 (id=281299)   : Dummy (3)
@@ -1637,7 +1639,8 @@ Attributes       : ........ ........ ........ ........   ..x..... ......x. .....
                  : Channeled (34), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=134063)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.06994 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06994 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=225417)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Enemy (6)
 Description      : Channel Jade lightning, causing $o1 Nature damage over $117952d to the target$?a154436[, generating 1 Chi each time it deals damage,][] and sometimes knocking back melee attackers.
@@ -1958,7 +1961,8 @@ Effects          :
 #1 (id=150037)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=229522)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.85995 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85995 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 #3 (id=283420)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #4 (id=335940)   : Dummy (3)
@@ -2151,7 +2155,8 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   .x...... ........ ........ ........ 
 Effects          :
 #1 (id=155941)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.08789 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08789 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=155942)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | AP Coefficient: 0.14742 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc101545
@@ -2259,7 +2264,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=156720)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.28000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.28000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc123904
 
 Name             : Crackling Tiger Lightning Driver (id=123999) [Scaling Spell (6), Spell Family (53), Hidden] 
@@ -2493,7 +2499,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=157840)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.41250 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.41250 | Target: Friend (21)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Crane Heal (198756), Celestial Breath (199656), The Mists of Sheilun (199894), Sheilun's Gift (205406), Whispers of Shaohao (242400), Enveloping Mist (274062), Rising Mist (274912)
@@ -2920,7 +2927,8 @@ Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=171561)   : School Damage (2): nature
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.14202 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14202 | Target: Unknown(25)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=171562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 Description      : $@spelldesc115098
@@ -4217,7 +4225,8 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
                  : Channeled (34), Channeled (38), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=291816)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.16000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.16000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc193884
 Tooltip          : Healing for $w1 every $t1 sec.
 
@@ -4480,7 +4489,8 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
                  : Channeled (34), Channeled (38), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=310090)   : Apply Aura (6) | Periodic Heal (8): every 0.5 seconds
-                   Base Value: 1 | Scaled Value: 1 | Value Multiplier: 1 | SP Coefficient: 0.22500 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.22500 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=352117)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682)
@@ -4812,7 +4822,8 @@ Attributes       : ....x... ........ x....... .....x..   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=341557)   : School Damage (2): physical
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.16380 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16380 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : Stomps the ground, dealing $s1 Physical damage to all nearby enemies.
 
 Name             : Face Palm (id=227679) [Spell Family (53), Passive] 

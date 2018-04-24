@@ -1230,7 +1230,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=81809)    : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 1.40000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Target: Friend (21)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : An efficient spell, healing a friendly target for $s1.
 
 Name             : Inquisition (id=84963) [Spell Family (10)] 
@@ -1696,7 +1697,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=127310)   : Direct Heal (10)
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.82500 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.82500 | Target: Friend (21)
+                   Hotfixed: Base Value (1 -> 0)
 #2 (id=167446)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #3 (id=240995)   : Dummy (3)
@@ -2390,7 +2392,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=217570)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.02500 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.02500 | Target: Friend (21)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc114163
 Tooltip          : Healing $w1 health every $t2 sec.
 
@@ -4383,7 +4386,8 @@ Attributes       : ........ ........ x.x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=343604)   : School Damage (2): holy
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.75000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.75000 | Target: Enemy (6)
+                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc20271
 
 Name             : Blessed Hammer (id=229976) [Spell Family (10), Passive, Hidden] 
