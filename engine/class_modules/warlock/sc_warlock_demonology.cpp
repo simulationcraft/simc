@@ -48,10 +48,9 @@ namespace warlock {
         felstorm_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_melee_attack_t("felstorm", p, p -> find_spell(89751)) {
           parse_options(options_str);
           tick_zero = true;
-          hasted_ticks = false;
+          hasted_ticks = true;
           may_miss = false;
           may_crit = false;
-          weapon_multiplier = 0;
 
           dynamic_tick_action = true;
           tick_action = new felstorm_tick_t(p, data());
@@ -62,10 +61,14 @@ namespace warlock {
           hasted_ticks = false;
           may_miss = false;
           may_crit = false;
-          weapon_multiplier = 0;
 
           dynamic_tick_action = true;
           tick_action = new felstorm_tick_t(p, data());
+        }
+
+        timespan_t composite_dot_duration(const action_state_t* s) const override
+        {
+          return s->action->tick_time(s) * 5.0;
         }
 
         double action_multiplier() const override
@@ -112,8 +115,7 @@ namespace warlock {
       felguard_pet_t::felguard_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
         warlock_pet_t(sim, owner, name, PET_FELGUARD, name != "felguard") {
         action_list_str += "/felstorm";
-        action_list_str += "/legion_strike,if=cooldown.felstorm.remains";
-        owner_coeff.ap_from_sp = 0.5;
+        action_list_str += "/legion_strike,if=energy>=100";
       }
 
       void felguard_pet_t::init_base_stats() {
@@ -122,6 +124,12 @@ namespace warlock {
         melee_attack = new warlock_pet_melee_t(this);
         special_action = new felstorm_t(this,"");
         special_action_two = new axe_toss_t(this,"");
+      }
+
+      double felguard_pet_t::composite_player_multiplier(school_e school) const {
+        double m = warlock_pet_t::composite_player_multiplier(school);
+        m *= 1.1;
+        return m;
       }
 
       action_t* felguard_pet_t::create_action(const std::string& name, const std::string& options_str) {
@@ -274,8 +282,6 @@ namespace warlock {
       {
         action_list_str = "travel/dreadbite";
         regen_type = REGEN_DISABLED;
-        owner_coeff.health = 0.4;
-        owner_coeff.ap_from_sp = 0.6;
       }
 
       void dreadstalker_t::init_base_stats()
@@ -323,7 +329,6 @@ namespace warlock {
       vilefiend_t::vilefiend_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "vilefiend", PET_VILEFIEND)
       {
         action_list_str += "/travel";
-        owner_coeff.ap_from_sp = 1.14;
       }
 
       void vilefiend_t::init_base_stats()

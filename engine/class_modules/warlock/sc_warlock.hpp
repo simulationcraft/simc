@@ -659,7 +659,7 @@ namespace warlock
         {
           school = SCHOOL_PHYSICAL;
           weapon = &(p->main_hand_weapon);
-          weapon_multiplier = 0.72;
+          weapon_multiplier = 1.0;
           base_execute_time = weapon->swing_time;
           may_crit = background = repeating = true;
 
@@ -780,6 +780,7 @@ namespace warlock
         {
           felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felguard" );
           virtual void init_base_stats() override;
+          virtual double composite_player_multiplier(school_e school) const override;
           virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
         };
       }

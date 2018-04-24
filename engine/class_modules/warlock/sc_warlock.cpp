@@ -8,7 +8,7 @@ namespace warlock
     warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ) :
       pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_action_two( nullptr ), melee_attack( nullptr ), summon_stats( nullptr ), ascendance( nullptr )
     {
-      owner_coeff.ap_from_sp = 1.0;
+      owner_coeff.ap_from_sp = 0.5;
       owner_coeff.sp_from_sp = 1.0;
       owner_coeff.health = 0.5;
     }
@@ -30,8 +30,6 @@ namespace warlock
         warlock_pet_t(sim, owner, name, PET_FELHUNTER, name != "felhunter")
       {
         action_list_str = "shadow_bite";
-        owner_coeff.ap_from_sp = 0.9123;
-        owner_coeff.sp_from_sp = 0.9123;
       }
 
       void felhunter_pet_t::init_base_stats()
@@ -88,9 +86,8 @@ namespace warlock
       succubus_pet_t::succubus_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
         warlock_pet_t(sim, owner, name, PET_SUCCUBUS, name != "succubus")
       {
+        main_hand_weapon.swing_time = timespan_t::from_seconds(3.0);
         action_list_str = "lash_of_pain";
-        owner_coeff.ap_from_sp = 0.5;
-        owner_coeff.ap_from_sp *= 1.2;
       }
 
       void succubus_pet_t::init_base_stats()
@@ -124,7 +121,6 @@ namespace warlock
         warlock_pet_t(sim, owner, name, PET_VOIDWALKER, name != "voidwalker")
       {
         action_list_str = "torment";
-        owner_coeff.ap_from_sp *= 1.2; // PTR
       }
 
       void voidwalker_pet_t::init_base_stats()
@@ -153,7 +149,6 @@ namespace warlock
       stamina_per_owner = 0;
 
       main_hand_weapon.type = WEAPON_BEAST;
-
       main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     }
 
