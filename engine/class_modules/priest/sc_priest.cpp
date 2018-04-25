@@ -617,7 +617,7 @@ void priest_t::create_cooldowns()
   cooldowns.silence           = get_cooldown( "silence" );
   cooldowns.mind_blast        = get_cooldown( "mind_blast" );
   // cooldowns.shadow_word_death = get_cooldown( "shadow_word_death" );
-  cooldowns.shadow_word_void = get_cooldown( "shadow_word_void" );
+  // cooldowns.shadow_word_void = get_cooldown( "shadow_word_void" );
   cooldowns.void_bolt        = get_cooldown( "void_bolt" );
   cooldowns.mind_bomb        = get_cooldown( "mind_bomb" );
   cooldowns.psychic_horror   = get_cooldown( "psychic_horror" );

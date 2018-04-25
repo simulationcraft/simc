@@ -68,7 +68,9 @@ private:
 
 public:
   mind_blast_t( priest_t& player, const std::string& options_str )
-    : priest_spell_t( "mind_blast", player, player.find_class_spell( "Mind Blast" ) )
+    : priest_spell_t( "mind_blast", player, player.talents.shadow_word_void->ok() 
+                                    ? player.find_talent_spell( "Shadow Word: Void" )
+                                    : player.find_class_spell( "Mind Blast" )  )
   {
     parse_options( options_str );
     is_sphere_of_insanity_spell = true;
@@ -89,12 +91,14 @@ public:
     {
       crit_bonus_multiplier *= 1.0 + priest().sets->set( PRIEST_SHADOW, T21, B2 )->effectN( 1 ).percent();
     }
-    background = ( priest().talents.shadow_word_void->ok() );
+    //background = ( priest().talents.shadow_word_void->ok() );
   }
 
   void init() override
   {
-    if ( priest().active_items.mangazas_madness && priest().cooldowns.mind_blast->charges == 1 )
+    if (    priest().active_items.mangazas_madness 
+         && priest().cooldowns.mind_blast->charges == 1 
+         && !priest().talents.shadow_word_void->ok() )
     {
       priest().cooldowns.mind_blast->charges +=
           priest().active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
@@ -172,142 +176,7 @@ public:
     timespan_t cd = priest_spell_t::cooldown_base_duration( cooldown );
     if ( priest().buffs.voidform->check() )
     {
-      cd += -timespan_t::from_seconds( 1.5 );  // still hardcoded N1gh7h4wk 2018/01/26
-    }
-    return cd;
-  }
-
-  void update_ready( timespan_t cd_duration ) override
-  {
-    priest().buffs.voidform->up();  // Benefit tracking
-
-    // Shadowy Insight has proc'd during the cast of Mind Blast, the cooldown reset is deferred to the finished cast,
-    // instead of "eating" it.
-    if ( priest().buffs.shadowy_insight->check() )
-    {
-      cd_duration            = timespan_t::zero();
-      cooldown->last_charged = sim->current_time();
-
-      if ( sim->debug )
-      {
-        sim->out_debug.printf(
-            "%s shadowy insight proc occured during %s cast. Deferring "
-            "cooldown reset.",
-            priest().name(), name() );
-      }
-    }
-
-    priest_spell_t::update_ready( cd_duration );
-  }
-};
-
-struct shadow_word_void_t final : public priest_spell_t
-{
-  // TODO: Make sure that this replaces Mind Blast somehow
-private:
-  double insanity_gain;
-
-public:
-  shadow_word_void_t( priest_t& player, const std::string& options_str )
-    : priest_spell_t( "shadow_word_void", player, player.find_talent_spell( "Shadow Word: Void" ) )
-  {
-    parse_options( options_str );
-    is_sphere_of_insanity_spell = true;
-    is_mastery_spell            = true;
-
-    insanity_gain = data().effectN( 2 ).resource( RESOURCE_INSANITY );
-    insanity_gain *= ( 1.0 + priest().talents.fortress_of_the_mind->effectN( 2 ).percent() );
-    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
-
-    spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
-
-    if ( player.artifact.mind_shattering.rank() )
-    {
-      base_multiplier *= 1.0 + player.artifact.mind_shattering.percent();
-    }
-
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T21, B2 ) )
-    {
-      crit_bonus_multiplier *= 1.0 + priest().sets->set( PRIEST_SHADOW, T21, B2 )->effectN( 1 ).percent();
-    }
-  }
-
-  void init() override
-  {
-    priest().cooldowns.shadow_word_void->hasted = true;
-
-    priest_spell_t::init();
-  }
-
-  void schedule_execute( action_state_t* s ) override
-  {
-    priest_spell_t::schedule_execute( s );
-
-    priest().buffs.shadowy_insight->expire();
-  }
-
-  virtual double composite_crit_chance() const override
-  {
-    double c = priest_spell_t::composite_crit_chance();
-
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) && priest().buffs.overwhelming_darkness->check() )
-    {
-      c += ( priest().buffs.overwhelming_darkness->check() ) *
-           ( priest().buffs.overwhelming_darkness->data().effectN( 1 ).percent() / 2.0 );
-    }
-
-    return c;
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest().buffs.power_overwhelming->trigger();
-    priest().buffs.overwhelming_darkness->up();  // benefit tracking
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( state );
-
-    if ( priest().buffs.empty_mind->check() )
-    {
-      d *= 1.0 + ( priest().buffs.empty_mind->check() * priest().buffs.empty_mind->data().effectN( 1 ).percent() );
-    }
-
-    return d;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    double temp_gain = insanity_gain + ( priest().buffs.empty_mind->stack() *
-                                         priest().buffs.empty_mind->data().effectN( 2 ).percent() );
-
-    priest().generate_insanity( temp_gain, priest().gains.insanity_shadow_word_void, s->action );
-    priest().buffs.empty_mind->expire();
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( priest().buffs.shadowy_insight->check() )
-    {
-      return timespan_t::zero();
-    }
-
-    timespan_t et = priest_spell_t::execute_time();
-
-    return et;
-  }
-
-  timespan_t cooldown_base_duration( const cooldown_t& cooldown ) const override
-  {
-    timespan_t cd = priest_spell_t::cooldown_base_duration( cooldown );
-    if ( priest().buffs.voidform->check() )
-    {
-      cd += priest().buffs.voidform->data().effectN( 6 ).time_value();
+      cd += priest().buffs.voidform->data().effectN(6).time_value();
     }
     return cd;
   }
@@ -2278,14 +2147,7 @@ action_t* priest_t::create_action_shadow( const std::string& name, const std::st
   }
   if ( ( name == "mind_blast" ) || ( name == "shadow_word_void" ) )
   {
-    if ( talents.shadow_word_void->ok() )
-    {
-      return new shadow_word_void_t( *this, options_str );
-    }
-    else
-    {
-      return new mind_blast_t( *this, options_str );
-    }
+    return new mind_blast_t( *this, options_str );    
   }
 
   return nullptr;
