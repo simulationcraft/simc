@@ -4618,14 +4618,12 @@ void hunter_t::create_buffs()
 
   buffs.moknathal_tactics =
     make_buff( this, "moknathal_tactics", talents.way_of_the_moknathal -> effectN( 1 ).trigger() )
-    ->set_default_value( find_spell( 201081 ) -> effectN( 1 ).percent() )
-    ->set_max_stack( find_spell( 201081 ) -> max_stacks() );
+    ->set_default_value( find_spell( 201081 ) -> effectN( 1 ).percent() );
 
   buffs.mongoose_fury =
     make_buff( this, "mongoose_fury", find_spell( 190931 ) )
     ->set_default_value( find_spell( 190931 ) -> effectN( 1 ).percent() )
-    ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->set_max_stack( find_spell( 190931 ) -> max_stacks() );
+    ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   buffs.sentinels_sight =
     make_buff( this, "sentinels_sight", find_spell( 208913 ) )
