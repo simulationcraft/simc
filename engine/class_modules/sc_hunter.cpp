@@ -3493,23 +3493,24 @@ struct sentinel_t : public hunter_spell_t
 struct summon_pet_t: public hunter_spell_t
 {
   std::string pet_name;
+  bool opt_disabled;
   pet_t* pet;
+
   summon_pet_t( hunter_t* player, const std::string& options_str ):
     hunter_spell_t( "summon_pet", player ),
-    pet( nullptr )
+    opt_disabled( false ), pet( nullptr )
   {
     harmful = may_hit = false;
     callbacks = false;
     ignore_false_positive = true;
     pet_name = options_str.empty() ? p() -> summon_pet_str : options_str;
+    opt_disabled = util::str_compare_ci( pet_name, "disabled" );
   }
 
   bool init_finished() override
   {
-    if ( ! pet )
-    {
+    if ( ! pet && ! opt_disabled )
       pet = player -> find_pet( pet_name );
-    }
 
     if ( ! pet && p() -> specialization() != HUNTER_MARKSMANSHIP )
     {
@@ -3531,7 +3532,7 @@ struct summon_pet_t: public hunter_spell_t
 
   bool ready() override
   {
-    if ( p() -> active.pet == pet || p() -> talents.lone_wolf -> ok() )
+    if ( opt_disabled || p() -> active.pet == pet )
       return false;
 
     return hunter_spell_t::ready();
@@ -4378,7 +4379,8 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
 
 void hunter_t::create_pets()
 {
-  create_pet( summon_pet_str, summon_pet_str );
+  if ( !util::str_compare_ci( summon_pet_str, "disabled" ) )
+    create_pet( summon_pet_str, summon_pet_str );
 
   if ( talents.dire_beast -> ok() )
     pets.dire_beast = new pets::dire_critter_t( this  );
