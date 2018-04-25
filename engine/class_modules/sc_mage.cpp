@@ -3027,12 +3027,11 @@ struct evocation_t : public arcane_mage_spell_t
     parse_options( options_str );
 
     // TODO: Let the user select the granularity (for early interrupts).
-    base_tick_time    = timespan_t::from_seconds( 1.0 );
+    base_tick_time    = timespan_t::from_seconds( 0.5 );
     channeled         = true;
     dot_duration      = data().duration();
     harmful           = false;
     hasted_ticks      = false;
-    tick_zero         = true;
     ignore_false_positive = true;
 
     cooldown -> duration *= 1.0 + p -> spec.evocation_2 -> effectN( 1 ).percent();
