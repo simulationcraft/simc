@@ -515,7 +515,8 @@ unsigned item_t::item_level() const
     return std::min( (unsigned) sim -> scale_to_itemlevel, ilvl );
 
   return parsed.item_level == 0
-         ? static_cast<unsigned>(dbc::item_level_squish( ilvl, player -> dbc.ptr ))
+         //? static_cast<unsigned>(dbc::item_level_squish( ilvl, player -> dbc.ptr ))
+         ? ilvl
          : parsed.item_level;
 }
 
