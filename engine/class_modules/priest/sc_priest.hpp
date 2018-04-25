@@ -709,22 +709,17 @@ namespace fiend
  */
 struct base_fiend_pet_t : public priest_pet_t
 {
-  struct buffs_t
-  {
-    propagate_const<buff_t*> shadowcrawl;
-  } buffs;
 
   struct gains_t
   {
     propagate_const<gain_t*> fiend;
   } gains;
 
-  propagate_const<action_t*> shadowcrawl_action;
 
   double direct_power_mod;
 
   base_fiend_pet_t( sim_t* sim, priest_t& owner, pet_e pt, const std::string& name )
-    : priest_pet_t( sim, owner, name, pt ), buffs(), gains(), shadowcrawl_action( nullptr ), direct_power_mod( 0.0 )
+    : priest_pet_t( sim, owner, name, pt ), gains(), direct_power_mod( 0.0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
@@ -736,14 +731,7 @@ struct base_fiend_pet_t : public priest_pet_t
   virtual double insanity_gain() const       = 0;
 
   void init_action_list() override;
-
-  void create_buffs() override
-  {
-    priest_pet_t::create_buffs();
-
-    buffs.shadowcrawl = buff_creator_t( this, "shadowcrawl", find_pet_spell( "Shadowcrawl" ) );
-  }
-
+  
   void init_gains() override
   {
     priest_pet_t::init_gains();
@@ -774,18 +762,6 @@ struct base_fiend_pet_t : public priest_pet_t
 
     resources.initial[ RESOURCE_MANA ] = owner->resources.max[ RESOURCE_MANA ];
     resources.current = resources.max = resources.initial;
-  }
-
-  void summon( timespan_t duration ) override
-  {
-    priest_pet_t::summon( duration );
-
-    if ( shadowcrawl_action )
-    {
-      // Ensure that it gets used after the first melee strike. In the combat logs that happen at the same time, but the
-      // melee comes first.
-      shadowcrawl_action->cooldown->ready = sim->current_time() + timespan_t::from_seconds( 0.001 );
-    }
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override;
@@ -857,13 +833,7 @@ struct shadowcrawl_t final : public priest_pet_spell_t
   {
     return static_cast<base_fiend_pet_t&>( *player );
   }
-
-  void execute() override
-  {
-    priest_pet_spell_t::execute();
-
-    p().buffs.shadowcrawl->trigger();
-  }
+    
 };
 
 struct fiend_melee_t : public priest_pet_melee_t
@@ -885,16 +855,7 @@ struct fiend_melee_t : public priest_pet_melee_t
   {
     return static_cast<base_fiend_pet_t&>( *player );
   }
-
-  double action_multiplier() const override
-  {
-    double am = priest_pet_melee_t::action_multiplier();
-
-    am *= 1.0 + p().buffs.shadowcrawl->check() * p().buffs.shadowcrawl->data().effectN( 2 ).percent();
-
-    return am;
-  }
-
+  
   timespan_t execute_time() const override
   {
     if ( base_execute_time == timespan_t::zero() )
@@ -904,13 +865,6 @@ struct fiend_melee_t : public priest_pet_melee_t
       return timespan_t::zero();
 
     return base_execute_time * player->cache.spell_speed();
-  }
-
-  void execute() override
-  {
-    priest_pet_melee_t::execute();
-
-    p().buffs.shadowcrawl->up();  // uptime tracking
   }
 
   void impact( action_state_t* s ) override

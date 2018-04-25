@@ -535,8 +535,7 @@ void base_fiend_pet_t::init_action_list()
                            "pre-potting is done." );
 
     action_priority_list_t* def = get_action_priority_list( "default" );
-    def->add_action( "shadowcrawl" );
-    def->add_action( "wait_for_shadowcrawl" );
+    def->add_action( "wait" );
   }
 
   priest_pet_t::init_action_list();
@@ -544,17 +543,7 @@ void base_fiend_pet_t::init_action_list()
 
 action_t* base_fiend_pet_t::create_action( const std::string& name, const std::string& options_str )
 {
-  if ( name == "shadowcrawl" )
-  {
-    shadowcrawl_action = new actions::shadowcrawl_t( *this );
-    return shadowcrawl_action;
-  }
-
-  if ( name == "wait_for_shadowcrawl" )
-  {
-    return new wait_for_cooldown_t( this, "shadowcrawl" );
-  }
-
+  
   return priest_pet_t::create_action( name, options_str );
 }
 }  // namespace fiend
