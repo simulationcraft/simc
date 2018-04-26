@@ -99,6 +99,7 @@ protected:
   virtual void startDraggedTextTimer( int tab );
   virtual void startHoverTimer( int tab );
   virtual bool event( QEvent* e ) override;
+  virtual void mousePressEvent(QMouseEvent * event) override;
 public slots:
   void mouseHoverTimedout();
   void draggedTextTimedout();
