@@ -1958,14 +1958,6 @@ struct barrage_t: public hunter_spell_t
       radius = 0; //Barrage attacks all targets in front of the hunter, so setting radius to 0 will prevent distance targeting from using a 40 yard radius around the target.
       // Todo: Add in support to only hit targets in the frontal cone.
     }
-
-    void schedule_travel( action_state_t* s ) override {
-      // Simulate the random chance of hitting.
-      if ( rng().roll( 0.5 ) )
-        hunter_ranged_attack_t::schedule_travel( s );
-      else
-        action_state_t::release( s );
-    }
   };
 
   barrage_damage_t* primary;
