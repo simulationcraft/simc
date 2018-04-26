@@ -2002,7 +2002,7 @@ struct barrage_t: public hunter_spell_t
 struct multi_shot_t: public hunter_ranged_attack_t
 {
   multi_shot_t( hunter_t* p, const std::string& options_str ):
-    hunter_ranged_attack_t( "multishot", p, p -> find_class_spell( "Multi-Shot" ) )
+    hunter_ranged_attack_t( "multishot", p, p -> find_specialization_spell( "Multi-Shot" ) )
   {
     parse_options( options_str );
     may_proc_mm_feet = true;
