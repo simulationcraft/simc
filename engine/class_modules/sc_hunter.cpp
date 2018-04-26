@@ -505,6 +505,21 @@ public:
   {
     return target_data[target];
   }
+
+  std::vector<action_t*> background_actions;
+
+  template <typename T, typename... Ts>
+  T* get_background_action( const std::string& n, Ts&&... args )
+  {
+    auto it = range::find_if( background_actions, [ &n ]( action_t* a ) { return a -> name_str == n; } );
+    if ( it != background_actions.cend() )
+      return dynamic_cast<T*>( *it );
+
+    auto action = new T( n, this, std::forward<Ts>( args )... );
+    action -> background = true;
+    background_actions.push_back( action );
+    return action;
+  }
 };
 
 // Template for common hunter action code.
@@ -1947,8 +1962,8 @@ struct barrage_t: public hunter_spell_t
 {
   struct barrage_damage_t: public hunter_ranged_attack_t
   {
-    barrage_damage_t( hunter_t* player ):
-      hunter_ranged_attack_t( "barrage_primary", player, player -> talents.barrage -> effectN( 1 ).trigger() )
+    barrage_damage_t( const std::string& n, hunter_t* p ):
+      hunter_ranged_attack_t( n, p, p -> talents.barrage -> effectN( 1 ).trigger() )
     {
       background = true;
       dual = true;
@@ -1962,9 +1977,9 @@ struct barrage_t: public hunter_spell_t
 
   barrage_damage_t* primary;
 
-  barrage_t( hunter_t* player, const std::string& options_str ):
-    hunter_spell_t( "barrage", player, player -> talents.barrage ),
-    primary( new barrage_damage_t( player ) )
+  barrage_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "barrage", p, p -> talents.barrage ),
+    primary( p -> get_background_action<barrage_damage_t>( "barrage_damage" ) )
   {
     parse_options( options_str );
 
@@ -1978,7 +1993,7 @@ struct barrage_t: public hunter_spell_t
     tick_zero = true;
     travel_speed = 0.0;
 
-    starved_proc = player -> get_proc( "starved: barrage" );
+    starved_proc = p -> get_proc( "starved: barrage" );
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
@@ -2070,8 +2085,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
 struct chimaera_shot_impact_t: public hunter_ranged_attack_t
 {
-  chimaera_shot_impact_t( hunter_t* p, const char* name, const spell_data_t* s ):
-    hunter_ranged_attack_t( name, p, s )
+  chimaera_shot_impact_t( const std::string& n, hunter_t* p, const spell_data_t* s ):
+    hunter_ranged_attack_t( n, p, s )
   {
     dual = true;
     aoe = 2;
@@ -2088,15 +2103,15 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
   chimaera_shot_impact_t* frost;
   chimaera_shot_impact_t* nature;
 
-  chimaera_shot_t( hunter_t* player, const std::string& options_str ):
-    hunter_ranged_attack_t( "chimaera_shot", player, player -> talents.chimaera_shot ),
+  chimaera_shot_t( hunter_t* p, const std::string& options_str ):
+    hunter_ranged_attack_t( "chimaera_shot", p, p -> talents.chimaera_shot ),
     frost( nullptr ), nature( nullptr )
   {
     parse_options( options_str );
     callbacks = false;
-    frost = new chimaera_shot_impact_t( player, "chimaera_shot_frost", player -> find_spell( 171454 ) );
+    frost = p -> get_background_action<chimaera_shot_impact_t>( "chimaera_shot_frost", p -> find_spell( 171454 ) );
     add_child( frost );
-    nature = new chimaera_shot_impact_t( player, "chimaera_shot_nature", player -> find_spell( 171457 ) );
+    nature = p -> get_background_action<chimaera_shot_impact_t>( "chimaera_shot_nature", p -> find_spell( 171457 ) );
     add_child( nature );
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
   }
@@ -2339,7 +2354,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     if ( p -> talents.double_tap -> ok() )
     {
-      double_tap = new aimed_shot_secondary_t( "aimed_shot_double_tap", p );
+      double_tap = p -> get_background_action<aimed_shot_secondary_t>( "aimed_shot_double_tap" );
       add_child( double_tap );
     }
 
@@ -2556,8 +2571,8 @@ struct rapid_fire_t: public hunter_spell_t
 {
   struct rapid_fire_damage_t: public hunter_ranged_attack_t
   {
-    rapid_fire_damage_t( hunter_t* p ):
-      hunter_ranged_attack_t( "rapid_fire_damage", p, p -> find_spell( 257044 ) -> effectN( 2 ).trigger() )
+    rapid_fire_damage_t( const std::string& n, hunter_t* p ):
+      hunter_ranged_attack_t( n, p, p -> find_spell( 257044 ) -> effectN( 2 ).trigger() )
     {
       background = true;
       dual = true;
@@ -2580,7 +2595,7 @@ struct rapid_fire_t: public hunter_spell_t
 
   rapid_fire_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "rapid_fire", p, p -> find_spell( 257044 ) ),
-    damage( new rapid_fire_damage_t( p ) )
+    damage( p -> get_background_action<rapid_fire_damage_t>( "rapid_fire_damage" ) )
   {
     parse_options( options_str );
 
@@ -2646,8 +2661,8 @@ struct explosive_shot_t: public hunter_spell_t
 {
   struct explosive_shot_impact_t: hunter_ranged_attack_t
   {
-    explosive_shot_impact_t( hunter_t* p ):
-      hunter_ranged_attack_t( "explosive_shot_impact", p, p -> find_spell( 212680 ) )
+    explosive_shot_impact_t( const std::string& n, hunter_t* p ):
+      hunter_ranged_attack_t( n, p, p -> find_spell( 212680 ) )
     {
       background = true;
       dual = true;
@@ -2663,7 +2678,7 @@ struct explosive_shot_t: public hunter_spell_t
     travel_speed = 20.0;
     may_miss = false;
 
-    impact_action = new explosive_shot_impact_t( p );
+    impact_action = p -> get_background_action<explosive_shot_impact_t>( "explosive_shot_impact" );
     impact_action -> stats = stats;
   }
 };
@@ -3180,8 +3195,8 @@ struct moc_t : public hunter_spell_t
 {
   struct peck_t : public hunter_ranged_attack_t
   {
-    peck_t( hunter_t* player ) :
-      hunter_ranged_attack_t( "crow_peck", player, player -> find_spell( 131900 ) )
+    peck_t( const std::string& n, hunter_t* p ) :
+      hunter_ranged_attack_t( n, p, p -> find_spell( 131900 ) )
     {
       background = true;
       dual = true;
@@ -3207,9 +3222,9 @@ struct moc_t : public hunter_spell_t
 
   peck_t* peck;
 
-  moc_t( hunter_t* player, const std::string& options_str ) :
-    hunter_spell_t( "a_murder_of_crows", player, player -> talents.a_murder_of_crows ),
-    peck( new peck_t( player ) )
+  moc_t( hunter_t* p, const std::string& options_str ) :
+    hunter_spell_t( "a_murder_of_crows", p, p -> talents.a_murder_of_crows ),
+    peck( p -> get_background_action<peck_t>( "crow_peck" ) )
   {
     parse_options( options_str );
 
@@ -3221,7 +3236,7 @@ struct moc_t : public hunter_spell_t
 
     tick_zero = true;
 
-    starved_proc = player -> get_proc( "starved: a_murder_of_crows" );
+    starved_proc = p -> get_proc( "starved: a_murder_of_crows" );
   }
 
   void tick( dot_t* d ) override
