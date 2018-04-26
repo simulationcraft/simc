@@ -4953,6 +4953,31 @@ struct time_warp_t : public mage_spell_t
 
 // Arcane Mage "Burn" State Switch Action =====================================
 
+void report_burn_switch_error( action_t* a )
+{
+  sim_t* sim = a -> sim;
+
+  // Explicitly output this error message from all threads, so we always have an "error message"
+  // communicated to the user. Add it also to the parent's error list, so reporting will include
+  // it.
+  {
+    AUTO_LOCK( sim -> parent ? sim -> parent -> relatives_mutex : sim -> relatives_mutex );
+    auto s = fmt::sprintf( "%s %s infinite loop detected "
+                           "(no time passing between executes) at '%s'",
+                           a -> player -> name(), a -> name(), a -> signature_str.c_str());
+    util::replace_all( s, "\n", "" );
+    std::cerr << s << "\n";
+
+    if ( sim -> parent )
+    {
+      sim -> parent -> error_list.push_back( s );
+    }
+  }
+
+  sim -> cancel_iteration();
+  sim -> cancel();
+}
+
 struct start_burn_phase_t : public action_t
 {
   start_burn_phase_t( mage_t* p, const std::string& options_str ):
@@ -4972,25 +4997,7 @@ struct start_burn_phase_t : public action_t
     bool success = p -> burn_phase.enable( sim -> current_time() );
     if ( ! success )
     {
-      // Explicitly output this error message from all threads, so we always have an "error message"
-      // communicated to the user. Add it also to the parent's error list, so reporting will include
-      // it.
-      {
-        AUTO_LOCK( sim -> parent ? sim -> parent -> relatives_mutex : sim -> relatives_mutex );
-        auto s = fmt::sprintf( "%s start_burn_phase infinite loop detected "
-                               "(no time passing between executes) at '%s'",
-                       p -> name(), signature_str.c_str());
-        util::replace_all( s, "\n", "" );
-        std::cerr << s << "\n";
-
-        if ( sim -> parent )
-        {
-          sim -> parent -> error_list.push_back( s );
-        }
-      }
-
-      sim -> cancel_iteration();
-      sim -> cancel();
+      report_burn_switch_error( this );
       return;
     }
 
@@ -5033,10 +5040,7 @@ struct stop_burn_phase_t : public action_t
     bool success = p -> burn_phase.disable( sim -> current_time() );
     if ( ! success )
     {
-      sim -> errorf( "%s stop_burn_phase infinite loop detected (no time passing between executes) at '%s'",
-                     p -> name(), signature_str.c_str() );
-      sim -> cancel_iteration();
-      sim -> cancel();
+      report_burn_switch_error( this );
       return;
     }
 
