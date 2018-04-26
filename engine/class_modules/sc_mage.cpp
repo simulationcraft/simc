@@ -4975,15 +4975,18 @@ struct start_burn_phase_t : public action_t
       // Explicitly output this error message from all threads, so we always have an "error message"
       // communicated to the user. Add it also to the parent's error list, so reporting will include
       // it.
-      auto s = fmt::sprintf( "%s start_burn_phase infinite loop detected "
-                             "(no time passing between executes) at '%s'",
-                     p -> name(), signature_str.c_str());
-      util::replace_all( s, "\n", "" );
-      std::cerr << s << "\n";
-
-      if ( sim -> parent )
       {
-        sim -> parent -> error_list.push_back( s );
+        AUTO_LOCK( sim -> parent ? sim -> parent -> relatives_mutex : sim -> relatives_mutex );
+        auto s = fmt::sprintf( "%s start_burn_phase infinite loop detected "
+                               "(no time passing between executes) at '%s'",
+                       p -> name(), signature_str.c_str());
+        util::replace_all( s, "\n", "" );
+        std::cerr << s << "\n";
+
+        if ( sim -> parent )
+        {
+          sim -> parent -> error_list.push_back( s );
+        }
       }
 
       sim -> cancel_iteration();
