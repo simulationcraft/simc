@@ -911,7 +911,7 @@ class demon_hunter_action_t : public Base
 public:
   bool demonic_presence;
   bool hasted_gcd;
-  unsigned energize_die_sides;
+  double energize_delta;
 
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
                           const spell_data_t* s = spell_data_t::nil(),
@@ -919,7 +919,7 @@ public:
     : ab( n, p, s ),
     demonic_presence( ab::data().affected_by( p->mastery.demonic_presence->effectN( 1 ) ) ),
     hasted_gcd( false ),
-    energize_die_sides( 0 )
+    energize_delta( 0.0 )
   {
     ab::parse_options( o );
     ab::may_crit = true;
@@ -1026,9 +1026,9 @@ public:
   {
     double ea = ab::composite_energize_amount( s );
 
-    if ( energize_die_sides > 0 )
+    if ( energize_delta > 0 )
     {
-      ea += static_cast<int>( p()->rng().range( 1, 1 + energize_die_sides ) );
+      ea += static_cast<int>( p()->rng().range( 0, 1 + energize_delta ) - ( energize_delta / 2.0 ) );
     }
 
     return ea;
@@ -2464,7 +2464,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
 
     // Soul fragments consumed are capped for Spirit Bomb
     const int fragments_consumed = 
-      p()->consume_soul_fragments(soul_fragment::ALL, true, data().effectN(2).base_value());
+      p()->consume_soul_fragments(soul_fragment::ALL, true, (unsigned)data().effectN(2).base_value());
 
     action_state_t* damage_state = damage->get_state();
     damage->set_target( execute_state->target );
@@ -2996,14 +2996,19 @@ struct demons_bite_t : public demon_hunter_attack_t
   demons_bite_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "demons_bite", p, p -> find_class_spell( "Demon's Bite" ), options_str )
   {
-    // TODO: Die sides (old style randomization) is now gone, replaced by base value + "delta"
-    // coefficient
-    //energize_die_sides = data().effectN(3).die_sides();
+    energize_delta = energize_amount * data().effectN( 3 ).m_delta();
+  }
 
-    if ( p->talent.insatiable_hunger->ok() )
+  double composite_energize_amount( const action_state_t* s ) const override
+  {
+    double ea = demon_hunter_attack_t::composite_energize_amount( s );
+    
+    if ( p()->talent.insatiable_hunger->ok() )
     {
-      energize_die_sides += p->talent.insatiable_hunger->effectN( 1 ).base_value();
+      ea += static_cast<int>( p()->rng().range( 0, 1 + p()->talent.insatiable_hunger->effectN( 1 ).base_value() ) );
     }
+
+    return ea;
   }
 
   void execute() override
@@ -3041,9 +3046,7 @@ struct demon_blades_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( "demon_blades", p, p -> find_spell( 203796 ) )
   {
     background = true;
-    // TODO: Die sides (old style randomization) is now gone, replaced by base value + "delta"
-    // coefficient
-    //energize_die_sides = data().effectN(3).die_sides();
+    energize_delta = energize_amount * data().effectN( 3 ).m_delta();
   }
 
   void impact( action_state_t* s ) override
@@ -3337,7 +3340,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
     damage->execute();
 
     // Soul fragments consumed are capped for Soul Cleave
-    p()->consume_soul_fragments( soul_fragment::ALL, true, data().effectN( 3 ).base_value() );
+    p()->consume_soul_fragments( soul_fragment::ALL, true, (unsigned)data().effectN( 3 ).base_value() );
   }
 
   bool ready() override
