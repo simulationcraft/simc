@@ -7105,7 +7105,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
   // Firestarter expressions ==================================================
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "firestarter" ) )
   {
-    enum expr_type_e
+    enum firestarter_expr_type_e
     {
       FIRESTARTER_ACTIVE,
       FIRESTARTER_REMAINS
@@ -7114,9 +7114,9 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     struct firestarter_expr_t : public mage_expr_t
     {
       action_t* a;
-      expr_type_e type;
+      firestarter_expr_type_e type;
 
-      firestarter_expr_t( mage_t& m, const std::string& name, action_t* a, expr_type_e type ) :
+      firestarter_expr_t( mage_t& m, const std::string& name, action_t* a, firestarter_expr_type_e type ) :
         mage_expr_t( name, m ), a( a ), type( type )
       { }
 
@@ -7165,7 +7165,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
   // Temporal Flux expressions ================================================
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "temporal_flux_delay" ) )
   {
-    enum expr_type_e
+    enum temporal_flux_expr_type_e
     {
       DELAY_ACTIVE,
       DELAY_REMAINS
@@ -7173,9 +7173,9 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
 
     struct temporal_flux_expr_t : public mage_expr_t
     {
-      expr_type_e type;
+      temporal_flux_expr_type_e type;
 
-      temporal_flux_expr_t( mage_t& m, const std::string& name, expr_type_e type ) :
+      temporal_flux_expr_t( mage_t& m, const std::string& name, temporal_flux_expr_type_e type ) :
         mage_expr_t( name, m ), type( type )
       { }
 
