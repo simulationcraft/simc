@@ -10,7 +10,6 @@
 #include "sc_SimulationThread.hpp"
 #include "sc_SampleProfilesTab.hpp"
 #include "sc_SimulateTab.hpp"
-#include "sc_AutomationTab.hpp"
 #include "sc_WelcomeTab.hpp"
 #include "sc_AddonImportTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
@@ -171,7 +170,6 @@ void SC_MainWindow::loadHistory()
   http::cache_load( cache_file.toStdString() );
 
   optionsTab -> decodeOptions();
-  importTab -> automationTab -> decodeSettings();
   spellQueryTab -> decodeSettings();
 
   if ( simulateTab -> count() <= 1 )
@@ -210,7 +208,6 @@ void SC_MainWindow::saveHistory()
   settings.endGroup();// end user_data
 
   optionsTab -> encodeOptions();
-  importTab -> automationTab -> encodeSettings();
   spellQueryTab -> encodeSettings();
 }
 
@@ -354,6 +351,7 @@ void SC_MainWindow::createImportTab()
 
   newBattleNetView = new BattleNetImportWindow( this, true );
   importTab -> addTab( newBattleNetView, tr( "Battle.net" ) );
+
   importTab -> addTab( importTab -> addonTab, tr("Simc Addon") );
 
   SC_SampleProfilesTab* bisTab = new SC_SampleProfilesTab( this );
@@ -363,11 +361,10 @@ void SC_MainWindow::createImportTab()
   recentlyClosedTabImport = new SC_RecentlyClosedTabWidget( this, QBoxLayout::LeftToRight );
   recentlyClosedTabModel = recentlyClosedTabImport -> getModel();
   importTab -> addTab( recentlyClosedTabImport, tr( "Recently Closed" ) );
+  connect(recentlyClosedTabImport, SIGNAL(restoreTab(QWidget*, const QString&, const QString&, const QIcon&)),
+	  this, SLOT(simulateTabRestored(QWidget*, const QString&, const QString&, const QIcon&)));
 
-  importTab -> addTab( importTab -> automationTab, tr( "Automation" ) );
-  connect( importTab, SIGNAL( currentChanged( int ) ), this, SLOT( importTabChanged( int ) ) );
-  connect( recentlyClosedTabImport, SIGNAL( restoreTab( QWidget*, const QString&, const QString&, const QIcon& ) ),
-           this, SLOT( simulateTabRestored( QWidget*, const QString&, const QString&, const QIcon& ) ) );
+  connect(importTab, SIGNAL(currentChanged(int)), this, SLOT(importTabChanged(int)));
 
   // Commenting out until it is more fleshed out.
   // createCustomTab();
@@ -749,7 +746,6 @@ void SC_MainWindow::startSim()
     return;
   }
   optionsTab -> encodeOptions();
-  importTab -> automationTab -> encodeSettings();
 
   // Clear log text on success so users don't get confused if there is
   // an error from previous attempts
@@ -1064,7 +1060,6 @@ void SC_MainWindow::cmdLineTextEdited( const QString& s )
   case TAB_HELP:      cmdLineText = s; break;
   case TAB_LOG:       logFileText = s; break;
   case TAB_RESULTS:   resultsFileText = s; break;
-  default:  break;
   }
 }
 
@@ -1077,23 +1072,21 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
 {
   switch ( mainTab -> currentTab() )
   {
-  case TAB_WELCOME:   enqueueSim(); break;
-  case TAB_OPTIONS:   enqueueSim(); break;
-  case TAB_SIMULATE:  enqueueSim(); break;
-  case TAB_OVERRIDES: enqueueSim(); break;
-  case TAB_HELP:      enqueueSim(); break;
-  case TAB_IMPORT:
-    switch ( importTab -> currentTab() )
-    {
-    case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
-    default: break;
-    }
-    break;
-  case TAB_LOG: saveLog(); break;
-  case TAB_RESULTS: saveResults(); break;
-  case TAB_SPELLQUERY: spellQueryTab -> run_spell_query(); break;
-  case TAB_COUNT:
-    break;
+	  case TAB_WELCOME:   enqueueSim(); break;
+	  case TAB_OPTIONS:   enqueueSim(); break;
+	  case TAB_SIMULATE:  enqueueSim(); break;
+	  case TAB_OVERRIDES: enqueueSim(); break;
+	  case TAB_HELP:      enqueueSim(); break;
+	  case TAB_IMPORT:
+		switch ( importTab -> currentTab() )
+		{
+			case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
+		}
+		break;
+	  case TAB_LOG: saveLog(); break;
+	  case TAB_RESULTS: saveResults(); break;
+	  case TAB_SPELLQUERY: spellQueryTab -> run_spell_query(); break;
+	  case TAB_COUNT: break;
   }
 }
 
@@ -1121,22 +1114,14 @@ void SC_MainWindow::importButtonClicked()
 {
   switch ( importTab -> currentTab() )
   {
-  case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
-  case TAB_AUTOMATION:
-  {
-      QString profile = importTab -> automationTab -> startImport();
-      simulateTab -> add_Text( profile,  tr( "Automation Import" ) );
-      mainTab -> setCurrentTab( TAB_SIMULATE );
-  }
-      break;
-  case TAB_ADDON:
-  {
-      QString profile = importTab -> addonTab -> toPlainText();
-      simulateTab -> add_Text( profile,  tr( "SimC Addon Import" ) );
-      mainTab -> setCurrentTab( TAB_SIMULATE );
-  }
-      break;
-  default: break;
+	  case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
+	  case TAB_ADDON:
+	  {
+		  QString profile = importTab -> addonTab -> toPlainText();
+		  simulateTab -> add_Text( profile,  tr( "SimC Addon Import" ) );
+		  mainTab -> setCurrentTab( TAB_SIMULATE );
+	  }
+	  break;
   }
 }
 
@@ -1176,7 +1161,6 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
     {
     case TAB_OPTIONS:   break;
     case TAB_OVERRIDES: break;
-    default:            break;
     }
   }
 }
@@ -1217,11 +1201,11 @@ void SC_MainWindow::mainTabChanged( int index )
 
   switch ( index )
   {
-  case TAB_WELCOME:
-  case TAB_OPTIONS:
-  case TAB_SIMULATE:
-  case TAB_OVERRIDES:
-  case TAB_HELP:      break;
+  case TAB_WELCOME:		break;
+  case TAB_OPTIONS:		break;
+  case TAB_SIMULATE:	break;
+  case TAB_OVERRIDES:	break;
+  case TAB_HELP:		break;
   case TAB_LOG:       cmdLine -> setCommandLineText( TAB_LOG, logFileText ); break;
   case TAB_IMPORT:
     importTabChanged( importTab->currentIndex() );
@@ -1231,15 +1215,13 @@ void SC_MainWindow::mainTabChanged( int index )
     break;
   case TAB_SPELLQUERY:
     break;
-  default: assert( 0 );
+  default: assert( 0 ); break;
   }
 }
 
 void SC_MainWindow::importTabChanged( int index )
 {
   if ( index == TAB_BIS ||
-       index == TAB_CUSTOM ||
-       index == TAB_AUTOMATION ||
        index == TAB_RECENT ||
        index == TAB_ADDON ||
        index == TAB_IMPORT_NEW )
@@ -1374,7 +1356,6 @@ void SC_MainWindow::currentlyViewedTabCloseRequest()
     resultsTab -> TabCloseRequest( resultsTab -> currentIndex() );
   }
   break;
-  default: break;
   }
 }
 
@@ -1494,7 +1475,6 @@ void SC_SingleResultTab::save_result()
     defaultDestination = "results_json.json"; extension = "json"; break;
   case TAB_PLOTDATA:
     defaultDestination = "results_plotdata.csv"; extension = "csv"; break;
-  default: break;
   }
   destination = defaultDestination;
   QString savePath = mainWindow -> ResultsDestDir;
@@ -1539,9 +1519,9 @@ void SC_SingleResultTab::save_result()
       }
       break;
     }
-      case TAB_TEXT:
-      case TAB_JSON:
-      case TAB_PLOTDATA:
+      case TAB_TEXT:	break;
+      case TAB_JSON:	break;
+      case TAB_PLOTDATA:break;
       case TAB_CSV:
       {
         QFile file(f.selectedFiles().at(0));
@@ -1552,7 +1532,6 @@ void SC_SingleResultTab::save_result()
         }
         break;
       }
-      default: break;
     }
     QMessageBox::information( this, tr( "Save Result" ), tr( "Result saved to %1" ).arg( f.selectedFiles().at( 0 )), QMessageBox::Ok, QMessageBox::Ok );
     mainWindow -> logText -> appendPlainText( QString( tr("Results saved to: %1\n") ).arg( f.selectedFiles().at( 0 )) );

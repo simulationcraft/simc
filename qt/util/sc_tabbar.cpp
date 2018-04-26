@@ -210,13 +210,13 @@ void SC_TabBar::mousePressEvent(QMouseEvent *e)
 		case Qt::MiddleButton: 
 		{
 			tabCloseRequested(tabUnderMouse);
-			break;
 		}
+		break;
 		case Qt::LeftButton: 
 		{
 			setCurrentIndex(tabUnderMouse);
-			break;
 		}
+		break;
 	}
 }
 
