@@ -38,26 +38,30 @@ void parse_affecting_aura( action_t *const action, const spell_data_t *const spe
     if ( ! effect.ok() || effect.type() != E_APPLY_AURA )
       continue;
 
-    switch ( effect.subtype() )
+    if ( action -> data().affected_by( effect ) )
     {
-    case A_HASTED_GCD:
-      if ( action -> data().affected_by( effect ) )
-        action -> gcd_haste = HASTE_ATTACK;
-      break;
-
-    case A_HASTED_COOLDOWN:
-      if ( action -> data().affected_by( effect ) )
-        action -> cooldown -> hasted = true;
-      break;
-
-    case A_HASTED_CATEGORY:
-      if ( action -> data().category() == effect.misc_value1() )
-        action -> cooldown -> hasted = true;
-      break;
-
-    case A_ADD_PCT_MODIFIER:
-      if ( action -> data().affected_by( effect ) )
+      switch ( effect.subtype() )
       {
+      case A_HASTED_GCD:
+        action -> gcd_haste = HASTE_ATTACK;
+        break;
+
+      case A_HASTED_COOLDOWN:
+        action -> cooldown -> hasted = true;
+        break;
+
+      case A_ADD_FLAT_MODIFIER:
+        switch( effect.misc_value1() )
+        {
+        case P_RESOURCE_COST:
+          action -> base_costs[ RESOURCE_FOCUS ] += effect.base_value();
+          break;
+
+        default: break;
+        }
+        break;
+
+      case A_ADD_PCT_MODIFIER:
         switch ( effect.misc_value1() )
         {
         case P_GENERIC:
@@ -70,10 +74,21 @@ void parse_affecting_aura( action_t *const action, const spell_data_t *const spe
 
         default: break;
         }
-      }
-      break;
+        break;
 
-    default: break;
+      default: break;
+      }
+    }
+    else if ( action -> data().category() == effect.misc_value1() )
+    {
+      switch ( effect.subtype() )
+      {
+      case A_HASTED_CATEGORY:
+        action -> cooldown -> hasted = true;
+        break;
+
+      default: break;
+      }
     }
   }
 }
