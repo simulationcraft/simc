@@ -4712,7 +4712,6 @@ void hunter_t::apl_bm()
   default_list -> add_action( "use_items" );
 
   // Racials
-  default_list -> add_action( "arcane_torrent,if=focus.deficit>=30" );
   default_list -> add_action( "berserking,if=buff.bestial_wrath.remains>7&(!set_bonus.tier20_2pc|buff.bestial_wrath.remains<11)" );
   default_list -> add_action( "blood_fury,if=buff.bestial_wrath.remains>7" );
 
@@ -4756,7 +4755,6 @@ void hunter_t::apl_mm()
   default_list -> add_action( "use_items" );
 
   // Racials
-  default_list -> add_action( "arcane_torrent,if=focus.deficit>=30" );
   default_list -> add_action( "berserking,if=buff.trueshot.up" );
   default_list -> add_action( "blood_fury,if=buff.trueshot.up" );
 
@@ -4818,7 +4816,6 @@ void hunter_t::apl_surv()
   mokMaintain -> add_action( this, "Raptor Strike", "if=(buff.moknathal_tactics.remains<(gcd)|(buff.moknathal_tactics.stack<3))" );
 
   //CDs Call List
-  CDs -> add_action( "arcane_torrent,if=focus<=30" );
   CDs -> add_action( "berserking,if=buff.aspect_of_the_eagle.up" );
   CDs -> add_action( "blood_fury,if=buff.aspect_of_the_eagle.up" );
   CDs -> add_action( "potion,if=buff.aspect_of_the_eagle.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)" );
