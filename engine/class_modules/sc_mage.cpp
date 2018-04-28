@@ -6396,85 +6396,88 @@ std::string mage_t::default_rune() const
 
 void mage_t::apl_arcane()
 {
-  std::vector<std::string> racial_actions     = get_racial_actions();
+  std::vector<std::string> racial_actions = get_racial_actions();
 
-  action_priority_list_t* default_list        = get_action_priority_list( "default"          );
-  action_priority_list_t* variables           = get_action_priority_list( "variables"        );
-  action_priority_list_t* build               = get_action_priority_list( "build"            );
-  action_priority_list_t* conserve            = get_action_priority_list( "conserve"         );
-  action_priority_list_t* burn                = get_action_priority_list( "burn"             );
+  action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* movement = get_action_priority_list( "movement" );
+  action_priority_list_t* conserve = get_action_priority_list( "conserve" );
+  action_priority_list_t* burn = get_action_priority_list( "burn" );
 
-  default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react", "Interrupt the boss when possible." );
-  default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(time=0|(buff.arcane_power.up&(buff.potion.up|!action.potion.usable))|target.time_to_die<=buff.bloodlust.duration)", "3 different lust usages to support Shard: on pull; during Arcane Power (with potion, preferably); end of fight." );
-  default_list -> add_action( "call_action_list,name=variables", "Set variables used throughout the APL." );
-  default_list -> add_action( "cancel_buff,name=presence_of_mind,if=active_enemies>1&set_bonus.tier20_2pc", "AoE scenarios will delay our Presence of Mind cooldown because we'll be using Arcane Explosion instead of Arcane Blast, so we cancel the aura immediately." );
-  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
-  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
-  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
-  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
-  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
-  default_list -> add_action( "call_action_list,name=build,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&!burn_phase", "Build Arcane Charges before doing anything else. Burn phase has some specific actions for building Arcane Charges, so we avoid entering this list if currently burning." );
-  default_list -> add_action( "call_action_list,name=burn,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack&variable.time_until_burn=0)|burn_phase", "Enter burn actions if we're ready to burn, or already burning." );
-  default_list -> add_action( "call_action_list,name=conserve", "Fallback to conserve rotation." );
+  default_list -> add_action( this, "Time Warp", "if=time=0" );
+  default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react" );
+  default_list -> add_action( "call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length|(cooldown.arcane_power.remains=0&cooldown.evocation.remains<=variable.average_burn_length&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0)|talent.mana_adept.enabled&mana.pct>=80))",
+    "Start a burn phase when important cooldowns are available. Start with 4 arcane charges, unless there's a good reason not to. (charged up / mana adept)" );
+  default_list -> add_action( "call_action_list,name=conserve,if=!burn_phase" );
+  default_list -> add_action( "call_action_list,name=movement" );
 
-  variables    -> add_action( "variable,name=arcane_missiles_procs,op=set,value=buff.clearcasting.react", "Track the number of Arcane Missiles procs that we have." );
-  variables    -> add_action( "variable,name=time_until_burn,op=set,value=cooldown.arcane_power.remains", "Burn condition #1: Arcane Power has to be available." );
-  variables    -> add_action( "variable,name=time_until_burn,op=max,value=cooldown.evocation.remains-variable.average_burn_length", "Burn condition #2: Evocation should be up by the time we finish burning. We use the custom variable average_burn_length to help estimate when Evocation will be available." );
-  variables    -> add_action( "variable,name=time_until_burn,op=max,value=cooldown.presence_of_mind.remains,if=set_bonus.tier20_2pc", "Burn condition #3: 2pt20 grants a damage boost with Presence of Mind usage, so we definitely want to stack that with AP." );
-  variables    -> add_action( "variable,name=time_until_burn,op=max,value=action.rune_of_power.usable_in,if=talent.rune_of_power.enabled", "Burn condition #4: We need an RoP charge if we've actually taken the talent. Check usable_in to see when we'll be able to cast, and ignore the line if we didn't take the talent." );
-  variables    -> add_action( "variable,name=time_until_burn,op=max,value=cooldown.charged_up.remains,if=talent.charged_up.enabled&set_bonus.tier21_2pc", "Burn condition #5: Charged Up allows the 2pt21 buff to be extended during our burn phase." );
-  variables    -> add_action( "variable,name=time_until_burn,op=reset,if=target.time_to_die<variable.average_burn_length", "Boss is gonna die soon. All the above conditions don't really matter. We're just gonna burn our mana until combat ends." );
-
-  build -> add_talent( this, "Arcane Orb" );
-  build -> add_action( this, "Arcane Missiles", "if=active_enemies<3&(variable.arcane_missiles_procs=buff.clearcasting.react|(variable.arcane_missiles_procs&mana.pct<=50&buff.arcane_charge.stack=3)),chain=1", "Use Arcane Missiles at max stacks to avoid munching a proc. Alternatively, we can cast at 3 stacks of Arcane Charge to conserve mana." );
-  build -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
-  build -> add_action( this, "Arcane Blast" );
-
-  burn  -> add_action( "variable,name=total_burns,op=add,value=1,if=!burn_phase", "Increment our burn phase counter. Whenever we enter the `burn` actions without being in a burn phase, it means that we are about to start one." );
-  burn  -> add_action( "start_burn_phase,if=!burn_phase", "The burn_phase variable is a flag indicating whether or not we are in a burn phase. It is set to 1 (True) with start_burn_phase, and 0 (False) with stop_burn_phase." );
-  burn  -> add_action( "stop_burn_phase,if=prev_gcd.1.evocation&cooldown.evocation.charges=0&burn_phase_duration>0", "Evocation is the end of our burn phase, but we check available charges in case of Gravity Spiral. The final burn_phase_duration check is to prevent an infinite loop in SimC." );
-  burn  -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking", "Use during pandemic refresh window or if the dot is missing." );
-  burn  -> add_talent( this, "Mirror Image" );
-  burn  -> add_action( "lights_judgment,if=buff.arcane_power.down" );
-  burn  -> add_talent( this, "Rune of Power", "if=mana.pct>30|(buff.arcane_power.up|cooldown.arcane_power.up)", "Prevents using RoP at super low mana." );
-  burn  -> add_action( this, "Arcane Power" );
-
-  for( size_t i = 0; i < racial_actions.size(); i++ )
+  burn -> add_action( "variable,name=total_burns,op=add,value=1,if=!burn_phase", "Increment our burn phase counter. Whenever we enter the `burn` actions without being in a burn phase, it means that we are about to start one." );
+  burn -> add_action( "start_burn_phase,if=!burn_phase" );
+  burn -> add_action( "stop_burn_phase,if=burn_phase&(cooldown.evocation.remains>=73|(equipped.gravity_spiral&cooldown.evocation.charges=0&cooldown.evocation.remains>30))&(!temporal_flux_delay.active)&target.time_to_die>variable.average_burn_length&burn_phase_duration>0",
+    "End the burn phase when we just evocated, and temporal flux passed. Normally we'd use previous gcd = evocation, but that doesn't work due to temporal flux delaying our end burn, so arcane power cooldown (90 sec) - 10 seconds usage - 5 seconds temporal flux - gcd - 1 second leeway." );
+  burn -> add_talent( this, "Mirror Image", "", "Pop everything on the GCD before using arcane power." );
+  burn -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack<=1&(!set_bonus.tier20_2pc|cooldown.presence_of_mind.remains>5)" );
+  burn -> add_talent( this, "Arcane Orb", "if=((buff.arcane_charge.max_stack-buff.arcane_charge.stack)>=(active_enemies+1))" );
+  burn -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
+  burn -> add_action( this, "Time Warp", "if=buff.bloodlust.down&((buff.arcane_power.down&cooldown.arcane_power.remains=0)|(target.time_to_die<=buff.bloodlust.duration))" );
+  burn -> add_talent( this, "Rune of Power", "if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(mana.pct>=80&talent.mana_adept.enabled))" );
+  burn -> add_action( this, "Arcane Power" );
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
-    if ( racial_actions[ i ] == "lights_judgment" )
+    burn -> add_action( racial_actions[ i ] );
+    if ( racial_actions[ i ] == "arcane_pulse" ) {
       continue;  // Handled manually.
+    }
 
-    burn -> add_action( racial_actions[i] );
   }
+  burn -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
+  burn -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
+  burn -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
+  burn -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
+  burn -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
+  burn -> add_action( this, "Presence of Mind" );
+  burn -> add_action( this, "Arcane Blast" ,"if=buff.presence_of_mind.up&set_bonus.tier20_2pc&talent.overpowered.enabled&buff.arcane_power.up");
+  burn -> add_action( this, "Arcane Barrage", "if=(active_enemies>=3|(active_enemies>=2&talent.resonance.enabled))&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
+  burn -> add_action( this, "Arcane Explosion", "if=active_enemies>=3|(active_enemies>=2&talent.resonance.enabled)" );
+  burn -> add_action( this, "Arcane Missiles", "if=(buff.clearcasting.react&mana.pct<=95)|(talent.mana_adept.enabled&mana.pct>=80),chain=1" );
+  burn -> add_action( this, "Arcane Blast", "if=active_enemies<=2" );
+  burn -> add_action( "variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+(burn_phase_duration+temporal_flux_delay.remains))%variable.total_burns",
+    "Now that we're done burning, we can update the average_burn_length with the length of this burn." );
+  burn -> add_action( this, "Evocation", "interrupt_if=mana.pct>=97|(buff.clearcasting.react&mana.pct>=92)" );
+  burn -> add_action( this, "Arcane Barrage", "", "For the rare occasion where we go oom before evocation is back up. (Usually cos we get very bad rng so the burn is cut very short)" );
 
-  burn  -> add_action( "potion,if=buff.arcane_power.up&(buff.berserking.up|buff.blood_fury.up|!(race.troll|race.orc))", "For Troll/Orc, it's best to sync potion with their racial buffs." );
-  burn  -> add_action( "use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains", "Pops any on-use items, e.g., Tarnished Sentinel Medallion." );
-  burn  -> add_action( this, "Arcane Barrage", "if=set_bonus.tier21_2pc&((set_bonus.tier20_2pc&cooldown.presence_of_mind.up)|(talent.charged_up.enabled&cooldown.charged_up.up))&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.expanding_mind.down", "With 2pt20 or Charged Up we are able to extend the damage buff from 2pt21." );
-  burn  -> add_action( this, "Presence of Mind", "if=((mana.pct>30|buff.arcane_power.up)&set_bonus.tier20_2pc)|buff.rune_of_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time|buff.arcane_power.remains<=buff.presence_of_mind.max_stack*action.arcane_blast.execute_time", "With T20, use PoM at start of RoP/AP for damage buff. Without T20, use PoM at end of RoP/AP to cram in two final Arcane Blasts. Includes a mana condition to prevent using PoM at super low mana." );
-  burn  -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack<buff.arcane_charge.max_stack", "Use Charged Up to regain Arcane Charges after dumping to refresh 2pt21 buff." );
-  burn  -> add_talent( this, "Arcane Orb" );
-  burn  -> add_action( this, "Arcane Barrage", "if=active_enemies>4&equipped.mantle_of_the_first_kirin_tor&buff.arcane_charge.stack=buff.arcane_charge.max_stack", "Arcane Barrage has a good chance of launching an Arcane Orb at max Arcane Charge stacks." );
-  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.clearcasting.react&active_enemies<3,chain=1", "Arcane Missiles are good, but not when there's multiple targets up." );
-  burn  -> add_action( this, "Arcane Blast", "if=buff.presence_of_mind.up", "Get PoM back on cooldown as soon as possible." );
-  burn  -> add_action( this, "Arcane Explosion", "if=active_enemies>1" );
-  burn  -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs>1,chain=1" );
-  burn  -> add_action( this, "Arcane Blast" );
-  burn  -> add_action( "variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+burn_phase_duration)%variable.total_burns", "Now that we're done burning, we can update the average_burn_length with the length of this burn." );
-  burn  -> add_action( this, "Evocation", "interrupt_if=ticks=2|mana.pct>=85,interrupt_immediate=1", "That last tick of Evocation is a waste; it's better for us to get back to casting." );
 
-  conserve -> add_talent( this, "Mirror Image", "if=variable.time_until_burn>recharge_time|variable.time_until_burn>target.time_to_die" );
-  conserve -> add_action( "strict_sequence,name=miniburn,if=talent.rune_of_power.enabled&set_bonus.tier20_4pc&variable.time_until_burn>30:rune_of_power:arcane_barrage:presence_of_mind" );
-  conserve -> add_talent( this, "Rune of Power", "if=full_recharge_time<=execute_time", "Use if we're about to cap on stacks" );
-  conserve -> add_action( "strict_sequence,name=abarr_cu_combo,if=talent.charged_up.enabled&cooldown.charged_up.recharge_time<variable.time_until_burn:arcane_barrage:charged_up", "We want Charged Up for our burn phase to refresh 2pt21 buff, but if we have time to let it recharge we can use it during conserve." );
-  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs=buff.clearcasting.react&active_enemies<3,chain=1", "Arcane Missiles are good, but not when there's multiple targets up." );
-  conserve -> add_talent( this, "Supernova" );
-  conserve -> add_talent( this, "Nether Tempest", "if=refreshable|!ticking", "Use during pandemic refresh window or if the dot is missing." );
-  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1&(mana.pct>=70-(10*equipped.mystic_kilt_of_the_rune_master))", "AoE until about 70% mana. We can go a little further with kilt, down to 60% mana." );
-  conserve -> add_action( this, "Arcane Blast", "if=mana.pct>=90|buff.rhonins_assaulting_armwraps.up|(buff.rune_of_power.remains>=cast_time&equipped.mystic_kilt_of_the_rune_master)", "Use Arcane Blast if we have the mana for it or a proc from legendary wrists. With the Kilt we can cast freely." );
-  conserve -> add_action( this, "Arcane Missiles", "if=variable.arcane_missiles_procs,chain=1" );
-  conserve -> add_action( this, "Arcane Barrage" );
-  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>1", "The following two lines are here in case Arcane Barrage is on cooldown." );
+  conserve -> add_talent( this, "Mirror Image" );
+  conserve -> add_talent( this, "Charged Up", "if=buff.arcane_charge.stack=0" );
+  conserve -> add_action( this, "Presence of Mind", "if=set_bonus.tier20_2pc&buff.arcane_charge.stack=0" );
+  conserve -> add_action( "cancel_buff,name=presence_of_mind,if=set_bonus.tier20_2pc&talent.mana_adept.enabled",
+    "Cancel presence of mind when running mana adept & tier 20 2pc, because we almost never cast AB anyway, and we want the cooldown to start ticking ASAP." );
+  conserve -> add_talent( this, "Nether Tempest", "if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack" );
+  conserve -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack<=2" );
+  conserve -> add_action( this, "Arcane Barrage", "if=mana.pct<=95&talent.mana_adept.enabled&(!equipped.mystic_kilt_of_the_rune_master|(mana.pct<=(100-(buff.arcane_charge.stack*4))&buff.arcane_charge.stack>=1))",
+    "Use barrage on cooldown when running mana adept, since it allows us to basically never cast arcane blast, while making sure we don't overcap mana when running kilt. (Could be on high AC due to CU or similar effects)" );
+  conserve -> add_action( this, "Arcane Blast", "if=(buff.rule_of_threes.up|buff.rhonins_assaulting_armwraps.react)&buff.arcane_charge.stack>=3",
+    "Arcane Blast shifts up in priority when running rule of threes. (Or Rhonin's)" );
+  conserve -> add_action( this, "Arcane Missiles", "if=(talent.mana_adept.enabled&mana.pct>=80)|(!talent.mana_adept.enabled&mana.pct<=95&buff.clearcasting.react),chain=1" );
+  conserve -> add_action( this, "Arcane Blast", "if=equipped.mystic_kilt_of_the_rune_master&buff.arcane_charge.stack=0" );
+  conserve -> add_action( this, "Arcane Barrage", "if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&active_enemies>=3",
+    "Throw out 4 stack barrage every chance we got in AoE situations, seperate line from the barrage line below for readability." );
+  conserve -> add_action( this, "Arcane Barrage", "if=mana.pct<=30|(mana.pct<=45&!talent.overpowered.enabled)|((mana.pct<=50|(mana.pct<=60&!talent.overpowered.enabled)|talent.mana_adept.enabled&mana.pct<80)|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd))&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|talent.mana_adept.enabled)",
+    "During conserve, we still just want to continue not dropping charges as long as possible."
+    "So keep 'burning' until 60 % (50 % with OP) and then swap to a 4x AB->Abarr conserve rotation. This is mana neutral for RoT, mana negative with arcane familiar."
+    "Only use arcane barrage with less than 4 Arcane charges if we risk going too low on mana for our next burn" );
+  conserve -> add_talent( this, "Supernova", "if=mana.pct<=95" );
+  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>=3&(mana.pct>=40|buff.arcane_charge.stack=3)",
+    "Keep 'burning' in aoe situations until 40%. After that only cast AE with 3 Arcane charges, since it's almost equal mana cost to a 3 stack AB anyway. At that point AoE rotation will be AB x3 -> AE -> Abarr" );
   conserve -> add_action( this, "Arcane Blast" );
+
+
+  movement -> add_talent( this, "Shimmer", "if=movement.distance>=10" );
+  movement -> add_action( this, "Presence of Mind" );
+  movement -> add_action( this, "Arcane Missiles", "if=movement.distance<10" );
+  movement -> add_action( this, "Arcane Missiles", "if=movement.distance<10" );
+  movement -> add_talent( this, "Arcane Orb" );
+  movement -> add_action( this, "Arcane Pulse" );
+
 }
 
 // Fire Mage Action List ===================================================================================================
