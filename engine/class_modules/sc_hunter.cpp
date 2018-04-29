@@ -2083,52 +2083,54 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
 // Chimaera Shot =====================================================================
 
-struct chimaera_shot_impact_t: public hunter_ranged_attack_t
-{
-  chimaera_shot_impact_t( const std::string& n, hunter_t* p, const spell_data_t* s ):
-    hunter_ranged_attack_t( n, p, s )
-  {
-    dual = true;
-    aoe = 2;
-    radius = 5.0;
-
-    energize_type = ENERGIZE_PER_HIT;
-    energize_resource = RESOURCE_FOCUS;
-    energize_amount = p -> find_spell( 204304 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
-  }
-};
-
 struct chimaera_shot_t: public hunter_ranged_attack_t
 {
-  chimaera_shot_impact_t* frost;
-  chimaera_shot_impact_t* nature;
+  struct chimaera_shot_impact_t: public hunter_ranged_attack_t
+  {
+    chimaera_shot_impact_t( const std::string& n, hunter_t* p, const spell_data_t* s ):
+      hunter_ranged_attack_t( n, p, s )
+    {
+      dual = true;
+      parse_effect_data( p -> find_spell( 204304 ) -> effectN( 1 ) );
+    }
+  };
+
+  std::array<chimaera_shot_impact_t*, 2> damage;
+  unsigned current_damage_action;
 
   chimaera_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "chimaera_shot", p, p -> talents.chimaera_shot ),
-    frost( nullptr ), nature( nullptr )
+    current_damage_action( 0 )
   {
     parse_options( options_str );
+
     callbacks = false;
-    frost = p -> get_background_action<chimaera_shot_impact_t>( "chimaera_shot_frost", p -> find_spell( 171454 ) );
-    add_child( frost );
-    nature = p -> get_background_action<chimaera_shot_impact_t>( "chimaera_shot_nature", p -> find_spell( 171457 ) );
-    add_child( nature );
+    aoe = 2;
+    radius = 5.0;
+
+    damage[ 0 ] = p -> get_background_action<chimaera_shot_impact_t>( "chimaera_shot_frost", p -> find_spell( 171454 ) );
+    damage[ 1 ] = p -> get_background_action<chimaera_shot_impact_t>( "chimaera_shot_nature", p -> find_spell( 171457 ) );
+    for ( auto a : damage )
+      add_child( a );
+
     school = SCHOOL_FROSTSTRIKE; // Just so the report shows a mixture of the two colors.
   }
 
-  void execute() override
+  void do_schedule_travel( action_state_t* s, const timespan_t& ) override
   {
-    hunter_ranged_attack_t::execute();
-
-    if ( rng().roll( 0.5 ) ) // Chimaera shot has a 50/50 chance to roll frost or nature damage... for the flavorz.
-      frost -> execute();
-    else
-      nature -> execute();
+    damage[ current_damage_action ] -> set_target( s -> target );
+    damage[ current_damage_action ] -> execute();
+    current_damage_action = ( current_damage_action + 1 ) % damage.size();
+    action_state_t::release( s );
   }
 
   double cast_regen() const override
   {
-    return frost -> cast_regen();
+    const timespan_t cast_time = std::max( execute_time(), gcd() );
+    const double regen = p() -> resource_regen_per_second( RESOURCE_FOCUS );
+    const size_t targets_hit = std::min( target_list().size(), as<size_t>( n_targets() ) );
+    return ( regen * cast_time.total_seconds() ) +
+           ( targets_hit * damage[ 0 ] -> composite_energize_amount( nullptr ) );
   }
 };
 
