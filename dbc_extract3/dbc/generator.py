@@ -1222,6 +1222,8 @@ class SpellDataGenerator(DataGenerator):
           (  77443, 2 ), # Steady Shot energize effect
           ( 257622, 2 ), # Trick Shots buff
           ( 269502, 2 ), ( 260395, 2 ), # Lethal Shots buffs
+          ( 259516, 3 ), # Flanking Strike
+          ( 267666, 3 ), # Chakrams
         ),
 
         # Rogue:
