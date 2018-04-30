@@ -8021,11 +8021,11 @@ void monk_t::target_mitigation( school_e school,
 
   // Inner Strength
   if ( buff.inner_stength -> up() )
-    s -> result_amount *= 1.0 - buff.inner_stength -> stack_value();
+    s -> result_amount *= 1.0 + buff.inner_stength -> stack_value();
 
   // Damage Reduction Cooldowns
   if ( buff.fortifying_brew -> up() )
-    s -> result_amount *= 1.0 + spec.fortifying_brew -> effectN( 1 ).percent(); // Saved a -2% per stack
+    s -> result_amount *= 1.0 - spec.fortifying_brew -> effectN( 1 ).percent();
 
   // Touch of Karma Absorbtion
   if ( buff.touch_of_karma -> up() )
