@@ -1850,7 +1850,6 @@ public:
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
     owner_coeff.ap_from_ap = 1.00;
-    // owner_coeff.ap_from_ap *= 1 + o() -> spec.windwalker_monk -> effectN( 1 ).percent(); 
   }
 
   monk_t* o()
@@ -2047,6 +2046,8 @@ struct monk_action_t: public Base
   bool mistweaver_damage_increase_dot;
   bool windwalker_damage_increase;
   bool windwalker_damage_increase_two;
+  bool windwalker_damage_increase_three;
+  bool windwalker_damage_increase_four;
   bool windwalker_damage_increase_dot;
   bool windwalker_damage_increase_dot_two;
   bool windwalker_damage_increase_dot_three;
@@ -2070,9 +2071,11 @@ public:
     mistweaver_damage_increase( ab::data().affected_by( player -> spec.mistweaver_monk ->effectN( 1 ) ) ),
     mistweaver_damage_increase_dot( ab::data().affected_by( player -> spec.mistweaver_monk ->effectN( 2 ) ) ),
     windwalker_damage_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 1 ) ) ),
-    windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) ),
+    windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 4 ) ) ),
+    windwalker_damage_increase_three( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 5 ) ) ),
+    windwalker_damage_increase_four( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 9 ) ) ),
     windwalker_damage_increase_dot( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 2 ) ) ),
-    windwalker_damage_increase_dot_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 3 ) ) ),
+    windwalker_damage_increase_dot_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) ),
     windwalker_damage_increase_dot_three( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 7 ) ) ),
     windwalker_damage_increase_dot_four( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 8 ) ) )
   {
@@ -2114,30 +2117,30 @@ public:
         if ( windwalker_damage_increase )
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
         if ( windwalker_damage_increase_two )
-          ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 6 ).percent();
+          ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 4 ).percent();
+        if ( windwalker_damage_increase_three )
+          ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 5 ).percent();
+        if ( windwalker_damage_increase_four )
+          ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 9 ).percent();
 
         if ( windwalker_damage_increase_dot )
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 2 ).percent();
         if ( windwalker_damage_increase_dot_two )
-          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 3 ).percent();
+          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 6 ).percent();
         if ( windwalker_damage_increase_dot_three )
-        {
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 7 ).percent();
-          // chi wave is technically a direct damage, so need to apply this modifier to dd as well
-          ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 7 ).percent();
-        }
         if ( windwalker_damage_increase_dot_four )
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 8 ).percent();
 
         if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 3 ) ) )
           ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 3 ).time_value(); // Saved as -500 milliseconds
-      // Technically minimum GCD is 750ms but nothing brings the GCD below 1 sec
+      // Technically minimum GCD is 750ms but all but the level 15 spells have a minimum GCD of 1 sec
         ab::min_gcd = timespan_t::from_seconds( 1.0 );
         // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) );
         // Cooldown reduction
-        if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 4 ) ) )
-          ab::cooldown -> duration *= 1 + player -> spec.windwalker_monk -> effectN( 4 ).percent(); // saved as -100
+        if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 10 ) ) )
+          ab::cooldown -> duration *= 1 + player -> spec.windwalker_monk -> effectN( 10 ).percent(); // saved as -100
         break;
       }
       default: break;
@@ -2749,7 +2752,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( 15 ).percent(); // -50% for Brewmasters
 
     if ( p -> specialization() == MONK_WINDWALKER )
-      energize_amount = p -> spec.windwalker_monk -> effectN( 5 ).base_value();
+      energize_amount = p -> spec.windwalker_monk -> effectN( 3 ).base_value();
     else
       energize_type = ENERGIZE_NONE;
 
@@ -3000,11 +3003,14 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       am *= 1 + p() -> spec.rising_sun_kick_2 -> effectN( 1 ).percent();
 
     if ( p() -> buff.storm_earth_and_fire -> up() )
-      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();;
+      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
 
+    // Windwalker Spec Effect 1 & 5 points to spell 185099 (the direct damage spell, not the trigger spell)
     am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
 
-    am *= 1 + p() -> spec.mistweaver_monk ->effectN( 11 ).percent();
+    am *= 1 + p() -> spec.windwalker_monk -> effectN( 5 ).percent();
+
+    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 11 ).percent();
 
     return am;
   }
@@ -3256,8 +3262,6 @@ struct blackout_kick_t: public monk_melee_attack_t
 
         if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B4 ) && p() -> buff.bok_proc -> up() )
           am *= 1 + p() -> sets -> set( MONK_WINDWALKER, T21, B4) -> effectN( 1 ).percent();
-
-        am *= 1 + p() -> spec.windwalker_monk -> effectN( 12 ).percent();
         break;
       }
       default: break;
@@ -3490,14 +3494,17 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
-
-    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 7 ).percent();
-
-    pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
-    pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
-
+    switch ( p() -> specialization() )
+    {
+      case MONK_WINDWALKER:
+        pm *= 1 + p() -> spec.windwalker_monk -> effectN( 4 ).percent();
+        pm *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
+        break;
+      case MONK_BREWMASTER:
+        pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
+        pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
+        break;
+    }
     return pm;
   }
 
@@ -3590,7 +3597,8 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
 
     pm *= 1 + ( mark_of_the_crane_counter() * p() -> passives.cyclone_strikes -> effectN( 1 ).percent() );
 
-    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 4 ).percent();
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 8 ).percent();
 
     return pm;
   }
@@ -3815,7 +3823,7 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
     if ( p() -> buff.storm_earth_and_fire -> up() )
       pm *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
 
-    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 2 ).percent();
+    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 4 ).percent();
 
     return pm;
   }
