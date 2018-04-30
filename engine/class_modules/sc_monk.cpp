@@ -261,6 +261,7 @@ public:
     buff_t* dizzying_kicks;
     buff_t* flying_serpent_kick_movement;
     buff_t* hit_combo;
+    buff_t* inner_stength;
     buff_t* power_strikes;
     buff_t* pressure_point;
     buff_t* spinning_crane_kick;
@@ -2412,6 +2413,9 @@ public:
             p() -> buff.serenity -> extend_duration( p(), timespan_t::from_millis( extension ) );
           }
         }
+
+        if ( p() -> talent.inner_strength )
+          p() -> buff.inner_stength -> trigger();
 
         // The Emperor's Capacitor Legendary
         if ( p() -> legendary.the_emperors_capacitor && p() -> level() < 120 )
@@ -7185,6 +7189,9 @@ void monk_t::create_buffs()
                    -> set_default_value( passives.hit_combo -> effectN( 1 ).percent() )
                    -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
+  buff.inner_stength = make_buff( this, "inner_strength", find_spell( 261769 ) )
+                       -> set_default_value( find_spell( 261769 ) -> effectN( 1 ).base_value() );
+
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.serenity );
 
   buff.storm_earth_and_fire = make_buff( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
@@ -8012,9 +8019,13 @@ void monk_t::target_mitigation( school_e school,
   if ( get_target_data( s -> action -> player ) -> dots.breath_of_fire -> is_ticking() )
     s -> result_amount *= 1.0 + passives.breath_of_fire_dot -> effectN( 2 ).percent();
 
+  // Inner Strength
+  if ( buff.inner_stength -> up() )
+    s -> result_amount *= 1.0 - buff.inner_stength -> stack_value();
+
   // Damage Reduction Cooldowns
   if ( buff.fortifying_brew -> up() )
-    s -> result_amount *= 1.0 - spec.fortifying_brew -> effectN( 1 ).percent();
+    s -> result_amount *= 1.0 + spec.fortifying_brew -> effectN( 1 ).percent(); // Saved a -2% per stack
 
   // Touch of Karma Absorbtion
   if ( buff.touch_of_karma -> up() )
