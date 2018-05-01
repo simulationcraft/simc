@@ -1,10 +1,10 @@
-#define CLASS_ABILITY_SIZE (52)
+#define CLASS_ABILITY_SIZE (48)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26476
+// Class based active abilities, wow build 26530
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -80,19 +80,21 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       190411, // Whirlwind
            0,
     },
-    // Protection tree, 14 abilities
+    // Protection tree, 16 abilities
     {
+      107574, // Avatar
        18499, // Berserker Rage
         1160, // Demoralizing Shout
        20243, // Devastate
       198304, // Intercept
+        5246, // Intimidating Shout
        12975, // Last Stand
        97462, // Rallying Cry
-        1719, // Recklessness
         6572, // Revenge
         2565, // Shield Block
        23922, // Shield Slam
          871, // Shield Wall
+       46968, // Shockwave
        23920, // Spell Reflection
         6343, // Thunder Clap
        34428, // Victory Rush
@@ -107,7 +109,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // General tree, 17 abilities
+    // General tree, 16 abilities
     {
        86704, // Ancient Fury
        66235, // Ardent Defender
@@ -119,7 +121,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       209202, // Eye of Tyr (Artifact)
        62124, // Hand of Reckoning
       162056, // Jailer's Judgment
-       20271, // Judgment
       228288, // Judgment
          633, // Lay on Hands
       114919, // Light's Hammer
@@ -128,7 +129,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       205273, // Wake of Ashes (Artifact)
            0,
     },
-    // Holy tree, 15 abilities
+    // Holy tree, 16 abilities
     {
       212056, // Absolution
        31821, // Aura Mastery
@@ -143,11 +144,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          853, // Hammer of Justice
        82326, // Holy Light
        20473, // Holy Shock
+      275773, // Judgment
        85222, // Light of Dawn
       183998, // Light of the Martyr
            0,
     },
-    // Protection tree, 15 abilities
+    // Protection tree, 16 abilities
     {
        31850, // Ardent Defender
        31935, // Avenger's Shield
@@ -161,12 +163,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        86659, // Guardian of Ancient Kings
          853, // Hammer of Justice
        53595, // Hammer of the Righteous
+      275779, // Judgment
       184092, // Light of the Protector
        96231, // Rebuke
        53600, // Shield of the Righteous
            0,
     },
-    // Retribution tree, 13 abilities
+    // Retribution tree, 14 abilities
     {
        31884, // Avenging Wrath
       184575, // Blade of Justice
@@ -178,6 +181,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       203539, // Greater Blessing of Wisdom
          853, // Hammer of Justice
       183218, // Hand of Hindrance
+       20271, // Judgment
        96231, // Rebuke
       184662, // Shield of Vengeance
        85256, // Templar's Verdict
@@ -236,7 +240,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       187698, // Tar Trap
            0,
     },
-    // Marksmanship tree, 13 abilities
+    // Marksmanship tree, 15 abilities
     {
        19434, // Aimed Shot
       185358, // Arcane Shot
@@ -245,6 +249,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       147362, // Counter Shot
       109304, // Exhilaration
       187650, // Freezing Trap
+      260395, // Lethal Shots
+      269502, // Lethal Shots
        34477, // Misdirection
       257620, // Multi-Shot
       257044, // Rapid Fire
@@ -253,11 +259,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       193526, // Trueshot
            0,
     },
-    // Survival tree, 14 abilities
+    // Survival tree, 16 abilities
     {
       186289, // Aspect of the Eagle
+      267666, // Chakrams
       266779, // Coordinated Assault
       109304, // Exhilaration
+      259516, // Flanking Strike
       187650, // Freezing Trap
       190925, // Harpoon
        19577, // Intimidation
@@ -274,7 +282,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 52 abilities
+    // Pet tree, 48 abilities
     {
       263446, // Acid Spit (Exotic Ability)
       160011, // Agile Reflexes (Special Ability)
@@ -288,8 +296,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        16827, // Claw (Basic Attack)
        61684, // Dash (Ferocity, Cunning Ability)
       160060, // Deadly Sting (Special Ability)
-      243120, // Deathstrike Venom
-      243121, // Deathstrike Venom
       263887, // Dragon's Guile (Special Ability)
        50285, // Dust Cloud (Special Ability)
       159953, // Feast (Exotic Ability)
@@ -300,7 +306,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       263853, // Infected Bite (Special Ability)
        19577, // Intimidation
        24394, // Intimidation
-      138374, // Lightning Blast
       263423, // Lock Jaw (Special Ability)
        54680, // Monstrous Bite (Special Ability)
       264264, // Nether Shock (Special Ability)
@@ -321,7 +326,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        90328, // Spirit Walk (Bonus Ability)
       264056, // Spore Cloud (Special Ability)
       263852, // Talon Rend (Special Ability)
-      242735, // Talon Slash
       160065, // Tendon Rip (Special Ability)
       263858, // Toxic Sting (Special Ability)
        94022, // Trick (Bonus Ability)
@@ -532,7 +536,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       220143, // Apocalypse (Artifact)
       205223, // Consumption (Artifact)
       111673, // Control Undead
-      127344, // Corpse Explosion
+      127344, // Corpse Exploder
        56222, // Dark Command
        50977, // Death Gate
        49576, // Death Grip
@@ -548,7 +552,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       190778, // Sindragosa's Fury (Artifact)
            0,
     },
-    // Blood tree, 11 abilities
+    // Blood tree, 10 abilities
     {
       221562, // Asphyxiate
        50842, // Blood Boil
@@ -560,10 +564,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        48792, // Icebound Fortitude
       195182, // Marrowrend
        55233, // Vampiric Blood
-      212552, // Wraith Walk
            0,
     },
-    // Frost tree, 9 abilities
+    // Frost tree, 8 abilities
     {
        45524, // Chains of Ice
        47568, // Empower Rune Weapon
@@ -573,11 +576,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        49020, // Obliterate
        51271, // Pillar of Frost
       196770, // Remorseless Winter
-      212552, // Wraith Walk
            0,
     },
-    // Unholy tree, 12 abilities
+    // Unholy tree, 11 abilities
     {
+      275699, // Apocalypse
        42650, // Army of the Dead
        45524, // Chains of Ice
        63560, // Dark Transformation
@@ -588,8 +591,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        77575, // Outbreak
        46584, // Raise Dead
        55090, // Scourge Strike
-       49206, // Summon Gargoyle
-      212552, // Wraith Walk
            0,
     },
     {
@@ -619,7 +620,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2825, // Bloodlust
       192058, // Capacitor Totem
       204945, // Doom Winds (Artifact)
-      207778, // Downpour (Artifact)
+      207778, // Downpour
         2484, // Earthbind Totem
         2645, // Ghost Wolf
        32182, // Heroism
@@ -768,7 +769,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2948, // Scorch
            0,
     },
-    // Frost tree, 12 abilities
+    // Frost tree, 13 abilities
     {
       190356, // Blizzard
       235219, // Cold Snap
@@ -781,6 +782,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30455, // Ice Lance
        12472, // Icy Veins
           66, // Invisibility
+         118, // Polymorph (Sheep)
        31687, // Summon Water Elemental
            0,
     },
@@ -1228,7 +1230,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 26476
+// Talent tree specialization abilities, wow build 26530
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1340,24 +1342,26 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        12975, // Last Stand
        86535, // Plate Specialization
        76857, // Mastery: Critical Block
+      115768, // Deep Wounds
           71, // Defensive Stance
         1160, // Demoralizing Shout
       137048, // Protection Warrior
         6343, // Thunder Clap
          871, // Shield Wall
       162702, // Stat Negation Aura - Strength Tank
-      115768, // Deep Wounds
        20243, // Devastate
        23920, // Spell Reflection
         2565, // Shield Block
       198304, // Intercept
        34428, // Victory Rush
-        1719, // Recklessness
        18499, // Berserker Rage
         5301, // Revenge Trigger
       231834, // Shield Slam (Rank 2)
       231847, // Shield Block (Rank 2)
        97462, // Rallying Cry
+      107574, // Avatar
+       46968, // Shockwave
+        5246, // Intimidating Shout
            0,
     },
     {
@@ -1390,12 +1394,13 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
          853, // Hammer of Justice
       212056, // Absolution
       219562, // Light of the Martyr
-      227068, // Righteousness
-      231644, // Judgment (Rank 2)
       231642, // Beacon of Light (Rank 2)
       231667, // Crusader Strike (Rank 2)
       272906, // Holy Shock (Rank 2)
        31884, // Avenging Wrath
+      200327, // Blessing of Sacrifice ((Rank 2))
+      275773, // Judgment
+      231644, // Judgment (Rank 2)
            0,
     },
     // Specialization abilities for Protection
@@ -1424,9 +1429,10 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       213644, // Cleanse Toxins
        19750, // Flash of Light
        31884, // Avenging Wrath
-      231657, // Judgment (Rank 2)
       231665, // Avenger's Shield (Rank 2)
       229976, // Blessed Hammer
+      275779, // Judgment
+      231657, // Judgment (Rank 2)
            0,
     },
     // Specialization abilities for Retribution
@@ -1449,8 +1455,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       203539, // Greater Blessing of Wisdom
       213644, // Cleanse Toxins
       231667, // Crusader Strike (Rank 2)
-      231663, // Judgment (Rank 3)
       267316, // Mastery: Hand of Light
+       20271, // Judgment
+      231663, // Judgment (Rank 2)
            0,
     },
     {
@@ -1534,12 +1541,12 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
          781, // Disengage
       262839, // Raptor Strike (Rank 2)
       263135, // Mastery: Spirit Bond
-      263183, // Disengage (Rank 2)
       263186, // Kill Command (Rank 2)
        34477, // Misdirection
       266779, // Coordinated Assault
       186289, // Aspect of the Eagle
        19577, // Intimidation
+      231549, // Disengage (Rank 2)
            0,
     },
     {
@@ -1684,6 +1691,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        19236, // Desperate Prayer
       271534, // Mastery: Reverence
       132157, // Holy Nova
+      198068, // Power of the Dark Side
            0,
     },
     // Specialization abilities for Holy
@@ -1772,7 +1780,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       195182, // Marrowrend
       195292, // Death's Caress
       108199, // Gorefiend's Grasp
-      212552, // Wraith Walk
       206930, // Heart Strike
       221562, // Asphyxiate
        48792, // Icebound Fortitude
@@ -1798,7 +1805,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       195621, // Frost Fever
       196770, // Remorseless Winter
        81229, // Runic Empowerment
-      212552, // Wraith Walk
            0,
     },
     // Specialization abilities for Unholy
@@ -1808,7 +1814,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        85948, // Festering Strike
        49530, // Sudden Doom
        63560, // Dark Transformation
-       49206, // Summon Gargoyle
        77515, // Mastery: Dreadblade
       137007, // Unholy Death Knight
        46584, // Raise Dead
@@ -1822,7 +1827,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        47541, // Death Coil
       197147, // Festering Wound
        51462, // Runic Corruption
-      212552, // Wraith Walk
+      275699, // Apocalypse
            0,
     },
     {
@@ -1840,6 +1845,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        86108, // Mail Specialization (Passive)
       137040, // Elemental Shaman
       162699, // Stat Negation Aura - Intellect DPS
+      198103, // Earth Elemental
         8042, // Earth Shock
        61882, // Earthquake
       187828, // Maelstrom
@@ -1852,7 +1858,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       168534, // Mastery: Elemental Overload
       196840, // Frost Shock
       198067, // Fire Elemental
-      198103, // Earth Elemental
        51886, // Cleanse Spirit
         8004, // Healing Surge
       231721, // Lava Burst (Rank 2)
@@ -1995,6 +2000,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       235219, // Cold Snap
        11426, // Ice Barrier
       236662, // Blizzard (Rank 2)
+         118, // Polymorph (Sheep)
            0,
     },
     {
@@ -2343,7 +2349,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26476
+// Class mastery abilities, wow build 26530
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2582,7 +2588,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26476
+// Racial abilities, wow build 26530
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3494,7 +3500,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26476
+// Set bonus data, wow build 26530
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4213,9 +4219,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
 };
-#define RPPMMOD_SIZE (911)
+#define RPPMMOD_SIZE (916)
 
-// 911 RPPM Modifiers, wow build level 26476
+// 916 RPPM Modifiers, wow build level 26530
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -4355,6 +4361,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 196099,    5,  1,  1.0000 },
   { 196777,    4,  1,  1.0000 },
   { 197846,    4,  1,  1.0000 },
+  { 198068,    4,  1,  1.0000 },
   { 198735,    4,  1,  1.0000 },
   { 199806,    4,  1,  1.0000 },
   { 201336,    4,  1,  1.0000 },
@@ -5128,11 +5135,15 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 274484,    4,  1,  1.0000 },
   { 274790,    4,  1,  1.0000 },
   { 274835,    4,  1,  1.0000 },
+  { 275460,    4,  1,  1.0000 },
+  { 276123,    4,  1,  1.0000 },
+  { 276135,    4,  1,  1.0000 },
+  { 276176,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
 #define ARTIFACT_SIZE (41)
 
-// Artifact base data, wow build 26476
+// Artifact base data, wow build 26530
 static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
   {  2,  70 },
   {  3, 577 },
@@ -5179,7 +5190,7 @@ static struct artifact_t __artifact_data[ARTIFACT_SIZE] = {
 
 #define ARTIFACT_POWER_SIZE (908)
 
-// Artifact power data, wow build 26476
+// Artifact power data, wow build 26530
 static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] = {
   { 1739,   0,  64,  0,   3, 250879, "Netherlight Fortification"          }, // Netherlight Fortification (id=250879, n_ranks=3)
   { 1770,   0,  64,  0,   3, 252088, "Light Speed"                        }, // Light Speed (id=252088, n_ranks=3)
@@ -5758,7 +5769,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
   {  966,  48,   1,  1,   1, 200421, "The Light Saves"                    }, // The Light Saves (id=200421, n_ranks=1)
   {  967,  48,   0,  0,   1, 200407, "Protection of the Light"            }, // Protection of the Light (id=200407, n_ranks=1)
   {  968,  48,   0,  0,   1, 200373, "Vindicator"                         }, // Vindicator (id=200373, n_ranks=1)
-  {  969,  48,  32, 11,   3, 200327, "Share the Burden"                   }, // Share the Burden (id=200327, n_ranks=8)
+  {  969,  48,  32, 11,   3, 200327, "Blessing of Sacrifice"              }, // Blessing of Sacrifice (id=200327, n_ranks=8)
   {  970,  48,  32,  4,   3, 200326, "Focused Healing"                    }, // Focused Healing (id=200326, n_ranks=8)
   {  971,  48,  32,  5,   3, 200316, "Justice through Sacrifice"          }, // Justice through Sacrifice (id=200316, n_ranks=8)
   {  972,  48,  32,  6,   3, 200315, "Shock Treatment"                    }, // Shock Treatment (id=200315, n_ranks=8)
@@ -6092,7 +6103,7 @@ static struct artifact_power_data_t __artifact_power_data[ARTIFACT_POWER_SIZE] =
 };
 #define ARTIFACT_POWER_RANK_SIZE (7746)
 
-// Artifact power rank data, wow build 26476
+// Artifact power rank data, wow build 26530
 static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RANK_SIZE] = {
   {  2316,   40,  0, 205273,      0.000, 0x00000000, 0 },
   {  2317,   41,  0, 186941,      8.000, 0x00000000, 0 },
@@ -13843,7 +13854,7 @@ static struct artifact_power_rank_t __artifact_power_rank_data[ARTIFACT_POWER_RA
 };
 #define ARTIFACT_POWER_RANK_HOTFIX_SIZE (0)
 
-// 0 artifact_power_rank hotfix entries, wow build level 26476
+// 0 artifact_power_rank hotfix entries, wow build level 26530
 static hotfix::client_hotfix_entry_t __artifact_power_rank_hotfix_data[] = {
   {      0,  0, 0, 0 },
 };
