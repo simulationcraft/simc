@@ -521,9 +521,9 @@ public:
   void cancel();
   bool iterate( sim_t* parent_sim );
 
-  void output( const sim_t& sim, js::JsonOutput& root ) const;
-  void output( const sim_t& sim, FILE* out ) const;
-  void output( const sim_t& sim, std::ostream& out ) const;
+  void output_json( const sim_t& sim, js::JsonOutput& out ) const;
+  void output_text( const sim_t& sim, std::ostream& out ) const;
+  void output_html( const sim_t& sim, std::ostream& out ) const;
 
   bool is_initializing() const
   { return m_state == INITIALIZING; }

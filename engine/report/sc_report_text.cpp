@@ -1268,7 +1268,7 @@ void print_text_report( std::ostream& os, sim_t* sim, bool detail )
     print_player_sequence( os, sim, sim->targets_by_name, detail );
   }
 
-  sim -> profilesets.output( *sim, os );
+  sim -> profilesets.output_text( *sim, os );
 
   sim_summary_performance( os, sim );
 

@@ -820,7 +820,7 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
   fflush( stdout );
 }
 
-void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const
+void profilesets_t::output_json( const sim_t& sim, js::JsonOutput& root ) const
 {
   root[ "metric" ] = util::scale_metric_type_string( sim.profileset_metric.front() );
 
@@ -884,26 +884,26 @@ void profilesets_t::output( const sim_t& sim, js::JsonOutput& root ) const
   } );
 }
 
-void profilesets_t::output( const sim_t& sim, FILE* out ) const
+void profilesets_t::output_text( const sim_t& sim, std::ostream& out ) const
 {
   if ( m_profilesets.size() == 0 )
   {
     return;
   }
 
-  util::fprintf( out, "\n\nProfilesets (median %s):\n",
+  fmt::print( out, "\n\nProfilesets (median {:s}):\n",
     util::scale_metric_type_string( sim.profileset_metric.front() ) );
 
   std::vector<const profile_set_t*> results;
   generate_sorted_profilesets( results );
 
-  range::for_each( results, [ out ]( const profile_set_t* profileset ) {
-    util::fprintf( out, "    %-10.3f : %s\n",
+  range::for_each( results, [ &out ]( const profile_set_t* profileset ) {
+      fmt::print( out, "    {:-10.3f} : {:s}\n",
       profileset -> result().median(), profileset -> name().c_str() );
   } );
 }
 
-void profilesets_t::output( const sim_t& sim, std::ostream& out ) const
+void profilesets_t::output_html( const sim_t& sim, std::ostream& out ) const
 {
   if ( m_profilesets.size() == 0 )
   {
