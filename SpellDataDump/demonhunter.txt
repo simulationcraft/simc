@@ -286,7 +286,6 @@ Name             : Consume Soul (id=178963) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Shadow
 Range            : 100 yards
-Affecting spells : Gaping Maw (269220 effect#1)
 Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ........ .....x..   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -316,7 +315,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : Increases your Agility by $s1% while wearing only leather armor.
 
-Name             : Chaos Nova (id=179057) [Spell Family (107)] 
+Name             : Chaos Nova (id=179057) [Scaling Spell (-1), Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
 Resource         : 30 Fury (17) (id=10418)
@@ -338,7 +337,6 @@ Attributes       : ....x... ........ ....x... ........   ...x...x ........ .....
 Effects          :
 #2 (id=267052)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20475 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-                   Hotfixed: Base Value (1 -> 0)
 Description      : Unleash an eruption of fel energy, dealing $s2 Chaos damage and disorienting all nearby enemies for $d. Damage will cancel the effect.
 
 Each enemy disoriented by Chaos Nova has a $s1% chance to generate a Lesser Soul Fragment.
@@ -592,7 +590,6 @@ Replaces         : Fel Rush (id=195072)
 Class            : Vengeance Demon Hunter
 School           : Physical
 Range            : 30 yards
-GCD              : 0.5 seconds
 Cooldown         : 0.8 seconds
 Charges          : 2 (20 seconds cooldown)
 Category         : 1553
@@ -625,7 +622,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=276573)   : School Damage (2): fire
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.31122 | Radius: 6 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.31122 | Radius: 6 yards | Target: AOE enemy (instant) (16)
 Description      : $@spelldesc189110
 
 Name             : Increased Threat (id=189926) [Spell Family (107), Passive, Hidden] 
@@ -640,7 +637,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=278012)   : Apply Aura (6) | Threat (10)
-                   Base Value: 650 | Scaled Value: 650 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 550 | Scaled Value: 550 | Misc Value: 127 | Target: Self (1)
 
 Name             : Metamorphosis (id=191427) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -1496,7 +1493,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300525)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Surge with fel power, increasing your Armor by $203819s2% of your Agility, and your Parry chance by $203819s1%, for $203819d.
+Description      : Surge with fel power, increasing your Armor by ${$203819s2*$AGI/100}, and your Parry chance by $203819s1%, for $203819d.
 
 Name             : Parry (id=203724) [Passive] 
 Class            : Demon Hunter
@@ -1593,7 +1590,6 @@ Class            : Demon Hunter
 School           : Shadow
 Range            : 100 yards
 Velocity         : 25 yards/sec
-Affecting spells : Gaping Maw (269220 effect#1)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -1671,7 +1667,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
 Description      : $@spelldesc203720
-Tooltip          : Armor increased by $w2% of your Agility.
+Tooltip          : Armor increased by ${$W2*$AGI/100}.
 Parry chance increased by $w1%.
 
 Name             : Fiery Brand (id=204021) [Spell Family (107)] 
@@ -2215,7 +2211,7 @@ Effects          :
 #1 (id=307173)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13104 | Target: Self (1)
 Description      : $@spelldesc207697
-Tooltip          : Healing $w1 health every $t sec.
+Tooltip          : Healing $w1 health every $t1 sec.
 
 Name             : Feast of Souls (id=207697) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
@@ -2532,7 +2528,6 @@ Class            : Demon Hunter
 School           : Shadow
 Range            : 100 yards
 Velocity         : 25 yards/sec
-Affecting spells : Gaping Maw (269220 effect#1)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
@@ -3395,7 +3390,7 @@ Name             : Soul Cleave (id=228478) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Range            : 5 yards
-Affecting spells : Vengeance Demon Hunter (212613 effect#2), Devour Souls (212821 effect#1), Tormented Souls (214744 effect#1), Gaping Maw (269220 effect#2)
+Affecting spells : Vengeance Demon Hunter (212613 effect#2), Devour Souls (212821 effect#1), Tormented Souls (214744 effect#1)
 Triggered by     : Soul Cleave (228477)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
@@ -3585,10 +3580,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=477040)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Your $?c1[Chaos][Fire] damage brands the target, increasing magic damage taken by $1490s1%.
-
-(Duration reduced to $s1 min against players)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Your $?c1[Chaos][Fire] damage brands the target, increasing magic damage taken by $1490s1%.
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -3715,9 +3708,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 23548.61 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 23548.61 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -3894,7 +3887,7 @@ Effects          :
 Description      : Unleash a torrent of Fel energy over $d, inflicting ${(($d/$t1)+1)*$258926s1} Chaos damage to all enemies within $258926A1 yds.
 Tooltip          : Unleashing Fel.
 
-Name             : Fel Barrage (id=258926) [Spell Family (107)] 
+Name             : Fel Barrage (id=258926) [Scaling Spell (-1), Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
 Range            : 100 yards
@@ -3954,13 +3947,15 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=706547)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1.4718 | Scaled Value: 1.4718 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #2 (id=706548)   : Apply Aura (6) | Dummy (4)
                    Base Value: 120 | Scaled Value: 120 | Target: Self (1)
-Description      : Shield yourself for $d, absorbing ${$s1/100*$AP*$pctH} damage.
+Description      : Shield yourself for $d, absorbing $<baseAbsorb> damage.
 
-Consumes all Soul Fragments within 25 yds to add ${$s2/100*$AP*$pctH} to the shield per fragment.
+Consumes all Soul Fragments within 25 yds to add $<fragmentAbsorb> to the shield per fragment.
 Tooltip          : Absorbs $w1 damage.
+Variables        : $baseAbsorb=${6*$AP*$pctH}
+$fragmentAbsorb=${1.2*$AP*$pctH}
 
 Name             : Charred Flesh (id=264002) [Spell Family (107), Passive] 
 Class            : Demon Hunter

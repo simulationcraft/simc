@@ -766,7 +766,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=9474)     : School Damage (2): shadowflame
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-                   Hotfixed: Base Value (1 -> 0)
 #2 (id=9475)     : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy (6)
 Description      : Blasts a target for $s1 Shadowflame damage. 
@@ -1311,28 +1310,26 @@ Effects          :
 Description      : $@spelldesc32388
 Tooltip          : Damage taken increased by $s1%.
 
-Name             : Blood Fury (Racial) (id=33702) [Scaling Spell (-1)] 
-Hotfixed         : Scaling Spell (-8 -> -1)
+Name             : Blood Fury (Racial) (id=33702) 
 Class            : Mage, Warlock
 Race             : Orc (0x2)
 School           : Physical
 Spell Level      : 1
+GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
 Attributes       : ....x... ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ......x. .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
-#1 (id=118955)   : Apply Aura (6) | Modify Healing Power (135)
-                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Target: Self (1)
-#2 (id=23584)    : Apply Aura (6) | Damage Done (13)
-                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Points Per Level: 2 | Misc Value: 0x7e | Target: Self (1)
-Description      : Increases your spell power by $s2 for $d.
-Tooltip          : Spell power increased by $s2.
+#1 (id=118955)   : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 (avg=2.572347) | Misc Value: 3 | Target: Self (1)
+Description      : Increases your Intellect by $s1 for $d.
+Tooltip          : Intellect increased by $w1.
 
 Name             : Rain of Fire (id=42223) [Spell Family (5)] 
 Class            : Warlock
@@ -1373,7 +1370,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=40331)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55000 | Target: Enemy (6)
-                   Hotfixed: Base Value (1 -> 0)
 #2 (id=40332)    : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 127 | Target: Enemy (6)
 Description      : A ghostly soul haunts the target, dealing $s1 Shadow damage and increasing your damage dealt to the target by $s2% for $d.
@@ -1397,7 +1393,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=46748)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Target: Enemy (6)
-                   Hotfixed: Base Value (1 -> 0)
 Description      : Bites the enemy, causing $s1 Shadow damage.
 
 |cFF777777(Right-Click to toggle)|r
@@ -1675,7 +1670,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=87009)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.68750 | Target: Enemy (6)
-                   Hotfixed: Base Value (1 -> 0)
 #2 (id=155200)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage. Deals $s2% additional damage to targets below 20% health.
@@ -1694,7 +1688,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=87492)    : School Damage (2): shadowflame
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc105174
 
 Name             : Nethermancy (Passive) (id=86091) [Passive, Hidden] 
@@ -2120,7 +2114,6 @@ Description      : $108446s1% of all damage you take is taken by your demon pet 
 Soul Leech also heals you for $108446s2% and your pet for $108446s3% of the absorption it grants.
 
 Name             : Dark Pact (id=108416) 
-Hotfixed         : Description
 Class            : Warlock
 School           : Physical
 Spell Level      : 1
@@ -2139,12 +2132,10 @@ Attributes       : ........ ........ ........ ...x....   .....x.. ........ .....
 Effects          :
 #1 (id=119507)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
-                   Hotfixed: Base Value (250 -> 0)
 #2 (id=180660)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=728489)   : Dummy (3)
                    Base Value: 250 | Scaled Value: 250 | Target: Self (1)
-                   Hotfixed: NEW EFFECT
 Description      : Sacrifices $s2% of your current health to shield you for $s3% of the sacrificed health for $d. Usable while suffering from control impairing effects.
 Tooltip          : Absorbs $w1 damage.
 
@@ -2445,7 +2436,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=124613)   : Apply Aura (6) | Threat (10)
-                   Base Value: 700 | Scaled Value: 700 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 450 | Scaled Value: 450 | Misc Value: 127 | Target: Self (1)
 Description      : Intimidates any target the Voidwalker attacks, increasing threat generation.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -2513,7 +2504,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=132079)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-                   Hotfixed: Base Value (1 -> 0)
 #2 (id=177448)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Enemy (6)
 #3 (id=283496)   : Energize Power% (137)
@@ -2654,7 +2644,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=175237)   : Apply Aura (6) | Threat (10)
-                   Base Value: 650 | Scaled Value: 650 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 450 | Scaled Value: 450 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
 Description      : Intimidates any target the Felguard attacks, increasing threat generation.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -2924,7 +2914,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=219942)   : Apply Aura (6) | Periodic Damage (3): fire every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc348
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 Variables        : $mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]
@@ -2997,7 +2986,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242701)   : Apply Aura (6) | Threat (10)
-                   Base Value: 650 | Scaled Value: 650 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 450 | Scaled Value: 450 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
 #2 (id=242702)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #3 (id=242703)   : Apply Aura (6) | Modify Parry% (47)
@@ -4331,7 +4320,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=351154)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Enemy (6)
-                   Hotfixed: Base Value (1 -> 0)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.
 
 Name             : Unstable Affliction (id=233490) [Spell Family (5)] 
@@ -4463,7 +4451,6 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
 Effects          :
 #1 (id=353731)   : Apply Aura (6) | Periodic Health Leech (53)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 6 | SP Coefficient: 0.10000 | Target: Enemy (6)
-                   Hotfixed: Base Value (1 -> 0)
 Description      : Drains life from the target, causing $o1 Shadow damage over $d, and healing you for ${$e1*100}% of the damage done.
 Tooltip          : Suffering $s1 Shadow damage every $t1 seconds. Restoring ${$e1*100}% of that damage as health to the caster.
 
@@ -4734,9 +4721,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 23548.61 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 23548.61 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
