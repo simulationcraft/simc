@@ -2765,7 +2765,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     if ( p() -> buff.storm_earth_and_fire -> up() )
       am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
 
-    if ( p() -> buff.power_strikes -> up() )
+    if ( p() -> buff.power_strikes -> up() && ( ( p() -> resources.current[RESOURCE_CHI] + energize_amount ) < p() -> resources.max[RESOURCE_CHI] ) )
       am *= 1.0 + p() -> talent.power_strikes -> effectN( 2 ).percent();
 
     return am;
@@ -4545,12 +4545,6 @@ struct chi_torpedo_t: public monk_spell_t
     monk_spell_t( "chi_torpedo", player, player -> talent.chi_torpedo )
   {
     parse_options( options_str );
-
-    if ( player -> talent.celerity )
-    {
-      cooldown -> duration += player -> talent.celerity -> effectN( 1 ).time_value();
-      cooldown -> charges += player -> talent.celerity -> effectN( 2 ).base_value();
-    }
   }
 
   void execute() override
@@ -6125,9 +6119,9 @@ struct chi_burst_t: public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-//    if ( p() -> specialization() == MONK_WINDWALKER )
+    if ( p() -> specialization() == MONK_WINDWALKER )
       // TODO: Hard code the 1 chi for now until the effect gets put in.
-//      p() -> resource_gain( RESOURCE_CHI, 1, p() -> gain.chi_burst );
+      p() -> resource_gain( RESOURCE_CHI, 1, p() -> gain.chi_burst );
   }
 };
 
