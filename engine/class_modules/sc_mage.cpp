@@ -532,7 +532,6 @@ public:
     const spell_data_t* fingers_of_frost;
     const spell_data_t* frost_mage;
     const spell_data_t* icicles;
-    const spell_data_t* icicles_driver;
     const spell_data_t* shatter;
     const spell_data_t* shatter_2;
   } spec;
@@ -5918,7 +5917,6 @@ void mage_t::init_spells()
   spec.savant                = find_mastery_spell( MAGE_ARCANE );
   spec.ignite                = find_mastery_spell( MAGE_FIRE );
   spec.icicles               = find_mastery_spell( MAGE_FROST );
-  spec.icicles_driver        = find_spell( 148012 );
 }
 
 // mage_t::init_base ========================================================
@@ -7098,14 +7096,14 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       {
         if ( mage.icicles.empty() )
           return 0;
-        else if ( mage.sim -> current_time() - mage.icicles[ 0 ].timestamp < mage.spec.icicles_driver -> duration() )
+        else if ( mage.sim -> current_time() - mage.icicles[ 0 ].timestamp < mage.buffs.icicles -> buff_duration )
           return as<double>( mage.icicles.size() );
         else
         {
           size_t icicles = 0;
           for ( int i = as<int>( mage.icicles.size() - 1 ); i >= 0; i-- )
           {
-            if ( mage.sim -> current_time() - mage.icicles[ i ].timestamp >= mage.spec.icicles_driver -> duration() )
+            if ( mage.sim -> current_time() - mage.icicles[ i ].timestamp >= mage.buffs.icicles -> buff_duration )
               break;
 
             icicles++;
@@ -7297,7 +7295,7 @@ action_t* mage_t::get_icicle()
     return nullptr;
 
   // All Icicles created before the treshold timed out.
-  timespan_t threshold = sim -> current_time() - spec.icicles_driver -> duration();
+  timespan_t threshold = sim -> current_time() - buffs.icicles -> buff_duration;
 
   // Find first icicle which did not time out
   auto idx = range::find_if( icicles, [ threshold ] ( const icicle_tuple_t& t ) { return t.timestamp > threshold; } );
@@ -7986,6 +7984,12 @@ public:
 
   virtual void register_hotfixes() const override
   {
+    hotfix::register_spell( "Mage", "2018-05-02", "Incorrect spell level for Icicle buff.", 205473 )
+      .field( "spell_level" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 78 )
+      .verification_value( 80 );
+
     hotfix::register_spell( "Mage", "2017-11-06", "Incorrect spell level for Icicle.", 148022 )
       .field( "spell_level" )
       .operation( hotfix::HOTFIX_SET )
