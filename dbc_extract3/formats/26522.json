@@ -48,7 +48,7 @@
   "AzeritePower": [
     { "data_type": "I", "field": "id_spell", "formats": { "cpp": "%6u" } },
     { "data_type": "H", "field": "unk_2" },
-    { "data_type": "H", "field": "unk_3" }
+    { "data_type": "b", "field": "unk_3" }
   ],
   "AzeritePowerSetMember": [
     { "data_type": "B", "field": "id_power" },
