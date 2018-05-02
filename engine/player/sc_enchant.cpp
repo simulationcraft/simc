@@ -575,34 +575,6 @@ item_socket_color enchant::initialize_relic( item_t&                    item,
         break;
       }
       case ITEM_ENCHANTMENT_RELIC_RANK:
-      {
-        // If the artifact= option already specified relics, we presume that the added ranks are
-        // already in the artifact powers provided by artifact= option.
-        if ( item.player -> artifact -> has_relic_options() || data.ench_amount[ i ] <= 0 )
-        {
-          break;
-        }
-
-        auto trait_index = data.ench_prop[ i ];
-        auto power_it = range::find_if( powers, [ trait_index ]( const artifact_power_data_t* data ) {
-          return trait_index == data -> power_index;
-        } );
-
-        if ( power_it == powers.end() )
-        {
-          break;
-        }
-
-        if ( item.player -> sim -> debug )
-        {
-          item.player -> sim -> out_debug.printf( "%s %s: Adding +%u rank to %s power",
-            item.player -> name(), relic.name(), data.ench_amount[ i ], ( *power_it ) -> name );
-        }
-
-        item.player -> artifact -> add_relic( relic_idx, relic_id,
-                                              ( *power_it ) -> id, data.ench_amount[ i ] );
-        break;
-      }
       default:
         break;
     }

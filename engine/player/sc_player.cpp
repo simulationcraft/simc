@@ -1471,8 +1471,6 @@ bool player_t::create_special_effects()
   if ( sim->debug )
     sim->out_debug.printf( "Creating special effects for player (%s)", name() );
 
-  expansion::legion::initialize_concordance( *this );
-
   // Initialize all item-based special effects. This includes any DBC-backed enchants, gems, as well
   // as inherent item effects that use a spell
   for ( auto& item : items )
@@ -8751,16 +8749,6 @@ const spell_data_t* player_t::find_specialization_spell( unsigned spell_id, spec
   return spell_data_t::not_found();
 }
 
-artifact_power_t player_t::find_artifact_spell( unsigned /*power_id*/ ) const
-{
-  return {};
-}
-
-artifact_power_t player_t::find_artifact_spell( const std::string& /*name*/, bool /*tokenized*/ ) const
-{
-  return {};
-}
-
 const spell_data_t* player_t::find_mastery_spell( specialization_e s, uint32_t idx ) const
 {
   if ( s != SPEC_NONE && s == _spec )
@@ -12183,88 +12171,6 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
     range::for_each( action_list, [event, context, candidate_target]( action_t* action ) {
       action->acquire_target( event, context, candidate_target );
     } );
-  }
-}
-
-/**
- * Get the concordance stat of a player
- */
-stat_e expansion::legion::concordance_stat_type( const player_t& player )
-{
-  switch ( player.specialization() )
-  {
-    case WARRIOR_ARMS:
-    case WARRIOR_FURY:
-    case PALADIN_RETRIBUTION:
-    case DEATH_KNIGHT_FROST:
-    case DEATH_KNIGHT_UNHOLY:
-      return STAT_STRENGTH;
-
-    case HUNTER_BEAST_MASTERY:
-    case HUNTER_MARKSMANSHIP:
-    case HUNTER_SURVIVAL:
-    case ROGUE_ASSASSINATION:
-    case ROGUE_OUTLAW:
-    case ROGUE_SUBTLETY:
-    case SHAMAN_ENHANCEMENT:
-    case MONK_WINDWALKER:
-    case DRUID_FERAL:
-    case DEMON_HUNTER_HAVOC:
-      return STAT_AGILITY;
-
-    case PRIEST_SHADOW:
-    case SHAMAN_ELEMENTAL:
-    case MAGE_ARCANE:
-    case MAGE_FIRE:
-    case MAGE_FROST:
-    case WARLOCK_AFFLICTION:
-    case WARLOCK_DEMONOLOGY:
-    case WARLOCK_DESTRUCTION:
-    case DRUID_BALANCE:
-      return STAT_INTELLECT;
-
-    case WARRIOR_PROTECTION:
-    case PALADIN_PROTECTION:
-    case DEATH_KNIGHT_BLOOD:
-    case MONK_BREWMASTER:
-    case DRUID_GUARDIAN:
-    case DEMON_HUNTER_VENGEANCE:
-      return STAT_VERSATILITY_RATING;
-
-    case PALADIN_HOLY:
-    case PRIEST_DISCIPLINE:
-    case PRIEST_HOLY:
-    case SHAMAN_RESTORATION:
-    case MONK_MISTWEAVER:
-    case DRUID_RESTORATION:
-      return STAT_INTELLECT;
-
-    default:
-      return STAT_NONE;
-  }
-}
-
-/**
- * Initialize the buff and callback for the 7.2 "infinite" artifact power.
- */
-void expansion::legion::initialize_concordance( player_t& player )
-{
-  // Unconditionally initialize 7.2 "infinite" buff
-  artifact_power_t concordance = player.find_artifact_spell( "Concordance of the Legionfall" );
-
-  stat_buff_t* buff =
-      make_buff<stat_buff_t>( &( player ), "concordance_of_the_legionfall", player.find_spell( 242583 ) )
-      ->add_stat( concordance_stat_type( player ), concordance.value() );
-
-  // Install a callback handler only if the player has the relevant artifact-related attributes
-  auto artifact_id = player.dbc.artifact_by_spec( player.specialization() );
-  if ( artifact_id > 0 && player.artifact->slot() != SLOT_INVALID && concordance.rank() > 0 )
-  {
-    special_effect_t* effect = new special_effect_t( &( player ) );
-    effect->type             = SPECIAL_EFFECT_EQUIP;
-    effect->spell_id         = concordance.data().id();
-    effect->custom_buff      = buff;
-    player.special_effects.push_back( effect );
   }
 }
 

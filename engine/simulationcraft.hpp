@@ -999,7 +999,6 @@ struct sim_t : private sc_thread_t
   int timewalk;
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
   bool scale_itemlevel_down_only; // Items below the value of scale_to_itemlevel will not be scaled up.
-  bool disable_artifacts; // Disable artifacts.
   bool disable_set_bonuses; // Disables all set bonuses.
   unsigned int disable_2_set; // Disables all 2 set bonuses for this tier/integer that this is set as
   unsigned int disable_4_set; // Disables all 4 set bonuses for this tier/integer that this is set as
@@ -3809,8 +3808,10 @@ struct player_t : public actor_t
   pet_t* cast_pet() { return debug_cast<pet_t*>( this ); }
   const pet_t* cast_pet() const { return debug_cast<const pet_t*>( this ); }
 
-  artifact_power_t find_artifact_spell( const std::string& name, bool tokenized = false ) const;
-  artifact_power_t find_artifact_spell( unsigned power_id ) const;
+  artifact_power_t find_artifact_spell( const std::string&, bool = false ) const
+  { return {}; }
+  artifact_power_t find_artifact_spell( unsigned ) const
+  { return {}; }
   const spell_data_t* find_racial_spell( const std::string& name, race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( const std::string& name ) const;
@@ -6860,9 +6861,6 @@ void initialize_special_effect_fallbacks( player_t* actor );
 // Second-phase special effect initializer
 void initialize_special_effect_2( special_effect_t* effect );
 
-// Initialize generic Artifact traits
-void initialize_artifact_powers( player_t* );
-
 // Initialize special effects related to various race spells
 void initialize_racial_effects( player_t* );
 
@@ -7337,8 +7335,6 @@ namespace expansion
 // Legion (WoW 7.0)
 namespace legion
 {
-stat_e concordance_stat_type( const player_t& player );
-void initialize_concordance( player_t& );
 } // namespace legion
 } // namespace expansion
 

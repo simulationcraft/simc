@@ -1386,7 +1386,7 @@ sim_t::sim_t() :
   enemy_death_pct( 0 ), rel_target_level( -1 ), target_level( -1 ),
   target_adds( 0 ), desired_targets( 1 ), enable_taunts( false ),
   use_item_verification( true ),
-  challenge_mode( false ), timewalk( -1 ), scale_to_itemlevel( -1 ), scale_itemlevel_down_only( false ), disable_artifacts( false ),
+  challenge_mode( false ), timewalk( -1 ), scale_to_itemlevel( -1 ), scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
   pvp_crit( false ),
   active_enemies( 0 ), active_allies( 0 ),
@@ -3258,8 +3258,6 @@ void sim_t::create_options()
   add_option( opt_int( "timewalk", timewalk, -1, MAX_SCALING_LEVEL ) );
   add_option( opt_int( "scale_to_itemlevel", scale_to_itemlevel ) );
   add_option( opt_bool( "scale_itemlevel_down_only", scale_itemlevel_down_only ) );
-  add_option( opt_bool( "disable_artifacts", disable_artifacts ) );
-  add_option( opt_bool( "disable_artifact", disable_artifacts ) );
   add_option( opt_bool( "disable_set_bonuses", disable_set_bonuses ) );
   add_option( opt_uint( "disable_2_set", disable_2_set ) );
   add_option( opt_uint( "disable_4_set", disable_4_set ) );

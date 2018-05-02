@@ -178,7 +178,6 @@ const expr_data_map_t expr_map[] =
   { "race_spell", DATA_RACIAL_SPELL },
   { "mastery", DATA_MASTERY_SPELL },
   { "spec_spell", DATA_SPECIALIZATION_SPELL },
-  { "artifact", DATA_ARTIFACT_SPELL },
   { "azerite", DATA_AZERITE_SPELL },
 };
 
@@ -370,17 +369,6 @@ struct spell_list_expr_t : public spell_data_expr_t
 
               result_spell_list.push_back( spell_id );
             }
-          }
-        }
-        break;
-      }
-      case DATA_ARTIFACT_SPELL:
-      {
-        for ( auto rank: sim -> dbc.artifact_power_ranks( 0 ) )
-        {
-          if ( range::find( result_spell_list, rank -> id_spell() ) == result_spell_list.end() )
-          {
-            result_spell_list.push_back( rank -> id_spell() );
           }
         }
         break;

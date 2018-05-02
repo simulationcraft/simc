@@ -1126,7 +1126,6 @@ class SpellDataGenerator(DataGenerator):
          191603, 191604, 191605, 191606, 191607, 191608, 191609, 191610, # Darkmoon Deck: Hellfire
          191624, 191625, 191626, 191627, 191628, 191629, 191630, 191631, # Darkmoon Deck: Immortality
          216099,                    # Elementium Bomb Squirrel Generator trinket
-         211309, 213428, 219655, 226829, # Artifact passive boosts
          222517, 222518, 222519, 222520, # Nature's Call trinket
          222050,                   # Wriggling Sinew trinket
          221865,                   # Twisting Wind trinket
@@ -1789,7 +1788,6 @@ class SpellDataGenerator(DataGenerator):
         self._data_store.link('SpellEquippedItems', 'id_spell', 'SpellName', 'equipped_item' )
         self._data_store.link('SpellClassOptions',  'id_spell', 'SpellName', 'class_option'  )
         self._data_store.link('SpellShapeshift',    'id_spell', 'SpellName', 'shapeshift'    )
-        self._data_store.link('ArtifactPowerRank',  'id_spell', 'SpellName', 'artifact_power')
         self._data_store.link('Spell',              'id',       'SpellName', 'text'          )
 
         if self._options.build >= 25600:
@@ -2252,15 +2250,6 @@ class SpellDataGenerator(DataGenerator):
 
                 self.process_spell(spell_id, ids, 0, 0)
 
-        # Artifact spells
-        for _, data in self._artifactpowerrank_db.items():
-            spell_id = data.id_spell
-            spell = self._spellname_db[spell_id]
-            if spell.id != spell_id:
-                continue
-
-            self.process_spell(spell_id, ids, 0, 0)
-
         for _, data in self._azeritepower_db.items():
             spell_id = data.id_spell
             spell = self._spellname_db[spell_id]
@@ -2528,12 +2517,8 @@ class SpellDataGenerator(DataGenerator):
             hotfix_flags |= f
             hotfix_data += hfd
 
-            # Note, no hotfix data for this for now. Also, only apply power id
-            # to the first rank, and only to spec specific artifacts. Fishing
-            # be gone!
-            # 41
-            power_rank = spell.get_link('artifact_power')
-            power = self._artifactpower_db[self._options.build < 25600 and power_rank.id_power or power_rank.id_parent]
+            # TODO: Remove around 8.0 (artifact power id, not needed any more)
+            power = self._artifactpower_db[0]
             fields += power.field('id')
 
             # 42, 43
@@ -4208,144 +4193,4 @@ class AzeriteDataGenerator(DataGenerator):
             self._out.write('  { %s },\n' % ', '.join(fields))
 
         self._out.write('} };\n')
-
-class ArtifactDataGenerator(DataGenerator):
-    def __init__(self, options, data_store):
-        super().__init__(options, data_store)
-
-        self._dbc = [ 'Artifact', 'ArtifactPower', 'ArtifactPowerRank', 'SpellName' ]
-
-        if options.build >= 24651:
-            self._dbc.append('RelicTalent')
-
-    def filter(self):
-        ids = {}
-
-        for id, data in self._artifact_db.items():
-            if data.id_spec == 0:
-                continue
-
-            ids[id] = { }
-
-        for id, data in self._artifactpower_db.items():
-            artifact_id = data.id_artifact
-
-            if artifact_id not in ids:
-                continue
-
-            ids[artifact_id][id] = { 'data': data, 'ranks': [] }
-
-        if self._options.build >= 24641:
-            ids[0] = { }
-            for id, data in self._relictalent_db.items():
-                if data.id_power == 0:
-                    continue
-
-                power_data = self._artifactpower_db[data.id_power]
-                ids[0][data.id_power] = { 'data': power_data, 'ranks': [] }
-
-        for id, data in self._artifactpowerrank_db.items():
-            power_id = self._options.build < 25600 and data.id_power or data.id_parent
-            power = self._artifactpower_db[power_id]
-            if power.id == 0:
-                continue
-
-            if power.id_artifact not in ids:
-                continue
-
-            if power_id not in ids[power.id_artifact]:
-                continue
-
-            if self._spellname_db[data.id_spell].id != data.id_spell:
-                continue
-
-            ids[power.id_artifact][power_id]['ranks'].append(data)
-
-        return ids
-
-    def generate(self, ids = None):
-        data_str = "%sartifact%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        artifact_keys = sorted(ids.keys())
-        if artifact_keys[0] == 0:
-            del artifact_keys[0]
-
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(artifact_keys) + 1))
-
-        self._out.write('// Artifact base data, wow build %d\n' % ( self._options.build ))
-
-        self._out.write('static struct artifact_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
-
-        powers = []
-        for key in artifact_keys + [0]:
-            data = self._artifact_db[key]
-            fields = data.field( 'id', 'id_spec' )
-            self._out.write('  { %s },\n' % (', '.join(fields)))
-            if key in ids:
-                for _, power_data in ids[key].items():
-                    powers.append(power_data)
-
-        self._out.write('};\n\n')
-
-        data_str = "%sartifact_power%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(powers) + 1))
-
-        self._out.write('// Artifact power data, wow build %d\n' % ( self._options.build ))
-
-        self._out.write('static struct artifact_power_data_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
-
-        ranks = []
-        for power in sorted(powers, key = lambda v: (v['data'].id_artifact, v['data'].id)) + [{ 'data': dbc.data.ArtifactPower.default(self._artifactpower_db.parser()), 'ranks': [] }]:
-            fields = power['data'].field('id', 'id_artifact', 'type', 'index', 'max_rank')
-            if len(power['ranks']) > 0:
-                spell = self._spellname_db[power['ranks'][0].id_spell]
-
-                fields += spell.field('id', 'name')
-                self._out.write('  { %s }, // %s (id=%u, n_ranks=%u)\n' % (', '.join(fields),
-                    spell.name, power['ranks'][0].id_spell, len(power['ranks'])))
-            else:
-                spell = self._spellname_db[0]
-                fields += spell.field('id', 'name')
-                self._out.write('  { %s },\n' % (', '.join(fields)))
-            ranks += power['ranks']
-
-        self._out.write('};\n')
-
-        data_str = "%sartifact_power_rank%s" % (
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-        )
-
-        self._out.write('#define %s_SIZE (%d)\n\n' % (data_str.upper(), len(ranks) + 1))
-
-        self._out.write('// Artifact power rank data, wow build %d\n' % ( self._options.build ))
-
-        self._out.write('static struct artifact_power_rank_t __%s_data[%s_SIZE] = {\n' % (data_str, data_str.upper()))
-
-        hotfix_data = {}
-        for rank in sorted(ranks, key = lambda v: (self._options.build < 25600 and v.id_power or v.id_parent, v.index)) + [self._artifactpowerrank_db.default()]:
-            fields = rank.field('id', self._options.build < 25600 and 'id_power' or 'id_parent', 'index', 'id_spell', 'value')
-            f, hfd = rank.get_hotfix_info(('index', 2), ('id_spell', 3), ('value', 4))
-            fields += [ '%#.8x' % f, '0' ]
-            if f > 0:
-                hotfix_data[rank.id] = hfd
-
-            try:
-                self._out.write('  { %s },\n' % (', '.join(fields)))
-            except Exception as e:
-                print(rank, self._options.build < 25600 and 'id_power' or 'id_parent')
-                print(rank._dbcp, rank._dbcp.has_key_block())
-                print(fields, e)
-                sys.exit(1)
-
-        self._out.write('};\n')
-
-        output_hotfixes(self, data_str, hotfix_data);
 

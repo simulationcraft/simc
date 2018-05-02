@@ -57,11 +57,6 @@ const point_data_t& player_artifact_data_t::point_data( unsigned power_id ) cons
 
 bool player_artifact_data_t::initialize()
 {
-  if ( sim() -> disable_artifacts )
-  {
-    return true;
-  }
-
   auto p = powers();
 
   auto damage_it = range::find_if( p , [ this ]( const artifact_power_data_t* power ) {
@@ -87,14 +82,7 @@ bool player_artifact_data_t::initialize()
 
 bool player_artifact_data_t::enabled() const
 {
-  if ( sim() -> disable_artifacts )
-  {
-    return false;
-  }
-  else
-  {
-    return m_slot != SLOT_INVALID;
-  }
+  return m_slot != SLOT_INVALID;
 }
 
 void player_artifact_data_t::reset_artifact()
@@ -162,11 +150,6 @@ int player_artifact_data_t::ilevel_increase() const
 
 slot_e player_artifact_data_t::slot() const
 {
-  if ( sim() -> disable_artifacts != 0 )
-  {
-    return SLOT_INVALID;
-  }
-
   return m_slot;
 }
 
@@ -252,7 +235,7 @@ bool player_artifact_data_t::add_crucible_power( unsigned power_id, unsigned ran
 
 void player_artifact_data_t::override_power( const std::string& name_str, unsigned rank )
 {
-  if ( rank > MAX_TRAIT_RANK || name_str.empty() || sim() -> disable_artifacts != 0 )
+  if ( rank > MAX_TRAIT_RANK || name_str.empty() )
   {
     return;
   }
