@@ -1869,7 +1869,10 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
     weapon_multiplier = 1.0;
     base_execute_time = weapon->swing_time;
 
-    // our spell data does not list it but 'Shoot' is affected by Lone Wolf
+    // our spell data does not list it but 'Auto Shot' (spell_id=75) is affected by these
+    affected_by.aotw_crit_chance = true;
+    affected_by.bestial_wrath = true;
+    affected_by.thrill_of_the_hunt = true;
     affected_by.lone_wolf = true;
 
     if ( p -> talents.volley -> ok() )
