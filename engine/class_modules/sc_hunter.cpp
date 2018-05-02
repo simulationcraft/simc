@@ -2268,11 +2268,14 @@ struct bursting_shot_t : public hunter_ranged_attack_t
 struct aimed_shot_base_t: public hunter_ranged_attack_t
 {
   benefit_t *const careful_aim;
+  int trick_shots_targets;
 
   aimed_shot_base_t( const std::string& name, hunter_t* p ):
     hunter_ranged_attack_t( name, p, p -> specs.aimed_shot ),
-    careful_aim( p -> talents.careful_aim -> ok() ? p -> get_benefit( "careful_aim" ) : nullptr )
+    careful_aim( p -> talents.careful_aim -> ok() ? p -> get_benefit( "careful_aim" ) : nullptr ),
+    trick_shots_targets( static_cast<int>( p -> specs.trick_shots -> effectN( 1 ).base_value() ) )
   {
+    radius = 8.0;
   }
 
   timespan_t execute_time() const override
@@ -2283,6 +2286,13 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       t *= 1.0 + p() -> buffs.t20_4p_precision -> data().effectN( 1 ).percent();
 
     return t;
+  }
+
+  int n_targets() const override
+  {
+    if ( p() -> buffs.trick_shots -> check() )
+      return trick_shots_targets + 1;
+    return hunter_ranged_attack_t::n_targets();
   }
 
   double action_multiplier() const override
@@ -2362,8 +2372,6 @@ struct aimed_shot_t : public aimed_shot_base_t
       double_tap = p -> get_background_action<aimed_shot_secondary_t>( "aimed_shot_double_tap" );
       add_child( double_tap );
     }
-
-    // TODO: Trick Shots
   }
 
   double cost() const override
@@ -2400,6 +2408,8 @@ struct aimed_shot_t : public aimed_shot_base_t
     p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
 
     p() -> buffs.master_marksman -> trigger();
+
+    p() -> buffs.trick_shots -> decrement();
 
     if ( lock_and_loaded )
       p() -> buffs.lock_and_load -> decrement();
@@ -2573,8 +2583,16 @@ struct rapid_fire_t: public hunter_spell_t
     {
       background = true;
       dual = true;
+      radius = 8.0;
 
       parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
+    }
+
+    int n_targets() const override
+    {
+      if ( p() -> buffs.trick_shots -> check() )
+        return 2;
+      return hunter_ranged_attack_t::n_targets();
     }
 
     double composite_crit_chance() const override
@@ -2606,10 +2624,7 @@ struct rapid_fire_t: public hunter_spell_t
 
     dot_duration += p -> talents.streamline -> effectN( 1 ).time_value();
 
-    /* TODO:
-     *  Trick Shots
-     *  custom cast_regen impl
-     */
+    // TODO: custom cast_regen impl
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
@@ -2631,6 +2646,8 @@ struct rapid_fire_t: public hunter_spell_t
   void last_tick( dot_t* d ) override
   {
     hunter_spell_t::last_tick( d );
+
+    p() -> buffs.trick_shots -> decrement();
 
     p() -> buffs.lethal_shots_rf -> decrement();
 
