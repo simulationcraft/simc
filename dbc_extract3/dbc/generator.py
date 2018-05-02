@@ -1218,7 +1218,6 @@ class SpellDataGenerator(DataGenerator):
           ( 217207, 0 ), # Dire Frenzy (pet)
           ( 201594, 0 ), # Stampede
           ( 118459, 5 ), # Beast Cleave
-          (  77443, 2 ), # Steady Shot energize effect
           ( 257622, 2 ), # Trick Shots buff
           ( 269502, 2 ), ( 260395, 2 ), # Lethal Shots buffs
           ( 259516, 3 ), # Flanking Strike

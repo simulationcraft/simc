@@ -2528,17 +2528,9 @@ struct steady_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    auto energize_spell = p -> find_spell( 77443 );
-    if ( energize_spell -> ok() )
-    {
-      parse_effect_data( energize_spell -> effectN( 1 ) );
-    }
-    else
-    {
-      energize_type = ENERGIZE_ON_CAST;
-      energize_resource = RESOURCE_FOCUS;
-      energize_amount = data().effectN( 2 ).base_value();
-    }
+    energize_type = ENERGIZE_ON_CAST;
+    energize_resource = RESOURCE_FOCUS;
+    energize_amount = data().effectN( 2 ).base_value();
   }
 
   void execute() override
