@@ -3578,6 +3578,16 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
       trigger_fof( fof_proc_chance );
     }
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = frost_mage_spell_t::action_multiplier();
+
+    // TODO: Remove 0.2 mult once the effect is fixed to work correctly.
+    am *= 1.0 + p() -> cache.mastery() * p() -> spec.icicles -> effectN( 4 ).mastery_value() * 0.2;
+
+    return am;
+  }
 };
 
 struct frozen_orb_t : public frost_mage_spell_t
