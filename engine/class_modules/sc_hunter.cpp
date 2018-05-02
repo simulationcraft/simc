@@ -93,6 +93,139 @@ void parse_affecting_aura( action_t *const action, const spell_data_t *const spe
   }
 }
 
+namespace cdwaste {
+
+struct action_data_t
+{
+  simple_sample_data_with_min_max_t exec;
+  simple_sample_data_with_min_max_t cumulative;
+  simple_sample_data_t iter;
+
+  void update_ready( const action_t* action, timespan_t cd )
+  {
+    const cooldown_t* cooldown = action -> cooldown;
+    sim_t* sim = action -> sim;
+    if ( ( cd > timespan_t::zero() || ( cd <= timespan_t::zero() && cooldown -> duration > timespan_t::zero() ) ) &&
+         cooldown -> current_charge == cooldown -> charges && cooldown -> last_charged > timespan_t::zero() &&
+         cooldown -> last_charged < sim -> current_time() )
+    {
+      double time_ = ( sim -> current_time() - cooldown -> last_charged ).total_seconds();
+      if ( sim -> debug )
+      {
+        sim -> out_debug.print( "{} {} cooldown waste tracking waste={:.3f} exec_time={:.3f}",
+                                action -> player -> name(), action -> name(),
+                                time_, action -> time_to_execute.total_seconds() );
+      }
+      time_ -= action -> time_to_execute.total_seconds();
+
+      if ( time_ > 0 )
+      {
+        exec.add( time_ );
+        iter.add( time_ );
+      }
+    }
+  }
+};
+
+struct player_data_t
+{
+  typedef std::pair<std::string, std::unique_ptr<action_data_t>> record_t;
+  std::vector<record_t> data_;
+
+  action_data_t* get( const action_t* a )
+  {
+    auto it = range::find_if( data_, [ a ] ( const record_t& r ) { return a -> name_str == r.first; } );
+    if ( it != data_.cend() )
+      return it -> second.get();
+
+    data_.push_back( record_t( a -> name_str, std::unique_ptr<action_data_t>( new action_data_t() ) ) );
+    return data_.back().second.get();
+  }
+
+  void merge( const player_data_t& other )
+  {
+    for ( size_t i = 0, end = data_.size(); i < end; i++ )
+    {
+      data_[ i ].second -> exec.merge( other.data_[ i ].second -> exec );
+      data_[ i ].second -> cumulative.merge( other.data_[ i ].second -> cumulative );
+    }
+  }
+
+  void datacollection_begin()
+  {
+    for ( auto& rec : data_ )
+      rec.second -> iter.reset();
+  }
+
+  void datacollection_end()
+  {
+    for ( auto& rec : data_ )
+      rec.second -> cumulative.add( rec.second -> iter.sum() );
+  }
+};
+
+void print_html_report( const player_t& player, const player_data_t& data, report::sc_html_stream& os )
+{
+  if ( data.data_.empty() )
+    return;
+
+  os << "\t\t\t\t\t<h3 class=\"toggle open\">Cooldown waste details</h3>\n"
+     << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+  os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n"
+     << "<tr>\n"
+     << "<th></th>\n"
+     << "<th colspan=\"3\">Seconds per Execute</th>\n"
+     << "<th colspan=\"3\">Seconds per Iteration</th>\n"
+     << "</tr>\n"
+     << "<tr>\n"
+     << "<th>Ability</th>\n"
+     << "<th>Average</th>\n"
+     << "<th>Minimum</th>\n"
+     << "<th>Maximum</th>\n"
+     << "<th>Average</th>\n"
+     << "<th>Minimum</th>\n"
+     << "<th>Maximum</th>\n"
+     << "</tr>\n";
+
+  size_t n = 0;
+  for ( const auto& rec : data.data_ )
+  {
+    const auto& entry = rec.second -> exec;
+    if ( entry.count() == 0 )
+      continue;
+
+    const auto& iter_entry = rec.second -> cumulative;
+
+    action_t* a = player.find_action( rec.first );
+    std::string name_str = rec.first;
+    if ( a )
+      name_str = report::action_decorator_t( a ).decorate();
+
+    std::string row_class_str = "";
+    if ( ++n & 1 )
+      row_class_str = " class=\"odd\"";
+
+    os.printf( "<tr%s>", row_class_str.c_str() );
+    os << "<td class=\"left\">" << name_str << "</td>";
+    os.printf( "<td class=\"right\">%.3f</td>", entry.mean() );
+    os.printf( "<td class=\"right\">%.3f</td>", entry.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", entry.max() );
+    os.printf( "<td class=\"right\">%.3f</td>", iter_entry.mean() );
+    os.printf( "<td class=\"right\">%.3f</td>", iter_entry.min() );
+    os.printf( "<td class=\"right\">%.3f</td>", iter_entry.max() );
+    os << "</tr>\n";
+  }
+
+  os << "</table>\n";
+
+  os << "\t\t\t\t\t</div>\n";
+
+  os << "<div class=\"clear\"></div>\n";
+}
+
+} // namespace cd_waste
+
 // ==========================================================================
 // Hunter
 // ==========================================================================
@@ -384,6 +517,8 @@ public:
     const spell_data_t* spirit_bond;
   } mastery;
 
+  cdwaste::player_data_t cd_waste;
+
   player_t* current_hunters_mark_target;
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
@@ -454,7 +589,11 @@ public:
   void      init_scaling() override;
   void      init_action_list() override;
   void      reset() override;
+  void      merge( player_t& other ) override;
   void      combat_begin() override;
+
+  void datacollection_begin() override;
+  void datacollection_end() override;
 
   double    composite_attack_power_multiplier() const override;
   double    composite_melee_crit_chance() const override;
@@ -533,6 +672,9 @@ public:
 
   bool hasted_gcd;
 
+  bool track_cd_waste;
+  cdwaste::action_data_t* cd_waste;
+
   struct {
     // bm
     bool aotw_crit_chance;
@@ -548,7 +690,11 @@ public:
   } affected_by;
 
   hunter_action_t( const std::string& n, hunter_t* player, const spell_data_t* s = spell_data_t::nil() ):
-                   ab( n, player, s ), hasted_gcd( false ), affected_by()
+    ab( n, player, s ),
+    hasted_gcd( false ),
+    track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
+    cd_waste( nullptr ),
+    affected_by()
   {
     ab::special = true;
 
@@ -584,6 +730,9 @@ public:
 
     // disable default gcd scaling from haste as we are rolling our own because of AotW
     ab::gcd_haste = HASTE_NONE;
+
+    if ( track_cd_waste )
+      cd_waste = p() -> cd_waste.get( this );
   }
 
   timespan_t gcd() const override
@@ -673,6 +822,14 @@ public:
       cost *= 1.0 + p() -> legendary.bm_waist -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
 
     return cost;
+  }
+
+  void update_ready( timespan_t cd ) override
+  {
+    if ( cd_waste )
+      cd_waste -> update_ready( this, cd );
+
+    ab::update_ready( cd );
   }
 
   virtual double cast_regen() const
@@ -4899,6 +5056,15 @@ void hunter_t::reset()
   current_hunters_mark_target = nullptr;
 }
 
+// hunter_t::merge ==========================================================
+
+void hunter_t::merge( player_t& other )
+{
+  player_t::merge( other );
+
+  cd_waste.merge( static_cast<hunter_t&>( other ).cd_waste );
+}
+
 // hunter_t::combat_begin ==================================================
 
 void hunter_t::combat_begin()
@@ -4924,6 +5090,26 @@ void hunter_t::combat_begin()
     }
   }
   player_t::combat_begin();
+}
+
+// hunter_t::datacollection_begin ===========================================
+
+void hunter_t::datacollection_begin()
+{
+  if ( active_during_iteration )
+    cd_waste.datacollection_begin();
+
+  player_t::datacollection_begin();
+}
+
+// hunter_t::datacollection_end =============================================
+
+void hunter_t::datacollection_end()
+{
+  if ( requires_data_collection() )
+    cd_waste.datacollection_end();
+
+  player_t::datacollection_end();
 }
 
 // hunter_t::composite_attack_power_multiplier ==============================
@@ -5197,17 +5383,13 @@ public:
   {
   }
 
-  void html_customsection( report::sc_html_stream& /* os*/ ) override
+  void html_customsection( report::sc_html_stream& os ) override
   {
-    (void)p;
-    /*// Custom Class Section
-    os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
-    << "\t\t\t\t\t<h3 class=\"toggle open\">Custom Section</h3>\n"
-    << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+    os << "\t\t\t\t<div class=\"player-section custom_section\">\n";
 
-    os << p.name();
+    cdwaste::print_html_report( p, p.cd_waste, os );
 
-    os << "\t\t\t\t\t\t</div>\n" << "\t\t\t\t\t</div>\n";*/
+    os << "\t\t\t\t\t</div>\n";
   }
 private:
   hunter_t& p;
