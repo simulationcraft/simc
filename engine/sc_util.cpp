@@ -2418,17 +2418,6 @@ void util::urlencode( std::string& str )
   str.swap( temp );
 }
 
-// create_wowhead_artifact_url ==============================================
-std::string util::create_wowhead_artifact_url( const player_t& p )
-{
-  if ( ! p.artifact || ! p.artifact -> enabled() )
-  {
-    return std::string();
-  }
-
-  return "http://legion.wowhead.com/artifact-calc#" + p.artifact -> encode();
-}
-
 // create_blizzard_talent_url ===============================================
 
 std::string util::create_blizzard_talent_url( const player_t& p )

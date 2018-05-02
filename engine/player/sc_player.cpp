@@ -290,22 +290,6 @@ bool parse_talent_override( sim_t* sim, const std::string& name, const std::stri
   return true;
 }
 
-// parse_artifact_override ====================================================
-
-bool parse_artifact_override( sim_t* sim, const std::string& name, const std::string& override_str )
-{
-  assert( name == "artifact_override" );
-  (void)name;
-
-  player_t* p = sim->active_player;
-
-  if ( !p->artifact_overrides_str.empty() )
-    p->artifact_overrides_str += "/";
-  p->artifact_overrides_str += override_str;
-
-  return true;
-}
-
 // parse_timeofday ====================================================
 
 bool parse_timeofday( sim_t* sim, const std::string& name, const std::string& override_str )
@@ -505,18 +489,6 @@ bool parse_set_bonus( sim_t* sim, const std::string&, const std::string& value )
 
   p->sets->set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( p->specialization() ) ][ bonus ].overridden = opt_val;
 
-  return true;
-}
-
-bool parse_artifact_crucible( sim_t* sim, const std::string&, const std::string& value )
-{
-  sim->active_player->artifact->set_crucible_str( value );
-  return true;
-}
-
-bool parse_artifact( sim_t* sim, const std::string&, const std::string& value )
-{
-  sim->active_player->artifact->set_artifact_str( value );
   return true;
 }
 
@@ -1534,7 +1506,6 @@ bool player_t::create_special_effects()
   }
 
   unique_gear::initialize_racial_effects( this );
-  unique_gear::initialize_artifact_powers( this );
 
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.
@@ -1965,43 +1936,6 @@ void player_t::init_talents()
       override_talent( split );
     }
   }
-}
-
-bool player_t::init_artifact()
-{
-  if ( !artifact )
-  {
-    return true;
-  }
-
-  unsigned artifact_id = dbc.artifact_by_spec( specialization() );
-
-  if ( artifact_id == 0 )
-  {
-    sim->errorf(
-        "No Artifact ID found for player '%s'! Please note that "
-        "SimC currently does not support players without specalization.",
-        name() );
-    return false;
-  }
-
-  if ( sim->debug )
-    sim->out_debug.printf( "Initializing artifact for player (%s)", name() );
-
-  if ( !artifact->initialize() )
-  {
-    return false;
-  }
-
-  if ( !artifact_overrides_str.empty() )
-  {
-    for ( auto& split : util::string_split( artifact_overrides_str, "/" ) )
-    {
-      override_artifact( split );
-    }
-  }
-
-  return true;
 }
 
 void player_t::init_spells()
@@ -3352,11 +3286,6 @@ double player_t::composite_player_multiplier( school_e school ) const
   if ( buffs.legendary_aoe_ring && buffs.legendary_aoe_ring->check() )
     m *= 1.0 + buffs.legendary_aoe_ring->default_value;
 
-  if ( artifact )
-  {
-    m *= 1.0 + artifact->artificial_damage_multiplier();
-  }
-
   if ( buffs.taste_of_mana && buffs.taste_of_mana->check() && school != SCHOOL_PHYSICAL )
   {
     m *= 1.0 + buffs.taste_of_mana->default_value;
@@ -3561,13 +3490,6 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
         m *= 1.0 + passive_values.amplification_2;
       break;
     case ATTR_STAMINA:
-    {
-      if ( artifact )
-      {
-        m *= 1.0 + artifact->artificial_stamina_multiplier();
-      }
-      break;
-    }
     default:
       break;
   }
@@ -8681,32 +8603,6 @@ static bool parse_min_gcd( sim_t* sim, const std::string& name, const std::strin
   return true;
 }
 
-void player_t::override_artifact( const std::string& override_str )
-{
-  std::string::size_type split = override_str.find( ':' );
-
-  if ( split == std::string::npos )
-  {
-    sim->errorf( "artifact_override: Invalid override_str %s for player %s.\n", override_str.c_str(), name() );
-    return;
-  }
-
-  const auto& override_rank_str = override_str.substr( split + 1, override_str.size() );
-
-  if ( override_rank_str.empty() )
-  {
-    sim->errorf( "artifact_override: Invalid override_str %s for player %s.\n", override_str.c_str(), name() );
-    return;
-  }
-
-  std::string name = override_str.substr( 0, split );
-  util::tokenize( name );
-
-  auto override_rank = util::to_unsigned( override_rank_str );
-
-  artifact->override_power( name, override_rank );
-}
-
 // TODO: HOTFIX handling
 void player_t::replace_spells()
 {
@@ -8855,136 +8751,14 @@ const spell_data_t* player_t::find_specialization_spell( unsigned spell_id, spec
   return spell_data_t::not_found();
 }
 
-artifact_power_t player_t::find_artifact_spell( unsigned power_id ) const
+artifact_power_t player_t::find_artifact_spell( unsigned /*power_id*/ ) const
 {
-  if ( !artifact || !artifact->enabled() )
-  {
-    return artifact_power_t();
-  }
-
-  // Find the artifact for the player
-  unsigned artifact_id = dbc.artifact_by_spec( specialization() );
-  if ( artifact_id == 0 )
-  {
-    return artifact_power_t();
-  }
-
-  auto total_ranks = artifact->power_rank( power_id );
-
-  // User input did not select this power
-  if ( total_ranks == 0 )
-  {
-    return artifact_power_t();
-  }
-
-  const artifact_power_data_t* power_data = dbc.artifact_power( power_id );
-
-  // No power found
-  if ( !power_data )
-  {
-    return artifact_power_t();
-  }
-
-  // Single rank powers can only be set to 0 or 1
-  if ( power_data->max_rank == 1 && total_ranks > 1 )
-  {
-    return artifact_power_t();
-  }
-
-  // 1 rank powers use the zeroth (only) entry, multi-rank spells have 0 -> max rank entries
-  std::vector<const artifact_power_rank_t*> ranks = dbc.artifact_power_ranks( power_data->id );
-  auto rank_index                                 = total_ranks - 1;
-
-  // Rank data missing for the power
-  if ( rank_index + 1 > ranks.size() )
-  {
-    sim->errorf( "%s too high rank (%u/%u) given for artifact power %s, disabling power", this->name(), rank_index + 1,
-                 ranks.size(), power_data->name ? power_data->name : "Unknown" );
-
-    return artifact_power_t();
-  }
-
-  // Finally, all checks satisfied, return a real spell
-  return artifact_power_t( total_ranks, find_spell( ranks[ rank_index ]->id_spell() ), power_data,
-                           ranks[ rank_index ] );
+  return {};
 }
 
-artifact_power_t player_t::find_artifact_spell( const std::string& name, bool tokenized ) const
+artifact_power_t player_t::find_artifact_spell( const std::string& /*name*/, bool /*tokenized*/ ) const
 {
-  if ( !artifact || !artifact->enabled() )
-  {
-    return artifact_power_t();
-  }
-
-  // Find the artifact for the player
-  unsigned artifact_id = dbc.artifact_by_spec( specialization() );
-  if ( artifact_id == 0 )
-  {
-    return artifact_power_t();
-  }
-
-  std::vector<const artifact_power_data_t*> powers = dbc.artifact_powers( artifact_id );
-  const artifact_power_data_t* power_data          = nullptr;
-
-  // Find the power by name
-  for ( size_t power_index = 0; power_index < powers.size(); ++power_index )
-  {
-    const artifact_power_data_t* power = powers[ power_index ];
-    if ( power->name == 0 )
-    {
-      continue;
-    }
-
-    std::string power_name = power->name;
-    if ( tokenized )
-      util::tokenize( power_name );
-
-    if ( util::str_compare_ci( name, power_name ) )
-    {
-      power_data = power;
-      break;
-    }
-  }
-
-  // No power found
-  if ( !power_data )
-  {
-    return artifact_power_t();
-  }
-
-  auto total_ranks = artifact->power_rank( power_data->id );
-
-  // User input did not select this power
-  if ( total_ranks == 0 )
-  {
-    return artifact_power_t();
-  }
-
-  // Single rank powers can only be set to 0 or 1
-  if ( power_data->max_rank == 1 && total_ranks > 1 )
-  {
-    return artifact_power_t();
-  }
-
-  // 1 rank powers use the zeroth (only) entry, multi-rank spells have 0 -> max rank entries
-  std::vector<const artifact_power_rank_t*> ranks = dbc.artifact_power_ranks( power_data->id );
-  auto rank_index                                 = total_ranks - 1;
-
-  // Rank data missing for the power
-  if ( rank_index + 1 > ranks.size() )
-  {
-    if ( sim->debug )
-    {
-      sim->out_debug.printf( "%s too high rank (%u/%u) given for artifact power %s", this->name(), rank_index + 1,
-                             ranks.size(), power_data->name ? power_data->name : "Unknown" );
-    }
-
-    return artifact_power_t();
-  }
-
-  // Finally, all checks satisfied, return a real spell
-  return artifact_power_t( total_ranks, find_spell( ranks[ rank_index ]->id_spell() ), power_data,
-                           ranks[ rank_index ] );
+  return {};
 }
 
 const spell_data_t* player_t::find_mastery_spell( specialization_e s, uint32_t idx ) const
@@ -10150,31 +9924,6 @@ std::string player_t::create_profile( save_e stype )
       }
     }
 
-    if ( artifact_overrides_str.size() > 0 )
-    {
-      std::vector<std::string> splits = util::string_split( artifact_overrides_str, "/" );
-      for ( size_t i = 0; i < splits.size(); i++ )
-      {
-        profile_str += "artifact_override=" + splits[ i ] + term;
-      }
-    }
-
-    std::string artifact_str, crucible_str;
-    if ( artifact )
-    {
-      artifact_str = artifact->artifact_option_string();
-      crucible_str = artifact->crucible_option_string();
-    }
-
-    if ( !artifact_str.empty() )
-    {
-      profile_str += artifact_str + term;
-    }
-
-    if ( !crucible_str.empty() )
-    {
-      profile_str += crucible_str + term;
-    }
   }
 
   if ( stype == SAVE_ALL )
@@ -10401,12 +10150,6 @@ void player_t::copy_from( player_t* source )
   professions_str = source->professions_str;
   source->recreate_talent_str( TALENT_FORMAT_UNCHANGED );
   parse_talent_url( sim, "talents", source->talents_str );
-  if ( artifact != nullptr )
-  {
-    artifact->set_artifact_str( source->artifact->encode() );
-    artifact->set_crucible_str( source->artifact->encode_crucible() );
-    artifact_overrides_str = source->artifact_overrides_str;
-  }
 
   talent_overrides_str = source->talent_overrides_str;
   action_list_str      = source->action_list_str;
@@ -10447,9 +10190,6 @@ void player_t::create_options()
   add_option( opt_string( "id", id_str ) );
   add_option( opt_func( "talents", parse_talent_url ) );
   add_option( opt_func( "talent_override", parse_talent_override ) );
-  add_option( opt_func( "artifact", parse_artifact ) );
-  add_option( opt_func( "crucible", parse_artifact_crucible ) );
-  add_option( opt_func( "artifact_override", parse_artifact_override ) );
   add_option( opt_string( "race", race_str ) );
   add_option( opt_func( "timeofday", parse_timeofday ) );
   add_option( opt_int( "level", true_level, 0, MAX_LEVEL ) );
@@ -10604,6 +10344,13 @@ void player_t::create_options()
   add_option( opt_timespan( "reaction_time_max", reaction_max ) );
   add_option( opt_bool( "stat_cache", cache.active ) );
   add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
+
+  // Dummy artifact options
+  // TODO: Remove when 8.0 goes live
+  std::string __dummy;
+  add_option( opt_string( "artifact", __dummy ) );
+  add_option( opt_string( "crucible", __dummy ) );
+  add_option( opt_string( "artifact_override", __dummy ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

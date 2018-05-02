@@ -628,10 +628,6 @@ report::sc_html_stream& player_artifact_data_t::generate_report( report::sc_html
 
   root << "<tr class=\"left\">\n<th>Artifact</th>\n<td><ul class=\"float\">\n";
 
-  root << "<li><a href=\""
-       << util::create_wowhead_artifact_url( *player() )
-       << "\" target=\"_blank\">Calculator (Wowhead.com)</a></li>";
-
   root << "<li>Purchased points: " << purchased_points() << ", crucible " << crucible_points() << ", total " << points() << "</li>";
   root << "</ul></td></tr>";
 

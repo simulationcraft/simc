@@ -3352,9 +3352,6 @@ struct player_t : public actor_t
   player_talent_points_t talent_points;
   std::string talent_overrides_str;
 
-  // Artifact Parsing
-  std::string artifact_overrides_str;
-
   // Profs
   std::array<int, PROFESSION_MAX> profession;
 
@@ -3858,7 +3855,6 @@ struct player_t : public actor_t
   virtual void invalidate_cache( cache_e c );
   virtual void init();
   virtual void override_talent( std::string& override_str );
-  virtual void override_artifact( const std::string& override_str );
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
   virtual std::string init_use_item_actions( const std::string& append = std::string() );
@@ -3870,7 +3866,6 @@ struct player_t : public actor_t
   virtual void init_target();
   virtual void init_race();
   virtual void init_talents();
-  virtual bool init_artifact();
   virtual void replace_spells();
   virtual void init_position();
   virtual void init_professions();
