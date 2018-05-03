@@ -25,11 +25,6 @@ struct dispersion_t final : public priest_spell_t
     tick_may_crit         = false;
     hasted_ticks          = false;
     may_miss              = false;
-
-    if ( priest().artifact.from_the_shadows.rank() )
-    {
-      cooldown->duration = data().cooldown() + priest().artifact.from_the_shadows.time_value();
-    }
   }
 
   void execute() override
@@ -81,11 +76,6 @@ public:
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
 
     spell_power_mod.direct *= 1.0 + player.talents.fortress_of_the_mind->effectN( 4 ).percent();
-
-    if ( player.artifact.mind_shattering.rank() )
-    {
-      base_multiplier *= 1.0 + player.artifact.mind_shattering.percent();
-    }
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T21, B2 ) )
     {
@@ -247,11 +237,6 @@ struct mind_sear_t final : public priest_spell_t
     is_mastery_spell    = true;
     tick_zero           = false;
 
-    if ( p.artifact.void_corruption.rank() )
-    {
-      base_multiplier *= 1.0 + p.artifact.void_corruption.percent();
-    }
-
     tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
   }
 };
@@ -287,17 +272,6 @@ struct new_void_tendril_mind_flay_t final : public priest_spell_t
   {
     return priest().composite_player_pet_damage_multiplier( state );
   }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    if ( priest().artifact.lash_of_insanity.rank() )
-    {
-      priest().generate_insanity( priest().find_spell( 240843 )->effectN( 1 ).percent(),
-                                  priest().gains.insanity_call_to_the_void, s->action );
-    }
-  }
 };
 
 struct mind_flay_t final : public priest_spell_t
@@ -321,12 +295,6 @@ struct mind_flay_t final : public priest_spell_t
 
     priest().active_spells.void_tendril = new new_void_tendril_mind_flay_t( p );
     add_child( priest().active_spells.void_tendril );
-
-    if ( p.artifact.void_siphon.rank() )
-    {
-      base_multiplier *= 1.0 + p.artifact.void_siphon.percent();
-    }
-
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T21, B2 ) )
@@ -441,10 +409,6 @@ struct shadow_word_death_t final : public priest_spell_t
     if ( shadow_word_death_2 )
     {
       cooldown->charges += shadow_word_death_2->effectN( 1 ).base_value();
-    }
-    if ( p.artifact.deaths_embrace.rank() )
-    {
-      base_multiplier *= 1.0 + p.artifact.deaths_embrace.percent();
     }
   }
 
@@ -821,25 +785,11 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
 
-    if ( p.artifact.to_the_pain.rank() )
-    {
-      base_multiplier *= 1.0 + p.artifact.to_the_pain.percent();
-    }
-
     if ( priest().specs.shadowy_apparitions->ok() && !priest().active_spells.shadowy_apparitions )
     {
       priest().active_spells.shadowy_apparitions = new shadowy_apparition_spell_t( p );
-      if ( !priest().artifact.unleash_the_shadows.rank() )
-      {
-        // If SW:P is the only action having SA, then we can add it as a child stat.
-        add_child( priest().active_spells.shadowy_apparitions );
-      }
-    }
-
-    if ( priest().artifact.sphere_of_insanity.rank() && !priest().active_spells.sphere_of_insanity )
-    {
-      priest().active_spells.sphere_of_insanity = new sphere_of_insanity_spell_t( p );
-      add_child( priest().active_spells.sphere_of_insanity );
+      // If SW:P is the only action having SA, then we can add it as a child stat.
+      add_child( priest().active_spells.shadowy_apparitions );      
     }
   }
 
@@ -860,19 +810,6 @@ struct shadow_word_pain_t final : public priest_spell_t
     if ( priest().active_items.zeks_exterminatus )
     {
       trigger_zeks();
-    }
-    if ( priest().artifact.sphere_of_insanity.rank() )
-    {
-      priest().active_spells.sphere_of_insanity->target_cache.is_valid = false;
-    }
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    priest_spell_t::last_tick( d );
-    if ( priest().artifact.sphere_of_insanity.rank() )
-    {
-      priest().active_spells.sphere_of_insanity->target_cache.is_valid = false;
     }
   }
 
@@ -918,18 +855,6 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     return c;
   }
-
-  double action_multiplier() const override
-  {
-    double m = priest_spell_t::action_multiplier();
-
-    if ( priest().artifact.mass_hysteria.rank() )
-    {
-      m *= 1.0 + ( priest().buffs.voidform->check() * ( priest().artifact.mass_hysteria.percent() ) );
-    }
-
-    return m;
-  }
 };
 
 struct vampiric_touch_t final : public priest_spell_t
@@ -944,11 +869,7 @@ struct vampiric_touch_t final : public priest_spell_t
       ignore_healing( p.options.priest_ignore_healing )
   {
     parse_options( options_str );
-    if ( !ignore_healing )
-    {
-      init_mental_fortitude();
-    }
-
+    
     may_crit         = false;
     is_mastery_spell = true;
 
@@ -958,19 +879,7 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp->background = true;
     }
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
-
-    if ( p.artifact.touch_of_darkness.rank() )
-    {
-      base_multiplier *= 1.0 + p.artifact.touch_of_darkness.percent();
-    }
-
-    if ( !priest().active_spells.shadowy_apparitions && priest().specs.shadowy_apparitions->ok() &&
-         p.artifact.unleash_the_shadows.rank() )
-    {
-      priest().active_spells.shadowy_apparitions = new shadowy_apparition_spell_t( p );
-    }
   }
-  void init_mental_fortitude();
 
   void trigger_heal( action_state_t* s )
   {
@@ -1021,17 +930,6 @@ struct vampiric_touch_t final : public priest_spell_t
       trigger_heal( d->state );
     }
 
-    if ( priest().artifact.unleash_the_shadows.rank() )
-    {
-      if ( priest().active_spells.shadowy_apparitions && ( d->state->result_amount > 0 ) )
-      {
-        if ( d->state->result == RESULT_CRIT && rng().roll( priest().artifact.unleash_the_shadows.percent() ) )
-        {
-          priest().active_spells.shadowy_apparitions->trigger();
-        }
-      }
-    }
-
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T19, B2 ) )
     {
       priest().generate_insanity( priest().sets->set( PRIEST_SHADOW, T19, B2 )->effectN( 1 ).base_value(),
@@ -1042,18 +940,6 @@ struct vampiric_touch_t final : public priest_spell_t
     {
       trigger_anunds();
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double m = priest_spell_t::action_multiplier();
-
-    if ( priest().artifact.mass_hysteria.rank() )
-    {
-      m *= 1.0 + ( priest().buffs.voidform->check() * ( priest().artifact.mass_hysteria.percent() ) );
-    }
-
-    return m;
   }
 };
 
@@ -1110,12 +996,6 @@ struct void_bolt_t final : public priest_spell_t
     is_sphere_of_insanity_spell = true;
     is_mastery_spell            = true;
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data.
-
-    if ( player.artifact.sinister_thoughts.rank() )
-    {
-      base_multiplier *= 1.0 + player.artifact.sinister_thoughts.percent();
-    }
-
     cooldown->hasted = true;
 
     auto rank2 = player.find_specialization_spell( 231688 );
@@ -1358,11 +1238,6 @@ struct void_torrent_t final : public priest_spell_t
 
     priest().buffs.void_torrent->trigger();
 
-    if ( priest().artifact.mind_quickening.rank() )
-    {
-      priest().buffs.mind_quickening->trigger();
-    }
-
     // Adjust the Voidform end event (essentially remove it) after the Void Torrent buff is up, since it disables
     // insanity drain for the duration of the channel
     priest().insanity.adjust_end_event();
@@ -1433,13 +1308,6 @@ struct mental_fortitude_t final : public priest_absorb_t
 
 }  // namespace heals
 
-void spells::vampiric_touch_t::init_mental_fortitude()
-{
-  if ( !priest().active_spells.mental_fortitude && priest().artifact.mental_fortitude.rank() )
-  {
-    priest().active_spells.mental_fortitude = new heals::mental_fortitude_t( priest() );
-  }
-}
 }  // namespace actions
 
 namespace buffs
@@ -1568,10 +1436,6 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
     priest().buffs.iridis_empowerment->trigger();
     priest().buffs.shadowform->expire();
     priest().insanity.begin_tracking();
-    if ( priest().artifact.sphere_of_insanity.rank() )
-    {
-      priest().buffs.sphere_of_insanity->trigger();
-    }
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) )
     {
@@ -2020,12 +1884,10 @@ void priest_t::create_buffs_shadow()
 
   // Artifact
   buffs.sphere_of_insanity = make_buff( this, "sphere_of_insanity", find_spell( 194182 ) );
-  buffs.mind_quickening = make_buff<stat_buff_t>( this, "mind_quickening", find_spell( 240673 ) );
 }
 
 void priest_t::init_rng_shadow()
 {
-  rppm.call_to_the_void = get_rppm( "call_to_the_void", artifact.call_to_the_void );
   rppm.shadowy_insight  = get_rppm( "shadowy_insighty", talents.shadowy_insight );
 }
 
@@ -2060,31 +1922,6 @@ void priest_t::init_spells_shadow()
   talents.legacy_of_the_void   = find_talent_spell( "Legacy of the Void" );
   talents.void_torrent         = find_talent_spell( "Void Torrent" );
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
-
-  // Artifact - Xal'atath, Blade of the Black Empire
-
-  artifact.call_to_the_void      = find_artifact_spell( "Call to the Void" );
-  artifact.creeping_shadows      = find_artifact_spell( "Creeping Shadows" );
-  artifact.darkening_whispers    = find_artifact_spell( "Darkening Whispers" );
-  artifact.deaths_embrace        = find_artifact_spell( "Death's Embrace" );
-  artifact.from_the_shadows      = find_artifact_spell( "From the Shadows" );
-  artifact.mass_hysteria         = find_artifact_spell( "Mass Hysteria" );
-  artifact.mental_fortitude      = find_artifact_spell( "Mental Fortitude" );
-  artifact.mind_shattering       = find_artifact_spell( "Mind Shattering" );
-  artifact.sinister_thoughts     = find_artifact_spell( "Sinister Thoughts" );
-  artifact.sphere_of_insanity    = find_artifact_spell( "Sphere of Insanity" );
-  artifact.thoughts_of_insanity  = find_artifact_spell( "Thoughts of Insanity" );
-  artifact.thrive_in_the_shadows = find_artifact_spell( "Thrive in the Shadows" );
-  artifact.to_the_pain           = find_artifact_spell( "To the Pain" );
-  artifact.touch_of_darkness     = find_artifact_spell( "Touch of Darkness" );
-  artifact.unleash_the_shadows   = find_artifact_spell( "Unleash the Shadows" );
-  artifact.void_corruption       = find_artifact_spell( "Void Corruption" );
-  artifact.void_siphon           = find_artifact_spell( "Void Siphon" );
-  //  artifact.void_torrent         = find_artifact_spell( "Void Torrent" );
-  artifact.darkness_of_the_conclave = find_artifact_spell( "Darkness of the Conclave" );
-  artifact.fiending_dark            = find_artifact_spell( "Fiending Dark" );
-  artifact.mind_quickening          = find_artifact_spell( "Mind Quickening" );
-  artifact.lash_of_insanity         = find_artifact_spell( "Lash of Insanity" );
 
   // General Spells
   specs.voidform            = find_specialization_spell( "Voidform" );
@@ -2368,7 +2205,7 @@ void priest_t::generate_apl_shadow()
                    ".sphere_of_insanity.rank)" );
   s2m->add_action( this, "Vampiric Touch",
                    "if=!talent.misery.enabled&!ticking&(active_enemies<4"
-                   "|(talent.auspicious_spirits.enabled&artifact.unleash_the_shadows.rank))" );
+                   "|(talent.auspicious_spirits.enabled))" );
   s2m->add_action( this, "Shadow Word: Pain",
                    "if=!talent.misery.enabled&!ticking&target.time_to_die>"
                    "10&"
@@ -2378,12 +2215,11 @@ void priest_t::generate_apl_shadow()
   s2m->add_action( this, "Vampiric Touch",
                    "if=!talent.misery.enabled&!ticking&target.time_to_die>10&"
                    "(active_enemies<4|(talent.auspicious_spirits."
-                   "enabled&"
-                   "artifact.unleash_the_shadows.rank)),cycle_targets=1" );
+                   "enabled)),cycle_targets=1" );
   s2m->add_action( this, "Shadow Word: Pain",
                    "if=!talent.misery.enabled&!ticking&target.time_to_die>"
                    "10&"
-                   "(active_enemies<5&artifact.sphere_of_insanity.rank),cycle_targets=1" );
+                   "(active_enemies<5),cycle_targets=1" );
   s2m->add_action( this, "Mind Flay",
                    "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action."
                    "void_"
@@ -2482,7 +2318,7 @@ void priest_t::generate_apl_shadow()
                   ".sphere_of_insanity.rank)" );
   vf->add_action( this, "Vampiric Touch",
                   "if=!talent.misery.enabled&!ticking&(active_enemies<4|"
-                  "(talent.auspicious_spirits.enabled&artifact.unleash_the_shadows.rank))" );
+                  "(talent.auspicious_spirits.enabled))" );
   vf->add_action( this, "Vampiric Touch",
                   "if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02"
                   "*buff.voidform.stack)*variable.dot_vt_dpgcd*target.time_to_die%(gcd.max*(156"

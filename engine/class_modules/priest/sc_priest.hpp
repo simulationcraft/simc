@@ -132,8 +132,6 @@ public:
     propagate_const<buff_t*> zeks_exterminatus;        // Aura for Zeks proc
     propagate_const<buff_t*> iridis_empowerment;       // Fake aura for Helm
 
-    // Artifact
-    propagate_const<buff_t*> mind_quickening;
   } buffs;
 
   // Talents
@@ -224,34 +222,6 @@ public:
     const spell_data_t* void_torrent;
     const spell_data_t* surrender_to_madness;
   } talents;
-
-  // Artifacts
-  struct artifact_spell_data_t
-  {
-    // Shadow - Xal'atath, Blade of the Black Empire
-    artifact_power_t call_to_the_void;
-    artifact_power_t creeping_shadows;
-    artifact_power_t darkening_whispers;
-    artifact_power_t deaths_embrace;
-    artifact_power_t from_the_shadows;
-    artifact_power_t mass_hysteria;
-    artifact_power_t mental_fortitude;
-    artifact_power_t mind_shattering;
-    artifact_power_t sinister_thoughts;
-    artifact_power_t sphere_of_insanity;
-    artifact_power_t thoughts_of_insanity;   // NYI
-    artifact_power_t thrive_in_the_shadows;  // NYI
-    artifact_power_t to_the_pain;
-    artifact_power_t touch_of_darkness;
-    artifact_power_t unleash_the_shadows;
-    artifact_power_t void_corruption;
-    artifact_power_t void_siphon;
-    artifact_power_t void_torrent;
-    artifact_power_t darkness_of_the_conclave;
-    artifact_power_t fiending_dark;
-    artifact_power_t mind_quickening;
-    artifact_power_t lash_of_insanity;
-  } artifact;
 
   struct legendary_t
   {
@@ -460,7 +430,6 @@ public:
   double composite_spell_haste() const override;
   double composite_spell_speed() const override;
   double composite_player_multiplier( school_e school ) const override;
-  double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
   double composite_player_absorb_multiplier( const action_state_t* s ) const override;
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;

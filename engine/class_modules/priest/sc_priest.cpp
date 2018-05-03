@@ -325,10 +325,6 @@ struct summon_shadowfiend_t final : public summon_pet_t
     cooldown           = p.cooldowns.shadowfiend;
     cooldown->duration = data().cooldown();
     cooldown->duration += priest().sets->set( PRIEST_SHADOW, T18, B2 )->effectN( 1 ).time_value();
-    if ( priest().artifact.fiending_dark.rank() )
-    {
-      summoning_duration += priest().artifact.fiending_dark.time_value( 1 );
-    }
   }
 };
 
@@ -346,10 +342,6 @@ struct summon_mindbender_t final : public summon_pet_t
     cooldown           = p.cooldowns.mindbender;
     cooldown->duration = data().cooldown();
     cooldown->duration += priest().sets->set( PRIEST_SHADOW, T18, B2 )->effectN( 2 ).time_value();
-    if ( priest().artifact.fiending_dark.rank() )
-    {
-      summoning_duration += ( priest().artifact.fiending_dark.time_value( 2 ) / 3.0 );
-    }
   }
 };
 
@@ -866,16 +858,6 @@ double priest_t::composite_melee_speed() const
   return h;
 }
 
-double priest_t::composite_player_pet_damage_multiplier( const action_state_t* state ) const
-{
-  double m = player_t::composite_player_pet_damage_multiplier( state );
-
-  m *= 1.0 + artifact.darkening_whispers.percent( 2 );
-  m *= 1.0 + artifact.darkness_of_the_conclave.percent( 3 );
-
-  return m;
-}
-
 double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
@@ -897,11 +879,7 @@ double priest_t::composite_player_multiplier( school_e school ) const
       }
       m *= 1.0 + voidform_multiplier;
     }
-
-    m *= 1.0 + artifact.creeping_shadows.percent();
-    m *= 1.0 + artifact.darkening_whispers.percent();
   }
-  m *= 1.0 + artifact.darkness_of_the_conclave.percent();
   m *= 1.0 + buffs.twist_of_fate->current_value;
 
   return m;
@@ -1168,21 +1146,20 @@ void priest_t::create_apl_precombat()
         "variable,name=cd_time,op=set,value=(12+(2-2*talent.mindbender.enabled*set_"
         "bonus.tier20_4pc)*set_bonus.tier19_2pc+(1-3*talent.mindbender.enabled*set_"
         "bonus.tier20_4pc)*equipped.mangazas_madness+(6+5*talent.mindbender.enabled)"
-        "*set_bonus.tier20_4pc+2*artifact.lash_of_insanity.rank)" );
+        "*set_bonus.tier20_4pc)" );
     precombat->add_action(
-        "variable,name=dot_swp_dpgcd,op=set,value=36.5*1.2*(1+0.06*artifact.to_the_pain.rank)"
+        "variable,name=dot_swp_dpgcd,op=set,value=36.5*1.2"
         "*(1+0.2+stat.mastery_rating%16000)*0.75" );
     precombat->add_action(
-        "variable,name=dot_vt_dpgcd,op=set,value=68*1.2*(1+0.05*artifact.touch_of_"
-        "darkness.rank)"
+        "variable,name=dot_vt_dpgcd,op=set,value=68*1.2*"
         "*(1+0.2+stat.mastery_rating%16000)*0.5" );
-    precombat->add_action( "variable,name=sear_dpgcd,op=set,value=120*1.2*(1+0.05*artifact.void_corruption.rank)" );
+    precombat->add_action( "variable,name=sear_dpgcd,op=set,value=120*1.2" );
     precombat->add_action(
         "variable,name=s2msetup_time,op=set,value=(0.8*(83+(20+20*talent.fortress_of_the_mind"
         ".enabled)*set_bonus.tier20_4pc+((33-13*set_bonus.tier20_4pc)*"
         "talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*equipped.mangazas_madness+(raw_haste_"
         "pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls."
-        "enabled)+(2*artifact.mass_hysteria.rank)))),if=talent.surrender_to_madness.enabled" );
+        "enabled)))),if=talent.surrender_to_madness.enabled" );
     precombat->add_action( "potion" );
   }
 
