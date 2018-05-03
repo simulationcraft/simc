@@ -1187,31 +1187,61 @@ struct void_bolt_t final : public priest_spell_t
   }
 };
 
-struct void_eruption_t final : public priest_spell_t
+struct dark_void_t final : public priest_spell_t
 {
-  propagate_const<shadow_word_pain_t*> child_swp;
-  propagate_const<action_t*> void_bolt;
+  propagate_const<shadow_word_pain_t*> child_swp; 
 
-  void_eruption_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "void_eruption", p, p.find_spell( 228360 ) ), void_bolt( nullptr )
+  dark_void_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "dark_void", p, p.find_talent_spell( "Dark Void" ) ),
+       child_swp( new shadow_word_pain_t( priest(), std::string( "" ), false ) )
   {
     parse_options( options_str );
     base_costs[ RESOURCE_INSANITY ] = 0.0;
-    if ( priest().talents.dark_void->ok() )
+    child_swp->background = true;
+
+    may_miss          = false;    
+    aoe               = -1;
+    radius            = data().effectN( 1 ).radius_max();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    child_swp->target = s->target;
+    child_swp->execute();
+  }
+};
+
+struct void_eruption_t final : public priest_spell_t
+{
+  propagate_const<action_t*> void_bolt;
+  const spell_data_t* data_spell;
+
+  void_eruption_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "void_eruption", p, p.find_spell( 228360 ) ), 
+      void_bolt( nullptr ),
+      data_spell( p.find_spell( 228260 ) )
+  {
+    parse_options( options_str );
+    
+    if( priest().talents.legacy_of_the_void->ok() )
     {
-      child_swp             = new shadow_word_pain_t( priest(), std::string( "" ), false );
-      child_swp->background = true;
+      priest().talents.legacy_of_the_void->effectN( 6 ).percent();
+    }
+    else
+    {
+      base_costs[ RESOURCE_INSANITY ] /= 100;  
     }
 
     may_miss          = false;
     is_mastery_spell  = true;
     aoe               = -1;
-    range             = 40.0;
-    radius            = 10.0;
-    school            = SCHOOL_SHADOW;
+    range             = data_spell->max_range();
+    radius            = data_spell->effectN( 1 ).radius();
     cooldown          = priest().cooldowns.void_bolt;
-    base_execute_time = p.find_spell( 228260 )->cast_time( p.true_level ) *
-                        ( 1.0 + p.talents.legacy_of_the_void->effectN( 3 ).percent() );
+    base_execute_time = data_spell->cast_time( priest().true_level ) *
+                        ( 1.0 + priest().talents.legacy_of_the_void->effectN( 3 ).percent() );
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
@@ -1253,13 +1283,8 @@ struct void_eruption_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
     priest_spell_t::impact( s );
-
-    if ( priest().talents.dark_void->ok() )
-    {
-      child_swp->target = s->target;
-      child_swp->execute();
-    }
   }
+
   // TODO: Healing part of HotV
   double composite_da_multiplier( const action_state_t* state ) const override
   {
@@ -1275,13 +1300,7 @@ struct void_eruption_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest().buffs.voidform->check() &&
-         ( priest().resources.current[ RESOURCE_INSANITY ] >=
-               priest().find_spell( 185916 )->effectN( 4 ).base_value() ||
-           ( priest().talents.legacy_of_the_void->ok() &&
-             ( priest().resources.current[ RESOURCE_INSANITY ] >=
-               priest().find_spell( 185916 )->effectN( 4 ).base_value() +
-                   priest().talents.legacy_of_the_void->effectN( 2 ).base_value() ) ) ) )
+    if ( !priest().buffs.voidform->check() )
     {
       return priest_spell_t::ready();
     }
@@ -2144,6 +2163,10 @@ action_t* priest_t::create_action_shadow( const std::string& name, const std::st
   if ( name == "shadowform" )
   {
     return new shadowform_t( *this, options_str );
+  }
+  if ( name == "dark_void" )
+  {
+    return new dark_void_t( *this, options_str );
   }
   if ( ( name == "mind_blast" ) || ( name == "shadow_word_void" ) )
   {
