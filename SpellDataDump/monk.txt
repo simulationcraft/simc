@@ -58,10 +58,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=3602)     : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Your damage weakens the target, increasing Physical damage taken by $113746s1%.
-
-(Duration reduced to $s1 min against players)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Your damage weakens the target, increasing Physical damage taken by $113746s1%.
 
 Name             : Pet Damage (id=8875) [Spell Family (9), Passive, Hidden] 
 Class            : Monk
@@ -204,25 +202,25 @@ Class            : Shaman, Monk
 Race             : Orc (0x2)
 School           : Physical
 Spell Level      : 1
+GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ......x. .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
 #1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
-#2 (id=23582)    : Apply Aura (6) | Damage Done (13)
-                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Misc Value: 0x7e | Target: Self (1)
-#3 (id=116811)   : Apply Aura (6) | Modify Healing Power (135)
-                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Misc Value: 126 | Target: Self (1)
-Description      : Increases your melee attack power by $s1 and your spell power by $s2 for $d.
-Tooltip          : Melee attack power increased by $s1.
-Spell power increased by $s2.
+                   Base Value: 0 | Scaled Value: 800.0662 (avg=2.57256) | Points Per Level: 4 | Target: Self (1)
+                   Hotfixed: Average (2.57256 -> 2.57256)
+#2 (id=23582)    : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 800.0662 (avg=2.57256) | Misc Value: 3 | Target: Self (1)
+                   Hotfixed: Average (2.57256 -> 2.57256)
+Description      : Increases your attack power and Intellect by $s1 for $d.
+Tooltip          : Attack power and Intellect increased by $w1.
 
 Name             : Hunter Pet (id=34902) [Passive, Hidden] 
 Class            : Monk
@@ -304,7 +302,7 @@ Resource         : 50 Energy (3) (id=10716) w/ Windwalker Monk (id=137025)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Power Strikes (129914 effect#2), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Heightened Senses (165692 effect#1), Extend Life (185158 effect#2), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Tiger Claws (218607 effect#1), Blackout Combo (228563 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Power Strikes (129914 effect#2), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Heightened Senses (165692 effect#1), Extend Life (185158 effect#2), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Item - Monk T19 Brewmaster 4P Bonus (211417 effect#1), Blackout Combo (228563 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -315,7 +313,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=108857)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.27027 | Target: Enemy (6)
-                   Hotfixed: Base Value (1 -> 0)
 #2 (id=134420)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: chi | Target: Self (1)
 #3 (id=281299)   : Dummy (3)
@@ -351,7 +348,7 @@ Cooldown         : 3 seconds
 Category         : 1561
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Dark Skies (195265 effect#1), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Swift Roundhouse (269435 effect#1), 
+Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Swift Roundhouse (269435 effect#1), 
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -360,12 +357,14 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ....x... ........ ........ ........ 
 Effects          :
 #1 (id=108867)   : School Damage (2): physical
-                   Base Value: 7700 | Scaled Value: 7700 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=487715)   : Dummy (3)
+                   Base Value: 7700 | Scaled Value: 7700 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+#3 (id=728117)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
-Description      : Kick with a blast of Chi energy, dealing $?s137025[${$s1/10000*$<CAP>}][${$s1/10000*$SP}] Physical damage.$?c3[
+Description      : Kick with a blast of Chi energy, dealing $?s137025[${$s2/10000*$<CAP>}][${$s2/10000*$SP}] Physical damage.$?c3[
 
-Reduces the cooldown of Rising Sun Kick and Fists of Fury by ${$m2/1000}.1 sec when used.][]
+Reduces the cooldown of Rising Sun Kick and Fists of Fury by ${$m3/1000}.1 sec when used.][]
 Variables        : $CAP=${($AP+$OAP)*2/3}
 
 Name             : Flying Serpent Kick (id=101545) [Spell Family (53)] 
@@ -497,7 +496,7 @@ Description      : Increases all damage dealt by $s3%.
 Name             : Spinning Crane Kick (id=107270) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Power of a Thousand Cranes (195269 effect#1), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Cyclone Strikes (220358 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Cyclone Strikes (220358 effect#1), 
 Triggered by     : Spinning Crane Kick (101546)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -524,7 +523,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 1 (10 seconds cooldown)
 Category         : 1518: Monk (137022 effect#2)
-Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Monk (137022 effect#1), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#5), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Rising Winds (195263 effect#1), Pressure Point (247255 effect#1), Rising Sun Kick (262840 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Monk (137022 effect#1), Brewmaster Monk (137023 effect#14), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#5), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Pressure Point (247255 effect#1), Rising Sun Kick (262840 effect#1)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -826,7 +825,7 @@ Effects          :
                    Base Value: 7 | Scaled Value: 7 | Target: Unknown(25)
 Description      : A wave of Chi energy flows through friends and foes, dealing $132467s1 Nature damage or $132463s1 healing. Bounces up to $s1 times to targets within $132466a2 yards.
 
-Name             : Renewing Mist (id=115151) [Scaling Spell (6), Spell Family (53)] 
+Name             : Renewing Mist (id=115151) [Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
 Resource         : 3% Base Mana (0) (id=5696)
@@ -835,7 +834,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 8 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#1), Chi-ji's Guidance (167717 effect#1), Extend Life (185158 effect#2), Extended Healing (199372 effect#1), The Mists of Sheilun (199888 effect#1), Item - Monk T19 Mistweaver 2P Bonus (211418 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#1), Chi-ji's Guidance (167717 effect#1), Extend Life (185158 effect#2), Item - Monk T19 Mistweaver 2P Bonus (211418 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ..x...x. 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -850,10 +849,9 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Friend (21)
 Description      : Surrounds the target with healing mists, restoring $119611o1 health over $119611d.
 
-If Renewing Mist heals a target past maximum health, it will travel to another injured ally within $<range> yds.$?a231606[
+If Renewing Mist heals a target past maximum health, it will travel to another injured ally within $119607A2 yds.$?a231606[
 
 Each time Renewing Mist heals, it has a $s2% chance to increase the healing of your next Vivify by $197206s1%.][]
-Variables        : $range=$?s123334[${40}][${20}]
 
 Name             : Celerity (Passive Talent) (id=115173) [Spell Family (53), Passive] 
 Class            : Monk
@@ -870,7 +868,7 @@ Effects          :
                    Base Value: -5000 | Scaled Value: -5000 | Misc Value: 1365 | Target: Self (1)
 #2 (id=135980)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1365 | Target: Self (1)
-Description      : Reduces the cooldown of $?s115008[Chi Torpedo][Roll] by ${$m1/-1000} sec and increases its maximum number of charges by $m2.
+Description      : Reduces the cooldown of Roll by ${$m1/-1000} sec and increases its maximum number of charges by $m2.
 
 Name             : Soothing Mist (id=115175) [Spell Family (53)] 
 Class            : Mistweaver Monk
@@ -880,7 +878,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 8 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Soothing Remedies (199377 effect#1), The Mists of Sheilun (199888 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2)
 Attributes       : ........ ........ ........ ........   ..x...x. ........ ........ .....x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -891,9 +889,6 @@ Attributes       : ........ ........ ........ ........   ..x...x. ........ .....
 Effects          :
 #1 (id=128871)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.45000 | Target: Friend (21)
-#2 (id=727062)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Self (1)
-                   Affected Spells: Vivify (116670), Enveloping Mist (124682)
 Description      : Heals the target for $o1 over $d.  While channeling, Enveloping Mist and Vivify may be cast instantly on the target.
 Tooltip          : Healing for $w1 every $t1 sec.
 
@@ -941,7 +936,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=128879)   : School Damage (2): fire
-                   Base Value: 2 | Scaled Value: 2 (avg=0, dl=0.24) | AP Coefficient: 0.23751 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.23751 | Radius: 12 yards | Target: Cone Front (104)
 Description      : Breathe fire on targets in front of you, causing $s1 Fire damage.
 
 Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
@@ -992,7 +987,7 @@ Spell Level      : 20
 Cooldown         : 1 seconds
 Charges          : 3 (16 seconds cooldown)
 Category         : 1562: Brewmaster Monk (137023 effect#5)
-Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), Potent Kick (213047 effect#1)
+Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1013,7 +1008,7 @@ Resource         : 4.374% Base Mana (0) (id=5718)
 Spell Level      : 70
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Tendrils of Revival (238058 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2)
 Attributes       : ........ ........ ........ ........   ........ ..x....x ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1300,7 +1295,7 @@ Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Soothing Mist (115175 effect#2), Thunder Focus Tea (116680 effect#5), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Uplifting Trance (197206 effect#1), Infusion of Life (199380 effect#1), Vivify (231602 effect#1), Invigorating Brew (269622 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#5), Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Uplifting Trance (197206 effect#1), Vivify (231602 effect#1), Invigorating Brew (269622 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1473,7 +1468,7 @@ School           : Nature
 Spell Level      : 60
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 8 seconds
+Duration         : 5 seconds
 Cooldown         : 45 seconds
 Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Brewmaster Monk (137023 effect#14)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1532,7 +1527,7 @@ Spell Level      : 35
 Range            : 40 yards
 Duration         : 12 seconds
 Cooldown         : 120 seconds
-Affecting spells : Item - Monk WoD PvP Mistweaver 4P Bonus (165697 effect#1), Protection of Shaohao (199367 effect#1)
+Affecting spells : Item - Monk WoD PvP Mistweaver 4P Bonus (165697 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... x....... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1553,7 +1548,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 1
 Range            : 8 yards
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Fists of the Wind (195291 effect#1), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), 
 Triggered by     : Fists of Fury (113656)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
@@ -1640,7 +1635,6 @@ Attributes       : ........ ........ ........ ........   ..x..... ......x. .....
 Effects          :
 #1 (id=134063)   : Apply Aura (6) | Periodic Damage (3): nature every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06994 | Target: Enemy (6)
-                   Hotfixed: Base Value (1 -> 0)
 #2 (id=225417)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Enemy (6)
 Description      : Channel Jade lightning, causing $o1 Nature damage over $117952d to the target$?a154436[, generating 1 Chi each time it deals damage,][] and sometimes knocking back melee attackers.
@@ -1740,7 +1734,7 @@ Spell Level      : 28
 Cooldown         : 1 seconds
 Charges          : 3 (16 seconds cooldown)
 Category         : 1562: Brewmaster Monk (137023 effect#5)
-Affecting spells : Elusive Dance (196738 effect#2), Staggering Around (213055 effect#1)
+Affecting spells : Elusive Dance (196738 effect#2)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1754,7 +1748,26 @@ Description      : Clears $s1% of your damage delayed with Stagger.
 
 Shares charges with Ironskin Brew.
 
-Name             : Renewing Mist (id=119611) [Scaling Spell (6), Spell Family (53)] 
+Name             : Renewing Mist (id=119607) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Level      : 1 (max 1)
+Range            : 50000 yards
+Attributes       : ........ ........ x....... ...x....   .....x.. ..x..... ........ ........ 
+                 : ..x..... ........ ...x.... ........   ........ ........ ........ ..x...x. 
+                 : ........ ........ ...xx... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ..x.....   ........ ........ ........ ......x. 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=137980)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 100 yards | Target: Friend (21)
+#2 (id=177923)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 100 yards | Target: Unknown(132) -> AOE friendly (31)
+Description      : $@spelldesc115151
+
+Name             : Renewing Mist (id=119611) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Range            : 50000 yards
@@ -1762,7 +1775,7 @@ Duration         : 20 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Extended Healing (199372 effect#1), The Mists of Sheilun (199888 effect#1)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2)
 Attributes       : ........ ........ ..x..... x..x....   ........ ........ ........ ........ 
                  : ..x..... x....... ........ ........   ........ .x...... ........ ..x...x. 
                  : ........ .......x ........ ........   ........ .....x.. ........ ........ 
@@ -1772,7 +1785,7 @@ Attributes       : ........ ........ ..x..... x..x....   ........ ........ .....
                  : Not a proc (105), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=138091)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 (avg=2.069999) | SP Coefficient: 0.17500 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.17500 | Target: Friend (21)
 Description      : $@spelldesc115151
 Tooltip          : Restores $w1 health every $t1 sec.
 
@@ -1950,7 +1963,7 @@ Cooldown         : 1 seconds
 Charges          : 1 (8 seconds cooldown)
 Category         : 1490: Brewmaster Monk (137023 effect#4)
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Smashed (213050 effect#1), Full Keg (214428 effect#1), Stormstout's Last Gasp (248044 effect#2), Fit to Burst (269431 effect#2)
+Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Stormstout's Last Gasp (248044 effect#2)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1962,7 +1975,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=229522)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85995 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-                   Hotfixed: Base Value (1 -> 0)
 #3 (id=283420)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #4 (id=335940)   : Dummy (3)
@@ -2156,7 +2168,6 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
 Effects          :
 #1 (id=155941)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08789 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-                   Hotfixed: Base Value (1 -> 0)
 #2 (id=155942)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | AP Coefficient: 0.14742 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc101545
@@ -2180,7 +2191,7 @@ Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 12 seconds
 Proc Chance      : 101%
-Affecting spells : Item - Monk WoD PvP Brewmaster 4P Bonus (171445 effect#1), Hot Blooded (213049 effect#1), Dragonfire Brew (213183 effect#2), Hot Blooded (227683 effect#1), Hot Blooded (227684 effect#1), Hot Blooded (227685 effect#1), Hot Blooded (227686 effect#1), Hot Blooded (227687 effect#1), Hot Blooded (239304 effect#1), Hot Blooded (239305 effect#1), 
+Affecting spells : Item - Monk WoD PvP Brewmaster 4P Bonus (171445 effect#1), 
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2265,7 +2276,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=156720)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.28000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
-                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc123904
 
 Name             : Crackling Tiger Lightning Driver (id=123999) [Scaling Spell (6), Spell Family (53), Hidden] 
@@ -2434,7 +2444,6 @@ School           : Physical
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 30 seconds
-Triggered by     : Obstinate Determination (216424)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2480,7 +2489,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.81900 | Target: Friend (21)
 Description      : $@spelldesc124502
 
-Name             : Enveloping Mist (id=124682) [Scaling Spell (6), Spell Family (53)] 
+Name             : Enveloping Mist (id=124682) [Spell Family (53)] 
 Class            : Mistweaver Monk
 School           : Nature
 Resource         : 5.2% Base Mana (0) (id=7504)
@@ -2489,7 +2498,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
-Affecting spells : Soothing Mist (115175 effect#2), Thunder Focus Tea (116680 effect#3), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Way of the Mistweaver (199366 effect#1), The Mists of Sheilun (199888 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1)
+Affecting spells : Thunder Focus Tea (116680 effect#3), Mistweaver Monk (137024 effect#1), Extend Life (185158 effect#2), Mist Wrap (197900 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Surge of Mists (246328 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -2500,10 +2509,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=157840)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.41250 | Target: Friend (21)
-                   Hotfixed: Base Value (1 -> 0)
 #2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Crane Heal (198756), Celestial Breath (199656), The Mists of Sheilun (199894), Sheilun's Gift (205406), Whispers of Shaohao (242400), Enveloping Mist (274062), Rising Mist (274912)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Crane Heal (198756), Sheilun's Gift (205406), Enveloping Mist (274062), Rising Mist (274912)
 Description      : Wraps the target in healing mists, healing for $o1 over $d$?a231605[, and increasing healing received from your other spells by $m2%][].
 Tooltip          : Heals $w1 every $t1 sec.
 Healing received from the Monk increased by $m2%.
@@ -2928,7 +2936,6 @@ Attributes       : ........ ........ ..x....x x..x....   .....x.x ........ .....
 Effects          :
 #1 (id=171561)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14202 | Target: Unknown(25)
-                   Hotfixed: Base Value (1 -> 0)
 #2 (id=171562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
 Description      : $@spelldesc115098
@@ -3049,7 +3056,7 @@ Effects          :
 #11 (id=260842)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 50 | Scaled Value: 50 | Misc Value 2: 0x4 | Target: Self (1)
 #12 (id=260843)   : Apply Aura (6) | Threat (10)
-                   Base Value: 650 | Scaled Value: 650 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 550 | Scaled Value: 550 | Misc Value: 127 | Target: Self (1)
 #13 (id=260844)   : Apply Aura (6) | Modify Attacker Melee Crit Chance (187)
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #14 (id=260845)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
@@ -3059,7 +3066,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #16 (id=362030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Blackout Strike (205523), Dragonfire Brew (227681), Blackout Kick (228649), Rushing Jade Wind (261715)
+                   Affected Spells: Blackout Kick (100784), Breath of Fire (115181), Rushing Jade Wind (116847), Rushing Jade Wind (148187), Blackout Strike (205523), Blackout Kick (228649), Rushing Jade Wind (261715)
 #17 (id=474893)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
@@ -3078,10 +3085,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179708)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Crane Heal (198756), Celestial Breath (199656), The Mists of Sheilun (199894), Sheilun's Gift (205406), Whispers of Shaohao (242400), Enveloping Mist (274062), Rising Mist (274912)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Crane Heal (198756), Sheilun's Gift (205406), Enveloping Mist (274062), Rising Mist (274912)
 #2 (id=191104)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Crane Heal (198756), Celestial Breath (199656), The Mists of Sheilun (199894), Sheilun's Gift (205406), Whispers of Shaohao (242400), Enveloping Mist (274062), Rising Mist (274912)
+                   Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Crane Heal (198756), Sheilun's Gift (205406), Enveloping Mist (274062), Rising Mist (274912)
 #3 (id=191105)   : Apply Aura (6) | Unknown(312)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 117 | Target: Self (1)
 #4 (id=191106)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
@@ -3204,7 +3211,6 @@ Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x.x. x.x.x.x. x.x..x.. .x...... 
                  : Yellow Melee, White Ranged, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered, Proc on jump
-Affecting spells : Spiritual Focus (195298 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ......x.   ........ ........ ..x..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3276,7 +3282,6 @@ School           : Physical
 GCD              : 1 seconds
 Duration         : 9 seconds
 Cooldown         : 90 seconds
-Affecting spells : Spiritual Focus (195298 effect#5), Split Personality (238059 effect#2)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3562,7 +3567,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 56
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Rising Winds (195263 effect#1), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Pressure Point (247255 effect#1), Rising Sun Kick (262840 effect#1)
+Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Pressure Point (247255 effect#1), Rising Sun Kick (262840 effect#1)
 Triggered by     : Rising Sun Kick (107428)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3606,7 +3611,7 @@ Velocity         : 40 yards/sec
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Essence of the Mists (199485 effect#1), The Mists of Sheilun (199888 effect#1), Item - Monk T19 Mistweaver 4P Bonus (211423 effect#2), Essence Well (274963 effect#2)
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), Item - Monk T19 Mistweaver 4P Bonus (211423 effect#2), Upwelling (274963 effect#2)
 Triggered by     : Essence Font (191837)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3645,7 +3650,6 @@ Class            : Monk
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 830, Index: 1, Max Rank: 1, Type: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3709,7 +3713,6 @@ Class            : Monk
 School           : Physical
 Range            : 100 yards
 Proc Chance      : 101%
-Artifact Power   : Id: 832, Index: 2, Max Rank: 1, Type: 1
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -4226,7 +4229,6 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
 Effects          :
 #1 (id=291816)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.16000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
-                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc193884
 Tooltip          : Healing for $w1 every $t1 sec.
 
@@ -4236,7 +4238,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 45 seconds
+Duration         : 25 seconds
 Cooldown         : 180 seconds
 Category         : 1418
 Category Cooldown: 180 seconds
@@ -4267,7 +4269,7 @@ Effects          :
 #1 (id=292176)   : Unknown(254)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 8 | Radius: 0 - 1.75 yards | Target: Unknown(132) -> Unknown(86)
 #2 (id=316503)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45000 | Target: Friend (21)
 Description      : Chi-Ji dashes to three allies, healing them for $s2.
 
 Name             : Song of Chi-Ji (id=198898) [Spell Family (53)] 
@@ -4380,7 +4382,6 @@ Range            : 9 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
 Cooldown         : 40 seconds
-Artifact Power   : Id: 831, Max Rank: 1, Type: 18
 Affecting spells : Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), The Wind Blows (248101 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4406,7 +4407,6 @@ School           : Nature
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Artifact Power   : Id: 931, Max Rank: 1, Type: 18
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4448,7 +4448,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
 Proc Chance      : 101%
-Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Dark Skies (195265 effect#1), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Swift Roundhouse (269435 effect#1), 
+Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Swift Roundhouse (269435 effect#1), 
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4479,7 +4479,7 @@ Range            : 40 yards
 GCD              : 0.5 seconds
 Duration         : 20 seconds
 Cooldown         : 1 seconds
-Affecting spells : Extend Life (185158 effect#2), Soothing Remedies (199377 effect#1), The Mists of Sheilun (199888 effect#1)
+Affecting spells : Extend Life (185158 effect#2)
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ ..x..x.. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..x.. ........ ...x.... 
@@ -4490,7 +4490,6 @@ Attributes       : ........ ........ x....... ........   ..x...x. ........ .....
 Effects          :
 #1 (id=310090)   : Apply Aura (6) | Periodic Heal (8): every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.22500 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
-                   Hotfixed: Base Value (1 -> 0)
 #2 (id=352117)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682)
@@ -4625,7 +4624,6 @@ Tooltip          : You may cast Touch of Death again before the cooldown is trig
 Name             : Face Palm (id=213116) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Artifact Power   : Id: 1286, Index: 12, Max Rank: 8, Type: 32, Values: [ 10, 20, 30, 40, 50, 60, 70, 80 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4646,7 +4644,6 @@ GCD              : 1 seconds
 Velocity         : 15 yards/sec
 Duration         : 3 seconds
 Cooldown         : 75 seconds
-Artifact Power   : Id: 1277, Max Rank: 1, Type: 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4668,7 +4665,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 28
 Duration         : 6 seconds
-Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), Potent Kick (213047 effect#1)
+Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4823,7 +4820,6 @@ Attributes       : ....x... ........ x....... .....x..   ........ .x...... .....
 Effects          :
 #1 (id=341557)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16380 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-                   Hotfixed: Base Value (1 -> 0)
 Description      : Stomps the ground, dealing $s1 Physical damage to all nearby enemies.
 
 Name             : Face Palm (id=227679) [Spell Family (53), Passive] 
@@ -4882,7 +4878,7 @@ Effects          :
                    Affected Spells: Tiger Palm (100780)
 #2 (id=344192)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Breath of Fire (115181), Dragonfire Brew (227681)
+                   Affected Spells: Breath of Fire (115181)
 #3 (id=344193)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=344194)   : Apply Aura (6) | Dummy (4)
@@ -4895,7 +4891,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 3
 Range            : 5 yards
-Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Dark Skies (195265 effect#1), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Obsidian Fists (213051 effect#1), Draught of Darkness (238057 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Swift Roundhouse (269435 effect#1), 
+Affecting spells : Stance of the Fierce Tiger (103985 effect#3), Blackout Kick! (116768 effect#1), Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Elusive Dance (196739 effect#2), Hit Combo (196741 effect#1), Blackout Kick (261916 effect#1), Blackout Kick (261917 effect#1), Swift Roundhouse (269435 effect#1), 
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5041,7 +5037,6 @@ Description      : Stagger is $s1% more effective against magical attacks.
 Name             : Master of Combinations (id=238095) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
-Artifact Power   : Id: 1550, Max Rank: 1, Type: 0
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5060,7 +5055,6 @@ Name             : Thunderfist (id=238131) [Spell Family (53), Passive]
 Class            : Monk
 School           : Physical
 Proc Chance      : 100%
-Artifact Power   : Id: 1551, Max Rank: 1, Type: 1
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5342,9 +5336,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 23548.61 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 23548.61 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -5595,7 +5589,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc195399
 
-Name             : Enveloping Mist (id=274062) [Scaling Spell (6), Spell Family (53)] 
+Name             : Enveloping Mist (id=274062) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
 Spell Level      : 12
@@ -5666,7 +5660,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | Radius: 0 - 60 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : $@spelldesc274909
 
-Name             : Essence Well (id=274963) [Spell Family (53), Passive] 
+Name             : Upwelling (id=274963) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
 Range            : 100 yards
@@ -5675,7 +5669,7 @@ Proc Flags       : ........ ..x...x. ........ ........
                  : AOE Heal, Heal
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

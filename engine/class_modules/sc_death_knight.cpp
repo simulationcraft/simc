@@ -7,15 +7,14 @@
 // Unholy
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
 // - Army of the dead ghouls should spawn once every 0.5s for 4s rather than all at once
+// - Unholy BFA talents :yay:
 // Blood
-// - Bloodworms
-// - BFA blood talents (new and reworked)
+// - Model Bloodworms more accurately (ap inheritance is off, and maybe other things)
 // - New bone shield (armor based on strength buff)
 // - Heart Strike looks like it deals slightly too much damage
 // - Dancing Rune Weapon damage isn't completely accurate, could be AP inheritance ?
-// - Fix blood so it doesn't crash ?
 // Frost
-// - Implement Inexorable Assault
+// - Implement Inexorable Assault ?
 
 #include "simulationcraft.hpp"
 
@@ -642,13 +641,13 @@ public:
     const spell_data_t* rune_strike;
 
     // Tier 2
-    const spell_data_t* rapid_decomposition; // Needs update
-    const spell_data_t* hemostasis; // NYI
+    const spell_data_t* rapid_decomposition;
+    const spell_data_t* hemostasis;
     const spell_data_t* consumption;
     
     // Tier 3
     const spell_data_t* will_of_the_necropolis; // NYI
-    const spell_data_t* antimagic_barrier; // Needs update
+    const spell_data_t* antimagic_barrier;
     const spell_data_t* rune_tap;
 
     // Tier 4 Utility tier, NYI
@@ -658,12 +657,12 @@ public:
 
     // Tier 5
     const spell_data_t* foul_bulwark;
-    const spell_data_t* ossuary; // Needs update
+    const spell_data_t* ossuary;
     const spell_data_t* tombstone;
 
     // Tier 6
-    const spell_data_t* voracious; // NYI
-    const spell_data_t* bloodworms; // NYI
+    const spell_data_t* voracious;
+    const spell_data_t* bloodworms;
     const spell_data_t* mark_of_blood; // NYI
 
     // Tier 7
@@ -694,12 +693,14 @@ public:
   struct rppm_t
   {
     real_ppm_t* freezing_death;
+    real_ppm_t* bloodworms;
   } rppm;
 
   // Pets and Guardians
   struct pets_t
   {
     std::array< pets::death_knight_pet_t*, 8 > army_ghoul;
+    std::array< pets::death_knight_pet_t*, 6 > bloodworms;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon_pet;
     pets::dt_pet_t* ghoul_pet; // Covers both Ghoul and Sludge Belcher
     pets::death_knight_pet_t* gargoyle;
@@ -788,6 +789,7 @@ public:
     _runes( this )
   {
     range::fill( pets.army_ghoul, nullptr );
+    range::fill( pets.bloodworms, nullptr );
     
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.army_of_the_dead = get_cooldown( "army_of_the_dead" );
@@ -2539,6 +2541,27 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   { return new auto_attack_melee_t<dancing_rune_weapon_pet_t>( this ); }
 };
 
+// ==========================================================================
+// Bloodworms
+// ==========================================================================
+
+struct bloodworm_pet_t : public death_knight_pet_t
+{
+  bloodworm_pet_t( death_knight_t* owner ) :
+    death_knight_pet_t( owner, "bloodworm", true, true)
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.4 );
+
+    owner_coeff.ap_from_ap = 0.3; // TODO : once properly implemented and armor is fixed, figure out the actual value. Close enough for now
+    regen_type = REGEN_DISABLED;
+  }
+
+  attack_t* create_auto_attack() override
+  { return new auto_attack_melee_t<bloodworm_pet_t>( this ); }
+};
+
+
 } // namespace pets
 
 namespace { // UNNAMED NAMESPACE
@@ -3366,7 +3389,30 @@ struct melee_t : public death_knight_melee_attack_t
           p() -> cooldown.death_and_decay -> reset( true );
         }
       }
+
+      if ( p() -> talent.bloodworms -> ok() )
+      {
+        trigger_bloodworm();
+      }
     }
+  }
+
+  void trigger_bloodworm()
+  {
+    if ( ! p() -> rppm.bloodworms -> trigger() )
+    {
+      return;
+    }
+
+    for ( size_t i = 0 ; i < p() -> pets.bloodworms.size() ; i++ )
+    {
+      if ( ! p() -> pets.bloodworms[ i ] || p() -> pets.bloodworms[ i ] -> is_sleeping() )
+      {
+        p() -> pets.bloodworms[ i ] -> summon( timespan_t::from_seconds( p() -> talent.bloodworms -> effectN( 3 ).base_value() ) ); 
+        return;
+      }
+    }
+    return;
   }
 };
 
@@ -3718,18 +3764,6 @@ struct blooddrinker_t : public death_knight_spell_t
       heal -> execute();
     }
   }
-};
-
-// Bloodworms ================================================================
-
-struct bloodworms_t : public death_knight_spell_t
-{
-  bloodworms_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "bloodworms", p, p -> talent.bloodworms )
-   {
-      background = true;
-      parse_options( options_str );
-   }
 };
 
 // Bonestorm ================================================================
@@ -6810,7 +6844,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   
   // Talents
   if ( name == "blooddrinker"             ) return new blooddrinker_t             ( this, options_str );
-  if ( name == "bloodworms"               ) return new bloodworms_t               ( this, options_str );
   if ( name == "bonestorm"                ) return new bonestorm_t                ( this, options_str );
   if ( name == "consumption"              ) return new consumption_t              ( this, options_str );
   if ( name == "mark_of_blood"            ) return new mark_of_blood_t            ( this, options_str );
@@ -6971,9 +7004,20 @@ void death_knight_t::create_pets()
     }
   }
   
-  if ( find_action( "dancing_rune_weapon" ) && specialization() == DEATH_KNIGHT_BLOOD )
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
-    pets.dancing_rune_weapon_pet = new pets::dancing_rune_weapon_pet_t( this );
+    if ( find_action( "dancing_rune_weapon" ) ) 
+    {
+      pets.dancing_rune_weapon_pet = new pets::dancing_rune_weapon_pet_t( this );
+    }
+
+    if ( talent.bloodworms -> ok() )
+    {
+      for ( auto i = 0; i < 6; i++ )
+      {
+        pets.bloodworms[ i ] = new pets::bloodworm_pet_t( this );
+      }
+    }
   }
 }
 
@@ -7034,6 +7078,7 @@ void death_knight_t::init_rng()
   player_t::init_rng();
 
   rppm.freezing_death = get_rppm ( "freezing death", sets -> set( DEATH_KNIGHT_FROST, T21, B4 ) );
+  rppm.bloodworms = get_rppm( "bloodworms", talent.bloodworms );
 }
 
 // death_knight_t::init_base ================================================
@@ -7182,12 +7227,12 @@ void death_knight_t::init_spells()
 
   // Tier 2
   talent.rapid_decomposition    = find_talent_spell( "Rapid Decomposition" );
-  talent.hemostasis             = find_talent_spell( "Hemostasis"          ); // NYI
+  talent.hemostasis             = find_talent_spell( "Hemostasis"          );
   talent.consumption            = find_talent_spell( "Consumption"         ); 
 
   // Tier 3
   talent.will_of_the_necropolis = find_talent_spell( "Will of the Necropolis" ); // NYI
-  talent.antimagic_barrier      = find_talent_spell( "Anti-Magic Barrier"     ); // NYI
+  talent.antimagic_barrier      = find_talent_spell( "Anti-Magic Barrier"     ); 
   talent.rune_tap               = find_talent_spell( "Rune Tap"               );
 
   // Tier 4 Utility - NYI
@@ -7197,12 +7242,12 @@ void death_knight_t::init_spells()
 
   // Tier 5
   talent.foul_bulwark          = find_talent_spell( "Foul Bulwark" );
-  talent.ossuary               = find_talent_spell( "Ossuary"      ); // NYI
+  talent.ossuary               = find_talent_spell( "Ossuary"      ); 
   talent.tombstone             = find_talent_spell( "Tombstone"    );
 
   // Tier 6
-  talent.voracious             = find_talent_spell( "Voracious"     ); // NYI
-  talent.bloodworms            = find_talent_spell( "Bloodworms"    ); // NYI
+  talent.voracious             = find_talent_spell( "Voracious"     ); 
+  talent.bloodworms            = find_talent_spell( "Bloodworms"    ); 
   talent.mark_of_blood         = find_talent_spell( "Mark of Blood" );
 
   // Tier 7

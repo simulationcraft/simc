@@ -50,18 +50,17 @@ enum main_tabs_e
   TAB_OVERRIDES,
   TAB_HELP,
   TAB_LOG,
-  TAB_SPELLQUERY
-  , TAB_COUNT
+  TAB_SPELLQUERY, 
+  TAB_COUNT
 };
 
 enum import_tabs_e
 {
   TAB_IMPORT_NEW = 0,
+  TAB_ADDON,
   TAB_BIS,
   TAB_RECENT,
-  TAB_AUTOMATION,
-  TAB_ADDON,
-  TAB_CUSTOM,
+  TAB_CUSTOM
 };
 
 class SC_WebView;
@@ -522,7 +521,6 @@ class SC_ImportTab: public SC_enumeratedTab < import_tabs_e >
   Q_OBJECT
   public:
       SC_ImportTab( QWidget* parent = nullptr );
-      SC_AutomationTab* automationTab;
       SC_AddonImportTab* addonTab;
 };
 

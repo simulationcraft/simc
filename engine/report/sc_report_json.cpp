@@ -882,7 +882,7 @@ void to_json( JsonOutput root, const sim_t& sim )
   if ( sim.profilesets.n_profilesets() > 0 )
   {
     auto profileset_root = root[ "profilesets" ];
-    sim.profilesets.output( sim, profileset_root );
+    sim.profilesets.output_json( sim, profileset_root );
   }
 
   auto stats_root = root[ "statistics" ];

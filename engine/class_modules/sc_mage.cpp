@@ -532,7 +532,6 @@ public:
     const spell_data_t* fingers_of_frost;
     const spell_data_t* frost_mage;
     const spell_data_t* icicles;
-    const spell_data_t* icicles_driver;
     const spell_data_t* shatter;
     const spell_data_t* shatter_2;
   } spec;
@@ -3027,12 +3026,11 @@ struct evocation_t : public arcane_mage_spell_t
     parse_options( options_str );
 
     // TODO: Let the user select the granularity (for early interrupts).
-    base_tick_time    = timespan_t::from_seconds( 1.0 );
+    base_tick_time    = timespan_t::from_seconds( 0.5 );
     channeled         = true;
     dot_duration      = data().duration();
     harmful           = false;
     hasted_ticks      = false;
-    tick_zero         = true;
     ignore_false_positive = true;
 
     cooldown -> duration *= 1.0 + p -> spec.evocation_2 -> effectN( 1 ).percent();
@@ -3579,6 +3577,16 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
       fof_proc_chance += p() -> sets -> set( MAGE_FROST, T19, B4 ) -> effectN( 1 ).percent();
       trigger_fof( fof_proc_chance );
     }
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = frost_mage_spell_t::action_multiplier();
+
+    // TODO: Remove 0.2 mult once the effect is fixed to work correctly.
+    am *= 1.0 + p() -> cache.mastery() * p() -> spec.icicles -> effectN( 4 ).mastery_value() * 0.2;
+
+    return am;
   }
 };
 
@@ -4954,6 +4962,31 @@ struct time_warp_t : public mage_spell_t
 
 // Arcane Mage "Burn" State Switch Action =====================================
 
+void report_burn_switch_error( action_t* a )
+{
+  sim_t* sim = a -> sim;
+
+  // Explicitly output this error message from all threads, so we always have an "error message"
+  // communicated to the user. Add it also to the parent's error list, so reporting will include
+  // it.
+  {
+    AUTO_LOCK( sim -> parent ? sim -> parent -> relatives_mutex : sim -> relatives_mutex );
+    auto s = fmt::sprintf( "%s %s infinite loop detected "
+                           "(no time passing between executes) at '%s'",
+                           a -> player -> name(), a -> name(), a -> signature_str.c_str());
+    util::replace_all( s, "\n", "" );
+    std::cerr << s << "\n";
+
+    if ( sim -> parent )
+    {
+      sim -> parent -> error_list.push_back( s );
+    }
+  }
+
+  sim -> cancel_iteration();
+  sim -> cancel();
+}
+
 struct start_burn_phase_t : public action_t
 {
   start_burn_phase_t( mage_t* p, const std::string& options_str ):
@@ -4973,10 +5006,7 @@ struct start_burn_phase_t : public action_t
     bool success = p -> burn_phase.enable( sim -> current_time() );
     if ( ! success )
     {
-      sim -> errorf( "%s start_burn_phase infinite loop detected (no time passing between executes) at '%s'",
-                     p -> name(), signature_str.c_str() );
-      sim -> cancel_iteration();
-      sim -> cancel();
+      report_burn_switch_error( this );
       return;
     }
 
@@ -5019,10 +5049,7 @@ struct stop_burn_phase_t : public action_t
     bool success = p -> burn_phase.disable( sim -> current_time() );
     if ( ! success )
     {
-      sim -> errorf( "%s stop_burn_phase infinite loop detected (no time passing between executes) at '%s'",
-                     p -> name(), signature_str.c_str() );
-      sim -> cancel_iteration();
-      sim -> cancel();
+      report_burn_switch_error( this );
       return;
     }
 
@@ -5900,7 +5927,6 @@ void mage_t::init_spells()
   spec.savant                = find_mastery_spell( MAGE_ARCANE );
   spec.ignite                = find_mastery_spell( MAGE_FIRE );
   spec.icicles               = find_mastery_spell( MAGE_FROST );
-  spec.icicles_driver        = find_spell( 148012 );
 }
 
 // mage_t::init_base ========================================================
@@ -7080,14 +7106,14 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       {
         if ( mage.icicles.empty() )
           return 0;
-        else if ( mage.sim -> current_time() - mage.icicles[ 0 ].timestamp < mage.spec.icicles_driver -> duration() )
+        else if ( mage.sim -> current_time() - mage.icicles[ 0 ].timestamp < mage.buffs.icicles -> buff_duration )
           return as<double>( mage.icicles.size() );
         else
         {
           size_t icicles = 0;
           for ( int i = as<int>( mage.icicles.size() - 1 ); i >= 0; i-- )
           {
-            if ( mage.sim -> current_time() - mage.icicles[ i ].timestamp >= mage.spec.icicles_driver -> duration() )
+            if ( mage.sim -> current_time() - mage.icicles[ i ].timestamp >= mage.buffs.icicles -> buff_duration )
               break;
 
             icicles++;
@@ -7106,7 +7132,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
   // Firestarter expressions ==================================================
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "firestarter" ) )
   {
-    enum expr_type_e
+    enum firestarter_expr_type_e
     {
       FIRESTARTER_ACTIVE,
       FIRESTARTER_REMAINS
@@ -7115,9 +7141,9 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
     struct firestarter_expr_t : public mage_expr_t
     {
       action_t* a;
-      expr_type_e type;
+      firestarter_expr_type_e type;
 
-      firestarter_expr_t( mage_t& m, const std::string& name, action_t* a, expr_type_e type ) :
+      firestarter_expr_t( mage_t& m, const std::string& name, action_t* a, firestarter_expr_type_e type ) :
         mage_expr_t( name, m ), a( a ), type( type )
       { }
 
@@ -7166,7 +7192,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
   // Temporal Flux expressions ================================================
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "temporal_flux_delay" ) )
   {
-    enum expr_type_e
+    enum temporal_flux_expr_type_e
     {
       DELAY_ACTIVE,
       DELAY_REMAINS
@@ -7174,9 +7200,9 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
 
     struct temporal_flux_expr_t : public mage_expr_t
     {
-      expr_type_e type;
+      temporal_flux_expr_type_e type;
 
-      temporal_flux_expr_t( mage_t& m, const std::string& name, expr_type_e type ) :
+      temporal_flux_expr_t( mage_t& m, const std::string& name, temporal_flux_expr_type_e type ) :
         mage_expr_t( name, m ), type( type )
       { }
 
@@ -7279,7 +7305,7 @@ action_t* mage_t::get_icicle()
     return nullptr;
 
   // All Icicles created before the treshold timed out.
-  timespan_t threshold = sim -> current_time() - spec.icicles_driver -> duration();
+  timespan_t threshold = sim -> current_time() - buffs.icicles -> buff_duration;
 
   // Find first icicle which did not time out
   auto idx = range::find_if( icicles, [ threshold ] ( const icicle_tuple_t& t ) { return t.timestamp > threshold; } );
@@ -7968,7 +7994,7 @@ public:
 
   virtual void register_hotfixes() const override
   {
-    hotfix::register_spell( "Mage", "2017-11-06", "Incorrect spell level for Icicles driver.", 148012 )
+    hotfix::register_spell( "Mage", "2018-05-02", "Incorrect spell level for Icicle buff.", 205473 )
       .field( "spell_level" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 78 )

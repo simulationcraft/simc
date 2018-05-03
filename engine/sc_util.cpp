@@ -1155,7 +1155,6 @@ const char* util::special_effect_source_string( special_effect_source_e type )
     case SPECIAL_EFFECT_SOURCE_ADDON:   return "addon";
     case SPECIAL_EFFECT_SOURCE_GEM:     return "gem";
     case SPECIAL_EFFECT_SOURCE_SOCKET_BONUS: return "socket_bonus";
-    case SPECIAL_EFFECT_SOURCE_ARTIFACT: return "artifact";
     case SPECIAL_EFFECT_SOURCE_RACE: return "race";
     case SPECIAL_EFFECT_SOURCE_FALLBACK: return "fallback";
     default:                            return "unknown";
@@ -2416,17 +2415,6 @@ void util::urlencode( std::string& str )
   }
 
   str.swap( temp );
-}
-
-// create_wowhead_artifact_url ==============================================
-std::string util::create_wowhead_artifact_url( const player_t& p )
-{
-  if ( ! p.artifact || ! p.artifact -> enabled() )
-  {
-    return std::string();
-  }
-
-  return "http://legion.wowhead.com/artifact-calc#" + p.artifact -> encode();
 }
 
 // create_blizzard_talent_url ===============================================

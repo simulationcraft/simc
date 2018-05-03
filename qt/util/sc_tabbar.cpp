@@ -199,6 +199,27 @@ bool SC_TabBar::event( QEvent* e )
   return QTabBar::event( e );
 }
 
+void SC_TabBar::mousePressEvent(QMouseEvent *e)
+{
+	int tabUnderMouse = tabAt(e -> pos());
+
+	emit(layoutRequestEvent());
+
+	switch (e -> button()) 
+	{
+		case Qt::MiddleButton: 
+		{
+			tabCloseRequested(tabUnderMouse);
+		}
+		break;
+		case Qt::LeftButton: 
+		{
+			setCurrentIndex(tabUnderMouse);
+		}
+		break;
+	}
+}
+
 void SC_TabBar::mouseHoverTimedout()
 {
   mouseHoverTimeoutTimer.stop();

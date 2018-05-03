@@ -68,22 +68,23 @@ Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc (0x2)
 School           : Physical
 Spell Level      : 1
+GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
 Attributes       : ....x... ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ......x. .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Does not break stealth (37)
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 800.0658 (avg=2.572559) | Points Per Level: 4 | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
-                   Base Value: 0 | Scaled Value: 410.52 (avg=1.32) | Points Per Level: 4 | Target: Self (1)
-Description      : Increases attack power by $s1 for $d.
-Tooltip          : Attack power increased by $s1.
+                   Base Value: 0 | Scaled Value: 800.0658 (avg=2.572559) | Points Per Level: 4 | Target: Self (1)
+Description      : Increases your attack power by $s1 for $d.
+Tooltip          : Attack power increased by $w1.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -152,7 +153,7 @@ Resource         : -30 Runic Power (6) (id=10627)
 Spell Level      : 82
 GCD              : 1.5 seconds
 Duration         : 4 seconds
-Cooldown         : 600 seconds
+Cooldown         : 480 seconds
 Affecting spells : Death Knight (137005 effect#2)
 Attributes       : ........ ........ ........ ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -163,13 +164,13 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .x...
 Effects          :
 #1 (id=34352)    : Apply Aura (6) | Periodic Trigger Spell (23): Army of the Dead every 0.5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 42651 | Target: Self (1)
-Description      : Summons a legion of Ghouls over $d who will fight for you for $42651d, swarming the area, fighting anything they can.
-Tooltip          : Summoning Ghouls.
+Description      : Summons a legion of ghouls who swarms your enemies, fighting anything they can for $42651d.
+Tooltip          : Summoning ghouls.
 
 Name             : Army of the Dead (id=42651) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
-Duration         : 40 seconds
+Duration         : 30 seconds
 Triggered by     : Army of the Dead (42650)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -184,7 +185,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 24207 | Misc Value 2: 0x2af | Target: Unknown(86)
 Description      : $@spelldesc42650
 
-Name             : Death and Decay (id=43265) [Scaling Spell (1), Spell Family (15)] 
+Name             : Death and Decay (id=43265) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Blood Unholy Death Knight
 School           : Shadow
 Resource         : 1 Rune (5) (id=5832)
@@ -207,18 +208,20 @@ Effects          :
 #1 (id=34958)    : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 #2 (id=105194)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.041) | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (28)
+                   Base Value: 0 | Scaled Value: 12.751 (avg=0.041) | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (28)
 #3 (id=129192)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=274827)   : Unknown(179)
                    Base Value: 26 | Scaled Value: 26 | Misc Value: 4485 | Target: Unknown(87)
-Description      : Corrupts the targeted ground, causing ${$52212m1*11} Shadow damage over $d to targets within the area. While you remain within the area, your $?c1[Heart Strike will hit up to $188290m3 additional targets.]?s207311[Clawing Shadows will hit all enemies near the target.][Scourge Strike will hit all enemies near the target.]
+Description      : Corrupts the targeted ground, causing ${$52212m1*11} Shadow damage over $d to targets within the area.
+
+While you remain within the area, your $?c1[Heart Strike will hit up to $188290m3 additional targets.]?s207311[Clawing Shadows will hit all enemies near the target.][Scourge Strike will hit all enemies near the target.]
 
 Name             : Death Strike (id=45470) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
 Spell Level      : 1
-Affecting spells : Icebound Fortitude (48792 effect#4), Dark Succor (101568 effect#1), Haemostasis (235559 effect#1), Carrion Feast (238042 effect#1), Hemostasis (273947 effect#1)
+Affecting spells : Icebound Fortitude (48792 effect#4), Dark Succor (101568 effect#1), Haemostasis (235559 effect#1), Hemostasis (273947 effect#1)
 Attributes       : ........ ........ ........ ...x....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....xx..   ........ ........ x....... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -263,8 +266,7 @@ School           : Physical
 Spell Level      : 55
 Range            : 30 yards
 GCD              : 1.5 seconds
-Cooldown         : 60 seconds
-Affecting spells : All Will Serve (194916 effect#1)
+Cooldown         : 30 seconds
 Attributes       : ........ ........ ........ .......x   ........ ..x..... .x...... ........ 
                  : x....... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : x....... ........ ........ ........   ........ ........ .....x.. ........ 
@@ -295,9 +297,10 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=39690)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Claw the enemy, dealing $91776s1% of normal melee damage.$?s63560[
+Description      : Claw the enemy, dealing $91776s1 Physical damage.$?s63560[
 
-|CFFE55BB0Dark Transformation: Rakes an enemy with deformed claws, dealing $91778s1% of normal damage as Shadow to all enemies in front of the monstrosity.|R][]
+|CFFE55BB0Dark Transformation: Rakes an enemy with deformed claws, dealing $<sweepingclaw> Shadow damage to all enemies in front of the monstrosity.|R][]
+Variables        : $sweepingclaw= ${$91778s2*3.35}
 
 Name             : Gnaw (id=47481) [Spell Family (15)] 
 Class            : Death Knight
@@ -317,7 +320,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Bite and tear at a target's limbs, dealing light damage and stunning for $91800d.$?s63560[
 
-|CFFE55BB0Dark Transformation: Strike an enemy with a smashing attack, dealing $91797s2% of normal melee damage and stunning for $91797d.|R][]
+|CFFE55BB0Dark Transformation: Strike an enemy with a smashing attack, dealing $91797s2 Physical damage and stunning for $91797d.|R][]
 
 Name             : Leap (id=47482) 
 Class            : Death Knight
@@ -383,15 +386,15 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Interrupt | Target: Enemy (6)
 Description      : Smash the target's mind with cold, interrupting spellcasting and preventing any spell in that school from being cast for $d.
 
-Name             : Death Coil (id=47541) [Scaling Spell (1), Spell Family (15)] 
+Name             : Death Coil (id=47541) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Shadow
-Resource         : 45 Runic Power (6) (id=2194)
+Resource         : 40 Runic Power (6) (id=2194)
 Spell Level      : 55
 Range            : 30 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : Sudden Doom (81340 effect#1), Deadliest Coil (191419 effect#1), Death March (235556 effect#2)
+Affecting spells : Sudden Doom (81340 effect#1), Death March (235556 effect#2)
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -400,8 +403,12 @@ Attributes       : ........ ........ ..x..... ........   ........ .xx..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=39752)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (avg=3) | Target: Enemy (6)
-Description      : Fires a blast of unholy energy at the target, causing $47632s1 Shadow damage to an enemy$?s137007[ and restoring $196263s1 Energy to your ][]$?s137007&?s207313[abomination]?s137007[ghoul][].
+                   Base Value: 0 | Scaled Value: 933 (avg=3) | Target: Enemy (6)
+#2 (id=728053)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1
+Description      : Fires a blast of unholy energy at the target, causing $47632s1 Shadow damage to an enemy.$?s137007[
+
+Reduces the cooldown of Dark Transformation by $s2 sec][].
 Variables        : $mastery=$?s55090[${((100+$77515m1)/100)}][${1.00}]
 $blood=$?a48263[${1.2}][${1.0}]
 $damage=${(0.80*1.1*$AP)*$<mastery>*$<blood>}
@@ -439,7 +446,7 @@ Spell Level      : 55
 Range            : 40 yards
 Velocity         : 35 yards/sec
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effect#1), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Deadliest Coil (191419 effect#1), Death March (235556 effect#2), Master of Ghouls (246995 effect#1), 
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Sudden Doom (81340 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death March (235556 effect#2), Master of Ghouls (246995 effect#1), 
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ..x..... ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -470,7 +477,7 @@ Effects          :
 #2 (id=40418)    : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Self (1)
 #3 (id=40419)    : Apply Aura (6) | Threat (10)
-                   Base Value: 650 | Scaled Value: 650 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 550 | Scaled Value: 550 | Misc Value: 127 | Target: Self (1)
 #4 (id=139814)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
 #5 (id=139815)   : Apply Aura (6) | Modify Expertise% (240)
@@ -489,8 +496,8 @@ Name             : Death's Advance (id=48265) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 55
-Duration         : 10 seconds
-Cooldown         : 30 seconds
+Duration         : 8 seconds
+Cooldown         : 45 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -498,16 +505,18 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=40421)    : Apply Aura (6) | Modify Min Speed% (305)
+#1 (id=40421)    : Apply Aura (6) | Increase Speed% (31)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+#2 (id=477160)   : Apply Aura (6) | Modify Min Speed% (305)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Self (1)
-#2 (id=477160)   : Apply Aura (6) | Unknown(147)
+#3 (id=477161)   : Apply Aura (6) | Unknown(147)
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Misc Value: 1887 | Target: Self (1)
-#3 (id=477161)   : Apply Aura (6) | Resist Forced Movement% (485)
-                   Base Value: -80 | Scaled Value: -80 | Value Multiplier: 1 | Target: Self (1)
-Description      : For $d, you cannot be slowed below $s1% of normal speed, you resist forced movement effects by $s3%, and you are immune to external knockbacks.
+#4 (id=728895)   : Apply Aura (6) | Resist Forced Movement% (485)
+                   Base Value: -100 | Scaled Value: -100 | Value Multiplier: 1 | Target: Self (1)
+Description      : For $d, your movement speed is increased by $s1%, you cannot be slowed below $s2% of normal speed, and you are immune to forced movement effects and knockbacks.
 
-Passive: You cannot be slowed below $124285s1% of normal speed.
-Tooltip          : You cannot be slowed below $w1% of normal speed, you resist forced movement effects by $w3%, and you are immune to external knockbacks.
+|cFFFFFFFFPassive:|r You cannot be slowed below $124285s1% of normal speed.
+Tooltip          : Your movement speed is increased by $s1%, you cannot be slowed below $s2% of normal speed, and you are immune to forced movement effects and knockbacks.
 
 Name             : Anti-Magic Shell (id=48707) [Spell Family (15)] 
 Class            : Death Knight
@@ -517,7 +526,7 @@ Duration         : 5 seconds
 Cooldown         : 60 seconds
 Category Cooldown: 60 seconds
 Proc Chance      : 101%
-Affecting spells : Deadly Durability (191565 effect#1), Anti-Magic Barrier (205727 effect#1), Volatile Shielding (207188 effect#1), Spell Eater (207321 effect#1), Acherus Drapes (210852 effect#1)
+Affecting spells : Anti-Magic Barrier (205727 effect#1), Volatile Shielding (207188 effect#1), Spell Eater (207321 effect#1), Acherus Drapes (210852 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -526,7 +535,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=40863)    : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 126 | Mechanic: Interrupt | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 126 | Mechanic: Interrupt | Target: Self (1)
 #2 (id=40864)    : Apply Aura (6) | Unknown(267)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 126 | Target: Self (1)
 #3 (id=306615)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -537,6 +546,28 @@ Immune to harmful magic effects.
 Variables        : $amb=$?s205727[${1.3}][${1.0}]
 $shield=${$MHP*$m2/100*(1+$@versadmg)*$<amb>}
 
+Name             : Death Pact (id=48743) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Duration         : 15 seconds
+Cooldown         : 120 seconds
+Attributes       : ........ ........ ........ ..x..x..   ........ ..x..... .x.x.... ........ 
+                 : ..x..... ........ ........ .....x..   ........ ........ ....x... ........ 
+                 : ....x... x....... ........ ........   ........ ........ .....x.. ........ 
+                 : ........ ........ ........ ...x.x..   ........ ........ ........ ........ 
+                 : .......x ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot crit (93), Disable player multipliers (221)
+Effects          :
+#1 (id=40903)    : Direct Heal% (136)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+#2 (id=214260)   : Apply Aura (6) | Absorb Healing (301)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
+#3 (id=729346)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Description      : Create a death pact that heals you for $s1% of your maximum health, but absorbs incoming healing equal to $s3% of your max health for $d.
+Tooltip          : The next $w2 healing received will be absorbed.
+
 Name             : Icebound Fortitude (id=48792) [Spell Family (15)] 
 Class            : Blood Frost Unholy Death Knight
 School           : Physical
@@ -546,7 +577,7 @@ Cooldown         : 180 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Blood Death Knight (137008 effect#6), Ice in Your Veins (189154 effect#1), Deadly Durability (191565 effect#1)
+Affecting spells : Blood Death Knight (137008 effect#6)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -575,7 +606,7 @@ Resource         : -20 Runic Power (6) (id=10640)
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Killing Machine (51124 effect#1), Death Knight (137005 effect#2), Nothing but the Boots (189144 effect#1), Obliteration (207256 effect#1), Koltira's Newfound Will (208782 effect#2), Item - Death Knight T21 Frost 2P Bonus (251873 effect#2), Decimate (265145 effect#2)
+Affecting spells : Killing Machine (51124 effect#1), Death Knight (137005 effect#2), Obliteration (207256 effect#1), Koltira's Newfound Will (208782 effect#2), Item - Death Knight T21 Frost 2P Bonus (251873 effect#2), Decimate (265145 effect#2)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -603,7 +634,6 @@ Cooldown         : 120 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... x...x.x. x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, AOE Hostile Spell, Heal, Hostile Spell, Periodic
-Affecting spells : Dance of Darkness (192514 effect#1), Mouth of Hell (192570 effect#1)
 Attributes       : ........ ........ ........ ........   ........ .xx..... ........ ....x... 
                  : ........ ........ ........ ........   .x...... ..x..... ..x..... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -629,7 +659,7 @@ Resource         : 25 Runic Power (6) (id=2237)
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Death Knight (137005 effect#2), Biting Cold (166057 effect#1), Chill of the Grave (205209 effect#1)
+Affecting spells : Death Knight (137005 effect#2), Biting Cold (166057 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -654,7 +684,7 @@ Resource         : -10 Runic Power (6) (id=10641)
 Spell Level      : 55
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Rime (59052 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Blast Radius (189086 effect#1), Northrend Winds (204088 effect#1), Freezing Fog (207060 effect#1), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#1)
+Affecting spells : Rime (59052 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Northrend Winds (204088 effect#1), Freezing Fog (207060 effect#1), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#1)
 Attributes       : ........ ........ ..x..... ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -670,12 +700,12 @@ Description      : Blast the target with a frigid wind, dealing $s1 $?s204088[Fr
 $@spelldesc55095
 
 Name             : Summon Gargoyle (id=49206) [Spell Family (15)] 
-Class            : Unholy Death Knight
+Class            : Death Knight
 School           : Shadow
 Spell Level      : 75
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 45 seconds
+Duration         : 35 seconds
 Cooldown         : 180 seconds
 Affecting spells : Death Knight (137005 effect#2)
 Attributes       : ........ ........ ........ ........   ........ .x...... .x...... ........ 
@@ -691,7 +721,11 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 27829 | Misc Value 2: 0xca6 | Radius: 3 yards | Target: Unknown(44)
 #3 (id=41321)    : Trigger Spell (64): Summon Gargoyle
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 61777 | Target: Self (1)
-Description      : A Gargoyle flies into the area and bombards the target for $61777d.
+#4 (id=728503)   : Dummy (3)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+Description      : Summon a Gargoyle into the area to bombard the target for $61777d.
+
+The Gargoyle gains $211947s1% increased damage for every $s4 Runic Power you spend.
 
 Name             : Sudden Doom (id=49530) [Spell Family (15), Passive] 
 Class            : Unholy Death Knight
@@ -701,7 +735,7 @@ Proc Chance      : 100%
 Real PPM         : 2.875 (Haste multiplier)
 Proc Flags       : ..x..... ........ ........ ........ 
                  : White Melee
-Affecting spells : Double Doom (191741 effect#2)
+Affecting spells : Inevitable Doom (276023 effect#2)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -723,6 +757,7 @@ GCD              : 0.5 seconds
 Charges          : 1 (25 seconds cooldown)
 Category         : 1428
 Mechanic         : Grip
+Affecting spells : Death's Reach (276079 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ....x... ........   ........ ........ xx...... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -742,7 +777,7 @@ Resource         : 45 Runic Power (6) (id=6268)
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Dark Succor (101568 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Deathbringer (144953 effect#1), Item - Death Knight T18 Blood 4P Bonus (187873 effect#1), Unending Thirst (216019 effect#2), Death March (235556 effect#2), Haemostasis (235559 effect#1), Gravewarden (242010 effect#2), Master of Ghouls (246995 effect#1), Dark Grudge (269368 effect#2), Hemostasis (273947 effect#1)
+Affecting spells : Dark Succor (101568 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Deathbringer (144953 effect#1), Item - Death Knight T18 Blood 4P Bonus (187873 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Gravewarden (242010 effect#2), Master of Ghouls (246995 effect#1), Dark Grudge (269368 effect#2), Hemostasis (273947 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -767,7 +802,7 @@ Name             : Razorice (id=50401) [Spell Family (15)]
 Class            : Death Knight
 School           : Frost
 Range            : 10 yards
-Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Bad to the Bone (189147 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), 
 Attributes       : ....x... .....x.. ..x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... x.x..... ......x. 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -816,7 +851,6 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=43101)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-                   Hotfixed: Base Value (1 -> 0)
 Description      : Deals $s1 Shadow damage$?s212744[ to all enemies within $A1 yds.][ and infects all enemies within $A1 yds with Blood Plague.
 
 |Tinterface\icons\spell_deathknight_bloodplague.blp:24|t |cFFFFFFFFBlood Plague|r
@@ -894,7 +928,6 @@ Spell Level      : 57
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 60 seconds
-Affecting spells : Frozen Core (189179 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -918,6 +951,7 @@ School           : Physical
 Range            : 30 yards
 Duration         : 3 seconds
 Mechanic         : Taunt
+Affecting spells : Death's Reach (276079 effect#1)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   ........ ........ ..x..... ........ 
                  : x....... ...x.... ........ ........   ........ ........ ........ ........ 
@@ -1031,7 +1065,7 @@ Name             : Death and Decay (id=52212) [Scaling Spell (1), Spell Family (
 Class            : Death Knight
 School           : Shadow
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Morbid Strike (166021 effect#2), All-Consuming Rot (192464 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Morbid Strike (166021 effect#2), Master of Ghouls (246995 effect#1), 
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ ........ ........ .x....x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -1110,7 +1144,7 @@ Range            : 40 yards
 Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Veteran of the Third War (48263 effect#6), Blood Death Knight (137008 effect#4), The Darkest Crusade (191488 effect#1)
+Affecting spells : Veteran of the Third War (48263 effect#6), Blood Death Knight (137008 effect#4)
 Triggered by     : Fallen Crusader (166441)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
@@ -1133,7 +1167,7 @@ School           : Shadow
 Spell Level      : 55
 Range            : 50000 yards
 Duration         : 24 seconds
-Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Coagulopathy (192460 effect#1), Rapid Decomposition (194662 effect#1), Master of Ghouls (246995 effect#1), Soulflayer's Corruption (248066 effect#1)
+Affecting spells : Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Rapid Decomposition (194662 effect#1), Master of Ghouls (246995 effect#1), Soulflayer's Corruption (248066 effect#1)
 Triggered by     : Death's Caress (195292)
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... x....... ........ ........   ........ ........ ..x..... ......x. 
@@ -1158,7 +1192,7 @@ Resource         : -10 Runic Power (6) (id=10648)
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#2), Scourge of Worlds (191748 effect#1), Necrosis (216974 effect#1), Master of Ghouls (246995 effect#1), Scourge the Unbeliever (265147 effect#2)
+Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#2), Master of Ghouls (246995 effect#1), Scourge the Unbeliever (265147 effect#2)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1205,7 +1239,6 @@ Spell Level      : 60
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Category         : 1641
-Affecting spells : Vampiric Fangs (192542 effect#1), Vampiric Fangs (192543 effect#1), Vampiric Fangs (192544 effect#1), Vampiric Fangs (208793 effect#1), Vampiric Fangs (208794 effect#1), Vampiric Fangs (208795 effect#1), Vampiric Fangs (238686 effect#1), Vampiric Fangs (238687 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1417,7 +1450,7 @@ Class            : Death Knight
 School           : Shadow
 Resource         : 0 Runic Power (6) (id=5972)
 Spell Level      : 55
-Duration         : 40 seconds
+Duration         : 30 seconds
 Stance Mask      : 0x00000040
 Triggered by     : Summon Gargoyle (49206), Dark Arbiter (207349)
 Attributes       : .......x x....... .......x x..x...x   .....x.. ..x..... ........ ..x.x... 
@@ -1538,9 +1571,9 @@ Spell Level      : 74
 Range            : 100 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
-Duration         : 20 seconds
+Duration         : 15 seconds
 Cooldown         : 60 seconds
-Affecting spells : Item - Death Knight T17 Unholy 2P Bonus (165575 effect#1), Eternal Agony (208598 effect#1)
+Affecting spells : Item - Death Knight T17 Unholy 2P Bonus (165575 effect#1), Dark Infusion (198943 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. .x...... ........ ........   ........ ........ ........ ........ 
@@ -1561,7 +1594,7 @@ Name             : Death Strike Off-Hand (id=66188) [Scaling Spell (1), Spell Fa
 Class            : Death Knight
 School           : Physical
 Range            : 100 yards
-Affecting spells : Dark Succor (101568 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Deathbringer (144953 effect#1), Item - Death Knight T18 Blood 4P Bonus (187873 effect#1), Unending Thirst (216019 effect#2), Death March (235556 effect#2), Haemostasis (235559 effect#1), Gravewarden (242010 effect#2), Master of Ghouls (246995 effect#1), Dark Grudge (269368 effect#2), Hemostasis (273947 effect#1)
+Affecting spells : Dark Succor (101568 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Deathbringer (144953 effect#1), Item - Death Knight T18 Blood 4P Bonus (187873 effect#1), Death March (235556 effect#2), Haemostasis (235559 effect#1), Gravewarden (242010 effect#2), Master of Ghouls (246995 effect#1), Dark Grudge (269368 effect#2), Hemostasis (273947 effect#1)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1580,7 +1613,7 @@ Name             : Frost Strike Off-Hand (id=66196) [Scaling Spell (1), Spell Fa
 Class            : Death Knight
 School           : Frost
 Range            : 100 yards
-Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Ambidexterity (189092 effect#1), Chill of the Grave (205209 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Frost Strike (49143)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ..x..... x.....x. 
@@ -1598,7 +1631,7 @@ Name             : Obliterate Off-Hand (id=66198) [Scaling Spell (1), Spell Fami
 Class            : Death Knight
 School           : Physical
 Range            : 100 yards
-Affecting spells : Killing Machine (51124 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Ambidexterity (189092 effect#1), Nothing but the Boots (189144 effect#1), Obliteration (207256 effect#1), Koltira's Newfound Will (208782 effect#2), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#2), Decimate (265145 effect#2)
+Affecting spells : Killing Machine (51124 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Obliteration (207256 effect#1), Koltira's Newfound Will (208782 effect#2), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#2), Decimate (265145 effect#2)
 Triggered by     : Obliterate (49020)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ..x..... x.....x. 
@@ -1676,7 +1709,7 @@ School           : Shadow
 Spell Level      : 80
 Range            : 100 yards
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#2), Scourge of Worlds (191748 effect#1), Necrosis (216974 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#2), Master of Ghouls (246995 effect#1), 
 Triggered by     : Scourge Strike (55090)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ..x..... ......x. 
@@ -1730,10 +1763,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68126)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Self (1)
-                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frost Breath (190780), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Hypothermia (228322), Howling Blast (237680), Inexorable Assault (253597)
+                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frost Breath (190780), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Crystalline Swords (205164), Crystalline Swords (205165), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074)
 #2 (id=90622)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frost Breath (190780), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Hypothermia (228322), Howling Blast (237680), Inexorable Assault (253597)
+                   Affected Spells: Howling Blast (49184), Razorice (50401), Frost Fever (55095), Frost Strike Off-Hand (66196), Breath of Sindragosa (155166), Frost Breath (190780), Frozen Pulse (195750), Glacial Advance (195975), Remorseless Winter (196771), Crystalline Swords (205164), Crystalline Swords (205165), Avalanche (207150), Frostscythe (207230), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074)
 Description      : Increases your Frost damage abilities by ${$s1}.1%.
 
 Name             : Mastery: Dreadblade (id=77515) [Spell Family (15), Passive] 
@@ -1750,10 +1783,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68129)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Death and Decay (52212), Scourge Strike (70890), Outbreak (77575), Soul Reaper (130736), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739)
+                   Affected Spells: Death Coil (47632), Death and Decay (52212), Scourge Strike (70890), Outbreak (77575), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Apocalypse (275699), Harrowing Decay (275931), Corpse Explosion (276051)
 #2 (id=90623)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.25000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Death and Decay (52212), Scourge Strike (70890), Outbreak (77575), Soul Reaper (130736), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739)
+                   Affected Spells: Death Coil (47632), Death and Decay (52212), Scourge Strike (70890), Outbreak (77575), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Defile (156000), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Bursting Sores (207267), Clawing Shadows (207311), Epidemic (212739), Epidemic (215969), Apocalypse (275699), Harrowing Decay (275931), Corpse Explosion (276051)
 Description      : Increases the damage of your Shadow damage abiilites by ${$s1}.1%.
 
 Name             : Blood Shield (id=77535) [Spell Family (15)] 
@@ -1772,8 +1805,7 @@ Effects          :
 #1 (id=68132)    : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Self (1)
 Description      : When you deal damage with Death Strike while in Blood Presence, you gain a percentage of your health gained as a physical absorption shield.
-Tooltip          : Absorbs $w1 Physical damage.$?s273953[
-Leech increased by $274009s1%.][]
+Tooltip          : Absorbs $w1 Physical damage.
 
 Name             : Outbreak (id=77575) [Spell Family (15)] 
 Class            : Unholy Death Knight
@@ -1793,8 +1825,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=68141)    : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08190 | Target: Enemy (6)
-Description      : Deals $s1 Shadow damage and surrounds the target in a miasma lasting for $196782d that causes the target and all nearby enemies to be infected with Virulent Plague.
-
+Description      : Deals $s1 Shadow damage and surrounds the target in a miasma for $196782d that infects nearby enemies with Virulent Plague.
 
 |Tinterface\icons\ability_creature_disease_02.blp:24|t |cFFFFFFFFVirulent Plague|r
 $@spelldesc191587
@@ -1841,7 +1872,6 @@ Tooltip          : Your next Death and Decay costs no Runes and generates no Run
 Name             : Runic Empowerment (id=81229) [Spell Family (15), Passive] 
 Class            : Frost Death Knight
 School           : Physical
-Affecting spells : Runefrost (238043 effect#1)
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1859,7 +1889,6 @@ Class            : Death Knight
 School           : Physical
 Spell Level      : 55
 Duration         : 8 seconds
-Affecting spells : Dance of Darkness (192514 effect#1)
 Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1895,7 +1924,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ..x.x.x. x....... ........ 
                  : AOE Heal, AOE Hostile Spell, Heal, Hostile Spell
-Affecting spells : Double Doom (191741 effect#1)
+Affecting spells : Inevitable Doom (276023 effect#1)
 Triggered by     : Sudden Doom (49530)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1926,7 +1955,7 @@ Effects          :
                    Base Value: 3.5 | Scaled Value: 3.5 (avg=0, dl=0.25) | Value Multiplier: 1 | SP Coefficient: 1.00000 | Misc Value: 90
 Description      : Gives a chance to parry enemy melee attacks.
 
-Name             : Festering Strike (id=85948) [Scaling Spell (1), Spell Family (15)] 
+Name             : Festering Strike (id=85948) [Scaling Spell (-1), Spell Family (15)] 
 Class            : Unholy Death Knight
 School           : Physical
 Resource         : 2 Rune (5) (id=6275)
@@ -1934,7 +1963,7 @@ Resource         : -20 Runic Power (6) (id=10658)
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Rotten Touch (191442 effect#1), Master of Ghouls (246995 effect#1), Festering Doom (272741 effect#1)
+Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), Festering Doom (272741 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1943,13 +1972,11 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Requires main-hand weapon (106)
 Effects          :
-#1 (id=87374)    : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.433) | Target: Enemy (6)
-#2 (id=87375)    : School Damage (2): physical
+#1 (id=87374)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.01088 | Target: Enemy (6)
-#3 (id=333923)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 (avg=0, dl=0.666667) | Target: Enemy (6)
-Description      : Deals $s2 Physical damage and infects the target with $m3 to $M3 Festering Wounds.
+#2 (id=87375)    : Dummy (3)
+                   Base Value: 2.5 | Scaled Value: 2.5 (avg=0, dl=0.4) | Target: Enemy (6)
+Description      : Strikes for $s1 Physical damage and infects the target with $m2-$M2 Festering Wounds.
 
 |Tinterface\icons\spell_yorsahj_bloodboil_purpleoil.blp:24|t |cFFFFFFFFFestering Wound|r
 $@spelldesc194310
@@ -2017,10 +2044,10 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=95511)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11138 | Target: Enemy (6)
-Description      : Claw the enemy, dealing $s1% of normal melee damage.
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Target: Enemy (6)
+Description      : Claw the enemy, dealing $s1 Physical damage.
 
-Name             : Sweeping Claws (id=91778) 
+Name             : Sweeping Claws (id=91778) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Resource         : 40 Energy (3) (id=10561)
@@ -2038,8 +2065,9 @@ Effects          :
 #1 (id=95513)    : Dummy (3)
                    Base Value: 80 | Scaled Value: 80 | Target: Enemy (6)
 #2 (id=341774)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07160 | Radius: 8 yards | Target: Cone Front (104)
-Description      : Rakes an enemy with deformed claws, dealing $91778s1% of normal damage as Shadow to the target and nearby enemies.
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | Radius: 8 yards | Target: Cone Front (104)
+Description      : Rakes an enemy with deformed claws, dealing $<sweepingclaw> Shadow damage to the target and nearby enemies.
+Variables        : $sweepingclaw= ${$91778s2*3.35}
 
 Name             : Monstrous Blow (id=91797) [Spell Family (15)] 
 Class            : Death Knight
@@ -2060,7 +2088,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Enemy (6)
 #2 (id=95538)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11138 | Target: Enemy (6)
-Description      : Strike an enemy with a smashing attack, dealing $s2% of normal melee damage and stunning for $d.
+Description      : Strike an enemy with a smashing attack, dealing $s2 Physical damage and stunning for $d.
 Tooltip          : Stunned.
 
 Name             : Gnaw (id=91800) [Spell Family (15)] 
@@ -2344,6 +2372,48 @@ Description      : An unholy pact that prevents fatal damage, instead absorbing 
 
 If any healing absorption remains when this effect expires, you will die. This effect may only occur every $123981d.
 
+Name             : Unholy Blight (id=115989) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Resource         : 1 Rune (5) (id=191725)
+Resource         : -10 Runic Power (6) (id=191726)
+Spell Level      : 1
+GCD              : 1 seconds
+Duration         : 6 seconds
+Cooldown         : 60 seconds
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
+Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=130545)   : Apply Aura (6) | Periodic Trigger Spell (23): Unholy Blight every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 115994 | Target: Self (1)
+Description      : Surrounds yourself with a vile swarm of insects for $d, stinging all nearby enemies and infecting them with an unholy disease that deals $115994o1 damage over $115994d.
+Tooltip          : Surrounded by a vile swarm of insects, infecting enemies within $115994a1 yds with an unholy disease.
+
+Name             : Unholy Blight (id=115994) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Level      : 1
+Duration         : 15 seconds
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Ebon Fever (207269 effect#1), Master of Ghouls (246995 effect#1), 
+Triggered by     : Unholy Blight (115989)
+Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ........ .......x ....x..x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable weapon procs (151)
+Effects          :
+#1 (id=130553)   : Apply Aura (6) | Periodic Damage (3): shadow every 3 seconds
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+Description      : $@spelldesc115989
+Tooltip          : Suffering $sw1 Shadow damage every $t1 sec.
+
 Name             : Death Siphon (id=116783) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
@@ -2414,7 +2484,7 @@ Effects          :
 #2 (id=157276)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
-Name             : Corpse Explosion (id=127344) [Spell Family (15)] 
+Name             : Corpse Exploder (id=127344) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 40
@@ -2448,12 +2518,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=167609)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-                   Affected Spells: Claw (16827), Bite (17253), Smack (49966), Talon Slash (242735)
+                   Affected Spells: Claw (16827), Bite (17253), Smack (49966)
 #2 (id=191547)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 #3 (id=191721)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Claw (16827), Bite (17253), Smack (49966), Talon Slash (242735)
+                   Affected Spells: Claw (16827), Bite (17253), Smack (49966)
 #4 (id=337955)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Your pet's Basic Attack deals $s1% increased damage, can now be used from $s2 yards away, and will instantly teleport your pet behind its target. Your pet can teleport only once per $s4 sec.
@@ -2461,31 +2531,31 @@ Description      : Your pet's Basic Attack deals $s1% increased damage, can now 
 Name             : Soul Reaper (id=130736) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
-Resource         : 1 Rune (5) (id=7764)
-Resource         : -10 Runic Power (6) (id=11031)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Duration         : 5 seconds
+Duration         : 6 seconds
 Cooldown         : 45 seconds
 Affecting spells : Mastery: Dreadblade (77515 effect#1), Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), 
-Triggered by     : Soul Reaper (215711)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Requires main-hand weapon (106)
 Effects          :
-#1 (id=168240)   : Weapon Damage% (31)
-                   Base Value: 126 | Scaled Value: 1.26 | Target: Enemy (6)
-#2 (id=168241)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 215711 | Target: Enemy (6)
-Description      : Strike an enemy's soul for $sw1 Shadow damage, afflicting them with Soul Reaper for $d.
+#1 (id=168240)   : Apply Aura (6) | Periodic Damage (3): shadow every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | Target: Enemy (6)
+#2 (id=168241)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: rune | Target: Self (1)
+Description      : Strike an enemy's soul, dealing $<dmg> Shadow damage over $d.
 
-Bursting a Festering Wound on an enemy afflicted by Soul Reaper grants $215711s1% Haste for $215711d, stacking up to 3 times.
-Tooltip          : Bursting a Festering Wound will grant the Death Knight Haste.
+If the enemy dies while afflicted by Soul Reaper, gain $215711s1% Haste for $215711d.
+
+|cFFFFFFFFGenerates $s2 Rune.|r
+Tooltip          : Suffering $sw1 damage every $t1 sec.
+Variables        : $dmg=${$sw1*($d+1)/$t1}
 
 Name             : Death Knight (id=137005) [Spell Family (15), Passive, Hidden] 
 Class            : Death Knight
@@ -2504,14 +2574,14 @@ Effects          :
                    Affected Spells: Glacial Advance (194913), Glacial Advance (195975), Frostscythe (207230)
 #2 (id=188986)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Path of Frost (3714), Army of the Dead (42650), Obliterate (49020), Frost Strike (49143), Summon Gargoyle (49206), Death Strike (49998), Scourge Strike (55090), Horn of Winter (57330), Raise Ally (61999), Festering Strike (85948), Soul Reaper (130736), Bonestorm (194844), Blighted Rune Weapon (194918), Marrowrend (195182), Remorseless Winter (196770), Consumption (205223), Heart Strike (206930), Frostscythe (207230), Clawing Shadows (207311), Rune Strike (210764), Wraith Walk (212552), Apocalypse (220143), Consumption (274156)
+                   Affected Spells: Path of Frost (3714), Army of the Dead (42650), Obliterate (49020), Frost Strike (49143), Summon Gargoyle (49206), Death Strike (49998), Scourge Strike (55090), Horn of Winter (57330), Raise Ally (61999), Festering Strike (85948), Soul Reaper (130736), Bonestorm (194844), Marrowrend (195182), Remorseless Winter (196770), Consumption (205223), Heart Strike (206930), Frostscythe (207230), Clawing Shadows (207311), Rune Strike (210764), Wraith Walk (212552), Apocalypse (220143), Consumption (274156), Apocalypse (275699)
 #3 (id=191178)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | Misc Value: 1611 | Target: Self (1)
                    Affected Spells: Rune Strike (210764)
                    Affected Spells (Category): Blood Boil (50842)
 #4 (id=191179)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1642 | Target: Self (1)
-                   Affected Spells (Category): Epidemic (207317)
+                   Affected Spells (Category): 
 #5 (id=191180)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Frostscythe (207230)
@@ -2556,10 +2626,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179689)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 28 | Scaled Value: 28 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Frost Breath (190780), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Apocalypse (220143), Obliterate (222024), Frost Strike (222026), Hypothermia (228322), Howling Blast (237680), Crystalline Swords (243122), Inexorable Assault (253597), Consumption (274156)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Frost Breath (190780), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Crystalline Swords (205164), Crystalline Swords (205165), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Apocalypse (220143), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Harrowing Decay (275931), Corpse Explosion (276051)
 #2 (id=191174)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 28 | Scaled Value: 28 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Frost Breath (190780), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Apocalypse (220143), Obliterate (222024), Frost Strike (222026), Hypothermia (228322), Howling Blast (237680), Crystalline Swords (243122), Inexorable Assault (253597), Consumption (274156)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Frost Breath (190780), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Crystalline Swords (205164), Crystalline Swords (205165), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Apocalypse (220143), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Harrowing Decay (275931), Corpse Explosion (276051)
 #3 (id=191175)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
@@ -2600,22 +2670,22 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179690)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Frost Breath (190780), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Apocalypse (220143), Obliterate (222024), Frost Strike (222026), Hypothermia (228322), Howling Blast (237680), Crystalline Swords (243122), Inexorable Assault (253597), Consumption (274156)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Frost Breath (190780), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Crystalline Swords (205164), Crystalline Swords (205165), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Apocalypse (220143), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Harrowing Decay (275931), Corpse Explosion (276051)
 #2 (id=191170)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Frost Breath (190780), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Apocalypse (220143), Obliterate (222024), Frost Strike (222026), Hypothermia (228322), Howling Blast (237680), Crystalline Swords (243122), Inexorable Assault (253597), Consumption (274156)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Frost Breath (190780), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Crystalline Swords (205164), Crystalline Swords (205165), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Apocalypse (220143), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Harrowing Decay (275931), Corpse Explosion (276051)
 #3 (id=191171)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191172)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
                    Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
 #5 (id=191173)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -30 | Scaled Value: -30 | Misc Value 2: 281 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751), Void Tendril (250834), Pool of Pure Void (250766), Shadow Strike (253324), Sorrow (253022), Torment the Weak (252907), Chaotic Darkness (252896), Shadowbind (252879), Isolated Strike (255609), Shadow Blades (257702)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751), Void Tendril (250834), Pool of Pure Void (250766), Shadow Strike (253324), Chaotic Darkness (252896), Shadowbind (252879), Isolated Strike (255609), Shadow Blades (257702)
 #6 (id=260787)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 22 | Misc Value 2: 281 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751), Void Tendril (250834), Pool of Pure Void (250766), Shadow Strike (253324), Sorrow (253022), Torment the Weak (252907), Chaotic Darkness (252896), Shadowbind (252879), Isolated Strike (255609), Shadow Blades (257702)
+                   Affected Spells (Label): Fel-Crazed Rage (225777), Orb of Destruction (229700), Ceaseless Toxin (242497), Spear of Anguish (242605), Unending Hunger (242536), Dread Torrent (246464), Insidious Corruption (243941), Piercing Anguish (246751), Void Tendril (250834), Pool of Pure Void (250766), Shadow Strike (253324), Chaotic Darkness (252896), Shadowbind (252879), Isolated Strike (255609), Shadow Blades (257702)
 #7 (id=260788)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=260789)   : Apply Aura (6) | Dummy (4)
@@ -2650,10 +2720,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179691)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 29 | Scaled Value: 29 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Frost Breath (190780), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Apocalypse (220143), Obliterate (222024), Frost Strike (222026), Hypothermia (228322), Howling Blast (237680), Crystalline Swords (243122), Inexorable Assault (253597), Consumption (274156)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Frost Breath (190780), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Crystalline Swords (205164), Crystalline Swords (205165), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Apocalypse (220143), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Harrowing Decay (275931), Corpse Explosion (276051)
 #2 (id=191166)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 29 | Scaled Value: 29 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Frost Breath (190780), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Frozen Soul (204959), Crystalline Swords (205164), Crystalline Swords (205165), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Apocalypse (220143), Obliterate (222024), Frost Strike (222026), Hypothermia (228322), Howling Blast (237680), Crystalline Swords (243122), Inexorable Assault (253597), Consumption (274156)
+                   Affected Spells: Death Coil (47632), Howling Blast (49184), Death Strike (49998), Razorice (50401), Blood Boil (50842), Death and Decay (52212), Blood Plague (55078), Scourge Strike (55090), Frost Fever (55095), Death Strike Off-Hand (66188), Frost Strike Off-Hand (66196), Obliterate Off-Hand (66198), Scourge Strike (70890), Outbreak (77575), Festering Strike (85948), Unholy Blight (115989), Unholy Blight (115994), Soul Reaper (130736), Breath of Sindragosa (155166), Defile (156000), Frost Breath (190780), Virulent Plague (191587), Virulent Eruption (191685), Festering Wound (194311), Marrowrend (195182), Death's Caress (195292), Frozen Pulse (195750), Glacial Advance (195975), Bonestorm (196528), Remorseless Winter (196771), Crystalline Swords (205164), Crystalline Swords (205165), Consumption (205223), Heart Strike (206930), Blooddrinker (206931), Avalanche (207150), Frostscythe (207230), Bursting Sores (207267), Clawing Shadows (207311), Rune Strike (210764), Epidemic (212739), Epidemic (215969), Apocalypse (220143), Obliterate (222024), Frost Strike (222026), Howling Blast (237680), Inexorable Assault (253597), Glacial Contagion (274074), Consumption (274156), Apocalypse (275699), Harrowing Decay (275931), Corpse Explosion (276051)
 #3 (id=191167)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 80 | Scaled Value: 80 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188), Consumption (205223)
@@ -2920,13 +2990,13 @@ Tooltip          : Continuously dealing Shadowfrost damage every $t1 sec to enem
 
 Name             : Defile (id=152280) [Spell Family (15)] 
 Class            : Death Knight
-School           : Shadowfrost
-Resource         : 1 Rune (5) (id=9066)
-Resource         : -10 Runic Power (6) (id=10662)
+School           : Shadow
+Resource         : 1 Rune (5) (id=191728)
+Resource         : -10 Runic Power (6) (id=191729)
 Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
-Cooldown         : 30 seconds
+Cooldown         : 25 seconds
 Affecting spells : Crimson Scourge (81141 effect#1), Blood Death Knight (137008 effect#5), Rapid Decomposition (194662 effect#1)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2944,11 +3014,11 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #4 (id=216897)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0xffffffec | Target: Self (1)
-Description      : Defile the targeted ground, dealing ${($156000s1*($d+1)/$t3)} Shadowfrost damage to all enemies over $d.
+Description      : Defile the targeted ground, dealing ${($156000s1*($d+1)/$t3)} Shadow damage to all enemies over $d.
 
-Every $t3 sec, if any enemies are standing in the Defile, it grows in size and increases your Mastery by $218100s1, stacking up to $218100u times.
+While you remain within your Defile, your $?s207311[Clawing Shadows][Scourge Strike] will hit all enemies near the target.
 
-While you remain within your Defile, your $?s207311[Clawing Shadows][Scourge Strike] will hit all enemies near the target.
+If any enemies are standing in the Defile, it grows in size every sec.
 
 Name             : Expansive Mind (Racial Passive) (id=154747) [Passive] 
 Class            : Death Knight
@@ -2987,14 +3057,13 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Radius: 12 yards | Target: Cone Front (104)
 #2 (id=215545)   : School Damage (2): shadowfrost
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.51761 | Radius: 12 yards | Target: Cone Front (104)
-                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc152279
 
 Name             : Defile (id=156000) [Spell Family (15)] 
 Class            : Death Knight
-School           : Shadowfrost
+School           : Shadow
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Morbid Strike (166021 effect#2), All-Consuming Rot (192464 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Morbid Strike (166021 effect#2), Master of Ghouls (246995 effect#1), 
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x....xx 
                  : x....... ........ ........ ........   ........ .......x ........ ........ 
@@ -3002,9 +3071,8 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=216887)   : School Damage (2): shadowfrost
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09173 | Target: Enemy (6)
-                   Hotfixed: Base Value (1 -> 0)
+#1 (id=216887)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08000 | Target: Enemy (6)
 #2 (id=322756)   : Dummy (3)
                    Base Value: 66 | Scaled Value: 66
 Description      : $@spelldesc152280
@@ -3240,7 +3308,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=256877)   : Apply Aura (6) | Proc Trigger Spell (42): Dark Succor
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Trigger Spell: 101568 | Target: Self (1)
-Description      : When you kill an enemy that yields experience or honor, your next Death Strike within $101568d is free and its healing is increased by $101568s1%.
+Description      : When you kill an enemy that yields experience or honor, your next Death Strike within $101568d is free and heals for $101568s1% more.
 
 Name             : Frozen Obliteration (id=184982) 
 Class            : Death Knight
@@ -3342,7 +3410,6 @@ Name             : Crystalline Swords (id=189186) [Spell Family (15), Passive]
 Class            : Death Knight
 School           : Physical
 Proc Chance      : 45%
-Artifact Power   : Id: 122, Index: 1, Max Rank: 1, Type: 18
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
@@ -3364,7 +3431,6 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 300 seconds
 Category         : 1652
-Artifact Power   : Id: 124, Index: 3, Max Rank: 1, Type: 1
 Affecting spells : Consort's Cold Core (235605 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3415,10 +3481,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=280739)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Unknown(120)
-                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Last Stand (53478), Bullheaded (53490), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Dash (61684), Charge (61685), Thunderstomp (63900), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Talon Slash (242735), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
+                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Last Stand (53478), Bullheaded (53490), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Dash (61684), Charge (61685), Thunderstomp (63900), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
 #2 (id=725119)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Unknown(120)
-                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Last Stand (53478), Bullheaded (53490), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Dash (61684), Charge (61685), Thunderstomp (63900), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Talon Slash (242735), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
+                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Last Stand (53478), Bullheaded (53490), Frost Breath (54644), Monstrous Bite (54680), Froststorm Breath (54689), Dash (61684), Charge (61685), Thunderstomp (63900), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
 #3 (id=725122)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Pathfinding (264656), Endurance Training (264662), Predator's Thirst (264663)
@@ -3436,7 +3502,7 @@ Spell Level      : 55
 Range            : 50000 yards
 Duration         : 21 seconds
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Plaguebearer (191485 effect#1), Ebon Fever (207269 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Ebon Fever (207269 effect#1), Master of Ghouls (246995 effect#1), 
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x ....x..x ........   ........ ........ ........ ........ 
@@ -3450,18 +3516,20 @@ Effects          :
 #2 (id=288070)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : A disease that deals ${7*$s1} Shadow damage over $d. It erupts when the infected target dies, dealing $191685s1 Shadow damage divided among nearby enemies, and has a $s2% chance to erupt each time it deals damage.
-Tooltip          : Suffering $w1 Shadow damage every $t1 sec. Chance to erupt for $191685s1 damage split among all nearby enemies. Always erupts if the infected dies.
+Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
+Chance to erupt for $191685s1 damage split among all nearby enemies.
+Always erupts if the infected dies.
 
 Name             : Virulent Eruption (id=191685) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 18
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Plaguebearer (191485 effect#1), Ebon Fever (207269 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Ebon Fever (207269 effect#1), Master of Ghouls (246995 effect#1), 
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
-                 : x....... ........ ........ ........   ........ ........ ........ ......x. 
+                 : x....... ........ ........ ....x...   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
@@ -3552,7 +3620,7 @@ Spell Level      : 57
 Range            : 50000 yards
 Duration         : 24 seconds
 Internal Cooldown: 1 seconds
-Stacks           : -1 initial, 8 maximum
+Stacks           : -1 initial, 6 maximum
 Proc Chance      : 20%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : AOE Heal Taken, Heal Taken
@@ -3575,7 +3643,7 @@ School           : Shadow
 Spell Level      : 57
 Range            : 50000 yards
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Bursting Sores (207264 effect#1), Lash of Shadows (238044 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Bursting Sores (207264 effect#1), Master of Ghouls (246995 effect#1), 
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ .......x .......x ........   ........ ........ ........ ........ 
@@ -3759,10 +3827,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=286107)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -60000 | Scaled Value: -60000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Raise Dead (46584)
-Description      : Your Raise Dead spell summons an additional skeletal minion, and its cooldown is removed.
+#1 (id=286107)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 11 | Target: Self (1)
+Description      : Your Raise Dead spell summons an additional skeletal minion.
 
 Name             : Pestilent Pustules (id=194917) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -3776,31 +3843,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=286108)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
-Description      : Every $s1 Festering Wounds you burst, you gain 1 Rune.
-
-Name             : Blighted Rune Weapon (id=194918) [Spell Family (15)] 
-Class            : Death Knight
-School           : Shadow
-GCD              : 1.5 seconds
-Duration         : 30 seconds
-Cooldown         : 60 seconds
-Stacks           : 5 initial, 5 maximum
-Proc Chance      : 101%
-Proc Flags       : ..x..... ........ ........ ........ 
-                 : White Melee
-Affecting spells : Death Knight (137005 effect#2)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=286109)   : Apply Aura (6) | Proc Trigger Spell (42): Blighted Rune Weapon
-                   Base Value: 5 | Scaled Value: 5 | Trigger Spell: 195758 | Target: Self (1)
-Description      : Your next $s1 auto attacks infect your target with 2 Festering Wounds.
-Tooltip          : Applying Festering Wounds when autoattacking.
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+Description      : Bursting a Festering Wound has a $s1% chance to grant you Runic Corruption.
 
 Name             : Bone Shield (id=195181) [Spell Family (15)] 
 Class            : Death Knight
@@ -3813,7 +3857,6 @@ Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
 Affecting spells : Bone Wall (144948 effect#1), Rattlegore Bone Legplates (205816 effect#2), Foul Bulwark (206974 effect#1), Ossuary (219786 effect#1)
-Triggered by     : Rattling Bones (192557)
 Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ......x. ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3831,8 +3874,8 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #5 (id=708241)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
-Description      : Surrounds you with a barrier of whirling bones, increasing Armor by $s1% of your Strength, and your Haste by $s4%. Each melee attack against you consumes a charge. Lasts $d or until all charges are consumed.
-Tooltip          : Armor increased by $w1% of your Strength.
+Description      : Surrounds you with a barrier of whirling bones, increasing Armor by ${$s1*$STR/100}, and your Haste by $s4%. Each melee attack against you consumes a charge. Lasts $d or until all charges are consumed.
+Tooltip          : Armor increased by ${$w1*$STR/100}.
 Haste increased by $w4%.
 
 Name             : Marrowrend (id=195182) [Spell Family (15)] 
@@ -3843,7 +3886,7 @@ Resource         : -20 Runic Power (6) (id=10671)
 Spell Level      : 55
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Unholy Coil (184897 effect#2), Bonebreaker (192538 effect#1), Item - Death Knight T19 Blood 2P Bonus (211039 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Unholy Coil (184897 effect#2), Item - Death Knight T19 Blood 2P Bonus (211039 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Bone Shield (195181)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3973,7 +4016,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=287339)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05242 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc194909
 
 Name             : Festering Wound (id=195757) [Spell Family (15)] 
@@ -3993,22 +4035,6 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Misc Value: runic_power | Target: Self (1)
 Description      : $@spelldesc194310
 
-Name             : Blighted Rune Weapon (id=195758) [Spell Family (15)] 
-Class            : Death Knight
-School           : Shadow
-Range            : 100 yards
-Triggered by     : Blighted Rune Weapon (194918)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=287347)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Unknown(25)
-Description      : $@spelldesc207170
-
 Name             : Glacial Advance (id=195975) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
@@ -4025,24 +4051,6 @@ Effects          :
 #1 (id=287633)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.61425 | Radius: 0 - 1.5 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Summon glacial spikes from the ground that advance forward, damaging enemies near their eruption point for $s1 frost damage.
-
-Name             : Unholy Vigor (id=196263) [Scaling Spell (-1)] 
-Class            : Death Knight
-School           : Shadow
-Spell Level      : 55
-Range            : 50000 yards
-Proc Chance      : 101%
-Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
-                 : ........ .......x ....x..x ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
-                 : Disable weapon procs (151)
-Effects          :
-#1 (id=288063)   : Energize Power (30)
-                   Base Value: 10 | Scaled Value: 10 | Misc Value: energy | Target: Active Pet (5)
-Description      : Grants the Death Knight's $?s207313[abomination][ghoul] $s1 energy.
 
 Name             : Bloodworm (id=196361) [Spell Family (15)] 
 Class            : Death Knight
@@ -4121,7 +4129,7 @@ Tooltip          : Dealing $196771s1 Frost damage to enemies each second.
 Name             : Remorseless Winter (id=196771) [Spell Family (15)] 
 Class            : Death Knight
 School           : Frost
-Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Dead of Winter (189164 effect#1), Gathering Storm (211805 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Gathering Storm (211805 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Remorseless Winter (196770)
 Attributes       : ........ ........ ........ ..xx....   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   .......x .x...... ........ ........ 
@@ -4171,7 +4179,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=289532)   : Apply Aura (6) | Proc Trigger Spell (42): Festering Wound
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 195757 | Target: Self (1)
-Description      : $@spelldesc194310
+Description      : Festering Strike applies a pustulent lesion that will burst on death or when damaged by Scourge Strike, dealing $194311s1 Shadow damage and generating $195757s1 Runic Power.
+
+Stacks up to $194310u times on any target.
 
 Name             : Bloodworms (id=197531) [Spell Family (15), Hidden] 
 Class            : Death Knight
@@ -4223,7 +4233,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.36036 | Target: Enemy (6)
 Description      : Inflicts Shadow damage to an enemy.
 
-Name             : Shadow Infusion (id=198943) [Spell Family (15), Passive] 
+Name             : Dark Infusion (id=198943) [Spell Family (15), Passive] 
 Class            : Death Knight
 School           : Physical
 Spell Level      : 1
@@ -4238,9 +4248,14 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=292782)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
-Description      : While your $?s207313[abomination][ghoul] is not transformed, Death Coil will also reduce the remaining cooldown of Dark Transformation by $s5 sec.
+#1 (id=292782)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 5000 | Scaled Value: 5000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Dark Transformation (63560)
+#2 (id=730081)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+Description      : Dark Transformation lasts ${$s1/1000} sec longer.
+
+$?s207317[Death Coil and Epidemic reduce][Death Coil reduces] the remaining cooldown of Dark Transformation by an additional $s2 sec.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -4340,7 +4355,6 @@ Spell Level      : 56
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Artifact Power   : Id: 289, Max Rank: 1, Type: 18
 Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -4430,7 +4444,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Category         : 1207
-Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#3), Veinrender (192457 effect#1), Blood for Blood (202846 effect#1), Item - Death Knight T19 Blood 2P Bonus (211039 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#3), Blood for Blood (202846 effect#1), Item - Death Knight T19 Blood 2P Bonus (211039 effect#1), Master of Ghouls (246995 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -4764,7 +4778,6 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
 Effects          :
 #1 (id=306367)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08190 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-                   Hotfixed: Base Value (1 -> 0)
 Description      : $@spelldesc207142
 
 Name             : Abomination's Might (id=207161) [Spell Family (15), Passive] 
@@ -4853,6 +4866,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 8 seconds
+Mechanic         : Root
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -4862,7 +4876,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=306397)   : Apply Aura (6) | Root (455)
-                   Base Value: 0 | Scaled Value: 0 | Mechanic: Stun | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Mechanic: Root | Target: Enemy (6)
 Description      : $@spelldesc207170
 Tooltip          : Rooted.
 
@@ -4911,7 +4925,7 @@ Resource         : 1 Rune (5) (id=11012)
 Spell Level      : 1
 Range            : 8 yards
 GCD              : 1.5 seconds
-Affecting spells : Killing Machine (51124 effect#1), Mastery: Frozen Heart (77514 effect#1), Death Knight (137005 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Nothing but the Boots (189144 effect#1), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#3)
+Affecting spells : Killing Machine (51124 effect#1), Mastery: Frozen Heart (77514 effect#1), Death Knight (137005 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#3)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4990,7 +5004,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=306535)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Festering Wound (194311)
 Description      : Festering Wounds deal $s1% more damage when burst, and all enemies within $207267A1 yds of a burst Festering Wound suffer $207267s1 Shadow damage.
 
@@ -5011,7 +5025,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
                  : Disable weapon procs (151)
 Effects          :
 #1 (id=306540)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.14742 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #2 (id=338561)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc207264
@@ -5029,13 +5043,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=306542)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 19 | Target: Self (1)
-                   Affected Spells: Virulent Plague (191587), Virulent Eruption (191685)
+                   Affected Spells: Unholy Blight (115994), Virulent Plague (191587), Virulent Eruption (191685)
 #2 (id=306543)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Virulent Plague (191587), Virulent Eruption (191685)
+                   Affected Spells: Unholy Blight (115994), Virulent Plague (191587), Virulent Eruption (191685)
 #3 (id=358079)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Virulent Plague (191587), Virulent Eruption (191685)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Unholy Blight (115994), Virulent Plague (191587), Virulent Eruption (191685)
 Description      : Virulent Plague deals $s3% more damage over time in half the duration.
 
 Name             : Infected Claws (id=207272) [Spell Family (15), Passive] 
@@ -5053,59 +5067,27 @@ Effects          :
                    Base Value: 35 | Scaled Value: 35 | Misc Value: 19 | Target: Self (1)
 Description      : Your $?s207313[abomination's Cleaver][ghoul's Claw] attack has a $s1% chance to cause a Festering Wound on the target.
 
-Name             : Unholy Frenzy (id=207289) [Spell Family (15), Passive] 
+Name             : Unholy  Frenzy (id=207289) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=306573)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 19 | Target: Self (1)
-Description      : When a Festering Wound bursts, you gain $207290s1% increased attack speed for $207290d.
-
-Name             : Unholy Frenzy (id=207290) [Spell Family (15)] 
-Class            : Death Knight
-School           : Shadow
-Spell Level      : 1
-Range            : 50000 yards
-Duration         : 2.5 seconds
+GCD              : 1.5 seconds
+Duration         : 12 seconds
+Cooldown         : 75 seconds
 Proc Chance      : 101%
-Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
-                 : ........ .......x .......x ........   ........ ........ ........ ........ 
+Proc Flags       : ..x..... ........ ........ ........ 
+                 : White Melee
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
-                 : Disable weapon procs (151)
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=306575)   : Apply Aura (6) | Modify Ranged and Melee Attack Speed% (342)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
-Description      : $@spelldesc207289
-Tooltip          : Attack speed increased by $s1%.
-
-Name             : Castigator (id=207305) [Spell Family (15), Passive] 
-Class            : Death Knight
-School           : Shadow
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=306594)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
-#2 (id=313374)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Each Festering Strike critical strike applies $s1 additional Festering Wounds.
-
-Each Scourge Strike critical strike bursts $s2 additional Festering Wound.
+#1 (id=306573)   : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : Incites you into a killing frenzy for $d, increasing Haste by $s1% and causing your auto attacks to infect the target with a Festering Wound.
+Tooltip          : Haste increased by $s1%.
+Auto attacks infect the target with a Festering Wound.
 
 Name             : Clawing Shadows (id=207311) [Spell Family (15)] 
 Class            : Death Knight
@@ -5115,7 +5097,7 @@ Resource         : -10 Runic Power (6) (id=11018)
 Spell Level      : 1
 Range            : 30 yards
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Dreadblade (77515 effect#1), Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#2), Scourge of Worlds (191748 effect#1), Necrosis (216974 effect#1), Master of Ghouls (246995 effect#1), Scourge the Unbeliever (265147 effect#2)
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Death and Decay (188290 effect#2), Master of Ghouls (246995 effect#1), Scourge the Unbeliever (265147 effect#2)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5127,7 +5109,7 @@ Effects          :
 #1 (id=306601)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=324719)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.27082 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #3 (id=350135)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Deals $s2 Shadow damage and causes 1 Festering Wound to burst.
@@ -5165,11 +5147,8 @@ Description      : Outbreak reduces the movement speed of all affected enemies b
 Name             : Epidemic (id=207317) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
-Resource         : 1 Rune (5) (id=11019)
-Resource         : -10 Runic Power (6) (id=11165)
+Resource         : 30 Runic Power (6) (id=11019)
 GCD              : 1.5 seconds
-Charges          : 3 (10 seconds cooldown)
-Category         : 1642: Death Knight (137005 effect#4)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5179,30 +5158,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=306611)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 100 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Description      : Causes each of your Virulent Plagues within $A1 yds to flare up, dealing $212739s1 Shadow damage to the infected enemy, and an additional $215969s2 Shadow damage to all other enemies near them.
-
-Name             : Corpse Shield (id=207319) [Spell Family (15)] 
-Class            : Death Knight
-School           : Shadow
-GCD              : 1.5 seconds
-Duration         : 10 seconds
-Cooldown         : 60 seconds
-Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot cancel aura (31)
-Effects          :
-#1 (id=306614)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0xfffffff6 | Target: Self (1)
-#2 (id=727826)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 90 | Scaled Value: 90 | Misc Value: 127 | Target: Self (1)
-Description      : For the next $d, $s2% of all damage you take is transferred to your $?s207313[abomination]?s58640[geist][ghoul].
-
-If your $?s207313[abomination]?s58640[geist][ghoul] is slain while this spell is active, it cannot be resummoned for 30 seconds.
-Tooltip          : $s1% of all damage you take is being redirected to your pet.
+Description      : Causes each of your Virulent Plagues to flare up, dealing $212739s1 Shadow damage to the infected enemy, and an additional $215969s2 Shadow damage to all other enemies near them.
 
 Name             : Spell Eater (id=207321) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -5216,56 +5172,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=306617)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Anti-Magic Shell (48707)
 #2 (id=308159)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 5000 | Scaled Value: 5000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Anti-Magic Shell (48707)
-Description      : Your Anti-Magic Shell is $s1% larger and lasts ${$s2/1000} sec longer.
-
-Name             : Necrosis (id=207346) [Spell Family (15), Passive] 
-Class            : Death Knight
-School           : Shadow
-Proc Chance      : 101%
-Proc Flags       : ....x.x. ........ x....... ........ 
-                 : Yellow Melee, White Ranged, Hostile Spell
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=306654)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Dealing damage with Death Coil causes your next $?s207311[Clawing Shadows][Scourge Strike] to deal $216974s1% increased damage.
-
-Name             : Dark Arbiter (id=207349) [Spell Family (15)] 
-Class            : Death Knight
-School           : Shadow
-Range            : 30 yards
-GCD              : 1.5 seconds
-Duration         : 20 seconds
-Cooldown         : 120 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=306658)   : Summon (28)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 100876 | Misc Value 2: 0xca6 | Radius: 4 yards | Target: Unknown(44)
-#2 (id=313813)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
-#3 (id=313814)   : Trigger Spell (64): Summon Gargoyle
-                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 61777 | Target: Self (1)
-#4 (id=328306)   : Trigger Spell (64): Dark Arbiter
-                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 212412 | Target: Self (1)
-#5 (id=328307)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Summon a Val'kyr to attack the target for $d. The Val'kyr will gain $211947s1% increased damage for every $s5 Runic Power you spend.
+Description      : Anti-Magic Shell absorbs $s1% more magic damage and lasts ${$s2/1000} sec longer.
 
 Name             : Debilitating Infestation (id=208278) [Spell Family (15)] 
 Class            : Death Knight
@@ -5338,7 +5250,7 @@ School           : Frost
 Duration         : 3 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Dead of Winter (189164 effect#1), Gathering Storm (211805 effect#1)
+Affecting spells : Gathering Storm (211805 effect#1)
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x.x.   .......x .x...... ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
@@ -5391,11 +5303,10 @@ Effects          :
 Description      : $@spelldesc207161
 Tooltip          : Dazed. Movement speed reduced by $s1.
 
-Name             : Shadow Empowerment (id=211947) [Spell Family (15)] 
+Name             : Dark Empowerment (id=211947) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Range            : 40 yards
-Velocity         : 30 yards/sec
 Duration         : Aura (infinite)
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -5409,7 +5320,7 @@ Effects          :
 #1 (id=314050)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 0x7f | Radius: 0 - 80 yards | Target: At Caster (22) -> AOE friendly (30)
                    Affected School(s): All
-Description      : Spending Runic Power increases the Val'kyr Battlemaiden's damage by $s1% per Runic Power spent.
+Description      : Spending Runic Power increases damage done.
 Tooltip          : Damage dealt increased by $w1%.
 
 Name             : Smash (id=212332) [Spell Family (15)] 
@@ -5534,25 +5445,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04508 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc212333
 
-Name             : Dark Arbiter (id=212412) [Spell Family (15), Hidden] 
-Class            : Death Knight
-School           : Shadow
-Range            : 30 yards
-GCD              : 1.5 seconds
-Duration         : 40 seconds
-Cooldown         : 180 seconds
-Triggered by     : Dark Arbiter (207349)
-Attributes       : .......x x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Hidden (7)
-Effects          :
-#1 (id=314922)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-
 Name             : Skulker Shot (id=212423) 
 Class            : Death Knight
 School           : Physical
@@ -5572,16 +5464,16 @@ Effects          :
                    Base Value: 85 | Scaled Value: 85 | Target: Enemy (6)
 #2 (id=348187)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06630 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-Description      : A shot that causes Physical damage.
+Description      : A ranged shot that causes Physical damage.
 
 Name             : Wraith Walk (id=212552) [Spell Family (15)] 
-Class            : Blood Frost Unholy Death Knight
+Class            : Death Knight
 School           : Physical
 Spell Level      : 60
 GCD              : 1.5 seconds
-Duration         : 3 seconds
-Cooldown         : 45 seconds
-Affecting spells : Death Knight (137005 effect#2), Lingering Apparition (212763 effect#1), March of the Damned (219779 effect#1)
+Duration         : 4 seconds
+Cooldown         : 60 seconds
+Affecting spells : Death Knight (137005 effect#2)
 Attributes       : ....x... ........ x......x ........   ..x...x. ..x..... ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
@@ -5604,7 +5496,7 @@ Effects          :
                    Base Value: -5 | Scaled Value: -5
 #7 (id=368591)   : None (0)
                    Base Value: 100 | Scaled Value: 100
-Description      : Sidestep into the Shadowlands, removing all root effects and increasing your movement speed by $s1% for $d. Any action will cancel the effect.
+Description      : Sidestep into the Shadowlands, removing all root effects and increasing your movement speed by $s1% for $d. Taking any action cancels the effect.
 
 While active, your movement speed cannot be reduced below $m2%.
 Tooltip          : Movement speed increased by $w1%.
@@ -5642,41 +5534,15 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=315517)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.16380 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | Target: Enemy (6)
 Description      : $@spelldesc207317
-
-Name             : Lingering Apparition (id=212763) [Spell Family (15), Passive] 
-Class            : Death Knight
-School           : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=315564)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: Wraith Walk (212552)
-#2 (id=315565)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -15000 | Scaled Value: -15000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Wraith Walk (212552)
-#3 (id=315566)   : Dummy (3)
-                   Base Value: 30 | Scaled Value: 30
-#4 (id=315567)   : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15
-Description      : You move $s3% faster during Wraith Walk, and its cooldown is reduced by $s4 sec.
 
 Name             : Soul Reaper (id=215711) [Spell Family (15)] 
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 87
 Range            : 100 yards
-Duration         : 15 seconds
-Stacks           : 3 maximum
-Proc Chance      : 101%
-Triggered by     : Soul Reaper (130736)
+Duration         : 8 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5685,9 +5551,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=320761)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
-#2 (id=376050)   : Apply Aura (6) | Unknown(408)
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 130736 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc130736
 Tooltip          : Haste increased by $s1%.
 
@@ -5695,6 +5559,7 @@ Name             : Epidemic (id=215969) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Range            : 100 yards
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5705,61 +5570,8 @@ Effects          :
 #1 (id=321210)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=328301)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03440 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc207317
-
-Name             : Necrosis (id=216974) [Spell Family (15)] 
-Class            : Death Knight
-School           : Shadow
-Duration         : 6 seconds
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=322828)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
-                   Affected Spells: Scourge Strike (55090), Scourge Strike (70890), Clawing Shadows (207311)
-Description      : $@spelldesc207346
-Tooltip          : Scourge Strike damage increased by $s1%.
-
-Name             : Defile (id=218100) [Scaling Spell (-1), Spell Family (15)] 
-Class            : Death Knight
-School           : Shadowfrost
-Range            : 100 yards
-Duration         : 6 seconds
-Cooldown         : 1 seconds
-Stacks           : 10 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .......x 
-                 : x....... ........ ........ ........   ........ .......x ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=324699)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 54.88217 (avg=0.17647) | Misc Value: 33554432 | Target: Self (1)
-Description      : $@spelldesc152280
-Tooltip          : Mastery increased by $s1.
-
-Name             : March of the Damned (id=219779) [Spell Family (15), Passive] 
-Class            : Death Knight
-School           : Shadow
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=327499)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Wraith Walk (212552)
-Description      : Wraith Walk lasts $s1% longer and breaks stun, snare, and root effects when cast.
 
 Name             : Ossuary (id=219786) [Spell Family (15), Passive] 
 Class            : Death Knight
@@ -5777,7 +5589,7 @@ Effects          :
                    Affected Spells: Bone Shield (195181)
 #2 (id=330791)   : Apply Aura (6) | Modify Max Resource (418)
                    Base Value: 250 | Scaled Value: 250 | Misc Value: 6 | Target: Self (1)
-Description      : Your Bone Shield stores up an additional $s1 charges.
+Description      : Your Bone Shield stores up to an additional $s1 charges.
 
 Your maximum Runic Power is increased by ${$m2/10}.
 
@@ -5813,7 +5625,6 @@ School           : Physical
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
-Artifact Power   : Id: 149, Max Rank: 1, Type: 18
 Affecting spells : Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Push Active Ability to Bar (225862)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -5923,7 +5734,7 @@ Name             : Obliterate (id=222024) [Scaling Spell (1), Spell Family (15)]
 Class            : Death Knight
 School           : Physical
 Range            : 100 yards
-Affecting spells : Killing Machine (51124 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Nothing but the Boots (189144 effect#1), Obliteration (207256 effect#1), Koltira's Newfound Will (208782 effect#2), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#2), Decimate (265145 effect#2)
+Affecting spells : Killing Machine (51124 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Obliteration (207256 effect#1), Koltira's Newfound Will (208782 effect#2), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#2), Decimate (265145 effect#2)
 Triggered by     : Obliterate (49020)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ..x..... ......x. 
@@ -5944,7 +5755,7 @@ Name             : Frost Strike (id=222026) [Scaling Spell (1), Spell Family (15
 Class            : Death Knight
 School           : Frost
 Range            : 100 yards
-Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Chill of the Grave (205209 effect#1), Master of Ghouls (246995 effect#1), 
+Affecting spells : Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Master of Ghouls (246995 effect#1), 
 Triggered by     : Frost Strike (49143)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ..x..... ......x. 
@@ -5980,7 +5791,7 @@ Class            : Death Knight
 School           : Frost
 Spell Level      : 55
 Range            : 100 yards
-Affecting spells : Rime (59052 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Blast Radius (189086 effect#1), Northrend Winds (204088 effect#1), Freezing Fog (207060 effect#1), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#1)
+Affecting spells : Rime (59052 effect#1), Mastery: Frozen Heart (77514 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Biting Cold (166057 effect#1), Northrend Winds (204088 effect#1), Freezing Fog (207060 effect#1), Master of Ghouls (246995 effect#1), Item - Death Knight T21 Frost 2P Bonus (251873 effect#1)
 Attributes       : ........ ........ ........ ........   ...x...x .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6221,9 +6032,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 23548.61 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 19647.12 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 23548.61 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -6377,5 +6188,101 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=727526)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Radius: 8 yards | Target: Cone Front (104)
+
+Name             : Apocalypse (id=275699) [Spell Family (15)] 
+Class            : Unholy Death Knight
+School           : Shadow
+Spell Level      : 75
+Range            : 5 yards
+GCD              : 1.5 seconds
+Cooldown         : 90 seconds
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Death Knight (137005 effect#2), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
+Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
+                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Requires main-hand weapon (106)
+Effects          :
+#1 (id=728914)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | Target: Enemy (6)
+#2 (id=728915)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4
+Description      : Bring doom upon the enemy, dealing $sw1 Shadow damage and bursting up to $s2 Festering Wounds on the target.
+
+Summons an Army of the Dead ghoul for $221180d for each burst Festering Wound.
+
+Name             : Inevitable Doom (id=276023) [Spell Family (15), Passive] 
+Class            : Death Knight
+School           : Physical
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Cannot cancel aura (31)
+Effects          :
+#1 (id=729401)   : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 37 | Target: Self (1)
+                   Affected Spells: Sudden Doom (81340)
+#2 (id=729402)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 18 | Target: Self (1)
+                   Affected Spells: Sudden Doom (49530)
+Description      : Sudden Doom now triggers $s2% more often and stacks up to ${$m1+1} times.
+
+Name             : Corpse Explosion (id=276049) [Spell Family (15), Passive] 
+Class            : Death Knight
+School           : Physical
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Cannot cancel aura (31)
+Effects          :
+#1 (id=729459)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Ghouls summoned by your Army of the Dead and Apocalypse explode when they die, dealing $276051s1 Shadow damage to nearby enemies.
+
+Name             : Corpse Explosion (id=276051) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Affecting spells : Mastery: Dreadblade (77515 effect#1), Frost Death Knight (137006 effect#1), Unholy Death Knight (137007 effect#1), Blood Death Knight (137008 effect#1), Master of Ghouls (246995 effect#1), 
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=729461)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.35000
+#2 (id=729462)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Description      : Deals $s1 Shadow damage to enemies within $A2 yards.
+
+Name             : Death's Reach (id=276079) [Spell Family (15), Passive] 
+Class            : Death Knight
+School           : Shadow
+Proc Chance      : 101%
+Proc Flags       : .x...... ........ ........ ........ 
+                 : Killing Blow
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=729509)   : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 5 | Target: Self (1)
+                   Affected Spells: Death Grip (49576), Death Grip (51399)
+Description      : Increases the range of Death Grip by $s1 yds.
+
+Killingl an enemy that yields experience or honor reset the cooldown of Death Grip.
 
 

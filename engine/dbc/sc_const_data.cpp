@@ -27,7 +27,6 @@ dbc_index_t<spell_data_t> spell_data_index;
 dbc_index_t<spelleffect_data_t> spelleffect_data_index;
 dbc_index_t<talent_data_t> talent_data_index;
 dbc_index_t<spellpower_data_t> power_data_index;
-ordered_dbc_index_t<artifact_power_rank_t> artifact_power_rank_data_index;
 
 // Wrapper class to map other data to specific spells, and also to map effects that manipulate that
 // data
@@ -294,7 +293,6 @@ void dbc::init()
   spelleffect_data_index.init();
   talent_data_index.init();
   power_data_index.init();
-  artifact_power_rank_data_index.init();
   init_item_data();
 
   // runtime linking, eg. from spell_data to all its effects
@@ -1603,18 +1601,6 @@ spellpower_data_t* spellpower_data_t::list( bool ptr )
 #endif
 }
 
-artifact_power_rank_t* artifact_power_rank_t::list( bool ptr )
-{
-  ( void )ptr;
-
-#if SC_USE_PTR
-  return ptr ? __ptr_artifact_power_rank_data
-             : __artifact_power_rank_data;
-#else
-  return __artifact_power_rank_data;
-#endif
-}
-
 double spelleffect_data_t::scaled_average( double budget, unsigned level ) const
 {
   if ( _m_avg != 0 && _spell -> scaling_class() != 0 )
@@ -1854,12 +1840,6 @@ spellpower_data_t* spellpower_data_t::find( unsigned id, bool ptr )
 {
   spellpower_data_t* power = power_data_index.get( ptr, id );
   return power ? power : spellpower_data_t::nil();
-}
-
-artifact_power_rank_t* artifact_power_rank_t::find( unsigned id, bool ptr )
-{
-  artifact_power_rank_t* rank = artifact_power_rank_data_index.get( ptr, id );
-  return rank ? rank : artifact_power_rank_t::nil();
 }
 
 talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int col, specialization_e spec, bool ptr )
@@ -2745,182 +2725,6 @@ bool spell_data_t::affected_by( const spelleffect_data_t* effect ) const
 bool spell_data_t::affected_by( const spelleffect_data_t& effect ) const
 { return affected_by( &effect ); }
 
-unsigned dbc_t::artifact_by_spec( specialization_e spec ) const
-{
-#if SC_USE_PTR
-  const artifact_t * p = ptr ? __ptr_artifact_data : __artifact_data;
-#else
-  const artifact_t * p = __artifact_data;
-#endif
-
-  while ( p -> id != 0 )
-  {
-    if ( p -> id_spec == spec )
-    {
-      return p -> id;
-    }
-    p++;
-  }
-
-  return 0;
-}
-
-const artifact_power_data_t* dbc_t::artifact_power( unsigned power_id ) const
-{
-#if SC_USE_PTR
-  const artifact_power_data_t * p = ptr ? __ptr_artifact_power_data : __artifact_power_data;
-#else
-  const artifact_power_data_t * p = __artifact_power_data;
-#endif
-
-  while ( p -> id != 0 )
-  {
-    if ( p -> id == power_id )
-    {
-      return p;
-    }
-    p++;
-  }
-
-  return nullptr;
-}
-
-std::vector<const artifact_power_data_t*> dbc_t::artifact_powers( unsigned artifact_id ) const
-{
-  std::vector<const artifact_power_data_t*> powers;
-
-#if SC_USE_PTR
-  const artifact_power_data_t * p = ptr ? __ptr_artifact_power_data : __artifact_power_data;
-#else
-  const artifact_power_data_t * p = __artifact_power_data;
-#endif
-
-  while ( p -> id != 0 )
-  {
-    if ( p -> id_artifact == artifact_id )
-    {
-      powers.push_back( p );
-    }
-    else if ( p -> power_type == ARTIFACT_TRAIT_RELIC )
-    {
-      powers.push_back( p );
-    }
-
-    p++;
-  }
-
-  return powers;
-}
-
-std::vector<const artifact_power_rank_t*> dbc_t::artifact_power_ranks( unsigned power_id ) const
-{
-  std::vector<const artifact_power_rank_t*> ranks;
-
-#if SC_USE_PTR
-  const artifact_power_rank_t * p = ptr ? __ptr_artifact_power_rank_data : __artifact_power_rank_data;
-#else
-  const artifact_power_rank_t * p = __artifact_power_rank_data;
-#endif
-
-  while ( p -> id() != 0 )
-  {
-    if ( power_id == 0 || p -> id_power() == power_id )
-    {
-      ranks.push_back( p );
-    }
-    // Ranks are sorted in power -> index form, so don't go past entries when the power id changes
-    else if ( ranks.size() > 0 )
-    {
-      break;
-    }
-    p++;
-  }
-
-  return ranks;
-}
-
-unsigned dbc_t::artifact_power_spell_id( specialization_e spec, unsigned power_index, unsigned rank ) const
-{
-  unsigned artifact_id = artifact_by_spec( spec );
-  if ( artifact_id == 0 )
-  {
-    return 0;
-  }
-
-  std::vector<const artifact_power_data_t*> powers = artifact_powers( artifact_id );
-  if ( powers.size() == 0 || power_index > powers.size() - 1 )
-  {
-    return 0;
-  }
-
-  std::vector<const artifact_power_rank_t*> ranks = artifact_power_ranks( powers[ power_index ] -> id );
-  if ( ranks.size() == 0 )
-  {
-    return 0;
-  }
-
-  auto max_rank = std::min( ranks.size() - 1, as<size_t>( rank - 1 ) );
-
-  return ranks[ max_rank ] -> id_spell();
-}
-
-// Returns the ( power_id, rank_increase ) pair for a given artifact id, relic item id combination
-std::pair<unsigned, unsigned> dbc_t::artifact_relic_rank_index( unsigned artifact_id, unsigned relic_item_id ) const
-{
-  auto relic_data = item( relic_item_id );
-  if ( ! relic_data )
-  {
-    return { 0, 0 };
-  }
-
-  auto gem_prop = gem_property( relic_data -> gem_properties );
-  if ( ! gem_prop.id || ! ( gem_prop.color & SOCKET_COLOR_RELIC ) )
-  {
-    return { 0, 0 };
-  }
-
-  auto enchantment_data = item_enchantment( gem_prop.enchant_id );
-  if ( ! enchantment_data.id )
-  {
-    return { 0, 0 };
-  }
-
-  unsigned amount = 0, trait_index = 0;
-  for ( size_t i = 0, end = sizeof_array( enchantment_data.ench_type ); i < end; ++i )
-  {
-    if ( enchantment_data.ench_type[ i ] != ITEM_ENCHANTMENT_RELIC_RANK )
-    {
-      continue;
-    }
-
-    if ( enchantment_data.ench_amount[ i ] < 0 )
-    {
-      continue;
-    }
-
-    amount = enchantment_data.ench_amount[ i ];
-    trait_index = enchantment_data.ench_prop[ i ];
-    break;
-  }
-
-  if ( amount == 0 || trait_index == 0 )
-  {
-    return { 0, 0 };
-  }
-
-  auto powers = artifact_powers( artifact_id );
-  auto power_it = range::find_if( powers, [ trait_index ]( const artifact_power_data_t* data ) {
-    return trait_index == data -> power_index;
-  } );
-
-  if ( power_it == powers.end() )
-  {
-    return { 0, 0 };
-  }
-
-  return { ( *power_it ) -> id, amount };
-}
-
 std::vector<const spell_data_t*> dbc_t::spells_by_label( size_t label ) const
 {
   return spell_label_index.affects_spells( as<unsigned>( label ), ptr );
@@ -2964,17 +2768,6 @@ size_t hotfix::n_power_hotfix_entry( bool ptr )
 #endif
 }
 
-size_t hotfix::n_artifact_hotfix_entry( bool ptr )
-{
-#if SC_USE_PTR
-  return ptr ? PTR_PTR_ARTIFACT_POWER_RANK_HOTFIX_SIZE
-             : ARTIFACT_POWER_RANK_HOTFIX_SIZE;
-#else
-  ( void ) ptr;
-  return ARTIFACT_POWER_RANK_HOTFIX_SIZE;
-#endif
-}
-
 const hotfix::client_hotfix_entry_t* hotfix::spell_hotfix_entry( bool ptr )
 {
 #if SC_USE_PTR
@@ -3002,17 +2795,6 @@ const hotfix::client_hotfix_entry_t* hotfix::power_hotfix_entry( bool ptr )
 #else
   (void ) ptr;
   return __power_hotfix_data;
-#endif
-}
-
-const hotfix::client_hotfix_entry_t* hotfix::artifact_hotfix_entry( bool ptr )
-{
-#if SC_USE_PTR
-  return ptr ? __ptr_ptr_artifact_power_rank_hotfix_data
-             : __artifact_power_rank_hotfix_data;
-#else
-  (void ) ptr;
-  return __artifact_power_rank_hotfix_data;
 #endif
 }
 
@@ -3057,9 +2839,6 @@ void hotfix::link_hotfix_data( bool ptr )
 
   // Finally, link power hotfix data
   link_hotfix_entry_ptr<spellpower_data_t>( ptr, power_hotfix_entry );
-
-  // Next, link artifact hotfix data
-  link_hotfix_entry_ptr<artifact_power_rank_t>( ptr, artifact_hotfix_entry );
 }
 
 const spelllabel_data_t* spelllabel_data_t::list( bool ptr )

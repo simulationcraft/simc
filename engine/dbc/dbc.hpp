@@ -180,13 +180,11 @@ namespace hotfix
   size_t n_spell_hotfix_entry( bool ptr );
   size_t n_effect_hotfix_entry( bool ptr );
   size_t n_power_hotfix_entry( bool ptr );
-  size_t n_artifact_hotfix_entry( bool ptr );
 
   // Returns an entry pointer to the hotfix data table of a specified type
   const client_hotfix_entry_t* spell_hotfix_entry( bool ptr );
   const client_hotfix_entry_t* effect_hotfix_entry( bool ptr );
   const client_hotfix_entry_t* power_hotfix_entry( bool ptr );
-  const client_hotfix_entry_t* artifact_hotfix_entry( bool ptr );
 
   // Helper method to extract correct hotfix entry from a data struct
   template <typename T>
@@ -457,8 +455,6 @@ struct artifact_power_rank_t
     static artifact_power_rank_t __nil;
     return &( __nil );
   }
-  static artifact_power_rank_t* list( bool ptr = false );
-  static artifact_power_rank_t* find( unsigned, bool ptr = false );
 };
 
 // ==========================================================================
@@ -1614,12 +1610,19 @@ public:
   std::pair<const curve_point_t*, const curve_point_t*> curve_point( unsigned curve_id, double value );
 
   // Artifact stuff
-  unsigned artifact_by_spec( specialization_e spec ) const;
-  std::vector<const artifact_power_data_t*> artifact_powers( unsigned artifact_id ) const;
-  const artifact_power_data_t* artifact_power( unsigned power_id ) const;
-  std::vector<const artifact_power_rank_t*> artifact_power_ranks( unsigned power_id ) const;
-  unsigned artifact_power_spell_id( specialization_e spec, unsigned power_index, unsigned rank ) const;
-  std::pair<unsigned, unsigned> artifact_relic_rank_index( unsigned artifact_id, unsigned relic_item_id ) const;
+  // TODO: Remove at some point after 8.0 prepatch
+  unsigned artifact_by_spec( specialization_e ) const
+  { return 0; }
+  std::vector<const artifact_power_data_t*> artifact_powers( unsigned ) const
+  { return {}; }
+  const artifact_power_data_t* artifact_power( unsigned ) const
+  { return nullptr; }
+  std::vector<const artifact_power_rank_t*> artifact_power_ranks( unsigned ) const
+  { return {}; }
+  unsigned artifact_power_spell_id( specialization_e, unsigned, unsigned ) const
+  { return 0; }
+  std::pair<unsigned, unsigned> artifact_relic_rank_index( unsigned, unsigned ) const
+  { return { 0, 0 }; }
 
   // Child items
   unsigned child_item( unsigned ) const;

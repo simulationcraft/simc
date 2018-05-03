@@ -515,7 +515,8 @@ unsigned item_t::item_level() const
     return std::min( (unsigned) sim -> scale_to_itemlevel, ilvl );
 
   return parsed.item_level == 0
-         ? static_cast<unsigned>(dbc::item_level_squish( ilvl, player -> dbc.ptr ))
+         //? static_cast<unsigned>(dbc::item_level_squish( ilvl, player -> dbc.ptr ))
+         ? ilvl
          : parsed.item_level;
 }
 
@@ -922,22 +923,6 @@ std::string item_t::encoded_item() const
 
   if ( ! option_gem_id_str.empty() )
     s << ",gem_id=" << option_gem_id_str;
-  // With artifact, we need to output gems (relics). This probably would need a more thorough
-  // checking but artifact doubtful will ever support normal gems, so there's not going to ever be a
-  // "gems" option for them.
-  else if ( player -> artifact -> slot() == slot &&
-            range::find_if( parsed.gem_id, []( int id ) { return id != 0; } ) != parsed.gem_id.end() )
-  {
-    s << ",gem_id=";
-    for ( size_t gem_idx = 0; gem_idx < parsed.gem_id.size(); ++gem_idx )
-    {
-      s << parsed.gem_id[ gem_idx ];
-      if ( gem_idx < parsed.gem_id.size() - 1 )
-      {
-        s << "/";
-      }
-    }
-  }
 
   // Figure out if any relics have "relic data" (relic bonus ids)
   auto relic_data_it = range::find_if( parsed.relic_data, []( const std::vector<unsigned> v ) {

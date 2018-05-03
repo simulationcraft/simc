@@ -1411,7 +1411,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
     }
   }
 
-  sim.profilesets.output( sim, os );
+  sim.profilesets.output_html( sim, os );
 
   print_html_sim_summary( os, sim );
 
