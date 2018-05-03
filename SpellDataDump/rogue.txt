@@ -7,7 +7,7 @@ Resource         : 35 Energy (3) (id=13)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Sleight of Hand (145211 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), The Quiet Knife (197231 effect#1), Symbols of Death (212283 effect#1), Weak Point (238068 effect#1), Headshot (242277 effect#1), The First of the Dead (248210 effect#2), Master Assassin (256735 effect#1), 
+Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Sleight of Hand (145211 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), The First of the Dead (248210 effect#2), Master Assassin (256735 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -57,7 +57,7 @@ Category         : 270
 Category Cooldown: 20 seconds
 Proc Chance      : 101%
 Mechanic         : Stun
-Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Deeper Stratagem (193531 effect#1), Acrobatic Strikes (196924 effect#1), Feeding Frenzy (242705 effect#1)
+Affecting spells : Rogue Tier 6 Trinket (40460 effect#1), Deeper Stratagem (193531 effect#1), Acrobatic Strikes (196924 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ..x..... ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ...x.... ........ ........   ........ ........ ........ ........ 
@@ -102,7 +102,7 @@ GCD              : 1 seconds
 Duration         : 18 seconds
 Cooldown         : 6 seconds
 Mechanic         : Bleed
-Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subterfuge (115192 effect#3), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Strangler (238066 effect#1), Item - Rogue T20 Assassination 4P Bonus (242274 effect#1), Item - Rogue T20 Assassination 2P Bonus (242275 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), 
+Affecting spells : Stealth (1784 effect#5), Vanish (11327 effect#5), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subterfuge (115192 effect#3), Shadow Blades (121471 effect#3), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Item - Rogue T20 Assassination 4P Bonus (242274 effect#1), Item - Rogue T20 Assassination 2P Bonus (242275 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -385,7 +385,7 @@ Spell Level      : 48
 Cooldown         : 120 seconds
 Category         : 39
 Category Cooldown: 120 seconds
-Affecting spells : Item - Rogue T18 Subtlety 2P Bonus (186278 effect#1), Flickering Shadows (197256 effect#2)
+Affecting spells : Item - Rogue T18 Subtlety 2P Bonus (186278 effect#1)
 Attributes       : ....x... ........ x.x.x... ...x.x..   .....x.. ..x..... ........ ........ 
                  : .xx..... ........ ........ ........   ........ ........ xxx..... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -431,7 +431,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
 Mechanic         : Bleed
-Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Serrated Edge (192315 effect#1), Gushing Wound (192329 effect#1), Blood of the Assassinated (192925 effect#1), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), 
+Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -522,7 +522,7 @@ Resource         : 1 - 5 Combo Points (4) (id=10581)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Death from Above (163786 effect#1), Deceit (166878 effect#1), Cold Blood (182304 effect#1), Eviscerating Blade (184917 effect#2), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Fate's Thirst (202514 effect#1), Fatebringer (202524 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Sharpened Sabers (252285 effect#1), Master Assassin (256735 effect#1), Storm of Steel (273455 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Death from Above (163786 effect#1), Deceit (166878 effect#1), Cold Blood (182304 effect#1), Eviscerating Blade (184917 effect#2), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Sharpened Sabers (252285 effect#1), Master Assassin (256735 effect#1), Storm of Steel (273455 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -547,7 +547,7 @@ School           : Nature
 Spell Level      : 10
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1), 
+Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1), 
 Triggered by     : Deadly Poison (2823)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -571,7 +571,7 @@ Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Envenom (32645 effect#2), Mastery: Potent Assassin (76803 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
+Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Envenom (32645 effect#2), Mastery: Potent Assassin (76803 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -611,7 +611,7 @@ Duration         : 8 seconds
 Cooldown         : 120 seconds
 Category         : 44
 Category Cooldown: 120 seconds
-Affecting spells : Shadow Walker (192345 effect#1), Flickering Shadows (197256 effect#1), Sprint (231691 effect#1)
+Affecting spells : Sprint (231691 effect#1)
 Attributes       : ....x... ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -685,7 +685,7 @@ Spell Level      : 14
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Energetic Recovery (79152 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Fatebringer (202524 effect#1), Lesser Adrenaline Rush (246558 effect#3)
+Affecting spells : Adrenaline Rush (13750 effect#3), Rogue Tier 6 Trinket (40460 effect#1), Energetic Recovery (79152 effect#1), Adrenaline Rush (186286 effect#3), Deeper Stratagem (193531 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -722,7 +722,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Stance Mask      : 0x40000000
-Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Solar Empowerment (164545 effect#1), Lunar Empowerment (164547 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Solar Stabbing (202426 effect#1), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1), Skywrath (214514 effect#1)
+Affecting spells : Incarnation: Chosen of Elune (102560 effect#2), Restoration Druid (137012 effect#8), Solar Empowerment (164545 effect#1), Lunar Empowerment (164547 effect#3), Item - Druid T17 Balance 2P Bonus (165433 effect#1), Celestial Fury (180719 effect#2), Thrash (192090 effect#2), Celestial Alignment (194223 effect#3), Astral Influence (197524 effect#1), Astral Power (197911 effect#2), Blessing of Elune (202737 effect#1), Promise of Elune, the Moon Goddess (208283 effect#2), Ekowraith, Creator of Worlds (210667 effect#1), Solar Empowerment (211089 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -759,7 +759,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Balanced Blades (192326 effect#1), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Assassin's Blades (214368 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Contaminant (269308 effect#2), Poisoned Wire (276083 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Contaminant (269308 effect#2), Poisoned Wire (276083 effect#1)
 Triggered by     : Mutilate (1329)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -842,7 +842,7 @@ Duration         : 3600 seconds
 Proc Chance      : 30%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Improved Poisons (14117 effect#1), Envenom (32645 effect#2), Mastery: Potent Assassin (76803 effect#1), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
+Affecting spells : Improved Poisons (14117 effect#1), Envenom (32645 effect#2), Mastery: Potent Assassin (76803 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
 Attributes       : ....x... ........ ........ ........   .....x.. ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ...xx... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -862,7 +862,7 @@ School           : Nature
 Spell Level      : 54
 Range            : 100 yards
 Duration         : 12 seconds
-Affecting spells : Improved Poisons (14117 effect#1), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1), 
+Affecting spells : Improved Poisons (14117 effect#1), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1), 
 Triggered by     : Wound Poison (8679)
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -889,7 +889,7 @@ Proc Chance      : 100%
 Stance Mask      : 0x20000000
 Proc Flags       : ..x.x.x. x...x... x....... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell
-Affecting spells : Nightstalker (14062 effect#1), Subterfuge (108208 effect#3), Item - Rogue T18 Subtlety 2P Bonus (186278 effect#1), Hit and Run (196922 effect#2), Acrobatic Strikes (196924 effect#2), Flickering Shadows (197256 effect#2)
+Affecting spells : Nightstalker (14062 effect#1), Subterfuge (108208 effect#3), Item - Rogue T18 Subtlety 2P Bonus (186278 effect#1), Hit and Run (196922 effect#2), Acrobatic Strikes (196924 effect#2)
 Attributes       : ....x... ........ x.x.x... .x.x....   .....x.. ..x..... ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -921,7 +921,7 @@ Spell Level      : 56
 GCD              : 0.8 seconds
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Affecting spells : Item - Rogue T18 Combat 4P Bonus (186288 effect#1), Fortune's Boon (202907 effect#1)
+Affecting spells : Item - Rogue T18 Combat 4P Bonus (186288 effect#1)
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -953,7 +953,7 @@ Category         : 1712
 Proc Chance      : 100%
 Proc Flags       : ..x.x... x....... ........ ........ 
                  : White Melee, Yellow Melee, Yellow Ranged
-Affecting spells : Blade Dancer (202507 effect#1), Dancing Steel (272026 effect#2), 
+Affecting spells : Dancing Steel (272026 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1180,7 +1180,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Balanced Blades (192326 effect#1), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Assassin's Blades (214368 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Contaminant (269308 effect#2), Poisoned Wire (276083 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (170882 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Contaminant (269308 effect#2), Poisoned Wire (276083 effect#1)
 Triggered by     : Mutilate (1329)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -1238,7 +1238,6 @@ School           : Physical
 Spell Level      : 80
 Duration         : 5 seconds
 Cooldown         : 120 seconds
-Affecting spells : Fade into Shadows (192323 effect#1)
 Attributes       : ....x... ........ ..x..... ........   .....x.. ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1285,10 +1284,10 @@ Attributes       : ........ ........ ........ ...x....   ........ ..x..... .....
 Effects          :
 #1 (id=21282)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #2 (id=479892)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #3 (id=479893)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : $@spelldesc31223
@@ -1304,7 +1303,7 @@ Spell Level      : 36
 Range            : 5 yards
 GCD              : 1 seconds
 Duration         : 1 seconds
-Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Death from Above (163786 effect#1), Cold Blood (170882 effect#1), Toxic Mutilator (184916 effect#1), Shadow Dance (185313 effect#4), Toxic Blades (192310 effect#1), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), 
+Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Potent Assassin (76803 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Death from Above (163786 effect#1), Cold Blood (170882 effect#1), Toxic Mutilator (184916 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -1362,7 +1361,6 @@ Spell Level      : 50
 Proc Chance      : 100%
 Proc Flags       : ..x.x... ........ ........ ........ 
                  : White Melee, Yellow Melee
-Affecting spells : Fortune Strikes (202530 effect#1)
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1754,7 +1752,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68022)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | Target: Self (1)
-                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Envenom (32645), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388), Poison Bomb (255546), Poisoned Wire (276083)
+                   Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Envenom (32645), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388), Poison Bomb (255546), Poisoned Wire (276083)
 #2 (id=68023)    : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.70000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Garrote (703), Rupture (1943), Deadly Poison (2818), Deadly Poison (2823), Crippling Poison (3408), Crippling Poison (3409), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Deadly Poison (113780), Crimson Tempest (121411), Internal Bleeding (154953), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388), Poisoned Wire (276083)
@@ -1871,7 +1869,6 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Affecting spells : Master Assassin (192349 effect#1)
 Attributes       : ........ ........ ........ ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1882,7 +1879,7 @@ Attributes       : ........ ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=68390)    : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #2 (id=68391)    : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
 #3 (id=87043)    : Apply Aura (6) | Stalked (68)
@@ -1948,7 +1945,7 @@ Class            : Rogue
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Main Gauche (76806 effect#2), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Fortune's Strike (202521 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), 
+Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Main Gauche (76806 effect#2), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .....x.. .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -2159,7 +2156,7 @@ Class            : Rogue
 School           : Nature
 Spell Level      : 10
 Range            : 100 yards
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Master Alchemist (192318 effect#1), Surge of Toxins (192425 effect#1), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1), 
+Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Master Poisoner (196864 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1), Master Assassin (256735 effect#1), 
 Attributes       : ........ ........ .....x.. ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2316,7 +2313,6 @@ Spell Level      : 56
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Affecting spells : Soul Shadows (197386 effect#1)
 Attributes       : ........ ........ ..x..... ........   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2456,10 +2452,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179719)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #2 (id=191060)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #3 (id=191061)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -38 | Scaled Value: -38 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Nightstalker (14062)
@@ -2504,10 +2500,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179720)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 42 | Scaled Value: 42 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #2 (id=191056)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 42 | Scaled Value: 42 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #3 (id=191057)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191058)   : Apply Aura (6) | Dummy (4)
@@ -2548,10 +2544,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179721)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 32 | Scaled Value: 32 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #2 (id=191052)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 32 | Scaled Value: 32 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #3 (id=191053)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Insignia of Ravenholdt (209041)
@@ -2710,7 +2706,7 @@ Range            : 15 yards
 GCD              : 2 seconds
 Duration         : 1 seconds
 Cooldown         : 20 seconds
-Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Acrobatic Strikes (196924 effect#4), Fatebringer (202524 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Feeding Frenzy (242705 effect#1), Master Assassin (256735 effect#1), 
+Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Acrobatic Strikes (196924 effect#4), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), 
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -2890,7 +2886,7 @@ Resource         : 35 Energy (3) (id=9758)
 Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Sleight of Hand (145211 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), The Quiet Knife (197231 effect#1), Symbols of Death (212283 effect#1), Weak Point (238068 effect#1), Headshot (242277 effect#1), The First of the Dead (248210 effect#2), Master Assassin (256735 effect#1), 
+Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Sleight of Hand (145211 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), The First of the Dead (248210 effect#2), Master Assassin (256735 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2954,10 +2950,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=373905)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #5 (id=479896)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #6 (id=479897)   : Apply Aura (6) | Unknown(275)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Self (1)
                    Affected Spells: Pick Pocket (921), Cheap Shot (1833), Sap (6770), Shadowstrike (185438), Pick Pocket (192986), Symbols of Death (212283)
@@ -2991,7 +2987,7 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 1 seconds
 Stance Mask      : 0x20000000
-Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), From the Shadows (184918 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Precision Strike (197235 effect#1), Symbols of Death (212283 effect#1), Weak Point (238068 effect#1), Headshot (242277 effect#1), Shadowstrike (245623 effect#1), The First of the Dead (248210 effect#1), Master Assassin (256735 effect#1), 
+Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#2), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), From the Shadows (184918 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Shadowstrike (245623 effect#1), The First of the Dead (248210 effect#1), Master Assassin (256735 effect#1), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3044,7 +3040,7 @@ Spell Level      : 12
 Range            : 20 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Broadsides (193356 effect#3), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Opportunity (195627 effect#1), Gunslinger (202522 effect#1), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Deadshot (272940 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Broadsides (193356 effect#3), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Opportunity (195627 effect#1), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Deadshot (272940 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3068,7 +3064,6 @@ Tooltip          : Movement speed reduced by $s3%.
 Name             : Poison Knives (id=192376) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Artifact Power   : Id: 331, Index: 10, Max Rank: 8, Type: 32, Values: [ 3, 6, 9, 12, 15, 18, 21, 24 ]
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3112,7 +3107,6 @@ GCD              : 1 seconds
 Duration         : 14 seconds
 Cooldown         : 45 seconds
 Proc Chance      : 101%
-Artifact Power   : Id: 346, Max Rank: 1, Type: 18
 Proc Flags       : ....x... ....x... x....... ........ 
                  : Yellow Melee, AOE Hostile Spell, Hostile Spell
 Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Potent Assassin (76803 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Kingsbane (192853 effect#1), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Dreadblade's Vigor (238103 effect#1), Headshot (242277 effect#1), Toxic Blade (245389 effect#1), Master Assassin (256735 effect#1), 
@@ -3192,7 +3186,7 @@ Resource         : 45 Energy (3) (id=10438)
 Spell Level      : 10
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Broadsides (193356 effect#3), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Jolly Roger (199603 effect#1), Weaponmaster (200733 effect#1), Cursed Edges (202463 effect#1), Swordplay (211669 effect#1), Symbols of Death (212283 effect#1), Sabermetrics (238067 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Swashbuckler (269297 effect#1), Snake Eyes (275863 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Broadsides (193356 effect#3), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Acrobatic Strikes (196924 effect#1), Jolly Roger (199603 effect#1), Weaponmaster (200733 effect#1), Swordplay (211669 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Swashbuckler (269297 effect#1), Snake Eyes (275863 effect#1)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
@@ -3225,7 +3219,7 @@ Spell Level      : 40
 Range            : 100 yards
 GCD              : 1 seconds
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Deeper Stratagem (193531 effect#1), Fatebringer (202524 effect#1), Lesser Adrenaline Rush (246558 effect#3)
+Affecting spells : Adrenaline Rush (13750 effect#3), Deeper Stratagem (193531 effect#1), Lesser Adrenaline Rush (246558 effect#3)
 Attributes       : ....x... ........ x.x..... .....x..   .....x.. ..x..... ......x. ....x... 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
                  : ....x... ........ ........ ........   ........ ........ ........ ........ 
@@ -3290,7 +3284,7 @@ Attributes       : ....x... ........ ..x..... .....x.x   .....x.. ..x..... .....
 Effects          :
 #1 (id=283681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 Description      : Increases Critical Strike chance by $s1% for the duration of Roll the Bones.
 Tooltip          : Critical Strike chance increased by $s1%.
 
@@ -3369,7 +3363,7 @@ Class            : Rogue
 School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Executioner (76808 effect#1), Deeper Stratagem (193531 effect#1), Demon's Kiss (197233 effect#1), Feeding Frenzy (242705 effect#1), Subtle Blade (269342 effect#1), 
+Affecting spells : Mastery: Executioner (76808 effect#1), Deeper Stratagem (193531 effect#1), Subtle Blade (269342 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ x.x..... .....xx. 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -3492,13 +3486,13 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=284088)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #2 (id=479907)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #3 (id=479908)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 Description      : Increases damage done by $s1% for $d.
 Tooltip          : Damage done increased by $s1%.
 
@@ -3515,7 +3509,7 @@ Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Demon's Kiss (197233 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Feeding Frenzy (242705 effect#1), Master Assassin (256735 effect#1), Subtle Blade (269342 effect#1), 
+Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1), Subtle Blade (269342 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3608,7 +3602,7 @@ Resource         : 1 - 5 Combo Points (4) (id=10595)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Death from Above (163786 effect#1), Eviscerating Blade (184917 effect#3), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Acrobatic Strikes (196924 effect#1), Gutripper (197234 effect#1), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effect#1), Eviscerate (231716 effect#1), Headshot (242277 effect#1), Feeding Frenzy (242705 effect#1), Shuriken Combo (245640 effect#1), Master Assassin (256735 effect#1), Night's Vengeance (273424 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Death from Above (163786 effect#1), Eviscerating Blade (184917 effect#3), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Acrobatic Strikes (196924 effect#1), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effect#1), Eviscerate (231716 effect#1), Headshot (242277 effect#1), Shuriken Combo (245640 effect#1), Master Assassin (256735 effect#1), Night's Vengeance (273424 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3748,7 +3742,7 @@ Effects          :
                    Affected Spells: Kidney Shot (408), Kick (1766), Gouge (1776), Quaking Palm (107079), Sinister Strike (193315), Eviscerate (196819), Finality: Eviscerate (197393)
 #4 (id=325547)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 6 | Target: Self (1)
-                   Affected Spells: Death from Above (152150), Greed (202822), Greed (202823), Blade Rush (271877), Blade Rush (271881), Blade Rush (271896)
+                   Affected Spells: Death from Above (152150), Blade Rush (271877), Blade Rush (271881), Blade Rush (271896)
 #5 (id=335443)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(35)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 35 | Target: Self (1)
                    Affected Spells: Blade Flurry (22482)
@@ -3882,7 +3876,7 @@ Resource         : 1 - 5 Combo Points (4) (id=10684)
 Spell Level      : 3
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Death from Above (163786 effect#1), Eviscerating Blade (184917 effect#3), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Acrobatic Strikes (196924 effect#1), Gutripper (197234 effect#1), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effect#1), Eviscerate (231716 effect#1), Headshot (242277 effect#1), Feeding Frenzy (242705 effect#1), Shuriken Combo (245640 effect#1), Master Assassin (256735 effect#1), Night's Vengeance (273424 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Rogue Tier 6 Trinket (40460 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Death from Above (163786 effect#1), Eviscerating Blade (184917 effect#3), Shadow Dance (185313 effect#4), Adrenaline Rush (186286 effect#3), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Acrobatic Strikes (196924 effect#1), Finality: Eviscerate (197496 effect#1), Symbols of Death (212283 effect#1), Eviscerate (231716 effect#1), Headshot (242277 effect#1), Shuriken Combo (245640 effect#1), Master Assassin (256735 effect#1), Night's Vengeance (273424 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -3914,7 +3908,7 @@ Duration         : 6 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken
-Affecting spells : Mastery: Executioner (76808 effect#1), Deeper Stratagem (193531 effect#1), Demon's Kiss (197233 effect#1), Feeding Frenzy (242705 effect#1), Subtle Blade (269342 effect#1), 
+Affecting spells : Mastery: Executioner (76808 effect#1), Deeper Stratagem (193531 effect#1), Subtle Blade (269342 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ....x... ........   ........ ........ ........ ........ 
@@ -4126,7 +4120,7 @@ Spell Level      : 20
 Range            : 20 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Fatebringer (202524 effect#1), Symbols of Death (212283 effect#1), Black Powder (216230 effect#1), Between the Eyes (235484 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), 
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Between the Eyes (235484 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), 
 Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ...x.... 
@@ -4193,7 +4187,7 @@ Resource         : 35 Energy (3) (id=10797)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#4), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), The Quiet Knife (197231 effect#1), Symbols of Death (212283 effect#1), Weak Point (238068 effect#1), Headshot (242277 effect#1), The First of the Dead (248210 effect#2), Master Assassin (256735 effect#1), 
+Affecting spells : Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Shadow Blades (121471 effect#4), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), The First of the Dead (248210 effect#2), Master Assassin (256735 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ....x... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4264,7 +4258,7 @@ Range            : 100 yards
 Duration         : 12 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Assassin (76803 effect#1), Master Alchemist (192318 effect#1), Poison Knives (192376 effect#2), Surge of Toxins (192425 effect#1), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
+Affecting spells : Improved Poisons (14117 effect#1), Venomous Totem (23726 effect#2), Mastery: Potent Assassin (76803 effect#1), Poison Knives (192376 effect#2), Master Poisoner (196864 effect#1), Toxic Blade (245389 effect#1), Virulent Poisons (252277 effect#1)
 Triggered by     : Agonizing Poison (200802)
 Attributes       : ........ ........ .....x.. ........   ...x.x.x ........ .x...... ........ 
                  : ..x..... ........ ........ x.......   .......x ........ ........ ......x. 
@@ -4303,7 +4297,6 @@ School           : Shadow
 Duration         : 12 seconds
 Cooldown         : 90 seconds
 Proc Chance      : 101%
-Artifact Power   : Id: 1052, Max Rank: 1, Type: 18
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, AOE Heal
 Affecting spells : Mastery: Potent Assassin (76803 effect#1), Kingsbane (192853 effect#1), Dreadblade's Vigor (238103 effect#1), Toxic Blade (245389 effect#1)
@@ -4384,7 +4377,7 @@ Range            : 20 yards
 GCD              : 1 seconds
 Velocity         : 40 yards/sec
 Duration         : 6 seconds
-Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Broadsides (193356 effect#3), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Opportunity (195627 effect#1), Gunslinger (202522 effect#1), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Deadshot (272940 effect#1)
+Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Broadsides (193356 effect#3), Shark Infested Waters (193357 effect#1), Elaborate Planning (193641 effect#1), Opportunity (195627 effect#1), Blunderbuss (202848 effect#1), Greenskin's Waterlogged Wristcuffs (209423 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1), Deadshot (272940 effect#1)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4412,7 +4405,6 @@ Tooltip          : Movement speed reduced by $s3%.
 Name             : Blunderbuss (id=202897) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Artifact Power   : Id: 1053, Index: 1, Max Rank: 1, Type: 1
 Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4487,7 +4479,6 @@ School           : Physical
 Range            : 8 yards
 GCD              : 1 seconds
 Cooldown         : 60 seconds
-Artifact Power   : Id: 851, Max Rank: 1, Type: 18
 Affecting spells : Nightblade (195452 effect#6)
 Triggered by     : Push Active Ability to Bar (225880)
 Attributes       : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4649,10 +4640,10 @@ Attributes       : ....x... ........ x.x..... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=314702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #2 (id=466105)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #3 (id=466120)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #4 (id=479903)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
@@ -4843,7 +4834,6 @@ Description      : Critical strikes with Between the Eyes deal four times normal
 Name             : Dreadblade's Vigor (id=238103) [Spell Family (8), Passive] 
 Class            : Rogue
 School           : Physical
-Artifact Power   : Id: 1582, Max Rank: 1, Type: 0
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4927,7 +4917,7 @@ Attributes       : ....x... ........ ..x..... ..x....x   ........ ........ .....
 Effects          :
 #1 (id=373279)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
-                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Envenom (32645), Deadly Poison (113780), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388), Poison Bomb (255546), Poisoned Wire (276083)
+                   Affected Spells: Deadly Poison (2818), Deadly Poison (2823), Wound Poison (8679), Wound Poison (8680), Venomhide Poison (14795), Envenom (32645), Deadly Poison (113780), Kingsbane (192759), Kingsbane (192760), Agonizing Poison (200803), Curse of the Dreadblades (202665), Kingsbane (222062), Toxic Blade (245388), Poison Bomb (255546), Poisoned Wire (276083)
 Description      : $@spelldesc245388
 Tooltip          : $s1% increased damage taken from poisons from the casting Rogue.
 
@@ -5360,7 +5350,6 @@ Name             : Vendetta (id=256495) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Duration         : 3 seconds
-Affecting spells : Master Assassin (192349 effect#1)
 Triggered by     : Vendetta (79140)
 Attributes       : ........ ........ ........ .......x   .....x.. ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5389,10 +5378,10 @@ Attributes       : ........ ........ ........ ...x...x   .....x.. ........ .....
 Effects          :
 #1 (id=479461)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 #2 (id=730848)   : Apply Aura (6) | Unknown(334)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), From the Shadows (192434), Poison Bomb (192660), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Second Shuriken (197611), Shadow Nova (197800), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Greed (202822), Greed (202823), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Soul Rip (220893), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
+                   Affected Spells: Backstab (53), Garrote (703), Mutilate (1329), Sinister Strike (1752), Rupture (1943), Dispatch (2098), Deadly Poison (2818), Mutilate (5374), Ambush (8676), Wound Poison (8680), Mutilate (27576), Envenom (32645), Fan of Knives (51723), Killing Spree (57841), Killing Spree Off-Hand (57842), Main Gauche (86392), Blindside (111240), Deadly Poison (113780), Shuriken Toss (114014), Crimson Tempest (121411), Shadow Blade (121473), Shadow Blade Off-hand (121474), Death from Above (152150), Internal Bleeding (154953), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Pistol Shot (185763), Kingsbane (192759), Kingsbane (192760), Sinister Strike (193315), Nightblade (195452), Eviscerate (196819), Ghostly Strike (196937), Finality: Eviscerate (197393), Shuriken Storm (197835), Riposte (199753), Between the Eyes (199804), Gloomblade (200758), Blunderbuss (202895), Goremaw's Bite (209783), Goremaw's Bite (209784), Kingsbane (222062), Toxic Blade (245388), Toxic Blade (245389), Poison Bomb (255544), Poison Bomb (255546), Blade Rush (271881), Poisoned Wire (276083)
 Description      : $@spelldesc255989
 Tooltip          : Critical strike chance increased by $w1%.
 
