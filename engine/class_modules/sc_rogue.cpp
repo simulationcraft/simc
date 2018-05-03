@@ -2456,7 +2456,7 @@ struct blindside_t: public rogue_attack_t
 
   bool ready() override
   {
-    if ( ! p() -> buffs.blindside -> check() && target -> health_percentage() >= data().effectN( 4 ).percent() )
+    if ( ! p() -> buffs.blindside -> check() && target -> health_percentage() >= data().effectN( 4 ).base_value() )
       return false;
 
     return rogue_attack_t::ready();
