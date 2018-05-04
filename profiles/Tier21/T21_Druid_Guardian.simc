@@ -57,6 +57,8 @@ actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
 # if=buff.rage_of_the_sleeper.up
 actions.cooldowns+=/arcane_torrent
+# if=buff.rage_of_the_sleeper.up
+actions.cooldowns+=/lights_judgment
 actions.cooldowns+=/lunar_beam,if=buff.rage_of_the_sleeper.up
 actions.cooldowns+=/incarnation
 actions.cooldowns+=/barkskin,if=talent.brambles.enabled&(buff.rage_of_the_sleeper.up|talent.survival_of_the_fittest.enabled)

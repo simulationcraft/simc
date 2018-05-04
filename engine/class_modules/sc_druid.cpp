@@ -124,7 +124,6 @@ struct druid_td_t : public actor_target_data_t
   {
     buff_t* bloodletting;
     buff_t* open_wounds;
-    buff_t* stellar_empowerment;
     buff_t* circadian_invocation_arcane;
     buff_t* circadian_invocation_nature;
   } debuff;
@@ -350,6 +349,8 @@ public:
     buff_t* balance_tier18_4pc; // T18 4P Balance
     buff_t* wax_and_wane;
     buff_t* solar_solstice; //T21 4P Balance
+    buff_t* stellar_empowerment;
+    buff_t* starfall;
     haste_buff_t* astral_acceleration;
 
     // Feral
@@ -1446,9 +1447,7 @@ struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
-
-    // disabled for now since they'll probably institute this behavior later.
-    // druid.cooldown.warrior_of_elune -> start();
+    druid.cooldown.warrior_of_elune -> start();
   }
 };
 
@@ -1980,7 +1979,7 @@ public:
   {
      double tm = base_t::composite_ta_multiplier(s);
 
-     if ( stellar_empowerment && td (s->target ) -> debuff.stellar_empowerment -> up() )
+     if ( p() -> buff.stellar_empowerment->check() )
      {
         tm *= 1.0 + composite_stellar_empowerment( s -> target );
      }
@@ -2089,7 +2088,7 @@ public:
 
   virtual double composite_stellar_empowerment( player_t* t ) const
   {
-    double se = td( t ) -> debuff.stellar_empowerment -> check_value();
+    double se = p() -> buff.stellar_empowerment -> check_value();
          
     se += p() -> mastery.starlight -> ok() * p() -> cache.mastery_value();
             
@@ -3283,7 +3282,7 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( p() -> buff.apex_predator -> check() )
     {
-       req *= ( 1 - p() -> buff.apex_predator -> data().effectN(1).percent() );
+       req *= ( 1 - abs( p() -> buff.apex_predator -> data().effectN(1).percent() ) );
     }
 
     return req;
@@ -3303,7 +3302,7 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( p() -> buff.apex_predator -> check() )
     {
-      c *= (1 - p() -> buff.apex_predator -> data().effectN(1).percent() );
+      c *= (1 - abs(p() -> buff.apex_predator -> data().effectN(1).percent()) );
     }
 
     return c;
@@ -3383,7 +3382,16 @@ struct ferocious_bite_t : public cat_attack_t
 
     if ( p() -> buff.apex_predator -> up() )
     {
+      //Apex Predator bites Counts as spending the full 50 energy.
       am *= 2.0;
+
+      //Bugged as of 21/02-2018, as the energy cost reduction (from Berserk/Incarnation) will empower 
+      //the bonus damage (from energy) despite apex predator making the ability completely free
+      if ( p() -> bugs && ( p() -> buff.incarnation_cat -> up() | p() -> buff.berserk -> up()  ))
+      {
+        am *= 1.5;
+      }
+
       return am;
     }
 
@@ -5453,22 +5461,21 @@ struct full_moon_t : public druid_spell_t
     druid_spell_t( "full_moon", player, player -> find_spell( 202771 ), options_str ), radiant_moonlight(false)
   {
     aoe = -1;
-    split_aoe_damage = true;
     cooldown = player -> cooldown.moon_cd;
   }
 
-  double calculate_direct_amount( action_state_t* state ) const override
+  void impact(action_state_t* s) override
   {
-    double da = druid_spell_t::calculate_direct_amount( state );
-    
-    // Sep 3 2016: Main target takes full damage, this reverses the divisor in action_t::calculate_direct_amount (hotfixed).
-    if ( state -> chain_target == 0 )
-    {
-      da *= state -> n_targets;
-    }
-
-    return da;
-  }  
+      if (s->chain_target == 0)
+          druid_spell_t::impact(s);
+      else
+      {
+          double damage = s->result_amount;
+          damage /= execute_state->n_targets;
+          s->result_amount = s->result_total=damage;
+          druid_spell_t::impact(s);
+      }
+  }
 
   void execute() override
   {
@@ -5481,6 +5488,11 @@ struct full_moon_t : public druid_spell_t
     else {
       p()->moon_stage = NEW_MOON; //Requires hit
     }
+  }
+
+  timespan_t travel_time() const override
+  {
+      return timespan_t::from_millis(900); //this has a set travel time since it spawns on the target
   }
 
   bool ready() override
@@ -6275,183 +6287,171 @@ struct stampeding_roar_t : public druid_spell_t
 };
 
 // Starfall Spell ===========================================================
-
 struct starfall_t : public druid_spell_t
 {
-  struct starfall_tick_t : public druid_spell_t
-  {
-    bool echoing_stars;
-    starfall_tick_t( const std::string& n, druid_t* p, const spell_data_t* s ) :
-      druid_spell_t( n, p, s ),
-      echoing_stars( false )
+    struct starfall_tick_t : public druid_spell_t
     {
-      aoe = -1;
-      background = dual = direct_tick = true; // Legion TOCHECK
-      callbacks = false;
-      radius  = p -> find_spell( 191034 ) -> effectN( 1 ).radius();
-      radius *= 1.0 + p -> talent.stellar_drift -> effectN( 1 ).percent();
+        bool echoing_stars;
+        starfall_tick_t(const std::string& n, druid_t* p, const spell_data_t* s) :
+            druid_spell_t(n, p, s),
+            echoing_stars(false)
+        {
+            aoe = -1;
+            background = dual = direct_tick = true; // Legion TOCHECK
+            callbacks = false;
+            radius = p->find_spell(191034)->effectN(1).radius();
+            radius *= 1.0 + p->talent.stellar_drift->effectN(1).percent();
 
-      base_multiplier *= 1.0 + p -> talent.stellar_drift -> effectN( 2 ).percent();
-      base_multiplier *= 1.0 + p -> artifact.light_of_the_evening_star.percent();
-    }
-    
-    timespan_t travel_time() const override
+            base_multiplier *= 1.0 + p->talent.stellar_drift->effectN(2).percent();
+            base_multiplier *= 1.0 + p->artifact.light_of_the_evening_star.percent();
+        }
+
+        timespan_t travel_time() const override
+        {
+            // If this is an echo and distance targeting is on, no travel is needed.
+            if (echoing_stars && sim->distance_targeting_enabled)
+                return timespan_t::zero();
+
+            /* Generate a travel time, 800 - 1800ms. FIXME: Travel time is a bit messed up with regards
+            to echoes. "Chains" should impact as the same time as their source. */
+            return rng().range(timespan_t::from_millis(800), timespan_t::from_millis(1800));
+        }
+
+        double action_multiplier() const override
+        {
+            double am = druid_spell_t::action_multiplier();
+
+            if (p()->mastery.starlight->ok())
+                am *= 1.0 + p()->cache.mastery_value();
+
+            if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
+                am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(1).percent();
+
+            return am;
+        }
+
+        void impact(action_state_t* s) override
+        {
+            druid_spell_t::impact(s);
+
+            // Distance targeting: Execute a proper "chain" off of each target impacted.
+            if (p()->artifact.echoing_stars.rank() && !echoing_stars &&
+                sim->distance_targeting_enabled)
+            {
+                p()->active.echoing_stars->target = select_chain_target(s);
+
+                if (p()->active.echoing_stars->target)
+                    p()->active.echoing_stars->execute();
+            }
+        }
+
+        void execute() override
+        {
+            druid_spell_t::execute();
+
+            // Non-distance targeting: If we hit more than 1 target, simply trigger the echo as an AoE.
+            if (p()->artifact.echoing_stars.rank() && !echoing_stars &&
+                !sim->distance_targeting_enabled && execute_state->n_targets > 1)
+            {
+                assert(!p()->active.echoing_stars->pre_execute_state);
+                p()->active.echoing_stars->schedule_execute();
+            }
+        }
+
+        player_t* select_chain_target(action_state_t* s)
+        {
+            // Create target list
+            std::vector<player_t*> targets;
+            for (size_t i = 0, actors = sim->target_non_sleeping_list.size(); i < actors; i++)
+            {
+                player_t* t = sim->target_non_sleeping_list[i];
+
+                if (t->is_enemy() && t != s->target &&
+                    t->get_ground_aoe_distance(*s) <= p()->active.echoing_stars->radius + t->combat_reach)
+                    targets.push_back(t);
+            }
+
+            if (targets.size() > 0)
+            {
+                // Select a random target
+                return targets[(int)p()->rng().range(0, (double)targets.size())];
+            }
+
+            return nullptr;
+        }
+    };
+
+    starfall_t(druid_t* p, const std::string& options_str) :
+        druid_spell_t("starfall", p, p -> find_specialization_spell("Starfall"), options_str)
     {
-      // If this is an echo and distance targeting is on, no travel is needed.
-      if ( echoing_stars && sim -> distance_targeting_enabled )
-        return timespan_t::zero();
+        may_miss = may_crit = false;
+        base_tick_time = data().duration() / 8.0; // ticks 9 times (missing from spell data)
+                                                  // TOCHECK: tick zero?
 
-      /* Generate a travel time, 800 - 1800ms. FIXME: Travel time is a bit messed up with regards
-      to echoes. "Chains" should impact as the same time as their source. */
-      return rng().range( timespan_t::from_millis( 800 ), timespan_t::from_millis( 1800 ) );
+        if (!p->active.starfall)
+        {
+            p->active.starfall = new starfall_tick_t("starfall_tick", p, p->find_spell(191037));
+            p->active.starfall->stats = stats;
+        }
+
+        if (p->artifact.echoing_stars.rank() && !p->active.echoing_stars)
+        {
+            /* Create echoing stars action. If distance targeting is off, we'll just cheat a bit and
+            trigger a repeat AoE that hits for less damage. If it's on, then we'll do real chaining
+            from each target impacted. */
+            starfall_tick_t* echo = new starfall_tick_t("echoing_stars", p, p->find_spell(226104));
+            // set bool so this action knows its the secondary and to not trigger itself
+            echo->echoing_stars = true;
+
+            if (sim->distance_targeting_enabled)
+            {
+                echo->aoe = 0;
+                echo->radius = data().effectN(2).radius_max();
+            }
+
+            add_child(echo);
+            p->active.echoing_stars = echo;
+        }
+
+        base_costs[RESOURCE_ASTRAL_POWER] +=
+            p->talent.soul_of_the_forest->effectN(2).resource(RESOURCE_ASTRAL_POWER);
     }
 
-    double action_multiplier() const override
+    double cost() const override
     {
-      double am = druid_spell_t::action_multiplier();
+        if (p()->buff.oneths_overconfidence->check())
+            return 0;
 
-      if ( p() -> mastery.starlight -> ok() )
-        am *= 1.0 + p() -> cache.mastery_value();
-
-      if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
-          am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(1).percent();
-
-      return am;
+        return druid_spell_t::cost();
     }
 
-    void impact( action_state_t* s ) override
+    virtual void execute() override
     {
-      druid_spell_t::impact( s );
+        if (p()->sets->has_set_bonus(DRUID_BALANCE, T20, B4))
+        {
+            p()->buff.astral_acceleration->trigger();
+        }
+        if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B4))
+        {
+            p()->buff.solar_solstice->trigger();
+        }
+        druid_spell_t::execute();
 
-      // Distance targeting: Execute a proper "chain" off of each target impacted.
-      if ( p() -> artifact.echoing_stars.rank() && ! echoing_stars &&
-        sim -> distance_targeting_enabled )
-      {
-        p() -> active.echoing_stars -> target = select_chain_target( s );
+        make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
+            .target(execute_state->target)
+            .pulse_time(data().duration() / 9) //ticks 9 times
+            .duration(data().duration())
+            .action(p()->active.starfall));
 
-        if ( p() -> active.echoing_stars -> target )
-          p() -> active.echoing_stars -> execute();
-      }
+        if (p()->buff.oneths_overconfidence->up()) // benefit tracking
+            p()->buff.oneths_overconfidence->decrement();
+        p()->buff.oneths_intuition->trigger();
+        timespan_t duration = p()->buff.stellar_empowerment->buff_duration;
+        if (p()->bugs)
+            duration = timespan_t::from_millis(rng().range(9000, 10000));
+        p()->buff.stellar_empowerment->trigger(1,p()->buff.stellar_empowerment->data().effectN(1).percent(),1,duration);
+        p()->buff.starfall->trigger();
     }
-
-    void execute() override
-    {
-      druid_spell_t::execute();
-
-      // Non-distance targeting: If we hit more than 1 target, simply trigger the echo as an AoE.
-      if ( p() -> artifact.echoing_stars.rank() && ! echoing_stars &&
-        ! sim -> distance_targeting_enabled && execute_state -> n_targets > 1 )
-      {
-        assert( ! p() -> active.echoing_stars -> pre_execute_state );
-        p() -> active.echoing_stars -> schedule_execute();
-      }
-    }
-
-    player_t* select_chain_target( action_state_t* s )
-    {
-      // Create target list
-      std::vector<player_t*> targets;
-      for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
-      {
-        player_t* t = sim -> target_non_sleeping_list[ i ];
-
-        if ( t -> is_enemy() && t != s -> target &&
-          t -> get_ground_aoe_distance( *s ) <= p() -> active.echoing_stars -> radius + t -> combat_reach )
-          targets.push_back( t );
-      }
-        
-      if ( targets.size() > 0 )
-      {
-        // Select a random target
-        return targets[ ( int ) p() -> rng().range( 0, ( double ) targets.size() ) ];
-      }
-
-      return nullptr;
-    }
-  };
-
-  starfall_t( druid_t* p, const std::string& options_str ):
-    druid_spell_t( "starfall", p, p -> find_specialization_spell( "Starfall" ), options_str )
-  {
-    may_miss = may_crit = false;
-    base_tick_time = data().duration() / 8.0; // ticks 9 times (missing from spell data)
-    // TOCHECK: tick zero?
-
-    if ( ! p -> active.starfall )
-    {
-      p -> active.starfall = new starfall_tick_t( "starfall_tick", p, p -> find_spell( 191037 ) );
-      p -> active.starfall -> stats = stats;
-    }
-
-    if ( p -> artifact.echoing_stars.rank() && ! p -> active.echoing_stars )
-    {
-      /* Create echoing stars action. If distance targeting is off, we'll just cheat a bit and
-      trigger a repeat AoE that hits for less damage. If it's on, then we'll do real chaining
-      from each target impacted. */
-      starfall_tick_t* echo = new starfall_tick_t( "echoing_stars", p, p -> find_spell( 226104 ) );
-      // set bool so this action knows its the secondary and to not trigger itself
-      echo -> echoing_stars = true;
-        
-      if ( sim -> distance_targeting_enabled )
-      {
-        echo -> aoe = 0;
-        echo -> radius = data().effectN( 2 ).radius_max();
-      }
-
-      add_child( echo );
-      p -> active.echoing_stars = echo;
-    }
-
-    base_costs[ RESOURCE_ASTRAL_POWER ] +=
-      p -> talent.soul_of_the_forest -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-  }
-
-  double cost() const override
-  {
-    if ( p() -> buff.oneths_overconfidence -> check() )
-      return 0;
-
-    return druid_spell_t::cost();
-  }
-
-  virtual void execute() override
-  {
-    if (p()->sets->has_set_bonus(DRUID_BALANCE, T20, B4))
-    {
-      p()->buff.astral_acceleration->trigger();
-    }
-    if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B4))
-    {
-        p()->buff.solar_solstice->trigger();
-    }
-    druid_spell_t::execute();
-
-    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-        .target( execute_state -> target )
-        .x( execute_state -> target -> x_position )
-        .y( execute_state -> target -> y_position )
-        .pulse_time( base_tick_time * p() -> cache.spell_haste() )
-        .duration( data().duration() * p() -> cache.spell_haste() )
-        .start_time( sim -> current_time() )
-        .action( p() -> active.starfall ) );
-
-    // Trigger starfall debuffs
-    for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
-    {
-      player_t* t = sim -> target_non_sleeping_list[ i ];
-
-      if ( t -> is_enemy() && ( ! sim -> distance_targeting_enabled ||
-        t -> get_player_distance( *execute_state -> target ) <= p() -> active.starfall -> radius + t -> combat_reach ) )
-      {
-        td( t ) -> debuff.stellar_empowerment -> trigger();
-      }
-    }
-    
-    if ( p() -> buff.oneths_overconfidence -> up() ) // benefit tracking
-      p() -> buff.oneths_overconfidence -> decrement();
-
-    p() -> buff.oneths_intuition -> trigger();
-  }
 };
 
 struct starshards_t : public starfall_t
@@ -6651,6 +6651,8 @@ struct warrior_of_elune_t : public druid_spell_t
   void execute() override
   {
     druid_spell_t::execute();
+
+    p()->cooldown.warrior_of_elune->reset(false);
 
     p() -> buff.warrior_of_elune -> trigger( p() -> talent.warrior_of_elune -> max_stacks() );
   }
@@ -7510,6 +7512,14 @@ void druid_t::create_buffs()
   buff.solar_solstice = buff_creator_t(this, "solar_solstice", find_spell(252767))
       .default_value(find_spell(252767)->effectN(1).percent());
 
+  buff.stellar_empowerment = buff_creator_t(this, "stellar_empowerment", find_spell(197637))
+                                .default_value(spec.stellar_empowerment->effectN(1).percent())
+                                .duration(timespan_t::from_seconds(8)); //seems blizzard removed any useful spelldata, so hardcore this for now.
+
+  buff.starfall              = buff_creator_t(this, "starfall", find_spell(191034))
+                              .duration(timespan_t::from_seconds(8));
+                            
+
   // Feral
 
   buff.ashamanes_energy      = buff_creator_t( this, "ashamanes_energy", find_spell( 210583 ) )
@@ -7716,6 +7726,7 @@ std::string druid_t::default_potion() const
 std::string druid_t::default_food() const
 {
    return (true_level > 100 && specialization() == DRUID_FERAL) ? "lemon_herb_filet" :
+          (true_level > 100 && specialization() == DRUID_BALANCE) ? "lemon_herb_filet" :
           (true_level >  100) ? "lavish_suramar_feast" :
           (true_level >  90) ?  "pickled_eel" :
           (true_level >= 90) ?  "sea_mist_rice_noodles" :
@@ -7787,7 +7798,10 @@ void druid_t::apl_precombat()
   else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
   {
     precombat -> add_action( this, "Moonkin Form" );
-    precombat -> add_action( "blessing_of_elune" );
+    precombat -> add_action("variable,name=starfall_st,value=talent.soul_of_the_forest.enabled");
+    precombat->add_action("variable,name=flare_st,value=talent.stellar_flare.enabled");
+    precombat -> add_action( "blessing_of_elune,if=!variable.starfall_st" );
+    precombat -> add_action("blessing_of_anshe,if=variable.starfall_st");
   }
   //else if (specialization() == DRUID_RESTORATION && (primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL))
   //{
@@ -8115,15 +8129,15 @@ void druid_t::apl_balance()
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
   action_priority_list_t* FoE                 = get_action_priority_list( "fury_of_elune"  );
-  action_priority_list_t* ST                  = get_action_priority_list( "single_target" );
-  action_priority_list_t* AoE                 = get_action_priority_list( "AoE" );
+  action_priority_list_t* ST                  = get_action_priority_list( "st" );
+  action_priority_list_t* AoE                 = get_action_priority_list( "aoe" );
   action_priority_list_t* ED                  = get_action_priority_list( "ed" );
 
   if ( sim -> allow_potions && true_level >= 80 )
     default_list -> add_action( potion_action + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
 
-  default_list -> add_action( "blessing_of_elune,if=active_enemies<=2&talent.blessing_of_the_ancients.enabled&buff.blessing_of_elune.down" );
-  default_list -> add_action( "blessing_of_elune,if=active_enemies>=3&talent.blessing_of_the_ancients.enabled&buff.blessing_of_anshe.down" );
+  default_list -> add_action( "blessing_of_elune,if=active_enemies<=2&(!variable.starfall_st|(variable.starfall_st&buff.celestial_alignment.up))" );
+  default_list -> add_action( "blessing_of_anshe,if=active_enemies>=3|variable.starfall_st&!buff.celestial_alignment.up&cooldown.celestial_alignment.remains>15" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
@@ -8144,27 +8158,27 @@ void druid_t::apl_balance()
   default_list -> add_talent( this, "Astral Communion", "if=astral_power.deficit>=79" );
   default_list -> add_talent( this, "Warrior of Elune");
   default_list -> add_action( "incarnation,if=astral_power>=40" );
-  default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
-  default_list -> add_action("call_action_list,name=AoE,if=(spell_targets.starfall>=2&talent.stellar_drift.enabled)|spell_targets.starfall>=3");
-  default_list -> add_action("call_action_list,name=single_target");
+  default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40&(!variable.starfall_st|time>=7*gcd.max)" );
+  default_list -> add_action("call_action_list,name=aoe,if=(spell_targets.starfall>=2&talent.stellar_drift.enabled)|spell_targets.starfall>=3");
+  default_list -> add_action("call_action_list,name=st");
   
+  ST -> add_action( this, "Starfall", "if=(buff.oneths_overconfidence.react&((!variable.flare_st&(astral_power.deficit<40|(set_bonus.tier21_4pc&!buff.solar_solstice.up)|(!variable.starfall_st&!buff.solar_empowerment.up&!buff.lunar_empowerment.up&cooldown.moon_cd.charges=0)))|astral_power.deficit<35|buff.astral_acceleration.remains>5|(buff.celestial_alignment.up|buff.incarnation.up)))|(variable.starfall_st&!buff.starfall.up)");
   ST -> add_talent( this, "Force of Nature");
   ST -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
   ST -> add_action( this, "Moonfire", "target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
   ST -> add_action( this, "Sunfire", "target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
-  ST -> add_action( this, "Starfall", "if=buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<44)");
-  ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3");
-  ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3");
-  ST -> add_action( this, "Starsurge", "if=astral_power.deficit<44|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.remains>5|(set_bonus.tier21_4pc&!buff.solar_solstice.up))|(gcd.max*(astral_power%40))>target.time_to_die");
-  ST -> add_action( this, "New Moon", "if=astral_power.deficit>14&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)");
-  ST -> add_action( this, "Half Moon", "if=astral_power.deficit>24&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)");
-  ST -> add_action( this, "Full Moon", "if=astral_power.deficit>44");
+  ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3&astral_power.deficit>10");
+  ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3&astral_power.deficit>15");
+  ST -> add_action( this, "Starsurge", "if=buff.oneths_intuition.react|((!variable.flare_st&(astral_power.deficit<40|(set_bonus.tier21_4pc&!buff.solar_solstice.up)|(!variable.starfall_st&!buff.solar_empowerment.up&!buff.lunar_empowerment.up&cooldown.moon_cd.charges=0)))|astral_power.deficit<35|buff.astral_acceleration.remains>5|(buff.celestial_alignment.up|buff.incarnation.up))|(gcd.max*(astral_power%40))>target.time_to_die");
+  ST -> add_action( this, "New Moon", "if=astral_power.deficit>10&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)");
+  ST -> add_action( this, "Half Moon", "if=astral_power.deficit>20&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)");
+  ST -> add_action( this, "Full Moon", "if=astral_power.deficit>40&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)");
   ST -> add_action( this, "Lunar Strike", "if=buff.warrior_of_elune.up&buff.lunar_empowerment.up");
   ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up");
   ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up");
   ST -> add_action( this, "Solar Wrath");
   
-  AoE -> add_action( this, "Starfall", "if=debuff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|(buff.celestial_alignment.remains>8|buff.incarnation.remains>8)|target.time_to_die<8");
+  AoE -> add_action( this, "Starfall", "if=buff.starfall.remains<gcd.max*2|astral_power.deficit<22.5|(buff.celestial_alignment.remains>8|buff.incarnation.remains>8)|target.time_to_die<8");
   AoE -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
   AoE -> add_action( this, "Sunfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
   AoE -> add_action( this, "Moonfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
@@ -9120,7 +9134,8 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   }
   else if ( util::str_compare_ci( name_str, "new_moon" )
             || util::str_compare_ci( name_str, "half_moon" )
-            || util::str_compare_ci( name_str, "full_moon" )  )
+            || util::str_compare_ci( name_str, "full_moon" )
+            || util::str_compare_ci(name_str, "free_full_moon"))
   {
     struct moon_stage_expr_t : public druid_expr_t
     {
@@ -9135,6 +9150,8 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
           stage = 1;
         else if ( util::str_compare_ci( name_str, "full_moon" ) )
           stage = 2;
+        else if (util::str_compare_ci(name_str, "free_full_moon"))
+          stage = 3;
         else
         {
           assert( false && "Bad name_str passed to moon_stage_expr_t" );
@@ -9671,10 +9688,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   debuff.open_wounds         = buff_creator_t( *this, "open_wounds", source.find_spell( 210670 ) )
                                .default_value( source.find_spell( 210670 ) -> effectN( 1 ).percent() )
                                .trigger_spell( source.artifact.open_wounds );
-  debuff.stellar_empowerment = buff_creator_t( *this, "stellar_empowerment", source.spec.stellar_empowerment )
-                               .default_value(source.spec.stellar_empowerment->effectN(1).percent())
-                               .duration( timespan_t::from_seconds( 8 )); //seems blizzard removed any useful spelldata, so hardcore this for now.
-
   debuff.circadian_invocation_arcane = buff_creator_t( *this, "circadian_invocation_arcane", source.find_spell( 240606 ) )
                                         .default_value( source.find_spell( 240606 ) -> effectN( 1 ).percent() );
   debuff.circadian_invocation_nature = buff_creator_t( *this, "circadian_invocation_nature", source.find_spell( 240607 ) )

@@ -16,6 +16,13 @@
  * @brief Random number generation
  */
 namespace rng {
+
+
+/// rng engines
+enum class engine_type {
+  DEFAULT, MURMURHASH, SFMT, STD, TINYMT, XORSHIFT64, XORSHIFT128, XORSHIFT1024
+};
+
 /**\ingroup SC_RNG
  * @brief Random number generator base class
  *
@@ -24,8 +31,6 @@ namespace rng {
  */
 struct rng_t
 {
-  /// rng engines
-  enum type_e { DEFAULT, MURMURHASH, SFMT, STD, TINYMT, XORSHIFT64, XORSHIFT128, XORSHIFT1024 };
 
   virtual ~rng_t() {}
   /// name of rng engine
@@ -54,8 +59,8 @@ private:
 
 };
 
-std::unique_ptr<rng_t> create( rng_t::type_e = rng_t::DEFAULT );
-rng_t::type_e parse_type( const std::string& name );
+std::unique_ptr<rng_t> create( engine_type = engine_type::DEFAULT );
+engine_type parse_type( const std::string& name );
 
 double stdnormal_cdf( double );
 double stdnormal_inv( double );

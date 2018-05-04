@@ -4,9 +4,9 @@ level=110
 race=orc
 role=attack
 position=ranged_back
-talents=2202012
+talents=2212112
 artifact=56:0:0:0:0:868:4:869:4:870:4:871:4:872:4:873:4:874:4:875:4:876:1:877:1:878:1:879:1:880:1:881:1:882:1:1095:4:1336:1:1368:1:1517:4:1518:1:1519:1:1520:24:1636:1
-crucible=1739:3:1780:3:875:1:870:2
+crucible=1739:1771:870/1739:1771:875/1739:1771:870
 
 # Default consumables
 potion=prolonged_power
@@ -70,20 +70,20 @@ hands=serpentstalker_grips,id=152132,bonus_id=3612/1502
 waist=depraved_tacticians_waistguard,id=152006,bonus_id=3612/1502
 legs=serpentstalker_legguards,id=152134,bonus_id=3612/1502
 feet=greatboots_of_the_searing_tempest,id=152684,bonus_id=3612/1502
-finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
-finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
-trinket1=convergence_of_fates,id=140806,bonus_id=3518
-trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=titanstrike,id=128861,bonus_id=726,gem_id=155853/152025/152293,relic_id=3612:1512/3612:1502/3612:1502
+finger1=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
+finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
+trinket1=golganneths_vitality,id=154174,bonus_id=3997
+trinket2=convergence_of_fates,id=140806,bonus_id=3518/1502
+main_hand=titanstrike,id=128861,bonus_id=726,gem_id=155853/152026/152293,relic_id=3612:1512/3612:1502/3612:1502
 
 # Gear Summary
 # gear_ilvl=968.53
-# gear_agility=38156
+# gear_agility=43394
 # gear_stamina=63116
-# gear_crit_rating=11164
-# gear_haste_rating=8757
-# gear_mastery_rating=13791
-# gear_versatility_rating=3867
+# gear_crit_rating=7502
+# gear_haste_rating=8774
+# gear_mastery_rating=13145
+# gear_versatility_rating=2437
 # gear_armor=3671
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

@@ -79,38 +79,6 @@ struct resource_threshold_event_t : public event_t
   }
 };
 
-struct touch_of_the_grave_spell_t : public spell_t
-{
-  touch_of_the_grave_spell_t( player_t* p, const spell_data_t* spell ) :
-    spell_t( "touch_of_the_grave", p, spell )
-  {
-    background = may_crit = true;
-    base_dd_min = base_dd_max = 0;
-    attack_power_mod.direct = 1.25;
-    spell_power_mod.direct = 1.0;
-  }
-
-  double attack_direct_power_coefficient( const action_state_t* ) const override
-  {
-    if ( composite_attack_power() >= composite_spell_power() )
-    {
-      return attack_power_mod.direct;
-    }
-
-    return 0;
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* ) const override
-  {
-    if ( composite_spell_power() > composite_attack_power() )
-    {
-      return spell_power_mod.direct;
-    }
-
-    return 0;
-  }
-};
-
 // Execute Pet Action =======================================================
 
 struct execute_pet_action_t : public action_t
@@ -1072,7 +1040,18 @@ void player_t::init_base_stats()
     resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, level() );
     resources.base[ RESOURCE_MANA   ] = dbc.resource_base( type, level() );
 
-    base.mana_regen_per_second = dbc.regen_base( type, level() ) / 5.0;
+    // Mana Regen
+    base.mana_regen_per_second = dbc.resource_base( type, level() ) * 0.01; // 1% seems to be default for all classes
+    for ( auto spell : dbc::class_passives( this ) )
+    {
+      for ( auto effect : *spell->_effects )
+      {
+        if ( effect->subtype() == A_379 )
+        {
+          base.mana_regen_per_second *= 1.0 + effect->percent();
+        }
+      }
+    }
     base.mana_regen_per_spirit = dbc.regen_spirit( type, level() );
     base.health_per_stamina    = dbc.health_per_stamina( level() );
 
@@ -1476,16 +1455,6 @@ bool player_t::create_special_effects()
   if ( sim -> debug )
     sim -> out_debug.printf( "Creating special effects for player (%s)", name() );
 
-  const spell_data_t* totg = find_racial_spell( "Touch of the Grave" );
-  if ( totg -> ok() )
-  {
-    special_effect_t* effect = new special_effect_t( this );
-    effect -> type = SPECIAL_EFFECT_EQUIP;
-    effect -> spell_id = totg -> id();
-    effect -> execute_action = new touch_of_the_grave_spell_t( this, totg -> effectN( 1 ).trigger() );
-    special_effects.push_back( effect );
-  }
-
   // Initialize the buff and callback for the 7.2 "infinite" artifact power
   expansion::legion::initialize_concordance( *this );
 
@@ -1521,6 +1490,7 @@ bool player_t::create_special_effects()
     special_effects.push_back( new special_effect_t( effect ) );
   }
 
+  unique_gear::initialize_racial_effects( this );
   unique_gear::initialize_artifact_powers( this );
 
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
@@ -1754,6 +1724,10 @@ std::string player_t::init_use_racial_actions( const std::string& append )
       buffer += "/arcane_torrent";
       race_action_found = true;
       break;
+    case RACE_LIGHTFORGED_DRAENEI:
+      buffer += "/lights_judgment";
+      race_action_found = true;
+      break;
     default: break;
   }
 
@@ -1772,6 +1746,7 @@ std::vector<std::string> player_t::get_racial_actions()
   actions.push_back( "blood_fury" );
   actions.push_back( "berserking" );
   actions.push_back( "arcane_torrent" );
+  actions.push_back( "lights_judgment" );
 
   return actions;
 }
@@ -1975,6 +1950,8 @@ void player_t::init_spells()
   racials.brawn                   = find_racial_spell( "Brawn" );
   racials.endurance               = find_racial_spell( "Endurance" );
   racials.viciousness             = find_racial_spell( "Viciousness" );
+  racials.magical_affinity        = find_racial_spell( "Magical Affinity" );
+  racials.mountaineer             = find_racial_spell( "Mountaineer" );
 
   if ( ! is_enemy() )
   {
@@ -3391,6 +3368,9 @@ double player_t::composite_player_multiplier( school_e  school  ) const
     m *= 1.0 + buffs.damage_done -> check_stack_value();
   }
 
+  if ( school != SCHOOL_PHYSICAL )
+    m *= 1.0 + racials.magical_affinity -> effectN( 1 ).percent();
+
   return m;
 }
 
@@ -3661,7 +3641,9 @@ double player_t::composite_rating( rating_e rating ) const
     case RATING_DAMAGE_VERSATILITY:
     case RATING_HEAL_VERSATILITY:
     case RATING_MITIGATION_VERSATILITY:
-      v = current.stats.versatility_rating; break;
+      v = current.stats.versatility_rating;
+      v += racials.mountaineer -> effectN( 2 ).average( this );
+      break;
     case RATING_EXPERTISE:
       v = current.stats.expertise_rating; break;
     case RATING_DODGE:
@@ -6115,7 +6097,7 @@ real_ppm_t* player_t::get_rppm( const std::string& name, const spell_data_t* dat
   return new_rppm;
 }
 
-real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod, rppm_scale_e s )
+real_ppm_t* player_t::get_rppm( const std::string& name, double freq, double mod, unsigned s )
 {
   auto it = range::find_if( rppm_list, [ &name ]( const real_ppm_t* rppm ) {
     return util::str_compare_ci( rppm -> name(), name );
@@ -6802,6 +6784,113 @@ struct stoneform_t : public racial_spell_t
     player -> buffs.stoneform -> trigger();
   }
 };
+
+// Light's Judgment =========================================================
+
+struct lights_judgment_t : public racial_spell_t
+{
+  struct lights_judgment_damage_t : public spell_t
+  {
+    lights_judgment_damage_t( player_t* p ) :
+      spell_t( "lights_judgment_damage", p, p -> find_spell( 256893 ) )
+    {
+      background = may_crit = true;
+      aoe = -1;
+    }
+
+    void init() override
+    {
+      spell_t::init();
+
+      // Manually set up some flags, as the autodetection cannot determine that the missile is a
+      // damaging spell
+      snapshot_flags |= STATE_AP | STATE_SP | STATE_CRIT;
+    }
+
+    double attack_direct_power_coefficient( const action_state_t* ) const override
+    {
+      auto ap = composite_attack_power() * player -> composite_attack_power_multiplier();
+      auto sp = composite_spell_power() * player -> composite_spell_power_multiplier();
+
+      // Hardcoded into the tooltip
+      return ap >= sp ? 16.0 : 0.0;
+    }
+
+    double spell_direct_power_coefficient( const action_state_t* ) const override
+    {
+      auto ap = composite_attack_power() * player -> composite_attack_power_multiplier();
+      auto sp = composite_spell_power() * player -> composite_spell_power_multiplier();
+
+      // Hardcoded into the tooltip
+      return sp > ap ? 12.0 : 0.0;
+    }
+  };
+
+  action_t* damage;
+
+  lights_judgment_t( player_t* p, const std::string& options_str ) :
+    racial_spell_t( p, "lights_judgment", p -> find_racial_spell( "Light's Judgment" ), options_str )
+  {
+    may_miss = callbacks = false;
+
+    damage = p -> find_action( "lights_judgment_damage" );
+    if ( damage == nullptr )
+    {
+      damage = new lights_judgment_damage_t( p );
+    }
+
+    add_child( damage );
+  }
+
+  // Missile travels for 3 seconds according to tooltip
+  timespan_t travel_time() const override
+  { return timespan_t::from_seconds( 3.0 ); }
+
+  void impact( action_state_t* state ) override
+  {
+    racial_spell_t::impact( state );
+
+    damage -> set_target( state -> target );
+    damage -> execute();
+  }
+};
+
+// Arcane Pulse =============================================================
+
+struct arcane_pulse_t : public racial_spell_t
+{
+  arcane_pulse_t( player_t* p, const std::string& options_str ) :
+    racial_spell_t( p, "arcane_pulse", p -> find_racial_spell( "Arcane Pulse" ), options_str )
+  {
+    may_crit = true;
+    aoe = -1;
+  }
+
+  void init() override
+  {
+    spell_t::init();
+    snapshot_flags |= STATE_AP | STATE_SP | STATE_CRIT;
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* ) const override
+  {
+    auto ap = composite_attack_power() * player -> composite_attack_power_multiplier();
+    auto sp = composite_spell_power() * player -> composite_spell_power_multiplier();
+
+    // Hardcoded into the tooltip
+    return ap >= sp ? 2.0 : 0.0;
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* ) const override
+  {
+    auto ap = composite_attack_power() * player -> composite_attack_power_multiplier();
+    auto sp = composite_spell_power() * player -> composite_spell_power_multiplier();
+
+    // Hardcoded into the tooltip
+    return sp > ap ? 0.75 : 0.0;
+  }
+};
+
 
 // Restart Sequence Action ==================================================
 
@@ -7889,23 +7978,26 @@ struct pool_resource_t : public action_t
 action_t* player_t::create_action( const std::string& name,
                                    const std::string& options_str )
 {
+  if ( name == "arcane_pulse"       ) return new       arcane_pulse_t( this, options_str );
   if ( name == "arcane_torrent"     ) return new     arcane_torrent_t( this, options_str );
   if ( name == "berserking"         ) return new         berserking_t( this, options_str );
   if ( name == "blood_fury"         ) return new         blood_fury_t( this, options_str );
   if ( name == "darkflight"         ) return new         darkflight_t( this, options_str );
+  if ( name == "lights_judgment"    ) return new    lights_judgment_t( this, options_str );
+  if ( name == "rocket_barrage"     ) return new     rocket_barrage_t( this, options_str );
   if ( name == "shadowmeld"         ) return new         shadowmeld_t( this, options_str );
+  if ( name == "stoneform"          ) return new          stoneform_t( this, options_str );
+
   if ( name == "cancel_buff"        ) return new        cancel_buff_t( this, options_str );
   if ( name == "swap_action_list"   ) return new   swap_action_list_t( this, options_str );
   if ( name == "run_action_list"    ) return new    run_action_list_t( this, options_str );
   if ( name == "call_action_list"   ) return new   call_action_list_t( this, options_str );
   if ( name == "restart_sequence"   ) return new   restart_sequence_t( this, options_str );
   if ( name == "restore_mana"       ) return new       restore_mana_t( this, options_str );
-  if ( name == "rocket_barrage"     ) return new     rocket_barrage_t( this, options_str );
   if ( name == "sequence"           ) return new           sequence_t( this, options_str );
   if ( name == "strict_sequence"    ) return new    strict_sequence_t( this, options_str );
   if ( name == "snapshot_stats"     ) return new     snapshot_stats_t( this, options_str );
   if ( name == "start_moving"       ) return new       start_moving_t( this, options_str );
-  if ( name == "stoneform"          ) return new          stoneform_t( this, options_str );
   if ( name == "stop_moving"        ) return new        stop_moving_t( this, options_str );
   if ( name == "use_item"           ) return new           use_item_t( this, options_str );
   if ( name == "use_items"          ) return new          use_items_t( this, options_str );
@@ -10130,10 +10222,14 @@ void player_t::copy_from( player_t* source )
   professions_str = source -> professions_str;
   source -> recreate_talent_str( TALENT_FORMAT_UNCHANGED );
   parse_talent_url( sim, "talents", source -> talents_str );
-  artifact -> set_artifact_str( source -> artifact -> encode() );
-  artifact -> set_crucible_str( source -> artifact -> encode_crucible() );
+  if ( artifact != nullptr )
+  {
+    artifact -> set_artifact_str( source -> artifact -> encode() );
+    artifact -> set_crucible_str( source -> artifact -> encode_crucible() );
+    artifact_overrides_str = source -> artifact_overrides_str;
+  }
+
   talent_overrides_str = source -> talent_overrides_str;
-  artifact_overrides_str = source -> artifact_overrides_str;
   action_list_str = source -> action_list_str;
   alist_map = source -> alist_map;
   use_apl = source -> use_apl;
@@ -11218,7 +11314,7 @@ player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const t
 bool player_collected_data_t::tank_container_type( const player_t* for_actor,
                                                    int             target_statistics_level )
 {
-  if ( for_actor -> primary_role() == ROLE_TANK && for_actor -> level() == MAX_LEVEL )
+  if ( true ) // FIXME: cannot use virtual function calls here! for_actor -> primary_role() == ROLE_TANK && for_actor -> level() == MAX_LEVEL )
   {
     return for_actor -> sim -> statistics_level < target_statistics_level;
   }

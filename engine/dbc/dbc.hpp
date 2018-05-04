@@ -1503,7 +1503,7 @@ public:
   double avoid_per_str_agi_by_level( unsigned level ) const;
 
   std::vector<const rppm_modifier_t*> real_ppm_modifiers( unsigned ) const;
-  rppm_scale_e real_ppm_scale( unsigned ) const;
+  unsigned real_ppm_scale( unsigned ) const;
   double real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level = 0 ) const;
 
   std::vector<const item_upgrade_t*> item_upgrades(unsigned ) const;

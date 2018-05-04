@@ -188,6 +188,7 @@ include ../source_files/engine_main_make
 
 ifneq (,${GIT})
   OPTS += -DSC_GIT_REV="\"$(shell ${GIT} rev-parse --short HEAD)\""
+  OPTS += -DSC_GIT_BRANCH="\"$(shell ${GIT} rev-parse --abbrev-ref HEAD)\""
 endif
 
 SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC)) $(filter %.hpp, $(SRC)) $(filter %.inc, $(SRC))
@@ -237,15 +238,9 @@ $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)
 	$(CXX) $(CPP_FLAGS) $(OPTS) -S $< -o $@
 
-# Force regeneration of sc_main.o on every recompilation to potntially get the
+# Force regeneration of git_info.o on every recompilation to potntially get the
 # changed GIT shorthash into the binary
-sc_main.o: .FORCE
-
-report/sc_report_html_sim.o: .FORCE
-
-report/sc_report_json.o: .FORCE
-
-report/sc_report_xml.o: .FORCE
+util/git_info.o: .FORCE
 
 # cleanup targets
 mostlyclean:

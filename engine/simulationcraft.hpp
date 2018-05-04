@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "735"
-#define SC_MINOR_VERSION "01"
+#define SC_MINOR_VERSION "02"
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 #define SC_BETA 0
 #if SC_BETA
@@ -250,20 +250,6 @@ struct artifact_power_t
   { return rank_; }
 };
 
-// Spell information struct, holding static functions to output spell data in a human readable form
-
-namespace spell_info
-{
-std::string to_str( const dbc_t& dbc, const spell_data_t* spell, int level = MAX_LEVEL );
-void        to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t* parent, int level = MAX_LEVEL );
-//static std::string to_str( sim_t* sim, uint32_t spell_id, int level = MAX_LEVEL );
-std::string talent_to_str( const dbc_t& dbc, const talent_data_t* talent, int level = MAX_LEVEL );
-std::string set_bonus_to_str( const dbc_t& dbc, const item_set_bonus_t* set_bonus, int level = MAX_LEVEL );
-void        talent_to_xml( const dbc_t& dbc, const talent_data_t* talent, xml_node_t* parent, int level = MAX_LEVEL );
-void        set_bonus_to_xml( const dbc_t& dbc, const item_set_bonus_t* talent, xml_node_t* parent, int level = MAX_LEVEL );
-std::ostringstream& effect_to_str( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level = MAX_LEVEL );
-void                effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, xml_node_t*    parent, int level = MAX_LEVEL );
-}
 
 /* Luxurious sample data container with automatic merge/analyze,
  * intended to be used in class modules for custom reporting.
@@ -610,7 +596,7 @@ protected:
   buff_refresh_duration_callback_t _refresh_duration_callback;
   buff_stack_change_callback_t _stack_change_callback;
   double _rppm_freq, _rppm_mod;
-  rppm_scale_e _rppm_scale;
+  unsigned _rppm_scale;
   const spell_data_t* _trigger_data;
   std::vector<cache_e> _invalidate_list;
   friend struct ::buff_t;
@@ -686,7 +672,7 @@ public:
   { _rppm_freq = f; return *( static_cast<bufftype*>( this ) ); }
   bufftype& rppm_mod( double m )
   { _rppm_mod = m; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& rppm_scale( rppm_scale_e s )
+  bufftype& rppm_scale( unsigned s )
   { _rppm_scale = s; return *( static_cast<bufftype*>( this ) ); }
   bufftype& trigger_spell( const spell_data_t* s )
   { _trigger_data = s; return *( static_cast<bufftype*>( this ) ); }
@@ -840,6 +826,9 @@ public:
   bool activated, reactable;
   bool reverse, constant, quiet, overridden, can_cancel;
   bool requires_invalidation;
+
+  // Optimization-related values
+  bool manual_chance_used; /// Is the buff triggered with a manual (positive) chance?
 
   // dynamic values
   double current_value;
@@ -1888,7 +1877,7 @@ struct sim_t : private sc_thread_t
   unsigned           spell_query_level;
   std::string        spell_query_xml_output_file_str;
 
-  mutex_t* pause_mutex; // External pause mutex, instantiated an external entity (in our case the GUI).
+  std::unique_ptr<mutex_t> pause_mutex; // External pause mutex, instantiated an external entity (in our case the GUI).
   bool paused;
 
   // Highcharts stuff
@@ -2585,7 +2574,7 @@ struct special_effect_t
   double stat_amount, discharge_amount, discharge_scaling;
   double proc_chance_;
   double ppm_;
-  rppm_scale_e rppm_scale_;
+  unsigned rppm_scale_;
   double rppm_modifier_;
   timespan_t duration_, cooldown_, tick;
   bool cost_reduction;
@@ -2670,7 +2659,7 @@ struct special_effect_t
   unsigned proc_flags2() const;
   double ppm() const;
   double rppm() const;
-  rppm_scale_e rppm_scale() const;
+  unsigned rppm_scale() const;
   double rppm_modifier() const;
   double proc_chance() const;
   timespan_t cooldown() const;
@@ -3044,7 +3033,7 @@ private:
   timespan_t   last_trigger_attempt;
   timespan_t   last_successful_trigger;
   timespan_t   initial_precombat_time;
-  rppm_scale_e scales_with;
+  unsigned     scales_with;
 
   real_ppm_t(): player(nullptr), freq(0), modifier(0), rppm(0), scales_with()
   { }
@@ -3056,9 +3045,9 @@ public:
                              double            PPM,
                              const timespan_t& last_trigger,
                              const timespan_t& last_successful_proc,
-                             rppm_scale_e      scales_with );
+                             unsigned          scales_with );
 
-  real_ppm_t( const std::string& name, player_t* p, double frequency = 0, double mod = 1.0, rppm_scale_e s = RPPM_NONE ) :
+  real_ppm_t( const std::string& name, player_t* p, double frequency = 0, double mod = 1.0, unsigned s = RPPM_NONE ) :
     player( p ),
     name_str( name ),
     freq( frequency ),
@@ -3072,7 +3061,7 @@ public:
 
   real_ppm_t( const std::string& name, player_t* p, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
 
-  void set_scaling( rppm_scale_e s )
+  void set_scaling( unsigned s )
   { scales_with = s; }
 
   void set_modifier( double mod )
@@ -4129,6 +4118,7 @@ struct player_t : public actor_t
     buff_t* damage_done;
     buff_t* darkflight;
     buff_t* devotion_aura;
+    buff_t* entropic_embrace;
     buff_t* exhaustion;
     buff_t* guardian_spirit;
     buff_t* blessing_of_sacrifice;
@@ -4256,6 +4246,8 @@ struct player_t : public actor_t
     const spell_data_t* brawn;
     const spell_data_t* endurance;
     const spell_data_t* viciousness;
+    const spell_data_t* magical_affinity;
+    const spell_data_t* mountaineer;
   } racials;
 
   struct passives_t
@@ -4381,7 +4373,7 @@ struct player_t : public actor_t
   virtual double composite_dodge() const;
   virtual double composite_parry() const;
   virtual double composite_block() const;
-          double composite_block_dr( double extra_block ) const;
+  double composite_block_dr( double extra_block ) const;
   virtual double composite_block_reduction() const;
   virtual double composite_crit_block() const;
   virtual double composite_crit_avoidance() const;
@@ -4654,7 +4646,7 @@ struct player_t : public actor_t
 
   cooldown_t* get_cooldown( const std::string& name );
   real_ppm_t* get_rppm    ( const std::string& name, const spell_data_t* data = spell_data_t::nil(), const item_t* item = nullptr );
-  real_ppm_t* get_rppm    ( const std::string& name, double freq, double mod = 1.0, rppm_scale_e s = RPPM_NONE );
+  real_ppm_t* get_rppm    ( const std::string& name, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
   shuffled_rng_t* get_shuffled_rng(const std::string& name, int success_entries = 0, int total_entries = 0);
   dot_t*      get_dot     ( const std::string& name, player_t* source );
   gain_t*     get_gain    ( const std::string& name );
@@ -7594,6 +7586,9 @@ void initialize_special_effect_2( special_effect_t* effect );
 // Initialize generic Artifact traits
 void initialize_artifact_powers( player_t* );
 
+// Initialize special effects related to various race spells
+void initialize_racial_effects( player_t* );
+
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
 const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
 
@@ -8177,21 +8172,21 @@ inline double real_ppm_t::proc_chance( player_t*         player,
                                        double            PPM,
                                        const timespan_t& last_trigger,
                                        const timespan_t& last_successful_proc,
-                                       rppm_scale_e      scales_with )
+                                       unsigned          scales_with )
 {
   double coeff = 1.0;
   double seconds = std::min( ( player -> sim -> current_time() - last_trigger ).total_seconds(), max_interval() );
 
-  if ( scales_with == RPPM_HASTE )
+  if ( scales_with & RPPM_HASTE )
     coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
 
   // This might technically be two separate crit values, but this should be sufficient for our
   // cases. In any case, the client data does not offer information which crit it is (attack or
   // spell).
-  if ( scales_with == RPPM_CRIT )
+  if ( scales_with & RPPM_CRIT )
     coeff *= 1.0 + std::max( player -> cache.attack_crit_chance(), player -> cache.spell_crit_chance() );
 
-  if ( scales_with == RPPM_ATTACK_SPEED )
+  if ( scales_with & RPPM_ATTACK_SPEED )
     coeff *= 1.0 / player -> cache.attack_speed();
 
   double real_ppm = PPM * coeff;

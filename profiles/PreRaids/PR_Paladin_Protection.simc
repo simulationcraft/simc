@@ -7,6 +7,12 @@ position=front
 talents=2231223
 artifact=49:137548:136778:137547:0:1120:1:1121:3:1124:3:1125:1:1126:3:1128:6:1129:3:1133:1:1135:1:1343:1
 
+# Default consumables
+potion=unbending_potion
+flask=flask_of_ten_thousand_scars
+food=seedbattered_fish_plate
+augmentation=defiled
+
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -14,15 +20,11 @@ artifact=49:137548:136778:137547:0:1120:1:1121:3:1124:3:1125:1:1126:3:1128:6:112
 # SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask,type=flask_of_ten_thousand_scars,if=!talent.seraphim.enabled
-actions.precombat+=/flask,type=flask_of_the_countless_armies,if=(role.attack|talent.seraphim.enabled)
-actions.precombat+=/food,type=seedbattered_fish_plate,if=!talent.seraphim.enabled
-actions.precombat+=/food,type=lavish_suramar_feast,if=(role.attack|talent.seraphim.enabled)
+actions.precombat=flask
+actions.precombat+=/food
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/potion,name=unbending_potion,if=!talent.seraphim.enabled
-actions.precombat+=/potion,name=old_war,if=(role.attack|talent.seraphim.enabled)&active_enemies<3
-actions.precombat+=/potion,name=prolonged_power,if=(role.attack|talent.seraphim.enabled)&active_enemies>=3
+actions.precombat+=/potion
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -30,9 +32,11 @@ actions+=/use_item,name=shivermaws_jawbone
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
+actions+=/lights_judgment
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
+actions+=/lights_judgment
 actions+=/call_action_list,name=prot
 
 # This is a high-DPS (but low-survivability) configuration.
@@ -42,6 +46,7 @@ actions.max_dps+=/use_item,name=shivermaws_jawbone
 actions.max_dps+=/blood_fury
 actions.max_dps+=/berserking
 actions.max_dps+=/arcane_torrent
+actions.max_dps+=/lights_judgment
 
 # This is a high-survivability (but low-DPS) configuration.
 # Invoke by adding "actions+=/run_action_list,name=max_survival" to the beginning of the default APL.
@@ -50,6 +55,7 @@ actions.max_survival+=/use_item,name=shivermaws_jawbone
 actions.max_survival+=/blood_fury
 actions.max_survival+=/berserking
 actions.max_survival+=/arcane_torrent
+actions.max_survival+=/lights_judgment
 
 actions.prot=shield_of_the_righteous,if=!talent.seraphim.enabled&(action.shield_of_the_righteous.charges>2)&!(debuff.eye_of_tyr.up&buff.aegis_of_light.up&buff.ardent_defender.up&buff.guardian_of_ancient_kings.up&buff.divine_shield.up&buff.potion.up)
 actions.prot+=/bastion_of_light,if=!talent.seraphim.enabled&talent.bastion_of_light.enabled&action.shield_of_the_righteous.charges<1
@@ -69,7 +75,6 @@ actions.prot+=/lay_on_hands,if=!talent.seraphim.enabled&health.pct<15
 actions.prot+=/potion,name=old_war,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies<3
 actions.prot+=/potion,name=prolonged_power,if=buff.avenging_wrath.up&talent.seraphim.enabled&active_enemies>=3
 actions.prot+=/potion,name=unbending_potion,if=!talent.seraphim.enabled
-actions.prot+=/potion,name=draenic_strength,if=incoming_damage_2500ms>health.max*0.4&&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)|target.time_to_die<=25
 actions.prot+=/stoneform,if=!talent.seraphim.enabled&incoming_damage_2500ms>health.max*0.4&!(debuff.eye_of_tyr.up|buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)
 actions.prot+=/avenging_wrath,if=!talent.seraphim.enabled
 actions.prot+=/judgment,if=!talent.seraphim.enabled

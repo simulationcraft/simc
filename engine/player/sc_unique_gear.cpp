@@ -137,6 +137,12 @@ namespace set_bonus
   void passive_stat_aura( special_effect_t& );
 }
 
+namespace racial
+{
+  void touch_of_the_grave( special_effect_t& );
+  void entropic_embrace( special_effect_t& );
+}
+
 /**
  * Select attribute operator for buffs. Selects the attribute based on the
  * comparator given (std::greater for example), based on all defined attributes
@@ -2178,8 +2184,6 @@ void item::orb_of_voidsight( special_effect_t& effect )
   effect.custom_buff = buff;
   effect.player -> buffs.demon_damage_buff = buff;
 
-  effect.rppm_scale_ = RPPM_DISABLE;
-
   new dbc_proc_callback_t( effect.item, effect );
 }
 
@@ -3588,6 +3592,121 @@ void item::warlords_unseeing_eye( special_effect_t& effect )
   // Push the effect into the priority list. 
   effect.player -> absorb_priority.push_back( 184762 );
 }
+
+struct touch_of_the_grave_t : public spell_t
+{
+  touch_of_the_grave_t( player_t* p, const spell_data_t* spell ) :
+    spell_t( "touch_of_the_grave", p, spell )
+  {
+    background = may_crit = true;
+    base_dd_min = base_dd_max = 0;
+    attack_power_mod.direct = 1.25;
+    spell_power_mod.direct = 1.0;
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* ) const override
+  {
+    if ( composite_attack_power() >= composite_spell_power() )
+    {
+      return attack_power_mod.direct;
+    }
+
+    return 0;
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* ) const override
+  {
+    if ( composite_spell_power() > composite_attack_power() )
+    {
+      return spell_power_mod.direct;
+    }
+
+    return 0;
+  }
+};
+
+void racial::touch_of_the_grave( special_effect_t& effect )
+{
+  effect.execute_action = new touch_of_the_grave_t( effect.player, effect.trigger() );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+struct entropic_embrace_damage_t : public spell_t
+{
+  entropic_embrace_damage_t( const special_effect_t& effect ) :
+    spell_t( "entropic_embrace", effect.player, effect.player -> find_spell( 259756 ) )
+  {
+    background = true;
+    may_miss = callbacks = false;
+  }
+
+  void init() override
+  {
+    spell_t::init();
+
+    snapshot_flags = update_flags = STATE_TGT_MUL_DA | STATE_TGT_MUL_TA;
+  }
+};
+
+struct entropic_embrace_damage_cb_t : public dbc_proc_callback_t
+{
+  double coeff;
+  entropic_embrace_damage_cb_t( const special_effect_t* effect, double c ) :
+    dbc_proc_callback_t( effect -> player, *effect ),
+    coeff( c )
+  { }
+
+  void trigger( action_t* a, void* call_data ) override
+  {
+    auto state = reinterpret_cast<action_state_t*>( call_data );
+    if ( state -> result_amount <= 0 )
+    {
+      return;
+    }
+
+    dbc_proc_callback_t::trigger( a, call_data );
+  }
+
+  void execute( action_t* /* a */, action_state_t* state ) override
+  {
+    proc_action -> base_dd_min = state -> result_amount * coeff;
+    proc_action -> base_dd_max = proc_action -> base_dd_min;
+
+    proc_action -> set_target( state -> target );
+    proc_action -> execute();
+  }
+};
+
+void racial::entropic_embrace( special_effect_t& effect )
+{
+  special_effect_t* effect_driver = new special_effect_t( effect.player );
+  effect_driver -> source = SPECIAL_EFFECT_SOURCE_RACE;
+  effect_driver -> type = SPECIAL_EFFECT_EQUIP;
+  effect_driver -> proc_flags2_ = PF2_ALL_HIT;
+  effect_driver -> name_str = "entropic_embrace_damage_driver";
+  effect_driver -> spell_id = effect.trigger() -> id();
+  effect_driver -> execute_action = create_proc_action<entropic_embrace_damage_t>( "entropic_embrace", effect );
+  effect.player -> special_effects.push_back( effect_driver );
+
+  auto proc = new entropic_embrace_damage_cb_t( effect_driver,
+      effect.trigger() -> effectN( 1 ).percent() );
+  proc -> deactivate();
+
+  buff_t* base_buff = buff_t::find( effect.player, "entropic_embrace" );
+  if ( base_buff == nullptr )
+  {
+    base_buff = buff_creator_t( effect.player, "entropic_embrace", effect.trigger() )
+                .stack_change_callback( [ proc ]( buff_t*, int, int new_ ) {
+                  if ( new_ > 0 ) proc -> activate();
+                  else            proc -> deactivate();
+                } );
+  }
+
+  effect.custom_buff = base_buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
 } // UNNAMED NAMESPACE
 
 /*
@@ -3752,6 +3871,47 @@ void unique_gear::initialize_artifact_powers( player_t* player )
 
     player -> special_effects.push_back( new special_effect_t( effect ) );
   } );
+}
+
+void unique_gear::initialize_racial_effects( player_t* player )
+{
+  if ( player -> race == RACE_NONE )
+  {
+    return;
+  }
+
+  unsigned rid = util::race_id( player -> race );
+  unsigned cid = util::class_id( player -> type );
+
+  if ( rid == 0 )
+  {
+    return;
+  }
+
+  // Iterate over all race spells for the player
+  for ( unsigned n = 0; n < player -> dbc.race_ability_size(); ++n )
+  {
+    auto cls_spell_id = player -> dbc.race_ability( rid, cid, n );
+    auto spell_id = player -> dbc.race_ability( rid, 0, n );
+    if ( cls_spell_id > 0 || spell_id > 0 )
+    {
+      auto spell = player -> dbc.spell( cls_spell_id > 0 ? cls_spell_id : spell_id );
+      if ( ! spell || ! spell -> ok() )
+      {
+        continue;
+      }
+
+      special_effect_t effect( player );
+      effect.source = SPECIAL_EFFECT_SOURCE_RACE;
+      auto ret = unique_gear::initialize_special_effect( effect, spell -> id() );
+      if ( ! ret || ! effect.is_custom() )
+      {
+        continue;
+      }
+
+      player -> special_effects.push_back( new special_effect_t( effect ) );
+    }
+  }
 }
 
 // ==========================================================================
@@ -4456,6 +4616,10 @@ void unique_gear::register_special_effects()
   register_special_effect( 187688, set_bonus::t18_lfr_4pc_mail_agility  );
   register_special_effect( 187778, set_bonus::t18_lfr_4pc_mail_caster   );
   register_special_effect( 187863, set_bonus::t18_lfr_4pc_leather_melee );
+
+  /* Racial special effects */
+  register_special_effect( 5227,   racial::touch_of_the_grave );
+  register_special_effect( 255669, racial::entropic_embrace );
 }
 
 void unique_gear::unregister_special_effects()

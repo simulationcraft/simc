@@ -127,13 +127,19 @@ void SC_TabWidgetCloseAll::closeOtherTabs()
   }
 }
 
-void SC_TabWidgetCloseAll::removeTab( int index )
+void SC_TabWidgetCloseAll::removeTab( int index, bool close_permanently )
 {
   QWidget* widgetAtIndex = widget( index );
   if ( widgetAtIndex != 0 )
   {
-    // index could be out of bounds, only emit signal if there is a legit widget at the index
-    emit( tabAboutToBeRemoved( widgetAtIndex, tabText( index ), tabToolTip( index ), tabIcon( index ) ) );
+    if ( close_permanently )
+    {
+      widgetAtIndex->deleteLater();
+    }
+    else
+    {
+      emit( tabAboutToBeRemoved( widgetAtIndex, tabText( index ), tabToolTip( index ), tabIcon( index ) ) );
+    }
   }
 }
 

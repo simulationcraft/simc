@@ -64,7 +64,7 @@ public:
 
   void closeAllTabs();
   void closeOtherTabs();
-  void removeTab( int index );
+  void removeTab( int index, bool close_permanently = false );
   void enableMouseHoveredOverTabSignal( bool enable );
   void enableDragHoveredOverTabSignal( bool enable );
 private:

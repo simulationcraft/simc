@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "util/git_info.hpp"
 #include "sim/sc_profileset.hpp"
 #include <locale>
 
@@ -248,13 +249,16 @@ int sim_t::main( const std::vector<std::string>& args )
     setup_success = false;
   }
 
-#if ! defined( SC_GIT_REV )
+  if ( !git_info::available() )
+  {
   util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s)\n",
       SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str());
-#else
-  util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s, git build %s)\n",
-      SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str(), SC_GIT_REV);
-#endif
+  }
+  else
+  {
+  util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s, git build %s %s)\n",
+      SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str(), git_info::branch(), git_info::revision());
+  }
 
   if ( display_hotfixes )
   {

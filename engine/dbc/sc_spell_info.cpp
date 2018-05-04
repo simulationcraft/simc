@@ -4,6 +4,7 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "sc_spell_info.hpp"
 
 namespace {
 struct proc_map_t
@@ -1339,6 +1340,27 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           s << "Itemlevel multiplier [base=" << rppm_modifier -> type << "], ";
           has_modifiers = true;
           break;
+        case RPPM_MODIFIER_CLASS:
+        {
+          if ( ! has_modifiers )
+          {
+            s << " (";
+          }
+
+          for ( int i = 1; i <= 12; ++i )
+          {
+            if ( rppm_modifier -> type & ( 1 << (i - 1) ) )
+            {
+              player_e type = util::translate_class_id( i );
+              double rppm_val = spell -> real_ppm() * ( 1.0 + rppm_modifier -> coefficient );
+              const char* class_str = util::player_type_string( type );
+              s << util::inverse_tokenize( class_str ) << ": " << rppm_val << ", ";
+            }
+          }
+
+          has_modifiers = true;
+          break;
+        }
         case RPPM_MODIFIER_SPEC:
         {
           if ( ! has_modifiers )

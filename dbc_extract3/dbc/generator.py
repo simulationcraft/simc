@@ -1249,10 +1249,12 @@ class SpellDataGenerator(DataGenerator):
          255672,
          # 7.3.0 Forgefiend's Fabricator
          253322, 256025, 
-		 # 7.3.0 Riftworld Codex buffs and damage component
-		 252545, 251938, 256415, 252550,
+         # 7.3.0 Riftworld Codex buffs and damage component
+         252545, 251938, 256415, 252550,
          # 7.3.2 Norgannon pantheon "random school" nukes
          257243, 257532, 257241, 257242, 257534, 257533,
+         # 7.3.5 Auxilary spells for the new races
+         259756, 259760
         ),
 
         # Warrior:
@@ -2078,7 +2080,7 @@ class SpellDataGenerator(DataGenerator):
             if spell_id == 0:
                 continue
 
-            spec_data = self._chrspecialization_db[perk_data.id_spec]
+            spec_data = self._chrspecialization_db[perk_data.id_parent]
             if spec_data.id == 0:
                 continue
 

@@ -1,4 +1,4 @@
-SimulationCraft 735-01 for World of Warcraft 7.3.5 Live (wow build 25901)
+SimulationCraft 735-02 for World of Warcraft 7.3.5 Live (wow build 25901)
 
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
@@ -32,7 +32,7 @@ Resource         : 3% Base Mana (0) (id=7817)
 Spell Level      : 3
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Epidemic (184922 effect#1), Absolute Corruption (196103 effect#2), Drain Soul (198590 effect#2), Hideous Corruption (199112 effect#1), Perdition (199158 effect#1), Wrath of Consumption (199646 effect#1), Sacrolash's Dark Strike (207952 effect#1), Winnowing (238072 effect#1), Tormented Agony (252938 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#5), Epidemic (184922 effect#1), Absolute Corruption (196103 effect#2), Drain Soul (198590 effect#2), Hideous Corruption (199112 effect#1), Perdition (199158 effect#1), Wrath of Consumption (199646 effect#1), Sacrolash's Dark Strike (207952 effect#1), Winnowing (238072 effect#1), Tormented Agony (252938 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -291,6 +291,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=374)      : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.03540 | Target: Enemy (6)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=198244)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : Inflicts increasing agony on the target, causing up to ${$o1*$u} Shadow damage over $d. Damage starts low and increases over the duration. Refreshing Agony maintains its current damage level.
@@ -2353,6 +2354,7 @@ Effects          :
 Description      : $@spelldesc1122
 
 Name             : Demonic Gateway (id=111771) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Resource         : 10% Base Mana (0) (id=5421)
@@ -2367,7 +2369,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=124273)   : Summon (28)
@@ -3012,18 +3014,26 @@ Effects          :
 #1 (id=179727)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: 14 | Scaled Value: 14 | Target: Self (1)
                    Affected Spells: Agony (980), Seed of Corruption (27243), Seed of Corruption (27285), Haunt (48181), Siphon Life (63106), Corruption (146739), Demonic Power (196100), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Harvester of Souls (218615), Compounding Horror (231489), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Rend Soul (242834)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #2 (id=191031)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
                    Base Value: 14 | Scaled Value: 14 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Agony (980), Seed of Corruption (27243), Seed of Corruption (27285), Haunt (48181), Siphon Life (63106), Corruption (146739), Demonic Power (196100), Drain Soul (198590), Soul Flame (199581), Phantom Singularity (205179), Phantom Singularity (205246), Harvester of Souls (218615), Compounding Horror (231489), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Rend Soul (242834)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #3 (id=191032)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 14 | Scaled Value: 14 | Target: Self (1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 #4 (id=191033)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
                    Base Value: -33 | Scaled Value: -33 | Target: Self (1)
                    Affected Spells: Demonic Power (196100)
-#5 (id=191034)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#6 (id=261077)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Hotfixed: Chain Multiplier (0 -> 1)
+#5 (id=191034)   : Apply Aura (6) | Add Percent Modifier (108): Generic Modifier (0)
+                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
+                   Affected Spells: Corruption (172), Agony (980), Corruption (146739)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -6), Affects Spells, Chain Multiplier (0 -> 1)
+#6 (id=261077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Damage (22)
+                   Base Value: -6 | Scaled Value: -6 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Corruption (172), Agony (980), Corruption (146739)
+                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -6), Misc Value (0 -> 22), Affects Spells, Chain Multiplier (0 -> 1)
 #7 (id=261078)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=261079)   : Apply Aura (6) | Dummy (4)
@@ -3040,6 +3050,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=261085)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#15 (id=710818)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Hotfixed: NEW EFFECT
 
 Name             : Demonology Warlock (id=137044) [Spell Family (5), Passive, Hidden] 
 Class            : Demonology Warlock
@@ -3155,6 +3168,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32400 | Target: Unknown(25)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -5448,6 +5462,7 @@ Effects          :
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
+Hotfixed         : Variables
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5466,7 +5481,7 @@ Effects          :
 #1 (id=477694)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256893 | Radius: 0 - 5 yards | Target: Enemy (6)
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*5,$AP*6.25)}
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
 
 Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5517,6 +5532,7 @@ Effects          :
 Description      : Experience gains from killing Demons increased by $s1%.
 
 Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
+Hotfixed         : Variables
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5534,23 +5550,26 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=479673)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 5 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Hotfixed: Chain Multiplier (0 -> 1)
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
-Variables        : $damage=${$cond($gt($SP,$AP),$SP*5,$AP*6.25)}
+Variables        : $damage=${$cond($gt($SP,$AP),$SP*12.0,$AP*16)*$pctD*(1+$@versadmg)}
 
 Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
-School           : None
+School           : Holy
 Max Scaling Level: 120
+Range            : 40 yards
 Triggered by     : Light's Reckoning (255652)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Disable player multipliers (221)
 Effects          :
-#1 (id=479676)   : School Damage (2): none
+#1 (id=479676)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
                    Base Value: 100000 | Scaled Value: 465816 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)

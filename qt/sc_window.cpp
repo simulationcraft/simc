@@ -14,6 +14,7 @@
 #include "sc_WelcomeTab.hpp"
 #include "sc_AddonImportTab.hpp"
 #include "util/sc_mainwindowcommandline.hpp"
+#include "util/git_info.hpp"
 #ifdef SC_PAPERDOLL
 #include "sc_PaperDoll.hpp"
 #endif
@@ -95,7 +96,7 @@ void SC_MainWindow::updateSimProgress()
     sim = paperdoll_sim ? paperdoll_sim : SC_MainWindow::sim;
   else
 #endif
-    sim = SC_MainWindow::sim;
+    sim = SC_MainWindow::sim.get();
 
   std::string progressBarToolTip;
 
@@ -320,7 +321,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   connect( importThread, SIGNAL( finished() ), this, SLOT( importFinished() ) );
 
   simulateThread = new SC_SimulateThread( this );
-  connect( simulateThread, SIGNAL( simulationFinished( sim_t* ) ), this, SLOT( simulateFinished( sim_t* ) ) );
+  connect( simulateThread, &SC_SimulateThread::simulationFinished, this, &SC_MainWindow::simulateFinished );
 
 #ifdef SC_PAPERDOLL
   paperdollThread = new PaperdollThread( this );
@@ -511,20 +512,21 @@ void SC_MainWindow::updateWebView( SC_WebView* wv )
 // Sim Initialization
 // ==========================================================================
 
-sim_t* SC_MainWindow::initSim()
+std::shared_ptr<sim_t> SC_MainWindow::initSim()
 {
-  sim_t* sim = new sim_t();
-  sim -> pause_mutex = new mutex_t();
+  auto sim = std::make_shared<sim_t>();
+  sim -> pause_mutex = std::unique_ptr<mutex_t>(new mutex_t());
   sim -> report_progress = 0;
 #if SC_USE_PTR
   sim -> parse_option( "ptr", ( ( optionsTab -> choice.version -> currentIndex() == 1 ) ? "1" : "0" ) );
 #endif
   sim -> parse_option( "debug", ( ( optionsTab -> choice.debug -> currentIndex() == 2 ) ? "1" : "0" ) );
+  sim -> cleanup_threads = true;
 
   return sim;
 }
 
-void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
+void SC_MainWindow::deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_error_message )
 {
   if ( sim )
   {
@@ -538,8 +540,7 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
     std::string output_file_str = sim -> output_file_str;
     bool sim_control_was_not_zero = sim -> control != 0;
 
-    delete sim -> pause_mutex;
-    delete sim;
+    sim = nullptr;
 
     QString contents;
     bool logFileOpenedSuccessfully = false;
@@ -797,13 +798,18 @@ void SC_MainWindow::startSim()
 
   QString tab_name = std::get<0>( value );
   auto simc_gui_profile = std::get<1>( value );
-#if ! defined( SC_GIT_REV )
-  auto simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4) ###\n\n").
-      arg(SC_VERSION).arg(sim->dbc.wow_version()).arg(sim->dbc.wow_ptr_status()).arg(sim->dbc.build_level());
-#else
-  auto simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4, git build %5) ###\n\n").
-          arg(SC_VERSION).arg(sim->dbc.wow_version()).arg(sim->dbc.wow_ptr_status()).arg(sim->dbc.build_level()).arg(SC_GIT_REV);
-#endif
+  QString simc_version;
+  if ( !git_info::available())
+  {
+    simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4) ###\n\n").
+        arg(SC_VERSION).arg(sim->dbc.wow_version()).arg(sim->dbc.wow_ptr_status()).arg(sim->dbc.build_level());
+  }
+  else
+  {
+    simc_version = QString("### SimulationCraft %1 for World of Warcraft %2 %3 (wow build %4, git build %5 %6) ###\n\n").
+            arg(SC_VERSION).arg(sim->dbc.wow_version()).arg(sim->dbc.wow_ptr_status()).arg(sim->dbc.build_level()).
+            arg(git_info::branch()).arg(git_info::revision());
+  }
   simc_gui_profile = simc_version + simc_gui_profile;
   QByteArray utf8_profile = simc_gui_profile.toUtf8();
   QFile file( AppDataDir + QDir::separator() + "simc_gui.simc" );
@@ -1019,7 +1025,7 @@ void PaperdollThread::run()
 }
 #endif // SC_PAPERDOLL
 
-void SC_MainWindow::simulateFinished( sim_t* sim )
+void SC_MainWindow::simulateFinished( std::shared_ptr<sim_t> sim )
 {
   simPhase = "%p%";
   simProgress = 100;
@@ -1454,10 +1460,14 @@ void SC_MainWindow::resultsTabChanged( int /* index */ )
 
 void SC_MainWindow::resultsTabCloseRequest( int index )
 {
-  int confirm = QMessageBox::question( this, tr( "Close Result Tab" ), tr( "Do you really want to close this result?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
-  if ( confirm == QMessageBox::Yes )
+  QMessageBox msgBox( QMessageBox::Question, tr( "Close Result Tab" ), tr( "Do you really want to close this result?" ), QMessageBox::Yes | QMessageBox::No );
+  auto close_all_button = msgBox.addButton(tr("Close permanently"), QMessageBox::YesRole);
+  int confirm = msgBox.exec();
+  bool close_permanently = msgBox.clickedButton() == close_all_button;
+  if ( confirm == QMessageBox::Yes || close_permanently )
   {
-    resultsTab -> removeTab( index );
+    auto tab = static_cast <SC_SingleResultTab*>(resultsTab -> widget( index ));
+    resultsTab -> removeTab( index, close_permanently );
     if ( resultsTab -> count() == 1 )
     {
       SC_SingleResultTab* tab = static_cast <SC_SingleResultTab*>(resultsTab -> widget( 0 ));

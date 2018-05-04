@@ -19,6 +19,7 @@
  HEADERS += engine/sim/sc_expressions.hpp
  HEADERS += engine/report/sc_report.hpp
  HEADERS += engine/player/artifact_data.hpp
+ HEADERS += engine/dbc/sc_spell_info.hpp
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp
  PRECOMPILED_HEADER += engine/simulationcraft.hpp
@@ -39,6 +40,7 @@
  SOURCES += engine/util/rng.cpp
  SOURCES += engine/util/io.cpp
  SOURCES += engine/util/concurrency.cpp
+ SOURCES += engine/util/git_info.cpp
  SOURCES += engine/sim/x7_pantheon.cpp
  SOURCES += engine/sim/sc_sim.cpp
  SOURCES += engine/sim/sc_scaling.cpp

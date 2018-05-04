@@ -1483,13 +1483,15 @@ std::vector<const rppm_modifier_t*> dbc_t::real_ppm_modifiers( unsigned spell_id
   return data;
 }
 
-rppm_scale_e dbc_t::real_ppm_scale( unsigned spell_id ) const
+unsigned dbc_t::real_ppm_scale( unsigned spell_id ) const
 {
 #if SC_USE_PTR
   const rppm_modifier_t* p = ptr ? __ptr_rppmmodifier_data : __rppmmodifier_data;
 #else
   const rppm_modifier_t* p = __rppmmodifier_data;
 #endif
+
+  unsigned scale = 0;
 
   while ( p -> spell_id != 0 )
   {
@@ -1501,18 +1503,18 @@ rppm_scale_e dbc_t::real_ppm_scale( unsigned spell_id ) const
 
     if ( p -> modifier_type == RPPM_MODIFIER_HASTE )
     {
-      return RPPM_HASTE;
+      scale |= RPPM_HASTE;
     }
     else if ( p -> modifier_type == RPPM_MODIFIER_CRIT )
     {
-      return RPPM_CRIT;
+      scale |= RPPM_CRIT;
     }
 
 
     p++;
   }
 
-  return RPPM_NONE;
+  return scale;
 }
 
 double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned item_level ) const

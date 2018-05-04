@@ -2040,7 +2040,6 @@ struct mind_flay_t final : public priest_spell_t
     may_crit                    = false;
     channeled                   = true;
     hasted_ticks                = false;
-    use_off_gcd                 = true;
     is_mind_spell               = true;
     is_sphere_of_insanity_spell = true;
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data
@@ -3161,7 +3160,6 @@ struct void_bolt_t final : public priest_spell_t
       rank2( player.find_specialization_spell( 231688 ) )
   {
     parse_options( options_str );
-    use_off_gcd                 = true;
     is_sphere_of_insanity_spell = true;
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data.
 
@@ -3360,7 +3358,6 @@ struct void_torrent_t final : public priest_spell_t
 
     may_crit      = false;
     channeled     = true;
-    use_off_gcd   = true;
     is_mind_spell = false;
     tick_zero     = true;
 
@@ -3898,9 +3895,9 @@ struct sephuzs_secret_enabler_t : public scoped_actor_callback_t<priest_t>
   {
   }
 
-  void manipulate( priest_t* shaman, const special_effect_t& e ) override
+  void manipulate( priest_t* priest, const special_effect_t& e ) override
   {
-    shaman->legendary.sephuzs_secret = e.driver();
+    priest->legendary.sephuzs_secret = e.driver();
   }
 };
 
@@ -5249,6 +5246,8 @@ void priest_t::apl_shadow()
   vf->add_action( this, "Shadow Word: Pain", "if=active_enemies>1&!talent.misery.enabled&!ticking&((1+0.02"
       "*buff.voidform.stack)*variable.dot_swp_dpgcd*target.time_to_die%(gcd.max*(118"
       "+variable.sear_dpgcd*(active_enemies-1))))>1,cycle_targets=1" );
+  if (race == RACE_LIGHTFORGED_DRAENEI)
+	  vf->add_action( "lights_judgment,if=buff.voidform.stack<10");
   vf->add_action( this, "Mind Flay", "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action."
       "void_"
       "bolt.usable|(current_insanity_drain*gcd.max>insanity&(insanity-(current_"

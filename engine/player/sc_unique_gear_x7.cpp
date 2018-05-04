@@ -18,7 +18,7 @@ namespace consumable
   void hearty_feast( special_effect_t& );
   void lavish_suramar_feast( special_effect_t& );
   void pepper_breath( special_effect_t& );
-  void lemon_herb_filet( special_effect_t& );
+  void darkmoon_faire_food( special_effect_t& );
 }
 
 namespace enchants
@@ -2504,6 +2504,14 @@ struct bulwark_of_flame_t : public absorb_buff_t
     absorb_buff_t::expire_override( stacks, remaining );
 
     explosion -> schedule_execute();
+
+    // Ensure there is no double-player-ready event created if the player is channeling something
+    // while this ability is being used. This is technically a bug, but for now the workaround is to
+    // not crash the sim.
+    if ( player -> channeling )
+    {
+      return;
+    }
 
     // Due to the client not allowing the ability queue here, we have to wait
     // the amount of lag + how often the key is spammed until the next ability is used.
@@ -6043,21 +6051,18 @@ void consumable::lavish_suramar_feast( special_effect_t& effect )
   effect.stat_amount = effect.player -> find_spell( effect.trigger_spell_id ) -> effectN( 1 ).average( effect.player );
 }
 
-// Lemon Herb Filet =========================================================
+// Darkmoon faire food ( Lemon Herb Filet and Sugar-crusted fish feast share the same buff )
 
-void consumable::lemon_herb_filet( special_effect_t& effect )
+void consumable::darkmoon_faire_food( special_effect_t& effect )
 {
   double value = effect.driver() -> effectN( 1 ).percent();
 
-  race_e race = effect.player -> race;
-  if ( race == RACE_PANDAREN
-    || race == RACE_PANDAREN_ALLIANCE
-    || race == RACE_PANDAREN_HORDE )
+  if ( is_pandaren( effect.player -> race ) )
   {
     value *= 2.0;
   }
 
-  buff_t* dmf_well_fed = buff_creator_t( effect.player, "lemon_herb_filet", effect.driver() )
+  buff_t* dmf_well_fed = buff_creator_t( effect.player, "darkmoon_faire_food", effect.driver() )
     .default_value( value )
     .add_invalidate( CACHE_VERSATILITY );
 
@@ -6881,7 +6886,7 @@ void unique_gear::register_special_effects_x7()
   register_special_effect( 225606, consumable::pepper_breath );
   register_special_effect( 225601, consumable::pepper_breath );
   register_special_effect( 201336, consumable::pepper_breath );
-  register_special_effect( 185736, consumable::lemon_herb_filet );
+  register_special_effect( 185736, consumable::darkmoon_faire_food );
 
   /* Artifact powers */
   register_special_effect( 252906, artifact_power::torment_the_weak );

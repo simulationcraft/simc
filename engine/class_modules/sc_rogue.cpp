@@ -248,7 +248,7 @@ struct rogue_t : public player_t
     buff_t* shark_infested_waters;
     buff_t* true_bearing;
     // Subtlety
-    buff_t* focused_shurikens;
+    buff_t* shuriken_combo;
     buff_t* shadow_blades;
     buff_t* shadow_dance;
     buff_t* symbols_of_death;
@@ -2970,7 +2970,7 @@ struct eviscerate_t : public rogue_attack_t
 
     m *= 1.0 + p() -> buffs.finality_eviscerate -> stack_value();
 
-    m *= 1.0 + p() -> buffs.focused_shurikens -> check_stack_value();
+    m *= 1.0 + p() -> buffs.shuriken_combo -> check_stack_value();
 
     return m;
   }
@@ -3005,9 +3005,9 @@ struct eviscerate_t : public rogue_attack_t
       p() -> buffs.feeding_frenzy -> decrement();
     }
 
-    if ( p() -> buffs.focused_shurikens -> up() )
+    if ( p() -> buffs.shuriken_combo -> up() )
     {
-      p() -> buffs.focused_shurikens -> expire();
+      p() -> buffs.shuriken_combo -> expire();
     }
   }
 };
@@ -4632,7 +4632,7 @@ struct shuriken_storm_t: public rogue_attack_t
 
     if ( p() -> spec.shuriken_combo -> ok() && execute_state -> n_targets > 1 )
     {
-      p() -> buffs.focused_shurikens -> trigger((int)(execute_state -> n_targets) - 1);
+      p() -> buffs.shuriken_combo -> trigger((int)(execute_state -> n_targets) - 1);
     }
   }
 
@@ -7280,11 +7280,12 @@ void rogue_t::init_action_list()
     def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7+talent.venom_rush.enabled*3)%2" );
     def -> add_action( "variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined" );
     def -> add_action( "call_action_list,name=cds" );
-    def -> add_action( "run_action_list,name=stealthed,if=stealthed.rogue" );
     def -> add_action( "run_action_list,name=aoe,if=spell_targets.fan_of_knives>2" );
+    def -> add_action( "run_action_list,name=stealthed,if=stealthed.rogue" );
     def -> add_action( "call_action_list,name=maintain" );
     def -> add_action( "call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)" );
     def -> add_action( "call_action_list,name=build,if=combo_points.deficit>1+talent.anticipation.enabled*2|energy.deficit<=25+variable.energy_regen_combined" );
+    def -> add_action( "arcane_pulse");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -7309,6 +7310,8 @@ void rogue_t::init_action_list()
     {
       if ( racial_actions[i] == "arcane_torrent" )
         cds -> add_action( racial_actions[i] + ",if=dot.kingsbane.ticking&!buff.envenom.up&energy.deficit>=15+variable.energy_regen_combined*gcd.remains*1.1" );
+      else if ( racial_actions[i] == "arcane_pulse" )
+        continue; // Manually added
       else
         cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
     }
@@ -7316,13 +7319,14 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled|dot.rupture.ticking" );
     cds -> add_talent( this, "Exsanguinate", "if=!set_bonus.tier20_4pc&(prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up)" );
     cds -> add_talent( this, "Exsanguinate", "if=set_bonus.tier20_4pc&dot.garrote.remains>20&dot.rupture.remains>4+4*cp_max_spend" );
+    cds -> add_action( this, "Vanish", "if=target.time_to_die<=6" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&mantle_duration=0&debuff.vendetta.up" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&talent.exsanguinate.enabled&combo_points>=cp_max_spend&mantle_duration=0&cooldown.exsanguinate.remains<1" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&equipped.mantle_of_the_master_assassin&(debuff.vendetta.up|target.time_to_die<10)&mantle_duration=0" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))" );
     cds -> add_action( this, "Vanish", "if=talent.shadow_focus.enabled&variable.energy_time_to_max_combined>=2&combo_points.deficit>=4" );
-    cds -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=0.2)&dot.rupture.remains>8&cooldown.vendetta.remains>10" );
-    cds -> add_action( this, "Kingsbane", "if=combo_points.deficit>=1+(mantle_duration>=0.2)&!stealthed.rogue&(!cooldown.toxic_blade.ready|!talent.toxic_blade.enabled&buff.envenom.up)" );
+    cds -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=0.2)&dot.rupture.remains>8&cooldown.vendetta.remains>10|target.time_to_die<=6" );
+    cds -> add_action( this, "Kingsbane", "if=combo_points.deficit>=1+(mantle_duration>=0.2)&!stealthed.rogue&(!cooldown.toxic_blade.ready|!talent.toxic_blade.enabled&buff.envenom.up)|target.time_to_die<=15" );
     
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
@@ -7356,6 +7360,7 @@ void rogue_t::init_action_list()
     maintain -> add_action( "pool_resource,for_next=1" );
     maintain -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
     maintain -> add_action( this, "Garrote", "if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1&(!cooldown.vanish.up|time>12)" );
+    maintain -> add_action( this, "Garrote", "if=!set_bonus.tier20_4pc&talent.exsanguinate.enabled&cooldown.exsanguinate.remains<2+2*(cooldown.vanish.remains<2)&time>12" );
     maintain -> add_action( this, "Rupture", "if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration=0&target.time_to_die>6" );
 
     // Finishers
@@ -7366,12 +7371,11 @@ void rogue_t::init_action_list()
     finish -> add_action( this, "Envenom", "if=!talent.anticipation.enabled&combo_points>=4+(talent.deeper_stratagem.enabled&!set_bonus.tier19_4pc)&(debuff.vendetta.up|debuff.toxic_blade.up|mantle_duration>=0.2|debuff.surge_of_toxins.remains<0.2|energy.deficit<=25+variable.energy_regen_combined)" );
     finish -> add_action( this, "Envenom", "if=talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.2" );
 
-    
-
     // AoE Rotation
     action_priority_list_t* aoe = get_action_priority_list( "aoe", "AoE" );
     aoe -> add_action( this, "Envenom", "if=!buff.envenom.up&combo_points>=cp_max_spend" );
     aoe -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=cp_max_spend&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
+    aoe -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&stealthed.rogue&refreshable&!exsanguinated" );
     aoe -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend" );
     aoe -> add_action( this, "Fan of Knives" );
   }
@@ -7402,6 +7406,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=build" );
     def -> add_action( "call_action_list,name=finish,if=!variable.ss_useable" );
     def -> add_action( this, "Gouge", "if=talent.dirty_tricks.enabled&combo_points.deficit>=1", "Gouge is used as a CP Generator while nothing else is available and you have Dirty Tricks talent. It's unlikely that you'll be able to do this optimally in-game since it requires to move in front of the target, but it's here so you can quantifiy its value." );
+    def -> add_action( "arcane_pulse" );
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
@@ -7435,6 +7440,8 @@ void rogue_t::init_action_list()
     {
       if ( racial_actions[i] == "arcane_torrent" )
         cds -> add_action( racial_actions[i] + ",if=energy.deficit>40" );
+      else if ( racial_actions[i] == "arcane_pulse" )
+        continue; // Manually added
       else
         cds -> add_action( racial_actions[i] );
     }
@@ -7481,10 +7488,11 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=finish,if=variable.dsh_dfa&equipped.the_first_of_the_dead&dot.nightblade.remains<=(cooldown.symbols_of_death.remains+10)&cooldown.symbols_of_death.remains<=2&combo_points>=2" );
     def -> add_action( "wait,sec=time_to_sht.5,if=combo_points=5&time_to_sht.5<=1&energy.deficit>=30&!buff.shadow_blades.up" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold" );
+    def -> add_action( "arcane_pulse");
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_action( this, "Shuriken Storm", "if=spell_targets.shuriken_storm>=2+buff.the_first_of_the_dead.up" );
+    build -> add_action( this, "Shuriken Storm", "if=spell_targets.shuriken_storm>=2+(buff.the_first_of_the_dead.up|buff.symbols_of_death.up|buff.master_of_subtlety.up)" );
     build -> add_talent( this, "Gloomblade" );
     build -> add_action( this, "Backstab" );
 
@@ -7518,7 +7526,9 @@ void rogue_t::init_action_list()
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
-        cds -> add_action( racial_actions[i] + ",if=stealthed.rogue&energy.deficit>70" );
+        cds -> add_action( racial_actions[i] + ",if=energy.deficit>70" );
+      else if ( racial_actions[i] == "arcane_pulse" )
+        continue; // Manually added
       else
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
@@ -7536,7 +7546,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
       // It is not worth to override a normal nightblade for a finality one outside of pandemic threshold, it is worth to wait the end of the finality to refresh it unless you already got the finality buff.
     finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&(mantle_duration=0|remains<=mantle_duration)&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)" );
-    finish -> add_action( this, "Nightblade", "cycle_targets=1,if=(!talent.death_from_above.enabled|set_bonus.tier19_2pc)&(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>12&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)" );
+    finish -> add_action( this, "Nightblade", "cycle_targets=1,if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>12&mantle_duration=0&((refreshable&(!finality|buff.finality_nightblade.up|variable.dsh_dfa))|remains<tick_time*2)&(spell_targets.shuriken_storm<4&!variable.dsh_dfa|!buff.symbols_of_death.up)" );
     finish -> add_action( this, "Nightblade", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5+(combo_points=6)&target.time_to_die-remains>cooldown.symbols_of_death.remains+5" );
     finish -> add_talent( this, "Death from Above", "if=!talent.dark_shadow.enabled|(!buff.shadow_dance.up|spell_targets>=4)&(buff.symbols_of_death.up|cooldown.symbols_of_death.remains>=10+set_bonus.tier20_4pc*5)&buff.the_first_of_the_dead.remains<1&(buff.finality_eviscerate.up|spell_targets.shuriken_storm<4)" );
     finish -> add_action( this, "Eviscerate" );
@@ -8444,7 +8454,7 @@ void rogue_t::create_buffs()
                                 .refresh_behavior( BUFF_REFRESH_PANDEMIC );
   buffs.roll_the_bones        = new buffs::roll_the_bones_t( this, rtb_creator );
   // Subtlety
-  buffs.focused_shurikens     = buff_creator_t( this, "focused_shurikens", find_spell( 245640 ) )
+  buffs.shuriken_combo        = buff_creator_t( this, "shuriken_combo", find_spell( 245640 ) )
                                 .default_value( find_spell( 245640 ) -> effectN( 1 ).percent() );
   buffs.shadow_blades         = new buffs::shadow_blades_t( this );
   buffs.shadow_dance          = new buffs::shadow_dance_t( this );

@@ -732,9 +732,9 @@ public:
   PaperdollThread* paperdollThread;
 #endif
 
-  sim_t* sim;
-  sim_t* import_sim;
-  sim_t* paperdoll_sim;
+  std::shared_ptr<sim_t> sim;
+  std::shared_ptr<sim_t> import_sim;
+  std::shared_ptr<sim_t> paperdoll_sim;
   std::string simPhase;
   std::string importSimPhase;
   int simProgress;
@@ -758,8 +758,8 @@ public:
   void    startSim();
   bool    simRunning();
 
-  sim_t*  initSim();
-  void    deleteSim( sim_t* sim, SC_TextEdit* append_error_message = 0 );
+  std::shared_ptr<sim_t>  initSim();
+  void    deleteSim( std::shared_ptr<sim_t>& sim, SC_TextEdit* append_error_message = 0 );
 
   void loadHistory();
   void saveHistory();
@@ -806,7 +806,7 @@ private slots:
   void updatetimer();
   void itemWasEnqueuedTryToSim();
   void importFinished();
-  void simulateFinished( sim_t* );
+  void simulateFinished( std::shared_ptr<sim_t> );
 #ifdef SC_PAPERDOLL
   void paperdollFinished();
   player_t* init_paperdoll_sim( sim_t*& );
@@ -998,7 +998,7 @@ public:
     connect( this,      SIGNAL( linkClicked( const QUrl& ) ),    this,      SLOT( linkClickedSlot( const QUrl& ) ) );
 #endif
 
-    SC_WebPage* page = new SC_WebPage( parent );
+    SC_WebPage* page = new SC_WebPage( this );
     setPage( page );
 #if defined( SC_USE_WEBKIT )
     page -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
@@ -1021,7 +1021,7 @@ public:
     }
     else
     {
-      qDebug() << "Can't write webcache! sucks";
+      qWarning() << "Can't create/write webcache.";
     }
   }
 
@@ -1243,7 +1243,7 @@ class SC_ImportThread : public QThread
 {
   Q_OBJECT
   SC_MainWindow* mainWindow;
-  sim_t* sim;
+  std::shared_ptr<sim_t> sim;
 
 public:
   int tab;
@@ -1258,9 +1258,9 @@ public:
 
   void importWidget();
 
-  void start( sim_t* s, int t, const QString& u, const QString& sources, const QString& spec, const QString& role, const QString& apikey )
+  void start( std::shared_ptr<sim_t> s, int t, const QString& u, const QString& sources, const QString& spec, const QString& role, const QString& apikey )
   { sim = s; tab = t; url = u; profile = ""; item_db_sources = sources; player = 0; active_spec = spec; m_role = role, api = apikey; QThread::start(); }
-  void start( sim_t* s, const QString&, const QString&, const QString&, const QString& );
+  void start( std::shared_ptr<sim_t> s, const QString&, const QString&, const QString&, const QString& );
   void run() override;
   SC_ImportThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), tab(0), player( 0 ) {}
 };

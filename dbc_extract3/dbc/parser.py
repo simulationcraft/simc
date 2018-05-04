@@ -95,14 +95,20 @@ class DBCacheParser:
         sig = wdb_parser.table_hash
 
         if sig not in self.entries:
-            return DBCRecordInfo(-1, record_id, 0, 0)
+            return DBCRecordInfo(-1, record_id, 0, 0, 0)
 
         if record_id >= len(self.entries[sig]):
-            return DBCRecordInfo(-1, record_id, 0, 0)
+            return DBCRecordInfo(-1, record_id, 0, 0, 0)
 
-        dbc_id = wdb_parser.has_id_block() and self.entries[sig][record_id]['record_id'] or -1
+        dbc_id = self.entries[sig][record_id]['record_id']
+        key_id = 0
+        if wdb_parser.has_key_block() and wdb_parser.has_id_block() and dbc_id < len(wdb_parser.dbc_id_table):
+            real_record_info = wdb_parser.dbc_id_table[dbc_id]
+            if real_record_info:
+                key_id = real_record_info.parent_id
+
         return DBCRecordInfo(dbc_id, record_id, self.entries[sig][record_id]['offset'], \
-                self.entries[sig][record_id]['length'])
+                self.entries[sig][record_id]['length'], key_id)
 
     def get_record(self, dbc_id, offset, size, wdb_parser):
         sig = wdb_parser.table_hash
@@ -138,39 +144,51 @@ class DBCacheParser:
         if not self.parse_header():
             return False
 
-        entry_unpacker = struct.Struct('<4sIiIIII')
+        entry_unpacker = struct.Struct('<4sIiIIIBBBB')
 
         n_entries = 0
+        all_entries = []
         while self.parse_offset < len(self.data):
-            magic, unk_1, unk_2, length, sig, record_id, unk_3 = entry_unpacker.unpack_from(self.data, self.parse_offset)
+            magic, game_type, unk_2, length, sig, record_id, enabled, unk_4, unk_5, unk_6 = \
+                    entry_unpacker.unpack_from(self.data, self.parse_offset)
+
             if magic != b'XFTH':
                 logging.error('Invalid hotfix magic %s', magic.decode('utf-8'))
                 return False
 
             self.parse_offset += entry_unpacker.size
-            if length == 0:
-                continue
 
             entry = {
                 'record_id': record_id,
-                'unk_1': unk_1,
+                'game_type': game_type,
                 'unk_2': unk_2,
-                'unk_3': unk_3,
+                'enabled': enabled,
+                'unk_4': unk_4,
+                'unk_5': unk_5,
+                'unk_6': unk_6,
                 'length': length,
-                'offset': self.parse_offset
+                'offset': self.parse_offset,
+                'sig': sig,
             }
-
-            logging.debug('header: { magic=%s, unk_1=%u, unk_2=%u, length=%u, sig=%u, record_id=%u, unk_3=%u }, entry: { %s }',
-                magic, unk_1, unk_2, length, sig, record_id, unk_3, 'record_id=%(record_id)u, unk_1=%(unk_1)u, unk_2=%(unk_2)u, unk_3=%(unk_3)u, length=%(length)u, offset=%(offset)u' % entry)
 
             if sig not in self.entries:
                 self.entries[sig] = []
 
-            self.entries[sig].append(entry)
+            if enabled:
+                self.entries[sig].append(entry)
+                all_entries.append(entry)
 
             # Skip data
             self.parse_offset += length
             n_entries += 1
+
+        if self.options.debug:
+            for entry in sorted(all_entries, key = lambda e: (e['unk_2'], e['sig'], e['record_id'])):
+                logging.debug('entry: { %s }',
+                    ('record_id=%(record_id)-6u game_type=%(game_type)u table_hash=%(sig)#.8x ' +
+                     'unk_2=%(unk_2)-5u enabled=%(enabled)u, unk_4=%(unk_4)-3u unk_5=%(unk_5)-3u ' +
+                     'unk_6=%(unk_6)-3u length=%(length)-3u offset=%(offset)-7u') % entry)
+
 
         logging.debug('Parsed %d hotfix entries', n_entries)
 
@@ -629,7 +647,7 @@ class DBCParserBase:
 
     def find_record_offset(self, id_):
         if not self.id_data:
-            return DBCRecordInfo(id_, -1, 0, 0)
+            return DBCRecordInfo(id_, -1, 0, 0, 0)
 
         unpacker = None
         if self.id_data[1] == 1:
@@ -648,26 +666,21 @@ class DBCParserBase:
                 dbc_id &= 0x00FFFFFF
 
             if dbc_id == id_:
-                return DBCRecordInfo(id_, record_id, self.data_offset + self.record_size * record_id, self.record_size)
+                return DBCRecordInfo(id_, record_id, self.data_offset + self.record_size * record_id, self.record_size, 0)
 
-        return DBCRecordInfo(id_, -1, 0, 0)
+        return DBCRecordInfo(id_, -1, 0, 0, 0)
 
     # Returns dbc_id (always 0 for base), record offset into file
     def get_record_info(self, record_id):
-        return DBCRecordInfo(-1, record_id, self.data_offset + record_id * self.record_size, self.record_size)
+        return DBCRecordInfo(-1, record_id, self.data_offset + record_id * self.record_size, self.record_size, 0)
 
     def get_record(self, dbc_id, offset, size):
         return self.record_parser(dbc_id, self.data, offset, size)
 
     def find(self, id_):
-        _, record_id, record_offset, record_size = self.find_record_offset(id_)
+        _, record_id, record_offset, record_size, key_id = self.find_record_offset(id_)
 
         if record_offset > 0:
-            if self.has_key_block():
-                key_id = self.key(record_id)
-            else:
-                key_id = 0
-
             return DBCRecordData(id_, key_id, self.record_parser(id_, self.data, record_offset, record_size))
         else:
             return DBCRecordData(id_, 0, tuple())
@@ -749,7 +762,7 @@ class LegionWDBParser(DBCParserBase):
             if id_ < len(self.dbc_id_table) and self.dbc_id_table[id_]:
                 return self.dbc_id_table[id_]
             else:
-                return DBCRecordInfo(id_, -1, 0, 0)
+                return DBCRecordInfo(id_, -1, 0, 0, 0)
         else:
             return super().find_record_offset(id_)
 
@@ -785,10 +798,21 @@ class LegionWDBParser(DBCParserBase):
             else:
                 data_offset = self.data_offset + record_id * self.record_size
 
-            record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size)
+            # If the db2 file has a key block, we need to grab the key at this
+            # point from the block, to record it into the data we have. Storing
+            # the information now associates with the correct dbc id, since the
+            # key block is record index based, not dbc id based.
+            if self.has_key_block():
+                key_id, _ = _CLONE.unpack_from(self.data, self.key_block_offset + 12 + _CLONE.size * record_id)
+            else:
+                key_id = 0
+
+            record_info = DBCRecordInfo(dbc_id, record_id, data_offset, size, key_id)
             idtable.append(record_info)
             recordtable[dbc_id] = record_info
-            indexdict[dbc_id] = (data_offset, size)
+            # Key id needs to be recorded here as well, so that a possible
+            # clone block can also clone the key id
+            indexdict[dbc_id] = (data_offset, size, key_id)
             record_id += 1
 
         # Process clones
@@ -799,7 +823,7 @@ class LegionWDBParser(DBCParserBase):
                 continue
 
             source = indexdict[source_id]
-            record_info = DBCRecordInfo(target_id, record_id, source[0], source[1])
+            record_info = DBCRecordInfo(target_id, record_id, source[0], source[1], source[2])
             idtable.append(record_info)
             recordtable[target_id] = record_info
 

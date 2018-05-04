@@ -22,6 +22,10 @@ class DBCacheIterator:
         self._wdb_parser = wdb_parser
         self._records = f.parser.n_entries(wdb_parser)
 
+        self._key_field_name = dbc.use_hotfix_key_field(self._wdb_parser.class_name())
+        if self._key_field_name:
+            self._key_field_index = self._data_class._cd[self._key_field_name]
+
         self._record = 0
 
     def __iter__(self):
@@ -31,8 +35,7 @@ class DBCacheIterator:
         if self._record == self._records:
             raise StopIteration
 
-        key_id = 0
-        dbc_id, record_id, offset, size = self._parser.get_record_info(self._wdb_parser, self._record)
+        dbc_id, record_id, offset, size, key_id = self._parser.get_record_info(self._wdb_parser, self._record)
         data = self._parser.get_record(dbc_id, offset, size, self._wdb_parser)
 
         # If the cache entry is for a WDB file that is expanded, we need to
@@ -58,10 +61,22 @@ class DBCacheIterator:
                 end_offset -= 1
 
             data = data[start_offset:end_offset]
+        elif self._wdb_parser.has_key_block():
+            # If the key block id is not duplicated in the record, it'll be at
+            # the end of the hotfix entry
+            if not self._key_field_name:
+                key_id = data[-1]
+                data = data[:-1]
+            # Duplicated, just grab it from the record index
+            else:
+                key_id = data[self._key_field_index]
 
         self._record += 1
 
-        return self._data_class(self._parser, dbc_id, data, key_id)
+        return self._data_class(self._parser,
+                                self._wdb_parser.has_id_block() and dbc_id or -1,
+                                data,
+                                self._wdb_parser.has_key_block() and key_id or 0)
 
 class DBCache:
     def __init__(self, options):
@@ -95,11 +110,10 @@ class DBCFileIterator:
         if self._record == self._n_records:
             raise StopIteration
 
-        key_id = 0
-        if self._parser.magic == b'WDC1':
+        dbc_id, record_id, offset, size, key_id = self._parser.get_record_info(self._record)
+        if self._parser.has_key_block() and key_id == 0:
             key_id = self._parser.key(self._record)
 
-        dbc_id, record_id, offset, size = self._parser.get_record_info(self._record)
         data = self._parser.get_record(dbc_id, offset, size)
         self._record += 1
 

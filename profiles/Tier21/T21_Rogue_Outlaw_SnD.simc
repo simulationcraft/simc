@@ -56,6 +56,7 @@ actions+=/call_action_list,name=build
 actions+=/call_action_list,name=finish,if=!variable.ss_useable
 # Gouge is used as a CP Generator while nothing else is available and you have Dirty Tricks talent. It's unlikely that you'll be able to do this optimally in-game since it requires to move in front of the target, but it's here so you can quantifiy its value.
 actions+=/gouge,if=talent.dirty_tricks.enabled&combo_points.deficit>=1
+actions+=/arcane_pulse
 
 # Blade Flurry
 actions.bf=cancel_buff,name=blade_flurry,if=spell_targets.blade_flurry<2&buff.blade_flurry.up
@@ -72,6 +73,7 @@ actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=60|buff.adrenalin
 actions.cds+=/blood_fury
 actions.cds+=/berserking
 actions.cds+=/arcane_torrent,if=energy.deficit>40
+actions.cds+=/lights_judgment
 actions.cds+=/cannonball_barrage,if=spell_targets.cannonball_barrage>=1
 actions.cds+=/adrenaline_rush,if=!buff.adrenaline_rush.up&energy.deficit>0
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)

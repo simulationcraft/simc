@@ -226,6 +226,9 @@ class DBCRecord(RawDBCRecord):
             fields.append('id')
         fields += self._fi
 
+        if self._dbcp.has_key_block():
+            fields.append('id_parent')
+
         return delim.join(fields)
 
     def __str__(self):
@@ -278,7 +281,7 @@ class DBCRecord(RawDBCRecord):
             else:
                 s += '%u%c' % (self._d[i], delim)
 
-        if self._dbcp.has_key_block():
+        if self._key > 0:
             s += '%u%c' % (self._key, delim)
 
         if len(s) > 0:

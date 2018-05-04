@@ -1,4 +1,4 @@
-//==========================================================================
+﻿//==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -177,6 +177,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* sidewinders;
     cooldown_t* bestial_wrath;
     cooldown_t* trueshot;
     cooldown_t* dire_beast;
@@ -442,6 +443,7 @@ public:
     clear_next_hunters_mark( true )
   {
     // Cooldowns
+    cooldowns.sidewinders     = get_cooldown( "sidewinders" );
     cooldowns.bestial_wrath   = get_cooldown( "bestial_wrath" );
     cooldowns.trueshot        = get_cooldown( "trueshot" );
     cooldowns.dire_beast      = get_cooldown( "dire_beast" );
@@ -3242,7 +3244,7 @@ struct legacy_of_the_windrunners_t: aimed_shot_base_t
 
 // Aimed Shot =========================================================================
 
-struct aimed_shot_t: public aimed_shot_base_t
+struct aimed_shot_t : public aimed_shot_base_t
 {
   benefit_t* aimed_in_careful_aim;
   benefit_t* aimed_in_critical_aimed;
@@ -3251,7 +3253,7 @@ struct aimed_shot_t: public aimed_shot_base_t
   vulnerability_stats_t vulnerability_stats;
   bool lock_and_loaded;
 
-  aimed_shot_t( hunter_t* p, const std::string& options_str ):
+  aimed_shot_t( hunter_t* p, const std::string& options_str ) :
     aimed_shot_base_t( "aimed_shot", p, p -> find_specialization_spell( "Aimed Shot" ) ),
     aimed_in_careful_aim( p -> get_benefit( "aimed_in_careful_aim" ) ),
     aimed_in_critical_aimed( p -> get_benefit( "aimed_in_critical_aimed" ) ),
@@ -3366,7 +3368,38 @@ struct aimed_shot_t: public aimed_shot_base_t
     return false;
   }
 
-  void try_t20_2p_mm() override {}
+  void try_t20_2p_mm() override { }
+
+  double casts_in_vulnerable() const
+  {
+    double remaining_time = p() -> get_target_data( target ) -> debuffs.vulnerable -> remains().total_seconds();
+
+    if ( p() -> talents.sidewinders -> ok() ) {
+      cooldown_t* sw_cd = p() -> cooldowns.sidewinders;
+
+      if ( sw_cd -> recharge_event )
+        remaining_time = std::min( sw_cd -> current_charge_remains().total_seconds() + ( sw_cd -> charges - sw_cd -> current_charge - 1 ) * sw_cd -> duration.total_seconds(), remaining_time );
+      else
+        return 0;
+    }
+    
+    int by_time = remaining_time / execute_time().total_seconds();
+    if ( by_time == 0 )
+      return 0;
+
+    int by_focus = p() -> resources.current[ RESOURCE_FOCUS ] / cost();
+    by_focus = by_focus + ( fmod( p() -> resources.current[ RESOURCE_FOCUS ], cost() ) + by_focus * cast_regen() ) / cost();
+
+    return std::min( by_time, by_focus );
+  }
+
+  expr_t* create_expression( const std::string& expression_str ) override
+  {
+    if ( expression_str == "vuln_casts" )
+      return make_mem_fn_expr( expression_str, *this, &aimed_shot_t::casts_in_vulnerable );
+
+    return aimed_shot_base_t::create_expression( expression_str );
+  }
 };
 
 // Arcane Shot Attack ================================================================
@@ -4993,6 +5026,19 @@ struct kill_command_t: public hunter_spell_t
     return false;
   }
 
+  // as of at least 20/03/2018 KC gcd gets reduced twice by haste, wow-bugtracker #219
+  timespan_t gcd() const override
+  {
+    timespan_t g = hunter_spell_t::gcd();
+
+    if ( g == timespan_t::zero() )
+      return g;
+
+    g *= player -> cache.attack_haste();
+
+    return std::max( g, min_gcd );
+  }
+
   // this is somewhat unfortunate but we can't get at the
   // pets dot in any other way
   template <typename F>
@@ -6561,13 +6607,13 @@ void hunter_t::apl_mm()
   non_patient_sniper -> add_talent( this, "Sentinel", "if=!debuff.hunters_mark.up" );
   non_patient_sniper -> add_talent( this, "Black Arrow", "if=talent.sidewinders.enabled|spell_targets.multishot<6" );
   non_patient_sniper -> add_talent( this, "A Murder of Crows", "if=target.time_to_die>=cooldown+duration|target.health.pct<20" );
-  non_patient_sniper -> add_action( this, "Windburst");
+  non_patient_sniper -> add_action( this, "Windburst" );
   non_patient_sniper -> add_talent( this, "Barrage", "if=spell_targets>2|(target.health.pct<20&buff.bullseye.stack<25)" );
-  non_patient_sniper -> add_action( this, "Marked Shot", "if=buff.marking_targets.up|buff.trueshot.up" );
+  non_patient_sniper -> add_action( this, "Marked Shot" );
+  non_patient_sniper -> add_action( this, "Arcane Shot", "if=set_bonus.tier21_4pc&equipped.zevrims_hunger&talent.sentinel.enabled&(buff.marking_targets.up|buff.trueshot.up)&!variable.waiting_for_sentinel" );
   non_patient_sniper -> add_talent( this, "Sidewinders", "if=!variable.waiting_for_sentinel&(debuff.hunters_mark.down|(buff.trueshot.down&buff.marking_targets.down))&((buff.marking_targets.up|buff.trueshot.up)|charges_fractional>1.8)&(focus.deficit>cast_regen)" );
   non_patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time" );
   non_patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&debuff.vulnerability.remains>cast_time&(!variable.pooling_for_piercing|(buff.lock_and_load.up&lowest_vuln_within.5>gcd.max))&(spell_targets.multishot<5|talent.trick_shot.enabled|buff.sentinels_sight.stack=20)" );
-  non_patient_sniper -> add_action( this, "Marked Shot" );
   non_patient_sniper -> add_action( this, "Aimed Shot", "if=focus+cast_regen>focus.max&!buff.sentinels_sight.up" );
   non_patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets.multishot>1&!variable.waiting_for_sentinel" );
   non_patient_sniper -> add_action( this, "Arcane Shot", "if=spell_targets.multishot=1&!variable.waiting_for_sentinel" );
@@ -6579,13 +6625,8 @@ void hunter_t::apl_mm()
                                 "condition=talent.sidewinders.enabled&cooldown.sidewinders.full_recharge_time<debuff.vulnerability.remains",
                                 "Sidewinders charges could cap sooner than the Vulnerable debuff ends, so clip the current window to the recharge time if it will." );
 
-  patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=floor(variable.vuln_window%action.aimed_shot.execute_time)",
-                                "Determine the number of Aimed Shot casts that are possible according to available focus and remaining Vulnerable duration." );
 
-  patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,"
-                                "value=floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost),"
-                                "if=variable.vuln_aim_casts>0&variable.vuln_aim_casts>floor((focus+action.aimed_shot.cast_regen*(variable.vuln_aim_casts-1))%action.aimed_shot.cost)" );
-
+  patient_sniper -> add_action( "variable,name=vuln_aim_casts,op=set,value=action.aimed_shot.vuln_casts" );
   patient_sniper -> add_action( "variable,name=can_gcd,value=variable.vuln_window<action.aimed_shot.cast_time|variable.vuln_window>variable.vuln_aim_casts*action.aimed_shot.execute_time+gcd.max+0.1" );
 
   patient_sniper -> add_action( "call_action_list,name=targetdie,if=target.time_to_die<variable.vuln_window&spell_targets.multishot=1" );
@@ -6594,9 +6635,8 @@ void hunter_t::apl_mm()
   patient_sniper -> add_talent( this, "Piercing Shot", "if=cooldown.piercing_shot.up&spell_targets>1&lowest_vuln_within.5>0&((!buff.trueshot.up&focus>80&(lowest_vuln_within.5<1|debuff.hunters_mark.up))|(buff.trueshot.up&focus>105&lowest_vuln_within.5<6))",
                                       "For multitarget, the possible Marked Shots that might be lost while waiting for Patient Sniper to stack are not worth losing, so fire Piercing as soon as Marked Shot is ready before resetting the window. Basically happens immediately under Trushot." );
   
-  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets>1&talent.trick_shot.enabled&debuff.vulnerability.remains>cast_time&(buff.sentinels_sight.stack>=spell_targets.multishot*5|buff.sentinels_sight.stack+(spell_targets.multishot%2)>20|buff.lock_and_load.up|(set_bonus.tier20_2pc&!buff.t20_2p_critical_aimed_damage.up&action.aimed_shot.in_flight))",
-                                      "For multitarget, Aimed Shot is generally only worth using with Trickshot, and depends on if Lock and Load is triggered or Warbelt is equipped and about half of your next multishot's "
-                                      "additional Sentinel's Sight stacks would be wasted. Once either of those condition are met, the next Aimed is forced immediately afterwards to trigger the Tier 20 2pc." );
+  patient_sniper -> add_action( this, "Aimed Shot", "if=spell_targets.multishot>1&talent.trick_shot.enabled&debuff.vulnerability.remains>cast_time&(buff.sentinels_sight.stack>=spell_targets.multishot*5|buff.sentinels_sight.stack+(spell_targets.multishot%2)>20|(set_bonus.tier20_2pc&!buff.t20_2p_critical_aimed_damage.up&prev.aimed_shot)|buff.lock_and_load.up&spell_targets.multishot<3)",
+                                      "On 3 or more targets dump stacks and add another Aimed for T20. On 2 targets also spend Lock and Load procs." );
 
   patient_sniper -> add_action( this, "Marked Shot", "if=spell_targets>1" );
   patient_sniper -> add_action( this, "Multi-Shot", "if=spell_targets>1&(buff.marking_targets.up|buff.trueshot.up)" );
@@ -6613,7 +6653,7 @@ void hunter_t::apl_mm()
   
   patient_sniper -> add_action( this, "Aimed Shot", "if=talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight))&(variable.vuln_window-(execute_time*variable.vuln_aim_casts)<1|focus.deficit<=cast_regen|buff.trueshot.up)&(spell_targets.multishot=1|focus>100)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=!talent.sidewinders.enabled&(debuff.vulnerability.remains>cast_time|(buff.lock_and_load.down&action.windburst.in_flight&(!set_bonus.tier21_4pc|debuff.hunters_mark.down)))&(!variable.pooling_for_piercing|lowest_vuln_within.5>execute_time+gcd.max)" );
-  patient_sniper -> add_action( this, "Marked Shot", "if=!talent.sidewinders.enabled&!variable.pooling_for_piercing&(!action.windburst.in_flight|set_bonus.tier21_4pc)&((focus>65|buff.trueshot.up|(1%attack_haste)>1.217|(1%attack_haste)>1.171&set_bonus.tier20_4pc)|set_bonus.tier21_4pc&!set_bonus.tier20_2pc)" );
+  patient_sniper -> add_action( this, "Marked Shot", "if=!talent.sidewinders.enabled&((buff.lock_and_load.up&debuff.vulnerability.down)|(variable.vuln_window<action.aimed_shot.cast_time&!variable.pooling_for_piercing&(!action.windburst.in_flight|set_bonus.tier21_4pc)&((focus>65|buff.trueshot.up|(1%attack_haste)>1.217|(1%attack_haste)>1.171&set_bonus.tier20_4pc)|set_bonus.tier21_4pc&!set_bonus.tier20_2pc)))" );
   patient_sniper -> add_action( this, "Marked Shot", "if=talent.sidewinders.enabled&(variable.vuln_aim_casts<1|buff.trueshot.up|variable.vuln_window<action.aimed_shot.cast_time)" );
   patient_sniper -> add_action( this, "Aimed Shot", "if=focus+cast_regen>focus.max&buff.lock_and_load.down&!buff.sentinels_sight.up" );
   patient_sniper -> add_talent( this, "Sidewinders", "if=(!debuff.hunters_mark.up|(!buff.marking_targets.up&!buff.trueshot.up))&((buff.marking_targets.up&variable.vuln_aim_casts<1)|buff.trueshot.up|charges_fractional>1.9)" );
@@ -6670,6 +6710,7 @@ void hunter_t::apl_surv()
   CDs -> add_action( "arcane_torrent,if=focus<=30" );
   CDs -> add_action( "berserking,if=buff.aspect_of_the_eagle.up" );
   CDs -> add_action( "blood_fury,if=buff.aspect_of_the_eagle.up" );
+  CDs -> add_action( "lights_judgment,if=!buff.aspect_of_the_eagle.up&cooldown.aspect_of_the_eagle.remains<2" );
   CDs -> add_action( "potion,if=buff.aspect_of_the_eagle.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)" );
   CDs -> add_talent( this, "Snake Hunter", "if=cooldown.mongoose_bite.charges=0&buff.mongoose_fury.remains>3*gcd&(cooldown.aspect_of_the_eagle.remains>5&!buff.aspect_of_the_eagle.up)" );
   CDs -> add_action( this, "Aspect of the Eagle", "if=buff.mongoose_fury.up&(cooldown.mongoose_bite.charges=0|buff.mongoose_fury.remains<11)" );
