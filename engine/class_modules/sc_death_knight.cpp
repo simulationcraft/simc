@@ -436,7 +436,6 @@ public:
     buff_t* blighted_rune_weapon;
     haste_buff_t* unholy_frenzy;
     buff_t* necrosis;
-    stat_buff_t* defile;
     haste_buff_t* soul_reaper;
     absorb_buff_t* tombstone;
 
@@ -4055,16 +4054,6 @@ struct defile_damage_t : public death_and_decay_damage_base_t
   defile_damage_t( death_knight_spell_t* parent ) :
     death_and_decay_damage_base_t( parent, "defile_damage", parent -> player -> find_spell( 156000 ) )
   { }
-
-  void execute() override
-  {
-    death_and_decay_damage_base_t::execute();
-
-    if ( hit_any_target )
-    {
-      p() -> buffs.defile -> trigger();
-    }
-  }
 };
 
 struct death_and_decay_base_t : public death_knight_spell_t
@@ -7817,10 +7806,6 @@ void death_knight_t::create_buffs()
   buffs.necrosis = buff_creator_t( this, "necrosis", find_spell( 216974 ) )
     .default_value( find_spell( 216974 ) -> effectN( 1 ).percent() )
     .trigger_spell( talent.necrosis );
-
-  buffs.defile = stat_buff_creator_t( this, "defile", find_spell( 218100 ) )
-    .cd( timespan_t::zero() )
-    .trigger_spell( talent.defile );
 
   buffs.soul_reaper = make_buff<haste_buff_t>( this, "soul_reaper_haste", talent.soul_reaper -> effectN( 2 ).trigger() );
   buffs.soul_reaper->set_default_value( talent.soul_reaper -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
