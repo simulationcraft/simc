@@ -622,7 +622,7 @@ public:
     const spell_data_t* epidemic; // NYI
 
     // Tier 7
-    const spell_data_t* dark_infusion; // NYI
+    const spell_data_t* dark_infusion;
     const spell_data_t* unholy_frenzy; // NYI
     const spell_data_t* summon_gargoyle;
 
@@ -4005,10 +4005,15 @@ struct t21_death_coil_t : public death_knight_spell_t
       p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
     }
 
+    // Reduces the cooldown Dark Transformation by 1s, +3s if Dark Infusion is talented
+
+    p() -> cooldown.dark_transformation -> adjust( - timespan_t::from_seconds(
+        p() -> spec.death_coil -> effectN( 2 ).base_value() ) );
+
     if ( p() -> talent.dark_infusion -> ok() )
     {
       p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
-        p() -> talent.dark_infusion -> effectN( 1 ).base_value() ) );
+        p() -> talent.dark_infusion -> effectN( 2 ).base_value() ) );
     }
 
     if ( p() -> pets.ghoul_pet )
@@ -4109,10 +4114,15 @@ struct death_coil_t : public death_knight_spell_t
       p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
     }
 
+    // Reduces the cooldown Dark Transformation by 1s, +3s if Dark Infusion is talented
+
+    p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
+      p() -> spec.death_coil -> effectN( 2 ).base_value() ) );
+
     if ( p() -> talent.dark_infusion -> ok() )
     {
       p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
-        p() -> talent.dark_infusion -> effectN( 1 ).base_value() ) );
+        p() -> talent.dark_infusion -> effectN( 2 ).base_value() ) );
     }
 
     if ( p() -> pets.ghoul_pet )
@@ -4443,6 +4453,18 @@ struct epidemic_damage_main_t : public death_knight_spell_t
     death_knight_spell_t( "epidemic_main", p, p -> find_spell( 212739 ) )
   {
     background = true;
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    
+    // Reduces the cooldown Dark Transformation by 3s if Dark Infusion is talented
+    if ( p() -> talent.dark_infusion -> ok() )
+    {
+      p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
+        p() -> talent.dark_infusion -> effectN( 2 ).base_value() ) );
+    }
   }
 };
 
@@ -7368,7 +7390,7 @@ void death_knight_t::create_buffs()
                               .trigger_spell( spec.crimson_scourge );
   buffs.dancing_rune_weapon = new dancing_rune_weapon_buff_t( this );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", spec.dark_transformation )
-    .duration( spec.dark_transformation -> duration() )
+    .duration( spec.dark_transformation -> duration() + timespan_t::from_millis( talent.dark_infusion -> effectN( 1 ).base_value() ) )
     .cd( timespan_t::zero() ); // Handled by the action
 
   buffs.death_and_decay     = buff_creator_t( this, "death_and_decay", find_spell( 188290 ) )
