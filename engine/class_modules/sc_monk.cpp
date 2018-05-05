@@ -574,6 +574,25 @@ public:
     const spell_data_t* the_wind_blows;
   } legendary;
 
+  struct azerite_powers_t
+  {
+    // Multiple
+    azerite_power_t strength_of_spirit;
+
+    // Brewmaster
+    azerite_power_t boiling_brew;
+    azerite_power_t fit_to_burst;
+    azerite_power_t staggering_strikes;
+
+    // Mistweaver
+    azerite_power_t invigorating_brew;
+    azerite_power_t overflowing_mists;
+
+    // Windwalker
+    azerite_power_t iron_fists;
+    azerite_power_t sunrise_technique;
+  } azerite;
+
   struct pets_t
   {
     pets::storm_earth_and_fire_pet_t* sef[ SEF_PET_MAX ];
@@ -614,6 +633,7 @@ public:
       cooldown( cooldowns_t() ),
       passives( passives_t() ),
       legendary( legendary_t() ),
+      azerite( azerite_powers_t() ),
       pet( pets_t() ),
       user_options( options_t() ),
       light_stagger_threshold( 0 ),
@@ -4086,6 +4106,16 @@ struct keg_smash_t: public monk_melee_attack_t
       am *= 1 + p() -> legendary.stormstouts_last_gasp -> effectN( 2 ).percent();
 
     return am;
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = monk_melee_attack_t::bonus_da( s );
+
+    if ( td( s -> target ) -> dots.breath_of_fire -> is_ticking() )
+      b += p() -> azerite.boiling_brew.value();
+
+    return b;
   }
 
   virtual void impact( action_state_t* s ) override
