@@ -5575,7 +5575,7 @@ struct soul_reaper_t : public death_knight_spell_t
 struct summon_gargoyle_t : public death_knight_spell_t
 {
   summon_gargoyle_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "summon_gargoyle", p, p -> find_class_spell( "Summon Gargoyle" ) )
+    death_knight_spell_t( "summon_gargoyle", p, p -> talent.summon_gargoyle )
   {
     parse_options( options_str );
     harmful = false;
@@ -5585,9 +5585,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    timespan_t duration = data().effectN( 3 ).trigger() -> duration();
-
-    p() -> pets.gargoyle -> summon( duration );
+    p() -> pets.gargoyle -> summon( data().effectN( 3 ).trigger() -> duration() );
   }
 };
 
@@ -6688,7 +6686,7 @@ void death_knight_t::create_pets()
 {
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
-    if ( find_action( "summon_gargoyle" ) && ! talent.summon_gargoyle -> ok() )
+    if ( find_action( "summon_gargoyle" ) && talent.summon_gargoyle -> ok() )
     {
       pets.gargoyle = new pets::gargoyle_pet_t( this );
     }
