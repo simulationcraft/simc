@@ -490,6 +490,7 @@ struct rogue_t : public player_t
     azerite_power_t nights_vengeance;
     azerite_power_t sharpened_blades;
     azerite_power_t storm_of_steel;
+    azerite_power_t twist_the_knife;
   } azerite;
 
   // Procs
@@ -2621,6 +2622,16 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t( "envenom", p, p -> find_specialization_spell( "Envenom" ), options_str )
   {
     dot_duration = timespan_t::zero();
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = rogue_attack_t::bonus_da( s );
+
+    if ( td( s -> target ) -> dots.garrote -> is_ticking() )
+      b += p() -> azerite.twist_the_knife.value();
+
+    return b;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -6977,6 +6988,7 @@ void rogue_t::init_spells()
   azerite.nights_vengeance  = find_azerite_spell( "Night's Vengeance" );
   azerite.sharpened_blades  = find_azerite_spell( "Sharpened Blades" );
   azerite.storm_of_steel    = find_azerite_spell( "Storm of Steel" );
+  azerite.twist_the_knife   = find_azerite_spell( "Twist the Knife" );
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
