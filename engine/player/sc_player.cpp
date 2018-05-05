@@ -7,6 +7,8 @@
 
 #include "simulationcraft.hpp"
 
+#include "dbc/azerite.hpp"
+
 namespace
 {
 // Player Ready Event =======================================================
@@ -662,6 +664,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   dbc( s->dbc ),
   talent_points(),
   artifact( nullptr ),
+  azerite( nullptr ),
   base(),
   initial(),
   current(),
@@ -770,6 +773,11 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )
   {
     artifact = artifact::player_artifact_data_t::create( this );
+  }
+
+  if ( ! is_enemy() && ! is_enemy() )
+  {
+    azerite = azerite::create_state( this );
   }
 
   // Set the gear object to a special default value, so we can support gear_x=0 properly.
@@ -1344,6 +1352,32 @@ bool player_t::init_items()
   init_weapon( off_hand_weapon );
 
   return true;
+}
+
+/**
+ * Initializes the Azerite-related support structures for an actor if there are any.
+ *
+ * Since multiple instances of the same azerite power can be worn by an actor, we need to ensure
+ * that only one instance of the azerite power gets initialized. Ensure this by building a simple
+ * map that keeps initialization status for all azerite powers defined for the actor from different
+ * sources (currently only items). Initialization status changes automatically when an
+ * azerite_power_t object is created for the actor.
+ *
+ * Note, guards against invocation from non-player actors (enemies, adds, pets ...)
+ */
+void player_t::init_azerite()
+{
+  if ( is_enemy() || is_pet() )
+  {
+    return;
+  }
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "Initializing Azerite sub-system for player (%s)", name() );
+  }
+
+  azerite -> initialize();
 }
 
 void player_t::init_meta_gem()
@@ -8764,6 +8798,27 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, uint32_t i
   }
 
   return spell_data_t::not_found();
+}
+
+azerite_power_t player_t::find_azerite_spell( unsigned id ) const
+{
+  if ( ! azerite )
+  {
+    return {};
+  }
+
+  return azerite -> get_power( id );
+}
+
+azerite_power_t player_t::find_azerite_spell( const std::string& name, bool tokenized ) const
+{
+  if ( ! azerite )
+  {
+    return {};
+  }
+
+  // Note, no const propagation here, so this works
+  return azerite -> get_power( name, tokenized );
 }
 
 /**

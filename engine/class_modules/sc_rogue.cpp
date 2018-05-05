@@ -278,6 +278,9 @@ struct rogue_t : public player_t
     buff_t* t21_2pc_outlaw;
     buff_t* t21_4pc_subtlety;
 
+    // Azerite powers
+    buff_t* sharpened_blades;
+
   } buffs;
 
   // Cooldowns
@@ -476,6 +479,12 @@ struct rogue_t : public player_t
     // Subtlety
     const spell_data_t* executioner;
   } mastery;
+
+  // Azerite powers
+  struct azerite_powers_t
+  {
+    azerite_power_t sharpened_blades;
+  } azerite;
 
   // Procs
   struct procs_t
@@ -2129,6 +2138,11 @@ struct melee_t : public rogue_attack_t
       first = false;
     }
     rogue_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      p() -> buffs.sharpened_blades -> trigger();
+    }
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -3430,6 +3444,16 @@ struct shadow_blade_t : public rogue_attack_t
     may_glance = false;
     base_execute_time = weapon -> swing_time;
   }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      p() -> buffs.sharpened_blades -> trigger();
+    }
+  }
 };
 
 struct shadow_blades_t : public rogue_attack_t
@@ -3680,6 +3704,22 @@ struct shuriken_toss_t : public rogue_attack_t
   shuriken_toss_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shuriken_toss", p, p -> find_specialization_spell( "Shuriken Toss" ), options_str )
   { }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = rogue_attack_t::bonus_da( s );
+
+    b += p() -> buffs.sharpened_blades -> stack_value();
+
+    return b;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.sharpened_blades -> expire();
+  }
 
   // 1/15/2018 - Confirmed Shuriken Toss procs Insignia hits in-game, although Poisoned Knife does not
 };
@@ -4184,7 +4224,15 @@ struct poisoned_knife_t : public rogue_attack_t
 {
   poisoned_knife_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "poisoned_knife", p, p -> find_specialization_spell( "Poisoned Knife" ), options_str )
+  { }
+
+  double bonus_da( const action_state_t* s ) const override
   {
+    double b = rogue_attack_t::bonus_da( s );
+
+    b += p() -> buffs.sharpened_blades -> stack_value();
+
+    return b;
   }
 
   bool procs_insignia_of_ravenholdt() const override
@@ -4192,6 +4240,13 @@ struct poisoned_knife_t : public rogue_attack_t
 
   double composite_poison_flat_modifier( const action_state_t* ) const override
   { return 1.0; }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.sharpened_blades -> expire();
+  }
 };
 
 // ==========================================================================
@@ -6871,6 +6926,8 @@ void rogue_t::init_spells()
   talent.master_of_shadows  = find_talent_spell( "Master of Shadows" );
   talent.death_from_above   = find_talent_spell( "Death from Above" );
 
+  azerite.sharpened_blades  = find_azerite_spell( "Sharpened Blades" );
+
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
   // Legendaries
@@ -7202,6 +7259,11 @@ void rogue_t::create_buffs()
   buffs.t21_2pc_outlaw                     = make_buff( this, "sharpened_sabers", find_spell( 252285 ) )
                                              -> set_default_value( find_spell( 252285 ) -> effectN( 1 ).percent() );
   buffs.t21_4pc_subtlety                   = make_buff( this, "shadow_gestures", sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> effectN( 1 ).trigger() );
+
+  // Azerite
+  buffs.sharpened_blades                   = make_buff( this, "sharpened_blades", find_spell( 272916 ) )
+                                             -> set_trigger_spell( azerite.sharpened_blades.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_default_value( azerite.sharpened_blades.value() );
 }
 
 // rogue_t::create_options ==================================================

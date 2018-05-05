@@ -2270,6 +2270,9 @@ bool sim_t::init_actor( player_t* p )
     return false;
   }
 
+  // Must be done after init_items (processes item options, so we know selected azerite powers in
+  // each item), and before init_spells (class modules "find_azerite_spell" in these).
+  p -> init_azerite();
   p -> init_spells();
   p -> init_base_stats();
   p -> create_buffs();

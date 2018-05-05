@@ -46,6 +46,7 @@ SRC += \
     player$(PATHSEP)sc_enchant.cpp \
     player$(PATHSEP)sc_consumable.cpp \
     player$(PATHSEP)artifact_data.cpp \
+    player$(PATHSEP)azerite_data.cpp \
     interfaces$(PATHSEP)sc_wowhead.cpp \
     interfaces$(PATHSEP)sc_js.cpp \
     interfaces$(PATHSEP)sc_http.cpp \

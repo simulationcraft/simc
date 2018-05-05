@@ -1399,6 +1399,14 @@ unsigned dbc_t::mastery_ability( unsigned class_id, unsigned specialization, uns
 #endif
 }
 
+const azerite_power_entry_t& dbc_t::azerite_power( unsigned power_id ) const
+{
+  return azerite_power_entry_t::find( power_id, ptr );
+}
+
+arv::array_view<azerite_power_entry_t> dbc_t::azerite_powers() const
+{ return azerite_power_entry_t::data( ptr ); }
+
 unsigned dbc_t::class_max_size() const
 {
   return MAX_CLASS;

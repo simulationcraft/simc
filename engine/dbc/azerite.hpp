@@ -7,14 +7,15 @@
 
 #include "util/array_view.hpp"
 
-struct azerite_power_t
+struct azerite_power_entry_t
 {
-  unsigned id;
-  unsigned spell_id;
+  unsigned    id;
+  unsigned    spell_id;
+  const char* name;
 
-  static const azerite_power_t& find( unsigned id, bool ptr = false );
-  static const azerite_power_t& nil();
-  static arv::array_view<azerite_power_t> data( bool ptr = false );
+  static const azerite_power_entry_t& find( unsigned id, bool ptr = false );
+  static const azerite_power_entry_t& nil();
+  static arv::array_view<azerite_power_entry_t> data( bool ptr = false );
 };
 
 #endif /* AZERITE_HPP */
