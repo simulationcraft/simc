@@ -273,6 +273,9 @@ public:
     buff_t* hidden_masters_forbidden_touch;
     haste_buff_t* sephuzs_secret;
     buff_t* the_emperors_capacitor;
+
+    // Azerite Trait
+    stat_buff_t* iron_fists;
   } buff;
 
 public:
@@ -3745,6 +3748,12 @@ struct fists_of_fury_t: public monk_melee_attack_t
     combo_strikes_trigger( CS_FISTS_OF_FURY );
 
     monk_melee_attack_t::execute();
+
+    // Get the number of targets from the non sleeping target list
+    auto targets = sim -> target_non_sleeping_list.size();
+
+    if ( targets >= p() -> azerite.iron_fists.spell_ref().effectN( 2 ).base_value() )
+      p() -> buff.iron_fists -> trigger();
   }
 
   virtual void last_tick( dot_t* dot ) override
@@ -6931,7 +6940,7 @@ void monk_t::init_spells()
   spec.windwalker_monk               = find_specialization_spell( 137025 );
   spec.windwalking                   = find_specialization_spell( "Windwalking" );
 
-  // Azurite Powers ===================================
+  // Azerite Powers ===================================
   // Multiple
   azerite.strength_of_spirit         = find_azerite_spell( "Strength of Spirit" );
 
@@ -7181,7 +7190,7 @@ void monk_t::create_buffs()
   buff.channeling_soothing_mist = make_buff( this, "channeling_soothing_mist", passives.soothing_mist_heal );
 
   buff.life_cocoon = make_buff<absorb_buff_t>( this, "life_cocoon", spec.life_cocoon );
-  buff.life_cocoon->set_absorb_source( get_stats( "life_cocoon" ) )->set_cooldown( timespan_t::zero() );
+  buff.life_cocoon -> set_absorb_source( get_stats( "life_cocoon" ) )->set_cooldown( timespan_t::zero() );
 
   buff.mana_tea = make_buff( this, "mana_tea", talent.mana_tea )
                   -> set_default_value( talent.mana_tea -> effectN( 1 ).percent() );
@@ -7251,6 +7260,11 @@ void monk_t::create_buffs()
 
   buff.the_emperors_capacitor = make_buff( this, "the_emperors_capacitor", passives.the_emperors_capacitor )
                                 -> set_default_value( passives.the_emperors_capacitor -> effectN( 1 ).percent() );
+
+  // Azerite Traits
+  buff.iron_fists = make_buff<stat_buff_t>( this, "iron_fists", find_spell( 272806 ) );
+  buff.iron_fists -> set_trigger_spell( azerite.iron_fists.spell_ref().effectN( 1 ).trigger() );
+  buff.iron_fists -> set_default_value( azerite.iron_fists.value() );
 }
 
 // monk_t::init_gains =======================================================
