@@ -3598,7 +3598,7 @@ double player_t::composite_rating( rating_e rating ) const
     case RATING_HEAL_VERSATILITY:
     case RATING_MITIGATION_VERSATILITY:
       v = current.stats.versatility_rating;
-      v += racials.mountaineer->effectN( 2 ).average( this );
+      v += racials.mountaineer->effectN( 1 ).average( this );
       break;
     case RATING_EXPERTISE:
       v = current.stats.expertise_rating;
