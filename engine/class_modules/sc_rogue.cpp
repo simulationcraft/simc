@@ -282,6 +282,7 @@ struct rogue_t : public player_t
     buff_t* deadshot;
     buff_t* nights_vengeance;
     buff_t* sharpened_blades;
+    buff_t* storm_of_steel;
 
   } buffs;
 
@@ -488,6 +489,7 @@ struct rogue_t : public player_t
     azerite_power_t deadshot;
     azerite_power_t nights_vengeance;
     azerite_power_t sharpened_blades;
+    azerite_power_t storm_of_steel;
   } azerite;
 
   // Procs
@@ -2549,6 +2551,13 @@ struct dispatch_t: public rogue_attack_t
     return false;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = rogue_attack_t::bonus_da( s );
+    b += p() -> buffs.storm_of_steel -> stack_value();
+    return b;
+  }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -2599,6 +2608,8 @@ struct dispatch_t: public rogue_attack_t
     }
 
     p() -> trigger_t21_4pc_outlaw( execute_state );
+
+    p() -> buffs.storm_of_steel -> expire();
   }
 };
 
@@ -3786,6 +3797,8 @@ struct sinister_strike_t : public rogue_attack_t
       {
         rogue -> buffs.t21_2pc_outlaw -> trigger();
       }
+
+      rogue -> buffs.storm_of_steel -> trigger();
     }
   };
 
@@ -6963,6 +6976,7 @@ void rogue_t::init_spells()
   azerite.deadshot          = find_azerite_spell( "Deadshot" );
   azerite.nights_vengeance  = find_azerite_spell( "Night's Vengeance" );
   azerite.sharpened_blades  = find_azerite_spell( "Sharpened Blades" );
+  azerite.storm_of_steel    = find_azerite_spell( "Storm of Steel" );
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
@@ -7306,6 +7320,9 @@ void rogue_t::create_buffs()
   buffs.sharpened_blades                   = make_buff( this, "sharpened_blades", find_spell( 272916 ) )
                                              -> set_trigger_spell( azerite.sharpened_blades.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.sharpened_blades.value() );
+  buffs.storm_of_steel                     = make_buff( this, "storm_of_steel", find_spell( 273455 ) )
+                                             -> set_trigger_spell( azerite.storm_of_steel.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_default_value( azerite.storm_of_steel.value() );
 }
 
 // rogue_t::create_options ==================================================
