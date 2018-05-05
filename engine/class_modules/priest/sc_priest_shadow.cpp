@@ -1088,7 +1088,7 @@ struct dark_void_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-    priest().generate_insanity( insanity_gain, priest().gains.insanity_dark_void, execute_state->action );
+    
     child_swp->target = s->target;
     child_swp->execute();
   }
