@@ -551,6 +551,24 @@ private:
   std::string _new_option;
 };
 
+struct opts_obsoleted_t : public option_t
+{
+  opts_obsoleted_t( const std::string& name ) :
+    option_t( name )
+  { }
+protected:
+  bool parse( sim_t*, const std::string& name, const std::string& ) const override
+  {
+    if ( name != this -> name() )
+      return false;
+
+    std::cerr << "Option '" << name << "' has been obsoleted and will be removed in the future." << std::endl;
+    return true;
+  }
+  std::ostream& print( std::ostream& stream ) const override
+  { return stream; }
+};
+
 } // opts
 
 // option_t::parse ==========================================================
@@ -899,3 +917,6 @@ std::unique_ptr<option_t> opt_func( const std::string& n, const opts::function_t
 
 std::unique_ptr<option_t> opt_deprecated( const std::string& n, const std::string& new_option )
 { return std::unique_ptr<option_t>(new opts_deperecated_t( n, new_option )); }
+
+std::unique_ptr<option_t> opt_obsoleted( const std::string& n )
+{ return std::unique_ptr<option_t>(new opts_obsoleted_t( n )); }

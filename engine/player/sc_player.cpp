@@ -10333,12 +10333,14 @@ void player_t::create_options()
   add_option( opt_bool( "stat_cache", cache.active ) );
   add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
 
+  // Obsolete options
+
   // Dummy artifact options
   // TODO: Remove when 8.0 goes live
-  std::string __dummy;
-  add_option( opt_string( "artifact", __dummy ) );
-  add_option( opt_string( "crucible", __dummy ) );
-  add_option( opt_string( "artifact_override", __dummy ) );
+  add_option( opt_obsoleted( "artifact" ) );
+  add_option( opt_obsoleted( "crucible" ) );
+  add_option( opt_obsoleted( "artifact_override" ) );
+  add_option( opt_obsoleted( "disable_artifact" ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )
