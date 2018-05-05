@@ -1106,15 +1106,21 @@ struct void_eruption_t final : public priest_spell_t
     
     if( priest().talents.legacy_of_the_void->ok() )
     {
-      insanity_required = priest().talents.legacy_of_the_void->effectN( 6 ).percent();
+
+      insanity_required = (double) priest().talents.legacy_of_the_void->effectN( 6 ).base_value();
     }
     else
     {
-      insanity_required = base_costs[ RESOURCE_INSANITY ] / 100;
+      insanity_required = data_spell->cost( POWER_INSANITY ) / 100.0;
+    }
+
+    if ( sim->debug )
+    {
+      priest().sim->out_debug.printf("Void Eruption requires %.2d insanity", insanity_required );
     }
 
     // We don't want to lose insanity when casting it!
-    base_costs[RESOURCE_INSANITY] = 0;
+    base_costs[ RESOURCE_INSANITY ] = 0;
 
     may_miss          = false;
     is_mastery_spell  = true;
