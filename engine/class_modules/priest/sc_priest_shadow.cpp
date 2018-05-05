@@ -1068,10 +1068,13 @@ struct void_bolt_t final : public priest_spell_t
 struct dark_void_t final : public priest_spell_t
 {
   propagate_const<shadow_word_pain_t*> child_swp; 
+  double insanity_gain;
 
   dark_void_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "dark_void", p, p.find_talent_spell( "Dark Void" ) ),
-       child_swp( new shadow_word_pain_t( priest(), std::string( "" ), false ) )
+       child_swp( new shadow_word_pain_t( priest(), std::string( "" ), false ) ),
+       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
+
   {
     parse_options( options_str );
     base_costs[ RESOURCE_INSANITY ] = 0.0;
@@ -1085,7 +1088,7 @@ struct dark_void_t final : public priest_spell_t
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
-
+    priest().generate_insanity( insanity_gain, priest().gains.insanity_dark_void, execute_state->action );
     child_swp->target = s->target;
     child_swp->execute();
   }

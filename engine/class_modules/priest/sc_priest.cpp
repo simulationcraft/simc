@@ -660,6 +660,7 @@ void priest_t::create_gains()
   gains.vampiric_touch_health                  = get_gain( "Health from Vampiric Touch Ticks" );
   gains.insanity_blessing                      = get_gain( "Insanity from Blessing Dawnlight Medallion" );
   gains.insanity_call_to_the_void              = get_gain( "Insanity Gained from Call to the Void" );
+  gains.insanity_dark_void                     = get_gain( "Insanity Gained from Dark Void" );
 }
 
 /** Construct priest procs */

@@ -320,7 +320,7 @@ public:
     propagate_const<gain_t*> shadowy_insight;
     propagate_const<gain_t*> vampiric_touch_health;
     propagate_const<gain_t*> insanity_call_to_the_void;
-
+    propagate_const<gain_t*> insanity_dark_void;
   } gains;
 
   // Benefits
