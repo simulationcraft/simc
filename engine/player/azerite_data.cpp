@@ -101,9 +101,12 @@ std::vector<double> azerite_power_t::budget() const
       min_ilevel = m_spell -> max_scaling_level();
     }
 
-    // TODO: If the spell has -7 scaling type, it's affected by combat rating multipliers, however
-    // for overridden powers, we don't know the item type
     auto budget = item_database::item_budget( m_player, min_ilevel );
+    if ( m_spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 )
+    {
+      budget = item_database::apply_combat_rating_multiplier( m_player,
+          CR_MULTIPLIER_ARMOR, min_ilevel, budget );
+    }
     b.push_back( budget );
   } );
 
