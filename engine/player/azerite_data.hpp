@@ -54,6 +54,10 @@ public:
   /// pointers
   operator const spell_data_t*() const;
 
+  // State of the azerite power
+  bool ok() const;
+  /// State of the azerite power
+  bool enabled() const;
   /// Return the associated spell data for the azerite power
   const spell_data_t* spell() const;
   /// Return the associated spell data for the azerite power

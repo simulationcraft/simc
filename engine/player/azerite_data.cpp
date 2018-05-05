@@ -19,6 +19,12 @@ const spell_data_t* azerite_power_t::spell() const
 const spell_data_t& azerite_power_t::spell_ref() const
 { return *m_spell; }
 
+bool azerite_power_t::ok() const
+{ return m_spell -> ok(); }
+
+bool azerite_power_t::enabled() const
+{ return ok(); }
+
 double azerite_power_t::value( size_t index ) const
 {
   if ( index > m_spell -> effect_count() || index == 0 )
