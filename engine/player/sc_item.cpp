@@ -679,6 +679,7 @@ bool item_t::parse_options()
   options.push_back(opt_string("drop_level", option_drop_level_str));
   options.push_back(opt_string("relic_id", option_relic_id_str));
   options.push_back(opt_string("relic_ilevel", option_relic_ilevel_str));
+  options.push_back(opt_string("azerite_powers", option_azerite_powers_str));
 
   try
   {
@@ -756,6 +757,19 @@ bool item_t::parse_options()
       }
 
       ++relic_idx;
+    }
+  }
+
+  if ( ! option_azerite_powers_str.empty() )
+  {
+    auto split = util::string_split( option_azerite_powers_str, "/:" );
+    for ( const auto& power_str : split )
+    {
+      auto power_id = util::to_unsigned( power_str );
+      if ( power_id > 0 )
+      {
+        parsed.azerite_ids.push_back( power_id );
+      }
     }
   }
 
@@ -964,6 +978,11 @@ std::string item_t::encoded_item() const
   if ( ! option_relic_ilevel_str.empty() )
   {
     s << ",relic_ilevel=" << option_relic_ilevel_str;
+  }
+
+  if ( ! option_azerite_powers_str.empty() )
+  {
+    s << ",azerite_powers=" << option_azerite_powers_str;
   }
 
   if ( ! option_enchant_str.empty() )

@@ -256,7 +256,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Soul Harvest (196098 effect#1), Writhe in Agony (196102 effect#1), Hood of Eternal Disdain (205797 effect#1), Agony (231792 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Suffer (269372 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Soul Harvest (196098 effect#1), Writhe in Agony (196102 effect#1), Hood of Eternal Disdain (205797 effect#1), Agony (231792 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -1051,6 +1051,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 283.01 (avg=0.91) | SP Coefficient: 0.35000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc27243
 
+Name             : Strength (id=27973) [Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Demon Hunter
+School           : Physical
+Duration         : Aura (infinite)
+Azerite Power Id : 6
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=17468)    : Apply Aura (6) | Attribute (29)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+
 Name             : Arcane Torrent (Racial) (id=28730) 
 Class            : Mage, Warlock
 Race             : Blood Elf (0x200)
@@ -1333,6 +1349,22 @@ Effects          :
 Description      : Increases your Intellect by $s1 for $d.
 Tooltip          : Intellect increased by $w1.
 
+Name             : Agility 20 (id=41695) [Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 7
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=33215)    : Apply Aura (6) | Attribute (29)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Self (1)
+Description      : Increases Agility by $s1.
+
 Name             : Rain of Fire (id=42223) [Spell Family (5)] 
 Class            : Warlock
 School           : Fire
@@ -1398,6 +1430,22 @@ Effects          :
 Description      : Bites the enemy, causing $s1 Shadow damage.
 
 |cFF777777(Right-Click to toggle)|r
+
+Name             : Increase Versatility 15 (id=55564) [Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 1
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=48506)    : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 15 | Scaled Value: 15 | Misc Value: 1879048192 | Target: Self (1)
+Description      : Increases your Versatility by $s1.
 
 Name             : Glyph of Felguard (Demonology) (id=56246) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -1680,7 +1728,7 @@ Name             : Hand of Gul'dan (id=86040) [Spell Family (5)]
 Class            : Shaman, Warlock
 School           : Shadowflame
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), Meteoric Flare (269594 effect#2), From the Shadows (270569 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Soul Harvest (196098 effect#1), From the Shadows (270569 effect#1)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
                  : ........ ........ ........ .x......   ........ ..x..... ........ ..x..... 
@@ -1824,6 +1872,26 @@ Description      : Burns harmful spells, removing $89808s1 harmful Magic effect 
 Cast upon master when $ghe:she; is unable to cast spells due to a Magic effect.
 
 |cFF777777(Right-Click to toggle)|r
+
+Name             : Item - Proc Mastery (id=92322) [Spell Family (10), Passive, Hidden] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Internal Cooldown: 100 seconds
+Proc Chance      : 10%
+Azerite Power Id : 8
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=96302)    : Apply Aura (6) | Proc Trigger Spell (42): Revelation
+                   Base Value: 100 | Scaled Value: 100 | Trigger Spell: 92320 | Target: Self (1)
+Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
 Name             : Flee (Special Ability) (id=93282) [Scaling Spell (11), Spell Family (5)] 
 Class            : Warlock
@@ -4749,6 +4817,22 @@ Effects          :
 Description      : The caster spits a glob of bile at the target, inflicting Nature damage on impact and coating them in bile. The victim continues to take Nature damage for $d.
 Tooltip          : Nature damage every $t2 sec.
 
+Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 2
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=487505)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Misc Value: 917504 | Target: Self (1)
+Description      : Increases haste by $s1.
+
 Name             : Empowered Healthstone (id=262031) [Spell Family (5), Passive] 
 Class            : Warlock
 School           : Physical
@@ -4783,6 +4867,56 @@ Effects          :
 Description      : $@spelldesc262031
 Tooltip          : Healing for $m1% of maximum health every $t1 sec.
 Spell casts are not delayed by taking damage.
+
+Name             : Resounding Protection (id=263962) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 15
+Triggered by     : Resounding Protection (269279)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=707038)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 270568 | Target: Self (1)
+Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
+
+Name             : Azerite Empowered (id=263978) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 13
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=707058)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15
+Description      : Increases the item level this item by 5.
+
+Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
+Class            : Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 21
+Triggered by     : Elemental Whirl (268956)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=707066)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 270667 | Target: Self (1)
+Description      : Your damaging abilities have a chance to grant you Elemental Whirl, increasing your Critical Strike, Haste, Mastery, or Versatility by $s1 for $268956d.
 
 Name             : Creeping Death (id=264000) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -4866,6 +5000,25 @@ Effects          :
 Description      : Launches a bolt of death at the target, dealing $s2% of the total remaining damage of your damage over time effects on the target.$?s196103[
 
 Counts up to $s3 sec of your Corruption's damage.][]
+
+Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Death Knight, Shaman, Mage, Warlock
+School           : Physical
+Azerite Power Id : 18
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=707293)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 112.4097 (avg=0.361446) | Misc Value: 33554432 | Target: Self (1)
+#2 (id=709390)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 56.5454 (avg=0.181818) | Misc Value: 65536 | Target: Self (1)
+Description      : Increases your Mastery by $s1 and your Leech by $s2.
+Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 
 Name             : Summon Vilefiend (id=264119) [Spell Family (5)] 
 Class            : Warlock
@@ -5236,6 +5389,25 @@ Effects          :
 #1 (id=710940)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 1 | Target: Self (1)
 Description      : Chaos Bolt consumes up to $s1 sec of Immolate's damage over time effect on your target, instantly dealing that much damage.
+
+Name             : Gutripper (id=266937) [Scaling Spell (-1), Passive] 
+Class            : Paladin, Hunter, Rogue, Shaman, Mage, Warlock, Demon Hunter
+School           : Physical
+Azerite Power Id : 31
+Triggered by     : Gutripper (270668)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=713208)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1400.901 (avg=4.504504) | Trigger Spell: 270668 | Target: Self (1)
+#2 (id=720336)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30
+Description      : Your damaging abilities have a chance to deal $s1 Physical damage to the target. Gutripper occurs much more often against targets below $s2% health. 
 
 Name             : Demonic Core (id=267102) [Spell Family (5), Passive] 
 Class            : Demonology Warlock
@@ -5682,6 +5854,126 @@ $@spellname48020
 $@spelldesc48020
 
 
+Name             : Azerite Fortification (id=268435) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 86
+Triggered by     : Azerite Fortification (270659)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=715936)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1400.901 (avg=4.504505) | Trigger Spell: 270658 | Target: Self (1)
+Description      : When stunned, immobilized, or knocked back, you heal for $s1.
+Tooltip          : When stunned, immobilized, or knocked back, you heal for $s1.
+
+Name             : Impassive Visage (id=268437) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Internal Cooldown: 6 seconds
+Proc Chance      : 100%
+Azerite Power Id : 83
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Triggered by     : Impassive Visage (270117)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=715939)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 559.856 (avg=1.80018) | Trigger Spell: 270654 | Target: Self (1)
+Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
+Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
+
+Name             : Bulwark of the Masses (id=268595) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 84
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=716159)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 3362.162 (avg=10.81081) | Trigger Spell: 270655 | Target: Self (1)
+#2 (id=720319)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4
+Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
+
+Name             : Gemhide (id=268596) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 85
+Triggered by     : Gemhide (270576)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=716160)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.420473) | Trigger Spell: 270579 | Target: Self (1)
+#2 (id=716161)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.86384) | Target: Self (1)
+#3 (id=720325)   : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10
+Description      : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Dodge for $270576d.
+Tooltip          : When dealt damage greater than $s3% of your maximum health, gain $s1 Avoidance and $s2 Dodge for $270576d.
+
+Name             : Vampiric Speed (id=268599) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 44
+Triggered by     : Vampiric Speed (269238), Vampiric Speed (269239)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=716165)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 2521.622 (avg=8.108109) | Trigger Spell: 270652 | Target: Self (1)
+#2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 196.1262 (avg=0.630631) | Target: Self (1)
+Description      : When an enemy you damaged dies, you heal for $s1 and gain $s2 Speed for $269239d.
+Tooltip          : When an enemy you damaged dies, heal for $s1 and gain $s2 Speed for $269239d.
+
+Name             : Self Reliance (id=268600) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 87
+Triggered by     : Self Reliance (270661)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=716167)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 281.024 (avg=0.903614) | Trigger Spell: 270660 | Target: Self (1)
+#2 (id=716168)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20
+Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
+Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $270661t1 sec.
+
 Name             : Demonfire (id=270481) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadowflame
@@ -5734,6 +6026,26 @@ Effects          :
                    Affected Spells: Hand of Gul'dan (86040), Totem Mastery (226772), Demonbolt (264178)
 Description      : $@spelldesc267170
 Tooltip          : Damage taken from the Warlock's Shadowflame damage spells increased by $s1%.
+
+Name             : Champion of Azeroth (id=270583) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Proc Chance      : 100%
+Azerite Power Id : 82
+Triggered by     : Champion of Azeroth (270584), Champion of Azeroth (270586)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=720209)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 2521.622 (avg=8.108109) | Trigger Spell: 270643 | Target: Self (1)
+#2 (id=720302)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 87.19631 (avg=0.280374) | Target: Self (1)
+Description      : Contributing to the death of an enemy of Azeroth heals you for $s1 and grants you $s2 Versatility for $270586d, stacking up to $270586u times.
 
 Name             : Dreadbite (id=271971) 
 Class            : Warlock
@@ -5941,5 +6253,240 @@ Effects          :
                    Affected Spells: Shadow Bolt (686), Shadow Bolt (232670), Demonbolt (264178)
 Description      : $@spelldesc267214
 Tooltip          : Damage of Shadowbolt and Demonbolt increased by $s1%.
+
+Name             : Wracking Brilliance (id=272891) [Scaling Spell (-1), Spell Family (5), Passive] 
+Class            : Warlock
+School           : Physical
+Azerite Power Id : 123
+Triggered by     : Wracking Brilliance (272893)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=724083)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 252.8455 (avg=0.813008) | Trigger Spell: 272892 | Target: Self (1)
+Description      : Every other Soul Shard your Agony generates also increases your Intellect by $s1 for $272893d.
+
+Name             : Shadow's Bite (id=272944) [Scaling Spell (-1), Spell Family (5), Passive] 
+Class            : Warlock
+School           : Physical
+Azerite Power Id : 130
+Triggered by     : Shadow's Bite (272945)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=724173)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 189.6341 (avg=0.609756) | Target: Self (1)
+Description      : When your summoned Dreadstalkers fade away, they increase the damage of your Shadow Bolt by $s1 for $272945d.
+
+Name             : Heavy Rain (id=272955) [Scaling Spell (-1), Spell Family (5), Passive] 
+Class            : Warlock
+School           : Physical
+Azerite Power Id : 131
+Triggered by     : Heavy Rain (272957)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=724206)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 311 (avg=1) | Trigger Spell: 272956 | Target: Self (1)
+Description      : When your Rain of Fire damages 3 or more targets, gain $s1 Haste for $272957d.
+
+Name             : Erratic Omen (id=273504) [Scaling Spell (-1), Spell Family (5), Passive] 
+Class            : Warlock
+School           : Physical
+Azerite Power Id : 182
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=725185)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1517.073 (avg=4.878049) | Target: Self (1)
+#2 (id=725186)   : Dummy (3)
+                   Base Value: 40 | Scaled Value: 40
+Description      : When your spells strike a target due to Havoc, they have a $s2% chance to deal an additional $s1 Chaos damage.
+
+Name             : Inevitable Demise (id=273521) [Scaling Spell (-1), Spell Family (5), Passive] 
+Class            : Warlock
+School           : Physical
+Azerite Power Id : 183
+Triggered by     : Inevitable Demise (273525)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=725219)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 15.55 (avg=0.05) | Trigger Spell: 273522 | Target: Self (1)
+Description      : Damaging an enemy with Corruption increases the damage of your next Drain Life by $s1. This effect stacks up to 100 times.
+
+Name             : Umbral Blaze (id=273523) [Scaling Spell (-1), Passive] 
+Class            : Warlock
+School           : Physical
+Azerite Power Id : 190
+Triggered by     : Umbral Blaze (273526)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=725221)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 777.5 (avg=2.5) | Trigger Spell: 273524 | Target: Self (1)
+#2 (id=725222)   : Dummy (3)
+                   Base Value: 15 | Scaled Value: 15
+Description      : Your Hand of Guldan has a $s2% chance to burn its target for $s1 additional Shadowflame damage every $273526t1 sec for $273526d.
+
+Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 192
+Triggered by     : Seize the Moment! (273714)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=725525)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 273684 | Target: Self (1)
+#2 (id=725608)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Target: Self (1)
+#3 (id=725609)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | Trigger Spell: 273684 | Target: Self (1)
+#4 (id=725610)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 224.1442 (avg=0.720721) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant you Meticulous Scheming for $273685d, which transforms into Seize the Moment! after you cast $s3 different spells, granting you $s4 Haste for $273714d seconds.
+
+Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 157
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=725706)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 632.0947 (avg=2.032459) | Trigger Spell: 273153 | Target: Self (1)
+#2 (id=725707)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
+Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
+
+Name             : Blightborne Infusion (id=273823) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 193
+Triggered by     : Blightborne Infusion (273826)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=725757)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 622 (avg=2) | Trigger Spell: 273825 | Target: Self (1)
+Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros. The Soul grants you some of its power, increasing your $s1 Critical Strike for $273826d.
+
+Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 195
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=725766)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 442.4662 (avg=1.422721) | Trigger Spell: 273830 | Target: Self (1)
+#2 (id=725767)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 884.9592 (avg=2.845528) | Target: Self (1)
+Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
+
+Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
+
+Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 194
+Triggered by     : Filthy Transfusion (273836)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=725772)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 273835 | Target: Self (1)
+Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $d.
+
+Name             : Sandstorm (id=273853) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 196
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=725799)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
+                   Base Value: 0 | Scaled Value: 279.9 (avg=0.9) | Trigger Spell: 273858 | Target: Self (1)
+#2 (id=725824)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 933 (avg=3)
+Description      : Your spells and abilities have a chance to summon a cylone of piercing winds. Enemies inside the cyclone take $s1 damage every $t1, and deal $s2 less damage to you.
+
+Name             : Lifeblood (id=274418) [Scaling Spell (-1), Passive] 
+Class            : Warlock
+School           : Physical
+Azerite Power Id : 208
+Triggered by     : Lifeblood (274420)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=726739)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 354.54 (avg=1.14) | Trigger Spell: 274419 | Target: Self (1)
+Description      : When you use a Healthstone, gain $s1 Leech for $274420d
 
 

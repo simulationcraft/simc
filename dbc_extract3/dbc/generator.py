@@ -1754,7 +1754,7 @@ class SpellDataGenerator(DataGenerator):
                 'SpellEquippedItems', 'SpecializationSpells', 'ChrSpecialization',
                 'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell',
                 'ItemEffect', 'MinorTalent', 'ArtifactPowerRank', 'ArtifactPower', 'Artifact',
-                'SpellShapeshift', 'SpellMechanic', 'SpellLabel', 'AzeritePower',
+                'SpellShapeshift', 'SpellMechanic', 'SpellLabel', 'AzeritePower', 'AzeritePowerSetMember',
                 'SpellName' ]
 
         if self._options.build < 25600:
@@ -1788,6 +1788,7 @@ class SpellDataGenerator(DataGenerator):
         self._data_store.link('SpellClassOptions',  'id_spell', 'SpellName', 'class_option'  )
         self._data_store.link('SpellShapeshift',    'id_spell', 'SpellName', 'shapeshift'    )
         self._data_store.link('Spell',              'id',       'SpellName', 'text'          )
+        self._data_store.link('AzeritePower',       'id_spell', 'SpellName', 'azerite_power' )
 
         if self._options.build >= 25600:
             self._data_store.link('SpellMisc',                  'id_parent', 'SpellName', 'misc'         )
@@ -2249,13 +2250,20 @@ class SpellDataGenerator(DataGenerator):
 
                 self.process_spell(spell_id, ids, 0, 0)
 
-        for _, data in self._azeritepower_db.items():
-            spell_id = data.id_spell
+        for _, data in self._azeritepowersetmember_db.items():
+            power = self._azeritepower_db[data.id_power]
+            if power.id != data.id_power:
+                continue
+
+            spell_id = power.id_spell
             spell = self._spellname_db[spell_id]
             if spell.id != spell_id:
                 continue
 
-            self.process_spell(spell_id, ids, 0, 0)
+            self.process_spell(spell_id, ids, 0, 0, False)
+            if spell_id in ids:
+                mask_class = self._class_masks[data.class_id] or 0
+                ids[spell_id]['mask_class'] |= mask_class
 
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the
         # generic spells from SpellDataGenerator._spell_id_list[0]
@@ -2516,8 +2524,8 @@ class SpellDataGenerator(DataGenerator):
             hotfix_flags |= f
             hotfix_data += hfd
 
-            # TODO: Remove around 8.0 (artifact power id, not needed any more)
-            power = self._artifactpower_db[0]
+            # 41
+            power = spell.get_link('azerite_power')
             fields += power.field('id')
 
             # 42, 43
@@ -4168,7 +4176,38 @@ class AzeriteDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         super().__init__(options, data_store)
 
-        self._dbc = [ 'AzeritePower' ]
+        self._dbc = [ 'AzeriteEmpoweredItem', 'AzeritePower', 'AzeritePowerSetMember', 'SpellName', 'ItemSparse' ]
+
+    def filter(self):
+        ids = set()
+        power_sets = set()
+
+        # Figure out a valid set of power set ids
+        for id, data in self._azeriteempowereditem_db.items():
+            if data.id_item not in self._itemsparse_db:
+                continue
+
+            power_sets.add(data.id_power_set)
+
+        for id, data in self._azeritepowersetmember_db.items():
+            # Only use azerite power sets that are associated with items
+            if data.id_parent not in power_sets:
+                continue
+
+            power = self._azeritepower_db[data.id_power]
+            if power.id != data.id_power:
+                continue
+
+            if power.id_spell == 0:
+                continue
+
+            spell = self._spellname_db[power.id_spell]
+            if spell.id != power.id_spell:
+                continue
+
+            ids.add(power.id)
+
+        return list(ids)
 
     def generate(self, ids = None):
         data_str = "%sazerite_power%s" % (
@@ -4176,18 +4215,15 @@ class AzeriteDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or '',
         )
 
-        data = [ x for x in self._azeritepower_db.values() ]
-
-        # Ensure id-based sort
-        data.sort(key = lambda v : v.id)
-
         self._out.write('// Azerite powers, wow build %d\n' % ( self._options.build ))
 
-        self._out.write('static constexpr std::array<azerite_power_t, %d> __%s_data { {\n' % (
-            len(data), data_str))
+        self._out.write('static constexpr std::array<azerite_power_entry_t, %d> __%s_data { {\n' % (
+            len(ids), data_str))
 
-        for entry in data:
+        for id in sorted(ids):
+            entry = self._azeritepower_db[id]
             fields = entry.field('id', 'id_spell')
+            fields += self._spellname_db[entry.id_spell].field('name')
 
             self._out.write('  { %s },\n' % ', '.join(fields))
 

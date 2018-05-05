@@ -20,6 +20,8 @@
 #include "sc_enums.hpp"
 #include "sc_util.hpp"
 
+#include "dbc/azerite.hpp"
+
 // ==========================================================================
 // Forward declaration
 // ==========================================================================
@@ -867,7 +869,7 @@ public:
   unsigned    _stance_mask;        // 39 Stance mask (used only for druid form restrictions?)
   // SpellMechanic.db2
   unsigned    _mechanic;           // 40
-  unsigned    _power_id;           // 41 Artifact power id
+  unsigned    _power_id;           // 41 Azerite power id
   // Textual data
   const char* _desc;               // 42 Spell.dbc description stringblock
   const char* _tooltip;            // 43 Spell.dbc tooltip stringblock
@@ -1623,6 +1625,11 @@ public:
   { return 0; }
   std::pair<unsigned, unsigned> artifact_relic_rank_index( unsigned, unsigned ) const
   { return { 0, 0 }; }
+
+  // Azerite
+  const azerite_power_entry_t& azerite_power( unsigned power_id ) const;
+  const azerite_power_entry_t& azerite_power( const std::string& name, bool tokenized = false ) const;
+  arv::array_view<azerite_power_entry_t> azerite_powers() const;
 
   // Child items
   unsigned child_item( unsigned ) const;

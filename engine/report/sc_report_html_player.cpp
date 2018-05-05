@@ -990,6 +990,38 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       item_sim_desc += " }";
     }
 
+    if ( item.parsed.azerite_ids.size() )
+    {
+      std::stringstream s;
+      for ( size_t i = 0; i < item.parsed.azerite_ids.size(); ++i )
+      {
+        const auto& power = item.player -> dbc.azerite_power( item.parsed.azerite_ids[ i ] );
+        if ( power.id == 0 )
+        {
+          continue;
+        }
+
+        const auto spell = item.player -> find_spell( power.spell_id );
+        auto decorator = report::spell_data_decorator_t( item.player, spell );
+        decorator.item( item );
+
+        s << decorator.decorate();
+
+        if ( i < item.parsed.azerite_ids.size() - 1 )
+        {
+          s << ", ";
+        }
+      }
+
+      if ( ! s.str().empty() )
+      {
+        item_sim_desc += "<br/>";
+        item_sim_desc += "azerite powers: { ";
+        item_sim_desc += s.str();
+        item_sim_desc += " }";
+      }
+    }
+
     os.printf(
         "<tr>\n"
         "<th class=\"left\" colspan=\"2\"></th>\n"

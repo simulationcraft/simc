@@ -18,6 +18,7 @@
  HEADERS += engine/sim/sc_expressions.hpp
  HEADERS += engine/report/sc_report.hpp
  HEADERS += engine/player/artifact_data.hpp
+ HEADERS += engine/player/azerite_data.hpp
  HEADERS += engine/dbc/sc_spell_info.hpp
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp
@@ -80,6 +81,7 @@
  SOURCES += engine/player/sc_enchant.cpp
  SOURCES += engine/player/sc_consumable.cpp
  SOURCES += engine/player/artifact_data.cpp
+ SOURCES += engine/player/azerite_data.cpp
  SOURCES += engine/interfaces/sc_wowhead.cpp
  SOURCES += engine/interfaces/sc_js.cpp
  SOURCES += engine/interfaces/sc_http.cpp

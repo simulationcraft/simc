@@ -7,6 +7,8 @@
 
 #include "simulationcraft.hpp"
 
+#include "dbc/azerite.hpp"
+
 namespace
 {
 // Player Ready Event =======================================================
@@ -662,6 +664,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   dbc( s->dbc ),
   talent_points(),
   artifact( nullptr ),
+  azerite( nullptr ),
   base(),
   initial(),
   current(),
@@ -770,6 +773,11 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   if ( !is_enemy() && !is_pet() && type != HEALING_ENEMY )
   {
     artifact = artifact::player_artifact_data_t::create( this );
+  }
+
+  if ( ! is_enemy() && ! is_pet() )
+  {
+    azerite = azerite::create_state( this );
   }
 
   // Set the gear object to a special default value, so we can support gear_x=0 properly.
@@ -1344,6 +1352,32 @@ bool player_t::init_items()
   init_weapon( off_hand_weapon );
 
   return true;
+}
+
+/**
+ * Initializes the Azerite-related support structures for an actor if there are any.
+ *
+ * Since multiple instances of the same azerite power can be worn by an actor, we need to ensure
+ * that only one instance of the azerite power gets initialized. Ensure this by building a simple
+ * map that keeps initialization status for all azerite powers defined for the actor from different
+ * sources (currently only items). Initialization status changes automatically when an
+ * azerite_power_t object is created for the actor.
+ *
+ * Note, guards against invocation from non-player actors (enemies, adds, pets ...)
+ */
+void player_t::init_azerite()
+{
+  if ( is_enemy() || is_pet() )
+  {
+    return;
+  }
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.printf( "Initializing Azerite sub-system for player (%s)", name() );
+  }
+
+  azerite -> initialize();
 }
 
 void player_t::init_meta_gem()
@@ -3564,7 +3598,7 @@ double player_t::composite_rating( rating_e rating ) const
     case RATING_HEAL_VERSATILITY:
     case RATING_MITIGATION_VERSATILITY:
       v = current.stats.versatility_rating;
-      v += racials.mountaineer->effectN( 2 ).average( this );
+      v += racials.mountaineer->effectN( 1 ).average( this );
       break;
     case RATING_EXPERTISE:
       v = current.stats.expertise_rating;
@@ -8766,6 +8800,27 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, uint32_t i
   return spell_data_t::not_found();
 }
 
+azerite_power_t player_t::find_azerite_spell( unsigned id ) const
+{
+  if ( ! azerite )
+  {
+    return {};
+  }
+
+  return azerite -> get_power( id );
+}
+
+azerite_power_t player_t::find_azerite_spell( const std::string& name, bool tokenized ) const
+{
+  if ( ! azerite )
+  {
+    return {};
+  }
+
+  // Note, no const propagation here, so this works
+  return azerite -> get_power( name, tokenized );
+}
+
 /**
  * Tries to find spell data by name.
  *
@@ -9912,6 +9967,14 @@ std::string player_t::create_profile( save_e stype )
       }
     }
 
+    if ( azerite )
+    {
+      std::string azerite_overrides = azerite -> overrides_str();
+      if ( ! azerite_overrides.empty() )
+      {
+        profile_str += "azerite_override=" + azerite_overrides + term;
+      }
+    }
   }
 
   if ( stype == SAVE_ALL )
@@ -10139,6 +10202,11 @@ void player_t::copy_from( player_t* source )
   source->recreate_talent_str( TALENT_FORMAT_UNCHANGED );
   parse_talent_url( sim, "talents", source->talents_str );
 
+  if ( azerite )
+  {
+    azerite -> copy_overrides( source -> azerite );
+  }
+
   talent_overrides_str = source->talent_overrides_str;
   action_list_str      = source->action_list_str;
   alist_map            = source->alist_map;
@@ -10333,12 +10401,21 @@ void player_t::create_options()
   add_option( opt_bool( "stat_cache", cache.active ) );
   add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
 
+  // Azerite options
+  if ( ! is_enemy() && ! is_pet() )
+  {
+    add_option( opt_func( "azerite_override", std::bind( &azerite::azerite_state_t::parse_override,
+          azerite.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+  }
+
+  // Obsolete options
+
   // Dummy artifact options
   // TODO: Remove when 8.0 goes live
-  std::string __dummy;
-  add_option( opt_string( "artifact", __dummy ) );
-  add_option( opt_string( "crucible", __dummy ) );
-  add_option( opt_string( "artifact_override", __dummy ) );
+  add_option( opt_obsoleted( "artifact" ) );
+  add_option( opt_obsoleted( "crucible" ) );
+  add_option( opt_obsoleted( "artifact_override" ) );
+  add_option( opt_obsoleted( "disable_artifact" ) );
 }
 
 player_t* player_t::create( sim_t*, const player_description_t& )

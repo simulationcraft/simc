@@ -151,6 +151,7 @@ namespace highchart {
 #include "sim/sc_profileset.hpp"
 
 #include "player/artifact_data.hpp"
+#include "player/azerite_data.hpp"
 
 // Legion-specific "pantheon trinket" system
 #include "sim/x7_pantheon.hpp"
@@ -2152,6 +2153,7 @@ struct item_t
     std::array<std::vector<unsigned>, MAX_GEM_SLOTS> relic_data;
     std::array<unsigned, MAX_GEM_SLOTS>              relic_ilevel;
     std::array<unsigned, MAX_GEM_SLOTS>              relic_bonus_ilevel;
+    std::vector<unsigned>                            azerite_ids;
 
     parsed_input_t() :
       item_level( 0 ), upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
@@ -2201,6 +2203,7 @@ struct item_t
   std::string option_drop_level_str;
   std::string option_relic_id_str;
   std::string option_relic_ilevel_str;
+  std::string option_azerite_powers_str;
   double option_initial_cd;
 
   // Extracted data
@@ -3357,6 +3360,9 @@ struct player_t : public actor_t
   // Artifact
   std::unique_ptr<artifact::player_artifact_data_t> artifact;
 
+  /// Azerite state object
+  std::unique_ptr<azerite::azerite_state_t> azerite;
+
   // TODO: FIXME, these stats should not be increased by scale factor deltas
   struct base_initial_current_t
   {
@@ -3812,6 +3818,8 @@ struct player_t : public actor_t
   { return {}; }
   artifact_power_t find_artifact_spell( unsigned ) const
   { return {}; }
+  azerite_power_t find_azerite_spell( const std::string& name, bool tokenized = false ) const;
+  azerite_power_t find_azerite_spell( unsigned power_id ) const;
   const spell_data_t* find_racial_spell( const std::string& name, race_e s = RACE_NONE ) const;
   const spell_data_t* find_class_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( const std::string& name ) const;
@@ -3872,6 +3880,7 @@ struct player_t : public actor_t
   virtual void init_professions();
   virtual void init_spells();
   virtual bool init_items();
+  virtual void init_azerite(); /// Initialize azerite-related support structures for the actor
   virtual void init_weapon( weapon_t& );
   virtual void init_base_stats();
   virtual void init_initial_stats();
@@ -6468,6 +6477,7 @@ unsigned upgrade_ilevel( const item_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
 stat_pair_t item_enchantment_effect_stats( player_t* player, const item_enchantment_data_t& enchantment, int index );
 double item_budget( const item_t* item, unsigned max_ilevel );
+double item_budget( const player_t* player, unsigned ilevel );
 
 inline bool heroic( unsigned f ) { return ( f & RAID_TYPE_HEROIC ) == RAID_TYPE_HEROIC; }
 inline bool lfr( unsigned f ) { return ( f & RAID_TYPE_LFR ) == RAID_TYPE_LFR; }
@@ -6479,6 +6489,7 @@ bool apply_item_bonus( item_t& item, const item_bonus_entry_t& entry );
 double curve_point_value( dbc_t& dbc, unsigned curve_id, double point_value );
 bool apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level );
 double apply_combat_rating_multiplier( const item_t& item, double amount );
+double apply_combat_rating_multiplier( const player_t* player, combat_rating_multiplier_type type, unsigned ilevel, double amount );
 
 // Return the combat rating multiplier category for item data
 combat_rating_multiplier_type item_combat_rating_type( const item_data_t* data );

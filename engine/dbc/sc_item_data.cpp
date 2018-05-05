@@ -1349,6 +1349,21 @@ unsigned item_database::upgrade_ilevel( const item_t& item, unsigned upgrade_lev
   return upgrades[ upgrade_level ] -> ilevel_delta;
 }
 
+double item_database::item_budget( const player_t* player, unsigned ilevel )
+{
+  if ( player == nullptr )
+  {
+    return 0.0;
+  }
+
+  const random_prop_data_t& budget = player -> dbc.random_property( ilevel );
+
+  // Since we don't know the quality of the "item", just return the uncommon item budget. The
+  // budgets have been the same for all qualities for a long while, but this function will break if
+  // this ever changes.
+  return budget.p_uncommon[ 0 ];
+}
+
 double item_database::item_budget( const item_t* item, unsigned max_ilevel )
 {
   double m_scale = 0;
@@ -1770,6 +1785,20 @@ bool item_database::has_item_bonus_type( const item_t& item, item_bonus_type bon
   return it != item.parsed.bonus_id.end();
 }
 
+double item_database::apply_combat_rating_multiplier( const player_t*               player,
+                                                      combat_rating_multiplier_type type,
+                                                      unsigned                      ilevel,
+                                                      double                        raw_amount )
+{
+  auto combat_rating_multiplier = player -> dbc.combat_rating_multiplier( ilevel, type );
+  if ( combat_rating_multiplier != 0 )
+  {
+    return raw_amount * combat_rating_multiplier;
+  }
+
+  return raw_amount;
+}
+
 double item_database::apply_combat_rating_multiplier( const item_t& item, double amount )
 {
   auto type = item_combat_rating_type( &item.parsed.data );
@@ -1778,13 +1807,7 @@ double item_database::apply_combat_rating_multiplier( const item_t& item, double
     return amount;
   }
 
-  auto combat_rating_multiplier = item.player -> dbc.combat_rating_multiplier( item.item_level(), type );
-  if ( combat_rating_multiplier != 0 )
-  {
-    return amount * combat_rating_multiplier;
-  }
-
-  return amount;
+  return apply_combat_rating_multiplier( item.player, type, item.item_level(), amount );
 }
 
 combat_rating_multiplier_type item_database::item_combat_rating_type( const item_data_t* data )

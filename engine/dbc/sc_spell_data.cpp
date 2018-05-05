@@ -104,7 +104,7 @@ const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, "family",            O_SD( _class_flags_family )     }, // Family
   { SD_TYPE_UNSIGNED, "stance_mask",       O_SD( _stance_mask )            },
   { SD_TYPE_UNSIGNED, "mechanic",          O_SD( _mechanic )               },
-  { SD_TYPE_UNSIGNED, "power_id",          O_SD( _power_id )               }, // Artifact power id
+  { SD_TYPE_UNSIGNED, "power_id",          O_SD( _power_id )               }, // Azereite power id
   { SD_TYPE_STR,      "desc",              O_SD( _desc )                   },
   { SD_TYPE_STR,      "tooltip",           O_SD( _tooltip )                },
   { SD_TYPE_STR,      "desc_vars",         O_SD( _desc_vars )              },
@@ -375,7 +375,7 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_AZERITE_SPELL:
       {
-        for ( const auto& p : azerite_power_t::data( sim -> dbc.ptr ) )
+        for ( const auto& p : azerite_power_entry_t::data( sim -> dbc.ptr ) )
         {
           if ( range::find( result_spell_list, p.spell_id ) == result_spell_list.end() )
           {

@@ -278,6 +278,12 @@ struct rogue_t : public player_t
     buff_t* t21_2pc_outlaw;
     buff_t* t21_4pc_subtlety;
 
+    // Azerite powers
+    buff_t* deadshot;
+    buff_t* nights_vengeance;
+    buff_t* sharpened_blades;
+    buff_t* storm_of_steel;
+
   } buffs;
 
   // Cooldowns
@@ -476,6 +482,16 @@ struct rogue_t : public player_t
     // Subtlety
     const spell_data_t* executioner;
   } mastery;
+
+  // Azerite powers
+  struct azerite_powers_t
+  {
+    azerite_power_t deadshot;
+    azerite_power_t nights_vengeance;
+    azerite_power_t sharpened_blades;
+    azerite_power_t storm_of_steel;
+    azerite_power_t twist_the_knife;
+  } azerite;
 
   // Procs
   struct procs_t
@@ -2129,6 +2145,11 @@ struct melee_t : public rogue_attack_t
       first = false;
     }
     rogue_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      p() -> buffs.sharpened_blades -> trigger();
+    }
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -2372,6 +2393,11 @@ struct between_the_eyes_t : public rogue_attack_t
     }
 
     p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      p() -> buffs.deadshot -> trigger();
+    }
   }
 };
 
@@ -2526,6 +2552,13 @@ struct dispatch_t: public rogue_attack_t
     return false;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = rogue_attack_t::bonus_da( s );
+    b += p() -> buffs.storm_of_steel -> stack_value();
+    return b;
+  }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -2576,6 +2609,8 @@ struct dispatch_t: public rogue_attack_t
     }
 
     p() -> trigger_t21_4pc_outlaw( execute_state );
+
+    p() -> buffs.storm_of_steel -> expire();
   }
 };
 
@@ -2587,6 +2622,16 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t( "envenom", p, p -> find_specialization_spell( "Envenom" ), options_str )
   {
     dot_duration = timespan_t::zero();
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = rogue_attack_t::bonus_da( s );
+
+    if ( td( s -> target ) -> dots.garrote -> is_ticking() )
+      b += p() -> azerite.twist_the_knife.value();
+
+    return b;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -2662,6 +2707,13 @@ struct eviscerate_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).percent();
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = rogue_attack_t::bonus_da( s );
+    b += p() -> buffs.nights_vengeance -> stack_value();
+    return b;
+  }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -2694,6 +2746,8 @@ struct eviscerate_t : public rogue_attack_t
     {
       p() -> buffs.shuriken_combo -> expire();
     }
+
+    p() -> buffs.nights_vengeance -> expire();
   }
 };
 
@@ -3116,6 +3170,13 @@ struct pistol_shot_t : public rogue_attack_t
     return g;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = rogue_attack_t::bonus_da( s );
+    b += p() -> buffs.deadshot -> stack_value();
+    return b;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -3144,6 +3205,7 @@ struct pistol_shot_t : public rogue_attack_t
     // Expire buffs.
     p() -> buffs.opportunity -> expire();
     p() -> buffs.greenskins_waterlogged_wristcuffs -> expire();
+    p() -> buffs.deadshot -> expire();
   }
 };
 
@@ -3293,6 +3355,14 @@ struct nightblade_t : public rogue_attack_t
 
     return data().duration() + base_per_tick * cast_state( s ) -> cp;
   }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> buffs.nights_vengeance -> trigger();
+  }
 };
 
 // Roll the Bones ===========================================================
@@ -3429,6 +3499,16 @@ struct shadow_blade_t : public rogue_attack_t
     background = true;
     may_glance = false;
     base_execute_time = weapon -> swing_time;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      p() -> buffs.sharpened_blades -> trigger();
+    }
   }
 };
 
@@ -3681,6 +3761,22 @@ struct shuriken_toss_t : public rogue_attack_t
     rogue_attack_t( "shuriken_toss", p, p -> find_specialization_spell( "Shuriken Toss" ), options_str )
   { }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = rogue_attack_t::bonus_da( s );
+
+    b += p() -> buffs.sharpened_blades -> stack_value();
+
+    return b;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.sharpened_blades -> expire();
+  }
+
   // 1/15/2018 - Confirmed Shuriken Toss procs Insignia hits in-game, although Poisoned Knife does not
 };
 
@@ -3712,6 +3808,8 @@ struct sinister_strike_t : public rogue_attack_t
       {
         rogue -> buffs.t21_2pc_outlaw -> trigger();
       }
+
+      rogue -> buffs.storm_of_steel -> trigger();
     }
   };
 
@@ -4184,7 +4282,15 @@ struct poisoned_knife_t : public rogue_attack_t
 {
   poisoned_knife_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "poisoned_knife", p, p -> find_specialization_spell( "Poisoned Knife" ), options_str )
+  { }
+
+  double bonus_da( const action_state_t* s ) const override
   {
+    double b = rogue_attack_t::bonus_da( s );
+
+    b += p() -> buffs.sharpened_blades -> stack_value();
+
+    return b;
   }
 
   bool procs_insignia_of_ravenholdt() const override
@@ -4192,6 +4298,13 @@ struct poisoned_knife_t : public rogue_attack_t
 
   double composite_poison_flat_modifier( const action_state_t* ) const override
   { return 1.0; }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.sharpened_blades -> expire();
+  }
 };
 
 // ==========================================================================
@@ -6871,6 +6984,12 @@ void rogue_t::init_spells()
   talent.master_of_shadows  = find_talent_spell( "Master of Shadows" );
   talent.death_from_above   = find_talent_spell( "Death from Above" );
 
+  azerite.deadshot          = find_azerite_spell( "Deadshot" );
+  azerite.nights_vengeance  = find_azerite_spell( "Night's Vengeance" );
+  azerite.sharpened_blades  = find_azerite_spell( "Sharpened Blades" );
+  azerite.storm_of_steel    = find_azerite_spell( "Storm of Steel" );
+  azerite.twist_the_knife   = find_azerite_spell( "Twist the Knife" );
+
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
   // Legendaries
@@ -7202,6 +7321,20 @@ void rogue_t::create_buffs()
   buffs.t21_2pc_outlaw                     = make_buff( this, "sharpened_sabers", find_spell( 252285 ) )
                                              -> set_default_value( find_spell( 252285 ) -> effectN( 1 ).percent() );
   buffs.t21_4pc_subtlety                   = make_buff( this, "shadow_gestures", sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> effectN( 1 ).trigger() );
+
+  // Azerite
+  buffs.deadshot                           = make_buff( this, "deadshot", find_spell( 272940 ) )
+                                             -> set_trigger_spell( azerite.deadshot.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_default_value( azerite.deadshot.value() );
+  buffs.nights_vengeance                   = make_buff( this, "nights_vengeance", find_spell( 273424 ) )
+                                             -> set_trigger_spell( azerite.nights_vengeance.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_default_value( azerite.nights_vengeance.value() );
+  buffs.sharpened_blades                   = make_buff( this, "sharpened_blades", find_spell( 272916 ) )
+                                             -> set_trigger_spell( azerite.sharpened_blades.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_default_value( azerite.sharpened_blades.value() );
+  buffs.storm_of_steel                     = make_buff( this, "storm_of_steel", find_spell( 273455 ) )
+                                             -> set_trigger_spell( azerite.storm_of_steel.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_default_value( azerite.storm_of_steel.value() );
 }
 
 // rogue_t::create_options ==================================================
