@@ -14,6 +14,7 @@
 struct spell_data_t;
 struct item_t;
 struct player_t;
+struct sim_t;
 
 namespace azerite
 {
@@ -37,18 +38,21 @@ class azerite_power_t
     S,
   };
 
+  /// Actor the power belongs to
+  const player_t*       m_player;
   /// Associated spell data
-  const spell_data_t*        m_spell;
-  /// Items that enable this power for the actor
-  std::vector<const item_t*> m_items;
+  const spell_data_t*   m_spell;
+  /// Ilevels of the items that enable this azerite power
+  std::vector<unsigned> m_ilevels;
   /// Cached scaled (total) value
-  mutable double             m_value;
+  mutable double        m_value;
 
 public:
   using azerite_value_fn_t = std::function<double(const azerite_power_t&)>;
 
   azerite_power_t();
-  azerite_power_t( const spell_data_t* spell, const std::vector<const item_t*>& items );
+  azerite_power_t( const player_t* p, const spell_data_t* spell, const std::vector<const item_t*>& items );
+  azerite_power_t( const player_t* p, const spell_data_t* spell, const std::vector<unsigned>& ilevels );
 
   /// Implicit conversion to spell_data_t* object for easy use in accessors that accept spell data
   /// pointers
@@ -73,7 +77,7 @@ public:
   /// Return the raw budget values represented by the items for this azerite power.
   std::vector<double> budget() const;
   /// List of items associated with this azerite power
-  const std::vector<const item_t*> items() const;
+  const std::vector<unsigned> ilevels() const;
 };
 
 namespace azerite
@@ -95,6 +99,8 @@ class azerite_state_t
   std::unordered_map<unsigned, bool> m_state;
   /// Map of the actor's azerite power ids, and their associated items (items that select the power)
   std::unordered_map<unsigned, std::vector<const item_t*>> m_items;
+  /// Azerite power overrides, (power, list of override ilevels)
+  std::unordered_map<unsigned, std::vector<unsigned>> m_overrides;
 
 public:
   azerite_state_t( player_t* p );
@@ -109,6 +115,13 @@ public:
   azerite_power_t get_power( const std::string& name, bool tokenized = false );
   /// Check initialization status of an azerite power
   bool is_initialized( unsigned id ) const;
+
+  /// Parse and sanitize azerite_override option
+  bool parse_override( sim_t*, const std::string& /*name*/, const std::string& /*value*/ );
+  /// Output overrides as an azerite_override options string
+  std::string overrides_str() const;
+  /// Clone overrides from another actor
+  void copy_overrides( const std::unique_ptr<azerite_state_t>& other );
 };
 
 /// Creates an azerite state object for the actor

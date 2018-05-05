@@ -1628,6 +1628,7 @@ public:
 
   // Azerite
   const azerite_power_entry_t& azerite_power( unsigned power_id ) const;
+  const azerite_power_entry_t& azerite_power( const std::string& name, bool tokenized = false ) const;
   arv::array_view<azerite_power_entry_t> azerite_powers() const;
 
   // Child items

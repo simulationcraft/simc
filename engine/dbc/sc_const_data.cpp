@@ -1404,6 +1404,31 @@ const azerite_power_entry_t& dbc_t::azerite_power( unsigned power_id ) const
   return azerite_power_entry_t::find( power_id, ptr );
 }
 
+const azerite_power_entry_t& dbc_t::azerite_power( const std::string& name, bool tokenized ) const
+{
+  for ( const auto& power : azerite_powers() )
+  {
+    if ( tokenized )
+    {
+      std::string tokenized_name = power.name;
+      util::tokenize( tokenized_name );
+      if ( util::str_compare_ci( name, tokenized_name ) )
+      {
+        return power;
+      }
+    }
+    else
+    {
+      if ( util::str_compare_ci( name, power.name ) )
+      {
+        return power;
+      }
+    }
+  }
+
+  return azerite_power_entry_t::nil();
+}
+
 arv::array_view<azerite_power_entry_t> dbc_t::azerite_powers() const
 { return azerite_power_entry_t::data( ptr ); }
 

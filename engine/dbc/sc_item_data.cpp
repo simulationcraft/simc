@@ -1349,6 +1349,21 @@ unsigned item_database::upgrade_ilevel( const item_t& item, unsigned upgrade_lev
   return upgrades[ upgrade_level ] -> ilevel_delta;
 }
 
+double item_database::item_budget( const player_t* player, unsigned ilevel )
+{
+  if ( player == nullptr )
+  {
+    return 0.0;
+  }
+
+  const random_prop_data_t& budget = player -> dbc.random_property( ilevel );
+
+  // Since we don't know the quality of the "item", just return the uncommon item budget. The
+  // budgets have been the same for all qualities for a long while, but this function will break if
+  // this ever changes.
+  return budget.p_uncommon[ 0 ];
+}
+
 double item_database::item_budget( const item_t* item, unsigned max_ilevel )
 {
   double m_scale = 0;

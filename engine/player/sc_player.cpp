@@ -9967,6 +9967,14 @@ std::string player_t::create_profile( save_e stype )
       }
     }
 
+    if ( azerite )
+    {
+      std::string azerite_overrides = azerite -> overrides_str();
+      if ( ! azerite_overrides.empty() )
+      {
+        profile_str += "azerite_override=" + azerite_overrides + term;
+      }
+    }
   }
 
   if ( stype == SAVE_ALL )
@@ -10194,6 +10202,11 @@ void player_t::copy_from( player_t* source )
   source->recreate_talent_str( TALENT_FORMAT_UNCHANGED );
   parse_talent_url( sim, "talents", source->talents_str );
 
+  if ( azerite )
+  {
+    azerite -> copy_overrides( source -> azerite );
+  }
+
   talent_overrides_str = source->talent_overrides_str;
   action_list_str      = source->action_list_str;
   alist_map            = source->alist_map;
@@ -10387,6 +10400,13 @@ void player_t::create_options()
   add_option( opt_timespan( "reaction_time_max", reaction_max ) );
   add_option( opt_bool( "stat_cache", cache.active ) );
   add_option( opt_bool( "karazhan_trinkets_paired", karazhan_trinkets_paired ) );
+
+  // Azerite options
+  if ( ! is_enemy() && ! is_pet() )
+  {
+    add_option( opt_func( "azerite_override", std::bind( &azerite::azerite_state_t::parse_override,
+          azerite.get(), std::placeholders::_1, std::placeholders::_2, std::placeholders::_3 ) ) );
+  }
 
   // Obsolete options
 
