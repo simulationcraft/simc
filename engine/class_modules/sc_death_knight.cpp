@@ -377,7 +377,6 @@ struct death_knight_td_t : public actor_target_data_t {
     buff_t* razorice;
     buff_t* festering_wound;
     buff_t* mark_of_blood;
-    buff_t* soul_reaper;
     buff_t* perseverance_of_the_ebon_martyr;
   } debuff;
 
@@ -515,6 +514,7 @@ public:
     gain_t* heartbreaker;
     gain_t* drw_heart_strike;
     gain_t* rune_strike;
+    gain_t* soul_reaper;
   } gains;
 
   // Specialization
@@ -902,6 +902,8 @@ public:
   void      trigger_t20_4pc_frost( double consumed );
   void      trigger_t20_4pc_unholy( double consumed );
 
+  void      trigger_soul_reaper_death( player_t* );
+
   // Actor is standing in their own Death and Decay or Defile
   bool      in_death_and_decay() const;
   expr_t*   create_death_and_decay_expression( const std::string& expr_str );
@@ -941,26 +943,29 @@ inline void rune_event_t::execute_event()
 inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* death_knight ) :
   actor_target_data_t( target, death_knight )
 {
-  dot.blood_plague       = target -> get_dot( "blood_plague",       death_knight );
+  dot.blood_plague         = target -> get_dot( "blood_plague",         death_knight );
   dot.breath_of_sindragosa = target -> get_dot( "breath_of_sindragosa", death_knight );
-  dot.frost_fever        = target -> get_dot( "frost_fever",        death_knight );
-  dot.outbreak           = target -> get_dot( "outbreak",           death_knight );
-  dot.soul_reaper        = target -> get_dot( "soul_reaper_dot",    death_knight );
-  dot.virulent_plague    = target -> get_dot( "virulent_plague",    death_knight );
+  dot.frost_fever          = target -> get_dot( "frost_fever",          death_knight );
+  dot.outbreak             = target -> get_dot( "outbreak",             death_knight );
+  dot.virulent_plague      = target -> get_dot( "virulent_plague",      death_knight );
+  dot.soul_reaper          = target -> get_dot( "soul_reaper",          death_knight );
 
-  debuff.razorice        = make_buff( *this, "razorice", death_knight -> find_spell( 51714 ) )
+  debuff.razorice          = make_buff( *this, "razorice", death_knight -> find_spell( 51714 ) )
                            -> set_period( timespan_t::zero() );
-  debuff.festering_wound = buff_creator_t( *this, "festering_wound", death_knight -> find_spell( 194310 ) )
+  debuff.festering_wound   = buff_creator_t( *this, "festering_wound", death_knight -> find_spell( 194310 ) )
                            .trigger_spell( death_knight -> spec.festering_wound )
                            .cd( timespan_t::zero() ); // Handled by trigger_festering_wound
-  debuff.mark_of_blood   = buff_creator_t( *this, "mark_of_blood", death_knight -> talent.mark_of_blood )
-                           .cd( timespan_t::zero() ); // Handled by the action
-  debuff.soul_reaper     = buff_creator_t( *this, "soul_reaper", death_knight -> talent.soul_reaper )
+  debuff.mark_of_blood     = buff_creator_t( *this, "mark_of_blood", death_knight -> talent.mark_of_blood )
                            .cd( timespan_t::zero() ); // Handled by the action
   debuff.perseverance_of_the_ebon_martyr = buff_creator_t( *this, "perseverance_of_the_ebon_martyr", death_knight -> find_spell( 216059 ) )
     .chance( death_knight -> legendary.perseverance_of_the_ebon_martyr -> ok() )
     .default_value( death_knight -> find_spell( 216059 ) -> effectN( 1 ).percent() )
     .duration( timespan_t::from_seconds( 5 ) ); //In game testing shows it's around 5 seconds.
+
+  if ( death_knight -> specialization() == DEATH_KNIGHT_UNHOLY && death_knight -> talent.soul_reaper -> ok() )
+  {
+    target -> callbacks_on_demise.push_back( std::bind( &death_knight_t::trigger_soul_reaper_death, death_knight, std::placeholders::_1 ) );
+  }
 }
 
 // ==========================================================================
@@ -5541,24 +5546,24 @@ struct scourge_strike_t : public scourge_strike_base_t
 
 // Soul Reaper ==============================================================
 
-struct soul_reaper_t : public death_knight_melee_attack_t
+struct soul_reaper_t : public death_knight_spell_t
 {
   soul_reaper_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "soul_reaper", p, p ->  talent.soul_reaper )
+    death_knight_spell_t( "soul_reaper", p, p ->  talent.soul_reaper )
   {
     parse_options( options_str );
 
-    weapon = &( p -> main_hand_weapon );
-  }
+    energize_type = ENERGIZE_NONE;
 
+    tick_may_crit = tick_zero = true;
+    may_miss = may_crit = hasted_ticks = false;       
+  }
+  
   void execute() override
   {
-    death_knight_melee_attack_t::execute();
+    death_knight_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      td( execute_state -> target ) -> debuff.soul_reaper -> trigger();
-    }
+    p() -> replenish_rune( p() -> talent.soul_reaper -> effectN( 2 ).base_value(), p() -> gains.soul_reaper );
   }
 };
 
@@ -6301,6 +6306,32 @@ void death_knight_t::trigger_t20_4pc_unholy( double consumed )
   }
 }
 
+void death_knight_t::trigger_soul_reaper_death( player_t* target )
+{
+  // Don't pollute results at the end-of-iteration deaths of everyone
+  if ( sim -> event_mgr.canceled )
+  {
+    return;
+  }
+
+  if ( ! talent.soul_reaper -> ok() )
+  {
+    return;
+  }
+
+  death_knight_td_t* td = get_target_data( target );
+
+  if ( td -> dot.soul_reaper -> is_ticking() )
+  {
+    if ( sim -> log )
+    {
+      sim -> out_debug.printf( "Target died while affected by Soul Reaper debuff :  Death Knight %s gain the Soul Reaper buff.", name() );
+    }
+
+    buffs.soul_reaper -> trigger();
+  }
+}
+
 bool death_knight_t::in_death_and_decay() const
 {
   if ( ! sim -> distance_targeting_enabled )
@@ -6434,10 +6465,6 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
       }
 
       td -> debuff.festering_wound -> decrement( n_executes );
-      if ( td -> debuff.soul_reaper -> up() )
-      {
-        dk -> buffs.soul_reaper -> trigger( n_executes );
-      }
     }
   };
 
@@ -7264,7 +7291,7 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "call_action_list,name=generic" );
 
-  cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&buff.cold_heart.stack>10&!debuff.soul_reaper.up", "Cold heart and other on-gcd cooldowns" );
+  cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&buff.cold_heart.stack>10", "Cold heart and other on-gcd cooldowns" );
   cooldowns -> add_action( this, "Army of the Dead" );
   cooldowns -> add_action( this, "Summon Gargoyle", "if=(!equipped.137075|cooldown.dark_transformation.remains<10)&rune.time_to_4>=gcd" );
   cooldowns -> add_talent( this, "Soul Reaper", "if=debuff.festering_wound.stack>=3&rune>=3" );
@@ -7275,9 +7302,6 @@ void death_knight_t::default_apl_unholy()
   cold_heart -> add_action( this, "Chains of ice", "if=buff.master_of_ghouls.remains<gcd&buff.master_of_ghouls.up&buff.cold_heart.stack>17" );
   cold_heart -> add_action( this, "Chains of ice", "if=buff.cold_heart.stack=20&buff.unholy_strength.react" );
 
-
-  generic -> add_action( this, "Scourge Strike", "if=debuff.soul_reaper.up&debuff.festering_wound.up", "Default rotation" );
-  generic -> add_talent( this, "Clawing Shadows", "if=debuff.soul_reaper.up&debuff.festering_wound.up" );
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<22" );
   generic -> add_talent( this, "Defile" );
   generic -> add_action( "call_action_list,name=aoe,if=active_enemies>=2", "Switch to aoe" );
@@ -7461,11 +7485,10 @@ void death_knight_t::create_buffs()
       }
       return total_duration;
     } );
-  buffs.soul_reaper = make_buff<haste_buff_t>( this, "soul_reaper_haste", talent.soul_reaper -> effectN( 2 ).trigger() );
-  buffs.soul_reaper->set_default_value( talent.soul_reaper -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
-    ->set_trigger_spell( talent.soul_reaper );
+  buffs.soul_reaper = make_buff<haste_buff_t>( this, "soul_reaper", find_spell( 215711 ) );
+  buffs.soul_reaper -> set_default_value( find_spell( 215711 ) -> effectN( 1 ).percent() );
   buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.tombstone );
-  buffs.tombstone->set_cooldown( timespan_t::zero() ); // Handled by the action
+  buffs.tombstone -> set_cooldown( timespan_t::zero() ); // Handled by the action
   buffs.t19oh_8pc = stat_buff_creator_t( this, "deathlords_might", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
     .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
 
@@ -7523,6 +7546,7 @@ void death_knight_t::init_gains()
   gains.heartbreaker                     = get_gain( "Heartbreaker"               );
   gains.drw_heart_strike                 = get_gain( "Rune Weapon Heart Strike"   );
   gains.rune_strike                      = get_gain( "Rune Strike"                );
+  gains.soul_reaper                      = get_gain( "Soul Reaper"                );
 }
 
 // death_knight_t::init_procs ===============================================
