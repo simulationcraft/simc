@@ -270,12 +270,12 @@ public:
   // Active
   struct actives_t
   {
-    pets::hunter_main_pet_t* pet;
     action_t*           serpent_sting;
   } active;
 
   struct pets_t
   {
+    pets::hunter_main_pet_t* main;
     pets::animal_companion_t* animal_companion;
     pets::dire_critter_t* dire_beast;
     pet_t* spitting_cobra;
@@ -775,7 +775,7 @@ public:
     if ( affected_by.spirit_bond && p() -> mastery.spirit_bond -> ok() )
       am *= 1.0 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( 1 ).mastery_value();
 
-    if ( affected_by.lone_wolf && p() -> active.pet == nullptr )
+    if ( affected_by.lone_wolf && p() -> pets.main == nullptr )
       am *= 1.0 + p() -> specs.lone_wolf -> effectN( 3 ).percent();
 
     return am;
@@ -1247,15 +1247,15 @@ public:
   {
     base_t::summon( duration );
 
-    o() -> active.pet = this;
+    o() -> pets.main = this;
   }
 
   void demise() override
   {
     base_t::demise();
 
-    if ( o() -> active.pet == this )
-      o() -> active.pet = nullptr;
+    if ( o() -> pets.main == this )
+      o() -> pets.main = nullptr;
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -2239,7 +2239,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( p() -> buffs.master_marksman -> up() )
       p() -> buffs.master_marksman -> decrement();
 
-    pets::hunter_main_pet_t* pet = p() -> active.pet;
+    pets::hunter_main_pet_t* pet = p() -> pets.main;
     if ( pet && p() -> specs.beast_cleave -> ok() )
       pet -> buffs.beast_cleave -> trigger();
 
@@ -2405,7 +2405,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     if ( p() -> legendary.bm_shoulders -> ok() )
       p() -> buffs.the_mantle_of_command -> trigger();
 
-    if ( auto pet = p() -> active.pet )
+    if ( auto pet = p() -> pets.main )
     {
       if ( p() -> talents.stomp -> ok() )
         pet -> active.stomp -> execute();
@@ -3063,8 +3063,8 @@ struct flanking_strike_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    if ( p() -> active.pet )
-      p() -> active.pet -> active.flanking_strike -> execute();
+    if ( p() -> pets.main )
+      p() -> pets.main -> active.flanking_strike -> execute();
 
     if ( p() -> sets -> has_set_bonus( HUNTER_SURVIVAL, T21, B2 ) &&
          rng().roll( p() -> sets -> set( HUNTER_SURVIVAL, T21, B2 ) -> proc_chance() ) )
@@ -3492,7 +3492,7 @@ struct summon_pet_t: public hunter_spell_t
 
   bool ready() override
   {
-    if ( opt_disabled || p() -> active.pet == pet )
+    if ( opt_disabled || p() -> pets.main == pet )
       return false;
 
     return hunter_spell_t::ready();
@@ -3634,7 +3634,7 @@ struct bestial_wrath_t: public hunter_spell_t
           p() -> pets.dire_beast -> buffs.bestial_wrath -> trigger();
       }
 
-      p() -> active.pet -> buffs.tier19_2pc_bm -> trigger();
+      p() -> pets.main -> buffs.tier19_2pc_bm -> trigger();
     }
 
     hunter_spell_t::execute();
@@ -3642,7 +3642,7 @@ struct bestial_wrath_t: public hunter_spell_t
 
   bool ready() override
   {
-    if ( !p() -> active.pet )
+    if ( !p() -> pets.main )
       return false;
 
     return hunter_spell_t::ready();
@@ -3673,10 +3673,10 @@ struct kill_command_t: public hunter_spell_t
   {
     hunter_spell_t::execute();
 
-    if ( p() -> active.pet )
+    if ( p() -> pets.main )
     {
-      p() -> active.pet -> active.kill_command -> set_target( execute_state -> target );
-      p() -> active.pet -> active.kill_command -> execute();
+      p() -> pets.main -> active.kill_command -> set_target( execute_state -> target );
+      p() -> pets.main -> active.kill_command -> execute();
     }
 
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B2 ) )
@@ -3691,7 +3691,7 @@ struct kill_command_t: public hunter_spell_t
 
   bool ready() override
   {
-    if ( p() -> active.pet && p() -> active.pet -> active.kill_command -> ready() ) // Range check from the pet.
+    if ( p() -> pets.main && p() -> pets.main -> active.kill_command -> ready() ) // Range check from the pet.
       return hunter_spell_t::ready();
 
     return false;
@@ -3714,13 +3714,13 @@ struct aspect_of_the_wild_t: public hunter_spell_t
   void execute() override
   {
     p() -> buffs.aspect_of_the_wild -> trigger();
-    p() -> active.pet -> buffs.aspect_of_the_wild -> trigger();
+    p() -> pets.main -> buffs.aspect_of_the_wild -> trigger();
     hunter_spell_t::execute();
   }
 
   bool ready() override
   {
-    if ( !p() -> active.pet )
+    if ( !p() -> pets.main )
       return false;
 
     return hunter_spell_t::ready();
@@ -5080,7 +5080,7 @@ void hunter_t::reset()
   player_t::reset();
 
   // Active
-  active.pet = nullptr;
+  pets.main = nullptr;
   current_hunters_mark_target = nullptr;
 }
 
