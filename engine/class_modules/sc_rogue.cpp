@@ -280,6 +280,7 @@ struct rogue_t : public player_t
 
     // Azerite powers
     buff_t* deadshot;
+    buff_t* nights_vengeance;
     buff_t* sharpened_blades;
 
   } buffs;
@@ -485,6 +486,7 @@ struct rogue_t : public player_t
   struct azerite_powers_t
   {
     azerite_power_t deadshot;
+    azerite_power_t nights_vengeance;
     azerite_power_t sharpened_blades;
   } azerite;
 
@@ -2683,6 +2685,13 @@ struct eviscerate_t : public rogue_attack_t
     base_multiplier *= 1.0 + p -> spec.eviscerate_2 -> effectN( 1 ).percent();
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = rogue_attack_t::bonus_da( s );
+    b += p() -> buffs.nights_vengeance -> stack_value();
+    return b;
+  }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -2715,6 +2724,8 @@ struct eviscerate_t : public rogue_attack_t
     {
       p() -> buffs.shuriken_combo -> expire();
     }
+
+    p() -> buffs.nights_vengeance -> expire();
   }
 };
 
@@ -3321,6 +3332,14 @@ struct nightblade_t : public rogue_attack_t
     base_per_tick += timespan_t::from_seconds( p() -> sets -> set( ROGUE_SUBTLETY, T19, B2 ) -> effectN( 1 ).base_value() );
 
     return data().duration() + base_per_tick * cast_state( s ) -> cp;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> buffs.nights_vengeance -> trigger();
   }
 };
 
@@ -6942,6 +6961,7 @@ void rogue_t::init_spells()
   talent.death_from_above   = find_talent_spell( "Death from Above" );
 
   azerite.deadshot          = find_azerite_spell( "Deadshot" );
+  azerite.nights_vengeance  = find_azerite_spell( "Night's Vengeance" );
   azerite.sharpened_blades  = find_azerite_spell( "Sharpened Blades" );
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
@@ -7280,6 +7300,9 @@ void rogue_t::create_buffs()
   buffs.deadshot                           = make_buff( this, "deadshot", find_spell( 272940 ) )
                                              -> set_trigger_spell( azerite.deadshot.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.deadshot.value() );
+  buffs.nights_vengeance                   = make_buff( this, "nights_vengeance", find_spell( 273424 ) )
+                                             -> set_trigger_spell( azerite.nights_vengeance.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_default_value( azerite.nights_vengeance.value() );
   buffs.sharpened_blades                   = make_buff( this, "sharpened_blades", find_spell( 272916 ) )
                                              -> set_trigger_spell( azerite.sharpened_blades.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.sharpened_blades.value() );
