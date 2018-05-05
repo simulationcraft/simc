@@ -775,7 +775,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
     artifact = artifact::player_artifact_data_t::create( this );
   }
 
-  if ( ! is_enemy() && ! is_enemy() )
+  if ( ! is_enemy() && ! is_pet() )
   {
     azerite = azerite::create_state( this );
   }
