@@ -279,6 +279,7 @@ struct rogue_t : public player_t
     buff_t* t21_4pc_subtlety;
 
     // Azerite powers
+    buff_t* deadshot;
     buff_t* sharpened_blades;
 
   } buffs;
@@ -483,6 +484,7 @@ struct rogue_t : public player_t
   // Azerite powers
   struct azerite_powers_t
   {
+    azerite_power_t deadshot;
     azerite_power_t sharpened_blades;
   } azerite;
 
@@ -2386,6 +2388,11 @@ struct between_the_eyes_t : public rogue_attack_t
     }
 
     p() -> trigger_sephuzs_secret( execute_state, MECHANIC_STUN );
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      p() -> buffs.deadshot -> trigger();
+    }
   }
 };
 
@@ -3130,6 +3137,13 @@ struct pistol_shot_t : public rogue_attack_t
     return g;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = rogue_attack_t::bonus_da( s );
+    b += p() -> buffs.deadshot -> stack_value();
+    return b;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -3158,6 +3172,7 @@ struct pistol_shot_t : public rogue_attack_t
     // Expire buffs.
     p() -> buffs.opportunity -> expire();
     p() -> buffs.greenskins_waterlogged_wristcuffs -> expire();
+    p() -> buffs.deadshot -> expire();
   }
 };
 
@@ -6926,6 +6941,7 @@ void rogue_t::init_spells()
   talent.master_of_shadows  = find_talent_spell( "Master of Shadows" );
   talent.death_from_above   = find_talent_spell( "Death from Above" );
 
+  azerite.deadshot          = find_azerite_spell( "Deadshot" );
   azerite.sharpened_blades  = find_azerite_spell( "Sharpened Blades" );
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
@@ -7261,6 +7277,9 @@ void rogue_t::create_buffs()
   buffs.t21_4pc_subtlety                   = make_buff( this, "shadow_gestures", sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> effectN( 1 ).trigger() );
 
   // Azerite
+  buffs.deadshot                           = make_buff( this, "deadshot", find_spell( 272940 ) )
+                                             -> set_trigger_spell( azerite.deadshot.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_default_value( azerite.deadshot.value() );
   buffs.sharpened_blades                   = make_buff( this, "sharpened_blades", find_spell( 272916 ) )
                                              -> set_trigger_spell( azerite.sharpened_blades.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.sharpened_blades.value() );
