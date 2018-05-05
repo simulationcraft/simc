@@ -377,9 +377,7 @@ struct mind_flay_t final : public priest_spell_t
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T20, B2 ) )
     {
       priest().buffs.empty_mind->trigger();
-    }
-
-    priest().trigger_call_to_the_void( d );
+    }   
 
     priest().generate_insanity( insanity_gain, priest().gains.insanity_mind_flay, d->state->action );
   }
@@ -1097,6 +1095,7 @@ struct void_eruption_t final : public priest_spell_t
 {
   propagate_const<action_t*> void_bolt;
   const spell_data_t* data_spell;
+  double insanity_required;
 
   void_eruption_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "void_eruption", p, p.find_spell( 228360 ) ), 
@@ -1107,12 +1106,15 @@ struct void_eruption_t final : public priest_spell_t
     
     if( priest().talents.legacy_of_the_void->ok() )
     {
-      priest().talents.legacy_of_the_void->effectN( 6 ).percent();
+      insanity_required = priest().talents.legacy_of_the_void->effectN( 6 ).percent();
     }
     else
     {
-      base_costs[ RESOURCE_INSANITY ] /= 100;  
+      insanity_required = base_costs[ RESOURCE_INSANITY ] / 100;
     }
+
+    // We don't want to lose insanity when casting it!
+    base_costs[RESOURCE_INSANITY] = 0;
 
     may_miss          = false;
     is_mastery_spell  = true;
@@ -1180,7 +1182,8 @@ struct void_eruption_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest().buffs.voidform->check() )
+    if ( !priest().buffs.voidform->check() 
+       && priest().resources.current[ RESOURCE_INSANITY ] >= insanity_required )
     {
       return priest_spell_t::ready();
     }
@@ -1832,6 +1835,8 @@ void priest_t::insanity_state_t::adjust_end_event()
 
 void priest_t::trigger_call_to_the_void( const dot_t* d )
 {
+  // Broken without Artifact
+  return;
   if ( rppm.call_to_the_void->trigger() )
   {
     procs.void_tendril->occur();
