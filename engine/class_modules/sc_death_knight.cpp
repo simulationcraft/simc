@@ -711,6 +711,7 @@ public:
     proc_t* km_natural_expiration;
     proc_t* t19_2pc_unholy;
     proc_t* shattering_strikes;
+    proc_t* bloodworms;
   } procs;
 
   // Legendaries
@@ -3199,6 +3200,8 @@ struct melee_t : public death_knight_melee_attack_t
     {
       return;
     }
+
+    p() -> procs.bloodworms -> occur();
 
     for ( size_t i = 0 ; i < p() -> pets.bloodworms.size() ; i++ )
     {
@@ -7564,6 +7567,8 @@ void death_knight_t::init_procs()
   procs.ready_rune               = get_proc( "Rune ready" );
 
   procs.t19_2pc_unholy           = get_proc( "Tier19 Unholy 2PC" );
+
+  procs.bloodworms               = get_proc( "Bloodworms" );
 }
 
 // death_knight_t::init_absorb_priority =====================================
