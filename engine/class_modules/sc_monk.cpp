@@ -6931,6 +6931,23 @@ void monk_t::init_spells()
   spec.windwalker_monk               = find_specialization_spell( 137025 );
   spec.windwalking                   = find_specialization_spell( "Windwalking" );
 
+  // Azurite Powers ===================================
+  // Multiple
+  azerite.strength_of_spirit         = find_azerite_spell( "Strength of Spirit" );
+
+  // Brewmaster
+  azerite.boiling_brew               = find_azerite_spell( "Boiling Brew" );
+  azerite.fit_to_burst               = find_azerite_spell( "Fit to Burst" );
+  azerite.staggering_strikes         = find_azerite_spell( "Staggering Strikes" );
+
+  // Mistweaver
+  azerite.invigorating_brew          = find_azerite_spell( "Invigorating Brew" );
+  azerite.overflowing_mists          = find_azerite_spell( "Overflowing Mists" );
+
+  // Windwalker
+  azerite.iron_fists                 = find_azerite_spell( "Iron Fists" );
+  azerite.sunrise_technique          = find_azerite_spell( "Sunrise Technique" );
+
   // Passives =========================================
   // General
   passives.aura_monk                        = find_spell( 137022 );
