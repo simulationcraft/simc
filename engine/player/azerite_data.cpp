@@ -306,6 +306,11 @@ bool azerite_state_t::parse_override( sim_t* sim, const std::string&, const std:
   auto override_split = util::string_split( value, "/" );
   for ( const auto& opt : override_split )
   {
+    if ( opt.empty() )
+    {
+      continue;
+    }
+
     auto opt_split = util::string_split( opt, ":" );
     if ( opt_split.size() != 2 )
     {
