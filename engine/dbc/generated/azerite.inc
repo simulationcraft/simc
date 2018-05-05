@@ -1,4 +1,4 @@
-// Azerite powers, wow build 26530
+// Azerite powers, wow build 26557
 static constexpr std::array<azerite_power_entry_t, 178> __azerite_power_data { {
   {   1,  55564, "Increase Versatility 15"            },
   {   2, 261582, "Haste"                              },
