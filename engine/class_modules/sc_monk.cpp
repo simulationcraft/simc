@@ -3752,7 +3752,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     // Get the number of targets from the non sleeping target list
     auto targets = sim -> target_non_sleeping_list.size();
 
-    if ( targets >= p() -> azerite.iron_fists.spell_ref().effectN( 2 ).base_value() )
+    if ( p() -> azerite.iron_fists.enabled() && targets >= p() -> azerite.iron_fists.spell_ref().effectN( 2 ).base_value() )
       p() -> buff.iron_fists -> trigger();
   }
 
