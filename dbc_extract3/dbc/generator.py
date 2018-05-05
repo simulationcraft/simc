@@ -4176,12 +4176,24 @@ class AzeriteDataGenerator(DataGenerator):
     def __init__(self, options, data_store = None):
         super().__init__(options, data_store)
 
-        self._dbc = [ 'AzeritePower', 'AzeritePowerSetMember', 'SpellName' ]
+        self._dbc = [ 'AzeriteEmpoweredItem', 'AzeritePower', 'AzeritePowerSetMember', 'SpellName', 'ItemSparse' ]
 
     def filter(self):
         ids = set()
+        power_sets = set()
+
+        # Figure out a valid set of power set ids
+        for id, data in self._azeriteempowereditem_db.items():
+            if data.id_item not in self._itemsparse_db:
+                continue
+
+            power_sets.add(data.id_power_set)
 
         for id, data in self._azeritepowersetmember_db.items():
+            # Only use azerite power sets that are associated with items
+            if data.id_parent not in power_sets:
+                continue
+
             power = self._azeritepower_db[data.id_power]
             if power.id != data.id_power:
                 continue
