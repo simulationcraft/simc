@@ -12,7 +12,7 @@
  HEADERS += engine/util/generic.hpp
  HEADERS += engine/util/concurrency.hpp
  HEADERS += engine/util/cache.hpp
- HEADERS += engine/sim/x7_pantheon.hpp
+ HEADERS += engine/sim/x6_pantheon.hpp
  HEADERS += engine/sim/sc_profileset.hpp
  HEADERS += engine/sim/sc_option.hpp
  HEADERS += engine/sim/sc_expressions.hpp
@@ -47,7 +47,7 @@
  SOURCES += engine/util/fmt/ostream.cpp
  SOURCES += engine/util/fmt/posix.cpp
  SOURCES += engine/util/fmt/printf.cpp
- SOURCES += engine/sim/x7_pantheon.cpp
+ SOURCES += engine/sim/x6_pantheon.cpp
  SOURCES += engine/sim/sc_sim.cpp
  SOURCES += engine/sim/sc_scaling.cpp
  SOURCES += engine/sim/sc_reforge_plot.cpp
@@ -71,7 +71,7 @@
  SOURCES += engine/report/sc_gear_weights.cpp
  SOURCES += engine/report/sc_color.cpp
  SOURCES += engine/report/sc_chart.cpp
- SOURCES += engine/player/sc_unique_gear_x7.cpp
+ SOURCES += engine/player/sc_unique_gear_x6.cpp
  SOURCES += engine/player/sc_unique_gear.cpp
  SOURCES += engine/player/sc_set_bonus.cpp
  SOURCES += engine/player/sc_proc.cpp

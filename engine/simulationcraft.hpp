@@ -154,7 +154,7 @@ namespace highchart {
 #include "player/azerite_data.hpp"
 
 // Legion-specific "pantheon trinket" system
-#include "sim/x7_pantheon.hpp"
+#include "sim/x6_pantheon.hpp"
 
 // Talent Translation =======================================================
 

@@ -1,4 +1,4 @@
-#include "x7_pantheon.hpp"
+#include "x6_pantheon.hpp"
 #include "simulationcraft.hpp"
 
 namespace
