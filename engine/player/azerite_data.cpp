@@ -376,4 +376,69 @@ bool azerite_state_t::parse_override( sim_t* sim, const std::string&, const std:
 
   return true;
 }
+
+bool azerite_state_t::is_enabled( unsigned id ) const
+{
+  // All azerite-related effects disabled
+  if ( m_player -> sim -> azerite_status == AZERITE_DISABLED_ALL )
+  {
+    return false;
+  }
+
+  auto it = m_overrides.find( id );
+  // Override found, figure enable status from it
+  if ( it != m_overrides.end() )
+  {
+    if ( it -> second.size() == 1 && it -> second[ 0 ] == 0 )
+    {
+      return false;
+    }
+
+    return true;
+  }
+
+  // Only look at item-based azerite, if all azerite is enabled
+  if ( m_player -> sim -> azerite_status == AZERITE_ENABLED )
+  {
+    auto it = m_items.find( id );
+    return it != m_items.end();
+  }
+
+  // Out of options, it can't be enabled
+  return false;
+}
+
+bool azerite_state_t::is_enabled( const std::string& name, bool tokenized ) const
+{
+  const auto& power = m_player -> dbc.azerite_power( name, tokenized );
+  if ( power.id == 0 )
+  {
+    return false;
+  }
+
+  return is_enabled( power.id );
+}
+
+expr_t* azerite_state_t::create_expression( const std::vector<std::string>& expr_str ) const
+{
+  if ( expr_str.size() == 1 )
+  {
+    return nullptr;
+  }
+
+  const auto& power = m_player -> dbc.azerite_power( expr_str[ 1 ], true );
+  if ( power.id == 0 )
+  {
+    m_player -> sim -> errorf( "%s unknown azerite power \"%s\" in expression",
+      m_player -> name(), expr_str[ 1 ].c_str() );
+    return nullptr;
+  }
+
+  if ( util::str_compare_ci( expr_str[ 2 ], "enabled" ) )
+  {
+    return expr_t::create_constant( "azerite_enabled", as<double>( is_enabled( power.id ) ) );
+  }
+
+  return nullptr;
+}
 } // Namespace azerite ends

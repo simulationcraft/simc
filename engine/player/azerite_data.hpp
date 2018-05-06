@@ -15,6 +15,8 @@ struct spell_data_t;
 struct item_t;
 struct player_t;
 struct sim_t;
+struct action_t;
+struct expr_t;
 
 namespace azerite
 {
@@ -106,7 +108,8 @@ public:
   azerite_state_t( player_t* p );
 
   /// Initializes the azerite state from the actor's items. Must be run after player_t::init_items()
-  //  is called (successfully)
+  ///  is called (successfully), but before player_t::init_spells() is invoked by the actor
+  ///  initialization process.
   void initialize();
 
   /// Get an azerite_power_t object for a given power identifier
@@ -116,12 +119,20 @@ public:
   /// Check initialization status of an azerite power
   bool is_initialized( unsigned id ) const;
 
+  /// Check the enable status of an azerite power
+  bool is_enabled( unsigned id ) const;
+  /// Check the enable status of an azerite power
+  bool is_enabled( const std::string& name, bool tokenized = false ) const;
+
   /// Parse and sanitize azerite_override option
   bool parse_override( sim_t*, const std::string& /*name*/, const std::string& /*value*/ );
   /// Output overrides as an azerite_override options string
   std::string overrides_str() const;
   /// Clone overrides from another actor
   void copy_overrides( const std::unique_ptr<azerite_state_t>& other );
+
+  /// Create azerite-related expressions
+  expr_t* create_expression( const std::vector<std::string>& expr_str ) const;
 };
 
 /// Creates an azerite state object for the actor

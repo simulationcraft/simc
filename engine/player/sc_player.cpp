@@ -9447,6 +9447,11 @@ expr_t* player_t::create_expression( action_t* a, const std::string& expression_
     // FIXME: report error and return?
   }
 
+  else if ( util::str_compare_ci( splits[ 0 ], "azerite" ) )
+  {
+    return azerite -> create_expression( splits );
+  }
+
   else if ( splits[ 0 ] == "using_apl" && splits.size() == 2 )
   {
     struct use_apl_expr_t : public expr_t
