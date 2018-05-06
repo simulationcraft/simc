@@ -996,7 +996,7 @@ void print_html_gear( report::sc_html_stream& os, const player_t& p )
       for ( size_t i = 0; i < item.parsed.azerite_ids.size(); ++i )
       {
         const auto& power = item.player -> dbc.azerite_power( item.parsed.azerite_ids[ i ] );
-        if ( power.id == 0 )
+        if ( power.id == 0 || ! item.player -> azerite -> is_enabled( power.id ) )
         {
           continue;
         }
