@@ -6833,9 +6833,9 @@ namespace unique_gear
 typedef std::vector<const special_effect_db_item_t*> special_effect_set_t;
 
 void register_hotfixes();
-void register_hotfixes_x7();
+void register_hotfixes_legion();
 void register_special_effects();
-void register_special_effects_x7(); // Legion special effects
+void register_special_effects_legion(); // Legion special effects
 void sort_special_effects();
 void unregister_special_effects();
 
@@ -6863,7 +6863,7 @@ void register_special_effect( unsigned spell_id, const T& cb, bool fallback = fa
 }
 
 void register_target_data_initializers( sim_t* );
-void register_target_data_initializers_x7( sim_t* ); // Legion targetdata initializers
+void register_target_data_initializers_legion( sim_t* ); // Legion targetdata initializers
 
 void init( player_t* );
 

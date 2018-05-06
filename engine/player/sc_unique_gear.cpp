@@ -4386,7 +4386,7 @@ void unique_gear::register_special_effect( unsigned spell_id, const char* encode
 void unique_gear::register_special_effects()
 {
   // Register legion special effects
-  register_special_effects_x7();
+  register_special_effects_legion();
 
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */
@@ -4609,7 +4609,7 @@ void unique_gear::unregister_special_effects()
 
 void unique_gear::register_hotfixes()
 {
-  register_hotfixes_x7();
+  register_hotfixes_legion();
 }
 
 void unique_gear::register_target_data_initializers( sim_t* sim )
@@ -4621,7 +4621,7 @@ void unique_gear::register_target_data_initializers( sim_t* sim )
   sim -> register_target_data_initializer( empty_drinking_horn_constructor_t( 124238, trinkets ) );
   sim -> register_target_data_initializer( prophecy_of_fear_constructor_t( 124230, trinkets ) );
 
-  register_target_data_initializers_x7( sim );
+  register_target_data_initializers_legion( sim );
 }
 
 special_effect_t* unique_gear::find_special_effect( player_t* actor, unsigned spell_id, special_effect_e type )
