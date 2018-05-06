@@ -1395,6 +1395,7 @@ sim_t::sim_t() :
   fight_style( "Patchwerk" ), add_waves( 0 ), overrides( overrides_t() ),
   default_aura_delay( timespan_t::from_millis( 30 ) ),
   default_aura_delay_stddev( timespan_t::from_millis( 5 ) ),
+  azerite_status( AZERITE_ENABLED ),
   progress_bar( *this ),
   scaling( new scaling_t( this ) ),
   plot( new plot_t( this ) ),
@@ -3383,6 +3384,29 @@ void sim_t::create_options()
 
       sim -> legion_opts.cradle_of_anguish_resets.push_back( v );
     } );
+    return true;
+  } ) );
+
+  // Battle for Azeroth
+  add_option( opt_func( "disable_azerite", []( sim_t* sim, const std::string&, const std::string& value ) {
+    if ( value == "1" )
+    {
+      sim -> azerite_status = AZERITE_DISABLED_ALL;
+    }
+    else if ( util::str_compare_ci( value, "items" ) )
+    {
+      sim -> azerite_status = AZERITE_DISABLED_ITEMS;
+    }
+    else if ( util::str_compare_ci( value, "all" ) )
+    {
+      sim -> azerite_status = AZERITE_DISABLED_ALL;
+    }
+    else
+    {
+      sim -> errorf( "Unknown disable_azerite value \"%s\", valid values are 'items' or 'all'",
+          value.c_str() );
+      return false;
+    }
     return true;
   } ) );
 }

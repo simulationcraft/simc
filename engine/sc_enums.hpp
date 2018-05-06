@@ -34,6 +34,14 @@ enum
   WEAPON_POWER_COEFFICIENT = 6, // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
 };
 
+// Azerite control
+enum azerite_control
+{
+  AZERITE_ENABLED = 0,          /// All azerite-related effects enabled (default)
+  AZERITE_DISABLED_ITEMS,       /// Azerite effects from items are disabled
+  AZERITE_DISABLED_ALL          /// All azerite-related effects disabled
+};
+
 enum regen_type_e
 {
   /**

@@ -150,6 +150,12 @@ bool azerite_state_t::is_initialized( unsigned id ) const
 
 azerite_power_t azerite_state_t::get_power( unsigned id )
 {
+  // All azerite disabled
+  if ( m_player -> sim -> azerite_status == AZERITE_DISABLED_ALL )
+  {
+    return {};
+  }
+
   auto it = m_state.find( id );
   if ( it == m_state.end() )
   {
@@ -231,7 +237,15 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
           m_player -> name(), power.name, s.str().c_str() );
     }
 
-    return { m_player, m_player -> find_spell( power.spell_id ), m_items[ id ] };
+    // Item-related azerite effects are only enabled when "all" is defined
+    if ( m_player -> sim -> azerite_status == AZERITE_ENABLED )
+    {
+      return { m_player, m_player -> find_spell( power.spell_id ), m_items[ id ] };
+    }
+    else
+    {
+      return {};
+    }
   }
 }
 
