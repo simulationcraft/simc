@@ -82,6 +82,9 @@ timespan_t azerite_power_t::time_value( size_t index, time_type tt ) const
       return timespan_t::from_seconds( value( index ) );
     case time_type::MS:
       return timespan_t::from_millis( value( index ) );
+    // Should be never reached
+    default:
+      return timespan_t::zero();
   }
 }
 
