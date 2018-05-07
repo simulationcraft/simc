@@ -393,7 +393,6 @@ public:
   bool deprecated_dnd_expression;
 
   // Counters
-  int pestilent_pustules;
   int t20_2pc_frost;
   int t20_4pc_frost; // Collect RP usage
 
@@ -502,7 +501,6 @@ public:
     gain_t* rc; // Runic Corruption
     gain_t* runic_empowerment;
     gain_t* empower_rune_weapon;
-    gain_t* pestilent_pustules;
     gain_t* tombstone;
     gain_t* t19_4pc_blood;
     gain_t* draugr_girdle_everlasting_king;
@@ -606,7 +604,7 @@ public:
     const spell_data_t* clawing_shadows;
 
     // Tier 2
-    const spell_data_t* pestilent_pustules; // NYI
+    const spell_data_t* pestilent_pustules;
     const spell_data_t* inevitable_doom; // NYI
     const spell_data_t* soul_reaper; // NYI
 
@@ -712,6 +710,8 @@ public:
     proc_t* t19_2pc_unholy;
     proc_t* shattering_strikes;
     proc_t* bloodworms;
+    proc_t* pp_runic_corruption;
+    proc_t* rp_runic_corruption;
   } procs;
 
   // Legendaries
@@ -764,7 +764,6 @@ public:
     fallen_crusader_rppm( find_spell( 166441 ) -> real_ppm() ),
     antimagic_shell_absorbed( 0.0 ),
     deprecated_dnd_expression( false ),
-    pestilent_pustules( 0 ),
     t20_2pc_frost( 0 ),
     t20_4pc_frost( 0 ),
     antimagic_shell( nullptr ),
@@ -3644,19 +3643,18 @@ struct rune_master_buff_t : public buff_t
 // DRW buff
 struct dancing_rune_weapon_buff_t : public buff_t
 {
-  death_knight_t* p;
-
   dancing_rune_weapon_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "dancing_rune_weapon", p -> spell.dancing_rune_weapon )
       .duration( p -> spell.dancing_rune_weapon -> duration() )
       .cd( timespan_t::zero() )
-      .add_invalidate( CACHE_PARRY ) ),
-    p( p )
+      .add_invalidate( CACHE_PARRY ) )
   { }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    death_knight_t* p = debug_cast< death_knight_t* >( player );
 
     // Triggers Rune Master buff if T21 4P is equipped
     if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B4 ) )
@@ -5730,12 +5728,9 @@ struct breath_of_sindragosa_t : public death_knight_spell_t
 
 struct antimagic_shell_buff_t : public buff_t
 {
-  death_knight_t* dk;
-
   antimagic_shell_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "antimagic_shell", p -> spell.antimagic_shell )
-                              .cd( timespan_t::zero() ) ),
-      dk( p )
+                              .cd( timespan_t::zero() ) )
   { }
 
   void execute( int stacks, double value, timespan_t duration ) override
@@ -6387,6 +6382,12 @@ bool death_knight_t::trigger_runic_corruption( double rpcost, double override_ch
   if ( ! rng().roll( actual_chance ) )
     return false;
 
+
+  if ( talent.pestilent_pustules -> ok() && override_chance == -1.0 )
+  {
+    procs.rp_runic_corruption -> occur();
+  }
+
   timespan_t duration = timespan_t::from_seconds( 3.0 * cache.attack_haste() );
   if ( buffs.runic_corruption -> check() == 0 )
     buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
@@ -6442,13 +6443,6 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
           dk -> active_spells.bursting_sores -> execute();
         }
 
-        if ( dk -> talent.pestilent_pustules -> ok() &&
-             ++dk -> pestilent_pustules == dk -> talent.pestilent_pustules -> effectN( 1 ).base_value() )
-        {
-          dk -> replenish_rune( 1, dk -> gains.pestilent_pustules );
-          dk -> pestilent_pustules = 0;
-        }
-
         if ( dk -> talent.unholy_frenzy -> ok() )
         {
           dk -> buffs.unholy_frenzy -> trigger();
@@ -6462,6 +6456,17 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
           {
             dk -> procs.t19_2pc_unholy -> occur();
           }
+        }
+      }
+
+      // Triggers once for all the festering wound burst event on the same target
+      // Apocalypse is 10% * n wounds burst to proc
+      // Scourge strike in DnD is 1 - ( 0.9 ) ^ n targets to proc
+      if ( dk -> talent.pestilent_pustules -> ok() )
+      {
+        if ( dk -> trigger_runic_corruption( 0, dk -> talent.pestilent_pustules -> effectN( 1 ).percent() * n ) )
+        {
+          dk -> procs.pp_runic_corruption -> occur();
         }
       }
 
@@ -7535,7 +7540,6 @@ void death_knight_t::init_gains()
   gains.empower_rune_weapon              = get_gain( "Empower Rune Weapon"        );
   gains.rc                               = get_gain( "runic_corruption_all"       );
   gains.runic_attenuation                = get_gain( "Runic Attenuation"          );;
-  gains.pestilent_pustules               = get_gain( "Pestilent Pustules"         );
   gains.tombstone                        = get_gain( "Tombstone"                  );
   gains.t19_4pc_blood                    = get_gain( "Tier19 Blood 4PC"           );
   gains.draugr_girdle_everlasting_king   = get_gain( "Draugr, Girdle of the Everlasting King" );
@@ -7564,7 +7568,9 @@ void death_knight_t::init_procs()
 
   procs.ready_rune               = get_proc( "Rune ready" );
 
-  procs.t19_2pc_unholy           = get_proc( "Tier19 Unholy 2PC" );
+  procs.t19_2pc_unholy           = get_proc( "Runic Corruption : T19 2P "             );
+  procs.rp_runic_corruption      = get_proc( "Runic Corruption : Runic Power Spent"   );
+  procs.pp_runic_corruption      = get_proc( "Runic Corruption : Pestilent Pustules " );
 
   procs.bloodworms               = get_proc( "Bloodworms" );
 }
@@ -7641,7 +7647,6 @@ void death_knight_t::reset()
 
   runic_power_decay_rate = 1; // 1 RP per second decay
   antimagic_shell_absorbed = 0.0;
-  pestilent_pustules = 0;
   _runes.reset();
   dnds.clear();
   t20_2pc_frost = 0;
