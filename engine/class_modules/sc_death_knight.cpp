@@ -617,7 +617,7 @@ public:
     // Tier 6
     const spell_data_t* corpse_explosion; // NYI
     const spell_data_t* defile;
-    const spell_data_t* epidemic; // NYI
+    const spell_data_t* epidemic;
 
     // Tier 7
     const spell_data_t* dark_infusion;
@@ -4460,18 +4460,6 @@ struct epidemic_damage_main_t : public death_knight_spell_t
   {
     background = true;
   }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-    
-    // Reduces the cooldown Dark Transformation by 3s if Dark Infusion is talented
-    if ( p() -> talent.dark_infusion -> ok() )
-    {
-      p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
-        p() -> talent.dark_infusion -> effectN( 2 ).base_value() ) );
-    }
-  }
 };
 
 struct epidemic_damage_aoe_t : public death_knight_spell_t
@@ -4533,6 +4521,20 @@ struct epidemic_t : public death_knight_spell_t
           aoe -> execute();
         }
       }
+    }
+
+    // Currently doesn't trigger Runic Corruption
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/253
+    if ( result_is_hit( execute_state -> result ) && !p() -> bugs )
+    {
+      p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
+    }
+
+    // Reduces the cooldown Dark Transformation by 3s if Dark Infusion is talented
+    if ( p() -> talent.dark_infusion -> ok() )
+    {
+      p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
+        p() -> talent.dark_infusion -> effectN( 2 ).base_value() ) );
     }
   }
 };
