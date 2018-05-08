@@ -5679,16 +5679,17 @@ struct unholy_blight_t : public death_knight_spell_t
   {
     may_crit = may_miss = may_dodge = may_parry = false;
     hasted_ticks = false;
+    tick_zero = true;
     parse_options( options_str );
 
     aoe = -1;
   }
 
-  void impact( action_state_t* state ) override
+  void tick( dot_t* dot ) override
   {
-    death_knight_spell_t::impact( state );
+    death_knight_spell_t::tick( dot );
 
-    ub_dot -> set_target( state -> target );
+    ub_dot -> set_target( dot -> target );
     ub_dot -> schedule_execute();
   }
 };
