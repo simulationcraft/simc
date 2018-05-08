@@ -4922,13 +4922,18 @@ void hunter_t::apl_bm()
 void hunter_t::apl_mm()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
+
+  // Precombat actions
+  precombat -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down" );
+  precombat -> add_talent( this, "Double Tap" );
 
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( this, "Counter Shot", "if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up" );
 
   // Item Actions
-  default_list -> add_action( special_use_item_action( "tarnished_sentinel_medallion", "if=((cooldown.trueshot.remains_guess<6|cooldown.trueshot.remains_guess>45)&(target.time_to_die>cooldown+duration))|target.time_to_die<25|buff.bullseye.react=30" ) );
-  default_list -> add_action( special_use_item_action( "tome_of_unraveling_sanity", "if=((cooldown.trueshot.remains_guess<13|cooldown.trueshot.remains_guess>60)&(target.time_to_die>cooldown+duration*2))|target.time_to_die<26|buff.bullseye.react=30" ) );
+  default_list -> add_action( special_use_item_action( "tarnished_sentinel_medallion", "if=((cooldown.trueshot.remains_guess<6|cooldown.trueshot.remains_guess>45)&(target.time_to_die>cooldown+duration))|target.time_to_die<25" ) );
+  default_list -> add_action( special_use_item_action( "tome_of_unraveling_sanity", "if=((cooldown.trueshot.remains_guess<13|cooldown.trueshot.remains_guess>60)&(target.time_to_die>cooldown+duration*2))|target.time_to_die<26" ) );
   default_list -> add_action( special_use_item_action( "kiljaedens_burning_wish", "if=cooldown.trueshot.remains_guess>45" ) );
   default_list -> add_action( special_use_item_action( "terminus_signaling_beacon", "if=cooldown.trueshot.remains_guess>30" ) );
   default_list -> add_action( "use_items" );
@@ -4942,9 +4947,10 @@ void hunter_t::apl_mm()
 
   // TODO: actual APL
   default_list -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down" );
-  default_list -> add_action( this, "Trueshot", "if=action.aimed_shot.charges=0" );
+  default_list -> add_action( this, "Trueshot", "if=action.aimed_shot.charges=0&buff.precise_shots.down" );
   default_list -> add_action( this, "Arcane Shot", "if=buff.precise_shots.up" );
   default_list -> add_talent( this, "Double Tap" );
+  default_list -> add_action( this, "Multi-Shot", "if=enemies>2&buff.trick_shots.down" );
   default_list -> add_action( this, "Aimed Shot", "if=charges>=2|buff.lock_and_load.react" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_talent( this, "Explosive Shot" );
@@ -4953,7 +4959,7 @@ void hunter_t::apl_mm()
   default_list -> add_talent( this, "Piercing Shot" );
   default_list -> add_action( this, "Rapid Fire" );
   default_list -> add_action( this, "Aimed Shot" );
-  default_list -> add_action( this, "Arcane Shot", "if=focus>30" );
+  default_list -> add_action( this, "Arcane Shot", "if=(focus>40&spell_targets.multishot<3)|(focus>80)" );
   default_list -> add_action( this, "Steady Shot" );
 }
 
