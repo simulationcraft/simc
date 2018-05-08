@@ -282,6 +282,8 @@ namespace warlock
         propagate_const<buff_t*> sacrificed_souls;
         propagate_const<buff_t*> dreaded_haste; // t20 4pc
         propagate_const<buff_t*> rage_of_guldan; // t21 2pc
+        propagate_const<buff_t*> wild_imps;
+        propagate_const<buff_t*> dreadstalkers;
 
         //destruction_buffs
         propagate_const<buff_t*> backdraft;
@@ -665,6 +667,16 @@ namespace warlock
 
           if ( p->dual_wield() )
             oh = new off_hand_swing( p );
+        }
+
+        double action_multiplier() const override {
+          double m = warlock_pet_action_t::action_multiplier();
+          if (p()->pet_type == PET_FELGUARD)
+          {
+            m *= 1.1;
+          }
+
+          return m;
         }
 
         virtual void execute() override

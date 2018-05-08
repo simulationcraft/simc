@@ -1422,6 +1422,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 267988, 2 ),		# Summon Vicious Hellhound
 		  ( 267987, 2 ),		# Summon Illidari Satyr
 		  ( 267989, 2 ),		# Summon Eyes of Gul'dan
+		  ( 267986, 2 ),		# Summon Prince Malchezaar
 		  ( 272172, 5 ),		# Shivarra - Multi-Slash
 		  ( 272435, 5 ),		# Darkhound - Fel Bite
 		  ( 272167, 5 ),		# Bilescourge - Toxic Bile
@@ -1431,6 +1432,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 272013, 5 ),		# Vicious Hellhound - Demon Fangs
 		  ( 272012, 5 ),		# Illidari Satyr - Shadow Slash
 		  ( 272131, 5 ),		# Eye of Gul'dan - Eye of Gul'dan
+		  
         ),
 
         # Monk:
