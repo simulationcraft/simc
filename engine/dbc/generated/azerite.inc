@@ -1,4 +1,4 @@
-// Azerite powers, wow build 26530
+// Azerite powers, wow build 26567
 static constexpr std::array<azerite_power_entry_t, 139> __azerite_power_data { {
   {  13, 263978, "Azerite Empowered"                  },
   {  14, 268594, "Longstrider"                        },
@@ -77,14 +77,14 @@ static constexpr std::array<azerite_power_entry_t, 139> __azerite_power_data { {
   { 144, 273131, "Rejuvenating Grace"                 },
   { 145, 273134, "Fortifying Auras"                   },
   { 146, 273136, "Critical Flash"                     },
-  { 147, 273139, "King's Shield"                      },
+  { 147, 277641, "Powerful Placeholder"               },
   { 148, 273140, "Righteous Flames"                   },
   { 149, 273142, "Healing Hammer"                     },
-  { 150, 273143, "Strong Light"                       },
-  { 151, 273145, "Searing Blades"                     },
+  { 150, 277641, "Powerful Placeholder"               },
+  { 151, 277641, "Powerful Placeholder"               },
   { 152, 273146, "Healthy Judgment"                   },
   { 153, 273147, "Deferred Sentence"                  },
-  { 154, 273148, "Furious Wrath"                      },
+  { 154, 277641, "Powerful Placeholder"               },
   { 155, 273149, "Weeping Aura"                       },
   { 156, 273150, "Ruinous Bolt"                       },
   { 157, 273790, "Rezan's Fury"                       },
