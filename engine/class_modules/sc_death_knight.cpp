@@ -554,6 +554,7 @@ public:
     const spell_data_t* death_coil;
     const spell_data_t* outbreak;
     const spell_data_t* scourge_strike;
+    const spell_data_t* apocalypse;
 
   } spec;
 
@@ -691,6 +692,7 @@ public:
   struct pets_t
   {
     std::array< pets::death_knight_pet_t*, 8 > army_ghoul;
+    std::array< pets::death_knight_pet_t*, 4 > apoc_ghoul;
     std::array< pets::bloodworm_pet_t*, 6 > bloodworms;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon_pet;
     pets::dt_pet_t* ghoul_pet;
@@ -781,6 +783,7 @@ public:
     _runes( this )
   {
     range::fill( pets.army_ghoul, nullptr );
+    range::fill( pets.apoc_ghoul, nullptr );
     range::fill( pets.bloodworms, nullptr );
     
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
@@ -1903,7 +1906,7 @@ struct army_pet_t : public base_ghoul_pet_t
     base_ghoul_pet_t::init_base_stats();
 
     owner_coeff.ap_from_ap = 0.30;
-    // 2017-01-10: Army of the Dead ghouls damage has been increased.
+    // 2017-01-10: Army of the Dead and apoc ghouls damage has been increased.
     // FIXME: Exact number TBDiscovered, 33% sounds fine
     owner_coeff.ap_from_ap *= 1.33;
   }
@@ -3244,6 +3247,47 @@ struct auto_attack_t : public death_knight_melee_attack_t
 // Death Knight Abilities
 // ==========================================================================
 
+// Apocalypse ===============================================================
+
+struct apocalypse_t : public death_knight_melee_attack_t
+{
+  const spell_data_t* summon;
+
+  apocalypse_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_melee_attack_t( "apocalypse", p, p -> spec.apocalypse ),
+    summon( p -> find_spell( 221180 ) )
+  {
+    parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+    auto n_wounds = std::min( (int) data().effectN( 2 ).base_value(),
+                              td( execute_state -> target ) -> debuff.festering_wound -> stack() );
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      p() -> burst_festering_wound( execute_state, n_wounds );
+
+      for ( int i = 0; i < n_wounds; ++i )
+      {
+        p() -> pets.apoc_ghoul[ i ] -> summon( summon -> duration() );
+        p() -> buffs.t20_2pc_unholy -> trigger();
+      }
+    }
+  }
+
+  virtual bool ready() override
+  {
+    death_knight_td_t* td = p() -> get_target_data( target );
+    if ( ! td -> debuff.festering_wound -> check() )
+      return false;
+
+    return death_knight_melee_attack_t::ready();
+  }
+};
+
 // Army of the Dead =========================================================
 
 struct army_of_the_dead_t : public death_knight_spell_t
@@ -3722,6 +3766,15 @@ struct dark_transformation_t : public death_knight_spell_t
       if ( p() -> pets.army_ghoul[ i ] && p() -> pets.army_ghoul[ i ] -> taktheritrix )
       {
         p() -> pets.army_ghoul[ i ] -> taktheritrix -> trigger();
+      }
+    }
+
+    for ( size_t i = 0; i < p() -> pets.apoc_ghoul.size(); i++ )
+    {
+      if ( p() -> pets.apoc_ghoul[ i ] &&
+           p() -> pets.apoc_ghoul[ i ] -> taktheritrix )
+      {
+        p() -> pets.apoc_ghoul[ i ] -> taktheritrix -> trigger();
       }
     }
   }
@@ -6627,6 +6680,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
   // Unholy Actions
   if ( name == "army_of_the_dead"         ) return new army_of_the_dead_t         ( this, options_str );
+  if ( name == "apocalypse"               ) return new apocalypse_t               ( this, options_str );
   if ( name == "dark_transformation"      ) return new dark_transformation_t      ( this, options_str );
   if ( name == "death_and_decay"          ) return new death_and_decay_t          ( this, options_str );
   if ( name == "death_coil"               ) return new death_coil_t               ( this, options_str );
@@ -6745,6 +6799,14 @@ void death_knight_t::create_pets()
       for ( int i = 0; i < 8; i++ )
       {
         pets.army_ghoul[ i ] = new pets::army_pet_t( this, "army_ghoul" );
+      }
+    }
+
+    if ( find_action( "apocalypse" ) )
+    {
+      for ( int i = 0; i < 4; i++ )
+      {
+        pets.apoc_ghoul[ i ] = new pets::army_pet_t( this, "apoc_ghoul" );
       }
     }
   }
@@ -6904,6 +6966,7 @@ void death_knight_t::init_spells()
   spec.death_coil                 = find_specialization_spell( "Death Coil" );
   spec.outbreak                   = find_specialization_spell( "Outbreak" );
   spec.scourge_strike             = find_specialization_spell( "Scourge Strike" );
+  spec.apocalypse                 = find_specialization_spell( "Apocalypse" );
 
   mastery.blood_shield            = find_mastery_spell( DEATH_KNIGHT_BLOOD );
   mastery.frozen_heart            = find_mastery_spell( DEATH_KNIGHT_FROST );
@@ -8391,6 +8454,11 @@ struct taktheritrixs_shoulderpads_t : public scoped_actor_callback_t<death_knigh
     for ( size_t i = 0; i < p -> pets.army_ghoul.size(); i++ )
     {
       create_buff( p -> pets.army_ghoul[ i ] );
+    }
+
+    for ( size_t i = 0; i < p -> pets.apoc_ghoul.size(); i++ )
+    {
+      create_buff( p -> pets.apoc_ghoul[ i ] );
     }
   }
 
