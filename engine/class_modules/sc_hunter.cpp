@@ -238,7 +238,7 @@ struct hunter_t;
 namespace pets
 {
 struct hunter_main_pet_t;
-struct hunter_secondary_pet_t;
+struct animal_companion_t;
 struct dire_critter_t;
 }
 
@@ -276,6 +276,7 @@ public:
 
   struct pets_t
   {
+    pets::animal_companion_t* animal_companion;
     pets::dire_critter_t* dire_beast;
     pet_t* spitting_cobra;
   } pets;
@@ -393,7 +394,7 @@ public:
   {
     // tier 15
     spell_data_ptr_t killer_instinct;
-    spell_data_ptr_t animal_companion; // NYI in-game
+    spell_data_ptr_t animal_companion;
     spell_data_ptr_t dire_beast;
 
     spell_data_ptr_t master_marksman;
@@ -1296,7 +1297,7 @@ public:
 };
 
 // ==========================================================================
-// Secondary pets: Dire Beast, Black Arrow
+// Secondary pets: Animal Companion, Dire Beast
 // ==========================================================================
 
 template <typename Pet>
@@ -1350,6 +1351,32 @@ struct hunter_secondary_pet_t: public hunter_pet_t
     // attack immediately on summons
     if ( main_hand_attack )
       main_hand_attack -> execute();
+  }
+};
+
+// ==========================================================================
+// Animal Companion
+// ==========================================================================
+
+struct animal_companion_t : public hunter_secondary_pet_t
+{
+  struct animal_companion_melee_t: public secondary_pet_melee_t<animal_companion_t>
+  {
+    animal_companion_melee_t( animal_companion_t* p ):
+      base_t( "animal_companion_melee", p )
+    { }
+  };
+
+  animal_companion_t( hunter_t* owner ):
+    hunter_secondary_pet_t( owner, "animal_companion" )
+  {
+  }
+
+  void init_base_stats() override
+  {
+    hunter_secondary_pet_t::init_base_stats();
+
+    main_hand_attack = new animal_companion_melee_t( this );
   }
 };
 
@@ -3457,6 +3484,9 @@ struct summon_pet_t: public hunter_spell_t
     pet -> type = PLAYER_PET;
     pet -> summon();
 
+    if ( p() -> pets.animal_companion )
+      p() -> pets.animal_companion -> summon();
+
     if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
   }
 
@@ -4339,8 +4369,11 @@ void hunter_t::create_pets()
   if ( !util::str_compare_ci( summon_pet_str, "disabled" ) )
     create_pet( summon_pet_str, summon_pet_str );
 
+  if ( talents.animal_companion -> ok() )
+    pets.animal_companion = new pets::animal_companion_t( this );
+
   if ( talents.dire_beast -> ok() )
-    pets.dire_beast = new pets::dire_critter_t( this  );
+    pets.dire_beast = new pets::dire_critter_t( this );
 
   if ( talents.spitting_cobra -> ok() )
     pets.spitting_cobra = new pets::spitting_cobra_t( this );
