@@ -1170,9 +1170,9 @@ public:
         -> set_default_value( o() -> specs.beast_cleave -> effectN( 1 ).percent() );
 
     buffs.frenzy =
-      make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
+      make_buff<haste_buff_t>( this, "frenzy", o() -> find_spell( 272790 ) )
         -> set_default_value ( o() -> find_spell( 272790 ) -> effectN( 1 ).percent() )
-        -> add_invalidate( CACHE_ATTACK_HASTE );
+        -> add_invalidate( CACHE_ATTACK_SPEED );
 
     buffs.tier19_2pc_bm =
       make_buff( this, "tier19_2pc_bm", find_spell(211183) )
