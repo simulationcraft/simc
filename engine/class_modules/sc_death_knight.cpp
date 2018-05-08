@@ -605,7 +605,7 @@ public:
 
     // Tier 2
     const spell_data_t* pestilent_pustules;
-    const spell_data_t* inevitable_doom; // NYI
+    const spell_data_t* inevitable_doom;
     const spell_data_t* soul_reaper; // NYI
 
     // Tier 3
@@ -7489,7 +7489,9 @@ void death_knight_t::create_buffs()
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", spec.sudden_doom -> effectN( 1 ).trigger() )
                               .rppm_scale( RPPM_ATTACK_SPEED ) // 2016-08-08: Hotfixed, not in spell data
-                              .trigger_spell( spec.sudden_doom );
+                              .rppm_mod( 1.0 + talent.inevitable_doom -> effectN( 2 ).percent() )
+                              .trigger_spell( spec.sudden_doom )
+                              .max_stack( spec.sudden_doom -> effectN( 1 ).trigger() -> initial_stacks() + talent.inevitable_doom -> effectN( 1 ).base_value() );
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
   buffs.voracious           = buff_creator_t( this, "voracious", find_spell( 274009 ) )
                               .trigger_spell( talent.voracious )
