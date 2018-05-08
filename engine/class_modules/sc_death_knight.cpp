@@ -370,6 +370,7 @@ struct death_knight_td_t : public actor_target_data_t {
     dot_t* outbreak;
     dot_t* soul_reaper;
     dot_t* virulent_plague;
+    dot_t* unholy_blight;
   } dot;
 
   struct
@@ -606,12 +607,12 @@ public:
     // Tier 2
     const spell_data_t* pestilent_pustules;
     const spell_data_t* inevitable_doom;
-    const spell_data_t* soul_reaper; // NYI
+    const spell_data_t* soul_reaper;
 
     // Tier 3
     const spell_data_t* bursting_sores;
     const spell_data_t* ebon_fever;
-    const spell_data_t* unholy_blight; // NYI
+    const spell_data_t* unholy_blight;
 
 
     // Tier 6
@@ -949,6 +950,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dot.outbreak             = target -> get_dot( "outbreak",             death_knight );
   dot.virulent_plague      = target -> get_dot( "virulent_plague",      death_knight );
   dot.soul_reaper          = target -> get_dot( "soul_reaper",          death_knight );
+  dot.unholy_blight        = target -> get_dot( "unholy_blight",        death_knight );
 
   debuff.razorice          = make_buff( *this, "razorice", death_knight -> find_spell( 51714 ) )
                            -> set_period( timespan_t::zero() );
@@ -3037,34 +3039,6 @@ struct bursting_sores_t : public death_knight_spell_t
     }
 
     return tl.size();
-  }
-};
-
-// Remorseless Winter (aoe damage) ==========================================
-
-struct remorseless_winter_damage_t : public death_knight_spell_t
-{
-  remorseless_winter_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "remorseless_winter_damage", p, p -> find_spell( 196771 ) )
-  {
-    background = true;
-    aoe = -1;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = death_knight_spell_t::action_multiplier();
-
-    m *= 1.0 + p() -> buffs.gathering_storm -> stack_value();
-
-    return m;
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    death_knight_spell_t::impact( state );
-
-    td( state -> target ) -> debuff.perseverance_of_the_ebon_martyr -> trigger();
   }
 };
 
@@ -5385,6 +5359,32 @@ struct raise_dead_t : public death_knight_spell_t
 
 // Remorseless Winter =======================================================
 
+struct remorseless_winter_damage_t : public death_knight_spell_t
+{
+  remorseless_winter_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "remorseless_winter_damage", p, p -> find_spell( 196771 ) )
+  {
+    background = true;
+    aoe = -1;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_spell_t::action_multiplier();
+
+    m *= 1.0 + p() -> buffs.gathering_storm -> stack_value();
+
+    return m;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    td( state -> target ) -> debuff.perseverance_of_the_ebon_martyr -> trigger();
+  }
+};
+
 struct remorseless_winter_t : public death_knight_spell_t
 {
   remorseless_winter_t( death_knight_t* p, const std::string& options_str ) :
@@ -5626,6 +5626,42 @@ struct tombstone_t : public death_knight_spell_t
       p() -> cooldown.dancing_rune_weapon -> adjust( 
         charges * timespan_t::from_millis( p() -> sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
     }
+  }
+};
+
+// Unholy Blight ============================================================
+
+struct unholy_blight_dot_t : public death_knight_spell_t
+{
+  unholy_blight_dot_t( death_knight_t* p ) : 
+    death_knight_spell_t( "unholy_blight", p, p -> talent.unholy_blight -> effectN( 1 ).trigger() )
+  {
+    background = true;
+    hasted_ticks = false;
+  }
+};
+
+struct unholy_blight_t : public death_knight_spell_t
+{
+  unholy_blight_dot_t* ub_dot;
+
+  unholy_blight_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "unholy_blight_spreader", p, p -> talent.unholy_blight ),
+    ub_dot( new unholy_blight_dot_t( p ) )
+  {
+    may_crit = may_miss = may_dodge = may_parry = false;
+    hasted_ticks = false;
+    parse_options( options_str );
+
+    aoe = -1;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    ub_dot -> set_target( state -> target );
+    ub_dot -> schedule_execute();
   }
 };
 
@@ -6631,6 +6667,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
   if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
   if ( name == "unholy_frenzy"            ) return new unholy_frenzy_t            ( this, options_str );
+  if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
     
 
   return player_t::create_action( name, options_str );
