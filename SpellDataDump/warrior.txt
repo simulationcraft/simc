@@ -697,7 +697,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=5764)     : Apply Aura (6) | Proc Trigger Spell (42): Meat Cleaver
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 257019 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 85739 | Target: Self (1)
 Description      : Whirlwind causes your next Bloodthirst or Rampage to strike up to $85739s1 additional targets for $85739s3% damage.
 
 Name             : Last Stand (id=12975) [Spell Family (4)] 
@@ -783,7 +783,7 @@ Variables        : $mult=${($max(0,$min($pl-12,8))*8.5+241)/309}
 
 Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
-Race             : Orc (0x2)
+Race             : Orc (0x2002)
 School           : Physical
 Spell Level      : 1
 GCD              : 1.5 seconds
@@ -806,7 +806,7 @@ Tooltip          : Attack power increased by $w1.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc (0x2)
+Race             : Orc (0x2002)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -829,7 +829,7 @@ GCD              : 1.5 seconds
 Cooldown         : 4.5 seconds
 Category         : 971: Warrior (137047 effect#6)
 Category Cooldown: 4.5 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Meat Cleaver (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165640 effect#1), Taste for Blood (206333 effect#1), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Meat Cleaver (257019 effect#2), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Meat Cleaver (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165640 effect#1), Taste for Blood (206333 effect#1), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1477,7 +1477,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 12880 | Target: Self (1)
 #5 (id=217532)   : Apply Aura (6) | Modify Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases your chance to block by ${$s2}.1%% and your chance to critically block (blocking twice the amount) by ${$s1}.1%.
+Description      : Increases your chance to block by ${$s2}.1% and your chance to critically block (gaining twice your block value) by ${$s1}.1%.
 
 Also increases your attack power by ${$s5}.1%.
 
@@ -1487,7 +1487,7 @@ School           : Physical
 Spell Level      : 20
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Warrior (137047 effect#1), Inner Rage (215573 effect#1), Raging Thirst (242300 effect#1), Meat Cleaver (257019 effect#1)
+Affecting spells : Warrior (137047 effect#1), Inner Rage (215573 effect#1), Raging Thirst (242300 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1514,7 +1514,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#1), Raging Thirst (242300 effect#1), Meat Cleaver (257019 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#1), Raging Thirst (242300 effect#1)
 Triggered by     : Raging Blow (85288)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .x...... ........ x.....x. 
@@ -1539,6 +1539,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
+Triggered by     : Whirlwind (12950)
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1683,7 +1684,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#1), Raging Thirst (242300 effect#1), Meat Cleaver (257019 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Inner Rage (215573 effect#1), Raging Thirst (242300 effect#1)
 Triggered by     : Raging Blow (85288)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ......x. 
@@ -2396,7 +2397,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Heroic Throw (57755)
 #6 (id=261027)   : Apply Aura (6) | Threat (10)
-                   Base Value: 550 | Scaled Value: 550 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | Misc Value: 127 | Target: Self (1)
 #7 (id=261028)   : Apply Aura (6) | Unknown(213)
                    Base Value: -56 | Scaled Value: -56 | Target: Self (1)
 #8 (id=261029)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -2907,7 +2908,7 @@ Spell Level      : 12
 Range            : 5 yards
 GCD              : 2 seconds
 Cooldown         : 1.5 seconds
-Affecting spells : Warrior (137047 effect#2), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1), Meat Cleaver (257019 effect#1)
+Affecting spells : Warrior (137047 effect#2), Carnage (202922 effect#1), Massacre (206316 effect#1), Outrage (253385 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2937,7 +2938,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Colossus Smash (208086 effect#1), Outrage (253385 effect#1), Meat Cleaver (257019 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Colossus Smash (208086 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -2957,7 +2958,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Colossus Smash (208086 effect#1), Outrage (253385 effect#1), Meat Cleaver (257019 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Colossus Smash (208086 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3277,7 +3278,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Colossus Smash (208086 effect#1), Outrage (253385 effect#1), Meat Cleaver (257019 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Colossus Smash (208086 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3297,7 +3298,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Colossus Smash (208086 effect#1), Outrage (253385 effect#1), Meat Cleaver (257019 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Colossus Smash (208086 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -3324,8 +3325,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=297836)   : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-#2 (id=323852)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Self (1)
 Description      : Increases your maximum health by $s1%.
 
 Name             : Second Wind (id=202147) [Spell Family (4), Passive] 
@@ -4015,7 +4014,7 @@ Effects          :
 #2 (id=720649)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 30 | Scaled Value: 30 | Target: Enemy (6)
 Description      : $@spelldesc167105
-Tooltip          : The Warrior's attacks deal $w1% additional damage.
+Tooltip          : Taking $w1% additional damage from the Warrior.
 
 Name             : Warpaint (id=208154) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -4422,7 +4421,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Colossus Smash (208086 effect#1), Outrage (253385 effect#1), Meat Cleaver (257019 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Massacre (206316 effect#1), Colossus Smash (208086 effect#1), Outrage (253385 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -5118,33 +5117,6 @@ Effects          :
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
-
-Name             : Meat Cleaver (id=257019) [Spell Family (4)] 
-Class            : Warrior
-School           : Physical
-Duration         : 8 seconds
-Proc Chance      : 100%
-Proc Flags       : ....x... ....x... ........ ........ 
-                 : Yellow Melee, AOE Hostile Spell
-Triggered by     : Whirlwind (12950)
-Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=479950)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
-                   Base Value: 4 | Scaled Value: 4 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364), Rampage (218617)
-#2 (id=479951)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881)
-#3 (id=479952)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881)
-Description      : Causes your next Raging Blow or Rampage to strike up to $85739s1 additional targets for $s3% damage.
-Tooltip          : Your next Raging Blow or Rampage strikes up to $w1 additional targets for $w3% damage.
 
 Name             : Skullsplitter (id=260643) [Spell Family (4)] 
 Class            : Warrior

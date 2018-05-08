@@ -388,7 +388,7 @@ Description      : Maximum mana increased by $s1%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc (0x2)
+Race             : Orc (0x2002)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -459,7 +459,7 @@ Attributes       : ......xx ........ x.x..... ........   ........ ..x..... .x...
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=15691)    : Apply Aura (6) | Threat (10)
-                   Base Value: 550 | Scaled Value: 550 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | Misc Value: 127 | Target: Self (1)
 #2 (id=15692)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
 Description      : Increases your threat generation while active, making you a more effective tank.
@@ -525,8 +525,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 4488 | Target: Unknown(87)
 #3 (id=81786)    : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 43499 | Misc Value 2: 0xbba | Target: Custom (18)
-Description      : Consecrates the land beneath you, causing ${$81297s1*9} Holy damage over $d to enemies who enter the area.$?s184123[ Shares a cooldown with Divine Wrath.][]
-Tooltip          : Damage every $t1 $lsecond:seconds;.
+Description      : Consecrates the land beneath you, causing ${$81297s1*9} Holy damage over $d to enemies who enter the area.
+Tooltip          : Damage every $t1 sec.
 
 Name             : Strength (id=27973) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Demon Hunter
@@ -757,8 +757,8 @@ Effects          :
 #1 (id=25579)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Target: Enemy (6)
 #2 (id=25580)    : Energize Power (30)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: holy_power | Target: Self (1)
-Description      : Strike the target for $s1 Physical damage.$?s85256[
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: holy_power | Target: Self (1)
+Description      : Strike the target for $s1 Physical damage.$?s137027[
 
 |cFFFFFFFFGenerates $s2 Holy Power.][]
 Variables        : $mult=${($min($pl-1,19)*6+96)/210}
@@ -908,7 +908,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=46256)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.42500 | Radius: 6 yards | Target: Cone Front (104)
@@ -1104,7 +1104,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=53091)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 4 | Scaled Value: 4 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
 #2 (id=106028)   : None (0)
                    Base Value: 20 | Scaled Value: 20
 Description      : $@spelldesc28880
@@ -1750,7 +1750,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=127305)   : Trigger Missiles (32)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 122773 | Radius: 10 yards | Target: Unknown(87)
-Description      : Hurls a Light-infused hammer into the ground, where it blasts a 10 yard radius every $114918t1 sec for ${$122773d-1.5} sec. Each blast deals $114919s1 Holy damage to enemies and heals up to 6 allies for $119952s1.
+Description      : Hurls a Light-infused hammer to the ground, dealing $114919s1 Holy damage to nearby enemies and healing up to 6 nearby allies for $119952s1, every $114918t1 sec for ${$122773d-1.5} sec.
 
 Name             : Eternal Flame (id=114163) [Spell Family (10)] 
 Class            : Paladin
@@ -1799,11 +1799,11 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=127312)   : Dummy (3)
                    Base Value: 102 | Scaled Value: 102 | Target: Unknown(25)
-Description      : A beam of light turns the target into a Holy Prism.
+Description      : Fires a beam of light that scatters to strike a clump of targets. 
 
-An enemy target takes $114852s1 Holy damage and radiates $114852s2 healing to 5 nearby allies within $114852A2 yards.
+If the beam is aimed at an enemy target, it deals $114852s1 Holy damage and radiates $114852s2 healing to 5 allies within $114852A2 yards.
 
-A friendly target is healed for $114871s1 and radiates $114871s2 Holy damage to 5 nearby enemies within $114871A2 yards.
+If the beam is aimed at a friendly target, it heals for $114871s1 and radiates $114871s2 Holy damage to 5 enemies within $114871A2 yards.
 
 Name             : Selfless Healer (id=114250) [Spell Family (10)] 
 Class            : Paladin
@@ -2164,6 +2164,9 @@ Effects          :
 #13 (id=260914)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
                    Affected Spells: Consecration (26573), Consecration (81297), Consecration (205228)
+#14 (id=732535)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Crusader Strike (35395)
 
 Name             : Protection Paladin (id=137028) [Spell Family (10), Passive, Hidden] 
 Class            : Protection Paladin
@@ -2403,7 +2406,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 157122 | Target: Self (1)
 #3 (id=232078)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 126 | Misc Value 2: 0xffffffec | Target: Self (1)
-Description      : Increases your block chance by $s1%, allows you to block spells, and your successful blocks deal $157122s1 Holy damage to your attacker.
+Description      : Your block chance is increased by $s1%, you are able to block spells, and your successful blocks deal $157122s1 Holy damage to your attacker.
 
 Name             : Seraphim (id=152262) [Scaling Spell (-1), Spell Family (10)] 
 Class            : Paladin
@@ -2751,10 +2754,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1) -> Self (1)
 #3 (id=724358)   : Apply Aura (6) | Unknown(395)
                    Base Value: -20 | Scaled Value: -20 | SP Coefficient: 0.25000 | Misc Value: 6770 | Target: Self (1) -> Self (1)
-Description      : Allies within $s2 yards take $s1% reduced damage, reduced when more allies are in the aura.
+Description      : Damage dealt to allies within $s2 yards is reduced by up to $s1%, diminishing as more allies enter the aura.
 
 While Aura Mastery is active, all affected allies gain $s3% damage reduction.
-Tooltip          : Allies within $s1 yards take $s1% reduced damage, reduced when more allies are in the aura.
+Tooltip          : Damage taken by allies within $s2 yards reduced by up to $s1%, diminishing as more allies enter the aura.
 
 Name             : Retribution (id=183435) [Spell Family (10), Passive] 
 Class            : Retribution Paladin
@@ -2820,7 +2823,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 196941 | Target: Self (1)
 #2 (id=370254)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-Description      : Judgment now applies Judgment of Light to the target, causing the next $196941N successful attacks against the target to heal the attacker for $183811s1. $@switch<$s2>[][This effect can only occur once every $s1 sec on each target.]
+Description      : Judgment now causes the next $196941N successful attacks against the target to heal the attacker for $183811s1. $@switch<$s2>[][This effect can only occur once every $s1 sec on each target.]
 
 Name             : Judgment of Light (id=183811) [Spell Family (10)] 
 Class            : Paladin
@@ -3100,7 +3103,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290421)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-Description      : Light of Dawn and Holy Shock have a $h% chance to not start their cooldown, and make their next cast free.
+Description      : Casting Light of Dawn or Holy Shock has a $h% chance to not trigger that spell's cooldown, and to make the next cast free.
 
 Name             : Divine Hammer (id=198034) [Spell Family (10)] 
 Class            : Paladin
@@ -3209,7 +3212,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Radius: 0 - 30 yards | Target: Unknown(132) -> AOE friendly (31)
 Description      : Apply a Beacon of Light to your target and $s2 injured allies within $A2 yards for $d.
 
-Your heals will heal all of them for $s3% of the amount healed.$?a231642[ Your Flash of Light and Holy Light on the targets will also refund $231642s1% of their Mana cost.][]
+All affected allies will be healed for $s3% of the amount of your other healing done.$?a231642[ Your Flash of Light and Holy Light on these targets will also refund $231642s1% of their Mana cost.][]
 Tooltip          : $@spellaura53563
 
 Name             : Blessing of Sacrifice ((Rank 2)) (id=200327) [Spell Family (10), Passive] 
@@ -3403,7 +3406,7 @@ Effects          :
 #1 (id=300207)   : Apply Aura (6) | Periodic Dummy (226): every 6 seconds
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
 #2 (id=318981)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Friend (21)
 #3 (id=361463)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Friend (21)
 Description      : Places a powerful blessing on a single ally for $d, granting a shield that absorbs up to $<shield> damage every $t1 sec.
@@ -3524,7 +3527,7 @@ Effects          :
 #7 (id=479890)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Retribution Aura (204011), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Divine Storm (224239), Templar's Verdict (224266), Judgment (228288), Wake of Ashes (255937), Execution Sentence (267798), Zeal (269937), Judgment (275773), Judgment (275779)
-Description      : Each enemy within $s1 yards reduces the damage that you take and increases the damage that you deal by $s2%. This effect has diminishing returns.
+Description      : Each enemy within $s1 yards reduces the damage that you take and increases the damage that you deal by up to $s2%.
 
 Name             : Retribution Aura (id=203797) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -3544,7 +3547,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300655)   : Apply Raid Aura (65) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | SP Coefficient: 0.25000 | Misc Value: 126 | Radius: 60 yards | Target: Self (1) -> Self (1)
-Description      : Protects yourself and all party or raid members within $A1 yards with an aura that deals $204011s1 Holy damage when melee attacked.
+Description      : You and your allies within $A1 yards are protected by an aura that lashes out against any melee attackers, dealing $204011s1 Holy damage.
 Tooltip          : Melee attackers take Holy damage from the protecting Paladin.
 
 Name             : Retribution Aura (id=204011) [Spell Family (10)] 
@@ -3586,10 +3589,10 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=301055)   : Apply Aura (6) | School Immunity (39)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 126 | Target: Unknown(57)
-Description      : Places a blessing on a party or raid member, protecting them from all magical attacks for $d.
+Description      : Blesses a party or raid member, granting immunity to magical damage and harmful effects for $d.
 
 Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
-Tooltip          : Immune to magical attacks.
+Tooltip          : Immune to magical damage and harmful effects.
 
 Name             : Blessed Hammer (id=204019) [Spell Family (10)] 
 Class            : Paladin
@@ -3607,7 +3610,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=301056)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6006 | Target: Custom (18)
-Description      : Throws a Blessed Hammer that spirals outward, dealing $204301s1 Holy damage to enemies that it hits, and causing them to deal $204301s2% less damage to you on their next auto attack.
+Description      : Throws a Blessed Hammer that spirals outward, dealing $204301s1 Holy damage to enemies and weakening them, reducing the damage you take from their next auto attack by $204301s2%.
 
 Name             : Crusader's Judgment (id=204023) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -4244,9 +4247,9 @@ Effects          :
 #7 (id=321945)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Judgment (20271), Crusader Strike (35395), Judgment (197277), Judgment (214222), Judgment (228288), Judgment (275773), Judgment (275779)
-Description      : You become the ultimate crusader of light, increasing your Crusader Strike, Judgment and auto-attack damage by $s3%.
+Description      : You become the ultimate crusader of light, increasing your Crusader Strike, Judgment, and auto-attack damage by $s3%.
 
-Crusader Strike and Judgment cool down $m4% faster, and when you deal damage with those abilities, $m2 injured allies will be healed for $m1% of the damage done. Lasts $d.
+Crusader Strike and Judgment cool down $m4% faster and heal up to $m2 injured allies for $m1% of the damage they deal. Lasts $d.
 Tooltip          : Crusader Strike, Judment and auto-attack damage increased by $w3%.
 
 Cooldown rate of your Crusader Strike and Judgment is increased by $w4%.
@@ -4343,7 +4346,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=333729)   : Apply Aura (6) | Periodic Heal (8): every 5 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Friend (21)
-Description      : Infuse a friendly target with faith for $d, healing them for $s1 at the end.
+Description      : Begin mending the wounds of a friendly target, healing them for $s1 after $d.
 Tooltip          : Will be healed for $w1 upon expiration.
 
 Name             : Divine Purpose (id=223817) [Spell Family (10), Passive] 
@@ -5821,22 +5824,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 311 (avg=1) | Misc Value: 1 | Trigger Spell: 273032 | Target: Self (1)
 Description      : Flash of Light grants you $s1 Critical Strike for 6 seconds if it heals a target below 50% health.
 
-Name             : King's Shield (id=273139) [Scaling Spell (-1), Spell Family (10), Passive] 
-Class            : Paladin
-School           : Physical
-Azerite Power Id : 147
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=724543)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 2177 (avg=7) | Trigger Spell: 272977 | Target: Self (1)
-Description      : When Guardian of Ancient Kings expires, your Block Value is increased by $s1 for 10 seconds.
-
 Name             : Righteous Flames (id=273140) [Scaling Spell (-1), Spell Family (10), Passive] 
 Class            : Paladin
 School           : Physical
@@ -5873,40 +5860,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : Hammer of the Righteous heals you for X if your health is below 20%.
 
-Name             : Strong Light (id=273143) [Scaling Spell (-1), Spell Family (10), Passive] 
-Class            : Paladin
-School           : Physical
-Azerite Power Id : 150
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=724549)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 466.5 (avg=1.5) | Trigger Spell: 272977 | Target: Self (1)
-#2 (id=724550)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0
-Description      : Gain $s1 strength for 6 sec every time you heal a target below 50% HP with Light of the Protector.
-
-Name             : Searing Blades (id=273145) [Scaling Spell (-1), Passive] 
-Class            : Paladin
-School           : Physical
-Azerite Power Id : 151
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=724552)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 388.75 (avg=1.25) | Trigger Spell: 272904 | Target: Self (1)
-Description      : Your Blade of Justice critical hits also burn the target for $s1 holy damage over 6 seconds.
-
 Name             : Healthy Judgment (id=273146) [Scaling Spell (-1), Passive] 
 Class            : Paladin
 School           : Physical
@@ -5938,22 +5891,6 @@ Effects          :
 #1 (id=724554)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 311 (avg=1) | Trigger Spell: 272904 | Target: Self (1)
 Description      : Crusader Strike has a 3% chance to Condemn your target, dealing X Holy damage after 7 seconds.
-
-Name             : Furious Wrath (id=273148) [Scaling Spell (-1), Passive] 
-Class            : Paladin
-School           : Physical
-Azerite Power Id : 154
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=724555)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 2488 (avg=8) | Trigger Spell: 272904 | Target: Self (1)
-Description      : When your Avenging Wrath ends, gain up to $s1 Strength/Intellect for 15 seconds, based on how much damage and healing you did while Avenging Wrath was active.
 
 Name             : Weeping Aura (id=273149) [Scaling Spell (-1), Passive] 
 Class            : Paladin
@@ -6236,5 +6173,21 @@ Effects          :
 #1 (id=729049)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.12500 | Target: Enemy (6)
 Description      : Judges the target, dealing $s1 Holy damage$?a231657[, and reducing the remaining cooldown on Shield of the Righteous by $231657s1 sec, or ${$231657s1*2} sec on a critical strike][].
+
+Name             : Powerful Placeholder (id=277641) [Passive] 
+Class            : Paladin
+School           : Physical
+Azerite Power Id : 147
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=732935)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Coming Soon to Armor Near You!
 
 

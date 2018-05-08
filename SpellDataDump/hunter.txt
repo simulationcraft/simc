@@ -686,7 +686,7 @@ Tooltip          : Tracking Undead.
 
 Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
-Race             : Orc (0x2)
+Race             : Orc (0x2002)
 School           : Physical
 Spell Level      : 1
 GCD              : 1.5 seconds
@@ -729,7 +729,7 @@ Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc (0x2)
+Race             : Orc (0x2002)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2351,7 +2351,7 @@ Description      : $@spelldesc120360
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
-Resource         : 35 Focus (2) (id=191709)
+Resource         : 25 Focus (2) (id=191709)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
@@ -3039,7 +3039,7 @@ Name             : Thick Hide (Special Ability) (id=160058) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
-Duration         : 12 seconds
+Duration         : 15 seconds
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Thick Hide (160057)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
@@ -3050,7 +3050,7 @@ Attributes       : ....x... ........ ........ .....x..   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=224306)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -60 | Scaled Value: -60 | SP Coefficient: 0.25000 | Misc Value: 0x7f | Target: Self (1)
 Description      : The Clefthoof's skin thickens, causing it to take $s1% less damage for $d.
 Tooltip          : Damage taken reduced by $s1%.
 
@@ -3855,10 +3855,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283926)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effects (8)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 8 | Target: Self (1)
-                   Affected Spells: Dire Frenzy (246152)
+                   Affected Spells: Barbed Shot (246152)
 #2 (id=374727)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
-                   Affected Spells: Dire Frenzy (246152)
+                   Affected Spells: Barbed Shot (246152)
 Description      : $?s120679[Dire Beast][Dire Frenzy] generates $s2 additional Focus over its duration.
 
 Name             : Steady Focus (id=193533) [Spell Family (9), Passive] 
@@ -4548,6 +4548,7 @@ Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
+Duration         : 8 seconds
 Charges          : 2 (12 seconds cooldown)
 Category         : 1675: Hunter (137014 effect#9)
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
@@ -4558,15 +4559,18 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=323302)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | Target: Enemy (6)
+#1 (id=323302)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | Target: Enemy (6)
 #2 (id=323303)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | Target: Enemy (6)
-Description      : Fire a shot that tears through your enemy, causing them to bleed for $s1 damage over $272790d, sending your pet into a frenzy, increasing their attack speed by $272790s1%, stacking up to $272790u times.
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+Description      : Fire a shot that tears through your enemy, causing them to bleed for ${$s1*$d/$t1} damage over $272790d.
+
+Sends your pet into a frenzy, increasing attack speed by $272790s1%, stacking up to $272790u times.
 
 |cFFFFFFFFGenerates ${$246152s1*$246152d/$246152t1} Focus over $246152d.|r
+Tooltip          : Suffering $sw1 damage every $t1 sec.
 
-Name             : Dire Frenzy (id=217207) [Spell Family (9)] 
+Name             : Barbed Shot (id=217207) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -4736,7 +4740,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Learn the secrets of taming Feathermanes.
 
-Name             : Dire Frenzy (id=246152) [Spell Family (9)] 
+Name             : Barbed Shot (id=246152) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Range            : 100 yards
@@ -5069,8 +5073,8 @@ Name             : Thrill of the Hunt (id=257944) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Proc Chance      : 100%
-Proc Flags       : ....x... ....x... ........ ........ 
-                 : Yellow Melee, AOE Hostile Spell
+Proc Flags       : ........ x....... ........ ........ 
+                 : Yellow Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5081,7 +5085,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=481555)   : Apply Aura (6) | Proc Trigger Spell (42): Thrill of the Hunt
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 257946 | Target: Self (1)
-Description      : $?s120679[Dire Beast][Dire Frenzy] increases your critical strike chance by $257946s1% for $257946d, stacking up to $257946u times.
+Description      : Barbed Shot increases your critical strike chance by $257946s1% for $257946d, stacking up to $257946u times.
 
 Name             : Thrill of the Hunt (id=257946) [Spell Family (9)] 
 Class            : Hunter
@@ -5188,12 +5192,13 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 20 seconds
 Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
-Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
+Attributes       : ....x... ........ x....x.. ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Cannot dodge/parry/block (21)
 Effects          :
 #1 (id=483871)   : Trigger Spell (64): Chakrams
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 259398 | Target: Enemy (6)
@@ -6203,7 +6208,7 @@ Name             : Thick Fur (Special Ability) (id=263926) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
-Duration         : 12 seconds
+Duration         : 15 seconds
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Thick Fur (263934)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
@@ -6214,7 +6219,7 @@ Attributes       : ....x... ........ ........ .....x..   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=706983)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -60 | Scaled Value: -60 | SP Coefficient: 0.25000 | Misc Value: 0x7f | Target: Self (1)
 Description      : The Bear's fur dampens attacks, taking $s1% less damage for $d.
 Tooltip          : Damage taken reduced by $s1%.
 
@@ -6250,7 +6255,7 @@ Name             : Silverback (Special Ability) (id=263938) [Spell Family (9)]
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
-Duration         : 12 seconds
+Duration         : 15 seconds
 Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Silverback (263939)
 Attributes       : ....x... ........ ........ .....x..   ........ ..x..... ........ ........ 
@@ -6261,7 +6266,7 @@ Attributes       : ....x... ........ ........ .....x..   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=706997)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -50 | Scaled Value: -50 | SP Coefficient: 0.25000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -60 | Scaled Value: -60 | SP Coefficient: 0.25000 | Misc Value: 0x7f | Target: Self (1)
 Description      : The Gorilla shrugs off attacks, taking $s1% less damage for $d.
 Tooltip          : Damage taken reduced by $s1%.
 
@@ -6387,7 +6392,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Affecting spells : Aspect of the Beast (191384 effect#1), 
-Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -6408,7 +6413,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Affecting spells : Aspect of the Beast (191384 effect#1), 
-Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -6519,7 +6524,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Affecting spells : Aspect of the Beast (191384 effect#1), 
-Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -6540,7 +6545,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Affecting spells : Aspect of the Beast (191384 effect#1), 
-Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
@@ -6561,7 +6566,7 @@ Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 10 seconds
 Affecting spells : Aspect of the Beast (191384 effect#1), 
-Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
+Attributes       : ....x... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 

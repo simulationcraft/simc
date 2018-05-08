@@ -578,13 +578,13 @@ Effects          :
 Description      : Seduces the target, disorienting for $6358d. Damage will break the effect. Only usable against Humanoids.
 Tooltip          : Disoriented.
 
-Name             : Whiplash (Special Ability) (id=6360) [Scaling Spell (11), Spell Family (57)] 
+Name             : Whiplash (Special Ability) (id=6360) [Scaling Spell (-1), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Spell Level      : 31
 Range            : 10 yards
-Duration         : 6 seconds
-Cooldown         : 10 seconds
+Duration         : 10 seconds
+Cooldown         : 6 seconds
 Mechanic         : Snare
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ........ 
@@ -832,7 +832,7 @@ Effects          :
 Description      : Burns nearby enemies for $20153s1 fire damage every $t1 sec.
 Tooltip          : Burns nearby enemies for fire damage every $t1 sec.
 
-Name             : Devour Magic (Special Ability) (id=19505) [Scaling Spell (11), Spell Family (57)] 
+Name             : Devour Magic (Special Ability) (id=19505) [Scaling Spell (-1), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Resource         : 20 Energy (3) (id=802)
@@ -841,7 +841,7 @@ Range            : 30 yards
 Cooldown         : 15 seconds
 Category         : 12
 Category Cooldown: 15 seconds
-Attributes       : ........ ........ x....... ........   .......x ........ ........ ........ 
+Attributes       : ........ ........ x....... ........   .......x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -853,10 +853,6 @@ Effects          :
 #2 (id=10728)    : None (0)
                    Base Value: 234 | Scaled Value: 234
 Description      : Purges $19505s1 beneficial magic $19505leffect:effects; from an enemy. If an effect is devoured, the $?s219450[Observer][Felhunter]$?s56249[ and Warlock][] will be healed for $19658m1 and gain 60 Fel Energy.
-
-|cFFFFFFFFAuto-Cast:|r
-Use if the $?s219450[Observer][Felhunter]'s current target has a beneficial magic effect.
-
 |cFF777777(Right-Click to toggle)|r
 
 Name             : Spell Lock (Command Demon Ability) (id=19647) [Spell Family (57)] 
@@ -963,7 +959,7 @@ Tooltip          : Soul is stored.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc (0x2)
+Race             : Orc (0x2002)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1327,9 +1323,8 @@ Description      : $@spelldesc32388
 Tooltip          : Damage taken increased by $s1%.
 
 Name             : Blood Fury (Racial) (id=33702) [Scaling Spell (-1)] 
-Hotfixed         : Scaling Spell (-8 -> -1)
 Class            : Mage, Warlock
-Race             : Orc (0x2)
+Race             : Orc (0x2002)
 School           : Physical
 Spell Level      : 1
 GCD              : 1.5 seconds
@@ -1345,7 +1340,6 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=118955)   : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 800.0662 (avg=2.57256) | Misc Value: 3 | Target: Self (1)
-                   Hotfixed: Average (2.57235 -> 2.57256)
 Description      : Increases your Intellect by $s1 for $d.
 Tooltip          : Intellect increased by $w1.
 
@@ -2504,7 +2498,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=124613)   : Apply Aura (6) | Threat (10)
-                   Base Value: 450 | Scaled Value: 450 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | Misc Value: 127 | Target: Self (1)
 Description      : Intimidates any target the Voidwalker attacks, increasing threat generation.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -2712,7 +2706,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=175237)   : Apply Aura (6) | Threat (10)
-                   Base Value: 450 | Scaled Value: 450 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
 Description      : Intimidates any target the Felguard attacks, increasing threat generation.
 
 |cFFFFFFFFAuto-Cast:|r
@@ -3054,7 +3048,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=242701)   : Apply Aura (6) | Threat (10)
-                   Base Value: 450 | Scaled Value: 450 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 400 | Scaled Value: 400 | SP Coefficient: 0.25000 | Misc Value: 127 | Target: Self (1)
 #2 (id=242702)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #3 (id=242703)   : Apply Aura (6) | Modify Parry% (47)
@@ -4992,7 +4986,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=707289)   : School Damage (2): chaos
-                   Base Value: 0.0025 | Scaled Value: 0.0025 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=707290)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40
 #3 (id=707411)   : Dummy (3)
@@ -5453,7 +5447,7 @@ Effects          :
 #3 (id=718439)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Conflagrate (17962)
-Description      : Conflagrate deals $s3% increased damage and grants an additional stack of Backdraft.
+Description      : Conflagrate deals $s3% increased damage and grants an additional charge of Backdraft.
 
 Name             : From the Shadows (id=267170) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -5660,6 +5654,23 @@ Effects          :
                    Affected School(s): All
 Description      : $@spelldesc267215
 Tooltip          : Damage dealt increased by $w1%.
+
+Name             : Summon Prince Malchezaar (id=267986) [Spell Family (5)] 
+Class            : Warlock
+School           : Fire
+Spell Level      : 1
+Range            : 100 yards
+Duration         : 15 seconds
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=715011)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 136397 | Misc Value 2: 0x10b1 | Target: Unknown(87)
+Description      : Summon Prince Malchezaar to fight for you for the next $d.
 
 Name             : Summon Illidari Satyr (id=267987) [Spell Family (5)] 
 Class            : Warlock

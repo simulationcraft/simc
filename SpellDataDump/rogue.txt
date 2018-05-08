@@ -1085,7 +1085,7 @@ Description      : Increases your maximum Energy by $s1 and your Energy regenera
 
 Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
-Race             : Orc (0x2)
+Race             : Orc (0x2002)
 School           : Physical
 Spell Level      : 1
 GCD              : 1.5 seconds
@@ -1124,7 +1124,7 @@ Description      : Increases your speed while $?s5176[Prowl is active by $s1%.][
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc (0x2)
+Race             : Orc (0x2002)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2006,13 +2006,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.00100 | Target: Enemy (6)
 Description      : $@spelldesc76806
 
-Name             : Find Weakness (id=91021) [Spell Family (8)] 
+Name             : Expose Weakness (id=91021) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Range            : 100 yards
 Duration         : 10 seconds
 Proc Chance      : 101%
-Triggered by     : Find Weakness (91023)
+Triggered by     : Expose Weakness (91023)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
                  : x....... ........ ........ ........   ........ ........ ........ ........ 
@@ -2025,7 +2025,7 @@ Effects          :
 Description      : $@spelldesc91023
 Tooltip          : $w1% of armor is ignored by the attacking Rogue.
 
-Name             : Find Weakness (id=91023) [Spell Family (8), Passive, Hidden] 
+Name             : Expose Weakness (id=91023) [Spell Family (8), Passive, Hidden] 
 Class            : Rogue
 School           : Physical
 Proc Chance      : 100%
@@ -2039,7 +2039,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=94451)    : Apply Aura (6) | Proc Trigger Spell (42): Find Weakness
+#1 (id=94451)    : Apply Aura (6) | Proc Trigger Spell (42): Expose Weakness
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Trigger Spell: 91021 | Target: Self (1)
 Description      : Your Shadowstrike and Cheap Shot abilities reveal a flaw in your target's defenses, causing all your attacks to bypass $91021s1% of that enemy's armor for $91021d.
 
@@ -2396,10 +2396,10 @@ Effects          :
                    Affected Spells: Backstab (53), Backstab (173458), Shadowstrike (185438)
 #3 (id=150620)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Garrote (703), Sinister Strike (1752), Cheap Shot (1833), Fan of Knives (51723), Shuriken Toss (114014), Prey on the Weak (131511), Poisoned Knife (185565), Prey on the Weak (255909)
+                   Affected Spells: Garrote (703), Sinister Strike (1752), Cheap Shot (1833), Fan of Knives (51723), Shuriken Toss (114014), Prey on the Weak (131511), Shadowstrike (185438), Poisoned Knife (185565), Prey on the Weak (255909)
 #4 (id=150621)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Backstab (53), Ambush (8676), Blindside (111240), Backstab (173458), Shadowstrike (185438), Gloomblade (200758)
+                   Affected Spells: Backstab (53), Ambush (8676), Blindside (111240), Backstab (173458), Gloomblade (200758)
 #5 (id=480761)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Gloomblade (200758)
@@ -3064,17 +3064,15 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
 Effects          :
-#1 (id=269259)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=269260)   : School Damage (2): physical
+#1 (id=269259)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.69880 | Target: Enemy (6)
-#3 (id=269261)   : Energize Power (30)
+#2 (id=269260)   : Energize Power (30)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: combo_points | Target: Self (1)
-Description      : Strike the target, dealing $s2 Physical damage.$?a231718[
+Description      : Strike the target, dealing $s1 Physical damage.$?a231718[
 
-While Stealth is active, you strike through the shadows and appear behind your target up to ${5+$245623s1} yds away, dealing $245623s2% additional damage.][]
+While Stealthed, you strike through the shadows and appear behind your target up to ${5+$245623s1} yds away, dealing $245623s2% additional damage.][]
 
-|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r
+|cFFFFFFFFAwards $s2 combo $lpoint:points;.|r
 
 Name             : Poisoned Knife (id=185565) [Scaling Spell (9), Spell Family (8)] 
 Class            : Assassination Rogue
@@ -4050,7 +4048,7 @@ Effects          :
 #1 (id=290720)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=290721)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05733 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 1 | Scaled Value: 1 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=344592)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Sprays shurikens at all targets within $A1 yards, dealing $s1 Physical damage.
@@ -4692,7 +4690,6 @@ Name             : Symbols of Death (id=212283) [Spell Family (8)]
 Class            : Subtlety Rogue
 School           : Physical
 Spell Level      : 36
-GCD              : 1 seconds
 Duration         : 10 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1694
@@ -5938,7 +5935,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724288)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 379.5512 (avg=1.220422) | Target: Self (1)
-Description      : When Mutilate applies Lethal poison with both daggers, it poisons them for an additional $s1 damage.
+Description      : When Mutilate applies Lethal Poison with both daggers, it poisons the target for an additional $s1 damage.
 
 Name             : Night's Vengeance (id=273418) [Scaling Spell (-1), Passive] 
 Class            : Rogue
