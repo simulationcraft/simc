@@ -4549,7 +4549,7 @@ void hunter_t::create_buffs()
   buffs.thrill_of_the_hunt =
     make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
       -> set_default_value( talents.thrill_of_the_hunt -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-      -> set_chance( talents.thrill_of_the_hunt -> ok() );
+      -> set_trigger_spell( talents.thrill_of_the_hunt );
 
   // Marksmanship
 
@@ -4568,17 +4568,17 @@ void hunter_t::create_buffs()
 
   buffs.lock_and_load =
     make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
-      -> set_chance( talents.lock_and_load -> ok() ? talents.lock_and_load -> proc_chance() : 0 );
+      -> set_trigger_spell( talents.lock_and_load );
 
   buffs.master_marksman =
     make_buff( this, "master_marksman", talents.master_marksman -> effectN( 1 ).trigger() )
       -> set_default_value( talents.master_marksman -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-      -> set_chance( talents.master_marksman -> ok() ? talents.master_marksman -> proc_chance() : 0 );
+      -> set_trigger_spell( talents.master_marksman );
 
   buffs.steady_focus =
     make_buff( this, "steady_focus", find_spell( 193534 ) )
       -> set_default_value( find_spell( 193534 ) -> effectN( 1 ).percent() )
-      -> set_chance( talents.steady_focus -> ok() );
+      -> set_trigger_spell( talents.steady_focus );
 
   buffs.double_tap =
     make_buff( this, "double_tap", talents.double_tap )
