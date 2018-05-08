@@ -676,7 +676,6 @@ public:
     const spell_data_t* rune_master;
 
     const spell_data_t* death_coil_damage;
-    const spell_data_t* unholy_vigor;
     const spell_data_t* runic_corruption;
 
   } spell;
@@ -1774,12 +1773,8 @@ struct dt_pet_t : public base_ghoul_pet_t
     cooldown_t* gnaw_smash; // shared cd between gnaw/smash and their DT'd counterparts
   } cooldown;
 
-  // Unholy Vigor gain object
-  gain_t* unholy_vigor;
-
   dt_pet_t( death_knight_t* owner, const std::string& name ) :
-    base_ghoul_pet_t( owner, name, false ),
-    unholy_vigor( get_gain( "Unholy Vigor" ) )
+    base_ghoul_pet_t( owner, name, false )
   {
     cooldown.gnaw_smash = get_cooldown( "gnaw_smash" );
     cooldown.gnaw_smash -> duration = find_spell( 91800 ) -> cooldown();
@@ -3954,16 +3949,14 @@ struct coils_of_devastation_t
 
 // Unholy T21 4P
 // Procs some mechanics of Death Coil but not all of them
-// Replicates unholy vigor, dark infusion, T21 2P, Death March and now (2017-12-23) T21 4P (can proc off itself) and Runic Corruption
+// Replicates Dark infusion, T21 2P, Death March and now (2017-12-23) T21 4P (can proc off itself) and Runic Corruption
 // Doesn't replicate DA Empowerment
 struct t21_death_coil_t : public death_knight_spell_t
 {
-  const spell_data_t* unholy_vigor;
   coils_of_devastation_t* coils_of_devastation;
 
   t21_death_coil_t( death_knight_t* p, coils_of_devastation_t* cod , const std::string& options_str ) :
     death_knight_spell_t( "death_coil T21", p, p -> spec.death_coil ),
-    unholy_vigor( p -> spell.unholy_vigor ), 
     coils_of_devastation ( cod )
   {
     background = true;
@@ -4001,14 +3994,6 @@ struct t21_death_coil_t : public death_knight_spell_t
         p() -> talent.dark_infusion -> effectN( 2 ).base_value() ) );
     }
 
-    if ( p() -> pets.ghoul_pet )
-    {
-      p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY,
-        unholy_vigor -> effectN( 1 ).resource( RESOURCE_ENERGY ),
-        p() -> pets.ghoul_pet -> unholy_vigor,
-        this );
-    }
-
     p() -> trigger_death_march( execute_state );
   }
 
@@ -4044,13 +4029,11 @@ struct t21_death_coil_t : public death_knight_spell_t
 // TODO: Conveert to mimic blizzard spells
 struct death_coil_t : public death_knight_spell_t
 {
-  const spell_data_t* unholy_vigor;
   coils_of_devastation_t* coils_of_devastation;
   t21_death_coil_t* t21_death_coil;
   
   death_coil_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "death_coil", p, p -> spec.death_coil ),
-    unholy_vigor( p -> spell.unholy_vigor ),
     coils_of_devastation( nullptr ),
     t21_death_coil( nullptr )
   {
@@ -4108,14 +4091,6 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
         p() -> talent.dark_infusion -> effectN( 2 ).base_value() ) );
-    }
-
-    if ( p() -> pets.ghoul_pet )
-    {
-      p() -> pets.ghoul_pet -> resource_gain( RESOURCE_ENERGY,
-                                              unholy_vigor -> effectN( 1 ).resource( RESOURCE_ENERGY ),
-                                              p() -> pets.ghoul_pet -> unholy_vigor,
-                                              this );
     }
 
     p() -> trigger_death_march( execute_state );
@@ -7045,7 +7020,6 @@ void death_knight_t::init_spells()
   // Unholy
   spell.death_coil_damage      = find_spell( 47632 );
   spell.runic_corruption       = find_spell( 51460 );
-  spell.unholy_vigor           = find_spell( 196263 );
 
   // Active Spells
   fallen_crusader += find_spell( 53365 ) -> effectN( 1 ).percent();
