@@ -3583,8 +3583,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   {
     double am = frost_mage_spell_t::action_multiplier();
 
-    // TODO: Remove 0.2 mult once the effect is fixed to work correctly.
-    am *= 1.0 + p() -> cache.mastery() * p() -> spec.icicles -> effectN( 4 ).mastery_value() * 0.2;
+    am *= 1.0 + p() -> cache.mastery() * p() -> spec.icicles -> effectN( 4 ).mastery_value();
 
     return am;
   }
