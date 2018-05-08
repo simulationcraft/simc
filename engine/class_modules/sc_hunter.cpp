@@ -670,8 +670,6 @@ private:
 public:
   typedef hunter_action_t base_t;
 
-  bool hasted_gcd;
-
   bool track_cd_waste;
   cdwaste::action_data_t* cd_waste;
 
@@ -691,20 +689,17 @@ public:
 
   hunter_action_t( const std::string& n, hunter_t* player, const spell_data_t* s = spell_data_t::nil() ):
     ab( n, player, s ),
-    hasted_gcd( false ),
     track_cd_waste( s -> cooldown() > timespan_t::zero() || s -> charge_cooldown() > timespan_t::zero() ),
     cd_waste( nullptr ),
     affected_by()
   {
     ab::special = true;
+    ab::gcd_haste = HASTE_NONE;
 
     parse_affecting_aura( this, p() -> specs.hunter );
     parse_affecting_aura( this, p() -> specs.beast_mastery_hunter );
     parse_affecting_aura( this, p() -> specs.marksmanship_hunter );
     parse_affecting_aura( this, p() -> specs.survival_hunter );
-
-    if ( ab::gcd_haste != HASTE_NONE )
-      hasted_gcd = true;
 
     affected_by.aotw_crit_chance = ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 1 ) );
     affected_by.aotw_gcd_reduce = ab::data().affected_by( p() -> specs.aspect_of_the_wild -> effectN( 3 ) );
@@ -728,9 +723,6 @@ public:
   {
     ab::init();
 
-    // disable default gcd scaling from haste as we are rolling our own because of AotW
-    ab::gcd_haste = HASTE_NONE;
-
     if ( track_cd_waste )
       cd_waste = p() -> cd_waste.get( this );
   }
@@ -742,11 +734,14 @@ public:
     if ( g == timespan_t::zero() )
       return g;
 
+    // recalculate the gcd while under the effect of AotW as it applies before haste reduction
     if ( affected_by.aotw_gcd_reduce && p() -> buffs.aspect_of_the_wild -> check() )
+    {
+      g = trigger_gcd;
       g += p() -> specs.aspect_of_the_wild -> effectN( 3 ).time_value();
-
-    if ( hasted_gcd )
-      g *= ab::player -> cache.attack_haste();
+      if ( ab::gcd_haste != HASTE_NONE )
+        g *= ab::composite_haste();
+    }
 
     if ( g < ab::min_gcd )
       g = ab::min_gcd;
