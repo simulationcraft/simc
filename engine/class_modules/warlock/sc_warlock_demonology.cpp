@@ -9,6 +9,7 @@ namespace warlock {
           parse_options(options_str);
           aoe = -1;
           weapon = &(p->main_hand_weapon);
+          base_dd_min, base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
         }
 
         bool ready() override {
@@ -31,6 +32,7 @@ namespace warlock {
           aoe = -1;
           background = true;
           weapon = &(p->main_hand_weapon);
+          base_dd_min, base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
         }
 
         double action_multiplier() const override
@@ -206,6 +208,7 @@ namespace warlock {
       {
         warlock_pet_t::arise();
 
+        o()->buffs.wild_imps->increment();
         if (isnotdoge)
         {
           firebolt->cooldown->start(timespan_t::from_millis(rng().range(500, 1500)));
@@ -215,6 +218,7 @@ namespace warlock {
       void wild_imp_pet_t::demise() {
         warlock_pet_t::demise();
 
+        o()->buffs.wild_imps->decrement();
         o()->buffs.demonic_core->trigger(1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN(1).percent());
       }
     }
@@ -295,6 +299,8 @@ namespace warlock {
       void dreadstalker_t::arise()
       {
         warlock_pet_t::arise();
+
+        o()->buffs.dreadstalkers->trigger();
 
         dreadbite_executes = 1;
         bites_executed = 0;
@@ -751,7 +757,7 @@ namespace warlock {
             if (!imp->is_sleeping())
             {
               double available = imp->resources.current[RESOURCE_ENERGY];
-              imp->resource_loss(RESOURCE_ENERGY,available);
+              imp->dismiss(true);
               for (auto dt : p()->warlock_pet_list.demonic_tyrants)
               {
                 if (!dt->is_sleeping())
@@ -844,16 +850,34 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
+        
+        struct lower_energy
+        {
+          inline bool operator() (const pets::wild_imp::wild_imp_pet_t* imp1, const pets::wild_imp::wild_imp_pet_t* imp2)
+          {
+            return (imp1->resources.current[RESOURCE_ENERGY] > imp2->resources.current[RESOURCE_ENERGY]);
+          }
+        };
 
-        int i = 0;
+        std::vector<pets::wild_imp::wild_imp_pet_t*> imps;
+
         for (auto imp : p()->warlock_pet_list.wild_imps)
         {
           if (!imp->is_sleeping())
           {
-            p()->buffs.demonic_core->trigger();
-            imp->dismiss(true);
-            if (++i == p()->talents.power_siphon->effectN(1).base_value()) break;
+            imps.push_back(imp);
           }
+        }
+        
+        std::sort(imps.begin(), imps.end(), lower_energy());
+        if(imps.size()>p()->talents.power_siphon->effectN(1).base_value()) imps.resize(p()->talents.power_siphon->effectN(1).base_value());
+
+        for (int i = 0; i < imps.size(); i++)
+        {
+          p()->buffs.demonic_core->trigger();
+          pets::wild_imp::wild_imp_pet_t* imp = imps.front();
+          imps.erase(imps.begin());
+          imp->dismiss(true);
         }
       }
     };
@@ -1042,6 +1066,13 @@ namespace warlock {
       ->set_refresh_behavior(buff_refresh_behavior::DURATION);
     buffs.dreaded_haste = make_buff<haste_buff_t>(this, "dreaded_haste", sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger())
       ->set_default_value(sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger()->effectN(1).percent());
+
+    //to track imps
+    buffs.wild_imps = make_buff(this, "wild_imps")
+      ->set_max_stack(40);
+    buffs.dreadstalkers = make_buff(this, "dreadstalkers")
+      ->set_max_stack(4)
+      ->set_duration(timespan_t::from_seconds(12));
   }
 
   void warlock_t::init_spells_demonology() {
@@ -1083,12 +1114,12 @@ namespace warlock {
     action_priority_list_t* def = get_action_priority_list("default");
     
     def -> add_talent(this, "Demonic Strength", "if=!cooldown.summon_demonic_tyrant.remains<10");
-    def -> add_talent(this, "Power Siphon");
+    def -> add_talent(this, "Power Siphon", "if=buff.wild_imps.stack>=2");
     def -> add_talent(this, "Doom", "if=talent.doom.enabled&refreshable");
     def -> add_action("service_felguard");
     def -> add_talent(this, "Summon Vilefiend");
     def -> add_action("call_dreadstalkers");
-    def -> add_action("summon_demonic_tyrant,if=prev_gcd.1.hand_of_guldan");
+    def -> add_action("summon_demonic_tyrant,if=buff.dreadstalkers.remains>cast_time&buff.wild_imps.stack>=3");
     def -> add_talent(this, "Bilescourge Bombers");
     def -> add_action("hand_of_guldan,if=soul_shard>=3");
     def -> add_talent(this, "Soul Strike");
