@@ -621,7 +621,7 @@ public:
 
     // Tier 7
     const spell_data_t* dark_infusion;
-    const spell_data_t* unholy_frenzy; // NYI
+    const spell_data_t* unholy_frenzy;
     const spell_data_t* summon_gargoyle;
 
     // Blood
@@ -3177,6 +3177,11 @@ struct melee_t : public death_knight_melee_attack_t
         frozen_pulse -> schedule_execute();
       }
 
+      if ( p() -> buffs.unholy_frenzy -> up() )
+      {
+        p() -> trigger_festering_wound( s, 1 );
+      }
+
       // TODO: Why doesn't Crimson Scourge proc while DnD is pulsing?
       if ( td( s -> target ) -> dot.blood_plague -> is_ticking() && p() -> dnds.size() == 0 )
       {
@@ -5624,6 +5629,25 @@ struct tombstone_t : public death_knight_spell_t
   }
 };
 
+// Unholy Frenzy ============================================================
+
+struct unholy_frenzy_t : public death_knight_spell_t
+{
+  unholy_frenzy_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "unholy_frenzy", p, p -> talent.unholy_frenzy )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p() -> buffs.unholy_frenzy -> trigger();
+  }
+};
+
 // Breath of Sindragosa =====================================================
 
 struct breath_of_sindragosa_tick_t: public death_knight_spell_t
@@ -6445,10 +6469,6 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
           dk -> active_spells.bursting_sores -> execute();
         }
 
-        if ( dk -> talent.unholy_frenzy -> ok() )
-        {
-          dk -> buffs.unholy_frenzy -> trigger();
-        }
 
         // TODO: Is this per festering wound, or one try?
         if ( dk -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T19, B2 ) )
@@ -6610,7 +6630,8 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "epidemic"                 ) return new epidemic_t                 ( this, options_str );
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
   if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
-
+  if ( name == "unholy_frenzy"            ) return new unholy_frenzy_t            ( this, options_str );
+    
 
   return player_t::create_action( name, options_str );
 }
@@ -6741,7 +6762,9 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
-  haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
+  haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> check_value() );
+
+  haste *= 1.0 / ( 1.0 + buffs.unholy_frenzy -> check_value() );
 	
   haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );    
   
@@ -6766,7 +6789,9 @@ double death_knight_t::composite_spell_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
 
-  haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> stack_value() );
+  haste *= 1.0 / ( 1.0 + buffs.soul_reaper -> check_value() );
+
+  haste *= 1.0 / ( 1.0 + buffs.unholy_frenzy -> check_value() );
 	
   haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );
   
@@ -6924,7 +6949,7 @@ void death_knight_t::init_spells()
 
   // Tier 7
   talent.dark_infusion         = find_talent_spell( "Dark Infusion" );
-  talent.unholy_frenzy         = find_talent_spell( "Unholy Frenzy" );
+  talent.unholy_frenzy         = find_talent_spell( "Unholy  Frenzy" ); // TODO : will break when Blizzard fixes the typo
   talent.summon_gargoyle       = find_talent_spell( "Summon Gargoyle" );
 
 
@@ -7480,19 +7505,8 @@ void death_knight_t::create_buffs()
                                              .add_invalidate( CACHE_STAMINA )
                                              .chance( 0 );
 
-  buffs.unholy_frenzy = make_buff<haste_buff_t>( this, "unholy_frenzy", find_spell( 207290 ) );
-  buffs.unholy_frenzy->add_invalidate( CACHE_ATTACK_SPEED )
-    ->set_trigger_spell( talent.unholy_frenzy )
-    ->set_default_value( 1.0 / ( 1.0 + find_spell( 207290 ) -> effectN( 1 ).percent() ) )
-    // Unholy Frenzy duration is hard capped at 25 seconds
-    ->set_refresh_duration_callback( []( const buff_t* b, const timespan_t& duration ) {
-      timespan_t total_duration = b -> remains() + duration;
-      if ( total_duration > timespan_t::from_seconds( 25 ) )
-      {
-        total_duration = timespan_t::from_seconds( 25 );
-      }
-      return total_duration;
-    } );
+  buffs.unholy_frenzy = make_buff<haste_buff_t>( this, "unholy_frenzy", talent.unholy_frenzy );
+  buffs.unholy_frenzy -> set_default_value( talent.unholy_frenzy -> effectN( 1 ).percent() );
   buffs.soul_reaper = make_buff<haste_buff_t>( this, "soul_reaper", find_spell( 215711 ) );
   buffs.soul_reaper -> set_default_value( find_spell( 215711 ) -> effectN( 1 ).percent() );
   buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.tombstone );
@@ -7978,11 +7992,6 @@ double death_knight_t::composite_melee_speed() const
   if ( buffs.icy_talons -> up() )
   {
     haste *= 1.0 / ( 1.0 + buffs.icy_talons -> check_stack_value() );
-  }
-
-  if ( buffs.unholy_frenzy -> up() )
-  {
-    haste *= buffs.unholy_frenzy -> check_value();
   }
 
   return haste;
