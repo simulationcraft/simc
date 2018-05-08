@@ -345,7 +345,7 @@ Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 2.5 seconds
-Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Arcane Instability (166872 effect#1), Arcane Focus (171375 effect#1), Rule of Threes (187292 effect#1), Clearcasting (263725 effect#1), Rule of Threes (264774 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Arcane Instability (166872 effect#1), Arcane Focus (171375 effect#1), Rule of Threes (187292 effect#1), Clearcasting (263725 effect#1), Rule of Threes (264774 effect#1), Amplification (277726 effect#1)
 Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ..x.xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ .....x.. ........ ........ 
@@ -6398,5 +6398,24 @@ Effects          :
 #1 (id=732956)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
 Description      : Pyroblast burns enemies between you and the target for ${$s1*(1+$277703d/$277703t1)} Fire damage over $277703d.
+
+Name             : Amplification (id=277726) [Spell Family (3), Hidden] 
+Class            : Mage
+School           : Physical
+Spell Level      : 12
+Duration         : 20 seconds
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Hidden (7)
+Effects          :
+#1 (id=733079)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 19 | Target: Self (1)
+                   Affected Spells: Arcane Missiles (5143)
+Description      : $@spelldesc236628
+Tooltip          : Arcane Missiles fires $236628s1 additional $lmissile:missiles;.
 
 
