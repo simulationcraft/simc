@@ -4356,6 +4356,8 @@ struct death_strike_t : public death_knight_melee_attack_t
 
   void execute() override
   {
+    p() -> buffs.voracious -> trigger();
+
     death_knight_melee_attack_t::execute();
 
     if ( oh_attack )
@@ -4379,7 +4381,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     p() -> trigger_death_march( execute_state );
     p() -> buffs.skullflowers_haemostasis -> expire();
     p() -> buffs.hemostasis -> expire();
-    p() -> buffs.voracious -> trigger();
   }
 
   bool ready() override
