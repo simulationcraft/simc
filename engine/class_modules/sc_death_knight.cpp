@@ -6473,7 +6473,7 @@ bool death_knight_t::trigger_runic_corruption( double rpcost, double override_ch
     return false;
 
 
-  if ( talent.pestilent_pustules -> ok() && override_chance == -1.0 )
+  if ( override_chance == -1.0 )
   {
     procs.rp_runic_corruption -> occur();
   }
