@@ -161,7 +161,7 @@ namespace warlock {
         {
           double c = warlock_pet_spell_t::cost();
 
-          if (p()->buffs.demonic_power->check())
+          if (p()->o()->buffs.tyrant->check())
           {
             c *= 1.0 + p()->buffs.demonic_power->data().effectN(3).percent();
           }
@@ -300,6 +300,7 @@ namespace warlock {
       {
         warlock_pet_t::arise();
 
+        o()->buffs.dreadstalkers->set_duration(o()->find_spell(193332)->duration());
         o()->buffs.dreadstalkers->trigger();
 
         dreadbite_executes = 1;
@@ -312,6 +313,7 @@ namespace warlock {
       void dreadstalker_t::demise() {
         warlock_pet_t::demise();
 
+        o()->buffs.dreadstalkers->decrement();
         o()->buffs.demonic_core->trigger(1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN(2).percent());
       }
 
@@ -771,6 +773,21 @@ namespace warlock {
             }
           }
         }
+
+        p()->buffs.tyrant->set_duration(p()->find_spell(265187)->duration());
+        p()->buffs.tyrant->trigger();
+        if (p()->buffs.dreadstalkers->check())
+        {
+          p()->buffs.dreadstalkers->extend_duration(p(), p()->buffs.demonic_power->data().effectN(2).time_value());
+        }
+        if (p()->buffs.service_pet->check())
+        {
+          p()->buffs.service_pet->extend_duration(p(), p()->buffs.demonic_power->data().effectN(2).time_value());
+        }
+        if (p()->buffs.vilefiend->check())
+        {
+          p()->buffs.vilefiend->extend_duration(p(), p()->buffs.demonic_power->data().effectN(2).time_value());
+        }
       }
     };
 
@@ -949,6 +966,9 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
+        p()->buffs.vilefiend->set_duration(p()->talents.summon_vilefiend->duration());
+        p()->buffs.vilefiend->trigger();
+
         for (auto& vilefiend : p()->warlock_pet_list.vilefiends)
         {
           if (vilefiend->is_sleeping())
@@ -972,6 +992,8 @@ namespace warlock {
           void execute() override {
               summon_pet_t::execute();
               pet->buffs.grimoire_of_service->trigger();
+              p()->buffs.service_pet->set_duration(timespan_t::from_seconds(p()->talents.grimoire_of_service->effectN(1).base_value()));
+              p()->buffs.service_pet->trigger();
           }
           bool init_finished() override {
               if (pet) {
@@ -1071,8 +1093,13 @@ namespace warlock {
     buffs.wild_imps = make_buff(this, "wild_imps")
       ->set_max_stack(40);
     buffs.dreadstalkers = make_buff(this, "dreadstalkers")
-      ->set_max_stack(4)
-      ->set_duration(timespan_t::from_seconds(12));
+      ->set_max_stack(4);
+    buffs.vilefiend = make_buff(this, "vilefiend")
+      ->set_max_stack(1);
+    buffs.tyrant = make_buff(this, "tyrant")
+      ->set_max_stack(1);
+    buffs.service_pet = make_buff(this, "service_pet")
+      ->set_max_stack(1);
   }
 
   void warlock_t::init_spells_demonology() {

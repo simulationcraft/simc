@@ -284,6 +284,9 @@ namespace warlock
         propagate_const<buff_t*> rage_of_guldan; // t21 2pc
         propagate_const<buff_t*> wild_imps;
         propagate_const<buff_t*> dreadstalkers;
+        propagate_const<buff_t*> vilefiend;
+        propagate_const<buff_t*> tyrant;
+        propagate_const<buff_t*> service_pet;
 
         //destruction_buffs
         propagate_const<buff_t*> backdraft;
