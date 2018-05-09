@@ -4519,9 +4519,7 @@ struct epidemic_t : public death_knight_spell_t
       }
     }
 
-    // Currently doesn't trigger Runic Corruption
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/253
-    if ( result_is_hit( execute_state -> result ) && ! p() -> bugs )
+    if ( result_is_hit( execute_state -> result ) )
     {
       p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
     }
@@ -7007,7 +7005,7 @@ void death_knight_t::init_spells()
 
   // Tier 7
   talent.armies_of_the_damned  = find_talent_spell( "Armies of the Damned" ); // NYI
-  talent.unholy_frenzy         = find_talent_spell( "Unholy  Frenzy" ); // TODO : will break when Blizzard fixes the typo
+  talent.unholy_frenzy         = find_talent_spell( "Unholy Frenzy" );
   talent.summon_gargoyle       = find_talent_spell( "Summon Gargoyle" );
 
 
