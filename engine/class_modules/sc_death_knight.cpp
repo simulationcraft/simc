@@ -618,7 +618,7 @@ public:
 
 
     // Tier 6
-    const spell_data_t* corpse_explosion; // NYI
+    const spell_data_t* pestilence;
     const spell_data_t* defile;
     const spell_data_t* epidemic;
 
@@ -3814,6 +3814,11 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
     else
     {
       death_knight_spell_t::impact( s );
+
+      if ( p() -> talent.pestilence -> ok() && rng().roll( p() -> talent.pestilence -> effectN( 1 ).percent() ) )
+      {
+        p() -> trigger_festering_wound( s, 1 );
+      }
     }
   }
 };
@@ -3847,7 +3852,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
     ground_aoe            = true;
     radius                = data().effectN( 1 ).radius_max();
 
-    // Blood has a 15s cooldown on DnD
+    // Blood has a lower cd on DnD
     cooldown -> duration += cooldown -> duration * p -> spec.blood_death_knight -> effectN( 5 ).percent();
   }
 
@@ -7022,7 +7027,7 @@ void death_knight_t::init_spells()
   talent.unholy_blight         = find_talent_spell( "Unholy Blight" );
 
   // Tier 6
-  talent.corpse_explosion      = find_talent_spell( "Corpse Explosion" );
+  talent.pestilence            = find_talent_spell( "Pestilence" );
   talent.defile                = find_talent_spell( "Defile" );
   talent.epidemic              = find_talent_spell( "Epidemic" );
 
