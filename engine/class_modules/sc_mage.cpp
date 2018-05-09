@@ -550,7 +550,7 @@ public:
   {
     // Tier 15
     const spell_data_t* rule_of_threes;
-    const spell_data_t* mana_adept;
+    const spell_data_t* amplification;
     const spell_data_t* arcane_familiar;
     const spell_data_t* firestarter;
     const spell_data_t* pyromaniac;
@@ -2431,23 +2431,23 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
 
 struct am_state_t : public mage_spell_state_t
 {
-  timespan_t extra_tick_time_reduction;
+  double tick_time_multiplier;
 
   am_state_t( action_t* action, player_t* target ) :
     mage_spell_state_t( action, target ),
-    extra_tick_time_reduction()
+    tick_time_multiplier( 1.0 )
   { }
 
   virtual void initialize() override
   {
     mage_spell_state_t::initialize();
-    extra_tick_time_reduction = timespan_t::zero();
+    tick_time_multiplier = 1.0;
   }
 
   virtual std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     mage_spell_state_t::debug_str( s )
-      << " extra_tick_time_reduction=" << extra_tick_time_reduction;
+      << " tick_time_multiplier=" << tick_time_multiplier;
     return s;
   }
 
@@ -2455,13 +2455,13 @@ struct am_state_t : public mage_spell_state_t
   {
     mage_spell_state_t::copy_state( other );
 
-    extra_tick_time_reduction = debug_cast<const am_state_t*>( other ) -> extra_tick_time_reduction;
+    tick_time_multiplier = debug_cast<const am_state_t*>( other ) -> tick_time_multiplier;
   }
 };
 
 struct arcane_missiles_t : public arcane_mage_spell_t
 {
-  timespan_t mana_adept_reduction;
+  double amplification_reduction;
 
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_missiles", p,
@@ -2478,9 +2478,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
 
-    if ( p -> talents.mana_adept -> ok() )
+    if ( p -> talents.amplification -> ok() )
     {
-      mana_adept_reduction = p -> talents.mana_adept -> effectN( 1 ).trigger() -> effectN( 1 ).time_value();
+      amplification_reduction = p -> find_spell( 277726 ) -> effectN( 1 ).percent();
     }
   }
 
@@ -2499,10 +2499,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::snapshot_state( state, rt );
 
-    if ( p() -> talents.mana_adept -> ok()
-      && p() -> resources.pct( RESOURCE_MANA ) > p() -> talents.mana_adept -> effectN( 1 ).percent() )
+    if ( p() -> talents.amplification -> ok() && p() -> buffs.clearcasting -> check() )
     {
-      debug_cast<am_state_t*>( state ) -> extra_tick_time_reduction = mana_adept_reduction;
+      debug_cast<am_state_t*>( state ) -> tick_time_multiplier = 1.0 + amplification_reduction;
     }
   }
 
@@ -2521,10 +2520,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   virtual timespan_t tick_time( const action_state_t* s ) const override
   {
-    timespan_t t = base_tick_time;
+    timespan_t t = arcane_mage_spell_t::tick_time( s );
 
-    t += debug_cast<const am_state_t*>( s ) -> extra_tick_time_reduction;
-    t *= s -> haste;
+    t *= debug_cast<const am_state_t*>( s ) -> tick_time_multiplier;
 
     return t;
   }
@@ -5842,7 +5840,7 @@ void mage_t::init_spells()
   // Talents
   // Tier 15
   talents.rule_of_threes     = find_talent_spell( "Rule of Threes"     );
-  talents.mana_adept         = find_talent_spell( "Mana Adept"         );
+  talents.amplification      = find_talent_spell( "Amplification"      );
   talents.arcane_familiar    = find_talent_spell( "Arcane Familiar"    );
   talents.firestarter        = find_talent_spell( "Firestarter"        );
   talents.pyromaniac         = find_talent_spell( "Pyromaniac"         );
