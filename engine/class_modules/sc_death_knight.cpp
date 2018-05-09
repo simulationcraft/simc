@@ -4333,6 +4333,12 @@ struct death_strike_t : public death_knight_melee_attack_t
   double cost() const override
   {
     double c = death_knight_melee_attack_t::cost();
+
+    if ( p() -> talent.ossuary -> ok() &&
+         p() -> buffs.bone_shield -> stack() >= p() -> talent.ossuary -> effectN( 1 ).base_value() )
+    {
+      c += p() -> spell.ossuary -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+    }
     
     if ( p() -> buffs.t20_blood -> check() && p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T20, B4 ) )
     {
@@ -7497,7 +7503,7 @@ void death_knight_t::create_buffs()
                                 resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + new_buff;
                                 recalculate_resource_max( RESOURCE_HEALTH );
                               } : buff_stack_change_callback_t() )
-                              -> set_max_stack( spell.bone_shield -> max_stacks() + talent.ossuary -> effectN( 1 ).base_value() );
+                              -> set_max_stack( spell.bone_shield -> max_stacks() );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge", find_spell( 81141 ) )
                               .trigger_spell( spec.crimson_scourge );
   buffs.dancing_rune_weapon = new dancing_rune_weapon_buff_t( this );
