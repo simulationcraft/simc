@@ -6342,6 +6342,7 @@ void rogue_t::init_action_list()
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
     build -> add_action( this, "Shuriken Storm", "if=spell_targets.shuriken_storm>=2+(buff.the_first_of_the_dead.up|buff.symbols_of_death.up)" );
+    build -> add_action( this, "Shuriken Toss", "if=buff.sharpened_blades.stack>=19" );
     build -> add_talent( this, "Gloomblade" );
     build -> add_action( this, "Backstab" );
 
