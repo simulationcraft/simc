@@ -607,7 +607,7 @@ public:
 
     // Tier 2
     const spell_data_t* pestilent_pustules;
-    const spell_data_t* inevitable_doom;
+    const spell_data_t* harbinger_of_doom;
     const spell_data_t* soul_reaper;
 
     // Tier 3
@@ -7011,7 +7011,7 @@ void death_knight_t::init_spells()
 
   // Tier 2
   talent.pestilent_pustules    = find_talent_spell( "Pestilent Pustules" );
-  talent.inevitable_doom       = find_talent_spell( "Inevitable Doom" );
+  talent.harbinger_of_doom     = find_talent_spell( "Harbinger of Doom" );
   talent.soul_reaper           = find_talent_spell( "Soul Reaper" );
 
   // Tier 3
@@ -7565,9 +7565,9 @@ void death_knight_t::create_buffs()
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", spec.sudden_doom -> effectN( 1 ).trigger() )
                               .rppm_scale( RPPM_ATTACK_SPEED ) // 2016-08-08: Hotfixed, not in spell data
-                              .rppm_mod( 1.0 + talent.inevitable_doom -> effectN( 2 ).percent() )
+                              .rppm_mod( 1.0 + talent.harbinger_of_doom -> effectN( 2 ).percent() )
                               .trigger_spell( spec.sudden_doom )
-                              .max_stack( spec.sudden_doom -> effectN( 1 ).trigger() -> initial_stacks() + talent.inevitable_doom -> effectN( 1 ).base_value() );
+                              .max_stack( spec.sudden_doom -> effectN( 1 ).trigger() -> initial_stacks() + talent.harbinger_of_doom -> effectN( 1 ).base_value() );
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
   buffs.voracious           = buff_creator_t( this, "voracious", find_spell( 274009 ) )
                               .trigger_spell( talent.voracious )
