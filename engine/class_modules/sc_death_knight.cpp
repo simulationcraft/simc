@@ -4123,7 +4123,7 @@ struct death_coil_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     // Sudden Doomed Death Coils buff Gargoyle
-    if ( p() -> buffs.sudden_doom -> check() && p() -> pets.gargoyle )
+    if ( p() -> buffs.sudden_doom -> check() && ! p() -> pets.gargoyle -> is_sleeping() )
     {
       p() -> pets.gargoyle -> increase_power( base_costs[ RESOURCE_RUNIC_POWER ] );
     }
@@ -4533,7 +4533,7 @@ struct epidemic_t : public death_knight_spell_t
 
     // Currently doesn't trigger Runic Corruption
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/253
-    if ( result_is_hit( execute_state -> result ) && !p() -> bugs )
+    if ( result_is_hit( execute_state -> result ) && ! p() -> bugs )
     {
       p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
     }
@@ -5531,7 +5531,7 @@ struct scourge_strike_t : public scourge_strike_base_t
     const spell_data_t* scourge_base;
 
     scourge_strike_shadow_t( death_knight_t* p ) :
-      death_knight_melee_attack_t( "scourge_strike_shadow", p, p -> spec.scourge_strike -> effectN( 4 ).trigger() ),
+      death_knight_melee_attack_t( "scourge_strike_shadow", p, p -> spec.scourge_strike -> effectN( 3 ).trigger() ),
       scourge_base( p -> spec.scourge_strike )
     {
       may_miss = may_parry = may_dodge = false;
