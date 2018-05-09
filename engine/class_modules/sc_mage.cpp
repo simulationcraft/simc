@@ -88,7 +88,6 @@ struct mage_td_t : public actor_target_data_t
 {
   struct dots_t
   {
-    dot_t* ignite;
     dot_t* nether_tempest;
   } dots;
 
@@ -5454,7 +5453,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots( dots_t() ),
   debuffs( debuffs_t() )
 {
-  dots.ignite         = target -> get_dot( "ignite", mage );
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
 
   debuffs.erosion       = make_buff<buffs::erosion_t>( this );
