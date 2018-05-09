@@ -4388,6 +4388,19 @@ struct death_strike_t : public death_knight_melee_attack_t
       }
     }
 
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      if ( p() -> spec.runic_empowerment )
+      {
+        p() -> trigger_runic_empowerment( base_costs[ RESOURCE_RUNIC_POWER ] );
+      }
+      else if ( p() -> spec.runic_corruption )
+      {
+        p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
+      }
+    }
+
+
     p() -> trigger_death_march( execute_state );
     p() -> buffs.skullflowers_haemostasis -> expire();
     p() -> buffs.hemostasis -> expire();
