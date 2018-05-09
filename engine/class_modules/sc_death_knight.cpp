@@ -622,7 +622,7 @@ public:
     const spell_data_t* epidemic;
 
     // Tier 7
-    const spell_data_t* dark_infusion;
+    const spell_data_t* armies_of_the_damned; // NYI
     const spell_data_t* unholy_frenzy;
     const spell_data_t* summon_gargoyle;
 
@@ -4041,12 +4041,6 @@ struct t21_death_coil_t : public death_knight_spell_t
     p() -> cooldown.dark_transformation -> adjust( - timespan_t::from_seconds(
         p() -> spec.death_coil -> effectN( 2 ).base_value() ) );
 
-    if ( p() -> talent.dark_infusion -> ok() )
-    {
-      p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
-        p() -> talent.dark_infusion -> effectN( 2 ).base_value() ) );
-    }
-
     p() -> trigger_death_march( execute_state );
   }
 
@@ -4139,12 +4133,6 @@ struct death_coil_t : public death_knight_spell_t
 
     p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
       p() -> spec.death_coil -> effectN( 2 ).base_value() ) );
-
-    if ( p() -> talent.dark_infusion -> ok() )
-    {
-      p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
-        p() -> talent.dark_infusion -> effectN( 2 ).base_value() ) );
-    }
 
     p() -> trigger_death_march( execute_state );
   }
@@ -4536,13 +4524,6 @@ struct epidemic_t : public death_knight_spell_t
     if ( result_is_hit( execute_state -> result ) && ! p() -> bugs )
     {
       p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
-    }
-
-    // Reduces the cooldown Dark Transformation by 3s if Dark Infusion is talented
-    if ( p() -> talent.dark_infusion -> ok() )
-    {
-      p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
-        p() -> talent.dark_infusion -> effectN( 2 ).base_value() ) );
     }
   }
 };
@@ -7025,7 +7006,7 @@ void death_knight_t::init_spells()
   talent.epidemic              = find_talent_spell( "Epidemic" );
 
   // Tier 7
-  talent.dark_infusion         = find_talent_spell( "Dark Infusion" );
+  talent.armies_of_the_damned  = find_talent_spell( "Armies of the Damned" ); // NYI
   talent.unholy_frenzy         = find_talent_spell( "Unholy  Frenzy" ); // TODO : will break when Blizzard fixes the typo
   talent.summon_gargoyle       = find_talent_spell( "Summon Gargoyle" );
 
@@ -7523,7 +7504,7 @@ void death_knight_t::create_buffs()
                               .trigger_spell( spec.crimson_scourge );
   buffs.dancing_rune_weapon = new dancing_rune_weapon_buff_t( this );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", spec.dark_transformation )
-    .duration( spec.dark_transformation -> duration() + timespan_t::from_millis( talent.dark_infusion -> effectN( 1 ).base_value() ) )
+    .duration( spec.dark_transformation -> duration() )
     .cd( timespan_t::zero() ); // Handled by the action
 
   buffs.death_and_decay     = buff_creator_t( this, "death_and_decay", find_spell( 188290 ) )
