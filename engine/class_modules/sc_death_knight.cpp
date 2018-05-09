@@ -454,6 +454,7 @@ public:
   struct cooldowns_t {
     cooldown_t* antimagic_shell;
     cooldown_t* army_of_the_dead;
+    cooldown_t* apocalypse;
     cooldown_t* avalanche;
     cooldown_t* bone_shield_icd;
     cooldown_t* dancing_rune_weapon;
@@ -622,7 +623,7 @@ public:
     const spell_data_t* epidemic;
 
     // Tier 7
-    const spell_data_t* armies_of_the_damned; // NYI
+    const spell_data_t* army_of_the_damned;
     const spell_data_t* unholy_frenzy;
     const spell_data_t* summon_gargoyle;
 
@@ -788,19 +789,20 @@ public:
     
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.army_of_the_dead = get_cooldown( "army_of_the_dead" );
-    cooldown.avalanche       = get_cooldown( "avalanche" );
+    cooldown.apocalypse = get_cooldown( "apocalypse" );
+    cooldown.avalanche = get_cooldown( "avalanche" );
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay = get_cooldown( "death_and_decay" );
-    cooldown.defile          = get_cooldown( "defile" );
+    cooldown.defile = get_cooldown( "defile" );
     cooldown.empower_rune_weapon = get_cooldown( "empower_rune_weapon" );
     cooldown.hungering_rune_weapon = get_cooldown( "hungering_rune_weapon" );
-    cooldown.icecap          = get_cooldown( "icecap" );
+    cooldown.icecap = get_cooldown( "icecap" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
-    cooldown.rune_strike     = get_cooldown( "rune_strike" );
-    cooldown.vampiric_blood  = get_cooldown( "vampiric_blood" );
+    cooldown.rune_strike = get_cooldown( "rune_strike" );
+    cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
 
     talent_points.register_validity_fn( [ this ] ( const spell_data_t* spell )
     {
@@ -4115,14 +4117,15 @@ struct death_coil_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-
+    
+    
     // Sudden Doomed Death Coils buff Gargoyle
-    if ( p() -> buffs.sudden_doom -> check() && ! p() -> pets.gargoyle -> is_sleeping() )
+    if ( p() -> buffs.sudden_doom -> check() && p() -> pets.gargoyle )
     {
       p() -> pets.gargoyle -> increase_power( base_costs[ RESOURCE_RUNIC_POWER ] );
     }
 
-    p() -> buffs.sudden_doom -> decrement();
+    
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -4134,25 +4137,33 @@ struct death_coil_t : public death_knight_spell_t
     p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
       p() -> spec.death_coil -> effectN( 2 ).base_value() ) );
 
+    p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds( 
+      p() -> talent.army_of_the_damned -> effectN( 1 ).base_value() / 10 ) );
+
+    p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds( 
+      p() -> talent.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
+
     p() -> trigger_death_march( execute_state );
+    
+    p() -> buffs.sudden_doom -> decrement();
   }
 
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
-
+    
     if ( rng().roll( player -> sets -> set( DEATH_KNIGHT_UNHOLY, T19, B4 ) -> effectN( 1 ).percent() ) )
     {
       p() -> trigger_festering_wound( state, 1 );
     }
-
+    
     // Coils of Devastation application
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B2 ) && result_is_hit( state -> result ) )
     {
       residual_action::trigger( coils_of_devastation, state -> target,
         state -> result_amount * p() -> sets -> set( DEATH_KNIGHT_UNHOLY, T21, B2 ) -> effectN( 1 ).percent() );
     }
-
+    
     // T21 4P gives 20% chance to deal damage a second time
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B4 ) && result_is_hit( state -> result ) )
     {
@@ -4529,6 +4540,12 @@ struct epidemic_t : public death_knight_spell_t
     {
       p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
     }
+
+    p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds( 
+      p() -> talent.army_of_the_damned -> effectN( 1 ).base_value() / 10 ) );
+
+    p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds( 
+      p() -> talent.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
   }
 };
 
@@ -7010,7 +7027,7 @@ void death_knight_t::init_spells()
   talent.epidemic              = find_talent_spell( "Epidemic" );
 
   // Tier 7
-  talent.armies_of_the_damned  = find_talent_spell( "Armies of the Damned" ); // NYI
+  talent.army_of_the_damned    = find_talent_spell( "Army of the Damned" );
   talent.unholy_frenzy         = find_talent_spell( "Unholy Frenzy" );
   talent.summon_gargoyle       = find_talent_spell( "Summon Gargoyle" );
 
