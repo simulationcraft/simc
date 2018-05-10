@@ -5812,6 +5812,11 @@ struct solar_wrath_t : public druid_spell_t
   {
     natures_balance    = player -> talent.natures_balance -> effectN( 2 ).base_value() * player -> find_spell( 164815 ) -> effectN( 2 ).period();
 
+    form_mask = MOONKIN_FORM;
+
+    if (player->specialization() == DRUID_RESTORATION)
+      form_mask = NO_FORM | MOONKIN_FORM;
+
     base_execute_time *= 1.0 + player -> sets -> set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     energize_amount = player -> spec.astral_power -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
   }
