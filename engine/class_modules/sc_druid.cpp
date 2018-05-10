@@ -4282,56 +4282,20 @@ void druid_heal_t::init_living_seed()
 // Frenzied Regeneration ====================================================
 // TOCHECK: Verify healing calculations match alpha.
 
-struct frenzied_regeneration_t : public druid_heal_t
+struct frenzied_regeneration_t : public heals::druid_heal_t
 {
-  /* struct frenzied_regeneration_ignite_t : public residual_action::residual_periodic_action_t<druid_heal_t> */
-  /* { */
-  /*   frenzied_regeneration_ignite_t( druid_t* p, const spell_data_t* s ) : */
-  /*     residual_action::residual_periodic_action_t<druid_heal_t>( "frenzied_regeneration", p, spell_data_t::nil() ) */
-  /*   { */
-  /*     background = true; */
-  /*     target = p; */
-
-  /*     dot_duration = s -> duration(); */
-  /*     base_tick_time = s -> effectN( 1 ).period(); */
-  /*     school = s -> get_school_type(); */
-  /*   } */
-
-  /*   timespan_t composite_dot_duration( const action_state_t* s ) const override */
-  /*   { */
-  /*     timespan_t t = residual_action::residual_periodic_action_t<druid_heal_t>::composite_dot_duration( s ); */
-
-  /*     t += timespan_t::from_seconds( p() -> buff.guardian_tier19_4pc -> check_stack_value() ); */
-
-  /*     return t; */
-  /*   } */
-  /* }; */
-
-  /* double heal_pct, min_pct; */
-  /* timespan_t time_window; */
-  /* frenzied_regeneration_ignite_t* ignite; */
   heal_t* skysecs_hold;
 
   frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( "frenzied_regeneration_driver", p,
-      p -> find_specialization_spell( "Frenzied Regeneration" ), options_str ),
+    druid_heal_t( "frenzied_regeneration", p,
+      p -> find_affinity_spell( "Frenzied Regeneration" ), options_str ),
       skysecs_hold( nullptr )
   {
     /* use_off_gcd = quiet = true; */
-    quiet = true;
     may_crit = tick_may_crit = false;
     target = p;
     cooldown -> hasted = true;
     hasted_ticks = false;
-
-/*     // % of damage taken in the last x seconds to heal. */
-/*     heal_pct = data().effectN( 2 ).percent(); */
-/*     // Length of the incoming damage window. */
-/*     time_window = timespan_t::from_seconds( data().effectN( 3 ).base_value() ); */
-/*     // Minimum base heal amount as a % of max health. */
-/*     min_pct = data().effectN( 4 ).percent(); */
-/*     ignite = new frenzied_regeneration_ignite_t( p, &data() ); */
-/*     dot_duration = timespan_t::zero(); */
   }
 
   void init() override
