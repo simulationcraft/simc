@@ -5851,7 +5851,7 @@ void player_t::target_mitigation( school_e school, dmg_e dmg_type, action_state_
     }
 
     if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
-      sim->out_debug.printf( "Damage to %s after armor mitigation is %f", s->target->name(), s->result_amount );
+      sim->out_debug.printf( "Damage to %s after armor mitigation is %f (%f armor)", s->target->name(), s->result_amount, s -> target_armor );
 
     double pre_block_amount = s->result_amount;
 

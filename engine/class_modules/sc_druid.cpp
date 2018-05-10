@@ -540,9 +540,10 @@ public:
     const spell_data_t* ironfur;
     const spell_data_t* thick_hide; // Guardian Affinity
     const spell_data_t* thrash_bear_dot; // For Rend and Tear modifier
-    const spell_data_t* mangle_2;
     const spell_data_t* lightning_reflexes;
-    const spell_data_t* ironfur_2;
+    const spell_data_t* mangle_2; // Rank 2
+    const spell_data_t* ironfur_2; // Rank 2
+    const spell_data_t* frenzied_regeneration_2; // Rank 2
 
     // Resto
     const spell_data_t* restoration;
@@ -769,6 +770,7 @@ public:
   virtual void      reset() override;
   virtual void      merge( player_t& other ) override;
   virtual timespan_t available() const override;
+  virtual double    composite_armor() const override;
   virtual double    composite_armor_multiplier() const override;
   virtual double    composite_attack_power_multiplier() const override;
   virtual double    composite_attribute( attribute_e attr ) const override;
@@ -4296,6 +4298,9 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
     target = p;
     cooldown -> hasted = true;
     hasted_ticks = false;
+
+    if ( p -> specialization() == DRUID_GUARDIAN )
+      cooldown -> charges += p -> spec.frenzied_regeneration_2 -> effectN( 1 ).base_value();
   }
 
   void init() override
@@ -4305,17 +4310,8 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
     snapshot_flags = STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_TA;
   }
 
-  /* double calculate_base_amount() */
-  /* { */
-  /*   double dt = p() -> compute_incoming_damage( time_window ) * heal_pct; */
-
-  /*   return std::max( dt, p() -> resources.max[ RESOURCE_HEALTH ] * min_pct ); */
-  /* } */
-
   void execute() override
   {
-    /* base_dd_min = base_dd_max = calculate_base_amount(); */
-
     druid_heal_t::execute();
 
     if ( skysecs_hold )
@@ -4335,13 +4331,8 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
     am *= 1.0 + p() -> buff.guardian_of_elune -> check()
       * p() -> buff.guardian_of_elune -> data().effectN( 2 ).percent();
 
-    /* am *= 1.0 + timespan_t::from_seconds( p() -> buff.guardian_tier19_4pc -> check_stack_value() ) / ignite -> dot_duration; */
-
     return am;
   }
-
-  /* void impact( action_state_t* s ) override */
-  /* { residual_action::trigger( ignite, s -> target, s -> result_amount ); } */
 };
 
 // Healing Touch ============================================================
@@ -6583,9 +6574,10 @@ void druid_t::init_spells()
   spec.guardian_overrides         = find_specialization_spell( "Guardian Overrides Passive" );
   spec.ironfur                    = find_specialization_spell( "Ironfur" );
   spec.thrash_bear_dot            = find_specialization_spell( "Thrash" ) -> ok() ? find_spell( 192090 ) : spell_data_t::not_found();
-  spec.mangle_2                   = find_specialization_spell( 231064 );
   spec.lightning_reflexes         = find_specialization_spell( 231064 );
+  spec.mangle_2                   = find_specialization_spell( 231064 );
   spec.ironfur_2                  = find_specialization_spell( 231070 );
+  spec.frenzied_regeneration_2    = find_specialization_spell( 273048 );
 
   // Restoration
   spec.moonkin_form_affinity      = find_spell(197625);
@@ -7018,7 +7010,7 @@ void druid_t::create_buffs()
                                .duration( spec.ironfur -> duration() )
                                .default_value( spec.ironfur -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_ARMOR )
-                               .max_stack( 20 ) // many stacks, handle it
+                               .max_stack( spec.ironfur_2 -> effectN( 1 ).base_value() )
                                .stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                .cd( timespan_t::zero() );
 
@@ -8095,6 +8087,9 @@ void druid_t::invalidate_cache( cache_e c )
   case CACHE_CRIT_CHANCE:
     if ( specialization() == DRUID_GUARDIAN )
       invalidate_cache( CACHE_DODGE );
+  case CACHE_AGILITY:
+    if ( buff.ironfur -> check() )
+      invalidate_cache( CACHE_ARMOR );
   default:
     break;
   }
@@ -8114,6 +8109,20 @@ double druid_t::composite_attack_power_multiplier() const
   return ap;
 }
 
+// druid_t::composite_armor =================================================
+
+double druid_t::composite_armor() const
+{
+  double a = player_t::composite_armor();
+
+  if ( buff.ironfur -> up() )
+  {
+    a += ( buff.ironfur -> check_stack_value() * cache.agility() );
+  }
+
+  return a;
+}
+
 // druid_t::composite_armor_multiplier ======================================
 
 double druid_t::composite_armor_multiplier() const
@@ -8125,8 +8134,6 @@ double druid_t::composite_armor_multiplier() const
     a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent();
     a *= 1.0 + buff.incarnation_bear -> data().effectN( 5 ).percent();
   }
-
-  a *= 1.0 + buff.ironfur -> check_stack_value();
 
   a *= 1.0 + buff.protection_of_ashamane -> check() * buff.protection_of_ashamane -> data().effectN( 2 ).percent();
 
