@@ -4388,6 +4388,9 @@ void unique_gear::register_special_effects()
   // Register legion special effects
   register_special_effects_legion();
 
+  // Register azerite special effects
+  azerite::register_azerite_powers();
+
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */
   register_special_effect( 45482,  "ProcOn/hit_45480Trigger"            ); /* Shattered Sun Pendant of Might */

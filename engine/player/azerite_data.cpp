@@ -501,7 +501,7 @@ std::vector<unsigned> azerite_state_t::enabled_spells() const
   return spells;
 }
 
-void regiser_azerite_powers()
+void register_azerite_powers()
 {
   unique_gear::register_special_effect( 263962, special_effects::resounding_protection );
 }
@@ -513,18 +513,39 @@ namespace special_effects
 {
 void resounding_protection( special_effect_t& effect )
 {
+  class rp_event_t : public event_t
+  {
+    buff_t*    buff;
+    timespan_t period;
+
+public:
+    rp_event_t( buff_t* b, const timespan_t& t ) :
+      event_t( *b -> source, t ), buff( b ), period( t )
+    { }
+
+    void execute() override
+    {
+      buff -> trigger();
+      make_event<rp_event_t>( sim(), buff, period );
+    }
+  };
+
   azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
   if ( ! power.enabled() )
   {
     return;
   }
 
+  const spell_data_t* driver = effect.player -> find_spell( 270568 );
+  const spell_data_t* absorb = effect.player -> find_spell( 269279 );
   double amount = power.value();
-  buff_t* buff = make_buff<absorb_buff_t>( effect.player, "resounding_protection", power.spell() )
+  buff_t* buff = make_buff<absorb_buff_t>( effect.player, "resounding_protection", absorb )
                  -> set_default_value( amount );
 
-  effect.custom_buff = buff;
-  // TODO: start at the beginning of combat
+  effect.player -> register_combat_begin( [ buff, driver ]( player_t* ) {
+    buff -> trigger();
+    make_event<rp_event_t>( *buff -> sim, buff, driver -> effectN( 1 ).period() );
+  } );
 }
 } // Namespace special effects ends
 } // Namespace azerite ends
