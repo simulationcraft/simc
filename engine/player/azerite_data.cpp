@@ -504,6 +504,7 @@ std::vector<unsigned> azerite_state_t::enabled_spells() const
 void register_azerite_powers()
 {
   unique_gear::register_special_effect( 263962, special_effects::resounding_protection );
+  unique_gear::register_special_effect( 263984, special_effects::elemental_whirl       );
 }
 } // Namespace azerite ends
 
@@ -546,6 +547,52 @@ public:
     buff -> trigger();
     make_event<rp_event_t>( *buff -> sim, buff, driver -> effectN( 1 ).period() );
   } );
+}
+
+void elemental_whirl( special_effect_t& effect )
+{
+  class ew_proc_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<buff_t*> buffs;
+
+    public:
+    ew_proc_cb_t( const special_effect_t& effect, const std::vector<buff_t*>& b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( b )
+    { }
+
+    void execute( action_t* /* a */, action_state_t* /* state */ ) override
+    {
+      size_t buff_index = rng().range( 0.0, as<double>( buffs.size() ) );
+      buffs[ buff_index ] -> trigger();
+    }
+  };
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( ! power.enabled() )
+  {
+    return;
+  }
+
+  double amount = power.value();
+  const spell_data_t* driver = effect.player -> find_spell( 270667 );
+  const spell_data_t* crit_spell = effect.player -> find_spell( 268953 );
+  const spell_data_t* hast_spell = effect.player -> find_spell( 268954 );
+  const spell_data_t* mast_spell = effect.player -> find_spell( 268955 );
+  const spell_data_t* vers_spell = effect.player -> find_spell( 268956 );
+
+  buff_t* crit = make_buff<stat_buff_t>( effect.player, "elemental_whirl_crit", crit_spell )
+    -> add_stat( STAT_CRIT_RATING, amount );
+  buff_t* versatility = make_buff<stat_buff_t>( effect.player, "elemental_whirl_versatility", vers_spell )
+    -> add_stat( STAT_VERSATILITY_RATING, amount );
+  buff_t* mastery = make_buff<stat_buff_t>( effect.player, "elemental_whirl_mastery", mast_spell )
+    -> add_stat( STAT_MASTERY_RATING, amount );
+  buff_t* haste = make_buff<stat_buff_t>( effect.player, "elemental_whirl_haste", hast_spell )
+    -> add_stat( STAT_HASTE_RATING, amount );
+
+  // Replace the driver spell, the azerite power does not hold the RPPM value
+  effect.spell_id = driver -> id();
+
+  new ew_proc_cb_t( effect, { crit, haste, mastery, versatility } );
 }
 } // Namespace special effects ends
 } // Namespace azerite ends

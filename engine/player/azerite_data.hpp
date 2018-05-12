@@ -149,6 +149,7 @@ void register_azerite_powers();
 namespace special_effects
 {
 void resounding_protection( special_effect_t& effect );
+void elemental_whirl( special_effect_t& effect );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
