@@ -127,6 +127,37 @@ std::unique_ptr<azerite_state_t> create_state( player_t* p )
   return std::unique_ptr<azerite_state_t>( new azerite_state_t( p ) );
 }
 
+bool initialize_azerite_powers( player_t* actor )
+{
+  if ( ! actor -> azerite )
+  {
+    return true;
+  }
+
+  for ( auto azerite_spell : actor -> azerite -> enabled_spells() )
+  {
+    const auto spell = actor -> find_spell( azerite_spell );
+    if ( ! spell -> ok() )
+    {
+      continue;
+    }
+
+    special_effect_t effect { actor };
+    effect.source = SPECIAL_EFFECT_SOURCE_AZERITE;
+
+    auto ret = unique_gear::initialize_special_effect( effect, azerite_spell );
+    // Note, only apply custom special effects for azerite for an abundance of safety
+    if ( ! ret || ! effect.is_custom() )
+    {
+      continue;
+    }
+
+    actor -> special_effects.push_back( new special_effect_t( effect ) );
+  }
+
+  return true;
+}
+
 azerite_state_t::azerite_state_t( player_t* p ) : m_player( p )
 { }
 
@@ -443,5 +474,30 @@ expr_t* azerite_state_t::create_expression( const std::vector<std::string>& expr
   }
 
   return nullptr;
+}
+
+std::vector<unsigned> azerite_state_t::enabled_spells() const
+{
+  std::vector<unsigned> spells;
+
+  for ( const auto& entry : m_state )
+  {
+    if ( ! is_enabled( entry.first ) )
+    {
+      continue;
+    }
+
+    const auto& power = m_player -> dbc.azerite_power( entry.first );
+    if ( power.id == 0 )
+    {
+      continue;
+    }
+
+    spells.push_back( power.spell_id );
+  }
+
+  range::unique( spells );
+
+  return spells;
 }
 } // Namespace azerite ends

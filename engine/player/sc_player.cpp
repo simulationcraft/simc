@@ -1539,6 +1539,16 @@ bool player_t::create_special_effects()
 
   unique_gear::initialize_racial_effects( this );
 
+  // Initialize generic azerite powers. Note that this occurs later in the process than the class
+  // module spell initialization (init_spells()), which is where the core presumes that each class
+  // module gets the state their azerite powers (through the invocation of find_azerite_spells).
+  // This means that any enabled azerite power that is not referenced in a class module will be
+  // initialized here.
+  if ( ! azerite::initialize_azerite_powers( this ) )
+  {
+    return false;
+  }
+
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.
   unique_gear::initialize_special_effect_fallbacks( this );
