@@ -5930,7 +5930,7 @@ struct starfall_t : public druid_spell_t
 
 
         base_costs[RESOURCE_ASTRAL_POWER] +=
-            p->talent.soul_of_the_forest->effectN(2).resource(RESOURCE_ASTRAL_POWER);
+            p->talent.soul_of_the_forest->effectN(2).base_value()/10;
     }
 
     double cost() const override
