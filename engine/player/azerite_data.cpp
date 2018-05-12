@@ -3,11 +3,11 @@
 #include "simulationcraft.hpp"
 
 azerite_power_t::azerite_power_t() :
-  m_player( nullptr ), m_spell( spell_data_t::not_found() ), m_value( std::numeric_limits<double>::lowest() )
+  m_player( nullptr ), m_spell( spell_data_t::not_found() )
 { }
 
 azerite_power_t::azerite_power_t( const player_t* p, const spell_data_t* spell, const std::vector<const item_t*>& items ) :
-  m_player( p ), m_spell( spell ), m_value( std::numeric_limits<double>::lowest() )
+  m_player( p ), m_spell( spell )
 {
   range::for_each( items, [ this ]( const item_t* item ) {
     m_ilevels.push_back( item -> item_level() );
@@ -15,8 +15,7 @@ azerite_power_t::azerite_power_t( const player_t* p, const spell_data_t* spell, 
 }
 
 azerite_power_t::azerite_power_t( const player_t* p, const spell_data_t* spell, const std::vector<unsigned>& ilevels ) :
-  m_player( p ), m_spell( spell ), m_ilevels( ilevels ),
-  m_value( std::numeric_limits<double>::lowest() )
+  m_player( p ), m_spell( spell ), m_ilevels( ilevels )
 { }
 
 azerite_power_t::operator const spell_data_t*() const
@@ -41,9 +40,10 @@ double azerite_power_t::value( size_t index ) const
     return 0.0;
   }
 
-  if ( m_value != std::numeric_limits<double>::lowest() )
+  if ( m_value.size() >= index &&
+       m_value[ index - 1 ] != std::numeric_limits<double>::lowest() )
   {
-    return m_value;
+    return m_value[ index - 1 ];
   }
 
   double sum = 0.0;
@@ -52,23 +52,19 @@ double azerite_power_t::value( size_t index ) const
     sum += m_spell -> effectN( index ).m_average() * budget;
   } );
 
-  m_value = sum;
+  if ( m_value.size() < index )
+  {
+    m_value.resize( index, std::numeric_limits<double>::lowest() );
+  }
+
+  m_value[ index - 1 ] = sum;
 
   return sum;
 }
 
 double azerite_power_t::value( const azerite_value_fn_t& fn ) const
 {
-  if ( m_value != std::numeric_limits<double>::lowest() )
-  {
-    return m_value;
-  }
-
-  double v = fn( *this );
-
-  m_value = v;
-
-  return v;
+  return fn( *this );
 }
 
 double azerite_power_t::percent( size_t index ) const
@@ -505,6 +501,7 @@ void register_azerite_powers()
 {
   unique_gear::register_special_effect( 263962, special_effects::resounding_protection );
   unique_gear::register_special_effect( 263984, special_effects::elemental_whirl       );
+  unique_gear::register_special_effect( 264108, special_effects::blood_siphon          );
 }
 } // Namespace azerite ends
 
@@ -593,6 +590,18 @@ void elemental_whirl( special_effect_t& effect )
   effect.spell_id = driver -> id();
 
   new ew_proc_cb_t( effect, { crit, haste, mastery, versatility } );
+}
+
+void blood_siphon( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( ! power.enabled() )
+  {
+    return;
+  }
+
+  effect.player -> passive.mastery_rating += power.value( 1 );
+  effect.player -> passive.leech_rating += power.value( 2 );
 }
 } // Namespace special effects ends
 } // Namespace azerite ends

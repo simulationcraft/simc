@@ -42,13 +42,13 @@ class azerite_power_t
   };
 
   /// Actor the power belongs to
-  const player_t*       m_player;
+  const player_t*             m_player;
   /// Associated spell data
-  const spell_data_t*   m_spell;
+  const spell_data_t*         m_spell;
   /// Ilevels of the items that enable this azerite power
-  std::vector<unsigned> m_ilevels;
+  std::vector<unsigned>       m_ilevels;
   /// Cached scaled (total) value
-  mutable double        m_value;
+  mutable std::vector<double> m_value;
 
 public:
   using azerite_value_fn_t = std::function<double(const azerite_power_t&)>;
@@ -150,6 +150,7 @@ namespace special_effects
 {
 void resounding_protection( special_effect_t& effect );
 void elemental_whirl( special_effect_t& effect );
+void blood_siphon( special_effect_t& effect );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
