@@ -500,4 +500,31 @@ std::vector<unsigned> azerite_state_t::enabled_spells() const
 
   return spells;
 }
+
+void regiser_azerite_powers()
+{
+  unique_gear::register_special_effect( 263962, special_effects::resounding_protection );
+}
+} // Namespace azerite ends
+
+namespace azerite
+{
+namespace special_effects
+{
+void resounding_protection( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( ! power.enabled() )
+  {
+    return;
+  }
+
+  double amount = power.value();
+  buff_t* buff = make_buff<absorb_buff_t>( effect.player, "resounding_protection", power.spell() )
+                 -> set_default_value( amount );
+
+  effect.custom_buff = buff;
+  // TODO: start at the beginning of combat
+}
+} // Namespace special effects ends
 } // Namespace azerite ends
