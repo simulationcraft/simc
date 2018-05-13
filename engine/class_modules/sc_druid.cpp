@@ -7010,7 +7010,8 @@ void druid_t::create_buffs()
                                .duration( spec.ironfur -> duration() )
                                .default_value( spec.ironfur -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_ARMOR )
-                               .max_stack( spec.ironfur_2 -> effectN( 1 ).base_value() )
+                               .max_stack( specialization() == DRUID_GUARDIAN ? spec.ironfur_2 -> effectN( 1 ).base_value() :
+                                           1 )
                                .stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                .cd( timespan_t::zero() );
 
