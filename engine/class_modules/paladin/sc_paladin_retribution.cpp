@@ -79,7 +79,6 @@ double holy_power_consumer_t::composite_target_multiplier( player_t* t ) const
   if ( td -> buffs.debuffs_judgment -> up() )
   {
     double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
-    judgment_multiplier += p() -> passives.judgment -> effectN( 1 ).percent();
     m *= judgment_multiplier;
   }
 

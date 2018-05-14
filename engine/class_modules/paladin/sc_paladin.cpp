@@ -722,6 +722,11 @@ struct crusader_strike_t : public holy_power_generator_t
         if ( success )
           p() -> procs.the_fires_of_justice -> occur();
       }
+
+      if ( p() -> specialization() == PALADIN_RETRIBUTION )
+      {
+        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> spec.retribution_paladin -> effectN( 14 ).base_value(), p() -> gains.hp_cs );
+      }
     }
   }
 
@@ -1183,6 +1188,7 @@ void paladin_t::init_gains()
   gains.hp_t19_4p                   = get_gain( "t19_4p" );
   gains.hp_t20_2p                   = get_gain( "t20_2p" );
   gains.hp_justice_gaze             = get_gain( "justice_gaze" );
+  gains.hp_cs                       = get_gain( "crusader_strike" );
 }
 
 // paladin_t::init_procs ====================================================
