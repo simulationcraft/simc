@@ -210,6 +210,7 @@ public:
     gain_t* hp_t19_4p;
     gain_t* hp_t20_2p;
     gain_t* hp_justice_gaze;
+    gain_t* hp_cs;
   } gains;
 
   // Spec Passives
