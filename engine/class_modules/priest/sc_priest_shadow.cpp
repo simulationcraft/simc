@@ -1078,6 +1078,7 @@ struct dark_void_t final : public priest_spell_t
   {
     parse_options( options_str );
     base_costs[ RESOURCE_INSANITY ] = 0.0;
+    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data.
     child_swp->background = true;
 
     may_miss          = false;    
@@ -1091,6 +1092,13 @@ struct dark_void_t final : public priest_spell_t
     
     child_swp->target = s->target;
     child_swp->execute();
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest().generate_insanity(insanity_gain, priest().gains.insanity_dark_void, execute_state->action);
   }
 };
 
@@ -1474,7 +1482,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
     if ( priest().talents.lingering_insanity->ok() )
     {
-      priest().buffs.lingering_insanity->trigger( expiration_stacks );
+      priest().buffs.lingering_insanity->trigger( expiration_stacks / 2 );
     }
 
     priest().buffs.the_twins_painful_touch->expire();
@@ -1499,10 +1507,9 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
 struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
 {
-  int hidden_lingering_insanity;
 
   lingering_insanity_t( priest_t& p )
-    : base_t( p, "lingering_insanity", p.talents.lingering_insanity ), hidden_lingering_insanity( 0 )
+    : base_t( p, "lingering_insanity", p.talents.lingering_insanity )
   {
     set_reverse( true );
     set_duration( timespan_t::from_seconds( 50 ) );
@@ -1510,16 +1517,6 @@ struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
     set_tick_behavior( buff_tick_behavior::REFRESH );
     set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
     set_max_stack( p.find_spell( 185916 )->effectN( 4 ).base_value() );  // or 18?
-
-    // Calculate the amount of stacks lost per second based on the amount of haste lost per second
-    // divided by the amount of haste gained per Voidform stack
-    hidden_lingering_insanity = as<int>(p.find_spell( 199849 )->effectN( 1 ).base_value() /
-                                ( p.find_spell( 228264 )->effectN( 2 ).base_value() / 10.0 ));
-  }
-
-  void decrement( int, double ) override
-  {
-    buff_t::decrement( hidden_lingering_insanity );
   }
 
   void expire_override( int stacks, timespan_t ) override
