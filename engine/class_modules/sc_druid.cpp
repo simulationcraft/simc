@@ -4176,6 +4176,7 @@ struct thrash_bear_t : public bear_attack_t
     gore = true;
     dot_duration = p -> spec.thrash_bear_dot -> duration();
     base_tick_time = p -> spec.thrash_bear_dot -> effectN( 1 ).period();
+    hasted_ticks = true;
     attack_power_mod.tick = p -> spec.thrash_bear_dot -> effectN( 1 ).ap_coeff();
     dot_max_stack = 3;
     // Apply hidden passive damage multiplier
