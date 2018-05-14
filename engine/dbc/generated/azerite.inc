@@ -1,4 +1,4 @@
-// Azerite powers, wow build 26604
+// Azerite powers, wow build 26610
 static constexpr std::array<azerite_power_entry_t, 139> __azerite_power_data { {
   {  13, 263978, "Azerite Empowered"                  },
   {  14, 268594, "Longstrider"                        },
