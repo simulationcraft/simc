@@ -532,7 +532,7 @@ Description      : Allows you to resurrect yourself upon death with $21169s1% he
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc (0x2)
+Race             : Orc (0x2002)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -710,9 +710,8 @@ Allies receiving this effect will become Exhausted and unable to benefit from He
 Tooltip          : Haste increased by $s1%.
 
 Name             : Blood Fury (Racial) (id=33697) [Scaling Spell (-1)] 
-Hotfixed         : Scaling Spell (-8 -> -1)
 Class            : Shaman, Monk
-Race             : Orc (0x2)
+Race             : Orc (0x2002)
 School           : Physical
 Spell Level      : 1
 GCD              : 1.5 seconds
@@ -728,10 +727,8 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=23581)    : Apply Aura (6) | Modify Attack Power (99)
                    Base Value: 0 | Scaled Value: 800.0662 (avg=2.57256) | Points Per Level: 4 | Target: Self (1)
-                   Hotfixed: Average (2.57256 -> 2.57256)
 #2 (id=23582)    : Apply Aura (6) | Attribute (29)
                    Base Value: 0 | Scaled Value: 800.0662 (avg=2.57256) | Misc Value: 3 | Target: Self (1)
-                   Hotfixed: Average (2.57256 -> 2.57256)
 Description      : Increases your attack power and Intellect by $s1 for $d.
 Tooltip          : Attack power and Intellect increased by $w1.
 
@@ -4373,7 +4370,7 @@ Class            : Shaman
 School           : Physical
 Spell Level      : 1
 Range            : 8 - 25 yards
-GCD              : 1.5 seconds
+GCD              : 0.5 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 101%
 Affecting spells : Shaman (137038 effect#3)
@@ -5998,7 +5995,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=320915)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.32760 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | Target: Enemy (6)
 Description      : $@spelldesc196884
 
 Name             : Chain Lightning Overload (id=218558) [Spell Family (11)] 

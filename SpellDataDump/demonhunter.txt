@@ -34,7 +34,7 @@ Tooltip          : Magic damage taken increased by $s1%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc (0x2)
+Race             : Orc (0x2002)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -705,7 +705,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=278012)   : Apply Aura (6) | Threat (10)
-                   Base Value: 550 | Scaled Value: 550 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 500 | Scaled Value: 500 | Misc Value: 127 | Target: Self (1)
 
 Name             : Metamorphosis (id=191427) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -1509,7 +1509,7 @@ Name             : Felblade (id=203557) [Spell Family (107), Passive, Hidden]
 Class            : Demon Hunter
 School           : Physical
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 1.69 (Haste multiplier)
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
@@ -3514,7 +3514,7 @@ Name             : Felblade (id=236167) [Spell Family (107), Passive, Hidden]
 Class            : Demon Hunter
 School           : Physical
 Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
+Real PPM         : 1.69 (Haste multiplier)
 Proc Flags       : ....x... ....x... ........ ........ 
                  : Yellow Melee, AOE Hostile Spell
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 

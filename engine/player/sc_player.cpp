@@ -1539,6 +1539,16 @@ bool player_t::create_special_effects()
 
   unique_gear::initialize_racial_effects( this );
 
+  // Initialize generic azerite powers. Note that this occurs later in the process than the class
+  // module spell initialization (init_spells()), which is where the core presumes that each class
+  // module gets the state their azerite powers (through the invocation of find_azerite_spells).
+  // This means that any enabled azerite power that is not referenced in a class module will be
+  // initialized here.
+  if ( ! azerite::initialize_azerite_powers( this ) )
+  {
+    return false;
+  }
+
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.
   unique_gear::initialize_special_effect_fallbacks( this );
@@ -3867,6 +3877,11 @@ void player_t::combat_begin()
     buffs.tyrants_decree_driver->trigger();
     buffs.tyrants_immortality->trigger( buffs.tyrants_immortality->max_stack() );
   }
+
+  // Trigger registered combat-begin functions
+  range::for_each( combat_begin_functions, [ this ]( const combat_begin_fn_t& fn ) {
+    fn( this );
+  } );
 }
 
 void player_t::combat_end()
@@ -5851,7 +5866,7 @@ void player_t::target_mitigation( school_e school, dmg_e dmg_type, action_state_
     }
 
     if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
-      sim->out_debug.printf( "Damage to %s after armor mitigation is %f", s->target->name(), s->result_amount );
+      sim->out_debug.printf( "Damage to %s after armor mitigation is %f (%f armor)", s->target->name(), s->result_amount, s -> target_armor );
 
     double pre_block_amount = s->result_amount;
 
@@ -12278,4 +12293,26 @@ void player_t::deactivate()
   // Record total number of iterations ran for this actor. Relevant in target_error cases for data
   // analysis at the end of simulation
   collected_data.total_iterations = sim->current_iteration;
+}
+
+void player_t::register_combat_begin( buff_t* b )
+{
+  combat_begin_functions.push_back( [ b ]( player_t* ) { b -> trigger(); } );
+}
+
+void player_t::register_combat_begin( action_t* a )
+{
+  combat_begin_functions.push_back( [ a ]( player_t* ) { a -> execute(); } );
+}
+
+void player_t::register_combat_begin( const combat_begin_fn_t& fn )
+{
+  combat_begin_functions.push_back( fn );
+}
+
+void player_t::register_combat_begin( double amount, resource_e resource, gain_t* g )
+{
+  combat_begin_functions.push_back( [ amount, resource, g ]( player_t* p ) {
+    p -> resource_gain( resource, amount, g );
+  });
 }

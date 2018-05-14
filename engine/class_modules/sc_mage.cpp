@@ -344,6 +344,7 @@ public:
   struct actions_t
   {
     action_t* arcane_assault;
+    action_t* conflagration_flare_up;
     action_t* legendary_arcane_orb;
     action_t* legendary_meteor;
     action_t* legendary_comet_storm;
@@ -550,7 +551,7 @@ public:
   {
     // Tier 15
     const spell_data_t* rule_of_threes;
-    const spell_data_t* mana_adept;
+    const spell_data_t* amplification;
     const spell_data_t* arcane_familiar;
     const spell_data_t* firestarter;
     const spell_data_t* pyromaniac;
@@ -596,6 +597,7 @@ public:
     const spell_data_t* erosion;
     const spell_data_t* nether_tempest;
     const spell_data_t* flame_patch;
+    const spell_data_t* conflagration;
     const spell_data_t* living_bomb;
     const spell_data_t* freezing_rain;
     const spell_data_t* splitting_ice;
@@ -2153,6 +2155,18 @@ struct ignite_t : public residual_action_t
     snapshot_flags |= STATE_TGT_MUL_TA;
     update_flags |= STATE_TGT_MUL_TA;
   }
+
+  virtual void tick( dot_t* dot ) override
+  {
+    residual_action_t::tick( dot );
+
+    if ( p() -> talents.conflagration -> ok()
+      && rng().roll( p() -> talents.conflagration -> effectN( 1 ).percent() ) )
+    {
+      p() -> action.conflagration_flare_up -> set_target( dot -> target );
+      p() -> action.conflagration_flare_up -> execute();
+    }
+  }
 };
 
 // Arcane Barrage Spell =======================================================
@@ -2431,23 +2445,23 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
 
 struct am_state_t : public mage_spell_state_t
 {
-  timespan_t extra_tick_time_reduction;
+  double tick_time_multiplier;
 
   am_state_t( action_t* action, player_t* target ) :
     mage_spell_state_t( action, target ),
-    extra_tick_time_reduction()
+    tick_time_multiplier( 1.0 )
   { }
 
   virtual void initialize() override
   {
     mage_spell_state_t::initialize();
-    extra_tick_time_reduction = timespan_t::zero();
+    tick_time_multiplier = 1.0;
   }
 
   virtual std::ostringstream& debug_str( std::ostringstream& s ) override
   {
     mage_spell_state_t::debug_str( s )
-      << " extra_tick_time_reduction=" << extra_tick_time_reduction;
+      << " tick_time_multiplier=" << tick_time_multiplier;
     return s;
   }
 
@@ -2455,13 +2469,13 @@ struct am_state_t : public mage_spell_state_t
   {
     mage_spell_state_t::copy_state( other );
 
-    extra_tick_time_reduction = debug_cast<const am_state_t*>( other ) -> extra_tick_time_reduction;
+    tick_time_multiplier = debug_cast<const am_state_t*>( other ) -> tick_time_multiplier;
   }
 };
 
 struct arcane_missiles_t : public arcane_mage_spell_t
 {
-  timespan_t mana_adept_reduction;
+  double amplification_reduction;
 
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_missiles", p,
@@ -2478,9 +2492,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
 
-    if ( p -> talents.mana_adept -> ok() )
+    if ( p -> talents.amplification -> ok() )
     {
-      mana_adept_reduction = p -> talents.mana_adept -> effectN( 1 ).trigger() -> effectN( 1 ).time_value();
+      amplification_reduction = p -> find_spell( 277726 ) -> effectN( 1 ).percent();
     }
   }
 
@@ -2499,10 +2513,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::snapshot_state( state, rt );
 
-    if ( p() -> talents.mana_adept -> ok()
-      && p() -> resources.pct( RESOURCE_MANA ) > p() -> talents.mana_adept -> effectN( 1 ).percent() )
+    if ( p() -> talents.amplification -> ok() && p() -> buffs.clearcasting -> check() )
     {
-      debug_cast<am_state_t*>( state ) -> extra_tick_time_reduction = mana_adept_reduction;
+      debug_cast<am_state_t*>( state ) -> tick_time_multiplier = 1.0 + amplification_reduction;
     }
   }
 
@@ -2521,10 +2534,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   virtual timespan_t tick_time( const action_state_t* s ) const override
   {
-    timespan_t t = base_tick_time;
+    timespan_t t = arcane_mage_spell_t::tick_time( s );
 
-    t += debug_cast<const am_state_t*>( s ) -> extra_tick_time_reduction;
-    t *= s -> haste;
+    t *= debug_cast<const am_state_t*>( s ) -> tick_time_multiplier;
 
     return t;
   }
@@ -2957,6 +2969,31 @@ struct cone_of_cold_t : public frost_mage_spell_t
 };
 
 
+// Conflagration Spell =====================================================
+
+struct conflagration_t : public fire_mage_spell_t
+{
+  conflagration_t( mage_t* p ) :
+    fire_mage_spell_t( "conflagration", p, p -> find_spell( 226757 ) )
+  {
+    hasted_ticks = false;
+    tick_may_crit = may_crit = false;
+    background = true;
+  }
+};
+
+struct conflagration_flare_up_t : public fire_mage_spell_t
+{
+  conflagration_flare_up_t( mage_t* p ) :
+    fire_mage_spell_t( "conflagration_flare_up", p, p -> find_spell( 205345 ) )
+  {
+    callbacks = false;
+    background = true;
+    aoe = -1;
+  }
+};
+
+
 // Counterspell Spell =======================================================
 
 struct counterspell_t : public mage_spell_t
@@ -3127,16 +3164,21 @@ struct ebonbolt_t : public frost_mage_spell_t
 
 struct fireball_t : public fire_mage_spell_t
 {
+  conflagration_t* conflagration;
+
   fireball_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) )
+    fire_mage_spell_t( "fireball", p, p -> find_class_spell( "Fireball" ) ),
+    conflagration( nullptr )
   {
     parse_options( options_str );
     triggers_hot_streak = true;
     triggers_ignite = true;
     triggers_kindling = true;
-    if ( p -> specialization() == MAGE_FIRE && p -> action.unstable_magic_explosion )
+
+    if ( p -> talents.conflagration -> ok() )
     {
-      add_child( p -> action.unstable_magic_explosion );
+      conflagration = new conflagration_t( p );
+      add_child( conflagration );
     }
   }
 
@@ -3172,7 +3214,12 @@ struct fireball_t : public fire_mage_spell_t
         p() -> buffs.enhanced_pyrotechnics -> trigger();
       }
 
-      trigger_unstable_magic( s );
+      if ( conflagration )
+      {
+        conflagration -> set_target( s -> target );
+        conflagration -> execute();
+      }
+
       trigger_infernal_core( s -> target );
     }
   }
@@ -3583,8 +3630,7 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
   {
     double am = frost_mage_spell_t::action_multiplier();
 
-    // TODO: Remove 0.2 mult once the effect is fixed to work correctly.
-    am *= 1.0 + p() -> cache.mastery() * p() -> spec.icicles -> effectN( 4 ).mastery_value() * 0.2;
+    am *= 1.0 + p() -> cache.mastery() * p() -> spec.icicles -> effectN( 4 ).mastery_value();
 
     return am;
   }
@@ -5084,19 +5130,7 @@ struct unstable_magic_explosion_t : public mage_spell_t
     background = true;
 
     base_dd_min = base_dd_max = 1.0;
-
-    switch ( p -> specialization() )
-    {
-      case MAGE_ARCANE:
-        school = SCHOOL_ARCANE;
-        break;
-      case MAGE_FIRE:
-        school = SCHOOL_FIRE;
-        break;
-      default:
-        // This shouldn't happen
-        break;
-    }
+    school = SCHOOL_ARCANE;
   }
 
   virtual void init() override
@@ -5130,10 +5164,6 @@ void mage_spell_t::trigger_unstable_magic( action_state_t* s )
     case MAGE_ARCANE:
       um_proc_rate = p() -> action.unstable_magic_explosion
                          -> data().effectN( 1 ).percent();
-      break;
-    case MAGE_FIRE:
-      um_proc_rate = p() -> action.unstable_magic_explosion
-                         -> data().effectN( 3 ).percent();
       break;
     default:
       um_proc_rate = 0.0;
@@ -5423,7 +5453,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   dots( dots_t() ),
   debuffs( debuffs_t() )
 {
-  dots.nether_tempest    = target -> get_dot( "nether_tempest",    mage );
+  dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
 
   debuffs.erosion       = make_buff<buffs::erosion_t>( this );
   debuffs.frozen        = make_buff( *this, "frozen" )
@@ -5636,6 +5666,11 @@ bool mage_t::create_actions()
     action.arcane_assault = new arcane_assault_t( this );
   }
 
+  if ( talents.conflagration -> ok() )
+  {
+    action.conflagration_flare_up = new conflagration_flare_up_t( this );
+  }
+
   if ( talents.unstable_magic -> ok() )
   {
     action.unstable_magic_explosion = new unstable_magic_explosion_t( this );
@@ -5843,7 +5878,7 @@ void mage_t::init_spells()
   // Talents
   // Tier 15
   talents.rule_of_threes     = find_talent_spell( "Rule of Threes"     );
-  talents.mana_adept         = find_talent_spell( "Mana Adept"         );
+  talents.amplification      = find_talent_spell( "Amplification"      );
   talents.arcane_familiar    = find_talent_spell( "Arcane Familiar"    );
   talents.firestarter        = find_talent_spell( "Firestarter"        );
   talents.pyromaniac         = find_talent_spell( "Pyromaniac"         );
@@ -5884,6 +5919,7 @@ void mage_t::init_spells()
   talents.erosion            = find_talent_spell( "Erosion"            );
   talents.nether_tempest     = find_talent_spell( "Nether Tempest"     );
   talents.flame_patch        = find_talent_spell( "Flame Patch"        );
+  talents.conflagration      = find_talent_spell( "Conflagration"      );
   talents.living_bomb        = find_talent_spell( "Living Bomb"        );
   talents.freezing_rain      = find_talent_spell( "Freezing Rain"      );
   talents.splitting_ice      = find_talent_spell( "Splitting Ice"      );

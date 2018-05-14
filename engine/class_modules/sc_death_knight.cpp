@@ -454,6 +454,7 @@ public:
   struct cooldowns_t {
     cooldown_t* antimagic_shell;
     cooldown_t* army_of_the_dead;
+    cooldown_t* apocalypse;
     cooldown_t* avalanche;
     cooldown_t* bone_shield_icd;
     cooldown_t* dancing_rune_weapon;
@@ -607,7 +608,7 @@ public:
 
     // Tier 2
     const spell_data_t* pestilent_pustules;
-    const spell_data_t* inevitable_doom;
+    const spell_data_t* harbinger_of_doom;
     const spell_data_t* soul_reaper;
 
     // Tier 3
@@ -617,12 +618,12 @@ public:
 
 
     // Tier 6
-    const spell_data_t* corpse_explosion; // NYI
+    const spell_data_t* pestilence;
     const spell_data_t* defile;
     const spell_data_t* epidemic;
 
     // Tier 7
-    const spell_data_t* dark_infusion;
+    const spell_data_t* army_of_the_damned;
     const spell_data_t* unholy_frenzy;
     const spell_data_t* summon_gargoyle;
 
@@ -788,19 +789,20 @@ public:
     
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.army_of_the_dead = get_cooldown( "army_of_the_dead" );
-    cooldown.avalanche       = get_cooldown( "avalanche" );
+    cooldown.apocalypse = get_cooldown( "apocalypse" );
+    cooldown.avalanche = get_cooldown( "avalanche" );
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
     cooldown.dark_transformation = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay = get_cooldown( "death_and_decay" );
-    cooldown.defile          = get_cooldown( "defile" );
+    cooldown.defile = get_cooldown( "defile" );
     cooldown.empower_rune_weapon = get_cooldown( "empower_rune_weapon" );
     cooldown.hungering_rune_weapon = get_cooldown( "hungering_rune_weapon" );
-    cooldown.icecap          = get_cooldown( "icecap" );
+    cooldown.icecap = get_cooldown( "icecap" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
-    cooldown.rune_strike     = get_cooldown( "rune_strike" );
-    cooldown.vampiric_blood  = get_cooldown( "vampiric_blood" );
+    cooldown.rune_strike = get_cooldown( "rune_strike" );
+    cooldown.vampiric_blood = get_cooldown( "vampiric_blood" );
 
     talent_points.register_validity_fn( [ this ] ( const spell_data_t* spell )
     {
@@ -3812,6 +3814,11 @@ struct death_and_decay_damage_base_t : public death_knight_spell_t
     else
     {
       death_knight_spell_t::impact( s );
+
+      if ( p() -> talent.pestilence -> ok() && rng().roll( p() -> talent.pestilence -> effectN( 1 ).percent() ) )
+      {
+        p() -> trigger_festering_wound( s, 1 );
+      }
     }
   }
 };
@@ -3845,7 +3852,7 @@ struct death_and_decay_base_t : public death_knight_spell_t
     ground_aoe            = true;
     radius                = data().effectN( 1 ).radius_max();
 
-    // Blood has a 15s cooldown on DnD
+    // Blood has a lower cd on DnD
     cooldown -> duration += cooldown -> duration * p -> spec.blood_death_knight -> effectN( 5 ).percent();
   }
 
@@ -4041,12 +4048,6 @@ struct t21_death_coil_t : public death_knight_spell_t
     p() -> cooldown.dark_transformation -> adjust( - timespan_t::from_seconds(
         p() -> spec.death_coil -> effectN( 2 ).base_value() ) );
 
-    if ( p() -> talent.dark_infusion -> ok() )
-    {
-      p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
-        p() -> talent.dark_infusion -> effectN( 2 ).base_value() ) );
-    }
-
     p() -> trigger_death_march( execute_state );
   }
 
@@ -4121,14 +4122,15 @@ struct death_coil_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-
+    
+    
     // Sudden Doomed Death Coils buff Gargoyle
     if ( p() -> buffs.sudden_doom -> check() && p() -> pets.gargoyle )
     {
       p() -> pets.gargoyle -> increase_power( base_costs[ RESOURCE_RUNIC_POWER ] );
     }
 
-    p() -> buffs.sudden_doom -> decrement();
+    
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -4140,31 +4142,33 @@ struct death_coil_t : public death_knight_spell_t
     p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
       p() -> spec.death_coil -> effectN( 2 ).base_value() ) );
 
-    if ( p() -> talent.dark_infusion -> ok() )
-    {
-      p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
-        p() -> talent.dark_infusion -> effectN( 2 ).base_value() ) );
-    }
+    p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds( 
+      p() -> talent.army_of_the_damned -> effectN( 1 ).base_value() / 10 ) );
+
+    p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds( 
+      p() -> talent.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
 
     p() -> trigger_death_march( execute_state );
+    
+    p() -> buffs.sudden_doom -> decrement();
   }
 
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
-
+    
     if ( rng().roll( player -> sets -> set( DEATH_KNIGHT_UNHOLY, T19, B4 ) -> effectN( 1 ).percent() ) )
     {
       p() -> trigger_festering_wound( state, 1 );
     }
-
+    
     // Coils of Devastation application
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B2 ) && result_is_hit( state -> result ) )
     {
       residual_action::trigger( coils_of_devastation, state -> target,
         state -> result_amount * p() -> sets -> set( DEATH_KNIGHT_UNHOLY, T21, B2 ) -> effectN( 1 ).percent() );
     }
-
+    
     // T21 4P gives 20% chance to deal damage a second time
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T21, B4 ) && result_is_hit( state -> result ) )
     {
@@ -4345,6 +4349,12 @@ struct death_strike_t : public death_knight_melee_attack_t
   double cost() const override
   {
     double c = death_knight_melee_attack_t::cost();
+
+    if ( p() -> talent.ossuary -> ok() &&
+         p() -> buffs.bone_shield -> stack() >= p() -> talent.ossuary -> effectN( 1 ).base_value() )
+    {
+      c += p() -> spell.ossuary -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+    }
     
     if ( p() -> buffs.t20_blood -> check() && p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T20, B4 ) )
     {
@@ -4356,6 +4366,8 @@ struct death_strike_t : public death_knight_melee_attack_t
 
   void execute() override
   {
+    p() -> buffs.voracious -> trigger();
+
     death_knight_melee_attack_t::execute();
 
     if ( oh_attack )
@@ -4379,7 +4391,6 @@ struct death_strike_t : public death_knight_melee_attack_t
     p() -> trigger_death_march( execute_state );
     p() -> buffs.skullflowers_haemostasis -> expire();
     p() -> buffs.hemostasis -> expire();
-    p() -> buffs.voracious -> trigger();
   }
 
   bool ready() override
@@ -4530,19 +4541,16 @@ struct epidemic_t : public death_knight_spell_t
       }
     }
 
-    // Currently doesn't trigger Runic Corruption
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/253
-    if ( result_is_hit( execute_state -> result ) && !p() -> bugs )
+    if ( result_is_hit( execute_state -> result ) )
     {
       p() -> trigger_runic_corruption( base_costs[ RESOURCE_RUNIC_POWER ] );
     }
 
-    // Reduces the cooldown Dark Transformation by 3s if Dark Infusion is talented
-    if ( p() -> talent.dark_infusion -> ok() )
-    {
-      p() -> cooldown.dark_transformation -> adjust( -timespan_t::from_seconds(
-        p() -> talent.dark_infusion -> effectN( 2 ).base_value() ) );
-    }
+    p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds( 
+      p() -> talent.army_of_the_damned -> effectN( 1 ).base_value() / 10 ) );
+
+    p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds( 
+      p() -> talent.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
   }
 };
 
@@ -5530,7 +5538,7 @@ struct scourge_strike_t : public scourge_strike_base_t
     const spell_data_t* scourge_base;
 
     scourge_strike_shadow_t( death_knight_t* p ) :
-      death_knight_melee_attack_t( "scourge_strike_shadow", p, p -> spec.scourge_strike -> effectN( 4 ).trigger() ),
+      death_knight_melee_attack_t( "scourge_strike_shadow", p, p -> spec.scourge_strike -> effectN( 3 ).trigger() ),
       scourge_base( p -> spec.scourge_strike )
     {
       may_miss = may_parry = may_dodge = false;
@@ -7010,7 +7018,7 @@ void death_knight_t::init_spells()
 
   // Tier 2
   talent.pestilent_pustules    = find_talent_spell( "Pestilent Pustules" );
-  talent.inevitable_doom       = find_talent_spell( "Inevitable Doom" );
+  talent.harbinger_of_doom     = find_talent_spell( "Harbinger of Doom" );
   talent.soul_reaper           = find_talent_spell( "Soul Reaper" );
 
   // Tier 3
@@ -7019,13 +7027,13 @@ void death_knight_t::init_spells()
   talent.unholy_blight         = find_talent_spell( "Unholy Blight" );
 
   // Tier 6
-  talent.corpse_explosion      = find_talent_spell( "Corpse Explosion" );
+  talent.pestilence            = find_talent_spell( "Pestilence" );
   talent.defile                = find_talent_spell( "Defile" );
   talent.epidemic              = find_talent_spell( "Epidemic" );
 
   // Tier 7
-  talent.dark_infusion         = find_talent_spell( "Dark Infusion" );
-  talent.unholy_frenzy         = find_talent_spell( "Unholy  Frenzy" ); // TODO : will break when Blizzard fixes the typo
+  talent.army_of_the_damned    = find_talent_spell( "Army of the Damned" );
+  talent.unholy_frenzy         = find_talent_spell( "Unholy Frenzy" );
   talent.summon_gargoyle       = find_talent_spell( "Summon Gargoyle" );
 
 
@@ -7517,12 +7525,12 @@ void death_knight_t::create_buffs()
                                 resources.initial_multiplier[ RESOURCE_HEALTH ] *= 1.0 + new_buff;
                                 recalculate_resource_max( RESOURCE_HEALTH );
                               } : buff_stack_change_callback_t() )
-                              -> set_max_stack( spell.bone_shield -> max_stacks() + talent.ossuary -> effectN( 1 ).base_value() );
+                              -> set_max_stack( spell.bone_shield -> max_stacks() );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge", find_spell( 81141 ) )
                               .trigger_spell( spec.crimson_scourge );
   buffs.dancing_rune_weapon = new dancing_rune_weapon_buff_t( this );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", spec.dark_transformation )
-    .duration( spec.dark_transformation -> duration() + timespan_t::from_millis( talent.dark_infusion -> effectN( 1 ).base_value() ) )
+    .duration( spec.dark_transformation -> duration() )
     .cd( timespan_t::zero() ); // Handled by the action
 
   buffs.death_and_decay     = buff_creator_t( this, "death_and_decay", find_spell( 188290 ) )
@@ -7564,9 +7572,9 @@ void death_knight_t::create_buffs()
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", spec.sudden_doom -> effectN( 1 ).trigger() )
                               .rppm_scale( RPPM_ATTACK_SPEED ) // 2016-08-08: Hotfixed, not in spell data
-                              .rppm_mod( 1.0 + talent.inevitable_doom -> effectN( 2 ).percent() )
+                              .rppm_mod( 1.0 + talent.harbinger_of_doom -> effectN( 2 ).percent() )
                               .trigger_spell( spec.sudden_doom )
-                              .max_stack( spec.sudden_doom -> effectN( 1 ).trigger() -> initial_stacks() + talent.inevitable_doom -> effectN( 1 ).base_value() );
+                              .max_stack( spec.sudden_doom -> effectN( 1 ).trigger() -> initial_stacks() + talent.harbinger_of_doom -> effectN( 1 ).base_value() );
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
   buffs.voracious           = buff_creator_t( this, "voracious", find_spell( 274009 ) )
                               .trigger_spell( talent.voracious )

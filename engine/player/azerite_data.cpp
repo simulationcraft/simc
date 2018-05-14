@@ -127,6 +127,37 @@ std::unique_ptr<azerite_state_t> create_state( player_t* p )
   return std::unique_ptr<azerite_state_t>( new azerite_state_t( p ) );
 }
 
+bool initialize_azerite_powers( player_t* actor )
+{
+  if ( ! actor -> azerite )
+  {
+    return true;
+  }
+
+  for ( auto azerite_spell : actor -> azerite -> enabled_spells() )
+  {
+    const auto spell = actor -> find_spell( azerite_spell );
+    if ( ! spell -> ok() )
+    {
+      continue;
+    }
+
+    special_effect_t effect { actor };
+    effect.source = SPECIAL_EFFECT_SOURCE_AZERITE;
+
+    auto ret = unique_gear::initialize_special_effect( effect, azerite_spell );
+    // Note, only apply custom special effects for azerite for an abundance of safety
+    if ( ! ret || ! effect.is_custom() )
+    {
+      continue;
+    }
+
+    actor -> special_effects.push_back( new special_effect_t( effect ) );
+  }
+
+  return true;
+}
+
 azerite_state_t::azerite_state_t( player_t* p ) : m_player( p )
 { }
 
@@ -444,4 +475,77 @@ expr_t* azerite_state_t::create_expression( const std::vector<std::string>& expr
 
   return nullptr;
 }
+
+std::vector<unsigned> azerite_state_t::enabled_spells() const
+{
+  std::vector<unsigned> spells;
+
+  for ( const auto& entry : m_state )
+  {
+    if ( ! is_enabled( entry.first ) )
+    {
+      continue;
+    }
+
+    const auto& power = m_player -> dbc.azerite_power( entry.first );
+    if ( power.id == 0 )
+    {
+      continue;
+    }
+
+    spells.push_back( power.spell_id );
+  }
+
+  range::unique( spells );
+
+  return spells;
+}
+
+void register_azerite_powers()
+{
+  unique_gear::register_special_effect( 263962, special_effects::resounding_protection );
+}
+} // Namespace azerite ends
+
+namespace azerite
+{
+namespace special_effects
+{
+void resounding_protection( special_effect_t& effect )
+{
+  class rp_event_t : public event_t
+  {
+    buff_t*    buff;
+    timespan_t period;
+
+public:
+    rp_event_t( buff_t* b, const timespan_t& t ) :
+      event_t( *b -> source, t ), buff( b ), period( t )
+    { }
+
+    void execute() override
+    {
+      buff -> trigger();
+      make_event<rp_event_t>( sim(), buff, period );
+    }
+  };
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( ! power.enabled() )
+  {
+    return;
+  }
+
+  const spell_data_t* driver = effect.player -> find_spell( 270568 );
+  const spell_data_t* absorb = effect.player -> find_spell( 269279 );
+  double amount = power.value();
+  buff_t* buff = make_buff<absorb_buff_t>( effect.player, "resounding_protection", absorb )
+                 -> set_default_value( amount );
+
+  effect.player -> register_combat_begin( [ buff, driver ]( player_t* ) {
+    buff -> trigger();
+    make_event<rp_event_t>( *buff -> sim, buff, driver -> effectN( 1 ).period() );
+  } );
+}
+} // Namespace special effects ends
 } // Namespace azerite ends

@@ -17,6 +17,7 @@ struct player_t;
 struct sim_t;
 struct action_t;
 struct expr_t;
+struct special_effect_t;
 
 namespace azerite
 {
@@ -133,10 +134,22 @@ public:
 
   /// Create azerite-related expressions
   expr_t* create_expression( const std::vector<std::string>& expr_str ) const;
+
+  /// Enabled azerite spells
+  std::vector<unsigned> enabled_spells() const;
 };
 
 /// Creates an azerite state object for the actor
 std::unique_ptr<azerite_state_t> create_state( player_t* );
+/// Initialize azerite powers through the generic special effect subsystem
+bool initialize_azerite_powers( player_t* actor );
+/// Register generic azerite powers to the special effect system
+void register_azerite_powers();
+
+namespace special_effects
+{
+void resounding_protection( special_effect_t& effect );
+} // Namespace special_effects ends
 
 } // Namespace azerite ends
 

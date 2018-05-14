@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26557
+// Class based active abilities, wow build 26567
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -844,7 +844,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 21 abilities
+    // Demonology tree, 22 abilities
     {
       104316, // Call Dreadstalkers
       264178, // Demonbolt
@@ -862,6 +862,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       267989, // Summon Eyes of Gul'dan
        30146, // Summon Felguard (Summon)
       267987, // Summon Illidari Satyr
+      267986, // Summon Prince Malchezaar
       267994, // Summon Shivarra
       268001, // Summon Ur'zul
       267988, // Summon Vicious Hellhound
@@ -1230,7 +1231,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 26557
+// Talent tree specialization abilities, wow build 26567
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2349,7 +2350,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26557
+// Class mastery abilities, wow build 26567
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2588,7 +2589,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26557
+// Racial abilities, wow build 26567
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3500,7 +3501,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26557
+// Set bonus data, wow build 26567
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4219,9 +4220,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
 };
-#define RPPMMOD_SIZE (916)
+#define RPPMMOD_SIZE (918)
 
-// 916 RPPM Modifiers, wow build level 26557
+// 918 RPPM Modifiers, wow build level 26567
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5082,6 +5083,10 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 268035,    4,  1,  1.0000 },
   { 268191,    4,  1,  1.0000 },
   { 268501,    4,  1,  1.0000 },
+  { 268512,    3,  1,  1.0000 },
+  { 268516,    4,  1,  1.0000 },
+  { 268517,    4,  1,  1.0000 },
+  { 268531,    4,  1,  1.0000 },
   { 268553,    4,  1,  1.0000 },
   { 268603,    4,  1,  1.0000 },
   { 268605,    4,  1,  1.0000 },
@@ -5117,9 +5122,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 273153,    4,  1,  1.0000 },
   { 273684,    4,  1,  1.0000 },
   { 273830,    4,  1,  1.0000 },
-  { 273936,    4,  1,  1.0000 },
-  { 273941,    4,  1,  1.0000 },
-  { 273954,    4,  1,  1.0000 },
   { 273975,    4,  1,  1.0000 },
   { 273987,    4,  1,  1.0000 },
   { 273991,    3,  1,  1.0000 },
@@ -5139,5 +5141,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 276123,    4,  1,  1.0000 },
   { 276135,    4,  1,  1.0000 },
   { 276176,    4,  1,  1.0000 },
+  { 277522,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };

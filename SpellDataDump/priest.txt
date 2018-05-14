@@ -22,10 +22,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Friend (21)
 Description      : Shields an ally for $d, absorbing $<shield> damage, and preventing damage from delaying spellcasting.
 Tooltip          : Absorbs $w1 damage.
-Variables        : $mastery=$?a271534[${(1+$271534s2/100)}][${1}]
-$rapture=$?a47536[${(1+$47536s1/100)}][${1}]
+Variables        : $rapture=$?a47536[${(1+$47536s1/100)}][${1}]
 $shadow=$?a137033[${1.5}][${1}]
-$shield=${$SP*0.9*(1+$@versadmg)*$<mastery>*$<rapture>*$<shadow>}
+$shield=${$SP*1.1*(1+$@versadmg)*$<rapture>*$<shadow>}
 
 Name             : Renew (id=139) [Spell Family (6)] 
 Class            : Holy Priest
@@ -623,7 +622,7 @@ Tooltip          : Stamina increased by $w1%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc (0x2)
+Race             : Orc (0x2002)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -761,7 +760,7 @@ Description      : A word of dark binding that inflicts $s1 Shadow damage to the
 Name             : Binding Heal (id=32546) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
-Resource         : 1.7% Base Mana (0) (id=1347)
+Resource         : 2% Base Mana (0) (id=1347)
 Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -1139,7 +1138,7 @@ School           : Holy
 Spell Level      : 60
 Range            : 40 yards
 Velocity         : 40 yards/sec
-Affecting spells : Twist of Fate (123254 effect#1), Shadow Priest (137033 effect#1), Reparation (186478 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Radiant Focus (252848 effect#1), Twist of Fate (265258 effect#1), Mastery: Reverence (271534 effect#1), 
+Affecting spells : Twist of Fate (123254 effect#1), Shadow Priest (137033 effect#1), Reparation (186478 effect#1), Voidform (194249 effect#1), Shadowform (232698 effect#1), Radiant Focus (252848 effect#1), Twist of Fate (265258 effect#1), 
 Triggered by     : Penance (47758)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -1358,7 +1357,7 @@ Effects          :
 Description      : $@spelldesc28880
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
-Name             : Power Word: Barrier (id=62618) [Scaling Spell (8), Spell Family (6)] 
+Name             : Power Word: Barrier (id=62618) [Scaling Spell (-1), Spell Family (6)] 
 Class            : Discipline Priest
 School           : Holy
 Resource         : 4% Base Mana (0) (id=2830)
@@ -1396,8 +1395,7 @@ Attributes       : ....x... ........ x....... .....x..   ........ .xx..... .....
 Effects          :
 #1 (id=57790)    : Trigger Spell (64): (35779)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 35779 | Target: Enemy (6)
-Description      : Crawls through the shadows to the target enemy, and increases damage done by $s2% for $d.
-Tooltip          : Damage increased by $s2%.
+Description      : Crawls through the shadows to the target enemy.
 
 Name             : Holy Words (Rank 2) (id=63733) [Spell Family (6), Passive] 
 Class            : Holy Priest
@@ -1449,7 +1447,6 @@ Internal Cooldown: 6 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
-Affecting spells : Mastery: Madness (77486 effect#1), Priest (137030 effect#1), Shadow Priest (137033 effect#9), Legacy of the Void (193225 effect#1), Voidform (194249 effect#12), Heart of the Void (248296 effect#1)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1717,10 +1714,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68105)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Mind Flay (15407), Vampiric Touch (34914), Mind Sear (48045), Mind Sear (49821), Body and Soul (64129), Shadow Word: Void (205351), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Mind Flay (15407), Vampiric Touch (34914), Mind Sear (48045), Mind Sear (49821), Shadow Word: Void (205351), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
 #2 (id=224463)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Mind Flay (15407), Vampiric Touch (34914), Mind Sear (48045), Mind Sear (49821), Body and Soul (64129), Shadow Word: Void (205351), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
+                   Affected Spells: Shadow Word: Pain (589), Mind Blast (8092), Mind Flay (15407), Vampiric Touch (34914), Mind Sear (48045), Mind Sear (49821), Shadow Word: Void (205351), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
 Description      : Increases the damage of your Shadow Word: Pain, Vampiric Touch, $?s205351[Shadow Word: Void][Mind Blast], Mind Flay, Mind Sear, Void Eruption, and Void Bolt by ${$m1}.1%.
 
 Name             : Echo of Light (id=77489) [Spell Family (6)] 
@@ -1779,9 +1776,9 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #2 (id=178045)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60
-Description      : Plea, Power Word: Shield, Shadow Mend, and Power Word: Radiance also apply Atonement to your target for $194384s3 sec.
+Description      : Power Word: Shield, Shadow Mend, and Power Word: Radiance apply Atonement to your target for $194384s5 sec.
 
-When you deal spell damage, you instantly heal all targets affected by Atonement for ${$s1}.1% of the damage done.
+Your spell damage heals all targets affected by Atonement for $s1% of the damage done.
 
 Name             : Power Word: Barrier (id=81782) [Spell Family (6)] 
 Class            : Priest
@@ -1907,7 +1904,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 50000 yards
 Stance Mask      : 0x80000000
-Affecting spells : Power Word: Shield (211558 effect#1)
+Affecting spells : Atonement (194384 effect#2), Power Word: Shield (211558 effect#1)
 Attributes       : ........ ........ x....... x..x....   .....x.. ..x..... ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
                  : ........ .......x ........ ........   ...x.... ........ .xx...x. ........ 
@@ -2443,7 +2440,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=165487)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Target: Enemy (6)
 #2 (id=168466)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : Strikes an enemy with heavenly power, dealing $s1 Holy damage and restoring $<mana>% of your maximum mana.
@@ -2497,7 +2494,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179714)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-                   Affected Spells: Power Word: Shield (17), Shadow Word: Death (32379), Prayer of Mending (33076), Body and Soul (64129), Power Word: Solace (129250), Shadow Word: Death (199911), Circle of Healing (204883), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
+                   Affected Spells: Power Word: Shield (17), Shadow Word: Death (32379), Prayer of Mending (33076), Power Word: Solace (129250), Shadow Word: Death (199911), Circle of Healing (204883), Void Bolt (205448), Void Eruption (228260), Void Eruption (228360)
 #2 (id=191080)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1602 | Target: Self (1)
                    Affected Spells: Mind Blast (8092), Void Bolt (205448)
@@ -2652,7 +2649,7 @@ Effects          :
                    Affected Spells: Power Word: Shield (17)
 #9 (id=260940)   : Apply Aura (6) | Add Flat Modifier (107): Unknown(38)
                    Base Value: -6000 | Scaled Value: -6000 | Misc Value: 38 | Target: Self (1)
-                   Affected Spells: Body and Soul (64129), Void Eruption (228260), Void Eruption (228360)
+                   Affected Spells: Void Eruption (228260), Void Eruption (228360)
 #10 (id=260941)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 298 (Label) | Target: Self (1)
                    Affected Spells (Label): Cleansing Matrix (242619), Fruitful Machinations (242623), Guiding Hand (242622), Infusion of Light (242621), Felshield (253277), Tarratus Keystone (253282), Refreshing Agony (253284), L'ura's Word (250781), Tarratus Keystone (255924), Refreshing Agony (255981), Highfather's Timekeeping (253288), Felshield (253278), Highfather's Timekeeping (255932), Emerald Blossom (257442), Verdant Embrace (257444)
@@ -2889,7 +2886,7 @@ Spell Level      : 28
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Twist of Fate (123254 effect#1), Shadow Priest (137033 effect#6), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), Mastery: Reverence (271534 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Shadow Priest (137033 effect#6), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2931,7 +2928,7 @@ Duration         : 10 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Shadow Priest (137033 effect#6), Power Word: Shield (211558 effect#1), Mastery: Reverence (271534 effect#1)
+Affecting spells : Shadow Priest (137033 effect#6), Power Word: Shield (211558 effect#1)
 Attributes       : ........ ........ x....... ..x....x   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3139,13 +3136,13 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283483)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
                    Base Value: -3000 | Scaled Value: -3000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Body and Soul (64129), Void Eruption (228260), Void Eruption (228360)
+                   Affected Spells: Void Eruption (228260), Void Eruption (228360)
 #2 (id=325209)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: -30 | Scaled Value: -30 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Voidform (185916)
 #3 (id=361454)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Body and Soul (64129), Void Eruption (228260), Void Eruption (228360)
+                   Affected Spells: Void Eruption (228260), Void Eruption (228360)
 #4 (id=361455)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -35 | Scaled Value: -35 | Misc Value: 12 | Target: Self (1)
 #5 (id=371747)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
@@ -3219,7 +3216,7 @@ Effects          :
                    Base Value: 218413 | Scaled Value: 218413 | Trigger Spell: 218413 | Target: Self (1)
 #12 (id=343559)   : Apply Aura (6) | Unknown(332)
                    Base Value: 205448 | Scaled Value: 205448 | Target: Self (1)
-                   Affected Spells: Body and Soul (64129), Void Eruption (228260), Void Eruption (228360)
+                   Affected Spells: Void Eruption (228260), Void Eruption (228360)
 #13 (id=352180)   : Apply Aura (6) | Unknown(332)
                    Base Value: 194249 | Scaled Value: 194249 | Misc Value: 232698 | Target: Self (1)
 #14 (id=469640)   : Apply Aura (6) | Unknown(235)
@@ -3255,7 +3252,7 @@ School           : Holy
 Spell Level      : 1
 Range            : 60 yards
 Duration         : 15 seconds
-Affecting spells : Grace (200309 effect#1), Lenience (238063 effect#1)
+Affecting spells : Grace (200309 effect#1), Lenience (238063 effect#1), Mastery: Reverence (271534 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3267,11 +3264,14 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Target: Friend (21)
 #2 (id=294886)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
+                   Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Atonement (94472), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Circle of Healing (204883), Body and Mind (214121), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Orison (271532), Moment of Repose (272776)
+#3 (id=325533)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
+                   Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
                    Affected Spells: Renew (139), Prayer of Healing (596), Holy Word: Serenity (2050), Heal (2060), Flash Heal (2061), Binding Heal (32546), Prayer of Mending (33110), Holy Word: Sanctify (34861), Penance (47750), Divine Hymn (64844), Divine Star (110745), Halo (120692), Shadow Mend (186263), Power Word: Radiance (194509), Circle of Healing (204883), Body and Mind (214121), Cosmic Ripple (243241), Holy Word: Salvation (265202), Contrition (270501), Orison (271532), Moment of Repose (272776)
-#3 (id=325533)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | Target: Friend (21)
 #4 (id=362006)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Friend (21)
+#5 (id=733034)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | Target: Friend (21)
 Description      : $@spelldesc81749
 Tooltip          : Healed whenever the Priest damages an enemy.
 
@@ -3754,8 +3754,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=294888)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 12 | Target: Self (1)
+#1 (id=294888)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Atonement (194384)
 Description      : Increases your non-Atonement healing and absorption by $s1% on targets with Atonement.
 
@@ -4927,7 +4927,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=706056)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-#2 (id=725320)   : Energize Power (30)
+#2 (id=731117)   : Energize Power (30)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: insanity | Target: Self (1)
 Description      : Unleashes an explosion of dark energy around the target, dealing $s1 Shadow damage and applying Shadow Word: Pain to all nearby enemies.
 
@@ -5280,7 +5280,7 @@ Range            : 100 yards
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Heal
-Affecting spells : Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Twist of Fate (265258 effect#1), Mastery: Reverence (271534 effect#1)
+Affecting spells : Twist of Fate (123254 effect#1), Atonement (194384 effect#2), Twist of Fate (265258 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5289,7 +5289,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=719440)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | Target: Friend (21)
 Description      : $@spelldesc197419
 
 Name             : Champion of Azeroth (id=270583) [Scaling Spell (-1), Passive] 
@@ -5386,13 +5386,10 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=721830)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Self (1)
-                   Affected Spells: Penance (47666), Shadow Mend (186263), Shadow Mend (187464), Contrition (270501)
-#2 (id=721831)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Self (1)
-                   Affected Spells: Penance (47666)
-Description      : Increases the damage of Penance, the absorption of Power Word: Shield, and the healing of Shadow Mend by ${$s1}.1%.
+#1 (id=721830)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Atonement (194384)
+Description      : Your healing and absorption is increased by ${$s1}.1% on targets with Atonement.
 
 Name             : Moment of Repose (id=272775) [Scaling Spell (-1), Spell Family (6), Passive] 
 Class            : Priest
