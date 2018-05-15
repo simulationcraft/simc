@@ -907,6 +907,49 @@ void warlock_t::create_pets()
         warlock_pet_list.vilefiends[i] = new pets::vilefiend::vilefiend_t(sim, this);
       }
     }
+    if (talents.inner_demons->ok() or talents.nether_portal->ok())
+    {
+      for (size_t i = 0; i < warlock_pet_list.shivarra.size(); i++)
+      {
+        warlock_pet_list.shivarra[i] = new pets::shivarra::shivarra_t(sim, this);
+      }
+      for (size_t i = 0; i < warlock_pet_list.darkhounds.size(); i++)
+      {
+        warlock_pet_list.darkhounds[i] = new pets::darkhound::darkhound_t(sim, this);
+      }
+      for (size_t i = 0; i < warlock_pet_list.bilescourges.size(); i++)
+      {
+        warlock_pet_list.bilescourges[i] = new pets::bilescourge::bilescourge_t(sim, this);
+      }
+      for (size_t i = 0; i < warlock_pet_list.urzuls.size(); i++)
+      {
+        warlock_pet_list.urzuls[i] = new pets::urzul::urzul_t(sim, this);
+      }
+      for (size_t i = 0; i < warlock_pet_list.void_terrors.size(); i++)
+      {
+        warlock_pet_list.void_terrors[i] = new pets::void_terror::void_terror_t(sim, this);
+      }
+      for (size_t i = 0; i < warlock_pet_list.wrathguards.size(); i++)
+      {
+        warlock_pet_list.wrathguards[i] = new pets::wrathguard::wrathguard_t(sim, this);
+      }
+      for (size_t i = 0; i < warlock_pet_list.vicious_hellhounds.size(); i++)
+      {
+        warlock_pet_list.vicious_hellhounds[i] = new pets::vicious_hellhound::vicious_hellhound_t(sim, this);
+      }
+      for (size_t i = 0; i < warlock_pet_list.illidari_satyrs.size(); i++)
+      {
+        warlock_pet_list.illidari_satyrs[i] = new pets::illidari_satyr::illidari_satyr_t(sim, this);
+      }
+      for (size_t i = 0; i < warlock_pet_list.eyes_of_guldan.size(); i++)
+      {
+        warlock_pet_list.eyes_of_guldan[i] = new pets::eyes_of_guldan::eyes_of_guldan_t(sim, this);
+      }
+      for (size_t i = 0; i < warlock_pet_list.prince_malchezaar.size(); i++)
+      {
+        warlock_pet_list.prince_malchezaar[i] = new pets::prince_malchezaar::prince_malchezaar_t(sim, this);
+      }
+    }
   }
 
   if (specialization() == WARLOCK_DESTRUCTION)

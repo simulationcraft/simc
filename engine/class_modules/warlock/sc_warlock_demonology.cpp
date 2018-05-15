@@ -328,9 +328,9 @@ namespace warlock {
     {
       struct bile_spit_t : public warlock_pet_spell_t
       {
-        bile_spit_t(warlock_pet_t* p) : warlock_pet_spell_t("bile_spit", p, p -> find_spell(260641))
+        bile_spit_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_spell_t("bile_spit", p, p -> find_spell(260641))
         {
-          
+          parse_options(options_str);
         }
       };
 
@@ -347,7 +347,7 @@ namespace warlock {
       
       action_t* vilefiend_t::create_action(const std::string& name, const std::string& options_str)
       {
-        if (name == "bile_spit") return new bile_spit_t(this);
+        if (name == "bile_spit") return new bile_spit_t(this, options_str);
 
         return warlock_pet_t::create_action(name, options_str);
       }
@@ -410,6 +410,120 @@ namespace warlock {
         return warlock_pet_t::create_action(name, options_str);
       }
     }
+    namespace shivarra {
+      shivarra_t::shivarra_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "shivarra")
+      {
+        action_list_str = "travel";
+      }
+
+      void shivarra_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+    }
+    namespace darkhound {
+      darkhound_t::darkhound_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "darkhound") 
+      {
+        action_list_str = "travel";
+      }
+
+      void darkhound_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+    }
+    namespace bilescourge {
+      bilescourge_t::bilescourge_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "bilescourge") 
+      {
+        action_list_str = "travel";
+      }
+
+      void bilescourge_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+    }
+    namespace urzul {
+      urzul_t::urzul_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "urzul") 
+      {
+        action_list_str = "travel";
+      }
+
+      void urzul_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+    }
+    namespace void_terror {
+      void_terror_t::void_terror_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "void_terror") {
+        action_list_str = "travel";
+      }
+
+      void void_terror_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+    }
+    namespace wrathguard {
+      wrathguard_t::wrathguard_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "wrathguard") {
+        action_list_str = "travel";
+      }
+
+      void wrathguard_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+    }
+    namespace vicious_hellhound {
+      vicious_hellhound_t::vicious_hellhound_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "vicious_hellhound") {
+        action_list_str = "travel";
+      }
+
+      void vicious_hellhound_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+    }
+    namespace illidari_satyr {
+      illidari_satyr_t::illidari_satyr_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "illidari_satyr") {
+        action_list_str = "travel";
+      }
+
+      void illidari_satyr_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+    }
+    namespace eyes_of_guldan {
+      eyes_of_guldan_t::eyes_of_guldan_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "eyes_of_guldan") {
+        action_list_str = "travel";
+      }
+
+      void eyes_of_guldan_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+    }
+    namespace prince_malchezaar {
+      prince_malchezaar_t::prince_malchezaar_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "prince_malchezaar") {
+        action_list_str = "travel";
+      }
+
+      void prince_malchezaar_t::init_base_stats()
+      {
+        warlock_pet_t::init_base_stats();
+        melee_attack = new warlock_pet_melee_t(this);
+      }
+    }
 
     void warlock_pet_t::create_buffs_demonology() {
       buffs.demonic_power = make_buff(this, "demonic_power", find_spell(265273))
@@ -429,7 +543,7 @@ namespace warlock {
     void warlock_pet_t::init_spells_demonology() {
       active.soul_strike                = new felguard::soul_strike_t(this);
       active.demonic_strength_felstorm  = new felguard::felstorm_t(this);
-      active.bile_spit                  = new vilefiend::bile_spit_t(this);
+      active.bile_spit                  = new vilefiend::bile_spit_t(this,"");
     }
   }
 
@@ -1021,6 +1135,162 @@ namespace warlock {
       }
     };
 
+    struct nether_portal_t : public warlock_spell_t
+    {
+      nether_portal_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("nether_portal", p, p->talents.nether_portal)
+      {
+        parse_options(options_str);
+        harmful = may_crit = may_miss = false;
+      }
+
+      void execute() override
+      {
+        warlock_spell_t::execute();
+        p()->buffs.soul_harvest->trigger();
+      }
+      void consume_resource() override {
+        warlock_spell_t::consume_resource();
+
+        p()->active.summon_random_demon->execute();
+      }
+    };
+
+    struct summon_random_demon_t : public warlock_spell_t {
+      summon_random_demon_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("summon_random_demon", p) {
+        parse_options(options_str);
+        background = true;
+      }
+
+      void execute() override
+      {
+        int demon_int = rng().range(10) + 1;
+        int rare_check;
+        if (demon_int <= 2) 
+        {
+          rare_check = rng().range(10) + 1;
+          if (rare_check > 1)
+          {
+            demon_int = rng().range(8) + 3;
+          }
+        }
+
+
+        switch (demon_int) {
+          case 1 : {
+              for (auto demon : p()->warlock_pet_list.prince_malchezaar)
+              {
+                if (demon->is_sleeping())
+                {
+                  demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                  break;
+                }
+              }
+              break;
+          }
+          case 2 : {
+            for (auto demon : p()->warlock_pet_list.eyes_of_guldan)
+            {
+              if (demon->is_sleeping())
+              {
+                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                break;
+              }
+            }
+            break;
+          }
+          case 3 : {
+            for (auto demon : p()->warlock_pet_list.shivarra)
+            {
+              if (demon->is_sleeping())
+              {
+                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                break;
+              }
+            }
+            break;
+          }
+          case 4 : {
+            for (auto demon : p()->warlock_pet_list.darkhounds)
+            {
+              if (demon->is_sleeping())
+              {
+                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                break;
+              }
+            }
+            break;
+          }
+          case 5 : {
+            for (auto demon : p()->warlock_pet_list.bilescourges)
+            {
+              if (demon->is_sleeping())
+              {
+                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                break;
+              }
+            }
+            break;
+          }
+          case 6 : {
+            for (auto demon : p()->warlock_pet_list.urzuls)
+            {
+              if (demon->is_sleeping())
+              {
+                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                break;
+              }
+            }
+            break;
+          }
+          case 7 : {
+            for (auto demon : p()->warlock_pet_list.void_terrors)
+            {
+              if (demon->is_sleeping())
+              {
+                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                break;
+              }
+            }
+            break;
+          }
+          case 8 : {
+            for (auto demon : p()->warlock_pet_list.wrathguards)
+            {
+              if (demon->is_sleeping())
+              {
+                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                break;
+              }
+            }
+            break;
+          }
+          case 9 : {
+            for (auto demon : p()->warlock_pet_list.vicious_hellhounds)
+            {
+              if (demon->is_sleeping())
+              {
+                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                break;
+              }
+            }
+            break;
+          }
+          case 10 : {
+            for (auto demon : p()->warlock_pet_list.illidari_satyrs)
+            {
+              if (demon->is_sleeping())
+              {
+                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                break;
+              }
+            }
+            break;
+          }
+        }
+      }
+    };
+
   } // end actions namespace
   namespace buffs {
   } // end buffs namespace
@@ -1040,6 +1310,7 @@ namespace warlock {
     if (action_name == "power_siphon") return new           power_siphon_t(this, options_str);
     if (action_name == "soul_strike") return new            soul_strike_t(this, options_str);
     if (action_name == "inner_demons") return new           inner_demons_t(this, options_str);
+    if (action_name == "nether_portal") return new          nether_portal_t(this, options_str);
 
     if (action_name == "call_dreadstalkers") return new     call_dreadstalkers_t(this, options_str);
     if (action_name == "summon_felguard") return new        summon_main_pet_t("felguard", this);
@@ -1062,7 +1333,7 @@ namespace warlock {
       ->set_cooldown(timespan_t::zero());
     //Talents
     buffs.demonic_calling = make_buff(this, "demonic_calling", talents.demonic_calling->effectN(1).trigger())
-        ->set_trigger_spell(talents.demonic_calling);
+      ->set_trigger_spell(talents.demonic_calling);
     buffs.inner_demons = make_buff(this, "inner_demons", find_spell(267216))
       ->set_period(timespan_t::from_seconds(talents.inner_demons->effectN(1).base_value()))
       ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
@@ -1076,10 +1347,15 @@ namespace warlock {
             break;
           }
         }
+        if (rng().roll(talents.inner_demons->effectN(1).percent())) {
+          active.summon_random_demon->execute();
+        }
       });
     buffs.sacrificed_souls = make_buff(this, "sacrificed_souls", find_spell(272591))
       ->set_trigger_spell(talents.sacrificed_souls)
       ->set_default_value(find_spell(272591)->effectN(1).percent());
+    buffs.nether_portal = make_buff(this, "nether_portal", talents.nether_portal)
+      ->set_duration(talents.nether_portal->duration());
     //Tier
     buffs.rage_of_guldan = make_buff(this, "rage_of_guldan", sets->set(WARLOCK_DEMONOLOGY, T21, B2)->effectN(1).trigger())
       ->set_duration(find_spell(257926)->duration())
@@ -1121,6 +1397,8 @@ namespace warlock {
     talents.sacrificed_souls                = find_talent_spell("Sacrificed Souls");
     talents.demonic_consumption             = find_talent_spell("Demonic Consumption");
     talents.nether_portal                   = find_talent_spell("Nether Portal");
+
+    active.summon_random_demon              = new actions_demonology::summon_random_demon_t(this, "");
   }
 
   void warlock_t::init_gains_demonology() {
@@ -1142,6 +1420,7 @@ namespace warlock {
     
     def -> add_talent(this, "Demonic Strength", "if=!cooldown.summon_demonic_tyrant.remains<10");
     def -> add_talent(this, "Power Siphon", "if=buff.wild_imps.stack>=2");
+    def -> add_talent(this, "Nether Portal");
     def -> add_talent(this, "Doom", "if=talent.doom.enabled&refreshable");
     def -> add_action("service_felguard");
     def -> add_talent(this, "Summon Vilefiend");
