@@ -686,10 +686,9 @@ Tooltip          : Tracking Undead.
 
 Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
-Race             : Orc (0x2002)
+Race             : Orc (0x2)
 School           : Physical
 Spell Level      : 1
-GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 120 seconds
 Attributes       : ....x... ........ ........ ........   .....x.. ..x..... ........ ........ 
@@ -701,9 +700,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 0 | Scaled Value: 800.0658 (avg=2.572559) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 400.0328 (avg=1.286279) | Points Per Level: 4 | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
-                   Base Value: 0 | Scaled Value: 800.0658 (avg=2.572559) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 400.0328 (avg=1.286279) | Points Per Level: 4 | Target: Self (1)
 Description      : Increases your attack power by $s1 for $d.
 Tooltip          : Attack power increased by $w1.
 
@@ -729,7 +728,7 @@ Description      : Increases all damage done by your pet by $s2%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc (0x2002)
+Race             : Orc (0x2)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1135,7 +1134,7 @@ School           : Physical
 Spell Level      : 74
 Range            : 40 yards
 Cooldown         : 45 seconds
-Attributes       : ....x... ........ ........ ........   ........ ........ ........ ..x..... 
+Attributes       : ....x... ........ ........ ........   ........ ........ .x...... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3842,7 +3841,7 @@ Effects          :
 Description      : Grants you and your pet $s2 Focus per sec and $s1% increased critical strike chance for $d.
 Tooltip          : Critical Strike chance for you and your pet increased by $s1%.
 
-Name             : Dire Stable (id=193532) [Spell Family (9), Passive] 
+Name             : Scent of Blood (id=193532) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -3859,7 +3858,7 @@ Effects          :
 #2 (id=374727)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | Target: Self (1)
                    Affected Spells: Barbed Shot (246152)
-Description      : $?s120679[Dire Beast][Dire Frenzy] generates $s2 additional Focus over its duration.
+Description      : Barbed Shot generates $s2 additional Focus over its duration.
 
 Name             : Steady Focus (id=193533) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -4374,7 +4373,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Trigger Spell: 207081 | Target: Self (1)
 #2 (id=328701)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Discharge a massive jolt of electricity from |cFFFFCC99Titanstrike|r into all your pets$?s217200[][ and Dire Beasts], causing them to deal up to ${$RAP*1.15*0.5*$<bmMastery>} Nature damage to their target every $207094t sec. for $207094d.$?s217200[ Also causes your next Dire Frenzy to deal $218635s1 additional Nature damage on each of the 5 Dire Frenzy attacks.][]
+Description      : Discharge a massive jolt of electricity from |cFFFFCC99Titanstrike|r into all your pets$?s217200[][ and Dire Beasts], causing them to deal up to ${$RAP*1.15*0.5*$<bmMastery>} Nature damage to their target every $207094t sec. for $207094d.$?s217200[ Also causes the next pet frenzy caused by Barbed Shot to deal $218635s1 additional Nature damage on each of the 5 attacks.][]
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $lowNerf=${0.5+$min($pl,20)*0.025}
 $damage=${$83381m1+($RAP*0.6)*$<bmMastery>*$<lowNerf>*(1+$@versadmg)}
@@ -4565,12 +4564,12 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Fire a shot that tears through your enemy, causing them to bleed for ${$s1*$d/$t1} damage over $272790d.
 
-Sends your pet into a frenzy, increasing attack speed by $272790s1%, stacking up to $272790u times.
+Sends your pet into a frenzy, increasing attack speed by $272790s1% for $272790d sec, stacking up to $272790u times.
 
 |cFFFFFFFFGenerates ${$246152s1*$246152d/$246152t1} Focus over $246152d.|r
 Tooltip          : Suffering $sw1 damage every $t1 sec.
 
-Name             : Barbed Shot (id=217207) [Spell Family (9)] 
+Name             : Frenzy (id=217207) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -4745,7 +4744,7 @@ Class            : Hunter
 School           : Physical
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Dire Stable (193532 effect#1), Dire Longevity (215911 effect#1)
+Affecting spells : Scent of Blood (193532 effect#1), Dire Longevity (215911 effect#1)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4917,9 +4916,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 23548.61 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 32969.62 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 23548.61 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 32969.62 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -6329,7 +6328,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707058)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
-Description      : Increases the item level this item by 5.
+Description      : Increases the item level of this item by 5.
 
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -6349,7 +6348,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to grant you Elemental Whirl, increasing your Critical Strike, Haste, Mastery, or Versatility by $s1 for $268956d.
 
 Name             : Heed My Call (id=263987) [Scaling Spell (-1), Passive] 
-Class            : Paladin, Hunter, Shaman
+Class            : Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Demon Hunter
 School           : Physical
 Azerite Power Id : 22
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6427,7 +6426,7 @@ Effects          :
 Description      : The Sporebat emits a could of imbued spores around the enemy target, removing $s1 Enrage and $s2 Magic effect.
 
 Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Death Knight, Shaman, Mage, Warlock
+Class            : Warrior, Paladin, Hunter, Rogue, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 18
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6845,7 +6844,7 @@ Description      : $@spelldesc265895
 Tooltip          : Generating ${$m1/5} Focus every sec.
 
 Name             : Overwhelming Power (id=266180) [Scaling Spell (-1), Passive] 
-Class            : Paladin, Hunter, Shaman
+Class            : Paladin, Hunter, Rogue, Shaman, Mage, Warlock
 School           : Physical
 Azerite Power Id : 30
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6911,7 +6910,7 @@ Effects          :
 Description      : The cooldowns of $?c3[Aspect of the Eagle, ][]Aspect of the Cheetah$?c3[,][] and Aspect of the Turtle are reduced by $s1%.
 
 Name             : Gutripper (id=266937) [Scaling Spell (-1), Passive] 
-Class            : Paladin, Hunter, Rogue, Shaman, Mage, Warlock, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Demon Hunter
 School           : Physical
 Azerite Power Id : 31
 Triggered by     : Gutripper (270668)
@@ -6929,7 +6928,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 Description      : Your damaging abilities have a chance to deal $s1 Physical damage to the target. Gutripper occurs much more often against targets below $s2% health. 
 
-Name             : Animal Companion [NYI] (id=267116) [Spell Family (9), Passive] 
+Name             : Animal Companion (id=267116) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
 Attributes       : ......x. x....... ........ ........   ........ ........ ........ ........ 
@@ -7722,7 +7721,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Trigger Spell: 272743 | Target: Self (1)
 Description      : Wildfire Bomb drops a small cluster of bombs around the target, each exploding for $s1 damage.
 
-Name             : Dire Frenzy (id=272790) [Spell Family (9)] 
+Name             : Frenzy (id=272790) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Range            : 100 yards
@@ -7779,7 +7778,7 @@ Name             : Summon Animal Companion (id=273277)
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
-Triggered by     : Animal Companion [NYI] (267116)
+Triggered by     : Animal Companion (267116)
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7847,7 +7846,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
-Name             : Blightborne Infusion (id=273823) [Scaling Spell (-1), Passive] 
+Name             : Blightborne Infusion (Drustvar Power) (id=273823) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 193
@@ -7862,7 +7861,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725757)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 622 (avg=2) | Trigger Spell: 273825 | Target: Self (1)
-Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros. The Soul grants you some of its power, increasing your $s1 Critical Strike for $273826d.
+Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros. The Soul grants you some of its power, increasing your Critical Strike by $s1 for $273826d.
 
 Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7899,7 +7898,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725772)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 273835 | Target: Self (1)
-Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $d.
+Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : Sandstorm (id=273853) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -7955,5 +7954,107 @@ Effects          :
 #1 (id=726630)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 494.49 (avg=1.59) | Trigger Spell: 274356 | Target: Self (1)
 Description      : Each second Aspect of the Turtle is active, heal for $s1
+
+Name             : Dance of Death (id=274441) [Scaling Spell (-1), Spell Family (9), Passive] 
+Class            : Hunter
+School           : Physical
+Azerite Power Id : 211
+Triggered by     : Dance of Death (274443)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=726776)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 345.521 (avg=1.111) | Trigger Spell: 274442 | Target: Self (1)
+Description      : Dire Frenzy has a chance equal to your critical strike chance to grant you $s1 Agility for its duration.
+
+Name             : Unerring Vision (id=274444) [Scaling Spell (-1), Spell Family (9), Passive] 
+Class            : Hunter
+School           : Physical
+Azerite Power Id : 212
+Triggered by     : Unerring Vision (274447)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=726781)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 345.521 (avg=1.111) | Trigger Spell: 274445 | Target: Self (1)
+Description      : While Trueshot is active you gain $s1 Critical Strike rating every sec, stacking up to 10 times.
+
+Name             : Venomous Fangs (id=274590) [Scaling Spell (-1), Spell Family (9), Passive] 
+Class            : Hunter
+School           : Physical
+Azerite Power Id : 213
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=726998)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Target: Self (1)
+Description      : Your pet's Basic Attack deals $s1 additional damage to enemies suffering from your Serpent Sting.
+
+Name             : Cobra's Bite (id=277634) [Scaling Spell (-1), Spell Family (9), Passive] 
+Class            : Hunter
+School           : Physical
+Azerite Power Id : 366
+Triggered by     : Cobra's Bite (277916)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=732926)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 316.0569 (avg=1.01626) | Trigger Spell: 277635 | Target: Self (1)
+Description      : Cobra Shot deals ${$s1*($277916d/$277916t1)} Nature damage over $277916d.
+
+Name             : Steady Aim (id=277651) [Scaling Spell (-1), Spell Family (9), Passive] 
+Class            : Hunter
+School           : Physical
+Azerite Power Id : 368
+Triggered by     : Steady Aim (277959)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=732950)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 227.1068 (avg=0.730247) | Trigger Spell: 277957 | Target: Self (1)
+Description      : Steady Shot increases the damage of your next Aimed Shot against the target by $s1, stacking up to $277959u times.
+
+Name             : Blur of Talons (id=277653) [Scaling Spell (-1), Spell Family (9), Passive] 
+Class            : Hunter
+School           : Physical
+Azerite Power Id : 371
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=732952)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 76.1244 (avg=0.244773) | Trigger Spell: 277966 | Target: Self (1)
+#2 (id=733430)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 16.85651 (avg=0.054201) | Target: Self (1)
+Description      : During Coordinated Assault, $?s259387[Mongoose Bite][Raptor Strike] increases your Agility by $s1 and your Speed by $s2 for $277969d. Stacks up to $277969u times.
 
 
