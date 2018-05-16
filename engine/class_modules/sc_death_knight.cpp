@@ -27,7 +27,8 @@ struct runes_t;
 struct rune_t;
 
 namespace pets {
-  struct death_knight_pet_t;  struct dancing_rune_weapon_pet_t;
+  struct death_knight_pet_t;
+  struct dancing_rune_weapon_pet_t;
   struct bloodworm_pet_t;
   struct dt_pet_t;
   struct gargoyle_pet_t;
@@ -532,6 +533,7 @@ public:
     const spell_data_t* riposte;
     const spell_data_t* crimson_scourge;
     const spell_data_t* blood_boil;
+    const spell_data_t* dancing_rune_weapon;
     const spell_data_t* deaths_caress;
     const spell_data_t* heart_strike;
     const spell_data_t* marrowrend;
@@ -3688,7 +3690,7 @@ struct dancing_rune_weapon_buff_t : public buff_t
 struct dancing_rune_weapon_t : public death_knight_spell_t
 {
   dancing_rune_weapon_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "dancing_rune_weapon", p, p -> find_class_spell( "Dancing Rune Weapon" ) )
+    death_knight_spell_t( "dancing_rune_weapon", p, p -> spec.dancing_rune_weapon )
   {
     may_miss = may_crit = may_dodge = may_parry = harmful = false;
 
@@ -3700,7 +3702,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.dancing_rune_weapon -> trigger();
-    p() -> pets.dancing_rune_weapon_pet -> summon( data().duration() );
+    p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) );
   }
 };
 
@@ -6963,6 +6965,7 @@ void death_knight_t::init_spells()
   spec.riposte                    = find_specialization_spell( "Riposte" );
   spec.blood_boil                 = find_specialization_spell( "Blood Boil" );
   spec.crimson_scourge            = find_specialization_spell( "Crimson Scourge" );
+  spec.dancing_rune_weapon        = find_specialization_spell( "Dancing Rune Weapon" );
   spec.deaths_caress              = find_specialization_spell( "Death's Caress" );
   spec.heart_strike               = find_specialization_spell( "Heart Strike" );
   spec.marrowrend                 = find_specialization_spell( "Marrowrend" );
