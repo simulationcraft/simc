@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26610
+// Class based active abilities, wow build 26629
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -80,12 +80,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       190411, // Whirlwind
            0,
     },
-    // Protection tree, 16 abilities
+    // Protection tree, 17 abilities
     {
       107574, // Avatar
        18499, // Berserker Rage
         1160, // Demoralizing Shout
        20243, // Devastate
+      190456, // Ignore Pain
       198304, // Intercept
         5246, // Intimidating Shout
        12975, // Last Stand
@@ -530,7 +531,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Death Knight
   {
-    // General tree, 18 abilities
+    // General tree, 17 abilities
     {
        48707, // Anti-Magic Shell
       220143, // Apocalypse (Artifact)
@@ -548,7 +549,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        47528, // Mind Freeze
         3714, // Path of Frost
        61999, // Raise Ally
-      264349, // Reap Magic
       190778, // Sindragosa's Fury (Artifact)
            0,
     },
@@ -613,7 +613,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Shaman
   {
-    // General tree, 19 abilities
+    // General tree, 21 abilities
     {
       114911, // Ancestral Guidance
       108271, // Astral Shift
@@ -630,6 +630,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       211010, // Hex
       211015, // Hex
       269352, // Hex
+      277778, // Hex
+      277784, // Hex
          370, // Purge
       205495, // Stormkeeper (Artifact)
         8143, // Tremor Totem (Earth Totem)
@@ -654,10 +656,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        57994, // Wind Shear
            0,
     },
-    // Enhancement tree, 12 abilities
+    // Enhancement tree, 13 abilities
     {
        51886, // Cleanse Spirit
       187874, // Crash Lightning
+      198103, // Earth Elemental
        51533, // Feral Spirit
       193796, // Flametongue
       196834, // Frostbrand
@@ -670,11 +673,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        57994, // Wind Shear
            0,
     },
-    // Restoration tree, 16 abilities
+    // Restoration tree, 17 abilities
     {
       212048, // Ancestral Vision
         1064, // Chain Heal
          421, // Chain Lightning
+      198103, // Earth Elemental
       188838, // Flame Shock
        73920, // Healing Rain
         5394, // Healing Stream Totem
@@ -708,7 +712,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Mage
   {
-    // General tree, 27 abilities
+    // General tree, 30 abilities
     {
       120145, // Ancient Teleport: Dalaran
         1459, // Arcane Intellect
@@ -736,6 +740,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       161354, // Polymorph (Monkey)
       161355, // Polymorph (Penguin)
       161372, // Polymorph (Turtle)
+      277787, // Polymorph (Turtle)
+      277792, // Polymorph (Turtle)
+         475, // Remove Curse
        80353, // Time Warp
            0,
     },
@@ -769,7 +776,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         2948, // Scorch
            0,
     },
-    // Frost tree, 13 abilities
+    // Frost tree, 12 abilities
     {
       190356, // Blizzard
       235219, // Cold Snap
@@ -782,7 +789,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30455, // Ice Lance
        12472, // Icy Veins
           66, // Invisibility
-         118, // Polymorph (Sheep)
        31687, // Summon Water Elemental
            0,
     },
@@ -833,7 +839,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       104773, // Unending Resolve
            0,
     },
-    // Affliction tree, 7 abilities
+    // Affliction tree, 8 abilities
     {
          980, // Agony
          172, // Corruption
@@ -841,6 +847,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        27243, // Seed of Corruption
       232670, // Shadow Bolt
        30283, // Shadowfury
+      205180, // Summon Darkglare
        30108, // Unstable Affliction
            0,
     },
@@ -898,6 +905,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       171011, // Burning Presence (Special Ability)
         3716, // Consuming Shadows (Basic Attack)
       170995, // Cripple
+      205231, // Dark Glare
       272013, // Demon Fangs
       270481, // Demonfire
       265279, // Demonfire Blast
@@ -906,7 +914,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        19505, // Devour Magic (Special Ability)
        85692, // Doom Bolt
       272156, // Double Breath
-      205231, // Eye Laser
       272131, // Eye of Gul'dan
       272435, // Fel Bite
       104318, // Fel Firebolt (Basic Attack)
@@ -1167,13 +1174,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Demon Hunter
   {
-    // General tree, 18 abilities
+    // General tree, 19 abilities
     {
       188499, // Blade Dance
       198589, // Blur
       179057, // Chaos Nova
       162794, // Chaos Strike
-      183752, // Consume Magic
+      278326, // Consume Magic
+      183752, // Disrupt
       198013, // Eye Beam
       195072, // Fel Rush
       201467, // Fury of the Illidari (Artifact)
@@ -1231,7 +1239,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 26610
+// Talent tree specialization abilities, wow build 26629
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1307,6 +1315,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         7384, // Overpower
       262304, // Deep Wounds
       231830, // Execute (Rank 2)
+      279423, // Seasoned Soldier
            0,
     },
     // Specialization abilities for Fury
@@ -1344,7 +1353,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        86535, // Plate Specialization
        76857, // Mastery: Critical Block
       115768, // Deep Wounds
-          71, // Defensive Stance
+          71, // Vanguard
         1160, // Demoralizing Shout
       137048, // Protection Warrior
         6343, // Thunder Clap
@@ -1363,6 +1372,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       107574, // Avatar
        46968, // Shockwave
         5246, // Intimidating Shout
+      190456, // Ignore Pain
            0,
     },
     {
@@ -1656,6 +1666,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       231718, // Shadowstrike (Rank 2)
       245639, // Shuriken Combo
       245751, // Sprint (Rank 2)
+      277950, // Shadow's Grasp
            0,
     },
     {
@@ -1806,6 +1817,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       195621, // Frost Fever
       196770, // Remorseless Winter
        81229, // Runic Empowerment
+      278223, // Death Strike (Rank 2)
            0,
     },
     // Specialization abilities for Unholy
@@ -1829,6 +1841,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       197147, // Festering Wound
        51462, // Runic Corruption
       275699, // Apocalypse
+      278223, // Death Strike (Rank 2)
            0,
     },
     {
@@ -1890,6 +1903,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        33757, // Windfury
        51886, // Cleanse Spirit
       231723, // Feral Spirit (Rank 2)
+      198103, // Earth Elemental
            0,
     },
     // Specialization abilities for Restoration
@@ -1921,6 +1935,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       231785, // Tidal Waves (Rank 2)
       231725, // Riptide (Rank 2)
       231721, // Lava Burst (Rank 2)
+      198103, // Earth Elemental
            0,
     },
     {
@@ -2001,7 +2016,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       235219, // Cold Snap
        11426, // Ice Barrier
       236662, // Blizzard (Rank 2)
-         118, // Polymorph (Sheep)
            0,
     },
     {
@@ -2025,6 +2039,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       232670, // Shadow Bolt
       234153, // Drain Life
        30283, // Shadowfury
+      205180, // Summon Darkglare
            0,
     },
     // Specialization abilities for Demonology
@@ -2313,6 +2328,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       162243, // Demon's Bite
       162697, // Stat Negation Aura - Agility DPS
       197125, // Chaos Strike (Passive)
+      278386, // Demonic Wards
            0,
     },
     // Specialization abilities for Vengeance
@@ -2350,7 +2366,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26610
+// Class mastery abilities, wow build 26629
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2589,7 +2605,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26610
+// Racial abilities, wow build 26629
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3501,7 +3517,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26610
+// Set bonus data, wow build 26629
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4220,9 +4236,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
 };
-#define RPPMMOD_SIZE (918)
+#define RPPMMOD_SIZE (920)
 
-// 918 RPPM Modifiers, wow build level 26610
+// 920 RPPM Modifiers, wow build level 26629
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -4562,7 +4578,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 227171,    4,  1,  1.0000 },
   { 227868,    4,  1,  1.0000 },
   { 228141,    4,  1,  1.0000 },
-  { 228400,    3,  1,  1.0000 },
+  { 228400,    4,  1,  1.0000 },
   { 228445,    4,  1,  1.0000 },
   { 230080,    4,  1,  1.0000 },
   { 230140,    4,  1,  1.0000 },
@@ -4582,7 +4598,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 235003,    4,  1,  1.0000 },
   { 235011,    4,  1,  1.0000 },
   { 236167,    4,  1,  1.0000 },
-  { 236545,    3,  1,  1.0000 },
+  { 236545,    4,  1,  1.0000 },
   { 238498, 2093,  3, -0.5000 },
   { 238498,  103,  4, -0.5000 },
   { 238498,  104,  4, -0.5000 },
@@ -4761,10 +4777,10 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 248276,    4,  1,  1.0000 },
   { 248277,    4,  1,  1.0000 },
   { 248278,    4,  1,  1.0000 },
-  { 250075,    3,  1,  1.0000 },
+  { 250075,    4,  1,  1.0000 },
   { 250091,    4,  1,  1.0000 },
   { 250091,  253,  4, -0.2700 },
-  { 250093,    3,  1,  1.0000 },
+  { 250093,    4,  1,  1.0000 },
   { 250768, 2477,  3, -0.5000 },
   { 250768,  102,  4, -0.5000 },
   { 250768,  103,  4, -0.5000 },
@@ -4932,9 +4948,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 253326,   73,  4, -0.5000 },
   { 253326,    4,  1,  1.0000 },
   { 253793,    4,  1,  1.0000 },
-  { 255148,    4,  1,  1.0000 },
-  { 255150,    4,  1,  1.0000 },
-  { 255151,    4,  1,  1.0000 },
   { 255818, 2603,  3, -0.5000 },
   { 255818,  103,  4, -0.5000 },
   { 255818,  104,  4, -0.5000 },
@@ -4944,7 +4957,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 255818,  263,  4, -0.5000 },
   { 255818,  264,  4, -0.5000 },
   { 255818,    4,  1,  1.0000 },
-  { 256067,    3,  1,  1.0000 },
+  { 256067,    4,  1,  1.0000 },
   { 256815,  476,  3, -0.5000 },
   { 256815,  251,  4, -0.5000 },
   { 256815,  252,  4, -0.5000 },
@@ -4994,7 +5007,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 256827,  264,  4, -0.5000 },
   { 258880,    4,  1,  1.0000 },
   { 258885,    4,  1,  1.0000 },
-  { 258896,    3,  1,  1.0000 },
+  { 258896,    4,  1,  1.0000 },
   { 258907,    4,  1,  1.0000 },
   { 258933,    4,  1,  1.0000 },
   { 258942,    4,  1,  1.0000 },
@@ -5068,7 +5081,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 265282,    4,  1,  1.0000 },
   { 265310,    4,  1,  1.0000 },
   { 265317,    4,  1,  1.0000 },
-  { 265318,    4,  1,  1.0000 },
   { 265327,    4,  1,  1.0000 },
   { 265331,    4,  1,  1.0000 },
   { 265353,    4,  1,  1.0000 },
@@ -5083,7 +5095,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 268035,    4,  1,  1.0000 },
   { 268191,    4,  1,  1.0000 },
   { 268501,    4,  1,  1.0000 },
-  { 268512,    3,  1,  1.0000 },
+  { 268512,    4,  1,  1.0000 },
   { 268516,    4,  1,  1.0000 },
   { 268517,    4,  1,  1.0000 },
   { 268531,    4,  1,  1.0000 },
@@ -5095,16 +5107,11 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 268620,    4,  1,  1.0000 },
   { 268624,    4,  1,  1.0000 },
   { 268771,    4,  1,  1.0000 },
-  { 268855,    4,  1,  1.0000 },
-  { 268888,    4,  1,  1.0000 },
-  { 268900,    4,  1,  1.0000 },
-  { 268906,    4,  1,  1.0000 },
-  { 268912,    4,  1,  1.0000 },
   { 269009,    4,  1,  1.0000 },
   { 269066,    4,  1,  1.0000 },
   { 269853,    4,  1,  1.0000 },
   { 269884,    4,  1,  1.0000 },
-  { 269886,    3,  1,  1.0000 },
+  { 269886,    4,  1,  1.0000 },
   { 269891,    4,  1,  1.0000 },
   { 270668,    4,  1,  1.0000 },
   { 270679,    4,  1,  1.0000 },
@@ -5124,11 +5131,11 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 273830,    4,  1,  1.0000 },
   { 273975,    4,  1,  1.0000 },
   { 273987,    4,  1,  1.0000 },
-  { 273991,    3,  1,  1.0000 },
+  { 273991,    4,  1,  1.0000 },
   { 274071,    4,  1,  1.0000 },
   { 274072,    4,  1,  1.0000 },
   { 274145,    4,  1,  1.0000 },
-  { 274219,    3,  1,  1.0000 },
+  { 274219,    4,  1,  1.0000 },
   { 274225,    4,  1,  1.0000 },
   { 274233,    4,  1,  1.0000 },
   { 274239,    4,  1,  1.0000 },
@@ -5138,9 +5145,20 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 274790,    4,  1,  1.0000 },
   { 274835,    4,  1,  1.0000 },
   { 275460,    4,  1,  1.0000 },
-  { 276123,    4,  1,  1.0000 },
   { 276135,    4,  1,  1.0000 },
   { 276176,    4,  1,  1.0000 },
   { 277522,    4,  1,  1.0000 },
+  { 277905,    4,  1,  1.0000 },
+  { 278112,    4,  1,  1.0000 },
+  { 278140,    4,  1,  1.0000 },
+  { 278152,    4,  1,  1.0000 },
+  { 278154,    4,  1,  1.0000 },
+  { 278155,    4,  1,  1.0000 },
+  { 278251,    4,  1,  1.0000 },
+  { 278389,    4,  1,  1.0000 },
+  { 278824,    4,  1,  1.0000 },
+  { 278831,    4,  1,  1.0000 },
+  { 279426,    4,  1,  1.0000 },
+  { 279449,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
