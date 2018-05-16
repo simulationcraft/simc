@@ -37,15 +37,16 @@ actions+=/lights_judgment
 actions+=/call_action_list,name=prot
 
 actions.prot=potion,if=target.time_to_die<25
-actions.prot+=/battle_cry,if=cooldown.shield_slam.remains=0
-actions.prot+=/demoralizing_shout
-actions.prot+=/ravager,if=talent.ravager.enabled
-actions.prot+=/shield_block,if=cooldown.shield_slam.remains=0
-actions.prot+=/ignore_pain,if=(!talent.vengeance.enabled&buff.renewed_fury.remains<1.5)|(!talent.vengeance.enabled&rage.deficit>=40)|(buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage<30&!buff.revenge.react)
+actions.prot+=/battle_cry,if=gcd.remains=0
+actions.prot+=/demoralizing_shout,if=buff.battle_cry.up
+actions.prot+=/ravager,if=talent.ravager.enabled&buff.battle_cry.up
+actions.prot+=/shield_block,if=(buff.battle_cry.up&buff.shield_block.down)|(cooldown.shield_slam.remains=0&gcd.remains=0)
+actions.prot+=/ignore_pain,if=(!talent.vengeance.enabled&buff.renewed_fury.remains<=0)|(!talent.vengeance.enabled&rage.deficit>=40)|(buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage<30&!buff.revenge.react)
 actions.prot+=/shield_slam
 actions.prot+=/revenge,if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_ignore_pain.up)|(buff.vengeance_revenge.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_pain.up&!buff.vengeance_revenge.up&rage>=30)
 actions.prot+=/thunder_clap
 actions.prot+=/devastate
+actions.prot+=/berserker_rage
 
 head=vision_of_the_spider_queen,id=137451,bonus_id=1492/1727
 neck=raven_filigree_pendant,id=134499,bonus_id=1492/1727,enchant=mark_of_the_heavy_hide

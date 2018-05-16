@@ -26,6 +26,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/moonkin_form
 actions.precombat+=/variable,name=starfall_st,value=talent.soul_of_the_forest.enabled
+actions.precombat+=/variable,name=flare_st,value=talent.stellar_flare.enabled
 actions.precombat+=/blessing_of_elune,if=!variable.starfall_st
 actions.precombat+=/blessing_of_anshe,if=variable.starfall_st
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
@@ -52,7 +53,7 @@ actions+=/celestial_alignment,if=astral_power>=40&(!variable.starfall_st|time>=7
 actions+=/call_action_list,name=aoe,if=(spell_targets.starfall>=2&talent.stellar_drift.enabled)|spell_targets.starfall>=3
 actions+=/call_action_list,name=st
 
-actions.aoe=starfall,if=buff.stellar_empowerment.remains<gcd.max*2|astral_power.deficit<22.5|(buff.celestial_alignment.remains>8|buff.incarnation.remains>8)|target.time_to_die<8
+actions.aoe=starfall,if=buff.starfall.remains<gcd.max*2|astral_power.deficit<22.5|(buff.celestial_alignment.remains>8|buff.incarnation.remains>8)|target.time_to_die<8
 actions.aoe+=/stellar_flare,target_if=refreshable,if=target.time_to_die>10
 actions.aoe+=/sunfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
 actions.aoe+=/moonfire,target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4
@@ -114,17 +115,17 @@ actions.fury_of_elune+=/solar_wrath,if=buff.solar_empowerment.up
 actions.fury_of_elune+=/lunar_strike,if=buff.lunar_empowerment.stack=3|(buff.lunar_empowerment.remains<5&buff.lunar_empowerment.up)|active_enemies>=2
 actions.fury_of_elune+=/solar_wrath
 
-actions.st=starfall,if=(buff.oneths_overconfidence.react&(!buff.astral_acceleration.up|buff.astral_acceleration.remains>5|astral_power.deficit<40))|(variable.starfall_st&!buff.stellar_empowerment.up)
+actions.st=starfall,if=(buff.oneths_overconfidence.react&((!variable.flare_st&(astral_power.deficit<40|(set_bonus.tier21_4pc&!buff.solar_solstice.up)|(!variable.starfall_st&!buff.solar_empowerment.up&!buff.lunar_empowerment.up&cooldown.moon_cd.charges=0)))|astral_power.deficit<35|buff.astral_acceleration.remains>5|(buff.celestial_alignment.up|buff.incarnation.up)))|(variable.starfall_st&!buff.starfall.up)
 actions.st+=/force_of_nature
 actions.st+=/stellar_flare,target_if=refreshable,if=target.time_to_die>10
 actions.st+=/moonfire,target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8
 actions.st+=/sunfire,target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8
 actions.st+=/solar_wrath,if=buff.solar_empowerment.stack=3&astral_power.deficit>10
 actions.st+=/lunar_strike,if=buff.lunar_empowerment.stack=3&astral_power.deficit>15
-actions.st+=/starsurge,if=buff.oneths_intuition.react|astral_power.deficit<40|(buff.celestial_alignment.up|buff.incarnation.up|buff.astral_acceleration.remains>5|(set_bonus.tier21_4pc&!buff.solar_solstice.up))|(gcd.max*(astral_power%40))>target.time_to_die
+actions.st+=/starsurge,if=buff.oneths_intuition.react|((!variable.flare_st&(astral_power.deficit<40|(set_bonus.tier21_4pc&!buff.solar_solstice.up)|(!variable.starfall_st&!buff.solar_empowerment.up&!buff.lunar_empowerment.up&cooldown.moon_cd.charges=0)))|astral_power.deficit<35|buff.astral_acceleration.remains>5|(buff.celestial_alignment.up|buff.incarnation.up))|(gcd.max*(astral_power%40))>target.time_to_die
 actions.st+=/new_moon,if=astral_power.deficit>10&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)
 actions.st+=/half_moon,if=astral_power.deficit>20&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)
-actions.st+=/full_moon,if=astral_power.deficit>40
+actions.st+=/full_moon,if=astral_power.deficit>40&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)
 actions.st+=/lunar_strike,if=buff.warrior_of_elune.up&buff.lunar_empowerment.up
 actions.st+=/solar_wrath,if=buff.solar_empowerment.up
 actions.st+=/lunar_strike,if=buff.lunar_empowerment.up
