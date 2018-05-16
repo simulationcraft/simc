@@ -7587,7 +7587,9 @@ void death_knight_t::create_buffs()
                               .rppm_scale( RPPM_ATTACK_SPEED ) // 2016-08-08: Hotfixed, not in spell data
                               .rppm_mod( 1.0 + talent.harbinger_of_doom -> effectN( 2 ).percent() )
                               .trigger_spell( spec.sudden_doom )
-                              .max_stack( spec.sudden_doom -> effectN( 1 ).trigger() -> initial_stacks() + talent.harbinger_of_doom -> effectN( 1 ).base_value() );
+                              .max_stack( specialization() == DEATH_KNIGHT_UNHOLY ?
+                                spec.sudden_doom -> effectN( 1 ).trigger() -> max_stacks() + talent.harbinger_of_doom -> effectN( 1 ).base_value() :
+                                1 );
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
   buffs.voracious           = buff_creator_t( this, "voracious", find_spell( 274009 ) )
                               .trigger_spell( talent.voracious )
