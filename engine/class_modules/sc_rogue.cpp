@@ -219,7 +219,7 @@ struct rogue_t : public player_t
     buff_t* broadside;
     buff_t* buried_treasure;
     haste_buff_t* grand_melee;
-    buff_t* jolly_roger;
+    buff_t* skull_and_crossbones;
     buff_t* ruthless_precision;
     buff_t* true_bearing;
     // Subtlety
@@ -3869,7 +3869,7 @@ struct sinister_strike_t : public rogue_attack_t
   {
     double opportunity_proc_chance = data().effectN( 3 ).percent();
     opportunity_proc_chance += p() -> talent.weaponmaster -> effectN( 1 ).percent();
-    opportunity_proc_chance += p() -> buffs.jolly_roger -> stack_value();
+    opportunity_proc_chance += p() -> buffs.skull_and_crossbones -> stack_value();
     return opportunity_proc_chance;
   }
 
@@ -4983,14 +4983,14 @@ struct roll_the_bones_t : public buff_t
     buffs[ 0 ] = rogue -> buffs.broadside;
     buffs[ 1 ] = rogue -> buffs.buried_treasure;
     buffs[ 2 ] = rogue -> buffs.grand_melee;
-    buffs[ 3 ] = rogue -> buffs.jolly_roger;
+    buffs[ 3 ] = rogue -> buffs.skull_and_crossbones;
     buffs[ 4 ] = rogue -> buffs.ruthless_precision;
     buffs[ 5 ] = rogue -> buffs.true_bearing;
   }
 
   void expire_secondary_buffs()
   {
-    rogue -> buffs.jolly_roger -> expire();
+    rogue -> buffs.skull_and_crossbones -> expire();
     rogue -> buffs.grand_melee -> expire();
     rogue -> buffs.ruthless_precision -> expire();
     rogue -> buffs.true_bearing -> expire();
@@ -6320,7 +6320,7 @@ void rogue_t::init_action_list()
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
-    stealth -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadside.up&energy>60&!buff.jolly_roger.up" );
+    stealth -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up" );
     stealth -> add_action( this, "Ambush", "if=variable.ambush_condition" );
     stealth -> add_action( this, "Vanish", "if=(variable.ambush_condition|equipped.mantle_of_the_master_assassin&!variable.rtb_reroll&!variable.ss_useable)&mantle_duration=0" );
     stealth -> add_action( "shadowmeld,if=variable.ambush_condition" );
@@ -6589,7 +6589,7 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 
     return make_fn_expr( name_str, [ this ]() {
       double n_buffs = 0;
-      n_buffs += buffs.jolly_roger -> check() != 0;
+      n_buffs += buffs.skull_and_crossbones -> check() != 0;
       n_buffs += buffs.grand_melee -> check() != 0;
       n_buffs += buffs.ruthless_precision -> check() != 0;
       n_buffs += buffs.true_bearing -> check() != 0;
@@ -6662,7 +6662,7 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       buffs.broadside,
       buffs.buried_treasure,
       buffs.grand_melee,
-      buffs.jolly_roger,
+      buffs.skull_and_crossbones,
       buffs.ruthless_precision,
       buffs.true_bearing
     } };
@@ -6804,9 +6804,9 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
   {
     return create_rtb_buff_t21_expression( buffs.grand_melee );
   }
-  if ( util::str_compare_ci( name_str, "buff.jolly_roger.t21" ) )
+  if ( util::str_compare_ci( name_str, "buff.skull_and_crossbones.t21" ) )
   {
-    return create_rtb_buff_t21_expression( buffs.jolly_roger );
+    return create_rtb_buff_t21_expression( buffs.skull_and_crossbones );
   }
   if ( util::str_compare_ci( name_str, "buff.ruthless_precision.t21" ) )
   {
@@ -7204,7 +7204,7 @@ void rogue_t::create_buffs()
   buffs.grand_melee -> add_invalidate( CACHE_ATTACK_SPEED )
                     -> add_invalidate( CACHE_LEECH )
                     -> set_default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
-  buffs.jolly_roger           = make_buff( this, "jolly_roger", find_spell( 199603 ) )
+  buffs.skull_and_crossbones  = make_buff( this, "skull_and_crossbones", find_spell( 199603 ) )
                                 -> set_default_value( find_spell( 199603 ) -> effectN( 1 ).percent() );
   buffs.ruthless_precision    = make_buff( this, "ruthless_precision", find_spell( 193357 ) )
                                 -> set_default_value( find_spell( 193357 ) -> effectN( 1 ).percent() )
