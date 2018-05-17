@@ -401,7 +401,7 @@ public:
     spell_data_ptr_t serpent_sting;
 
     // tier 30
-    spell_data_ptr_t dire_stable;
+    spell_data_ptr_t scent_of_blood;
     spell_data_ptr_t one_with_the_pack;
     spell_data_ptr_t chimaera_shot;
 
@@ -4394,7 +4394,7 @@ void hunter_t::init_spells()
   talents.serpent_sting                     = find_talent_spell( "Serpent Sting" );
 
   // tier 30
-  talents.dire_stable                       = find_talent_spell( "Dire Stable" );
+  talents.scent_of_blood                    = find_talent_spell( "Scent of Blood" );
   talents.one_with_the_pack                 = find_talent_spell( "One with the Pack" );
   talents.chimaera_shot                     = find_talent_spell( "Chimaera Shot" );
 
@@ -4560,7 +4560,7 @@ void hunter_t::create_buffs()
     buffs.dire_frenzy[ i ] =
       make_buff( this, util::tokenize_fn( dire_frenzy -> name_cstr() ) + "_" + util::to_string( i + 1 ), dire_frenzy )
         -> set_default_value( dire_frenzy -> effectN( 1 ).resource( RESOURCE_FOCUS ) +
-                              talents.dire_stable -> effectN( 1 ).base_value() )
+                              talents.scent_of_blood -> effectN( 1 ).base_value() )
         -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
                           resource_gain( RESOURCE_FOCUS, b -> default_value, gains.dire_frenzy );
                         } );
