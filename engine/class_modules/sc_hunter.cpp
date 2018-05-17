@@ -230,6 +230,17 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
 // Hunter
 // ==========================================================================
 
+/* BfA TODO
+ *  Marksmanship
+ *   - AiS 50% initial bonus on non-damaged targets
+ *   - Double Tap AiS delay
+ *   - Trick-Shots / AiS interaction (timings/delays)
+ *   - Rapid Fire `cast_regen`
+ *  Beast Mastery
+ *   - Kill Command damage formula
+ *   - Barbed Shot refresh mechanic
+ */
+
 // somewhat arbitrary number of the maximum count of barbed shot buffs possible simultaneously
 constexpr unsigned BARBED_SHOT_BUFFS_MAX = 10;
 
