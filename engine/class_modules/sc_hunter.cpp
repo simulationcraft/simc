@@ -3455,10 +3455,15 @@ struct summon_pet_t: public hunter_spell_t
     hunter_spell_t( "summon_pet", player ),
     opt_disabled( false ), pet( nullptr )
   {
+    add_option( opt_string( "name", pet_name ) );
+    parse_options( options_str );
+
     harmful = may_hit = false;
     callbacks = false;
     ignore_false_positive = true;
-    pet_name = options_str.empty() ? p() -> summon_pet_str : options_str;
+
+    if ( pet_name.empty() )
+      pet_name = p() -> summon_pet_str;
     opt_disabled = util::str_compare_ci( pet_name, "disabled" );
   }
 
