@@ -232,9 +232,8 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
 
 /* BfA TODO
  *  Marksmanship
- *   - AiS 50% initial bonus on non-damaged targets
- *   - Double Tap AiS delay
- *   - Trick-Shots / AiS interaction (timings/delays)
+ *   - Double Tap AiS 'delay' (do we actually care? it seems to matter *only* for the
+ *     initial 50% bonus damage in the sub ~20yds range)
  *  Beast Mastery
  *   - Kill Command damage formula
  *   - Barbed Shot refresh mechanic
@@ -254,6 +253,8 @@ struct dire_critter_t;
 
 struct hunter_td_t: public actor_target_data_t
 {
+  bool damaged;
+
   struct debuffs_t
   {
     buff_t* mark_of_helbrine;
@@ -576,6 +577,7 @@ public:
   void      init_procs() override;
   void      init_rng() override;
   void      init_scaling() override;
+  void      init_assessors() override;
   void      init_action_list() override;
   void      reset() override;
   void      merge( player_t& other ) override;
@@ -2495,6 +2497,10 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_target_da_multiplier( t );
 
+    auto td = find_td( t );
+    if ( !( td && td -> damaged ) )
+      m *= 1.0 + data().effectN( 2 ).percent();
+
     if ( careful_aim )
     {
       const bool active =
@@ -3942,6 +3948,7 @@ struct muzzle_t: public interrupt_base_t
 
 hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   actor_target_data_t( target, p ),
+  damaged( false ),
   debuffs(),
   dots()
 {
@@ -3982,6 +3989,8 @@ void hunter_td_t::target_demise()
     p -> resource_gain( RESOURCE_FOCUS, p -> find_spell( 259558 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p -> gains.hunters_mark );
     p -> current_hunters_mark_target = nullptr;
   }
+
+  damaged = false;
 }
 
 expr_t* hunter_t::create_expression( action_t* a, const std::string& expression_str )
@@ -4557,6 +4566,22 @@ void hunter_t::init_scaling()
   scaling -> disable( STAT_STRENGTH );
 }
 
+// hunter_t::init_assessors =================================================
+
+void hunter_t::init_assessors()
+{
+  player_t::init_assessors();
+
+  if ( specialization() == HUNTER_MARKSMANSHIP )
+  {
+    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [this]( dmg_e, action_state_t* s ) {
+      if ( s -> result_amount > 0 )
+        get_target_data( s -> target ) -> damaged = true;
+      return assessor::CONTINUE;
+    } );
+  }
+}
+
 // hunter_t::default_potion =================================================
 
 std::string hunter_t::default_potion() const
@@ -4720,6 +4745,7 @@ void hunter_t::apl_mm()
   // Precombat actions
   precombat -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down" );
   precombat -> add_talent( this, "Double Tap" );
+  precombat -> add_action( this, "Aimed Shot", "if=spell_targets.multishot<3" );
 
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( this, "Counter Shot", "if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up" );
