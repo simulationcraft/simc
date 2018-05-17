@@ -1143,7 +1143,7 @@ class SpellDataGenerator(DataGenerator):
          191259,
          # 7.1.5 Entwined Elemental Foci buffs
          225729, 225730,
-         # 7.1.5 Archimonde's Hatred Reborn damage spell 
+         # 7.1.5 Archimonde's Hatred Reborn damage spell
          235188,
          # 7.2.0 Dreadstone of Endless Shadows stat buffs
          238499, 238500, 238501,
@@ -1158,7 +1158,7 @@ class SpellDataGenerator(DataGenerator):
          # 7.3.0 Gorshalach's Legacy
          255672,
          # 7.3.0 Forgefiend's Fabricator
-         253322, 256025, 
+         253322, 256025,
          # 7.3.0 Riftworld Codex buffs and damage component
          252545, 251938, 256415, 252550,
          # 7.3.2 Norgannon pantheon "random school" nukes
@@ -1251,6 +1251,7 @@ class SpellDataGenerator(DataGenerator):
             ( 202848, 0 ),          # Blunderbuss driver
             ( 197496, 0 ), ( 197498, 0 ), # New nightblade buffs
             ( 246558, 0 ),          # Outlaw T20 4pc Lesser Adrenaline Rush
+            ( 279043, 0 ),          # Shadow Blades damaging spell
         ),
 
         # Priest:
@@ -1435,7 +1436,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 272013, 5 ),		# Vicious Hellhound - Demon Fangs
 		  ( 272012, 5 ),		# Illidari Satyr - Shadow Slash
 		  ( 272131, 5 ),		# Eye of Gul'dan - Eye of Gul'dan
-		  
+
         ),
 
         # Monk:
