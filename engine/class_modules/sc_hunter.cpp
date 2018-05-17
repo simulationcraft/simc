@@ -731,7 +731,7 @@ public:
     // recalculate the gcd while under the effect of AotW as it applies before haste reduction
     if ( affected_by.aotw_gcd_reduce && p() -> buffs.aspect_of_the_wild -> check() )
     {
-      g = trigger_gcd;
+      g = ab::trigger_gcd;
       g += p() -> specs.aspect_of_the_wild -> effectN( 3 ).time_value();
       if ( ab::gcd_haste != HASTE_NONE )
         g *= ab::composite_haste();
@@ -1583,7 +1583,7 @@ public:
 
     if ( affected_by.sv_legendary_cloak )
     {
-      const hunter_td_t* otd = o() -> get_target_data( t );
+      const hunter_td_t* otd = ab::o() -> get_target_data( t );
       if ( otd -> debuffs.unseen_predators_cloak -> up() )
         cc += otd -> debuffs.unseen_predators_cloak -> check_value();
     }
