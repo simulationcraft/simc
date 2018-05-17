@@ -240,12 +240,6 @@ namespace warlock
       if ( buffs.demonic_power -> check() )
         m *= 1.0 + ( buffs.demonic_power -> default_value );
 
-      if ( o()->buffs.soul_harvest->check() )
-      {
-        m *= 1.0 + o()->buffs.soul_harvest->check_stack_value();
-      }
-      m *= 1.0 + o()->spec.affliction->effectN( 3 ).percent();
-
       return m;
     }
 
@@ -305,35 +299,6 @@ namespace warlock
 
       if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
       {
-        if ( p()->legendary.the_master_harvester )
-        {
-          timespan_t sh_duration = timespan_t::from_seconds( p()->find_spell( 248113 )->effectN( 4 ).base_value() );
-          double sh_proc_chance;
-          switch ( p()->specialization() )
-          {
-          case WARLOCK_AFFLICTION:
-            sh_proc_chance = p()->find_spell( 248113 )->effectN( 1 ).percent();
-            break;
-          case WARLOCK_DEMONOLOGY:
-            sh_proc_chance = p()->find_spell( 248113 )->effectN( 2 ).percent();
-            break;
-          case WARLOCK_DESTRUCTION:
-            sh_proc_chance = p()->find_spell( 248113 )->effectN( 3 ).percent();
-            break;
-          default:
-            sh_proc_chance = 0;
-            break;
-          }
-          for ( int i = 0; i < last_resource_cost; i++ )
-          {
-            if ( p()->rng().roll( sh_proc_chance ) )
-            {
-              p()->buffs.soul_harvest->trigger( 1, 0.2, -1.0, sh_duration );
-              p()->procs.the_master_harvester->occur();
-            }
-          }
-        }
-
         if ( p()->talents.soul_conduit->ok() )
         {
           if ( p()->specialization() == WARLOCK_DEMONOLOGY )
@@ -503,6 +468,7 @@ namespace warlock
     dots_phantom_singularity = target->get_dot("phantom_singularity", &p);
     dots_siphon_life = target->get_dot("siphon_life", &p);
     dots_seed_of_corruption = target->get_dot("seed_of_corruption", &p);
+    dots_vile_taint = target->get_dot("vile_taint", &p);
 
     debuffs_haunt = make_buff( *this, "haunt", source->find_spell( 48181 ) )->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
     debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", source->find_spell( 32390 ) )
@@ -590,7 +556,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     spells(),
     initial_soul_shards( 3 ),
     allow_sephuz( false ),
-    deaths_embrace_fixed_time( true ),
     default_pet(),
     shard_react( timespan_t::zero() )
   {
@@ -685,9 +650,6 @@ double warlock_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.alythesss_pyrogenics->check_stack_value();
   }
 
-  if ( buffs.soul_harvest->check() )
-    m *= 1.0 + buffs.soul_harvest -> check_stack_value();
-
   m *= 1.0 + buffs.sindorei_spite->check_stack_value();
   m *= 1.0 + buffs.lessons_of_spacetime->check_stack_value();
 
@@ -698,8 +660,8 @@ double warlock_t::composite_spell_crit_chance() const
 {
   double sc = player_t::composite_spell_crit_chance();
 
-  if (buffs.dark_soul->check())
-    sc *= 1.0 / (1.0 + buffs.dark_soul->check_value());
+  if (buffs.dark_soul_instability->check())
+    sc *= 1.0 / (1.0 + buffs.dark_soul_instability->check_value());
 
   return sc;
 }
@@ -720,6 +682,9 @@ double warlock_t::composite_spell_haste() const
 
   if ( buffs.demonic_speed->check() )
     h *= 1.0 / ( 1.0 + buffs.demonic_speed->check_value() );
+
+  if (buffs.dark_soul_misery->check())
+    h *= 1.0 / (1.0 + buffs.dark_soul_misery->check_value());
 
   if (buffs.reverse_entropy->check())
     h *= 1.0 / (1.0 + buffs.reverse_entropy->check_value());
@@ -766,8 +731,8 @@ double warlock_t::composite_melee_crit_chance() const
 {
   double mc = player_t::composite_melee_crit_chance();
 
-  if (buffs.dark_soul->check())
-    mc *= 1.0 / (1.0 + buffs.dark_soul->check_value());
+  if (buffs.dark_soul_instability->check())
+    mc *= 1.0 / (1.0 + buffs.dark_soul_instability->check_value());
 
   return mc;
 }
@@ -957,6 +922,14 @@ void warlock_t::create_pets()
     for (size_t i = 0; i < warlock_pet_list.infernals.size(); i++)
     {
       warlock_pet_list.infernals[i] = new pets::infernal::infernal_t(sim, this);
+    }
+  }
+
+  if (specialization() == WARLOCK_AFFLICTION)
+  {
+    for (size_t i = 0; i < warlock_pet_list.darkglare.size(); i++)
+    {
+      warlock_pet_list.darkglare[i] = new pets::darkglare::darkglare_t(sim, this);
     }
   }
 
@@ -1230,26 +1203,6 @@ void warlock_t::init_resources( bool force )
 
 void warlock_t::combat_begin()
 {
-  if ( !sim->fixed_time )
-  {
-    if ( deaths_embrace_fixed_time )
-    {
-      for ( auto& p : sim->player_list )
-      {
-        if ( p->specialization() != WARLOCK_AFFLICTION && p->type != PLAYER_PET )
-        {
-          deaths_embrace_fixed_time = false;
-          break;
-        }
-      }
-      if ( deaths_embrace_fixed_time )
-      {
-        sim->fixed_time = true;
-        sim->errorf( "To fix issues with the target exploding <20%% range due to execute, fixed_time=1 has been enabled. This gives similar results" );
-        sim->errorf( "to execute's usage in a raid sim, without taking an eternity to simulate. To disable this option, add warrior_fixed_time=0 to your sim." );
-      }
-    }
-  }
   player_t::combat_begin();
 }
 
@@ -1286,7 +1239,6 @@ void warlock_t::create_options()
   add_option( opt_int( "soul_shards", initial_soul_shards ) );
   add_option( opt_string( "default_pet", default_pet ) );
   add_option( opt_bool( "allow_sephuz", allow_sephuz ) );
-  add_option( opt_bool( "deaths_embrace_fixed_time", deaths_embrace_fixed_time ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )
@@ -1312,7 +1264,6 @@ void warlock_t::copy_from( player_t* source )
   initial_soul_shards = p->initial_soul_shards;
   allow_sephuz = p->allow_sephuz;
   default_pet = p->default_pet;
-  deaths_embrace_fixed_time = p->deaths_embrace_fixed_time;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const

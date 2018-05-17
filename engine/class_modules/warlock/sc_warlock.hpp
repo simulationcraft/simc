@@ -52,6 +52,11 @@ namespace warlock
       namespace prince_malchezaar {
         struct prince_malchezaar_t;
       }
+
+      namespace darkglare
+      {
+        struct darkglare_t;
+      }
     }
 
     constexpr int MAX_UAS = 5;
@@ -67,6 +72,7 @@ namespace warlock
       std::array<propagate_const<dot_t*>, MAX_UAS> dots_unstable_affliction;
       propagate_const<dot_t*> dots_siphon_life;
       propagate_const<dot_t*> dots_phantom_singularity;
+      propagate_const<dot_t*> dots_vile_taint;
 
       propagate_const<buff_t*> debuffs_haunt;
       propagate_const<buff_t*> debuffs_agony;
@@ -123,6 +129,7 @@ namespace warlock
         static const int INFERNAL_LIMIT = 1;
         static const int RANDOM_LIMIT = 10;
         static const int RARE_RANDOM_LIMIT = 10;
+        static const int DARKGLARE_LIMIT = 1;
         std::array<pets::wild_imp::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
         std::array<pets::dreadstalker::dreadstalker_t*, DREADSTALKER_LIMIT> dreadstalkers;
         std::array<pets::vilefiend::vilefiend_t*, VILFIEND_LIMIT> vilefiends;
@@ -138,6 +145,7 @@ namespace warlock
         std::array<pets::illidari_satyr::illidari_satyr_t*, RANDOM_LIMIT> illidari_satyrs;
         std::array<pets::eyes_of_guldan::eyes_of_guldan_t*, RARE_RANDOM_LIMIT> eyes_of_guldan;
         std::array<pets::prince_malchezaar::prince_malchezaar_t*, RARE_RANDOM_LIMIT> prince_malchezaar;
+        std::array<pets::darkglare::darkglare_t*, DARKGLARE_LIMIT> darkglare;
       } warlock_pet_list;
 
       std::vector<std::string> pet_name_list;
@@ -180,16 +188,18 @@ namespace warlock
 
         const spell_data_t* writhe_in_agony;
         const spell_data_t* absolute_corruption;
-        const spell_data_t* deaths_embrace;
+        const spell_data_t* siphon_life;
 
         const spell_data_t* sow_the_seeds;
         const spell_data_t* phantom_singularity;
-        const spell_data_t* soul_harvest;
+        const spell_data_t* vile_taint;
 
         const spell_data_t* nightfall;
+        const spell_data_t* drain_soul;
 
         const spell_data_t* creeping_death;
-        const spell_data_t* siphon_life;
+        const spell_data_t* dark_soul_misery;
+        
         // DEMO
         const spell_data_t* dreadlash;
         const spell_data_t* demonic_strength;
@@ -226,7 +236,7 @@ namespace warlock
         const spell_data_t* grimoire_of_supremacy;
 
         const spell_data_t* channel_demonfire;
-        const spell_data_t* dark_soul;
+        const spell_data_t* dark_soul_instability;
       } talents;
 
       struct legendary_t
@@ -288,6 +298,7 @@ namespace warlock
         const spell_data_t* shadow_bite;
         const spell_data_t* shadow_bite_2;
         const spell_data_t* shadow_bolt; // also demo
+        const spell_data_t* summon_darkglare;
 
         // Demonology only
         const spell_data_t* demonology;
@@ -311,11 +322,11 @@ namespace warlock
       {
         propagate_const<buff_t*> demonic_power;
         propagate_const<buff_t*> grimoire_of_sacrifice;
-        propagate_const<buff_t*> soul_harvest;
 
         //affliction buffs
         propagate_const<buff_t*> active_uas;
         propagate_const<buff_t*> nightfall;
+        propagate_const<buff_t*> dark_soul_misery;
         propagate_const<buff_t*> demonic_speed; // t20 4pc
 
         //demonology buffs
@@ -338,7 +349,7 @@ namespace warlock
         propagate_const<buff_t*> active_havoc;
         propagate_const<buff_t*> reverse_entropy;
         propagate_const<buff_t*> grimoire_of_supremacy;
-        propagate_const<buff_t*> dark_soul;
+        propagate_const<buff_t*> dark_soul_instability;
 
         // legendary buffs
         buff_t* sindorei_spite;
@@ -971,6 +982,16 @@ namespace warlock
           virtual void init_base_stats() override;
         };
       }
+
+      namespace darkglare
+      {
+        struct darkglare_t : public warlock_pet_t
+        {
+          darkglare_t(sim_t* sim, warlock_t* owner, const std::string& name = "darkglare");
+          virtual double composite_player_multiplier(school_e school) const override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
+        };
+      }
     }
 
     namespace actions
@@ -1201,11 +1222,6 @@ namespace warlock
 
           if ( p()->legendary.odr_shawl_of_the_ymirjar && target == p()->havoc_target && affected_by_odr_shawl_of_the_ymirjar  )
             m *= 1.0 + p()->legendary.odr_shawl_of_the_ymirjar->effectN( 1 ).percent();
-
-          double deaths_embrace_health = p()->talents.deaths_embrace->effectN( 2 ).base_value();
-
-          if ( p()->talents.deaths_embrace->ok() && target->health_percentage() <= deaths_embrace_health && affected_by_deaths_embrace )
-            m *= 1.0 + p()->talents.deaths_embrace->effectN( 1 ).percent() * ( 1 - target->health_percentage() / deaths_embrace_health );
 
           return m;
         }
