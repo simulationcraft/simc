@@ -1064,7 +1064,6 @@ public:
 
   struct actives_t
   {
-    action_t* dire_frenzy;
     action_t* kill_command;
     action_t* flanking_strike;
     attack_t* beast_cleave;
@@ -1846,18 +1845,6 @@ struct flanking_strike_t: public hunter_main_pet_attack_t
   { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
 };
 
-// Dire Frenzy (pet) =======================================================
-
-struct dire_frenzy_t: public hunter_main_pet_attack_t
-{
-  dire_frenzy_t( hunter_main_pet_t* p ):
-    hunter_main_pet_attack_t( "dire_frenzy", p, p -> find_spell( 217207 ) )
-  {
-      background = true;
-      weapon = &p -> main_hand_weapon;
-  }
-};
-
 // Stomp ===================================================================
 
 struct stomp_t : public hunter_pet_action_t< hunter_pet_t, attack_t >
@@ -1969,9 +1956,6 @@ void hunter_main_pet_t::init_spells()
 
   if ( o() -> specs.beast_cleave -> ok() )
     active.beast_cleave = new actions::beast_cleave_attack_t( this );
-
-  if ( o() -> specs.barbed_shot -> ok() )
-    active.dire_frenzy = new actions::dire_frenzy_t( this );
 
   if ( o() -> specialization() == HUNTER_SURVIVAL )
     active.flanking_strike = new actions::flanking_strike_t( this );
@@ -2409,10 +2393,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     {
       if ( p() -> talents.stomp -> ok() )
         pet -> active.stomp -> execute();
-
-      // XXX: contrary to what the tooltip says this still performs Dire Frenzy attacks
-      for ( int i = 0; i < data().effectN( 2 ).base_value(); i++ )
-        pet -> active.dire_frenzy -> schedule_execute();
 
       pet -> buffs.frenzy -> trigger();
     }
