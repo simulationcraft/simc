@@ -220,7 +220,7 @@ struct rogue_t : public player_t
     buff_t* buried_treasure;
     haste_buff_t* grand_melee;
     buff_t* jolly_roger;
-    buff_t* shark_infested_waters;
+    buff_t* ruthless_precision;
     buff_t* true_bearing;
     // Subtlety
     buff_t* shuriken_combo;
@@ -2371,6 +2371,18 @@ struct between_the_eyes_t : public rogue_attack_t
                     options_str ), greenskins_waterlogged_wristcuffs( nullptr )
   {
     crit_bonus_multiplier *= 1.0 + p -> find_specialization_spell( 235484 ) -> effectN( 1 ).percent();
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = rogue_attack_t::composite_crit_chance();
+
+    if ( p() -> buffs.ruthless_precision -> up() )
+    {
+      c += p() -> buffs.ruthless_precision -> data().effectN( 2 ).percent();
+    }
+
+    return c;
   }
 
   void execute() override
@@ -4972,7 +4984,7 @@ struct roll_the_bones_t : public buff_t
     buffs[ 1 ] = rogue -> buffs.buried_treasure;
     buffs[ 2 ] = rogue -> buffs.grand_melee;
     buffs[ 3 ] = rogue -> buffs.jolly_roger;
-    buffs[ 4 ] = rogue -> buffs.shark_infested_waters;
+    buffs[ 4 ] = rogue -> buffs.ruthless_precision;
     buffs[ 5 ] = rogue -> buffs.true_bearing;
   }
 
@@ -4980,7 +4992,7 @@ struct roll_the_bones_t : public buff_t
   {
     rogue -> buffs.jolly_roger -> expire();
     rogue -> buffs.grand_melee -> expire();
-    rogue -> buffs.shark_infested_waters -> expire();
+    rogue -> buffs.ruthless_precision -> expire();
     rogue -> buffs.true_bearing -> expire();
     rogue -> buffs.broadside -> expire();
     rogue -> buffs.buried_treasure -> expire();
@@ -5960,7 +5972,7 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += spell.critical_strikes -> effectN( 1 ).percent();
 
-  crit += buffs.shark_infested_waters -> stack_value();
+  crit += buffs.ruthless_precision -> stack_value();
 
   crit += buffs.mantle_of_the_master_assassin -> stack_value(); // 7.1.5 Legendary
 
@@ -6003,7 +6015,7 @@ double rogue_t::composite_spell_crit_chance() const
 
   crit += spell.critical_strikes -> effectN( 1 ).percent();
 
-  crit += buffs.shark_infested_waters -> stack_value();
+  crit += buffs.ruthless_precision -> stack_value();
 
   crit += buffs.mantle_of_the_master_assassin -> stack_value(); // 7.1.5 Legendary
 
@@ -6579,7 +6591,7 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       double n_buffs = 0;
       n_buffs += buffs.jolly_roger -> check() != 0;
       n_buffs += buffs.grand_melee -> check() != 0;
-      n_buffs += buffs.shark_infested_waters -> check() != 0;
+      n_buffs += buffs.ruthless_precision -> check() != 0;
       n_buffs += buffs.true_bearing -> check() != 0;
       n_buffs += buffs.broadside -> check() != 0;
       n_buffs += buffs.buried_treasure -> check() != 0;
@@ -6651,7 +6663,7 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       buffs.buried_treasure,
       buffs.grand_melee,
       buffs.jolly_roger,
-      buffs.shark_infested_waters,
+      buffs.ruthless_precision,
       buffs.true_bearing
     } };
 
@@ -6796,9 +6808,9 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
   {
     return create_rtb_buff_t21_expression( buffs.jolly_roger );
   }
-  if ( util::str_compare_ci( name_str, "buff.shark_infested_waters.t21" ) )
+  if ( util::str_compare_ci( name_str, "buff.ruthless_precision.t21" ) )
   {
-    return create_rtb_buff_t21_expression( buffs.shark_infested_waters );
+    return create_rtb_buff_t21_expression( buffs.ruthless_precision );
   }
   if ( util::str_compare_ci( name_str, "buff.true_bearing.t21" ) )
   {
@@ -7194,7 +7206,7 @@ void rogue_t::create_buffs()
                     -> set_default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
   buffs.jolly_roger           = make_buff( this, "jolly_roger", find_spell( 199603 ) )
                                 -> set_default_value( find_spell( 199603 ) -> effectN( 1 ).percent() );
-  buffs.shark_infested_waters = make_buff( this, "shark_infested_waters", find_spell( 193357 ) )
+  buffs.ruthless_precision    = make_buff( this, "ruthless_precision", find_spell( 193357 ) )
                                 -> set_default_value( find_spell( 193357 ) -> effectN( 1 ).percent() )
                                 -> add_invalidate( CACHE_CRIT_CHANCE );
   buffs.true_bearing          = make_buff( this, "true_bearing", find_spell( 193359 ) )
