@@ -235,7 +235,6 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
  *   - AiS 50% initial bonus on non-damaged targets
  *   - Double Tap AiS delay
  *   - Trick-Shots / AiS interaction (timings/delays)
- *   - Rapid Fire `cast_regen`
  *  Beast Mastery
  *   - Kill Command damage formula
  *   - Barbed Shot refresh mechanic
@@ -2793,8 +2792,6 @@ struct rapid_fire_t: public hunter_spell_t
     tick_zero = true;
 
     dot_duration += p -> talents.streamline -> effectN( 1 ).time_value();
-
-    // TODO: custom cast_regen impl
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
@@ -2836,6 +2833,16 @@ struct rapid_fire_t: public hunter_spell_t
       t *= 1.0 + p() -> buffs.double_tap -> check_value();
 
     return t;
+  }
+
+  double cast_regen() const override
+  {
+    auto tt = base_tick_time;
+    if ( p() -> buffs.double_tap -> check() )
+      tt *= 1.0 + p() -> buffs.double_tap -> check_value();
+    auto num_ticks = as<int>( std::ceil( dot_duration / tt ) );
+
+    return hunter_spell_t::cast_regen() + num_ticks * damage -> composite_energize_amount( nullptr );
   }
 };
 
