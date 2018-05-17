@@ -16,7 +16,8 @@ enum secondary_trigger_e
 {
   TRIGGER_NONE = 0U,
   TRIGGER_DEATH_FROM_ABOVE,
-  TRIGGER_WEAPONMASTER
+  TRIGGER_WEAPONMASTER,
+  TRIGGER_SHURIKEN_TORNADO
 };
 
 struct rogue_t;
@@ -245,6 +246,7 @@ struct rogue_t : public player_t
     buff_t* slice_and_dice;
     // Subtlety
     buff_t* master_of_shadows;
+    buff_t* shuriken_tornado;
     buff_t* death_from_above;
 
 
@@ -468,6 +470,7 @@ struct rogue_t : public player_t
     const spell_data_t* dark_shadow;
 
     const spell_data_t* master_of_shadows;
+    const spell_data_t* shuriken_tornado;
     const spell_data_t* death_from_above;
   } talent;
 
@@ -3725,6 +3728,26 @@ struct shuriken_storm_t: public rogue_attack_t
   }
 };
 
+// Shuriken Tornado =========================================================
+
+struct shuriken_tornado_t : public rogue_attack_t
+{
+  shuriken_tornado_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "shuriken_tornado", p, p -> talent.shuriken_tornado, options_str )
+  {
+    may_miss = false;
+    dot_duration = timespan_t::zero();
+    aoe = -1;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.shuriken_tornado -> trigger();
+  }
+};
+
 // Shuriken Toss ============================================================
 
 struct shuriken_toss_t : public rogue_attack_t
@@ -4852,6 +4875,27 @@ struct shadow_dance_t : public stealth_like_buff_t
     {
       add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     }
+  }
+};
+
+struct shuriken_tornado_t : public buff_t
+{
+  rogue_t* rogue;
+  action_t* shuriken_storm_action;
+
+  shuriken_tornado_t( rogue_t* r ) :
+    buff_t( r, "shuriken_tornado", r -> talent.shuriken_tornado ),
+    rogue( r ),
+    shuriken_storm_action( nullptr )
+  {
+    set_cooldown( timespan_t::zero() );
+    set_period( timespan_t::from_seconds( 1.0 ) ); // Not explicitly in spell data
+    set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+      if ( !shuriken_storm_action )
+        shuriken_storm_action = rogue -> find_action( "shuriken_storm" );
+      if ( shuriken_storm_action )
+        make_event<actions::secondary_ability_trigger_t>( *sim, rogue -> target, shuriken_storm_action, 0, TRIGGER_SHURIKEN_TORNADO );
+    } );
   }
 };
 
@@ -6321,6 +6365,7 @@ void rogue_t::init_action_list()
     cds -> add_action( "pool_resource,for_next=1,extra_amount=55-talent.shadow_focus.enabled*10" );
     cds -> add_action( this, "Vanish", "if=energy>=55-talent.shadow_focus.enabled*10&variable.dsh_dfa&(!equipped.mantle_of_the_master_assassin|buff.symbols_of_death.up)&cooldown.shadow_dance.charges_fractional<=variable.shd_fractional&!buff.shadow_dance.up&!buff.stealth.up&mantle_duration=0&(dot.nightblade.remains>=cooldown.death_from_above.remains+6&!(buff.the_first_of_the_dead.remains>1&combo_points>=5)|target.time_to_die-dot.nightblade.remains<=6)&cooldown.death_from_above.remains<=1|target.time_to_die<=7" );
     cds -> add_action( this, "Shadow Dance", "if=!buff.shadow_dance.up&target.time_to_die<=4+talent.subterfuge.enabled" );
+    cds -> add_talent( this, "Shuriken Tornado", "if=spell_targets>=3&dot.nightblade.ticking&buff.symbols_of_death.up&(!talent.dark_shadow.enabled|buff.shadow_dance.up)");
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
@@ -6403,6 +6448,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
   if ( name == "shadowstrike"        ) return new shadowstrike_t       ( this, options_str );
   if ( name == "shuriken_storm"      ) return new shuriken_storm_t     ( this, options_str );
+  if ( name == "shuriken_tornado"    ) return new shuriken_tornado_t   ( this, options_str );
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( this, options_str );
   if ( name == "sinister_strike"     ) return new sinister_strike_t    ( this, options_str );
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
@@ -6914,6 +6960,7 @@ void rogue_t::init_spells()
   talent.dark_shadow        = find_talent_spell( "Dark Shadow" );
 
   talent.master_of_shadows  = find_talent_spell( "Master of Shadows" );
+  talent.shuriken_tornado   = find_talent_spell( "Shuriken Tornado" );
   talent.death_from_above   = find_talent_spell( "Death from Above" );
 
   azerite.deadshot          = find_azerite_spell( "Deadshot" );
@@ -7192,6 +7239,7 @@ void rogue_t::create_buffs()
                                     resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.master_of_shadows );
                                   } )
                                   -> set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.shuriken_tornado        = new buffs::shuriken_tornado_t( this );
   buffs.death_from_above        = make_buff( this, "death_from_above", spell.death_from_above )
                                   // Note: Duration is set to 1.475s (+/- gauss RNG) on action execution in order to match the current model
                                   // and then let it be trackable in the APL. The driver will also expire this buff when the finisher is scheduled.
