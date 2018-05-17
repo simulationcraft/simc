@@ -230,8 +230,8 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
 // Hunter
 // ==========================================================================
 
-// somewhat arbitrary number of the maximum count of dire frenzy buffs possible simultaneously
-constexpr unsigned DIRE_FRENZY_BUFFS_MAX = 10;
+// somewhat arbitrary number of the maximum count of barbed shot buffs possible simultaneously
+constexpr unsigned BARBED_SHOT_BUFFS_MAX = 10;
 
 struct hunter_t;
 
@@ -315,7 +315,7 @@ public:
   {
     buff_t* aspect_of_the_wild;
     buff_t* bestial_wrath;
-    std::array<buff_t*, DIRE_FRENZY_BUFFS_MAX> dire_frenzy;
+    std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
     buff_t* thrill_of_the_hunt;
     buff_t* steady_focus;
     buff_t* lock_and_load;
@@ -374,7 +374,7 @@ public:
   // Gains
   struct gains_t
   {
-    gain_t* dire_frenzy;
+    gain_t* barbed_shot;
     gain_t* aspect_of_the_wild;
     gain_t* spitting_cobra;
     gain_t* nesingwarys_trapping_treads;
@@ -1100,7 +1100,7 @@ public:
   {
     buff_t* aspect_of_the_wild;
     buff_t* beast_cleave;
-    buff_t* dire_frenzy;
+    buff_t* frenzy;
     buff_t* tier19_2pc_bm;
   } buffs;
 
@@ -1169,8 +1169,8 @@ public:
       make_buff( this, "beast_cleave", find_spell( 118455 ) )
         -> set_default_value( o() -> specs.beast_cleave -> effectN( 1 ).percent() );
 
-    buffs.dire_frenzy =
-      make_buff( this, "dire_frenzy", o() -> find_spell( 272790 ) )
+    buffs.frenzy =
+      make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
         -> set_default_value ( o() -> find_spell( 272790 ) -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_ATTACK_HASTE );
 
@@ -1238,7 +1238,7 @@ public:
     ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent() );
 
     if ( o() -> specs.barbed_shot -> ok() )
-      ah *= 1.0 / ( 1.0 + buffs.dire_frenzy -> check_stack_value() );
+      ah *= 1.0 / ( 1.0 + buffs.frenzy -> check_stack_value() );
 
     return ah;
   }
@@ -2387,8 +2387,8 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     // trigger regen buff
-    auto it = range::find_if( p() -> buffs.dire_frenzy, []( buff_t* b ) { return !b -> check(); } );
-    if ( it != p() -> buffs.dire_frenzy.end() )
+    auto it = range::find_if( p() -> buffs.barbed_shot, []( buff_t* b ) { return !b -> check(); } );
+    if ( it != p() -> buffs.barbed_shot.end() )
       (*it) -> trigger(); // TODO: error when don't have enough buffs?
 
     p() -> buffs.thrill_of_the_hunt -> trigger();
@@ -2414,7 +2414,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       for ( int i = 0; i < data().effectN( 2 ).base_value(); i++ )
         pet -> active.dire_frenzy -> schedule_execute();
 
-      pet -> buffs.dire_frenzy -> trigger();
+      pet -> buffs.frenzy -> trigger();
     }
   }
 };
@@ -4554,15 +4554,15 @@ void hunter_t::create_buffs()
       -> set_activated( true )
       -> set_default_value( specs.bestial_wrath -> effectN( 1 ).percent() );
 
-  const spell_data_t* dire_frenzy = find_spell( 246152 );
-  for ( size_t i = 0; i < buffs.dire_frenzy.size(); i++ )
+  const spell_data_t* barbed_shot = find_spell( 246152 );
+  for ( size_t i = 0; i < buffs.barbed_shot.size(); i++ )
   {
-    buffs.dire_frenzy[ i ] =
-      make_buff( this, util::tokenize_fn( dire_frenzy -> name_cstr() ) + "_" + util::to_string( i + 1 ), dire_frenzy )
-        -> set_default_value( dire_frenzy -> effectN( 1 ).resource( RESOURCE_FOCUS ) +
+    buffs.barbed_shot[ i ] =
+      make_buff( this, "barbed_shot_" + util::to_string( i + 1 ), barbed_shot )
+        -> set_default_value( barbed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ) +
                               talents.scent_of_blood -> effectN( 1 ).base_value() )
         -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-                          resource_gain( RESOURCE_FOCUS, b -> default_value, gains.dire_frenzy );
+                          resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot );
                         } );
   }
 
@@ -4723,7 +4723,7 @@ void hunter_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.dire_frenzy          = get_gain( "dire_frenzy" );
+  gains.barbed_shot          = get_gain( "barbed_shot" );
   gains.aspect_of_the_wild   = get_gain( "aspect_of_the_wild" );
   gains.spitting_cobra       = get_gain( "spitting_cobra" );
   gains.nesingwarys_trapping_treads = get_gain( "nesingwarys_trapping_treads" );
