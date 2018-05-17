@@ -27,7 +27,7 @@ struct residual_damage_state_t;
 struct rogue_poison_t;
 struct rogue_attack_t;
 struct melee_t;
-struct shadow_blade_t;
+struct shadow_blades_attack_t;
 }
 
 namespace buffs
@@ -187,8 +187,7 @@ struct rogue_t : public player_t
   action_t* auto_attack;
   actions::melee_t* melee_main_hand;
   actions::melee_t* melee_off_hand;
-  actions::shadow_blade_t* shadow_blade_main_hand;
-  actions::shadow_blade_t* shadow_blade_off_hand;
+  actions::shadow_blades_attack_t* shadow_blades_attack;
 
   // Data collection
   luxurious_sample_data_t* dfa_mh, *dfa_oh;
@@ -547,7 +546,7 @@ struct rogue_t : public player_t
     poison_bomb( nullptr ),
     insignia_of_ravenholdt_( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
-    shadow_blade_main_hand( nullptr ), shadow_blade_off_hand( nullptr ),
+    shadow_blades_attack( nullptr ),
     dfa_mh( nullptr ), dfa_oh( nullptr ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -668,6 +667,7 @@ struct rogue_t : public player_t
   void trigger_restless_blades( const action_state_t* );
   void trigger_exsanguinate( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
+  void trigger_shadow_blades_attack( action_state_t* );
   void trigger_insignia_of_ravenholdt( action_state_t* );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_t21_4pc_assassination( const action_state_t* state );
@@ -885,9 +885,7 @@ struct rogue_attack_t : public melee_attack_t
 
     // Figure out the affected flags
     affected_by.shadow_blades = data().affected_by( p() -> spec.shadow_blades -> effectN( 2 ) ) ||
-                                data().affected_by( p() -> spec.shadow_blades -> effectN( 3 ) ) ||
-                                data().affected_by( p() -> spec.shadow_blades -> effectN( 4 ) ) ||
-                                data().affected_by( p() -> spec.shadow_blades -> effectN( 5 ) );
+                                data().affected_by( p() -> spec.shadow_blades -> effectN( 3 ) );
 
     affected_by.ruthlessness = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.relentless_strikes = base_costs[ RESOURCE_COMBO_POINT ] > 0;
@@ -1950,6 +1948,7 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_combat_potency( state );
   p() -> trigger_blade_flurry( state );
   p() -> trigger_shadow_techniques( state );
+  p() -> trigger_shadow_blades_attack( state );
   p() -> trigger_insignia_of_ravenholdt( state );
 
   if ( result_is_hit( state -> result ) )
@@ -3005,16 +3004,6 @@ struct gloomblade_t : public rogue_attack_t
     requires_weapon = WEAPON_DAGGER;
   }
 
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( p() -> buffs.shadow_blades -> up() )
-      m *= 1.0 + p() -> buffs.shadow_blades -> data().effectN( 5 ).percent();
-
-    return m;
-  }
-
   void execute() override
   {
     rogue_attack_t::execute();
@@ -3500,50 +3489,12 @@ struct rupture_t : public rogue_attack_t
 
 // Shadow Blades ============================================================
 
-struct shadow_blade_t : public rogue_attack_t
-{
-  shadow_blade_t( const std::string& name_str, rogue_t* p, const spell_data_t* s ) :
-    rogue_attack_t( name_str, p, s )
-  {
-    school  = SCHOOL_SHADOW;
-    special = false;
-    repeating = true;
-    background = true;
-    may_glance = false;
-    base_execute_time = weapon -> swing_time;
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> buffs.sharpened_blades -> trigger();
-    }
-  }
-};
-
 struct shadow_blades_t : public rogue_attack_t
 {
   shadow_blades_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shadow_blades", p, p -> find_specialization_spell( "Shadow Blades" ), options_str )
   {
     harmful = may_miss = may_crit = false;
-
-    if ( ! p -> shadow_blade_main_hand )
-    {
-      p -> shadow_blade_main_hand = 
-        new shadow_blade_t( "shadow_blade_mh", p, data().effectN( 1 ).trigger() );
-      add_child( p -> shadow_blade_main_hand );
-    }
-
-    if ( ! p -> shadow_blade_off_hand && p -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      p -> shadow_blade_off_hand = 
-        new shadow_blade_t( "shadow_blade_offhand", p, p -> find_spell( data().effectN( 1 ).misc_value1() ) );
-      add_child( p -> shadow_blade_off_hand );
-    }
   }
 
   void execute() override
@@ -3551,6 +3502,24 @@ struct shadow_blades_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.shadow_blades -> trigger();
+  }
+};
+
+struct shadow_blades_attack_t : public rogue_attack_t
+{
+  shadow_blades_attack_t( rogue_t* p ) :
+    rogue_attack_t( "shadow_blades_attack", p, p -> find_spell( 279043 ) )
+  {
+    background = true;
+    may_crit = false;
+    attack_power_mod.direct = 0;
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    snapshot_flags = update_flags = 0;
   }
 };
 
@@ -3722,15 +3691,6 @@ struct shuriken_storm_t: public rogue_attack_t
     energize_type = ENERGIZE_PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 1;
-  }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    // As of 2017-07-28, Shuriken Storm also grants an additional CP with Shadow Blades, but it was
-    // removed from spell data during 7.2.5 PTR for some reason. We have to hardcode it here.
-    affected_by.shadow_blades = true;
   }
 
   bool procs_insignia_of_ravenholdt() const override
@@ -5147,67 +5107,6 @@ struct roll_the_bones_t : public buff_t
   }
 };
 
-struct shadow_blades_t : public buff_t
-{
-  shadow_blades_t( rogue_t* p ) :
-    buff_t( p, "shadow_blades", p -> find_specialization_spell( "Shadow Blades" ) )
-  {
-    set_duration( p -> find_specialization_spell( "Shadow Blades" ) -> duration() );
-    set_cooldown( timespan_t::zero() );
-  }
-
-  void change_auto_attack( attack_t*& hand, attack_t* a )
-  {
-    if ( hand == 0 )
-      return;
-
-    bool executing = hand -> execute_event != 0;
-    timespan_t time_to_hit = timespan_t::zero();
-
-    if ( executing )
-    {
-      time_to_hit = hand -> execute_event -> occurs() - sim -> current_time();
-      event_t::cancel( hand -> execute_event );
-    }
-
-    hand = a;
-
-    // Kick off the new attack, by instantly scheduling and rescheduling it to
-    // the remaining time to hit. We cannot use normal reschedule mechanism
-    // here (i.e., simply use event_t::reschedule() and leave it be), because
-    // the rescheduled event would be triggered before the full swing time
-    // (of the new auto attack) in most cases.
-    if ( executing )
-    {
-      timespan_t old_swing_time = hand -> base_execute_time;
-      hand -> base_execute_time = timespan_t::zero();
-      hand -> schedule_execute();
-      hand -> base_execute_time = old_swing_time;
-      hand -> execute_event -> reschedule( time_to_hit );
-    }
-  }
-
-  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
-  {
-    buff_t::execute( stacks, value, duration );
-
-    rogue_t* p = debug_cast< rogue_t* >( player );
-    change_auto_attack( p -> main_hand_attack, p -> shadow_blade_main_hand );
-    if ( p -> off_hand_attack )
-      change_auto_attack( p -> off_hand_attack, p -> shadow_blade_off_hand );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    rogue_t* p = debug_cast< rogue_t* >( player );
-    change_auto_attack( p -> main_hand_attack, p -> melee_main_hand );
-    if ( p -> off_hand_attack )
-      change_auto_attack( p -> off_hand_attack, p -> melee_off_hand );
-  }
-};
-
 } // end namespace buffs
 
 inline void actions::marked_for_death_t::impact( action_state_t* state )
@@ -5747,6 +5646,26 @@ void rogue_t::spend_combo_points( const action_state_t* state )
     trigger_combo_point_gain( static_cast<int>(max_spend), gains.t21_4pc_subtlety, state -> action );
     buffs.t21_4pc_subtlety -> expire();
   }
+}
+
+void rogue_t::trigger_shadow_blades_attack( action_state_t* state )
+{
+  if ( ! buffs.shadow_blades -> check() || state -> result_total <= 0 || ! state -> action -> result_is_hit( state -> result ) )
+  {
+    return;
+  }
+
+  const actions::rogue_attack_t* attack = cast_attack( state -> action );
+  if ( ! attack -> affected_by.shadow_blades )
+  {
+    return;
+  }
+
+  double amount = state -> result_amount * buffs.shadow_blades -> check_value();
+  shadow_blades_attack -> base_dd_min = amount;
+  shadow_blades_attack -> base_dd_max = amount;
+  shadow_blades_attack -> set_target( state -> target );
+  shadow_blades_attack -> execute();
 }
 
 void rogue_t::trigger_insignia_of_ravenholdt( action_state_t* state )
@@ -7005,6 +6924,8 @@ void rogue_t::init_spells()
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
+  shadow_blades_attack = new actions::shadow_blades_attack_t( this );
+
   // Legendaries
   insignia_of_ravenholdt_ = new actions::insignia_of_ravenholdt_attack_t( this );
 
@@ -7216,7 +7137,9 @@ void rogue_t::create_buffs()
   // Subtlety
   buffs.shuriken_combo        = make_buff( this, "shuriken_combo", find_spell( 245640 ) )
                                 -> set_default_value( find_spell( 245640 ) -> effectN( 1 ).percent() );
-  buffs.shadow_blades         = new buffs::shadow_blades_t( this );
+  buffs.shadow_blades         = make_buff( this, "shadow_blades", spec.shadow_blades )
+                                -> set_cooldown( timespan_t::zero() )
+                                -> set_default_value( spec.shadow_blades -> effectN( 1 ).percent() );
   buffs.shadow_dance          = new buffs::shadow_dance_t( this );
   buffs.symbols_of_death      = make_buff( this, "symbols_of_death", spec.symbols_of_death )
                                 -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
