@@ -283,8 +283,8 @@ struct rogue_t : public player_t
     buff_t* deadshot;
     buff_t* nights_vengeance;
     buff_t* sharpened_blades;
+    buff_t* snake_eyes;
     buff_t* storm_of_steel;
-
   } buffs;
 
   // Cooldowns
@@ -491,6 +491,7 @@ struct rogue_t : public player_t
     azerite_power_t deadshot;
     azerite_power_t nights_vengeance;
     azerite_power_t sharpened_blades;
+    azerite_power_t snake_eyes;
     azerite_power_t storm_of_steel;
     azerite_power_t twist_the_knife;
   } azerite;
@@ -3384,7 +3385,8 @@ struct roll_the_bones_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    timespan_t d = ( cast_state( execute_state ) -> cp + 1 ) * p() -> buffs.roll_the_bones -> data().duration();
+    int cp = cast_state( execute_state ) -> cp;
+    timespan_t d = ( cp + 1 ) * p() -> buffs.roll_the_bones -> data().duration();
 
     p() -> buffs.roll_the_bones -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
 
@@ -3394,6 +3396,8 @@ struct roll_the_bones_t : public rogue_attack_t
     {
       p() -> trigger_true_bearing( execute_state );
     }
+
+    p() -> buffs.snake_eyes -> trigger( 1, cp * p() -> azerite.snake_eyes.value() );
   }
 
   bool ready() override
@@ -3856,6 +3860,15 @@ struct sinister_strike_t : public rogue_attack_t
     return opportunity_proc_chance;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = rogue_attack_t::bonus_da( s );
+
+    b += p() -> buffs.snake_eyes -> stack_value();
+
+    return b;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -3864,6 +3877,8 @@ struct sinister_strike_t : public rogue_attack_t
     {
       return;
     }
+
+    p() -> buffs.snake_eyes -> expire();
 
     if ( ! sinister_strike_proc_event &&
          ( p() -> buffs.opportunity -> trigger( 1, buff_t::DEFAULT_VALUE(), sinister_strike_proc_chance() ) ) )
@@ -6966,6 +6981,7 @@ void rogue_t::init_spells()
   azerite.deadshot          = find_azerite_spell( "Deadshot" );
   azerite.nights_vengeance  = find_azerite_spell( "Night's Vengeance" );
   azerite.sharpened_blades  = find_azerite_spell( "Sharpened Blades" );
+  azerite.snake_eyes        = find_azerite_spell( "Snake Eyes" );
   azerite.storm_of_steel    = find_azerite_spell( "Storm of Steel" );
   azerite.twist_the_knife   = find_azerite_spell( "Twist the Knife" );
 
@@ -7316,6 +7332,9 @@ void rogue_t::create_buffs()
   buffs.sharpened_blades                   = make_buff( this, "sharpened_blades", find_spell( 272916 ) )
                                              -> set_trigger_spell( azerite.sharpened_blades.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.sharpened_blades.value() );
+  buffs.snake_eyes                         = make_buff( this, "snake_eyes", find_spell( 275863 ) )
+                                             -> set_trigger_spell( azerite.snake_eyes.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_default_value( azerite.snake_eyes.value() );
   buffs.storm_of_steel                     = make_buff( this, "storm_of_steel", find_spell( 273455 ) )
                                              -> set_trigger_spell( azerite.storm_of_steel.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.storm_of_steel.value() );
