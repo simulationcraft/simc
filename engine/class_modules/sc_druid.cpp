@@ -11,39 +11,29 @@ namespace { // UNNAMED NAMESPACE
 // ==========================================================================
 
 /*
-  Legion TODO:
-
-  Astral Influence
-  Affinity active components
-  Artifact 20 rank traits?
-  Ekowraith, Creator of Worlds legendary
-  Weapon Damage scaling issue
+  BfA TODO:
 
   Feral =====================================================================
-  Predator vs. adds
-  Artifact utility traits
-  Check Luffa-Wrapped Grips (what procs it)
-  Check Blood Scent crit
-  Jagged Wounds partial ticks
 
   Balance ===================================================================
-  Stellar Drift cast while moving
-  Force of Nature
-  Shooting Stars AsP react
-  Check Fury of Elune
+  New Empowerment effects:
+    -Proc each other
+    -Solar Empowerment explodes
+    -Starlord baseline
+  T20 as a talent without Starfall
+  Stellar Flare scales like FoE
+  Treants generate AsP over time
+  Still need AP Coeff for Treants
+  FoE generates AsP
+  Nature's Balance redesigned:
+    -Generates AsP like Blessing of An'She (which was removed)
+    -OoC baseline AsP becomes 50(change starting AsP to 50 when talented)
+  Inc and CA do not generate extra AsP and instead give 15% haste
 
-  Touch of the Moon
-  Light of the Sun
-  Rejuvenating Innervation
 
   Guardian ==================================================================
-  Statistics?
-  Incarnation CD modifier rework
-  Check Galactic Guardian proc sources
-  Find missing damage multipliers
 
   Resto =====================================================================
-  All the things
 
   Needs Documenting =========================================================
   predator_rppm option
@@ -5931,7 +5921,7 @@ struct starfall_t : public druid_spell_t
 
 
         base_costs[RESOURCE_ASTRAL_POWER] +=
-            p->talent.soul_of_the_forest->effectN(2).base_value()/10;
+            p->talent.soul_of_the_forest->effectN(2).resource(RESOURCE_ASTRAL_POWER);
     }
 
     double cost() const override
