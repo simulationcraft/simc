@@ -34,7 +34,7 @@ Tooltip          : Magic damage taken increased by $s1%.
 
 Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Orc (0x2002)
+Race             : Orc (0x2)
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -363,7 +363,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ..x..... .....
                  : Does not break stealth (37), Cannot crit (93)
 Effects          :
 #1 (id=257146)   : Direct Heal% (136)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 #2 (id=310971)   : Trigger Spell (64): Demonic Appetite
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 210041 | Target: Self (1)
 Description      : $@spelldesc178940
@@ -383,34 +383,35 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : Increases your Agility by $s1% while wearing only leather armor.
 
-Name             : Chaos Nova (id=179057) [Scaling Spell (-1), Spell Family (107)] 
+Name             : Chaos Nova (id=179057) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
 Resource         : 30 Fury (17) (id=10418)
 GCD              : 1.5 seconds
-Duration         : 5 seconds
+Duration         : 2 seconds
 Cooldown         : 60 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Unleashed Power (206477 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4)
-Attributes       : ....x... ........ ....x... ........   ...x...x ........ ........ ........ 
+Attributes       : ....x... ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Stop attacks (20)
 Effects          :
+#1 (id=257307)   : Apply Aura (6) | Stun (12)
+                   Base Value: 30 | Scaled Value: 30 | Radius: 0 - 8 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=267052)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20475 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Description      : Unleash an eruption of fel energy, dealing $s2 Chaos damage and disorienting all nearby enemies for $d. Damage will cancel the effect.
+Description      : Unleash an eruption of fel energy, dealing $s2 Chaos damage and stunning all nearby enemies for $d.
 
-Each enemy disoriented by Chaos Nova has a $s1% chance to generate a Lesser Soul Fragment.
-Tooltip          : Disoriented.
+Each enemy stunned by Chaos Nova has a $s1% chance to generate a Lesser Soul Fragment.
+Tooltip          : Stunned.
 
-Name             : Consume Magic (id=183752) [Spell Family (107)] 
+Name             : Disrupt (id=183752) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chromatic
 Range            : 10 yards
@@ -433,7 +434,7 @@ Generates $218903s1 Fury on a successful interrupt.][
 
 Generates ${$218903s2/10} Pain on a successful interrupt.]|r
 
-Name             : Consume Magic (id=183782) [Spell Family (107), Passive, Hidden] 
+Name             : Disrupt (id=183782) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
 School           : Physical
 Proc Chance      : 100%
@@ -447,7 +448,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=266245)   : Apply Aura (6) | Proc Trigger Spell (42): Consume Magic
+#1 (id=266245)   : Apply Aura (6) | Proc Trigger Spell (42): Disrupt
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218903 | Target: Self (1)
 
 Name             : Throw Glaive (id=185123) [Spell Family (107)] 
@@ -705,7 +706,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=278012)   : Apply Aura (6) | Threat (10)
-                   Base Value: 500 | Scaled Value: 500 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 450 | Scaled Value: 450 | Misc Value: 127 | Target: Self (1)
 
 Name             : Metamorphosis (id=191427) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -864,7 +865,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 6615 | Target: Unknown(62)
 #2 (id=374312)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Summons darkness around you in an 8 yd radius, granting friendly targets a $209426s1% chance to avoid all damage from an attack. Lasts $d.
+Description      : Summons darkness around you in an 8 yd radius, granting friendly targets a $209426s2% chance to avoid all damage from an attack. Lasts $d.
 
 Name             : Chaos Strike (Passive) (id=197125) [Spell Family (107), Passive, Hidden] 
 Class            : Havoc Demon Hunter
@@ -934,7 +935,7 @@ Name             : Eye Beam (id=198030) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chromatic
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Blind Fury (203550 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Soul Flame of Insight (226334 effect#1), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Blind Fury (203550 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Soul Flame of Insight (226334 effect#1), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Eyes of Rage (278500 effect#2)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1503,7 +1504,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=300262)   : Apply Aura (6) | Proc Trigger Spell (42): Master of the Glaive
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 213405 | Target: Self (1)
-Description      : Throw Glaive now snares all enemies hit by $213405s1% for $213405d.
+#2 (id=734046)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1612 | Target: Self (1)
+Description      : Throw Glaive has ${$s2+1} charges, and snares all enemies hit by $213405s1% for $213405d.
 
 Name             : Felblade (id=203557) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
@@ -2273,7 +2276,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=307173)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.13104 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.18000 | Target: Self (1)
 Description      : $@spelldesc207697
 Tooltip          : Healing $w1 health every $t1 sec.
 
@@ -2847,10 +2850,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=315235)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 14 | Scaled Value: 14 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Fury of the Illidari (201628), Fury of the Illidari (201789), Anguish (202446), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926)
 #2 (id=315236)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 14 | Scaled Value: 14 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Fury of the Illidari (201628), Fury of the Illidari (201789), Anguish (202446), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926)
 #3 (id=315237)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | Target: Self (1)
@@ -3211,10 +3214,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Consuming a Soul Fragment reduces the remaining cooldown of Demon Spikes by ${$s1/10}.1 sec.
 
-Name             : Consume Magic (id=218903) [Spell Family (107)] 
+Name             : Disrupt (id=218903) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Chaos
-Triggered by     : Consume Magic (183782)
+Triggered by     : Disrupt (183782)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3223,9 +3226,9 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=326008)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: fury | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: fury | Target: Self (1)
 #2 (id=326009)   : Energize Power (30)
-                   Base Value: 500 | Scaled Value: 500 | Misc Value: pain | Target: Self (1)
+                   Base Value: 300 | Scaled Value: 300 | Misc Value: pain | Target: Self (1)
 Description      : $@spelldesc183752
 
 Name             : Critical Strikes (Passive) (id=221351) [Passive] 
@@ -3442,7 +3445,7 @@ Effects          :
 #3 (id=344030)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #4 (id=344031)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.05000 | Target: Self (1)
 Description      : Viciously strike all enemies in front of you for $228478s1 Physical damage and heal yourself for $s4.
 
 Consumes up to $s3 Soul Fragments within $s1 yds.
@@ -3771,9 +3774,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 23548.61 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 32969.62 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 23548.61 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 32969.62 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -4067,7 +4070,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=707058)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
-Description      : Increases the item level this item by 5.
+Description      : Increases the item level of this item by 5.
 
 Name             : Elemental Whirl (id=263984) [Scaling Spell (-7), Passive] 
 Class            : Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -4085,6 +4088,25 @@ Effects          :
 #1 (id=707066)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 270667 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant you Elemental Whirl, increasing your Critical Strike, Haste, Mastery, or Versatility by $s1 for $268956d.
+
+Name             : Heed My Call (id=263987) [Scaling Spell (-1), Passive] 
+Class            : Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Demon Hunter
+School           : Physical
+Azerite Power Id : 22
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=707069)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 622 (avg=2) | Misc Value: 1792 | Trigger Spell: 271681 | Target: Self (1)
+#2 (id=713642)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 62.2 (avg=0.2)
+Description      : Your damaging abilities have a chance to deal $s1 to your target, and $s2 to enemies within 3 yards of that target.
+Tooltip          : Your damaging abilities have a chance to deal $s1 to your target, and $s2 to enemies within 3 yards of that target.
 
 Name             : Charred Flesh (id=264002) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -4121,8 +4143,27 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 1 | Target: Self (1)
 Description      : Consuming a Soul Fragment has a chance to activate Metamorphosis for $s1 sec.
 
+Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 18
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=707293)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 112.4097 (avg=0.361446) | Misc Value: 33554432 | Target: Self (1)
+#2 (id=709390)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 56.5454 (avg=0.181818) | Misc Value: 65536 | Target: Self (1)
+Description      : Increases your Mastery by $s1 and your Leech by $s2.
+Tooltip          : Increases Mastery by $s1 and Leech by $s2.
+
 Name             : Gutripper (id=266937) [Scaling Spell (-1), Passive] 
-Class            : Paladin, Hunter, Rogue, Shaman, Mage, Warlock, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Demon Hunter
 School           : Physical
 Azerite Power Id : 31
 Triggered by     : Gutripper (270668)
@@ -4159,6 +4200,23 @@ Effects          :
 #1 (id=714511)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=0.178571) | Trigger Spell: 270675 | Target: Self (1)
 Description      : Taking damage grants you $s1 Dodge for $269214d, stacking up to $269214u times.
+
+Name             : Azerite Veins (id=267683) [Scaling Spell (-1), Passive] 
+Class            : Paladin, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 89
+Triggered by     : Azerite Veins (270674)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=714531)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 138.8394 (avg=0.446429) | Trigger Spell: 270673 | Target: Self (1)
+Description      : Taking damage has a chance to grant you Azerite Veins, healing you for $s1 every $270674t1 sec. Lasts $270674d or until you are fully healed.
 
 Name             : Void Reaver (id=268175) [Spell Family (107), Passive, Hidden] 
 Class            : Demon Hunter
@@ -4446,7 +4504,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
-Name             : Blightborne Infusion (id=273823) [Scaling Spell (-1), Passive] 
+Name             : Blightborne Infusion (Drustvar Power) (id=273823) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 193
@@ -4461,7 +4519,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725757)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 622 (avg=2) | Trigger Spell: 273825 | Target: Self (1)
-Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros. The Soul grants you some of its power, increasing your $s1 Critical Strike for $273826d.
+Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros. The Soul grants you some of its power, increasing your Critical Strike by $s1 for $273826d.
 
 Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -4498,7 +4556,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=725772)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 273835 | Target: Self (1)
-Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $d.
+Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : Sandstorm (id=273853) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -4535,6 +4593,38 @@ Effects          :
                    Base Value: 0 | Scaled Value: 699.75 (avg=2.25) | Trigger Spell: 274345 | Target: Self (1)
 Description      : Consuming a Soul Fragment shields you, granting $s1 Absorb for $274346d
 
+Name             : Unbound Chaos (id=275144) [Scaling Spell (-1), Spell Family (107), Passive] 
+Class            : Demon Hunter
+School           : Physical
+Azerite Power Id : 220
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=727995)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 505.6002 (avg=1.625724) | Target: Self (1)
+Description      : Your inner demon slams into nearby enemies at the end of your Fel Rush, dealing $s1 Chaos damage.
+
+Name             : Rigid Carapace (id=275350) [Scaling Spell (-7), Spell Family (107), Passive] 
+Class            : Demon Hunter
+School           : Physical
+Azerite Power Id : 221
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=728344)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.304878) | Target: Self (1)
+Description      : Demon Spikes increases your Armor by $s1 every $275351t2 sec, for $275351d.
+
 Name             : Seething Power (id=275934) [Scaling Spell (-1), Spell Family (107), Passive] 
 Class            : Demon Hunter
 School           : Physical
@@ -4570,5 +4660,81 @@ Effects          :
 #2 (id=729330)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : Soul Cleave grants you a shield that absorbs $s1 damage, increased by up to $s2% based on your missing health.
+
+Name             : Consume Magic (id=278326) [Spell Family (15)] 
+Class            : Demon Hunter
+School           : Chromatic
+Spell Level      : 103
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 10 seconds
+Attributes       : ........ ........ ..x..... ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=733970)   : Dispel (38)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Enemy (6)
+#2 (id=733971)   : Energize Power (30)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: fury | Target: Self (1)
+#3 (id=733972)   : Energize Power (30)
+                   Base Value: 200 | Scaled Value: 200 | Misc Value: pain | Target: Self (1)
+Description      : Consume $m1 beneficial Magic effect from the target, removing it and granting you $?c1[$s2 Fury][${$s3/10} Pain].
+
+Name             : Demonic Wards (id=278386) [Spell Family (107), Passive] 
+Class            : Havoc Demon Hunter
+School           : Physical
+Spell Level      : 1
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=734062)   : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -10 | Scaled Value: -10 | Misc Value: 0x7e | Target: Self (1)
+Description      : Your tattoos reduce magic damage taken by $s1%.
+
+Name             : Eyes of Rage (id=278500) [Scaling Spell (-1), Spell Family (107), Passive] 
+Class            : Demon Hunter
+School           : Physical
+Azerite Power Id : 353
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=734233)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 279442 | Target: Self (1)
+#2 (id=734234)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 50.00009 (avg=0.160772) | Target: Self (1)
+                   Affected Spells: Eye Beam (198030)
+Description      : Eye Beam deals an additional $?s203550[${$s2*15}][${$s2*10}] damage. Consuming a Soul Fragment reduces the cooldown of Eye Beam by ${$s1/1000}.1 sec.
+
+Name             : Essence Sever (id=278501) [Scaling Spell (-1), Spell Family (107), Passive] 
+Class            : Demon Hunter
+School           : Physical
+Azerite Power Id : 355
+Triggered by     : Essence Sever (279450)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=734236)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 400.1171 (avg=1.28655) | Trigger Spell: 279449 | Target: Self (1)
+#2 (id=734237)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4
+Description      : Shear has a chance to rip Lesser Soul Fragments from up to $s2 nearby enemies, dealing $s1 Fire damage to each.
 
 

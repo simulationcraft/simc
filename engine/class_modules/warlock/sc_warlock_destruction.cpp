@@ -205,7 +205,7 @@ namespace warlock {
     struct dark_soul_t : public warlock_spell_t
     {
       dark_soul_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("soul_harvest", p, p -> talents.dark_soul)
+        warlock_spell_t("soul_harvest", p, p -> talents.dark_soul_instability)
       {
         parse_options(options_str);
         harmful = may_crit = may_miss = false;
@@ -214,7 +214,7 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
-        p()->buffs.dark_soul->trigger();
+        p()->buffs.dark_soul_instability->trigger();
       }
     };
     //Spells
@@ -898,10 +898,10 @@ namespace warlock {
       ->set_trigger_spell(talents.reverse_entropy);
     buffs.grimoire_of_supremacy = make_buff(this, "grimoire_of_supremacy", find_spell(266091))
       ->set_default_value(find_spell(266091)->effectN(1).percent());
-    buffs.dark_soul = make_buff(this, "dark_soul", talents.dark_soul)
+    buffs.dark_soul_instability = make_buff(this, "dark_soul", talents.dark_soul_instability)
       ->add_invalidate(CACHE_SPELL_CRIT_CHANCE)
       ->add_invalidate(CACHE_CRIT_CHANCE)
-      ->set_default_value(talents.dark_soul->effectN(1).percent());
+      ->set_default_value(talents.dark_soul_instability->effectN(1).percent());
   }
   void warlock_t::init_spells_destruction() {
     using namespace actions_destruction;
@@ -928,7 +928,7 @@ namespace warlock {
     talents.grimoire_of_supremacy       = find_talent_spell("Grimoire of Supremacy");
 
     talents.channel_demonfire           = find_talent_spell("Channel Demonfire");
-    talents.dark_soul                   = find_talent_spell("Dark Soul");
+    talents.dark_soul_instability       = find_talent_spell("Dark Soul: Instability");
 
     /*
     if (specialization() == WARLOCK_DESTRUCTION)

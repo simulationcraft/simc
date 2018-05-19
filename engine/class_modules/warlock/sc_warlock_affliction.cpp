@@ -3,6 +3,71 @@
 
 namespace warlock
 {
+  namespace pets
+  {
+    namespace darkglare
+    {
+      struct dark_glare_t : public warlock_pet_spell_t
+      {
+        dark_glare_t(warlock_pet_t* p) : warlock_pet_spell_t("dark_glare", p, p -> find_spell(205231))
+        {
+          
+        }
+
+        double action_multiplier() const override
+        {
+          double m = warlock_pet_spell_t::action_multiplier();
+
+          double dots = 0.0;
+
+          //p()->o()->get_active_dots(agony_action_id);
+
+          for (const auto target : sim->target_non_sleeping_list)
+          {
+            if (td(target)->dots_agony->is_ticking())
+              dots += 1.0;
+            if (td(target)->dots_corruption->is_ticking())
+              dots += 1.0;
+            if (td(target)->dots_siphon_life->is_ticking())
+              dots += 1.0;
+            if (td(target)->dots_phantom_singularity->is_ticking())
+              dots += 1.0;
+            if (td(target)->dots_vile_taint->is_ticking())
+              dots += 1.0;
+            for (auto& current_ua : td(target)->dots_unstable_affliction)
+            {
+              if (current_ua->is_ticking())
+                dots += 1.0;
+            }
+          }
+
+          m *= 1.0 + (dots * p()->o()->spec.summon_darkglare->effectN(3).percent());
+
+          return m;
+        }
+      };
+
+      darkglare_t::darkglare_t(sim_t* sim, warlock_t* owner, const std::string& name) : 
+        warlock_pet_t(sim, owner, name, PET_DARKGLARE, name != "darkglare")
+      {
+        action_list_str += "dark_glare";
+      }
+
+      double darkglare_t::composite_player_multiplier(school_e school) const
+      {
+        double m = warlock_pet_t::composite_player_multiplier(school);
+        return m;
+      }
+
+      action_t* darkglare_t::create_action(const std::string& name, const std::string& options_str)
+      {
+        if (name == "dark_glare") return new dark_glare_t(this);
+
+        return warlock_pet_t::create_action(name, options_str);
+      }
+    }
+  }
+
   namespace actions_affliction
   {
     using namespace actions;
@@ -129,7 +194,7 @@ namespace warlock
 
         double tier_bonus = 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T19, B4 )->effectN( 1 ).percent();
         double active_agonies = p()->get_active_dots( internal_id );
-        double accumulator_increment = rng().range( 0.0, p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.32 * tier_bonus : 0.32 ) / std::sqrt( active_agonies );
+        double accumulator_increment = rng().range( 0.0, p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.368 * tier_bonus : 0.368 ) / std::sqrt( active_agonies );
 
         p()->agony_accumulator += accumulator_increment;
 
@@ -514,10 +579,10 @@ namespace warlock
         if ( p()->talents.siphon_life->ok() )
           total_damage_siphon_life = get_contribution_from_dot( td->dots_siphon_life );
 
-        double total_damage_phantom_singularity = 0.0;
+        //double total_damage_phantom_singularity = 0.0;
 
-        if ( p()->talents.phantom_singularity->ok() )
-          total_damage_phantom_singularity = get_contribution_from_dot( td->dots_phantom_singularity );
+        //if ( p()->talents.phantom_singularity->ok() )
+          //total_damage_phantom_singularity = get_contribution_from_dot( td->dots_phantom_singularity );
 
         double total_damage_ua = 0.0;
 
@@ -526,7 +591,7 @@ namespace warlock
           total_damage_ua += get_contribution_from_dot( current_ua );
         }
 
-        const double total_dot_dmg = total_damage_agony + total_damage_corruption + total_damage_siphon_life + total_damage_phantom_singularity + total_damage_ua;
+        const double total_dot_dmg = total_damage_agony + total_damage_corruption + total_damage_siphon_life + total_damage_ua;
 
         this->base_dd_min = this->base_dd_max = ( total_dot_dmg * data().effectN( 2 ).percent() );
 
@@ -538,9 +603,40 @@ namespace warlock
       }
     };
 
-    // lvl 30 - writhe|ac|deaths embrace
+    // lvl 30 - writhe|ac|siphon life
+    struct siphon_life_t : public warlock_spell_t
+    {
+      siphon_life_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("siphon_life", p, p -> talents.siphon_life)
+      {
+        parse_options(options_str);
+        may_crit = false;
+        affected_by_deaths_embrace = true;
+      }
+
+      double action_multiplier() const override
+      {
+        double m = warlock_spell_t::action_multiplier();
+
+        if (p()->mastery_spells.potent_afflictions->ok())
+          m *= 1.0 + p()->cache.mastery_value();
+
+        return m;
+      }
+
+      double composite_target_multiplier(player_t* target) const override
+      {
+        double m = warlock_spell_t::composite_target_multiplier(target);
+        auto td = this->td(target);
+
+        if (td->debuffs_tormented_agony->check())
+          m *= 1.0 + td->debuffs_tormented_agony->data().effectN(1).percent();
+
+        return m;
+      }
+    };
     // lvl 45 - demon skin|burning rush|dark pact
-    // lvl 60 - sow the seeds|phantom singularity|soul harvest
+    // lvl 60 - sow the seeds|phantom singularity|vile taint
     struct phantom_singularity_tick_t : public warlock_spell_t
     {
       phantom_singularity_tick_t( warlock_t* p ) :
@@ -580,76 +676,142 @@ namespace warlock
       }
     };
 
-    // lvl 75 - darkfury|mortal coil|demonic circle
-    // lvl 90 - nightfall|nightfall|grimoire of sacrifice
-    // lvl 100 - soul conduit|creeping death|siphon life
-    struct siphon_life_t : public warlock_spell_t
+    struct vile_taint_damage_t : public warlock_spell_t
     {
-      siphon_life_t( warlock_t* p, const std::string& options_str ) :
-        warlock_spell_t( "siphon_life", p, p -> talents.siphon_life )
+      vile_taint_damage_t(warlock_t* p)
+        : warlock_spell_t("vile_taint_damage", p, p -> talents.vile_taint)
       {
-        parse_options( options_str );
-        may_crit = false;
-        affected_by_deaths_embrace = true;
+        aoe = -1;
+        background = dual = ground_aoe = true;
+        hasted_ticks = false;
       }
 
-      double action_multiplier() const override
+      double cost() const override
       {
-        double m = warlock_spell_t::action_multiplier();
-
-        if ( p()->mastery_spells.potent_afflictions->ok() )
-          m *= 1.0 + p()->cache.mastery_value();
-
-        return m;
+        return 0.0;
       }
 
-      double composite_target_multiplier( player_t* target ) const override
+      dot_t* get_dot(player_t* t)
       {
-        double m = warlock_spell_t::composite_target_multiplier( target );
-        auto td = this->td( target );
+        if (!t) t = target;
+        if (!t) return nullptr;
 
-        if ( td->debuffs_tormented_agony->check() )
-          m *= 1.0 + td->debuffs_tormented_agony->data().effectN( 1 ).percent();
+        return td(t)->dots_vile_taint;
+      }
 
-        return m;
+      void make_ground_aoe_event(warlock_t* p, action_state_t* execute_state)
+      {
+        make_event<ground_aoe_event_t>(*sim, p, ground_aoe_params_t()
+          .target(execute_state->target)
+          .x(p->talents.vile_taint->ok() ? p->x_position : execute_state->target->x_position)
+          .y(p->talents.vile_taint->ok() ? p->y_position : execute_state->target->y_position)
+          .pulse_time(p->talents.vile_taint->effectN(1).period())
+          .duration(p->talents.vile_taint->duration())
+          .start_time(sim->current_time())
+          .action(this));
       }
     };
 
-    // Buffs
-    struct soul_harvest_t : public warlock_spell_t
+    struct vile_taint_t : public warlock_spell_t
     {
-      int agony_action_id;
-      timespan_t base_duration;
-      timespan_t total_duration;
-      timespan_t time_per_agony;
-      timespan_t max_duration;
+      vile_taint_damage_t* damage;
 
-      soul_harvest_t( warlock_t* p, const std::string& options_str ) :
-        warlock_spell_t( "soul_harvest", p, p -> talents.soul_harvest ),
-        agony_action_id( -1 )
+      vile_taint_t(warlock_t* p, const std::string& options_str)
+        : warlock_spell_t("vile_taint", p, p -> talents.vile_taint)
       {
-        parse_options( options_str );
+        may_miss = may_crit = false;
+        damage = new vile_taint_damage_t(p);
+        damage->stats = stats;
+      }
+
+      // Don't record data for this action.
+      void record_data(action_state_t* s) override
+      {
+        (void)s;
+        assert(s->result_amount == 0.0);
+      }
+
+      void execute() override
+      {
+        warlock_spell_t::execute();
+        damage->make_ground_aoe_event(p(), execute_state);
+      }
+
+      expr_t* create_expression(const std::string& name) override
+      {
+        return warlock_spell_t::create_expression(name);
+      }
+    };
+    // lvl 75 - darkfury|mortal coil|demonic circle
+    // lvl 90 - nightfall|drain soul|grimoire of sacrifice
+    // lvl 100 - soul conduit|creeping death|dark soul misery
+    struct dark_soul_t : public warlock_spell_t
+    {
+      dark_soul_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("dark_soul", p, p -> talents.dark_soul_misery)
+      {
+        parse_options(options_str);
         harmful = may_crit = may_miss = false;
-        base_duration = data().duration();
-        time_per_agony = timespan_t::from_seconds( data().effectN( 2 ).base_value() );
-        max_duration = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
       }
 
       void execute() override
       {
         warlock_spell_t::execute();
 
-        total_duration = base_duration + time_per_agony * p()->get_active_dots( agony_action_id );
+        p()->buffs.dark_soul_misery->trigger();
+      }
+    };
 
-        p()->buffs.soul_harvest->expire();
-        p()->buffs.soul_harvest->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, std::min( total_duration, max_duration ) );
+    // Buffs
+    struct summon_darkglare_t : public warlock_spell_t
+    {
+      summon_darkglare_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("summon_darkglare", p, p -> spec.summon_darkglare)
+      {
+        parse_options(options_str);
+        harmful = may_crit = may_miss = false;
       }
 
-      void init() override
+      void execute() override
       {
-        warlock_spell_t::init();
+        warlock_spell_t::execute();
+        
+        for (auto& darkglare : p()->warlock_pet_list.darkglare)
+        {
+          if (darkglare->is_sleeping())
+          {
+            darkglare->summon(data().duration());
+          }
+        }
 
-        agony_action_id = p()->find_action_id( "agony" );
+        for (const auto target : sim->target_non_sleeping_list)
+        {
+          if (td(target)->dots_agony->is_ticking())
+          {
+            td(target)->dots_agony->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+          }
+          if (td(target)->dots_corruption->is_ticking())
+          {
+            td(target)->dots_corruption->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+          }
+          if (td(target)->dots_siphon_life->is_ticking())
+          {
+            td(target)->dots_siphon_life->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+          }
+          if (td(target)->dots_phantom_singularity->is_ticking())
+          {
+            td(target)->dots_phantom_singularity->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+          }
+          if (td(target)->dots_vile_taint->is_ticking())
+          {
+            td(target)->dots_vile_taint->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+          }
+          for (auto& current_ua : td(target)->dots_unstable_affliction)
+          {
+            if (current_ua->is_ticking())
+              current_ua->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+          }
+        }
       }
     };
 
@@ -730,6 +892,7 @@ namespace warlock
     if ( action_name == "corruption" ) return new                     corruption_t( this, options_str );
     if ( action_name == "agony" ) return new                          agony_t( this, options_str );
     if ( action_name == "unstable_affliction" ) return new            unstable_affliction_t( this, options_str );
+    if ( action_name == "summon_darkglare") return new                summon_darkglare_t(this, options_str);
     // aoe
     if ( action_name == "seed_of_corruption" ) return new             seed_of_corruption_t( this, options_str );
     // talents
@@ -737,7 +900,8 @@ namespace warlock
     if ( action_name == "deathbolt" ) return new                      deathbolt_t( this, options_str );
     if ( action_name == "phantom_singularity" ) return new            phantom_singularity_t( this, options_str );
     if ( action_name == "siphon_life" ) return new                    siphon_life_t( this, options_str );
-    if ( action_name == "soul_harvest" ) return new                   soul_harvest_t( this, options_str );
+    if ( action_name == "dark_soul" ) return new                      dark_soul_t( this, options_str );
+    if ( action_name == "vile_taint" ) return new                     vile_taint_t(this, options_str);
 
     return nullptr;
   }
@@ -748,11 +912,8 @@ namespace warlock
     buffs.active_uas = make_buff( this, "active_uas" )
       ->set_max_stack( 20 );
     //talents
-    buffs.soul_harvest = make_buff( this, "soul_harvest", talents.soul_harvest )
-      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-      ->set_refresh_behavior( buff_refresh_behavior::EXTEND )
-      ->set_cooldown( timespan_t::zero() )
-      ->set_default_value( talents.soul_harvest->effectN( 1 ).percent() );
+    buffs.dark_soul_misery = make_buff<haste_buff_t>(this, "dark_soul", talents.dark_soul_misery)
+      ->set_default_value(talents.dark_soul_misery->effectN(1).percent());
     buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
       ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
       ->set_trigger_spell( talents.nightfall );
@@ -772,19 +933,20 @@ namespace warlock
     // Specialization Spells
     spec.unstable_affliction            = find_specialization_spell( "Unstable Affliction" );
     spec.agony                          = find_specialization_spell( "Agony" );
+    spec.summon_darkglare               = find_specialization_spell( "Summon Darkglare" );
     // Talents
     talents.shadow_embrace              = find_talent_spell( "Shadow Embrace" );
     talents.haunt                       = find_talent_spell( "Haunt" );
     talents.deathbolt                   = find_talent_spell( "Deathbolt" );
     talents.writhe_in_agony             = find_talent_spell( "Writhe in Agony" );
     talents.absolute_corruption         = find_talent_spell( "Absolute Corruption" );
-    talents.deaths_embrace              = find_talent_spell( "Death's Embrace" );
+    talents.siphon_life                 = find_talent_spell( "Siphon Life" );
     talents.sow_the_seeds               = find_talent_spell( "Sow the Seeds" );
     talents.phantom_singularity         = find_talent_spell( "Phantom Singularity" );
-    talents.soul_harvest                = find_talent_spell( "Soul Harvest" );
+    talents.vile_taint                  = find_talent_spell( "Vile Taint" );
     talents.nightfall                   = find_talent_spell( "Nightfall" );
     talents.creeping_death              = find_talent_spell( "Creeping Death" );
-    talents.siphon_life                 = find_talent_spell( "Siphon Life" );
+    talents.dark_soul_misery            = find_talent_spell( "Dark Soul: Misery" );
     // Tier
     active.tormented_agony              = new tormented_agony_t( this );
 
@@ -826,14 +988,16 @@ namespace warlock
   {
     action_priority_list_t* def = get_action_priority_list( "default" );
 
-    def->add_action( "soul_harvest,if=buff.active_uas.stack>0" );
+    def->add_action( "dark_soul,if=buff.active_uas.stack>0" );
     def->add_action( "haunt" );
     def->add_action( "agony,if=refreshable" );
     def->add_action( "siphon_life,if=refreshable" );
     def->add_action( "corruption,if=refreshable" );
     def->add_action( "phantom_singularity" );
+    def->add_action( "vile_taint" );
     def->add_action( "unstable_affliction,if=soul_shard=5" );
     def->add_action( "unstable_affliction,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking=0)|soul_shard>2" );
+    def->add_action( "summon_darkglare" );
     def->add_action( "deathbolt" );
     def->add_action( "shadow_bolt" );
   }

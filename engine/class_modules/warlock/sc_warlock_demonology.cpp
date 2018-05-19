@@ -1147,7 +1147,7 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
-        p()->buffs.soul_harvest->trigger();
+        p()->buffs.nether_portal->trigger();
       }
       void consume_resource() override {
         warlock_spell_t::consume_resource();

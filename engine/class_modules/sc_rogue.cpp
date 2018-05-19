@@ -16,7 +16,8 @@ enum secondary_trigger_e
 {
   TRIGGER_NONE = 0U,
   TRIGGER_DEATH_FROM_ABOVE,
-  TRIGGER_WEAPONMASTER
+  TRIGGER_WEAPONMASTER,
+  TRIGGER_SHURIKEN_TORNADO
 };
 
 struct rogue_t;
@@ -27,7 +28,7 @@ struct residual_damage_state_t;
 struct rogue_poison_t;
 struct rogue_attack_t;
 struct melee_t;
-struct shadow_blade_t;
+struct shadow_blades_attack_t;
 }
 
 namespace buffs
@@ -112,7 +113,7 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* ghostly_strike;
     buff_t* garrote; // Hidden proxy buff for garrote to get Thuggee working easily(ish)
     buff_t* toxic_blade;
-    buff_t* expose_weakness;
+    buff_t* find_weakness;
   } debuffs;
 
   rogue_td_t( player_t* target, rogue_t* source );
@@ -187,8 +188,7 @@ struct rogue_t : public player_t
   action_t* auto_attack;
   actions::melee_t* melee_main_hand;
   actions::melee_t* melee_off_hand;
-  actions::shadow_blade_t* shadow_blade_main_hand;
-  actions::shadow_blade_t* shadow_blade_off_hand;
+  actions::shadow_blades_attack_t* shadow_blades_attack;
 
   // Data collection
   luxurious_sample_data_t* dfa_mh, *dfa_oh;
@@ -216,11 +216,11 @@ struct rogue_t : public player_t
     buff_t* opportunity;
     buff_t* roll_the_bones;
     // Roll the bones buffs
-    buff_t* broadsides;
+    buff_t* broadside;
     buff_t* buried_treasure;
     haste_buff_t* grand_melee;
-    buff_t* jolly_roger;
-    buff_t* shark_infested_waters;
+    buff_t* skull_and_crossbones;
+    buff_t* ruthless_precision;
     buff_t* true_bearing;
     // Subtlety
     buff_t* shuriken_combo;
@@ -246,6 +246,7 @@ struct rogue_t : public player_t
     buff_t* slice_and_dice;
     // Subtlety
     buff_t* master_of_shadows;
+    buff_t* shuriken_tornado;
     buff_t* death_from_above;
 
 
@@ -282,8 +283,8 @@ struct rogue_t : public player_t
     buff_t* deadshot;
     buff_t* nights_vengeance;
     buff_t* sharpened_blades;
+    buff_t* snake_eyes;
     buff_t* storm_of_steel;
-
   } buffs;
 
   // Cooldowns
@@ -335,7 +336,7 @@ struct rogue_t : public player_t
     // CP Gains
     gain_t* seal_fate;
     gain_t* quick_draw;
-    gain_t* broadsides;
+    gain_t* broadside;
     gain_t* ruthlessness;
     gain_t* shadow_techniques;
     gain_t* shadow_blades;
@@ -460,7 +461,7 @@ struct rogue_t : public player_t
     const spell_data_t* killing_spree;
 
     // Subtlety
-    const spell_data_t* expose_weakness;
+    const spell_data_t* find_weakness;
     const spell_data_t* gloomblade;
 
     const spell_data_t* shadow_focus;
@@ -469,6 +470,7 @@ struct rogue_t : public player_t
     const spell_data_t* dark_shadow;
 
     const spell_data_t* master_of_shadows;
+    const spell_data_t* shuriken_tornado;
     const spell_data_t* death_from_above;
   } talent;
 
@@ -489,6 +491,7 @@ struct rogue_t : public player_t
     azerite_power_t deadshot;
     azerite_power_t nights_vengeance;
     azerite_power_t sharpened_blades;
+    azerite_power_t snake_eyes;
     azerite_power_t storm_of_steel;
     azerite_power_t twist_the_knife;
   } azerite;
@@ -547,7 +550,7 @@ struct rogue_t : public player_t
     poison_bomb( nullptr ),
     insignia_of_ravenholdt_( nullptr ),
     auto_attack( nullptr ), melee_main_hand( nullptr ), melee_off_hand( nullptr ),
-    shadow_blade_main_hand( nullptr ), shadow_blade_off_hand( nullptr ),
+    shadow_blades_attack( nullptr ),
     dfa_mh( nullptr ), dfa_oh( nullptr ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -668,6 +671,7 @@ struct rogue_t : public player_t
   void trigger_restless_blades( const action_state_t* );
   void trigger_exsanguinate( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
+  void trigger_shadow_blades_attack( action_state_t* );
   void trigger_insignia_of_ravenholdt( action_state_t* );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_t21_4pc_assassination( const action_state_t* state );
@@ -771,7 +775,7 @@ struct rogue_attack_t : public melee_attack_t
     bool alacrity;
     bool adrenaline_rush_gcd;
     bool lesser_adrenaline_rush_gcd;
-    bool broadsides;
+    bool broadside;
     bool t21_2pc_assassination;
     bool master_assassin;
     bool toxic_blade;
@@ -885,9 +889,7 @@ struct rogue_attack_t : public melee_attack_t
 
     // Figure out the affected flags
     affected_by.shadow_blades = data().affected_by( p() -> spec.shadow_blades -> effectN( 2 ) ) ||
-                                data().affected_by( p() -> spec.shadow_blades -> effectN( 3 ) ) ||
-                                data().affected_by( p() -> spec.shadow_blades -> effectN( 4 ) ) ||
-                                data().affected_by( p() -> spec.shadow_blades -> effectN( 5 ) );
+                                data().affected_by( p() -> spec.shadow_blades -> effectN( 3 ) );
 
     affected_by.ruthlessness = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.relentless_strikes = base_costs[ RESOURCE_COMBO_POINT ] > 0;
@@ -896,7 +898,7 @@ struct rogue_attack_t : public melee_attack_t
     affected_by.alacrity = base_costs[ RESOURCE_COMBO_POINT ] > 0;
     affected_by.adrenaline_rush_gcd = data().affected_by( p() -> buffs.adrenaline_rush -> data().effectN( 3 ) );
     affected_by.lesser_adrenaline_rush_gcd = data().affected_by( p() -> buffs.t20_4pc_outlaw -> data().effectN( 3 ) );
-    affected_by.broadsides = data().affected_by( p() -> buffs.broadsides -> data().effectN( 4 ) );
+    affected_by.broadside = data().affected_by( p() -> buffs.broadside -> data().effectN( 4 ) );
     affected_by.t21_2pc_assassination = data().affected_by( p()->sets->set( ROGUE_ASSASSINATION, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.master_assassin = data().affected_by( p() -> spec.master_assassin -> effectN( 1 ) );
     affected_by.toxic_blade = data().affected_by( p() -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ) );
@@ -958,7 +960,7 @@ struct rogue_attack_t : public melee_attack_t
 
     if ( cp > 0 )
     {
-      if ( p() -> buffs.broadsides -> check() )
+      if ( p() -> buffs.broadside -> check() )
       {
         cp += 1;
       }
@@ -1186,9 +1188,9 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::action_multiplier();
 
-    if (affected_by.broadsides && p() -> buffs.broadsides -> up())
+    if (affected_by.broadside && p() -> buffs.broadside -> up())
     {
-      m *= 1.0 + p() -> buffs.broadsides -> data().effectN( 4 ).percent();
+      m *= 1.0 + p() -> buffs.broadside -> data().effectN( 4 ).percent();
     }
 
     // Apply Nightstalker as an Action Multiplier for things that don't snapshot
@@ -1217,7 +1219,7 @@ struct rogue_attack_t : public melee_attack_t
   double target_armor( player_t* target ) const override
   {
     double a = melee_attack_t::target_armor( target );
-    a *= 1.0 - td( target ) -> debuffs.expose_weakness -> value();
+    a *= 1.0 - td( target ) -> debuffs.find_weakness -> value();
     return a;
   }
 
@@ -1950,6 +1952,7 @@ void rogue_attack_t::impact( action_state_t* state )
   p() -> trigger_combat_potency( state );
   p() -> trigger_blade_flurry( state );
   p() -> trigger_shadow_techniques( state );
+  p() -> trigger_shadow_blades_attack( state );
   p() -> trigger_insignia_of_ravenholdt( state );
 
   if ( result_is_hit( state -> result ) )
@@ -2299,10 +2302,10 @@ struct ambush_t : public rogue_attack_t
   void execute() override
   {
     rogue_attack_t::execute();
-    if ( p() -> buffs.broadsides -> up() )
+    if ( p() -> buffs.broadside -> up() )
     {
-      p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 1 ).base_value(),
-          p() -> gains.broadsides, this );
+      p() -> trigger_combo_point_gain( p() -> buffs.broadside -> data().effectN( 2 ).base_value(),
+          p() -> gains.broadside, this );
     }
   }
 };
@@ -2371,6 +2374,18 @@ struct between_the_eyes_t : public rogue_attack_t
                     options_str ), greenskins_waterlogged_wristcuffs( nullptr )
   {
     crit_bonus_multiplier *= 1.0 + p -> find_specialization_spell( 235484 ) -> effectN( 1 ).percent();
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = rogue_attack_t::composite_crit_chance();
+
+    if ( p() -> buffs.ruthless_precision -> up() )
+    {
+      c += p() -> buffs.ruthless_precision -> data().effectN( 2 ).percent();
+    }
+
+    return c;
   }
 
   void execute() override
@@ -2938,10 +2953,10 @@ struct gouge_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( result_is_hit (execute_state -> result ) && p() -> buffs.broadsides -> up() )
+    if ( result_is_hit (execute_state -> result ) && p() -> buffs.broadside -> up() )
     {
-      p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 1 ).base_value(),
-          p() -> gains.broadsides, this );
+      p() -> trigger_combo_point_gain( p() -> buffs.broadside -> data().effectN( 2 ).base_value(),
+          p() -> gains.broadside, this );
 
       p() -> trigger_sephuzs_secret( execute_state, MECHANIC_INCAPACITATE );
     }
@@ -2964,10 +2979,10 @@ struct ghostly_strike_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> buffs.broadsides -> up() )
+    if ( result_is_hit( execute_state -> result ) && p() -> buffs.broadside -> up() )
     {
-      p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 2 ).base_value(),
-          p() -> gains.broadsides, this );
+      p() -> trigger_combo_point_gain( p() -> buffs.broadside -> data().effectN( 2 ).base_value(),
+          p() -> gains.broadside, this );
     }
   }
 
@@ -2991,16 +3006,6 @@ struct gloomblade_t : public rogue_attack_t
     rogue_attack_t( "gloomblade", p, p -> talent.gloomblade, options_str )
   {
     requires_weapon = WEAPON_DAGGER;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( p() -> buffs.shadow_blades -> up() )
-      m *= 1.0 + p() -> buffs.shadow_blades -> data().effectN( 5 ).percent();
-
-    return m;
   }
 
   void execute() override
@@ -3184,10 +3189,10 @@ struct pistol_shot_t : public rogue_attack_t
     // Extra CP only if the initial attack grants CP (Blunderbuss damage events do not).
     if ( generate_cp() > 0 )
     {
-      if ( result_is_hit( execute_state -> result ) && p() -> buffs.broadsides -> up() )
+      if ( result_is_hit( execute_state -> result ) && p() -> buffs.broadside -> up() )
       {
-        p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 3 ).base_value(),
-            p() -> gains.broadsides, this );
+        p() -> trigger_combo_point_gain( p() -> buffs.broadside -> data().effectN( 2 ).base_value(),
+            p() -> gains.broadside, this );
       }
 
       if ( p() -> talent.quick_draw -> ok() && p() -> buffs.opportunity -> check() )
@@ -3380,7 +3385,8 @@ struct roll_the_bones_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    timespan_t d = ( cast_state( execute_state ) -> cp + 1 ) * p() -> buffs.roll_the_bones -> data().duration();
+    int cp = cast_state( execute_state ) -> cp;
+    timespan_t d = ( cp + 1 ) * p() -> buffs.roll_the_bones -> data().duration();
 
     p() -> buffs.roll_the_bones -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
 
@@ -3390,6 +3396,8 @@ struct roll_the_bones_t : public rogue_attack_t
     {
       p() -> trigger_true_bearing( execute_state );
     }
+
+    p() -> buffs.snake_eyes -> trigger( 1, cp * p() -> azerite.snake_eyes.value() );
   }
 
   bool ready() override
@@ -3488,50 +3496,12 @@ struct rupture_t : public rogue_attack_t
 
 // Shadow Blades ============================================================
 
-struct shadow_blade_t : public rogue_attack_t
-{
-  shadow_blade_t( const std::string& name_str, rogue_t* p, const spell_data_t* s ) :
-    rogue_attack_t( name_str, p, s )
-  {
-    school  = SCHOOL_SHADOW;
-    special = false;
-    repeating = true;
-    background = true;
-    may_glance = false;
-    base_execute_time = weapon -> swing_time;
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      p() -> buffs.sharpened_blades -> trigger();
-    }
-  }
-};
-
 struct shadow_blades_t : public rogue_attack_t
 {
   shadow_blades_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shadow_blades", p, p -> find_specialization_spell( "Shadow Blades" ), options_str )
   {
     harmful = may_miss = may_crit = false;
-
-    if ( ! p -> shadow_blade_main_hand )
-    {
-      p -> shadow_blade_main_hand = 
-        new shadow_blade_t( "shadow_blade_mh", p, data().effectN( 1 ).trigger() );
-      add_child( p -> shadow_blade_main_hand );
-    }
-
-    if ( ! p -> shadow_blade_off_hand && p -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      p -> shadow_blade_off_hand = 
-        new shadow_blade_t( "shadow_blade_offhand", p, p -> find_spell( data().effectN( 1 ).misc_value1() ) );
-      add_child( p -> shadow_blade_off_hand );
-    }
   }
 
   void execute() override
@@ -3539,6 +3509,24 @@ struct shadow_blades_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.shadow_blades -> trigger();
+  }
+};
+
+struct shadow_blades_attack_t : public rogue_attack_t
+{
+  shadow_blades_attack_t( rogue_t* p ) :
+    rogue_attack_t( "shadow_blades_attack", p, p -> find_spell( 279043 ) )
+  {
+    background = true;
+    may_crit = false;
+    attack_power_mod.direct = 0;
+  }
+
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    snapshot_flags = update_flags = 0;
   }
 };
 
@@ -3663,8 +3651,8 @@ struct shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    if ( p() -> talent.expose_weakness ->ok() )
-      td( state -> target ) -> debuffs.expose_weakness -> trigger();
+    if ( p() -> talent.find_weakness ->ok() )
+      td( state -> target ) -> debuffs.find_weakness -> trigger();
 
     p() -> trigger_weaponmaster( state );
   }
@@ -3712,15 +3700,6 @@ struct shuriken_storm_t: public rogue_attack_t
     energize_amount = 1;
   }
 
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    // As of 2017-07-28, Shuriken Storm also grants an additional CP with Shadow Blades, but it was
-    // removed from spell data during 7.2.5 PTR for some reason. We have to hardcode it here.
-    affected_by.shadow_blades = true;
-  }
-
   bool procs_insignia_of_ravenholdt() const override
   { return false; }
 
@@ -3750,6 +3729,26 @@ struct shuriken_storm_t: public rogue_attack_t
 
     if ( p() -> buffs.the_dreadlords_deceit -> up() )
       p() -> buffs.the_dreadlords_deceit -> expire();
+  }
+};
+
+// Shuriken Tornado =========================================================
+
+struct shuriken_tornado_t : public rogue_attack_t
+{
+  shuriken_tornado_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "shuriken_tornado", p, p -> talent.shuriken_tornado, options_str )
+  {
+    may_miss = false;
+    dot_duration = timespan_t::zero();
+    aoe = -1;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.shuriken_tornado -> trigger();
   }
 };
 
@@ -3857,8 +3856,17 @@ struct sinister_strike_t : public rogue_attack_t
   {
     double opportunity_proc_chance = data().effectN( 3 ).percent();
     opportunity_proc_chance += p() -> talent.weaponmaster -> effectN( 1 ).percent();
-    opportunity_proc_chance += p() -> buffs.jolly_roger -> stack_value();
+    opportunity_proc_chance += p() -> buffs.skull_and_crossbones -> stack_value();
     return opportunity_proc_chance;
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = rogue_attack_t::bonus_da( s );
+
+    b += p() -> buffs.snake_eyes -> stack_value();
+
+    return b;
   }
 
   void execute() override
@@ -3870,6 +3878,8 @@ struct sinister_strike_t : public rogue_attack_t
       return;
     }
 
+    p() -> buffs.snake_eyes -> expire();
+
     if ( ! sinister_strike_proc_event &&
          ( p() -> buffs.opportunity -> trigger( 1, buff_t::DEFAULT_VALUE(), sinister_strike_proc_chance() ) ) )
     {
@@ -3878,10 +3888,10 @@ struct sinister_strike_t : public rogue_attack_t
 
     p() -> buffs.t19_4pc_outlaw -> decrement();
 
-    if ( ! sinister_strike_proc_event && p() -> buffs.broadsides -> up() )
+    if ( ! sinister_strike_proc_event && p() -> buffs.broadside -> up() )
     {
-      p() -> trigger_combo_point_gain( p() -> buffs.broadsides -> data().effectN( 1 ).base_value(),
-          p() -> gains.broadsides, this );
+      p() -> trigger_combo_point_gain( p() -> buffs.broadside -> data().effectN( 2 ).base_value(),
+          p() -> gains.broadside, this );
     }
   }
 };
@@ -4883,6 +4893,27 @@ struct shadow_dance_t : public stealth_like_buff_t
   }
 };
 
+struct shuriken_tornado_t : public buff_t
+{
+  rogue_t* rogue;
+  action_t* shuriken_storm_action;
+
+  shuriken_tornado_t( rogue_t* r ) :
+    buff_t( r, "shuriken_tornado", r -> talent.shuriken_tornado ),
+    rogue( r ),
+    shuriken_storm_action( nullptr )
+  {
+    set_cooldown( timespan_t::zero() );
+    set_period( timespan_t::from_seconds( 1.0 ) ); // Not explicitly in spell data
+    set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+      if ( !shuriken_storm_action )
+        shuriken_storm_action = rogue -> find_action( "shuriken_storm" );
+      if ( shuriken_storm_action )
+        make_event<actions::secondary_ability_trigger_t>( *sim, rogue -> target, shuriken_storm_action, 0, TRIGGER_SHURIKEN_TORNADO );
+    } );
+  }
+};
+
 struct rogue_poison_buff_t : public buff_t
 {
   rogue_poison_buff_t( rogue_td_t& r, const std::string& name, const spell_data_t* spell ) :
@@ -4968,21 +4999,21 @@ struct roll_the_bones_t : public buff_t
     set_period( timespan_t::zero() ); // Disable ticking
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
-    buffs[ 0 ] = rogue -> buffs.broadsides;
+    buffs[ 0 ] = rogue -> buffs.broadside;
     buffs[ 1 ] = rogue -> buffs.buried_treasure;
     buffs[ 2 ] = rogue -> buffs.grand_melee;
-    buffs[ 3 ] = rogue -> buffs.jolly_roger;
-    buffs[ 4 ] = rogue -> buffs.shark_infested_waters;
+    buffs[ 3 ] = rogue -> buffs.skull_and_crossbones;
+    buffs[ 4 ] = rogue -> buffs.ruthless_precision;
     buffs[ 5 ] = rogue -> buffs.true_bearing;
   }
 
   void expire_secondary_buffs()
   {
-    rogue -> buffs.jolly_roger -> expire();
+    rogue -> buffs.skull_and_crossbones -> expire();
     rogue -> buffs.grand_melee -> expire();
-    rogue -> buffs.shark_infested_waters -> expire();
+    rogue -> buffs.ruthless_precision -> expire();
     rogue -> buffs.true_bearing -> expire();
-    rogue -> buffs.broadsides -> expire();
+    rogue -> buffs.broadside -> expire();
     rogue -> buffs.buried_treasure -> expire();
   }
 
@@ -5132,67 +5163,6 @@ struct roll_the_bones_t : public buff_t
 
     // Remove all secondary buffs when regular RtB expires. (see https://github.com/Ravenholdt-TC/Rogue/issues/84)
     expire_secondary_buffs();
-  }
-};
-
-struct shadow_blades_t : public buff_t
-{
-  shadow_blades_t( rogue_t* p ) :
-    buff_t( p, "shadow_blades", p -> find_specialization_spell( "Shadow Blades" ) )
-  {
-    set_duration( p -> find_specialization_spell( "Shadow Blades" ) -> duration() );
-    set_cooldown( timespan_t::zero() );
-  }
-
-  void change_auto_attack( attack_t*& hand, attack_t* a )
-  {
-    if ( hand == 0 )
-      return;
-
-    bool executing = hand -> execute_event != 0;
-    timespan_t time_to_hit = timespan_t::zero();
-
-    if ( executing )
-    {
-      time_to_hit = hand -> execute_event -> occurs() - sim -> current_time();
-      event_t::cancel( hand -> execute_event );
-    }
-
-    hand = a;
-
-    // Kick off the new attack, by instantly scheduling and rescheduling it to
-    // the remaining time to hit. We cannot use normal reschedule mechanism
-    // here (i.e., simply use event_t::reschedule() and leave it be), because
-    // the rescheduled event would be triggered before the full swing time
-    // (of the new auto attack) in most cases.
-    if ( executing )
-    {
-      timespan_t old_swing_time = hand -> base_execute_time;
-      hand -> base_execute_time = timespan_t::zero();
-      hand -> schedule_execute();
-      hand -> base_execute_time = old_swing_time;
-      hand -> execute_event -> reschedule( time_to_hit );
-    }
-  }
-
-  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() ) override
-  {
-    buff_t::execute( stacks, value, duration );
-
-    rogue_t* p = debug_cast< rogue_t* >( player );
-    change_auto_attack( p -> main_hand_attack, p -> shadow_blade_main_hand );
-    if ( p -> off_hand_attack )
-      change_auto_attack( p -> off_hand_attack, p -> shadow_blade_off_hand );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    rogue_t* p = debug_cast< rogue_t* >( player );
-    change_auto_attack( p -> main_hand_attack, p -> melee_main_hand );
-    if ( p -> off_hand_attack )
-      change_auto_attack( p -> off_hand_attack, p -> melee_off_hand );
   }
 };
 
@@ -5737,6 +5707,26 @@ void rogue_t::spend_combo_points( const action_state_t* state )
   }
 }
 
+void rogue_t::trigger_shadow_blades_attack( action_state_t* state )
+{
+  if ( ! buffs.shadow_blades -> check() || state -> result_total <= 0 || ! state -> action -> result_is_hit( state -> result ) )
+  {
+    return;
+  }
+
+  const actions::rogue_attack_t* attack = cast_attack( state -> action );
+  if ( ! attack -> affected_by.shadow_blades )
+  {
+    return;
+  }
+
+  double amount = state -> result_amount * buffs.shadow_blades -> check_value();
+  shadow_blades_attack -> base_dd_min = amount;
+  shadow_blades_attack -> base_dd_max = amount;
+  shadow_blades_attack -> set_target( state -> target );
+  shadow_blades_attack -> execute();
+}
+
 void rogue_t::trigger_insignia_of_ravenholdt( action_state_t* state )
 {
   if ( ! legendary.insignia_of_ravenholdt )
@@ -5889,9 +5879,9 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     -> set_default_value( source -> talent.toxic_blade -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
   debuffs.ghostly_strike = make_buff( *this, "ghostly_strike", source -> talent.ghostly_strike )
     -> set_default_value( source -> talent.ghostly_strike -> effectN( 3 ).percent() );
-  const spell_data_t* ew_debuff = source -> talent.expose_weakness -> effectN( 1 ).trigger();
-  debuffs.expose_weakness = make_buff( *this, "expose_weakness", ew_debuff )
-    -> set_default_value( ew_debuff -> effectN( 1 ).percent() );
+  const spell_data_t* fw_debuff = source -> talent.find_weakness -> effectN( 1 ).trigger();
+  debuffs.find_weakness = make_buff( *this, "find_weakness", fw_debuff )
+    -> set_default_value( fw_debuff -> effectN( 1 ).percent() );
 
   // Register on-demise callback for assassination to perform Venomous Wounds energy replenish on
   // death.
@@ -5960,7 +5950,7 @@ double rogue_t::composite_melee_crit_chance() const
 
   crit += spell.critical_strikes -> effectN( 1 ).percent();
 
-  crit += buffs.shark_infested_waters -> stack_value();
+  crit += buffs.ruthless_precision -> stack_value();
 
   crit += buffs.mantle_of_the_master_assassin -> stack_value(); // 7.1.5 Legendary
 
@@ -6003,7 +5993,7 @@ double rogue_t::composite_spell_crit_chance() const
 
   crit += spell.critical_strikes -> effectN( 1 ).percent();
 
-  crit += buffs.shark_infested_waters -> stack_value();
+  crit += buffs.ruthless_precision -> stack_value();
 
   crit += buffs.mantle_of_the_master_assassin -> stack_value(); // 7.1.5 Legendary
 
@@ -6262,8 +6252,8 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_talent( this, "Ghostly Strike", "if=combo_points.deficit>=1+buff.broadsides.up&refreshable" );
-    build -> add_action( this, "Pistol Shot", "if=combo_points.deficit>=1+buff.broadsides.up+talent.quick_draw.enabled&buff.opportunity.up&(energy.time_to_max>2-talent.quick_draw.enabled|(buff.greenskins_waterlogged_wristcuffs.up&buff.greenskins_waterlogged_wristcuffs.remains<2))" );
+    build -> add_talent( this, "Ghostly Strike", "if=combo_points.deficit>=1+buff.broadside.up&refreshable" );
+    build -> add_action( this, "Pistol Shot", "if=combo_points.deficit>=1+buff.broadside.up+talent.quick_draw.enabled&buff.opportunity.up&(energy.time_to_max>2-talent.quick_draw.enabled|(buff.greenskins_waterlogged_wristcuffs.up&buff.greenskins_waterlogged_wristcuffs.remains<2))" );
     build -> add_action( this, "Sinister Strike", "if=variable.ss_useable" );
 
     // Blade Flurry
@@ -6308,7 +6298,7 @@ void rogue_t::init_action_list()
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
-    stealth -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadsides.up&energy>60&!buff.jolly_roger.up" );
+    stealth -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up" );
     stealth -> add_action( this, "Ambush", "if=variable.ambush_condition" );
     stealth -> add_action( this, "Vanish", "if=(variable.ambush_condition|equipped.mantle_of_the_master_assassin&!variable.rtb_reroll&!variable.ss_useable)&mantle_duration=0" );
     stealth -> add_action( "shadowmeld,if=variable.ambush_condition" );
@@ -6390,6 +6380,7 @@ void rogue_t::init_action_list()
     cds -> add_action( "pool_resource,for_next=1,extra_amount=55-talent.shadow_focus.enabled*10" );
     cds -> add_action( this, "Vanish", "if=energy>=55-talent.shadow_focus.enabled*10&variable.dsh_dfa&(!equipped.mantle_of_the_master_assassin|buff.symbols_of_death.up)&cooldown.shadow_dance.charges_fractional<=variable.shd_fractional&!buff.shadow_dance.up&!buff.stealth.up&mantle_duration=0&(dot.nightblade.remains>=cooldown.death_from_above.remains+6&!(buff.the_first_of_the_dead.remains>1&combo_points>=5)|target.time_to_die-dot.nightblade.remains<=6)&cooldown.death_from_above.remains<=1|target.time_to_die<=7" );
     cds -> add_action( this, "Shadow Dance", "if=!buff.shadow_dance.up&target.time_to_die<=4+talent.subterfuge.enabled" );
+    cds -> add_talent( this, "Shuriken Tornado", "if=spell_targets>=3&dot.nightblade.ticking&buff.symbols_of_death.up&(!talent.dark_shadow.enabled|buff.shadow_dance.up)");
 
     // Finishers
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
@@ -6472,6 +6463,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
   if ( name == "shadowstrike"        ) return new shadowstrike_t       ( this, options_str );
   if ( name == "shuriken_storm"      ) return new shuriken_storm_t     ( this, options_str );
+  if ( name == "shuriken_tornado"    ) return new shuriken_tornado_t   ( this, options_str );
   if ( name == "shuriken_toss"       ) return new shuriken_toss_t      ( this, options_str );
   if ( name == "sinister_strike"     ) return new sinister_strike_t    ( this, options_str );
   if ( name == "slice_and_dice"      ) return new slice_and_dice_t     ( this, options_str );
@@ -6577,11 +6569,11 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 
     return make_fn_expr( name_str, [ this ]() {
       double n_buffs = 0;
-      n_buffs += buffs.jolly_roger -> check() != 0;
+      n_buffs += buffs.skull_and_crossbones -> check() != 0;
       n_buffs += buffs.grand_melee -> check() != 0;
-      n_buffs += buffs.shark_infested_waters -> check() != 0;
+      n_buffs += buffs.ruthless_precision -> check() != 0;
       n_buffs += buffs.true_bearing -> check() != 0;
-      n_buffs += buffs.broadsides -> check() != 0;
+      n_buffs += buffs.broadside -> check() != 0;
       n_buffs += buffs.buried_treasure -> check() != 0;
       return n_buffs;
     } );
@@ -6647,11 +6639,11 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     };
 
     const std::array<const buff_t*, 6> rtb_buffs = { {
-      buffs.broadsides,
+      buffs.broadside,
       buffs.buried_treasure,
       buffs.grand_melee,
-      buffs.jolly_roger,
-      buffs.shark_infested_waters,
+      buffs.skull_and_crossbones,
+      buffs.ruthless_precision,
       buffs.true_bearing
     } };
 
@@ -6780,9 +6772,9 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
       return return_value;
     } );
   }
-  if ( util::str_compare_ci( name_str, "buff.broadsides.t21" ) )
+  if ( util::str_compare_ci( name_str, "buff.broadside.t21" ) )
   {
-    return create_rtb_buff_t21_expression( buffs.broadsides );
+    return create_rtb_buff_t21_expression( buffs.broadside );
   }
   if ( util::str_compare_ci( name_str, "buff.buried_treasure.t21" ) )
   {
@@ -6792,13 +6784,13 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
   {
     return create_rtb_buff_t21_expression( buffs.grand_melee );
   }
-  if ( util::str_compare_ci( name_str, "buff.jolly_roger.t21" ) )
+  if ( util::str_compare_ci( name_str, "buff.skull_and_crossbones.t21" ) )
   {
-    return create_rtb_buff_t21_expression( buffs.jolly_roger );
+    return create_rtb_buff_t21_expression( buffs.skull_and_crossbones );
   }
-  if ( util::str_compare_ci( name_str, "buff.shark_infested_waters.t21" ) )
+  if ( util::str_compare_ci( name_str, "buff.ruthless_precision.t21" ) )
   {
-    return create_rtb_buff_t21_expression( buffs.shark_infested_waters );
+    return create_rtb_buff_t21_expression( buffs.ruthless_precision );
   }
   if ( util::str_compare_ci( name_str, "buff.true_bearing.t21" ) )
   {
@@ -6974,7 +6966,7 @@ void rogue_t::init_spells()
   talent.killing_spree      = find_talent_spell( "Killing Spree" );
 
   // Subtlety
-  talent.expose_weakness    = find_talent_spell( "Expose Weakness" );
+  talent.find_weakness      = find_talent_spell( "Find Weakness" );
   talent.gloomblade         = find_talent_spell( "Gloomblade" );
 
   talent.shadow_focus       = find_talent_spell( "Shadow Focus" );
@@ -6983,15 +6975,19 @@ void rogue_t::init_spells()
   talent.dark_shadow        = find_talent_spell( "Dark Shadow" );
 
   talent.master_of_shadows  = find_talent_spell( "Master of Shadows" );
+  talent.shuriken_tornado   = find_talent_spell( "Shuriken Tornado" );
   talent.death_from_above   = find_talent_spell( "Death from Above" );
 
   azerite.deadshot          = find_azerite_spell( "Deadshot" );
   azerite.nights_vengeance  = find_azerite_spell( "Night's Vengeance" );
   azerite.sharpened_blades  = find_azerite_spell( "Sharpened Blades" );
+  azerite.snake_eyes        = find_azerite_spell( "Snake Eyes" );
   azerite.storm_of_steel    = find_azerite_spell( "Storm of Steel" );
   azerite.twist_the_knife   = find_azerite_spell( "Twist the Knife" );
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
+
+  shadow_blades_attack = new actions::shadow_blades_attack_t( this );
 
   // Legendaries
   insignia_of_ravenholdt_ = new actions::insignia_of_ravenholdt_attack_t( this );
@@ -7030,7 +7026,7 @@ void rogue_t::init_gains()
   gains.venomous_wounds          = get_gain( "Venomous Vim"             );
   gains.venomous_wounds_death    = get_gain( "Venomous Vim (death)"     );
   gains.quick_draw               = get_gain( "Quick Draw"               );
-  gains.broadsides               = get_gain( "Broadsides"               );
+  gains.broadside                = get_gain( "Broadside"                );
   gains.ruthlessness             = get_gain( "Ruthlessness"             );
   gains.shadow_techniques        = get_gain( "Shadow Techniques"        );
   gains.master_of_shadows        = get_gain( "Master of Shadows"        );
@@ -7183,7 +7179,7 @@ void rogue_t::create_buffs()
                                 } );
   buffs.opportunity           = make_buff( this, "opportunity", find_spell( 195627 ) );
   // Roll the bones buffs
-  buffs.broadsides            = make_buff( this, "broadsides", find_spell( 193356 ) )
+  buffs.broadside             = make_buff( this, "broadside", find_spell( 193356 ) )
                                 -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.buried_treasure       = make_buff( this, "buried_treasure", find_spell( 199600 ) )
                                 -> set_affects_regen( true )
@@ -7192,9 +7188,9 @@ void rogue_t::create_buffs()
   buffs.grand_melee -> add_invalidate( CACHE_ATTACK_SPEED )
                     -> add_invalidate( CACHE_LEECH )
                     -> set_default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
-  buffs.jolly_roger           = make_buff( this, "jolly_roger", find_spell( 199603 ) )
+  buffs.skull_and_crossbones  = make_buff( this, "skull_and_crossbones", find_spell( 199603 ) )
                                 -> set_default_value( find_spell( 199603 ) -> effectN( 1 ).percent() );
-  buffs.shark_infested_waters = make_buff( this, "shark_infested_waters", find_spell( 193357 ) )
+  buffs.ruthless_precision    = make_buff( this, "ruthless_precision", find_spell( 193357 ) )
                                 -> set_default_value( find_spell( 193357 ) -> effectN( 1 ).percent() )
                                 -> add_invalidate( CACHE_CRIT_CHANCE );
   buffs.true_bearing          = make_buff( this, "true_bearing", find_spell( 193359 ) )
@@ -7204,7 +7200,9 @@ void rogue_t::create_buffs()
   // Subtlety
   buffs.shuriken_combo        = make_buff( this, "shuriken_combo", find_spell( 245640 ) )
                                 -> set_default_value( find_spell( 245640 ) -> effectN( 1 ).percent() );
-  buffs.shadow_blades         = new buffs::shadow_blades_t( this );
+  buffs.shadow_blades         = make_buff( this, "shadow_blades", spec.shadow_blades )
+                                -> set_cooldown( timespan_t::zero() )
+                                -> set_default_value( spec.shadow_blades -> effectN( 1 ).percent() );
   buffs.shadow_dance          = new buffs::shadow_dance_t( this );
   buffs.symbols_of_death      = make_buff( this, "symbols_of_death", spec.symbols_of_death )
                                 -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
@@ -7257,6 +7255,7 @@ void rogue_t::create_buffs()
                                     resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.master_of_shadows );
                                   } )
                                   -> set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.shuriken_tornado        = new buffs::shuriken_tornado_t( this );
   buffs.death_from_above        = make_buff( this, "death_from_above", spell.death_from_above )
                                   // Note: Duration is set to 1.475s (+/- gauss RNG) on action execution in order to match the current model
                                   // and then let it be trackable in the APL. The driver will also expire this buff when the finisher is scheduled.
@@ -7333,6 +7332,9 @@ void rogue_t::create_buffs()
   buffs.sharpened_blades                   = make_buff( this, "sharpened_blades", find_spell( 272916 ) )
                                              -> set_trigger_spell( azerite.sharpened_blades.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.sharpened_blades.value() );
+  buffs.snake_eyes                         = make_buff( this, "snake_eyes", find_spell( 275863 ) )
+                                             -> set_trigger_spell( azerite.snake_eyes.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_default_value( azerite.snake_eyes.value() );
   buffs.storm_of_steel                     = make_buff( this, "storm_of_steel", find_spell( 273455 ) )
                                              -> set_trigger_spell( azerite.storm_of_steel.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.storm_of_steel.value() );

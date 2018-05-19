@@ -413,6 +413,7 @@ public:
     buff_t* icy_veins;
 
     buff_t* bone_chilling;
+    buff_t* chain_reaction;
     buff_t* freezing_rain;
     buff_t* ice_floes;
     buff_t* ray_of_frost;
@@ -582,7 +583,7 @@ public:
     const spell_data_t* alexstraszas_fury;
     const spell_data_t* phoenix_flames;
     const spell_data_t* frozen_touch;
-    // TODO: add the NYI talent
+    const spell_data_t* chain_reaction;
     const spell_data_t* ebonbolt;
 
     // Tier 75
@@ -3965,6 +3966,12 @@ struct ice_lance_t : public frost_mage_spell_t
         }
       }
 
+      // TODO: Seems like this would be the intended behavior?
+      if ( p() -> talents.chain_reaction -> ok() )
+      {
+        p() -> buffs.chain_reaction -> trigger();
+      }
+
       if ( frozen &  FF_FINGERS_OF_FROST
         && frozen & ~FF_FINGERS_OF_FROST )
       {
@@ -3987,6 +3994,7 @@ struct ice_lance_t : public frost_mage_spell_t
 
     am *= 1.0 + p() -> buffs.magtheridons_might -> check_stack_value();
     am *= 1.0 + p() -> buffs.arctic_blast -> check_value();
+    am *= 1.0 + p() -> buffs.chain_reaction -> check_stack_value();
 
     return am;
   }
@@ -5906,7 +5914,7 @@ void mage_t::init_spells()
   talents.alexstraszas_fury  = find_talent_spell( "Alexstrasza's Fury" );
   talents.phoenix_flames     = find_talent_spell( "Phoenix Flames"     );
   talents.frozen_touch       = find_talent_spell( "Frozen Touch"       );
-  // TODO: Add NYI talent here.
+  talents.chain_reaction     = find_talent_spell( "Chain Reaction"     );
   talents.ebonbolt           = find_talent_spell( "Ebonbolt"           );
   // Tier 75
   talents.ice_ward           = find_talent_spell( "Ice Ward"           );
@@ -6097,6 +6105,8 @@ void mage_t::create_buffs()
 
   buffs.bone_chilling          = make_buff( this, "bone_chilling", find_spell( 205766 ) )
                                    -> set_default_value( talents.bone_chilling -> effectN( 1 ).percent() / 10 );
+  buffs.chain_reaction         = make_buff( this, "chain_reaction", find_spell( 278310 ) )
+                                   -> set_default_value( find_spell( 278310 ) -> effectN( 1 ).percent() );
   buffs.freezing_rain          = make_buff( this, "freezing_rain", find_spell( 270232 ) )
                                    -> set_default_value( find_spell( 270232 ) -> effectN( 2 ).percent() );
   buffs.ice_floes              = make_buff( this, "ice_floes", talents.ice_floes );
