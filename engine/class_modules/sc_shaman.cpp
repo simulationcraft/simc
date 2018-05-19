@@ -921,7 +921,7 @@ public:
 		  if (ab::data().affected_by(p()->mastery.enhanced_elements->effectN(1)) || ab::data().affected_by(p()->mastery.enhanced_elements->effectN(5)))
 		  {
 			  //...hopefully blizzard never makes direct and periodic scaling different from eachother in our mastery..
-			  m *= 1.0 + p()->mastery.enhanced_elements->effectN(1).percent();
+			  m *= 1.0 + p()->cache.mastery_value();
 		  }
 	  }
 
