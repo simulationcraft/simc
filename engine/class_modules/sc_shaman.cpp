@@ -11,23 +11,23 @@
 
 // Battle for Azeroth TODO
 //
+// Shared
+// - Further seperate Totem Mastery buffs between the 2 specs
+//
 // Elemental
 // - Add Talents
 //   - Add Spirit Wolf
 // - Add Meteor to Primal Fire Elemental instead of Fire Nova
 // - Add Eye of the Storm to Primal Storm Elemental instead of Gale Force
+//
+// Enhancement
+// - Lots
 
 // Legion TODO
 //
-// Generic
-// - Clean up the "may proc" stuff
-// Elemental
-// - Verification
-// - Path of Flame spread mechanism (would be good to generalize this "nearby" spreading)
-// Enhancement
-// T20
-// 2p - Does the triggering crash hit benefit from the buff?
-// Windstrike unleash doom procs (currently commented)
+// Remove any remaining vestiges of legion stuff
+//
+// CYA LEGION
 
 namespace
 {  // UNNAMED NAMESPACE
@@ -166,6 +166,7 @@ struct shaman_td_t : public actor_target_data_t
   struct dots
   {
     dot_t* flame_shock;
+	dot_t* searing_assault;
   } dot;
 
   struct debuffs
@@ -715,16 +716,6 @@ struct resonance_totem_buff_t : public buff_t
 			double g = b->data().effectN(1).base_value();
 			p->resource_gain(RESOURCE_MAELSTROM, g, p->gain.ascendance);
 		});
-
-		//buff.resonance_totem =
-		//make_buff(this, "resonance_totem", find_spell(202192))
-		//->set_refresh_behavior(buff_refresh_behavior::DURATION)
-		//->set_duration(talent.totem_mastery->effectN(1).trigger()->duration())
-		//->set_period(find_spell(202192)->effectN(1).period())
-		//->set_tick_callback([this](buff_t* b, int, const timespan_t&) {
-		//	this->resource_gain(RESOURCE_MAELSTROM, b->data().effectN(1).resource(RESOURCE_MAELSTROM),
-		//		this->gain.resonance_totem, nullptr);
-		//});
 	}
 };
 
@@ -735,16 +726,9 @@ struct storm_totem_buff_t : public buff_t
 			p -> specialization() == SHAMAN_ENHANCEMENT ? p -> find_spell(262397)
 														: p -> find_spell(210652))
 	{
-		//buff.storm_totem = make_buff(this, "storm_totem", find_spell(210651))
 		set_duration(p->talent.totem_mastery->effectN(2).trigger()->duration());
 		set_cooldown(timespan_t::zero());
 		set_default_value(s_data->effectN(1).percent());
-
-		//buff.storm_totem = make_buff(this, "storm_totem", find_spell(210651))
-		//->set_duration(talent.totem_mastery->effectN(2).trigger()->duration())
-		//->set_cooldown(timespan_t::zero())  // Handled by the action
-		//									// FIXME: 7.3 ptr got rid of the 2 effectN, now we need to use 1
-		//	->set_default_value(find_spell(210651)->effectN(1).percent());
 	}
 };
 
@@ -757,10 +741,6 @@ struct ember_totem_buff_t : public buff_t
 	{
 		set_duration(p->talent.totem_mastery->effectN(3).trigger()->duration());
 		set_default_value(1.0 + s_data->effectN(1).percent());
-
-		//buff.ember_totem = make_buff(this, "ember_totem", find_spell(210658))
-		//->set_duration(talent.totem_mastery->effectN(3).trigger()->duration())
-		//->set_default_value(1.0 + find_spell(210658)->effectN(1).percent());
 	}
 };
 
@@ -772,10 +752,6 @@ struct tailwind_totem_buff_ele_t : public haste_buff_t
 		add_invalidate(CACHE_HASTE);
 		set_duration(p->talent.totem_mastery->effectN(4).trigger()->duration());
 		set_default_value(1.0 / (1.0 + s_data->effectN(1).percent()));
-
-		//buff.tailwind_totem->add_invalidate(CACHE_HASTE)
-		//->set_duration(talent.totem_mastery->effectN(4).trigger()->duration())
-		//->set_default_value(1.0 / (1.0 + find_spell(210659)->effectN(1).percent()));
 	}
 };
 
@@ -825,6 +801,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
                                 .duration( p->find_spell( 269808 )->duration() );
 
   // Enhancement
+  dot.searing_assault	  = target->get_dot( "searing_assault", p);
   debuff.earthen_spike = buff_creator_t( *this, "earthen_spike", p->talent.earthen_spike )
                              .cd( timespan_t::zero() )  // Handled by the action
                              // -10% resistance in spell data, treat it as a multiplier instead
@@ -855,6 +832,7 @@ public:
   gain_t* gain;
   double maelstrom_gain;
   double maelstrom_gain_coefficient;
+  bool enable_enh_mastery_scaling;
 
   // Generic procs
 
@@ -867,7 +845,8 @@ public:
       unshift_ghost_wolf( true ),
       gain( player->get_gain( s->id() > 0 ? s->name_cstr() : n ) ),
       maelstrom_gain( 0 ),
-      maelstrom_gain_coefficient( 1.0 )
+      maelstrom_gain_coefficient( 1.0 ),
+	  enable_enh_mastery_scaling(false)
   {
     ab::may_crit = true;
 
@@ -931,6 +910,22 @@ public:
       ab::gcd_haste = HASTE_ATTACK;
     }
 
+  }
+
+  double action_multiplier() const override
+  {
+	  double m = ab::action_multiplier();
+
+	  if (p()->specialization() == SHAMAN_ENHANCEMENT || enable_enh_mastery_scaling)
+	  {
+		  if (ab::data().affected_by(p()->mastery.enhanced_elements->effectN(1)) || ab::data().affected_by(p()->mastery.enhanced_elements->effectN(5)))
+		  {
+			  //...hopefully blizzard never makes direct and periodic scaling different from eachother in our mastery..
+			  m *= 1.0 + p()->mastery.enhanced_elements->effectN(1).percent();
+		  }
+	  }
+
+	  return m;
   }
 
   bool init_finished() override
@@ -2322,26 +2317,32 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
   }
 };
 
-struct ancestral_awakening_t : public shaman_heal_t
+struct searing_assault_t : public shaman_spell_t
 {
-  ancestral_awakening_t( shaman_t* player )
-    : shaman_heal_t( "ancestral_awakening", player, player->find_spell( 52752 ) )
-  {
-    background = proc = true;
-  }
+	searing_assault_t(const std::string& n, shaman_t* player)
+		: shaman_spell_t(n, player, player->find_spell(268429))
+	{
+		tick_may_crit = false;
+		may_crit = false;
+		hasted_ticks = false;
+		school = SCHOOL_FIRE;
+		background = true;
 
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double m = shaman_heal_t::composite_da_multiplier( state );
-    m *= p()->spec.ancestral_awakening->effectN( 1 ).percent();
-    return m;
-  }
+		//dot_duration = s->duration();
+		base_tick_time = dot_duration / 3;
+	}
 
-  void execute() override
-  {
-    target = find_lowest_player();
-    shaman_heal_t::execute();
-  }
+	double action_ta_multiplier() const override
+	{
+		double m = shaman_spell_t::action_ta_multiplier();
+
+		return m;
+	}
+
+	void tick(dot_t* d) override
+	{
+		shaman_spell_t::tick(d);
+	}
 };
 
 struct windfury_attack_t : public shaman_attack_t
@@ -2628,6 +2629,28 @@ struct elemental_overload_spell_t : public shaman_spell_t
       p()->buff.unlimited_power->trigger();
     }
   }
+};
+
+struct ancestral_awakening_t : public shaman_heal_t
+{
+	ancestral_awakening_t(shaman_t* player)
+		: shaman_heal_t("ancestral_awakening", player, player->find_spell(52752))
+	{
+		background = proc = true;
+	}
+
+	double composite_da_multiplier(const action_state_t* state) const override
+	{
+		double m = shaman_heal_t::composite_da_multiplier(state);
+		m *= p()->spec.ancestral_awakening->effectN(1).percent();
+		return m;
+	}
+
+	void execute() override
+	{
+		target = find_lowest_player();
+		shaman_heal_t::execute();
+	}
 };
 
 // shaman_heal_t::impact ====================================================
@@ -3150,6 +3173,11 @@ struct flametongue_t : public shaman_spell_t
     : shaman_spell_t( "flametongue", player, player->find_specialization_spell( "Flametongue" ), options_str )
   {
     add_child( player->flametongue );
+
+	if (p()->talent.searing_assault->ok())
+	{
+		impact_action = new searing_assault_t("searing assault", player);
+	}
   }
 
   void init() override
@@ -3163,6 +3191,11 @@ struct flametongue_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.flametongue->trigger();
+  }
+
+  void impact(action_state_t* s) override
+  {
+	  shaman_spell_t::impact(s);
   }
 };
 
@@ -6793,12 +6826,12 @@ double shaman_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( mastery.enhanced_elements->ok() &&
-       ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) ||
-         dbc::is_school( school, SCHOOL_NATURE ) ) )
-  {
-    m *= 1.0 + cache.mastery_value();
-  }
+  //if ( mastery.enhanced_elements->ok() &&
+  //     ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) ||
+  //       dbc::is_school( school, SCHOOL_NATURE ) ) )
+  //{
+  //  m *= 1.0 + cache.mastery_value();
+  //}
 
   return m;
 }
@@ -6832,13 +6865,13 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   // Enhancement
   m *= 1.0 + spec.enhancement_shaman->effectN( 3 ).percent();
 
-  auto school = s->action->get_school();
-  if ( ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) ||
-         dbc::is_school( school, SCHOOL_NATURE ) ) &&
-       mastery.enhanced_elements->ok() )
-  {
-    m *= 1.0 + cache.mastery_value();
-  }
+  //auto school = s->action->get_school();
+  //if ( ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) ||
+  //       dbc::is_school( school, SCHOOL_NATURE ) ) &&
+  //     mastery.enhanced_elements->ok() )
+  //{
+  //  m *= 1.0 + cache.mastery_value();
+  //}
 
   return m;
 }
