@@ -316,7 +316,11 @@ public:
     buff_t* frostbrand;
     buff_t* hot_hand;
     buff_t* lightning_shield;
+	buff_t* lightning_shield_overcharge;
     buff_t* stormbringer;
+	buff_t* forceful_winds;
+	buff_t* landslide;
+
 
     // Restoration
     buff_t* spirit_walk;
@@ -360,7 +364,7 @@ public:
     gain_t* resonance_totem;
     gain_t* wind_gust;
 	gain_t* forceful_winds;
-	gain_t* lightning_shield;
+	gain_t* lightning_shield_overcharge;
   } gain;
 
   // Tracked Procs
@@ -714,7 +718,7 @@ struct resonance_totem_buff_t : public buff_t
 
 		set_tick_callback([p](buff_t* b, int, const timespan_t&) {
 			double g = b->data().effectN(1).base_value();
-			p->resource_gain(RESOURCE_MAELSTROM, g, p->gain.ascendance);
+			p->resource_gain(RESOURCE_MAELSTROM, g, p->gain.resonance_totem);
 		});
 	}
 };
@@ -761,6 +765,52 @@ struct tailwind_totem_buff_enh_t : public buff_t
 		: buff_t(p, "tailwind_totem_enh", p -> find_spell(262400))
 	{
 		set_duration(p->talent.totem_mastery->effectN(4).trigger()->duration());
+		set_default_value(s_data->effectN(1).percent());
+	}
+};
+
+struct lightning_shield_buff_t : public buff_t
+{
+	lightning_shield_buff_t(shaman_t* p)
+		: buff_t(p, "lightning_shield", p -> find_spell(192106))
+	{
+		set_chance(p->talent.lightning_shield->ok());
+	}
+};
+
+struct lightning_shield_overcharge_buff_t : public buff_t
+{
+	lightning_shield_overcharge_buff_t(shaman_t* p)
+		: buff_t(p, "lightning_shield_overcharge", p -> find_spell(273323))
+	{
+		set_duration(s_data->duration());
+		set_period(s_data->effectN(2).period());
+
+		set_tick_callback([p](buff_t* b, int, const timespan_t&) {
+			double g = b->data().effectN(2).base_value();
+			p->resource_gain(RESOURCE_MAELSTROM, g, p->gain.lightning_shield_overcharge);
+		});
+	}
+};
+
+struct forceful_winds_buff_t : public buff_t
+{
+	forceful_winds_buff_t(shaman_t* p)
+		: buff_t(p, "forceful_winds", p -> find_spell(262652))
+	{
+		set_refresh_behavior(buff_refresh_behavior::DISABLED);
+		set_duration(s_data->duration());
+		set_max_stack(s_data->max_stacks());
+		set_default_value(s_data->effectN(1).percent());
+	}
+};
+
+struct landslide_buff_t : public buff_t
+{
+	landslide_buff_t(shaman_t* p)
+		: buff_t(p, "landslide", p -> find_spell(202004))
+	{
+		set_duration(s_data->duration());
 		set_default_value(s_data->effectN(1).percent());
 	}
 };
@@ -916,9 +966,9 @@ public:
   {
 	  double m = ab::action_multiplier();
 
-	  if (p()->specialization() == SHAMAN_ENHANCEMENT || enable_enh_mastery_scaling)
+	  if (p()->specialization() == SHAMAN_ENHANCEMENT )
 	  {
-		  if (ab::data().affected_by(p()->mastery.enhanced_elements->effectN(1)) || ab::data().affected_by(p()->mastery.enhanced_elements->effectN(5)))
+		  if (ab::data().affected_by(p()->mastery.enhanced_elements->effectN(1)) || ab::data().affected_by(p()->mastery.enhanced_elements->effectN(5)) || enable_enh_mastery_scaling)
 		  {
 			  //...hopefully blizzard never makes direct and periodic scaling different from eachother in our mastery..
 			  m *= 1.0 + p()->cache.mastery_value();
@@ -1163,8 +1213,8 @@ public:
     {
       may_proc_hot_hand = ab::weapon != nullptr;
     }
-
-    may_proc_lightning_shield = p()->talent.lightning_shield->ok() && weapon && weapon_multiplier > 0;
+	
+	may_proc_lightning_shield = ab::weapon != nullptr;
   }
 
   bool init_finished() override
@@ -1186,7 +1236,7 @@ public:
 
     if ( may_proc_lightning_shield )
     {
-      proc_ls = player->get_proc( std::string( "Lightning Shield: " ) + full_name() );
+      proc_ls = player->get_proc( std::string( "Lightning Shield Overcharge: " ) + full_name() );
     }
 
     if ( may_proc_maelstrom_weapon )
@@ -1356,7 +1406,7 @@ public:
 
   double action_multiplier() const override
   {
-    double m = spell_t::action_multiplier();
+    double m = shaman_action_t::action_multiplier();
     // BfA Elemental talent - Master of the Elements
     if ( affected_by_master_of_the_elements )
     {
@@ -2303,11 +2353,12 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     : shaman_spell_t( n, player, player->find_spell( 10444 ) )
   {
     may_crit = background = true;
+	enable_enh_mastery_scaling = true;
 
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
       snapshot_flags          = STATE_AP;
-      attack_power_mod.direct = w->swing_time.total_seconds() / 2.6 * 0.2;
+      attack_power_mod.direct = 0.044;
     }
   }
 
@@ -2347,6 +2398,9 @@ struct searing_assault_t : public shaman_spell_t
 
 struct windfury_attack_t : public shaman_attack_t
 {
+	struct {
+		std::array<proc_t*, 6> at_fw;
+	} stats_;
   windfury_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w )
     : shaman_attack_t( n, player, s )
   {
@@ -2358,8 +2412,10 @@ struct windfury_attack_t : public shaman_attack_t
 
     // Windfury can not proc itself
     may_proc_windfury = false;
-
     may_proc_maelstrom_weapon = true;
+
+	for (size_t i = 0; i < stats_.at_fw.size(); i++)
+		stats_.at_fw[i] = player->get_proc("Windfury-ForcefulWinds: " + std::to_string(i));
   }
 
   bool init_finished() override
@@ -2390,13 +2446,23 @@ struct windfury_attack_t : public shaman_attack_t
   double action_multiplier() const override
   {
     double m = shaman_attack_t::action_multiplier();
-
+	if (p()->buff.forceful_winds->up())
+	{
+		m *= 1.0 + (p()->buff.forceful_winds->stack_value());
+	}
     return m;
   }
 
   void impact( action_state_t* state ) override
   {
-    shaman_attack_t::impact( state );
+	  if (p()->talent.forceful_winds->ok())
+	  {
+		  stats_.at_fw[p()->buff.forceful_winds->check()]->occur();
+		  double bonus_resource = p()->buff.forceful_winds->s_data->effectN(2).base_value() * p()->buff.forceful_winds->check();
+		  p()->resource_gain(RESOURCE_MAELSTROM, bonus_resource, p()->gain.forceful_winds);
+	  }
+	
+	  shaman_attack_t::impact( state );
   }
 };
 
@@ -2449,6 +2515,7 @@ struct stormstrike_attack_t : public shaman_attack_t
     may_miss = may_dodge = may_parry = false;
     weapon                           = w;
 	base_multiplier *= 1.0;
+	may_proc_lightning_shield = true;
   }
 
   void init() override
@@ -2463,6 +2530,14 @@ struct stormstrike_attack_t : public shaman_attack_t
 	if (p()->buff.storm_totem->up())
 	{
 		m *= 1.0 + p()->buff.storm_totem->data().effectN(1).percent();
+	}
+
+	if (p()->buff.landslide->up())
+	{
+		if (weapon->slot == SLOT_MAIN_HAND)
+		{
+			m *= 1.0 + p()->buff.landslide->value();
+		}
 	}
 
     return m;
@@ -2482,7 +2557,19 @@ struct stormstrike_attack_t : public shaman_attack_t
 
   void impact( action_state_t* state ) override
   {
-    shaman_attack_t::impact( state );
+    if (p()->buff.lightning_shield->up())
+	{
+		p()->buff.lightning_shield->trigger();
+		
+		if (p()->buff.lightning_shield->stack() >= 15) //if 15 or greater, trigger overcharge and remove all stacks, then trigger LS back to 1.
+		{                                              //is there a way to do this without expiring lightning shield entirely?
+			p()->buff.lightning_shield_overcharge->trigger();
+			p()->buff.lightning_shield->expire();
+			p()->buff.lightning_shield->trigger();
+		}
+	}
+
+	shaman_attack_t::impact(state);
   }
 };
 
@@ -2554,11 +2641,21 @@ struct ground_aoe_spell_t : public spell_t
 struct lightning_shield_damage_t : public shaman_spell_t
 {
   lightning_shield_damage_t( shaman_t* player )
-    : shaman_spell_t( "lightning_shield_damage", player, player->find_spell( 192109 ) )
+    : shaman_spell_t( "lightning_shield_damage", player, player->find_spell(273324) )
   {
     background = true;
     callbacks  = false;
   }
+};
+
+struct lightning_shield_defense_damage_t : public shaman_spell_t
+{
+	lightning_shield_defense_damage_t(shaman_t* player)
+		:shaman_spell_t("lifghtning_shield_defense_damage", player, player->find_spell(192109))
+	{
+		background = true;
+		callbacks = false;
+	}
 };
 
 struct earthen_rage_spell_t : public shaman_spell_t
@@ -3162,6 +3259,17 @@ struct rockbiter_t : public shaman_spell_t
   void impact( action_state_t* s ) override
   {
     shaman_spell_t::impact( s );
+
+	if (p()->talent.landslide->ok())
+	{
+		double proc_chance = p()->talent.landslide->proc_chance();
+		if (rng().roll(proc_chance))
+		{
+			p()->buff.landslide->trigger();
+		}
+	}
+
+	///overloads += rng().roll(overload_chance(source_state));
   }
 };
 
@@ -5895,34 +6003,6 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
   attack->proc_hh->occur();
 }
 
-void shaman_t::trigger_lightning_shield( const action_state_t* state )
-{
-  if ( !buff.lightning_shield->up() )
-  {
-    return;
-  }
-
-  if ( !state->action->result_is_hit( state->result ) )
-  {
-    return;
-  }
-
-  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
-  if ( !attack->may_proc_lightning_shield )
-  {
-    return;
-  }
-
-  if ( !rng().roll( talent.lightning_shield->proc_chance() ) )
-  {
-    return;
-  }
-
-  action.lightning_shield->set_target( state->target );
-  action.lightning_shield->execute();
-  attack->proc_ls->occur();
-}
-
 // TODO: Target swaps
 void shaman_t::trigger_earthen_rage( const action_state_t* state )
 {
@@ -5990,8 +6070,13 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
     }
     else
     {
-      a = windfury_oh;
+		return;
     }
+
+	if (talent.forceful_winds->ok())
+	{
+		buff.forceful_winds->trigger();
+	}
 
     a->set_target( state->target );
     a->schedule_execute();
@@ -6020,6 +6105,34 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
   flametongue->set_target( state->target );
   flametongue->schedule_execute();
   attack->proc_ft->occur();
+}
+
+void shaman_t::trigger_lightning_shield( const action_state_t* state )
+{
+  if ( ! buff.lightning_shield -> up() )
+  {
+    return;
+  }
+
+  if (!buff.lightning_shield_overcharge->up())
+  {
+	  return;
+  }
+
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+  {
+    return;
+  }
+
+  shaman_attack_t* attack = debug_cast< shaman_attack_t* >( state -> action );
+  if ( ! attack -> may_proc_lightning_shield )
+  {
+    return;
+  }
+
+  action.lightning_shield -> set_target( state -> target );
+  action.lightning_shield -> execute();
+  attack -> proc_ls -> occur();
 }
 
 void shaman_t::trigger_hailstorm( const action_state_t* state )
@@ -6064,13 +6177,12 @@ void shaman_t::create_buffs()
   buff.resonance_totem = new resonance_totem_buff_t( this );
   buff.storm_totem = new storm_totem_buff_t( this );
   buff.ember_totem = new ember_totem_buff_t( this );
-  buff.tailwind_totem_ele = new tailwind_totem_buff_ele_t( this );
-  buff.tailwind_totem_enh = new tailwind_totem_buff_enh_t( this );
   buff.ghost_wolf =
       make_buff( this, "ghost_wolf", find_class_spell( "Ghost Wolf" ) );
   //
   // Elemental
   //
+  buff.tailwind_totem_ele = new tailwind_totem_buff_ele_t(this);
   buff.elemental_blast_crit = make_buff<stat_buff_t>( this, "elemental_blast_critical_strike", find_spell( 118522 ) );
   buff.elemental_blast_crit->set_max_stack( 1 );
   buff.elemental_blast_haste = make_buff<stat_buff_t>( this, "elemental_blast_haste", find_spell( 173183 ) );
@@ -6125,21 +6237,25 @@ void shaman_t::create_buffs()
   //
   // Enhancement
   //
+  buff.tailwind_totem_enh = new tailwind_totem_buff_enh_t(this);
+  buff.lightning_shield = new lightning_shield_buff_t(this);
+  buff.lightning_shield_overcharge = new lightning_shield_overcharge_buff_t(this);
+  buff.flametongue = new flametongue_buff_t(this);
+  buff.forceful_winds = new forceful_winds_buff_t(this);
+  buff.landslide = new landslide_buff_t(this);
+
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
   buff.feral_spirit =
       make_buff( this, "t17_4pc_melee", sets->set( SHAMAN_ENHANCEMENT, T17, B4 )->effectN( 1 ).trigger() )
           ->set_cooldown( timespan_t::zero() );
-  buff.flametongue      = new flametongue_buff_t( this );
   buff.hot_hand =
       make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )->set_trigger_spell( talent.hot_hand );
-  buff.lightning_shield = make_buff( this, "lightning_shield", find_talent_spell( "Lightning Shield" ) )
-                              ->set_chance( talent.lightning_shield->ok() );
   buff.spirit_walk = make_buff( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
   buff.frostbrand  = make_buff( this, "frostbrand", spec.frostbrand )
                         ->set_period( timespan_t::zero() )
                         ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
   buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) )
-                          ->set_activated( false )  // TODO: Need a delay on this
+                          ->set_activated( false )
                           ->set_max_stack( find_spell( 201846 )->initial_stacks() );
   
   //
@@ -6164,6 +6280,8 @@ void shaman_t::init_gains()
   gain.spirit_of_the_maelstrom = get_gain( "Spirit of the Maelstrom" );
   gain.resonance_totem         = get_gain( "Resonance Totem" );
   gain.wind_gust               = get_gain( "Wind Gust" );
+  gain.lightning_shield_overcharge  = get_gain("Lightning Shield Overcharge");
+  gain.forceful_winds		   = get_gain("Forceful Winds");
 }
 
 // shaman_t::init_procs =====================================================
