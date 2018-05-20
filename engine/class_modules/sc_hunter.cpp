@@ -235,8 +235,7 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
  *   - Double Tap AiS 'delay' (do we actually care? it seems to matter *only* for the
  *     initial 50% bonus damage in the sub ~20yds range)
  *  Beast Mastery
- *   - Kill Command damage formula
- *   - Barbed Shot refresh mechanic
+ *   - review Barbed Shot refresh mechanic
  */
 
 // somewhat arbitrary number of the maximum count of barbed shot buffs possible simultaneously
@@ -1614,15 +1613,24 @@ struct kill_command_bm_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
     background = true;
     proc = true;
 
-    attack_power_mod.direct = 3.0 / 4.0; // Hard-coded in tooltip.
+    // Kill Command seems to use base damage in BfA
+    base_dd_min = data().effectN( 1 ).min( p, p -> level() );
+    base_dd_max = data().effectN( 1 ).max( p, p -> level() );
 
     if ( o() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T21, B2 ) )
       base_multiplier *= 1.0 + o() -> sets -> set( HUNTER_BEAST_MASTERY, T21, B2 ) -> effectN( 1 ).percent();
   }
 
-  // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
-  double composite_attack_power() const override
-  { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
+  double bonus_da( const action_state_t* ) const override
+  {
+    /* It looks like KC kept the owner ap part of its damage going into bfa,
+     * with the same coefficient. Model it as a simple bonus damage adder.
+     * It's not strictly correct as we ideally have to snapshot it in the state
+     * but as KC is instant that doesn't really matter.
+     */
+    constexpr double owner_coeff_ = 3.0 / 4.0;
+    return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier() * owner_coeff_;
+  }
 
   double action_multiplier() const override
   {
