@@ -1497,7 +1497,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   struct sef_fist_of_the_white_tiger_oh_t : public sef_melee_attack_t
   {
     sef_fist_of_the_white_tiger_oh_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "fist_of_the_white_tiger_offhand", player, player -> o() -> talent.fist_of_the_white_tiger -> effectN( 4 ).trigger() )
+      sef_melee_attack_t( "fist_of_the_white_tiger_offhand", player, player -> o() -> talent.fist_of_the_white_tiger )
     {
       may_dodge = may_parry = may_block = may_miss = true;
       dual = true;
@@ -1509,7 +1509,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   struct sef_fist_of_the_white_tiger_t : public sef_melee_attack_t
   {
     sef_fist_of_the_white_tiger_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "fist_of_the_white_tiger", player, player -> o() -> talent.fist_of_the_white_tiger -> effectN( 3 ).trigger() )
+      sef_melee_attack_t( "fist_of_the_white_tiger", player, player -> o() -> talent.fist_of_the_white_tiger -> effectN( 2 ).trigger() )
     {
       may_dodge = may_parry = may_block = may_miss = true;
       dual = true;
@@ -2742,8 +2742,6 @@ struct tiger_palm_t: public monk_melee_attack_t
   {
     parse_options( options_str );
     sef_ability = SEF_TIGER_PALM;
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
 
     add_child( eye_of_the_tiger_damage );
     add_child( eye_of_the_tiger_heal );
@@ -2973,8 +2971,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     sef_ability = SEF_RISING_SUN_KICK;
 
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
     attack_power_mod.direct = p -> spec.rising_sun_kick -> effectN( 1 ).trigger() -> effectN( 1 ).ap_coeff();
     spell_power_mod.direct = 0.0;
 
@@ -3108,8 +3104,6 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
   {
     cooldown -> duration = timespan_t::zero();
     background = dual = true;
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
     trigger_gcd = timespan_t::zero();
   }
 
@@ -3271,7 +3265,7 @@ struct blackout_kick_t: public monk_melee_attack_t
     if (weapon_multiplier == 0)
     {
       const weapon_t* mh = ( weapon == nullptr ) ? &player -> main_hand_weapon : weapon;
-      const weapon_t* oh = (weapon == nullptr) ? &player -> off_hand_weapon : weapon;
+      const weapon_t* oh = ( weapon == nullptr ) ? &player -> off_hand_weapon : weapon;
       if ( mh && mh -> type != WEAPON_NONE && p() -> specialization() == MONK_WINDWALKER )
       {
         assert( mh -> slot != SLOT_OFF_HAND );
@@ -3376,8 +3370,6 @@ struct blackout_strike_t: public monk_melee_attack_t
   {
     parse_options( options_str );
 
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
     spell_power_mod.direct = 0.0;
     cooldown -> duration = data().cooldown();
   }
@@ -3430,8 +3422,6 @@ struct tick_action_t : public monk_melee_attack_t
   {
     dual = background = true;
     aoe = -1;
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
     radius = data -> effectN( 1 ).radius();
 
     // Reset some variables to ensure proper execution
@@ -3652,8 +3642,6 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
   {
     background = true;
     aoe = -1;
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
 
     attack_power_mod.direct = p -> spec.fists_of_fury -> effectN( 5 ).ap_coeff();
     base_costs[ RESOURCE_CHI ] = 0;
@@ -3685,11 +3673,6 @@ struct fists_of_fury_t: public monk_melee_attack_t
     // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
     base_tick_time = dot_duration / 4;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-
-    attack_power_mod.direct = 0.0;
-    attack_power_mod.tick = 0.0;
-    spell_power_mod.direct = 0.0;
-    spell_power_mod.tick = 0.0;
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
   }
@@ -3777,9 +3760,6 @@ struct whirling_dragon_punch_tick_t: public monk_melee_attack_t
     background = true;
     aoe = -1;
     radius = s -> effectN( 1 ).radius();
-
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
   }
 
   virtual timespan_t travel_time() const override
@@ -3854,18 +3834,19 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
 // Fist of the White Tiger
 // ==========================================================================
 // Off hand hits first followed by main hand
+// The ability does NOT require an off-hand weapon to be executed. 
+// The ability uses the main-hand weapon damage for both attacks
 
 struct fist_of_the_white_tiger_off_hand_t: public monk_melee_attack_t
 {
   fist_of_the_white_tiger_off_hand_t( monk_t* p, const char* name, const spell_data_t* s ):
     monk_melee_attack_t( name, p, s )
   {
-    sef_ability = SEF_FIST_OF_THE_WHITE_TIGER_OH;
+    sef_ability = SEF_FIST_OF_THE_WHITE_TIGER;
     may_dodge = may_parry = may_block = may_miss = true;
     dual = true;
-    attack_power_mod.direct = p -> talent.fist_of_the_white_tiger -> effectN( 1 ).ap_coeff();
-    // This is the off-hand damage and is reduced by 50% baseline.
-    attack_power_mod.direct *= 0.5;
+    // attack_power_mod.direct = p -> talent.fist_of_the_white_tiger -> effectN( 1 ).ap_coeff();
+    weapon = &( player -> main_hand_weapon ); 
   }
 
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
@@ -3891,22 +3872,23 @@ struct fist_of_the_white_tiger_off_hand_t: public monk_melee_attack_t
 
 struct fist_of_the_white_tiger_t: public monk_melee_attack_t
 {
-  fist_of_the_white_tiger_off_hand_t* oh_attack;
+  fist_of_the_white_tiger_off_hand_t* mh_attack;
   fist_of_the_white_tiger_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "fist_of_the_white_tiger", p, p -> talent.fist_of_the_white_tiger ),
-    oh_attack( nullptr )
+    monk_melee_attack_t( "fist_of_the_white_tiger_offhand", p, p -> talent.fist_of_the_white_tiger ),
+    mh_attack( nullptr )
   {
-    sef_ability = SEF_FIST_OF_THE_WHITE_TIGER;
+    sef_ability = SEF_FIST_OF_THE_WHITE_TIGER_OH;
 
     parse_options( options_str );
-    may_dodge = may_parry = may_block = true;
-//    attack_power_mod.direct = p -> talent.fist_of_the_white_tiger -> effectN( 3 ).trigger() -> effectN( 1 ).ap_coeff();
+    may_dodge   = may_parry = may_block = true;
+    // This is the off-hand damage
+    weapon      = &( player -> off_hand_weapon ); 
     trigger_gcd = data().gcd();
 
 //    energize_type = ENERGIZE_NONE;
 
-    oh_attack = new fist_of_the_white_tiger_off_hand_t( p, "fist_of_the_white_tiger_offhand", p -> talent.fist_of_the_white_tiger -> effectN( 4 ).trigger() );
-    add_child( oh_attack );
+    mh_attack = new fist_of_the_white_tiger_off_hand_t( p, "fist_of_the_white_tiger_mainhand", p -> talent.fist_of_the_white_tiger -> effectN( 2 ).trigger() );
+    add_child( mh_attack );
   }
 
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
@@ -3922,24 +3904,16 @@ struct fist_of_the_white_tiger_t: public monk_melee_attack_t
     return pm;
   }
 
-  bool ready() override
-  {
-    if ( p() -> main_hand_weapon.type == WEAPON_NONE )
-      return false;
-
-    return monk_melee_attack_t::ready();
-  }
-
   void execute() override
   {
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_FIST_OF_THE_WHITE_TIGER );
 
-    monk_melee_attack_t::execute(); // this is the MH attack
+    monk_melee_attack_t::execute();
 
-    if ( oh_attack && result_is_hit( execute_state -> result ) && p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, OH does not execute.
-      oh_attack -> execute();
+    if ( result_is_hit( execute_state -> result ) )
+      mh_attack -> execute();
   }
 };
 
@@ -4084,9 +4058,6 @@ struct keg_smash_t: public monk_melee_attack_t
     
     attack_power_mod.direct = p.spec.keg_smash -> effectN( 2 ).ap_coeff();
     radius = p.spec.keg_smash -> effectN( 2 ).radius();
-
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
 
     cooldown -> duration = p.spec.keg_smash -> cooldown();
     cooldown -> duration = p.spec.keg_smash -> charge_cooldown();
@@ -4427,18 +4398,16 @@ struct paralysis_t: public monk_melee_attack_t
 
 struct flying_serpent_kick_t: public monk_melee_attack_t
 {
-  const spell_data_t* fsk_damage;
   bool first_charge;
   double movement_speed_increase;
   flying_serpent_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "flying_serpent_kick", p, p -> spec.flying_serpent_kick ),
-    fsk_damage( p -> passives.flying_serpent_kick_damage ),
     first_charge( true ), movement_speed_increase( p -> spec.flying_serpent_kick -> effectN( 1 ).percent() )
   {
     parse_options( options_str );
     ignore_false_positive = true;
     movement_directionality = MOVEMENT_OMNI;
-    attack_power_mod.direct = fsk_damage -> effectN( 1 ).ap_coeff();
+    attack_power_mod.direct = p -> passives.flying_serpent_kick_damage -> effectN( 1 ).ap_coeff();
     aoe = -1;
     p -> cooldown.flying_serpent_kick = cooldown;
   }
