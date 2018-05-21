@@ -144,6 +144,15 @@ enum totem_e
   TOTEM_WATER,
   TOTEM_MAX
 };
+
+enum wolf_type_e
+{
+	SPIRIT_WOLF = 0,
+	FIRE_WOLF,
+	FROST_WOLF,
+	LIGHTNING_WOLF
+};
+
 enum imbue_e
 {
   IMBUE_NONE = 0,
@@ -167,6 +176,7 @@ struct shaman_td_t : public actor_target_data_t
   {
     dot_t* flame_shock;
 	dot_t* searing_assault;
+	dot_t* molten_weapon;
   } dot;
 
   struct debuffs
@@ -184,7 +194,7 @@ struct shaman_td_t : public actor_target_data_t
     dot_t* earthliving;
   } heal;
 
-  shaman_td_t( player_t* target, shaman_t* p );
+  shaman_td_t(player_t* target, shaman_t* p);
 
   shaman_t* actor() const
   {
@@ -267,6 +277,7 @@ public:
     spell_t* crashing_storm;
 	spell_t* searing_assault;
 	spell_t* molten_weapon;
+	action_t* molten_weapon_dot;
   } action;
 
   // Pets
@@ -599,7 +610,7 @@ public:
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_searing_assault(const action_state_t * state);
   void trigger_flametongue_weapon( const action_state_t* );
-  void trigger_icy_edge( const action_state_t*, std::vector<pet_t*> );
+  void trigger_icy_edge( const action_state_t* );
   void trigger_hailstorm( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
   void trigger_lightning_shield( const action_state_t* state );
@@ -899,6 +910,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
 
   // Enhancement
   dot.searing_assault	  = target->get_dot( "searing_assault", p);
+  dot.molten_weapon		  = target->get_dot("molten_weapon", p);
   debuff.earthen_spike = buff_creator_t( *this, "earthen_spike", p->talent.earthen_spike )
                              .cd( timespan_t::zero() )  // Handled by the action
                              // -10% resistance in spell data, treat it as a multiplier instead
@@ -1326,7 +1338,7 @@ public:
     p()->trigger_hailstorm( state );
     p()->trigger_lightning_shield( state );
     p()->trigger_hot_hand( state );
-	p()->trigger_icy_edge(state, p()->pet_list);
+	p()->trigger_icy_edge(state);
   }
 
   void trigger_maelstrom_weapon( const action_state_t* source_state, double amount = 0 )
@@ -1828,6 +1840,23 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
     }
   }
 
+
+  //double action_multiplier() const override
+  //{
+	 // double m = ab::action_multiplier();
+
+	 // if (p()->specialization() == SHAMAN_ENHANCEMENT)
+	 // {
+		//  if (ab::data().affected_by(p()->mastery.enhanced_elements->effectN(1)) || ab::data().affected_by(p()->mastery.enhanced_elements->effectN(5)) || enable_enh_mastery_scaling)
+		//  {
+		//	  //...hopefully blizzard never makes direct and periodic scaling different from eachother in our mastery..
+		//	  m *= 1.0 + p()->cache.mastery_value();
+		//  }
+	 // }
+
+	 // return m;
+  //}
+
   void init() override
   {
     pet_action_t<T_PET, melee_attack_t>::init();
@@ -1913,9 +1942,10 @@ struct base_wolf_t : public shaman_pet_t
 {
   action_t* alpha_wolf;
   buff_t* alpha_wolf_buff;
+  wolf_type_e wolf_type;
 
   base_wolf_t( shaman_t* owner, const std::string& name )
-    : shaman_pet_t( owner, name ), alpha_wolf( nullptr ), alpha_wolf_buff( nullptr )
+    : shaman_pet_t( owner, name ), alpha_wolf( nullptr ), alpha_wolf_buff( nullptr ), wolf_type(SPIRIT_WOLF)
   {
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
@@ -1938,36 +1968,43 @@ struct wolf_base_attack_t : public pet_melee_attack_t<T>
   using super = wolf_base_attack_t<T>;
 
   wolf_base_attack_t( T* wolf, const std::string& n, const spell_data_t* spell = spell_data_t::nil(),
-                      const std::string& options_str = std::string() )
-    : pet_melee_attack_t<T>( wolf, n, spell )
+                      const std::string& options_str = std::string() ) : pet_melee_attack_t<T>( wolf, n, spell )
   {
     this->parse_options( options_str );
-
-	background = repeating = true;
-	special = false;
-
-	weapon = &(p()->main_hand_weapon);
-	weapon_multiplier = 1.0;
-
-	base_execute_time = weapon->swing_time;
-	school = SCHOOL_PHYSICAL;
   }
+};
+
+template <typename T>
+struct wolf_base_auto_attack_t : public pet_melee_attack_t<T>
+{
+	using super = wolf_base_auto_attack_t<T>;
+
+	wolf_base_auto_attack_t( T* wolf, const std::string& n, const spell_data_t* spell = spell_data_t::nil(),
+		const std::string& options_str = std::string() ) : pet_melee_attack_t<T>(wolf, n, spell)
+	{
+		this->parse_options(options_str);
+
+		this->background = this->repeating = true;
+		this->special = false;
+
+		this->weapon = &(p()->main_hand_weapon);
+		this->weapon_multiplier = 1.0;
+
+		this->base_execute_time = weapon->swing_time;
+		this->school = SCHOOL_PHYSICAL;
+	}
 };
 
 struct spirit_wolf_t : public base_wolf_t
 {
-  struct fs_melee_t : public wolf_base_attack_t<spirit_wolf_t>
+  struct fs_melee_t : public wolf_base_auto_attack_t<spirit_wolf_t>
   {
 	  const spell_data_t *maelstrom;
 
-    fs_melee_t( spirit_wolf_t* player )
-      : super( player, "melee" ),
-        maelstrom( player->find_spell( 190185 ) )
-        
+    fs_melee_t( spirit_wolf_t* player ) : super( player, "melee" ), maelstrom( player->find_spell( 190185 ) )
     {
       
     }
-
 
     void impact( action_state_t* state ) override
     {
@@ -2007,7 +2044,7 @@ bool spirit_wolf_t::create_actions()
 
 struct elemental_wolf_base_t : public base_wolf_t
 {
-  struct dw_melee_t : public wolf_base_attack_t<elemental_wolf_base_t>
+  struct dw_melee_t : public wolf_base_auto_attack_t<elemental_wolf_base_t>
   {
     const spell_data_t* maelstrom;
 
@@ -2054,7 +2091,7 @@ struct frost_wolf_t : public elemental_wolf_base_t
 
   frost_wolf_t( shaman_t* owner ) : elemental_wolf_base_t( owner, owner->raptor_glyph ? "frost_raptor" : "frost_wolf" )
   {
-	  
+	  wolf_type = FROST_WOLF;
   }
 
 
@@ -2065,7 +2102,21 @@ struct frost_wolf_t : public elemental_wolf_base_t
 	  {
 		  background = true;
 		  snapshot_flags = STATE_AP;
-		  attack_power_mod.direct = 0.075;
+		  attack_power_mod.direct = 0.065;
+		  school = SCHOOL_FROST;
+	  }
+
+	  //Move this to pet base attack eventually.
+	  double action_multiplier() const override
+	  {
+	   double m = super::action_multiplier();
+
+		if (super::data().affected_by(p()->o()->mastery.enhanced_elements->effectN(1)) || super::data().affected_by(p()->o()->mastery.enhanced_elements->effectN(5)))
+		{
+			m *= 1.0 + p()->o()->cache.mastery_value();
+		}
+
+	   return m;
 	  }
   };
 
@@ -2093,6 +2144,7 @@ struct fire_wolf_t : public elemental_wolf_base_t
 {
   fire_wolf_t( shaman_t* owner ) : elemental_wolf_base_t( owner, owner->raptor_glyph ? "fiery_raptor" : "fiery_wolf" )
   {
+	  wolf_type = FIRE_WOLF;
   }
 
   bool create_actions() override
@@ -2119,6 +2171,7 @@ struct lightning_wolf_t : public elemental_wolf_base_t
   lightning_wolf_t( shaman_t* owner )
     : elemental_wolf_base_t( owner, owner->raptor_glyph ? "lightning_raptor" : "lightning_wolf" )
   {
+	  wolf_type = LIGHTNING_WOLF;
   }
 
   double composite_player_multiplier( school_e s ) const override
@@ -3146,7 +3199,38 @@ struct lava_lash_t : public shaman_attack_t
       cl->set_target( state->target );
       cl->schedule_execute();
     }
+
+	if (p()->buff.molten_weapon->up())
+	{
+		trigger_molten_weapon_dot(state->target, state->result_amount);
+	}
+
   }
+
+  virtual void trigger_molten_weapon_dot(player_t* t, double dmg)
+  {
+	    double wolf_count_multi = p()->buff.molten_weapon->data().effectN(2).percent() * p()->buff.molten_weapon->check();
+		double feed_amount = wolf_count_multi * dmg;
+		residual_action::trigger(p()->action.molten_weapon_dot, // ignite spell
+			t, // target
+			feed_amount);
+  }
+};
+
+// Molten Weapon Dot ============================================================
+
+struct molten_weapon_dot_t : public residual_action::residual_periodic_action_t < shaman_spell_t >
+{
+	molten_weapon_dot_t(shaman_t* p) :
+		base_t("molten_weapon", p, p -> find_spell(271924))
+	{
+		//spell data seems messed up - need to whitelist?
+		dual = true;
+		dot_duration = timespan_t::from_seconds(4);
+		base_tick_time = timespan_t::from_seconds(2);
+		tick_zero = false;
+		hasted_ticks = false;
+	}
 };
 
 // Stormstrike Attack =======================================================
@@ -6264,7 +6348,7 @@ void shaman_t::trigger_searing_assault(const action_state_t* state)
 	}
 }
 
-void shaman_t::trigger_icy_edge( const action_state_t* state, std::vector<pet_t*> pets)
+void shaman_t::trigger_icy_edge( const action_state_t* state)
 {
 	shaman_attack_t* attack = debug_cast<shaman_attack_t*>(state->action);
 
@@ -6279,25 +6363,15 @@ void shaman_t::trigger_icy_edge( const action_state_t* state, std::vector<pet_t*
 		return;
 	}
 
-	pet::frost_wolf_t* wolf = nullptr;
-	int x = 0;
-
-	while (wolf == nullptr)
+	for (auto wolf : pet.elemental_wolves)
 	{
-		if (!pets[x]->summoned)
-		{
+		if (wolf->is_sleeping())
 			continue;
+		if (debug_cast<pet::base_wolf_t*>(wolf)->wolf_type == FROST_WOLF)
+		{
+			debug_cast<pet::frost_wolf_t*>(wolf)->actions.icy_edge->set_target(state->target);
+			debug_cast<pet::frost_wolf_t*>(wolf)->actions.icy_edge->execute();
 		}
-		if (pets[x]->name_str == "frost_wolf" || pets[x]->name_str == "frost_raptor")
-			wolf = dynamic_cast<pet::frost_wolf_t*>(pets[x]);
-		x++;
-	}
-
-	wolf->actions.icy_edge->set_target(state->target);
-
-	for (int x = 1; x <= buff.icy_edge->check(); x++)
-	{
-		wolf->actions.icy_edge->schedule_execute();
 	}
 }
 
@@ -6897,6 +6971,8 @@ void shaman_t::init_action_list()
       windfury_oh = new windfury_attack_t( "windfury_attack_oh", this, find_spell( 33750 ), &( off_hand_weapon ) );
     }
     flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
+
+	action.molten_weapon_dot = new molten_weapon_dot_t(this);
   }
 
   if ( talent.hailstorm->ok() )
