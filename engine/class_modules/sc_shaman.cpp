@@ -475,8 +475,8 @@ public:
     const spell_data_t* landslide;
 	const spell_data_t* forceful_winds;
 
-    //const spell_data_t* spirit_wolf;
-    //const spell_data_t* earth_shield;
+    const spell_data_t* spirit_wolf;
+    const spell_data_t* earth_shield;
     //const spell_data_t* static_charge;
 
     const spell_data_t* searing_assault;
@@ -4508,9 +4508,40 @@ struct feral_spirit_spell_t : public shaman_spell_t
 
     if ( p()-> talent.elemental_spirits -> ok() )
     {
-      // Summon 2 pets here too. The doom wolves (3 separate wolf types) are in an array of 6
-      // entries, and we randomly pick two (separate) wolves from it.
-      size_t n = 2;
+      //This summon evaluates the wolf type to spawn as the roll, instead of rolling against
+		// the available pool of wolves to spawn.
+		size_t n = 2;
+		while (n)
+		{
+			int wolf_roll = rng().range(0, 3) + 1; //add 1 to get the correct enum range
+
+			for (auto wolf : p()->pet.elemental_wolves)
+			{
+				if (debug_cast<pet::base_wolf_t*>(wolf)->wolf_type == wolf_roll && wolf->is_sleeping())
+				{
+					wolf->summon(summon_duration());
+					if (wolf_roll == FIRE_WOLF)
+					{
+						p()->buff.molten_weapon->trigger();
+					}
+					if (wolf_roll == FROST_WOLF)
+					{
+						p()->buff.icy_edge->trigger();
+					}
+					if (wolf_roll == LIGHTNING_WOLF)
+					{
+						p()->buff.crackling_surge->trigger();
+					}
+					break;
+				}
+			}
+			n--;
+		}
+
+		//This summon distribution produces a 1/3 chance for the first wolf, then 1/5 chance to get a repeat, 
+		//since it'll skip an already spawned wolf and re-roll.
+		//This is incorrect as it should be 2 1/3 chances for each wolf to spawn.
+      /*size_t n = 2;
       while ( n )
       {
         size_t idx = rng().range( size_t(), p()->pet.elemental_wolves.size() );
@@ -4533,7 +4564,7 @@ struct feral_spirit_spell_t : public shaman_spell_t
 			p()->buff.crackling_surge->trigger();
 		}
         n--;
-      }
+      }*/
     }
     else
     {
@@ -6064,6 +6095,10 @@ void shaman_t::init_spells()
   talent.landslide     = find_talent_spell( "Landslide" );
   talent.forceful_winds = find_talent_spell( "Forceful Winds" );
   talent.totem_mastery  = find_talent_spell( "Totem Mastery" );
+
+  talent.spirit_wolf = find_talent_spell("Spirit Wolf");
+  talent.earth_shield = find_talent_spell("Earth Shield");
+  talent.static_charge = find_talent_spell("Static Charge");
 
   talent.searing_assault = find_talent_spell( "Searing Assault" );
   talent.hailstorm  = find_talent_spell( "Hailstorm" );
