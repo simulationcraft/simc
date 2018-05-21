@@ -1987,10 +1987,10 @@ struct wolf_base_auto_attack_t : public pet_melee_attack_t<T>
 		this->background = this->repeating = true;
 		this->special = false;
 
-		this->weapon = &(p()->main_hand_weapon);
+		this->weapon = &(this->p()->main_hand_weapon);
 		this->weapon_multiplier = 1.0;
 
-		this->base_execute_time = weapon->swing_time;
+		this->base_execute_time = this->weapon->swing_time;
 		this->school = SCHOOL_PHYSICAL;
 	}
 };
