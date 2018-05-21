@@ -326,10 +326,9 @@ namespace warlock {
     {
       struct bile_spit_t : public warlock_pet_spell_t
       {
-        bile_spit_t(warlock_pet_t* p) : warlock_pet_spell_t("bile_spit", p, p -> find_spell(260641))
+        bile_spit_t(warlock_pet_t* p) : warlock_pet_spell_t("bile_spit", p, p -> find_spell(267997))
         {
-          spell_power_mod.tick = data().effectN(1).trigger()->effectN(2).base_value();
-          base_tick_time = data().effectN(2).period();
+          
         }
       };
 
