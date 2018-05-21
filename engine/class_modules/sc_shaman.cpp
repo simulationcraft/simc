@@ -21,8 +21,9 @@
 // - Add Eye of the Storm to Primal Storm Elemental instead of Gale Force
 //
 // Enhancement
-// - Lots
-
+// - Azerite stuff
+// - Forceful winds is evaluating per windfury proc, instead of before
+//      all windfury damage is dealt in aoe. Added an event delay, but only kinda works.
 // Legion TODO
 //
 // Remove any remaining vestiges of legion stuff
@@ -6363,11 +6364,17 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 		buff.forceful_winds->trigger();
 	}
 
-    a->set_target( state->target );
-    a->schedule_execute();
-    a->schedule_execute();
+	//Right now Forceful winds stacks the buff on all targets hit before dealing damage
+	//so delay windfury's hits so they can all process before landing. Possibly a bug.
+	buff.forceful_winds->extend_duration(this, timespan_t::from_seconds(0.001));
+	auto target = state->target;
+	make_event(*sim, timespan_t::from_millis(1), [a, target, this]() {
+		a->set_target(target);
+		a->schedule_execute();
+		a->schedule_execute();
+	});
 
-    attack->proc_wf->occur();
+	attack->proc_wf->occur();
   }
 }
 
