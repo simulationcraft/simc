@@ -9,7 +9,7 @@ namespace warlock {
           parse_options(options_str);
           aoe = -1;
           weapon = &(p->main_hand_weapon);
-          base_dd_min, base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
+          base_dd_min = base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
         }
 
         bool ready() override {
@@ -32,7 +32,7 @@ namespace warlock {
           aoe = -1;
           background = true;
           weapon = &(p->main_hand_weapon);
-          base_dd_min, base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
+          base_dd_min = base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
         }
 
         double action_multiplier() const override
@@ -225,7 +225,6 @@ namespace warlock {
     namespace dreadstalker {
       struct dreadbite_t : public warlock_pet_melee_attack_t
       {
-        timespan_t dreadstalker_duration;
         double t21_4pc_increase;
 
         dreadbite_t(warlock_pet_t* p) :
@@ -237,10 +236,6 @@ namespace warlock {
             aoe = -1;
             radius = 8;
           }
-          dreadstalker_duration = p->find_spell(193332)->duration() +
-            (p->o()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T19, B4)
-              ? p->o()->sets->set(WARLOCK_DEMONOLOGY, T19, B4)->effectN(1).time_value()
-              : timespan_t::zero());
           t21_4pc_increase = p->o()->sets->set(WARLOCK_DEMONOLOGY, T21, B4)->effectN(1).percent();
         }
 
@@ -255,6 +250,8 @@ namespace warlock {
         double action_multiplier() const override
         {
           double m = warlock_pet_melee_attack_t::action_multiplier();
+
+          m *= 1.2; //until I can figure out wtf is going on with this spell
 
           if (p()->o()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B4) && p()->bites_executed == 1)
             m *= 1.0 + t21_4pc_increase;
@@ -286,6 +283,7 @@ namespace warlock {
       {
         action_list_str = "travel/dreadbite";
         regen_type = REGEN_DISABLED;
+        //owner_coeff.ap_from_sp = 0.5;
       }
 
       void dreadstalker_t::init_base_stats()
@@ -328,15 +326,16 @@ namespace warlock {
     {
       struct bile_spit_t : public warlock_pet_spell_t
       {
-        bile_spit_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_spell_t("bile_spit", p, p -> find_spell(260641))
+        bile_spit_t(warlock_pet_t* p) : warlock_pet_spell_t("bile_spit", p, p -> find_spell(260641))
         {
-          parse_options(options_str);
+          spell_power_mod.tick = data().effectN(1).trigger()->effectN(2).base_value();
+          base_tick_time = data().effectN(2).period();
         }
       };
 
       vilefiend_t::vilefiend_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "vilefiend", PET_VILEFIEND)
       {
-        action_list_str += "/travel";
+        action_list_str += "travel";
       }
 
       void vilefiend_t::init_base_stats()
@@ -347,7 +346,7 @@ namespace warlock {
       
       action_t* vilefiend_t::create_action(const std::string& name, const std::string& options_str)
       {
-        if (name == "bile_spit") return new bile_spit_t(this, options_str);
+        if (name == "bile_spit") return new bile_spit_t(this);
 
         return warlock_pet_t::create_action(name, options_str);
       }
@@ -423,6 +422,18 @@ namespace warlock {
       }
     }
     namespace darkhound {
+      struct fel_bite_t : public warlock_pet_melee_attack_t {
+        fel_bite_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_melee_attack_t(p, "Fel Bite") {
+          parse_options(options_str);
+          cooldown->duration = timespan_t::from_seconds(4);
+          weapon = &(p->main_hand_weapon);
+        }
+
+        bool ready() override {
+          if (p()->special_action->get_dot()->is_ticking()) return false;
+          return warlock_pet_melee_attack_t::ready();
+        }
+      };
       darkhound_t::darkhound_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "darkhound") 
       {
         action_list_str = "travel";
@@ -543,7 +554,7 @@ namespace warlock {
     void warlock_pet_t::init_spells_demonology() {
       active.soul_strike                = new felguard::soul_strike_t(this);
       active.demonic_strength_felstorm  = new felguard::felstorm_t(this);
-      active.bile_spit                  = new vilefiend::bile_spit_t(this,"");
+      active.bile_spit                  = new vilefiend::bile_spit_t(this);
     }
   }
 
@@ -635,7 +646,7 @@ namespace warlock {
                 {
                   if (imp->is_sleeping())
                   {
-                    imp->summon();
+                    imp->summon(timespan_t::from_seconds(25));
                     if (++j == shards_used) break;
                   }
                 }
@@ -1081,7 +1092,7 @@ namespace warlock {
       {
         warlock_spell_t::execute();
         p()->buffs.vilefiend->set_duration(p()->talents.summon_vilefiend->duration());
-        p()->buffs.vilefiend->trigger();
+        //p()->buffs.vilefiend->trigger();
 
         for (auto& vilefiend : p()->warlock_pet_list.vilefiends)
         {

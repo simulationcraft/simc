@@ -15,14 +15,12 @@ namespace warlock
 
     namespace felhunter
     {
-      struct shadow_bite_t : public warlock_pet_spell_t
+      struct shadow_bite_t : public warlock_pet_melee_attack_t
       {
         shadow_bite_t(warlock_pet_t* p) :
-          warlock_pet_spell_t(p, "Shadow Bite") { }
-
-        double composite_spell_power() const override
+          warlock_pet_melee_attack_t(p, "Shadow Bite") 
         {
-          return warlock_pet_spell_t::composite_spell_power() * (p()->find_spell(54049)->effectN(1).base_value() + p()->find_spell(54049)->effectN(1).sp_coeff());
+          
         }
       };
 

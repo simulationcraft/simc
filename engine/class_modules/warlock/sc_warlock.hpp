@@ -729,10 +729,6 @@ namespace warlock
 
         double action_multiplier() const override {
           double m = warlock_pet_action_t::action_multiplier();
-          if (p()->pet_type == PET_FELGUARD)
-          {
-            m *= 1.1;
-          }
 
           return m;
         }
