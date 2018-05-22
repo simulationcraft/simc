@@ -270,6 +270,8 @@ struct execution_sentence_t : public holy_power_consumer_t
     {
       td( s -> target ) -> buffs.execution_sentence -> trigger();
     }
+    if ( p() -> talents.divine_judgment -> ok() )
+      p() -> buffs.divine_judgment -> trigger();
   }
 };
 
