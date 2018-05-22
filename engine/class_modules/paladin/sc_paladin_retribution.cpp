@@ -516,6 +516,7 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
     may_parry   = false;
     may_glance  = false;
     background  = true;
+    trigger_gcd = timespan_t::zero();
     id = 184689;
 
     split_aoe_damage = true;
@@ -542,10 +543,6 @@ struct shield_of_vengeance_t : public paladin_absorb_t
     parse_options( options_str );
 
     harmful = false;
-    use_off_gcd = true;
-    trigger_gcd = timespan_t::zero();
-
-    may_crit = true;
     attack_power_mod.direct = 5;
 
     if ( ! ( p -> active_shield_of_vengeance_proc ) )
