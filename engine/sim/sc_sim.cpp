@@ -1965,6 +1965,8 @@ void sim_t::analyze_error()
   if ( target_error <= 0 ) return;
   if ( current_iteration < 1 ) return;
 
+  work_queue -> lock();
+
   int n_iterations = work_queue -> progress().current_iterations;
   if ( strict_work_queue )
   {
@@ -1975,6 +1977,7 @@ void sim_t::analyze_error()
 
   if ( n_iterations < analyze_error_interval * ( analyze_number + 1 ) )
   {
+    work_queue -> unlock();
     return;
   }
 
@@ -2056,6 +2059,8 @@ void sim_t::analyze_error()
       }
     }
   }
+
+  work_queue -> unlock();
 }
 
 /**
