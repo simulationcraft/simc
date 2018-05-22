@@ -1162,7 +1162,8 @@ struct sim_t : private sc_thread_t
   struct work_queue_t
   {
     private:
-    mutex_t m;
+    std::recursive_mutex m;
+    using G = std::lock_guard<std::recursive_mutex>;
     public:
     std::vector<int> _total_work, _work, _projected_work;
     size_t index;
@@ -1170,17 +1171,19 @@ struct sim_t : private sc_thread_t
     work_queue_t() : index( 0 )
     { _total_work.resize( 1 ); _work.resize( 1 ); _projected_work.resize( 1 ); }
 
-    void init( int w )    { AUTO_LOCK(m); range::fill( _total_work, w ); range::fill( _projected_work, w ); }
+    void init( int w )    { G l(m); range::fill( _total_work, w ); range::fill( _projected_work, w ); }
     // Single actor batch sim init methods. Batches is the number of active actors
-    void batches( size_t n ) { AUTO_LOCK(m); _total_work.resize( n ); _work.resize( n ); _projected_work.resize( n ); }
+    void batches( size_t n ) { G l(m); _total_work.resize( n ); _work.resize( n ); _projected_work.resize( n ); }
 
-    void flush()          { AUTO_LOCK(m); _total_work[ index ] = _projected_work[ index ] = _work[ index ]; }
-    int  size()           { AUTO_LOCK(m); return index < _total_work.size() ? _total_work[ index ] : _total_work.back(); }
-    bool more_work()      { AUTO_LOCK(m); return index < _total_work.size() && _work[ index ] < _total_work[ index ]; }
+    void flush()          { G l(m); _total_work[ index ] = _projected_work[ index ] = _work[ index ]; }
+    int  size()           { G l(m); return index < _total_work.size() ? _total_work[ index ] : _total_work.back(); }
+    bool more_work()      { G l(m); return index < _total_work.size() && _work[ index ] < _total_work[ index ]; }
+    void lock()           { m.lock(); }
+    void unlock()         { m.unlock(); }
 
     void project( int w )
     {
-      AUTO_LOCK(m);
+      G l(m);
       _projected_work[ index ] = w;
 #ifdef NDEBUG
       if ( w > _work[ index ] )
@@ -1193,7 +1196,7 @@ struct sim_t : private sc_thread_t
     // own state on what index it is simulating
     size_t pop()
     {
-      AUTO_LOCK(m);
+      G l(m);
 
       if ( _work[ index ] >= _total_work[ index ] )
       {
@@ -1221,7 +1224,7 @@ struct sim_t : private sc_thread_t
     // sims progress with the main thread's current index.
     sim_progress_t progress( int idx = -1 )
     {
-      AUTO_LOCK(m);
+      G l(m);
       size_t current_index = idx;
       if ( idx < 0 )
       {
