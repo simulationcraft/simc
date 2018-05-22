@@ -61,10 +61,6 @@ Discord: [SimCMinMax](https://discord.gg/tFR2uvK) (#simulationcraft)
 
 SimulationCraft is different from SimCraft. Please use the full name SimulationCraft (or SimC) to refer to this project. Visit SimCraft if you are looking for full-motion simulators for SimRacing and FlightSim. 
 
-## Migrating from GoogleCode to GitHub
-To switch the remote git repository from googlecode to github, execute the following in your simc development folder:
-- git remote set-url origin https://github.com/simulationcraft/simc.git
-
 ## External Libraries
 
 This program uses the following external libraries.
