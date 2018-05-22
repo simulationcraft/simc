@@ -283,6 +283,7 @@ struct rogue_t : public player_t
     buff_t* deadshot;
     buff_t* nights_vengeance;
     buff_t* perforate;
+    buff_t* poisoned_wire;
     buff_t* sharpened_blades;
     buff_t* snake_eyes;
     buff_t* storm_of_steel;
@@ -492,6 +493,7 @@ struct rogue_t : public player_t
     azerite_power_t deadshot;
     azerite_power_t nights_vengeance;
     azerite_power_t perforate;
+    azerite_power_t poisoned_wire;
     azerite_power_t sharpened_blades;
     azerite_power_t snake_eyes;
     azerite_power_t storm_of_steel;
@@ -2939,6 +2941,7 @@ struct garrote_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     td( execute_state -> target ) -> debuffs.garrote -> trigger();
+    p() -> buffs.poisoned_wire -> trigger();
   }
 
   void tick( dot_t* d ) override
@@ -3285,6 +3288,11 @@ struct mutilate_strike_t : public rogue_attack_t
       c += toxic_mutilator_crit_chance;
     }
 
+    if ( p() -> buffs.poisoned_wire -> up() )
+    {
+      c += p() -> buffs.poisoned_wire -> check_stack_value() / p() -> current.rating.attack_crit;
+    }
+
     return c;
   }
 
@@ -3351,6 +3359,8 @@ struct mutilate_t : public rogue_attack_t
               p() -> gains.venom_rush );
       }
     }
+
+    p() -> buffs.poisoned_wire -> expire();
   }
 };
 
@@ -6993,6 +7003,7 @@ void rogue_t::init_spells()
   azerite.deadshot          = find_azerite_spell( "Deadshot" );
   azerite.nights_vengeance  = find_azerite_spell( "Night's Vengeance" );
   azerite.perforate         = find_azerite_spell( "Perforate" );
+  azerite.poisoned_wire     = find_azerite_spell( "Poisoned Wire" );
   azerite.sharpened_blades  = find_azerite_spell( "Sharpened Blades" );
   azerite.snake_eyes        = find_azerite_spell( "Snake Eyes" );
   azerite.storm_of_steel    = find_azerite_spell( "Storm of Steel" );
@@ -7345,6 +7356,9 @@ void rogue_t::create_buffs()
   buffs.perforate                          = make_buff( this, "perforate", find_spell( 277720 ) )
                                              -> set_trigger_spell( azerite.perforate.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.perforate.value() );
+  buffs.poisoned_wire                      = make_buff( this, "poisoned_wire", find_spell( 276083 ) )
+                                             -> set_trigger_spell( azerite.poisoned_wire.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_default_value( azerite.poisoned_wire.value() );
   buffs.sharpened_blades                   = make_buff( this, "sharpened_blades", find_spell( 272916 ) )
                                              -> set_trigger_spell( azerite.sharpened_blades.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.sharpened_blades.value() );
