@@ -516,7 +516,6 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
     may_parry   = false;
     may_glance  = false;
     background  = true;
-    trigger_gcd = timespan_t::zero();
     id = 184689;
 
     split_aoe_damage = true;
