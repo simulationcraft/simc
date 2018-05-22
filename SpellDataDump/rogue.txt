@@ -6277,20 +6277,4 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1866 (avg=6) | Target: Self (1)
 Description      : Shadow Dance grants an additional $s1 critical strike rating to the first Eviscerate, Shadowstrike, or Shuriken Storm used during it.
 
-Name             : Shadow Blades (id=279043) [Spell Family (8)] 
-Class            : Rogue
-School           : Shadow
-Range            : 50000 yards
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Cannot crit (93), Disable player multipliers (221)
-Effects          :
-#1 (id=735178)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | Target: Enemy (6)
-Description      : $@spelldesc121471
-
 

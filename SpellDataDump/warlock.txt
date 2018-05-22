@@ -4815,32 +4815,6 @@ Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
 
-Name             : Bile Spit (id=260641) 
-Class            : Warlock
-School           : Nature
-Range            : 50 yards
-Cast Time        : 1 seconds
-Velocity         : 15 yards/sec
-Duration         : 12 seconds
-Cooldown         : 3 seconds
-Category         : 1152
-Category Cooldown: 3 seconds
-Stacks           : 3 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=485932)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=485933)   : Apply Aura (6) | Periodic Damage (3): nature every 3 seconds
-                   Base Value: 0.2453 | Scaled Value: 0.2453 | Target: Unknown(25)
-Description      : The caster spits a glob of bile at the target, inflicting Nature damage on impact and coating them in bile. The victim continues to take Nature damage for $d.
-Tooltip          : Nature damage every $t2 sec.
-
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
@@ -5872,6 +5846,46 @@ Effects          :
 #1 (id=715021)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 136408 | Misc Value 2: 0x10bb | Radius: 5 yards | Target: AOE enemy (instant) (16)
 Description      : Summon a Darkhound to fight for you for the next $d.
+
+Name             : Bile Spit (id=267997) 
+Class            : Warlock
+School           : Nature
+Spell Level      : 1
+Range            : 40 yards
+Cast Time        : 1 seconds
+GCD              : 1 seconds
+Velocity         : 20 yards/sec
+Duration         : 10 seconds
+Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+Effects          :
+#1 (id=715022)   : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.68000 | Target: Enemy (6)
+#2 (id=715023)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | Target: Enemy (6)
+Description      : The Vilefiend spits a ball of bile at its target, dealing $s1 Nature damage and an additional $s2 Nature damage every $t2 sec for $d.
+Tooltip          : Suffering $w2 Nature damage every $t2 sec.
+
+Name             : Headbutt (id=267999) 
+Class            : Warlock
+School           : Physical
+Spell Level      : 1
+Range            : 5 yards
+GCD              : 1 seconds
+Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+Effects          :
+#1 (id=715029)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.68000 | Target: Enemy (6)
+Description      : The Vilefiend rams its bladed head into the target, dealing $s1 Physical damage.
 
 Name             : Summon Ur'zul (id=268001) [Spell Family (5)] 
 Class            : Warlock
