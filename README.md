@@ -1,4 +1,4 @@
-# [SimulationCraft](http://www.simulationcraft.org/) [![Build Status](https://travis-ci.org/simulationcraft/simc.svg)](https://travis-ci.org/simulationcraft/simc) [![Build status](https://ci.appveyor.com/api/projects/status/4e7fxyik4cuu4gxf?svg=true)](https://ci.appveyor.com/project/scamille/simc)
+# [SimulationCraft](https://www.simulationcraft.org/) [![Build Status](https://travis-ci.org/simulationcraft/simc.svg)](https://travis-ci.org/simulationcraft/simc) [![Build status](https://ci.appveyor.com/api/projects/status/4e7fxyik4cuu4gxf?svg=true)](https://ci.appveyor.com/project/scamille/simc)
 ## Overview
 
 SimulationCraft is a tool to explore combat mechanics in the popular MMO RPG World of Warcraft (tm).
@@ -13,7 +13,7 @@ A simple graphical interface is included with the tool, allowing players to down
 
 ## How Can I Use It?
 
-Go to the [downloads page](http://www.simulationcraft.org/download.html) and get the package for your particular platform. 
+Go to the [downloads page](https://www.simulationcraft.org/download.html) and get the package for your particular platform. 
 The Windows package offers both a formal install and a archive that can be extracted on to your desktop. There is no Linux release since it is so ridiculously easy to build it yourself on that platform. Releases occur quite frequently so be sure to check the release notes.
 
 Two executables are shipped: *SimulationCraft* sports a simple graphical user interface whereas *simc* uses a command-line interface.
@@ -80,7 +80,7 @@ The MSInttypes r29 (https://code.google.com/p/msinttypes/)
 Copyright (c) Alexander Chemeris. All rights reserved.
 BSD 3-Clause License (see LICENSE.BSD for more information).
 
-The Qt Toolkit (http://qt.io)
+The Qt Toolkit (https://www.qt.io/)
 
 Copyright (c) 2016 The Qt Company Ltd. and other contributors. All rights reserved.
 GNU Lesser General Public License, version 3 (see LICENSE.LGPL for more information).
