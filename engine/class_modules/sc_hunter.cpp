@@ -2853,6 +2853,15 @@ struct rapid_fire_t: public hunter_spell_t
     return t;
   }
 
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t base_tick_time_ = base_tick_time;
+    if ( p() -> buffs.double_tap -> check() )
+      base_tick_time_ *= 1.0 + p() -> buffs.double_tap -> check_value();
+
+    return dot_duration * ( tick_time( s ) / base_tick_time_ );
+  }
+
   double cast_regen() const override
   {
     auto tt = base_tick_time;
