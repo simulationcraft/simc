@@ -172,6 +172,7 @@ struct item_upgrade_t {
 
 struct random_prop_data_t {
   unsigned ilevel;
+  unsigned item_effect;
   double   p_epic[5];
   double   p_rare[5];
   double   p_uncommon[5];

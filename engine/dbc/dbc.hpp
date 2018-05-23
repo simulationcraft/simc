@@ -1112,6 +1112,7 @@ public:
   {
     switch ( _scaling_type )
     {
+      case -8: return PLAYER_SPECIAL_SCALE8;
       case -7: return PLAYER_SPECIAL_SCALE7;
       case -6: return PLAYER_SPECIAL_SCALE6;
       case -5: return PLAYER_SPECIAL_SCALE5;

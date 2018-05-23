@@ -913,6 +913,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       // Technically this should check for the item type, but that's not possible right now
       coefficient = dbc.combat_rating_multiplier( level, CR_MULTIPLIER_TRINKET );
     }
+    else if ( spell -> scaling_class() == PLAYER_SPECIAL_SCALE8 )
+    {
+      item_budget = ilevel_data.item_effect;
+    }
 
     s << item_budget * e -> m_average() * coefficient;
 

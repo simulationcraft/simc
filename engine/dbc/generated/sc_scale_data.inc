@@ -1,4 +1,4 @@
-// Hit points per stamina for level 1 - 120, wow build 26683
+// Hit points per stamina for level 1 - 120, wow build 26640
 static double __hp_per_sta[120] = {
     8,	8,	8,	8,	8,	//    5
     8,	8,	8,	8,	8,	//   10
@@ -26,7 +26,7 @@ static double __hp_per_sta[120] = {
     20,	20,	20,	20,	20,	//  120
 };
 
-// Spell scaling multipliers for levels 1 - 120, wow build 26683
+// Spell scaling multipliers for levels 1 - 120, wow build 26640
 static double __spell_scaling[][120] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -540,9 +540,36 @@ static double __spell_scaling[][120] = {
     32176.71321,	34958.01884,	37726.95892,	40482.1077,	43220.60518,	//  115
     45938.09674,	48628.65342,	51284.67248,	54010.63769,	82424.0571,	//  120
   },
+  // DamageReplaceStat
+  {
+    0.45,	0.525,	0.6,	0.675,	0.75,	//    5
+    0.75,	1,	1,	1.25,	1.25,	//   10
+    1.5,	1.5,	1.75,	1.75,	2,	//   15
+    2,	2.25,	2.25,	2.5,	2.5,	//   20
+    2.75,	2.75,	3,	3,	3.25,	//   25
+    3.25,	3.5,	3.5,	3.75,	3.75,	//   30
+    4,	4,	4.25,	4.25,	4.5,	//   35
+    4.5,	4.75,	4.75,	5,	5,	//   40
+    5.25,	5.25,	5.5,	5.5,	5.75,	//   45
+    5.75,	6,	6,	6.25,	6.25,	//   50
+    6.5,	6.5,	6.75,	6.75,	7,	//   55
+    7,	7.25,	7.25,	7.5,	7.5,	//   60
+    7.75,	7.75,	8,	8.25,	8.25,	//   65
+    8.5,	8.5,	8.75,	9,	9,	//   70
+    9.25,	9.5,	9.75,	9.75,	10,	//   75
+    10.25,	10.5,	10.5,	10.75,	11,	//   80
+    11.25,	11.5,	11.5,	11.75,	12,	//   85
+    12.25,	12.5,	12.75,	13,	13.25,	//   90
+    13.5,	13.75,	14,	14.25,	14.5,	//   95
+    14.75,	15,	15.25,	15.75,	16,	//  100
+    16.25,	16.5,	16.75,	17.25,	17.5,	//  105
+    17.75,	18.25,	18.5,	18.75,	19.25,	//  110
+    28.5,	30.5,	33,	35.5,	38.25,	//  115
+    41.25,	44.5,	47.75,	51.5,	77.75,	//  120
+  },
 };
 
-// Base mana points for levels 1 - 120, wow build 26683
+// Base mana points for levels 1 - 120, wow build 26640
 static double __base_mp[][120] = {
   {
     0,	0,	0,	0,	0,	//    5
@@ -896,7 +923,7 @@ static double __base_mp[][120] = {
   },
 };
 
-// Combat rating values for level 1 - 120, wow build 26683
+// Combat rating values for level 1 - 120, wow build 26640
 static double __combat_ratings[][120] = {
   // Dodge
   {
@@ -1494,7 +1521,7 @@ static double __combat_ratings[][120] = {
   },
 };
 
-// Combat rating multipliers for item level 1 - 1300, wow build 26683
+// Combat rating multipliers for item level 1 - 1300, wow build 26640
 static double __combat_ratings_mult_by_ilvl[][1300] = {
   // Armor Multiplier
   {
@@ -2550,7 +2577,7 @@ static double __combat_ratings_mult_by_ilvl[][1300] = {
   },
 };
 
-// Item level translation for item level 1 - 1300, wow build 26683
+// Item level translation for item level 1 - 1300, wow build 26640
 static double __item_level_squish[1300] = {
     1,	2,	3,	4,	5,	//    5
     6,	7,	8,	9,	10,	//   10
@@ -2814,7 +2841,7 @@ static double __item_level_squish[1300] = {
     576,	577,	578,	579,	580,	// 1300
 };
 
-// Item socket costs for item levels 1 - 1300, wow build 26683
+// Item socket costs for item levels 1 - 1300, wow build 26640
 static double __item_socket_cost_per_level[1300] = {
     0,	0,	0,	0,	0,	//    5
     0,	0,	0,	0,	0,	//   10
@@ -3018,7 +3045,7 @@ static double __item_socket_cost_per_level[1300] = {
     8,	8,	8,	8,	8,	// 1000
     };
 
-// Enemy armor mitigation constants (K-value) for level 1 - 123, wow build 26683
+// Enemy armor mitigation constants (K-value) for level 1 - 123, wow build 26640
 static double __armor_mitigation_by_lvl[123] = {
     80,	93,	106,	120,	133,	//    5
     150,	166,	183,	200,	216,	//   10
@@ -3046,7 +3073,7 @@ static double __armor_mitigation_by_lvl[123] = {
     4161,	4406,	4669,	4953,	7765,	//  120
     7765,	7765,	7765,	};
 
-// Azerite level to item level 1 - 300, wow build 26683
+// Azerite level to item level 1 - 300, wow build 26640
 static double __azerite_level_to_item_level[300] = {
     280,	282,	284,	286,	288,	//    5
     290,	292,	294,	296,	298,	//   10
