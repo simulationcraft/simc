@@ -2986,6 +2986,9 @@ bool sim_t::time_to_think( timespan_t proc_time )
 
 expr_t* sim_t::create_expression( const std::string& name_str )
 {
+  if ( name_str == "desired_targets" )
+    return expr_t::create_constant( name_str, desired_targets );
+
   if ( name_str == "initial_targets" )
     return expr_t::create_constant( name_str, target_list.size() );
 

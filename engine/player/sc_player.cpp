@@ -8941,12 +8941,12 @@ const spell_data_t* player_t::find_spell( unsigned int id ) const
 
 namespace
 {
-expr_t* deprecate_expression( player_t* p, const std::string& old_name, const std::string& new_name, action_t* a = nullptr  )
+expr_t* deprecate_expression( player_t& p, const std::string& old_name, const std::string& new_name, action_t* a = nullptr  )
 {
-  p->sim->errorf( "Use of \"%s\" ( action %s ) in action expressions is deprecated: use \"%s\" instead.\n",
+  p.sim->errorf( "Use of \"%s\" ( action %s ) in action expressions is deprecated: use \"%s\" instead.\n",
                   old_name.c_str(), a?a->name() : "unknown", new_name.c_str() );
 
-  return p->create_expression( new_name );
+  return p.create_expression( new_name );
 }
 
 struct player_expr_t : public expr_t
@@ -8969,92 +8969,53 @@ struct position_expr_t : public player_expr_t
     return ( 1 << player.position() ) & mask;
   }
 };
+
+expr_t* deprecated_player_expressions( player_t& player, const std::string& expression_str )
+{
+  if ( expression_str == "health_pct" )
+    return deprecate_expression( player, expression_str, "health.pct" );
+
+  if ( expression_str == "mana_pct" )
+    return deprecate_expression( player, expression_str, "mana.pct" );
+
+  if ( expression_str == "energy_regen" )
+    return deprecate_expression( player, expression_str, "energy.regen" );
+
+  if ( expression_str == "focus_regen" )
+    return deprecate_expression( player, expression_str, "focus.regen" );
+
+  if ( expression_str == "time_to_max_energy" )
+    return deprecate_expression( player, expression_str, "energy.time_to_max" );
+
+  if ( expression_str == "time_to_max_focus" )
+    return deprecate_expression( player, expression_str, "focus.time_to_max" );
+
+  if ( expression_str == "max_mana_nonproc" )
+    return deprecate_expression( player, expression_str, "mana.max_nonproc" );
+
+  return nullptr;
+}
+
 }  // namespace
 
 expr_t* player_t::create_expression( const std::string& expression_str )
 {
-  if ( expression_str == "level" )
-    return expr_t::create_constant( "level", true_level );
-  if ( expression_str == "name" )
-    return expr_t::create_constant( "name", actor_index );
-  if ( expression_str == "self" )
-    return expr_t::create_constant( "self", actor_index );
-  if ( expression_str == "in_combat" )
-    return make_ref_expr( "in_combat", in_combat );
-  if ( expression_str == "attack_haste" )
-    return make_fn_expr( expression_str, [this] { return cache.attack_haste(); } );
-  if ( expression_str == "attack_speed" )
-    return make_fn_expr( expression_str, [this] { return cache.attack_speed(); } );
-  if ( expression_str == "spell_haste" )
-    return make_fn_expr( expression_str, [this] { return cache.spell_speed(); } );
-
-  if ( expression_str == "desired_targets" )
-    return expr_t::create_constant( expression_str, sim->desired_targets );
-
-  if ( expression_str == "is_add" )
-    return expr_t::create_constant("is_add", is_add() );
-
-  if ( expression_str == "is_enemy" )
-    return expr_t::create_constant("is_enemy", is_enemy() );
-
-  // time_to_pct expressions
-  if ( util::str_in_str_ci( expression_str, "time_to_" ) )
+  if (expr_t* e = deprecated_player_expressions(*this, expression_str))
   {
-    std::vector<std::string> parts = util::string_split( expression_str, "_" );
-    double percent;
-
-    if ( util::str_in_str_ci( parts[ 2 ], "die" ) )
-      percent = 0.0;
-    else if ( util::str_in_str_ci( parts[ 2 ], "pct" ) )
-      percent = static_cast<double>( std::stoi( parts[ 2 ] ) );
-    else
-      percent = -1;
-    // skip construction if the percent is nonsensical
-    if ( percent >= 0.0 )
-    {
-      struct time_to_percent_t : public expr_t
-      {
-        double percent;
-        player_t* player;
-        time_to_percent_t( const std::string& n, player_t* p, double percent ) :
-          expr_t( n ),
-          percent( percent ),
-          player( p )
-        {
-        }
-
-        double evaluate() override
-        {
-          double time;
-          time = player->time_to_percent( percent ).total_seconds();
-          return time;
-        }
-      };
-
-      return new time_to_percent_t( parts[ 2 ], this, percent );
-    }
+    return e;
   }
 
-  if ( expression_str == "health_pct" )
-    return deprecate_expression( this, expression_str, "health.pct" );
+  if ( expression_str == "level" )
+    return expr_t::create_constant( "level", true_level );
 
-  if ( expression_str == "mana_pct" )
-    return deprecate_expression( this, expression_str, "mana.pct" );
+  if ( expression_str == "name" )
+    return expr_t::create_constant( "name", actor_index );
 
-  if ( expression_str == "energy_regen" )
-    return deprecate_expression( this, expression_str, "energy.regen" );
+  if ( expression_str == "self" )
+    return expr_t::create_constant( "self", actor_index );
 
-  if ( expression_str == "focus_regen" )
-    return deprecate_expression( this, expression_str, "focus.regen" );
-
-  if ( expression_str == "time_to_max_energy" )
-    return deprecate_expression( this, expression_str, "energy.time_to_max" );
-
-  if ( expression_str == "time_to_max_focus" )
-    return deprecate_expression( this, expression_str, "focus.time_to_max" );
-
-  if ( expression_str == "max_mana_nonproc" )
-    return deprecate_expression( this, expression_str, "mana.max_nonproc" );
+  if ( expression_str == "in_combat" )
+    return make_ref_expr( "in_combat", in_combat );
 
   if ( expression_str == "ptr" )
     return expr_t::create_constant( "ptr", dbc.ptr );
@@ -9062,16 +9023,54 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   if ( expression_str == "bugs" )
     return expr_t::create_constant( "bugs", bugs );
 
+  if ( expression_str == "is_add" )
+    return expr_t::create_constant("is_add", is_add() );
+
+  if ( expression_str == "is_enemy" )
+    return expr_t::create_constant("is_enemy", is_enemy() );
+
+  if ( expression_str == "attack_haste" )
+    return make_fn_expr( expression_str, [this] { return cache.attack_haste(); } );
+
+  if ( expression_str == "attack_speed" )
+    return make_fn_expr( expression_str, [this] { return cache.attack_speed(); } );
+
+  if ( expression_str == "spell_haste" )
+    return make_fn_expr( expression_str, [this] { return cache.spell_speed(); } );
+
+  if ( expression_str == "mastery_value" )
+    return make_mem_fn_expr( expression_str, this->cache, &player_stat_cache_t::mastery_value );
+
   if ( expression_str == "position_front" )
     return new position_expr_t( "position_front", *this, ( 1 << POSITION_FRONT ) | ( 1 << POSITION_RANGED_FRONT ) );
   if ( expression_str == "position_back" )
     return new position_expr_t( "position_back", *this, ( 1 << POSITION_BACK ) | ( 1 << POSITION_RANGED_BACK ) );
 
-  if ( expression_str == "mastery_value" )
-    return make_mem_fn_expr( expression_str, this->cache, &player_stat_cache_t::mastery_value );
-
   if ( expr_t* q = create_resource_expression( expression_str ) )
     return q;
+
+  // time_to_pct expressions
+  if ( util::str_in_str_ci( expression_str, "time_to_" ) )
+  {
+    std::vector<std::string> parts = util::string_split( expression_str, "_" );
+    double percent = -1;
+
+    if ( util::str_in_str_ci( parts[ 2 ], "die" ) )
+      percent = 0.0;
+    else if ( util::str_in_str_ci( parts[ 2 ], "pct" ) )
+    {
+      if (parts.size() == 4 )
+      {
+        // eg. time_to_pct_90
+        percent = std::stod( parts[ 3 ] );
+      }
+    }
+
+    if ( percent >= 0.0 ) // skip construction if the percent is nonsensical
+    {
+      return make_fn_expr( expression_str, [this, percent] { return time_to_percent( percent ).total_seconds(); } );
+    }
+  }
 
   // time_to_bloodlust conditional
   if ( expression_str == "time_to_bloodlust" )
