@@ -663,7 +663,7 @@ public:
   action_t* create_proc_action( const std::string& /* name */, const special_effect_t& ) override;
   pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
   void create_pets() override;
-  expr_t* create_expression( action_t*, const std::string& name ) override;
+  expr_t* create_expression( const std::string& name ) override;
   resource_e primary_resource() const override
   {
     return RESOURCE_MANA;
@@ -5261,12 +5261,12 @@ struct shaman_totem_pet_t : public pet_t
     return owner->composite_spell_power_multiplier();
   }
 
-  virtual expr_t* create_expression( action_t* a, const std::string& name ) override
+  virtual expr_t* create_expression( const std::string& name ) override
   {
     if ( util::str_compare_ci( name, "duration" ) )
       return make_ref_expr( name, duration );
 
-    return pet_t::create_expression( a, name );
+    return pet_t::create_expression( name );
   }
 };
 
@@ -5305,9 +5305,9 @@ struct shaman_totem_t : public shaman_spell_t
     // pet initialization order shenanigans. Otherwise, at this point in time (when
     // create_expression is called), the pets don't actually exist yet.
     if ( util::str_compare_ci( name, "active" ) )
-      return player->create_expression( this, "pet." + name_str + ".active" );
+      return player->create_expression( "pet." + name_str + ".active" );
     else if ( util::str_compare_ci( name, "remains" ) )
-      return player->create_expression( this, "pet." + name_str + ".remains" );
+      return player->create_expression( "pet." + name_str + ".remains" );
     else if ( util::str_compare_ci( name, "duration" ) )
       return make_ref_expr( name, totem_duration );
 
@@ -5898,7 +5898,7 @@ void shaman_t::create_pets()
 
 // shaman_t::create_expression ==============================================
 
-expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
+expr_t* shaman_t::create_expression( const std::string& name )
 {
   std::vector<std::string> splits = util::string_split( name, "." );
 
@@ -5964,7 +5964,7 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
     }
   }
 
-  return player_t::create_expression( a, name );
+  return player_t::create_expression( name );
 }
 
 // shaman_t::create_actions =================================================

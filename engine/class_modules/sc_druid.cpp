@@ -786,7 +786,7 @@ public:
   virtual double    temporary_movement_modifier() const override;
   virtual double    passive_movement_modifier() const override;
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
-  virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
+  virtual expr_t*   create_expression( const std::string& name ) override;
   virtual action_t* create_action( const std::string& name, const std::string& options ) override;
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() ) override;
   virtual void      create_pets() override;
@@ -8403,7 +8403,7 @@ double druid_t::composite_leech() const
 
 // druid_t::create_expression ===============================================
 
-expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
+expr_t* druid_t::create_expression( const std::string& name_str )
 {
   struct druid_expr_t : public expr_t
   {
@@ -8453,7 +8453,7 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
     return new moon_stage_expr_t( *this, name_str );
   }
 
-  return player_t::create_expression( a, name_str );
+  return player_t::create_expression( name_str );
 }
 
 // druid_t::create_options ==================================================

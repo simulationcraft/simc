@@ -2761,7 +2761,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     || name_str == "recharge_time"
     || name_str == "full_recharge_time" )
   {
-    return cooldown -> create_expression( this, name_str );
+    return cooldown -> create_expression( name_str );
   }
   else if ( name_str == "damage" )
     return new amount_expr_t( name_str, DMG_DIRECT, *this );
@@ -2808,6 +2808,26 @@ expr_t* action_t::create_expression( const std::string& name_str )
       { delete state; }
     };
     return new crit_pct_current_expr_t( this );
+  }
+  else if ( name_str == "multiplier" )
+  {
+    return make_fn_expr( name_str, [this] {
+      double multiplier = 0.0;
+      for ( auto base_school : base_schools )
+      {
+        double v = player->cache.player_multiplier( base_school );
+        if ( v > multiplier )
+        {
+          multiplier = v;
+        }
+      }
+
+      return multiplier;
+    } );
+  }
+  else if ( name_str == "primary_target" )
+  {
+    return make_fn_expr( name_str, [this]() { return player->target == target; } );
   }
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
@@ -3085,18 +3105,18 @@ expr_t* action_t::create_expression( const std::string& name_str )
   }
   if ( splits.size() == 3 && splits[0] == "buff" )
   {
-    return player -> create_expression( this, name_str );
+    return player -> create_expression( name_str );
   }
 
   if ( splits.size() == 3 && splits[ 0 ] == "debuff" )
   {
-    expr_t* debuff_expr = buff_t::create_expression( splits[ 1 ], this, splits[ 2 ] );
+    expr_t* debuff_expr = buff_t::create_expression( splits[ 1 ], splits[ 2 ], *this );
     if ( debuff_expr ) return debuff_expr;
   }
 
   if ( splits.size() == 3 && splits[ 0 ] == "aura" )
   {
-    return sim -> create_expression( this, name_str );
+    return sim -> create_expression( name_str );
   }
 
   if ( splits.size() >= 2 && splits[ 0 ] == "target" )
@@ -3124,6 +3144,78 @@ expr_t* action_t::create_expression( const std::string& name_str )
       }
     }
 
+    if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" ||
+                splits[ 0 ] == "in_flight_to_target" )
+    {
+      std::vector<action_t*> in_flight_list;
+      bool in_flight_singleton = ( splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" );
+      std::string action_name  = ( in_flight_singleton ) ? name_str : splits[ 1 ];
+      for ( size_t i = 0; i < player->action_list.size(); ++i )
+      {
+        action_t* action = player->action_list[ i ];
+        if ( action->name_str == action_name )
+        {
+          if ( in_flight_singleton || splits[ 2 ] == "in_flight" || splits[ 2 ] == "in_flight_to_target" )
+          {
+            in_flight_list.push_back( action );
+          }
+          else
+          {
+            return action->create_expression( splits[ 2 ] );
+          }
+        }
+      }
+      if ( !in_flight_list.empty() )
+      {
+        if ( splits[ 0 ] == "in_flight" || ( !in_flight_singleton && splits[ 2 ] == "in_flight" ) )
+        {
+          struct in_flight_multi_expr_t : public expr_t
+          {
+            const std::vector<action_t*> action_list;
+            in_flight_multi_expr_t( const std::vector<action_t*>& al ) : expr_t( "in_flight" ), action_list( al )
+            {
+            }
+            virtual double evaluate() override
+            {
+              for ( size_t i = 0; i < action_list.size(); i++ )
+              {
+                if ( action_list[ i ]->has_travel_events() )
+                  return true;
+              }
+              return false;
+            }
+          };
+          return new in_flight_multi_expr_t( in_flight_list );
+        }
+        else if ( splits[ 0 ] == "in_flight_to_target" ||
+                  ( !in_flight_singleton && splits[ 2 ] == "in_flight_to_target" ) )
+        {
+          struct in_flight_to_target_multi_expr_t : public expr_t
+          {
+            const std::vector<action_t*> action_list;
+            action_t& action;
+
+            in_flight_to_target_multi_expr_t( const std::vector<action_t*>& al, action_t& a ) :
+              expr_t( "in_flight_to_target" ),
+              action_list( al ),
+              action( a )
+            {
+            }
+            virtual double evaluate() override
+            {
+              for ( size_t i = 0; i < action_list.size(); i++ )
+              {
+                if ( action_list[ i ]->has_travel_events_for( action.target ) )
+                  return true;
+              }
+              return false;
+            }
+          };
+          return new in_flight_to_target_multi_expr_t( in_flight_list, *this );
+        }
+      }
+    }
+
     if ( util::str_compare_ci( splits[ start_rest ], "distance" ) )
       return make_ref_expr( "distance", player -> base.distance );
 
@@ -3133,10 +3225,10 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
     // Target.1.foo expression, bail out early.
     if ( expr_target )
-      return expr_target -> create_expression( this, rest );
+      return expr_target -> create_expression( rest );
 
     // Ensure that we can create an expression, if not, bail out early
-    auto expr_ptr = target -> create_expression( this, rest );
+    auto expr_ptr = target -> create_expression( rest );
     if ( expr_ptr == nullptr )
     {
       return nullptr;
@@ -3169,7 +3261,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
         if ( proxy_expr[ action.target -> actor_index ] == 0 )
         {
-          proxy_expr[ action.target -> actor_index ] = action.target -> create_expression( &action, suffix_expr_str );
+          proxy_expr[ action.target -> actor_index ] = action.target -> create_expression( suffix_expr_str );
         }
         assert( proxy_expr[ action.target -> actor_index ] );
 
@@ -3189,7 +3281,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     std::string rest = splits[1];
     for ( size_t i = 2; i < splits.size(); ++i )
       rest += '.' + splits[i];
-    return player -> create_expression( this, rest );
+    return player -> create_expression( rest );
   }
 
   // necessary for sim.target.*
@@ -3198,7 +3290,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     std::string rest = splits[ 1 ];
     for ( size_t i = 2; i < splits.size(); ++i )
       rest += '.' + splits[ i ];
-    return sim -> create_expression( this, rest );
+    return sim -> create_expression( rest );
   }
 
   if ( name_str == "enabled" )
@@ -3220,7 +3312,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return new executing_expr_t( *this );
   }
 
-  return player -> create_expression( this, name_str );
+  return player -> create_expression( name_str );
 }
 
 // action_t::ppm_proc_chance ================================================

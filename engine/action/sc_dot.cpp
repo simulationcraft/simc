@@ -510,6 +510,11 @@ void dot_t::copy( dot_t* other_dot ) const
 expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
                                   bool dynamic )
 {
+  if (!action)
+  {
+    dynamic = false;
+  }
+
   struct dot_expr_t : public expr_t
   {
     dot_t* static_dot;

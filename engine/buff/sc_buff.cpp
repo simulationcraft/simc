@@ -168,6 +168,254 @@ struct expiration_delay_t : public buff_event_t
     buff->expire();
   }
 };
+
+expr_t* create_buff_expression( std::string buff_name, const std::string& type, action_t* action,
+                                   buff_t* static_buff )
+{
+  if (!static_buff && !action)
+  {
+    assert(false && "Buff expressions require either a valid action or a valid static buff");
+    return nullptr;
+  }
+
+  struct buff_expr_t : public expr_t
+  {
+    std::string buff_name;
+    action_t* action;
+    buff_t* static_buff;
+    target_specific_t<buff_t> specific_buff;
+
+    buff_expr_t( const std::string& n, const std::string& bn, action_t* a, buff_t* b )
+      : expr_t( n ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false )
+    {
+    }
+
+    virtual buff_t* create() const
+    {
+      assert(action && "Cannot create dynamic buff expressions without a action.");
+
+      action->player->get_target_data( action->target );
+      auto buff = buff_t::find( action->target, buff_name, action->player );
+      if ( !buff )
+        buff = buff_t::find( action->target, buff_name, action->target );  // Raid debuffs
+      if ( !buff )
+      {
+        action->sim->error("Unable to build buff action expression for action '{}': "
+            "Reference to unknown buff/debuff '{}' by player {}.", action->name(), buff_name,
+            action->player->name());
+        action->sim->cancel();
+        // Prevent segfault
+        buff = buff_creator_t( action->player, "dummy" );
+      }
+
+      return buff;
+    }
+
+    virtual buff_t* buff() const
+    {
+      if ( static_buff )
+        return static_buff;
+      buff_t*& buff = specific_buff[ action->target ];
+      if ( !buff )
+      {
+        buff = create();
+      }
+      return buff;
+    }
+  };
+
+  if ( type == "duration" )
+  {
+    struct duration_expr_t : public buff_expr_t
+    {
+      duration_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_duration", bn, a, b )
+      {
+      }
+      virtual double evaluate() override
+      {
+        return buff()->buff_duration.total_seconds();
+      }
+    };
+    return new duration_expr_t( buff_name, action, static_buff );
+  }
+  if ( type == "remains" )
+  {
+    struct remains_expr_t : public buff_expr_t
+    {
+      remains_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_remains", bn, a, b )
+      {
+      }
+      virtual double evaluate() override
+      {
+        return buff()->remains().total_seconds();
+      }
+    };
+    return new remains_expr_t( buff_name, action, static_buff );
+  }
+  else if ( type == "cooldown_remains" )
+  {
+    struct cooldown_remains_expr_t : public buff_expr_t
+    {
+      cooldown_remains_expr_t( std::string bn, action_t* a, buff_t* b )
+        : buff_expr_t( "buff_cooldown_remains", bn, a, b )
+      {
+      }
+      virtual double evaluate() override
+      {
+        return buff()->cooldown->remains().total_seconds();
+      }
+    };
+    return new cooldown_remains_expr_t( buff_name, action, static_buff );
+  }
+  else if ( type == "up" )
+  {
+    struct up_expr_t : public buff_expr_t
+    {
+      up_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_up", bn, a, b )
+      {
+      }
+      virtual double evaluate() override
+      {
+        return buff()->check() > 0;
+      }
+    };
+    return new up_expr_t( buff_name, action, static_buff );
+  }
+  else if ( type == "down" )
+  {
+    struct down_expr_t : public buff_expr_t
+    {
+      down_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_down", bn, a, b )
+      {
+      }
+      virtual double evaluate() override
+      {
+        return buff()->check() <= 0;
+      }
+    };
+    return new down_expr_t( buff_name, action, static_buff );
+  }
+  else if ( type == "stack" )
+  {
+    struct stack_expr_t : public buff_expr_t
+    {
+      stack_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_stack", bn, a, b )
+      {
+      }
+      virtual double evaluate() override
+      {
+        return buff()->check();
+      }
+    };
+    return new stack_expr_t( buff_name, action, static_buff );
+  }
+  else if ( type == "stack_pct" )
+  {
+    struct stack_pct_expr_t : public buff_expr_t
+    {
+      stack_pct_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_stack_pct", bn, a, b )
+      {
+      }
+      virtual double evaluate() override
+      {
+        return 100.0 * buff()->check() / buff()->max_stack();
+      }
+    };
+    return new stack_pct_expr_t( buff_name, action, static_buff );
+  }
+  else if ( type == "max_stack" )
+  {
+    struct max_stack_expr_t : public buff_expr_t
+    {
+      max_stack_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_max_stack", bn, a, b )
+      {
+      }
+      virtual double evaluate() override
+      {
+        return buff()->max_stack();
+      }
+    };
+    return new max_stack_expr_t( buff_name, action, static_buff );
+  }
+  else if ( type == "value" )
+  {
+    struct value_expr_t : public buff_expr_t
+    {
+      value_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_value", bn, a, b )
+      {
+      }
+      virtual double evaluate() override
+      {
+        return buff()->value();
+      }
+    };
+    return new value_expr_t( buff_name, action, static_buff );
+  }
+  else if ( type == "react" )
+  {
+    struct react_expr_t : public buff_expr_t
+    {
+      react_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_react", bn, a, b )
+      {
+        if ( b )
+          b->reactable = true;
+      }
+      buff_t* create() const override
+      {
+        auto b       = buff_expr_t::create();
+        b->reactable = true;
+        return b;
+      }
+      double evaluate() override
+      {
+        return buff()->stack_react();
+      }
+    };
+    return new react_expr_t( buff_name, action, static_buff );
+  }
+  else if ( type == "react_pct" )
+  {
+    struct react_pct_expr_t : public buff_expr_t
+    {
+      react_pct_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_react_pct", bn, a, b )
+      {
+        if ( b )
+          b->reactable = true;
+      }
+      buff_t* create() const override
+      {
+        auto b       = buff_expr_t::create();
+        b->reactable = true;
+        return b;
+      }
+      double evaluate() override
+      {
+        return 100.0 * buff()->stack_react() / buff()->max_stack();
+      }
+    };
+    return new react_pct_expr_t( buff_name, action, static_buff );
+  }
+  else if ( type == "cooldown_react" )
+  {
+    struct cooldown_react_expr_t : public buff_expr_t
+    {
+      cooldown_react_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_cooldown_react", bn, a, b )
+      {
+      }
+      virtual double evaluate() override
+      {
+        if ( buff()->check() && !buff()->may_react() )
+          return 0;
+        else
+          return buff()->cooldown->remains().total_seconds();
+      }
+    };
+    return new cooldown_react_expr_t( buff_name, action, static_buff );
+  }
+
+  return nullptr;
+}
+
 }  // namespace
 
 buff_t::buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell_data, const item_t* item )
@@ -1756,245 +2004,13 @@ std::string buff_t::to_str() const
   return s.str();
 }
 
-// buff_t::create_expression ================================================
-
-expr_t* buff_t::create_expression( std::string buff_name, action_t* action, const std::string& type,
-                                   buff_t* static_buff )
+expr_t* buff_t::create_expression( std::string buff_name, const std::string& type, action_t& action )
 {
-  struct buff_expr_t : public expr_t
-  {
-    std::string buff_name;
-    action_t* action;
-    buff_t* static_buff;
-    target_specific_t<buff_t> specific_buff;
-
-    buff_expr_t( const std::string& n, const std::string& bn, action_t* a, buff_t* b )
-      : expr_t( n ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false )
-    {
-    }
-
-    virtual buff_t* create() const
-    {
-      action->player->get_target_data( action->target );
-      auto buff = buff_t::find( action->target, buff_name, action->player );
-      if ( !buff )
-        buff = buff_t::find( action->target, buff_name, action->target );  // Raid debuffs
-      if ( !buff )
-      {
-        action->sim->error("Unable to build buff action expression for action '{}': "
-            "Reference to unknown buff/debuff '{}' by player {}.", action->name(), buff_name,
-            action->player->name());
-        action->sim->cancel();
-        // Prevent segfault
-        buff = buff_creator_t( action->player, "dummy" );
-      }
-
-      return buff;
-    }
-
-    virtual buff_t* buff() const
-    {
-      if ( static_buff )
-        return static_buff;
-      buff_t*& buff = specific_buff[ action->target ];
-      if ( !buff )
-      {
-        buff = create();
-      }
-      return buff;
-    }
-  };
-
-  if ( type == "duration" )
-  {
-    struct duration_expr_t : public buff_expr_t
-    {
-      duration_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_duration", bn, a, b )
-      {
-      }
-      virtual double evaluate() override
-      {
-        return buff()->buff_duration.total_seconds();
-      }
-    };
-    return new duration_expr_t( buff_name, action, static_buff );
-  }
-  if ( type == "remains" )
-  {
-    struct remains_expr_t : public buff_expr_t
-    {
-      remains_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_remains", bn, a, b )
-      {
-      }
-      virtual double evaluate() override
-      {
-        return buff()->remains().total_seconds();
-      }
-    };
-    return new remains_expr_t( buff_name, action, static_buff );
-  }
-  else if ( type == "cooldown_remains" )
-  {
-    struct cooldown_remains_expr_t : public buff_expr_t
-    {
-      cooldown_remains_expr_t( std::string bn, action_t* a, buff_t* b )
-        : buff_expr_t( "buff_cooldown_remains", bn, a, b )
-      {
-      }
-      virtual double evaluate() override
-      {
-        return buff()->cooldown->remains().total_seconds();
-      }
-    };
-    return new cooldown_remains_expr_t( buff_name, action, static_buff );
-  }
-  else if ( type == "up" )
-  {
-    struct up_expr_t : public buff_expr_t
-    {
-      up_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_up", bn, a, b )
-      {
-      }
-      virtual double evaluate() override
-      {
-        return buff()->check() > 0;
-      }
-    };
-    return new up_expr_t( buff_name, action, static_buff );
-  }
-  else if ( type == "down" )
-  {
-    struct down_expr_t : public buff_expr_t
-    {
-      down_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_down", bn, a, b )
-      {
-      }
-      virtual double evaluate() override
-      {
-        return buff()->check() <= 0;
-      }
-    };
-    return new down_expr_t( buff_name, action, static_buff );
-  }
-  else if ( type == "stack" )
-  {
-    struct stack_expr_t : public buff_expr_t
-    {
-      stack_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_stack", bn, a, b )
-      {
-      }
-      virtual double evaluate() override
-      {
-        return buff()->check();
-      }
-    };
-    return new stack_expr_t( buff_name, action, static_buff );
-  }
-  else if ( type == "stack_pct" )
-  {
-    struct stack_pct_expr_t : public buff_expr_t
-    {
-      stack_pct_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_stack_pct", bn, a, b )
-      {
-      }
-      virtual double evaluate() override
-      {
-        return 100.0 * buff()->check() / buff()->max_stack();
-      }
-    };
-    return new stack_pct_expr_t( buff_name, action, static_buff );
-  }
-  else if ( type == "max_stack" )
-  {
-    struct max_stack_expr_t : public buff_expr_t
-    {
-      max_stack_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_max_stack", bn, a, b )
-      {
-      }
-      virtual double evaluate() override
-      {
-        return buff()->max_stack();
-      }
-    };
-    return new max_stack_expr_t( buff_name, action, static_buff );
-  }
-  else if ( type == "value" )
-  {
-    struct value_expr_t : public buff_expr_t
-    {
-      value_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_value", bn, a, b )
-      {
-      }
-      virtual double evaluate() override
-      {
-        return buff()->value();
-      }
-    };
-    return new value_expr_t( buff_name, action, static_buff );
-  }
-  else if ( type == "react" )
-  {
-    struct react_expr_t : public buff_expr_t
-    {
-      react_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_react", bn, a, b )
-      {
-        if ( b )
-          b->reactable = true;
-      }
-      buff_t* create() const override
-      {
-        auto b       = buff_expr_t::create();
-        b->reactable = true;
-        return b;
-      }
-      double evaluate() override
-      {
-        return buff()->stack_react();
-      }
-    };
-    return new react_expr_t( buff_name, action, static_buff );
-  }
-  else if ( type == "react_pct" )
-  {
-    struct react_pct_expr_t : public buff_expr_t
-    {
-      react_pct_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_react_pct", bn, a, b )
-      {
-        if ( b )
-          b->reactable = true;
-      }
-      buff_t* create() const override
-      {
-        auto b       = buff_expr_t::create();
-        b->reactable = true;
-        return b;
-      }
-      double evaluate() override
-      {
-        return 100.0 * buff()->stack_react() / buff()->max_stack();
-      }
-    };
-    return new react_pct_expr_t( buff_name, action, static_buff );
-  }
-  else if ( type == "cooldown_react" )
-  {
-    struct cooldown_react_expr_t : public buff_expr_t
-    {
-      cooldown_react_expr_t( std::string bn, action_t* a, buff_t* b ) : buff_expr_t( "buff_cooldown_react", bn, a, b )
-      {
-      }
-      virtual double evaluate() override
-      {
-        if ( buff()->check() && !buff()->may_react() )
-          return 0;
-        else
-          return buff()->cooldown->remains().total_seconds();
-      }
-    };
-    return new cooldown_react_expr_t( buff_name, action, static_buff );
-  }
-
-  return nullptr;
+  return create_buff_expression( buff_name, type, &action, nullptr );
+}
+expr_t* buff_t::create_expression( std::string buff_name, const std::string& type, buff_t& static_buff )
+{
+  return create_buff_expression( buff_name, type, nullptr, &static_buff );
 }
 
 #if defined( SC_USE_STAT_CACHE )

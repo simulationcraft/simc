@@ -8941,12 +8941,12 @@ const spell_data_t* player_t::find_spell( unsigned int id ) const
 
 namespace
 {
-expr_t* deprecate_expression( player_t* p, action_t* a, const std::string& old_name, const std::string& new_name )
+expr_t* deprecate_expression( player_t* p, const std::string& old_name, const std::string& new_name, action_t* a = nullptr  )
 {
   p->sim->errorf( "Use of \"%s\" ( action %s ) in action expressions is deprecated: use \"%s\" instead.\n",
-                  old_name.c_str(), a->name(), new_name.c_str() );
+                  old_name.c_str(), a?a->name() : "unknown", new_name.c_str() );
 
-  return p->create_expression( a, new_name );
+  return p->create_expression( new_name );
 }
 
 struct player_expr_t : public expr_t
@@ -8971,7 +8971,7 @@ struct position_expr_t : public player_expr_t
 };
 }  // namespace
 
-expr_t* player_t::create_expression( action_t* a, const std::string& expression_str )
+expr_t* player_t::create_expression( const std::string& expression_str )
 {
   if ( expression_str == "level" )
     return expr_t::create_constant( "level", true_level );
@@ -8979,22 +8979,6 @@ expr_t* player_t::create_expression( action_t* a, const std::string& expression_
     return expr_t::create_constant( "name", actor_index );
   if ( expression_str == "self" )
     return expr_t::create_constant( "self", actor_index );
-  if ( expression_str == "multiplier" )
-  {
-    return make_fn_expr( expression_str, [this, &a] {
-      double multiplier = 0.0;
-      for ( auto base_school : a->base_schools )
-      {
-        double v = cache.player_multiplier( base_school );
-        if ( v > multiplier )
-        {
-          multiplier = v;
-        }
-      }
-
-      return multiplier;
-    } );
-  }
   if ( expression_str == "in_combat" )
     return make_ref_expr( "in_combat", in_combat );
   if ( expression_str == "attack_haste" )
@@ -9055,25 +9039,25 @@ expr_t* player_t::create_expression( action_t* a, const std::string& expression_
   }
 
   if ( expression_str == "health_pct" )
-    return deprecate_expression( this, a, expression_str, "health.pct" );
+    return deprecate_expression( this, expression_str, "health.pct" );
 
   if ( expression_str == "mana_pct" )
-    return deprecate_expression( this, a, expression_str, "mana.pct" );
+    return deprecate_expression( this, expression_str, "mana.pct" );
 
   if ( expression_str == "energy_regen" )
-    return deprecate_expression( this, a, expression_str, "energy.regen" );
+    return deprecate_expression( this, expression_str, "energy.regen" );
 
   if ( expression_str == "focus_regen" )
-    return deprecate_expression( this, a, expression_str, "focus.regen" );
+    return deprecate_expression( this, expression_str, "focus.regen" );
 
   if ( expression_str == "time_to_max_energy" )
-    return deprecate_expression( this, a, expression_str, "energy.time_to_max" );
+    return deprecate_expression( this, expression_str, "energy.time_to_max" );
 
   if ( expression_str == "time_to_max_focus" )
-    return deprecate_expression( this, a, expression_str, "focus.time_to_max" );
+    return deprecate_expression( this, expression_str, "focus.time_to_max" );
 
   if ( expression_str == "max_mana_nonproc" )
-    return deprecate_expression( this, a, expression_str, "mana.max_nonproc" );
+    return deprecate_expression( this, expression_str, "mana.max_nonproc" );
 
   if ( expression_str == "ptr" )
     return expr_t::create_constant( "ptr", dbc.ptr );
@@ -9205,7 +9189,7 @@ expr_t* player_t::create_expression( action_t* a, const std::string& expression_
   // trinkets
   if ( splits[ 0 ] == "trinket" )
   {
-    if ( expr_t* expr = unique_gear::create_expression( a, expression_str ) )
+    if ( expr_t* expr = unique_gear::create_expression( *this, expression_str ) )
       return expr;
   }
 
@@ -9257,7 +9241,7 @@ expr_t* player_t::create_expression( action_t* a, const std::string& expression_
 
   if ( splits[ 0 ] == "legendary_ring" )
   {
-    if ( expr_t* expr = unique_gear::create_expression( a, expression_str ) )
+    if ( expr_t* expr = unique_gear::create_expression( *this, expression_str ) )
       return expr;
   }
 
@@ -9271,6 +9255,13 @@ expr_t* player_t::create_expression( action_t* a, const std::string& expression_
       }
     };
     return new race_expr_t( *this, splits[ 1 ] );
+  }
+
+  // spec
+  if ( splits[ 0 ] == "spec" && splits.size() == 2 )
+  {
+
+    return expr_t::create_constant( "spec", dbc::translate_spec_str( type, splits[1]) == specialization() );
   }
 
   // role
@@ -9346,7 +9337,7 @@ expr_t* player_t::create_expression( action_t* a, const std::string& expression_
       }
       else
       {
-        return pet->create_expression( a, expression_str.substr( splits[ 1 ].length() + 5 ) );
+        return pet->create_expression( expression_str.substr( splits[ 1 ].length() + 5 ) );
       }
     }
   }
@@ -9357,7 +9348,7 @@ expr_t* player_t::create_expression( action_t* a, const std::string& expression_
     if ( pet_t* pet = dynamic_cast<pet_t*>( this ) )
     {
       if ( pet->owner )
-        return pet->owner->create_expression( a, expression_str.substr( 6 ) );
+        return pet->owner->create_expression( expression_str.substr( 6 ) );
     }
     // FIXME: report failure.
   }
@@ -9495,25 +9486,25 @@ expr_t* player_t::create_expression( action_t* a, const std::string& expression_
   {
     if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" )
     {
-      a->player->get_target_data( this );
-      buff_t* buff = buff_t::find_expressable( buff_list, splits[ 1 ], a->player );
+      get_target_data( this );
+      buff_t* buff = buff_t::find_expressable( buff_list, splits[ 1 ], this );
       if ( !buff )
         buff = buff_t::find( this, splits[ 1 ], this );  // Raid debuffs
       if ( buff )
-        return buff_t::create_expression( splits[ 1 ], a, splits[ 2 ], buff );
+        return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *buff );
     }
     else if ( splits[ 0 ] == "cooldown" )
     {
       cooldown_t* cooldown = get_cooldown( splits[ 1 ] );
       if ( cooldown )
       {
-        return cooldown->create_expression( a, splits[ 2 ] );
+        return cooldown->create_expression( splits[ 2 ] );
       }
     }
     else if ( splits[ 0 ] == "dot" )
     {
       // FIXME! DoT Expressions should not need to get the dot itself.
-      return get_dot( splits[ 1 ], a->player )->create_expression( a, splits[ 2 ], false );
+      return get_dot( splits[ 1 ], this )->create_expression( nullptr, splits[ 2 ], false );
     }
     else if ( splits[ 0 ] == "swing" )
     {
@@ -9688,79 +9679,9 @@ expr_t* player_t::create_expression( action_t* a, const std::string& expression_
       return expr_t::create_constant( expression_str, power.rank() );
     }
   }
-  else if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" ||
-            splits[ 0 ] == "in_flight_to_target" )
-  {
-    std::vector<action_t*> in_flight_list;
-    bool in_flight_singleton = ( splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" );
-    std::string action_name  = ( in_flight_singleton ) ? a->name_str : splits[ 1 ];
-    for ( size_t i = 0; i < action_list.size(); ++i )
-    {
-      action_t* action = action_list[ i ];
-      if ( action->name_str == action_name )
-      {
-        if ( in_flight_singleton || splits[ 2 ] == "in_flight" || splits[ 2 ] == "in_flight_to_target" )
-        {
-          in_flight_list.push_back( action );
-        }
-        else
-        {
-          return action->create_expression( splits[ 2 ] );
-        }
-      }
-    }
-    if ( !in_flight_list.empty() )
-    {
-      if ( splits[ 0 ] == "in_flight" || ( !in_flight_singleton && splits[ 2 ] == "in_flight" ) )
-      {
-        struct in_flight_multi_expr_t : public expr_t
-        {
-          const std::vector<action_t*> action_list;
-          in_flight_multi_expr_t( const std::vector<action_t*>& al ) : expr_t( "in_flight" ), action_list( al )
-          {
-          }
-          virtual double evaluate() override
-          {
-            for ( size_t i = 0; i < action_list.size(); i++ )
-            {
-              if ( action_list[ i ]->has_travel_events() )
-                return true;
-            }
-            return false;
-          }
-        };
-        return new in_flight_multi_expr_t( in_flight_list );
-      }
-      else if ( splits[ 0 ] == "in_flight_to_target" ||
-                ( !in_flight_singleton && splits[ 2 ] == "in_flight_to_target" ) )
-      {
-        struct in_flight_to_target_multi_expr_t : public expr_t
-        {
-          const std::vector<action_t*> action_list;
-          action_t& action;
 
-          in_flight_to_target_multi_expr_t( const std::vector<action_t*>& al, action_t& a ) :
-            expr_t( "in_flight_to_target" ),
-            action_list( al ),
-            action( a )
-          {
-          }
-          virtual double evaluate() override
-          {
-            for ( size_t i = 0; i < action_list.size(); i++ )
-            {
-              if ( action_list[ i ]->has_travel_events_for( action.target ) )
-                return true;
-            }
-            return false;
-          }
-        };
-        return new in_flight_to_target_multi_expr_t( in_flight_list, *a );
-      }
-    }
-  }
 
-  return sim->create_expression( a, expression_str );
+  return sim->create_expression( expression_str );
 }
 
 expr_t* player_t::create_resource_expression( const std::string& name_str )

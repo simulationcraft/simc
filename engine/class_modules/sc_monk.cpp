@@ -759,7 +759,7 @@ public:
   virtual void      invalidate_cache( cache_e ) override;
   virtual void      init_action_list() override;
   void              activate() override;
-  virtual expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
+  virtual expr_t*   create_expression( const std::string& name_str ) override;
   virtual monk_td_t* get_target_data( player_t* target ) const override
   {
     monk_td_t*& td = target_data[target];
@@ -8914,7 +8914,7 @@ double monk_t::current_stagger_dot_remains()
 
 // monk_t::create_expression ==================================================
 
-expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
+expr_t* monk_t::create_expression( const std::string& name_str )
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
   if ( splits.size() == 2 && splits[0] == "stagger" )
@@ -9007,7 +9007,7 @@ expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
       return new sck_stack_expr_t( *this );
   }
 
-  return base_t::create_expression( a, name_str );
+  return base_t::create_expression( name_str );
 }
 
 // monk_t::monk_report =================================================

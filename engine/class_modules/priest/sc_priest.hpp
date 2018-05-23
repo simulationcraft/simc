@@ -440,7 +440,7 @@ public:
   void combat_begin() override;
   void init_rng() override;
   priest_td_t* get_target_data( player_t* target ) const override;
-  expr_t* create_expression( action_t* a, const std::string& name_str ) override;
+  expr_t* create_expression( const std::string& name_str ) override;
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_call_to_the_void( const dot_t* d );
 
@@ -466,7 +466,7 @@ private:
   void init_rng_shadow();
   void init_spells_shadow();
   void generate_apl_shadow();
-  expr_t* create_expression_shadow( action_t* a, const std::string& name_str );
+  expr_t* create_expression_shadow( const std::string& name_str );
   action_t* create_action_shadow( const std::string& name, const std::string& options_str );
 
   void create_buffs_discipline();

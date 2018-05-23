@@ -3957,18 +3957,18 @@ struct item_effect_base_expr_t : public expr_t
 {
   std::vector<const special_effect_t*> effects;
 
-  item_effect_base_expr_t( action_t* a, const std::vector<slot_e> slots ) :
+  item_effect_base_expr_t( player_t& player, const std::vector<slot_e> slots ) :
     expr_t( "item_effect_base_expr" )
   {
     const special_effect_t* e = 0;
 
     for ( size_t i = 0; i < slots.size(); i++ )
     {
-      e = a -> player -> items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
+      e = player.items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
       if ( e && e -> source != SPECIAL_EFFECT_SOURCE_NONE )
         effects.push_back( e );
 
-      e = a -> player -> items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+      e = player.items[ slots[ i ] ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
       if ( e && e -> source != SPECIAL_EFFECT_SOURCE_NONE )
         effects.push_back( e );
     }
@@ -3981,8 +3981,8 @@ struct item_effect_expr_t : public item_effect_base_expr_t
 {
   std::vector<expr_t*> exprs;
 
-  item_effect_expr_t( action_t* a, const std::vector<slot_e> slots ) :
-    item_effect_base_expr_t( a, slots )
+  item_effect_expr_t( player_t& player, const std::vector<slot_e> slots ) :
+    item_effect_base_expr_t( player, slots )
   { }
 
   // Evaluates automatically to the maximum value out of all expressions, may
@@ -4009,17 +4009,17 @@ struct item_effect_expr_t : public item_effect_base_expr_t
 // user input
 struct item_buff_expr_t : public item_effect_expr_t
 {
-  item_buff_expr_t( action_t* a, const std::vector<slot_e> slots, stat_e s, bool stacking, const std::string& expr_str ) :
-    item_effect_expr_t( a, slots )
+  item_buff_expr_t( player_t& player, const std::vector<slot_e> slots, stat_e s, bool stacking, const std::string& expr_str ) :
+    item_effect_expr_t( player, slots )
   {
     for (auto e : effects)
     {
       
 
-      buff_t* b = buff_t::find( a -> player, e -> name() );
+      buff_t* b = buff_t::find( &player, e -> name() );
       if ( buff_has_stat( b, s ) && ( ( ! stacking && b -> max_stack() <= 1 ) || ( stacking && b -> max_stack() > 1 ) ) )
       {
-        if ( expr_t* expr_obj = buff_t::create_expression( b -> name(), a, expr_str, b ) )
+        if ( expr_t* expr_obj = buff_t::create_expression( b -> name(), expr_str, *b ) )
           exprs.push_back( expr_obj );
       }
     }
@@ -4030,14 +4030,14 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
 {
   double v;
 
-  item_buff_exists_expr_t( action_t* a, const std::vector<slot_e>& slots, stat_e s ) :
-    item_effect_expr_t( a, slots ), v( 0 )
+  item_buff_exists_expr_t( player_t& player, const std::vector<slot_e>& slots, stat_e s ) :
+    item_effect_expr_t( player, slots ), v( 0 )
   {
     for (auto e : effects)
     {
       
 
-      buff_t* b = buff_t::find( a -> player, e -> name() );
+      buff_t* b = buff_t::find( &player, e -> name() );
       if ( buff_has_stat( b, s ) )
       {
         v = 1;
@@ -4054,16 +4054,16 @@ struct item_buff_exists_expr_t : public item_effect_expr_t
 // from user input
 struct item_cooldown_expr_t : public item_effect_expr_t
 {
-  item_cooldown_expr_t( action_t* a, const std::vector<slot_e> slots, const std::string& expr ) :
-    item_effect_expr_t( a, slots )
+  item_cooldown_expr_t( player_t& player, const std::vector<slot_e> slots, const std::string& expr ) :
+    item_effect_expr_t( player, slots )
   {
     for (auto e : effects)
     {
       
       if ( e -> cooldown() != timespan_t::zero() )
       {
-        cooldown_t* cd = a -> player -> get_cooldown( e -> cooldown_name() );
-        if ( expr_t* expr_obj = cd -> create_expression( a, expr ) )
+        cooldown_t* cd = player.get_cooldown( e -> cooldown_name() );
+        if ( expr_t* expr_obj = cd -> create_expression( expr ) )
           exprs.push_back( expr_obj );
       }
     }
@@ -4074,8 +4074,8 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
 {
   double v;
 
-  item_cooldown_exists_expr_t( action_t* a, const std::vector<slot_e>& slots ) :
-    item_effect_expr_t( a, slots ), v( 0 )
+  item_cooldown_exists_expr_t( player_t& player, const std::vector<slot_e>& slots ) :
+    item_effect_expr_t( player, slots ), v( 0 )
   {
     for (auto e : effects)
     {
@@ -4103,7 +4103,7 @@ struct item_cooldown_exists_expr_t : public item_effect_expr_t
  * trinket[.12].(has_|)(stacking_|)proc.<stat>.<buff_expr> OR
  * trinket[.12].(has_|)cooldown.<cooldown_expr>
  */
-expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str )
+expr_t* unique_gear::create_expression( player_t& player, const std::string& name_str )
 {
   enum proc_expr_e
   {
@@ -4179,21 +4179,21 @@ expr_t* unique_gear::create_expression( action_t* a, const std::string& name_str
 
   if ( pexprtype == PROC_ENABLED && ptype != PROC_COOLDOWN && splits.size() >= 4 )
   {
-    return new item_buff_expr_t( a, slots, stat, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
+    return new item_buff_expr_t( player, slots, stat, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
   }
   else if ( pexprtype == PROC_ENABLED && ptype == PROC_COOLDOWN && splits.size() >= 3  )
   {
-    return new item_cooldown_expr_t( a, slots, splits[ expr_idx ] );
+    return new item_cooldown_expr_t( player, slots, splits[ expr_idx ] );
   }
   else if ( pexprtype == PROC_EXISTS )
   {
     if ( ptype != PROC_COOLDOWN )
     {
-      return new item_buff_exists_expr_t( a, slots, stat );
+      return new item_buff_exists_expr_t( player, slots, stat );
     }
     else
     {
-      return new item_cooldown_exists_expr_t( a, slots );
+      return new item_cooldown_exists_expr_t( player, slots );
     }
   }
 

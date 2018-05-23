@@ -871,7 +871,7 @@ public:
   void      do_damage( action_state_t* ) override;
   bool      create_actions() override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
-  expr_t*   create_expression( action_t*, const std::string& name ) override;
+  expr_t*   create_expression( const std::string& name ) override;
   void      create_pets() override;
   void      create_options() override;
   resource_e primary_resource() const override { return RESOURCE_RUNIC_POWER; }
@@ -6765,7 +6765,7 @@ expr_t* death_knight_t::create_death_and_decay_expression( const std::string& ex
   return nullptr;
 }
 
-expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str )
+expr_t* death_knight_t::create_expression( const std::string& name_str )
 {
   auto splits = util::string_split( name_str, "." );
 
@@ -6777,8 +6777,8 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
       auto n = n_char - '0';
       if ( n <= 0 || as<size_t>( n ) > MAX_RUNES )
       {
-        sim -> errorf( "%s invalid expression '%s' for %s", name(), name_str.c_str(), a -> signature_str.c_str() );
-        return player_t::create_expression( a, name_str );
+        sim -> errorf( "%s invalid expression '%s'.", name(), name_str.c_str() );
+        return player_t::create_expression( name_str );
       }
 
       return make_fn_expr( "rune_time_to_x", [ this, n ]() {
@@ -6793,7 +6793,7 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
     return dnd_expr;
   }
 
-  return player_t::create_expression( a, name_str );
+  return player_t::create_expression( name_str );
 }
 
 // death_knight_t::create_pets ==============================================

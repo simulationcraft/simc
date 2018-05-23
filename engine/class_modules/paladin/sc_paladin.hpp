@@ -413,7 +413,7 @@ public:
   virtual void      init_assessors() override;
   virtual void      init_action_list() override;
   virtual void      reset() override;
-  virtual expr_t*   create_expression( action_t*, const std::string& name ) override;
+  virtual expr_t*   create_expression( const std::string& name ) override;
 
   // player stat functions
   virtual double    composite_attribute( attribute_e attr ) const override;

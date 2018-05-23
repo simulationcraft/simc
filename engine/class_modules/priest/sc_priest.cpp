@@ -753,20 +753,15 @@ stat_e priest_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-expr_t* priest_t::create_expression( action_t* a, const std::string& name_str )
+expr_t* priest_t::create_expression( const std::string& name_str )
 {
-  if ( name_str == "primary_target" )
-  {
-    return make_fn_expr( name_str, [this, a]() { return target == a->target; } );
-  }
-
-  auto shadow_expression = create_expression_shadow( a, name_str );
+  auto shadow_expression = create_expression_shadow( name_str );
   if ( shadow_expression )
   {
     return shadow_expression;
   }
 
-  return player_t::create_expression( a, name_str );
+  return player_t::create_expression( name_str );
 }
 
 void priest_t::assess_damage( school_e school, dmg_e dtype, action_state_t* s )

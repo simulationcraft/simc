@@ -598,7 +598,7 @@ public:
   double    matching_gear_multiplier( attribute_e attr ) const override;
   void      invalidate_cache( cache_e ) override;
   void      create_options() override;
-  expr_t*   create_expression( action_t*, const std::string& name ) override;
+  expr_t*   create_expression( const std::string& name ) override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
   void      create_pets() override;
@@ -4010,14 +4010,12 @@ void hunter_td_t::target_demise()
   damaged = false;
 }
 
-expr_t* hunter_t::create_expression( action_t* a, const std::string& expression_str )
+expr_t* hunter_t::create_expression( const std::string& expression_str )
 {
   std::vector<std::string> splits = util::string_split( expression_str, "." );
 
   if ( splits[ 0 ] == "cooldown" && splits[ 1 ] == "trueshot" )
   {
-    hunter_t* hunter = static_cast<hunter_t*>( a -> player );
-
     if ( splits[ 2 ] == "remains_guess" )
     {
       struct trueshot_remains_guess_t : public expr_t
@@ -4042,7 +4040,7 @@ expr_t* hunter_t::create_expression( action_t* a, const std::string& expression_
           return trueshot_cd -> remains().total_seconds() * reduction;
         }
       };
-      return new trueshot_remains_guess_t( hunter, expression_str );
+      return new trueshot_remains_guess_t( this, expression_str );
     }
     else if ( splits[ 2 ] == "duration_guess" )
     {
@@ -4068,11 +4066,11 @@ expr_t* hunter_t::create_expression( action_t* a, const std::string& expression_
           return trueshot_cd -> duration.total_seconds() * reduction;
         }
       };
-      return new trueshot_duration_guess_t( hunter, expression_str );
+      return new trueshot_duration_guess_t( this, expression_str );
     }
   }
 
-  return player_t::create_expression( a, expression_str );
+  return player_t::create_expression( expression_str );
 }
 
 // hunter_t::create_action ==================================================

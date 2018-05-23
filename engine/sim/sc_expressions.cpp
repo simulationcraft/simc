@@ -1227,6 +1227,74 @@ bool convert_to_rpn( std::vector<expr_token_t>& tokens )
   return true;
 }
 
+expr_t* build_player_expression_tree(
+    player_t& player, std::vector<expression::expr_token_t>& tokens )
+{
+  auto_dispose<std::vector<expr_t*>> stack;
+
+  size_t num_tokens = tokens.size();
+  for ( size_t i = 0; i < num_tokens; i++ )
+  {
+    expression::expr_token_t& t = tokens[ i ];
+
+    if ( t.type == expression::TOK_NUM )
+    {
+      stack.push_back( new const_expr_t( t.label, atof( t.label.c_str() ) ) );
+    }
+    else if ( t.type == expression::TOK_STR )
+    {
+      try {
+        expr_t* e = player.create_expression( t.label );
+        if ( !e )
+        {
+          player.sim->errorf(
+              "Player %s: Unable to decode expression function '%s'\n",
+              player.name(), t.label.c_str() );
+          return nullptr;
+        }
+        stack.push_back( e );
+      }
+      catch ( const std::exception& exc)
+      {
+        player.sim->errorf(
+            "Player %s : Exception while decoding expression function '%s': %s\n",
+            player.name(), t.label.c_str(), exc.what() );
+        return nullptr;
+      }
+    }
+    else if ( expression::is_unary( t.type ) )
+    {
+      if ( stack.size() < 1 )
+        return nullptr;
+      expr_t* input = stack.back();
+      stack.pop_back();
+      assert( input );
+      expr_t* expr = expression::select_unary( t.label, t.type, input );
+      stack.push_back( expr );
+    }
+    else if ( expression::is_binary( t.type ) )
+    {
+      if ( stack.size() < 2 )
+        return nullptr;
+      expr_t* right = stack.back();
+      stack.pop_back();
+      assert( right );
+      expr_t* left = stack.back();
+      stack.pop_back();
+      assert( left );
+      expr_t* expr = expression::select_binary( t.label, t.type, left, right );
+      stack.push_back( expr );
+    }
+  }
+
+  if ( stack.size() != 1 )
+    return nullptr;
+
+  expr_t* res = stack.back();
+  stack.pop_back();
+  return res;
+}
+
 }  // expression
 
 #if !defined( NDEBUG )

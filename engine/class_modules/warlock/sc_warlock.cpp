@@ -1286,7 +1286,7 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
   }
 }
 
-expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
+expr_t* warlock_t::create_expression( const std::string& name_str )
 {
   if ( name_str == "shard_react" )
   {
@@ -1312,7 +1312,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
           return t;});
   }
 
-  return player_t::create_expression( a, name_str );
+  return player_t::create_expression( name_str );
 }
 
 /* Report Extension Class

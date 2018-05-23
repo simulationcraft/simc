@@ -301,9 +301,11 @@ struct raid_event_t : private noncopyable
 
   std::string affected_role_str;
   role_e     affected_role;
+  std::string player_if_expr_str;
 
   timespan_t saved_duration;
   std::vector<player_t*> affected_players;
+  std::unordered_map<size_t, std::unique_ptr<expr_t>> player_expressions;
   std::vector<std::unique_ptr<option_t>> options;
 
   raid_event_t( sim_t*, const std::string& );
@@ -1326,7 +1328,7 @@ struct sim_t : private sc_thread_t
   player_t* find_player( int index ) const;
   cooldown_t* get_cooldown( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
-  expr_t*   create_expression( action_t*, const std::string& name );
+  expr_t*   create_expression( const std::string& name );
   /**
    * Create error with printf formatting.
    */
@@ -2683,7 +2685,7 @@ struct cooldown_t
   timespan_t reduced_cooldown() const
   { return ready - last_start; }
 
-  expr_t* create_expression( action_t* a, const std::string& name_str );
+  expr_t* create_expression( const std::string& name_str );
 
   static timespan_t ready_init()
   { return timespan_t::from_seconds( -60 * 60 ); }
@@ -4070,7 +4072,7 @@ struct player_t : public actor_t
   virtual void  summon_pet( const std::string& name, timespan_t duration = timespan_t::zero() );
   virtual void dismiss_pet( const std::string& name );
 
-  virtual expr_t* create_expression( action_t*, const std::string& name );
+  virtual expr_t* create_expression( const std::string& name );
 
   virtual void create_options();
   void recreate_talent_str( talent_format_e format = TALENT_FORMAT_NUMBERS );
@@ -6896,7 +6898,7 @@ void initialize_racial_effects( player_t* );
 const item_data_t* find_consumable( const dbc_t& dbc, const std::string& name, item_subclass_consumable type );
 const item_data_t* find_item_by_spell( const dbc_t& dbc, unsigned spell_id );
 
-expr_t* create_expression( action_t* a, const std::string& name_str );
+expr_t* create_expression( player_t& player, const std::string& name_str );
 
 // Kludge to automatically apply all player-derived, label based modifiers to unique effects. Will
 // be replaced in the future by something else.
@@ -7408,7 +7410,7 @@ inline double target_wrapper_expr_t::evaluate()
 
   if ( proxy_expr[ actor_index ] == nullptr )
   {
-    proxy_expr[ actor_index ] = target() -> create_expression( &( action ), suffix_expr_str );
+    proxy_expr[ actor_index ] = target() -> create_expression( suffix_expr_str );
   }
 
   return proxy_expr[ actor_index ] -> eval();

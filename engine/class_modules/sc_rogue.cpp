@@ -626,7 +626,7 @@ struct rogue_t : public player_t
   void      regen( timespan_t periodicity ) override;
   timespan_t available() const override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
-  expr_t*   create_expression( action_t* a, const std::string& name_str ) override;
+  expr_t*   create_expression( const std::string& name_str ) override;
   resource_e primary_resource() const override { return RESOURCE_ENERGY; }
   role_e    primary_role() const override  { return ROLE_ATTACK; }
   stat_e    convert_hybrid_stat( stat_e s ) const override;
@@ -6512,7 +6512,7 @@ expr_t* rogue_t::create_rtb_buff_t21_expression( const buff_t* rtb_buff )
 
 // rogue_t::create_expression ===============================================
 
-expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
+expr_t* rogue_t::create_expression( const std::string& name_str )
 {
   std::vector<std::string> split = util::string_split( name_str, "." );
 
@@ -6520,14 +6520,7 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     return make_ref_expr( name_str, resources.current[ RESOURCE_COMBO_POINT ] );
   else if ( util::str_compare_ci( name_str, "cp_max_spend" ) )
   {
-    if ( ! dynamic_cast<actions::rogue_attack_t*>( a ) )
-    {
-      return expr_t::create_constant( name_str, 0 );
-    }
-    else
-    {
-      return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
-    }
+    return make_mem_fn_expr( name_str, *this, &rogue_t::consume_cp_max );
   }
   else if ( util::str_compare_ci(name_str, "mantle_duration") )
   {
@@ -6819,7 +6812,7 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
     return create_rtb_buff_t21_expression( buffs.true_bearing );
   }
 
-  return player_t::create_expression( a, name_str );
+  return player_t::create_expression( name_str );
 }
 
 // rogue_t::init_base =======================================================

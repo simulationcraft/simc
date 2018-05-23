@@ -2192,8 +2192,7 @@ bool paladin_t::get_how_availability() const
 
 // player_t::create_expression ==============================================
 
-expr_t* paladin_t::create_expression( action_t* a,
-                                      const std::string& name_str )
+expr_t* paladin_t::create_expression( const std::string& name_str )
 {
   struct paladin_expr_t : public expr_t
   {
@@ -2253,7 +2252,7 @@ expr_t* paladin_t::create_expression( action_t* a,
     return new time_to_hpg_expr_t( name_str, *this );
   }
 
-  return player_t::create_expression( a, name_str );
+  return player_t::create_expression( name_str );
 }
 
 void paladin_t::merge( player_t& other )

@@ -79,7 +79,7 @@ struct enemy_t : public player_t
   virtual void combat_end() override;
   virtual void recalculate_health();
   virtual void demise() override;
-  virtual expr_t* create_expression( action_t* action, const std::string& type ) override;
+  virtual expr_t* create_expression( const std::string& type ) override;
   virtual timespan_t available() const override { return waiting_time; }
 
   void actor_changed() override
@@ -1605,8 +1605,7 @@ bool enemy_t::taunt( player_t* source )
 
 // enemy_t::create_expression ===============================================
 
-expr_t* enemy_t::create_expression( action_t* action,
-                                    const std::string& name_str )
+expr_t* enemy_t::create_expression( const std::string& name_str )
 {
   if ( name_str == "adds" )
     return make_mem_fn_expr( name_str, active_pets, &std::vector<pet_t*>::size );
@@ -1673,7 +1672,7 @@ expr_t* enemy_t::create_expression( action_t* action,
 
   }
 
-  return player_t::create_expression( action, name_str );
+  return player_t::create_expression( name_str );
 }
 
 // enemy_t::combat_begin ====================================================

@@ -417,7 +417,7 @@ public:
   action_t* create_action( const std::string& name,
                            const std::string& options ) override;
   void create_buffs() override;
-  expr_t* create_expression( action_t*, const std::string& ) override;
+  expr_t* create_expression( const std::string& ) override;
   void create_options() override;
   pet_t* create_pet( const std::string& name,
                      const std::string& type = std::string() ) override;
@@ -4113,8 +4113,7 @@ struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
 
 // demon_hunter_t::create_expression ========================================
 
-expr_t* demon_hunter_t::create_expression( action_t* a,
-    const std::string& name_str )
+expr_t* demon_hunter_t::create_expression( const std::string& name_str )
 {
   if ( name_str == "greater_soul_fragments" ||
        name_str == "lesser_soul_fragments" || name_str == "soul_fragments" )
@@ -4171,7 +4170,7 @@ expr_t* demon_hunter_t::create_expression( action_t* a,
     }
     else
     {
-      return this->cooldown.metamorphosis->create_expression(a, "remains");
+      return this->cooldown.metamorphosis->create_expression("remains");
     }
   }
   else if (name_str == "buff.metamorphosis.extended_by_demonic")
@@ -4179,7 +4178,7 @@ expr_t* demon_hunter_t::create_expression( action_t* a,
     return new metamorphosis_buff_demonic_expr_t(this, name_str);
   }
 
-  return player_t::create_expression( a, name_str );
+  return player_t::create_expression( name_str );
 }
 
 // demon_hunter_t::create_options

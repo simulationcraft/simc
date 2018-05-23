@@ -403,7 +403,7 @@ void cooldown_t::start( timespan_t _override, timespan_t delay )
   start( nullptr, _override, delay );
 }
 
-expr_t* cooldown_t::create_expression( action_t*, const std::string& name_str )
+expr_t* cooldown_t::create_expression( const std::string& name_str )
 {
   if ( name_str == "remains" )
     return make_mem_fn_expr( name_str, *this, &cooldown_t::remains );

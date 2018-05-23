@@ -2984,8 +2984,7 @@ bool sim_t::time_to_think( timespan_t proc_time )
 
 // sim_t::create_expression =================================================
 
-expr_t* sim_t::create_expression( action_t* a,
-                                  const std::string& name_str )
+expr_t* sim_t::create_expression( const std::string& name_str )
 {
   if ( name_str == "initial_targets" )
     return expr_t::create_constant( name_str, target_list.size() );
@@ -3069,7 +3068,7 @@ expr_t* sim_t::create_expression( action_t* a,
     {
       buff_t* buff = buff_t::find( this, splits[ 1 ] );
       if ( ! buff ) return nullptr;
-      return buff_t::create_expression( splits[ 1 ], a, splits[ 2 ], buff );
+      return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *buff );
     }
   }
   if ( splits.size() >= 3 && splits[ 0 ] == "actors" )
@@ -3079,7 +3078,7 @@ expr_t* sim_t::create_expression( action_t* a,
     std::string rest = splits[ 2 ];
     for ( size_t i = 3; i < splits.size(); ++i )
       rest += '.' + splits[ i ];
-    return actor -> create_expression( a, rest );
+    return actor -> create_expression( rest );
   }
 
   if ( splits.size() == 1 && splits[ 0 ] == "target" )

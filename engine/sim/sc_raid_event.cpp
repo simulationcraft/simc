@@ -934,6 +934,37 @@ struct position_event_t : public raid_event_t
   }
 };
 
+expr_t* parse_player_if_expr( player_t& player, const std::string& expr_str )
+{
+  if ( expr_str.empty() )
+    return nullptr;
+
+  std::vector<expression::expr_token_t> tokens =
+      expression::parse_tokens( nullptr, expr_str );
+
+  if ( player.sim->debug )
+    expression::print_tokens( tokens, player.sim );
+
+  if ( !expression::convert_to_rpn( tokens ) )
+  {
+    player.sim->error("{}: Unable to convert expression {} into RPN\n",
+                      player.name(),
+                      expr_str );
+    return nullptr;
+  }
+
+  if ( player.sim->debug )
+    expression::print_tokens( tokens, player.sim );
+
+  if ( expr_t* e = expression::build_player_expression_tree( player, tokens ) )
+    return e;
+
+  player.sim->error("{}: Unable to build expression tree from {}\n",
+                    player.name(),
+                    expr_str );
+  return nullptr;
+}
+
 } // UNNAMED NAMESPACE
 
 // raid_event_t::raid_event_t ===============================================
@@ -958,7 +989,9 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
   players_only( false ),
   player_chance( 1.0 ),
   affected_role( ROLE_NONE ),
-  saved_duration( timespan_t::zero() )
+  player_if_expr_str(),
+  saved_duration( timespan_t::zero() ),
+  player_expressions()
 {
   add_option( opt_string( "first", first_str ) );
   add_option( opt_string( "last", last_str ) );
@@ -976,6 +1009,7 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
   add_option( opt_float( "distance_min", distance_min ) );
   add_option( opt_float( "distance_max", distance_max ) );
   add_option( opt_string( "affected_role", affected_role_str ) );
+  add_option( opt_string( "player_if", player_if_expr_str ) );
 
 }
 
@@ -1032,9 +1066,20 @@ void raid_event_t::start()
   {
     player_t* p = sim -> player_non_sleeping_list[ i ];
 
+    auto& expr_uptr = player_expressions[p->actor_index];
+    if (!expr_uptr)
+    {
+      expr_uptr = std::unique_ptr<expr_t>(parse_player_if_expr(*p, player_if_expr_str));
+    }
+
     // Filter players
     if ( filter_player( p ) )
       continue;
+
+    if ( expr_uptr && !expr_uptr->success())
+    {
+      continue;
+    }
 
     affected_players.push_back( p );
   }
