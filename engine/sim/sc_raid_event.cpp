@@ -956,7 +956,7 @@ expr_t* parse_player_if_expr( player_t& player, const std::string& expr_str )
   if ( player.sim->debug )
     expression::print_tokens( tokens, player.sim );
 
-  if ( expr_t* e = expression::build_player_expression_tree( player, tokens ) )
+  if ( expr_t* e = expression::build_player_expression_tree( player, tokens, true ) )
     return e;
 
   player.sim->error("{}: Unable to build expression tree from {}\n",
@@ -1066,15 +1066,16 @@ void raid_event_t::start()
   {
     player_t* p = sim -> player_non_sleeping_list[ i ];
 
+
+    // Filter players
+    if ( filter_player( p ) )
+      continue;
+
     auto& expr_uptr = player_expressions[p->actor_index];
     if (!expr_uptr)
     {
       expr_uptr = std::unique_ptr<expr_t>(parse_player_if_expr(*p, player_if_expr_str));
     }
-
-    // Filter players
-    if ( filter_player( p ) )
-      continue;
 
     if ( expr_uptr && !expr_uptr->success())
     {

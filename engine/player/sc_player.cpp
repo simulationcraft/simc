@@ -8991,14 +8991,11 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   if ( expression_str == "desired_targets" )
     return expr_t::create_constant( expression_str, sim->desired_targets );
 
-  if ( util::str_compare_ci( expression_str, "is_add" ) )
-  {
-    return make_mem_fn_expr( expression_str, *this, &player_t::is_add );
-  }
-  else if ( util::str_compare_ci( expression_str, "is_enemy" ) )
-  {
-    return make_mem_fn_expr( expression_str, *this, &player_t::is_enemy );
-  }
+  if ( expression_str == "is_add" )
+    return expr_t::create_constant("is_add", is_add() );
+
+  if ( expression_str == "is_enemy" )
+    return expr_t::create_constant("is_enemy", is_enemy() );
 
   // time_to_pct expressions
   if ( util::str_in_str_ci( expression_str, "time_to_" ) )

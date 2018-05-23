@@ -1228,7 +1228,8 @@ bool convert_to_rpn( std::vector<expr_token_t>& tokens )
 }
 
 expr_t* build_player_expression_tree(
-    player_t& player, std::vector<expression::expr_token_t>& tokens )
+    player_t& player, std::vector<expression::expr_token_t>& tokens,
+    bool optimize )
 {
   auto_dispose<std::vector<expr_t*>> stack;
 
@@ -1269,7 +1270,10 @@ expr_t* build_player_expression_tree(
       expr_t* input = stack.back();
       stack.pop_back();
       assert( input );
-      expr_t* expr = expression::select_unary( t.label, t.type, input );
+      expr_t* expr =
+          ( optimize
+                ? expression::select_analyze_unary( t.label, t.type, input )
+                : expression::select_unary( t.label, t.type, input ) );
       stack.push_back( expr );
     }
     else if ( expression::is_binary( t.type ) )
@@ -1282,7 +1286,10 @@ expr_t* build_player_expression_tree(
       expr_t* left = stack.back();
       stack.pop_back();
       assert( left );
-      expr_t* expr = expression::select_binary( t.label, t.type, left, right );
+      expr_t* expr = ( optimize ? expression::select_analyze_binary(
+                                      t.label, t.type, left, right )
+                                : expression::select_binary( t.label, t.type,
+                                                             left, right ) );
       stack.push_back( expr );
     }
   }

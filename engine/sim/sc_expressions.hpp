@@ -71,7 +71,8 @@ void print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim );
 void convert_to_unary( std::vector<expr_token_t>& tokens );
 bool convert_to_rpn( std::vector<expr_token_t>& tokens );
 expr_t* build_player_expression_tree(
-    player_t& player, std::vector<expression::expr_token_t>& tokens );
+    player_t& player, std::vector<expression::expr_token_t>& tokens,
+    bool optimize );
 }
 
 /// Action expression
