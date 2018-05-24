@@ -956,7 +956,7 @@ expr_t* parse_player_if_expr( player_t& player, const std::string& expr_str )
   if ( player.sim->debug )
     expression::print_tokens( tokens, player.sim );
 
-  if ( expr_t* e = expression::build_player_expression_tree( player, tokens, true ) )
+  if ( expr_t* e = expression::build_player_expression_tree( player, tokens, player.sim -> optimize_expressions ) )
     return e;
 
   player.sim->error("{}: Unable to build expression tree from {}\n",

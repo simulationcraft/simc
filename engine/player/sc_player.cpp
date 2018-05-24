@@ -8732,11 +8732,11 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n, specializ
   // Get a talent's spell id for a given talent name
   unsigned spell_id = dbc.talent_ability_id( type, s, n.c_str(), name_tokenized );
 
-  if ( !spell_id && sim->debug )
-    sim->out_debug.printf( "Player %s: Can't find talent with name %s.\n", name(), n.c_str() );
-
   if ( !spell_id )
+  {
+    sim->print_debug( "Player {}: Can't find talent with name '{}'.\n", name(), n );
     return spell_data_t::not_found();
+  }
 
   for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
   {
@@ -8755,7 +8755,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n, specializ
         // std::min( 100, x ) dirty fix so that we can access tier 7 talents at level 100 and not level 105
         if ( check_validity &&
              ( !talent_points.validate( spell, j, i ) || true_level < std::min( ( j + 1 ) * 15, 100 ) ) )
-          return spell_data_t::not_found();
+          return spell_data_t::nil();
 
         return spell;
       }
@@ -8763,7 +8763,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n, specializ
   }
 
   /* Talent not enabled */
-  return spell_data_t::not_found();
+  return spell_data_t::nil();
 }
 
 const spell_data_t* player_t::find_specialization_spell( const std::string& name, specialization_e s ) const
@@ -9235,18 +9235,18 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     {
       if ( splits[ 2 ] == "active" )
       {
-        return make_fn_expr(expression_str, [this, pet] {return !pet->is_sleeping();});
+        return make_fn_expr(expression_str, [pet] {return !pet->is_sleeping();});
       }
       else if ( splits[ 2 ] == "remains" )
       {
-        return make_fn_expr(expression_str, [this, pet] {
+        return make_fn_expr(expression_str, [pet] {
           if ( pet->expiration && pet->expiration->remains() > timespan_t::zero() )
           {
             return pet->expiration->remains().total_seconds();
           }
           else
           {
-            return 0;
+            return 0.0;
           };});
       }
       else
@@ -9257,33 +9257,25 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   }
 
   // owner
-  else if ( splits[ 0 ] == "owner" )
+  if ( splits[ 0 ] == "owner" )
   {
     if ( pet_t* pet = dynamic_cast<pet_t*>( this ) )
     {
       if ( pet->owner )
         return pet->owner->create_expression( expression_str.substr( 6 ) );
     }
-    // FIXME: report failure.
+    else
+    {
+      throw std::invalid_argument(fmt::format("Cannot use expression '{}' because player is not a pet.",
+          expression_str));
+    }
   }
 
   // stat
-  else if ( splits[ 0 ] == "stat" && splits.size() == 2 )
+  if ( splits.size() == 2 && splits[ 0 ] == "stat"  )
   {
     if ( util::str_compare_ci( "spell_haste", splits[ 1 ] ) )
-    {
-      struct spell_haste_expr_t : public player_expr_t
-      {
-        spell_haste_expr_t( player_t& p ) : player_expr_t( "spell_haste", p )
-        {
-        }
-        double evaluate() override
-        {
-          return 1.0 / player.cache.spell_haste() - 1.0;
-        }
-      };
-      return new spell_haste_expr_t( *this );
-    }
+      return make_fn_expr(expression_str, [this] {return 1.0 / cache.spell_haste() - 1.0;});
 
     stat_e stat = util::parse_stat_type( splits[ 1 ] );
     switch ( stat )
@@ -9294,48 +9286,17 @@ expr_t* player_t::create_expression( const std::string& expression_str )
       case STAT_INTELLECT:
       case STAT_SPIRIT:
       {
-        struct attr_expr_t : public player_expr_t
-        {
-          attribute_e attr;
-          attr_expr_t( const std::string& name, player_t& p, attribute_e a ) : player_expr_t( name, p ), attr( a )
-          {
-          }
-          virtual double evaluate() override
-          {
-            return player.cache.get_attribute( attr );
-          }
-        };
-        return new attr_expr_t( expression_str, *this, static_cast<attribute_e>( stat ) );
+        return make_fn_expr(expression_str, [this, stat] {return cache.get_attribute( static_cast<attribute_e>( stat ) );});
       }
 
       case STAT_SPELL_POWER:
       {
-        struct sp_expr_t : player_expr_t
-        {
-          sp_expr_t( const std::string& name, player_t& p ) : player_expr_t( name, p )
-          {
-          }
-          virtual double evaluate() override
-          {
-            return player.cache.spell_power( SCHOOL_MAX ) * player.composite_spell_power_multiplier();
-          }
-        };
-        return new sp_expr_t( expression_str, *this );
+        return make_fn_expr(expression_str, [this] {return cache.spell_power( SCHOOL_MAX ) * composite_spell_power_multiplier();});
       }
 
       case STAT_ATTACK_POWER:
       {
-        struct ap_expr_t : player_expr_t
-        {
-          ap_expr_t( const std::string& name, player_t& p ) : player_expr_t( name, p )
-          {
-          }
-          virtual double evaluate() override
-          {
-            return player.cache.attack_power() * player.composite_attack_power_multiplier();
-          }
-        };
-        return new ap_expr_t( expression_str, *this );
+        return make_fn_expr(expression_str, [this] {return cache.attack_power() * composite_attack_power_multiplier();});
       }
 
       case STAT_EXPERTISE_RATING:
@@ -9364,61 +9325,41 @@ expr_t* player_t::create_expression( const std::string& expression_str )
         break;
     }
 
-    // FIXME: report error and return?
+    throw std::invalid_argument(fmt::format("Cannot build expression from '{}' because stat type '{}' could not be parsed.",
+        expression_str, splits[ 1 ]));
+
   }
 
-  else if ( util::str_compare_ci( splits[ 0 ], "azerite" ) )
+  if ( splits[ 0 ] == "azerite" )
   {
     return azerite -> create_expression( splits );
   }
 
-  else if ( splits[ 0 ] == "using_apl" && splits.size() == 2 )
+  if ( splits[ 0 ] == "using_apl" && splits.size() == 2 )
   {
-    struct use_apl_expr_t : public expr_t
-    {
-      bool is_match;
-      std::string apl_name;
-
-      use_apl_expr_t( player_t* p, const std::string& apl_str, const std::string& use_apl ) :
-        expr_t( "using_apl_" + apl_str ),
-        apl_name( apl_str )
-      {
-        (void)p;
-        is_match = util::str_compare_ci( apl_str, use_apl );
-      }
-
-      double evaluate() override
-      {
-        return is_match;
-      }
-    };
-
-    return new use_apl_expr_t( this, splits[ 1 ], use_apl );
+    return expr_t::create_constant( expression_str, util::str_compare_ci( splits[ 1 ], use_apl ) );
   }
 
-  else if ( splits.size() == 3 )
+  if ( splits.size() == 3 )
   {
     if ( splits[ 0 ] == "buff" || splits[ 0 ] == "debuff" )
     {
+      // buff.buff_name.buff_property
       get_target_data( this );
       buff_t* buff = buff_t::find_expressable( buff_list, splits[ 1 ], this );
       if ( !buff )
         buff = buff_t::find( this, splits[ 1 ], this );  // Raid debuffs
       if ( buff )
         return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *buff );
+      throw std::invalid_argument(fmt::format("Cannot find any buff with name '{}'.", splits[ 1 ]));
     }
     else if ( splits[ 0 ] == "cooldown" )
     {
-      cooldown_t* cooldown = get_cooldown( splits[ 1 ] );
-      if ( cooldown )
+      if ( cooldown_t* cooldown = get_cooldown( splits[ 1 ] ) )
       {
         return cooldown->create_expression( splits[ 2 ] );
       }
-    }
-    else if ( splits[ 0 ] == "dot" )
-    {
-      // FIXME! DoT Expressions should not need to get the dot itself.
-      return get_dot( splits[ 1 ], this )->create_expression( nullptr, splits[ 2 ], false );
+      throw std::invalid_argument(fmt::format("Cannot find any cooldown with name '{}'.", splits[ 1 ]));
     }
     else if ( splits[ 0 ] == "swing" )
     {
@@ -9429,7 +9370,8 @@ expr_t* player_t::create_expression( const std::string& expression_str )
       if ( s == "oh" || s == "offhand" || s == "off_hand" )
         hand = SLOT_OFF_HAND;
       if ( hand == SLOT_INVALID )
-        return 0;
+        throw std::invalid_argument(fmt::format("Invalid slot '{}' for swing expression.", splits[ 1 ]));
+
       if ( splits[ 2 ] == "remains" )
       {
         struct swing_remains_expr_t : public player_expr_t
@@ -9452,19 +9394,7 @@ expr_t* player_t::create_expression( const std::string& expression_str )
 
     if ( splits[ 0 ] == "spell" && splits[ 2 ] == "exists" )
     {
-      struct spell_exists_expr_t : public expr_t
-      {
-        const std::string name;
-        player_t& player;
-        spell_exists_expr_t( const std::string& n, player_t& p ) : expr_t( n ), name( n ), player( p )
-        {
-        }
-        virtual double evaluate() override
-        {
-          return player.find_spell( name )->ok();
-        }
-      };
-      return new spell_exists_expr_t( splits[ 1 ], *this );
+      return expr_t::create_constant(expression_str, find_spell( splits[ 1 ] )->ok());
     }
   }
   else if ( splits.size() == 2 )
@@ -9474,74 +9404,28 @@ expr_t* player_t::create_expression( const std::string& expression_str )
 
     if ( splits[ 0 ] == "active_dot" )
     {
-      struct active_dot_expr_t : public expr_t
-      {
-        const player_t& player;
-        unsigned id;
-
-        active_dot_expr_t( const player_t& p, unsigned action_id ) :
-          expr_t( "active_dot_expr" ),
-          player( p ),
-          id( action_id )
-        {
-        }
-
-        double evaluate() override
-        {
-          return player.get_active_dots( id );
-        }
-      };
-
       int internal_id = find_action_id( splits[ 1 ] );
       if ( internal_id > -1 )
-        return new active_dot_expr_t( *this, internal_id );
+      {
+        return make_fn_expr(expression_str, [this, internal_id] {return get_active_dots( internal_id );});
+      }
+      throw std::invalid_argument(fmt::format("Cannot find action '{}'.", splits[ 1 ]));
     }
 
     if ( splits[ 0 ] == "movement" )
     {
-      struct movement_expr_t : public expr_t
-      {
-        player_t* player;
-
-        movement_expr_t( const std::string& name, player_t* p ) : expr_t( name ), player( p )
-        {
-        }
-      };
-
       if ( splits[ 1 ] == "remains" )
       {
-        struct m_remains_expr_t : public movement_expr_t
-        {
-          m_remains_expr_t( const std::string& n, player_t* p ) : movement_expr_t( n, p )
-          {
-          }
-
-          double evaluate() override
-          {
-            if ( player->current.distance_to_move > 0 )
-              return ( player->current.distance_to_move / player->composite_movement_speed() );
-            else
-              return player->buffs.movement->remains().total_seconds();
-          }
-        };
-
-        return new m_remains_expr_t( splits[ 1 ], this );
+        return make_fn_expr(expression_str, [this] {
+          if ( current.distance_to_move > 0 )
+            return ( current.distance_to_move / composite_movement_speed() );
+          else
+            return buffs.movement->remains().total_seconds();
+        });
       }
       else if ( splits[ 1 ] == "distance" )
       {
-        struct m_distance_expr_t : public movement_expr_t
-        {
-          m_distance_expr_t( const std::string& n, player_t* p ) : movement_expr_t( n, p )
-          {
-          }
-
-          double evaluate() override
-          {
-            return player->current.distance_to_move;
-          }
-        };
-
-        return new m_distance_expr_t( splits[ 1 ], this );
+        return make_fn_expr(expression_str, [this] {return current.distance_to_move;});
       }
       else if ( splits[ 1 ] == "speed" )
         return make_mem_fn_expr( splits[ 1 ], *this, &player_t::composite_movement_speed );
@@ -9550,48 +9434,32 @@ expr_t* player_t::create_expression( const std::string& expression_str )
 
   if ( ( splits.size() == 3 ) && splits[ 0 ] == "talent" )
   {
-    struct s_expr_t : public player_expr_t
+    if ( splits[ 2 ] == "enabled" )
     {
-      spell_data_t* s;
-
-      s_expr_t( const std::string& name, player_t& p, spell_data_t* sp ) : player_expr_t( name, p ), s( sp )
+      const spell_data_t* s = find_talent_spell( splits[ 1 ], specialization(), true );
+      if (!s || !s->found())
       {
+        throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
       }
-      virtual double evaluate() override
-      {
-        return ( s && s->ok() );
-      }
-    };
 
-    if ( splits[ 2 ] != "enabled" )
-    {
-      return 0;
+      return expr_t::create_constant( expression_str, s && s->ok() );
     }
-
-    spell_data_t* s = nullptr;
-
-    if ( splits[ 0 ] == "talent" )
-    {
-      s = const_cast<spell_data_t*>( find_talent_spell( splits[ 1 ], specialization(), true ) );
-    }
-
-    if ( sim->optimize_expressions )
-      return expr_t::create_constant( expression_str, ( s && s->ok() ) ? 1.0 : 0.0 );
-    else
-      return new s_expr_t( expression_str, *this, s );
+    throw std::invalid_argument(fmt::format("Unsupported talent expression '{}'.", splits[ 2 ]));
   }
-  else if ( splits.size() == 3 && splits[ 0 ] == "artifact" && ( splits[ 2 ] == "enabled" || splits[ 2 ] == "rank" ) )
+
+  if ( splits.size() == 3 && splits[ 0 ] == "artifact" )
   {
     artifact_power_t power = find_artifact_spell( splits[ 1 ], true );
 
     if ( splits[ 2 ] == "enabled" )
     {
-      return expr_t::create_constant( expression_str, power.rank() > 0 ? 1.0 : 0.0 );
+      return expr_t::create_constant( expression_str, power.rank() > 0 );
     }
     else if ( splits[ 2 ] == "rank" )
     {
       return expr_t::create_constant( expression_str, power.rank() );
     }
+    throw std::invalid_argument(fmt::format("Unsupported artifact expression '{}'.", splits[ 2 ]));
   }
 
 

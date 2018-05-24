@@ -285,7 +285,7 @@ expr_t* set_bonus_t::create_expression( const player_t* , const std::string& typ
 
   if ( ! parse_set_bonus_option( type, set_bonus, bonus ) )
   {
-    return nullptr;
+    throw std::invalid_argument(fmt::format("Cannot parse set bonus '{}'.", type));
   }
 
   bool state = set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( actor -> specialization() ) ][ bonus ].spell -> id() > 0;

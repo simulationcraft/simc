@@ -459,9 +459,7 @@ expr_t* azerite_state_t::create_expression( const std::vector<std::string>& expr
   const auto& power = m_player -> dbc.azerite_power( expr_str[ 1 ], true );
   if ( power.id == 0 )
   {
-    m_player -> sim -> errorf( "%s unknown azerite power \"%s\" in expression",
-      m_player -> name(), expr_str[ 1 ].c_str() );
-    return nullptr;
+    throw std::invalid_argument(fmt::format("Unknown azerite power '{}'.", expr_str[ 1 ]));
   }
 
   if ( util::str_compare_ci( expr_str[ 2 ], "enabled" ) )
@@ -469,6 +467,7 @@ expr_t* azerite_state_t::create_expression( const std::vector<std::string>& expr
     return expr_t::create_constant( "azerite_enabled", as<double>( is_enabled( power.id ) ) );
   }
 
+  throw std::invalid_argument(fmt::format("Unsupported azerite expression '{}'.", expr_str[ 2 ]));
   return nullptr;
 }
 

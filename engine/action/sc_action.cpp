@@ -2243,6 +2243,12 @@ void action_t::init()
     }
   }
 
+  // Initialize dot - so we can access it from expressions
+  if ( dot_duration /*composite_dot_duration( nullptr )*/ > timespan_t::zero() || tick_zero )
+  {
+    get_dot(target);
+  }
+
   // Make sure background is set for triggered actions.
   // Leads to double-readying of the player otherwise.
   assert( ( !execute_action || execute_action->background ) &&
@@ -3059,11 +3065,11 @@ expr_t* action_t::create_expression( const std::string& name_str )
   }
   if ( splits.size() == 3 && splits[ 0 ] == "dot" )
   {
-    auto expr = target -> get_dot( splits[ 1 ], player ) -> create_expression( this, splits[ 2 ], true );
-    if ( expr )
+    if ( dot_t* dot = target -> find_dot( splits[ 1 ], player ) )
     {
-      return expr;
+      return dot->create_expression( nullptr, splits[ 2 ], false );
     }
+    throw std::invalid_argument(fmt::format("Cannot find any dot with name '{}'.", splits[ 1 ]));
   }
   if ( splits.size() == 3 && splits[ 0 ] == "enemy_dot" )
   {
