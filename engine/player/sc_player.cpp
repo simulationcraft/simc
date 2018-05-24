@@ -9046,6 +9046,18 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   if ( expression_str == "position_back" )
     return new position_expr_t( "position_back", *this, ( 1 << POSITION_BACK ) | ( 1 << POSITION_RANGED_BACK ) );
 
+  if ( expression_str == "time_to_bloodlust" )
+    return make_fn_expr( expression_str, [this] { return calculate_time_to_bloodlust(); } );
+
+  // Get the actor's raw initial haste percent
+  if ( expression_str == "raw_haste_pct" )
+  {
+    return make_fn_expr( expression_str, [this]() {
+      return std::max( 0.0, initial.stats.haste_rating ) / initial.rating.spell_haste;
+    } );
+  }
+
+  // Resource expressions
   if ( expr_t* q = create_resource_expression( expression_str ) )
     return q;
 
@@ -9053,7 +9065,7 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   if ( util::str_in_str_ci( expression_str, "time_to_" ) )
   {
     std::vector<std::string> parts = util::string_split( expression_str, "_" );
-    double percent = -1;
+    double percent = -1.0;
 
     if ( util::str_in_str_ci( parts[ 2 ], "die" ) )
       percent = 0.0;
@@ -9072,32 +9084,6 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     }
   }
 
-  // time_to_bloodlust conditional
-  if ( expression_str == "time_to_bloodlust" )
-  {
-    struct time_to_bloodlust_expr_t : public expr_t
-    {
-      player_t* player;
-
-      time_to_bloodlust_expr_t( player_t* p, const std::string& name ) : expr_t( name ), player( p )
-      {
-      }
-
-      double evaluate() override
-      {
-        return player->calculate_time_to_bloodlust();
-      }
-    };
-
-    return new time_to_bloodlust_expr_t( this, expression_str );
-  }
-
-  // T18 Hellfire Citadel class trinket
-  if ( expression_str == "t18_class_trinket" )
-  {
-    return expr_t::create_constant( expression_str, has_t18_class_trinket() );
-  }
-
   // incoming_damage_X expressions
   if ( util::str_in_str_ci( expression_str, "incoming_damage_" ) )
   {
@@ -9112,49 +9098,22 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     // skip construction if the duration is nonsensical
     if ( window_duration > timespan_t::zero() )
     {
-      struct inc_dmg_expr_t : public expr_t
-      {
-        player_t* player;
-        timespan_t duration;
-
-        inc_dmg_expr_t( player_t* p, const std::string& time_str, const timespan_t& duration ) :
-          expr_t( "incoming_damage_" + time_str ),
-          player( p ),
-          duration( duration )
-        {
-        }
-
-        double evaluate() override
-        {
-          return player->compute_incoming_damage( duration );
-        }
-      };
-
-      return new inc_dmg_expr_t( this, parts[ 2 ], window_duration );
+      return make_fn_expr(expression_str, [this, window_duration] {return compute_incoming_damage( window_duration );});
     }
-  }
-
-  // Get the actor's raw initial haste percent
-  if ( expression_str == "raw_haste_pct" )
-  {
-    return make_fn_expr( expression_str, [this]() {
-      double h = std::max( 0.0, initial.stats.haste_rating ) / initial.rating.spell_haste;
-
-      return h;
-    } );
   }
 
   // everything from here on requires splits
   std::vector<std::string> splits = util::string_split( expression_str, "." );
+
   // player variables
-  if ( splits[ 0 ] == "variable" && splits.size() == 2 )
+  if ( splits.size() == 2 && splits[ 0 ] == "variable"  )
   {
     struct variable_expr_t : public expr_t
     {
       player_t* player_;
       const action_variable_t* var_;
 
-      variable_expr_t( player_t* p, const std::string& name ) : expr_t( "variable" ), player_( p ), var_( 0 )
+      variable_expr_t( player_t* p, const std::string& name ) : expr_t( "variable" ), player_( p ), var_( nullptr )
       {
         for ( auto& elem : player_->variables )
         {
@@ -9164,6 +9123,10 @@ expr_t* player_t::create_expression( const std::string& expression_str )
             break;
           }
         }
+        if (!var_)
+        {
+          throw std::invalid_argument(fmt::format("Player {} no variable named '{}' found", player_->name(), name));
+        }
       }
 
       double evaluate() override
@@ -9172,23 +9135,17 @@ expr_t* player_t::create_expression( const std::string& expression_str )
       }
     };
 
-    variable_expr_t* expr = new variable_expr_t( this, splits[ 1 ] );
-    if ( !expr->var_ )
-    {
-      sim->errorf( "Player %s no variable named '%s' found", name(), splits[ 1 ].c_str() );
-      delete expr;
-    }
-    else
-      return expr;
+    return new variable_expr_t( this, splits[ 1 ] );
   }
 
   // trinkets
-  if ( splits[ 0 ] == "trinket" )
+  if ( !splits.empty() && splits[ 0 ] == "trinket" )
   {
     if ( expr_t* expr = unique_gear::create_expression( *this, expression_str ) )
       return expr;
   }
 
+  // item equipped by item_id or name
   if ( splits.size() == 2 && splits[ 0 ] == "equipped" )
   {
     unsigned item_id = util::to_unsigned( splits[ 1 ] );
@@ -9242,48 +9199,27 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   }
 
   // race
-  if ( splits[ 0 ] == "race" && splits.size() == 2 )
+  if ( splits.size() == 2 && splits[ 0 ] == "race" )
   {
-    struct race_expr_t : public const_expr_t
-    {
-      race_expr_t( player_t& p, const std::string& race_name ) : const_expr_t( "race", p.race_str == race_name )
-      {
-      }
-    };
-    return new race_expr_t( *this, splits[ 1 ] );
+    return expr_t::create_constant(expression_str, race_str == splits[ 1 ]);
   }
 
   // spec
-  if ( splits[ 0 ] == "spec" && splits.size() == 2 )
+  if ( splits.size() == 2 && splits[ 0 ] == "spec" )
   {
 
     return expr_t::create_constant( "spec", dbc::translate_spec_str( type, splits[1]) == specialization() );
   }
 
   // role
-  if ( splits[ 0 ] == "role" && splits.size() == 2 )
+  if ( splits.size() == 2 && splits[ 0 ] == "role" )
   {
-    struct role_expr_t : public const_expr_t
-    {
-      role_expr_t( player_t& p, const std::string& role ) :
-        const_expr_t( "role", util::str_compare_ci( util::role_type_string( p.primary_role() ), role ) )
-      {
-      }
-    };
-    return new role_expr_t( *this, splits[ 1 ] );
+    return expr_t::create_constant(expression_str, util::str_compare_ci( util::role_type_string( primary_role() ), splits[ 1 ] ));
   }
 
   // pet
   if ( splits[ 0 ] == "pet" )
   {
-    struct pet_expr_t : public expr_t
-    {
-      const pet_t& pet;
-      pet_expr_t( const std::string& name, pet_t& p ) : expr_t( name ), pet( p )
-      {
-      }
-    };
-
     pet_t* pet = find_pet( splits[ 1 ] );
     if ( !pet )
     {
@@ -9299,37 +9235,19 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     {
       if ( splits[ 2 ] == "active" )
       {
-        struct pet_active_expr_t : public pet_expr_t
-        {
-          pet_active_expr_t( pet_t* p ) : pet_expr_t( "pet_active", *p )
-          {
-          }
-
-          double evaluate() override
-          {
-            return !pet.is_sleeping();
-          }
-        };
-
-        return new pet_active_expr_t( pet );
+        return make_fn_expr(expression_str, [this, pet] {return !pet->is_sleeping();});
       }
       else if ( splits[ 2 ] == "remains" )
       {
-        struct pet_remains_expr_t : public pet_expr_t
-        {
-          pet_remains_expr_t( pet_t* p ) : pet_expr_t( "pet_remains", *p )
+        return make_fn_expr(expression_str, [this, pet] {
+          if ( pet->expiration && pet->expiration->remains() > timespan_t::zero() )
           {
+            return pet->expiration->remains().total_seconds();
           }
-
-          double evaluate() override
+          else
           {
-            if ( pet.expiration && pet.expiration->remains() > timespan_t::zero() )
-              return pet.expiration->remains().total_seconds();
-            else
-              return 0;
-          }
-        };
-        return new pet_remains_expr_t( pet );
+            return 0;
+          };});
       }
       else
       {
