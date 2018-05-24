@@ -1396,6 +1396,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
   dire_critter_t( hunter_t* owner ):
     hunter_secondary_pet_t( owner, std::string( "dire_beast" ) )
   {
+    owner_coeff.ap_from_ap = 0.15;
   }
 
   void init_base_stats() override
