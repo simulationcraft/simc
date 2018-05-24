@@ -3144,78 +3144,6 @@ expr_t* action_t::create_expression( const std::string& name_str )
       }
     }
 
-    if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" ||
-                splits[ 0 ] == "in_flight_to_target" )
-    {
-      std::vector<action_t*> in_flight_list;
-      bool in_flight_singleton = ( splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" );
-      std::string action_name  = ( in_flight_singleton ) ? name_str : splits[ 1 ];
-      for ( size_t i = 0; i < player->action_list.size(); ++i )
-      {
-        action_t* action = player->action_list[ i ];
-        if ( action->name_str == action_name )
-        {
-          if ( in_flight_singleton || splits[ 2 ] == "in_flight" || splits[ 2 ] == "in_flight_to_target" )
-          {
-            in_flight_list.push_back( action );
-          }
-          else
-          {
-            return action->create_expression( splits[ 2 ] );
-          }
-        }
-      }
-      if ( !in_flight_list.empty() )
-      {
-        if ( splits[ 0 ] == "in_flight" || ( !in_flight_singleton && splits[ 2 ] == "in_flight" ) )
-        {
-          struct in_flight_multi_expr_t : public expr_t
-          {
-            const std::vector<action_t*> action_list;
-            in_flight_multi_expr_t( const std::vector<action_t*>& al ) : expr_t( "in_flight" ), action_list( al )
-            {
-            }
-            virtual double evaluate() override
-            {
-              for ( size_t i = 0; i < action_list.size(); i++ )
-              {
-                if ( action_list[ i ]->has_travel_events() )
-                  return true;
-              }
-              return false;
-            }
-          };
-          return new in_flight_multi_expr_t( in_flight_list );
-        }
-        else if ( splits[ 0 ] == "in_flight_to_target" ||
-                  ( !in_flight_singleton && splits[ 2 ] == "in_flight_to_target" ) )
-        {
-          struct in_flight_to_target_multi_expr_t : public expr_t
-          {
-            const std::vector<action_t*> action_list;
-            action_t& action;
-
-            in_flight_to_target_multi_expr_t( const std::vector<action_t*>& al, action_t& a ) :
-              expr_t( "in_flight_to_target" ),
-              action_list( al ),
-              action( a )
-            {
-            }
-            virtual double evaluate() override
-            {
-              for ( size_t i = 0; i < action_list.size(); i++ )
-              {
-                if ( action_list[ i ]->has_travel_events_for( action.target ) )
-                  return true;
-              }
-              return false;
-            }
-          };
-          return new in_flight_to_target_multi_expr_t( in_flight_list, *this );
-        }
-      }
-    }
-
     if ( util::str_compare_ci( splits[ start_rest ], "distance" ) )
       return make_ref_expr( "distance", player -> base.distance );
 
@@ -3273,6 +3201,78 @@ expr_t* action_t::create_expression( const std::string& name_str )
     };
 
     return new target_proxy_expr_t( *this, rest );
+  }
+
+  if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" ||
+              splits[ 0 ] == "in_flight_to_target" )
+  {
+    std::vector<action_t*> in_flight_list;
+    bool in_flight_singleton = ( splits[ 0 ] == "in_flight" || splits[ 0 ] == "in_flight_to_target" );
+    std::string action_name  = ( in_flight_singleton ) ? name_str : splits[ 1 ];
+    for ( size_t i = 0; i < player->action_list.size(); ++i )
+    {
+      action_t* action = player->action_list[ i ];
+      if ( action->name_str == action_name )
+      {
+        if ( in_flight_singleton || splits[ 2 ] == "in_flight" || splits[ 2 ] == "in_flight_to_target" )
+        {
+          in_flight_list.push_back( action );
+        }
+        else
+        {
+          return action->create_expression( splits[ 2 ] );
+        }
+      }
+    }
+    if ( !in_flight_list.empty() )
+    {
+      if ( splits[ 0 ] == "in_flight" || ( !in_flight_singleton && splits[ 2 ] == "in_flight" ) )
+      {
+        struct in_flight_multi_expr_t : public expr_t
+        {
+          const std::vector<action_t*> action_list;
+          in_flight_multi_expr_t( const std::vector<action_t*>& al ) : expr_t( "in_flight" ), action_list( al )
+          {
+          }
+          virtual double evaluate() override
+          {
+            for ( size_t i = 0; i < action_list.size(); i++ )
+            {
+              if ( action_list[ i ]->has_travel_events() )
+                return true;
+            }
+            return false;
+          }
+        };
+        return new in_flight_multi_expr_t( in_flight_list );
+      }
+      else if ( splits[ 0 ] == "in_flight_to_target" ||
+                ( !in_flight_singleton && splits[ 2 ] == "in_flight_to_target" ) )
+      {
+        struct in_flight_to_target_multi_expr_t : public expr_t
+        {
+          const std::vector<action_t*> action_list;
+          action_t& action;
+
+          in_flight_to_target_multi_expr_t( const std::vector<action_t*>& al, action_t& a ) :
+            expr_t( "in_flight_to_target" ),
+            action_list( al ),
+            action( a )
+          {
+          }
+          virtual double evaluate() override
+          {
+            for ( size_t i = 0; i < action_list.size(); i++ )
+            {
+              if ( action_list[ i ]->has_travel_events_for( action.target ) )
+                return true;
+            }
+            return false;
+          }
+        };
+        return new in_flight_to_target_multi_expr_t( in_flight_list, *this );
+      }
+    }
   }
 
   // necessary for self.target.*, self.dot.*
