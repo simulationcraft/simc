@@ -6511,6 +6511,9 @@ bool apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_leve
 double apply_combat_rating_multiplier( const item_t& item, double amount );
 double apply_combat_rating_multiplier( const player_t* player, combat_rating_multiplier_type type, unsigned ilevel, double amount );
 
+/// Convert stat values to stat allocation values based on the item data
+void convert_stat_values( item_t& item );
+
 // Return the combat rating multiplier category for item data
 combat_rating_multiplier_type item_combat_rating_type( const item_data_t* data );
 

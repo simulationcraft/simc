@@ -1845,3 +1845,52 @@ combat_rating_multiplier_type item_database::item_combat_rating_type( const item
       return CR_MULTIPLIER_INVALID;
   }
 }
+
+void item_database::convert_stat_values( item_t& item )
+{
+  if ( item.parsed.data.quality < 3 || item.parsed.data.quality > 7 )
+  {
+    return;
+  }
+
+  auto slot_type = item_database::random_suffix_type( &item.parsed.data );
+  if ( slot_type == -1 )
+  {
+    return;
+  }
+
+  const auto& ilevel_data = item.player -> dbc.random_property( item.parsed.data.level );
+  double budget = 0.0;
+  if ( item.parsed.data.quality == 4 || item.parsed.data.quality == 5 )
+  {
+    budget = ilevel_data.p_epic[ slot_type ];
+  }
+  // Rare/Heirloom
+  else if ( item.parsed.data.quality == 3 || item.parsed.data.quality == 7 )
+  {
+    budget = ilevel_data.p_rare[ slot_type ];
+  }
+  // Rest
+  else
+  {
+    budget = ilevel_data.p_uncommon[ slot_type ];
+  }
+
+  for ( size_t i = 0; i < sizeof_array( item.parsed.data.stat_val ) && item.parsed.data.stat_val[ i ] > 0; ++i )
+  {
+    double cr_coeff = 1.0;
+    if ( util::is_combat_rating( static_cast<item_mod_type>( item.parsed.data.stat_type_e[ i ] ) ) )
+    {
+      auto item_cr_type = item_database::item_combat_rating_type( &item.parsed.data );
+      if ( item_cr_type != CR_MULTIPLIER_INVALID )
+      {
+        cr_coeff = item.player -> dbc.combat_rating_multiplier( item.parsed.data.level,
+            item_cr_type );
+      }
+    }
+
+    double alloc = ( item.parsed.data.stat_val[ i ] / cr_coeff ) * 10000.0 / budget;
+    item.parsed.data.stat_alloc[ i ] = static_cast<int>( alloc );
+    item.parsed.data.stat_val[ i ] = 0;
+  }
+}

@@ -736,6 +736,11 @@ bool download_item_data( item_t& item, cache::behavior_e caching )
         }
       }
     }
+
+    // Convert Blizzard item stat values into actual stat allocation percents, so we can do normal
+    // stat computation on the item. This presumes that blizzard item data will always give us the
+    // correct data for the item (in relation to the item level reported)
+    item_database::convert_stat_values( item );
   }
   catch ( const char* fieldname )
   {
@@ -884,6 +889,18 @@ bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
   bool ret = download_item_data( item, caching );
   if ( ret )
     item.source_str = "Blizzard";
+
+  for ( size_t i = 0, end = item.parsed.bonus_id.size(); ret && i < end; i++ )
+  {
+    auto item_bonuses = item.player -> dbc.item_bonus( item.parsed.bonus_id[ i ] );
+    // Apply bonuses
+    for ( const auto bonus : item_bonuses )
+    {
+      if ( ! item_database::apply_item_bonus( item, *bonus ) )
+        return false;
+    }
+  }
+
   return ret;
 }
 
