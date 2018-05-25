@@ -3937,7 +3937,7 @@ class ArmorValueDataGenerator(DataGenerator):
                 if ilevel > self._options.scale_ilevel:
                     continue
 
-                fields = data.field('ilevel')
+                fields = data.field('id')
                 if dbname != 'ItemArmorTotal':
                     fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
                 else:
