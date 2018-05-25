@@ -1676,13 +1676,6 @@ double spelleffect_data_t::average( const item_t* item ) const
   {
     budget = item_database::apply_combat_rating_multiplier( *item, budget );
   }
-  else if ( _spell -> scaling_class() == PLAYER_SPECIAL_SCALE8 )
-  {
-    const auto& entry = item -> player -> dbc.random_property(
-      std::min( item -> item_level(), _spell -> max_scaling_level() ) );
-
-    budget = entry.item_effect;
-  }
 
   return _m_avg * budget;
 }
@@ -1745,13 +1738,6 @@ double spelleffect_data_t::delta( const item_t* item ) const
   if ( _spell -> scaling_class() == PLAYER_SPECIAL_SCALE7 )
   {
     m_scale = item_database::apply_combat_rating_multiplier( *item, m_scale );
-  }
-  else if ( _spell -> scaling_class() == PLAYER_SPECIAL_SCALE8 )
-  {
-    const auto& entry = item -> player -> dbc.random_property(
-      std::min( item -> item_level(), _spell -> max_scaling_level() ) );
-
-    m_scale = entry.item_effect;
   }
 
   return scaled_delta( m_scale );
