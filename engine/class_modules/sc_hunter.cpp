@@ -2238,6 +2238,9 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( p() -> buffs.t20_4p_bestial_rage -> up() )
       am *= 1.0 + p() -> buffs.t20_4p_bestial_rage -> check_value();
 
+    if ( p() -> buffs.precise_shots -> up() )
+      am *= 1.0 + p() -> buffs.precise_shots -> check_value();
+
     return am;
   }
 
@@ -2247,6 +2250,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     if ( p() -> buffs.master_marksman -> up() )
       p() -> buffs.master_marksman -> decrement();
+
+    p() -> buffs.precise_shots -> decrement();
 
     pets::hunter_main_pet_t* pet = p() -> pets.main;
     if ( pet && p() -> specs.beast_cleave -> ok() )
