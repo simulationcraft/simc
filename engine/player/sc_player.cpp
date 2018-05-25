@@ -9105,240 +9105,206 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   // everything from here on requires splits
   std::vector<std::string> splits = util::string_split( expression_str, "." );
 
-  // player variables
-  if ( splits.size() == 2 && splits[ 0 ] == "variable"  )
+  if ( splits.size() == 2)
   {
-    struct variable_expr_t : public expr_t
+    // player variables
+    if ( splits[ 0 ] == "variable"  )
     {
-      player_t* player_;
-      const action_variable_t* var_;
-
-      variable_expr_t( player_t* p, const std::string& name ) : expr_t( "variable" ), player_( p ), var_( nullptr )
+      struct variable_expr_t : public expr_t
       {
-        for ( auto& elem : player_->variables )
+        player_t* player_;
+        const action_variable_t* var_;
+
+        variable_expr_t( player_t* p, const std::string& name ) : expr_t( "variable" ), player_( p ), var_( nullptr )
         {
-          if ( util::str_compare_ci( name, elem->name_ ) )
+          for ( auto& elem : player_->variables )
           {
-            var_ = elem;
-            break;
+            if ( util::str_compare_ci( name, elem->name_ ) )
+            {
+              var_ = elem;
+              break;
+            }
+          }
+          if (!var_)
+          {
+            throw std::invalid_argument(fmt::format("Player {} no variable named '{}' found", player_->name(), name));
           }
         }
-        if (!var_)
+
+        double evaluate() override
         {
-          throw std::invalid_argument(fmt::format("Player {} no variable named '{}' found", player_->name(), name));
+          return var_->current_value_;
+        }
+      };
+
+      return new variable_expr_t( this, splits[ 1 ] );
+    }
+
+    // item equipped by item_id or name
+    if ( splits[ 0 ] == "equipped" )
+    {
+      unsigned item_id = util::to_unsigned( splits[ 1 ] );
+      for ( size_t i = 0; i < items.size(); ++i )
+      {
+        if ( item_id > 0 && items[ i ].parsed.data.id == item_id )
+        {
+          return expr_t::create_constant( "item_equipped", 1 );
+        }
+        else if ( util::str_compare_ci( items[ i ].name_str, splits[ 1 ] ) )
+        {
+          return expr_t::create_constant( "item_equipped", 1 );
         }
       }
 
-      double evaluate() override
+      return expr_t::create_constant( "item_equipped", 0 );
+    }
+
+    // check weapon type
+    if ( ( splits[ 0 ] == "main_hand" || splits[ 0 ] == "off_hand" ) )
+    {
+      double weapon_status = -1;
+      if ( splits[ 0 ] == "main_hand" && util::str_compare_ci( splits[ 1 ], "2h" ) )
       {
-        return var_->current_value_;
+        weapon_status = static_cast<double>( main_hand_weapon.group() == WEAPON_2H );
       }
-    };
-
-    return new variable_expr_t( this, splits[ 1 ] );
-  }
-
-  // trinkets
-  if ( !splits.empty() && splits[ 0 ] == "trinket" )
-  {
-    if ( expr_t* expr = unique_gear::create_expression( *this, expression_str ) )
-      return expr;
-  }
-
-  // item equipped by item_id or name
-  if ( splits.size() == 2 && splits[ 0 ] == "equipped" )
-  {
-    unsigned item_id = util::to_unsigned( splits[ 1 ] );
-    for ( size_t i = 0; i < items.size(); ++i )
-    {
-      if ( item_id > 0 && items[ i ].parsed.data.id == item_id )
+      else if ( splits[ 0 ] == "main_hand" && util::str_compare_ci( splits[ 1 ], "1h" ) )
       {
-        return expr_t::create_constant( "item_equipped", 1 );
+        weapon_status =
+            static_cast<double>( main_hand_weapon.group() == WEAPON_1H || main_hand_weapon.group() == WEAPON_SMALL );
       }
-      else if ( util::str_compare_ci( items[ i ].name_str, splits[ 1 ] ) )
+      else if ( splits[ 0 ] == "off_hand" && util::str_compare_ci( splits[ 1 ], "2h" ) )
       {
-        return expr_t::create_constant( "item_equipped", 1 );
+        weapon_status = static_cast<double>( off_hand_weapon.group() == WEAPON_2H );
+      }
+      else if ( splits[ 0 ] == "off_hand" && util::str_compare_ci( splits[ 1 ], "1h" ) )
+      {
+        weapon_status =
+            static_cast<double>( off_hand_weapon.group() == WEAPON_1H || off_hand_weapon.group() == WEAPON_SMALL );
+      }
+
+      if ( weapon_status > -1 )
+      {
+        return expr_t::create_constant( "weapon_type_expr", weapon_status );
       }
     }
 
-    return expr_t::create_constant( "item_equipped", 0 );
-  }
-
-  if ( splits.size() == 2 && ( splits[ 0 ] == "main_hand" || splits[ 0 ] == "off_hand" ) )
-  {
-    double weapon_status = -1;
-    if ( splits[ 0 ] == "main_hand" && util::str_compare_ci( splits[ 1 ], "2h" ) )
+    // race
+    if ( splits[ 0 ] == "race" )
     {
-      weapon_status = static_cast<double>( main_hand_weapon.group() == WEAPON_2H );
-    }
-    else if ( splits[ 0 ] == "main_hand" && util::str_compare_ci( splits[ 1 ], "1h" ) )
-    {
-      weapon_status =
-          static_cast<double>( main_hand_weapon.group() == WEAPON_1H || main_hand_weapon.group() == WEAPON_SMALL );
-    }
-    else if ( splits[ 0 ] == "off_hand" && util::str_compare_ci( splits[ 1 ], "2h" ) )
-    {
-      weapon_status = static_cast<double>( off_hand_weapon.group() == WEAPON_2H );
-    }
-    else if ( splits[ 0 ] == "off_hand" && util::str_compare_ci( splits[ 1 ], "1h" ) )
-    {
-      weapon_status =
-          static_cast<double>( off_hand_weapon.group() == WEAPON_1H || off_hand_weapon.group() == WEAPON_SMALL );
+      return expr_t::create_constant(expression_str, race_str == splits[ 1 ]);
     }
 
-    if ( weapon_status > -1 )
+    // spec
+    if ( splits[ 0 ] == "spec" )
     {
-      return expr_t::create_constant( "weapon_type_expr", weapon_status );
-    }
-  }
 
-  if ( splits[ 0 ] == "legendary_ring" )
-  {
-    if ( expr_t* expr = unique_gear::create_expression( *this, expression_str ) )
-      return expr;
-  }
-
-  // race
-  if ( splits.size() == 2 && splits[ 0 ] == "race" )
-  {
-    return expr_t::create_constant(expression_str, race_str == splits[ 1 ]);
-  }
-
-  // spec
-  if ( splits.size() == 2 && splits[ 0 ] == "spec" )
-  {
-
-    return expr_t::create_constant( "spec", dbc::translate_spec_str( type, splits[1]) == specialization() );
-  }
-
-  // role
-  if ( splits.size() == 2 && splits[ 0 ] == "role" )
-  {
-    return expr_t::create_constant(expression_str, util::str_compare_ci( util::role_type_string( primary_role() ), splits[ 1 ] ));
-  }
-
-  // pet
-  if ( splits[ 0 ] == "pet" )
-  {
-    pet_t* pet = find_pet( splits[ 1 ] );
-    if ( !pet )
-    {
-      return expr_t::create_constant( "pet_not_found_expr", -1.0 );
+      return expr_t::create_constant( "spec", dbc::translate_spec_str( type, splits[1]) == specialization() );
     }
 
-    if ( splits.size() == 2 )
+    // role
+    if ( splits[ 0 ] == "role" )
     {
-      return expr_t::create_constant( "pet_index_expr", static_cast<double>( pet->actor_index ) );
+      return expr_t::create_constant(expression_str, util::str_compare_ci( util::role_type_string( primary_role() ), splits[ 1 ] ));
     }
-    // pet.foo.blah
-    else
+
+    // stat
+    if (splits[ 0 ] == "stat"  )
     {
-      if ( splits[ 2 ] == "active" )
+      if ( util::str_compare_ci( "spell_haste", splits[ 1 ] ) )
+        return make_fn_expr(expression_str, [this] {return 1.0 / cache.spell_haste() - 1.0;});
+
+      stat_e stat = util::parse_stat_type( splits[ 1 ] );
+      switch ( stat )
       {
-        return make_fn_expr(expression_str, [pet] {return !pet->is_sleeping();});
+        case STAT_STRENGTH:
+        case STAT_AGILITY:
+        case STAT_STAMINA:
+        case STAT_INTELLECT:
+        case STAT_SPIRIT:
+        {
+          return make_fn_expr(expression_str, [this, stat] {return cache.get_attribute( static_cast<attribute_e>( stat ) );});
+        }
+
+        case STAT_SPELL_POWER:
+        {
+          return make_fn_expr(expression_str, [this] {return cache.spell_power( SCHOOL_MAX ) * composite_spell_power_multiplier();});
+        }
+
+        case STAT_ATTACK_POWER:
+        {
+          return make_fn_expr(expression_str, [this] {return cache.attack_power() * composite_attack_power_multiplier();});
+        }
+
+        case STAT_EXPERTISE_RATING:
+          return make_mem_fn_expr( expression_str, *this, &player_t::composite_expertise_rating );
+        case STAT_HIT_RATING:
+          return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_hit_rating );
+        case STAT_CRIT_RATING:
+          return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_crit_rating );
+        case STAT_HASTE_RATING:
+          return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_haste_rating );
+        case STAT_ARMOR:
+          return make_ref_expr( expression_str, current.stats.armor );
+        case STAT_BONUS_ARMOR:
+          return make_ref_expr( expression_str, current.stats.bonus_armor );
+        case STAT_DODGE_RATING:
+          return make_mem_fn_expr( expression_str, *this, &player_t::composite_dodge_rating );
+        case STAT_PARRY_RATING:
+          return make_mem_fn_expr( expression_str, *this, &player_t::composite_parry_rating );
+        case STAT_BLOCK_RATING:
+          return make_mem_fn_expr( expression_str, *this, &player_t::composite_block_rating );
+        case STAT_MASTERY_RATING:
+          return make_mem_fn_expr( expression_str, *this, &player_t::composite_mastery_rating );
+        case STAT_VERSATILITY_RATING:
+          return make_mem_fn_expr( expression_str, *this, &player_t::composite_damage_versatility_rating );
+        default:
+          break;
       }
-      else if ( splits[ 2 ] == "remains" )
+
+      throw std::invalid_argument(fmt::format("Cannot build expression from '{}' because stat type '{}' could not be parsed.",
+          expression_str, splits[ 1 ]));
+    }
+
+    if ( splits[ 0 ] == "using_apl" )
+    {
+      return expr_t::create_constant( expression_str, util::str_compare_ci( splits[ 1 ], use_apl ) );
+    }
+
+    if ( splits[ 0 ] == "set_bonus" )
+      return sets->create_expression( this, splits[ 1 ] );
+
+    if ( splits[ 0 ] == "active_dot" )
+    {
+      int internal_id = find_action_id( splits[ 1 ] );
+      if ( internal_id > -1 )
       {
-        return make_fn_expr(expression_str, [pet] {
-          if ( pet->expiration && pet->expiration->remains() > timespan_t::zero() )
-          {
-            return pet->expiration->remains().total_seconds();
-          }
+        return make_fn_expr(expression_str, [this, internal_id] {return get_active_dots( internal_id );});
+      }
+      throw std::invalid_argument(fmt::format("Cannot find action '{}'.", splits[ 1 ]));
+    }
+
+    if ( splits[ 0 ] == "movement" )
+    {
+      if ( splits[ 1 ] == "remains" )
+      {
+        return make_fn_expr(expression_str, [this] {
+          if ( current.distance_to_move > 0 )
+            return ( current.distance_to_move / composite_movement_speed() );
           else
-          {
-            return 0.0;
-          };});
+            return buffs.movement->remains().total_seconds();
+        });
       }
-      else
+      else if ( splits[ 1 ] == "distance" )
       {
-        return pet->create_expression( expression_str.substr( splits[ 1 ].length() + 5 ) );
+        return make_fn_expr(expression_str, [this] {return current.distance_to_move;});
       }
+      else if ( splits[ 1 ] == "speed" )
+        return make_mem_fn_expr( splits[ 1 ], *this, &player_t::composite_movement_speed );
+
+      throw std::invalid_argument(fmt::format("Unsupported movement expression '{}'.", splits[ 1 ]));
     }
-  }
+  } // splits.size() == 2
 
-  // owner
-  if ( splits[ 0 ] == "owner" )
-  {
-    if ( pet_t* pet = dynamic_cast<pet_t*>( this ) )
-    {
-      if ( pet->owner )
-        return pet->owner->create_expression( expression_str.substr( 6 ) );
-    }
-    else
-    {
-      throw std::invalid_argument(fmt::format("Cannot use expression '{}' because player is not a pet.",
-          expression_str));
-    }
-  }
-
-  // stat
-  if ( splits.size() == 2 && splits[ 0 ] == "stat"  )
-  {
-    if ( util::str_compare_ci( "spell_haste", splits[ 1 ] ) )
-      return make_fn_expr(expression_str, [this] {return 1.0 / cache.spell_haste() - 1.0;});
-
-    stat_e stat = util::parse_stat_type( splits[ 1 ] );
-    switch ( stat )
-    {
-      case STAT_STRENGTH:
-      case STAT_AGILITY:
-      case STAT_STAMINA:
-      case STAT_INTELLECT:
-      case STAT_SPIRIT:
-      {
-        return make_fn_expr(expression_str, [this, stat] {return cache.get_attribute( static_cast<attribute_e>( stat ) );});
-      }
-
-      case STAT_SPELL_POWER:
-      {
-        return make_fn_expr(expression_str, [this] {return cache.spell_power( SCHOOL_MAX ) * composite_spell_power_multiplier();});
-      }
-
-      case STAT_ATTACK_POWER:
-      {
-        return make_fn_expr(expression_str, [this] {return cache.attack_power() * composite_attack_power_multiplier();});
-      }
-
-      case STAT_EXPERTISE_RATING:
-        return make_mem_fn_expr( expression_str, *this, &player_t::composite_expertise_rating );
-      case STAT_HIT_RATING:
-        return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_hit_rating );
-      case STAT_CRIT_RATING:
-        return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_crit_rating );
-      case STAT_HASTE_RATING:
-        return make_mem_fn_expr( expression_str, *this, &player_t::composite_melee_haste_rating );
-      case STAT_ARMOR:
-        return make_ref_expr( expression_str, current.stats.armor );
-      case STAT_BONUS_ARMOR:
-        return make_ref_expr( expression_str, current.stats.bonus_armor );
-      case STAT_DODGE_RATING:
-        return make_mem_fn_expr( expression_str, *this, &player_t::composite_dodge_rating );
-      case STAT_PARRY_RATING:
-        return make_mem_fn_expr( expression_str, *this, &player_t::composite_parry_rating );
-      case STAT_BLOCK_RATING:
-        return make_mem_fn_expr( expression_str, *this, &player_t::composite_block_rating );
-      case STAT_MASTERY_RATING:
-        return make_mem_fn_expr( expression_str, *this, &player_t::composite_mastery_rating );
-      case STAT_VERSATILITY_RATING:
-        return make_mem_fn_expr( expression_str, *this, &player_t::composite_damage_versatility_rating );
-      default:
-        break;
-    }
-
-    throw std::invalid_argument(fmt::format("Cannot build expression from '{}' because stat type '{}' could not be parsed.",
-        expression_str, splits[ 1 ]));
-
-  }
-
-  if ( splits[ 0 ] == "azerite" )
-  {
-    return azerite -> create_expression( splits );
-  }
-
-  if ( splits[ 0 ] == "using_apl" && splits.size() == 2 )
-  {
-    return expr_t::create_constant( expression_str, util::str_compare_ci( splits[ 1 ], use_apl ) );
-  }
 
   if ( splits.size() == 3 )
   {
@@ -9396,72 +9362,125 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     {
       return expr_t::create_constant(expression_str, find_spell( splits[ 1 ] )->ok());
     }
-  }
-  else if ( splits.size() == 2 )
-  {
-    if ( splits[ 0 ] == "set_bonus" )
-      return sets->create_expression( this, splits[ 1 ] );
 
-    if ( splits[ 0 ] == "active_dot" )
+    if (splits[ 0 ] == "talent" )
     {
-      int internal_id = find_action_id( splits[ 1 ] );
-      if ( internal_id > -1 )
+      if ( splits[ 2 ] == "enabled" )
       {
-        return make_fn_expr(expression_str, [this, internal_id] {return get_active_dots( internal_id );});
+        const spell_data_t* s = find_talent_spell( splits[ 1 ], specialization(), true );
+        if (!s || !s->found())
+        {
+          throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
+        }
+
+        return expr_t::create_constant( expression_str, s && s->ok() );
       }
-      throw std::invalid_argument(fmt::format("Cannot find action '{}'.", splits[ 1 ]));
+      throw std::invalid_argument(fmt::format("Unsupported talent expression '{}'.", splits[ 2 ]));
     }
 
-    if ( splits[ 0 ] == "movement" )
+    if ( splits[ 0 ] == "artifact" )
     {
-      if ( splits[ 1 ] == "remains" )
+      artifact_power_t power = find_artifact_spell( splits[ 1 ], true );
+
+      if ( splits[ 2 ] == "enabled" )
       {
-        return make_fn_expr(expression_str, [this] {
-          if ( current.distance_to_move > 0 )
-            return ( current.distance_to_move / composite_movement_speed() );
+        return expr_t::create_constant( expression_str, power.rank() > 0 );
+      }
+      else if ( splits[ 2 ] == "rank" )
+      {
+        return expr_t::create_constant( expression_str, power.rank() );
+      }
+      throw std::invalid_argument(fmt::format("Unsupported artifact expression '{}'.", splits[ 2 ]));
+    }
+  } // splits.size() == 3
+
+
+  // *** Variable-Length expressions from here on ***
+
+  // trinkets
+  if ( !splits.empty() && splits[ 0 ] == "trinket" )
+  {
+    if ( expr_t* expr = unique_gear::create_expression( *this, expression_str ) )
+      return expr;
+  }
+
+  if ( splits[ 0 ] == "legendary_ring" )
+  {
+    if ( expr_t* expr = unique_gear::create_expression( *this, expression_str ) )
+      return expr;
+  }
+
+  // pet
+  if ( splits.size() >= 2 && splits[ 0 ] == "pet" )
+  {
+    pet_t* pet = find_pet( splits[ 1 ] );
+    if ( !pet )
+    {
+      throw std::invalid_argument(fmt::format("Cannot find pet '{}'.", splits[ 1 ]));
+    }
+
+    if ( splits.size() == 2 )
+    {
+      return expr_t::create_constant( "pet_index_expr", static_cast<double>( pet->actor_index ) );
+    }
+    // pet.foo.blah
+    else
+    {
+      if ( splits[ 2 ] == "active" )
+      {
+        return make_fn_expr(expression_str, [pet] {return !pet->is_sleeping();});
+      }
+      else if ( splits[ 2 ] == "remains" )
+      {
+        return make_fn_expr(expression_str, [pet] {
+          if ( pet->expiration && pet->expiration->remains() > timespan_t::zero() )
+          {
+            return pet->expiration->remains().total_seconds();
+          }
           else
-            return buffs.movement->remains().total_seconds();
-        });
+          {
+            return 0.0;
+          };});
       }
-      else if ( splits[ 1 ] == "distance" )
+
+      // build player/pet expression from the tail of the expression string.
+      std::string tail = expression_str.substr( splits[ 1 ].length() + 5 );
+      if ( expr_t* e = pet->create_expression( tail ) )
       {
-        return make_fn_expr(expression_str, [this] {return current.distance_to_move;});
+        return e;
       }
-      else if ( splits[ 1 ] == "speed" )
-        return make_mem_fn_expr( splits[ 1 ], *this, &player_t::composite_movement_speed );
+
+      throw std::invalid_argument(fmt::format("Unsupported pet expression '{}'.", tail));
     }
   }
 
-  if ( ( splits.size() == 3 ) && splits[ 0 ] == "talent" )
+  // owner
+  if ( splits.size() > 1 && splits[ 0 ] == "owner" )
   {
-    if ( splits[ 2 ] == "enabled" )
+    if ( pet_t* pet = dynamic_cast<pet_t*>( this ) )
     {
-      const spell_data_t* s = find_talent_spell( splits[ 1 ], specialization(), true );
-      if (!s || !s->found())
+      if ( pet->owner )
       {
-        throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
+        std::string tail = expression_str.substr( 6 );
+        if ( expr_t* e = pet->owner->create_expression( tail ) )
+        {
+          return e;
+        }
+        throw std::invalid_argument(fmt::format("Unsupported owner expression '{}'.", tail));
       }
-
-      return expr_t::create_constant( expression_str, s && s->ok() );
+      throw std::invalid_argument(fmt::format("Pet has no owner."));
     }
-    throw std::invalid_argument(fmt::format("Unsupported talent expression '{}'.", splits[ 2 ]));
+    else
+    {
+      throw std::invalid_argument(fmt::format("Cannot use expression '{}' because player is not a pet.",
+          expression_str));
+    }
   }
 
-  if ( splits.size() == 3 && splits[ 0 ] == "artifact" )
+  if ( splits[ 0 ] == "azerite" )
   {
-    artifact_power_t power = find_artifact_spell( splits[ 1 ], true );
-
-    if ( splits[ 2 ] == "enabled" )
-    {
-      return expr_t::create_constant( expression_str, power.rank() > 0 );
-    }
-    else if ( splits[ 2 ] == "rank" )
-    {
-      return expr_t::create_constant( expression_str, power.rank() );
-    }
-    throw std::invalid_argument(fmt::format("Unsupported artifact expression '{}'.", splits[ 2 ]));
+    return azerite -> create_expression( splits );
   }
-
 
   return sim->create_expression( expression_str );
 }

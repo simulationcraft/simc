@@ -4118,38 +4118,49 @@ expr_t* unique_gear::create_expression( player_t& player, const std::string& nam
     PROC_COOLDOWN,
   };
 
-    int ptype_idx = 1, stat_idx = 2, expr_idx = 3;
-    enum proc_expr_e pexprtype = PROC_ENABLED;
-    enum proc_type_e ptype = PROC_STAT;
-    stat_e stat = STAT_NONE;
-    std::vector<slot_e> slots;
-    bool legendary_ring = false;
+  int ptype_idx = 1, stat_idx = 2, expr_idx = 3;
+  enum proc_expr_e pexprtype = PROC_ENABLED;
+  enum proc_type_e ptype = PROC_STAT;
+  stat_e stat = STAT_NONE;
+  std::vector<slot_e> slots;
+  bool legendary_ring = false;
 
-    std::vector<std::string> splits = util::string_split( name_str, "." );
+  std::vector<std::string> splits = util::string_split( name_str, "." );
 
-    if ( util::is_number( splits[1] ) )
-    {
-      if ( splits[1] == "1" )
-      {
-        slots.push_back( SLOT_TRINKET_1 );
-      }
-      else if ( splits[1] == "2" )
-      {
-        slots.push_back( SLOT_TRINKET_2 );
-      }
-      else
-        return 0;
-      ptype_idx++;
+  if ( splits.size() < 2 )
+  {
+    return nullptr;
+  }
 
-      stat_idx++;
-      expr_idx++;
-    }
-      // No positional parameter given so check both trinkets
-    else
+  if ( util::is_number( splits[1] ) )
+  {
+    if ( splits[1] == "1" )
     {
       slots.push_back( SLOT_TRINKET_1 );
+    }
+    else if ( splits[1] == "2" )
+    {
       slots.push_back( SLOT_TRINKET_2 );
     }
+    else
+      return 0;
+    ptype_idx++;
+
+    stat_idx++;
+    expr_idx++;
+  }
+    // No positional parameter given so check both trinkets
+  else
+  {
+    slots.push_back( SLOT_TRINKET_1 );
+    slots.push_back( SLOT_TRINKET_2 );
+  }
+
+  if ( splits.size() <= ptype_idx )
+  {
+    throw std::invalid_argument(fmt::format("Cannot create unique gear expression: too few parts '{}' < '{}'.",
+        splits.size(), ptype_idx+1));
+  }
 
   if ( util::str_prefix_ci( splits[ ptype_idx ], "has_" ) )
     pexprtype = PROC_EXISTS;
@@ -4166,6 +4177,11 @@ expr_t* unique_gear::create_expression( player_t& player, const std::string& nam
 
   if ( ptype != PROC_COOLDOWN && !legendary_ring )
   {
+    if ( splits.size() <= stat_idx )
+    {
+      throw std::invalid_argument(fmt::format("Cannot create unique gear expression: too few parts to parse stat: '{}' < '{}'.",
+          splits.size(), stat_idx+1));
+    }
     // Use "all stat" to indicate "any" ..
     if ( util::str_compare_ci( splits[ stat_idx ], "any" ) )
       stat = STAT_ALL;
@@ -4173,7 +4189,9 @@ expr_t* unique_gear::create_expression( player_t& player, const std::string& nam
     {
       stat = util::parse_stat_type( splits[ stat_idx ] );
       if ( stat == STAT_NONE )
-        return 0;
+      {
+        throw std::invalid_argument(fmt::format("Cannot parse stat '{}'.", splits[ stat_idx ]));
+      }
     }
   }
 
@@ -4197,7 +4215,8 @@ expr_t* unique_gear::create_expression( player_t& player, const std::string& nam
     }
   }
 
-  return 0;
+  throw std::invalid_argument(fmt::format("Unsupported unique gear expression '{}'.", splits.back()));
+  return nullptr;
 }
 
 // Find a consumable of a given subtype, see data_enum.hh for type values.

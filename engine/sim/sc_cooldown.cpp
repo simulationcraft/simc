@@ -407,10 +407,13 @@ expr_t* cooldown_t::create_expression( const std::string& name_str )
 {
   if ( name_str == "remains" )
     return make_mem_fn_expr( name_str, *this, &cooldown_t::remains );
+
   else if ( name_str == "duration" )
     return make_ref_expr( name_str, duration );
+
   else if ( name_str == "up" || name_str == "ready" )
     return make_mem_fn_expr( name_str, *this, &cooldown_t::up );
+
   else if ( name_str == "charges" )
   {
     return make_fn_expr( name_str, [ this ]() {
@@ -496,5 +499,5 @@ expr_t* cooldown_t::create_expression( const std::string& name_str )
   else if ( name_str == "max_charges" )
     return make_ref_expr( name_str, charges );
 
-  return nullptr;
+  throw std::invalid_argument(fmt::format("Unsupported cooldown expression '{}'.", name_str));
 }

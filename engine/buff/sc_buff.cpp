@@ -413,6 +413,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
     return new cooldown_react_expr_t( buff_name, action, static_buff );
   }
 
+  throw std::invalid_argument(fmt::format("Unsupported buff expression '{}'.", type));
   return nullptr;
 }
 
