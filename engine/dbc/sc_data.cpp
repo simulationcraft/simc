@@ -736,14 +736,12 @@ bool custom_dbc_data_t::add_power( spellpower_data_t* power, bool ptr )
 
 static void collect_base_spells( const spell_data_t* spell, std::vector<const spell_data_t*>& roots )
 {
-  if ( ! spell -> _driver )
-  {
-    if ( range::find( roots, spell ) == roots.end() )
-    {
-      roots.push_back( spell );
-    }
-  }
-  else
+  if ( range::find( roots, spell ) != roots.end() )
+    return;
+
+  roots.push_back( spell );
+
+  if ( spell -> _driver )
   {
     for ( auto driver_spell : *spell -> _driver )
     {
