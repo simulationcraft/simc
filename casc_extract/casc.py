@@ -29,13 +29,13 @@ class BLTEChunk(object):
 
 	def extract(self, data):
 		if len(data) != self.chunk_length:
-			self.options.parser.error('Invalid data length for chunk#%d, expected %u got %u' % (
+			sys.stderr.write('Invalid data length for chunk#%d, expected %u got %u\n' % (
 				self.id, self.chunk_length, len(data)))
 			return False
 
 		type = data[0]
 		if type not in [ _NULL_CHUNK, _COMPRESSED_CHUNK, _UNCOMPRESSED_CHUNK ]:
-			self.options.parser.error('Unknown chunk type %#x for chunk%d' % (type, self.id))
+			sys.stderr.write('Unknown chunk type %#x for chunk%d\n' % (type, self.id))
 			return False
 
 		if type != 0x00:
@@ -53,11 +53,11 @@ class BLTEChunk(object):
 			dc = zlib.decompressobj()
 			uncompressed_data = dc.decompress(data[1:])
 			if len(dc.unused_data) > 0:
-				self.options.parser.error('Unused %d bytes of compressed data in chunk%d' % (len(dc.unused_data), self.id))
+				sys.stderr.write('Unused %d bytes of compressed data in chunk%d' % (len(dc.unused_data), self.id))
 				return False
 
 			if len(uncompressed_data) != self.output_length:
-				self.options.parser.error('Output chunk data length mismatch in chunk %d, expected %d got %d' % (
+				sys.stderr.write('Output chunk data length mismatch in chunk %d, expected %d got %d\n' % (
 					self.id, self.output_length, len(uncompressed_data)))
 				return False
 
@@ -68,7 +68,7 @@ class BLTEChunk(object):
 	def __verify(self, data):
 		md5s = hashlib.md5(data).digest()
 		if md5s != self.sum:
-			sys.stderr.write('Chunk%d of type %#x fails verification, expects %s got %s' % (
+			sys.stderr.write('Chunk%d of type %#x fails verification, expects %s got %s\n' % (
 				self.id, data[0], codecs.encode(self.sum, 'hex').decode('utf-8'),
 				codecs.encode(md5s, 'hex').decode('utf-8')))
 			return False
