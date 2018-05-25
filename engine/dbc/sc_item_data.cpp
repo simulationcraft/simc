@@ -1854,7 +1854,7 @@ combat_rating_multiplier_type item_database::item_combat_rating_type( const item
 
 void item_database::convert_stat_values( item_t& item )
 {
-  if ( item.parsed.data.quality < 3 || item.parsed.data.quality > 7 )
+  if ( item.parsed.data.quality < 2 || item.parsed.data.quality > 7 )
   {
     return;
   }
