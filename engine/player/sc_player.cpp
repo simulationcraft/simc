@@ -8735,7 +8735,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n, specializ
   if ( !spell_id )
   {
     sim->print_debug( "Player {}: Can't find talent with name '{}'.\n", name(), n );
-    return spell_data_t::not_found();
+    return spell_data_t::nil();
   }
 
   for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
@@ -8755,7 +8755,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n, specializ
         // std::min( 100, x ) dirty fix so that we can access tier 7 talents at level 100 and not level 105
         if ( check_validity &&
              ( !talent_points.validate( spell, j, i ) || true_level < std::min( ( j + 1 ) * 15, 100 ) ) )
-          return spell_data_t::nil();
+          return spell_data_t::not_found();
 
         return spell;
       }
@@ -8763,7 +8763,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n, specializ
   }
 
   /* Talent not enabled */
-  return spell_data_t::nil();
+  return spell_data_t::not_found();
 }
 
 const spell_data_t* player_t::find_specialization_spell( const std::string& name, specialization_e s ) const
@@ -9368,12 +9368,12 @@ expr_t* player_t::create_expression( const std::string& expression_str )
       if ( splits[ 2 ] == "enabled" )
       {
         const spell_data_t* s = find_talent_spell( splits[ 1 ], specialization(), true );
-        if (!s || !s->found())
+        if ( s == spell_data_t::nil() )
         {
           throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
         }
 
-        return expr_t::create_constant( expression_str, s && s->ok() );
+        return expr_t::create_constant( expression_str, s->ok() );
       }
       throw std::invalid_argument(fmt::format("Unsupported talent expression '{}'.", splits[ 2 ]));
     }
