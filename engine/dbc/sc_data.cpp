@@ -769,6 +769,10 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
     clone -> _driver = 0;
     add_spell( clone, ptr );
   }
+  else
+  {
+    return clone;
+  }
 
   // Clone effects
   for ( size_t i = 0; i < source -> _effects -> size(); ++i )
