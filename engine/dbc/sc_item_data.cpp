@@ -1848,7 +1848,7 @@ combat_rating_multiplier_type item_database::item_combat_rating_type( const item
 
 void item_database::convert_stat_values( item_t& item )
 {
-  if ( item.parsed.data.quality < 3 || item.parsed.data.quality > 7 )
+  if ( item.parsed.data.quality < 2 || item.parsed.data.quality > 7 )
   {
     return;
   }
@@ -1876,7 +1876,7 @@ void item_database::convert_stat_values( item_t& item )
     budget = ilevel_data.p_uncommon[ slot_type ];
   }
 
-  for ( size_t i = 0; i < sizeof_array( item.parsed.data.stat_val ) && item.parsed.data.stat_val[ i ] > 0; ++i )
+  for ( size_t i = 0; i < item.parsed.stat_val.size() && item.parsed.stat_val[ i ] > 0; ++i )
   {
     double cr_coeff = 1.0;
     if ( util::is_combat_rating( static_cast<item_mod_type>( item.parsed.data.stat_type_e[ i ] ) ) )
@@ -1889,8 +1889,8 @@ void item_database::convert_stat_values( item_t& item )
       }
     }
 
-    double alloc = ( item.parsed.data.stat_val[ i ] / cr_coeff ) * 10000.0 / budget;
+    double alloc = ( item.parsed.stat_val[ i ] / cr_coeff ) * 10000.0 / budget;
     item.parsed.data.stat_alloc[ i ] = static_cast<int>( alloc );
-    item.parsed.data.stat_val[ i ] = 0;
+    item.parsed.stat_val[ i ] = 0;
   }
 }
