@@ -2439,6 +2439,10 @@ struct set_bonus_t
   // Fast accessor to a set bonus spell, returns the spell, or spell_data_t::not_found()
   const spell_data_t* set( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
   {
+    if ( specdata::spec_idx( spec ) < 0 )
+    {
+      return spell_data_t::nil();
+    }
 #ifndef NDEBUG
     assert(set_bonus_spec_data.size() > (unsigned)set_bonus );
     assert(set_bonus_spec_data[ set_bonus ].size() > (unsigned)specdata::spec_idx( spec ) );
