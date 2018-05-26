@@ -507,12 +507,16 @@ void dot_t::copy( dot_t* other_dot ) const
 
 // dot_t::create_expression =================================================
 
-expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
+expr_t* dot_t::create_expression( dot_t* dot, action_t* action, const std::string& name_str,
                                   bool dynamic )
 {
-  if (!action)
+  if (!dynamic)
   {
-    dynamic = false;
+    assert(dot && "dot expression are either dynamic or need a static dot");
+  }
+  if (dynamic)
+  {
+    assert( action && "dynamic dot expressions require a action.");
   }
 
   struct dot_expr_t : public expr_t
@@ -538,7 +542,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
       action->player->get_target_data( action->target );
       dot_t*& dot = specific_dot[ action->target ];
       if ( !dot )
-        dot = action->target->get_dot( static_dot->name(), action->player );
+        dot = action->target->get_dot( action->name_str, action->player );
       return dot;
     }
   };
@@ -556,7 +560,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->current_tick;
       }
     };
-    return new ticks_expr_t( this, action, dynamic );
+    return new ticks_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "extended_time" )
   {
@@ -571,7 +575,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->extended_time.total_seconds();
       }
     };
-    return new extended_time_expr_t( this, action, dynamic );
+    return new extended_time_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "duration" )
   {
@@ -592,7 +596,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
             .total_seconds();
       }
     };
-    return new duration_expr_t( this, action, dynamic );
+    return new duration_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "refreshable" )
   {
@@ -635,7 +639,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
       }
     };
 
-    return new refresh_expr_t( this, action, dynamic );
+    return new refresh_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "remains" )
   {
@@ -650,7 +654,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->remains().total_seconds();
       }
     };
-    return new remains_expr_t( this, action, dynamic );
+    return new remains_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "tick_dmg" )
   {
@@ -683,7 +687,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         delete s;
       }
     };
-    return new tick_dmg_expr_t( this, action, dynamic );
+    return new tick_dmg_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "crit_dmg" )
   {
@@ -711,7 +715,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return 0.0;
       }
     };
-    return new crit_dmg_expr_t( this, action, dynamic );
+    return new crit_dmg_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "tick_time_remains" )
   {
@@ -728,7 +732,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
                    : 0;
       }
     };
-    return new tick_time_remain_expr_t( this, action, dynamic );
+    return new tick_time_remain_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "ticks_remain" )
   {
@@ -743,7 +747,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->ticks_left();
       }
     };
-    return new ticks_remain_expr_t( this, action, dynamic );
+    return new ticks_remain_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "ticking" )
   {
@@ -758,7 +762,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->ticking;
       }
     };
-    return new ticking_expr_t( this, action, dynamic );
+    return new ticking_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "spell_power" )
   {
@@ -773,7 +777,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->state ? dot()->state->composite_spell_power() : 0;
       }
     };
-    return new dot_spell_power_expr_t( this, action, dynamic );
+    return new dot_spell_power_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "attack_power" )
   {
@@ -788,7 +792,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->state ? dot()->state->composite_attack_power() : 0;
       }
     };
-    return new dot_attack_power_expr_t( this, action, dynamic );
+    return new dot_attack_power_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "multiplier" )
   {
@@ -803,7 +807,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->state ? dot()->state->ta_multiplier : 0;
       }
     };
-    return new dot_multiplier_expr_t( this, action, dynamic );
+    return new dot_multiplier_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "pmultiplier" )
   {
@@ -818,7 +822,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->state ? dot()->state->persistent_multiplier : 0;
       }
     };
-    return new dot_pmultiplier_expr_t( this, action, dynamic );
+    return new dot_pmultiplier_expr_t( dot, action, dynamic );
   }
 
 #if 0
@@ -830,7 +834,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         dot_expr_t( "dot_mastery", d, a, dynamic ) {}
       virtual double evaluate() { return dot() -> state ? dot() -> state -> total_mastery() : 0; }
     };
-    return new dot_mastery_expr_t( this, current_action, dynamic );
+    return new dot_mastery_expr_t( dot, current_action, dynamic );
   }
 #endif
 
@@ -847,7 +851,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->state ? ( 1.0 / dot()->state->haste - 1.0 ) * 100 : 0;
       }
     };
-    return new dot_haste_pct_expr_t( this, action, dynamic );
+    return new dot_haste_pct_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "current_ticks" )
   {
@@ -862,7 +866,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->num_ticks;
       }
     };
-    return new current_ticks_expr_t( this, action, dynamic );
+    return new current_ticks_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "crit_pct" )
   {
@@ -877,7 +881,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->state ? dot()->state->crit_chance * 100.0 : 0;
       }
     };
-    return new dot_crit_pct_expr_t( this, action, dynamic );
+    return new dot_crit_pct_expr_t( dot, action, dynamic );
   }
   else if ( name_str == "stack" )
   {
@@ -892,7 +896,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->current_stack();
       }
     };
-    return new dot_stack_expr_t( this, action, dynamic );
+    return new dot_stack_expr_t( dot, action, dynamic );
   }
   else if (name_str == "max_stacks")
   {
@@ -907,7 +911,7 @@ expr_t* dot_t::create_expression( action_t* action, const std::string& name_str,
         return dot()->max_stack;
       }
     };
-    return new max_stack_expr_t(this, action, dynamic);
+    return new max_stack_expr_t(dot, action, dynamic);
   }
 
 

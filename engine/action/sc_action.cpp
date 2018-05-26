@@ -2484,16 +2484,26 @@ expr_t* action_t::create_expression( const std::string& name_str )
       expr_t( name ), action( a ) {}
   };
 
-  class amount_expr_t : public action_expr_t
+  class action_state_expr_t : public action_expr_t
+  {
+  public:
+    action_state_t* state;
+    action_state_expr_t( const std::string& name, action_t& a ) :
+      action_expr_t( name, a ), state( a.get_state() ) {}
+
+    virtual ~action_state_expr_t()
+    { delete state; }
+  };
+
+  class amount_expr_t : public action_state_expr_t
   {
   public:
     dmg_e           amount_type;
     result_e        result_type;
-    action_state_t* state;
     bool            average_crit;
 
     amount_expr_t( const std::string& name, dmg_e at, action_t& a, result_e rt = RESULT_NONE ) :
-      action_expr_t( name, a ), amount_type( at ), result_type( rt ), state( a.get_state() ),
+      action_state_expr_t( name, a ), amount_type( at ), result_type( rt ),
       average_crit( false )
     {
       if ( result_type == RESULT_NONE )
@@ -2534,18 +2544,30 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
       return a;
     }
-
-    virtual ~amount_expr_t()
-    { delete state; }
   };
 
   if ( name_str == "cast_time" )
     return make_mem_fn_expr( name_str, *this, &action_t::execute_time );
-  else if ( name_str == "usable" )
-  {
+
+  if ( name_str == "usable" )
     return make_mem_fn_expr( name_str, *cooldown, &cooldown_t::is_ready );
-  }
-  else if ( name_str == "usable_in" )
+
+  if ( name_str == "cost" )
+    return make_mem_fn_expr( name_str, *this, &action_t::cost );
+
+  if ( name_str == "target" )
+    return make_fn_expr(name_str, [this] {return target -> actor_index;});
+
+  if ( name_str == "gcd" )
+    return make_mem_fn_expr( name_str, *this, &action_t::gcd );
+
+  if ( name_str == "cooldown" )
+    return make_ref_expr( name_str, cooldown -> duration );
+
+  if ( name_str == "travel_time" )
+    return make_mem_fn_expr( name_str, *this, &action_t::travel_time );
+
+  if ( name_str == "usable_in" )
   {
     return make_fn_expr( name_str, [ this ]() {
       if ( ! cooldown -> is_ready() )
@@ -2562,30 +2584,13 @@ expr_t* action_t::create_expression( const std::string& name_str )
       return ( ready_at - current_time ).total_seconds();
     } );
   }
-  else if ( name_str == "cost" )
-    return make_mem_fn_expr( name_str, *this, &action_t::cost );
-  else if ( name_str == "target" )
-  {
-    struct target_expr_t : public action_expr_t
-    {
-      target_expr_t( action_t& a ) : action_expr_t( "target", a )
-      { }
 
-      double evaluate() override
-      { return static_cast<double>( action.target -> actor_index ); }
-    };
-    return new target_expr_t( *this );
-  }
-  else if ( name_str == "gcd" )
-    return make_mem_fn_expr( name_str, *this, &action_t::gcd );
-  else if ( name_str == "execute_time" )
+  if ( name_str == "execute_time" )
   {
-    struct execute_time_expr_t: public action_expr_t
+    struct execute_time_expr_t: public action_state_expr_t
     {
-      action_state_t* state;
-      action_t& action;
       execute_time_expr_t( action_t& a ):
-        action_expr_t( "execute_time", a ), state( a.get_state() ), action( a )
+        action_state_expr_t( "execute_time", a )
       { }
 
       double evaluate() override
@@ -2599,67 +2604,56 @@ expr_t* action_t::create_expression( const std::string& name_str )
         else
           return std::max( action.execute_time().total_seconds(), action.gcd().total_seconds() );
       }
-
-      virtual ~execute_time_expr_t()
-      {
-        delete state;
-      }
     };
     return new execute_time_expr_t( *this );
   }
-  else if ( name_str == "cooldown" )
-    return make_ref_expr( name_str, cooldown -> duration );
-  else if ( name_str == "tick_time" )
+
+  if ( name_str == "tick_time" )
   {
     struct tick_time_expr_t : public action_expr_t
     {
       tick_time_expr_t( action_t& a ) : action_expr_t( "tick_time", a ) {}
       virtual double evaluate() override
       {
-        dot_t* dot = action.get_dot();
-        if ( dot -> is_ticking() )
+        dot_t* dot = action.find_dot( action.target );
+        if ( dot && dot -> is_ticking() )
           return action.tick_time( dot -> state ).total_seconds();
         else
-          return 0;
+          return 0.0;
       }
     };
     return new tick_time_expr_t( *this );
   }
-  else if ( name_str == "new_tick_time" )
-  {
-    struct new_tick_time_expr_t : public action_expr_t
-    {
-      action_state_t* state;
 
-      new_tick_time_expr_t( action_t& a ) : action_expr_t( "new_tick_time", a ), state( a.get_state() ) {}
+  if ( name_str == "new_tick_time" )
+  {
+    struct new_tick_time_expr_t : public action_state_expr_t
+    {
+      new_tick_time_expr_t( action_t& a ) :
+        action_state_expr_t( "new_tick_time", a )
+      {}
       virtual double evaluate() override
       {
         action.snapshot_state( state, DMG_OVER_TIME );
         return action.tick_time( state ).total_seconds();
       }
-
-      ~new_tick_time_expr_t()
-      { delete state; }
     };
     return new new_tick_time_expr_t( *this );
   }
-  else if ( name_str == "travel_time" )
-    return make_mem_fn_expr( name_str, *this, &action_t::travel_time );
 
-  // FIXME! DoT Expressions should not need to get the dot itself.
-  else if ( expr_t* q = get_dot() -> create_expression( this, name_str, true ) )
-    return q;
+  if ( expr_t* q = dot_t::create_expression( nullptr, this, name_str, true ) )
+      return q;
 
-  else if ( name_str == "miss_react" )
+  if ( name_str == "miss_react" )
   {
     struct miss_react_expr_t : public action_expr_t
     {
       miss_react_expr_t( action_t& a ) : action_expr_t( "miss_react", a ) {}
       virtual double evaluate() override
       {
-        dot_t* dot = action.get_dot();
-        if ( dot -> miss_time < timespan_t::zero() ||
-             action.sim -> current_time() >= ( dot -> miss_time ) )
+        dot_t* dot = action.find_dot( action.target );
+        if ( dot && ( dot -> miss_time < timespan_t::zero() ||
+             action.sim -> current_time() >= ( dot -> miss_time ) ) )
           return true;
         else
           return false;
@@ -2667,20 +2661,13 @@ expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new miss_react_expr_t( *this );
   }
-  else if ( name_str == "cooldown_react" )
+
+  if ( name_str == "cooldown_react" )
   {
-    struct cooldown_react_expr_t : public action_expr_t
-    {
-      cooldown_react_expr_t( action_t& a ) : action_expr_t( "cooldown_react", a ) {}
-      virtual double evaluate() override
-      {
-        return action.cooldown -> up() &&
-               action.cooldown -> reset_react <= action.sim -> current_time();
-      }
-    };
-    return new cooldown_react_expr_t( *this );
+    return make_fn_expr(name_str, [this] { return cooldown -> up() && cooldown -> reset_react <= sim -> current_time(); });
   }
-  else if ( name_str == "cast_delay" )
+
+  if ( name_str == "cast_delay" )
   {
     struct cast_delay_expr_t : public action_expr_t
     {
@@ -2705,15 +2692,13 @@ expr_t* action_t::create_expression( const std::string& name_str )
     };
     return new cast_delay_expr_t( *this );
   }
-  else if ( name_str == "tick_multiplier" )
-  {
-    struct tick_multiplier_expr_t : public expr_t
-    {
-      action_t* action;
-      action_state_t* state;
 
-      tick_multiplier_expr_t( action_t* a ) :
-        expr_t( "tick_multiplier" ), action( a ), state( a -> get_state() )
+  if ( name_str == "tick_multiplier" )
+  {
+    struct tick_multiplier_expr_t : public action_state_expr_t
+    {
+      tick_multiplier_expr_t( action_t& a ) :
+        action_state_expr_t( "tick_multiplier", a )
       {
         state -> n_targets    = 1;
         state -> chain_target = 0;
@@ -2721,27 +2706,21 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
       virtual double evaluate() override
       {
-        action -> snapshot_state( state, RESULT_TYPE_NONE );
-        state -> target = action -> target;
+        action.snapshot_state( state, RESULT_TYPE_NONE );
+        state -> target = action.target;
 
-        return action -> composite_ta_multiplier( state );
+        return action.composite_ta_multiplier( state );
       }
-
-      virtual ~tick_multiplier_expr_t()
-      { delete state; }
     };
-
-    return new tick_multiplier_expr_t( this );
+    return new tick_multiplier_expr_t( *this );
   }
-  else if ( name_str == "persistent_multiplier" )
-  {
-    struct persistent_multiplier_expr_t : public expr_t
-    {
-      action_t* action;
-      action_state_t* state;
 
-      persistent_multiplier_expr_t( action_t* a ) :
-        expr_t( "persistent_multiplier" ), action( a ), state( a -> get_state() )
+  if ( name_str == "persistent_multiplier" )
+  {
+    struct persistent_multiplier_expr_t : public action_state_expr_t
+    {
+      persistent_multiplier_expr_t( action_t& a ) :
+        action_state_expr_t( "persistent_multiplier", a )
       {
         state -> n_targets    = 1;
         state -> chain_target = 0;
@@ -2749,19 +2728,16 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
       virtual double evaluate() override
       {
-        action -> snapshot_state( state, RESULT_TYPE_NONE );
-        state -> target = action -> target;
+        action.snapshot_state( state, RESULT_TYPE_NONE );
+        state -> target = action.target;
 
-        return action -> composite_persistent_multiplier( state );
+        return action.composite_persistent_multiplier( state );
       }
-
-      virtual ~persistent_multiplier_expr_t()
-      { delete state; }
     };
-
-    return new persistent_multiplier_expr_t( this );
+    return new persistent_multiplier_expr_t( *this );
   }
-  else if ( name_str == "charges"
+
+  if ( name_str == "charges"
     || name_str == "charges_fractional"
     || name_str == "max_charges"
     || name_str == "recharge_time"
@@ -2769,7 +2745,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     return cooldown -> create_expression( name_str );
   }
-  else if ( name_str == "damage" )
+
+  if ( name_str == "damage" )
     return new amount_expr_t( name_str, DMG_DIRECT, *this );
   else if ( name_str == "hit_damage" )
     return new amount_expr_t( name_str, DMG_DIRECT, *this, RESULT_HIT );
@@ -2789,33 +2766,30 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return new amount_expr_t( name_str, HEAL_OVER_TIME, *this, RESULT_HIT );
   else if ( name_str == "crit_tick_heal" )
     return new amount_expr_t( name_str, HEAL_OVER_TIME, *this, RESULT_CRIT );
-  else if ( name_str == "crit_pct_current" )
-  {
-    struct crit_pct_current_expr_t : public expr_t
-    {
-      action_t* action;
-      action_state_t* state;
 
-      crit_pct_current_expr_t( action_t* a ) :
-        expr_t( "crit_pct_current" ), action( a ), state( a -> get_state() )
+  if ( name_str == "crit_pct_current" )
+  {
+    struct crit_pct_current_expr_t : public action_state_expr_t
+    {
+      crit_pct_current_expr_t( action_t& a ) :
+        action_state_expr_t( "crit_pct_current", a )
       {
         state -> n_targets = 1;
         state -> chain_target = 0;
       }
+
       virtual double evaluate() override
       {
-        state -> target = action -> target;
-        action -> snapshot_state( state, RESULT_TYPE_NONE );
+        state -> target = action.target;
+        action.snapshot_state( state, RESULT_TYPE_NONE );
 
         return std::min( 100.0, state -> composite_crit_chance() * 100.0 );
       }
-
-      virtual ~crit_pct_current_expr_t()
-      { delete state; }
     };
-    return new crit_pct_current_expr_t( this );
+    return new crit_pct_current_expr_t( *this );
   }
-  else if ( name_str == "multiplier" )
+
+  if ( name_str == "multiplier" )
   {
     return make_fn_expr( name_str, [this] {
       double multiplier = 0.0;
@@ -2831,9 +2805,20 @@ expr_t* action_t::create_expression( const std::string& name_str )
       return multiplier;
     } );
   }
-  else if ( name_str == "primary_target" )
+
+  if ( name_str == "primary_target" )
   {
     return make_fn_expr( name_str, [this]() { return player->target == target; } );
+  }
+
+  if ( name_str == "enabled" )
+  {
+    return expr_t::create_constant( name_str, data().found() );
+  }
+
+  if ( name_str == "executing" )
+  {
+    return make_fn_expr( name_str, [this]() { return execute_event != nullptr; } );
   }
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
@@ -2844,13 +2829,12 @@ expr_t* action_t::create_expression( const std::string& name_str )
     {
       if ( sim -> distance_targeting_enabled )
       {
-        struct active_enemies_t: public expr_t
+        struct active_enemies_t: public action_expr_t
         {
-          action_t* action;
           double yards_from_player;
           int num_targets;
-          active_enemies_t( action_t* p, const std::string& yards ):
-            expr_t( "active_enemies_within" ), action( p )
+          active_enemies_t( action_t& a, const std::string& yards ):
+            action_expr_t( "active_enemies_within", a )
           {
             yards_from_player = std::stoi( yards );
             num_targets = 0;
@@ -2859,16 +2843,16 @@ expr_t* action_t::create_expression( const std::string& name_str )
           double evaluate() override
           {
             num_targets = 0;
-            for ( size_t i = 0, actors = action -> player -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
+            for ( size_t i = 0, actors = action.player -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
             {
-              player_t* t = action -> player -> sim -> target_non_sleeping_list[i];
-              if ( action -> player -> get_player_distance( *t ) <= yards_from_player )
+              player_t* t = action.player -> sim -> target_non_sleeping_list[i];
+              if ( action.player -> get_player_distance( *t ) <= yards_from_player )
                 num_targets++;
             }
             return num_targets;
           }
         };
-        return new active_enemies_t( this, splits[1] );
+        return new active_enemies_t( *this, splits[1] );
       }
       else
       { // If distance targeting is not enabled, default to active_enemies behavior.
@@ -2967,6 +2951,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
         };
         return new gcd_remains_expr_t( *this );
       }
+      throw std::invalid_argument(fmt::format("Unsupported gcd expression '{}'.", splits[ 1 ]));
     }
   }
 
@@ -3039,42 +3024,54 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( splits.size() == 3 && splits[0] == "prev_gcd" )
   {
-    int gcd = util::to_int( splits[1] );
-    if ( gcd <= 0 )
+    try
     {
-      sim -> errorf( "%s expression creation error: invalid parameters for expression 'prev_gcd.<number>.<action>'",
-            player -> name() );
-      return 0;
-    }
+      int gcd = std::stoi( splits[1] );
 
-    struct prevgcd_expr_t: public action_expr_t {
-      int gcd;
-      action_t* previously_used;
-      prevgcd_expr_t( action_t& a, int gcd, const std::string& prev_action ): action_expr_t( "prev_gcd", a ),
-        gcd( gcd ), // prevgcd.1.action will mean 1 gcd ago, prevgcd.2.action will mean 2 gcds ago, etc.
-        previously_used( a.player -> find_action( prev_action ) )
-      {}
-      virtual double evaluate() override
-      {
-        if ( previously_used && as<int>(action.player -> prev_gcd_actions.size()) >= gcd )
-          return ( *( action.player -> prev_gcd_actions.end() - gcd ) ) -> internal_id == previously_used -> internal_id;
-        return false;
-      }
-    };
-    return new prevgcd_expr_t( *this, gcd, splits[2] );
+      struct prevgcd_expr_t: public action_expr_t {
+        int gcd;
+        action_t* previously_used;
+        prevgcd_expr_t( action_t& a, int gcd, const std::string& prev_action ): action_expr_t( "prev_gcd", a ),
+          gcd( gcd ), // prevgcd.1.action will mean 1 gcd ago, prevgcd.2.action will mean 2 gcds ago, etc.
+          previously_used( a.player -> find_action( prev_action ) )
+        {
+          if (!previously_used)
+          {
+            throw std::invalid_argument(fmt::format("Cannot find action '{}''.", prev_action));
+          }
+        }
+        virtual double evaluate() override
+        {
+          if ( !previously_used )
+            return false;
+          if (action.player -> prev_gcd_actions.empty())
+            return false;
+          if ( previously_used && as<int>(action.player -> prev_gcd_actions.size()) >= gcd )
+            return ( *( action.player -> prev_gcd_actions.end() - gcd ) ) -> internal_id == previously_used -> internal_id;
+          return false;
+        }
+      };
+      return new prevgcd_expr_t( *this, gcd, splits[2] );
+    }
+    catch (const std::invalid_argument& e){
+      throw std::invalid_argument(fmt::format("Cannot parse arguments for expression 'prev_gcd.<number>.<action>': {}",
+          e.what()));
+    }
   }
+
   if ( splits.size() == 3 && splits[ 0 ] == "dot" )
   {
     if ( dot_t* dot = target -> find_dot( splits[ 1 ], player ) )
     {
-      return dot->create_expression( nullptr, splits[ 2 ], false );
+      return dot_t::create_expression( dot, this, splits[ 2 ], false );
     }
     throw std::invalid_argument(fmt::format("Cannot find any dot with name '{}'.", splits[ 1 ]));
   }
+
   if ( splits.size() == 3 && splits[ 0 ] == "enemy_dot" )
   {
     // simple by-pass to test
-    auto dt_ = player -> get_dot( splits[ 1 ], target ) -> create_expression( this, splits[ 2 ], false );
+    auto dt_ = dot_t::create_expression( player -> get_dot( splits[ 1 ], target ), this, splits[ 2 ], false );
     if ( dt_ )
       return dt_;
 
@@ -3083,7 +3080,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     for ( size_t i = 0, size = sim -> target_list.size(); i < size; i++ )
     {
       dot_t* d = player -> get_dot( splits[ 1 ], sim -> target_list[ i ] );
-      dot_expressions.push_back( d -> create_expression( this, splits[ 2 ], false ) );
+      dot_expressions.push_back( dot_t::create_expression( d, this, splits[ 2 ], false ) );
     }
     struct enemy_dots_expr_t : public expr_t
     {
@@ -3109,66 +3106,39 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
     return new enemy_dots_expr_t( dot_expressions );
   }
-  if ( splits.size() == 3 && splits[0] == "buff" )
-  {
-    return player -> create_expression( name_str );
-  }
 
   if ( splits.size() == 3 && splits[ 0 ] == "debuff" )
   {
-    expr_t* debuff_expr = buff_t::create_expression( splits[ 1 ], splits[ 2 ], *this );
-    if ( debuff_expr ) return debuff_expr;
-  }
-
-  if ( splits.size() == 3 && splits[ 0 ] == "aura" )
-  {
-    return sim -> create_expression( name_str );
+    if ( expr_t* debuff_expr = buff_t::create_expression( splits[ 1 ], splits[ 2 ], *this ) )
+      return debuff_expr;
   }
 
   if ( splits.size() >= 2 && splits[ 0 ] == "target" )
   {
     // Find target
-    player_t* expr_target = 0;
-    if ( splits[ 1 ][ 0 ] >= '0' && splits[ 1 ][ 0 ] <= '9' )
+    player_t* expr_target = target;
+    std::string tail = name_str.substr(splits[ 0 ].length() + 1);
+    if ( util::is_number(splits[ 1 ]))
     {
-      expr_target = find_target_by_number( atoi( splits[ 1 ].c_str() ) );
-      assert( expr_target );
-    }
+      expr_target = find_target_by_number( std::stoi( splits[ 1 ] ) );
 
-    size_t start_rest = 2;
-    if ( ! expr_target )
-    {
-      start_rest = 1;
-    }
-    else
-    {
-      if ( splits.size() == 2 )
-      {
-        sim -> errorf( "%s expression creation error: insufficient parameters for expression 'target.<number>.<expression>'",
-            player -> name() );
-        return 0;
-      }
-    }
+      if (!expr_target)
+        throw std::invalid_argument(fmt::format("Cannot find target by number '{}'.", splits[ 1 ]));
 
-    if ( util::str_compare_ci( splits[ start_rest ], "distance" ) )
+      tail = name_str.substr(splits[ 0 ].length() + splits[ 1 ].length() + 2);
+    }
+    // Fake target distance
+    if ( tail == "distance" )
       return make_ref_expr( "distance", player -> base.distance );
 
-    std::string rest = splits[ start_rest ];
-    for ( size_t i = start_rest + 1; i < splits.size(); ++i )
-      rest += '.' + splits[ i ];
-
-    // Target.1.foo expression, bail out early.
+    // Return target(.n).tail expression if we have one
     if ( expr_target )
-      return expr_target -> create_expression( rest );
-
-    // Ensure that we can create an expression, if not, bail out early
-    auto expr_ptr = target -> create_expression( rest );
-    if ( expr_ptr == nullptr )
     {
-      return nullptr;
+      if ( expr_t* e = expr_target -> create_expression( tail ) )
+      {
+        return e;
+      }
     }
-    // Delete the freshly created expression that tested for expression validity
-    delete expr_ptr;
 
     // Proxy target based expression, allowing "dynamic switching" of targets
     // for the "target.<expression>" expressions. Generates a suitable
@@ -3193,20 +3163,26 @@ expr_t* action_t::create_expression( const std::string& name_str )
           proxy_expr.resize( action.target -> actor_index + 1, nullptr );
         }
 
-        if ( proxy_expr[ action.target -> actor_index ] == 0 )
-        {
-          proxy_expr[ action.target -> actor_index ] = action.target -> create_expression( suffix_expr_str );
-        }
-        assert( proxy_expr[ action.target -> actor_index ] );
+        expr_t*& expr = proxy_expr[ action.target -> actor_index ];
 
-        return proxy_expr[ action.target -> actor_index ] -> eval();
+        if ( !expr )
+        {
+          expr = action.target -> create_expression( suffix_expr_str );
+          if (!expr)
+          {
+            throw std::invalid_argument(fmt::format("Cannot create dynamic target expression for target '{}' from '{}'.",
+                action.target->name(), suffix_expr_str));
+          }
+        }
+
+        return expr -> eval();
       }
 
       ~target_proxy_expr_t()
       { range::dispose( proxy_expr ); }
     };
 
-    return new target_proxy_expr_t( *this, rest );
+    return new target_proxy_expr_t( *this, tail );
   }
 
   if ( ( splits.size() == 3 && splits[ 0 ] == "action" ) || splits[ 0 ] == "in_flight" ||
@@ -3297,25 +3273,6 @@ expr_t* action_t::create_expression( const std::string& name_str )
     for ( size_t i = 2; i < splits.size(); ++i )
       rest += '.' + splits[ i ];
     return sim -> create_expression( rest );
-  }
-
-  if ( name_str == "enabled" )
-  {
-    struct ok_expr_t : public action_expr_t
-    {
-      ok_expr_t( action_t& a ) : action_expr_t( "enabled", a ) {}
-      virtual double evaluate() override { return action.data().found(); }
-    };
-    return new ok_expr_t( *this );
-  }
-  else if ( name_str == "executing" )
-  {
-    struct executing_expr_t : public action_expr_t
-    {
-      executing_expr_t( action_t& a ) : action_expr_t( "executing", a ) {}
-      virtual double evaluate() override { return action.execute_event != 0; }
-    };
-    return new executing_expr_t( *this );
   }
 
   return player -> create_expression( name_str );
