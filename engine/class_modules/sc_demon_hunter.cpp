@@ -421,7 +421,7 @@ public:
   void create_options() override;
   pet_t* create_pet( const std::string& name,
                      const std::string& type = std::string() ) override;
-  std::string create_profile( save_e = SAVE_ALL ) override;
+  std::string create_profile( save_e ) override;
   void init_absorb_priority() override;
   void init_action_list() override;
   void init_base_stats() override;

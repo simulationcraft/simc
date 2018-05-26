@@ -606,7 +606,7 @@ public:
   role_e    primary_role() const override { return ROLE_ATTACK; }
   stat_e    primary_stat() const override { return STAT_AGILITY; }
   stat_e    convert_hybrid_stat( stat_e s ) const override;
-  std::string      create_profile( save_e = SAVE_ALL ) override;
+  std::string      create_profile( save_e ) override;
   void      copy_from( player_t* source ) override;
 
   void      moving( ) override;
@@ -5118,7 +5118,7 @@ std::string hunter_t::create_profile( save_e stype )
 
   profile_str += "summon_pet=" + summon_pet_str + "\n";
 
-  if ( stype == SAVE_ALL )
+  if ( stype & SAVE_PLAYER )
   {
     if ( !hunter_fixed_time )
       profile_str += "hunter_fixed_time=" + util::to_string( hunter_fixed_time ) + "\n";

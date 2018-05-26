@@ -1,0 +1,41 @@
+deathknight="T21_Death_Knight_Unholy"
+spec=unholy
+level=110
+race=troll
+role=attack
+position=back
+talents=3211011
+
+# Default consumables
+potion=prolonged_power
+flask=countless_armies
+food=azshari_salad
+augmentation=defiled
+
+head=dreadwake_helm,id=152115,bonus_id=3612/1502
+neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+shoulders=taktheritrixs_shoulderpads,id=137075,bonus_id=3630
+back=dreadwake_greatcloak,id=152113,bonus_id=3612/1502,enchant=binding_of_strength
+chest=cold_heart,id=151796,bonus_id=3630
+wrists=vambraces_of_lifes_assurance,id=152023,bonus_id=3612/1502
+hands=dreadwake_gauntlets,id=152114,bonus_id=3612/1502
+waist=nathrezim_battle_girdle,id=152020,bonus_id=3612/1502
+legs=dreadwake_legplates,id=152116,bonus_id=3612/1502
+feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
+finger1=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
+finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_haste
+trinket1=khazgoroths_courage,id=154176,bonus_id=3997
+trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
+main_hand=apocalypse,id=128403,gem_id=155849/152056/155847,relic_id=3612:1512/3612:1502/3612:1512,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_ilvl=247.20
+# gear_strength=863
+# gear_stamina=1327
+# gear_crit_rating=154
+# gear_haste_rating=369
+# gear_mastery_rating=631
+# gear_versatility_rating=175
+# gear_armor=908
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1

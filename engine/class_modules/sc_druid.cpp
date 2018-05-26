@@ -791,7 +791,7 @@ public:
   virtual void      assess_heal( school_e, dmg_e, action_state_t* ) override;
   virtual void      recalculate_resource_max( resource_e ) override;
   virtual void      create_options() override;
-  virtual std::string      create_profile( save_e type = SAVE_ALL ) override;
+  virtual std::string      create_profile( save_e type ) override;
   virtual druid_td_t* get_target_data( player_t* target ) const override;
   virtual void      copy_from( player_t* ) override;
   virtual void output_json_report(js::JsonOutput& /* root */) const override;

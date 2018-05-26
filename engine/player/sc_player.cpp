@@ -9710,7 +9710,7 @@ std::string player_t::create_profile( save_e stype )
     profile_str += "# " + report_information.comment_str + term;
   }
 
-  if ( stype == SAVE_ALL )
+  if ( stype & SAVE_PLAYER )
   {
     profile_str += util::player_type_string( type );
     profile_str += "=\"" + name_str + '"' + term;
@@ -9738,7 +9738,7 @@ std::string player_t::create_profile( save_e stype )
     }
   }
 
-  if ( stype == SAVE_ALL || stype == SAVE_TALENTS )
+  if ( stype & SAVE_TALENTS )
   {
     if ( !talents_str.empty() )
     {
@@ -9765,7 +9765,7 @@ std::string player_t::create_profile( save_e stype )
     }
   }
 
-  if ( stype == SAVE_ALL )
+  if ( stype & SAVE_PLAYER )
   {
     std::string potion_option = potion_str.empty() ? default_potion() : potion_str;
     std::string flask_option  = flask_str.empty() ? default_flask() : flask_str;
@@ -9814,7 +9814,7 @@ std::string player_t::create_profile( save_e stype )
     }
   }
 
-  if ( stype == SAVE_ALL || stype == SAVE_ACTIONS )
+  if ( stype & SAVE_ACTIONS )
   {
     if ( !action_list_str.empty() || use_default_action_list )
     {
@@ -9854,7 +9854,7 @@ std::string player_t::create_profile( save_e stype )
     }
   }
 
-  if ( ( stype == SAVE_ALL || stype == SAVE_GEAR ) && !items.empty() )
+  if ( ( stype & SAVE_GEAR ) && !items.empty() )
   {
     profile_str += "\n";
     const slot_e SLOT_OUT_ORDER[] = {

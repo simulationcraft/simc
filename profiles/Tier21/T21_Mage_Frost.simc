@@ -5,88 +5,12 @@ race=dwarf
 role=spell
 position=back
 talents=2033021
-artifact=53:0:0:0:0
 
 # Default consumables
 potion=prolonged_power
 flask=whispered_pact
 food=lemon_herb_filet
 augmentation=defiled
-
-# This default action priority list is automatically created based on your character.
-# It is a attempt to provide you with a action list that is both simple and practicable,
-# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
-# Feel free to edit, adapt and improve it to your own needs.
-# SimulationCraft is always looking for updates and improvements to the default action lists.
-
-# Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask
-actions.precombat+=/food
-actions.precombat+=/augmentation
-actions.precombat+=/arcane_intellect
-actions.precombat+=/water_elemental
-actions.precombat+=/snapshot_stats
-actions.precombat+=/mirror_image
-actions.precombat+=/potion
-actions.precombat+=/frostbolt
-
-# Executed every time the actor is available.
-actions=counterspell
-# Free Ice Lance after Flurry. This action has rather high priority to ensure that we don't cast Rune of Power, Ray of Frost, etc. after Flurry and break up the combo. If FoF was already active, we do not lose anything by delaying the Ice Lance.
-actions+=/ice_lance,if=!buff.fingers_of_frost.react&prev_gcd.1.flurry
-# Time Warp is used right at the start. If the actor has Shard of the Exodar, try to synchronize the second Time Warp with Icy Veins. If the target is about to die, use Time Warp regardless.
-actions+=/time_warp,if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(cooldown.icy_veins.remains<1|target.time_to_die<50)
-actions+=/call_action_list,name=cooldowns
-actions+=/call_action_list,name=aoe,if=active_enemies>=4
-actions+=/call_action_list,name=single
-
-actions.aoe=frozen_orb
-actions.aoe+=/blizzard
-actions.aoe+=/comet_storm
-actions.aoe+=/ice_nova
-actions.aoe+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled|buff.icicles.stack<=4))
-actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react
-actions.aoe+=/ebonbolt
-actions.aoe+=/glacial_spike,if=buff.brain_freeze.react
-actions.aoe+=/ray_of_frost
-actions.aoe+=/frostbolt
-actions.aoe+=/call_action_list,name=movement
-actions.aoe+=/cone_of_cold
-actions.aoe+=/ice_lance
-
-# Rune of Power is used when going into Icy Veins and while Icy Veins are up. Outside of Icy Veins, use Rune of Power when about to cap on charges or the target is about to die.
-actions.cooldowns=rune_of_power,if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die+5<charges_fractional*10
-actions.cooldowns+=/potion,if=cooldown.icy_veins.remains<1|target.time_to_die<70
-actions.cooldowns+=/icy_veins
-actions.cooldowns+=/mirror_image
-actions.cooldowns+=/use_items
-actions.cooldowns+=/blood_fury
-actions.cooldowns+=/berserking
-actions.cooldowns+=/arcane_torrent
-actions.cooldowns+=/lights_judgment
-
-actions.movement=blink,if=movement.distance>10
-actions.movement+=/ice_floes,if=buff.ice_floes.down
-
-# In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill.
-actions.single=ice_nova,if=debuff.winters_chill.up
-actions.single+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled|buff.icicles.stack<=4))
-# With T20 2pc, Frozen Orb should be used as soon as it comes off CD.
-actions.single+=/frozen_orb,if=set_bonus.tier20_2pc&buff.fingers_of_frost.react<2
-actions.single+=/blizzard,if=active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2
-actions.single+=/ice_lance,if=buff.fingers_of_frost.react
-actions.single+=/ebonbolt
-actions.single+=/frozen_orb
-actions.single+=/comet_storm
-actions.single+=/ice_nova
-# Against low number of targets, Blizzard is used as a filler. Zann'esu buffed Blizzard is used only at 5 stacks.
-actions.single+=/blizzard,if=active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time
-actions.single+=/glacial_spike,if=buff.brain_freeze.react
-actions.single+=/ray_of_frost
-actions.single+=/frostbolt
-actions.single+=/call_action_list,name=movement
-# Use Ice Lance to do at least some damage while moving.
-actions.single+=/ice_lance
 
 head=runebound_collar,id=152138,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
@@ -105,14 +29,14 @@ trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=ebonchill,id=128862,bonus_id=731,gem_id=155850/155846/155850,relic_id=3612:1512/3612:1512/3612:1512
 
 # Gear Summary
-# gear_ilvl=100.13
-# gear_stamina=344
-# gear_intellect=297
-# gear_crit_rating=117
-# gear_haste_rating=147
-# gear_mastery_rating=78
-# gear_versatility_rating=143
-# gear_armor=109
+# gear_ilvl=245.27
+# gear_stamina=1288
+# gear_intellect=1111
+# gear_crit_rating=427
+# gear_haste_rating=490
+# gear_mastery_rating=239
+# gear_versatility_rating=389
+# gear_armor=244
 # set_bonus=tier20_2pc=1
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

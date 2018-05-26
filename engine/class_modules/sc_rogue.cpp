@@ -7528,7 +7528,7 @@ std::string rogue_t::create_profile( save_e stype )
   std::string profile_str = player_t::create_profile( stype );
 
   // Break out early if we are not saving everything, or gear
-  if ( stype != SAVE_ALL && stype != SAVE_GEAR )
+  if ( !(stype & SAVE_PLAYER ) && !(stype & SAVE_GEAR ) )
   {
     return profile_str;
   }
@@ -7569,7 +7569,7 @@ std::string rogue_t::create_profile( save_e stype )
     }
   }
 
-  if ( stype == SAVE_ALL )
+  if ( stype & SAVE_PLAYER )
   {
     if ( fok_rotation )
     {

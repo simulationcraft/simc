@@ -406,7 +406,7 @@ public:
   void init_scaling() override;
   void reset() override;
   void create_options() override;
-  std::string create_profile( save_e = SAVE_ALL ) override;
+  std::string create_profile( save_e ) override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   virtual action_t* create_proc_action( const std::string& name, const special_effect_t& effect ) override;
   pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;

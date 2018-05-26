@@ -1408,7 +1408,7 @@ std::string priest_t::create_profile( save_e type )
 {
   std::string profile_str = base_t::create_profile( type );
 
-  if ( type == SAVE_ALL )
+  if ( type & SAVE_PLAYER )
   {
     if ( !options.autoUnshift )
     {

@@ -5,50 +5,12 @@ race=blood_elf
 role=attack
 position=back
 talents=3310333
-artifact=3:0:0:0:0
 
 # Default consumables
 potion=prolonged_power
 flask=seventh_demon
 food=the_hungry_magister
 augmentation=defiled
-
-# This default action priority list is automatically created based on your character.
-# It is a attempt to provide you with a action list that is both simple and practicable,
-# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
-# Feel free to edit, adapt and improve it to your own needs.
-# SimulationCraft is always looking for updates and improvements to the default action lists.
-
-# Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask
-actions.precombat+=/augmentation
-actions.precombat+=/food
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
-actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
-actions.precombat+=/metamorphosis,if=!(talent.demon_reborn.enabled&(talent.demonic.enabled|set_bonus.tier21_4pc))
-
-# Executed every time the actor is available.
-actions=auto_attack
-actions+=/pick_up_fragment
-actions+=/consume_magic
-actions+=/nemesis
-actions+=/metamorphosis
-actions+=/vengeful_retreat
-actions+=/fel_rush
-actions+=/fel_barrage
-actions+=/dark_slash
-actions+=/throw_glaive
-actions+=/felblade
-actions+=/immolation_aura
-actions+=/death_sweep
-actions+=/fel_eruption
-actions+=/blade_dance
-actions+=/eye_beam
-actions+=/annihilation
-actions+=/chaos_strike
-actions+=/demons_bite
-actions+=/potion
 
 head=raddons_cascading_eyes,id=137061,bonus_id=3630
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
@@ -68,13 +30,13 @@ main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=155848/155852
 off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0
 
 # Gear Summary
-# gear_ilvl=100.13
-# gear_agility=219
-# gear_stamina=343
-# gear_crit_rating=419
-# gear_haste_rating=78
-# gear_mastery_rating=98
-# gear_versatility_rating=58
-# gear_armor=177
+# gear_ilvl=248.25
+# gear_agility=858
+# gear_stamina=1337
+# gear_crit_rating=889
+# gear_haste_rating=262
+# gear_mastery_rating=243
+# gear_versatility_rating=163
+# gear_armor=418
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

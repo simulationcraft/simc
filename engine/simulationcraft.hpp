@@ -963,7 +963,9 @@ struct sim_t : private sc_thread_t
   int         current_slot;
   int         optimal_raid, log, debug_each;
   std::vector<uint64_t> debug_seed;
-  int         save_profiles, default_actions;
+  bool        save_profiles;
+  bool        save_profile_with_actions; // When saving full profiles, include actions or not
+  bool        default_actions;
   stat_e      normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str, save_suffix_str;
   int         save_talent_str;

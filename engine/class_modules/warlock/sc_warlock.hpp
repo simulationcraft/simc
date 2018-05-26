@@ -448,7 +448,7 @@ namespace warlock
       bool create_actions() override;
       pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
       void      create_pets() override;
-      std::string      create_profile( save_e = SAVE_ALL ) override;
+      std::string      create_profile( save_e ) override;
       void      copy_from( player_t* source ) override;
       resource_e primary_resource() const override { return RESOURCE_MANA; }
       role_e    primary_role() const override { return ROLE_SPELL; }

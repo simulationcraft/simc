@@ -1369,7 +1369,11 @@ sim_t::sim_t() :
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
   fixed_time( false ), optimize_expressions( false ),
   current_slot( -1 ),
-  optimal_raid( 0 ), log( 0 ), debug_each( 0 ), save_profiles( 0 ), default_actions( 0 ),
+  optimal_raid( 0 ), log( 0 ),
+  debug_each( 0 ),
+  save_profiles( false ),
+  save_profile_with_actions( true ),
+  default_actions( false ),
   normalized_stat( STAT_NONE ),
   default_region_str( "us" ),
   save_prefix_str( "save_" ),
@@ -2252,7 +2256,7 @@ bool sim_t::init_actor( player_t* p )
     if ( m ) m -> init( p );
   }
 
-  if ( default_actions != 0 && !p -> is_pet() )
+  if ( default_actions && !p -> is_pet() )
   {
     p -> clear_action_priority_lists();
     p -> action_list_str.clear();
@@ -3213,7 +3217,8 @@ void sim_t::create_options()
   add_option( opt_timespan( "ignite_sampling_delta", ignite_sampling_delta ) );
   // Output
   add_option( opt_bool( "save_profiles", save_profiles ) );
-  add_option( opt_int( "default_actions", default_actions ) );
+  add_option( opt_bool( "save_profile_with_actions", save_profile_with_actions ) );
+  add_option( opt_bool( "default_actions", default_actions ) );
   add_option( opt_bool( "debug", debug ) );
   add_option( opt_bool( "debug_each", debug_each ) );
   add_option( opt_func( "debug_seed", parse_debug_seed ) );

@@ -1243,7 +1243,7 @@ std::string warlock_t::create_profile( save_e stype )
 {
   std::string profile_str = player_t::create_profile( stype );
 
-  if ( stype == SAVE_ALL )
+  if ( stype & SAVE_PLAYER )
   {
     if ( initial_soul_shards != 3 )    profile_str += "soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
     if ( !default_pet.empty() )        profile_str += "default_pet=" + default_pet + "\n";

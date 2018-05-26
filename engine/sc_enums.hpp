@@ -1107,14 +1107,14 @@ enum role_e
   ROLE_MAX
 };
 
-enum save_e
+enum save_e : unsigned
 {
   // Specifies the type of profile data to be saved
-  SAVE_ALL = 0,
-  SAVE_GEAR,
-  SAVE_TALENTS,
-  SAVE_ACTIONS,
-  SAVE_MAX
+  SAVE_GEAR = 0x1,
+  SAVE_TALENTS = 0x2,
+  SAVE_ACTIONS = 0x4,
+  SAVE_PLAYER = 0x8,
+  SAVE_ALL = SAVE_GEAR | SAVE_TALENTS | SAVE_ACTIONS | SAVE_PLAYER,
 };
 
 enum power_e

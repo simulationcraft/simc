@@ -5787,7 +5787,7 @@ std::string mage_t::create_profile( save_e save_type )
 {
   std::string profile = player_t::create_profile( save_type );
 
-  if ( save_type == SAVE_ALL )
+  if ( save_type & SAVE_PLAYER )
   {
     if ( firestarter_time > timespan_t::zero() )
     {
