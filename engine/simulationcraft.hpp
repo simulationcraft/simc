@@ -2439,21 +2439,10 @@ struct set_bonus_t
   // Fast accessor to a set bonus spell, returns the spell, or spell_data_t::not_found()
   const spell_data_t* set( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
   {
-#ifdef NDEBUG
-    switch ( set_bonus )
-    {
-      case PVP:
-      case T17LFR:
-      case T18LFR:
-      case T17:
-      case T18:
-      case T19:
-      case T20:
-      case T21:
-        break;
-      default:
-        assert( 0 && "Attempt to access role-based set bonus through specialization." );
-    }
+#ifndef NDEBUG
+    assert(set_bonus_spec_data.size() > (unsigned)set_bonus );
+    assert(set_bonus_spec_data[ set_bonus ].size() > (unsigned)specdata::spec_idx( spec ) );
+    assert(set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( spec ) ].size() > (unsigned)bonus );
 #endif
     return set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( spec ) ][ bonus ].spell;
   }
