@@ -5778,6 +5778,11 @@ struct solar_wrath_t : public druid_spell_t
 
     p() -> buff.power_of_elune -> trigger();
   }
+
+  void reset () override
+  {
+    empowered = 0;
+  }
 };
 
 // Stampeding Roar ==========================================================
@@ -8789,7 +8794,7 @@ void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
 
 void druid_t::trigger_solar_empowerment (const action_state_t* state)
 {
-  double dm = buff.solar_empowerment->check_value ();
+  double dm = find_spell(164545)->effectN(1).percent() + talent.soul_of_the_forest->effectN (1).percent ();
 
   dm += mastery.starlight->ok () * cache.mastery_value()/2;  //Only scales with half the mastery value
 
