@@ -2967,9 +2967,11 @@ double player_t::composite_melee_attack_power( attack_power_e type ) const
       break;
     case AP_WEAPON_BOTH:
     {
-      ap = base_ap + ( has_mh ? main_hand_weapon.dps : .5 ) * WEAPON_POWER_COEFFICIENT;
-      ap += base_ap + ( has_oh ? off_hand_weapon.dps : .5 ) * WEAPON_POWER_COEFFICIENT;
-      ap *= 2.0 / 3.0;
+      // Don't use with weapon = player -> off_hand_weapon or the OH penalty will be applied to the whole spell
+      ap = ( has_mh ? main_hand_weapon.dps : .5 ) + ( has_oh ? off_hand_weapon.dps : .5 ) / 2;
+      ap *= 2.0 / 3.0 * WEAPON_POWER_COEFFICIENT;
+      ap += base_ap;
+
       break;
     }
     // Nohand, just base AP then
