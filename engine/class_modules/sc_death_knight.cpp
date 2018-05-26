@@ -3405,6 +3405,8 @@ struct frost_fever_t : public disease_t
   {
     base_multiplier *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
 
+    ap_type = AP_WEAPON_BOTH;
+
     p -> cooldown.frost_fever = p -> get_cooldown( "frost_fever" );
     p -> cooldown.frost_fever -> duration = p -> spec.frost_fever -> internal_cooldown();
   }
@@ -4776,6 +4778,7 @@ struct glacial_advance_t : public death_knight_spell_t
   {
     parse_options( options_str );
     school = SCHOOL_FROST; // Damage is frost so override this to make reports make more sense
+    ap_type = AP_WEAPON_BOTH;
 
     execute_action = new glacial_advance_damage_t( player );
     add_child( execute_action );
@@ -4928,6 +4931,7 @@ struct howling_blast_t : public death_knight_spell_t
 
     aoe = 1;
     add_child( aoe_damage );
+    ap_type = AP_WEAPON_BOTH;
 
     base_multiplier    *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
     
@@ -5448,6 +5452,8 @@ struct remorseless_winter_t : public death_knight_spell_t
     // Periodic behavior handled by the buff
     dot_duration = timespan_t::zero();
     base_tick_time = timespan_t::zero();
+
+    ap_type = AP_WEAPON_BOTH;
 
     if ( action_t* rw_damage = p -> find_action( "remorseless_winter_damage" ) )
     {
