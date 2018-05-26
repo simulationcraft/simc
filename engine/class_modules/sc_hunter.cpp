@@ -238,6 +238,7 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
  *   - review Barbed Shot refresh mechanic
  *  Survival
  *   - review Bloodseeker dot refresh mechanics
+ *   - movement support for proper Harpoon & Terms of Engagement use
  */
 
 // somewhat arbitrary number of the maximum count of barbed shot buffs possible simultaneously
@@ -342,6 +343,7 @@ public:
     buff_t* tip_of_the_spear;
     buff_t* mongoose_fury;
     buff_t* predator;
+    buff_t* terms_of_engagement;
 
     // sets
     buff_t* t19_4p_mongoose_power;
@@ -388,6 +390,7 @@ public:
     gain_t* spitting_cobra;
     gain_t* nesingwarys_trapping_treads;
     gain_t* hunters_mark;
+    gain_t* terms_of_engagement;
   } gains;
 
   // Procs
@@ -409,7 +412,7 @@ public:
     spell_data_ptr_t serpent_sting;
 
     spell_data_ptr_t vipers_venom;
-    spell_data_ptr_t terms_of_engagement; // NYI
+    spell_data_ptr_t terms_of_engagement;
     spell_data_ptr_t alpha_predator;
 
     // tier 30
@@ -599,6 +602,7 @@ public:
   double    composite_player_pet_damage_multiplier( const action_state_t* ) const override;
   double    matching_gear_multiplier( attribute_e attr ) const override;
   void      invalidate_cache( cache_e ) override;
+  void      regen( timespan_t periodicity ) override;
   void      create_options() override;
   expr_t*   create_expression( const std::string& name ) override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
@@ -3198,17 +3202,51 @@ struct raptor_strike_t: public hunter_melee_attack_t
 
 struct harpoon_t: public hunter_melee_attack_t
 {
+  struct terms_of_engagement_t : hunter_melee_attack_t
+  {
+    terms_of_engagement_t( const std::string& n, hunter_t* p ):
+      hunter_melee_attack_t( n, p, p -> find_spell( 271625 ) )
+    {
+      dual = true;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      hunter_melee_attack_t::impact( s );
+
+      p() -> buffs.terms_of_engagement -> trigger();
+    }
+  };
+  terms_of_engagement_t* terms_of_engagement;
+
   bool first_harpoon;
+
   harpoon_t( hunter_t* p, const std::string& options_str ):
-    hunter_melee_attack_t( "harpoon", p, p -> specs.harpoon ), first_harpoon( true )
+    hunter_melee_attack_t( "harpoon", p, p -> specs.harpoon ),
+    terms_of_engagement( nullptr ),
+    first_harpoon( true )
   {
     parse_options( options_str );
+
     harmful = false;
+    base_teleport_distance  = data().max_range();
+    movement_directionality = MOVEMENT_OMNI;
+
+    cooldown -> duration += p -> find_spell( 231550 ) -> effectN( 1 ).time_value(); // Harpoon (Rank 2)
+
+    if ( p -> talents.terms_of_engagement -> ok() )
+      terms_of_engagement = p -> get_background_action<terms_of_engagement_t>( "harpoon_terms_of_engagement" );
   }
 
   void execute() override
   {
     hunter_melee_attack_t::execute();
+
+    if ( terms_of_engagement )
+    {
+      terms_of_engagement -> set_target( execute_state -> target );
+      terms_of_engagement -> execute();
+    }
 
     first_harpoon = false;
 
@@ -4522,6 +4560,13 @@ void hunter_t::create_buffs()
       -> set_default_value( find_spell( 260249 ) -> effectN( 1 ).percent() )
       -> add_invalidate( CACHE_ATTACK_SPEED );
 
+  buffs.terms_of_engagement =
+    make_buff( this, "terms_of_engagement", find_spell( 265898 ) )
+      -> set_default_value( find_spell( 265898 ) -> effectN( 1 ).base_value() / 5.0 )
+      -> set_affects_regen( true );
+
+  // Sets & legendaries
+
   buffs.sentinels_sight =
     make_buff( this, "sentinels_sight", find_spell( 208913 ) )
     ->set_default_value( find_spell( 208913 ) -> effectN( 1 ).percent() )
@@ -4612,6 +4657,7 @@ void hunter_t::init_gains()
   gains.spitting_cobra       = get_gain( "spitting_cobra" );
   gains.nesingwarys_trapping_treads = get_gain( "nesingwarys_trapping_treads" );
   gains.hunters_mark         = get_gain( "hunters_mark" );
+  gains.terms_of_engagement  = get_gain( "terms_of_engagement" );
 }
 
 // hunter_t::init_position ==================================================
@@ -5177,6 +5223,19 @@ void hunter_t::invalidate_cache( cache_e c )
     break;
   default: break;
   }
+}
+
+// hunter_t::regen =========================================================
+
+void hunter_t::regen( timespan_t periodicity )
+{
+  player_t::regen( periodicity );
+
+  if ( resources.is_infinite( RESOURCE_FOCUS ) )
+    return;
+
+  if ( buffs.terms_of_engagement -> up() )
+      resource_gain( RESOURCE_FOCUS, buffs.terms_of_engagement -> check_value() * periodicity.total_seconds(), gains.terms_of_engagement );
 }
 
 // hunter_t::matching_gear_multiplier =======================================
