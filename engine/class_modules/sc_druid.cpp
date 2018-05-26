@@ -38,6 +38,7 @@ namespace spells {
 struct moonfire_t;
 struct starshards_t;
 struct shooting_stars_t;
+struct solar_empowerment_t;
 }
 namespace heals {
 struct cenarion_ward_hot_t;
@@ -263,6 +264,7 @@ public:
     attack_t* shadow_thrash;
     spell_t*  shooting_stars;
     spell_t*  starfall;
+    spell_t* solar_empowerment;
     spell_t* fury_of_elune;
     spell_t*  starshards;
     action_t* yseras_gift;
@@ -281,6 +283,9 @@ public:
   double sylvan_walker;
 
   double equipped_weapon_dps;
+
+  //other
+  spells::solar_empowerment_t* solar_empowerment;
 
   // Druid Events
   std::vector<event_t*> persistent_buff_delay;
@@ -802,6 +807,7 @@ public:
   const spell_data_t* find_affinity_spell( const std::string& ) const;
   specialization_e get_affinity_spec() const;
   void trigger_natures_guardian( const action_state_t* );
+  void trigger_solar_empowerment (const action_state_t*);
   double calculate_expected_max_health() const;
 
 private:
@@ -1834,7 +1840,7 @@ public:
     if ( energize_resource_() == RESOURCE_ASTRAL_POWER )
     {
       if (warrior_of_elune && p() -> buff.warrior_of_elune -> up() )
-        e *= 1.0 + 0.4; //does not seem to be in the spelldata (202425)
+        e *= 1.0 + p()->talent.warrior_of_elune->effectN(2).percent();
 
     }
 
@@ -5668,17 +5674,36 @@ struct skull_bash_t : public druid_spell_t
 };
 
 // Solar Wrath ==============================================================
+struct solar_empowerment_t : public druid_spell_t
+{
+  solar_empowerment_t (druid_t* p) :
+    druid_spell_t ("solar_empowerment", p, p -> find_spell (164545))
+  {
+    background = true;
+    may_crit = false;
+    aoe = -1;
+  }
 
+  void init () override
+  {
+    druid_spell_t::init ();
+
+    snapshot_flags = update_flags = 0;
+  }
+};
 struct solar_wrath_t : public druid_spell_t
 {
+  bool empowered;
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "solar_wrath", player, player -> find_affinity_spell( "Solar Wrath" ), options_str )
+    druid_spell_t( "solar_wrath", player, player -> find_affinity_spell( "Solar Wrath" ), options_str ),
+    empowered(false)
   {
     form_mask = MOONKIN_FORM;
 
-    base_aoe_multiplier = p()->find_spell(164545)->effectN(1).percent();
     if (player->specialization() == DRUID_RESTORATION)
       form_mask = NO_FORM | MOONKIN_FORM;
+
+    add_child (player->active.solar_empowerment);
 
     base_execute_time *= 1.0 + player -> sets -> set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
     energize_amount = player -> spec.astral_power -> effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
@@ -5694,21 +5719,14 @@ struct solar_wrath_t : public druid_spell_t
     return cc;
   }
 
-  double action_multiplier() const override
+  void impact (action_state_t* s) 
   {
-    double am = druid_spell_t::action_multiplier();
-
-    if ( p() -> buff.solar_empowerment -> check() )
-      am *= 1.0 + composite_solar_empowerment();
-
-    return am;
-  }
-
-  int n_targets() const override
-  {
-      if (p()->buff.solar_empowerment->check())
-          return -1;
-      return 0;
+    druid_spell_t::impact (s);
+    if (empowered)
+    {
+      p ()->trigger_solar_empowerment (s);
+      empowered = false;
+    }    
   }
 
   timespan_t gcd() const override
@@ -5744,7 +5762,9 @@ struct solar_wrath_t : public druid_spell_t
       p() -> cooldown.celestial_alignment ->
         adjust( -p() -> sets -> set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
     }
-
+    if (p ()->buff.solar_empowerment->check ())
+      empowered = true;
+    
     p() -> buff.solar_empowerment -> decrement();
 
     if (player->specialization() == DRUID_BALANCE)
@@ -6645,6 +6665,7 @@ void druid_t::init_spells()
   artifact.grace_of_the_cenarion_circle = find_artifact_spell("Grace of the Cenarion Circle");
   artifact.persistence = find_artifact_spell("Persistence");
 
+
   // Active Actions =========================================================
 
   caster_melee_attack = new caster_attacks::druid_melee_t( this );
@@ -6686,6 +6707,8 @@ void druid_t::init_spells()
     active.ashamanes_rip = new cat_attacks::ashamanes_rip_t( this );
   if ( mastery.natures_guardian -> ok() )
     active.natures_guardian = new heals::natures_guardian_t( this );
+
+  active.solar_empowerment = new spells::solar_empowerment_t (this);
 }
 
 // druid_t::init_base =======================================================
@@ -8759,6 +8782,21 @@ void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
   s -> target = this;
   active.natures_guardian -> snapshot_state( s, HEAL_DIRECT );
   active.natures_guardian -> schedule_execute( s );
+}
+
+//druid_t::trigger_solar_empowerment
+
+void druid_t::trigger_solar_empowerment (const action_state_t* state)
+{
+  double dm = buff.solar_empowerment->check_value ();
+
+  dm += mastery.starlight->ok () * cache.mastery_value()/2;  //Only scales with half the mastery value
+
+  double amount = state->result_amount * dm;
+  active.solar_empowerment->base_dd_min = amount;
+  active.solar_empowerment->base_dd_max = amount;
+  active.solar_empowerment->set_target (state->target);
+  active.solar_empowerment->execute ();
 }
 
 // druid_t::calculate_expected_max_health ===================================
