@@ -3963,39 +3963,28 @@ struct wildfire_bomb_t: public hunter_spell_t
       bomb_base_t( n, p, p -> find_spell( 265157 ), "scorching_wildfire", p -> find_spell( 269747 ) )
     {}
   };
-
-  struct impact_driver_t : action_t
-  {
-    bomb_base_t* wildfire_bomb;
-
-    impact_driver_t( const std::string& n, hunter_t* p, action_t* parent ):
-      action_t( ACTION_OTHER, n, p, p -> find_spell( 265163 ) ),
-      wildfire_bomb( nullptr )
-    {
-      dual = true;
-
-      wildfire_bomb = p -> get_background_action<wildfire_bomb_damage_t>( "wildfire_bomb_damage" );
-      parent -> add_child( wildfire_bomb );
-      parent -> add_child( wildfire_bomb -> dot_action );
-    }
-
-    void execute() override
-    {
-      action_t::execute();
-
-      wildfire_bomb -> set_target( execute_state -> target );
-      wildfire_bomb -> execute();
-    }
-  };
+  bomb_base_t* wildfire_bomb;
 
   wildfire_bomb_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "wildfire_bomb", p, p -> specs.wildfire_bomb )
   {
     parse_options( options_str );
 
-    impact_action = p -> get_background_action<impact_driver_t>( "wildfire_bomb_impact", this );
+    may_miss = false;
 
     cooldown -> charges += static_cast<int>( p -> talents.guerrilla_tactics -> effectN( 1 ).base_value() );
+
+    wildfire_bomb = p -> get_background_action<wildfire_bomb_damage_t>( "wildfire_bomb_damage" );
+    add_child( wildfire_bomb );
+    add_child( wildfire_bomb -> dot_action );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_spell_t::impact( s );
+
+    wildfire_bomb -> set_target( s -> target );
+    wildfire_bomb -> execute();
   }
 };
 
