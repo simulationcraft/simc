@@ -470,7 +470,7 @@ public:
 
     spell_data_ptr_t birds_of_prey;
     spell_data_ptr_t wildfire_infusion; // NYI
-    spell_data_ptr_t chakrams; // NYI
+    spell_data_ptr_t chakrams;
   } talents;
 
   // Specialization Spells
@@ -3287,11 +3287,59 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
 
 struct chakrams_t : public hunter_ranged_attack_t
 {
+  /**
+   * In game Chakrams is actually around 5 different spells with 3 'damage' spells alone:
+   *  259398 - the actual 'projectile' that hits the main target, once, and returns
+   *  259396 - the 'aoe' part, does the damage on each projectile impact, except the main target
+   *  267666 - the second spell hitting the main target on impact
+   *
+   * Our implementation here does everything using only 259398 with a bit of
+   * multipliers fiddling. While it does not exactly match the in-game behaviour
+   * it produces exactly the same numbers.
+   *
+   * The big difference to the game are dynamic multipliers because of the timing
+   * of impacts. In-game only 259398, the single hit to the main target, is calculated
+   * on execute. Every other spell is calculated (and 'executed') on the projectile
+   * impacting the respective target.
+   * Unfortunately we don't have support for 'travelling' projectiles (or
+   * for any non-circular aoe for that matter).
+   * Fortunately Survival is melee, so the impact of this should be pretty low.
+   */
+
+  struct chakrams_damage_t : public hunter_ranged_attack_t
+  {
+    chakrams_damage_t( const std::string& n, hunter_t* p ):
+      hunter_ranged_attack_t( n, p, p -> talents.chakrams -> effectN( 1 ).trigger() )
+    {
+      dual = true;
+
+      // Chakrams hits all targets in it's path, as we don't have support for this
+      // just make it hit everything.
+      aoe = -1;
+      radius = 0;
+
+      base_multiplier *= 2.0;
+      base_aoe_multiplier = 0.5;
+    }
+  };
+  chakrams_damage_t* damage = nullptr;
+
   chakrams_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "chakrams", p, p -> talents.chakrams )
   {
-    // TODO
     parse_options( options_str );
+
+    damage = p -> get_background_action<chakrams_damage_t>( "chakrams_damage" );
+    add_child( damage );
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    damage -> set_target( execute_state -> target );
+    damage -> execute();
+    damage -> execute(); // to simulate the 'return' & hitting the main target twice
   }
 };
 
