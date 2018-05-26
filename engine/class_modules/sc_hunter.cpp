@@ -236,6 +236,8 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
  *     initial 50% bonus damage in the sub ~20yds range)
  *  Beast Mastery
  *   - review Barbed Shot refresh mechanic
+ *  Survival
+ *   - review Bloodseeker dot refresh mechanics
  */
 
 // somewhat arbitrary number of the maximum count of barbed shot buffs possible simultaneously
@@ -1662,6 +1664,9 @@ struct kill_command_sv_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
 
     attack_power_mod.direct = o() -> specs.kill_command -> effectN( 1 ).percent();
     attack_power_mod.tick = o() -> talents.bloodseeker -> effectN( 1 ).percent();
+
+    if ( ! o() -> talents.bloodseeker -> ok() )
+      dot_duration = timespan_t::zero();
 
     base_dd_multiplier *= 1.0 + o() -> talents.alpha_predator -> effectN( 2 ).percent();
   }
