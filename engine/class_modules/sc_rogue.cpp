@@ -3018,6 +3018,13 @@ struct gloomblade_t : public rogue_attack_t
     requires_weapon = WEAPON_DAGGER;
   }
 
+  double bonus_da( const action_state_t* state ) const override
+  {
+    double b = rogue_attack_t::bonus_da( state );
+    b += p() -> buffs.perforate -> stack_value();
+    return b;
+  }
+
   void execute() override
   {
     rogue_attack_t::execute();
@@ -3029,6 +3036,9 @@ struct gloomblade_t : public rogue_attack_t
     }
 
     p() -> trigger_t21_4pc_subtlety( execute_state );
+
+    if ( p() -> position() == POSITION_BACK )
+      p() -> buffs.perforate -> trigger();
   }
 };
 
