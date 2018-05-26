@@ -9990,7 +9990,7 @@ void player_t::create_options()
   add_option( opt_func( "talent_override", parse_talent_override ) );
   add_option( opt_string( "race", race_str ) );
   add_option( opt_func( "timeofday", parse_timeofday ) );
-  add_option( opt_int( "level", true_level, 0, MAX_LEVEL ) );
+  add_option( opt_int( "level", true_level, 1, MAX_LEVEL ) );
   add_option( opt_bool( "ready_trigger", ready_type ) );
   add_option( opt_func( "role", parse_role_string ) );
   add_option( opt_string( "target", target_str ) );
