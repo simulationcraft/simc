@@ -535,7 +535,7 @@ void base_fiend_pet_t::init_action_list()
 
 action_t* base_fiend_pet_t::create_action( const std::string& name, const std::string& options_str )
 {
-  
+
   return priest_pet_t::create_action( name, options_str );
 }
 }  // namespace fiend
@@ -1131,31 +1131,6 @@ void priest_t::create_apl_precombat()
   // do all kinds of calculations here to reduce CPU time
   if ( specialization() == PRIEST_SHADOW )
   {
-    precombat->add_action(
-        "variable,name=haste_eval,op=set,value=(raw_haste_pct-0.3)*(10+10*equipped."
-        "mangazas_madness+5*talent.fortress_of_the_mind.enabled)" );
-    precombat->add_action( "variable,name=haste_eval,op=max,value=0" );
-    precombat->add_action(
-        "variable,name=erupt_eval,op=set,value=26+1*talent.fortress_of_the_mind.enabled-"
-        "3*talent.Shadowy_insight.enabled+variable.haste_eval*1.5" );
-    precombat->add_action(
-        "variable,name=cd_time,op=set,value=(12+(2-2*talent.mindbender.enabled*set_"
-        "bonus.tier20_4pc)*set_bonus.tier19_2pc+(1-3*talent.mindbender.enabled*set_"
-        "bonus.tier20_4pc)*equipped.mangazas_madness+(6+5*talent.mindbender.enabled)"
-        "*set_bonus.tier20_4pc)" );
-    precombat->add_action(
-        "variable,name=dot_swp_dpgcd,op=set,value=36.5*1.2"
-        "*(1+0.2+stat.mastery_rating%16000)*0.75" );
-    precombat->add_action(
-        "variable,name=dot_vt_dpgcd,op=set,value=68*1.2*"
-        "*(1+0.2+stat.mastery_rating%16000)*0.5" );
-    precombat->add_action( "variable,name=sear_dpgcd,op=set,value=120*1.2" );
-    precombat->add_action(
-        "variable,name=s2msetup_time,op=set,value=(0.8*(83+(20+20*talent.fortress_of_the_mind"
-        ".enabled)*set_bonus.tier20_4pc+((33-13*set_bonus.tier20_4pc)*"
-        "talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*equipped.mangazas_madness+(raw_haste_"
-        "pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls."
-        "enabled)))),if=talent.surrender_to_madness.enabled" );
     precombat->add_action( "potion" );
   }
 
@@ -1170,6 +1145,7 @@ void priest_t::create_apl_precombat()
     default:
       precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
       precombat->add_action( "mind_blast" );
+      precombat->add_action( "shadow_word_void" );
       break;
   }
 }
