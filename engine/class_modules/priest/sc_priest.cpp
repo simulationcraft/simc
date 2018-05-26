@@ -418,8 +418,11 @@ void mangazas_madness( special_effect_t& effect )
   assert( priest );
   do_trinket_init( priest, PRIEST_SHADOW, priest->active_items.mangazas_madness, effect );
 
-  priest->cooldowns.shadow_word_void->charges +=
-      priest->active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
+  if ( priest->active_items.mangazas_madness )
+  {
+    priest->cooldowns.mind_blast->charges +=
+        priest->active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
+  }
 }
 
 void mother_shahrazs_seduction( special_effect_t& effect )
@@ -608,8 +611,6 @@ void priest_t::create_cooldowns()
   cooldowns.shadowfiend       = get_cooldown( "shadowfiend" );
   cooldowns.silence           = get_cooldown( "silence" );
   cooldowns.mind_blast        = get_cooldown( "mind_blast" );
-  // cooldowns.shadow_word_death = get_cooldown( "shadow_word_death" );
-  // cooldowns.shadow_word_void = get_cooldown( "shadow_word_void" );
   cooldowns.void_bolt        = get_cooldown( "void_bolt" );
   cooldowns.mind_bomb        = get_cooldown( "mind_bomb" );
   cooldowns.psychic_horror   = get_cooldown( "psychic_horror" );

@@ -284,8 +284,6 @@ public:
     propagate_const<cooldown_t*> silence;
 
     propagate_const<cooldown_t*> mind_blast;
-    // propagate_const<cooldown_t*> shadow_word_death;
-    propagate_const<cooldown_t*> shadow_word_void;
     propagate_const<cooldown_t*> void_bolt;
     propagate_const<cooldown_t*> mind_bomb;
     propagate_const<cooldown_t*> psychic_horror;
