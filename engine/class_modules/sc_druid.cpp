@@ -16,20 +16,9 @@ namespace { // UNNAMED NAMESPACE
   Feral =====================================================================
 
   Balance ===================================================================
-  New Empowerment effects:
-    -Proc each other
-    -Solar Empowerment explodes
-    -Starlord baseline
-  T20 as a talent without Starfall
-  Stellar Flare scales like FoE
-  Treants generate AsP over time
   Still need AP Coeff for Treants
-  FoE generates AsP
-  Nature's Balance redesigned:
-    -Generates AsP like Blessing of An'She (which was removed)
-    -OoC baseline AsP becomes 50(change starting AsP to 50 when talented)
-  Inc and CA do not generate extra AsP and instead give 15% haste
-
+  Nature's Balance needs to be triggered at the start of combat and AsP set to 50
+  Inc and CA need to actually give Haste
 
   Guardian ==================================================================
 
@@ -315,10 +304,10 @@ public:
     haste_buff_t* sephuzs_secret;
 
     // Balance
-    buff_t* blessing_of_anshe;
-    buff_t* blessing_of_elune;
+    buff_t* natures_balance;
     buff_t* celestial_alignment;
-    buff_t* fury_of_elune; // Tracking buff for APL
+    buff_t* fury_of_elune; // Astral Power Gain
+    buff_t* force_of_nature; // Astral Power Gain
     buff_t* incarnation_moonkin;
     buff_t* lunar_empowerment;
     buff_t* moonkin_form;
@@ -332,7 +321,8 @@ public:
     buff_t* solar_solstice; //T21 4P Balance
     buff_t* stellar_empowerment;
     buff_t* starfall;
-    haste_buff_t* astral_acceleration;
+    haste_buff_t* astral_acceleration; //T20 4P Balance
+    haste_buff_t* starlord; //talent
 
     // Feral
     buff_t* ashamanes_energy;
@@ -402,7 +392,10 @@ public:
     gain_t* soul_of_the_forest; // Feral & Guardian
 
     // Balance
-    gain_t* blessing_of_anshe;
+    gain_t* natures_balance; //talent
+    gain_t* force_of_nature;
+    gain_t* warrior_of_elune;
+    gain_t* fury_of_elune;
     gain_t* lunar_strike;
     gain_t* moonfire;
     gain_t* shooting_stars;
@@ -508,10 +501,9 @@ public:
 
     // Balance
     const spell_data_t* balance;
+    const spell_data_t* eclipse;
     const spell_data_t* astral_influence; // Balance Affinity
     const spell_data_t* astral_power;
-    const spell_data_t* blessing_of_anshe;
-    const spell_data_t* blessing_of_elune;
     const spell_data_t* celestial_alignment;
     const spell_data_t* moonkin_form;
     const spell_data_t* starfall;
@@ -577,20 +569,20 @@ public:
     const spell_data_t* bloodtalons;
 
     // Balance
-    const spell_data_t* force_of_nature;
+    const spell_data_t* natures_balance;
     const spell_data_t* warrior_of_elune;
-    const spell_data_t* starlord;
+    const spell_data_t* force_of_nature;
 
+    const spell_data_t* twin_moons;
     const spell_data_t* incarnation_moonkin;
+
+    const spell_data_t* starlord;
+    const spell_data_t* stellar_drift;
     const spell_data_t* stellar_flare;
 
-    const spell_data_t* new_moon;
-    const spell_data_t* blessing_of_the_ancients;
     const spell_data_t* shooting_stars;
-
     const spell_data_t* fury_of_elune;
-    const spell_data_t* stellar_drift;
-    const spell_data_t* natures_balance;
+    const spell_data_t* new_moon;
 
     // Guardian
     const spell_data_t* brambles;
@@ -1820,18 +1812,14 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 private:
   typedef druid_spell_base_t<spell_t> ab;
 public:
-  bool incarnation;
-  bool celestial_alignment;
-  bool blessing_of_elune;
+  bool warrior_of_elune;
   bool stellar_empowerment;
 
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s      = spell_data_t::nil(),
                  const std::string& options = std::string() )
     : base_t( token, p, s ),
-      incarnation( data().affected_by( p -> talent.incarnation_moonkin -> effectN( 2 ) ) ),
-      celestial_alignment( data().affected_by( p -> spec.celestial_alignment -> effectN( 3 ) ) ),
-      blessing_of_elune( data().affected_by( p -> spec.blessing_of_elune -> effectN( 1 ) ) ),
+      warrior_of_elune( data().affected_by( p -> talent.warrior_of_elune -> effectN( 1 ) ) ),
       stellar_empowerment( false )
   {
     parse_options( options );
@@ -1843,16 +1831,8 @@ public:
 
     if ( energize_resource_() == RESOURCE_ASTRAL_POWER )
     {
-      if ( blessing_of_elune && p() -> buff.blessing_of_elune -> up() )
-        e *= 1.0 + p() -> spec.blessing_of_elune -> effectN( 1 ).percent();
-
-      if ( celestial_alignment && p() -> buff.celestial_alignment -> check() )
-        e *= 1.0 + p() -> spec.celestial_alignment -> effectN( 3 ).percent();
-
-      if ( incarnation && p() -> buff.incarnation_moonkin -> check() )
-      {
-        e *= 1.0 + p() -> talent.incarnation_moonkin -> effectN( 2 ).percent();
-      }
+      if (warrior_of_elune && p() -> buff.warrior_of_elune -> up() )
+        e *= 1.0 + 0.4; //does not seem to be in the spelldata (202425)
 
     }
 
@@ -2037,6 +2017,13 @@ struct moonfire_t : public druid_spell_t
       dual = background = true;
       dot_duration       += p -> spec.balance -> effectN( 3 ).time_value();
       base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 8 ).percent();
+
+      if (p->talent.twin_moons->ok())
+      {
+          aoe = 1 + p->talent.twin_moons->effectN(1).base_value();
+          base_dd_multiplier *= 1.0 + p->talent.twin_moons->effectN(2).percent();
+          base_td_multiplier *= 1.0 + p->talent.twin_moons->effectN(3).percent();
+      }
 
       if ( p -> artifact.persistence )
       {
@@ -4879,63 +4866,15 @@ struct bear_form_t : public druid_spell_t
   }
 };
 
-// Blessing of An'she =======================================================
+// Nature's Balance =======================================================
 
-struct blessing_of_anshe_t : public druid_spell_t
+struct natures_balance_t : public druid_spell_t
 {
-  blessing_of_anshe_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "blessing_of_anshe", player, player -> spec.blessing_of_anshe, options_str )
+    natures_balance_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "natures_balance", player, player -> talent.natures_balance, options_str )
   {
     harmful = may_crit = false;
     ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p() -> buff.blessing_of_elune -> expire();
-    p() -> buff.blessing_of_anshe -> start();
-  }
-
-  virtual bool ready() override
-  {
-    if ( ! p() -> talent.blessing_of_the_ancients -> ok() )
-      return false;
-    if ( p() -> buff.blessing_of_anshe -> check() )
-      return false;
-
-    return druid_spell_t::ready();
-  }
-};
-
-// Blessing of Elune ========================================================
-
-struct blessing_of_elune_t : public druid_spell_t
-{
-  blessing_of_elune_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "blessing_of_elune", player, player -> spec.blessing_of_elune, options_str )
-  {
-    harmful = false;
-    ignore_false_positive = true;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p() -> buff.blessing_of_anshe -> expire();
-    p() -> buff.blessing_of_elune -> start();
-  }
-
-  virtual bool ready() override
-  {
-    if ( ! p() -> talent.blessing_of_the_ancients -> ok() )
-      return false;
-    if ( p() -> buff.blessing_of_elune -> check() )
-      return false;
-
-    return druid_spell_t::ready();
   }
 };
 
@@ -5072,7 +5011,7 @@ struct fury_of_elune_t : public druid_spell_t
   void execute() override
   {
       druid_spell_t::execute();
-      timespan_t pulse_time = data().effectN(3).time_value();
+      timespan_t pulse_time = data().effectN(3).period();
       make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
           .target(execute_state->target)
           .pulse_time(pulse_time * p()->composite_spell_haste()) //tick time is saved in an effect
@@ -5429,7 +5368,6 @@ struct lunar_beam_t : public druid_spell_t
 
 struct lunar_strike_t : public druid_spell_t
 {
-  timespan_t natures_balance;
   lunar_strike_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "lunar_strike", player,
       player -> find_affinity_spell( "Lunar Strike" ), options_str )
@@ -5437,14 +5375,7 @@ struct lunar_strike_t : public druid_spell_t
     aoe = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
 
-    natures_balance    = player -> talent.natures_balance -> effectN( 1 ).base_value() * player -> find_spell( 164812 ) -> effectN( 2 ).period();
-
     base_execute_time *= 1.0 + player -> sets -> set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
-  }
-
-  timespan_t natures_balance_extension() const
-  {
-    return natures_balance * p() -> cache.spell_haste();
   }
 
   double composite_crit_chance() const override
@@ -5471,8 +5402,8 @@ struct lunar_strike_t : public druid_spell_t
   {
     timespan_t g = druid_spell_t::gcd();
 
-    if ( p() -> talent.starlord -> ok() && p() -> buff.lunar_empowerment -> check() )
-      g *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
+    if (p() -> buff.lunar_empowerment -> check())
+        g *= 1 - p()->find_spell(164547)->effectN(3).percent();
 
     g = std::max( min_gcd, g );
 
@@ -5483,8 +5414,8 @@ struct lunar_strike_t : public druid_spell_t
   {
     timespan_t et = druid_spell_t::execute_time();
 
-    if ( p() -> talent.starlord -> ok() && p() -> buff.lunar_empowerment -> check() )
-      et *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
+    if (p() -> buff.lunar_empowerment -> check() )
+      et *= 1 - p()->find_spell(164547)->effectN(2).percent();
 
     if ( p() -> buff.warrior_of_elune -> check() )
       et *= 1 + p() -> talent.warrior_of_elune -> effectN( 1 ).percent();
@@ -5499,19 +5430,17 @@ struct lunar_strike_t : public druid_spell_t
 
     druid_spell_t::execute();
 
-    if ( natures_balance > timespan_t::zero() )
-    {
-      timespan_t extend_stuff = natures_balance_extension();
-      std::vector< player_t* >& tl = target_list();
-      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
-      {
-        player_t* t = tl[i];
-        td( t ) -> dots.moonfire -> extend_duration( extend_stuff, timespan_t::from_seconds( 28.6 ) );
-      }
-    }
 
     p() -> buff.lunar_empowerment -> decrement();
     p() -> buff.warrior_of_elune -> decrement();
+
+    if (player->specialization() == DRUID_BALANCE)
+    {
+        if (rng().roll(p()->spec.eclipse->effectN(1).percent()))
+        {
+            p()->buff.solar_empowerment->trigger();
+        }
+    }
 
     p() -> buff.power_of_elune -> trigger();
 
@@ -5753,15 +5682,12 @@ struct skull_bash_t : public druid_spell_t
 
 struct solar_wrath_t : public druid_spell_t
 {
-  timespan_t natures_balance;
-
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "solar_wrath", player, player -> find_affinity_spell( "Solar Wrath" ), options_str )
   {
-    natures_balance    = player -> talent.natures_balance -> effectN( 2 ).base_value() * player -> find_spell( 164815 ) -> effectN( 2 ).period();
-
     form_mask = MOONKIN_FORM;
 
+    base_aoe_multiplier = p()->find_spell(164545)->effectN(1).percent();
     if (player->specialization() == DRUID_RESTORATION)
       form_mask = NO_FORM | MOONKIN_FORM;
 
@@ -5789,12 +5715,19 @@ struct solar_wrath_t : public druid_spell_t
     return am;
   }
 
+  int n_targets() const override
+  {
+      if (p()->buff.solar_empowerment->check())
+          return -1;
+      return 0;
+  }
+
   timespan_t gcd() const override
   {
     timespan_t g = druid_spell_t::gcd();
 
-    if ( p() -> talent.starlord -> ok() && p() -> buff.solar_empowerment -> check() )
-      g *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
+    if ( p() -> buff.solar_empowerment -> check() )
+      g *= 1 - p()->find_spell(164545)->effectN(3).percent();
 
     g = std::max( min_gcd, g );
 
@@ -5805,15 +5738,10 @@ struct solar_wrath_t : public druid_spell_t
   {
     timespan_t et = druid_spell_t::execute_time();
 
-    if ( p() -> talent.starlord -> ok() && p() -> buff.solar_empowerment -> check() )
-      et *= 1 - p() -> talent.starlord -> effectN( 1 ).percent();
+    if (p() -> buff.solar_empowerment -> check() )
+      et *= 1 - p()->find_spell(164545)->effectN(2).percent();
 
     return et;
-  }
-
-  timespan_t natures_balance_extension() const
-  {
-    return natures_balance * p() -> cache.spell_haste();
   }
 
   void execute() override
@@ -5822,16 +5750,6 @@ struct solar_wrath_t : public druid_spell_t
 
     druid_spell_t::execute();
 
-    if ( natures_balance > timespan_t::zero() )
-    {
-      timespan_t extend_stuff = natures_balance_extension();
-      for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
-      {
-        player_t* t = sim -> target_non_sleeping_list[i];
-        td( t ) -> dots.sunfire -> extend_duration( extend_stuff, timespan_t::from_seconds( 23.4 ) );
-      }
-    }
-
     if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T17, B4 ) )
     {
       p() -> cooldown.celestial_alignment ->
@@ -5839,6 +5757,14 @@ struct solar_wrath_t : public druid_spell_t
     }
 
     p() -> buff.solar_empowerment -> decrement();
+
+    if (player->specialization() == DRUID_BALANCE)
+    {
+        if (rng().roll(p()->spec.eclipse->effectN(1).percent()))
+        {
+            p()->buff.lunar_empowerment->trigger();
+        }
+    }
 
     p() -> buff.power_of_elune -> trigger();
   }
@@ -5911,7 +5837,6 @@ struct starfall_t : public druid_spell_t
     {
         may_miss = may_crit = false;
         base_tick_time = data().duration() / 8.0; // ticks 9 times (missing from spell data)
-                                                  // TOCHECK: tick zero?
 
         if (!p->active.starfall)
         {
@@ -5937,6 +5862,10 @@ struct starfall_t : public druid_spell_t
         if (p()->sets->has_set_bonus(DRUID_BALANCE, T20, B4))
         {
             p()->buff.astral_acceleration->trigger();
+        }
+        if (p()->talent.starlord->ok())
+        {
+            p()->buff.starlord->trigger();
         }
         if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B4))
         {
@@ -6045,6 +5974,9 @@ struct starsurge_t : public druid_spell_t
     if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T20, B4 ))
        p() -> buff.astral_acceleration -> trigger();
 
+    if (p()->talent.starlord->ok())
+        p()->buff.starlord->trigger();
+
     if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B4))
         p()->buff.solar_solstice->trigger();
 
@@ -6077,8 +6009,15 @@ struct stellar_flare_t : public druid_spell_t
 {
   stellar_flare_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare, options_str )
+  {}
+  double action_multiplier() const override
   {
-      stellar_empowerment = true;
+      double am = druid_spell_t::action_multiplier();
+
+      if (p()->mastery.starlight->ok())
+          am *= 1.0 + p()->cache.mastery_value();
+
+      return am;
   }
 
 };
@@ -6217,6 +6156,7 @@ struct force_of_nature_t : public druid_spell_t
         p() -> force_of_nature[i] -> summon( summon_duration );
       }
     }
+    p()->buff.force_of_nature->trigger();
   }
 };
 } // end namespace spells
@@ -6404,8 +6344,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "barkskin"               ) return new               barkskin_t( this, options_str );
   if ( name == "berserk"                ) return new                berserk_t( this, options_str );
   if ( name == "bear_form"              ) return new      spells::bear_form_t( this, options_str );
-  if ( name == "blessing_of_anshe"      ) return new      blessing_of_anshe_t( this, options_str );
-  if ( name == "blessing_of_elune"      ) return new      blessing_of_elune_t( this, options_str );
+  if ( name == "natures_balance"      ) return new          natures_balance_t( this, options_str );
   if ( name == "brutal_slash"           ) return new           brutal_slash_t( this, options_str );
   if ( name == "bristling_fur"          ) return new          bristling_fur_t( this, options_str );
   if ( name == "cat_form"               ) return new       spells::cat_form_t( this, options_str );
@@ -6523,10 +6462,9 @@ void druid_t::init_spells()
   // Balance
   spec.astral_power               = find_specialization_spell( "Astral Power" );
   spec.balance                    = find_specialization_spell( "Balance Druid" );
-  spec.blessing_of_anshe          = find_talent_spell( "Blessing of the Ancients" ) -> ok() ? find_spell( 202739 ) : spell_data_t::not_found();
-  spec.blessing_of_elune          = find_talent_spell( "Blessing of the Ancients" ) -> ok() ? find_spell( 202737 ) : spell_data_t::not_found();
   spec.celestial_alignment        = find_specialization_spell( "Celestial Alignment" );
   spec.moonkin_form               = find_specialization_spell( "Moonkin Form" );
+  spec.eclipse                    = find_specialization_spell( "Eclipse");
   spec.starfall                   = find_specialization_spell( "Starfall" );
   spec.stellar_empowerment        = spec.starfall -> ok() ? find_spell( 197637 ) : spell_data_t::not_found();
   spec.balance_tier19_2pc         = sets -> has_set_bonus( DRUID_BALANCE, T19, B2 ) ? find_spell( 211089 ) : spell_data_t::not_found();
@@ -6609,20 +6547,20 @@ void druid_t::init_spells()
   talent.bloodtalons                    = find_talent_spell( "Bloodtalons" );
 
   // Balance
+  talent.natures_balance                = find_talent_spell( "Natures's Balance" );
   talent.warrior_of_elune               = find_talent_spell( "Warrior of Elune" );
-  talent.starlord                       = find_talent_spell( "Starlord" );
-  talent.force_of_nature                = find_talent_spell("Force of Nature");
+  talent.force_of_nature                = find_talent_spell( "Force of Nature");
 
+  talent.twin_moons                     = find_talent_spell( "Twin Moons");
   talent.incarnation_moonkin            = find_talent_spell( "Incarnation: Chosen of Elune" );
-  talent.stellar_flare                  = find_talent_spell( "Stellar Flare" );
 
-  talent.new_moon                       = find_talent_spell( "New Moon" );
-  talent.blessing_of_the_ancients       = find_talent_spell("Blessing of the Ancients");
-  talent.shooting_stars                 = find_talent_spell("Shooting Stars");
+  talent.starlord                       = find_talent_spell( "Starlord");
+  talent.stellar_drift                  = find_talent_spell( "Stellar Drift");
+  talent.stellar_flare                  = find_talent_spell( "Stellar Flare");
 
-  talent.natures_balance                = find_talent_spell("Nature's Balance");
+  talent.shooting_stars                 = find_talent_spell( "Shooting Stars");
   talent.fury_of_elune                  = find_talent_spell( "Fury of Elune" );
-  talent.stellar_drift                  = find_talent_spell("Stellar Drift");
+  talent.new_moon                       = find_talent_spell( "New Moon");
 
   // Guardian
   talent.brambles                       = find_talent_spell( "Brambles" );
@@ -6888,18 +6826,23 @@ void druid_t::create_buffs()
 
   // Balance
 
-  buff.blessing_of_anshe     = buff_creator_t( this, "blessing_of_anshe", spec.blessing_of_anshe )
-                               .tick_time_behavior( buff_tick_time_behavior::HASTED )
+  buff.natures_balance       = buff_creator_t( this, "natures_balance", talent.natures_balance )
+                               .tick_time_behavior( buff_tick_time_behavior::UNHASTED )
                                .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
-                                 resource_gain( RESOURCE_ASTRAL_POWER, spec.blessing_of_anshe -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
-                                 gain.blessing_of_anshe ); } );
-
-  buff.blessing_of_elune     = buff_creator_t( this, "blessing_of_elune", spec.blessing_of_elune );
+                                 resource_gain( RESOURCE_ASTRAL_POWER, talent.natures_balance -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
+                                 gain.natures_balance ); } );
 
   buff.celestial_alignment   = new celestial_alignment_buff_t( *this );
 
-  buff.fury_of_elune      = buff_creator_t( this, "fury_of_elune", spell_data_t::nil() )
-                               .duration(timespan_t::from_millis(8000)); // Tracking buff for APL use
+  buff.fury_of_elune         = buff_creator_t( this, "fury_of_elune", talent.fury_of_elune ) // Astral Power Gain Buff
+                               .tick_callback([this](buff_t*, int, const timespan_t&) {
+                                 resource_gain(RESOURCE_ASTRAL_POWER, talent.fury_of_elune->effectN(3).resource(RESOURCE_ASTRAL_POWER), //not to be found in the spelldata
+                                 gain.fury_of_elune); });
+
+  buff.force_of_nature       = buff_creator_t(this, "force_of_nature", talent.force_of_nature) // Astral Power Gain Buff
+                               .tick_callback([this](buff_t*, int, const timespan_t&) {
+                                  resource_gain(RESOURCE_ASTRAL_POWER, talent.force_of_nature->effectN(5).resource(RESOURCE_ASTRAL_POWER), //not to be found in the spelldata
+                                  gain.force_of_nature); });
 
   buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
                                .default_value( find_spell( 164547 ) -> effectN( 1 ).percent()
@@ -6921,7 +6864,12 @@ void druid_t::create_buffs()
   buff.astral_acceleration->set_cooldown(timespan_t::zero())
       ->set_default_value(find_spell(242232)->effectN(1).percent())
       ->set_refresh_behavior(buff_refresh_behavior::DISABLED);
-                                //.duration( timespan_t::from_seconds( 20.0 ) );
+
+  buff.starlord = make_buff<haste_buff_t>(this, "starlord", find_spell(279709));
+  buff.starlord->set_cooldown(timespan_t::zero())
+      ->set_default_value(find_spell(279709)->effectN(1).percent())
+      ->set_refresh_behavior(buff_refresh_behavior::DISABLED);
+
   buff.solar_solstice = buff_creator_t(this, "solar_solstice", find_spell(252767))
       .default_value(find_spell(252767)->effectN(1).percent());
 
@@ -7192,7 +7140,6 @@ void druid_t::apl_precombat()
   else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
   {
     precombat -> add_action( this, "Moonkin Form" );
-    precombat -> add_action( "blessing_of_elune" );
   }
   //else if (specialization() == DRUID_RESTORATION && (primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL))
   //{
@@ -7525,9 +7472,6 @@ void druid_t::apl_balance()
   if ( sim -> allow_potions && true_level >= 80 )
     default_list -> add_action( potion_action + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
 
-  default_list -> add_action( "blessing_of_elune,if=active_enemies<=2&talent.blessing_of_the_ancients.enabled&buff.blessing_of_elune.down" );
-  default_list -> add_action( "blessing_of_elune,if=active_enemies>=3&talent.blessing_of_the_ancients.enabled&buff.blessing_of_anshe.down" );
-
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
 
@@ -7736,7 +7680,9 @@ void druid_t::init_gains()
   gain.soul_of_the_forest    = get_gain( "soul_of_the_forest" ); // Feral & Guardian
 
   // Balance
-  gain.blessing_of_anshe     = get_gain( "blessing_of_anshe"     );
+  gain.natures_balance       = get_gain("natures_balance");
+  gain.force_of_nature       = get_gain("force_of_nature");
+  gain.fury_of_elune         = get_gain("fury_of_elune");
   gain.lunar_strike          = get_gain( "lunar_strike"          );
   gain.moonfire              = get_gain( "moonfire"              );
   gain.shooting_stars        = get_gain( "shooting_stars"        );
@@ -8202,6 +8148,14 @@ double druid_t::composite_spell_haste() const
   double sh = player_t::composite_spell_haste();
 
   sh *= 1.0 / ( 1.0 + buff.astral_acceleration -> check_stack_value() );
+
+  sh *= 1.0 / (1.0 + buff.starlord->check_stack_value());
+  //this doesnt seem to work
+  /*if (buff.celestial_alignment->check())
+      sh /= (1.0 + spec.celestial_alignment->effectN(3).percent());
+
+  if (buff.incarnation_moonkin->check())
+      sh /= (1.0 + talent.incarnation_moonkin->effectN(2).percent());*/
 
   if ( buff.sephuzs_secret -> check() )
      sh *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
