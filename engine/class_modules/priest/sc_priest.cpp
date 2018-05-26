@@ -1145,6 +1145,7 @@ void priest_t::create_apl_precombat()
     default:
       precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
       precombat->add_action( "mind_blast" );
+      precombat->add_action( "shadow_word_void" );
       break;
   }
 }

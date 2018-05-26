@@ -2051,9 +2051,9 @@ expr_t* priest_t::create_expression_shadow( const std::string& name_str )
 void priest_t::generate_apl_shadow()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
-  action_priority_list_t* check        = get_action_priority_list( "check" );
-  action_priority_list_t* main         = get_action_priority_list( "main" );
-  action_priority_list_t* vf           = get_action_priority_list( "vf" );
+  action_priority_list_t* aoe          = get_action_priority_list( "aoe" );
+  action_priority_list_t* cleave       = get_action_priority_list( "cleave" );
+  action_priority_list_t* single       = get_action_priority_list( "single" );
 
   // On-Use Items
   for ( const std::string& item_action : get_item_actions() )
@@ -2069,115 +2069,99 @@ void priest_t::generate_apl_shadow()
 
   // Potions
   default_list->add_action(
-      "potion,if=buff.bloodlust.react|target.time_to_die<"
-      "=80|target.health.pct<35" );
+      "potion,if=buff.bloodlust.react|target.time_to_die<=80|"
+      "target.health.pct<35" );
 
   // Choose which APL to use based on talents and fight conditions.
-  default_list->add_action( "run_action_list,name=vf,if=buff.voidform.up" );
-  default_list->add_action( "run_action_list,name=main" );
 
-  // check APL
-  check->add_action( "variable,op=set,name=actors_fight_time_mod,value=0" );
-  check->add_action(
-      "variable,op=set,name=actors_fight_time_mod,value=-((-(450)+(time+target."
-      "time_to_die))%10),if=time+target.time_to_die>450&time+target.time_to_"
-      "die<600" );
-  check->add_action(
-      "variable,op=set,name=actors_fight_time_mod,value=((450-(time+target."
-      "time_to_die))%5),if=time+target.time_to_die<=450" );
+  default_list->add_action(
+      "run_action_list,name=aoe,"
+      "if=spell_targets.mind_sear>(5+1*talent.misery.enabled)" );
+  default_list->add_action(
+      "run_action_list,name=cleave,if=active_enemies>1" );
+  default_list->add_action( "run_action_list,name=single,if=active_enemies=1" );
 
-  // Main APL
-  main->add_talent( this, "Surrender to Madness",
-                    "if=talent.surrender_to_madness.enabled" );
-  main->add_action( this, "Shadow Word: Pain",
-                    "if=talent.misery.enabled&dot.shadow_word_pain.remains<gcd.max,moving=1,cycle_targets=1" );
-  main->add_action( this, "Vampiric Touch",
-                    "if=talent.misery.enabled&(dot.vampiric_touch.remains<3*gcd.max|dot.shadow_word_pain.remains<3*gcd."
-                    "max),cycle_targets=1" );
-  main->add_action( this, "Shadow Word: Pain", "if=!talent.misery.enabled&dot.shadow_word_pain.remains<(3+(4%3))*gcd" );
-  main->add_action( this, "Vampiric Touch", "if=!talent.misery.enabled&dot.vampiric_touch.remains<(4+(4%3))*gcd" );
-  main->add_action( this, "Void Eruption" );
-  main->add_talent( this, "Shadow Crash", "if=talent.shadow_crash.enabled" );
-  main->add_action( this, "Mind Sear", "if=active_enemies>6" );
-  main->add_talent( this, "Shadow Word: Death",
-                    "if=talent.shadow_word_death.enabled&active_enemies<=4&"
-                    "cooldown.shadow_word_death.charges=2&insanity<=85" );
-  main->add_action( this, "Mind Blast",
-                    "if=active_enemies<=4" );
-  main->add_action( this, "Shadow Word: Pain",
-                    "if=!talent.misery.enabled&!ticking&target.time_to_die"
-                    ">10&(active_enemies<5&(talent.auspicious_spirits.enabled|talent.shadowy_"
-                    "insight.enabled)),cycle_targets=1" );
-  main->add_action( this, "Vampiric Touch",
-                    "if=active_enemies>1&!talent.misery.enabled&!ticking,cycle_targets=1" );
-  main->add_action( this, "Shadow Word: Pain",
-                    "if=active_enemies>1&!talent.misery.enabled&!ticking,cycle_targets=1" );
-  main->add_action( this, "Mind Flay", "interrupt=1,chain=1" );
-  main->add_action( this, "Shadow Word: Pain" );
+  // single APL
+  single->add_action( this, "Void Eruption" );
+  single->add_action( this, "Void Bolt" );
+  single->add_action( this, "Shadow Word: Death"
+                      "if=target.time_to_die<3|"
+                      "cooldown.shadow_word_death.charges=2" );
+  single->add_action( this, "Surrender to Madness"
+                      "if=buff.voidform.stack>=(15+buff.bloodlust.up)&"
+                      "target.time_to_die>200|target.time_to_die<75" );
+  single->add_action( this, "Dark Void" );
+  single->add_action( this, "Shadowfiend" );
+  single->add_action( this, "Mindbender" );
+  single->add_action( this, "Mind Blast"
+                      "if=(dot.shadow_word_pain.ticking&"
+                      "dot.vampiric_touch.ticking)|"
+                      "(talent.shadow_word_void.enabled&"
+                      "cooldown.shadow_word_void.charges=2)" );
+  single->add_action( this, "Shadow Word: Death"
+                      "if=!buff.voidform.up|"
+                      "(cooldown.shadow_word_death.charges=2&"
+                      "buff.voidform.stack<15)" );
+  single->add_action( this, "Shadow Crash"
+                      "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
+  single->add_action( this, "Mind Blast"
+                      "if=dot.shadow_word_pain.ticking&"
+                      "dot.vampiric_touch.ticking" );
+  single->add_action( this, "Void Torrent"
+                      "if=dot.shadow_word_pain.remains>4&"
+                      "dot.vampiric_touch.remains>4" );
+  single->add_action( this, "Shadow Word: Pain"
+                      "if=refreshable&target.time_to_die>4&"
+                      "!talent.misery.enabled&!talent.dark_void.enabled" );
+  single->add_action( this, "Vampiric Touch"
+                      "if=refreshable&target.time_to_die>6" );
+  single->add_action( this, "Mind Flay"
+                      "interrupt=1,chain=1");
+  single->add_action( this, "Shadow Word: Pain" );
 
-  // Voidform APL
-  vf->add_talent( this, "Surrender to Madness",
-                  "if=talent.surrender_to_madness.enabled&insanity>="
-                  "25&(cooldown.void_bolt.up|cooldown.void_torrent.up|cooldown.shadow_word_"
-                  "death.up|buff.shadowy_insight.up)" );
-  vf->add_action( this, "Void Bolt" );
-  if ( race == RACE_BLOOD_ELF )
-  {
-    vf->add_action(
-        "arcane_torrent,if=(insanity-(current_insanity_drain*gcd.max)+15)<100" );
-  }
-  vf->add_talent( this, "Shadow Crash", "if=talent.shadow_crash.enabled" );
-  vf->add_talent( this, "Void Torrent",
-                  "if=talent.void_torrent.enabled&dot.shadow_word_pain.remains>5.5&dot.vampiric_touch.remains>5.5" );
-  vf->add_talent( this, "Mindbender",
-                  "if=buff.insanity_drain_stacks.value>=5" );
-  if ( race == RACE_TROLL )
-  {
-    vf->add_action(
-        "berserking,if=buff.voidform.stack>=10&buff.insanity_drain_stacks.value<=20" );
-  }
-  vf->add_talent( this, "Shadow Word: Death",
-                  "if=talent.shadow_word_death.enabled&active_enemies<=4&"
-                  "current_insanity_drain*gcd.max>insanity&"
-                  "(insanity-(current_insanity_drain*gcd.max)+15)<100" );
-  vf->add_action(
-      "wait,sec=action.void_bolt.usable_in,if=action.void_bolt.usable_in<gcd."
-      "max*0.28" );
-  vf->add_action( this, "Mind Blast", "if=active_enemies<=4" );
-  vf->add_action(
-      "wait,sec=action.mind_blast.usable_in,if=action.mind_blast.usable_in<gcd."
-      "max*0.28&active_enemies<=4" );
-  vf->add_talent( this, "Shadow Word: Death",
-                  "if=talent.shadow_word_death.enabled&active_enemies<=4&"
-                  "cooldown.shadow_word_death.charges=2" );
-  vf->add_action( this, "Shadowfiend", "if=!talent.mindbender.enabled" );
-  vf->add_action( this, "Shadow Word: Pain",
-                  "if=talent.misery.enabled&dot.shadow_word_pain.remains"
-                  "<gcd,moving=1,cycle_targets=1" );
-  vf->add_action( this, "Vampiric Touch",
-                  "if=talent.misery.enabled&(dot.vampiric_touch.remains<3*"
-                  "gcd.max|dot.shadow_word_pain.remains<3*gcd.max)&target.time_to_die>5*gcd."
-                  "max,cycle_targets=1" );
-  vf->add_action( this, "Shadow Word: Pain",
-                  "if=!talent.misery.enabled&!ticking&(active_enemies<5|"
-                  "talent.auspicious_spirits.enabled|talent.shadowy_insight.enabled)" );
-  vf->add_action( this, "Vampiric Touch",
-                  "if=!talent.misery.enabled&!ticking&(active_enemies<4|"
-                  "(talent.auspicious_spirits.enabled))" );
-  vf->add_action( this, "Vampiric Touch",
-                  "if=active_enemies>1&!talent.misery.enabled&!ticking,cycle_targets=1" );
-  vf->add_action( this, "Shadow Word: Pain",
-                  "if=active_enemies>1&!talent.misery.enabled&!ticking,cycle_targets=1" );
-  if ( race == RACE_LIGHTFORGED_DRAENEI )
-  {
-    vf->add_action( "lights_judgment,if=buff.voidform.stack<10" );
-  }
-  vf->add_action( this, "Mind Flay",
-                  "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(action."
-                  "void_"
-                  "bolt.usable|(current_insanity_drain*gcd.max>insanity&(insanity-(current_"
-                  "insanity_drain*gcd.max)+30)<100&"
-                  "(talent.shadow_word_death.enabled&cooldown.shadow_word_death.charges>=1)))" );
-  vf->add_action( this, "Shadow Word: Pain" );
+  // cleave APL
+  cleave->add_action( this, "Void Eruption" );
+  cleave->add_action( this, "Void Bolt" );
+  cleave->add_action( this, "Shadow Word: Death"
+                      "target_if=target.time_to_die<3|buff.voidform.down" );
+  cleave->add_action( this, "Surrender to Madness"
+                      "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
+  cleave->add_action( this, "Dark Void" );
+  cleave->add_action( this, "Shadowfiend" );
+  cleave->add_action( this, "Mindbender" );
+  cleave->add_action( this, "Mind Blast"
+                      "if=buff.voidform.down&talent.misery.enabled" );
+  cleave->add_action( this, "Shadow Crash"
+                      "if=raid_event.adds.in>5&raid_event.adds.duration<2" );
+  cleave->add_action( this, "Shadow Word: Pain"
+                      "target_if=min:dot.shadow_word_pain.remains&refreshable&"
+                      "target.time_to_die>4,if=!talent.misery.enabled&"
+                      "!talent.dark_void.enabled" );
+  cleave->add_action( this, "Vampiric Touch"
+                      "target_if=min:dot.vampiric_touch.remains&"
+                      "refreshable&target.time_to_die>6" );
+  cleave->add_action( this, "Void Torrent" );
+  cleave->add_action( this, "Mind Sear"
+                      "target_if=spell_targets.mind_sear>2"
+                      ",chain=1,interrupt=1" );
+  cleave->add_action( this, "Mind Flay"
+                      "interrupt=1,chain=1" );
+  cleave->add_action( this, "Shadow Word: Pain" );
+
+  // aoe APL
+  aoe->add_action( this, "Void Eruption" );
+  aoe->add_action( this, "Void Bolt"
+                   "if=talent.dark_void.enabled&"
+                   "dot.shadow_word_pain.remains>travel_time" );
+  aoe->add_action( this, "Surrender to Madness"
+                   "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
+  aoe->add_action( this, "Dark Void" );
+  aoe->add_action( this, "Shadowfiend" );
+  aoe->add_action( this, "Mindbender" );
+  aoe->add_action( this, "Shadow Crash"
+                   "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
+  aoe->add_action( this, "Mind Sear"
+                   "chain=1,interrupt=1");
+  aoe->add_action( this, "Shadow Word: Pain" );
 }
 }  // namespace priestspace
