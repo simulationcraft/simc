@@ -5691,12 +5691,13 @@ struct solar_empowerment_t : public druid_spell_t
     snapshot_flags = update_flags = 0;
   }
 };
+
 struct solar_wrath_t : public druid_spell_t
 {
-  bool empowered;
+  int empowered;
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "solar_wrath", player, player -> find_affinity_spell( "Solar Wrath" ), options_str ),
-    empowered(false)
+    empowered(0)
   {
     form_mask = MOONKIN_FORM;
 
@@ -5725,7 +5726,7 @@ struct solar_wrath_t : public druid_spell_t
     if (empowered)
     {
       p ()->trigger_solar_empowerment (s);
-      empowered = false;
+      empowered--;
     }    
   }
 
@@ -5763,7 +5764,7 @@ struct solar_wrath_t : public druid_spell_t
         adjust( -p() -> sets -> set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
     }
     if (p ()->buff.solar_empowerment->check ())
-      empowered = true;
+      empowered++;
     
     p() -> buff.solar_empowerment -> decrement();
 
