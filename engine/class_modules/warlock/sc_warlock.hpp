@@ -182,9 +182,9 @@ namespace warlock
         // tier 100
         const spell_data_t* soul_conduit;
         // AFF
-        const spell_data_t* shadow_embrace;
+        const spell_data_t* nightfall;
+        const spell_data_t* drain_soul;
         const spell_data_t* haunt;
-        const spell_data_t* deathbolt;
 
         const spell_data_t* writhe_in_agony;
         const spell_data_t* absolute_corruption;
@@ -194,9 +194,11 @@ namespace warlock
         const spell_data_t* phantom_singularity;
         const spell_data_t* vile_taint;
 
-        const spell_data_t* nightfall;
-        const spell_data_t* drain_soul;
+        const spell_data_t* shadow_embrace;
+        const spell_data_t* deathbolt;
+        // grimoire of sacrifice
 
+        // soul conduit
         const spell_data_t* creeping_death;
         const spell_data_t* dark_soul_misery;
         
@@ -214,7 +216,7 @@ namespace warlock
         const spell_data_t* summon_vilefiend;
         
         const spell_data_t* inner_demons;
-        const spell_data_t* grimoire_of_service;
+        const spell_data_t* grimoire_felguard;
 
         const spell_data_t* sacrificed_souls;
         const spell_data_t* demonic_consumption;
@@ -333,7 +335,6 @@ namespace warlock
         propagate_const<buff_t*> demonic_core;
         propagate_const<buff_t*> demonic_calling;
         propagate_const<buff_t*> inner_demons;
-        propagate_const<buff_t*> sacrificed_souls;
         propagate_const<buff_t*> nether_portal;
         propagate_const<buff_t*> dreaded_haste; // t20 4pc
         propagate_const<buff_t*> rage_of_guldan; // t21 2pc
@@ -341,7 +342,7 @@ namespace warlock
         propagate_const<buff_t*> dreadstalkers;
         propagate_const<buff_t*> vilefiend;
         propagate_const<buff_t*> tyrant;
-        propagate_const<buff_t*> service_pet;
+        propagate_const<buff_t*> grimoire_felguard;
 
         //destruction_buffs
         propagate_const<buff_t*> backdraft;
@@ -700,31 +701,31 @@ namespace warlock
       {
         struct off_hand_swing : public warlock_pet_action_t<melee_attack_t>
         {
-          off_hand_swing( warlock_pet_t* p, const char* name = "melee_oh" ) :
+          off_hand_swing( warlock_pet_t* p, double wm, const char* name = "melee_oh" ) :
             warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() )
           {
             school = SCHOOL_PHYSICAL;
-            weapon = &( p->off_hand_weapon );
+            weapon = &(p->off_hand_weapon);
+            weapon_multiplier = wm;
             base_execute_time = weapon->swing_time;
-            may_crit = true;
-            background = true;
+            may_crit = background = true;
             base_multiplier = 0.5;
           }
         };
 
         off_hand_swing* oh;
 
-        warlock_pet_melee_t( warlock_pet_t* p, const char* name = "melee" ) :
-          warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() ), oh( nullptr )
+        warlock_pet_melee_t(warlock_pet_t* p, double wm = 1.0, const char* name = "melee") :
+          warlock_pet_action_t<melee_attack_t>(name, p, spell_data_t::nil()), oh(nullptr)
         {
           school = SCHOOL_PHYSICAL;
           weapon = &(p->main_hand_weapon);
-          weapon_multiplier = 1.0;
+          weapon_multiplier = wm;
           base_execute_time = weapon->swing_time;
           may_crit = background = repeating = true;
 
-          if ( p->dual_wield() )
-            oh = new off_hand_swing( p );
+          if (p->dual_wield())
+            oh = new off_hand_swing(p, weapon_multiplier);
         }
 
         double action_multiplier() const override {
@@ -913,6 +914,7 @@ namespace warlock
         {
           shivarra_t(sim_t* sim, warlock_t* owner, const std::string& name = "shivarra");
           virtual void init_base_stats() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
       namespace darkhound {
@@ -920,6 +922,7 @@ namespace warlock
         {
           darkhound_t(sim_t* sim, warlock_t* owner, const std::string& name = "darkhound");
           virtual void init_base_stats() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
       namespace bilescourge {
@@ -927,6 +930,7 @@ namespace warlock
         {
           bilescourge_t(sim_t* sim, warlock_t* owner, const std::string& name = "bilescourge");
           virtual void init_base_stats() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
       namespace urzul {
@@ -934,6 +938,7 @@ namespace warlock
         {
           urzul_t(sim_t* sim, warlock_t* owner, const std::string& name = "urzul");
           virtual void init_base_stats() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
       namespace void_terror {

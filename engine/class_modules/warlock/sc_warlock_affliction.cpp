@@ -92,6 +92,16 @@ namespace warlock
         return warlock_spell_t::execute_time();
       }
 
+      bool ready() override
+      {
+        if (p()->talents.drain_soul->ok())
+        {
+          return false;
+        }
+
+        return spell_t::ready();
+      }
+
       void impact(action_state_t* s) override
       {
         warlock_spell_t::impact(s);
@@ -491,7 +501,40 @@ namespace warlock
     };
 
     // Talents
-    // lvl 15 - shadow embrace|haunt|deathbolt
+
+    // lvl 15 - nightfall|drain soul|haunt
+    struct drain_soul_t : public warlock_spell_t
+    {
+      double rend_soul_proc_chance;
+      drain_soul_t( warlock_t* p, const std::string& options_str ) :
+        warlock_spell_t( "drain_soul", p, p -> talents.drain_soul )
+      {
+        parse_options(options_str);
+        channeled = true;
+        hasted_ticks = may_crit = false;
+      }
+
+      void tick(dot_t* d) override
+      {
+        warlock_spell_t::tick(d);
+        if (result_is_hit(d->state->result))
+        {
+          if (p()->talents.shadow_embrace->ok())
+            td(d->target)->debuffs_shadow_embrace->trigger();
+        }
+      }
+
+      virtual double composite_target_multiplier(player_t* t) const override
+      {
+        double m = warlock_spell_t::composite_target_multiplier(t);
+
+        if (t->health_percentage() < p()->talents.drain_soul->effectN(3).base_value())
+          m *= 1.0 + p()->talents.drain_soul->effectN(2).percent();
+
+        return m;
+      }
+    };
+
     struct haunt_t : public warlock_spell_t
     {
       haunt_t( warlock_t* p, const std::string& options_str ) :
@@ -508,98 +551,6 @@ namespace warlock
         {
           td( s->target )->debuffs_haunt->trigger();
         }
-      }
-    };
-
-    struct deathbolt_t : public warlock_spell_t
-    {
-      timespan_t ac_max;
-
-      deathbolt_t( warlock_t* p, const std::string& options_str ) :
-        warlock_spell_t( "deathbolt", p, p -> talents.deathbolt )
-      {
-        parse_options( options_str );
-        ac_max = timespan_t::from_seconds( data().effectN( 3 ).base_value() );
-      }
-
-      void init() override
-      {
-        warlock_spell_t::init();
-
-        snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
-      }
-
-      double get_contribution_from_dot( dot_t* dot )
-      {
-        if ( !( dot->is_ticking() ) )
-          return 0.0;
-
-        action_state_t* state = dot->current_action->get_state( dot->state );
-        dot->current_action->calculate_tick_amount( state, 1.0 );
-        double tick_base_damage = state->result_raw;
-        timespan_t remaining = dot->remains();
-
-        if ( dot->duration() > sim->expected_iteration_time )
-          remaining = ac_max;
-
-        timespan_t dot_tick_time = dot->current_action->tick_time( state );
-        double ticks_left = ( remaining - dot->time_to_next_tick() ) / dot_tick_time;
-
-        if ( ticks_left == 0.0 )
-        {
-          ticks_left += dot->time_to_next_tick() / dot->current_action->tick_time( state );
-        }
-        else
-        {
-          ticks_left += 1;
-        }
-
-        double total_damage = ticks_left * tick_base_damage;
-
-        if ( sim->debug )
-        {
-          sim->out_debug.printf( "%s %s dot_remains=%.3f duration=%.3f time_to_next=%.3f tick_time=%.3f ticks_left=%.3f amount=%.3f total=%.3f",
-            name(), dot->name(), dot->remains().total_seconds(), dot->duration().total_seconds(),
-            dot->time_to_next_tick().total_seconds(), dot_tick_time.total_seconds(),
-            ticks_left, tick_base_damage, total_damage );
-        }
-
-        action_state_t::release( state );
-        return total_damage;
-      }
-
-      void execute() override
-      {
-        warlock_td_t* td = this->td( target );
-
-        double total_damage_agony = get_contribution_from_dot( td->dots_agony );
-        double total_damage_corruption = get_contribution_from_dot( td->dots_corruption );
-        double total_damage_siphon_life = 0.0;
-
-        if ( p()->talents.siphon_life->ok() )
-          total_damage_siphon_life = get_contribution_from_dot( td->dots_siphon_life );
-
-        //double total_damage_phantom_singularity = 0.0;
-
-        //if ( p()->talents.phantom_singularity->ok() )
-          //total_damage_phantom_singularity = get_contribution_from_dot( td->dots_phantom_singularity );
-
-        double total_damage_ua = 0.0;
-
-        for ( auto& current_ua : td->dots_unstable_affliction )
-        {
-          total_damage_ua += get_contribution_from_dot( current_ua );
-        }
-
-        const double total_dot_dmg = total_damage_agony + total_damage_corruption + total_damage_siphon_life + total_damage_ua;
-
-        this->base_dd_min = this->base_dd_max = ( total_dot_dmg * data().effectN( 2 ).percent() );
-
-        if ( sim->debug ) {
-          sim->out_debug.printf( "%s deathbolt damage_remaining=%.3f", name(), total_dot_dmg );
-        }
-
-        warlock_spell_t::execute();
       }
     };
 
@@ -636,6 +587,7 @@ namespace warlock
       }
     };
     // lvl 45 - demon skin|burning rush|dark pact
+
     // lvl 60 - sow the seeds|phantom singularity|vile taint
     struct phantom_singularity_tick_t : public warlock_spell_t
     {
@@ -743,7 +695,100 @@ namespace warlock
       }
     };
     // lvl 75 - darkfury|mortal coil|demonic circle
-    // lvl 90 - nightfall|drain soul|grimoire of sacrifice
+
+    // lvl 90 - nightfall|deathbolt|grimoire of sacrifice
+    struct deathbolt_t : public warlock_spell_t
+    {
+      timespan_t ac_max;
+
+      deathbolt_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("deathbolt", p, p -> talents.deathbolt)
+      {
+        parse_options(options_str);
+        ac_max = timespan_t::from_seconds(data().effectN(3).base_value());
+      }
+
+      void init() override
+      {
+        warlock_spell_t::init();
+
+        snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+      }
+
+      double get_contribution_from_dot(dot_t* dot)
+      {
+        if (!(dot->is_ticking()))
+          return 0.0;
+
+        action_state_t* state = dot->current_action->get_state(dot->state);
+        dot->current_action->calculate_tick_amount(state, 1.0);
+        double tick_base_damage = state->result_raw;
+        timespan_t remaining = dot->remains();
+
+        if (dot->duration() > sim->expected_iteration_time)
+          remaining = ac_max;
+
+        timespan_t dot_tick_time = dot->current_action->tick_time(state);
+        double ticks_left = (remaining - dot->time_to_next_tick()) / dot_tick_time;
+
+        if (ticks_left == 0.0)
+        {
+          ticks_left += dot->time_to_next_tick() / dot->current_action->tick_time(state);
+        }
+        else
+        {
+          ticks_left += 1;
+        }
+
+        double total_damage = ticks_left * tick_base_damage;
+
+        if (sim->debug)
+        {
+          sim->out_debug.printf("%s %s dot_remains=%.3f duration=%.3f time_to_next=%.3f tick_time=%.3f ticks_left=%.3f amount=%.3f total=%.3f",
+            name(), dot->name(), dot->remains().total_seconds(), dot->duration().total_seconds(),
+            dot->time_to_next_tick().total_seconds(), dot_tick_time.total_seconds(),
+            ticks_left, tick_base_damage, total_damage);
+        }
+
+        action_state_t::release(state);
+        return total_damage;
+      }
+
+      void execute() override
+      {
+        warlock_td_t* td = this->td(target);
+
+        double total_damage_agony = get_contribution_from_dot(td->dots_agony);
+        double total_damage_corruption = get_contribution_from_dot(td->dots_corruption);
+        double total_damage_siphon_life = 0.0;
+
+        if (p()->talents.siphon_life->ok())
+          total_damage_siphon_life = get_contribution_from_dot(td->dots_siphon_life);
+
+        //double total_damage_phantom_singularity = 0.0;
+
+        //if ( p()->talents.phantom_singularity->ok() )
+        //total_damage_phantom_singularity = get_contribution_from_dot( td->dots_phantom_singularity );
+
+        double total_damage_ua = 0.0;
+
+        for (auto& current_ua : td->dots_unstable_affliction)
+        {
+          total_damage_ua += get_contribution_from_dot(current_ua);
+        }
+
+        const double total_dot_dmg = total_damage_agony + total_damage_corruption + total_damage_siphon_life + total_damage_ua;
+
+        this->base_dd_min = this->base_dd_max = (total_dot_dmg * data().effectN(2).percent());
+
+        if (sim->debug) {
+          sim->out_debug.printf("%s deathbolt damage_remaining=%.3f", name(), total_dot_dmg);
+        }
+
+        warlock_spell_t::execute();
+      }
+    };
+
     // lvl 100 - soul conduit|creeping death|dark soul misery
     struct dark_soul_t : public warlock_spell_t
     {
@@ -896,6 +941,7 @@ namespace warlock
     // aoe
     if ( action_name == "seed_of_corruption" ) return new             seed_of_corruption_t( this, options_str );
     // talents
+    if ( action_name == "drain_soul") return new                      drain_soul_t(this, options_str);
     if ( action_name == "haunt" ) return new                          haunt_t( this, options_str );
     if ( action_name == "deathbolt" ) return new                      deathbolt_t( this, options_str );
     if ( action_name == "phantom_singularity" ) return new            phantom_singularity_t( this, options_str );
@@ -935,16 +981,17 @@ namespace warlock
     spec.agony                          = find_specialization_spell( "Agony" );
     spec.summon_darkglare               = find_specialization_spell( "Summon Darkglare" );
     // Talents
-    talents.shadow_embrace              = find_talent_spell( "Shadow Embrace" );
+    talents.nightfall                   = find_talent_spell( "Nightfall" );
+    talents.drain_soul                  = find_talent_spell( "Drain Soul" );
     talents.haunt                       = find_talent_spell( "Haunt" );
-    talents.deathbolt                   = find_talent_spell( "Deathbolt" );
     talents.writhe_in_agony             = find_talent_spell( "Writhe in Agony" );
     talents.absolute_corruption         = find_talent_spell( "Absolute Corruption" );
     talents.siphon_life                 = find_talent_spell( "Siphon Life" );
     talents.sow_the_seeds               = find_talent_spell( "Sow the Seeds" );
     talents.phantom_singularity         = find_talent_spell( "Phantom Singularity" );
     talents.vile_taint                  = find_talent_spell( "Vile Taint" );
-    talents.nightfall                   = find_talent_spell( "Nightfall" );
+    talents.shadow_embrace              = find_talent_spell( "Shadow Embrace" );
+    talents.deathbolt                   = find_talent_spell( "Deathbolt" );
     talents.creeping_death              = find_talent_spell( "Creeping Death" );
     talents.dark_soul_misery            = find_talent_spell( "Dark Soul: Misery" );
     // Tier
@@ -999,6 +1046,7 @@ namespace warlock
     def->add_action( "unstable_affliction,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking=0)|soul_shard>2" );
     def->add_action( "summon_darkglare" );
     def->add_action( "deathbolt" );
+    def->add_talent( this, "Drain Soul", "chain=1,interrupt=1" );
     def->add_action( "shadow_bolt" );
   }
 

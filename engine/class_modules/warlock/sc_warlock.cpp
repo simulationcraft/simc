@@ -94,8 +94,6 @@ namespace warlock
 
         main_hand_weapon.swing_time = timespan_t::from_seconds(3.0);
         melee_attack = new warlock_pet_melee_t(this);
-        if (!util::str_compare_ci(name_str, "service_succubus"))
-          special_action = new whiplash_t(this);
       }
 
       action_t* succubus_pet_t::create_action(const std::string& name, const std::string& options_str)
@@ -356,14 +354,6 @@ namespace warlock
         }
 
         p()->buffs.demonic_speed->trigger();
-
-        if (p()->talents.sacrificed_souls->ok())
-        {
-          for (int i = 0; i < last_resource_cost; i++)
-          {
-            p()->buffs.sacrificed_souls->trigger();
-          }
-        }
 
         if (p()->talents.grimoire_of_supremacy->ok())
         {
@@ -782,7 +772,7 @@ action_t* warlock_t::create_action( const std::string& action_name, const std::s
 {
   using namespace actions;
 
-  if ( ( action_name == "summon_pet" || action_name == "service_pet" ) && default_pet.empty() ) {
+  if ( ( action_name == "summon_pet" ) && default_pet.empty() ) {
     sim->errorf( "Player %s used a generic pet summoning action without specifying a default_pet.\n", name() );
     return nullptr;
   }
@@ -832,17 +822,13 @@ pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& /*
   if ( p ) return p;
   using namespace pets;
 
-  if ( pet_name == "felhunter"          ) return new                felhunter::felhunter_pet_t( sim, this );
-  if ( pet_name == "imp"                ) return new                            imp::imp_pet_t( sim, this );
-  if ( pet_name == "succubus"           ) return new                  succubus::succubus_pet_t( sim, this );
-  if ( pet_name == "voidwalker"         ) return new              voidwalker::voidwalker_pet_t( sim, this );
-  if ( pet_name == "felguard"           ) return new                  felguard::felguard_pet_t( sim, this );
+  if ( pet_name == "felhunter"          )   return new                felhunter::felhunter_pet_t( sim, this );
+  if ( pet_name == "imp"                )   return new                            imp::imp_pet_t( sim, this );
+  if ( pet_name == "succubus"           )   return new                  succubus::succubus_pet_t( sim, this );
+  if ( pet_name == "voidwalker"         )   return new              voidwalker::voidwalker_pet_t( sim, this );
+  if ( pet_name == "felguard"           )   return new                  felguard::felguard_pet_t( sim, this );
 
-  if ( pet_name == "service_felhunter"  ) return new      felhunter::felhunter_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_imp"        ) return new                  imp::imp_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_succubus"   ) return new        succubus::succubus_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_voidwalker" ) return new    voidwalker::voidwalker_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_felguard"   ) return new        felguard::felguard_pet_t( sim, this, pet_name );
+  if ( pet_name == "grimoire_felguard"   )  return new        felguard::felguard_pet_t( sim, this, pet_name );
 
   return nullptr;
 }
