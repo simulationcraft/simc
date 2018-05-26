@@ -10,6 +10,17 @@
 // Enumerations =============================================================
 // annex _e to enumerations
 
+// Attack power computation modes for Battle for Azeroth+
+enum attack_power_e : unsigned
+{
+  AP_WEAPON_MH = 0,     /// Default mode, Attack power is a composite of power and mainhand weapon dps
+  AP_WEAPON_OH,         /// Attack power is a composite of power and offhand weapon dps
+  AP_WEAPON_BOTH,       /// Attack power is a composite of power and both weapon dps
+  AP_NO_WEAPON,         /// Attack power is purely based on player power (main stat)
+  AP_DEFAULT = AP_WEAPON_MH,
+};
+
+
 // Retargeting request event sources. Context in ACTOR_ is the actor that triggered the event
 enum retarget_event_e
 {

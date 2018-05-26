@@ -2935,6 +2935,52 @@ double player_t::composite_melee_attack_power() const
   return ap;
 }
 
+double player_t::composite_melee_attack_power( attack_power_e type ) const
+{
+  double base_ap = cache.attack_power();
+  double ap = 0;
+  bool has_mh = main_hand_weapon.type != WEAPON_NONE;
+  bool has_oh = off_hand_weapon.type != WEAPON_NONE;
+
+  switch ( type )
+  {
+    case AP_WEAPON_MH:
+      if ( has_mh )
+      {
+        ap = base_ap + main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
+      }
+      // Unarmed is apparently a 0.5 dps weapon, Bruce Lee would be ashamed.
+      else
+      {
+        ap = base_ap + .5 * WEAPON_POWER_COEFFICIENT;
+      }
+      break;
+    case AP_WEAPON_OH:
+      if ( has_oh )
+      {
+        ap = base_ap + off_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
+      }
+      else
+      {
+        ap = base_ap + .5 * WEAPON_POWER_COEFFICIENT;
+      }
+      break;
+    case AP_WEAPON_BOTH:
+    {
+      ap = base_ap + ( has_mh ? main_hand_weapon.dps : .5 ) * WEAPON_POWER_COEFFICIENT;
+      ap += base_ap + ( has_oh ? off_hand_weapon.dps : .5 ) * WEAPON_POWER_COEFFICIENT;
+      ap *= 2.0 / 3.0;
+      break;
+    }
+    // Nohand, just base AP then
+    default:
+      ap = base_ap;
+      break;
+  }
+
+  return ap;
+}
+
 double player_t::composite_attack_power_multiplier() const
 {
   return current.attack_power_multiplier;

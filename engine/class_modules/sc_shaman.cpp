@@ -1928,12 +1928,6 @@ struct base_wolf_t : public shaman_pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
 
-  double composite_melee_attack_power() const override
-  {
-    const double ap = owner->cache.attack_power() + owner->main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
-    return ap * owner->composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
-  }
-
   void create_buffs() override
   {
     shaman_pet_t::create_buffs();
@@ -2274,12 +2268,6 @@ struct earth_elemental_t : public primal_elemental_t
   {
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     owner_coeff.ap_from_sp      = 0.25;
-  }
-
-  double composite_melee_attack_power() const override
-  {
-    const double sp = owner->cache.spell_power( SCHOOL_PHYSICAL );
-    return sp * owner->composite_attack_power_multiplier() * owner_coeff.ap_from_sp;
   }
 };
 
@@ -3541,8 +3529,9 @@ struct crash_lightning_t : public shaman_attack_t
   {
     parse_options( options_str );
 
-    aoe    = -1;
-    weapon = &( p()->main_hand_weapon );
+    aoe     = -1;
+    weapon  = &( p()->main_hand_weapon );
+    ap_type = AP_WEAPON_BOTH;
 
     if ( player->action.crashing_storm )
     {
@@ -3692,6 +3681,7 @@ struct fury_of_air_aoe_t : public shaman_attack_t
     background = true;
     aoe        = -1;
     school     = SCHOOL_NATURE;
+    ap_type    = AP_WEAPON_BOTH;
   }
 
   void init() override
@@ -7177,14 +7167,17 @@ double shaman_t::composite_spell_power( school_e school ) const
   if ( specialization() == SHAMAN_ENHANCEMENT )
   {
     double added_spell_power = 0;
-    double weapon_dps        = cache.player->main_hand_weapon.dps;
-    if ( weapon_dps > 1 )
+    if ( main_hand_weapon.type != WEAPON_NONE )
     {
-      added_spell_power = ( weapon_dps * WEAPON_POWER_COEFFICIENT );
+      added_spell_power = main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
     }
     else
+    {
       added_spell_power = 0.5 * WEAPON_POWER_COEFFICIENT;
-    sp = composite_attack_power_multiplier() * cache.attack_power() * spec.enhancement_shaman->effectN( 4 ).percent() +
+    }
+
+    sp = composite_attack_power_multiplier() * cache.attack_power() *
+         spec.enhancement_shaman->effectN( 4 ).percent() +
          added_spell_power;
   }
   else

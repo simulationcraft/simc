@@ -971,13 +971,6 @@ public:
 
   hunter_t* o()             { return static_cast<hunter_t*>( owner ); }
   const hunter_t* o() const { return static_cast<hunter_t*>( owner ); }
-
-  double composite_melee_attack_power() const override
-  {
-    // does not handle sp -> ap but we don't have sp so...
-    const double ap = owner -> cache.attack_power() + owner -> main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
-    return ap * owner -> composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
-  }
 };
 
 // Template for common hunter pet action code.

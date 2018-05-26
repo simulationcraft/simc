@@ -3922,6 +3922,7 @@ struct player_t : public actor_t
   virtual double composite_melee_haste() const;
   virtual double composite_melee_speed() const;
   virtual double composite_melee_attack_power() const;
+  virtual double composite_melee_attack_power( attack_power_e type ) const;
   virtual double composite_melee_hit() const;
   virtual double composite_melee_crit_chance() const;
   virtual double composite_melee_crit_chance_multiplier() const
@@ -4127,7 +4128,7 @@ struct player_t : public actor_t
 
   virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */ = nullptr );
 
-  // Default consumable methods
+  // Various default values for the actor
   virtual std::string default_potion() const
   { return ""; }
   virtual std::string default_flask() const
@@ -4136,6 +4137,16 @@ struct player_t : public actor_t
   { return ""; }
   virtual std::string default_rune() const
   { return ""; }
+
+  /**
+   * Default attack power type to use for value computation.
+   *
+   * Defaults to BfA "new style" base_power + mh_weapon_dps * coefficient, can be overridden in
+   * class modules. Used by actions as a "last resort" to determine what attack power type drives
+   * the value calculation of the ability.
+   */
+  virtual attack_power_e default_ap_type() const
+  { return AP_DEFAULT; }
 
   // JSON Report extension. Overridable in class methods. Root element is an object assigned for
   // each JSON player object under "custom" property.
@@ -4784,6 +4795,9 @@ public:
   /// Used with tick_action, tells tick_action to update state on every tick.
   bool dynamic_tick_action;
 
+  /// Type of attack power used by the ability
+  attack_power_e ap_type;
+
   /// Did a channel action have an interrupt_immediate used to cancel it on it
   bool interrupt_immediate_occurred;
 
@@ -5326,24 +5340,11 @@ public:
   virtual double composite_haste() const
   { return 1.0; }
 
+  virtual attack_power_e attack_power_type() const
+  { return ap_type; }
+
   virtual double composite_attack_power() const
-  {
-    // BfA has added inherited attack power from WDPS for almost all attacks in the game
-    // This bonus is equal to 6x the WDPS of the weapon, and applies to anything using AP
-    // However, WDPS-based attacks or auto-attacks do not benefit from this bonus AP
-    if ( weapon_multiplier == 0 )
-    {
-      // All spells use the main-hand WDPS by default if one is not specifically assigned
-      // Otherwise use the assigned weapon so that OH attacks are calculated correctly
-      const weapon_t* w = ( weapon == nullptr ) ? &player->main_hand_weapon : weapon;
-      if ( w )
-      {
-        return player->cache.attack_power() + ( w->dps * WEAPON_POWER_COEFFICIENT );
-      }
-    }
-    
-    return player->cache.attack_power();
-  }
+  { return player -> composite_melee_attack_power( attack_power_type() ); }
 
   virtual double composite_spell_power() const
   {

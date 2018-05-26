@@ -421,6 +421,7 @@ action_t::action_t( action_e       ty,
   ground_aoe(),
   round_base_dmg( true),
   dynamic_tick_action( true), // WoD updates everything on tick by default. If you need snapshotted values for a periodic effect, use persistent multipliers.
+  ap_type( AP_DEFAULT ), // By default make actions use the new pure ap + mainhand dps value
   interrupt_immediate_occurred(),
   hit_any_target(),
   dot_behavior( DOT_REFRESH ),
@@ -2201,6 +2202,27 @@ void action_t::init()
   if ( channeled )
   {
     update_flags &= ~STATE_HASTE;
+  }
+
+  // Figure out BfA attack power mode based on information assigned to the action object. Note that
+  // this only defines the ap type, the ability may not necessarily use attack power at all, however
+  // that is not possible to know at init time with 100% accuracy.
+
+  // Weapon multiplier is set. The power calculation for the ability uses base ap only, as the
+  // weapon base damage is incorporated into the weapon damage%. Hardly ever used in BfA.
+  if ( weapon_multiplier > 0 )
+  {
+    ap_type = AP_NO_WEAPON;
+  }
+  // Offhand weapon is used in the ability, use off hand weapon dps
+  else if ( weapon && weapon -> slot == SLOT_OFF_HAND )
+  {
+    ap_type = AP_WEAPON_OH;
+  }
+  // All else fails, use the player's default ap type
+  else
+  {
+    ap_type = player -> default_ap_type();
   }
 
   if ( !(background || sequence) && (action_list && action_list -> name_str == "precombat") )
