@@ -17,8 +17,6 @@ namespace { // UNNAMED NAMESPACE
 
   Balance ===================================================================
   Still need AP Coeff for Treants
-  Nature's Balance needs to be triggered at the start of combat and AsP set to 50
-  Inc and CA need to actually give Haste
 
   Guardian ==================================================================
 
@@ -1238,6 +1236,8 @@ struct incarnation_moonkin_buff_t : public druid_buff_t< buff_t >
     set_default_value( p.talent.incarnation_moonkin -> effectN( 1 ).percent() );
     set_cooldown( timespan_t::zero() );
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    add_invalidate(CACHE_HASTE);
+    add_invalidate(CACHE_SPELL_HASTE);
   }
 };
 
@@ -1284,6 +1284,8 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     set_cooldown( timespan_t::zero() ); // handled by spell
     set_default_value( p.spec.celestial_alignment -> effectN( 1 ).percent() );
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    add_invalidate(CACHE_HASTE);
+    add_invalidate(CACHE_SPELL_HASTE);
   }
 };
 
@@ -4865,19 +4867,6 @@ struct bear_form_t : public druid_spell_t
     p() -> shapeshift( BEAR_FORM );
   }
 };
-
-// Nature's Balance =======================================================
-
-struct natures_balance_t : public druid_spell_t
-{
-    natures_balance_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "natures_balance", player, player -> talent.natures_balance, options_str )
-  {
-    harmful = may_crit = false;
-    ignore_false_positive = true;
-  }
-};
-
 // Brambles =================================================================
 
 struct brambles_t : public druid_spell_t
@@ -6344,7 +6333,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "barkskin"               ) return new               barkskin_t( this, options_str );
   if ( name == "berserk"                ) return new                berserk_t( this, options_str );
   if ( name == "bear_form"              ) return new      spells::bear_form_t( this, options_str );
-  if ( name == "natures_balance"      ) return new          natures_balance_t( this, options_str );
   if ( name == "brutal_slash"           ) return new           brutal_slash_t( this, options_str );
   if ( name == "bristling_fur"          ) return new          bristling_fur_t( this, options_str );
   if ( name == "cat_form"               ) return new       spells::cat_form_t( this, options_str );
@@ -6547,7 +6535,7 @@ void druid_t::init_spells()
   talent.bloodtalons                    = find_talent_spell( "Bloodtalons" );
 
   // Balance
-  talent.natures_balance                = find_talent_spell( "Natures's Balance" );
+  talent.natures_balance                = find_talent_spell( "Nature's Balance" );
   talent.warrior_of_elune               = find_talent_spell( "Warrior of Elune" );
   talent.force_of_nature                = find_talent_spell( "Force of Nature");
 
@@ -6826,22 +6814,22 @@ void druid_t::create_buffs()
 
   // Balance
 
-  buff.natures_balance       = buff_creator_t( this, "natures_balance", talent.natures_balance )
-                               .tick_time_behavior( buff_tick_time_behavior::UNHASTED )
+  buff.natures_balance       = buff_creator_t( this, "natures_balance", talent.natures_balance)
+                               .tick_zero(true)
                                .tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
-                                 resource_gain( RESOURCE_ASTRAL_POWER, talent.natures_balance -> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
+                                 resource_gain( RESOURCE_ASTRAL_POWER, talent.natures_balance-> effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ),
                                  gain.natures_balance ); } );
 
   buff.celestial_alignment   = new celestial_alignment_buff_t( *this );
 
   buff.fury_of_elune         = buff_creator_t( this, "fury_of_elune", talent.fury_of_elune ) // Astral Power Gain Buff
                                .tick_callback([this](buff_t*, int, const timespan_t&) {
-                                 resource_gain(RESOURCE_ASTRAL_POWER, talent.fury_of_elune->effectN(3).resource(RESOURCE_ASTRAL_POWER), //not to be found in the spelldata
+                                 resource_gain(RESOURCE_ASTRAL_POWER, talent.fury_of_elune->effectN(3).resource(RESOURCE_ASTRAL_POWER),
                                  gain.fury_of_elune); });
 
   buff.force_of_nature       = buff_creator_t(this, "force_of_nature", talent.force_of_nature) // Astral Power Gain Buff
                                .tick_callback([this](buff_t*, int, const timespan_t&) {
-                                  resource_gain(RESOURCE_ASTRAL_POWER, talent.force_of_nature->effectN(5).resource(RESOURCE_ASTRAL_POWER), //not to be found in the spelldata
+                                  resource_gain(RESOURCE_ASTRAL_POWER, talent.force_of_nature->effectN(5).resource(RESOURCE_ASTRAL_POWER),
                                   gain.force_of_nature); });
 
   buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
@@ -7486,8 +7474,8 @@ void druid_t::apl_balance()
   ST -> add_talent( this, "Fury of Elune","if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)");
   ST -> add_talent( this, "Force of Nature");
   ST -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
-  ST -> add_action( this, "Moonfire", "target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<6.6)&astral_power.deficit>7&target.time_to_die>8");
-  ST -> add_action( this, "Sunfire", "target_if=refreshable,if=((talent.natures_balance.enabled&remains<3)|remains<5.4)&astral_power.deficit>7&target.time_to_die>8");
+  ST -> add_action( this, "Moonfire", "target_if=refreshable,if=target.time_to_die>8");
+  ST -> add_action( this, "Sunfire", "target_if=refreshable,if=target.time_to_die>8");
   ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.stack=3&astral_power.deficit>10");
   ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.stack=3&astral_power.deficit>15");
   ST -> add_action( this, "Starsurge", "if=((cooldown.fury_of_elune.remains>15|!talent.fury_of_elune.enabled)&(astral_power.deficit<40|buff.celestial_alignment.up|buff.incarnation.up))|(cooldown.fury_of_elune.remains<15&astral_power.deficit<20)|(gcd.max*(astral_power%40))>target.time_to_die");
@@ -7749,7 +7737,9 @@ void druid_t::init_resources( bool force )
 
   resources.current[ RESOURCE_RAGE ] = 0;
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
-  resources.current[ RESOURCE_ASTRAL_POWER ] = initial_astral_power;
+  if (talent.natures_balance->ok()) {
+      resources.current[RESOURCE_ASTRAL_POWER] = talent.natures_balance->effectN(2).base_value();
+  } else {resources.current[RESOURCE_ASTRAL_POWER] = initial_astral_power;}
   expected_max_health = calculate_expected_max_health();
 }
 
@@ -7886,9 +7876,12 @@ timespan_t druid_t::available() const
 void druid_t::arise()
 {
   player_t::arise();
-
+  
   if ( talent.earthwarden -> ok() )
     buff.earthwarden -> trigger( buff.earthwarden -> max_stack() );
+
+  if (talent.natures_balance->ok())
+    buff.natures_balance->trigger();
 
   // Trigger persistent buffs
   if ( buff.yseras_gift )
@@ -8151,11 +8144,11 @@ double druid_t::composite_spell_haste() const
 
   sh *= 1.0 / (1.0 + buff.starlord->check_stack_value());
   //this doesnt seem to work
-  /*if (buff.celestial_alignment->check())
+  if (buff.celestial_alignment->check())
       sh /= (1.0 + spec.celestial_alignment->effectN(3).percent());
 
   if (buff.incarnation_moonkin->check())
-      sh /= (1.0 + talent.incarnation_moonkin->effectN(2).percent());*/
+      sh /= (1.0 + talent.incarnation_moonkin->effectN(3).percent());
 
   if ( buff.sephuzs_secret -> check() )
      sh *= 1.0 / ( 1.0 + buff.sephuzs_secret -> stack_value() );
