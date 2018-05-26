@@ -2084,30 +2084,30 @@ void priest_t::generate_apl_shadow()
   // single APL
   single->add_action( this, "Void Eruption" );
   single->add_action( this, "Void Bolt" );
-  single->add_action( this, "Shadow Word: Death"
+  single->add_talent( this, "Shadow Word: Death"
                       "if=target.time_to_die<3|"
                       "cooldown.shadow_word_death.charges=2" );
-  single->add_action( this, "Surrender to Madness"
+  single->add_talent( this, "Surrender to Madness"
                       "if=buff.voidform.stack>=(15+buff.bloodlust.up)&"
                       "target.time_to_die>200|target.time_to_die<75" );
-  single->add_action( this, "Dark Void" );
+  single->add_talent( this, "Dark Void" );
   single->add_action( this, "Shadowfiend" );
-  single->add_action( this, "Mindbender" );
+  single->add_talent( this, "Mindbender" );
   single->add_action( this, "Mind Blast"
                       "if=(dot.shadow_word_pain.ticking&"
                       "dot.vampiric_touch.ticking)|"
                       "(talent.shadow_word_void.enabled&"
                       "cooldown.shadow_word_void.charges=2)" );
-  single->add_action( this, "Shadow Word: Death"
+  single->add_talent( this, "Shadow Word: Death"
                       "if=!buff.voidform.up|"
                       "(cooldown.shadow_word_death.charges=2&"
                       "buff.voidform.stack<15)" );
-  single->add_action( this, "Shadow Crash"
+  single->add_talent( this, "Shadow Crash"
                       "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
   single->add_action( this, "Mind Blast"
                       "if=dot.shadow_word_pain.ticking&"
                       "dot.vampiric_touch.ticking" );
-  single->add_action( this, "Void Torrent"
+  single->add_talent( this, "Void Torrent"
                       "if=dot.shadow_word_pain.remains>4&"
                       "dot.vampiric_touch.remains>4" );
   single->add_action( this, "Shadow Word: Pain"
@@ -2122,16 +2122,16 @@ void priest_t::generate_apl_shadow()
   // cleave APL
   cleave->add_action( this, "Void Eruption" );
   cleave->add_action( this, "Void Bolt" );
-  cleave->add_action( this, "Shadow Word: Death"
+  cleave->add_talent( this, "Shadow Word: Death"
                       "target_if=target.time_to_die<3|buff.voidform.down" );
-  cleave->add_action( this, "Surrender to Madness"
+  cleave->add_talent( this, "Surrender to Madness"
                       "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
-  cleave->add_action( this, "Dark Void" );
+  cleave->add_talent( this, "Dark Void" );
   cleave->add_action( this, "Shadowfiend" );
-  cleave->add_action( this, "Mindbender" );
+  cleave->add_talent( this, "Mindbender" );
   cleave->add_action( this, "Mind Blast"
                       "if=buff.voidform.down&talent.misery.enabled" );
-  cleave->add_action( this, "Shadow Crash"
+  cleave->add_talent( this, "Shadow Crash"
                       "if=raid_event.adds.in>5&raid_event.adds.duration<2" );
   cleave->add_action( this, "Shadow Word: Pain"
                       "target_if=min:dot.shadow_word_pain.remains&refreshable&"
@@ -2140,7 +2140,7 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Vampiric Touch"
                       "target_if=min:dot.vampiric_touch.remains&"
                       "refreshable&target.time_to_die>6" );
-  cleave->add_action( this, "Void Torrent" );
+  cleave->add_talent( this, "Void Torrent" );
   cleave->add_action( this, "Mind Sear"
                       "target_if=spell_targets.mind_sear>2"
                       ",chain=1,interrupt=1" );
@@ -2153,12 +2153,12 @@ void priest_t::generate_apl_shadow()
   aoe->add_action( this, "Void Bolt"
                    "if=talent.dark_void.enabled&"
                    "dot.shadow_word_pain.remains>travel_time" );
-  aoe->add_action( this, "Surrender to Madness"
+  aoe->add_talent( this, "Surrender to Madness"
                    "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
-  aoe->add_action( this, "Dark Void" );
+  aoe->add_talent( this, "Dark Void" );
   aoe->add_action( this, "Shadowfiend" );
-  aoe->add_action( this, "Mindbender" );
-  aoe->add_action( this, "Shadow Crash"
+  aoe->add_talent( this, "Mindbender" );
+  aoe->add_talent( this, "Shadow Crash"
                    "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
   aoe->add_action( this, "Mind Sear"
                    "chain=1,interrupt=1");
