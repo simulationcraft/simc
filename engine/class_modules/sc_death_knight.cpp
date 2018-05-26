@@ -7777,7 +7777,7 @@ void death_knight_t::reset()
 void death_knight_t::assess_heal( school_e school, dmg_e t, action_state_t* s )
 {
   if ( buffs.vampiric_blood -> up() )
-    s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent();
+    s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 4 ).percent();
 
   player_t::assess_heal( school, t, s );
 }
