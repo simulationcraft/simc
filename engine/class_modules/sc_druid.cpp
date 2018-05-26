@@ -8794,7 +8794,7 @@ void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
 
 void druid_t::trigger_solar_empowerment (const action_state_t* state)
 {
-  double dm = find_spell(164545)->effectN(1).percent() + talent.soul_of_the_forest->effectN (1).percent ();
+  double dm = buff.solar_empowerment->data ().effectN (1).percent () + talent.soul_of_the_forest->effectN (1).percent ();
 
   dm += mastery.starlight->ok () * cache.mastery_value()/2;  //Only scales with half the mastery value
 
