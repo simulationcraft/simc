@@ -2197,12 +2197,6 @@ struct melee_t : public rogue_attack_t
 
     return m;
   }
-
-  // Auto Attacks don't double-dip from the bonus AP from WDPS
-  double composite_attack_power() const override
-  {
-    return melee_attack_t::composite_attack_power();
-  }
 };
 
 // Auto Attack ==============================================================
@@ -2387,6 +2381,7 @@ struct between_the_eyes_t : public rogue_attack_t
     rogue_attack_t( "between_the_eyes", p, p -> find_specialization_spell( "Between the Eyes" ),
                     options_str ), greenskins_waterlogged_wristcuffs( nullptr )
   {
+    ap_type = AP_WEAPON_BOTH;
     crit_bonus_multiplier *= 1.0 + p -> find_specialization_spell( 235484 ) -> effectN( 1 ).percent();
   }
 
@@ -3137,6 +3132,7 @@ struct pistol_shot_t : public rogue_attack_t
   pistol_shot_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "pistol_shot", p, p -> find_specialization_spell( "Pistol Shot" ), options_str )
   {
+    ap_type = AP_WEAPON_BOTH;
   }
 
   double cost() const override
@@ -3373,6 +3369,7 @@ struct nightblade_t : public rogue_attack_t
   {
     may_crit = false;
     hasted_ticks = true;
+    ap_type = AP_WEAPON_BOTH;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3720,6 +3717,7 @@ struct shuriken_storm_t: public rogue_attack_t
     energize_type = ENERGIZE_PER_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount = 1;
+    ap_type = AP_WEAPON_BOTH;
   }
 
   bool procs_insignia_of_ravenholdt() const override
@@ -3780,7 +3778,9 @@ struct shuriken_toss_t : public rogue_attack_t
 {
   shuriken_toss_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shuriken_toss", p, p -> find_specialization_spell( "Shuriken Toss" ), options_str )
-  { }
+  {
+    ap_type = AP_WEAPON_BOTH;
+  }
 
   double bonus_da( const action_state_t* s ) const override
   {
