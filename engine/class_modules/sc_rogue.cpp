@@ -2651,10 +2651,8 @@ struct envenom_t : public rogue_attack_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = rogue_attack_t::bonus_da( s );
-
-    if ( td( s -> target ) -> dots.garrote -> is_ticking() )
-      b += p() -> azerite.twist_the_knife.value();
-
+    if ( p() -> azerite.twist_the_knife.ok() )
+      b += p() -> azerite.twist_the_knife.value() * cast_state( s ) -> cp;
     return b;
   }
 
@@ -2703,6 +2701,9 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     timespan_t envenom_duration = p() -> buffs.envenom -> data().duration() * ( 1 + cast_state( execute_state ) -> cp );
+
+    if ( p() -> azerite.twist_the_knife.ok() && execute_state -> result == RESULT_CRIT )
+      envenom_duration += p() -> azerite.twist_the_knife.spell_ref().effectN( 2 ).time_value();
 
     p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
 
