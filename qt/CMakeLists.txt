@@ -1,6 +1,12 @@
 # SimulationCraft GUI
 
 if(LINUX AND NOT APPLE)
+    option(USE_WEBKIT "Use Qt Webkit" ON)
+else()
+    option(USE_WEBKIT "Use Qt Webkit" OFF)
+endif()
+
+if(USE_WEBKIT)
     find_package(Qt5 COMPONENTS Core Gui WebKit WebKitWidgets)
 else()
     find_package(Qt5 COMPONENTS Core Gui WebEngine WebEngineWidgets)
@@ -19,7 +25,7 @@ FILE(COPY ../Welcome.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
 add_executable(SimulationCraft ${gui_source})
 
-if(LINUX AND NOT APPLE)
+if(USE_WEBKIT)
     target_compile_definitions(SimulationCraft PRIVATE SC_USE_WEBKIT)
 	target_link_libraries(SimulationCraft engine Qt5::Core Qt5::Gui Qt5::WebKit Qt5::WebKitWidgets)
 else()

@@ -1126,7 +1126,6 @@ struct sim_t : private sc_thread_t
   std::vector<std::string> id_dictionary;
   std::map<double, std::vector<double> > divisor_timeline_cache;
   std::string output_file_str, html_file_str, json_file_str;
-  std::string xml_file_str, xml_stylesheet_file_str;
   std::string reforge_plot_output_file_str;
   std::vector<std::string> error_list;
   int report_precision;
@@ -2251,7 +2250,6 @@ struct item_t
   bool has_item_stat( stat_e stat ) const;
 
   std::string encoded_item() const;
-  void encoded_item( xml_writer_t& writer );
   std::string encoded_comment();
 
   std::string encoded_stats() const;

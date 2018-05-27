@@ -61,7 +61,6 @@
  SOURCES += engine/sim/sc_event.cpp
  SOURCES += engine/sim/sc_core_sim.cpp
  SOURCES += engine/sim/sc_cooldown.cpp
- SOURCES += engine/report/sc_report_xml.cpp
  SOURCES += engine/report/sc_report_text.cpp
  SOURCES += engine/report/sc_report_json.cpp
  SOURCES += engine/report/sc_report_html_sim.cpp

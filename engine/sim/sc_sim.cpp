@@ -3227,8 +3227,6 @@ void sim_t::create_options()
   add_option( opt_string( "json2", json_file_str ) );
   add_option( opt_bool( "hosted_html", hosted_html ) );
   add_option( opt_int( "healing", healing ) );
-  add_option( opt_string( "xml", xml_file_str ) );
-  add_option( opt_string( "xml_style", xml_stylesheet_file_str ) );
   add_option( opt_bool( "log", log ) );
   add_option( opt_string( "output", output_file_str ) );
   add_option( opt_bool( "save_raid_summary", save_raid_summary ) );

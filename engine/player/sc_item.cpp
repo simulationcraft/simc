@@ -825,52 +825,6 @@ bool item_t::initialize_data()
   return true;
 }
 
-// item_t::encoded_item =====================================================
-
-void item_t::encoded_item( xml_writer_t& writer )
-{
-  writer.begin_tag( "item" );
-  writer.print_attribute( "name", name_str );
-
-  writer.print_attribute( "slot", util::to_string( slot ) );
-  
-  if ( parsed.data.id )
-    writer.print_attribute( "id", util::to_string( parsed.data.id ) );
-
-  if ( parsed.bonus_id.size() > 0 )
-  {
-    std::string bonus_id_str;
-    for ( size_t i = 0, end = parsed.bonus_id.size(); i < end; i++ )
-    {
-      bonus_id_str += util::to_string( parsed.bonus_id[ i ] );
-      if ( i < parsed.bonus_id.size() - 1 )
-        bonus_id_str += "/";
-    }
-
-    writer.print_attribute( "bonus_id", bonus_id_str );
-  }
-
-  if ( parsed.upgrade_level > 0 )
-    writer.print_attribute( "upgrade_level", encoded_upgrade_level() );
-
-  if ( parsed.suffix_id != 0 )
-    writer.print_attribute( "suffix", encoded_random_suffix_id() );
-
-  if ( parsed.gem_stats.size() > 0 || ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) )
-    writer.print_attribute( "gems", encoded_gems() );
-
-  if ( parsed.enchant_stats.size() > 0 || ! parsed.encoded_enchant.empty() )
-    writer.print_attribute( "enchant", encoded_enchant() );
-
-  if ( parsed.addon_stats.size() > 0 || ! parsed.encoded_addon.empty() )
-    writer.print_attribute( "addon", encoded_addon() );
-
-  if ( parsed.item_level > 0 )
-    writer.print_attribute( "item_level", std::to_string( item_level() ) );
-
-  writer.end_tag( "item" );
-}
-
 std::string item_t::encoded_item() const
 {
   std::ostringstream s;

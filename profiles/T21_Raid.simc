@@ -4,7 +4,7 @@ default_actions=1
 #T21_Death_Knight_Frost.simc
 #T21_Death_Knight_Unholy.simc
 
-T21_Demon_Hunter_Havoc.simc
+#T21_Demon_Hunter_Havoc.simc
 
 #T21_Druid_Feral.simc
 #T21_Druid_Balance.simc
@@ -13,25 +13,25 @@ T21_Demon_Hunter_Havoc.simc
 #T21_Hunter_Marksmanship.simc
 #T21_Hunter_Survival.simc
 
-T21_Mage_Fire.simc
+#T21_Mage_Fire.simc
 T21_Mage_Frost.simc
 T21_Mage_Arcane.simc
 
-T21_Monk_Brewmaster.simc
-T21_Monk_Windwalker.simc
+#T21_Monk_Brewmaster.simc
+#T21_Monk_Windwalker.simc
 
-#T21_Paladin_Retribution.simc
+T21_Paladin_Retribution.simc
 
 T21_Priest_Shadow.simc
 
-T21_Rogue_Assassination.simc
-T21_Rogue_Outlaw.simc
-T21_Rogue_Subtlety_DfA.simc
+#T21_Rogue_Assassination.simc
+#T21_Rogue_Outlaw.simc
+#T21_Rogue_Subtlety_DfA.simc
 
 #T21_Shaman_Elemental.simc
 #T21_Shaman_Enhancement.simc
 
-T21_Warlock_Affliction.simc
+#T21_Warlock_Affliction.simc
 T21_Warlock_Demonology.simc
 #T21_Warlock_Destruction.simc
 
