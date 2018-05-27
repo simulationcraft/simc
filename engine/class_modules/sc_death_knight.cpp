@@ -6497,7 +6497,7 @@ bool death_knight_t::trigger_runic_corruption( double rpcost, double override_ch
 {
   double actual_chance = override_chance != -1.0
     ? override_chance
-    : ( spec.runic_corruption -> effectN( 2 ).percent() * rpcost / 100.0 );
+    : ( spec.runic_corruption -> effectN( 1 ).percent() * rpcost / 100.0 );
 
   if ( ! rng().roll( actual_chance ) )
     return false;
