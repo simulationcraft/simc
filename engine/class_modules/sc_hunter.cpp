@@ -3790,12 +3790,18 @@ struct hunters_mark_t: public hunter_spell_t
 
 struct double_tap_t: public hunter_spell_t
 {
+  timespan_t precast_time = timespan_t::zero();
+
   double_tap_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "double_tap", p, p -> talents.double_tap )
   {
+    add_option( opt_timespan( "precast_time", precast_time ) );
     parse_options( options_str );
 
     harmful = may_hit = false;
+    dot_duration = timespan_t::zero();
+
+    precast_time = clamp( precast_time, timespan_t::zero(), data().duration() );
   }
 
   void execute() override
@@ -3803,6 +3809,13 @@ struct double_tap_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> buffs.double_tap -> trigger();
+
+    // adjust for precasting
+    if ( ! player -> in_combat && precast_time != timespan_t::zero() )
+    {
+      p() -> buffs.double_tap -> extend_duration( player, -precast_time );
+      cooldown -> adjust( -precast_time );
+    }
   }
 };
 
@@ -4763,7 +4776,7 @@ void hunter_t::apl_mm()
 
   // Precombat actions
   precombat -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down" );
-  precombat -> add_talent( this, "Double Tap" );
+  precombat -> add_talent( this, "Double Tap", "precast_time=5" );
   precombat -> add_action( this, "Aimed Shot", "if=spell_targets.multishot<3" );
 
   default_list -> add_action( "auto_shot" );
