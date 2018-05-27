@@ -453,6 +453,7 @@ namespace warlock
     {
       dots_unstable_affliction[i] = target->get_dot("unstable_affliction_" + std::to_string(i + 1), &p);
     }
+    dots_drain_soul = target->get_dot("drain_soul", &p);
     dots_phantom_singularity = target->get_dot("phantom_singularity", &p);
     dots_siphon_life = target->get_dot("siphon_life", &p);
     dots_seed_of_corruption = target->get_dot("seed_of_corruption", &p);
@@ -509,6 +510,11 @@ namespace warlock
           // you can only get one soul shard per death from UA refunds
           break;
         }
+      }
+
+      if (dots_drain_soul->is_ticking())
+      {
+        warlock.resource_gain(RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul);
       }
     }
 

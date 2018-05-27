@@ -70,6 +70,7 @@ namespace warlock
       propagate_const<dot_t*> dots_corruption;
       propagate_const<dot_t*> dots_seed_of_corruption;
       std::array<propagate_const<dot_t*>, MAX_UAS> dots_unstable_affliction;
+      propagate_const<dot_t*> dots_drain_soul;
       propagate_const<dot_t*> dots_siphon_life;
       propagate_const<dot_t*> dots_phantom_singularity;
       propagate_const<dot_t*> dots_vile_taint;
@@ -366,31 +367,37 @@ namespace warlock
       // Gains
       struct gains_t
       {
+        gain_t* soul_conduit;
+
         gain_t* agony;
+        gain_t* drain_soul;
+        gain_t* seed_of_corruption;
+        gain_t* unstable_affliction_refund;
 
         gain_t* conflagrate;
         gain_t* shadowburn;
+        gain_t* incinerate;
+        gain_t* incinerate_crits;
         gain_t* immolate;
         gain_t* immolate_crits;
         gain_t* infernal;
         gain_t* shadowburn_shard;
         gain_t* inferno;
+        gain_t* reverse_entropy;
 
         gain_t* miss_refund;
-        gain_t* seed_of_corruption;
-        gain_t* unstable_affliction_refund;
+        
         gain_t* power_trip;
         gain_t* shadow_bolt;
         gain_t* doom;
-        gain_t* soul_conduit;
-        gain_t* reverse_entropy;
+        
         gain_t* soulsnatcher;
         gain_t* t19_2pc_demonology;
+
         gain_t* recurrent_ritual;
         gain_t* feretory_of_souls;
         gain_t* power_cord_of_lethtendris;
-        gain_t* incinerate;
-        gain_t* incinerate_crits;
+
         gain_t* affliction_t20_2pc;
         gain_t* destruction_t20_2pc;
       } gains;
