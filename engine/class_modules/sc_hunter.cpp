@@ -2941,6 +2941,7 @@ struct explosive_shot_t: public hunter_spell_t
     in_combat = false;
   }
 };
+constexpr timespan_t explosive_shot_t::precombat_travel_time;
 
 // Serpent Sting (Marksmanship) ==============================================
 
