@@ -2881,6 +2881,9 @@ struct rapid_fire_t: public hunter_spell_t
 
 struct explosive_shot_t: public hunter_spell_t
 {
+  static constexpr timespan_t precombat_travel_time = timespan_t::from_millis( 100 );
+  bool in_combat = false;
+
   struct explosive_shot_impact_t: hunter_ranged_attack_t
   {
     explosive_shot_impact_t( const std::string& n, hunter_t* p ):
@@ -2902,6 +2905,36 @@ struct explosive_shot_t: public hunter_spell_t
 
     impact_action = p -> get_background_action<explosive_shot_impact_t>( "explosive_shot_impact" );
     impact_action -> stats = stats;
+  }
+
+  timespan_t travel_time() const override
+  {
+    if ( in_combat )
+      return hunter_spell_t::travel_time();
+
+    return precombat_travel_time;
+  }
+
+  void execute() override
+  {
+    in_combat = player -> in_combat;
+
+    hunter_spell_t::execute();
+
+    if ( ! in_combat )
+    {
+      in_combat = player -> in_combat;
+      const timespan_t travel_time_ = travel_time() - precombat_travel_time;
+      // TODO: handle standing in melee range?
+      cooldown -> adjust( -travel_time_ );
+      player -> regen( travel_time_ );
+    }
+  }
+
+  void reset() override
+  {
+    hunter_spell_t::reset();
+    in_combat = false;
   }
 };
 
@@ -4777,7 +4810,8 @@ void hunter_t::apl_mm()
   // Precombat actions
   precombat -> add_talent( this, "Hunter's Mark", "if=debuff.hunters_mark.down" );
   precombat -> add_talent( this, "Double Tap", "precast_time=5" );
-  precombat -> add_action( this, "Aimed Shot", "if=spell_targets.multishot<3" );
+  precombat -> add_action( this, "Aimed Shot", "if=active_enemies<3" );
+  precombat -> add_talent( this, "Explosive_shot", "if=active_enemies>2" );
 
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( this, "Counter Shot", "if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up" );
