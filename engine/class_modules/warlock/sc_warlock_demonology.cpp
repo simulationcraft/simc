@@ -458,7 +458,6 @@ namespace warlock {
       {
         warlock_pet_t::init_base_stats();
         off_hand_weapon = main_hand_weapon;
-
         melee_attack = new warlock_pet_melee_t(this, 2.0);
       }
 
@@ -669,11 +668,13 @@ namespace warlock {
        ,overhead_assault()
       {
         action_list_str = "travel/overhead_assault";
+        owner_coeff.ap_from_sp = 0.065;
       }
 
       void wrathguard_t::init_base_stats()
       {
         warlock_pet_t::init_base_stats();
+        off_hand_weapon = main_hand_weapon;
         melee_attack = new warlock_pet_melee_t(this, 2.0);
       }
 
@@ -758,11 +759,13 @@ namespace warlock {
        ,shadow_slash()
       {
         action_list_str = "travel/shadow_slash";
+        owner_coeff.ap_from_sp = 0.065;
       }
 
       void illidari_satyr_t::init_base_stats()
       {
         warlock_pet_t::init_base_stats();
+        off_hand_weapon = main_hand_weapon;
         melee_attack = new warlock_pet_melee_t(this, 1.0);
       }
 

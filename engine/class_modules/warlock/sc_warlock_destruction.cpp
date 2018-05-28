@@ -202,9 +202,9 @@ namespace warlock {
         hasted_ticks = true;
       }
     }; //damage is not correct
-    struct dark_soul_t : public warlock_spell_t
+    struct dark_soul_instability_t : public warlock_spell_t
     {
-      dark_soul_t(warlock_t* p, const std::string& options_str) :
+      dark_soul_instability_t(warlock_t* p, const std::string& options_str) :
         warlock_spell_t("soul_harvest", p, p -> talents.dark_soul_instability)
       {
         parse_options(options_str);
@@ -876,7 +876,7 @@ namespace warlock {
       if (action_name == "shadowburn") return new                       shadowburn_t(this, options_str);
       if (action_name == "cataclysm") return new                        cataclysm_t(this, options_str);
       if (action_name == "channel_demonfire") return new                channel_demonfire_t(this, options_str);
-      if (action_name == "dark_soul") return new                        dark_soul_t(this, options_str);
+      if (action_name == "dark_soul_instability") return new            dark_soul_instability_t(this, options_str);
 
       return nullptr;
   }
@@ -960,18 +960,33 @@ namespace warlock {
   }
 
   void warlock_t::create_apl_destruction() {
-      action_priority_list_t* def = get_action_priority_list("default");
+    action_priority_list_t* def = get_action_priority_list("default");
+    action_priority_list_t* aoe = get_action_priority_list("aoe");
 
-      def -> add_action("immolate,if=refreshable");
-      def -> add_action("summon_infernal");
-      def -> add_talent(this, "Dark SOul", "if=soul_shard>=4");
-      def -> add_talent(this, "Channel Demonfire");
-      def -> add_action("chaos_bolt,if=!talent.internal_combustion.enabled&soul_shard>=4|(talent.eradication.enabled&debuff.eradication.remains<=cast_time)|buff.dark_soul.remains>cast_time");
-      def -> add_action("chaos_bolt,if=talent.internal_combustion.enabled&dot.immolate.remains>8|soul_shard=5");
-      def -> add_talent(this, "Soul Fire");
-      def -> add_talent(this, "Shadowburn", "if=soul_shard<=4");
-      def -> add_action("conflagrate,if=(talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2)");
-      def -> add_action("incinerate");
+    def->add_action("run_action_list,name=aoe,if=spell_targets.infernal_awakening>=3");
+    def->add_action("immolate,if=refreshable");
+    def->add_action("summon_infernal");
+    def->add_talent(this, "Dark Soul: Instability");
+    def->add_talent(this, "Soul Fire");
+    def->add_talent(this, "Channel Demonfire");
+    def->add_talent(this, "Cataclysm");
+    def->add_action("chaos_bolt,if=!talent.internal_combustion.enabled&soul_shard>=4|(talent.eradication.enabled&debuff.eradication.remains<=cast_time)|buff.dark_soul.remains>cast_time|pet.infernal.active&talent.grimoire_of_supremacy.enabled");
+    def->add_action("chaos_bolt,if=talent.internal_combustion.enabled&dot.immolate.remains>8|soul_shard=5");
+    def->add_action("conflagrate,if=(talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2)");
+    def->add_talent(this, "Sahdowburn", "if=charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time");
+    def->add_action("incinerate");
+
+    aoe->add_action("summon_infernal");
+    aoe->add_talent(this, "Dark Soul: Instability");
+    aoe->add_talent(this, "Cataclysm");
+    aoe->add_action("rain_of_fire,if=soul_shard>=4.5");
+    aoe->add_action("immolate,if=!remains");
+    aoe->add_talent(this, "Channel Demonfire");
+    aoe->add_action("immolate,cycle_targets=1,if=refreshable&(!talent.fire_and_brimstone.enabled|talent.cataclysm.enabled&cooldown.cataclysm.remains>=12|talent.inferno.enabled)");
+    aoe->add_action("rain_of_fire");
+    aoe->add_action("conflagrate,if=(talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2)");
+    aoe->add_talent(this, "Shadowburn", "if=!talent.fire_and_brimstone.enabled&(charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time)");
+    aoe->add_action("incinerate");
   }
 
   using namespace unique_gear;
