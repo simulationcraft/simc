@@ -680,7 +680,6 @@ namespace warlock
       void record_data(action_state_t* s) override
       {
         (void)s;
-        assert(s->result_amount == 0.0);
       }
 
       void execute() override
