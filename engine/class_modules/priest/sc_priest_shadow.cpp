@@ -2132,7 +2132,8 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Mind Blast",
                       "if=buff.voidform.down&talent.misery.enabled" );
   cleave->add_talent( this, "Shadow Crash",
-                      "if=raid_event.adds.in>5&raid_event.adds.duration<2" );
+                      "if=(raid_event.adds.in>5&raid_event.adds.duration<2)|"
+                      "raid_event.adds.duration>2" );
   cleave->add_action( this, "Shadow Word: Pain",
                       "target_if=min:dot.shadow_word_pain.remains&refreshable&"
                       "target.time_to_die>4,if=!talent.misery.enabled&"
