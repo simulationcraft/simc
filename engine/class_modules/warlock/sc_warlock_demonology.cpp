@@ -1051,12 +1051,13 @@ namespace warlock {
 
       double cost() const override
       {
+        double c = warlock_spell_t::cost();
         if (p()->buffs.demonic_calling->check())
         {
-          return 0.0;
+          c -= p()->talents.demonic_calling->effectN(1).base_value();
         }
 
-        return  warlock_spell_t::cost();
+        return  c;
       }
 
       timespan_t execute_time() const override
