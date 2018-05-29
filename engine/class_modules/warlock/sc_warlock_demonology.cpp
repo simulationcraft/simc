@@ -1497,8 +1497,8 @@ namespace warlock {
 
       void execute() override
       {
-        warlock_spell_t::execute();
         p()->buffs.nether_portal->trigger();
+        warlock_spell_t::execute();
       }
     };
 
