@@ -1722,6 +1722,10 @@ namespace warlock {
       ->set_max_stack(1);
     buffs.eyes_of_guldan = make_buff(this, "eyes_of_guldan")
       ->set_max_stack(4);
+    buffs.portal_summons = make_buff(this, "portal_summons")
+      ->set_duration(timespan_t::from_seconds(15))
+      ->set_max_stack(40)
+      ->set_refresh_behavior(buff_refresh_behavior::DURATION);
   }
 
   void warlock_t::init_spells_demonology() {

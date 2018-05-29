@@ -205,7 +205,7 @@ namespace warlock {
     struct dark_soul_instability_t : public warlock_spell_t
     {
       dark_soul_instability_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("soul_harvest", p, p -> talents.dark_soul_instability)
+        warlock_spell_t("dark_soul_instability", p, p -> talents.dark_soul_instability)
       {
         parse_options(options_str);
         harmful = may_crit = may_miss = false;
@@ -898,7 +898,7 @@ namespace warlock {
       ->set_trigger_spell(talents.reverse_entropy);
     buffs.grimoire_of_supremacy = make_buff(this, "grimoire_of_supremacy", find_spell(266091))
       ->set_default_value(find_spell(266091)->effectN(1).percent());
-    buffs.dark_soul_instability = make_buff(this, "dark_soul", talents.dark_soul_instability)
+    buffs.dark_soul_instability = make_buff(this, "dark_soul_instability", talents.dark_soul_instability)
       ->add_invalidate(CACHE_SPELL_CRIT_CHANCE)
       ->add_invalidate(CACHE_CRIT_CHANCE)
       ->set_default_value(talents.dark_soul_instability->effectN(1).percent());
@@ -970,7 +970,7 @@ namespace warlock {
     def->add_talent(this, "Soul Fire");
     def->add_talent(this, "Channel Demonfire");
     def->add_talent(this, "Cataclysm");
-    def->add_action("chaos_bolt,if=!talent.internal_combustion.enabled&soul_shard>=4|(talent.eradication.enabled&debuff.eradication.remains<=cast_time)|buff.dark_soul.remains>cast_time|pet.infernal.active&talent.grimoire_of_supremacy.enabled");
+    def->add_action("chaos_bolt,if=!talent.internal_combustion.enabled&soul_shard>=4|(talent.eradication.enabled&debuff.eradication.remains<=cast_time)|buff.dark_soul_instability.remains>cast_time|pet.infernal.active&talent.grimoire_of_supremacy.enabled");
     def->add_action("chaos_bolt,if=talent.internal_combustion.enabled&dot.immolate.remains>8|soul_shard=5");
     def->add_action("conflagrate,if=(talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2)");
     def->add_talent(this, "Sahdowburn", "if=charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time");

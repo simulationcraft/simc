@@ -369,6 +369,7 @@ namespace warlock
         if (p()->buffs.nether_portal->up())
         {
           p()->active.summon_random_demon->execute();
+          p()->buffs.portal_summons->trigger();
           p()->procs.portal_summon->occur();
         }
       }
@@ -661,7 +662,7 @@ double warlock_t::composite_spell_crit_chance() const
   double sc = player_t::composite_spell_crit_chance();
 
   if (buffs.dark_soul_instability->check())
-    sc *= 1.0 / (1.0 + buffs.dark_soul_instability->check_value());
+    sc += buffs.dark_soul_instability->check_value();
 
   return sc;
 }
@@ -732,7 +733,7 @@ double warlock_t::composite_melee_crit_chance() const
   double mc = player_t::composite_melee_crit_chance();
 
   if (buffs.dark_soul_instability->check())
-    mc *= 1.0 / (1.0 + buffs.dark_soul_instability->check_value());
+    mc += buffs.dark_soul_instability->check_value();
 
   return mc;
 }

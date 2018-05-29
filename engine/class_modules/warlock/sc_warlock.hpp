@@ -343,6 +343,7 @@ namespace warlock
         propagate_const<buff_t*> dreadstalkers;
         propagate_const<buff_t*> vilefiend;
         propagate_const<buff_t*> tyrant;
+        propagate_const<buff_t*> portal_summons;
         propagate_const<buff_t*> grimoire_felguard;
         propagate_const<buff_t*> prince_malchezaar;
         propagate_const<buff_t*> eyes_of_guldan;
