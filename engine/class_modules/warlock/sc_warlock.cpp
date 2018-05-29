@@ -365,6 +365,12 @@ namespace warlock
             }
           }
         }
+
+        if (p()->buffs.nether_portal->up())
+        {
+          p()->active.summon_random_demon->execute();
+          p()->procs.portal_summon->occur();
+        }
       }
     }
 
@@ -1048,6 +1054,7 @@ void warlock_t::init_procs()
   procs.one_shard_hog                   = get_proc( "one_shard_hog" );
   procs.two_shard_hog                   = get_proc( "two_shard_hog" );
   procs.three_shard_hog                 = get_proc( "three_shard_hog" );
+  procs.portal_summon                   = get_proc( "portal_summon" );
   procs.demonic_calling                 = get_proc( "demonic_calling" );
   procs.power_trip                      = get_proc( "power_trip" );
   procs.soul_conduit                    = get_proc( "soul_conduit" );

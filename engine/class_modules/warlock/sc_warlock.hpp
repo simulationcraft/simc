@@ -420,6 +420,7 @@ namespace warlock
         proc_t* wild_imp;
         proc_t* fragment_wild_imp;
         proc_t* dreadstalker_debug;
+        proc_t* portal_summon;
         proc_t* demonology_t20_2pc;
         //destro
         proc_t* t19_2pc_chaos_bolts;

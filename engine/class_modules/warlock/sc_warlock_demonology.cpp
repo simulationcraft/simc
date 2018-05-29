@@ -1454,23 +1454,11 @@ namespace warlock {
         summoning_duration = data().duration() + timespan_t::from_millis(1); // TODO: why?
       }
 
-      bool ready() override
-      {
-        if (!p()->resource_available(RESOURCE_SOUL_SHARD, 1.0))
-          return false;
-
-        return spell_t::ready();
-      }
-
       void execute() override {
           summon_pet_t::execute();
           pet->buffs.grimoire_of_service->trigger();
           p()->buffs.grimoire_felguard->set_duration(timespan_t::from_seconds(p()->talents.grimoire_felguard->effectN(1).base_value()));
           p()->buffs.grimoire_felguard->trigger();
-          if (p()->buffs.nether_portal->up())
-          {
-            p()->active.summon_random_demon->execute();
-          }
       }
       bool init_finished() override {
           if (pet) {
@@ -1512,12 +1500,6 @@ namespace warlock {
         warlock_spell_t::execute();
         p()->buffs.nether_portal->trigger();
       }
-
-      void consume_resource() override {
-        warlock_spell_t::consume_resource();
-
-        p()->active.summon_random_demon->execute();
-      }
     };
 
     struct summon_random_demon_t : public warlock_spell_t {
@@ -1538,6 +1520,7 @@ namespace warlock {
             demon_int = rng().range(8) + 3;
           }
         }
+        int summon_time = 15;
 
         switch (demon_int) {
           case 1 : {
@@ -1545,7 +1528,7 @@ namespace warlock {
               {
                 if (demon->is_sleeping())
                 {
-                  demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                  demon->summon(timespan_t::from_seconds(summon_time));
                   break;
                 }
               }
@@ -1558,7 +1541,7 @@ namespace warlock {
               {
                 if (demon->is_sleeping())
                 {
-                  demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                  demon->summon(timespan_t::from_seconds(summon_time));
                   break;
                 }
               }
@@ -1570,7 +1553,7 @@ namespace warlock {
             {
               if (demon->is_sleeping())
               {
-                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                demon->summon(timespan_t::from_seconds(summon_time));
                 break;
               }
             }
@@ -1581,7 +1564,7 @@ namespace warlock {
             {
               if (demon->is_sleeping())
               {
-                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                demon->summon(timespan_t::from_seconds(summon_time));
                 break;
               }
             }
@@ -1592,7 +1575,7 @@ namespace warlock {
             {
               if (demon->is_sleeping())
               {
-                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                demon->summon(timespan_t::from_seconds(summon_time));
                 break;
               }
             }
@@ -1603,7 +1586,7 @@ namespace warlock {
             {
               if (demon->is_sleeping())
               {
-                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                demon->summon(timespan_t::from_seconds(summon_time));
                 break;
               }
             }
@@ -1614,7 +1597,7 @@ namespace warlock {
             {
               if (demon->is_sleeping())
               {
-                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                demon->summon(timespan_t::from_seconds(summon_time));
                 break;
               }
             }
@@ -1625,7 +1608,7 @@ namespace warlock {
             {
               if (demon->is_sleeping())
               {
-                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                demon->summon(timespan_t::from_seconds(summon_time));
                 break;
               }
             }
@@ -1636,7 +1619,7 @@ namespace warlock {
             {
               if (demon->is_sleeping())
               {
-                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                demon->summon(timespan_t::from_seconds(summon_time));
                 break;
               }
             }
@@ -1647,7 +1630,7 @@ namespace warlock {
             {
               if (demon->is_sleeping())
               {
-                demon->summon(timespan_t::from_seconds(p()->talents.inner_demons->effectN(2).base_value()));
+                demon->summon(timespan_t::from_seconds(summon_time));
                 break;
               }
             }
