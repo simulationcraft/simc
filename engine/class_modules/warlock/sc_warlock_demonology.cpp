@@ -1352,7 +1352,7 @@ namespace warlock {
         std::sort(imps.begin(), imps.end(), lower_energy());
         if(imps.size()>p()->talents.power_siphon->effectN(1).base_value()) imps.resize(p()->talents.power_siphon->effectN(1).base_value());
 
-        for (int i = 0; i < imps.size(); i++)
+        while (imps.size() > 0)
         {
           p()->buffs.demonic_core->trigger();
           pets::wild_imp::wild_imp_pet_t* imp = imps.front();
@@ -1446,16 +1446,37 @@ namespace warlock {
 
     struct grimoire_felguard_t : public summon_pet_t {
       grimoire_felguard_t(warlock_t* p, const std::string& pet_name, const std::string& options_str) :
-              summon_pet_t("grimoire_felguard", p, p -> talents.grimoire_felguard) {
-              parse_options(options_str);
-              cooldown->duration = data().cooldown();
-              summoning_duration = data().duration() + timespan_t::from_millis(1); // TODO: why?
-          }
+        summon_pet_t("grimoire_felguard", p, p -> talents.grimoire_felguard) {
+        parse_options(options_str);
+        resource_current = RESOURCE_SOUL_SHARD;
+        cooldown->duration = data().cooldown();
+        summoning_duration = data().duration() + timespan_t::from_millis(1); // TODO: why?
+      }
+
+      double cost() const override
+      {
+        double c = warlock_spell_t::cost();
+        c += 1.0;
+        return c;
+      }
+
+      bool ready() override
+      {
+        if (!p()->resource_available(RESOURCE_SOUL_SHARD, 1.0))
+          return false;
+
+        return spell_t::ready();
+      }
+
       void execute() override {
           summon_pet_t::execute();
           pet->buffs.grimoire_of_service->trigger();
           p()->buffs.grimoire_felguard->set_duration(timespan_t::from_seconds(p()->talents.grimoire_felguard->effectN(1).base_value()));
           p()->buffs.grimoire_felguard->trigger();
+          if (p()->buffs.nether_portal->up())
+          {
+            p()->active.summon_random_demon->execute();
+          }
       }
       bool init_finished() override {
           if (pet) {
@@ -1496,7 +1517,6 @@ namespace warlock {
       {
         warlock_spell_t::execute();
         p()->buffs.nether_portal->trigger();
-        p()->active.summon_random_demon->execute();
       }
 
       void consume_resource() override {
