@@ -1448,16 +1448,10 @@ namespace warlock {
       grimoire_felguard_t(warlock_t* p, const std::string& pet_name, const std::string& options_str) :
         summon_pet_t("grimoire_felguard", p, p -> talents.grimoire_felguard) {
         parse_options(options_str);
+        base_costs[RESOURCE_SOUL_SHARD] = 1.0;
         resource_current = RESOURCE_SOUL_SHARD;
         cooldown->duration = data().cooldown();
         summoning_duration = data().duration() + timespan_t::from_millis(1); // TODO: why?
-      }
-
-      double cost() const override
-      {
-        double c = warlock_spell_t::cost();
-        c += 1.0;
-        return c;
       }
 
       bool ready() override
