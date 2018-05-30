@@ -1767,21 +1767,51 @@ namespace warlock {
 
   void warlock_t::create_apl_demonology() {
     action_priority_list_t* def = get_action_priority_list("default");
+    action_priority_list_t* np = get_action_priority_list("nether_portal");
+    action_priority_list_t* npb = get_action_priority_list("nether_portal_building");
+    action_priority_list_t* npa = get_action_priority_list("nether_portal_active");
+    action_priority_list_t* bas = get_action_priority_list("build_a_shard");
     
-    def -> add_talent(this, "Demonic Strength", "if=!cooldown.summon_demonic_tyrant.remains<10");
-    def -> add_talent(this, "Power Siphon", "if=buff.wild_imps.stack>=2");
-    def -> add_talent(this, "Nether Portal");
-    def -> add_talent(this, "Doom", "if=talent.doom.enabled&refreshable");
-    def -> add_action("grimoire_felguard");
-    def -> add_talent(this, "Summon Vilefiend");
-    def -> add_action("call_dreadstalkers");
-    def -> add_action("summon_demonic_tyrant,if=buff.dreadstalkers.remains>cast_time&buff.wild_imps.stack>=3");
-    def -> add_talent(this, "Bilescourge Bombers");
-    def -> add_action("hand_of_guldan,if=soul_shard>=3");
-    def -> add_talent(this, "Soul Strike");
-    def -> add_action("demonbolt,if=buff.demonic_core.stack>0&!talent.from_the_shadows.enabled");
-    def -> add_action("demonbolt,if=talent.from_the_shadows.enabled&(debuff.from_the_shadows.remains|buff.demonic_core.stack=4)");
-    def -> add_action("shadow_bolt");
+    def->add_action("demonic_strength");
+    def->add_action("call_action_list,name=nether_portal,if=talent.nether_portal.enabled");
+
+    np->add_action("call_action_list,name=nether_portal_building,if=cooldown.nether_portal.remains<20");
+    np->add_action("call_action_list,name=nether_portal_active,if=cooldown.nether_portal.remains>160");
+
+    npb->add_action("nether_portal,if=soul_shard>=5&(!talent.power_siphon.enabled|buff.demonic_core.up)");
+    npb->add_action("call_dreadstalkers");
+    npb->add_action("hand_of_guldan,if=cooldown.call_dreadstalkers.remains>18&soul_shard>=3");
+    npb->add_action("power_siphon,if=buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buff.demonic_power.down&soul_shard>=3");
+    npb->add_action("hand_of_guldan,if=soul_shard>=5");
+    npb->add_action("call_action_list,name=build_a_shard");
+
+    npa->add_action("call_dreadstalkers");
+    npa->add_action("hand_of_guldan,if=prev_gcd.1.grimoire_felguard|prev_gcd.1.summon_vilefiend");
+    npa->add_action("grimoire_felguard");
+    npa->add_action("summon_vilefiend");
+    npa->add_action("bilescourge_bombers");
+    npa->add_action("call_action_list,name=build_a_shard,if=soul_shard=1&(cooldown.call_dreadstalkers.remains<action.shadow_bolt.cast_time|(talent.bilescourge_bombers.enabled&cooldown.bilescourge_bombers.remains<action.shadow_bolt.cast_time))");
+    npa->add_action("hand_of_guldan,if=((cooldown.call_dreadstalkers.remains>action.demonbolt.cast_time)&(cooldown.call_dreadstalkers.remains>action.shadow_bolt.cast_time))&cooldown.nether_portal.remains>(160+action.hand_of_guldan.cast_time)");
+    npa->add_action("summon_demonic_tyrant,if=buff.nether_portal.remains<10&soul_shard=0");
+    npa->add_action("summon_demonic_tyrant,if=buff.nether_portal.remains<action.summon_demonic_tyrant.cast_time+5.5");
+    npa->add_action("demonbolt,if=buff.demonic_core.up");
+    npa->add_action("call_action_list,name=build_a_shard");
+
+    bas->add_action("soul_strike");
+    bas->add_action("shadow_bolt");
+
+    def->add_action("summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>30|(cooldown.summon_demonic_tyrant.remains<10&cooldown.call_dreadstalkers.remains<10)");
+    def->add_action("grimoire_felguard");
+    def->add_action("hand_of_guldan,if=soul_shard>=5");
+    def->add_action("hand_of_guldan,if=soul_shard>=3&cooldown.call_dreadstalkers.remains>4&(!talent.summon_vilefiend.enabled|cooldown.summon_vilefiend.remains>4)");
+    def->add_action("call_dreadstalkers");
+    def->add_action("bilescourge_bombers");
+    def->add_action("summon_demonic_tyrant,if=talent.summon_vilefiend.enabled&buff.dreadstalkers.remains>action.summon_demonic_tyrant.cast_time&buff.vilefiend.remains>action.summon_demonic_tyrant.cast_time");
+    def->add_action("summon_demonic_tyrant,if=!talent.summon_vilefiend.enabled&buff.dreadstalkers.remains>action.summon_demonic_tyrant.cast_time&soul_shard=0");
+    def->add_action("power_siphon,if=buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buff.demonic_power.down");
+    def->add_action("demonbolt,if=soul_shard<=3&buff.demonic_core.up");
+    def->add_action("doom,cycle_targets=1,if=(talent.doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3))");
+    def->add_action("call_action_list,name=build_a_shard");
   }
 
   using namespace unique_gear;

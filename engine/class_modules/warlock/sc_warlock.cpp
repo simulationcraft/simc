@@ -1101,15 +1101,16 @@ void warlock_t::apl_precombat()
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
-  if (specialization() == WARLOCK_DEMONOLOGY)
-    precombat->add_action("inner_demons,if=talent.inner_demons.enabled&!buff.inner_demons.remains");
-
   precombat->add_action("summon_pet");
+  if (specialization() == WARLOCK_DEMONOLOGY)
+    precombat->add_action("inner_demons,if=talent.inner_demons.enabled");
 
   precombat->add_action( "snapshot_stats" );
 
   if (specialization() != WARLOCK_DEMONOLOGY)
     precombat->add_action("grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled");
+  if (specialization() == WARLOCK_DEMONOLOGY)
+    precombat->add_action("demonbolt");
 
   if ( sim -> allow_potions )
   {
