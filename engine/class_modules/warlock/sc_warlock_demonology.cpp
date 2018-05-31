@@ -11,11 +11,6 @@ namespace warlock {
           weapon = &(p->main_hand_weapon);
           base_dd_min = base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
         }
-
-        bool ready() override {
-          if (p()->special_action->get_dot()->is_ticking()) return false;
-          return warlock_pet_melee_attack_t::ready();
-        }
       };
       struct axe_toss_t : public warlock_pet_spell_t {
         axe_toss_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_spell_t("Axe Toss", p, p -> find_spell(89766)) {
@@ -53,16 +48,39 @@ namespace warlock {
           hasted_ticks = true;
           may_miss = false;
           may_crit = false;
+          channeled = true;
 
           dynamic_tick_action = true;
           tick_action = new felstorm_tick_t(p, data());
         }
 
-        felstorm_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("demonic_strength_felstorm", p, p -> find_spell(89751)) {
+        timespan_t composite_dot_duration(const action_state_t* s) const override
+        {
+          return s->action->tick_time(s) * 5.0;
+        }
+
+        void cancel() override {
+          warlock_pet_melee_attack_t::cancel();
+          get_dot()->cancel();
+        }
+
+        void execute() override 
+        {
+          warlock_pet_melee_attack_t::execute();
+        }
+
+        void last_tick(dot_t* d) override {
+          warlock_pet_melee_attack_t::last_tick(d);
+        }
+      };
+      struct demonic_strength_t : public warlock_pet_melee_attack_t {
+        demonic_strength_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_melee_attack_t("demonic_strength_felstorm", p, p -> find_spell(89751)) {
+          parse_options(options_str);
           tick_zero = true;
-          hasted_ticks = false;
+          hasted_ticks = true;
           may_miss = false;
           may_crit = false;
+          channeled = true;
 
           dynamic_tick_action = true;
           tick_action = new felstorm_tick_t(p, data());
@@ -89,7 +107,8 @@ namespace warlock {
           get_dot()->cancel();
         }
 
-        void execute() override {
+        void execute() override
+        {
           warlock_pet_melee_attack_t::execute();
           p()->melee_attack->cancel();
         }
@@ -98,9 +117,6 @@ namespace warlock {
           warlock_pet_melee_attack_t::last_tick(d);
 
           p()->buffs.demonic_strength->expire();
-
-          if (!p()->is_sleeping() && !p()->melee_attack->target->is_sleeping())
-              p()->melee_attack->execute();
         }
       };
       struct soul_strike_t : public warlock_pet_melee_attack_t {
@@ -125,8 +141,7 @@ namespace warlock {
         warlock_pet_t::init_base_stats();
 
         melee_attack = new warlock_pet_melee_t(this);
-        special_action = new felstorm_t(this,"");
-        special_action_two = new axe_toss_t(this,"");
+        special_action = new axe_toss_t(this,"");
       }
 
       double felguard_pet_t::composite_player_multiplier(school_e school) const {
@@ -866,7 +881,7 @@ namespace warlock {
 
     void warlock_pet_t::init_spells_demonology() {
       active.soul_strike                = new felguard::soul_strike_t(this);
-      active.demonic_strength_felstorm  = new felguard::felstorm_t(this);
+      active.demonic_strength_felstorm  = new felguard::demonic_strength_t(this,"");
       active.bile_spit                  = new vilefiend::bile_spit_t(this);
     }
   }
@@ -1261,6 +1276,16 @@ namespace warlock {
         warlock_spell_t("demonic_strength", p, p->talents.demonic_strength)
       {
         parse_options(options_str);
+      }
+
+      bool ready() override
+      {
+        if (p()->get_dot("felstorm", p()->warlock_pet_list.active)->is_ticking())
+          return false;
+        if (p()->get_dot("demonic_strength_felstorm", p()->warlock_pet_list.active)->is_ticking())
+          return false;
+
+        return spell_t::ready();
       }
 
       void execute() override

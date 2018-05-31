@@ -505,13 +505,12 @@ namespace warlock
     // lvl 15 - nightfall|drain soul|haunt
     struct drain_soul_t : public warlock_spell_t
     {
-      double rend_soul_proc_chance;
       drain_soul_t( warlock_t* p, const std::string& options_str ) :
         warlock_spell_t( "drain_soul", p, p -> talents.drain_soul )
       {
         parse_options(options_str);
         channeled = true;
-        hasted_ticks = may_crit = false;
+        hasted_ticks = may_crit = true;
       }
 
       void tick(dot_t* d) override
