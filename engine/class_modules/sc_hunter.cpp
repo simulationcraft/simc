@@ -244,6 +244,13 @@ void print_html_report( const player_t& player, const player_data_t& data, repor
 // somewhat arbitrary number of the maximum count of barbed shot buffs possible simultaneously
 constexpr unsigned BARBED_SHOT_BUFFS_MAX = 10;
 
+// different types of Wildfire Infusion bombs
+enum wildfire_infusion_e {
+  WILDFIRE_INFUSION_SHRAPNEL = 0,
+  WILDFIRE_INFUSION_PHEROMONE,
+  WILDFIRE_INFUSION_VOLATILE,
+};
+
 struct hunter_t;
 
 namespace pets
@@ -268,6 +275,8 @@ struct hunter_td_t: public actor_target_data_t
   {
     dot_t* serpent_sting;
     dot_t* a_murder_of_crows;
+    dot_t* scorching_pheromones;
+    dot_t* scorching_shrapnel;
   } dots;
 
   hunter_td_t( player_t* target, hunter_t* p );
@@ -518,6 +527,7 @@ public:
   cdwaste::player_data_t cd_waste;
 
   player_t* current_hunters_mark_target;
+  wildfire_infusion_e next_wi_bomb = WILDFIRE_INFUSION_SHRAPNEL;
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
     player_t( sim, HUNTER, name, r ),
@@ -3057,6 +3067,38 @@ struct auto_attack_t: public action_t
   }
 };
 
+// Internal Bleeding (Wildfire Infusion) ===============================================
+
+struct internal_bleeding_t
+{
+  struct internal_bleeding_action_t: hunter_melee_attack_t
+  {
+    internal_bleeding_action_t( const std::string& n, hunter_t* p ):
+      hunter_melee_attack_t( n, p, p -> find_spell( 270343 ) )
+    {
+      dual = true;
+    }
+  };
+  internal_bleeding_action_t* action = nullptr;
+
+  internal_bleeding_t( hunter_t* p )
+  {
+    if ( p -> talents.wildfire_infusion -> ok() )
+      action = p -> get_background_action<internal_bleeding_action_t>( "internal_bleeding" );
+  }
+
+  void trigger( const action_state_t* s )
+  {
+    auto p = static_cast<const hunter_t*>( s -> action -> player );
+    auto td = p -> find_target_data( s -> target );
+    if ( action && td && td -> dots.scorching_shrapnel -> is_ticking() )
+    {
+      action -> set_target( s -> target );
+      action -> execute();
+    }
+  }
+};
+
 // Mongoose Bite =======================================================================
 
 struct mongoose_bite_t: hunter_melee_attack_t
@@ -3064,9 +3106,11 @@ struct mongoose_bite_t: hunter_melee_attack_t
   struct {
     std::array<proc_t*, 7> at_fury;
   } stats_;
+  internal_bleeding_t internal_bleeding;
 
   mongoose_bite_t( hunter_t* p, const std::string& options_str ):
-    hunter_melee_attack_t( "mongoose_bite", p, p -> talents.mongoose_bite )
+    hunter_melee_attack_t( "mongoose_bite", p, p -> talents.mongoose_bite ),
+    internal_bleeding( p )
   {
     parse_options( options_str );
 
@@ -3103,6 +3147,13 @@ struct mongoose_bite_t: hunter_melee_attack_t
     am *= 1.0 + p() -> buffs.mongoose_fury -> stack_value();
 
     return am;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_melee_attack_t::impact( s );
+
+    internal_bleeding.trigger( s );
   }
 };
 
@@ -3163,10 +3214,20 @@ struct flanking_strike_t: hunter_melee_attack_t
 
 struct butchery_t: public hunter_melee_attack_t
 {
+  internal_bleeding_t internal_bleeding;
+
   butchery_t( hunter_t* p, const std::string& options_str ):
-    hunter_melee_attack_t( "butchery", p, p -> talents.butchery )
+    hunter_melee_attack_t( "butchery", p, p -> talents.butchery ),
+    internal_bleeding( p )
   {
     parse_options( options_str );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_melee_attack_t::impact( s );
+
+    internal_bleeding.trigger( s );
   }
 };
 
@@ -3174,8 +3235,11 @@ struct butchery_t: public hunter_melee_attack_t
 
 struct raptor_strike_t: public hunter_melee_attack_t
 {
+  internal_bleeding_t internal_bleeding;
+
   raptor_strike_t( hunter_t* p, const std::string& options_str ):
-    hunter_melee_attack_t( "raptor_strike", p, p -> specs.raptor_strike )
+    hunter_melee_attack_t( "raptor_strike", p, p -> specs.raptor_strike ),
+    internal_bleeding( p )
   {
     parse_options( options_str );
 
@@ -3227,6 +3291,13 @@ struct raptor_strike_t: public hunter_melee_attack_t
       cdm *= 1.0 + p() -> buffs.t21_2p_exposed_flank -> data().effectN( 2 ).percent();
 
     return cdm;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_melee_attack_t::impact( s );
+
+    internal_bleeding.trigger( s );
   }
 };
 
@@ -3662,6 +3733,8 @@ struct kill_command_t: public hunter_spell_t
       double chance = data().effectN( 2 ).percent();
       if ( p() -> buffs.coordinated_assault -> check() )
         chance += p() -> specs.coordinated_assault -> effectN( 4 ).percent();
+      if ( td( execute_state -> target ) -> dots.scorching_pheromones -> is_ticking() )
+        chance += p() -> find_spell( 270323 ) -> effectN( 2 ).percent();
       if ( rng().roll( chance ) )
       {
         flankers_advantage -> occur();
@@ -4048,9 +4121,9 @@ struct steel_trap_t: public hunter_spell_t
 
 struct wildfire_bomb_t: public hunter_spell_t
 {
-  struct bomb_base_t : hunter_spell_t
+  struct bomb_base_t : public hunter_spell_t
   {
-    struct dot_action_t : hunter_spell_t
+    struct dot_action_t : public hunter_spell_t
     {
       dot_action_t( const std::string& n, hunter_t* p, const spell_data_t* s ):
         hunter_spell_t( n, p, s )
@@ -4060,18 +4133,22 @@ struct wildfire_bomb_t: public hunter_spell_t
       }
     };
     dot_action_t* dot_action;
+    bool direct_bleed;
 
-    bomb_base_t( const std::string& n, hunter_t* p, const spell_data_t* s, const std::string& dot_n, const spell_data_t* dot_s ):
-      hunter_spell_t( n, p, s ), dot_action( nullptr )
+    bomb_base_t( const std::string& n, wildfire_bomb_t* a, const spell_data_t* s, const std::string& dot_n, const spell_data_t* dot_s ):
+      hunter_spell_t( n, a -> p(), s ),
+      dot_action( a -> p() -> get_background_action<dot_action_t>( dot_n, dot_s ) ),
+      direct_bleed( s -> mechanic() == MECHANIC_BLEED )
     {
       dual = true;
       aoe = -1;
-      // XXX: It's actually a cone, but we sadly can't really model that
+      // XXX: It's actually a circle + cone, but we sadly can't really model that
       radius = 5.0;
 
-      dot_action = p -> get_background_action<dot_action_t>( dot_n, dot_s );
+      base_dd_multiplier *= 1.0 + p() -> talents.guerrilla_tactics -> effectN( 2 ).percent();
 
-      base_dd_multiplier *= 1.0 + p -> talents.guerrilla_tactics -> effectN( 2 ).percent();
+      a -> add_child( this );
+      a -> add_child( dot_action );
     }
 
     void impact( action_state_t* s ) override
@@ -4080,15 +4157,80 @@ struct wildfire_bomb_t: public hunter_spell_t
       dot_action -> set_target( s -> target );
       dot_action -> execute();
     }
+
+    double target_armor( player_t* t ) const override
+    {
+      if ( direct_bleed )
+        return 0;
+      return hunter_spell_t::target_armor( t );
+    }
   };
 
-  struct wildfire_bomb_damage_t : bomb_base_t
+  struct wildfire_bomb_damage_t : public bomb_base_t
   {
-    wildfire_bomb_damage_t( const std::string& n, hunter_t* p ):
-      bomb_base_t( n, p, p -> find_spell( 265157 ), "scorching_wildfire", p -> find_spell( 269747 ) )
+    wildfire_bomb_damage_t( const std::string& n, hunter_t* p, wildfire_bomb_t* a ):
+      bomb_base_t( n, a, p -> find_spell( 265157 ), "scorching_wildfire", p -> find_spell( 269747 ) )
     {}
   };
-  bomb_base_t* wildfire_bomb;
+
+  struct shrapnel_bomb_t : public bomb_base_t
+  {
+    shrapnel_bomb_t( const std::string& n, hunter_t* p, wildfire_bomb_t* a ):
+      bomb_base_t( n, a, p -> find_spell( 270338 ), "scorching_shrapnel", p -> find_spell( 270339 ) )
+    {
+      attacks::internal_bleeding_t internal_bleeding( p );
+      a -> add_child( internal_bleeding.action );
+    }
+  };
+
+  struct pheromone_bomb_t : public bomb_base_t
+  {
+    pheromone_bomb_t( const std::string& n, hunter_t* p, wildfire_bomb_t* a ):
+      bomb_base_t( n, a, p -> find_spell( 270329 ), "scorching_pheromones", p -> find_spell( 270332 ) )
+    {}
+  };
+
+  struct volatile_bomb_t : public bomb_base_t
+  {
+    struct violent_reaction_t : public hunter_spell_t
+    {
+      violent_reaction_t( const std::string& n, hunter_t* p ):
+        hunter_spell_t( n, p, p -> find_spell( 260231 ) )
+      {
+        dual = true;
+        hasted_ticks = false;
+      }
+    };
+    violent_reaction_t* violent_reaction;
+
+    volatile_bomb_t( const std::string& n, hunter_t* p, wildfire_bomb_t* a ):
+      bomb_base_t( n, a, p -> find_spell( 271048 ), "volatile_wildfire", p -> find_spell( 271049 ) ),
+      violent_reaction( p -> get_background_action<violent_reaction_t>( "violent_reaction" ) )
+    {
+      a -> add_child( violent_reaction );
+    }
+
+    void execute() override
+    {
+      bomb_base_t::execute();
+
+      if ( td( execute_state -> target ) -> dots.serpent_sting -> is_ticking() )
+      {
+        violent_reaction -> set_target( execute_state -> target );
+        violent_reaction -> execute();
+      }
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      bomb_base_t::impact( s );
+
+      td( s -> target ) -> dots.serpent_sting -> refresh_duration();
+    }
+  };
+
+  std::array<bomb_base_t*, 3> bombs;
+  bomb_base_t* current_bomb = nullptr;
 
   wildfire_bomb_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "wildfire_bomb", p, p -> specs.wildfire_bomb )
@@ -4099,17 +4241,40 @@ struct wildfire_bomb_t: public hunter_spell_t
 
     cooldown -> charges += static_cast<int>( p -> talents.guerrilla_tactics -> effectN( 1 ).base_value() );
 
-    wildfire_bomb = p -> get_background_action<wildfire_bomb_damage_t>( "wildfire_bomb_damage" );
-    add_child( wildfire_bomb );
-    add_child( wildfire_bomb -> dot_action );
+    if ( p -> talents.wildfire_infusion -> ok() )
+    {
+      bombs[ WILDFIRE_INFUSION_SHRAPNEL ] =  p -> get_background_action<shrapnel_bomb_t>( "shrapnel_bomb", this );
+      bombs[ WILDFIRE_INFUSION_PHEROMONE ] = p -> get_background_action<pheromone_bomb_t>( "pheromone_bomb", this );
+      bombs[ WILDFIRE_INFUSION_VOLATILE ] =  p -> get_background_action<volatile_bomb_t>( "volatile_bomb", this );
+    }
+    else
+    {
+      bombs[ WILDFIRE_INFUSION_SHRAPNEL ] = p -> get_background_action<wildfire_bomb_damage_t>( "wildfire_bomb_damage", this );
+    }
+  }
+
+  void execute() override
+  {
+    current_bomb = bombs[ p() -> next_wi_bomb ];
+
+    hunter_spell_t::execute();
+
+    if ( p() -> talents.wildfire_infusion -> ok() )
+    {
+      // assume that we can't get 2 same bombs in a row
+      int slot = rng().range( 2 );
+      if ( slot == p() -> next_wi_bomb )
+        slot += 2 - p() -> next_wi_bomb;
+      p() -> next_wi_bomb = static_cast<wildfire_infusion_e>( slot );
+    }
   }
 
   void impact( action_state_t* s ) override
   {
     hunter_spell_t::impact( s );
 
-    wildfire_bomb -> set_target( s -> target );
-    wildfire_bomb -> execute();
+    current_bomb -> set_target( s -> target );
+    current_bomb -> execute();
   }
 };
 
@@ -4147,6 +4312,8 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
 
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
+  dots.scorching_pheromones = target -> get_dot( "scorching_pheromones", p );
+  dots.scorching_shrapnel = target -> get_dot( "scorching_shrapnel", p );
 
   target -> callbacks_on_demise.push_back( std::bind( &hunter_td_t::target_demise, this ) );
 }
@@ -4178,7 +4345,7 @@ expr_t* hunter_t::create_expression( const std::string& expression_str )
 {
   std::vector<std::string> splits = util::string_split( expression_str, "." );
 
-  if ( splits[ 0 ] == "cooldown" && splits[ 1 ] == "trueshot" )
+  if ( splits.size() == 3 && splits[ 0 ] == "cooldown" && splits[ 1 ] == "trueshot" )
   {
     if ( splits[ 2 ] == "remains_guess" )
     {
@@ -4232,6 +4399,15 @@ expr_t* hunter_t::create_expression( const std::string& expression_str )
       };
       return new trueshot_duration_guess_t( this, expression_str );
     }
+  }
+  else if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
+  {
+    if ( splits[ 1 ] == "shrapnel" )
+      return make_fn_expr( expression_str, [ this ]() { return next_wi_bomb == WILDFIRE_INFUSION_SHRAPNEL; } );
+    if ( splits[ 1 ] == "pheromone" )
+      return make_fn_expr( expression_str, [ this ]() { return next_wi_bomb == WILDFIRE_INFUSION_PHEROMONE; } );
+    if ( splits[ 1 ] == "volatile" )
+      return make_fn_expr( expression_str, [ this ]() { return next_wi_bomb == WILDFIRE_INFUSION_VOLATILE; } );
   }
 
   return player_t::create_expression( expression_str );
@@ -5025,6 +5201,7 @@ void hunter_t::reset()
   // Active
   pets.main = nullptr;
   current_hunters_mark_target = nullptr;
+  next_wi_bomb = WILDFIRE_INFUSION_SHRAPNEL;
 }
 
 // hunter_t::merge ==========================================================
