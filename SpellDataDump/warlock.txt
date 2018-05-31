@@ -1148,7 +1148,7 @@ Name             : Summon Felguard (Summon) (id=30146) [Spell Family (5)]
 Class            : Demonology Warlock
 School           : Shadow
 Resource         : 1 Soul Shard (7) (id=1188)
-Spell Level      : 40
+Spell Level      : 12
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -1187,15 +1187,17 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 30153 | Target: Enemy (6)
 #3 (id=92765)    : Apply Aura (6) | Increase Speed% (31)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : The Felguard charges an enemy, causing $30153m1% weapon damage and increasing its movement speed by $30151s3% for $30151d.
+Description      : The Felguard charges an enemy, causing $<damage> Physical damage and increasing its movement speed by $30151s3% for $30151d.
 
 |cFFFFFFFFAuto-Cast:|r
 Use anytime the $?s108499[Wrathguard][Felguard]'s target is further than 8 yards away.
 
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Movement speed increased by $s3%.
+Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
+$damage=${0.1326*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
 
-Name             : Pursuit (id=30153) [Scaling Spell (11)] 
+Name             : Pursuit (id=30153) [Scaling Spell (-1)] 
 Class            : Warlock
 School           : Physical
 Range            : 50000 yards
@@ -1238,10 +1240,12 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 127 | Radius: 6 yards | Target: Cone Front (104)
 #3 (id=319698)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : A strong attack that does $s1% of the Felguard's weapon damage to all enemies in front of it, and reduces the effectiveness of any healing the victim receives by $s2% for $d.
+Description      : A strong attack that does $<damage> of the Felguard's weapon damage to all enemies in front of it, and reduces the effectiveness of any healing the victim receives by $s2% for $d.
 
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Effectiveness of any healing reduced by $w2%.
+Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
+$damage=${0.68*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Shadowfury (id=30283) [Spell Family (5)] 
 Class            : Affliction Demonology Destruction Warlock
@@ -1639,7 +1643,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ....x... ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
@@ -1776,8 +1780,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=169566)   : Apply Aura (6) | Unknown(371)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : The Felguard recklessly swings its weapon, striking all nearby targets within $89753A1 yards for $89753m1% weapon damage every sec for $89751d. The Felguard cannot take any other action during Felstorm.
-Tooltip          : Striking for $89753m1% weapon damage every sec. Unable to use other abilities.
+Description      : The Felguard recklessly swings its weapon, striking all nearby targets within $89753A1 yards for $<damage> Physical damage every $t1 sec for $89751d. The Felguard cannot take any other action during Felstorm.
+Tooltip          : Striking for $<damage> Physical damage every $t1 sec. Unable to use other abilities.
+Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
+$damage=${0.33*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Felstorm (id=89753) [Spell Family (5)] 
 Class            : Warlock
@@ -4922,8 +4928,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 622 (avg=2) | Misc Value: 1792 | Trigger Spell: 271681 | Target: Self (1)
 #2 (id=713642)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 62.2 (avg=0.2)
-Description      : Your damaging abilities have a chance to deal $s1 to your target, and $s2 to enemies within 3 yards of that target.
-Tooltip          : Your damaging abilities have a chance to deal $s1 to your target, and $s2 to enemies within 3 yards of that target.
+Description      : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
+Tooltip          : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 
 Name             : Creeping Death (id=264000) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -4960,9 +4966,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=707212)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : Command your Felguard to strike into the soul of its enemy, dealing $267964s1 Shadow damage.$?c2[
+Description      : Command your Felguard to strike into the soul of its enemy, dealing $<damage> Shadow damage.$?c2[
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
+Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
+$damage=${1*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Dreadlash (id=264078) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -5649,22 +5657,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 13046 | Radius: 5 yards | Target: Unknown(49)
 Description      : Tear open a portal to the Twisting Nether for $d.  Every time you spend Soul Shards, you will also command demons from the Nether to come out and fight for you.
 
-Name             : Soul Strike (id=267964) [Spell Family (5)] 
-Class            : Warlock
-School           : Shadow
-Spell Level      : 1
-Range            : 100 yards
-Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-Effects          :
-#1 (id=714972)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : $@spelldesc264057
-
 Name             : Demonic Consumption (id=267971) [Spell Family (5)] 
 Class            : Warlock
 School           : Physical
@@ -5853,7 +5845,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 136408 | Misc Value 2: 0x10bb | Radius: 5 yards | Target: AOE enemy (instant) (16)
 Description      : Summon a Darkhound to fight for you for the next $d.
 
-Name             : Bile Spit (id=267997) 
+Name             : Bile Spit (id=267997) [Spell Family (5)] 
 Class            : Warlock
 School           : Nature
 Spell Level      : 1
@@ -5870,11 +5862,12 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
 Effects          :
 #1 (id=715022)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.68000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.68000 | Target: Enemy (6)
 #2 (id=715023)   : Apply Aura (6) | Periodic Damage (3): nature every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | Target: Enemy (6)
-Description      : The Vilefiend spits a ball of bile at its target, dealing $s1 Nature damage and an additional $s2 Nature damage every $t2 sec for $d.
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.20000 | Target: Enemy (6)
+Description      : The Vilefiend spits a ball of bile at its target, dealing ${$m1*$<demoMastery>} Nature damage and an additional ${$m2*$<demoMastery>} Nature damage every $t2 sec for $d.
 Tooltip          : Suffering $w2 Nature damage every $t2 sec.
+Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
 
 Name             : Headbutt (id=267999) 
 Class            : Warlock
@@ -6030,8 +6023,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 2521.622 (avg=8.108109) | Trigger Spell: 270652 | Target: Self (1)
 #2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 196.1262 (avg=0.630631) | Target: Self (1)
-Description      : When an enemy you damaged dies, you heal for $s1 and gain $s2 Speed for $269239d.
-Tooltip          : When an enemy you damaged dies, heal for $s1 and gain $s2 Speed for $269239d.
+Description      : When an enemy you harmed dies, you heal for $s1 and gain $s2 Speed for $269239d.
+Tooltip          : When an enemy you harmed dies, heal for $s1 and gain $s2 Speed for $269239d.
 
 Name             : Self Reliance (id=268600) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -6105,26 +6098,6 @@ Effects          :
                    Affected Spells: Hand of Gul'dan (86040), Totem Mastery (226772), Demonbolt (264178)
 Description      : $@spelldesc267170
 Tooltip          : Damage taken from the Warlock's Shadowflame damage spells increased by $s1%.
-
-Name             : Champion of Azeroth (id=270583) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-School           : Physical
-Proc Chance      : 100%
-Azerite Power Id : 82
-Triggered by     : Champion of Azeroth (270584), Champion of Azeroth (270586)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=720209)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 2521.622 (avg=8.108109) | Trigger Spell: 270643 | Target: Self (1)
-#2 (id=720302)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 87.19631 (avg=0.280374) | Target: Self (1)
-Description      : Contributing to the death of an enemy of Azeroth heals you for $s1 and grants you $s2 Versatility for $270586d, stacking up to $270586u times.
 
 Name             : Dreadbite (id=271971) 
 Class            : Warlock
@@ -6363,24 +6336,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 311 (avg=1) | Trigger Spell: 272956 | Target: Self (1)
 Description      : When your Rain of Fire damages 3 or more targets, gain $s1 Haste for $272957d.
 
-Name             : Erratic Omen (id=273504) [Scaling Spell (-1), Spell Family (5), Passive] 
-Class            : Warlock
-School           : Physical
-Azerite Power Id : 182
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=725185)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1517.073 (avg=4.878049) | Target: Self (1)
-#2 (id=725186)   : Dummy (3)
-                   Base Value: 40 | Scaled Value: 40
-Description      : When your spells strike a target due to Havoc, they have a $s2% chance to deal an additional $s1 Chaos damage.
-
 Name             : Inevitable Demise (id=273521) [Scaling Spell (-1), Spell Family (5), Passive] 
 Class            : Warlock
 School           : Physical
@@ -6417,7 +6372,7 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15
 Description      : Your Hand of Guldan has a $s2% chance to burn its target for $s1 additional Shadowflame damage every $273526t1 sec for $273526d.
 
-Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive] 
+Name             : Meticulous Scheming (Tiragarde Sound) (id=273682) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 192
@@ -6440,7 +6395,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 224.1442 (avg=0.720721) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you Meticulous Scheming for $273685d, which transforms into Seize the Moment! after you cast $s3 different spells, granting you $s4 Haste for $273714d seconds.
 
-Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive] 
+Name             : Rezan's Fury (Zuldazar) (id=273790) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 157
@@ -6458,7 +6413,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
-Name             : Blightborne Infusion (Drustvar Power) (id=273823) [Scaling Spell (-7), Passive] 
+Name             : Blightborne Infusion (Drustvar) (id=273823) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 193
@@ -6474,7 +6429,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=1.2) | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul increases your Critical Strike by $s1.
 
-Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive] 
+Name             : Secrets of the Deep (Stormsong Valley) (id=273829) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 195
@@ -6494,7 +6449,7 @@ Description      : Your spells and abilities have a chance to create a Surging D
 
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
-Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive] 
+Name             : Filthy Transfusion (Nazmir) (id=273834) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 194
@@ -6510,24 +6465,6 @@ Effects          :
 #1 (id=725772)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 273835 | Target: Self (1)
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
-
-Name             : Sandstorm (id=273853) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-School           : Physical
-Azerite Power Id : 196
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=725799)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 0 | Scaled Value: 279.9 (avg=0.9) | Trigger Spell: 273858 | Target: Self (1)
-#2 (id=725824)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 933 (avg=3)
-Description      : Your spells and abilities have a chance to summon a cylone of piercing winds. Enemies inside the cyclone take $s1 damage every $t1, and deal $s2 less damage to you.
 
 Name             : Lifeblood (id=274418) [Scaling Spell (-1), Passive] 
 Class            : Warlock
@@ -6781,7 +6718,24 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 136.84 (avg=0.44) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
-Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $d. This effect stacks up to $s2 times.
+Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $s2 times.
+
+Name             : Bursting Flare (id=279909) [Scaling Spell (-1), Passive] 
+Class            : Warlock
+School           : Physical
+Azerite Power Id : 460
+Triggered by     : Bursting Flare (279913)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=736535)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Trigger Spell: 279911 | Target: Self (1)
+Description      : Casting Conflagrate on a target affected by your Immolate increases your Mastery by $s1 for $279913d, stacking up to $279913u times.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -6798,7 +6752,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 279927 | Target: Self (1)
-Description      : Azerite energy courses through you, reaching ${$279928m1*6} primary stat and then diminishing down to $279928s1 primary stat, cycling every 6 sec.
+Description      : Azerite energy courses through you, reaching ${$279928m1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $279928s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
 Name             : Summon Doomguard (id=280365) [Spell Family (57)] 
 Class            : Warlock
@@ -6818,5 +6772,41 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Summons a Doomguard.
 Tooltip          : You have summoned a Doomguard.
+
+Name             : Swirling Sands (Vol'dun) (id=280429) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 196
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737972)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 280432 | Target: Self (1)
+#2 (id=737973)   : Dummy (3)
+                   Base Value: 1000 | Scaled Value: 1000
+#3 (id=737974)   : Dummy (3)
+                   Base Value: 6000 | Scaled Value: 6000
+Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
+
+Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 82
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738417)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 17.23842 (avg=0.055429) | Trigger Spell: 280712 | Target: Self (1)
+Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 

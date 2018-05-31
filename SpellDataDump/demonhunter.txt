@@ -403,12 +403,14 @@ Attributes       : ....x... ........ ........ ........   ...x...x .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=257307)   : Apply Aura (6) | Stun (12)
-                   Base Value: 30 | Scaled Value: 30 | Radius: 0 - 8 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=267052)   : School Damage (2): chromatic
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20475 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#3 (id=738282)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30 | Radius: 0 - 8 yards | Mechanic: Stun | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : Unleash an eruption of fel energy, dealing $s2 Chaos damage and stunning all nearby enemies for $d.
 
-Each enemy stunned by Chaos Nova has a $s1% chance to generate a Lesser Soul Fragment.
+Each enemy stunned by Chaos Nova has a $s3% chance to generate a Lesser Soul Fragment.
 Tooltip          : Stunned.
 
 Name             : Disrupt (id=183752) [Spell Family (107)] 
@@ -580,7 +582,7 @@ Effects          :
 Description      : Transform to demon form for $d, increasing current and maximum health by $s2% and Armor by $s7%.
 
 |cFFFFFFFFGenerates ${$s4/10} Pain every $t4 sec.|r
-Tooltip          : Maximum health increased by $s2%. Armor increased by $s8%.
+Tooltip          : Maximum health increased by $s2%. Armor increased by $s7%.
 
 Generating ${$s4/10} Pain every $t4 sec.
 
@@ -1699,13 +1701,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=300651)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-#2 (id=300652)   : School Damage (2): shadow
+#1 (id=300651)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05967 | Target: Enemy (6)
-#3 (id=300653)   : Energize Power (30)
+#2 (id=300652)   : Energize Power (30)
                    Base Value: 16 | Scaled Value: 16 (avg=0, dl=0.5) | Misc Value: fury | Target: Self (1)
-Description      : Inflicts $s1 Shadow damage and generates $m3 to $M3 Fury.
+Description      : Inflicts $s1 Shadow damage and generates $m2 to $M2 Fury.
 
 Name             : Demon Spikes (id=203819) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -3430,7 +3430,7 @@ Effects          :
 #1 (id=344028)   : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | Target: Enemy (6)
 #2 (id=344029)   : Trigger Spell (64): Soul Cleave
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 228478
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 300 | Trigger Spell: 228478 | Target: Self (1)
 #3 (id=344030)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #4 (id=344031)   : Direct Heal (10)
@@ -3541,7 +3541,7 @@ Tooltip          : Dazed.
 Name             : Spirit Bomb (id=247454) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
-Resource         : 30 Pain (18) (id=191477)
+Resource         : 30 Pain (18) (id=191871)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
@@ -3557,7 +3557,7 @@ Effects          :
 #1 (id=377039)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #2 (id=707097)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Consume up to $s2 Soul Fragments within $s1 yds and then explode, afflicting nearby enemies with Frailty for $247456d and damaging them for $247455s1 Fire per fragment.
 
 You heal for $247456s1% of all damage you deal to enemies with Frailty.
@@ -4094,8 +4094,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 622 (avg=2) | Misc Value: 1792 | Trigger Spell: 271681 | Target: Self (1)
 #2 (id=713642)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 62.2 (avg=0.2)
-Description      : Your damaging abilities have a chance to deal $s1 to your target, and $s2 to enemies within 3 yards of that target.
-Tooltip          : Your damaging abilities have a chance to deal $s1 to your target, and $s2 to enemies within 3 yards of that target.
+Description      : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
+Tooltip          : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 
 Name             : Charred Flesh (id=264002) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -4265,7 +4265,7 @@ Name             : Void Reaver (id=268178) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Range            : 100 yards
-Duration         : 4 seconds
+Duration         : 12 seconds
 Triggered by     : Void Reaver (268175)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4275,7 +4275,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=715332)   : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -8 | Scaled Value: -8 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: -6 | Scaled Value: -6 | Misc Value: 127 | Target: Enemy (6)
 Description      : $@spelldesc268175
 Tooltip          : Dealing $s1% less damage to the Demon Hunter.
 
@@ -4376,8 +4376,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 2521.622 (avg=8.108109) | Trigger Spell: 270652 | Target: Self (1)
 #2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 196.1262 (avg=0.630631) | Target: Self (1)
-Description      : When an enemy you damaged dies, you heal for $s1 and gain $s2 Speed for $269239d.
-Tooltip          : When an enemy you damaged dies, heal for $s1 and gain $s2 Speed for $269239d.
+Description      : When an enemy you harmed dies, you heal for $s1 and gain $s2 Speed for $269239d.
+Tooltip          : When an enemy you harmed dies, heal for $s1 and gain $s2 Speed for $269239d.
 
 Name             : Self Reliance (id=268600) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -4398,26 +4398,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
 Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $270661t1 sec.
-
-Name             : Champion of Azeroth (id=270583) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-School           : Physical
-Proc Chance      : 100%
-Azerite Power Id : 82
-Triggered by     : Champion of Azeroth (270584), Champion of Azeroth (270586)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=720209)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 2521.622 (avg=8.108109) | Trigger Spell: 270643 | Target: Self (1)
-#2 (id=720302)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 87.19631 (avg=0.280374) | Target: Self (1)
-Description      : Contributing to the death of an enemy of Azeroth heals you for $s1 and grants you $s2 Versatility for $270586d, stacking up to $270586u times.
 
 Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
@@ -4510,7 +4490,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 326.2524 (avg=1.049043) | Target: Self (1)
 Description      : Immolation Aura increases your Armor by $s2, and causes melee attackers to take $s1 Fire damage.
 
-Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive] 
+Name             : Meticulous Scheming (Tiragarde Sound) (id=273682) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 192
@@ -4533,7 +4513,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 224.1442 (avg=0.720721) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you Meticulous Scheming for $273685d, which transforms into Seize the Moment! after you cast $s3 different spells, granting you $s4 Haste for $273714d seconds.
 
-Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive] 
+Name             : Rezan's Fury (Zuldazar) (id=273790) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 157
@@ -4551,7 +4531,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
-Name             : Blightborne Infusion (Drustvar Power) (id=273823) [Scaling Spell (-7), Passive] 
+Name             : Blightborne Infusion (Drustvar) (id=273823) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 193
@@ -4567,7 +4547,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=1.2) | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul increases your Critical Strike by $s1.
 
-Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive] 
+Name             : Secrets of the Deep (Stormsong Valley) (id=273829) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 195
@@ -4587,7 +4567,7 @@ Description      : Your spells and abilities have a chance to create a Surging D
 
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
-Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive] 
+Name             : Filthy Transfusion (Nazmir) (id=273834) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 194
@@ -4603,24 +4583,6 @@ Effects          :
 #1 (id=725772)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 273835 | Target: Self (1)
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
-
-Name             : Sandstorm (id=273853) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-School           : Physical
-Azerite Power Id : 196
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=725799)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 0 | Scaled Value: 279.9 (avg=0.9) | Trigger Spell: 273858 | Target: Self (1)
-#2 (id=725824)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 933 (avg=3)
-Description      : Your spells and abilities have a chance to summon a cylone of piercing winds. Enemies inside the cyclone take $s1 damage every $t1, and deal $s2 less damage to you.
 
 Name             : Soulmonger (id=274344) [Scaling Spell (-1), Passive] 
 Class            : Demon Hunter
@@ -4799,7 +4761,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 400.1171 (avg=1.28655) | Trigger Spell: 279449 | Target: Self (1)
 #2 (id=734237)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
-Description      : Shear has a chance to rip Lesser Soul Fragments from up to $s2 nearby enemies, dealing $s1 Fire damage to each.
+Description      : $?s263642[Fracture][Shear] has a chance to rip Lesser Soul Fragments from up to $s2 nearby enemies, dealing $s1 Fire damage to each.
 
 Name             : Cycle of Binding (id=278502) [Scaling Spell (-8), Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -4854,7 +4816,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 136.84 (avg=0.44) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
-Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $d. This effect stacks up to $s2 times.
+Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $s2 times.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -4871,6 +4833,42 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 279927 | Target: Self (1)
-Description      : Azerite energy courses through you, reaching ${$279928m1*6} primary stat and then diminishing down to $279928s1 primary stat, cycling every 6 sec.
+Description      : Azerite energy courses through you, reaching ${$279928m1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $279928s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
+
+Name             : Swirling Sands (Vol'dun) (id=280429) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 196
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737972)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 280432 | Target: Self (1)
+#2 (id=737973)   : Dummy (3)
+                   Base Value: 1000 | Scaled Value: 1000
+#3 (id=737974)   : Dummy (3)
+                   Base Value: 6000 | Scaled Value: 6000
+Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
+
+Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 82
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738417)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 17.23842 (avg=0.055429) | Trigger Spell: 280712 | Target: Self (1)
+Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 

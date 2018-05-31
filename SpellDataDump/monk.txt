@@ -745,7 +745,7 @@ School           : Physical
 Spell Level      : 16
 GCD              : 1 seconds
 Category         : 47
-Affecting spells : Fortifying Brew (120954 effect#6), High Tolerance (196737 effect#5), Ironskin Brew (215479 effect#1), Mystic Vitality (237076 effect#1)
+Affecting spells : Fortifying Brew (120954 effect#6), High Tolerance (196737 effect#5), Ironskin Brew (215479 effect#1), 
 Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...... ....x..x 
                  : x....... ........ ........ ........   ........ ........ ....x... ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -763,7 +763,7 @@ Effects          :
 #4 (id=138807)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
 #5 (id=140824)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Misc Value 2: 0x2 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 23 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : You shrug off attacks, delaying a portion of Physical damage based on your Agility, instead taking it over $124273d. Affects magical attacks at $s5% effectiveness.
 
 Name             : Expel Harm (id=115072) [Spell Family (53)] 
@@ -985,7 +985,7 @@ Description      : Breathe fire on targets in front of you, causing $s1 Fire dam
 
 Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
 
-Name             : Fortifying Brew (id=115203) [Scaling Spell (6), Spell Family (53)] 
+Name             : Fortifying Brew (id=115203) [Scaling Spell (-1), Spell Family (53)] 
 Class            : Brewmaster Monk
 School           : Physical
 Spell Level      : 55
@@ -1348,9 +1348,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=131794)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.05000 | Target: Friend (21)
 #2 (id=284314)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Radius: 0 - 60 yards | Target: Unknown(132) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70000 | Radius: 0 - 60 yards | Target: Unknown(132) -> AOE friendly (31)
 Description      : Causes a surge of invigorating mists, healing the target for $s1$?s274586[ and all allies with your Renewing Mist active for $s2][].
 
 Name             : Thunder Focus Tea (id=116680) [Scaling Spell (-1), Spell Family (53)] 
@@ -2093,24 +2093,6 @@ Effects          :
 Description      : Reduces all damage you take by $m2% to $m3% for $d, with larger attacks being reduced by more.
 Tooltip          : Damage taken reduced by $m2% to $m3% for $d, with larger attacks being reduced by more.
 
-Name             : Healing Elixir (id=122280) [Spell Family (53), Passive, Hidden] 
-Class            : Monk
-School           : Physical
-Proc Chance      : 101%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6), Hidden (7)
-Effects          :
-#1 (id=153852)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 35 | Scaled Value: 35 | Misc Value: 12 | Target: Self (1)
-Description      : $@spelldesc122281
-
 Name             : Healing Elixir (id=122281) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
@@ -2127,9 +2109,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=153853)   : Direct Heal% (136)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-Description      : Drink a healing elixir, healing you for $s1% of your maximum health.
-
-Healing Elixir will automatically trigger if you drop below $122280s1% health, and a charge is available.
+Description      : Drink a healing elixir, healing you for $s1% of your maximum health.
 
 Name             : Touch of Karma (id=122470) [Spell Family (53)] 
 Class            : Windwalker Monk
@@ -4009,7 +3989,7 @@ Effects          :
 #5 (id=726763)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Stagger (115069)
-Description      : Stagger is 10% more effective at delaying damage.
+Description      : Stagger is $s1% more effective at delaying damage.
 
 You gain up to $s4% Haste based on your current level of Stagger.
 
@@ -4117,7 +4097,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=289621)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Vivify (116670)
 Description      : $@spelldesc115151
 Tooltip          : Your next Vivify causes $s1% increased healing.
@@ -5073,22 +5053,6 @@ Effects          :
                    Affected Spells: Thunder Focus Tea (116680)
 Description      : Thunder Focus Tea can now additionally make your next Vivify have no mana cost, or reduce the cooldown of your next Rising Sun Kick by ${$s1/-1000} sec.
 
-Name             : Mystic Vitality (id=237076) [Spell Family (53), Passive] 
-Class            : Monk
-School           : Physical
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
-Effects          :
-#1 (id=358720)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 5 (33)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 33 | Target: Self (1)
-                   Affected Spells: Stagger (115069)
-Description      : Stagger is $s1% more effective against magical attacks.
-
 Name             : Master of Combinations (id=238095) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
@@ -5925,8 +5889,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 2521.622 (avg=8.108109) | Trigger Spell: 270652 | Target: Self (1)
 #2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 196.1262 (avg=0.630631) | Target: Self (1)
-Description      : When an enemy you damaged dies, you heal for $s1 and gain $s2 Speed for $269239d.
-Tooltip          : When an enemy you damaged dies, heal for $s1 and gain $s2 Speed for $269239d.
+Description      : When an enemy you harmed dies, you heal for $s1 and gain $s2 Speed for $269239d.
+Tooltip          : When an enemy you harmed dies, heal for $s1 and gain $s2 Speed for $269239d.
 
 Name             : Self Reliance (id=268600) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5964,26 +5928,6 @@ Effects          :
 #1 (id=718012)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 700.4504 (avg=2.252252) | Trigger Spell: 270639 | Target: Self (1)
 Description      : Vivify does an additional $s1 healing when empowered by Thunder Focus Tea.
-
-Name             : Champion of Azeroth (id=270583) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-School           : Physical
-Proc Chance      : 100%
-Azerite Power Id : 82
-Triggered by     : Champion of Azeroth (270584), Champion of Azeroth (270586)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=720209)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 2521.622 (avg=8.108109) | Trigger Spell: 270643 | Target: Self (1)
-#2 (id=720302)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 87.19631 (avg=0.280374) | Target: Self (1)
-Description      : Contributing to the death of an enemy of Azeroth heals you for $s1 and grants you $s2 Versatility for $270586d, stacking up to $270586u times.
 
 Name             : Touch of Death Amplifier (id=271232) [Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
@@ -6154,7 +6098,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 248.8 (avg=0.8) | Trigger Spell: 273468 | Target: Self (1)
 Description      : When you Blackout Strike, your Stagger is reduced by $s1.
 
-Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive] 
+Name             : Meticulous Scheming (Tiragarde Sound) (id=273682) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 192
@@ -6177,7 +6121,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 224.1442 (avg=0.720721) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you Meticulous Scheming for $273685d, which transforms into Seize the Moment! after you cast $s3 different spells, granting you $s4 Haste for $273714d seconds.
 
-Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive] 
+Name             : Rezan's Fury (Zuldazar) (id=273790) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 157
@@ -6195,7 +6139,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
-Name             : Blightborne Infusion (Drustvar Power) (id=273823) [Scaling Spell (-7), Passive] 
+Name             : Blightborne Infusion (Drustvar) (id=273823) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 193
@@ -6211,7 +6155,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=1.2) | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul increases your Critical Strike by $s1.
 
-Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive] 
+Name             : Secrets of the Deep (Stormsong Valley) (id=273829) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 195
@@ -6231,7 +6175,7 @@ Description      : Your spells and abilities have a chance to create a Surging D
 
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
-Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive] 
+Name             : Filthy Transfusion (Nazmir) (id=273834) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 194
@@ -6247,24 +6191,6 @@ Effects          :
 #1 (id=725772)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 273835 | Target: Self (1)
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
-
-Name             : Sandstorm (id=273853) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-School           : Physical
-Azerite Power Id : 196
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=725799)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 0 | Scaled Value: 279.9 (avg=0.9) | Trigger Spell: 273858 | Target: Self (1)
-#2 (id=725824)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 933 (avg=3)
-Description      : Your spells and abilities have a chance to summon a cylone of piercing winds. Enemies inside the cyclone take $s1 damage every $t1, and deal $s2 less damage to you.
 
 Name             : Enveloping Mist (id=274062) [Spell Family (53)] 
 Class            : Monk
@@ -6392,7 +6318,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729236)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1453.413 (avg=4.673353) | Trigger Spell: 273468 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1453.413 (avg=4.673353) | Target: Self (1)
 Description      : Drinking Purifying Brew while at Heavy Stagger causes your next $275893u melee abilities to heal you for $s1.
 
 Name             : Misty Peaks (id=275975) [Scaling Spell (-1), Spell Family (53), Passive] 
@@ -6596,7 +6522,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 136.84 (avg=0.44) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
-Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $d. This effect stacks up to $s2 times.
+Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $s2 times.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -6613,7 +6539,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 279927 | Target: Self (1)
-Description      : Azerite energy courses through you, reaching ${$279928m1*6} primary stat and then diminishing down to $279928s1 primary stat, cycling every 6 sec.
+Description      : Azerite energy courses through you, reaching ${$279928m1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $279928s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
 Name             : Good Karma (id=280195) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
@@ -6654,5 +6580,56 @@ Effects          :
 #2 (id=737591)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Misc Value: 23 | Target: Self (1)
 Description      : Every $s1 Chi you spend reduces the cooldown of Storm, Earth, and Fire by ${$m2/1000}.1 sec.
+
+Name             : Swirling Sands (Vol'dun) (id=280429) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 196
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737972)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 280432 | Target: Self (1)
+#2 (id=737973)   : Dummy (3)
+                   Base Value: 1000 | Scaled Value: 1000
+#3 (id=737974)   : Dummy (3)
+                   Base Value: 6000 | Scaled Value: 6000
+Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
+
+Name             : Bob and Weave (id=280515) [Spell Family (53), Passive] 
+Class            : Monk
+School           : Physical
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=738102)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Description      : Increases the duration of Stagger by ${$s1/10}.1 sec.
+
+Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 82
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738417)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 17.23842 (avg=0.055429) | Trigger Spell: 280712 | Target: Self (1)
+Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 
