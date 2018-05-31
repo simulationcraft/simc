@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26715
+// Class based active abilities, wow build 26734
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -64,13 +64,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1680, // Whirlwind
            0,
     },
-    // Fury tree, 13 abilities
+    // Fury tree, 12 abilities
     {
        18499, // Berserker Rage
        23881, // Bloodthirst
       184364, // Enraged Regeneration
         5308, // Execute
-      100130, // Furious Slash
         5246, // Intimidating Shout
        12323, // Piercing Howl
        85288, // Raging Blow
@@ -1241,7 +1240,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 26715
+// Talent tree specialization abilities, wow build 26734
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1339,11 +1338,9 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       184367, // Rampage
        18499, // Berserker Rage
       190411, // Whirlwind
-      100130, // Furious Slash
       209694, // Rampage!
         5246, // Intimidating Shout
       231842, // Dual Wield
-      231824, // Furious Slash (Rank 2)
       231827, // Execute (Rank 2)
        34428, // Victory Rush
            0,
@@ -1879,8 +1876,8 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       198067, // Fire Elemental
        51886, // Cleanse Spirit
         8004, // Healing Surge
-      231721, // Lava Burst (Rank 2)
       231722, // Chain Lightning (Rank 2)
+      280609, // Mastery: Elemental Overload (Rank 2)
            0,
     },
     // Specialization abilities for Enhancement
@@ -2373,7 +2370,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26715
+// Class mastery abilities, wow build 26734
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2612,7 +2609,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26715
+// Racial abilities, wow build 26734
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3524,7 +3521,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26715
+// Set bonus data, wow build 26734
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4245,7 +4242,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define RPPMMOD_SIZE (924)
 
-// 924 RPPM Modifiers, wow build level 26715
+// 924 RPPM Modifiers, wow build level 26734
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5168,8 +5165,8 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 279786,    4,  1,  1.0000 },
   { 279900,    4,  1,  1.0000 },
   { 279955,    4,  1,  1.0000 },
-  { 280240,    4,  1,  1.0000 },
   { 280383,    4,  1,  1.0000 },
   { 280386,    4,  1,  1.0000 },
+  { 280721,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };

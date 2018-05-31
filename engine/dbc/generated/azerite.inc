@@ -1,4 +1,4 @@
-// Azerite powers, wow build 26715
+// Azerite powers, wow build 26734
 static constexpr std::array<azerite_power_entry_t, 285> __azerite_power_data { {
   {  13, 263978, "Azerite Empowered"                  },
   {  14, 268594, "Longstrider"                        },
@@ -25,7 +25,7 @@ static constexpr std::array<azerite_power_entry_t, 285> __azerite_power_data { {
   {  43, 267671, "Winds of War"                       },
   {  44, 268599, "Vampiric Speed"                     },
   {  76, 269621, "Invigorating Brew"                  },
-  {  82, 270583, "Champion of Azeroth"                },
+  {  82, 280710, "Champion of Azeroth"                },
   {  83, 268437, "Impassive Visage"                   },
   {  84, 268595, "Bulwark of the Masses"              },
   {  85, 268596, "Gemhide"                            },
@@ -114,7 +114,6 @@ static constexpr std::array<azerite_power_entry_t, 285> __azerite_power_data { {
   { 179, 273461, "Strength of Earth"                  },
   { 180, 273452, "Storm of Steel"                     },
   { 181, 273488, "Twist the Knife"                    },
-  { 182, 273504, "Erratic Omen"                       },
   { 183, 273521, "Inevitable Demise"                  },
   { 184, 273291, "Sunrise Technique"                  },
   { 185, 273328, "Overflowing Mists"                  },
@@ -128,7 +127,7 @@ static constexpr std::array<azerite_power_entry_t, 285> __azerite_power_data { {
   { 193, 273823, "Blightborne Infusion"               },
   { 194, 273834, "Filthy Transfusion"                 },
   { 195, 273829, "Secrets of the Deep"                },
-  { 196, 273853, "Sandstorm"                          },
+  { 196, 280429, "Swirling Sands"                     },
   { 197, 274057, "Marrowblood"                        },
   { 198, 274070, "Glacial Contagion"                  },
   { 199, 274081, "Festermight"                        },
@@ -248,7 +247,7 @@ static constexpr std::array<azerite_power_entry_t, 285> __azerite_power_data { {
   { 410, 278675, "Paradise Lost"                      },
   { 411, 278676, "Ace Up Your Sleeve"                 },
   { 413, 278681, "The First Dance"                    },
-  { 414, 278683, "Sealed Fate"                        },
+  { 414, 278683, "Inevitability"                      },
   { 416, 278697, "Natural Harmony"                    },
   { 417, 278709, "Rumbling Tremors"                   },
   { 419, 278697, "Natural Harmony"                    },
@@ -282,6 +281,7 @@ static constexpr std::array<azerite_power_entry_t, 285> __azerite_power_data { {
   { 453, 277678, "Divine Right"                       },
   { 454, 277675, "Judicious Defense"                  },
   { 459, 279899, "Unstable Flames"                    },
+  { 460, 279909, "Bursting Flare"                     },
   { 461, 279926, "Earthlink"                          },
   { 462, 266936, "Azerite Globules"                   },
   { 463, 267889, "Blessed Portents"                   },
