@@ -1038,7 +1038,14 @@ public:
 struct hunter_main_pet_td_t: public actor_target_data_t
 {
 public:
+  struct dots_t
+  {
+    dot_t* bloodseeker;
+  } dots;
+
   hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p );
+
+  void target_demise();
 };
 
 struct hunter_main_pet_t: public hunter_pet_t
@@ -1651,9 +1658,9 @@ struct kill_command_bm_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
   }
 };
 
-struct kill_command_sv_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
+struct kill_command_sv_t: public hunter_pet_action_t < hunter_main_pet_t, attack_t >
 {
-  kill_command_sv_t( hunter_pet_t* p ):
+  kill_command_sv_t( hunter_main_pet_t* p ):
     base_t( "kill_command", p, p -> find_spell( 259277 ) )
   {
     background = true;
@@ -1671,6 +1678,25 @@ struct kill_command_sv_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
   // Override behavior so that Kill Command uses hunter's attack power rather than the pet's
   double composite_attack_power() const override
   { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
+
+  void execute() override
+  {
+    base_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) && o() -> talents.bloodseeker -> ok() )
+    {
+      p() -> buffs.predator -> trigger();
+      o() -> buffs.predator -> trigger();
+    }
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    base_t::last_tick( d );
+
+    p() -> buffs.predator -> decrement();
+    o() -> buffs.predator -> decrement();
+  }
 };
 
 // Beast Cleave ==============================================================
@@ -1912,8 +1938,25 @@ struct froststorm_breath_t: public hunter_main_pet_spell_t
 
 
 hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p ):
-actor_target_data_t( target, p )
+  actor_target_data_t( target, p ),
+  dots()
 {
+  dots.bloodseeker = target -> get_dot( "kill_command", p );
+
+  target -> callbacks_on_demise.push_back( std::bind( &hunter_main_pet_td_t::target_demise, this ) );
+}
+
+void hunter_main_pet_td_t::target_demise()
+{
+  if ( source -> sim -> event_mgr.canceled )
+    return;
+
+  auto pet = static_cast<hunter_main_pet_t*>( source );
+  if ( dots.bloodseeker -> is_ticking() )
+  {
+    pet -> buffs.predator -> decrement();
+    pet -> o() -> buffs.predator -> decrement();
+  }
 }
 
 // hunter_pet_t::create_action ==============================================
@@ -3642,6 +3685,22 @@ struct kill_command_t: public hunter_spell_t
       return hunter_spell_t::ready();
 
     return false;
+  }
+
+  expr_t* create_expression(const std::string& expression_str) override
+  {
+    // this is somewhat unfortunate but we can't get at the pets dot in any other way
+    auto splits = util::string_split( expression_str, "." );
+    if ( splits.size() == 2 && splits[ 0 ] == "bloodseeker" && splits[ 1 ] == "remains" )
+    {
+      return make_fn_expr( expression_str, [ this ] () {
+          if ( auto pet = p() -> pets.main )
+            return pet -> get_target_data( target ) -> dots.bloodseeker -> remains();
+          return timespan_t::zero();
+        } );
+    }
+
+    return hunter_spell_t::create_expression( expression_str );
   }
 };
 
