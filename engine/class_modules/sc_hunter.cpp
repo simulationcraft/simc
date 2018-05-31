@@ -1209,12 +1209,8 @@ public:
   double resource_regen_per_second( resource_e r ) const override
   {
     if ( r == RESOURCE_FOCUS )
-    {
       return o() -> resource_regen_per_second( r ) * 1.25;
-    }
-
     return base_t::resource_regen_per_second( r );
-
   }
 
   double composite_melee_speed() const override
@@ -1251,8 +1247,7 @@ public:
   {
     double m = base_t::composite_player_multiplier( school );
 
-    if ( buffs.tier19_2pc_bm -> up() )
-      m *= 1.0 + buffs.tier19_2pc_bm -> check_value();
+    m *= 1.0 + buffs.tier19_2pc_bm -> check_value();
 
     // Pet combat experience
     double combat_experience_mul = specs.combat_experience -> effectN( 2 ).percent();
@@ -1430,8 +1425,7 @@ struct dire_critter_t: public hunter_secondary_pet_t
   {
     double cpm = hunter_secondary_pet_t::composite_player_multiplier( school );
 
-    if ( buffs.bestial_wrath -> up() )
-      cpm *= 1.0 + buffs.bestial_wrath -> check_value();
+    cpm *= 1.0 + buffs.bestial_wrath -> check_value();
 
     return cpm;
   }
@@ -1636,8 +1630,7 @@ struct kill_command_bm_t: public hunter_pet_action_t < hunter_pet_t, attack_t >
   {
     double am = base_t::action_multiplier();
 
-    if ( o() -> buffs.t20_4p_bestial_rage -> up() )
-      am *= 1.0 + o() -> buffs.t20_4p_bestial_rage -> check_value();
+    am *= 1.0 + o() -> buffs.t20_4p_bestial_rage -> value();
 
     return am;
   }
@@ -1989,8 +1982,10 @@ void dire_critter_t::init_spells()
 
 } // end namespace pets
 
-void trigger_birds_of_prey( hunter_t* p, const action_state_t* state )
+void trigger_birds_of_prey( const action_state_t* state )
 {
+  auto p = static_cast<hunter_t*>( state -> action -> player );
+
   if ( ! p -> talents.birds_of_prey -> ok() )
     return;
 
@@ -2237,11 +2232,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
-    if ( p() -> buffs.t20_4p_bestial_rage -> up() )
-      am *= 1.0 + p() -> buffs.t20_4p_bestial_rage -> check_value();
-
-    if ( p() -> buffs.precise_shots -> up() )
-      am *= 1.0 + p() -> buffs.precise_shots -> check_value();
+    am *= 1.0 + p() -> buffs.t20_4p_bestial_rage -> value();
+    am *= 1.0 + p() -> buffs.precise_shots -> value();
 
     return am;
   }
@@ -2250,8 +2242,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if ( p() -> buffs.master_marksman -> up() )
-      p() -> buffs.master_marksman -> decrement();
+    p() -> buffs.master_marksman -> up(); // benefit tracking
+    p() -> buffs.master_marksman -> decrement();
 
     p() -> buffs.precise_shots -> decrement();
 
@@ -2359,7 +2351,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
     if ( p() -> talents.venomous_bite -> ok() )
       p() -> cooldowns.bestial_wrath -> adjust( -venomous_bite_reduction );
 
-    if ( p() -> talents.killer_cobra -> ok() && p() -> buffs.bestial_wrath -> up() )
+    if ( p() -> talents.killer_cobra -> ok() && p() -> buffs.bestial_wrath -> check() )
       p() -> cooldowns.kill_command -> reset( true );
 
     if ( p() -> legendary.bm_chest -> ok() )
@@ -2373,8 +2365,7 @@ struct cobra_shot_t: public hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
-    if ( p() -> buffs.t20_4p_bestial_rage -> up() )
-      am *= 1.0 + p() -> buffs.t20_4p_bestial_rage -> check_value();
+    am *= 1.0 + p() -> buffs.t20_4p_bestial_rage -> value();
 
     return am;
   }
@@ -2393,7 +2384,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
   bool init_finished() override
   {
     for ( auto pet : p() -> pet_list )
-      add_pet_stats( pet, { "dire_frenzy", "stomp" } );
+      add_pet_stats( pet, { "stomp" } );
 
     return hunter_ranged_attack_t::init_finished();
   }
@@ -2490,8 +2481,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
-    if ( p() -> buffs.sentinels_sight -> up() )
-      am *= 1.0 + p() -> buffs.sentinels_sight -> check_stack_value();
+    am *= 1.0 + p() -> buffs.sentinels_sight -> stack_value();
 
     return am;
   }
@@ -2500,11 +2490,8 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     double cc = hunter_ranged_attack_t::composite_crit_chance();
 
-    if ( p() -> buffs.gyroscopic_stabilization -> up() )
-      cc += p() -> buffs.gyroscopic_stabilization -> check_value();
-
-    if ( p() -> buffs.lethal_shots_ais -> up() )
-      cc += p() -> buffs.lethal_shots_ais -> check_value();
+    cc += p() -> buffs.gyroscopic_stabilization -> value();
+    cc += p() -> buffs.lethal_shots_ais -> value();
 
     return cc;
   }
@@ -2604,6 +2591,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     p() -> buffs.master_marksman -> trigger();
 
+    p() -> buffs.trick_shots -> up(); // benefit tracking
     p() -> buffs.trick_shots -> decrement();
 
     if ( lock_and_loaded )
@@ -2692,8 +2680,8 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
     p() -> buffs.precise_shots -> decrement();
 
-    if ( p() -> buffs.master_marksman -> up() )
-      p() -> buffs.master_marksman -> decrement();
+    p() -> buffs.master_marksman -> up(); // benefit tracking
+    p() -> buffs.master_marksman -> decrement();
 
     if ( p() -> talents.calling_the_shots -> ok() )
       p() -> cooldowns.trueshot -> adjust( - p() -> talents.calling_the_shots -> effectN( 1 ).time_value() );
@@ -2703,8 +2691,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
-    if ( p() -> buffs.precise_shots -> up() )
-      am *= 1.0 + p() -> buffs.precise_shots -> check_value();
+    am *= 1.0 + p() -> buffs.precise_shots -> value();
 
     return am;
   }
@@ -2790,12 +2777,18 @@ struct rapid_fire_t: public hunter_spell_t
       return hunter_ranged_attack_t::n_targets();
     }
 
+    void execute() override
+    {
+      hunter_ranged_attack_t::execute();
+
+      p() -> buffs.trick_shots -> up(); // benefit tracking
+    }
+
     double composite_crit_chance() const override
     {
       double cc = hunter_ranged_attack_t::composite_crit_chance();
 
-      if ( p() -> buffs.lethal_shots_rf -> up() )
-        cc += p() -> buffs.lethal_shots_rf -> check_value();
+      cc += p() -> buffs.lethal_shots_rf -> value();
 
       return cc;
     }
@@ -2855,8 +2848,7 @@ struct rapid_fire_t: public hunter_spell_t
   {
     timespan_t t = hunter_spell_t::tick_time( s );
 
-    if ( p() -> buffs.double_tap -> check() )
-      t *= 1.0 + p() -> buffs.double_tap -> check_value();
+    t *= 1.0 + p() -> buffs.double_tap -> check_value();
 
     return t;
   }
@@ -2864,18 +2856,16 @@ struct rapid_fire_t: public hunter_spell_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     timespan_t base_tick_time_ = base_tick_time;
-    if ( p() -> buffs.double_tap -> check() )
-      base_tick_time_ *= 1.0 + p() -> buffs.double_tap -> check_value();
+    base_tick_time_ *= 1.0 + p() -> buffs.double_tap -> check_value();
 
     return dot_duration * ( tick_time( s ) / base_tick_time_ );
   }
 
   double cast_regen() const override
   {
-    auto tt = base_tick_time;
-    if ( p() -> buffs.double_tap -> check() )
-      tt *= 1.0 + p() -> buffs.double_tap -> check_value();
-    auto num_ticks = as<int>( std::ceil( dot_duration / tt ) );
+    timespan_t base_tick_time_ = base_tick_time;
+    base_tick_time_ *= 1.0 + p() -> buffs.double_tap -> check_value();
+    auto num_ticks = as<int>( std::ceil( dot_duration / base_tick_time_ ) );
 
     return hunter_spell_t::cast_regen() + num_ticks * damage -> composite_energize_amount( nullptr );
   }
@@ -3054,7 +3044,7 @@ struct mongoose_bite_t: hunter_melee_attack_t
 
     p() -> buffs.vipers_venom -> trigger();
 
-    trigger_birds_of_prey( p(), execute_state );
+    trigger_birds_of_prey( execute_state );
 
     if ( p() -> legendary.sv_chest -> ok() )
       p() -> buffs.butchers_bone_apron -> trigger();
@@ -3067,8 +3057,7 @@ struct mongoose_bite_t: hunter_melee_attack_t
   {
     double am = hunter_melee_attack_t::action_multiplier();
 
-    if ( p() -> buffs.mongoose_fury -> up() )
-      am *= 1.0 + p() -> buffs.mongoose_fury -> check_stack_value();
+    am *= 1.0 + p() -> buffs.mongoose_fury -> stack_value();
 
     return am;
   }
@@ -3148,6 +3137,9 @@ struct raptor_strike_t: public hunter_melee_attack_t
     parse_options( options_str );
 
     base_multiplier *= 1.0 + p -> find_spell( 262839 ) -> effectN( 1 ).percent(); // Raptor Strike (Rank 2)
+
+    if ( p -> talents.mongoose_bite -> ok() )
+      background = true;
   }
 
   void execute() override
@@ -3156,7 +3148,7 @@ struct raptor_strike_t: public hunter_melee_attack_t
 
     p() -> buffs.vipers_venom -> trigger();
 
-    trigger_birds_of_prey( p(), execute_state );
+    trigger_birds_of_prey( execute_state );
 
     p() -> buffs.tip_of_the_spear -> expire();
 
@@ -3168,11 +3160,8 @@ struct raptor_strike_t: public hunter_melee_attack_t
   {
     double am = hunter_melee_attack_t::action_multiplier();
 
-    if ( p() -> buffs.tip_of_the_spear -> up() )
-      am *= 1.0 + p() -> buffs.tip_of_the_spear -> check_stack_value();
-
-    if ( p() -> buffs.t21_4p_in_for_the_kill -> up() )
-      am *= 1.0 + p() -> buffs.t21_4p_in_for_the_kill -> check_stack_value();
+    am *= 1.0 + p() -> buffs.tip_of_the_spear -> stack_value();
+    am *= 1.0 + p() -> buffs.t21_4p_in_for_the_kill -> stack_value();
 
     return am;
   }
@@ -3181,8 +3170,7 @@ struct raptor_strike_t: public hunter_melee_attack_t
   {
     double cc = hunter_melee_attack_t::composite_crit_chance();
 
-    if ( p() -> buffs.t21_2p_exposed_flank -> up() )
-      cc += p() -> buffs.t21_2p_exposed_flank -> check_value();
+    cc += p() -> buffs.t21_2p_exposed_flank -> value();
 
     return cc;
   }
@@ -3310,8 +3298,7 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::action_da_multiplier();
 
-    if ( p() -> buffs.vipers_venom -> up() )
-      m *= 1.0 + p() -> buffs.vipers_venom -> check_value();
+    m *= 1.0 + p() -> buffs.vipers_venom -> value();
 
     return m;
   }
@@ -3609,7 +3596,7 @@ struct kill_command_t: public hunter_spell_t
 
   bool init_finished() override
   {
-    for (auto pet : p() -> pet_list)
+    for ( auto pet : p() -> pet_list )
       add_pet_stats( pet, { "kill_command" } );
 
     return hunter_spell_t::init_finished();
@@ -3773,14 +3760,6 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     p() -> buffs.aspect_of_the_wild -> trigger();
     p() -> pets.main -> buffs.aspect_of_the_wild -> trigger();
     hunter_spell_t::execute();
-  }
-
-  bool ready() override
-  {
-    if ( !p() -> pets.main )
-      return false;
-
-    return hunter_spell_t::ready();
   }
 };
 
