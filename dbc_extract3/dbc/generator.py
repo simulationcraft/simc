@@ -1437,6 +1437,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 272013, 5 ),		# Vicious Hellhound - Demon Fangs
 		  ( 272012, 5 ),		# Illidari Satyr - Shadow Slash
 		  ( 272131, 5 ),		# Eye of Gul'dan - Eye of Gul'dan
+		  ( 267964, 0 ),		# new soul strike?
 		  
         ),
 
