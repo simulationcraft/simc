@@ -5657,6 +5657,22 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 13046 | Radius: 5 yards | Target: Unknown(49)
 Description      : Tear open a portal to the Twisting Nether for $d.  Every time you spend Soul Shards, you will also command demons from the Nether to come out and fight for you.
 
+Name             : Soul Strike (id=267964) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Spell Level      : 1
+Range            : 100 yards
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=714972)   : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc264057
+
 Name             : Demonic Consumption (id=267971) [Spell Family (5)] 
 Class            : Warlock
 School           : Physical
