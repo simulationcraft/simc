@@ -1216,14 +1216,15 @@ class SpellDataGenerator(DataGenerator):
         # Hunter:
         (
           ( 131900, 0 ), # Murder of Crows damage spell
-          ( 171457, 0 ), # Chimaera Shot - Nature
-          ( 217207, 0 ), # Dire Frenzy (pet)
-          ( 201594, 0 ), # Stampede
+          ( 171457, 1 ), # Chimaera Shot - Nature
+          ( 201594, 1 ), # Stampede
           ( 118459, 5 ), # Beast Cleave
           ( 257622, 2 ), # Trick Shots buff
           ( 269502, 2 ), ( 260395, 2 ), # Lethal Shots buffs
           ( 259516, 3 ), # Flanking Strike
           ( 267666, 3 ), # Chakrams
+          # Wildfire Infusion (Volatile Bomb spells)
+          ( 271048, 3 ), ( 271049, 3 ), ( 260231, 3 ),
         ),
 
         # Rogue:
