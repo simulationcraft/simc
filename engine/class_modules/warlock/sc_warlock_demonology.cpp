@@ -1137,7 +1137,6 @@ namespace warlock {
     {
       struct implosion_aoe_t : public warlock_spell_t
       {
-
         implosion_aoe_t(warlock_t* p) :
           warlock_spell_t("implosion_aoe", p, p -> find_spell(196278))
         {
@@ -1147,6 +1146,15 @@ namespace warlock {
           callbacks = false;
 
           p->spells.implosion_aoe = this;
+        }
+
+        double action_multiplier() const override
+        {
+          double m = warlock_spell_t::action_multiplier();
+
+          m *= 1.0 + p()->cache.mastery_value();
+
+          return m;
         }
       };
 
@@ -1308,9 +1316,18 @@ namespace warlock {
           warlock_spell_t("bilescourge_bombers_tick", p, p -> find_spell(267213))
         {
           aoe = -1;
-          background = dual = direct_tick = true; // Legion TOCHECK
+          background = dual = direct_tick = true;
           callbacks = false;
           radius = p->talents.bilescourge_bombers->effectN(1).radius();
+        }
+
+        double action_multiplier() const override
+        {
+          double m = warlock_spell_t::action_multiplier();
+
+          m *= 1.0 + p()->cache.mastery_value();
+
+          return m;
         }
       };
 
