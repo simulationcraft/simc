@@ -224,11 +224,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       204147, // Windburst (Artifact)
            0,
     },
-    // Beast Mastery tree, 13 abilities
+    // Beast Mastery tree, 14 abilities
     {
       193530, // Aspect of the Wild
       217200, // Barbed Shot
        19574, // Bestial Wrath
+      171457, // Chimaera Shot
       193455, // Cobra Shot
         5116, // Concussive Shot
       147362, // Counter Shot
@@ -1247,15 +1248,15 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Ferocity
     {
        61684, // Dash (Ferocity, Cunning Ability)
-      264663, // Predator's Thirst
        55709, // Heart of the Phoenix (Ferocity Ability)
-      264667, // Primal Rage (Ferocity Ability)
        20782, // Combat Experience
        53184, // Spiked Collar
        53482, // Blood of the Rhino
        19596, // Boar's Speed
        53497, // Cornered
        61688, // Great Stamina
+      264663, // Predator's Thirst
+      264667, // Primal Rage (Ferocity Ability)
            0,
     },
     // Specialization abilities for Tenacity
@@ -1266,10 +1267,10 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        53482, // Blood of the Rhino
        20782, // Combat Experience
        61688, // Great Stamina
-       19596, // Boar's Speed
       264662, // Endurance Training
-       53497, // Cornered
+       19596, // Boar's Speed
       264735, // Survival of the Fittest (Tenacity Ability)
+       53497, // Cornered
        53184, // Spiked Collar
            0,
     },
@@ -1280,11 +1281,11 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        19596, // Boar's Speed
        20782, // Combat Experience
        53497, // Cornered
-      264656, // Pathfinding
        53482, // Blood of the Rhino
-       53271, // Master's Call (Cunning Ability)
        61688, // Great Stamina
        53184, // Spiked Collar
+       53271, // Master's Call (Cunning Ability)
+      264656, // Pathfinding
            0,
     },
     {
