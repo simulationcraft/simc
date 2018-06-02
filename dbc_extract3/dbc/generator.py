@@ -1262,7 +1262,8 @@ class SpellDataGenerator(DataGenerator):
             ( 193473, 5 ),			# Void Tendril "Mind Flay"
             ( 217676, 3 ),			# Mind Spike Detonation
             ( 194249, 3, False ),   # Void Form extra data
-            ( 212570, 3, False )    # Surrendered Soul (Surrender To Madness Death)
+            ( 212570, 3, False ),   # Surrendered Soul (Surrender To Madness Death)
+	    ( 269555, 3 ),          # Azerite Trait Torment of Torments 
         ),
 
         # Death Knight:
