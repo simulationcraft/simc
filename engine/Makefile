@@ -58,8 +58,7 @@ CXX        = g++
 CPP_FLAGS  = -Wall -Wextra -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++11 -O3 -MMD -MP \
 -Wpedantic \
 -Wcast-qual \
--Wconversion-null \
--Wno-implicit-fallthrough # Since we can not yet mark things with [[fallthrough]], disable to avoid false positives.
+-Wconversion-null
 
 OPTS       =
 GIT        = $(shell [ -d ../.git ] && which git)
