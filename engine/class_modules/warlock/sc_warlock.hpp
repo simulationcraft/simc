@@ -564,7 +564,7 @@ namespace warlock
         struct active_t
         {
           melee_attack_t* soul_strike;
-          melee_attack_t* demonic_strength_felstorm;
+          action_t* demonic_strength_felstorm;
           spell_t*        bile_spit;
         } active;
 
@@ -860,6 +860,7 @@ namespace warlock
           virtual void init_base_stats() override;
           virtual double composite_player_multiplier(school_e school) const override;
           virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
+          bool create_actions() override;
         };
       }
       namespace dreadstalker

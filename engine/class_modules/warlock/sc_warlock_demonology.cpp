@@ -61,7 +61,7 @@ namespace warlock {
 
         void cancel() override {
           warlock_pet_melee_attack_t::cancel();
-          get_dot()->cancel();
+          //()->cancel();
         }
 
         void execute() override 
@@ -74,7 +74,12 @@ namespace warlock {
         }
       };
       struct demonic_strength_t : public warlock_pet_melee_attack_t {
-        demonic_strength_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_melee_attack_t("demonic_strength_felstorm", p, p -> find_spell(89751)) {
+        bool queued;
+
+        demonic_strength_t(warlock_pet_t* p, const std::string& options_str) :
+          warlock_pet_melee_attack_t("demonic_strength_felstorm", p, p -> find_spell(89751)),
+          queued(false)
+        {
           parse_options(options_str);
           tick_zero = true;
           hasted_ticks = true;
@@ -110,6 +115,7 @@ namespace warlock {
         void execute() override
         {
           warlock_pet_melee_attack_t::execute();
+          queued = false;
           p()->melee_attack->cancel();
         }
 
@@ -117,6 +123,12 @@ namespace warlock {
           warlock_pet_melee_attack_t::last_tick(d);
 
           p()->buffs.demonic_strength->expire();
+        }
+
+        bool ready() override {
+          if (!queued)
+            return false;
+          return warlock_pet_melee_attack_t::ready();
         }
       };
       struct soul_strike_t : public warlock_pet_melee_attack_t {
@@ -133,8 +145,18 @@ namespace warlock {
       felguard_pet_t::felguard_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
         warlock_pet_t(sim, owner, name, PET_FELGUARD, name != "felguard") {
         action_list_str = "travel";
+        action_list_str += "/demonic_strength_felstorm";
         action_list_str += "/felstorm";
         action_list_str += "/legion_strike,if=energy>=100";
+      }
+
+      bool felguard_pet_t::create_actions() {
+        auto r = warlock_pet_t::create_actions();
+
+        active.demonic_strength_felstorm  = find_action("demonic_strength_felstorm");
+        assert( active.demonic_strength_felstorm );
+
+        return r;
       }
 
       void felguard_pet_t::init_base_stats() {
@@ -152,6 +174,7 @@ namespace warlock {
 
       action_t* felguard_pet_t::create_action(const std::string& name, const std::string& options_str) {
         if (name == "legion_strike") return new legion_strike_t(this, options_str);
+        if (name == "demonic_strength_felstorm") return new demonic_strength_t(this, options_str);
         if (name == "felstorm") return new felstorm_t(this, options_str);
         if (name == "axe_toss") return new axe_toss_t(this, options_str);
 
@@ -881,7 +904,6 @@ namespace warlock {
 
     void warlock_pet_t::init_spells_demonology() {
       active.soul_strike                = new felguard::soul_strike_t(this);
-      active.demonic_strength_felstorm  = new felguard::demonic_strength_t(this,"");
       active.bile_spit                  = new vilefiend::bile_spit_t(this);
     }
   }
@@ -1302,8 +1324,10 @@ namespace warlock {
         if (p()->warlock_pet_list.active->pet_type == PET_FELGUARD)
         {
           p()->warlock_pet_list.active->buffs.demonic_strength->trigger();
-          p()->warlock_pet_list.active->active.demonic_strength_felstorm->set_target(execute_state->target);
-          p()->warlock_pet_list.active->active.demonic_strength_felstorm->execute();
+
+          assert( p()->warlock_pet_list.active->active.demonic_strength_felstorm );
+          auto ds = debug_cast<pets::felguard::demonic_strength_t*>(p()->warlock_pet_list.active->active.demonic_strength_felstorm);
+          ds->queued = true;
         }
       }
     };
