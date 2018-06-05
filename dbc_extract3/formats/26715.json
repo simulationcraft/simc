@@ -40,7 +40,7 @@
   ],
   "AzeriteEmpoweredItem": [
     { "data_type": "I", "field": "id_item", "formats": { "cpp": "%6u" } },
-    { "data_type": "B", "field": "unk_2" },
+    { "data_type": "B", "field": "id_azerite_tier_unlock" },
     { "data_type": "B", "field": "id_power_set" }
   ],
   "AzeriteItem": [
