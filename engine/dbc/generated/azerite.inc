@@ -1,5 +1,5 @@
-// Azerite powers, wow build 26734
-static constexpr std::array<azerite_power_entry_t, 285> __azerite_power_data { {
+// Azerite powers, wow build 26788
+static constexpr std::array<azerite_power_entry_t, 282> __azerite_power_data { {
   {  13, 263978, "Azerite Empowered"                  },
   {  14, 268594, "Longstrider"                        },
   {  15, 263962, "Resounding Protection"              },
@@ -20,7 +20,6 @@ static constexpr std::array<azerite_power_entry_t, 285> __azerite_power_data { {
   {  35, 264195, "Rotting Jaws"                       },
   {  36, 264198, "In The Rhythm"                      },
   {  38, 267879, "On My Way"                          },
-  {  40, 264600, "Embrace of the Sands"               },
   {  42, 267883, "Savior"                             },
   {  43, 267671, "Winds of War"                       },
   {  44, 268599, "Vampiric Speed"                     },
@@ -87,7 +86,6 @@ static constexpr std::array<azerite_power_entry_t, 285> __azerite_power_data { {
   { 152, 273146, "Healthy Judgment"                   },
   { 153, 273147, "Deferred Sentence"                  },
   { 154, 278617, "Relentless Inquisitor"              },
-  { 155, 273149, "Weeping Aura"                       },
   { 156, 273150, "Ruinous Bolt"                       },
   { 157, 273790, "Rezan's Fury"                       },
   { 158, 273154, "Rezan's Command"                    },
@@ -250,7 +248,6 @@ static constexpr std::array<azerite_power_entry_t, 285> __azerite_power_data { {
   { 414, 278683, "Inevitability"                      },
   { 416, 278697, "Natural Harmony"                    },
   { 417, 278709, "Rumbling Tremors"                   },
-  { 419, 278697, "Natural Harmony"                    },
   { 420, 278719, "Roiling Storm"                      },
   { 422, 278713, "Surging Tides"                      },
   { 423, 278715, "Spouting Spirits"                   },
@@ -268,8 +265,8 @@ static constexpr std::array<azerite_power_entry_t, 285> __azerite_power_data { {
   { 440, 278760, "Callous Reprisal"                   },
   { 441, 278765, "Iron Fortress"                      },
   { 442, 275974, "Deathbloom"                         },
-  { 443, 276007, "Crashing Chaos"                     },
-  { 444, 276007, "Crashing Chaos"                     },
+  { 443, 276007, "Excoriate"                          },
+  { 444, 277644, "Crashing Chaos"                     },
   { 445, 277673, "Perforate"                          },
   { 446, 277676, "Brigand's Blitz"                    },
   { 447, 277666, "Ancestral Resonance"                },

@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26734
+// Class based active abilities, wow build 26788
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -110,11 +110,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // General tree, 16 abilities
+    // General tree, 17 abilities
     {
        86704, // Ancient Fury
        66235, // Ardent Defender
         1044, // Blessing of Freedom
+       81297, // Consecration
       121183, // Contemplation
        35395, // Crusader Strike
          642, // Divine Shield
@@ -197,7 +198,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Hunter
   {
-    // General tree, 23 abilities
+    // General tree, 26 abilities
     {
        61648, // Aspect of the Chameleon
       186257, // Aspect of the Cheetah
@@ -209,6 +210,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        83244, // Call Pet 4
        83245, // Call Pet 5
       272651, // Command Pet
+        2641, // Dismiss Pet
+        6197, // Eagle Eye
         6991, // Feed Pet
         5384, // Feign Death
       125050, // Fetch
@@ -221,10 +224,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1515, // Tame Beast
       207068, // Titan's Thunder (Artifact)
       207097, // Titan's Thunder
+      210000, // Wake Up
       204147, // Windburst (Artifact)
            0,
     },
-    // Beast Mastery tree, 14 abilities
+    // Beast Mastery tree, 16 abilities
     {
       193530, // Aspect of the Wild
       217200, // Barbed Shot
@@ -233,22 +237,25 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       193455, // Cobra Shot
         5116, // Concussive Shot
       147362, // Counter Shot
+         781, // Disengage
       109304, // Exhilaration
       187650, // Freezing Trap
        19577, // Intimidation
        34026, // Kill Command
        34477, // Misdirection
         2643, // Multi-Shot
+      201594, // Stampede
       187698, // Tar Trap
            0,
     },
-    // Marksmanship tree, 15 abilities
+    // Marksmanship tree, 16 abilities
     {
        19434, // Aimed Shot
       185358, // Arcane Shot
       186387, // Bursting Shot
         5116, // Concussive Shot
       147362, // Counter Shot
+         781, // Disengage
       109304, // Exhilaration
       187650, // Freezing Trap
       260395, // Lethal Shots
@@ -261,11 +268,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       193526, // Trueshot
            0,
     },
-    // Survival tree, 16 abilities
+    // Survival tree, 21 abilities
     {
       186289, // Aspect of the Eagle
+      187708, // Carve
       267666, // Chakrams
       266779, // Coordinated Assault
+         781, // Disengage
       109304, // Exhilaration
       259516, // Flanking Strike
       187650, // Freezing Trap
@@ -277,6 +286,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       186270, // Raptor Strike
       259491, // Serpent Sting
       187698, // Tar Trap
+      260231, // Violent Reaction
+      271048, // Volatile Bomb
+      271049, // Volatile Wildfire
       259495, // Wildfire Bomb
       195645, // Wing Clip
            0,
@@ -453,7 +465,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       205065, // Void Torrent (Artifact)
            0,
     },
-    // Discipline tree, 17 abilities
+    // Discipline tree, 18 abilities
     {
        19236, // Desperate Prayer
         2061, // Flash Heal
@@ -461,6 +473,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        73325, // Leap of Faith
         1706, // Levitate
       212036, // Mass Resurrection
+        2096, // Mind Vision
        33206, // Pain Suppression
        47540, // Penance
        62618, // Power Word: Barrier
@@ -474,7 +487,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        34433, // Shadowfiend
            0,
     },
-    // Holy tree, 19 abilities
+    // Holy tree, 20 abilities
     {
        19236, // Desperate Prayer
        64843, // Divine Hymn
@@ -489,6 +502,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        73325, // Leap of Faith
         1706, // Levitate
       212036, // Mass Resurrection
+        2096, // Mind Vision
          596, // Prayer of Healing
        33076, // Prayer of Mending
         8122, // Psychic Scream
@@ -497,7 +511,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        64901, // Symbol of Hope
            0,
     },
-    // Shadow tree, 19 abilities
+    // Shadow tree, 20 abilities
     {
        47585, // Dispersion
         2061, // Flash Heal
@@ -507,6 +521,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        15407, // Mind Flay
        48045, // Mind Sear
       217676, // Mind Spike Detonation
+        2096, // Mind Vision
           17, // Power Word: Shield
         8122, // Psychic Scream
       213634, // Purify Disease
@@ -567,7 +582,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        55233, // Vampiric Blood
            0,
     },
-    // Frost tree, 8 abilities
+    // Frost tree, 7 abilities
     {
        45524, // Chains of Ice
        47568, // Empower Rune Weapon
@@ -575,7 +590,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        49184, // Howling Blast
        48792, // Icebound Fortitude
        49020, // Obliterate
-       51271, // Pillar of Frost
       196770, // Remorseless Winter
            0,
     },
@@ -614,7 +628,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Shaman
   {
-    // General tree, 21 abilities
+    // General tree, 23 abilities
     {
       114911, // Ancestral Guidance
       108271, // Astral Shift
@@ -623,6 +637,8 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       204945, // Doom Winds (Artifact)
       207778, // Downpour
         2484, // Earthbind Totem
+        6196, // Far Sight
+       10444, // Flametongue Attack
         2645, // Ghost Wolf
        32182, // Heroism
        51514, // Hex
@@ -809,7 +825,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // General tree, 27 abilities
+    // General tree, 29 abilities
     {
          710, // Banish
       187394, // Chaos Barrage
@@ -819,6 +835,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       111771, // Demonic Gateway
       196586, // Dimensional Rift (Artifact)
         1098, // Enslave Demon
+         126, // Eye of Kilrogg
         5782, // Fear
       111897, // Grimoire: Felhunter (Summon)
       111859, // Grimoire: Imp (Summon)
@@ -830,6 +847,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          698, // Ritual of Summoning
       196657, // Shadow Bolt
        63106, // Siphon Life
+      108366, // Soul Leech (Talent)
        20707, // Soulstone
          691, // Summon Felhunter (Summon)
          688, // Summon Imp (Summon)
@@ -898,7 +916,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 43 abilities
+    // Pet tree, 46 abilities
     {
        89766, // Axe Toss (Special Ability)
       267997, // Bile Spit
@@ -914,6 +932,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        19505, // Devour Magic (Special Ability)
        85692, // Doom Bolt
       272156, // Double Breath
+      205196, // Dreadbite
       205231, // Eye Beam
       272131, // Eye of Gul'dan
       272435, // Fel Bite
@@ -927,12 +946,14 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30213, // Legion Strike (Basic Attack)
         7870, // Lesser Invisibility (Special Ability)
       272439, // Many Faced Bite
+      171017, // Meteor Strike
       272172, // Multi-Slash
       272432, // Overhead Assault
        30151, // Pursuit (Special Ability)
         6358, // Seduction (Command Demon Ability)
       171014, // Seethe (Special Ability)
        54049, // Shadow Bite (Basic Attack)
+       17767, // Shadow Bulwark (Command Demon Ability)
       171138, // Shadow Lock (Special Ability)
       272012, // Shadow Slash
        89808, // Singe Magic (Command Demon Ability)
@@ -1010,7 +1031,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 21 abilities
+    // Windwalker tree, 22 abilities
     {
       116768, // Blackout Kick!
       211432, // Combo Master
@@ -1032,6 +1053,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       242387, // Thunderfist
       115080, // Touch of Death
       122470, // Touch of Karma
+      125174, // Touch of Karma
       116670, // Vivify
            0,
     },
@@ -1241,22 +1263,22 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 26734
+// Talent tree specialization abilities, wow build 26788
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
     // Specialization abilities for Ferocity
     {
        61684, // Dash (Ferocity, Cunning Ability)
+      264663, // Predator's Thirst
        55709, // Heart of the Phoenix (Ferocity Ability)
+      264667, // Primal Rage (Ferocity Ability)
        20782, // Combat Experience
        53184, // Spiked Collar
        53482, // Blood of the Rhino
        19596, // Boar's Speed
        53497, // Cornered
        61688, // Great Stamina
-      264663, // Predator's Thirst
-      264667, // Primal Rage (Ferocity Ability)
            0,
     },
     // Specialization abilities for Tenacity
@@ -1267,10 +1289,10 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        53482, // Blood of the Rhino
        20782, // Combat Experience
        61688, // Great Stamina
-      264662, // Endurance Training
        19596, // Boar's Speed
-      264735, // Survival of the Fittest (Tenacity Ability)
+      264662, // Endurance Training
        53497, // Cornered
+      264735, // Survival of the Fittest (Tenacity Ability)
        53184, // Spiked Collar
            0,
     },
@@ -1281,11 +1303,11 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        19596, // Boar's Speed
        20782, // Combat Experience
        53497, // Cornered
+      264656, // Pathfinding
        53482, // Blood of the Rhino
+       53271, // Master's Call (Cunning Ability)
        61688, // Great Stamina
        53184, // Spiked Collar
-       53271, // Master's Call (Cunning Ability)
-      264656, // Pathfinding
            0,
     },
     {
@@ -1559,6 +1581,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       186289, // Aspect of the Eagle
        19577, // Intimidation
       231549, // Disengage (Rank 2)
+      187708, // Carve
            0,
     },
     {
@@ -1738,6 +1761,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       262861, // Smite (Rank 2)
         8122, // Psychic Scream
        64901, // Symbol of Hope
+        2096, // Mind Vision
            0,
     },
     // Specialization abilities for Shadow
@@ -1807,7 +1831,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        86113, // Plate Specialization (Passive)
        49020, // Obliterate
        51128, // Killing Machine
-       51271, // Pillar of Frost
        59057, // Rime
        77514, // Mastery: Frozen Heart
       137006, // Frost Death Knight
@@ -2371,7 +2394,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26734
+// Class mastery abilities, wow build 26788
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2610,7 +2633,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26734
+// Racial abilities, wow build 26788
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3522,7 +3545,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26734
+// Set bonus data, wow build 26788
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4241,9 +4264,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
 };
-#define RPPMMOD_SIZE (924)
+#define RPPMMOD_SIZE (931)
 
-// 924 RPPM Modifiers, wow build level 26734
+// 931 RPPM Modifiers, wow build level 26788
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -4394,6 +4417,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 202840,    4,  1,  1.0000 },
   { 203557,    4,  1,  1.0000 },
   { 206478,    4,  1,  1.0000 },
+  { 207104,    4,  1,  1.0000 },
   { 207320,    4,  1,  1.0000 },
   { 207767,   71,  4, -0.4000 },
   { 208213,    4,  1,  1.0000 },
@@ -5111,7 +5135,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 268617,    4,  1,  1.0000 },
   { 268620,    4,  1,  1.0000 },
   { 268624,    4,  1,  1.0000 },
-  { 268771,    4,  1,  1.0000 },
   { 269009,    4,  1,  1.0000 },
   { 269066,    4,  1,  1.0000 },
   { 269853,    4,  1,  1.0000 },
@@ -5149,7 +5172,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 274477,    4,  1,  1.0000 },
   { 274484,    4,  1,  1.0000 },
   { 274790,    4,  1,  1.0000 },
-  { 274835,    4,  1,  1.0000 },
   { 275460,    4,  1,  1.0000 },
   { 276135,    4,  1,  1.0000 },
   { 276176,    4,  1,  1.0000 },
@@ -5169,5 +5191,13 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 280383,    4,  1,  1.0000 },
   { 280386,    4,  1,  1.0000 },
   { 280721,    4,  1,  1.0000 },
+  { 280778,    4,  1,  1.0000 },
+  { 280785,    4,  1,  1.0000 },
+  { 280816,    4,  1,  1.0000 },
+  { 280837,    4,  1,  1.0000 },
+  { 280851,    4,  1,  1.0000 },
+  { 280854,    4,  1,  1.0000 },
+  { 280855,    4,  1,  1.0000 },
+  { 280860,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
