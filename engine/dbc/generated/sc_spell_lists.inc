@@ -110,12 +110,11 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Paladin
   {
-    // General tree, 17 abilities
+    // General tree, 16 abilities
     {
        86704, // Ancient Fury
        66235, // Ardent Defender
         1044, // Blessing of Freedom
-       81297, // Consecration
       121183, // Contemplation
        35395, // Crusader Strike
          642, // Divine Shield
@@ -198,7 +197,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Hunter
   {
-    // General tree, 26 abilities
+    // General tree, 23 abilities
     {
        61648, // Aspect of the Chameleon
       186257, // Aspect of the Cheetah
@@ -210,8 +209,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        83244, // Call Pet 4
        83245, // Call Pet 5
       272651, // Command Pet
-        2641, // Dismiss Pet
-        6197, // Eagle Eye
         6991, // Feed Pet
         5384, // Feign Death
       125050, // Fetch
@@ -224,11 +221,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1515, // Tame Beast
       207068, // Titan's Thunder (Artifact)
       207097, // Titan's Thunder
-      210000, // Wake Up
       204147, // Windburst (Artifact)
            0,
     },
-    // Beast Mastery tree, 16 abilities
+    // Beast Mastery tree, 14 abilities
     {
       193530, // Aspect of the Wild
       217200, // Barbed Shot
@@ -237,25 +233,22 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       193455, // Cobra Shot
         5116, // Concussive Shot
       147362, // Counter Shot
-         781, // Disengage
       109304, // Exhilaration
       187650, // Freezing Trap
        19577, // Intimidation
        34026, // Kill Command
        34477, // Misdirection
         2643, // Multi-Shot
-      201594, // Stampede
       187698, // Tar Trap
            0,
     },
-    // Marksmanship tree, 16 abilities
+    // Marksmanship tree, 15 abilities
     {
        19434, // Aimed Shot
       185358, // Arcane Shot
       186387, // Bursting Shot
         5116, // Concussive Shot
       147362, // Counter Shot
-         781, // Disengage
       109304, // Exhilaration
       187650, // Freezing Trap
       260395, // Lethal Shots
@@ -268,13 +261,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       193526, // Trueshot
            0,
     },
-    // Survival tree, 21 abilities
+    // Survival tree, 17 abilities
     {
       186289, // Aspect of the Eagle
       187708, // Carve
       267666, // Chakrams
       266779, // Coordinated Assault
-         781, // Disengage
       109304, // Exhilaration
       259516, // Flanking Strike
       187650, // Freezing Trap
@@ -286,9 +278,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       186270, // Raptor Strike
       259491, // Serpent Sting
       187698, // Tar Trap
-      260231, // Violent Reaction
-      271048, // Volatile Bomb
-      271049, // Volatile Wildfire
       259495, // Wildfire Bomb
       195645, // Wing Clip
            0,
@@ -465,7 +454,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       205065, // Void Torrent (Artifact)
            0,
     },
-    // Discipline tree, 18 abilities
+    // Discipline tree, 17 abilities
     {
        19236, // Desperate Prayer
         2061, // Flash Heal
@@ -473,7 +462,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        73325, // Leap of Faith
         1706, // Levitate
       212036, // Mass Resurrection
-        2096, // Mind Vision
        33206, // Pain Suppression
        47540, // Penance
        62618, // Power Word: Barrier
@@ -487,7 +475,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        34433, // Shadowfiend
            0,
     },
-    // Holy tree, 20 abilities
+    // Holy tree, 19 abilities
     {
        19236, // Desperate Prayer
        64843, // Divine Hymn
@@ -502,7 +490,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        73325, // Leap of Faith
         1706, // Levitate
       212036, // Mass Resurrection
-        2096, // Mind Vision
          596, // Prayer of Healing
        33076, // Prayer of Mending
         8122, // Psychic Scream
@@ -511,7 +498,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        64901, // Symbol of Hope
            0,
     },
-    // Shadow tree, 20 abilities
+    // Shadow tree, 19 abilities
     {
        47585, // Dispersion
         2061, // Flash Heal
@@ -521,7 +508,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        15407, // Mind Flay
        48045, // Mind Sear
       217676, // Mind Spike Detonation
-        2096, // Mind Vision
           17, // Power Word: Shield
         8122, // Psychic Scream
       213634, // Purify Disease
@@ -628,7 +614,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Shaman
   {
-    // General tree, 23 abilities
+    // General tree, 21 abilities
     {
       114911, // Ancestral Guidance
       108271, // Astral Shift
@@ -637,8 +623,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       204945, // Doom Winds (Artifact)
       207778, // Downpour
         2484, // Earthbind Totem
-        6196, // Far Sight
-       10444, // Flametongue Attack
         2645, // Ghost Wolf
        32182, // Heroism
        51514, // Hex
@@ -825,7 +809,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Warlock
   {
-    // General tree, 29 abilities
+    // General tree, 27 abilities
     {
          710, // Banish
       187394, // Chaos Barrage
@@ -835,7 +819,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       111771, // Demonic Gateway
       196586, // Dimensional Rift (Artifact)
         1098, // Enslave Demon
-         126, // Eye of Kilrogg
         5782, // Fear
       111897, // Grimoire: Felhunter (Summon)
       111859, // Grimoire: Imp (Summon)
@@ -847,7 +830,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
          698, // Ritual of Summoning
       196657, // Shadow Bolt
        63106, // Siphon Life
-      108366, // Soul Leech (Talent)
        20707, // Soulstone
          691, // Summon Felhunter (Summon)
          688, // Summon Imp (Summon)
@@ -916,7 +898,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 46 abilities
+    // Pet tree, 43 abilities
     {
        89766, // Axe Toss (Special Ability)
       267997, // Bile Spit
@@ -932,7 +914,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        19505, // Devour Magic (Special Ability)
        85692, // Doom Bolt
       272156, // Double Breath
-      205196, // Dreadbite
       205231, // Eye Beam
       272131, // Eye of Gul'dan
       272435, // Fel Bite
@@ -946,14 +927,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30213, // Legion Strike (Basic Attack)
         7870, // Lesser Invisibility (Special Ability)
       272439, // Many Faced Bite
-      171017, // Meteor Strike
       272172, // Multi-Slash
       272432, // Overhead Assault
        30151, // Pursuit (Special Ability)
         6358, // Seduction (Command Demon Ability)
       171014, // Seethe (Special Ability)
        54049, // Shadow Bite (Basic Attack)
-       17767, // Shadow Bulwark (Command Demon Ability)
       171138, // Shadow Lock (Special Ability)
       272012, // Shadow Slash
        89808, // Singe Magic (Command Demon Ability)
@@ -1031,7 +1010,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 22 abilities
+    // Windwalker tree, 21 abilities
     {
       116768, // Blackout Kick!
       211432, // Combo Master
@@ -1053,7 +1032,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       242387, // Thunderfist
       115080, // Touch of Death
       122470, // Touch of Karma
-      125174, // Touch of Karma
       116670, // Vivify
            0,
     },

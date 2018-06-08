@@ -465,9 +465,9 @@
     { "data_type": "f", "field": "unk_24" },
     { "data_type": "f", "field": "base_value", "formats": { "cpp": "%11.4f" } },
     { "data_type": "i", "field": "misc_value", "elements": 2 },
-    { "data_type": "B", "field": "id_radius", "elements": 2 },
+    { "data_type": "I", "field": "id_radius", "elements": 2 },
     { "data_type": "I", "field": "class_mask", "elements": 4 },
-    { "data_type": "B", "field": "implicit_target", "elements": 2 }
+    { "data_type": "I", "field": "implicit_target", "elements": 2 }
   ],
   "SpellEffectAutoDescription": [
     { "data_type": "S", "field": "desc" },
