@@ -2307,6 +2307,9 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( num_targets_hit >= p() -> specs.trick_shots -> effectN( 2 ).base_value() )
       p() -> buffs.trick_shots -> trigger();
 
+    if ( p() -> talents.calling_the_shots -> ok() )
+      p() -> cooldowns.trueshot -> adjust( - p() -> talents.calling_the_shots -> effectN( 1 ).time_value() );
+
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B2 ) )
       trigger_t20_2pc_bm( p() );
   }
