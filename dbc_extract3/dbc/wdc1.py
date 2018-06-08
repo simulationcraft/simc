@@ -298,11 +298,24 @@ class WDC1ExtendedColumnValue:
         raise NotImplementedError
 
 class WDC1BitPackedValue(WDC1ExtendedColumnValue):
-    def __call__(self, id_, data, bytes_):
-        value = int.from_bytes(bytes_, byteorder = 'little')
+    def __init__(self, column):
+        super().__init__(column)
 
-        if self.column.is_signed():
-            value = transform_sign(value, self.element_mask, self.column.value_bit_size())
+        self.unpacker = None
+        if column.value_bit_size() % 8 == 0:
+            struct_type = get_struct_type(column.is_float(),
+                                          column.is_signed(),
+                                          column.value_bit_size())
+            self.unpacker = Struct('<{}'.format(struct_type))
+
+    def __call__(self, id_, data, bytes_):
+        if self.unpacker:
+            value = self.unpacker.unpack_from(bytes_, 0)[0]
+        else:
+            value = int.from_bytes(bytes_, byteorder = 'little')
+
+            if self.column.is_signed():
+                value = transform_sign(value, self.element_mask, self.column.value_bit_size())
 
         return (value,)
 
@@ -356,10 +369,11 @@ class WDC1ArrayDataValue(WDC1ColumnDataValue):
     def __init__(self, column):
         super().__init__(column)
 
+        bytes_per_element = self.column.format_bit_size() // 8
         # Array values are stored as 32-bit values
-        self.__array_size = 4 * self.column.elements()
+        self.__array_size = bytes_per_element * self.column.elements()
 
-        struct_type = get_struct_type(column.is_float(), column.is_signed(), 32)
+        struct_type = get_struct_type(column.is_float(), column.is_signed(), self.column.format_bit_size())
         self.unpacker = Struct('<{}{}'.format(column.elements(), struct_type))
 
     def __call__(self, id_, data, bytes_):
@@ -594,13 +608,13 @@ class WDC1Column:
     def format_bit_size(self):
         if not self.__format:
             return 0
-        elif self.__format in ['b', 'B']:
+        elif self.__format.data_type in ['b', 'B']:
             return 8
-        elif self.__format in ['h', 'H']:
+        elif self.__format.data_type in ['h', 'H']:
             return 16
-        elif self.__format in ['i', 'I']:
+        elif self.__format.data_type in ['i', 'I']:
             return 32
-        elif self.__format in ['q', 'Q']:
+        elif self.__format.data_type in ['q', 'Q']:
             return 64
         else:
             return 0
@@ -658,7 +672,7 @@ class WDC1Column:
         else:
             return self.__offset * 8
 
-    def field_packet_bit_offset(self):
+    def field_packed_bit_offset(self):
         return self.__packed_bit_offset
 
     def field_byte_offset(self):
