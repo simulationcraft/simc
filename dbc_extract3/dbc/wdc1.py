@@ -65,6 +65,8 @@ def get_struct_type(is_float, is_signed, bit_size):
         base_type = 'h'
     elif bit_size == 8:
         base_type = 'b'
+    elif bit_size == 0:
+        base_type = 'f'
     else:
         logging.error('Invalid bit length %u', bit_size)
         raise NotImplementedError
@@ -612,7 +614,7 @@ class WDC1Column:
             return 8
         elif self.__format.data_type in ['h', 'H']:
             return 16
-        elif self.__format.data_type in ['i', 'I']:
+        elif self.__format.data_type in ['i', 'I', 'f']:
             return 32
         elif self.__format.data_type in ['q', 'Q']:
             return 64
