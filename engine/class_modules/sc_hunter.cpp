@@ -2506,7 +2506,7 @@ struct bursting_shot_t : public hunter_ranged_attack_t
 struct aimed_shot_base_t: public hunter_ranged_attack_t
 {
   benefit_t *const careful_aim;
-  int trick_shots_targets;
+  const int trick_shots_targets;
 
   aimed_shot_base_t( const std::string& name, hunter_t* p ):
     hunter_ranged_attack_t( name, p, p -> specs.aimed_shot ),
@@ -2816,8 +2816,11 @@ struct rapid_fire_t: public hunter_spell_t
 {
   struct rapid_fire_damage_t: public hunter_ranged_attack_t
   {
+    const int trick_shots_targets;
+
     rapid_fire_damage_t( const std::string& n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 257044 ) -> effectN( 2 ).trigger() )
+      hunter_ranged_attack_t( n, p, p -> find_spell( 257044 ) -> effectN( 2 ).trigger() ),
+      trick_shots_targets( as<int>( p -> specs.trick_shots -> effectN( 3 ).base_value() ) )
     {
       background = true;
       dual = true;
@@ -2829,7 +2832,7 @@ struct rapid_fire_t: public hunter_spell_t
     int n_targets() const override
     {
       if ( p() -> buffs.trick_shots -> check() )
-        return 2;
+        return 1 + trick_shots_targets;
       return hunter_ranged_attack_t::n_targets();
     }
 
