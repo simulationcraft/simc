@@ -4090,8 +4090,6 @@ struct steel_trap_t: public hunter_spell_t
     {
       background = true;
       dual = true;
-
-      hasted_ticks = false;
     }
 
     void execute() override
@@ -4100,13 +4098,6 @@ struct steel_trap_t: public hunter_spell_t
 
       if ( p() -> legendary.sv_feet -> ok() )
         p() -> resource_gain( RESOURCE_FOCUS, p() -> find_spell( 212575 ) -> effectN( 1 ).resource( RESOURCE_FOCUS ), p() -> gains.nesingwarys_trapping_treads );
-    }
-
-    double target_armor( player_t* ) const override
-    {
-      // the trap does bleed damage which ignores armor
-      assert( data().mechanic() == MECHANIC_BLEED );
-      return 0.0;
     }
   };
 
