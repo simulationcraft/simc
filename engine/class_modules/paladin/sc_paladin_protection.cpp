@@ -673,10 +673,6 @@ void paladin_t::target_mitigation( school_e school,
     }
   }
 
-  // Knight Templar
-  if ( talents.knight_templar -> ok() && buffs.divine_steed -> up() )
-    s -> result_amount *= 1.0 + talents.knight_templar -> effectN( 2 ).percent();
-
   // Aegis of Light
   if ( talents.aegis_of_light -> ok() && buffs.aegis_of_light -> up() )
     s -> result_amount *= 1.0 + talents.aegis_of_light -> effectN( 1 ).percent();
@@ -857,7 +853,7 @@ void paladin_t::init_spells_protection()
   talents.blessing_of_salvation      = find_talent_spell( "Blessing of Salvation" );
   talents.retribution_aura           = find_talent_spell( "Retribution Aura" );
   talents.hand_of_the_protector      = find_talent_spell( "Hand of the Protector" );
-  talents.knight_templar             = find_talent_spell( "Knight Templar" );
+  talents.unbreakable_spirit         = find_talent_spell( "Unbreakable Spirit" );
   talents.final_stand                = find_talent_spell( "Final Stand" );
   talents.aegis_of_light             = find_talent_spell( "Aegis of Light" );
   //talents.judgment_of_light          = find_talent_spell( "Judgment of Light" );
@@ -977,7 +973,6 @@ void paladin_t::generate_action_prio_list_prot()
   prot->add_action(this, "Light of the Protector", "if=("+threshold_lotp+")&health.pct<55");
   prot->add_talent(this, "Hand of the Protector",  "if=("+threshold_hotp_rp+")&health.pct<65&talent.righteous_protector.enabled");
   prot->add_talent(this, "Hand of the Protector",  "if=("+threshold_hotp+")&health.pct<55");
-  prot->add_action(this, "Divine Steed", "if=!talent.seraphim.enabled&talent.knight_templar.enabled&" + threshold + "&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
   prot->add_talent(this, "Aegis of Light", "if=!talent.seraphim.enabled&" + threshold + "&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
   prot->add_action(this, "Guardian of Ancient Kings", "if=!talent.seraphim.enabled&" + threshold + "&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");
   prot->add_action(this, "Divine Shield", "if=!talent.seraphim.enabled&talent.final_stand.enabled&" + threshold + "&!(buff.aegis_of_light.up|buff.ardent_defender.up|buff.guardian_of_ancient_kings.up|buff.divine_shield.up|buff.potion.up)");

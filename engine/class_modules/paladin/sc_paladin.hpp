@@ -353,8 +353,8 @@ public:
     const spell_data_t* blessing_of_salvation;
     const spell_data_t* retribution_aura;
     const spell_data_t* hand_of_the_protector;
-    const spell_data_t* knight_templar;
     const spell_data_t* final_stand;
+    // skip unbreakable spirit - NYI
     const spell_data_t* aegis_of_light;
     // Judgment of Light seems to be a recopy from Holy.
     //const spell_data_t* judgment_of_light;

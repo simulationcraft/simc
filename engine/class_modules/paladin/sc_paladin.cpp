@@ -399,11 +399,6 @@ struct divine_steed_t : public paladin_spell_t
     : paladin_spell_t( "divine_steed", p, p -> find_spell( "Divine Steed" ) )
   {
     parse_options( options_str );
-
-    // adjust cooldown based on Knight Templar talent for prot
-    if ( p -> talents.knight_templar -> ok() )
-      cooldown -> duration *= 1.0 + p -> talents.knight_templar -> effectN( 1 ).percent();
-
   }
 
   void execute() override
