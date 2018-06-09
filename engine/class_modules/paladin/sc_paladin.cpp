@@ -794,113 +794,6 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
   }
 };
 
-// Judgment =================================================================
-
-struct judgment_t : public paladin_melee_attack_t
-{
-  timespan_t sotr_cdr; // needed for sotr interaction for protection
-  judgment_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
-  {
-    parse_options( options_str );
-
-    // no weapon multiplier
-    weapon_multiplier = 0.0;
-    may_block = may_parry = may_dodge = false;
-    cooldown -> charges = 1;
-
-    // TODO: this is a hack; figure out what's really going on here.
-    if ( p -> specialization() == PALADIN_RETRIBUTION )
-    {
-      base_costs[RESOURCE_MANA] = 0;
-      if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
-        base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
-
-      // TODO: more hax; really this is spellpower but the ap -> sp conversion seems to also take into account weapondps
-      attack_power_mod.direct = spell_power_mod.direct;
-      spell_power_mod.direct = 0;
-    }
-    else if ( p -> specialization() == PALADIN_HOLY )
-    {
-      base_multiplier *= 1.0 + p -> passives.holy_paladin -> effectN( 6 ).percent();
-    }
-    else if ( p -> specialization() == PALADIN_PROTECTION )
-    {
-      cooldown -> charges *= 1.0 + p->talents.crusaders_judgment->effectN( 1 ).base_value();
-      cooldown -> duration *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
-      base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
-      sotr_cdr = -1.0 * timespan_t::from_seconds( 2 ); // hack for p -> spec.judgment_2 -> effectN( 1 ).base_value()
-    }
-  }
-
-  virtual void execute() override
-  {
-    paladin_melee_attack_t::execute();
-
-    if ( p() -> talents.fist_of_justice -> ok() )
-    {
-      double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
-      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
-    }
-    if ( p() -> talents.zeal -> ok() )
-    {
-      p() -> buffs.zeal -> trigger( p() -> talents.zeal -> effectN( 1 ).base_value() );
-    }
-    if ( p() -> talents.divine_judgment -> ok() )
-    {
-      p() -> buffs.divine_judgment -> expire();
-    }
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
-      p() -> buffs.sacred_judgment -> trigger();
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B4 ) )
-      p() -> buffs.ret_t21_4p -> trigger();
-  }
-
-  proc_types proc_type() const override
-  {
-    return PROC1_MELEE_ABILITY;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-    if ( p() -> buffs.divine_judgment -> up() )
-      am *= 1.0 + p() -> buffs.divine_judgment -> data().effectN( 1 ).percent() * p() -> buffs.divine_judgment -> stack();
-    return am;
-  }
-
-  // Special things that happen when Judgment damages target
-  void impact( action_state_t* s ) override
-  {
-    if ( result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> buffs.debuffs_judgment -> trigger();
-
-      if ( p() -> talents.judgment_of_light -> ok() )
-        td( s -> target ) -> buffs.judgment_of_light -> trigger( 40 );
-
-      if ( p() -> specialization() == PALADIN_RETRIBUTION )
-      {
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.judgment );
-      }
-
-      // Judgment hits/crits reduce SotR recharge time
-      if ( p() -> specialization() == PALADIN_PROTECTION )
-      {
-        if ( p() -> sets -> has_set_bonus( PALADIN_PROTECTION, T20, B2 ) &&
-          rng().roll( p() -> sets -> set( PALADIN_PROTECTION, T20, B2 ) -> proc_chance() ) )
-        {
-          p() -> cooldowns.avengers_shield -> reset( true );
-        }
-
-        p() -> cooldowns.shield_of_the_righteous -> adjust( s -> result == RESULT_CRIT ? 2.0 * sotr_cdr : sotr_cdr );
-      }
-    }
-
-    paladin_melee_attack_t::impact( s );
-  }
-};
-
 // Rebuke ===================================================================
 
 struct rebuke_t : public paladin_melee_attack_t
@@ -1083,7 +976,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
   if ( name == "blessing_of_sacrifice"     ) return new blessing_of_sacrifice_t    ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
-  if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
   if ( name == "reckoning"                 ) return new reckoning_t                ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );

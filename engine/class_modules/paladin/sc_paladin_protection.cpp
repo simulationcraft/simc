@@ -351,6 +351,69 @@ struct holy_shield_proc_t : public paladin_spell_t
 
 };
 
+// Judgment =================================================================
+
+struct judgment_t : public paladin_melee_attack_t
+{
+  timespan_t sotr_cdr; // needed for sotr interaction for protection
+  judgment_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
+  {
+    parse_options( options_str );
+
+    // no weapon multiplier
+    weapon_multiplier = 0.0;
+    may_block = may_parry = may_dodge = false;
+    cooldown -> charges = 1;
+
+    cooldown -> charges *= 1.0 + p->talents.crusaders_judgment->effectN( 1 ).base_value();
+    cooldown -> duration *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
+    base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
+    sotr_cdr = -1.0 * timespan_t::from_seconds( 2 ); // hack for p -> spec.judgment_2 -> effectN( 1 ).base_value()
+
+  }
+
+  virtual void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p() -> talents.fist_of_justice -> ok() )
+    {
+      double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
+      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+    }
+  }
+
+  proc_types proc_type() const override
+  {
+    return PROC1_MELEE_ABILITY;
+  }
+
+  // Special things that happen when Judgment damages target
+  void impact( action_state_t* s ) override
+  {
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p() -> talents.judgment_of_light -> ok() )
+        td( s -> target ) -> buffs.judgment_of_light -> trigger( 40 );
+
+      // Judgment hits/crits reduce SotR recharge time
+      if ( p() -> specialization() == PALADIN_PROTECTION )
+      {
+        if ( p() -> sets -> has_set_bonus( PALADIN_PROTECTION, T20, B2 ) &&
+             rng().roll( p() -> sets -> set( PALADIN_PROTECTION, T20, B2 ) -> proc_chance() ) )
+        {
+          p() -> cooldowns.avengers_shield -> reset( true );
+        }
+
+        p() -> cooldowns.shield_of_the_righteous -> adjust( s -> result == RESULT_CRIT ? 2.0 * sotr_cdr : sotr_cdr );
+      }
+    }
+
+    paladin_melee_attack_t::impact( s );
+  }
+};
+
 // Light of the Titans proc ===================================================
 
 struct light_of_the_titans_t : public paladin_heal_t
@@ -806,6 +869,7 @@ action_t* paladin_t::create_action_protection( const std::string& name, const st
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
   if ( name == "hand_of_the_protector"     ) return new hand_of_the_protector_t    ( this, options_str );
+  if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
   if ( name == "light_of_the_protector"    ) return new light_of_the_protector_t   ( this, options_str );
   if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );

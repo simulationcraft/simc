@@ -466,6 +466,86 @@ struct templars_verdict_t : public holy_power_consumer_t
   }
 };
 
+// Judgment =================================================================
+
+struct judgment_t : public paladin_melee_attack_t
+{
+  judgment_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "judgment", p, p -> find_specialization_spell( "Judgment" ) )
+  {
+    parse_options( options_str );
+
+    // no weapon multiplier
+    weapon_multiplier = 0.0;
+    may_block = may_parry = may_dodge = false;
+    cooldown -> charges = 1;
+
+    // TODO: this is a hack; figure out what's really going on here.
+    if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
+      base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
+
+    // TODO: more hax; really this is spellpower but the ap -> sp conversion seems to also take into account weapondps
+    attack_power_mod.direct = spell_power_mod.direct;
+    spell_power_mod.direct = 0;
+  }
+
+  virtual void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p() -> talents.fist_of_justice -> ok() )
+    {
+      double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
+      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+    }
+    if ( p() -> talents.zeal -> ok() )
+    {
+      p() -> buffs.zeal -> trigger( p() -> talents.zeal -> effectN( 1 ).base_value() );
+    }
+    if ( p() -> talents.divine_judgment -> ok() )
+    {
+      p() -> buffs.divine_judgment -> expire();
+    }
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
+      p() -> buffs.sacred_judgment -> trigger();
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B4 ) )
+      p() -> buffs.ret_t21_4p -> trigger();
+  }
+
+  proc_types proc_type() const override
+  {
+    return PROC1_MELEE_ABILITY;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+    if ( p() -> buffs.divine_judgment -> up() )
+      am *= 1.0 + p() -> buffs.divine_judgment -> data().effectN( 1 ).percent() * p() -> buffs.divine_judgment -> stack();
+    return am;
+  }
+
+  // Special things that happen when Judgment damages target
+  void impact( action_state_t* s ) override
+  {
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> buffs.debuffs_judgment -> trigger();
+
+      if ( p() -> talents.judgment_of_light -> ok() )
+        td( s -> target ) -> buffs.judgment_of_light -> trigger( 40 );
+
+      if ( p() -> specialization() == PALADIN_RETRIBUTION )
+      {
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.judgment );
+      }
+    }
+
+    paladin_melee_attack_t::impact( s );
+  }
+};
+
+
 // Justicar's Vengeance
 struct justicars_vengeance_t : public holy_power_consumer_t
 {
@@ -668,6 +748,7 @@ action_t* paladin_t::create_action_retribution( const std::string& name, const s
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
   if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
   if ( name == "inquisition"               ) return new inquisition_t              ( this, options_str );
+  if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
   if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
