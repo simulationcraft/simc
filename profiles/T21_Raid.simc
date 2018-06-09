@@ -2,14 +2,14 @@ optimal_raid=1
 default_actions=1
 
 #T21_Death_Knight_Frost.simc
-#T21_Death_Knight_Unholy.simc
+T21_Death_Knight_Unholy.simc
 
 #T21_Demon_Hunter_Havoc.simc
 
 #T21_Druid_Feral.simc
 #T21_Druid_Balance.simc
 
-#T21_Hunter_Beast_Mastery_Stomp.simc
+#T21_Hunter_Beast_Mastery.simc
 #T21_Hunter_Marksmanship.simc
 #T21_Hunter_Survival.simc
 
@@ -31,7 +31,7 @@ T21_Priest_Shadow.simc
 #T21_Shaman_Elemental.simc
 #T21_Shaman_Enhancement.simc
 
-#T21_Warlock_Affliction.simc
+T21_Warlock_Affliction.simc
 T21_Warlock_Demonology.simc
 #T21_Warlock_Destruction.simc
 
