@@ -414,77 +414,61 @@ struct judgment_prot_t : public paladin_melee_attack_t
   }
 };
 
-// Light of the Titans proc ===================================================
-
-struct light_of_the_titans_t : public paladin_heal_t
-{
-  light_of_the_titans_t( paladin_t* p )
-    : paladin_heal_t( "light_of_the_titans", p, p -> find_spell( 209540 ) ) // hot stored in 209540
-  {
-    background = true;
-    proc = true;
-  }
-};
-
 // Light of the Protector (Protection) ========================================
 
 struct light_of_the_protector_t : public paladin_heal_t
 {
-  double health_diff_pct;
-  light_of_the_titans_t* titans_proc;
-
   light_of_the_protector_t( paladin_t* p, const std::string& options_str )
-    : paladin_heal_t( "light_of_the_protector", p, p -> find_specialization_spell( "Light of the Protector" ) ), health_diff_pct( 0 )
+    : paladin_heal_t( "light_of_the_protector", p, p -> find_specialization_spell( "Light of the Protector" ) ) 
   {
     parse_options( options_str );
 
-    may_crit = false;
-    use_off_gcd = true;
+    may_crit = true;
     target = p;
-
-    // pct of missing health returned
-    health_diff_pct = data().effectN( 1 ).percent();
 
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.light_of_the_protector;
-    // prevent spamming
-    internal_cooldown -> duration = timespan_t::from_seconds( 1.0 );
+  }
 
-    // disable if Hand of the Protector talented
-    if ( p -> talents.hand_of_the_protector -> ok() )
-      background = true;
+  double action_multiplier() const override
+  {
+    double m = paladin_heal_t::action_multiplier();
 
-    // light of the titans object attached to this
-    titans_proc = nullptr;
+    // heals for a base amount, increased by your missing health up to +200% (linear increase, each missing health % increase the healing by 2%)
+
+    double missing_health_percent = p() -> resources.max[ RESOURCE_HEALTH ] -  std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) / p() -> resources.max[ RESOURCE_HEALTH ];
+
+    m *= missing_health_percent * data().effectN( 2 ).percent();
+
+    return m;
   }
 
   void init() override
   {
     paladin_heal_t::init();
 
-    if ( p() -> saruans_resolve ) {
-      cooldown -> charges = 2;
+    if ( p() -> saruans_resolve ) 
+    {
+      cooldown -> charges += p() -> spells.saruans_resolve -> effectN( 1 ).base_value();
     }
   }
 
-  double recharge_multiplier() const override{
+  double recharge_multiplier() const override 
+  {
     double cdr = paladin_heal_t::recharge_multiplier();
-    if (p()->saruans_resolve){
-      cdr *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
+    if ( p() -> saruans_resolve )
+    {
+      cdr *= ( 1 + p() -> spells.saruans_resolve -> effectN( 3 ).percent() );
     }
     return cdr;
   }
 
-  virtual void execute() override
+  bool ready() override
   {
-    // heals for 25% of missing health.
-    base_dd_min = base_dd_max = health_diff_pct * ( p() -> resources.max[ RESOURCE_HEALTH ] - std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) );
+    if ( p() -> talents.hand_of_the_protector -> ok() )
+      return false;
 
-    paladin_heal_t::execute();
-    if ( titans_proc ){
-      titans_proc -> schedule_execute();
-    }
-
+    return paladin_heal_t::ready();
   }
 
 };
@@ -493,62 +477,56 @@ struct light_of_the_protector_t : public paladin_heal_t
 
 struct hand_of_the_protector_t : public paladin_heal_t
 {
-  double health_diff_pct;
-  light_of_the_titans_t* titans_proc;
-
   hand_of_the_protector_t( paladin_t* p, const std::string& options_str )
-    : paladin_heal_t( "hand_of_the_protector", p, p -> find_talent_spell( "Hand of the Protector" ) ), health_diff_pct( 0 )
+    : paladin_heal_t( "hand_of_the_protector", p, p -> find_talent_spell( "Hand of the Protector" ) )
   {
     parse_options( options_str );
 
-    may_crit = false;
-    use_off_gcd = true;
-
-    // pct of missing health returned
-    health_diff_pct = data().effectN( 1 ).percent();
-
+    may_crit = true;
+    
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p -> cooldowns.hand_of_the_protector;
-
-    // prevent spamming
-    internal_cooldown -> duration = timespan_t::from_seconds( .75 );
-
-    // disable if Hand of the Protector is not talented
-    if ( ! p -> talents.hand_of_the_protector -> ok() )
-      background = true;
-
-    // light of the titans object attached to this
-    titans_proc = nullptr;
   }
+
+  double action_multiplier() const override
+  {
+    double m = paladin_heal_t::action_multiplier();
+
+    // heals for a base amount, increased by your missing health up to +200% (linear increase, each missing health % increase the healing by 2%)
+
+    double missing_health_percent = p() -> resources.max[ RESOURCE_HEALTH ] -  std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) / p() -> resources.max[ RESOURCE_HEALTH ];
+
+    m *= missing_health_percent * data().effectN( 2 ).percent();
+
+    return m;
+  }
+
 
   void init() override
   {
     paladin_heal_t::init();
 
-    if ( p() -> saruans_resolve ) {
-      cooldown -> charges = 2;
+    if ( p() -> saruans_resolve ) 
+    {
+      cooldown -> charges += p() -> spells.saruans_resolve -> effectN( 1 ).base_value();
     }
   }
 
   double recharge_multiplier() const override{
     double cdr = paladin_heal_t::recharge_multiplier();
-    if (p()->saruans_resolve){
-      cdr *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
+    if ( p() -> saruans_resolve )
+    {
+      cdr *= ( 1 + p() -> spells.saruans_resolve -> effectN( 3 ).percent() );
     }
     return cdr;
   }
 
-  virtual void execute() override
+  bool ready() override
   {
-    // heals for % of missing health.
-    base_dd_min = base_dd_max = health_diff_pct * (target->resources.max[RESOURCE_HEALTH] - std::max(target->resources.current[RESOURCE_HEALTH], 0.0) );
+    if ( ! p() -> talents.hand_of_the_protector -> ok() )
+      return false;
 
-    paladin_heal_t::execute();
-
-    // Light of the Titans only works if self-cast
-    if ( titans_proc && target == p() )
-      titans_proc -> schedule_execute();
-
+    return paladin_heal_t::ready();
   }
 
 };
