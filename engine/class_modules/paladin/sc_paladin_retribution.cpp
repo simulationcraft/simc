@@ -466,11 +466,11 @@ struct templars_verdict_t : public holy_power_consumer_t
   }
 };
 
-// Judgment =================================================================
+// Judgment - Retribution =================================================================
 
-struct judgment_t : public paladin_melee_attack_t
+struct judgment_ret_t : public paladin_melee_attack_t
 {
-  judgment_t( paladin_t* p, const std::string& options_str )
+  judgment_ret_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "judgment", p, p -> find_specialization_spell( "Judgment" ) )
   {
     parse_options( options_str );
@@ -748,11 +748,15 @@ action_t* paladin_t::create_action_retribution( const std::string& name, const s
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
   if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
   if ( name == "inquisition"               ) return new inquisition_t              ( this, options_str );
-  if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
   if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
   if ( name == "shield_of_vengeance"       ) return new shield_of_vengeance_t      ( this, options_str );
+
+  if ( specialization() == PALADIN_RETRIBUTION )
+  {
+    if ( name == "judgment") return new judgment_ret_t( this, options_str );
+  }
 
   return nullptr;
 }

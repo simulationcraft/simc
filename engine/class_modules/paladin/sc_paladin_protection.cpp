@@ -351,13 +351,13 @@ struct holy_shield_proc_t : public paladin_spell_t
 
 };
 
-// Judgment =================================================================
+// Judgment - Protection =================================================================
 
-struct judgment_t : public paladin_melee_attack_t
+struct judgment_prot_t : public paladin_melee_attack_t
 {
   timespan_t sotr_cdr; // needed for sotr interaction for protection
-  judgment_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
+  judgment_prot_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "judgment", p, p -> find_specialization_spell( "Judgment" ) )
   {
     parse_options( options_str );
 
@@ -809,7 +809,7 @@ void paladin_t::trigger_grand_crusader()
     return;
 
   // attempts to proc the buff
-  if ( rng().roll( p() -> passives.grand_crusader ) )
+  if ( rng().roll( passives.grand_crusader -> proc_chance() ) )
   {
     // reset AS cooldown
     cooldowns.avengers_shield -> reset( true );
@@ -871,10 +871,14 @@ action_t* paladin_t::create_action_protection( const std::string& name, const st
   if ( name == "guardian_of_ancient_kings" ) return new guardian_of_ancient_kings_t( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
   if ( name == "hand_of_the_protector"     ) return new hand_of_the_protector_t    ( this, options_str );
-  if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
   if ( name == "light_of_the_protector"    ) return new light_of_the_protector_t   ( this, options_str );
   if ( name == "seraphim"                  ) return new seraphim_t                 ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
+
+  if ( specialization() == PALADIN_PROTECTION )
+  {
+    if ( name == "judgment" ) return new judgment_prot_t( this, options_str );
+  }
 
   return nullptr;
 }

@@ -449,11 +449,11 @@ struct holy_avenger_t : public paladin_heal_t
     }
 };
 
-// Judgment =================================================================
+// Judgment - Holy =================================================================
 
-struct judgment_t : public paladin_melee_attack_t
+struct judgment_holy_t : public paladin_melee_attack_t
 {
-  judgment_t( paladin_t* p, const std::string& options_str )
+  judgment_holy_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "judgment", p, p -> find_specialization_spell( "Judgment" ) )
   {
     parse_options( options_str );
@@ -629,9 +629,13 @@ action_t* paladin_t::create_action_holy( const std::string& name, const std::str
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
-  if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
   if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
   if ( name == "lights_hammer"             ) return new lights_hammer_t            ( this, options_str );
+
+  if ( specialization() == PALADIN_HOLY )
+  {
+    if ( name == "judgment") return new judgment_holy_t( this, options_str );
+  }
 
   return nullptr;
 }
