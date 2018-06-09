@@ -372,11 +372,20 @@ class WDC1ArrayDataValue(WDC1ColumnDataValue):
         super().__init__(column)
 
         bytes_per_element = self.column.format_bit_size() // 8
-        # Array values are stored as 32-bit values
-        self.__array_size = bytes_per_element * self.column.elements()
+        # Array values are stored as 32-bit values, however the data type may be <4 bytes
+        self.__array_size = 4 * self.column.elements()
+
+        pad_bytes = 4 - bytes_per_element
+        pad_str = ''
+        if pad_bytes > 0:
+            pad_str = '{}x'.format(pad_bytes)
 
         struct_type = get_struct_type(column.is_float(), column.is_signed(), self.column.format_bit_size())
-        self.unpacker = Struct('<{}{}'.format(column.elements(), struct_type))
+        element_type = '{data}{pad}'.format(
+            data = struct_type,
+            pad = pad_str)
+
+        self.unpacker = Struct('<{}'.format(element_type * column.elements()))
 
     def __call__(self, id_, data, bytes_):
         # Convert the bytes to a proper int value (our id into the block)
