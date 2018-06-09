@@ -44,9 +44,7 @@
  SOURCES += engine/util/concurrency.cpp
  SOURCES += engine/util/git_info.cpp
  SOURCES += engine/util/fmt/format.cpp
- SOURCES += engine/util/fmt/ostream.cpp
  SOURCES += engine/util/fmt/posix.cpp
- SOURCES += engine/util/fmt/printf.cpp
  SOURCES += engine/sim/x6_pantheon.cpp
  SOURCES += engine/sim/sc_sim.cpp
  SOURCES += engine/sim/sc_scaling.cpp

@@ -63,23 +63,20 @@ public:
   /**
    * Output using printf formatting syntax.
    */
-  template<typename... Args>
-  ofstream& printf(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  ofstream& printf(Format&& format, Args&& ... args)
   {
-    fmt::MemoryWriter w;
-    fmt::printf(w, format, std::forward<Args>(args)... );
-
-    *this << w.str();
+    *this << fmt::sprintf(std::forward<Format>(format), std::forward<Args>(args)... );;
 
     return *this;
   }
   /**
    * Output using fmt::format formatting syntax.
    */
-  template<typename... Args>
-  ofstream& format(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  ofstream& format(Format&& format, Args&& ... args)
   {
-    *this << fmt::format(format, std::forward<Args>(args)... );
+    *this << fmt::format(std::forward<Format>(format), std::forward<Args>(args)... );
 
     return *this;
   }

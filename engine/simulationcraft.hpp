@@ -792,10 +792,10 @@ struct sc_raw_ostream_t {
   sc_raw_ostream_t & operator<< (T const& rhs)
   { (*_stream) << rhs; return *this; }
 
-  template<typename... Args>
-  sc_raw_ostream_t& printf(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  sc_raw_ostream_t& printf(Format&& format, Args&& ... args)
   {
-    fmt::fprintf(*get_stream(), format, std::forward<Args>(args)... );
+    fmt::fprintf(*get_stream(), std::forward<Format>(format), std::forward<Args>(args)... );
     return *this;
   }
 
@@ -835,16 +835,16 @@ struct sim_ostream_t
   template <class T>
   sim_ostream_t & operator<< (T const& rhs);
 
-  template<typename... Args>
-  sim_ostream_t& printf(fmt::CStringRef format, Args&& ... args);
+  template<typename Format, typename... Args>
+  sim_ostream_t& printf(Format&& format, Args&& ... args);
 
   /**
    * Print using fmt libraries python-like formatting syntax.
    */
-  template<typename... Args>
-  sim_ostream_t& print(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  sim_ostream_t& print(Format&& format, Args&& ... args)
   {
-    *this << fmt::format(format, std::forward<Args>(args)... );
+    *this << fmt::format(std::forward<Format>(format), std::forward<Args>(args)... );
     return *this;
   }
 private:
@@ -1333,13 +1333,13 @@ struct sim_t : private sc_thread_t
   /**
    * Create error with printf formatting.
    */
-  template<typename... Args>
-  void errorf(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  void errorf(Format&& format, Args&& ... args)
   {
     if ( thread_index != 0 )
       return;
 
-    auto s = fmt::sprintf(format, std::forward<Args>(args)... );
+    auto s = fmt::sprintf(std::forward<Format>(format), std::forward<Args>(args)... );
     util::replace_all( s, "\n", "" );
     std::cerr << s << "\n";
 
@@ -1349,13 +1349,13 @@ struct sim_t : private sc_thread_t
   /**
    * Create error using fmt libraries python-like formatting syntax.
    */
-  template<typename... Args>
-  void error(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  void error(Format&& format, Args&& ... args)
   {
     if ( thread_index != 0 )
       return;
 
-    auto s = fmt::format(format, std::forward<Args>(args)... );
+    auto s = fmt::format(std::forward<Format>(format), std::forward<Args>(args)... );
     util::replace_all( s, "\n", "" );
     std::cerr << s << "\n";
 
@@ -1402,13 +1402,13 @@ struct sim_t : private sc_thread_t
    * Checks if sim debug is enabled.
    * Print using fmt libraries python-like formatting syntax.
    */
-  template<typename... Args>
-  void print_debug(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  void print_debug(Format&& format, Args&& ... args)
   {
     if ( ! debug )
       return;
 
-    out_debug.print(format, std::forward<Args>(args)... );
+    out_debug.print(std::forward<Format>(format), std::forward<Args>(args)... );
   }
 
   /**
@@ -1417,13 +1417,13 @@ struct sim_t : private sc_thread_t
    * Checks if sim logging is enabled.
    * Print using fmt libraries python-like formatting syntax.
    */
-  template<typename... Args>
-  void print_log(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  void print_log(Format&& format, Args&& ... args)
   {
     if ( ! log )
       return;
 
-    out_log.print(format, std::forward<Args>(args)... );
+    out_log.print(std::forward<Format>(format), std::forward<Args>(args)... );
   }
 private:
   void do_pause();
@@ -7602,11 +7602,11 @@ sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)
   return *this;
 }
 
-template<typename... Args>
-sim_ostream_t& sim_ostream_t::printf(fmt::CStringRef format, Args&& ... args)
+template<typename Format, typename... Args>
+sim_ostream_t& sim_ostream_t::printf(Format&& format, Args&& ... args)
 {
   _raw << util::to_string( sim.current_time().total_seconds(), 3 ) << " ";
-  fmt::fprintf(*_raw.get_stream(), format, std::forward<Args>(args)... );
+  fmt::fprintf(*_raw.get_stream(), std::forward<Format>(format), std::forward<Args>(args)... );
   _raw << "\n";
   return *this;
 }

@@ -9,9 +9,7 @@ SRC += \
     util$(PATHSEP)concurrency.cpp \
     util$(PATHSEP)git_info.cpp \
     util$(PATHSEP)fmt$(PATHSEP)format.cpp \
-    util$(PATHSEP)fmt$(PATHSEP)ostream.cpp \
     util$(PATHSEP)fmt$(PATHSEP)posix.cpp \
-    util$(PATHSEP)fmt$(PATHSEP)printf.cpp \
     sim$(PATHSEP)x6_pantheon.cpp \
     sim$(PATHSEP)sc_sim.cpp \
     sim$(PATHSEP)sc_scaling.cpp \
