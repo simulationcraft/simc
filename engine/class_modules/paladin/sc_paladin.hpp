@@ -245,7 +245,6 @@ public:
   // Passives
   struct passives_t
   {
-    const spell_data_t* bladed_armor;
     const spell_data_t* boundless_conviction;
     const spell_data_t* divine_bulwark;
     const spell_data_t* grand_crusader;

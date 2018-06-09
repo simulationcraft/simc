@@ -1702,8 +1702,6 @@ double paladin_t::composite_melee_attack_power() const
   if ( specialization() == PALADIN_HOLY ) //thx for Mistweaver maintainer
     return composite_spell_power( SCHOOL_MAX );
   double ap = player_t::composite_melee_attack_power();
-  if ( specialization() == PALADIN_PROTECTION )
-    ap += passives.bladed_armor -> effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
 
   return ap;
 }

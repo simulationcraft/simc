@@ -904,7 +904,6 @@ void paladin_t::init_spells_protection()
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
 
   // Prot Passives
-  passives.bladed_armor           = find_specialization_spell( "Bladed Armor" );
   passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
   passives.sanctuary              = find_specialization_spell( "Sanctuary" );
   passives.riposte                = find_specialization_spell( "Riposte" );
