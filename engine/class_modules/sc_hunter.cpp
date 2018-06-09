@@ -386,6 +386,7 @@ public:
     cooldown_t* a_murder_of_crows;
     cooldown_t* aimed_shot;
     cooldown_t* harpoon;
+    cooldown_t* wildfire_bomb;
   } cooldowns;
 
   // Custom Parameters
@@ -516,6 +517,7 @@ public:
     spell_data_ptr_t harpoon;
     spell_data_ptr_t raptor_strike;
     spell_data_ptr_t wildfire_bomb;
+    spell_data_ptr_t carve;
   } specs;
 
   struct mastery_spells_t
@@ -554,6 +556,7 @@ public:
     cooldowns.aspect_of_the_wild  = get_cooldown( "aspect_of_the_wild" );
     cooldowns.a_murder_of_crows   = get_cooldown( "a_murder_of_crows" );
     cooldowns.aimed_shot      = get_cooldown( "aimed_shot" );
+    cooldowns.wildfire_bomb   = get_cooldown( "wildfire_bomb" );
 
     base_gcd = timespan_t::from_seconds( 1.5 );
 
@@ -3216,6 +3219,32 @@ struct flanking_strike_t: hunter_melee_attack_t
   }
 };
 
+// Carve =============================================================================
+
+struct carve_t: public hunter_melee_attack_t
+{
+  const timespan_t wfb_reduction;
+  const unsigned wfb_reduction_target_cap;
+
+  carve_t( hunter_t* p, const std::string& options_str ):
+    hunter_melee_attack_t( "carve", p, p -> specs.carve ),
+    wfb_reduction( p -> specs.carve -> effectN( 2 ).time_value() ),
+    wfb_reduction_target_cap( as<unsigned>( p -> specs.carve -> effectN( 3 ).base_value() ) )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+  }
+
+  void execute() override
+  {
+    hunter_melee_attack_t::execute();
+
+    auto reduction = wfb_reduction * std::min( num_targets_hit, wfb_reduction_target_cap );
+    p() -> cooldowns.wildfire_bomb -> adjust( -reduction, true );
+  }
+};
+
 // Butchery ==========================================================================
 
 struct butchery_t: public hunter_melee_attack_t
@@ -3227,6 +3256,8 @@ struct butchery_t: public hunter_melee_attack_t
     internal_bleeding( p )
   {
     parse_options( options_str );
+
+    aoe = -1;
   }
 
   void impact( action_state_t* s ) override
@@ -4459,6 +4490,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "wildfire_bomb"         ) return new          wildfire_bomb_t( this, options_str );
   if ( name == "coordinated_assault"   ) return new    coordinated_assault_t( this, options_str );
   if ( name == "chakrams"              ) return new               chakrams_t( this, options_str );
+  if ( name == "carve"                 ) return new                  carve_t( this, options_str );
 
   if ( name == "serpent_sting" )
   {
@@ -4624,6 +4656,7 @@ void hunter_t::init_spells()
   specs.harpoon              = find_specialization_spell( "Harpoon" );
   specs.raptor_strike        = find_specialization_spell( "Raptor Strike" );
   specs.wildfire_bomb        = find_specialization_spell( "Wildfire Bomb" );
+  specs.carve                = find_specialization_spell( "Carve" );
 }
 
 // hunter_t::init_base ======================================================
