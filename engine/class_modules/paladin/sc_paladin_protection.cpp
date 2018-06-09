@@ -808,16 +808,18 @@ void paladin_t::trigger_grand_crusader()
   if ( ! passives.grand_crusader -> ok() )
     return;
 
-  // attempt to proc the buff, returns true if successful
-  if ( buffs.grand_crusader -> trigger() )
+  // attempts to proc the buff
+  if ( rng().roll( p() -> passives.grand_crusader ) )
   {
     // reset AS cooldown
     cooldowns.avengers_shield -> reset( true );
 
-    if (talents.crusaders_judgment -> ok() && cooldowns.judgment -> current_charge < cooldowns.judgment -> charges)
+    if ( talents.crusaders_judgment -> ok() && cooldowns.judgment -> current_charge < cooldowns.judgment -> charges )
     {
-      cooldowns.judgment -> adjust( -(cooldowns.judgment -> duration) ); //decrease remaining time by the duration of one charge, i.e., add one charge
+      cooldowns.judgment -> adjust( -( cooldowns.judgment -> duration) ); //decrease remaining time by the duration of one charge, i.e., add one charge
     }
+
+    procs.grand_crusader -> occur();
   }
 }
 
@@ -881,8 +883,6 @@ void paladin_t::create_buffs_protection()
 {
   buffs.guardian_of_ancient_kings      = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
                                           ->set_cooldown( timespan_t::zero() ); // let the ability handle the CD
-  buffs.grand_crusader                 = make_buff( this, "grand_crusader", passives.grand_crusader -> effectN( 1 ).trigger() )
-    ->set_chance( passives.grand_crusader -> proc_chance() + ( 0.0 + talents.first_avenger -> effectN( 2 ).percent() ) );
   buffs.shield_of_the_righteous        = make_buff( this, "shield_of_the_righteous", find_spell( 132403 ) );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
   buffs.aegis_of_light                 = make_buff( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
@@ -1066,7 +1066,7 @@ void paladin_t::generate_action_prio_list_prot()
   //prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&buff.seraphim.up");
   //prot->add_action( "call_action_list,name=prot_aoe,if=spell_targets.avenger_shield>3" );
   prot->add_action(this, "Judgment", "if=!talent.seraphim.enabled");
-  prot->add_action(this, "Avenger's Shield","if=!talent.seraphim.enabled&talent.crusaders_judgment.enabled&buff.grand_crusader.up");
+  prot->add_action(this, "Avenger's Shield","if=!talent.seraphim.enabled&talent.crusaders_judgment.enabled");
   prot->add_talent(this, "Blessed Hammer", "if=!talent.seraphim.enabled");
   prot->add_action(this, "Avenger's Shield", "if=!talent.seraphim.enabled");
   prot->add_action(this, "Consecration", "if=!talent.seraphim.enabled");

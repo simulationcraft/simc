@@ -1088,7 +1088,8 @@ void paladin_t::init_procs()
   procs.the_fires_of_justice      = get_proc( "the_fires_of_justice"           );
   procs.tfoj_set_bonus            = get_proc( "t19_4p"                         );
   procs.blade_of_wrath            = get_proc( "blade_of_wrath"                 );
-  procs.topless_tower = get_proc( "topless_tower");
+  procs.topless_tower             = get_proc( "topless_tower"                  );
+  procs.grand_crusader            = get_proc( "grand_crusader"                 );
 }
 
 // paladin_t::init_scaling ==================================================

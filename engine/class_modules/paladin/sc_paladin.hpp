@@ -280,6 +280,7 @@ public:
     proc_t* tfoj_set_bonus;
     proc_t* blade_of_wrath;
     proc_t* topless_tower;
+    proc_t* grand_crusader;
   } procs;
 
     struct shuffled_rngs_t
