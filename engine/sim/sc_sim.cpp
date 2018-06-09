@@ -3097,11 +3097,11 @@ expr_t* sim_t::create_expression( const std::string& name_str )
 
   if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "raid_event" ) )
   {
-    std::string type = splits[ 1 ];
+    std::string type_or_name = splits[ 1 ];
     std::string filter = splits[ 2 ];
 
     if ( optimize_expressions && util::str_compare_ci( filter, "exists" ) )
-      return expr_t::create_constant( name_str, raid_event_t::evaluate_raid_event_expression( this, type, filter ) );
+      return expr_t::create_constant( name_str, raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter ) );
 
     struct raid_event_expr_t : public expr_t
     {
@@ -3120,7 +3120,7 @@ expr_t* sim_t::create_expression( const std::string& name_str )
 
     };
 
-    return new raid_event_expr_t( this, type, filter );
+    return new raid_event_expr_t( this, type_or_name, filter );
   }
 
   // If nothing else works, check to see if the string matches an actor in the sim.

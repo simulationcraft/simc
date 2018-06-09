@@ -280,6 +280,7 @@ private:
 struct raid_event_t : private noncopyable
 {
   sim_t* sim;
+  std::string name;
   std::string type;
   int64_t num_starts;
   timespan_t first, last, next;

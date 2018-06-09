@@ -971,6 +971,7 @@ expr_t* parse_player_if_expr( player_t& player, const std::string& expr_str )
 
 raid_event_t::raid_event_t( sim_t* s, const std::string& type ) :
   sim( s ),
+  name(),
   type( type ),
   num_starts( 0 ),
   first( timespan_t::zero() ),
@@ -993,6 +994,7 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& type ) :
   saved_duration( timespan_t::zero() ),
   player_expressions()
 {
+  add_option( opt_string( "name", name ) );
   add_option( opt_string( "first", first_str ) );
   add_option( opt_string( "last", last_str ) );
   add_option( opt_timespan( "period", cooldown ) );
@@ -1353,19 +1355,26 @@ bool raid_event_t::filter_player( const player_t* p )
   return false;
 }
 
-double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type, std::string& filter )
+double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type_or_name, std::string& filter )
 {
   // correct for "damage" type event
-  if ( util::str_compare_ci( type, "damage" ) )
-    type = "raid_damage_";
+  if ( util::str_compare_ci( type_or_name, "damage" ) )
+    type_or_name = "raid_damage_";
 
   // filter the list for raid events that match the type requested
-  std::vector<raid_event_t*> matching_type;
-  for ( const auto& raid_event : s -> raid_events )
-    if ( util::str_prefix_ci( raid_event -> type, type ) )
-      matching_type.push_back( raid_event.get() );
+  std::vector<raid_event_t*> matching_events;
 
-  if ( matching_type.empty() )
+  // Add all raid event which match type or name
+  for ( const auto& raid_event : s -> raid_events )
+  {
+    if ( util::str_prefix_ci( raid_event -> type, type_or_name ) )
+      matching_events.push_back( raid_event.get() );
+
+    if ( util::str_prefix_ci( raid_event -> name, type_or_name ) )
+      matching_events.push_back( raid_event.get() );
+  }
+
+  if ( matching_events.empty() )
   {
     if ( util::str_compare_ci( filter, "in" ) || util::str_compare_ci( filter, "cooldown" ) )
       return 1.0e10; // ridiculously large number
@@ -1380,10 +1389,10 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type
   raid_event_t* e = 0;
   timespan_t time_to_event = timespan_t::from_seconds( -1 );
 
-  for ( size_t i = 0; i < matching_type.size(); i++ )
-    if ( time_to_event < timespan_t::zero() || matching_type[ i ] -> next_time() - s -> current_time() < time_to_event )
+  for ( size_t i = 0; i < matching_events.size(); i++ )
+    if ( time_to_event < timespan_t::zero() || matching_events[ i ] -> next_time() - s -> current_time() < time_to_event )
     {
-    e = matching_type[ i ];
+    e = matching_events[ i ];
     time_to_event = e -> next_time() - s -> current_time();
     }
   if ( e == 0 )

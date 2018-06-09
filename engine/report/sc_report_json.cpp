@@ -755,6 +755,7 @@ void to_json( JsonOutput& arr, const player_t& p )
 void to_json( JsonOutput& arr, const raid_event_t& event )
 {
   auto root = arr.add();
+  root[ "name" ] = event.name;
   root[ "type" ] = event.type;
   add_non_zero( root, "first", event.first );
   add_non_zero( root, "last", event.last );
