@@ -369,7 +369,7 @@ struct judgment_prot_t : public paladin_melee_attack_t
     cooldown -> charges *= 1.0 + p -> talents.crusaders_judgment->effectN( 1 ).base_value();
     cooldown -> duration *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 11 ).percent();
-    sotr_cdr = -1.0 * timespan_t::from_seconds( 2 ); // hack for p -> spec.judgment_2 -> effectN( 1 ).base_value()
+    sotr_cdr = -1.0 * timespan_t::from_seconds( p -> spec.judgment_2 -> effectN( 1 ).base_value() );
 
   }
 
@@ -950,9 +950,6 @@ void paladin_t::init_spells_protection()
 
   if ( specialization() == PALADIN_PROTECTION )
   {
-    extra_regen_period  = passives.sanctuary -> effectN( 5 ).period();
-    extra_regen_percent = passives.sanctuary -> effectN( 5 ).percent();
-
     spec.judgment_2 = find_specialization_spell( 231657 );
   }
 
