@@ -347,7 +347,7 @@ public:
     const spell_data_t* crusaders_judgment;
     const spell_data_t* holy_shield;
     const spell_data_t* blessed_hammer;
-    const spell_data_t* consecrated_hammer;
+    const spell_data_t* redoubt; // NYI
     // skip T45
     const spell_data_t* blessing_of_spellwarding;
     const spell_data_t* blessing_of_salvation;

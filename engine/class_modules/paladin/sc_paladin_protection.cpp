@@ -305,12 +305,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   {
     parse_options( options_str );
 
-    // eliminate cooldown and infinite charges if consecrated hammer is taken
-    if ( p -> talents.consecrated_hammer -> ok() )
-    {
-      cooldown -> charges = 1;
-      cooldown -> duration = timespan_t::zero();
-    }
+
     if ( p -> talents.blessed_hammer -> ok() )
       background = true;
 
@@ -332,7 +327,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       if ( hotr_aoe -> target != execute_state -> target )
         hotr_aoe -> target_cache.is_valid = false;
 
-      if ( p() -> talents.consecrated_hammer -> ok() || p() -> standing_in_consecration() )
+      if ( p() -> standing_in_consecration() )
       {
         hotr_aoe -> target = execute_state -> target;
         hotr_aoe -> execute();
@@ -417,16 +412,6 @@ struct light_of_the_protector_t : public paladin_heal_t
     return cdr;
   }
 
-  double action_multiplier() const override
-  {
-    double am = paladin_heal_t::action_multiplier();
-
-    if ( p() -> standing_in_consecration() || p() -> talents.consecrated_hammer -> ok() )
-      am *= 1.0 + p() -> spells.consecration_bonus -> effectN( 2 ).percent();
-
-    return am;
-  }
-
   virtual void execute() override
   {
     // heals for 25% of missing health.
@@ -488,16 +473,6 @@ struct hand_of_the_protector_t : public paladin_heal_t
       cdr *= (1 + p()->spells.saruans_resolve->effectN(3).percent());
     }
     return cdr;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_heal_t::action_multiplier();
-
-    if ( p() -> standing_in_consecration() || p() -> talents.consecrated_hammer -> ok() )
-      am *= 1.0 + p() -> spells.consecration_bonus -> effectN( 2 ).percent();
-
-    return am;
   }
 
   virtual void execute() override
@@ -596,17 +571,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     cooldown = p -> cooldowns.shield_of_the_righteous;
     p -> active_sotr = this;
   }
-
-  double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-
-    if ( p() -> standing_in_consecration() || p() -> talents.consecrated_hammer -> ok() )
-      am *= 1.0 + p() -> spells.consecration_bonus -> effectN( 2 ).percent();
-
-    return am;
-  }
-
 
   virtual void execute() override
   {
@@ -732,10 +696,6 @@ void paladin_t::target_mitigation( school_e school,
     // mastery bonus
     sotr_mitigation += cache.mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
 
-    // 20% more effective if standing in Cons
-    // TODO: test if this is multiplicative or additive. Assumed multiplicative.
-    if ( standing_in_consecration() || talents.consecrated_hammer -> ok() )
-      sotr_mitigation *= 1.0 + spells.consecration_bonus -> effectN( 3 ).percent();
 
     // clamp is hardcoded in tooltip, not shown in effects
     sotr_mitigation = std::max( -0.80, sotr_mitigation );
@@ -892,7 +852,7 @@ void paladin_t::init_spells_protection()
   talents.crusaders_judgment         = find_talent_spell( "Crusader's Judgment" );
   talents.holy_shield                = find_talent_spell( "Holy Shield" );
   talents.blessed_hammer             = find_talent_spell( "Blessed Hammer" );
-  talents.consecrated_hammer         = find_talent_spell( "Consecrated Hammer" );
+  talents.redoubt                    = find_talent_spell( "Redoubt" );
   talents.blessing_of_spellwarding   = find_talent_spell( "Blessing of Spellwarding" );
   talents.blessing_of_salvation      = find_talent_spell( "Blessing of Salvation" );
   talents.retribution_aura           = find_talent_spell( "Retribution Aura" );
