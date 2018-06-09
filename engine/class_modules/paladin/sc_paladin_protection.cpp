@@ -667,9 +667,9 @@ void paladin_t::target_mitigation( school_e school,
   }
 
   // heathcliffs
-  if (standing_in_consecration() && heathcliffs_immortality)
+  if ( standing_in_consecration() && heathcliffs_immortality )
   {
-    s->result_amount *= 1.0 - spells.heathcliffs_immortality->effectN(1).percent();
+    s -> result_amount *= 1.0 - spells.heathcliffs_immortality -> effectN( 1 ).percent();
   }
 
 
@@ -719,29 +719,13 @@ void paladin_t::target_mitigation( school_e school,
     s -> result_amount *= 1.0 + talents.aegis_of_light -> effectN( 1 ).percent();
 
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-    sim -> out_debug.printf( "Damage to %s after other mitigation effects but before SotR is %f", s -> target -> name(), s -> result_amount );
+    sim -> out_debug.printf( "Damage to %s after mitigation effects is %f", s -> target -> name(), s -> result_amount );
 
-  // Shield of the Righteous
-  if ( buffs.shield_of_the_righteous -> check())
+  // Divine Bulwark
+
+  if ( standing_in_consecration() )
   {
-    // sotr has a lot going on, so we'll be verbose
-    double sotr_mitigation;
-
-    // base effect
-    sotr_mitigation = buffs.shield_of_the_righteous -> data().effectN( 1 ).percent();
-
-    // mastery bonus
-    sotr_mitigation += cache.mastery() * passives.divine_bulwark -> effectN( 4 ).mastery_value();
-
-
-    // clamp is hardcoded in tooltip, not shown in effects
-    sotr_mitigation = std::max( -0.80, sotr_mitigation );
-    sotr_mitigation = std::min( -0.25, sotr_mitigation );
-
-    s -> result_amount *= 1.0 + sotr_mitigation;
-
-    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> out_debug.printf( "Damage to %s after SotR mitigation is %f", s -> target -> name(), s -> result_amount );
+    s -> result_amount *= cache.mastery() * passives.divine_bulwark -> effectN( 2 ).mastery_value();
   }
 
   // Ardent Defender
