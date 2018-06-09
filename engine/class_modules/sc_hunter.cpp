@@ -568,11 +568,11 @@ public:
         switch ( specialization() )
         {
           case HUNTER_BEAST_MASTERY:
-            return spell -> id() == 194306; // Bestial Fury
+            return spell -> id() == 257944; // Thrill of the Hunt
           case HUNTER_MARKSMANSHIP:
             return spell -> id() == 194595; // Lock and Load
           case HUNTER_SURVIVAL:
-            return spell -> id() == 87935; // Serpent Sting
+            return spell -> id() == 268501; // Viper's Venom
           default:
             return false;
         }
