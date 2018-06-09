@@ -697,6 +697,21 @@ class WDC1Column:
         else:
             return self.__field_size
 
+    def field_whole_bytes(self):
+        if self.__size_type in [0, 8, 16, 24, -32]:
+            return (32 - self.__size_type) // 8
+        else:
+            if self.__field_size < 9:
+                return 1
+            elif self.__field_size < 17:
+                return 2
+            elif self.__field_size < 33:
+                return 4
+            elif self.__field_size < 65:
+                return 8
+
+            return 0
+
     def value_bit_size(self):
         if self.__size_type in [0, 8, 16, 24, -32]:
             return (32 - self.__size_type)
@@ -1069,7 +1084,10 @@ class WDC1Parser(DBCParserBase):
     # Parse column information (right after static header)
     def parse_column_info(self):
         if not self.options.raw:
-            formats = self.fmt.objs(self.class_name(), True)
+            try:
+                formats = self.fmt.objs(self.class_name(), True)
+            except Exception:
+                formats = None
         else:
             formats = None
 
@@ -1258,7 +1276,7 @@ class WDC1Parser(DBCParserBase):
             # TODO: Are sparse blocks always <dbc_id, value> tuples with 4 bytes for a value?
             # TODO: Do we want to preparse the sparse block? Would save an
             # unpack call at the cost of increased memory
-            if column.field_block_size() == 0 or column.field_block_size() % 8 != 0:
+            if column.field_block_size() % 8 != 0:
                 logging.error('%s: Unknown sparse block type for column %s',
                     self.class_name(), column)
                 return False
@@ -1291,11 +1309,6 @@ class WDC1Parser(DBCParserBase):
 
         offset = self.key_block_offset
         records, min_id, max_id = _WDC1_KEY_HEADER.unpack_from(self.data, offset)
-
-        if records != self.records:
-            logging.error('%s invalid number of keys, expected %u, got %u',
-                    self.full_name(), self.records, records)
-            return False
 
         offset += _WDC1_KEY_HEADER.size
 
