@@ -128,8 +128,8 @@ namespace buffs {
     // Map modifiers appropriately based on spec
     paladin_t* paladin = static_cast<paladin_t*>( player );
 
-    healing_modifier = data().effectN( 5 ).percent();
-    crit_bonus = data().effectN( 4 ).percent();
+    healing_modifier = data().effectN( 4 ).percent();
+    crit_bonus = data().effectN( 3 ).percent();
     damage_modifier = data().effectN( 1 ).percent();
 
     // invalidate crit
@@ -244,11 +244,6 @@ struct consecration_tick_t: public paladin_spell_t {
     background = true;
     may_crit = true;
     ground_aoe = true;
-
-    if (p->specialization() == PALADIN_PROTECTION)
-    {
-      base_multiplier *= 1.0 + p->passives.protection_paladin->effectN(4).percent();
-    }
   }
 };
 
@@ -1714,7 +1709,7 @@ double paladin_t::composite_attack_power_multiplier() const
 
   // Mastery bonus is multiplicative with other effects
   if ( specialization() == PALADIN_PROTECTION )
-    ap *= 1.0 + cache.mastery() * passives.divine_bulwark -> effectN( 5 ).mastery_value();
+    ap *= 1.0 + cache.mastery() * passives.divine_bulwark -> effectN( 3 ).mastery_value();
 
   return ap;
 }
@@ -1748,8 +1743,6 @@ double paladin_t::composite_block() const
 double paladin_t::composite_block_reduction() const
 {
   double br = player_t::composite_block_reduction();
-
-  br += passives.improved_block -> effectN( 1 ).percent();
 
   return br;
 }
@@ -1821,11 +1814,6 @@ void paladin_t::invalidate_cache( cache_e c )
   if ( c == CACHE_ATTACK_CRIT_CHANCE && specialization() == PALADIN_PROTECTION )
     player_t::invalidate_cache( CACHE_PARRY );
 
-  if ( c == CACHE_BONUS_ARMOR && passives.bladed_armor -> ok() )
-  {
-    player_t::invalidate_cache( CACHE_ATTACK_POWER );
-    player_t::invalidate_cache( CACHE_SPELL_POWER );
-  }
 
   if ( c == CACHE_MASTERY && passives.divine_bulwark -> ok() )
   {

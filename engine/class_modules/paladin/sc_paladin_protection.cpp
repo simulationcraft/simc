@@ -907,7 +907,6 @@ void paladin_t::init_spells_protection()
   passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
   passives.sanctuary              = find_specialization_spell( "Sanctuary" );
   passives.riposte                = find_specialization_spell( "Riposte" );
-  passives.improved_block         = find_specialization_spell( "Improved Block" );
 
   if ( specialization() == PALADIN_PROTECTION )
   {
