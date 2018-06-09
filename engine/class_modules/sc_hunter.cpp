@@ -2077,8 +2077,8 @@ namespace attacks
 
 struct volley_t: hunter_ranged_attack_t
 {
-  volley_t( hunter_t* p ):
-    hunter_ranged_attack_t( "volley", p, p -> find_spell( 260247 ) )
+  volley_t( const std::string& n, hunter_t* p ):
+    hunter_ranged_attack_t( n, p, p -> talents.volley -> effectN( 1 ).trigger() )
   {
     background = true;
     aoe = -1;
@@ -2115,7 +2115,7 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
 
     if ( p -> talents.volley -> ok() )
     {
-      volley = new volley_t( p );
+      volley = p -> get_background_action<volley_t>( "volley" );
       add_child( volley );
     }
   }
@@ -2160,7 +2160,6 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
       }
     }
 
-    // XXX: this is broken in-game, but let's assume this has the talent proc chance
     if ( volley && rng().roll( p() -> talents.volley -> proc_chance() ) )
     {
       volley -> set_target( s -> target );
