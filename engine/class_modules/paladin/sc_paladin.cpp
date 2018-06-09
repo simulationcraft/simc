@@ -63,7 +63,6 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.blade_of_justice          = get_cooldown( "blade_of_justice" );
   cooldowns.blade_of_wrath            = get_cooldown( "blade_of_wrath" );
   cooldowns.divine_hammer             = get_cooldown( "divine_hammer" );
-  cooldowns.eye_of_tyr                = get_cooldown( "eye_of_tyr");
   cooldowns.holy_shock                = get_cooldown( "holy_shock");
   cooldowns.light_of_dawn             = get_cooldown( "light_of_dawn");
 
@@ -1060,7 +1059,6 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   buffs.execution_sentence = buff_creator_t( *this, "execution_sentence", paladin -> find_spell( 267799 ) );
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
   buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
-  buffs.eye_of_tyr_debuff = buff_creator_t( *this, "eye_of_tyr", paladin -> find_class_spell( "Eye of Tyr" ) ).cd( timespan_t::zero() );
   buffs.blessed_hammer_debuff = buff_creator_t( *this, "blessed_hammer", paladin -> find_spell( 204301 ) );
 }
 

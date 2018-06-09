@@ -34,7 +34,6 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* execution_sentence;
     buff_t* debuffs_judgment;
     buff_t* judgment_of_light;
-    buff_t* eye_of_tyr_debuff;
     buff_t* blessed_hammer_debuff;
   } buffs;
 
@@ -232,7 +231,6 @@ public:
     cooldown_t* hand_of_the_protector;   // Righteous Protector (prot) / Saruin
     cooldown_t* judgment;         // Grand Crusader + Crusader's Judgment
     cooldown_t* guardian_of_ancient_kings; // legen chest
-    cooldown_t* eye_of_tyr; // legen shoulders
     cooldown_t* holy_shock; // Holy Shock for Crusader's Might && DP
     cooldown_t* light_of_dawn; // Light of Dawn for DP
 
