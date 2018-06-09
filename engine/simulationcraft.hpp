@@ -280,7 +280,7 @@ private:
 struct raid_event_t : private noncopyable
 {
   sim_t* sim;
-  std::string name_str;
+  std::string type;
   int64_t num_starts;
   timespan_t first, last, next;
   timespan_t cooldown;
@@ -336,7 +336,6 @@ public:
   static void reset( sim_t* );
   static void combat_begin( sim_t* );
   static void combat_end( sim_t* ) {}
-  const char* name() const { return name_str.c_str(); }
   static double evaluate_raid_event_expression(sim_t* s, std::string& type, std::string& filter );
 };
 

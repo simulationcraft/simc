@@ -588,7 +588,7 @@ struct movement_event_t : public raid_event_t
     if ( distance_max / avg_player_movement_speed > cooldown_move ) distance_max = cooldown_move * avg_player_movement_speed;
     if ( distance_min / avg_player_movement_speed > cooldown_move ) distance_min = cooldown_move * avg_player_movement_speed;
 
-    if ( move_distance > 0 ) name_str = "movement_distance";
+    if ( move_distance > 0 ) type = "movement_distance";
     if ( !move_direction.empty() ) direction = util::parse_movement_direction( move_direction );
   }
 
@@ -712,7 +712,7 @@ struct damage_event_t : public raid_event_t
 
     assert( duration == timespan_t::zero() );
 
-    name_str = "raid_damage_" + type_str;
+    type = "raid_damage_" + type_str;
     damage_type = util::parse_school_type( type_str );
   }
 
@@ -732,7 +732,7 @@ struct damage_event_t : public raid_event_t
         }
       };
 
-      raid_damage = new raid_damage_t( name_str.c_str(), sim -> target, damage_type );
+      raid_damage = new raid_damage_t( type.c_str(), sim -> target, damage_type );
       raid_damage -> init();
     }
 
@@ -969,9 +969,9 @@ expr_t* parse_player_if_expr( player_t& player, const std::string& expr_str )
 
 // raid_event_t::raid_event_t ===============================================
 
-raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
+raid_event_t::raid_event_t( sim_t* s, const std::string& type ) :
   sim( s ),
-  name_str( n ),
+  type( type ),
   num_starts( 0 ),
   first( timespan_t::zero() ),
   last( timespan_t::zero() ),
@@ -1056,7 +1056,7 @@ timespan_t raid_event_t::duration_time()
 void raid_event_t::start()
 {
   if ( sim -> log )
-    sim -> out_log.printf( "Raid event %s starts.", name_str.c_str() );
+    sim -> out_log.printf( "Raid event %s starts.", type.c_str() );
 
   num_starts++;
 
@@ -1099,14 +1099,14 @@ void raid_event_t::finish()
   _finish();
 
   if ( sim -> log )
-    sim -> out_log.printf( "Raid event %s finishes.", name_str.c_str() );
+    sim -> out_log.printf( "Raid event %s finishes.", type.c_str() );
 }
 
 // raid_event_t::schedule ===================================================
 
 void raid_event_t::schedule()
 {
-  if ( sim -> debug ) sim -> out_debug.printf( "Scheduling raid event: %s", name_str.c_str() );
+  if ( sim -> debug ) sim -> out_debug.printf( "Scheduling raid event: %s", type.c_str() );
 
   struct duration_event_t : public event_t
   {
@@ -1119,7 +1119,7 @@ void raid_event_t::schedule()
       re -> set_next( s.current_time() + time );
     }
     virtual const char* name() const override
-    { return raid_event -> name(); }
+    { return raid_event -> type.c_str(); }
     virtual void execute() override
     {
       raid_event -> finish();
@@ -1137,7 +1137,7 @@ void raid_event_t::schedule()
       re -> set_next( s.current_time() + time );
     }
     virtual const char* name() const override
-    { return raid_event -> name(); }
+    { return raid_event -> type.c_str(); }
     virtual void execute() override
     {
       raid_event -> saved_duration = raid_event -> duration_time();
@@ -1187,11 +1187,11 @@ void raid_event_t::parse_options( const std::string& options_str )
 
   try
   {
-    opts::parse( sim, name_str, options, options_str );
+    opts::parse( sim, type, options, options_str );
   }
   catch( const std::exception& e )
   {
-    sim -> errorf( "Raid Event %s: Unable to parse options str '%s': %s", name_str.c_str(), options_str.c_str(), e.what() );
+    sim -> errorf( "Raid Event %s: Unable to parse options str '%s': %s", type.c_str(), options_str.c_str(), e.what() );
     sim -> cancel();
   }
 
@@ -1362,7 +1362,7 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type
   // filter the list for raid events that match the type requested
   std::vector<raid_event_t*> matching_type;
   for ( const auto& raid_event : s -> raid_events )
-    if ( util::str_prefix_ci( raid_event -> name(), type ) )
+    if ( util::str_prefix_ci( raid_event -> type, type ) )
       matching_type.push_back( raid_event.get() );
 
   if ( matching_type.empty() )

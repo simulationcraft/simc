@@ -3897,10 +3897,10 @@ void sim_t::activate_actors()
   current_iteration = -1;
 }
 
-bool sim_t::has_raid_event( const std::string& name ) const
+bool sim_t::has_raid_event( const std::string& type ) const
 {
-  auto it = range::find_if( raid_events, [ &name ]( const std::unique_ptr<raid_event_t>& event ) {
-      return util::str_compare_ci( name, event -> name() );
+  auto it = range::find_if( raid_events, [ &type ]( const std::unique_ptr<raid_event_t>& event ) {
+      return util::str_compare_ci( type, event -> type );
   } );
 
   return it != raid_events.end();
