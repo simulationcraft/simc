@@ -284,10 +284,6 @@ struct blade_of_justice_t : public holy_power_generator_t
     : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ) )
   {
     parse_options( options_str );
-
-    // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
-    base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
   }
 
   virtual double action_multiplier() const override

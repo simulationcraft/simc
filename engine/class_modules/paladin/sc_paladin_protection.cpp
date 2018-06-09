@@ -366,9 +366,9 @@ struct judgment_prot_t : public paladin_melee_attack_t
     may_block = may_parry = may_dodge = false;
     cooldown -> charges = 1;
 
-    cooldown -> charges *= 1.0 + p->talents.crusaders_judgment->effectN( 1 ).base_value();
-    cooldown -> duration *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
-    base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
+    cooldown -> charges *= 1.0 + p -> talents.crusaders_judgment->effectN( 1 ).base_value();
+    cooldown -> duration *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
+    base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 11 ).percent();
     sotr_cdr = -1.0 * timespan_t::from_seconds( 2 ); // hack for p -> spec.judgment_2 -> effectN( 1 ).base_value()
 
   }
@@ -944,7 +944,6 @@ void paladin_t::init_spells_protection()
   // Prot Passives
   passives.bladed_armor           = find_specialization_spell( "Bladed Armor" );
   passives.grand_crusader         = find_specialization_spell( "Grand Crusader" );
-  passives.guarded_by_the_light   = find_specialization_spell( "Guarded by the Light" );
   passives.sanctuary              = find_specialization_spell( "Sanctuary" );
   passives.riposte                = find_specialization_spell( "Riposte" );
   passives.improved_block         = find_specialization_spell( "Improved Block" );

@@ -1480,10 +1480,10 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
-  // Guarded by the Light buffs STA
+  // Protection gets increased stamina
   if ( attr == ATTR_STAMINA )
   {
-    m *= 1.0 + passives.guarded_by_the_light -> effectN( 2 ).percent();
+    m *= 1.0 + passives.protection_paladin -> effectN( 2 ).percent();
   }
 
   return m;
@@ -1684,7 +1684,7 @@ double paladin_t::composite_spell_power( school_e school ) const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      sp = passives.guarded_by_the_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
+      sp = passives.protection_paladin -> effectN( 7 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
       break;
     case PALADIN_RETRIBUTION:
       sp = passives.retribution_paladin -> effectN( 10 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
@@ -1725,7 +1725,7 @@ double paladin_t::composite_attack_power_multiplier() const
 
 double paladin_t::composite_spell_power_multiplier() const
 {
-  if ( specialization() == PALADIN_RETRIBUTION || passives.guarded_by_the_light -> ok() )
+  if ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION )
     return 1.0;
 
   return player_t::composite_spell_power_multiplier();
@@ -1738,10 +1738,6 @@ double paladin_t::composite_block() const
   // this handles base block and and all block subject to diminishing returns
   double block_subject_to_dr = cache.mastery() * passives.divine_bulwark -> effectN( 1 ).mastery_value();
   double b = player_t::composite_block_dr( block_subject_to_dr );
-
-  // Guarded by the Light block not affected by diminishing returns
-  // TODO: spell data broken (0%, tooltip values pointing at wrong effects) - revisit once spell data updated
-  b += passives.guarded_by_the_light -> effectN( 4 ).percent();
 
   // Holy Shield (assuming for now that it's not affected by DR)
   b += talents.holy_shield -> effectN( 1 ).percent();
@@ -1766,8 +1762,7 @@ double paladin_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  // Guarded by the Light grants -6% crit chance
-  c += passives.guarded_by_the_light -> effectN( 3 ).percent();
+  c += passives.protection_paladin -> effectN( 8 ).percent();
 
   return c;
 }
@@ -1818,7 +1813,7 @@ void paladin_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  if ( ( specialization() == PALADIN_RETRIBUTION || passives.guarded_by_the_light -> ok() || passives.divine_bulwark -> ok() )
+  if ( ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION )
        && ( c == CACHE_STRENGTH || c == CACHE_ATTACK_POWER )
      )
   {

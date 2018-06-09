@@ -249,7 +249,6 @@ public:
     const spell_data_t* boundless_conviction;
     const spell_data_t* divine_bulwark;
     const spell_data_t* grand_crusader;
-    const spell_data_t* guarded_by_the_light;
     const spell_data_t* hand_of_light;
     const spell_data_t* holy_insight;
     const spell_data_t* infusion_of_light;
