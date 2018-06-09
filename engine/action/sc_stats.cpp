@@ -110,9 +110,14 @@ full_result_e stats_t::translate_result( result_e result, block_result_e block_r
     {
       switch ( block_result )
       {
-      case BLOCK_RESULT_CRIT_BLOCKED: fulltype--;
-      case BLOCK_RESULT_BLOCKED:      fulltype--;
-      default:                        break;
+      case BLOCK_RESULT_CRIT_BLOCKED:
+        fulltype--;
+        [[gnu::fallthrough]];
+      case BLOCK_RESULT_BLOCKED:
+        fulltype--;
+        break;
+      default:
+        break;
       }
     }
     default: break;

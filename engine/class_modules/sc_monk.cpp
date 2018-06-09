@@ -130,8 +130,6 @@ namespace monk_util
                              const weapon_t* oh,
                              double ap )
   {
-    player_t* player = action -> player;
-
     double mhdps = 0;
     double ohdps = 0; 
     // Main Hand
@@ -3497,6 +3495,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
       case MONK_BREWMASTER:
         pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
         pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
+        break;
+      default:
         break;
     }
     return pm;

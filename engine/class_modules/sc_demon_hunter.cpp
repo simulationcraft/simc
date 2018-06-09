@@ -2353,6 +2353,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
         return candidate;
       }
+      break;
       case SOUL_FRAGMENT_SELECT_NEWEST:
         for ( it = p() -> soul_fragments.end(); it != p() -> soul_fragments.begin();
               it-- )
@@ -2365,6 +2366,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
             return frag;
           }
         }
+        break;
       case SOUL_FRAGMENT_SELECT_OLDEST:
       default:
         for ( it = p() -> soul_fragments.begin(); it != p() -> soul_fragments.end();
@@ -2378,6 +2380,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
             return frag;
           }
         }
+        break;
     }
 
     return nullptr;

@@ -670,6 +670,7 @@ namespace warlock
       vile_taint_t(warlock_t* p, const std::string& options_str)
         : warlock_spell_t("vile_taint", p, p -> talents.vile_taint)
       {
+        parse_options(options_str);
         may_miss = may_crit = false;
         damage = new vile_taint_damage_t(p);
         damage->stats = stats;

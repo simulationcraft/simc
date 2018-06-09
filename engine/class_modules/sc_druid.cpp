@@ -1937,7 +1937,7 @@ public:
 
   // Empowerment multiplier functions to prevent putting this mess in several places.
 
-  virtual double composite_stellar_empowerment( player_t* t ) const
+  virtual double composite_stellar_empowerment( player_t* ) const
   {
     double se = p() -> buff.stellar_empowerment -> check_value();
 
@@ -7978,9 +7978,11 @@ void druid_t::invalidate_cache( cache_e c )
   case CACHE_CRIT_CHANCE:
     if ( specialization() == DRUID_GUARDIAN )
       invalidate_cache( CACHE_DODGE );
+    break;
   case CACHE_AGILITY:
     if ( buff.ironfur -> check() )
       invalidate_cache( CACHE_ARMOR );
+    break;
   default:
     break;
   }

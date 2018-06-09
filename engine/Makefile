@@ -58,7 +58,8 @@ CXX        = g++
 CPP_FLAGS  = -Wall -Wextra -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++11 -O3 -MMD -MP \
 -Wpedantic \
 -Wcast-qual \
--Wconversion-null
+-Wconversion-null \
+-Wno-unknown-attributes
 
 OPTS       =
 GIT        = $(shell [ -d ../.git ] && which git)

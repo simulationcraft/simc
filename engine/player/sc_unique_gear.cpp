@@ -4118,7 +4118,7 @@ expr_t* unique_gear::create_expression( player_t& player, const std::string& nam
     PROC_COOLDOWN,
   };
 
-  int ptype_idx = 1, stat_idx = 2, expr_idx = 3;
+  unsigned int ptype_idx = 1, stat_idx = 2, expr_idx = 3;
   enum proc_expr_e pexprtype = PROC_ENABLED;
   enum proc_type_e ptype = PROC_STAT;
   stat_e stat = STAT_NONE;

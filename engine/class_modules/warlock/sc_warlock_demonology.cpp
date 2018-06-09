@@ -1511,7 +1511,7 @@ namespace warlock {
     };
 
     struct grimoire_felguard_t : public summon_pet_t {
-      grimoire_felguard_t(warlock_t* p, const std::string& pet_name, const std::string& options_str) :
+      grimoire_felguard_t(warlock_t* p, const std::string& options_str) :
         summon_pet_t("grimoire_felguard", p, p -> talents.grimoire_felguard) {
         parse_options(options_str);
         base_costs[RESOURCE_SOUL_SHARD] = 1.0;
@@ -1731,7 +1731,7 @@ namespace warlock {
     if (action_name == "summon_felguard") return new        summon_main_pet_t("felguard", this);
     if (action_name == "summon_demonic_tyrant") return new  summon_demonic_tyrant_t(this, options_str);
     if (action_name == "summon_vilefiend") return new       summon_vilefiend_t(this, options_str);
-    if (action_name == "grimoire_felguard") return new      grimoire_felguard_t(this, "felguard", options_str);
+    if (action_name == "grimoire_felguard") return new      grimoire_felguard_t(this, options_str);
 
     return nullptr;
   }

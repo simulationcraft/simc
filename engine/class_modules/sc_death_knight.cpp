@@ -5476,6 +5476,7 @@ struct rune_strike_t : public death_knight_melee_attack_t
   rune_strike_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "rune_strike", p, p -> talent.rune_strike )
   {
+    parse_options( options_str );
     energize_type = ENERGIZE_NONE;
   }
 

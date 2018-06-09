@@ -79,7 +79,7 @@ void parse_affecting_aura( action_t *const action, const spell_data_t *const spe
       default: break;
       }
     }
-    else if ( action -> data().category() == effect.misc_value1() )
+    else if ( action -> data().category() == as<unsigned>(effect.misc_value1()) )
     {
       switch ( effect.subtype() )
       {
