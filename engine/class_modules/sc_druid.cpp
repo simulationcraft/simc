@@ -310,7 +310,6 @@ public:
     buff_t* natures_balance;
     buff_t* celestial_alignment;
     buff_t* fury_of_elune; // Astral Power Gain
-    buff_t* force_of_nature; // Astral Power Gain
     buff_t* incarnation_moonkin;
     buff_t* lunar_empowerment;
     buff_t* moonkin_form;
@@ -576,10 +575,10 @@ public:
     const spell_data_t* warrior_of_elune;
     const spell_data_t* force_of_nature;
 
-    const spell_data_t* twin_moons;
+    const spell_data_t* starlord;
     const spell_data_t* incarnation_moonkin;
 
-    const spell_data_t* starlord;
+    const spell_data_t* twin_moons;
     const spell_data_t* stellar_drift;
     const spell_data_t* stellar_flare;
 
@@ -966,7 +965,7 @@ struct force_of_nature_t : public pet_t
   force_of_nature_t( sim_t* sim, druid_t* owner ) :
     pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
   {
-    owner_coeff.ap_from_sp = 3;
+    owner_coeff.ap_from_sp = 0; //Value currently unknown
     regen_type = REGEN_DISABLED;
     main_hand_weapon.type = WEAPON_BEAST;
   }
@@ -6158,6 +6157,7 @@ struct force_of_nature_t : public druid_spell_t
     parse_options( options );
     harmful = may_crit = false;
     summon_duration = p->find_spell(248280)->duration() + timespan_t::from_millis(1);
+    energize_amount = p->talent.force_of_nature->effectN(5).resource(RESOURCE_ASTRAL_POWER);
   }
 
   virtual void execute() override
@@ -6171,7 +6171,6 @@ struct force_of_nature_t : public druid_spell_t
         p() -> force_of_nature[i] -> summon( summon_duration );
       }
     }
-    p()->buff.force_of_nature->trigger();
   }
 };
 } // end namespace spells
@@ -6855,11 +6854,6 @@ void druid_t::create_buffs()
                                .tick_callback([this](buff_t*, int, const timespan_t&) {
                                  resource_gain(RESOURCE_ASTRAL_POWER, talent.fury_of_elune->effectN(3).resource(RESOURCE_ASTRAL_POWER),
                                  gain.fury_of_elune); });
-
-  buff.force_of_nature       = buff_creator_t(this, "force_of_nature", talent.force_of_nature) // Astral Power Gain Buff
-                               .tick_callback([this](buff_t*, int, const timespan_t&) {
-                                  resource_gain(RESOURCE_ASTRAL_POWER, talent.force_of_nature->effectN(5).resource(RESOURCE_ASTRAL_POWER),
-                                  gain.force_of_nature); });
 
   buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
                                .default_value( find_spell( 164547 ) -> effectN( 1 ).percent()
