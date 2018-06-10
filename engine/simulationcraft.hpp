@@ -3388,7 +3388,7 @@ struct player_t : public actor_t
     rating_t rating;
 
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
-    double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
+    double spell_power_multiplier, attack_power_multiplier, base_armor_multiplier, armor_multiplier;
     position_e position;
   }
   base, // Base values, from some database or overridden by user
@@ -3937,7 +3937,6 @@ struct player_t : public actor_t
   virtual double composite_spell_hit() const;
   virtual double composite_mastery() const;
   virtual double composite_mastery_value() const;
-  virtual double composite_bonus_armor() const;
   virtual double composite_damage_versatility() const;
   virtual double composite_heal_versatility() const;
   virtual double composite_mitigation_versatility() const;
@@ -3945,7 +3944,9 @@ struct player_t : public actor_t
   virtual double composite_run_speed() const;
   virtual double composite_avoidance() const;
   virtual double composite_armor() const;
-  virtual double composite_armor_multiplier() const;
+  virtual double composite_bonus_armor() const;
+  virtual double composite_base_armor_multiplier() const; // Modify Base Besistance
+  virtual double composite_armor_multiplier() const; // Modify Armor%, affects everything
   virtual double composite_miss() const;
   virtual double composite_dodge() const;
   virtual double composite_parry() const;

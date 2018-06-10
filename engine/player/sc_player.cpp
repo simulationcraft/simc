@@ -892,6 +892,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   attribute_multiplier(),
   spell_power_multiplier( 1.0 ),
   attack_power_multiplier( 1.0 ),
+  base_armor_multiplier( 1.0 ),
   armor_multiplier( 1.0 ),
   position( POSITION_BACK )
 {
@@ -927,6 +928,7 @@ std::string player_t::base_initial_current_t::to_string()
   // attribute_multiplier
   s << " spell_power_multiplier=" << spell_power_multiplier;
   s << " attack_power_multiplier=" << attack_power_multiplier;
+  s << " base_armor_multiplier=" << base_armor_multiplier;
   s << " armor_multiplier=" << armor_multiplier;
   s << " position=" << util::position_type_string( position );
   return s.str();
@@ -1390,7 +1392,7 @@ void player_t::init_meta_gem()
 
   if ( ( meta_gem == META_AUSTERE_EARTHSIEGE ) || ( meta_gem == META_AUSTERE_SHADOWSPIRIT ) )
   {
-    initial.armor_multiplier *= 1.02;
+    initial.base_armor_multiplier *= 1.02;
   }
 }
 
@@ -3026,12 +3028,25 @@ double player_t::composite_armor() const
 {
   double a = current.stats.armor;
 
+  a *= composite_base_armor_multiplier();
+
+  a += cache.bonus_armor();
+
+  // "Modify Armor%" effects affect all armor multiplicatively
+  // TODO: What constitutes "bonus armor" and "base armor" in terms of client data?
   a *= composite_armor_multiplier();
 
-  // Traditionally, armor multipliers have only applied to base armor from gear
-  // and not bonus armor. I'm assuming this will continue in WoD.
-  // TODO: need to test in beta to be sure - Theck, 2014-04-26
-  a += current.stats.bonus_armor;
+  return a;
+}
+
+double player_t::composite_base_armor_multiplier() const
+{
+  double a = current.base_armor_multiplier;
+
+  if ( meta_gem == META_AUSTERE_PRIMAL )
+  {
+    a += 0.02;
+  }
 
   return a;
 }
@@ -3039,11 +3054,6 @@ double player_t::composite_armor() const
 double player_t::composite_armor_multiplier() const
 {
   double a = current.armor_multiplier;
-
-  if ( meta_gem == META_AUSTERE_PRIMAL )
-  {
-    a += 0.02;
-  }
 
   return a;
 }
