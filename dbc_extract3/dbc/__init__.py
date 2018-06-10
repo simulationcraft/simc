@@ -8,7 +8,7 @@ import collections
 # (e.g., fields are 4 bytes). In addition, the WDC1 id block seems to be
 # tacked to the beginning of the record key block seems to be tacked to the
 # end of the record.
-EXPANDED_HOTFIX_RECORDS = [ 'SpellEffect' ]
+EXPANDED_HOTFIX_RECORDS = [ ]
 
 # For some client data file hotfix entries, the key block id (parent id) is
 # repeated in the actual record data. For those files, the key block id is
