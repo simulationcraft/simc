@@ -1125,10 +1125,7 @@ struct void_eruption_t final : public priest_spell_t
       insanity_required = data_spell->cost( POWER_INSANITY ) / 100.0;
     }
 
-    if ( sim->debug )
-    {
-      priest().sim->out_debug.printf("Void Eruption requires %.2d insanity", insanity_required );
-    }
+    sim->print_debug("Void Eruption requires {} insanity", insanity_required );
 
     // We don't want to lose insanity when casting it!
     base_costs[ RESOURCE_INSANITY ] = 0;
