@@ -16,17 +16,17 @@ _DB_STRUCT_HEADER_FIELDS = [
     'va_name',
     'unk_2',
     'fields',
-    'unk_4',
+    'size',
     'unk_5',
     'unk_6',
     'unk_7',
     'va_byte_offset',
     'va_elements',
     'va_field_format',
-    'va_unk_11',
-    'va_unk_12',
-    'va_unk_13',
-    'va_unk_14',
+    'va_flags',
+    'va_elements_file',
+    'va_field_format_file',
+    'va_flags_file',
     'unk_15',
     'table_hash',
     'unk_17',
@@ -93,6 +93,7 @@ class DBStructureHeader(collections.namedtuple('DBStructureHeader', _DB_STRUCT_H
 
         return parser.handle[va:null].decode('utf-8')
 
+    # VA -> Physical file offset
     def file_offset(self, parser, field_name):
         index = -1
         for idx in range(0, len(self._fields)):
@@ -110,12 +111,15 @@ class DBStructureHeader(collections.namedtuple('DBStructureHeader', _DB_STRUCT_H
 
         return va
 
-    def formats(self, parser):
+    def formats(self, parser, raw = False):
         format_offset = self.file_offset(parser, 'va_field_format')
 
         unpacker = struct.Struct('i' * self.fields)
 
         formats = unpacker.unpack_from(parser.handle, format_offset)
+        if raw:
+            return formats
+
         struct_formats = []
         for format_value in formats:
             if format_value not in _DB_FIELD_FORMATS:
@@ -133,16 +137,28 @@ class DBStructureHeader(collections.namedtuple('DBStructureHeader', _DB_STRUCT_H
 
         return unpacker.unpack_from(parser.handle, element_offset)
 
+    def flags(self, parser):
+        flags_offset = self.file_offset(parser, 'va_flags')
+
+        unpacker = struct.Struct('I' * self.fields)
+
+        return unpacker.unpack_from(parser.handle, flags_offset)
+
+    def offsets(self, parser):
+        byte_offset = self.file_offset(parser, 'va_byte_offset')
+
+        unpacker = struct.Struct('I' * self.fields)
+
+        return unpacker.unpack_from(parser.handle, byte_offset)
+
     def __str__(self):
         s = []
 
         for idx in range(0, len(self._fields)):
-            if idx < len(_DB_STRUCT_HEADER_FORMATS):
-                ss = '{}='.format(_DB_STRUCT_HEADER_FIELDS[idx])
-                ss += _DB_STRUCT_HEADER_FORMATS[idx].format(self[idx])
-                s.append(ss)
-            else:
-                s.append('{}={}'.format(_DB_STRUCT_HEADER_FIELDS[idx], self[idx]))
+            ss = '{}={}'.format(
+                _DB_STRUCT_HEADER_FIELDS[idx],
+                _DB_STRUCT_HEADER_FORMATS[idx].format(self[idx]))
+            s.append(ss)
 
         return ', '.join(s)
 
@@ -233,6 +249,11 @@ class PeStructParser:
         # Header must match table and layout hashes
 
         header = DBStructureHeader(*unpack)
+        logging.debug(header)
+        logging.debug('Offsets  {}'.format(header.offsets(self)))
+        logging.debug('Types    {}'.format(header.formats(self, True)))
+        logging.debug('Elements {}'.format(header.elements(self)))
+        logging.debug('Flags    {}'.format(header.flags(self)))
 
         formats = header.formats(self)
         elements = header.elements(self)

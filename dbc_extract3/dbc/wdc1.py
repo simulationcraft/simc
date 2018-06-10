@@ -658,6 +658,10 @@ class WDC1Column:
                 logging.warn('Column %s field sizes differ (%d vs %d)',
                     self.__index, self.__field_size, ext_data[5])
 
+            if self.__block_type == COLUMN_TYPE_INDEXED and ext_data[6] != 0:
+                logging.warn('Column %s for %s has non-zero elements (%d)',
+                    self.__index, self.__parser.file_name(), ext_data[6])
+
             self.__field_size = ext_data[5]
             self.__elements   = ext_data[6]
         elif self.__block_type == COLUMN_TYPE_BIT_S:
