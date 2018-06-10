@@ -190,30 +190,9 @@ class PeStructParser:
 
         return True
 
-    def validate_file(self, file_):
-        dbfile = DBCFile(self.options, file_)
-        try:
-            if not dbfile.open():
-                return True
-            field_formats = dbfile.parser.fmt.objs(dbfile.class_name(), True)
-
-        except Exception:
-            logging.debug('No data format for {}'.format(file_))
-            return True
-
-        # Dun care, nothing to check
-        if dbfile.parser.records == 0:
-            return True
-
-        locations = []
-        search_for = bytes(dbfile.class_name(), 'utf-8')
-
-        logging.debug(dbfile.parser)
-
-        # Construct an unique fingerprint to find in file, based on table and layout hashes
-
-        table_hash = struct.pack('I', dbfile.parser.table_hash)
-        layout_hash = struct.pack('I', dbfile.parser.layout_hash)
+    def find_db_header(self, dbcfile):
+        table_hash = struct.pack('I', dbcfile.parser.table_hash)
+        layout_hash = struct.pack('I', dbcfile.parser.layout_hash)
 
         # Offset of table hash in the DB structure header from the start
         table_hash_offset = compute_field_offset('table_hash')
@@ -233,8 +212,8 @@ class PeStructParser:
 
             logging.info(('Found {} layout_hash={:#8x}, table_hash={:#8x} at '
                           'offset {}, DB Structure start at {}').format(
-                os.path.basename(dbfile.file_name), dbfile.parser.table_hash,
-                dbfile.parser.layout_hash,
+                os.path.basename(dbcfile.file_name), dbcfile.parser.table_hash,
+                dbcfile.parser.layout_hash,
                 th_offset, th_offset - table_hash_offset
             ))
 
@@ -242,13 +221,33 @@ class PeStructParser:
             break
 
         if header_start == 0:
-            logging.info('No DB structure found for {}'.format(dbfile.class_name()))
-            return True
+            return None
 
         unpack = _DB_STRUCT.unpack_from(self.handle, header_start)
         # Header must match table and layout hashes
 
-        header = DBStructureHeader(*unpack)
+        return DBStructureHeader(*unpack)
+
+    def validate_file(self, file_):
+        dbfile = DBCFile(self.options, file_)
+        try:
+            if not dbfile.open():
+                return True
+            field_formats = dbfile.parser.fmt.objs(dbfile.class_name(), True)
+
+        except Exception:
+            logging.debug('No data format for {}'.format(file_))
+            return True
+
+        # Dun care, nothing to check
+        if dbfile.parser.records == 0:
+            return True
+
+        header = self.find_db_header(dbfile)
+        if not header:
+            logging.debug('No DB structure header found for {}'.format(dbfile.class_name()))
+            return True
+
         logging.debug(header)
         logging.debug('Offsets  {}'.format(header.offsets(self)))
         logging.debug('Types    {}'.format(header.formats(self, True)))
@@ -327,3 +326,66 @@ class PeStructParser:
                 return False
 
         return True
+
+    def generate_format(self, file_):
+        dbfile = DBCFile(self.options, file_)
+        if not dbfile.open():
+            return True
+
+        # Dun care, nothing to check
+        if dbfile.parser.records == 0:
+            return True
+
+        key = dbfile.class_name()
+        header = self.find_db_header(dbfile)
+        if not header:
+            logging.debug('No DB structure header found for {}'.format(dbfile.class_name()))
+            return True
+
+        formats = header.formats(self, True)
+        elements = header.elements(self)
+        output_formats = []
+        for field_idx in range(0, len(formats)):
+            col = dbfile.parser.column(field_idx)
+
+            type_ = 'bytes'
+            if col.field_ext_type() == wdc1.COLUMN_TYPE_BIT:
+                type_ = 'bits'
+            elif col.field_ext_type() == wdc1.COLUMN_TYPE_BIT_S:
+                type_ = 'sbits'
+            elif col.field_ext_type() == wdc1.COLUMN_TYPE_INDEXED:
+                type_ = 'index'
+            elif col.field_ext_type() == wdc1.COLUMN_TYPE_SPARSE:
+                type_ = 'sparse'
+            elif col.field_ext_type() == wdc1.COLUMN_TYPE_ARRAY:
+                type_ = 'array'
+
+            value_type = _DB_FIELD_FORMATS.get(formats[field_idx], 'unknown')[1]
+            if value_type != 'f' and not col.is_signed():
+                value_type = value_type.upper()
+
+            field_name = 'f{}'.format(field_idx + 1)
+            if not dbfile.parser.has_id_block() and dbfile.parser.id_index == field_idx:
+                field_name = 'id'
+
+            entry = {'data_type': value_type, 'field': field_name, 'column_type': type_}
+            if elements[field_idx] > 1:
+                entry['elements'] = elements[field_idx]
+
+            output_formats.append(entry)
+
+        self.generated_formats[key] = output_formats
+
+        return True
+
+    # Generate should not require knowing any formats
+    def generate(self):
+        self.options.raw = True
+
+        self.generated_formats = {}
+
+        for dbfile in self.dbfiles:
+            if not self.generate_format(dbfile):
+                return False
+
+        return self.generated_formats

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import argparse, sys, os, glob, logging, importlib
+import argparse, sys, os, glob, logging, importlib, json
 
 try:
     from bitarray import bitarray
@@ -26,7 +26,7 @@ parser.add_argument("-t", "--type", dest = "type",
                   help    = "Processing type [output]", metavar = "TYPE", 
                   default = "output", action = "store",
                   choices = [ 'output', 'scale', 'view', 'csv', 'header',
-                              'class_flags', 'generator', 'validate' ])
+                              'class_flags', 'generator', 'validate', 'generate_format' ])
 parser.add_argument("-o",            dest = "output")
 parser.add_argument("-a",            dest = "append")
 parser.add_argument("--raw",         dest = "raw",          default = False, action = "store_true")
@@ -60,7 +60,7 @@ parser.add_argument("--fields",      dest = "fields", default = [],
 parser.add_argument("args", metavar = "ARGS", type = str, nargs = argparse.REMAINDER)
 options = parser.parse_args()
 
-if options.build == 0 and options.type not in['header']:
+if options.build == 0 and options.type not in['header', 'generate_format']:
     parser.error('-b is a mandatory parameter for extraction type "%s"' % options.type)
 
 if options.min_ilevel < 0 or options.max_ilevel > 1300:
@@ -81,7 +81,7 @@ if options.type == 'parse' and len(options.args) < 2:
 if options.debug:
     logging.getLogger().setLevel(logging.DEBUG)
 
-if options.type == 'validate':
+if options.type in ['validate', 'generate_format']:
     from dbc.pe import PeStructParser
 
 # Initialize the base model for dbc.data, creating the relevant classes for all patch levels
@@ -94,6 +94,15 @@ if options.type == 'validate':
         sys.exit(1)
 
     p.validate()
+
+elif options.type == 'generate_format':
+    p = PeStructParser(options, options.args[0], options.args[1:])
+    if not p.initialize():
+        sys.exit(1)
+
+    json_obj = p.generate()
+
+    json.dump(json_obj, fp = sys.stdout, indent = 2)
 
 elif options.type == 'output':
     if len(options.args) < 1:
