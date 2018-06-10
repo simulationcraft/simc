@@ -645,8 +645,7 @@ public:
     cd_wasted_exec( nullptr ), cd_wasted_cumulative( nullptr ), cd_wasted_iter( nullptr )
   {
     ab::may_crit = true;
-    tactician_per_rage += ( player -> spec.tactician -> effectN( 2 ).percent() / 100 );
-    tactician_per_rage *= 1.0 + player -> artifact.exploit_the_weakness.percent();
+    tactician_per_rage += ( player -> spec.tactician -> effectN( 1 ).percent() / 100 );
     arms_t19_2p_chance = p() -> sets -> set( WARRIOR_ARMS, T19, B2 ) -> proc_chance();
 
     if ( arms_damage_increase )
@@ -4881,21 +4880,23 @@ void warrior_t::init_spells()
   if ( sets -> has_set_bonus( WARRIOR_FURY, T21, B2 ) ) active.slaughter = new slaughter_dot_t( this );
   if ( spec.rampage -> ok() )
   {
-    rampage_attack_t* first = new rampage_attack_t( this, spec.rampage -> effectN( 3 ).trigger(), "rampage1" );
-    rampage_attack_t* second = new rampage_attack_t( this, spec.rampage -> effectN( 4 ).trigger(), "rampage2" );
-    rampage_attack_t* third = new rampage_attack_t( this, spec.rampage -> effectN( 5 ).trigger(), "rampage3" );
-    rampage_attack_t* fourth = new rampage_attack_t( this, spec.rampage -> effectN( 6 ).trigger(), "rampage4" );
-    rampage_attack_t* fifth = new rampage_attack_t( this, spec.rampage -> effectN( 7 ).trigger(), "rampage5" );
-    first -> weapon = &( this -> main_hand_weapon );
-    second -> weapon = &( this -> off_hand_weapon );
-    third -> weapon = &( this -> main_hand_weapon );
-    fourth -> weapon = &( this -> off_hand_weapon );
-    fifth -> weapon = &( this -> main_hand_weapon );
+	// rampage now hits 4 times instead of 5 and effect indexes shifted
+    rampage_attack_t* first = new rampage_attack_t( this, spec.rampage -> effectN( 2 ).trigger(), "rampage1" );
+    rampage_attack_t* second = new rampage_attack_t( this, spec.rampage -> effectN( 3 ).trigger(), "rampage2" );
+    rampage_attack_t* third = new rampage_attack_t( this, spec.rampage -> effectN( 4 ).trigger(), "rampage3" );
+    rampage_attack_t* fourth = new rampage_attack_t( this, spec.rampage -> effectN( 5 ).trigger(), "rampage4" );
+   
+	// the order for hits is now OH MH OH MH
+	first -> weapon = &( this -> off_hand_weapon );
+    second -> weapon = &( this -> main_hand_weapon );
+    third -> weapon = &( this -> off_hand_weapon );
+    fourth -> weapon = &( this -> main_hand_weapon );
+   
     this -> rampage_attacks.push_back( first );
     this -> rampage_attacks.push_back( second );
     this -> rampage_attacks.push_back( third );
     this -> rampage_attacks.push_back( fourth );
-    this -> rampage_attacks.push_back( fifth );
+   
   }
 
   // Cooldowns
@@ -5597,9 +5598,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ):
   dots_trauma = target -> get_dot( "trauma", &p );
 
   debuffs_colossus_smash = buff_creator_t( static_cast<actor_pair_t>(*this), "colossus_smash" )
-    .default_value( p.spell.colossus_smash_debuff -> effectN( 3 ).percent() )
-    .duration( p.spell.colossus_smash_debuff -> duration()
-             * ( 1.0 + p.talents.titanic_might -> effectN( 1 ).percent() ) )
+    .default_value( p.spell.colossus_smash_debuff -> effectN( 2 ).percent() )
+    .duration( p.spell.colossus_smash_debuff -> duration())
     .cd( timespan_t::zero() );
 
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
@@ -6242,7 +6242,6 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   {
   case ATTR_STAMINA:
   a += spec.unwavering_sentinel -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
-  a += spec.titans_grip -> effectN( 2 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
   a += artifact.toughness.percent() * player_t::composite_attribute( ATTR_STAMINA );
   a += artifact.arms_of_the_valarjar.data().effectN( 2 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
   a += artifact.fury_of_the_valarjar.data().effectN( 2 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
