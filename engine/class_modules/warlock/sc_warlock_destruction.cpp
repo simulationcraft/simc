@@ -153,6 +153,7 @@ namespace warlock {
         warlock_td_t* td = this->td(target);
         dot_t* dot = td->dots_immolate;
 
+        assert(dot->current_action);
         action_state_t* state = dot->current_action->get_state(dot->state);
         dot->current_action->calculate_tick_amount(state, 1.0);
         double tick_base_damage = state->result_raw;
