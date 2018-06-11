@@ -706,6 +706,16 @@ namespace warlock
         {
           return p()->o()->get_target_data( t );
         }
+
+        void init() override
+        {
+          action_t::init();
+
+          if (p()->o()->specialization() == WARLOCK_DESTRUCTION)
+          {
+            base_multiplier *= 1.0 + p()->o()->spec.destruction->effectN(3).percent();
+          }
+        }
       };
 
       struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
@@ -1133,17 +1143,23 @@ namespace warlock
 
           affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p()->find_spell( 212173 )->effectN( 1 ) );
 
-          if ( data().affected_by(p()->spec.destruction->effectN(1)) )
-            base_dd_multiplier *= 1.0 + p()->spec.destruction->effectN( 1 ).percent();
+          if (p()->specialization() == WARLOCK_DESTRUCTION)
+          {
+            if (data().affected_by(p()->spec.destruction->effectN(1)))
+              base_dd_multiplier *= 1.0 + p()->spec.destruction->effectN(1).percent();
 
-          if ( data().affected_by(p()->spec.destruction->effectN(2)) )
-            base_td_multiplier *= 1.0 + p()->spec.destruction->effectN( 2 ).percent();
+            if (data().affected_by(p()->spec.destruction->effectN(2)))
+              base_td_multiplier *= 1.0 + p()->spec.destruction->effectN(2).percent();
+          }
 
-          if ( data().affected_by(p()->spec.affliction->effectN(1)) )
-            base_dd_multiplier *= 1.0 + p()->spec.affliction->effectN( 1 ).percent();
+          if (p()->specialization() == WARLOCK_AFFLICTION)
+          {
+            if (data().affected_by(p()->spec.affliction->effectN(1)))
+              base_dd_multiplier *= 1.0 + p()->spec.affliction->effectN(1).percent();
 
-          if ( data().affected_by(p()->spec.affliction->effectN(2)) )
-            base_td_multiplier *= 1.0 + p()->spec.affliction->effectN( 2 ).percent();
+            if (data().affected_by(p()->spec.affliction->effectN(2)))
+              base_td_multiplier *= 1.0 + p()->spec.affliction->effectN(2).percent();
+          }
 
           if ( p()->talents.creeping_death->ok() )
           {
