@@ -713,7 +713,7 @@ namespace warlock
 
           if (p()->o()->specialization() == WARLOCK_DESTRUCTION)
           {
-            base_multiplier *= 1.0 + p()->o()->spec.destruction->effectN(3).percent();
+            ab::base_multiplier *= 1.0 + p()->o()->spec.destruction->effectN(3).percent();
           }
         }
       };
