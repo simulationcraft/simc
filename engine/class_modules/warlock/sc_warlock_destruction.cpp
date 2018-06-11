@@ -568,8 +568,7 @@ namespace warlock {
         warlock_spell_t::impact(s);
         if (p()->talents.eradication->ok() && result_is_hit(s->result))
           td(s->target)->debuffs_eradication->trigger();
-        if (p()->talents.internal_combustion->ok() && result_is_hit(s->result))
-          internal_combustion->execute();
+        trigger_internal_combustion(s);
         if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B2))
           td(s->target)->debuffs_chaotic_flames->trigger();
         if (p()->legendary.magistrike && rng().roll(duplicate_chance))
@@ -590,6 +589,20 @@ namespace warlock {
         {
           residual_action::trigger(flames_of_argus, s->target, s->result_amount * p()->sets->set(WARLOCK_DESTRUCTION, T21, B4)->effectN(1).percent());
         }
+      }
+
+      void trigger_internal_combustion(action_state_t* s)
+      {
+        if (!p()->talents.internal_combustion->ok())
+          return;
+        if (!result_is_hit(s->result))
+          return;
+
+        auto td = this->td(s->target);
+        if (!td->dots_immolate->is_ticking())
+          return;
+
+        internal_combustion->execute();
       }
 
       void execute() override

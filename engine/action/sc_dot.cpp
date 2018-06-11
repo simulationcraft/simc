@@ -148,6 +148,9 @@ void dot_t::reduce_duration( timespan_t remove_seconds, uint32_t state_flags )
   if ( !ticking )
     return;
 
+  sim.print_debug("{} attempts to reduce duration of {} by {}.", source->name(),
+      name(), remove_seconds);
+
   if ( state_flags == (uint32_t)-1 )
     state_flags = current_action->snapshot_flags;
 
@@ -158,7 +161,7 @@ void dot_t::reduce_duration( timespan_t remove_seconds, uint32_t state_flags )
       state, state_flags,
       current_action->type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
 
-  if ( remove_seconds >= current_duration )
+  if ( remove_seconds >= remains() )
   {
     cancel();
 
@@ -181,9 +184,13 @@ void dot_t::reduce_duration( timespan_t remove_seconds, uint32_t state_flags )
                         remove_seconds.total_seconds() );
   }
 
+  sim.print_debug("{} dot {} new remains {}.", source->name(),
+      name(), remains());
+
   assert( end_event && "Dot is ticking but has no end event." );
   timespan_t remains = end_event->remains();
   remains -= remove_seconds;
+  assert(remains > timespan_t::zero());
   if ( remains != end_event->remains() )
   {
     event_t::cancel( end_event );
