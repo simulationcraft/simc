@@ -789,6 +789,19 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
   }
 };
 
+// Holy Shield damage proc ====================================================
+
+struct holy_shield_proc_t : public paladin_spell_t
+{
+  holy_shield_proc_t( paladin_t* p )
+    : paladin_spell_t( "holy_shield", p, p -> talents.holy_shield -> effectN( 2 ).trigger() )
+  {
+    background = true;
+    proc = true;
+    may_miss = false;
+  }
+};
+
 // Rebuke ===================================================================
 
 struct rebuke_t : public paladin_melee_attack_t
@@ -1358,6 +1371,9 @@ void paladin_t::init_spells()
 
   spells.avenging_wrath = find_spell( 31884 );
 
+  if ( talents.holy_shield -> ok() )
+    active_holy_shield_proc = new holy_shield_proc_t( this );
+
   if ( talents.judgment_of_light -> ok() )
     active_judgment_of_light_proc = new judgment_of_light_proc_t( this );
 }
@@ -1611,12 +1627,16 @@ double paladin_t::composite_armor_multiplier() const
   return a;
 }
 
-
 // paladin_t::composite_bonus_armor =========================================
 
 double paladin_t::composite_bonus_armor() const
 {
   double ba = player_t::composite_bonus_armor();
+
+  if ( buffs.shield_of_the_righteous -> check() )
+  {
+    ba += spells.shield_of_the_righteous -> effectN( 1 ).percent() * cache.attack_power();
+  }
 
   return ba;
 }

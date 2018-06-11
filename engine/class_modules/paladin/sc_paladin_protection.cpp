@@ -263,7 +263,6 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
   }
 };
 
-
 // Hammer of the Righteous ==================================================
 
 struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
@@ -334,21 +333,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       }
     }
   }
-};
-
-// Holy Shield damage proc ====================================================
-
-struct holy_shield_proc_t : public paladin_spell_t
-{
-  holy_shield_proc_t( paladin_t* p )
-    : paladin_spell_t( "holy_shield", p, p -> find_spell( 157122 ) ) // damage data stored in 157122
-  {
-    background = true;
-    proc = true;
-    may_miss = false;
-    may_crit = true;
-  }
-
 };
 
 // Judgment - Protection =================================================================
@@ -591,7 +575,7 @@ struct seraphim_t : public paladin_spell_t
 struct shield_of_the_righteous_t : public paladin_melee_attack_t
 {
   shield_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
-    paladin_melee_attack_t( "shield_of_the_righteous", p, p -> find_class_spell( "Shield of the Righteous" ) )
+    paladin_melee_attack_t( "shield_of_the_righteous", p, p -> find_specialization_spell( "Shield of the Righteous" ) )
   {
     parse_options( options_str );
 
@@ -600,6 +584,8 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
       sim -> errorf( "%s: %s only usable with shield equipped in offhand\n", p -> name(), name() );
       background = true;
     }
+
+    aoe = -1;
 
     // not on GCD, usable off-GCD
     trigger_gcd = timespan_t::zero();
@@ -625,12 +611,8 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     }
     else
       p() -> buffs.shield_of_the_righteous -> trigger();
-  }
 
-  // Special things that happen when SotR damages target
-  virtual void impact( action_state_t* s ) override
-  {
-    if ( result_is_hit( s -> result ) ) // TODO: not needed anymore? Can we even miss?
+    if ( result_is_hit( execute_state -> result ) ) // TODO: not needed anymore? Can we even miss?
     {
       // SotR hits reduce Light of the Protector and Avenging Wrath cooldown times if Righteous Protector is talented
       if ( p() -> talents.righteous_protector -> ok() )
@@ -641,8 +623,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
         p() -> cooldowns.hand_of_the_protector -> adjust( reduction );
       }
     }
-
-    paladin_melee_attack_t::impact( s );
   }
 };
 
@@ -787,7 +767,7 @@ void paladin_t::trigger_grand_crusader()
 
 void paladin_t::trigger_holy_shield( action_state_t* s )
 {
-  // escape if we don't have Holy Shield
+  // escape if we don't have Holy Shield 
   if ( ! talents.holy_shield -> ok() )
     return;
 
@@ -795,12 +775,8 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
   if ( ! s -> action -> player -> is_enemy() )
     return;
 
-  // Check for proc
-  if ( rng().roll( talents.holy_shield -> proc_chance() ) )
-  {
-    active_holy_shield_proc -> target = s -> action -> player;
-    active_holy_shield_proc -> schedule_execute();
-  }
+  active_holy_shield_proc -> target = s -> action -> player;
+  active_holy_shield_proc -> schedule_execute();
 }
 
 bool paladin_t::standing_in_consecration() const
@@ -848,8 +824,9 @@ action_t* paladin_t::create_action_protection( const std::string& name, const st
 void paladin_t::create_buffs_protection()
 {
   buffs.guardian_of_ancient_kings      = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
-                                          ->set_cooldown( timespan_t::zero() ); // let the ability handle the CD
-  buffs.shield_of_the_righteous        = make_buff( this, "shield_of_the_righteous", find_spell( 132403 ) );
+                                          -> set_cooldown( timespan_t::zero() ); // let the ability handle the CD
+  buffs.shield_of_the_righteous        = make_buff( this, "shield_of_the_righteous", spells.shield_of_the_righteous )
+                                          -> add_invalidate( CACHE_BONUS_ARMOR );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
   buffs.aegis_of_light                 = make_buff( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
   buffs.seraphim                       = stat_buff_creator_t( this, "seraphim", talents.seraphim )
@@ -864,7 +841,7 @@ void paladin_t::create_buffs_protection()
     ->set_max_stack( 1 ); // not sure why data says 3 stacks
 
   // Talents
-  buffs.holy_shield_absorb     = make_buff<absorb_buff_t>( this, "holy_shield", find_spell( 157122 ) );
+  buffs.holy_shield_absorb     = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
   buffs.holy_shield_absorb->set_absorb_school( SCHOOL_MAGIC )
       ->set_absorb_source( get_stats( "holy_shield_absorb" ) )
       ->set_absorb_gain( get_gain( "holy_shield_absorb" ) );
@@ -899,6 +876,7 @@ void paladin_t::init_spells_protection()
   spells.gift_of_the_golden_valkyr     = find_spell( 207628 );
   spells.heathcliffs_immortality       = find_spell( 207599 );
   spells.consecration_bonus            = find_spell( 188370 );
+  spells.shield_of_the_righteous       = find_spell( 132403 );
 
   // mastery
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
@@ -912,9 +890,6 @@ void paladin_t::init_spells_protection()
   {
     spec.judgment_2 = find_specialization_spell( 231657 );
   }
-
-  if ( talents.holy_shield -> ok() )
-    active_holy_shield_proc = new holy_shield_proc_t( this );
 }
 
 void paladin_t::generate_action_prio_list_prot()
