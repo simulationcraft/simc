@@ -4726,7 +4726,7 @@ void hunter_t::create_buffs()
 
   buffs.dire_beast =
     make_buff<haste_buff_t>( this, "dire_beast", talents.dire_beast -> effectN( 2 ).trigger() )
-      -> set_default_value( 1.0 / ( 1.0 + talents.dire_beast -> effectN( 2 ).trigger() -> effectN( 1 ).percent() ) );
+      -> set_default_value( talents.dire_beast -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
 
   buffs.thrill_of_the_hunt =
     make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
@@ -5334,7 +5334,8 @@ double hunter_t::composite_melee_haste() const
   if ( buffs.trueshot -> check() )
     h *= 1.0 / ( 1.0 + buffs.trueshot -> check_value() );
 
-  h *= buffs.dire_beast -> check_value();
+  if ( buffs.dire_beast -> check() )
+    h *= 1.0 / ( 1.0 + buffs.dire_beast -> check_value() );
 
   if ( buffs.sephuzs_secret -> check() )
     h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
@@ -5369,7 +5370,8 @@ double hunter_t::composite_spell_haste() const
   if ( buffs.trueshot -> check() )
     h *= 1.0 / ( 1.0 + buffs.trueshot -> check_value() );
 
-  h *= buffs.dire_beast -> check_value();
+  if ( buffs.dire_beast -> check() )
+    h *= 1.0 / ( 1.0 + buffs.dire_beast -> check_value() );
 
   if ( buffs.sephuzs_secret -> check() )
     h *= 1.0 / ( 1.0 + buffs.sephuzs_secret -> check_value() );
