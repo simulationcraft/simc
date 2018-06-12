@@ -2093,29 +2093,20 @@ struct volley_t: hunter_ranged_attack_t
 
 struct auto_shot_t: public hunter_action_t < ranged_attack_t >
 {
-  volley_t* volley;
-  bool first_shot;
+  volley_t* volley = nullptr;
+  bool first_shot = true;
 
-  auto_shot_t( hunter_t* p ): base_t( "auto_shot", p, spell_data_t::nil() ),
-    volley( nullptr ), first_shot( true )
+  auto_shot_t( hunter_t* p ):
+    base_t( "auto_shot", p, p -> find_spell( 75 ) )
   {
-    school = SCHOOL_PHYSICAL;
     background = true;
     repeating = true;
-    trigger_gcd = timespan_t::zero();
+    interrupt_auto_attack = false;
     special = false;
-    may_crit = true;
+    trigger_gcd = timespan_t::zero();
 
-    range = 40.0;
-    weapon = &p->main_hand_weapon;
-    weapon_multiplier = 1.0;
-    base_execute_time = weapon->swing_time;
-
-    // our spell data does not list it but 'Auto Shot' (spell_id=75) is affected by these
-    affected_by.aotw_crit_chance = true;
-    affected_by.bestial_wrath = true;
-    affected_by.thrill_of_the_hunt = true;
-    affected_by.lone_wolf = true;
+    weapon = &( p -> main_hand_weapon );
+    base_execute_time = weapon -> swing_time;
 
     if ( p -> talents.volley -> ok() )
     {
@@ -3014,10 +3005,10 @@ struct serpent_sting_mm_t: public hunter_ranged_attack_t
 
 struct melee_t: public hunter_melee_attack_t
 {
-  bool first;
+  bool first = true;
 
-  melee_t( hunter_t* player, const std::string &name = "auto_attack_mh", const spell_data_t* s = spell_data_t::nil() ):
-    hunter_melee_attack_t( name, player, s ), first( true )
+  melee_t( hunter_t* player ):
+    hunter_melee_attack_t( "auto_attack_mh", player )
   {
     school             = SCHOOL_PHYSICAL;
     base_execute_time  = player -> main_hand_weapon.swing_time;
