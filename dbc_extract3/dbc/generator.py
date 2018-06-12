@@ -1215,6 +1215,7 @@ class SpellDataGenerator(DataGenerator):
 
         # Hunter:
         (
+          ( 75, 0 ),     # Auto Shot
           ( 131900, 0 ), # Murder of Crows damage spell
           ( 171457, 1 ), # Chimaera Shot - Nature
           ( 201594, 1 ), # Stampede
