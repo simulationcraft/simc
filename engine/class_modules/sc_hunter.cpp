@@ -2507,6 +2507,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     trick_shots_targets( static_cast<int>( p -> specs.trick_shots -> effectN( 1 ).base_value() ) )
   {
     radius = 8.0;
+    base_aoe_multiplier = p -> specs.trick_shots -> effectN( 4 ).percent();
   }
 
   timespan_t execute_time() const override
