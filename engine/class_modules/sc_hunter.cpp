@@ -344,8 +344,7 @@ public:
     buff_t* trueshot;
     buff_t* master_marksman;
     buff_t* double_tap;
-    buff_t* lethal_shots_ais;
-    buff_t* lethal_shots_rf;
+    buff_t* lethal_shots;
 
     // Survival
     buff_t* coordinated_assault;
@@ -2541,7 +2540,9 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     double cc = hunter_ranged_attack_t::composite_crit_chance();
 
     cc += p() -> buffs.gyroscopic_stabilization -> value();
-    cc += p() -> buffs.lethal_shots_ais -> value();
+
+    if ( p() -> buffs.lethal_shots -> up() )
+      cc += p() -> buffs.lethal_shots -> data().effectN( 2 ).percent();
 
     return cc;
   }
@@ -2648,7 +2649,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       p() -> buffs.lock_and_load -> decrement();
     lock_and_loaded = false;
 
-    p() -> buffs.lethal_shots_ais -> decrement();
+    p() -> buffs.lethal_shots -> decrement();
 
     if ( p() -> buffs.sentinels_sight -> up() )
       p() -> buffs.sentinels_sight -> expire();
@@ -2779,13 +2780,7 @@ struct steady_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    if ( p() -> talents.lethal_shots -> ok() && rng().roll( p() -> talents.lethal_shots -> proc_chance() ) )
-    {
-      if ( rng().roll( .5 ) )
-        p() -> buffs.lethal_shots_ais -> trigger();
-      else
-        p() -> buffs.lethal_shots_rf -> trigger();
-    }
+    p() -> buffs.lethal_shots -> trigger();
   }
 
   timespan_t execute_time() const override
@@ -2841,7 +2836,7 @@ struct rapid_fire_t: public hunter_spell_t
     {
       double cc = hunter_ranged_attack_t::composite_crit_chance();
 
-      cc += p() -> buffs.lethal_shots_rf -> value();
+      cc += p() -> buffs.lethal_shots -> value();
 
       return cc;
     }
@@ -2887,9 +2882,7 @@ struct rapid_fire_t: public hunter_spell_t
     hunter_spell_t::last_tick( d );
 
     p() -> buffs.trick_shots -> decrement();
-
-    p() -> buffs.lethal_shots_rf -> decrement();
-
+    p() -> buffs.lethal_shots -> decrement();
     p() -> buffs.double_tap -> decrement();
 
     // schedule auto shot
@@ -4766,13 +4759,10 @@ void hunter_t::create_buffs()
       -> set_activated( true )
       -> set_default_value( talents.double_tap -> effectN( 1 ).percent() );
 
-  buffs.lethal_shots_ais =
-    make_buff( this, "lethal_shots_ais", find_spell( 269502 ) )
-      -> set_default_value( find_spell( 269502 ) -> effectN( 1 ).percent() );
-
-  buffs.lethal_shots_rf =
-    make_buff( this, "lethal_shots_rf", find_spell( 260395 ) )
-      -> set_default_value( find_spell( 260395 ) -> effectN( 1 ).percent() );
+  buffs.lethal_shots =
+    make_buff( this, "lethal_shots_rf", talents.lethal_shots -> effectN( 1 ).trigger() )
+      -> set_default_value( talents.lethal_shots -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
+      -> set_trigger_spell( talents.lethal_shots );
 
   // Survival
 
