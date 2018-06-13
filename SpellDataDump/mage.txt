@@ -184,7 +184,7 @@ Description      : Removes all Curses from a friendly target. $?s115700[If any C
 Name             : Arcane Explosion (id=1449) [Spell Family (3)] 
 Class            : Arcane Mage
 School           : Arcane
-Resource         : 12% Base Mana (0) (id=123)
+Resource         : 10% Base Mana (0) (id=123)
 Spell Level      : 18
 GCD              : 1.5 seconds
 Affecting spells : Arcane Power (12042 effect#1), Rune of Power (116014 effect#1), Incanter's Flow (116267 effect#1), Fire Mage (137019 effect#1), Frost Mage (137020 effect#1), Arcane Mage (137021 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effect#1), Erosion (210134 effect#1), Crackling Energy (246224 effect#1), Clearcasting (263725 effect#1), Explosive Echo (278537 effect#2)
@@ -2556,13 +2556,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179704)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
+                   Base Value: -25 | Scaled Value: -25 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703)
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -6 | Scaled Value: -6 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -25 | Scaled Value: -25 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Meteor (153564), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703)
 #3 (id=191117)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -25 | Scaled Value: -25 | Target: Self (1)
 #4 (id=191118)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: 60 | Scaled Value: 0 | Points Per Level: -2 | Target: Self (1)
 #5 (id=191119)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
@@ -5765,7 +5765,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=487505)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Misc Value: 917504 | Target: Self (1)
-Description      : Increases haste by $s1.
+Tooltip          : Increases haste by $s1.
 
 Name             : Clearcasting (id=263725) [Spell Family (3)] 
 Class            : Mage
@@ -5789,7 +5789,7 @@ Effects          :
 Description      : $@spelldesc79684
 Tooltip          : Your next Arcane Missiles or Arcane Explosion costs no mana.
 
-Name             : Resounding Protection (id=263962) [Scaling Spell (-1), Passive] 
+Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 15
@@ -5803,7 +5803,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707038)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 270568 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 846.2255 (avg=10.88393) | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
 Name             : Azerite Empowered (id=263978) [Passive] 
@@ -6746,14 +6746,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 136.84 (avg=0.44) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 93.3 (avg=0.3) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $s2 times.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 461
-Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6764,7 +6763,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 279927 | Target: Self (1)
-Description      : Azerite energy courses through you, reaching ${$279928m1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $279928s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
+Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
 Name             : Swirling Sands (Vol'dun) (id=280429) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter

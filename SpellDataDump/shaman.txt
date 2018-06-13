@@ -1768,7 +1768,7 @@ Name             : Hand of Gul'dan (id=86040) [Spell Family (5)]
 Class            : Shaman, Warlock
 School           : Shadowflame
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
                  : ........ ........ ........ .x......   ........ ..x..... ........ ..x..... 
@@ -1778,7 +1778,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=87492)    : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc105174
 
 Name             : Mail Specialization (Passive) (id=86099) [Passive, Hidden] 
@@ -6569,7 +6569,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=487505)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Misc Value: 917504 | Target: Self (1)
-Description      : Increases haste by $s1.
+Tooltip          : Increases haste by $s1.
 
 Name             : Totem Mastery (id=262395) [Spell Family (11)] 
 Class            : Shaman
@@ -6953,7 +6953,7 @@ Effects          :
 Description      : $@spelldesc198067
 Tooltip          : Maelstrom generation increased by $193774s1%
 
-Name             : Resounding Protection (id=263962) [Scaling Spell (-1), Passive] 
+Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 15
@@ -6967,7 +6967,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707038)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 270568 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 846.2255 (avg=10.88393) | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
 Name             : Azerite Empowered (id=263978) [Passive] 
@@ -7977,7 +7977,7 @@ Name             : Natural Harmony (id=278697) [Scaling Spell (-1), Spell Family
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 416
-Triggered by     : Natural Harmony (279028), Natural Harmony (279029), Natural Harmony (279033)
+Triggered by     : Natural Harmony: Fire (279028), Natural Harmony: Frost (279029), Natural Harmony: Nature (279033)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8015,9 +8015,11 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 #3 (id=734580)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 933 (avg=3)
-Description      : Your Earth Elemental spawns Tremors that deal $s1 Physical damage every $s2 seconds. Earth Elemental's auto attack damage is increased by $s3.
+#4 (id=739329)   : Dummy (3)
+                   Base Value: 8 | Scaled Value: 8
+Description      : Your Earth Elemental spawns Tremors that deal $s1 Physical damage to enemies within $s4 yds every $s2 seconds. Earth Elemental's auto attack damage is increased by $s3.
 
-Name             : Surging Tides (id=278713) [Scaling Spell (-1), Spell Family (11), Passive] 
+Name             : Surging Tides (id=278713) [Scaling Spell (-8), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 422
@@ -8031,7 +8033,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734587)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 2332.5 (avg=7.5) | Trigger Spell: 279181 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3110 (avg=40) | Trigger Spell: 279181 | Target: Self (1)
 #2 (id=734588)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #3 (id=734589)   : Dummy (3)
@@ -8090,14 +8092,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 136.84 (avg=0.44) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 93.3 (avg=0.3) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $s2 times.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 461
-Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8108,7 +8109,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 279927 | Target: Self (1)
-Description      : Azerite energy courses through you, reaching ${$279928m1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $279928s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
+Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
 Name             : Swirling Sands (Vol'dun) (id=280429) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter

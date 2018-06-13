@@ -1103,7 +1103,7 @@ School           : Physical
 Resource         : 10 Rage (1) (id=10734)
 Spell Level      : 40
 GCD              : 1.5 seconds
-Duration         : 5 seconds
+Duration         : 4 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (36 seconds cooldown)
 Category         : 1568: Druid (137009 effect#2)
@@ -1111,13 +1111,13 @@ Stance Mask      : 0x00000010
 Affecting spells : Druid (137009 effect#3), Natural Defenses (211160 effect#1), Guardian of Elune (213680 effect#2)
 Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=13048)    : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
-                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
+                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
 Description      : Heals you for $o1% of maximum health over $d.
 Tooltip          : Healing $w1% of maximum health every $t1 sec.
 
@@ -7050,9 +7050,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=487505)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Misc Value: 917504 | Target: Self (1)
-Description      : Increases haste by $s1.
+Tooltip          : Increases haste by $s1.
 
-Name             : Resounding Protection (id=263962) [Scaling Spell (-1), Passive] 
+Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 15
@@ -7066,7 +7066,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707038)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 270568 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 846.2255 (avg=10.88393) | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
 Name             : Azerite Empowered (id=263978) [Passive] 
@@ -7439,7 +7439,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=718821)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Bear Form Passive (1178)
 Description      : Bear Form gives an additional $s1% Stamina.
 
@@ -7448,7 +7448,7 @@ Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 98
-Triggered by     : Crystalline Carapace (271538), Crystalline Carapace (271539)
+Triggered by     : Crystalline Carapace (271539), Crystalline Carapace (271538)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7465,7 +7465,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s2 Armor and cause melee attackers to suffer $s1 Physical damage. Lasts $271538d.
 
-Name             : Upwelling (id=271557) [Scaling Spell (-1), Passive] 
+Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 101
@@ -7818,7 +7818,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=726761)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 186.6 (avg=0.6) | Target: Self (1)
-Description      : If Rejuvenation is your only Heal over Time effect on the target, increase the healing of Rejuvenation by $s1. 
+Description      : If Rejuvenation is your only heal over time effect on the target, increase the healing of Rejuvenation by $s1. 
 
 Name             : Reawakening (id=274813) [Scaling Spell (-1), Passive] 
 Class            : Druid
@@ -8008,8 +8008,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=730129)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 207.126 (avg=0.666) | Trigger Spell: 276156 | Target: Self (1)
-Description      : Barkskin reduces melee attacks against you by $s1 damage.
+                   Base Value: 0 | Scaled Value: -207.126 (avg=-0.666) | Trigger Spell: 276156 | Target: Self (1)
+Description      : Barkskin reduces melee attacks against you by ${$s1/-1} damage.
 
 Name             : High Noon (id=278505) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
@@ -8064,8 +8064,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=734251)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279468 | Target: Self (1)
-#2 (id=734252)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 20.0001 (avg=0.064309) | Misc Value: 22 | Target: Self (1)
+#2 (id=734252)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: 0 | Scaled Value: 20.0001 (avg=0.064309) | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Rip (1079)
 Description      : Rip deals ${$s2*12} additional damage per combo point, and has a $279468h% chance to award a combo point each time it deals damage.
 
@@ -8357,14 +8357,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 136.84 (avg=0.44) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 93.3 (avg=0.3) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $s2 times.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 461
-Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8375,7 +8374,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 279927 | Target: Self (1)
-Description      : Azerite energy courses through you, reaching ${$279928m1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $279928s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
+Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
 Name             : Swirling Sands (Vol'dun) (id=280429) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter

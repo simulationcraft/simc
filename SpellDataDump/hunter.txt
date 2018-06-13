@@ -1,5 +1,25 @@
 SimulationCraft 801-01 for World of Warcraft 8.0.1 bfa-BETA (wow build 26095)
 
+Name             : Auto Shot (id=75) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Level      : 1
+Range            : 40 yards
+Velocity         : 60 yards/sec
+Affecting spells : Bestial Wrath (19574 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Signet of Melandrus (233001 effect#1), Signet of Melandrus (233005 effect#1), Thrill of the Hunt (257946 effect#1)
+Attributes       : .x..x... ........ x.x..... ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ .......x ........ ........ 
+                 : x....... ........ ........ x.......   ........ ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Ranged Ability (1)
+Effects          :
+#1 (id=46)       : Weapon Damage% (31)
+                   Base Value: 100 | Scaled Value: 1 | Target: Enemy (6)
+Description      : Automatically shoots the target until cancelled.
+Tooltip          : Firing at the target.
+
 Name             : Mend Pet (id=136) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
@@ -266,7 +286,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #2 (id=1072)     : Apply Aura (6) | Modify Crit Chance% from Caster's Spells (308)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Enemy (6)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 Description      : $@spelldesc187650
 Tooltip          : Incapacitated.
 
@@ -470,13 +490,13 @@ School           : Physical
 Resource         : 30 Focus (2) (id=795)
 Spell Level      : 12
 Range            : 40 yards
-Cast Time        : 3 seconds
+Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Charges          : 2 (12 seconds cooldown)
 Category         : 1715: Marksmanship Hunter (137016 effect#11)
 Azerite Power Id : 97
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Item - Hunter T18 Marksmanship 4P Bonus (188191 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Lock and Load (194594 effect#1), Sentinel's Sight (208913 effect#1), Trueshot (211327 effect#1), Mongoose Power (211362 effect#1), Gyroscopic Stabilization (235712 effect#1), Precision (246153 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Arrowstorm (263814 effect#1), Coordinated Assault (266779 effect#1), Lethal Shots (269502 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Item - Hunter T18 Marksmanship 4P Bonus (188191 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Lock and Load (194594 effect#1), Sentinel's Sight (208913 effect#1), Trueshot (211327 effect#1), Mongoose Power (211362 effect#1), Gyroscopic Stabilization (235712 effect#1), Precision (246153 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Coordinated Assault (266779 effect#1), Lethal Shots (269502 effect#1)
 Triggered by     : Lock and Load (194594)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ .x..x... ........   ........ ........ ........ ........ 
@@ -513,14 +533,14 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
 Effects          :
 #1 (id=10779)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 #2 (id=10780)    : Trigger Spell (64): Bestial Wrath
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 186254
 #3 (id=342782)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 #4 (id=479792)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 Description      : Sends you and your pet into a rage, increasing all damage you both deal by $s1% for $d. $?s231548&s217200[
 
 Bestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Barbed Shot.][]
@@ -962,7 +982,7 @@ $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
-Name             : Pin (Special Ability) (id=50245) [Scaling Spell (4), Spell Family (9)] 
+Name             : Pin (Special Ability) (id=50245) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -984,8 +1004,7 @@ Attributes       : ....x... ........ ........ ......x.   ..x..... .x...... .....
 Effects          :
 #1 (id=42394)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Target: Enemy (6)
-Description      : The Crab claws at the target's feet with its pincers, slowing movement by $s1% for $d.
-
+Description      : The Crab claws at the target's feet with its pincers, slowing movement by $s1% for $d.
 Tooltip          : Pinned in place.
 
 Name             : Dust Cloud (Special Ability) (id=50285) [Spell Family (9)] 
@@ -1005,8 +1024,7 @@ Attributes       : ....x... ........ ........ ........   ........ .x...... .....
 Effects          :
 #1 (id=42449)    : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | Target: Enemy (6)
-Description      : The Tallstrider kicks up a cloud of dust towards the target, slowing movement by $s1% for $d.
-
+Description      : The Tallstrider kicks up a cloud of dust towards the target, slowing movement by $s1% for $d.
 
 Name             : Ankle Crack (Special Ability) (id=50433) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -1264,11 +1282,10 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=47482)    : Trigger Spell (64): Froststorm Breath
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 54689 | Target: Enemy (6)
-Description      : The Chimera blasts the target with frost breath, reducing movement speed by $s1% for $d.
-
+Description      : The Chimera blasts the target with frost breath, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Monstrous Bite (Special Ability) (id=54680) [Scaling Spell (4), Spell Family (9)] 
+Name             : Monstrous Bite (Special Ability) (id=54680) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -1287,8 +1304,7 @@ Effects          :
 Description      : The Devilsaur ferociously bites the enemy, causing the Mortal Wounds effect.
 
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
-Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
-
+Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 Tooltip          : Healing effects received reduced by $w1%.
 
 Name             : Froststorm Breath (id=54689) [Spell Family (9)] 
@@ -1364,7 +1380,7 @@ Class            : Marksmanship Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 40 yards
-Cast Time        : 2 seconds
+Cast Time        : 1.75 seconds
 GCD              : 1.5 seconds
 Velocity         : 75 yards/sec
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Steady Focus (193534 effect#1), Mongoose Power (211362 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
@@ -2119,6 +2135,7 @@ Name             : Binding Shot (id=109248) [Spell Family (9)]
 Class            : Hunter
 School           : Nature
 Range            : 30 yards
+GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 45 seconds
 Affecting spells : Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1)
@@ -2155,6 +2172,7 @@ Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Physical
 Spell Level      : 24
 Range            : 45 yards
+GCD              : 1.5 seconds
 Cooldown         : 120 seconds
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
@@ -2603,7 +2621,7 @@ Effects          :
                    Affected Spells: Kill Command (34026), Chimaera Shot (53209), Carve (187708)
 #3 (id=191143)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Steady Shot (56641), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Trueshot (193526), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Piercing Shot (198670), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Raptor Strike (265189), Coordinated Assault (266779), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Dire Beast (281036)
+                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Steady Shot (56641), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Trueshot (193526), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Piercing Shot (198670), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Raptor Strike (265189), Coordinated Assault (266779), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036)
 #4 (id=191144)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1628 | Target: Self (1)
                    Affected Spells (Category): 
@@ -2662,10 +2680,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179698)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 #2 (id=191138)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 6 | Scaled Value: 6 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 #3 (id=191139)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
                    Affected Spells: Bestial Wrath (19574), Bestial Wrath (186254)
@@ -2703,13 +2721,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179699)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Base Value: -20 | Scaled Value: -20 | Target: Self (1)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 #2 (id=191134)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Base Value: -20 | Scaled Value: -20 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 #3 (id=191135)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -20 | Scaled Value: -20 | Target: Self (1)
                    Affected Spells: Arcane Shot (185358)
 #4 (id=191136)   : Apply Aura (6) | Dummy (4)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
@@ -2760,10 +2778,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179700)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 #2 (id=191130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 #3 (id=191131)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191132)   : Apply Aura (6) | Modify Power Regen (110)
@@ -2861,13 +2879,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=215686)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 #2 (id=479794)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 #3 (id=484729)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 Description      : Increases your damage by $s3% when you do not have an active pet.
 
 Name             : Combat Experience (id=156843) [Spell Family (9), Passive] 
@@ -3809,16 +3827,16 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=283823)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Chimaera Shot (53209), Steady Shot (56641), Binding Shot (109248), Barrage (120360), Barrage (120361), A Murder of Crows (131894), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Piercing Shot (198670), Explosive Shot (212431), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620)
+                   Affected Spells: Auto Shot (75), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Chimaera Shot (53209), Steady Shot (56641), Binding Shot (109248), Barrage (120360), Barrage (120361), A Murder of Crows (131894), Counter Shot (147362), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Piercing Shot (198670), Explosive Shot (212431), Rapid Fire (257044), Rapid Fire (257045), Multi-Shot (257620), Serpent Sting (271788)
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Steady Shot (56641), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Piercing Shot (198670), Explosive Shot (212680), Bursting Shot (224729), Rapid Fire (257044), Multi-Shot (257620), Volley (260247), Explosive Shot (269850)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Steady Shot (56641), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Piercing Shot (198670), Explosive Shot (212680), Bursting Shot (224729), Rapid Fire (257044), Multi-Shot (257620), Volley (260247), Explosive Shot (269850), Serpent Sting (271788)
 #3 (id=316221)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Barrage (120361)
 #4 (id=345392)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Piercing Shot (198670), Bursting Shot (224729), Rapid Fire (257044), Volley (260247)
+                   Affected Spells: Aimed Shot (19434), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Bursting Shot (186387), Piercing Shot (198670), Bursting Shot (224729), Rapid Fire (257044), Volley (260247), Serpent Sting (271788)
 Description      : Range of all your ranged abilities is increased by ${$s1}.1% and damage of all abilities increased by ${$s2}.1%.
 Tooltip          : Range increased by $w1%.
 Focus spending abilites deal $s2% increased damage.
@@ -3864,12 +3882,12 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=283921)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 #2 (id=283922)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 2 | Target: Self (1)
 #3 (id=375957)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -200 | Scaled Value: -200 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Steady Shot (56641), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Trueshot (193526), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Piercing Shot (198670), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Raptor Strike (265189), Coordinated Assault (266779), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Dire Beast (281036)
+                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Steady Shot (56641), Call Pet 2 (83242), Call Pet 3 (83243), Call Pet 4 (83244), Call Pet 5 (83245), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Trueshot (193526), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Piercing Shot (198670), Explosive Shot (212431), Butchery (212436), Barbed Shot (217200), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Serpent Sting (259491), Wildfire Bomb (259495), Raptor Strike (265189), Coordinated Assault (266779), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036)
 Description      : Grants you and your pet $s2 Focus per sec and $s1% increased critical strike chance for $d.
 Tooltip          : Critical Strike chance for you and your pet increased by $s1%.
 
@@ -4538,7 +4556,7 @@ Resource         : 20 Focus (2) (id=191496)
 Spell Level      : 1
 Range            : 8 yards
 GCD              : 1.5 seconds
-Charges          : 3 (15 seconds cooldown)
+Charges          : 3 (9 seconds cooldown)
 Category         : 1616: Hunter (137014 effect#5)
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Mongoose Power (211362 effect#1), Butcher's Bone Apron (236446 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -5001,10 +5019,14 @@ Attributes       : ....x... ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=480367)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 127 | Target: Enemy (6)
-Description      : Apply Hunter's Mark to the target, increasing all damage you deal to the marked target by $s1%.  If the target dies while affected by Hunter's Mark, you instantly gain $259558s1 Focus.
+#2 (id=739461)   : Apply Aura (6) | Stalked (68)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
+Description      : Apply Hunter's Mark to the target, increasing all damage you deal to the marked target by $s1%.  If the target dies while affected by Hunter's Mark, you instantly gain $259558s1 Focus. The target can always be seen and tracked by the Hunter.
 
 Only one Hunter's Mark can be applied at a time.
-Tooltip          : Damage taken from the Hunter increased by $s1%.
+Tooltip          : Damage taken from the Hunter increased by $s1%.
+
+Can always be seen and tracked by the Hunter.
 
 Name             : Multi-Shot (id=257620) [Spell Family (9)] 
 Class            : Marksmanship Hunter
@@ -5025,7 +5047,7 @@ Attributes       : .x..x... ........ x....... ........   ........ .x...... .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=480918)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.41000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Fires several missiles, hitting your current target and all enemies within $A1 yards for $s1 Physical damage
 
 Name             : Trick Shots (id=257621) [Spell Family (9), Passive] 
@@ -5047,8 +5069,8 @@ Effects          :
 #3 (id=738672)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 9 | Target: Self (1)
 #4 (id=738673)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 9 | Target: Self (1)
-Description      : When Multi-Shot hits $s2 or more targets, your next Aimed Shot will ricochet and hit up to $s1 additional targets at $s4% of normal damage, or each shot of your next Rapid Fire will ricochet to $s3 additional nearby targets.
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 9 | Target: Self (1)
+Description      : When Multi-Shot hits $s2 or more targets, your next Aimed Shot will ricochet and hit up to $s1 additional targets for $s4% of normal damage, or each shot of your next Rapid Fire will ricochet to $s3 additional nearby targets.
 
 Name             : Trick Shots (id=257622) [Spell Family (9)] 
 Class            : Hunter
@@ -5067,7 +5089,7 @@ Effects          :
 #1 (id=480921)   : Apply Aura (6) | Dummy (4)
                    Base Value: -25 | Scaled Value: -25 | Misc Value: 14 | Target: Self (1)
 Description      : $@spelldesc257621
-Tooltip          : Your next Aimed Shot will ricochet and hit $257621s1 additional targets, or each shot of your next Rapid Fire will ricochet to an additional target.
+Tooltip          : Your next Aimed Shot will ricochet and hit $257621s1 additional targets for $257621s4% of normal damage, or each shot of your next Rapid Fire will ricochet to up to $257621s3 additional targets.
 
 Name             : Venomous Bite (id=257891) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -5121,7 +5143,7 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=481558)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 Description      : $@spelldesc257944
 Tooltip          : Critical strike chance increased by $s1%.
 
@@ -5222,9 +5244,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 259398 | Target: Enemy (6)
 #2 (id=714420)   : Trigger Spell (64): Chakrams
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 267605 | Target: Self (1)
-Description      : Throw a pair of chakrams at your target, slicing all enemies in the chakrams' path for ${2*$259396s1} Physical damage. The chakrams will return to you, damaging enemies again.
+Description      : Throw a pair of chakrams at your target, slicing all enemies in the chakrams' path for $<damage> Physical damage. The chakrams will return to you, damaging enemies again.
 
 Your primary target takes $259398s2% increased damage.
+Variables        : $damage=${$259396s1}
 
 Name             : Chakrams (id=259396) [Spell Family (9)] 
 Class            : Hunter
@@ -5397,7 +5420,7 @@ Effects          :
 #3 (id=485295)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 22 | Target: Self (1)
 #4 (id=722213)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 22 | Target: Self (1)
 Description      : Aimed Shot has a $s4% chance to deal $s3% bonus damage to targets who are above $s1% health or below $s2% health.
 
 Name             : Violent Reaction (id=260231) [Spell Family (9)] 
@@ -5503,7 +5526,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=485310)   : Apply Aura (6) | Proc Trigger Spell (42): Volley
                    Base Value: 25 | Scaled Value: 25 | Trigger Spell: 260247 | Target: Self (1)
-Description      : Your auto-shots have a chance to cause a volley of arrows to rain down around the target, dealing $260247sw1 Physical damage to each enemy within $260247A1 yards.
+Description      : Your auto-shots have a $h% chance to cause a volley of arrows to rain down around the target, dealing $260247sw1 Physical damage to each enemy within $260247A1 yards.
 
 Name             : Volley (id=260247) [Spell Family (9)] 
 Class            : Hunter
@@ -5604,7 +5627,7 @@ Name             : Master Marksman (id=260309) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
-Proc Chance      : 30%
+Proc Chance      : 100%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5636,7 +5659,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=485435)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Target: Self (1)
-Description      : $?s259387[Mongoose Biting][Raptor Striking] your pet's target extends the duration of Coordinated Assault by ${$s1/1000} sec.
+Description      : Attacking your pet's target with $?s259387[Mongoose Bite][Raptor Strike] or $?s212436[Butchery][Carve] extends the duration of Coordinated Assault by ${$s1/1000} sec.
 
 Name             : Streamline (id=260367) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
@@ -5659,13 +5682,15 @@ Effects          :
 #2 (id=719388)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Rapid Fire (257044)
-Description      : Rapid Fire now lasts an additional ${$m1/1000}.1 sec.
+#3 (id=739466)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Description      : Rapid Fire now lasts $s3% longer.
 
 Name             : Lethal Shots (id=260393) [Spell Family (9), Passive, Hidden] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
-Proc Chance      : 10%
+Proc Chance      : 25%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -5676,8 +5701,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=485528)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+#1 (id=485528)   : Apply Aura (6) | Proc Trigger Spell (42): Lethal Shots
+                   Base Value: 25 | Scaled Value: 25 | Trigger Spell: 260395 | Target: Self (1)
 Description      : Steady Shot has a $h% chance to cause your next Aimed Shot or Rapid Fire to be guaranteed critical strikes.
 
 Name             : Lethal Shots (id=260395) [Spell Family (9)] 
@@ -5685,6 +5710,10 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Duration         : 15 seconds
+Proc Chance      : 101%
+Proc Flags       : ........ x....... ........ ........ 
+                 : Yellow Ranged
+Triggered by     : Lethal Shots (260393)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5695,8 +5724,11 @@ Effects          :
 #1 (id=485530)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Rapid Fire (257045)
+#2 (id=739510)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
+                   Base Value: 100 | Scaled Value: 100 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Aimed Shot (19434)
 Description      : $@spelldesc260393
-Tooltip          : Your next Rapid Fire will deal a critical strike with each shot.
+Tooltip          : Your next Aimed Shot will have $s1% increased critical strike chance, or your next Rapid Fire will deal a critical strike with each shot.
 
 Name             : Double Tap (id=260402) [Spell Family (9)] 
 Class            : Hunter
@@ -5758,7 +5790,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=487505)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Misc Value: 917504 | Target: Self (1)
-Description      : Increases haste by $s1.
+Tooltip          : Increases haste by $s1.
 
 Name             : Cobra Shot (Rank 2) (id=262837) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
@@ -5876,7 +5908,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=651887)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Kill Command has a $259489s2% chance to immediately reset its cooldown.
+Description      : Kill Command has a $259489s2% chance to immediately reset its cooldown.
+
+Coordinated Assault increases this chance by another $266779s4%.
 
 Name             : Lock Jaw (Special Ability) (id=263423) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
@@ -6203,8 +6237,7 @@ Attributes       : ....x... ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=706916)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : The Dragonhawk takes on a defensive posture, increasing dodge chance by $s1% for $d.
-
+Description      : The Dragonhawk takes on a defensive posture, increasing dodge chance by $s1% for $d.
 Tooltip          : Dodge chance increased by $s1%.
 
 Name             : Catlike Reflexes (Special Ability) (id=263892) [Spell Family (9)] 
@@ -6242,8 +6275,7 @@ Attributes       : ....x... ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=706949)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : The Serpent takes on a defensive posture, increasing dodge chance by $s1% for $d.
-
+Description      : The Serpent takes on a defensive posture, increasing dodge chance by $s1% for $d.
 Tooltip          : Dodge chance increased by $s1%.
 
 Name             : Thick Fur (Special Ability) (id=263926) [Spell Family (9)] 
@@ -6340,7 +6372,7 @@ Description      : When falling below $s2% health, the Gorilla will shrug off at
 
 This effect can only occur once every $s3 sec.
 
-Name             : Resounding Protection (id=263962) [Scaling Spell (-1), Passive] 
+Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 15
@@ -6354,7 +6386,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707038)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 270568 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 846.2255 (avg=10.88393) | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
 Name             : Azerite Empowered (id=263978) [Passive] 
@@ -6623,8 +6655,7 @@ Attributes       : ....x... ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=707721)   : Apply Aura (6) | Modify Dodge% (49)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
-Description      : The Wind Serpent takes on a defensive posture, increasing dodge chance by $s1% for $d.
-
+Description      : The Wind Serpent takes on a defensive posture, increasing dodge chance by $s1% for $d.
 Tooltip          : Dodge chance increased by $s1%.
 
 Name             : Pathfinding (id=264656) [Spell Family (9), Passive] 
@@ -6871,19 +6902,21 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
 Effects          :
 #1 (id=712710)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 #2 (id=712711)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Stomp (201754), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Scorching Wildfire (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Scorching Pheromones (270332), Shrapnel Bomb (270338), Scorching Shrapnel (270339), Volatile Bomb (271048), Volatile Wildfire (271049), Harpoon (271625), Serpent Sting (271788)
 #3 (id=712712)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Active Pet (5)
                    Affected School(s): All
 #4 (id=712713)   : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-Description      : You and your pet attack as one, increasing all damage you both deal by $s1% for $d.
+#5 (id=739288)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+Description      : You and your pet attack as one, increasing all damage you both deal by $s1% for $d.$?s263186[
 
-While Coordinated Assault is active, Kill Command's chance to reset is increased by $s4%.
-Tooltip          : Damage dealt increased by $s1%. Kill Command's chance to reset increased by $s4%.
+While Coordinated Assault is active, Kill Command's chance to reset is increased by $s4%.][]
+Tooltip          : Damage dealt increased by $s1%.$?s263186[ Kill Command's chance to reset increased by $s4%.][]
 
 Name             : Born To Be Wild (id=266921) [Spell Family (9), Passive] 
 Class            : Hunter
@@ -7418,7 +7451,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 270336 | Target: Enemy (6)
 Description      : Hurl a bomb at the target, exploding for $270338s1 Fire damage in a cone and impaling enemies with burning shrapnel, scorching them for $270339o1 Fire damage over $270339d.
 
-$?s259387[Mongoose Bite][Raptor Strike] and Butchery apply Internal Bleeding, causing $270343o1 damage over $270343d. Internal Bleeding stacks up to $270343u times.
+$?s259387[Mongoose Bite][Raptor Strike] and $?s212436[Butchery][Carve] apply Internal Bleeding, causing $270343o1 damage over $270343d. Internal Bleeding stacks up to $270343u times.
 
 Name             : Shrapnel Bomb (id=270336) [Spell Family (9)] 
 Class            : Hunter
@@ -7537,7 +7570,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Lace your Wildfire Bomb with extra reagents, randomly giving it one of the following enhancements each time you throw it:
 
-|cFFFFFFFFShrapnel Bomb: |rShrapnel pierces the targets, causing $?s259387[Mongoose Bite][Raptor Strike] and Butchery to apply a bleed for $270343d that stacks up to $270343u times.
+|cFFFFFFFFShrapnel Bomb: |rShrapnel pierces the targets, causing $?s259387[Mongoose Bite][Raptor Strike] and $?s212436[Butchery][Carve] to apply a bleed for $270343d that stacks up to $270343u times.
 
 |cFFFFFFFFPheromone Bomb: |rKill Command has a $270323s2% chance to reset against targets coated with Pheromones.
 
@@ -7694,6 +7727,7 @@ Class            : Hunter
 School           : Physical
 Range            : 100 yards
 Velocity         : 70 yards/sec
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Mongoose Power (211362 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7714,6 +7748,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Duration         : 12 seconds
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Mongoose Power (211362 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7723,9 +7758,9 @@ Attributes       : .x...... ........ x....... ........   ........ .x...... .....
                  : Ranged Ability (1)
 Effects          :
 #1 (id=722198)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | Target: Enemy (6)
 #2 (id=722199)   : Apply Aura (6) | Periodic Damage (3): nature every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | Target: Enemy (6)
 Description      : Fire a shot that poisons your target, causing them to take $s1 Nature damage instantly and an additional $o2 Nature damage over $d.
 Tooltip          : Suffering $s2 Nature damage every $t2 sec.
 
@@ -8032,7 +8067,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726781)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 345.521 (avg=1.111) | Trigger Spell: 274445 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 34.5521 (avg=0.1111) | Trigger Spell: 274445 | Target: Self (1)
 Description      : While Trueshot is active you gain $s1 Critical Strike rating every sec, stacking up to 10 times.
 
 Name             : Venomous Fangs (id=274590) [Scaling Spell (-1), Spell Family (9), Passive] 
@@ -8228,14 +8263,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 136.84 (avg=0.44) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 93.3 (avg=0.3) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $s2 times.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 461
-Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8246,7 +8280,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 279927 | Target: Self (1)
-Description      : Azerite energy courses through you, reaching ${$279928m1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $279928s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
+Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
 Name             : Blood of the Rhino (Exotic Ability) (id=280069) [Passive] 
 Class            : Hunter

@@ -314,7 +314,7 @@ Tooltip          : Burns nearby enemies for $178741s1 Fire damage every $178740t
 
 Movement speed increased by $w4%.][]
 
-Name             : Immolation Aura (id=178741) [Spell Family (107)] 
+Name             : Immolation Aura (id=178741) [Scaling Spell (-1), Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
 Affecting spells : Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Vengeance Demon Hunter (212613 effect#2), 
@@ -327,7 +327,7 @@ Attributes       : ....x... ........ ..x..... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=256715)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (avg=1) | AP Coefficient: 0.09173 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 311 (avg=1) | AP Coefficient: 0.09173 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=310312)   : Energize Power (30)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: pain | Target: Self (1)
 Description      : Deals Fire damage to all nearby enemies.
@@ -1439,7 +1439,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Eye Beam (198013), Eye Beam (198030)
 #3 (id=355951)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 175 | Scaled Value: 175 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | Target: Self (1)
                    Affected Spells: Eye Beam (198013), Eye Beam (198030)
 Description      : Eye Beam generates ${$s3/5} Fury every sec. and its duration is increased by $s1%.
 
@@ -1533,7 +1533,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=300413)   : Apply Aura (6) | Restore Power (85)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 17 | Target: Self (1)
 Description      : $@spelldesc203551
 Tooltip          : Generating ${$m1/5} Fury every sec.
 
@@ -1729,7 +1729,7 @@ Description      : $@spelldesc203720
 Tooltip          : Armor increased by ${$W2*$AGI/100}.
 Parry chance increased by $w1%.
 
-Name             : Fiery Brand (id=204021) [Spell Family (107)] 
+Name             : Fiery Brand (id=204021) [Scaling Spell (-1), Spell Family (107)] 
 Replaces         : Chaos Nova (id=179057)
 Class            : Vengeance Demon Hunter
 School           : Fire
@@ -1750,7 +1750,7 @@ Effects          :
 #1 (id=301059)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | Target: Self (1)
 #2 (id=301062)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (avg=1) | AP Coefficient: 1.33169 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 311 (avg=1) | AP Coefficient: 1.33169 | Target: Enemy (6)
 Description      : Brand an enemy with a demonic symbol, instantly dealing $sw2 Fire damage and reducing the damage they deal to you by $s1% for $207744d.
 Tooltip          : Dealing $s1% less damage to the branding Demon Hunter.
 
@@ -2324,7 +2324,7 @@ Effects          :
 Description      : $@spelldesc204021
 Tooltip          : Branded, dealing $204021s1% less damage to the branding Demon Hunter$?s264002[ and taking $s2% more Fire damage from them][].
 
-Name             : Fiery Brand (id=207771) [Spell Family (107)] 
+Name             : Fiery Brand (id=207771) [Scaling Spell (-1), Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
 Range            : 100 yards
@@ -2346,7 +2346,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
                    Affected Spells: Immolation Aura (178741), Immolation Aura (187727), Infernal Strike (189110), Infernal Strike (189112), Fiery Brand (204021), Sigil of Silence (204490), Sigil of Flame (204598), Sigil of Chains (204843), Sigil of Misery (207685), Fiery Brand (207744), Fiery Brand (207771), Fel Devastation (212105), Felblade (213243), Felblade (232893), Spirit Bomb (247455), Immolation Aura (258921), Immolation Aura (258922)
 #3 (id=707094)   : Apply Aura (6) | Periodic Damage (3): fire every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 (avg=1) | AP Coefficient: 0.05000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 311 (avg=1) | AP Coefficient: 0.05000 | Target: Enemy (6)
 Description      : $@spelldesc204021
 Tooltip          : Branded, taking $w3 Fire damage every $t3 sec, and dealing $204021s1% less damage to the branding Demon Hunter$?s264002[ and taking $s2% more Fire damage from them][].
 
@@ -2751,7 +2751,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unleash the fel within you, damaging enemies directly in front of you for ${$212105s1*(2/$t1)} Fire damage over $d. Causing damage also heals you for up to ${$212106s1*(2/$t1)} health.
 
-Name             : Fel Devastation (id=212105) [Spell Family (107)] 
+Name             : Fel Devastation (id=212105) [Scaling Spell (-1), Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
 Range            : 50000 yards
@@ -3036,7 +3036,7 @@ Effects          :
 #3 (id=316326)   : Energize Power (30)
                    Base Value: 300 | Scaled Value: 300 | Misc Value: pain | Target: Self (1)
 #4 (id=316327)   : Energize Power (30)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: fury | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: fury | Target: Self (1)
 Description      : $@spelldesc232893
 
 Name             : Master of the Glaive (id=213405) [Spell Family (107)] 
@@ -3560,7 +3560,7 @@ Description      : Consume up to $s2 Soul Fragments within $s1 yds and then expl
 
 You heal for $247456s1% of all damage you deal to enemies with Frailty.
 
-Name             : Spirit Bomb (id=247455) [Spell Family (107)] 
+Name             : Spirit Bomb (id=247455) [Scaling Spell (-1), Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
 Range            : 100 yards
@@ -3972,7 +3972,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=487505)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Misc Value: 917504 | Target: Self (1)
-Description      : Increases haste by $s1.
+Tooltip          : Increases haste by $s1.
 
 Name             : Fracture (id=263642) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -4026,7 +4026,7 @@ Tooltip          : Absorbs $w1 damage.
 Variables        : $baseAbsorb=${6*$AP*$pctH}
 $fragmentAbsorb=${1.2*$AP*$pctH}
 
-Name             : Resounding Protection (id=263962) [Scaling Spell (-1), Passive] 
+Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 15
@@ -4040,7 +4040,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707038)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 270568 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 846.2255 (avg=10.88393) | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
 Name             : Azerite Empowered (id=263978) [Passive] 
@@ -4403,7 +4403,7 @@ Name             : Crystalline Carapace (id=271536) [Scaling Spell (-1), Passive
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 98
-Triggered by     : Crystalline Carapace (271538), Crystalline Carapace (271539)
+Triggered by     : Crystalline Carapace (271539), Crystalline Carapace (271538)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4420,7 +4420,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s2 Armor and cause melee attackers to suffer $s1 Physical damage. Lasts $271538d.
 
-Name             : Upwelling (id=271557) [Scaling Spell (-1), Passive] 
+Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 101
@@ -4815,14 +4815,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 136.84 (avg=0.44) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 93.3 (avg=0.3) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $s2 times.
 
 Name             : Earthlink (id=279926) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 461
-Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4833,7 +4832,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 279927 | Target: Self (1)
-Description      : Azerite energy courses through you, reaching ${$279928m1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $279928s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
+Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
 Name             : Swirling Sands (Vol'dun) (id=280429) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -4870,5 +4869,25 @@ Effects          :
 #1 (id=738417)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 17.23842 (avg=0.055429) | Trigger Spell: 280712 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
+
+Name             : Chaos Brand (id=281242) [Spell Family (107), Passive] 
+Replaces         : Chaos Brand (id=255260)
+Class            : Vengeance Demon Hunter
+School           : Physical
+Spell Level      : 100
+Proc Chance      : 100%
+Proc Flags       : ....x.x. x...x... x.x..... ........ 
+                 : Yellow Melee, White Ranged, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6)
+Effects          :
+#1 (id=739514)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+Description      : Your $?c1[Chaos][Fire] damage brands the target, increasing magic damage taken by $1490s1%.
 
 

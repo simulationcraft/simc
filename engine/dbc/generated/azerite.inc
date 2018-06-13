@@ -1,5 +1,5 @@
-// Azerite powers, wow build 26806
-static constexpr std::array<azerite_power_entry_t, 282> __azerite_power_data { {
+// Azerite powers, wow build 26812
+static constexpr std::array<azerite_power_entry_t, 281> __azerite_power_data { {
   {  13, 263978, "Azerite Empowered"                  },
   {  14, 268594, "Longstrider"                        },
   {  15, 263962, "Resounding Protection"              },
@@ -34,7 +34,7 @@ static constexpr std::array<azerite_power_entry_t, 282> __azerite_power_data { {
   {  89, 267683, "Azerite Veins"                      },
   {  98, 271536, "Crystalline Carapace"               },
   {  99, 271540, "Ablative Shielding"                 },
-  { 101, 271557, "Upwelling"                          },
+  { 101, 271557, "Shimmering Haven"                   },
   { 102, 267892, "Synergistic Growth"                 },
   { 103, 267882, "Concentrated Mending"               },
   { 104, 267884, "Bracing Chill"                      },
@@ -83,7 +83,6 @@ static constexpr std::array<azerite_power_entry_t, 282> __azerite_power_data { {
   { 148, 273140, "Righteous Flames"                   },
   { 149, 273142, "Healing Hammer"                     },
   { 150, 278605, "Soaring Shield"                     },
-  { 152, 273146, "Healthy Judgment"                   },
   { 153, 273147, "Deferred Sentence"                  },
   { 154, 278617, "Relentless Inquisitor"              },
   { 156, 273150, "Ruinous Bolt"                       },

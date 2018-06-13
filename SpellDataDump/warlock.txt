@@ -55,7 +55,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#2), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -82,7 +82,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -91,7 +91,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=267)      : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.45000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Target: Enemy (6)
 Description      : Sends a shadowy bolt at the enemy, causing $s1 Shadow damage.$?c2[
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
@@ -256,7 +256,7 @@ GCD              : 1.5 seconds
 Duration         : 18 seconds
 Stacks           : 6 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Writhe in Agony (196102 effect#1), Hood of Eternal Disdain (205797 effect#1), Agony (231792 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Sudden Onset (278721 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Writhe in Agony (196102 effect#1), Hood of Eternal Disdain (205797 effect#1), Agony (231792 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), Sudden Onset (278721 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -541,7 +541,7 @@ GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 45 seconds
 Category         : 631
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -655,7 +655,7 @@ Description      : Lashes the target, dealing $s1 Shadow damage.
 
 |cFF777777(Right-Click to toggle)|r
 
-Name             : Lesser Invisibility (Special Ability) (id=7870) [Scaling Spell (11), Spell Family (57)] 
+Name             : Lesser Invisibility (Special Ability) (id=7870) [Scaling Spell (-1), Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Resource         : 20 Energy (3) (id=312)
@@ -756,7 +756,7 @@ GCD              : 1.5 seconds
 Duration         : 5 seconds
 Charges          : 2 (12 seconds cooldown)
 Category         : 651
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -798,7 +798,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Charges          : 1 (12.96 seconds cooldown)
 Category         : 672: Warlock (137042 effect#2)
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Flashover (267115 effect#3)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Flashover (267115 effect#3)
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1008,7 +1008,7 @@ Duration         : 12 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Attributes       : ........ ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -1035,7 +1035,7 @@ Class            : Warlock
 School           : Shadow
 Spell Level      : 72
 Range            : 50000 yards
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Attributes       : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   x....... .x...... ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
@@ -1095,7 +1095,7 @@ GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Chaotic Inferno (279673 effect#1)
+Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Chaotic Flames (253092 effect#1), Chaotic Inferno (279673 effect#1)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1241,12 +1241,12 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 127 | Radius: 6 yards | Target: Cone Front (104)
 #3 (id=319698)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-Description      : A strong attack that does $<damage> of the Felguard's weapon damage to all enemies in front of it, and reduces the effectiveness of any healing the victim receives by $s2% for $d.
+Description      : A strong attack that deals $<damage> damage to all enemies in front of it, and reduces the effectiveness of any healing the victim receives by $s2% for $d.
 
 |cFF777777(Right-Click to toggle)|r
 Tooltip          : Effectiveness of any healing reduced by $w2%.
 Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
-$damage=${0.68*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
+$damage=${0.68*($SP*0.35)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Shadowfury (id=30283) [Spell Family (5)] 
 Class            : Affliction Demonology Destruction Warlock
@@ -1368,7 +1368,7 @@ Class            : Warlock
 School           : Fire
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1)
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
                  : .......x .......x ........ ........   ...x.... .......x .xx..... ..x..... 
@@ -1392,7 +1392,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 15 seconds
 Cooldown         : 15 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1513,7 +1513,7 @@ School           : Shadow
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -1729,7 +1729,7 @@ Name             : Hand of Gul'dan (id=86040) [Spell Family (5)]
 Class            : Shaman, Warlock
 School           : Shadowflame
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1)
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
                  : ........ ........ ........ .x......   ........ ..x..... ........ ..x..... 
@@ -1739,7 +1739,7 @@ Attributes       : ........ ........ .......x ........   ...x...x ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=87492)    : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc105174
 
 Name             : Nethermancy (Passive) (id=86091) [Passive, Hidden] 
@@ -1784,7 +1784,7 @@ Effects          :
 Description      : The Felguard recklessly swings its weapon, striking all nearby targets within $89753A1 yards for $<damage> Physical damage every $t1 sec for $89751d. The Felguard cannot take any other action during Felstorm.
 Tooltip          : Striking for $<damage> Physical damage every $t1 sec. Unable to use other abilities.
 Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
-$damage=${0.33*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
+$damage=${0.33*($SP*0.35)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Felstorm (id=89753) [Spell Family (5)] 
 Class            : Warlock
@@ -2044,7 +2044,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 16 yards/sec
-Affecting spells : Demonic Power (265273 effect#3)
+Affecting spells : Demonic Power (265273 effect#4)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2583,7 +2583,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
-Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 4P Bonus (165452 effect#1), Flamelicked (185229 effect#1), Item - Warlock T18 Destruction 2P Bonus (185965 effect#1), Embrace Chaos (212019 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Grimoire of Supremacy (266091 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2)
+Affecting spells : Backdraft (117828 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 4P Bonus (165452 effect#1), Flamelicked (185229 effect#1), Item - Warlock T18 Destruction 2P Bonus (185965 effect#1), Embrace Chaos (212019 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Grimoire of Supremacy (266091 effect#1), Crashing Chaos (277706 effect#1), Chaotic Inferno (278748 effect#2)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2852,11 +2852,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=179728)   : Apply Aura (6) | Dummy (4)
+#1 (id=179728)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#2 (id=191027)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#3 (id=191028)   : Apply Aura (6) | Dummy (4)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213), Demonfire (270481), Umbral Blaze (273526), Vile Taint (278350)
+#2 (id=191027)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Doom (265412), Doom (265469), Roaring Blaze (265931), Bilescourge Bombers (267213), Demonfire (270481), Umbral Blaze (273526), Vile Taint (278350)
+#3 (id=191028)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191029)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2879,6 +2881,12 @@ Effects          :
 #13 (id=261074)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=261075)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#15 (id=739515)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#16 (id=739516)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#17 (id=739517)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Destruction Warlock (id=137046) [Spell Family (5), Passive, Hidden] 
@@ -2926,7 +2934,7 @@ School           : Shadow
 Spell Level      : 3
 Range            : 40 yards
 Duration         : 14 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Tormented Agony (252938 effect#1), Creeping Death (264000 effect#1), 
 Triggered by     : Corruption (172)
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -2974,7 +2982,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2992,7 +3000,7 @@ School           : Fire
 Spell Level      : 12
 Range            : 100 yards
 Duration         : 18 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Item - Warlock T17 Destruction 2P Bonus (165455 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -3373,7 +3381,7 @@ Class            : Warlock
 School           : Shadow
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Triggered by     : Grimoire of Sacrifice (196099)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3483,7 +3491,7 @@ Class            : Warlock
 School           : Shadowflame
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Master Demonologist (77219 effect#2), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), 
+Affecting spells : Mastery: Master Demonologist (77219 effect#2), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ...x.... ........ 
                  : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ...x.... ........ .xx..... ..x..... 
@@ -3493,7 +3501,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ ...x.
                  : Does not break stealth (37), Requires line of sight (186)
 Effects          :
 #1 (id=288084)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32500 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc196277
 
 Name             : Hand of Doom (id=196283) [Spell Family (5), Passive] 
@@ -3625,7 +3633,7 @@ Class            : Warlock
 School           : Fire
 Range            : 100 yards
 Velocity         : 24 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3759,7 +3767,7 @@ Resource         : 0% Base Mana (0) and 1% Base Mana (0) per tick (id=10748)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Inevitable Demise (273525 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Inevitable Demise (273525 effect#1)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -3895,7 +3903,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 16 seconds
 Cooldown         : 45 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -3991,7 +3999,7 @@ Name             : Phantom Singularity (id=205246) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Range            : 500 yards
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x....x. 
                  : ........ ........ ........ ........   ........ .......x ........ ..x..... 
@@ -4202,7 +4210,8 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : $@spelldesc108501
-Tooltip          : Summoned by a Grimoire of Service.  Damage increased by $s1%.
+Tooltip          : Summoned by a Grimoire of Service.
+Damage done increased by $s1%.
 
 Name             : Reap Souls (Artifact) (id=216698) 
 Class            : Warlock
@@ -4414,7 +4423,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 25 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Nightfall (264571 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4434,7 +4443,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4456,7 +4465,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4478,7 +4487,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4500,7 +4509,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4522,7 +4531,7 @@ Range            : 100 yards
 Duration         : 8 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Epidemic (184922 effect#1), Item - Warlock T19 Affliction 2P Bonus (212002 effect#1), Creeping Death (264000 effect#1), Dreadful Calling (278727 effect#2)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -4544,7 +4553,7 @@ Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Inevitable Demise (273525 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Flamelicked (185229 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1), Inevitable Demise (273525 effect#1)
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ ..x..x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -4660,9 +4669,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=376201)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
-Description      : Soul Shards$?s137046[ and Soul Shard Fragments][] are generated by some of your spells and consumed to cast your most powerful spells and summon demons to serve you.$?s137046[
+Description      : $?c1[Soul Shards are generated by your Agony's damage over time]?c2[Soul Shards are generated by your Shadow Bolt]?c3[Soul Shard Fragments are generated by many of your spells][].
 
-10 Soul Shard Fragments make up 1 Soul Shard.][]
+Soul Shards are consumed to cast your most powerful spells and summon demons to serve you.
 
 While out of combat you regenerate up to 3 Soul Shards.
 
@@ -4829,7 +4838,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=487505)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Misc Value: 917504 | Target: Self (1)
-Description      : Increases haste by $s1.
+Tooltip          : Increases haste by $s1.
 
 Name             : Empowered Healthstone (id=262031) [Spell Family (5), Passive] 
 Class            : Warlock
@@ -4866,7 +4875,7 @@ Description      : $@spelldesc262031
 Tooltip          : Healing for $m1% of maximum health every $t1 sec.
 Spell casts are not delayed by taking damage.
 
-Name             : Resounding Protection (id=263962) [Scaling Spell (-1), Passive] 
+Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 15
@@ -4880,7 +4889,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707038)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 270568 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 846.2255 (avg=10.88393) | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
 Name             : Azerite Empowered (id=263978) [Passive] 
@@ -4974,7 +4983,7 @@ Description      : Command your Felguard to strike into the soul of its enemy, d
 
 |cFFFFFFFFGenerates 1 Soul Shard.|r][]
 Variables        : $demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]
-$damage=${1*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}
+$damage=${1*($SP*0.35)*$<demoMastery>*(1+$@versadmg)}
 
 Name             : Dreadlash (id=264078) [Spell Family (5), Passive, Hidden] 
 Class            : Warlock
@@ -5107,7 +5116,7 @@ Range            : 40 yards
 Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Demonic Core (264173 effect#1), From the Shadows (270569 effect#1), Shadow's Bite (272945 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Shadowy Inspiration (196606 effect#1), Demonic Core (264173 effect#1), From the Shadows (270569 effect#1), Shadow's Bite (272945 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5116,7 +5125,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=707419)   : School Damage (2): shadowflame
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.90000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.58000 | Target: Enemy (6)
 Description      : Send the fiery soul of a fallen demon at the enemy, causing $s1 Shadowflame damage.$?c2[
 
 |cFFFFFFFFGenerates 2 Soul Shards.|r][]
@@ -5237,16 +5246,14 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=709184)   : Summon (28)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 135002 | Misc Value 2: 0x109f | Radius: 5 yards | Target: Unknown(44)
-Description      : Summon a Demonic Tyrant to increase the duration of all of your current demons by ${$265273m2/1000}.1 sec, and increase the damage of all of your other demons by $265273s1%, while damaging your target.
+Description      : Summon a Demonic Tyrant to increase the duration of all of your current demons by ${$265273m2/1000}.1 sec, and increase the damage of all of your other demons by $265273s2%, while damaging your target.
 
 Name             : Demonic Power (id=265273) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
-GCD              : 1.5 seconds
 Duration         : 15 seconds
-Cooldown         : 90 seconds
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5254,16 +5261,17 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
-#1 (id=709317)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 15 | Scaled Value: 15 | Misc Value: 0x7f | Radius: 100 yards | Target: Unknown(120)
-                   Affected School(s): All
-#2 (id=709325)   : Apply Aura (6) | Dummy (4)
+#1 (id=709317)   : Apply Party Aura (35) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | Target: Unknown(120)
+#2 (id=709325)   : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+#3 (id=713532)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15000 | Scaled Value: 15000 | Target: Self (1)
-#3 (id=713532)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+#4 (id=739509)   : Apply Party Aura (35) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Radius: 100 yards | Target: Unknown(120)
                    Affected Spells: Fel Firebolt (104318)
 Description      : $@spelldesc265187
-Tooltip          : Damage increased by $s1%.
+Tooltip          : Damage dealt by your demons increased by $s2%.
 
 Name             : Demonfire Blast (id=265279) [Spell Family (5)] 
 Class            : Warlock
@@ -5272,7 +5280,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5291,7 +5299,7 @@ Resource         : 1% Base Mana (0) (id=191509)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 30 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -5312,7 +5320,7 @@ Name             : Doom (id=265469) [Spell Family (5)]
 Class            : Warlock
 School           : Shadow
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ...x.... ........ .xx..... ........ 
@@ -5322,7 +5330,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=709636)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.50000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.60000 | Target: Enemy (6)
 Description      : $@spelldesc265412
 Tooltip          : Doomed to take $w1 Shadow damage.
 
@@ -5331,7 +5339,7 @@ Class            : Warlock
 School           : Fire
 Range            : 100 yards
 Duration         : 6 seconds
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Odr, Shawl of the Ymirjar (212173 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ....x... ........   ........ .....x.. ........ ........ 
@@ -5576,9 +5584,9 @@ Class            : Warlock
 School           : Shadow
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Mastery: Master Demonologist (77219 effect#2), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), 
+Affecting spells : Mastery: Master Demonologist (77219 effect#2), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -5586,7 +5594,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=713715)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc267211
 
 Name             : Sacrificed Souls (id=267214) [Spell Family (5), Passive, Hidden] 
@@ -5661,7 +5669,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=713719)   : Unknown(179)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 13046 | Radius: 5 yards | Target: Unknown(49)
-Description      : Tear open a portal to the Twisting Nether for $d.  Every time you spend Soul Shards, you will also command demons from the Nether to come out and fight for you.
+Description      : Tear open a portal to the Twisting Nether for $d. Every time you spend Soul Shards, you will also command demons from the Nether to come out and fight for you.
 
 Name             : Soul Strike (id=267964) [Spell Family (5)] 
 Class            : Warlock
@@ -6075,7 +6083,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 1.25 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6616,7 +6624,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 20 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Destruction Warlock (137046 effect#1), 
+Affecting spells : Mastery: Potent Afflictions (77215 effect#1), Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -6629,7 +6637,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.15000 | Radius: 10 yards | Target: AOE enemy (instant) (16)
 #2 (id=735650)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -30 | Scaled Value: -30 | Radius: 10 yards | Target: AOE enemy (instant) (16)
-Description      : Erupts a vile pool at the target location, dealing $o1 Shadow damage over $d to all enemies within $a1 yds and reducing their movement speed by $s2%.
+Description      : Unleashes a vile explosion at the target location, dealing $o1 Shadow damage over $d to all enemies within $a1 yds and reducing their movement speed by $s2%.
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Movement slowed by $s2%.
 
@@ -6646,12 +6654,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734606)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 46.65 (avg=0.15) | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2.758259 (avg=0.008869) | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Agony (980)
 #2 (id=734607)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Self (1)
 Description      : Agony deals up to an additional $<dmg> damage and starts with $s2 stacks.
-Variables        : $dmg=${$s1*$980u*2}
+Variables        : $dmg=${$s1*$980u*$980d/$980t1}
 
 Name             : Dreadful Calling (id=278727) [Scaling Spell (-1), Spell Family (5), Passive] 
 Class            : Warlock
@@ -6758,7 +6766,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 136.84 (avg=0.44) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 93.3 (avg=0.3) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $s2 times.
 
 Name             : Bursting Flare (id=279909) [Scaling Spell (-1), Passive] 
@@ -6782,7 +6790,6 @@ Name             : Earthlink (id=279926) [Scaling Spell (-7), Passive]
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 461
-Triggered by     : Earthlink (279928)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6793,7 +6800,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 279927 | Target: Self (1)
-Description      : Azerite energy courses through you, reaching ${$279928m1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $279928s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
+Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
 Name             : Summon Doomguard (id=280365) [Spell Family (57)] 
 Class            : Warlock

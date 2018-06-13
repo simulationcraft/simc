@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26806
+// Class based active abilities, wow build 26812
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -568,7 +568,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        55233, // Vampiric Blood
            0,
     },
-    // Frost tree, 7 abilities
+    // Frost tree, 8 abilities
     {
        45524, // Chains of Ice
        47568, // Empower Rune Weapon
@@ -576,6 +576,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        49184, // Howling Blast
        48792, // Icebound Fortitude
        49020, // Obliterate
+       51271, // Pillar of Frost
       196770, // Remorseless Winter
            0,
     },
@@ -1241,7 +1242,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (36)
 
-// Talent tree specialization abilities, wow build 26806
+// Talent tree specialization abilities, wow build 26812
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1470,6 +1471,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       267316, // Mastery: Hand of Light
        20271, // Judgment
       231663, // Judgment (Rank 2)
+      267344, // Art of War
            0,
     },
     {
@@ -1822,6 +1824,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       196770, // Remorseless Winter
        81229, // Runic Empowerment
       278223, // Death Strike (Rank 2)
+       51271, // Pillar of Frost
            0,
     },
     // Specialization abilities for Unholy
@@ -2137,7 +2140,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       116670, // Vivify
       212051, // Reawaken
       231605, // Enveloping Mist (Rank 2)
-      231606, // Renewing Mist (Rank 2)
       231633, // Essence Font (Rank 2)
       231876, // Thunder Focus Tea (Rank 2)
       262840, // Rising Sun Kick (Rank 2)
@@ -2145,6 +2147,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       243435, // Fortifying Brew
       115175, // Soothing Mist
       274586, // Vivify (Rank 2)
+      281231, // Renewing Mist (Rank 2)
            0,
     },
     // Specialization abilities for Windwalker
@@ -2164,7 +2167,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       116095, // Disable
       157445, // Critical Strikes (Passive)
       162697, // Stat Negation Aura - Agility DPS
-      103985, // Stance of the Fierce Tiger (Stance)
       115080, // Touch of Death
       101546, // Spinning Crane Kick
       116705, // Spear Hand Strike
@@ -2360,6 +2362,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       207684, // Sigil of Misery
       162700, // Stat Negation Aura - Agility Tank
       203783, // Shear
+      281242, // Chaos Brand
            0,
     },
     {
@@ -2372,7 +2375,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26806
+// Class mastery abilities, wow build 26812
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2611,7 +2614,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26806
+// Racial abilities, wow build 26812
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3523,7 +3526,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26806
+// Set bonus data, wow build 26812
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4242,9 +4245,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
 };
-#define RPPMMOD_SIZE (931)
+#define RPPMMOD_SIZE (932)
 
-// 931 RPPM Modifiers, wow build level 26806
+// 932 RPPM Modifiers, wow build level 26812
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5099,6 +5102,7 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 265421,    4,  1,  1.0000 },
   { 265950,    4,  1,  1.0000 },
   { 267177,    4,  1,  1.0000 },
+  { 267344,    1,  1,  1.0000 },
   { 268035,    4,  1,  1.0000 },
   { 268191,    4,  1,  1.0000 },
   { 268501,    4,  1,  1.0000 },
