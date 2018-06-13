@@ -3013,6 +3013,9 @@ struct melee_t: public hunter_melee_attack_t
     may_glance         = true;
     special            = false;
     trigger_gcd        = timespan_t::zero();
+
+    // technically there is a separate effect for auto attacks, but meh
+    affected_by.coordinated_assault = true;
   }
 
   timespan_t execute_time() const override
