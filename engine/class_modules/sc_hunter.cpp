@@ -3222,6 +3222,9 @@ struct carve_t: public hunter_melee_attack_t
     parse_options( options_str );
 
     aoe = -1;
+
+    if ( p -> talents.butchery -> ok() )
+      background = true;
   }
 
   void execute() override
@@ -3230,6 +3233,8 @@ struct carve_t: public hunter_melee_attack_t
 
     auto reduction = wfb_reduction * std::min( num_targets_hit, wfb_reduction_target_cap );
     p() -> cooldowns.wildfire_bomb -> adjust( -reduction, true );
+
+    trigger_birds_of_prey( execute_state );
   }
 };
 
