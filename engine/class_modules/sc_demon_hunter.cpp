@@ -254,6 +254,7 @@ public:
     const spell_data_t* metamorphosis_buff;
     const spell_data_t* soul_fragment;
     const spell_data_t* chaos_brand;
+    const spell_data_t* demonic_wards;
 
     // Havoc
     const spell_data_t* havoc;
@@ -273,7 +274,6 @@ public:
     // Vengeance
     const spell_data_t* vengeance;
     const spell_data_t* demon_spikes;
-    const spell_data_t* demonic_wards;
     const spell_data_t* fiery_brand_dr;
     const spell_data_t* immolation_aura;
     const spell_data_t* riposte;
@@ -3049,7 +3049,7 @@ struct demon_blades_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( "demon_blades", p, p -> find_spell( 203796 ) )
   {
     background = true;
-    energize_delta = energize_amount * data().effectN( 3 ).m_delta();
+    energize_delta = energize_amount * data().effectN( 2 ).m_delta();
   }
 
   void impact( action_state_t* s ) override
@@ -4407,6 +4407,7 @@ void demon_hunter_t::init_spells()
   spec.immolation_aura        = specialization() == DEMON_HUNTER_HAVOC ? 
                                   find_talent_spell( "Immolation Aura" ) : find_specialization_spell( "Immolation Aura" );
   spec.chaos_brand            = find_spell( 255260 );
+  spec.demonic_wards          = find_specialization_spell( "Demonic Wards" ); // Two different spells with the same name
 
   // Havoc
   spec.havoc                  = find_specialization_spell( "Havoc Demon Hunter" );
@@ -4426,7 +4427,6 @@ void demon_hunter_t::init_spells()
   // Vengeance
   spec.vengeance              = find_specialization_spell( "Vengeance Demon Hunter" );
   spec.demon_spikes           = find_specialization_spell( "Demon Spikes" );
-  spec.demonic_wards          = find_specialization_spell( "Demonic Wards" );
   spec.fiery_brand_dr         = find_spell( 207744 );
   spec.riposte                = find_specialization_spell( "Riposte" );
   spec.soul_cleave            = find_specialization_spell( "Soul Cleave" );
@@ -4651,18 +4651,18 @@ void demon_hunter_t::apl_precombat()
 {
   action_priority_list_t* pre = get_action_priority_list( "precombat" );
 
-  pre->add_action("flask");
-  pre->add_action("augmentation");
-  pre->add_action("food");
+  pre->add_action( "flask" );
+  pre->add_action( "augmentation" );
+  pre->add_action( "food" );
 
   // Snapshot Stats
-  pre->add_action("snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done.");
+  pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  pre->add_action("potion");
+  pre->add_action( "potion" );
 
   if (specialization() == DEMON_HUNTER_HAVOC)
   {
-    pre->add_action(this, "Metamorphosis", "if=!(talent.demon_reborn.enabled&(talent.demonic.enabled|set_bonus.tier21_4pc))");
+    pre->add_action( this, "Metamorphosis" );
   }
 }
 
@@ -4832,11 +4832,14 @@ double demon_hunter_t::composite_armor_multiplier() const
 {
   double am = player_t::composite_armor_multiplier();
 
-  am *= 1.0 + spec.demonic_wards -> effectN( 5 ).percent();
-
-  if (specialization() == DEMON_HUNTER_VENGEANCE && buff.metamorphosis -> check())
+  if ( specialization() == DEMON_HUNTER_VENGEANCE )
   {
-    am *= 1.0 + spec.metamorphosis_buff->effectN( 7 ).percent();
+    am *= 1.0 + spec.demonic_wards->effectN( 5 ).percent();
+
+    if ( buff.metamorphosis->check() )
+    {
+      am *= 1.0 + spec.metamorphosis_buff->effectN( 7 ).percent();
+    }
   }
 
   return am;
@@ -4862,7 +4865,10 @@ double demon_hunter_t::composite_attribute_multiplier( attribute_e a ) const
   switch ( a )
   {
     case ATTR_STAMINA:
-      am *= 1.0 + spec.demonic_wards -> effectN( 4 ).percent();
+      if ( specialization() == DEMON_HUNTER_VENGEANCE )
+      {
+        am *= 1.0 + spec.demonic_wards->effectN( 4 ).percent();
+      }
       break;
     default:
       break;
@@ -4877,7 +4883,10 @@ double demon_hunter_t::composite_crit_avoidance() const
 {
   double ca = player_t::composite_crit_avoidance();
 
-  ca += spec.demonic_wards -> effectN( 2 ).percent();
+  if ( specialization() == DEMON_HUNTER_VENGEANCE )
+  {
+    ca += spec.demonic_wards->effectN( 2 ).percent();
+  }
 
   return ca;
 }
@@ -4965,7 +4974,10 @@ double demon_hunter_t::composite_melee_expertise( const weapon_t* w ) const
 {
   double me = player_t::composite_melee_expertise( w );
 
-  me += spec.demonic_wards -> effectN( 3 ).base_value();
+  if ( specialization() == DEMON_HUNTER_VENGEANCE )
+  {
+    me += spec.demonic_wards->effectN( 3 ).base_value();
+  }
 
   return me;
 }
@@ -5171,7 +5183,10 @@ double demon_hunter_t::calculate_expected_max_health() const
   double expected_health = (prop_values / slot_weights) * 8.318556;
   expected_health += base.stats.attribute[STAT_STAMINA];
   expected_health *= 1 + matching_gear_multiplier(ATTR_STAMINA);
-  expected_health *= 1 + spec.demonic_wards->effectN(4).percent();
+  if ( specialization() == DEMON_HUNTER_VENGEANCE )
+  {
+    expected_health *= 1 + spec.demonic_wards->effectN( 4 ).percent();
+  }
   expected_health *= current.health_per_stamina;
   return expected_health;
 }
@@ -5289,6 +5304,11 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt, action_state_
   if ( specialization() == DEMON_HUNTER_HAVOC )
   {
     s->result_amount *= 1.0 + buff.blur->value();
+
+    if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
+    {
+      s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent();
+    }
   }
   else // DEMON_HUNTER_VENGEANCE
   {
