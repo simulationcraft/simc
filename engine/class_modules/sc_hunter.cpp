@@ -1560,6 +1560,14 @@ public:
     affected_by.sv_legendary_cloak = ab::data().affected_by( ab::o() -> find_spell( 248212 ) -> effectN( 1 ) );
   }
 
+  void init() override
+  {
+    ab::init();
+
+    if ( affected_by.aspect_of_the_beast )
+      base_multiplier *= 1.0 + ab::o() -> talents.aspect_of_the_beast -> effectN( 1 ).percent();
+  }
+
   hunter_main_pet_td_t* td( player_t* t = nullptr ) const
   { return ab::p() -> get_target_data( t ? t : ab::target ); }
 
@@ -1569,9 +1577,6 @@ public:
 
     if ( affected_by.bestial_wrath )
       am *= 1.0 + ab::o() -> buffs.bestial_wrath -> check_value();
-
-    if ( affected_by.aspect_of_the_beast )
-      am *= 1.0 + ab::o() -> talents.aspect_of_the_beast -> effectN( 1 ).percent();
 
     if ( affected_by.spirit_bond && ab::o() -> mastery.spirit_bond -> ok() )
       am *= 1.0 + ab::o() -> cache.mastery() * ab::o() -> mastery.spirit_bond -> effectN( 1 ).mastery_value();
