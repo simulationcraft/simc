@@ -2254,10 +2254,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
     aoe = -1;
 
     if ( p -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B2 ) )
-    {
       base_multiplier *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
-      energize_amount += p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 2 ).base_value();
-    }
   }
 
   double cost() const override
@@ -2704,12 +2701,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
     may_proc_mm_feet = true;
-
-    if ( p -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B2 ) )
-    {
-      base_multiplier *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
-      energize_amount *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 3 ).percent();
-    }
   }
 
   double cost() const override
