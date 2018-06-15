@@ -55,7 +55,7 @@ macx {
 
   Resources.files = ../Welcome.html ../Welcome.png ../Error.html
   Resources.path = Contents/Resources
-  Profiles.files =  ../profiles/PreRaids ../profiles/Tier19 ../profiles/Tier20 ../profiles/Tier21
+  Profiles.files =  ../profiles/PreRaids ../profiles/Tier21 ../profiles/Tier22
   Profiles.path = Contents/Resources/profiles
   Localization.files = ../locale/sc_de.qm ../locale/sc_it.qm ../locale/sc_zh.qm
   Localization.path = Contents/Resources/locale
@@ -80,7 +80,7 @@ unix:!macx {
   DEFINES -= SC_USE_WEBENGINE
   DEFINES += SC_USE_WEBKIT
   message("Linux WebKit default")
-  
+
   DISTFILES  += CHANGES COPYING
   INSTALLS   += target profiles data icon locale
   # Disable strip
