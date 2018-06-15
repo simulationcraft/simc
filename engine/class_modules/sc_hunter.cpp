@@ -5563,32 +5563,32 @@ private:
 
 // HUNTER MODULE INTERFACE ==================================================
 
-typedef std::function<void(hunter_t&, const spell_data_t*)> special_effect_setter_t;
+using legendary_spell_ptr_t = spell_data_ptr_t hunter_t::legendary_t::*;
 
-void register_special_effect( unsigned spell_id, specialization_e spec, const special_effect_setter_t& setter )
+void register_legendary_effect( unsigned spell_id, specialization_e spec, legendary_spell_ptr_t ptr )
 {
   struct initializer_t : public unique_gear::scoped_actor_callback_t<hunter_t>
   {
-    special_effect_setter_t set;
+    legendary_spell_ptr_t ptr;
 
-    initializer_t( const special_effect_setter_t& setter ):
-      super( HUNTER ), set( setter )
+    initializer_t( legendary_spell_ptr_t ptr ):
+      super( HUNTER ), ptr( ptr )
     {}
 
-    initializer_t( specialization_e spec, const special_effect_setter_t& setter ):
-      super( spec ), set( setter )
+    initializer_t( specialization_e spec, legendary_spell_ptr_t ptr ):
+      super( spec ), ptr( ptr )
     {}
 
     void manipulate( hunter_t* p, const special_effect_t& e ) override
     {
-      set( *p, e.driver() );
+      p -> legendary.*ptr = e.driver();
     }
   };
 
   if ( spec == SPEC_NONE )
-    unique_gear::register_special_effect( spell_id, initializer_t( setter ) );
+    unique_gear::register_special_effect( spell_id, initializer_t( ptr ) );
   else
-    unique_gear::register_special_effect( spell_id, initializer_t( spec, setter ) );
+    unique_gear::register_special_effect( spell_id, initializer_t( spec, ptr ) );
 }
 
 struct hunter_module_t: public module_t
@@ -5606,24 +5606,24 @@ struct hunter_module_t: public module_t
 
   void static_init() const override
   {
-    register_special_effect( 236447, HUNTER_SURVIVAL,      []( hunter_t& p, const spell_data_t* s ) { p.legendary.sv_chest = s; });
-    register_special_effect( 212574, HUNTER_SURVIVAL,      []( hunter_t& p, const spell_data_t* s ) { p.legendary.sv_feet = s; });
-    register_special_effect( 225155, HUNTER_SURVIVAL,      []( hunter_t& p, const spell_data_t* s ) { p.legendary.sv_ring = s; });
-    register_special_effect( 213154, HUNTER_SURVIVAL,      []( hunter_t& p, const spell_data_t* s ) { p.legendary.sv_waist = s; });
-    register_special_effect( 248089, HUNTER_SURVIVAL,      []( hunter_t& p, const spell_data_t* s ) { p.legendary.sv_cloak = s; });
-    register_special_effect( 212278, HUNTER_BEAST_MASTERY, []( hunter_t& p, const spell_data_t* s ) { p.legendary.bm_feet = s; });
-    register_special_effect( 212329, SPEC_NONE,            []( hunter_t& p, const spell_data_t* s ) { p.legendary.bm_ring = s; });
-    register_special_effect( 235721, HUNTER_BEAST_MASTERY, []( hunter_t& p, const spell_data_t* s ) { p.legendary.bm_shoulders = s; });
-    register_special_effect( 207280, HUNTER_BEAST_MASTERY, []( hunter_t& p, const spell_data_t* s ) { p.legendary.bm_waist = s; });
-    register_special_effect( 248084, HUNTER_BEAST_MASTERY, []( hunter_t& p, const spell_data_t* s ) { p.legendary.bm_chest = s; });
-    register_special_effect( 206889, HUNTER_MARKSMANSHIP,  []( hunter_t& p, const spell_data_t* s ) { p.legendary.mm_feet = s; });
-    register_special_effect( 235691, HUNTER_MARKSMANSHIP,  []( hunter_t& p, const spell_data_t* s ) { p.legendary.mm_gloves = s; });
-    register_special_effect( 224550, HUNTER_MARKSMANSHIP,  []( hunter_t& p, const spell_data_t* s ) { p.legendary.mm_ring = s; });
-    register_special_effect( 208912, HUNTER_MARKSMANSHIP,  []( hunter_t& p, const spell_data_t* s ) { p.legendary.mm_waist = s; });
-    register_special_effect( 226841, HUNTER_MARKSMANSHIP,  []( hunter_t& p, const spell_data_t* s ) { p.legendary.mm_wrist = s; });
-    register_special_effect( 248087, HUNTER_MARKSMANSHIP,  []( hunter_t& p, const spell_data_t* s ) { p.legendary.mm_cloak = s; });
-    register_special_effect( 206332, SPEC_NONE,            []( hunter_t& p, const spell_data_t* s ) { p.legendary.wrist = s; });
-    register_special_effect( 208051, SPEC_NONE,            []( hunter_t& p, const spell_data_t* s ) { p.legendary.sephuzs_secret = s; });
+    register_legendary_effect( 236447, HUNTER_SURVIVAL,      &hunter_t::legendary_t::sv_chest );
+    register_legendary_effect( 212574, HUNTER_SURVIVAL,      &hunter_t::legendary_t::sv_feet );
+    register_legendary_effect( 225155, HUNTER_SURVIVAL,      &hunter_t::legendary_t::sv_ring );
+    register_legendary_effect( 213154, HUNTER_SURVIVAL,      &hunter_t::legendary_t::sv_waist );
+    register_legendary_effect( 248089, HUNTER_SURVIVAL,      &hunter_t::legendary_t::sv_cloak );
+    register_legendary_effect( 212278, HUNTER_BEAST_MASTERY, &hunter_t::legendary_t::bm_feet );
+    register_legendary_effect( 212329, SPEC_NONE,            &hunter_t::legendary_t::bm_ring );
+    register_legendary_effect( 235721, HUNTER_BEAST_MASTERY, &hunter_t::legendary_t::bm_shoulders );
+    register_legendary_effect( 207280, HUNTER_BEAST_MASTERY, &hunter_t::legendary_t::bm_waist );
+    register_legendary_effect( 248084, HUNTER_BEAST_MASTERY, &hunter_t::legendary_t::bm_chest );
+    register_legendary_effect( 206889, HUNTER_MARKSMANSHIP,  &hunter_t::legendary_t::mm_feet );
+    register_legendary_effect( 235691, HUNTER_MARKSMANSHIP,  &hunter_t::legendary_t::mm_gloves );
+    register_legendary_effect( 224550, HUNTER_MARKSMANSHIP,  &hunter_t::legendary_t::mm_ring );
+    register_legendary_effect( 208912, HUNTER_MARKSMANSHIP,  &hunter_t::legendary_t::mm_waist );
+    register_legendary_effect( 226841, HUNTER_MARKSMANSHIP,  &hunter_t::legendary_t::mm_wrist );
+    register_legendary_effect( 248087, HUNTER_MARKSMANSHIP,  &hunter_t::legendary_t::mm_cloak );
+    register_legendary_effect( 206332, SPEC_NONE,            &hunter_t::legendary_t::wrist );
+    register_legendary_effect( 208051, SPEC_NONE,            &hunter_t::legendary_t::sephuzs_secret );
   }
 
   void init( player_t* ) const override
