@@ -839,9 +839,9 @@ struct mage_spell_base_t : public spell_t
     return tm;
   }
 
-  expr_t* create_expression(const std::string& name) override
+  expr_t* create_expression( const std::string& expr_str ) override
   {
-    std::vector<std::string> splits = util::string_split( name_str, "." );
+    std::vector<std::string> splits = util::string_split( expr_str, "." );
 
     // Firestarter expressions ==================================================
     if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "firestarter" ) )
@@ -892,19 +892,19 @@ struct mage_spell_base_t : public spell_t
 
       if ( util::str_compare_ci( splits[ 1 ], "active" ) )
       {
-        return new firestarter_expr_t( *mage, name_str, this, FIRESTARTER_ACTIVE );
+        return new firestarter_expr_t( *mage, expr_str, this, FIRESTARTER_ACTIVE );
       }
       else if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
       {
-        return new firestarter_expr_t( *mage, name_str, this, FIRESTARTER_REMAINS );
+        return new firestarter_expr_t( *mage, expr_str, this, FIRESTARTER_REMAINS );
       }
       else
       {
-        sim -> errorf( "Player %s firestarer expression: unknown operation '%s'", name.c_str(), splits[ 1 ].c_str() );
+        sim -> errorf( "Player %s firestarer expression: unknown operation '%s'", player -> name(), splits[ 1 ].c_str() );
       }
     }
 
-    return spell_t::create_expression( name );
+    return spell_t::create_expression( expr_str );
   }
 };
 
