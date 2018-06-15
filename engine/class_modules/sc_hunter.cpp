@@ -3926,7 +3926,10 @@ struct aspect_of_the_wild_t: public hunter_spell_t
   void execute() override
   {
     p() -> buffs.aspect_of_the_wild -> trigger();
-    p() -> pets.main -> buffs.aspect_of_the_wild -> trigger();
+
+    // XXX: the pet doesn't actually gain the buff
+    // p() -> pets.main -> buffs.aspect_of_the_wild -> trigger();
+
     hunter_spell_t::execute();
   }
 };
