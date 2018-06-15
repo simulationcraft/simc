@@ -3780,6 +3780,14 @@ struct kill_command_t: public hunter_spell_t
       auto reduction = p() -> sets -> set( HUNTER_BEAST_MASTERY, T21, B4 ) -> effectN( 1 ).time_value();
       p() -> cooldowns.aspect_of_the_wild -> adjust( - reduction );
     }
+
+    // BFA currently lets survival's Kill Command trigger the t21 2p
+
+    if ( p()->sets->has_set_bonus( HUNTER_SURVIVAL, T21, B2 ) &&
+         rng().roll( p()->sets->set( HUNTER_SURVIVAL, T21, B2 )->proc_chance() ) )
+    {
+      p()->buffs.t21_2p_exposed_flank->trigger();
+    }
   }
 
   bool ready() override
