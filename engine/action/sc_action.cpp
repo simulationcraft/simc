@@ -3048,39 +3048,31 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( splits.size() == 3 && splits[0] == "prev_gcd" )
   {
-    try
-    {
-      int gcd = std::stoi( splits[1] );
+    int gcd = std::stoi( splits[1] );
 
-      struct prevgcd_expr_t: public action_expr_t {
-        int gcd;
-        action_t* previously_used;
-        prevgcd_expr_t( action_t& a, int gcd, const std::string& prev_action ): action_expr_t( "prev_gcd", a ),
-          gcd( gcd ), // prevgcd.1.action will mean 1 gcd ago, prevgcd.2.action will mean 2 gcds ago, etc.
-          previously_used( a.player -> find_action( prev_action ) )
-        {
-          if (!previously_used)
-          {
-            throw std::invalid_argument(fmt::format("Cannot find action '{}''.", prev_action));
-          }
-        }
-        virtual double evaluate() override
-        {
-          if ( !previously_used )
-            return false;
-          if (action.player -> prev_gcd_actions.empty())
-            return false;
-          if ( previously_used && as<int>(action.player -> prev_gcd_actions.size()) >= gcd )
-            return ( *( action.player -> prev_gcd_actions.end() - gcd ) ) -> internal_id == previously_used -> internal_id;
+    struct prevgcd_expr_t: public action_expr_t
+    {
+      int gcd;
+      action_t* previously_used;
+
+      prevgcd_expr_t( action_t& a, int gcd, const std::string& prev_action ) :
+        action_expr_t( "prev_gcd", a ),
+        gcd( gcd ), // prevgcd.1.action will mean 1 gcd ago, prevgcd.2.action will mean 2 gcds ago, etc.
+        previously_used( a.player -> find_action( prev_action ) )
+      { }
+
+      virtual double evaluate() override
+      {
+        if ( ! previously_used )
           return false;
-        }
-      };
-      return new prevgcd_expr_t( *this, gcd, splits[2] );
-    }
-    catch (const std::invalid_argument& e){
-      throw std::invalid_argument(fmt::format("Cannot parse arguments for expression 'prev_gcd.<number>.<action>': {}",
-          e.what()));
-    }
+        if ( action.player -> prev_gcd_actions.empty() )
+          return false;
+        if ( as<int>( action.player -> prev_gcd_actions.size() ) >= gcd )
+          return ( *( action.player -> prev_gcd_actions.end() - gcd ) ) -> internal_id == previously_used -> internal_id;
+        return false;
+      }
+    };
+    return new prevgcd_expr_t( *this, gcd, splits[2] );
   }
 
   if ( splits.size() == 3 && splits[ 0 ] == "dot" )
