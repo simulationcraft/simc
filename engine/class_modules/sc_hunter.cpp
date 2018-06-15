@@ -897,15 +897,6 @@ public:
   }
 };
 
-void trigger_mm_feet( hunter_t* p )
-{
-  if ( p -> legendary.mm_feet -> ok() )
-  {
-    double ms = p -> legendary.mm_feet -> effectN( 1 ).base_value();
-    p -> cooldowns.trueshot -> adjust( timespan_t::from_millis( ms ) );
-  }
-}
-
 void trigger_sephuzs_secret( hunter_t* p, const action_state_t* state, spell_mechanic type )
 {
   if ( ! p -> legendary.sephuzs_secret -> ok() )
