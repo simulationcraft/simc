@@ -785,10 +785,10 @@ public:
     if ( affected_by.coordinated_assault )
       am *= 1.0 + p() -> buffs.coordinated_assault -> check_value();
 
-    if ( affected_by.sniper_training && p() -> mastery.sniper_training -> ok() )
+    if ( affected_by.sniper_training )
       am *= 1.0 + p() -> cache.mastery() * p() -> mastery.sniper_training -> effectN( 2 ).mastery_value();
 
-    if ( affected_by.spirit_bond && p() -> mastery.spirit_bond -> ok() )
+    if ( affected_by.spirit_bond )
       am *= 1.0 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( 1 ).mastery_value();
 
     if ( affected_by.lone_wolf && p() -> pets.main == nullptr )
@@ -1230,7 +1230,7 @@ public:
 
     ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent() );
 
-    if ( o() -> specs.barbed_shot -> ok() )
+    if ( buffs.frenzy -> check() )
       ah *= 1.0 / ( 1.0 + buffs.frenzy -> check_stack_value() );
 
     if ( buffs.predator -> check() )
@@ -1594,8 +1594,8 @@ public:
 
     if ( affected_by.sv_legendary_cloak )
     {
-      const hunter_td_t* otd = ab::o() -> get_target_data( t );
-      if ( otd -> debuffs.unseen_predators_cloak -> up() )
+      const hunter_td_t* otd = ab::o() -> find_target_data( t );
+      if ( otd && otd -> debuffs.unseen_predators_cloak -> up() )
         cc += otd -> debuffs.unseen_predators_cloak -> check_value();
     }
 
@@ -4843,7 +4843,7 @@ void hunter_t::create_buffs()
 
   buffs.parsels_tongue =
     make_buff( this, "parsels_tongue", find_spell( 248085 ) )
-    ->set_default_value( find_spell( 248085 ) -> effectN( 1 ).percent() )
+    ->set_default_value( find_spell( 248085 ) -> effectN( 2 ).percent() )
     ->set_max_stack( find_spell( 248085 ) -> max_stacks() )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -5388,8 +5388,7 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 {
   double cdm = player_t::composite_player_critical_damage_multiplier( s );
 
-  if ( buffs.t20_2p_critical_aimed_damage -> up() )
-    cdm *= 1.0 + buffs.t20_2p_critical_aimed_damage -> value();
+  cdm *= 1.0 + buffs.t20_2p_critical_aimed_damage -> check_value();
 
   return cdm;
 }
@@ -5400,11 +5399,10 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buffs.t19_4p_mongoose_power -> up() )
-    m *= 1.0 + buffs.t19_4p_mongoose_power -> check_value();
+  m *= 1.0 + buffs.t19_4p_mongoose_power -> check_value();
 
-  if ( buffs.parsels_tongue -> up() )
-    m *= 1.0 + buffs.parsels_tongue -> stack_value();
+  if ( buffs.parsels_tongue -> check() )
+    m *= 1.0 + buffs.parsels_tongue -> data().effectN( 1 ).percent() * buffs.parsels_tongue -> current_stack;
 
   return m;
 }
@@ -5414,13 +5412,12 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 double hunter_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double d = player_t::composite_player_target_multiplier( target, school );
-  hunter_td_t* td = get_target_data( target );
 
-  if ( td -> debuffs.mark_of_helbrine -> up() )
-    d *= 1.0 + td -> debuffs.mark_of_helbrine -> value();
-
-  if ( td -> debuffs.hunters_mark -> up() )
+  if ( auto td = find_target_data( target ) )
+  {
+    d *= 1.0 + td -> debuffs.mark_of_helbrine -> check_value();
     d *= 1.0 + td -> debuffs.hunters_mark -> check_value();
+  }
 
   return d;
 }
@@ -5434,23 +5431,13 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   if ( mastery.master_of_beasts -> ok() )
     m *= 1.0 + cache.mastery_value();
 
-  if ( specs.beast_mastery_hunter -> ok() )
-    m *= 1.0 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
+  m *= 1.0 + specs.beast_mastery_hunter -> effectN( 3 ).percent();
+  m *= 1.0 + specs.survival_hunter -> effectN( 3 ).percent();
+  m *= 1.0 + specs.marksmanship_hunter -> effectN( 3 ).percent();
 
-  if ( specs.survival_hunter -> ok() )
-    m *= 1.0 + specs.survival_hunter -> effectN( 3 ).percent();
-
-  if ( specs.marksmanship_hunter -> ok() )
-    m *= 1.0 + specs.marksmanship_hunter -> effectN( 3 ).percent();
-
-  if ( buffs.coordinated_assault -> check() )
-    m *= 1.0 + buffs.coordinated_assault -> check_value();
-
-  if ( buffs.the_mantle_of_command -> check() )
-    m *= 1.0 + buffs.the_mantle_of_command -> check_value();
-
-  if ( buffs.parsels_tongue -> up() )
-    m *= 1.0 + buffs.parsels_tongue -> data().effectN( 2 ).percent() * buffs.parsels_tongue -> current_stack;
+  m *= 1.0 + buffs.coordinated_assault -> check_value();
+  m *= 1.0 + buffs.the_mantle_of_command -> check_value();
+  m *= 1.0 + buffs.parsels_tongue -> check_stack_value();
 
   return m;
 }
@@ -5489,7 +5476,7 @@ void hunter_t::regen( timespan_t periodicity )
   if ( resources.is_infinite( RESOURCE_FOCUS ) )
     return;
 
-  if ( buffs.terms_of_engagement -> up() )
+  if ( buffs.terms_of_engagement -> check() )
       resource_gain( RESOURCE_FOCUS, buffs.terms_of_engagement -> check_value() * periodicity.total_seconds(), gains.terms_of_engagement );
 }
 
