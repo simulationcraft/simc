@@ -7540,8 +7540,7 @@ void death_knight_t::create_buffs()
                                  .cd( find_spell( 157335 ) -> duration() );
 
   runeforge.rune_of_the_fallen_crusader = buff_creator_t( this, "unholy_strength", find_spell( 53365 ) )
-                                          .add_invalidate( CACHE_STRENGTH )
-                                          .add_invalidate( CACHE_ATTACK_POWER );
+                                          .add_invalidate( CACHE_STRENGTH );
   runeforge.rune_of_the_stoneskin_gargoyle = buff_creator_t( this, "stoneskin_gargoyle", find_spell( 62157 ) )
                                              .add_invalidate( CACHE_ARMOR )
                                              .add_invalidate( CACHE_STAMINA )
@@ -8105,6 +8104,10 @@ void death_knight_t::invalidate_cache( cache_e c )
     case CACHE_MASTERY:
       if ( specialization() == DEATH_KNIGHT_BLOOD )
         player_t::invalidate_cache( CACHE_ATTACK_POWER );
+      break;
+    case CACHE_ATTACK_POWER:
+      if ( specialization() == DEATH_KNIGHT_BLOOD )
+        player_t::invalidate_cache( CACHE_BONUS_ARMOR );
       break;
     default: break;
   }
