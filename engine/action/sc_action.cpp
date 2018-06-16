@@ -3079,7 +3079,14 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     if ( dot_t* dot = target -> find_dot( splits[ 1 ], player ) )
     {
-      return dot_t::create_expression( dot, this, splits[ 2 ], false );
+      if (auto expr = dot_t::create_expression( dot, this, splits[ 2 ], false ))
+      {
+        return expr;
+      }
+      else
+      {
+        throw std::invalid_argument(fmt::format("Cannot create a valid dot expression from '{}'", splits[ 2 ]));
+      }
     }
     throw std::invalid_argument(fmt::format("Cannot find any dot with name '{}'.", splits[ 1 ]));
   }
