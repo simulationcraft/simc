@@ -4771,6 +4771,12 @@ struct glacial_advance_damage_t : public death_knight_spell_t
     aoe = -1;
     background = true;
   }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+    td( state -> target ) -> debuff.razorice -> trigger();
+  }
 };
 
 struct glacial_advance_t : public death_knight_spell_t
