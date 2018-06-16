@@ -838,74 +838,6 @@ struct mage_spell_base_t : public spell_t
 
     return tm;
   }
-
-  expr_t* create_expression( const std::string& expr_str ) override
-  {
-    std::vector<std::string> splits = util::string_split( expr_str, "." );
-
-    // Firestarter expressions ==================================================
-    if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "firestarter" ) )
-    {
-      enum firestarter_expr_type_e
-      {
-        FIRESTARTER_ACTIVE,
-        FIRESTARTER_REMAINS
-      };
-
-      struct firestarter_expr_t : public expr_t
-      {
-        mage_t& mage;
-        action_t* a;
-        firestarter_expr_type_e type;
-
-        firestarter_expr_t( mage_t& m, const std::string& name, action_t* a, firestarter_expr_type_e type ) :
-          expr_t( name ), mage( m ), a( a ), type( type )
-        { }
-
-        double evaluate() override
-        {
-          if ( ! mage.talents.firestarter -> ok() )
-            return 0.0;
-
-          timespan_t remains;
-
-          if ( mage.firestarter_time > timespan_t::zero() )
-          {
-            remains = std::max( timespan_t::zero(), mage.firestarter_time - mage.sim -> current_time() );
-          }
-          else
-          {
-            remains = a -> target -> time_to_percent( mage.talents.firestarter -> effectN( 1 ).base_value() );
-          }
-
-          switch ( type )
-          {
-            case FIRESTARTER_ACTIVE:
-              return static_cast<double>( remains > timespan_t::zero() );
-            case FIRESTARTER_REMAINS:
-              return remains.total_seconds();
-            default:
-              return 0.0;
-          }
-        }
-      };
-
-      if ( util::str_compare_ci( splits[ 1 ], "active" ) )
-      {
-        return new firestarter_expr_t( *mage, expr_str, this, FIRESTARTER_ACTIVE );
-      }
-      else if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
-      {
-        return new firestarter_expr_t( *mage, expr_str, this, FIRESTARTER_REMAINS );
-      }
-      else
-      {
-        sim -> errorf( "Player %s firestarer expression: unknown operation '%s'", player -> name(), splits[ 1 ].c_str() );
-      }
-    }
-
-    return spell_t::create_expression( expr_str );
-  }
 };
 
 namespace pets
@@ -7243,6 +7175,64 @@ expr_t* mage_t::create_expression( const std::string& name_str )
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
+  // Firestarter expressions ==================================================
+  if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "firestarter" ) )
+  {
+    enum firestarter_expr_type_e
+    {
+      FIRESTARTER_ACTIVE,
+      FIRESTARTER_REMAINS
+    };
+
+    struct firestarter_expr_t : public mage_expr_t
+    {
+      firestarter_expr_type_e type;
+
+      firestarter_expr_t( mage_t& m, const std::string& name, firestarter_expr_type_e type ) :
+        mage_expr_t( name, m ), type( type )
+      { }
+
+      double evaluate() override
+      {
+        if ( ! mage.talents.firestarter -> ok() )
+          return 0.0;
+
+        timespan_t remains;
+
+        if ( mage.firestarter_time > timespan_t::zero() )
+        {
+          remains = std::max( timespan_t::zero(), mage.firestarter_time - mage.sim -> current_time() );
+        }
+        else
+        {
+          remains = mage.target -> time_to_percent( mage.talents.firestarter -> effectN( 1 ).base_value() );
+        }
+
+        switch ( type )
+        {
+          case FIRESTARTER_ACTIVE:
+            return static_cast<double>( remains > timespan_t::zero() );
+          case FIRESTARTER_REMAINS:
+            return remains.total_seconds();
+          default:
+            return 0.0;
+        }
+      }
+    };
+
+    if ( util::str_compare_ci( splits[ 1 ], "active" ) )
+    {
+      return new firestarter_expr_t( *this, name_str, FIRESTARTER_ACTIVE );
+    }
+    else if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
+    {
+      return new firestarter_expr_t( *this, name_str, FIRESTARTER_REMAINS );
+    }
+    else
+    {
+      throw std::invalid_argument(fmt::format("Unknown firestarer operation '{}'", splits[ 1 ] ));
+    }
+  }
 
   // Temporal Flux expressions ================================================
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "temporal_flux_delay" ) )
