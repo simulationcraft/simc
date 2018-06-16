@@ -23,12 +23,12 @@
 //
 //      Name                        ID        Source (h head, s shoulders, c chest)
 //    - Echo of the Elementals      275381    Atal'Dazar (h), Kings' Rest (s|c), The Motherlode!! (c)
-//    - Synapse Shock               277671    Freehold (h|s), Siege of Boralus (s|c), Tol Dagor (h|s)
+//    + Lava Shock                  273448    ?
 //    - Natural Harmony             278697    Shrine of the Storm (c)
-//    - Volcanic Lightning          272978    Temple of Sethraliss (h|c), The Motherlode!! (s), The Underrot (s),
-//    Waycrest Manor (h|c)
 //    - Rumbling Tremors            278709    The Underrot (h)
-//    - Lava Shock                  273448    ?
+//    - Synapse Shock               277671    Freehold (h|s), Siege of Boralus (s|c), Tol Dagor (h|s)
+//    + Volcanic Lightning          272978    Temple of Sethraliss (h|c), The Motherlode!! (s), The Underrot (s),
+//    Waycrest Manor (h|c)
 //
 // Enhancement
 // - Azerite stuff
@@ -333,6 +333,8 @@ public:
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
     stat_buff_t* elemental_blast_mastery;
+
+    buff_t* lava_shock;
 
     // Enhancement
     buff_t* crash_lightning;
@@ -4797,6 +4799,13 @@ struct earth_shock_t : public shaman_spell_t
     }
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = shaman_spell_t::bonus_da( s );
+    b += p()->buff.lava_shock->stack_value();
+    return b;
+  }
+
   double action_multiplier() const override
   {
     auto m = shaman_spell_t::action_multiplier();
@@ -4816,6 +4825,7 @@ struct earth_shock_t : public shaman_spell_t
     }
 
     p()->buff.t21_2pc_elemental->expire();
+    p()->buff.lava_shock->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -4892,6 +4902,11 @@ struct flame_shock_t : public shaman_spell_t
       }
 
       p()->buff.lava_surge->trigger();
+    }
+
+    if ( p()->azerite.lava_shock.ok() )
+    {
+      p()->buff.lava_shock->trigger();
     }
   }
 };
@@ -6574,6 +6589,12 @@ void shaman_t::create_buffs()
       make_buff( this, "earthen_strength", sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger() )
           ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T21, B2 ) )
           ->set_default_value( sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+
+  buff.lava_shock = make_buff( this, "lava_shock", azerite.lava_shock )
+                        ->set_trigger_spell( find_spell( 273453 ) )
+                        ->set_default_value( azerite.lava_shock.value() )
+                        ->set_max_stack( find_spell( 273453 )->max_stacks() )
+                        ->set_duration( find_spell( 273453 )->duration() );
 
   //
   // Enhancement
