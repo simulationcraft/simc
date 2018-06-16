@@ -683,6 +683,7 @@ public:
   {
     real_ppm_t* freezing_death;
     real_ppm_t* bloodworms;
+    real_ppm_t* runic_attenuation;
   } rppm;
 
   // Pets and Guardians
@@ -3120,17 +3121,19 @@ struct melee_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
   }
 
-
   void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
 
     if ( p() -> talent.runic_attenuation -> ok() )
     {
+      if ( p() -> rppm.runic_attenuation -> trigger() )
+      {
         p() -> resource_gain( RESOURCE_RUNIC_POWER,
                               p() -> talent.runic_attenuation -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
                               p() -> gains.runic_attenuation, this );
       }
+    }
 
     if ( result_is_hit( s -> result ) )
     {
@@ -3182,10 +3185,8 @@ struct melee_t : public death_knight_melee_attack_t
       if ( ! p() -> pets.bloodworms[ i ] || p() -> pets.bloodworms[ i ] -> is_sleeping() )
       {
         p() -> pets.bloodworms[ i ] -> summon( timespan_t::from_seconds( p() -> talent.bloodworms -> effectN( 3 ).base_value() ) ); 
-        return;
       }
     }
-    return;
   }
 };
 
@@ -6844,8 +6845,9 @@ void death_knight_t::init_rng()
 {
   player_t::init_rng();
 
-  rppm.freezing_death = get_rppm ( "freezing_death", sets -> set( DEATH_KNIGHT_FROST, T21, B4 ) );
+  rppm.freezing_death = get_rppm( "freezing_death", sets -> set( DEATH_KNIGHT_FROST, T21, B4 ) );
   rppm.bloodworms = get_rppm( "bloodworms", talent.bloodworms );
+  rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
 }
 
 // death_knight_t::init_base ================================================
