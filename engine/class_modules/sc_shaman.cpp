@@ -321,6 +321,8 @@ public:
     buff_t* ascendance;
     buff_t* ghost_wolf;
 
+    buff_t* synapse_shock;
+
     // Elemental, Restoration
     buff_t* lava_surge;
 
@@ -3859,6 +3861,16 @@ struct chain_lightning_overload_t : public chained_overload_base_t
                                p->find_spell( 190493 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
   {
   }
+
+  void impact( action_state_t* state ) override
+  {
+    chained_overload_base_t::impact( state );
+
+    if ( p()->azerite.synapse_shock.ok() )
+    {
+      p()->buff.synapse_shock->trigger();
+    }
+  }
 };
 
 struct lava_beam_overload_t : public chained_overload_base_t
@@ -3965,9 +3977,15 @@ struct chain_lightning_t : public chained_base_t
   void impact( action_state_t* state ) override
   {
     chained_base_t::impact( state );
+
     if ( p()->azerite.volcanic_lightning.ok() )
     {
       td( state->target )->debuff.volcanic_lightning->trigger();
+    }
+
+    if ( p()->azerite.synapse_shock.ok() )
+    {
+      p()->buff.synapse_shock->trigger();
     }
   }
 };
@@ -4286,6 +4304,16 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   {
     maelstrom_gain = player->find_spell( 190493 )->effectN( 4 ).resource( RESOURCE_MAELSTROM );
   }
+
+  void impact( action_state_t* state ) override
+  {
+    elemental_overload_spell_t::impact( state );
+
+    if ( p()->azerite.synapse_shock.ok() )
+    {
+      p()->buff.synapse_shock->trigger();
+    }
+  }
 };
 
 struct lightning_bolt_t : public shaman_spell_t
@@ -4383,6 +4411,10 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( p()->azerite.volcanic_lightning.ok() )
     {
       td( target )->debuff.volcanic_lightning->trigger();
+    }
+    if ( p()->azerite.synapse_shock.ok() )
+    {
+      p()->buff.synapse_shock->trigger();
     }
   }
 
@@ -6591,10 +6623,14 @@ void shaman_t::create_buffs()
           ->set_default_value( sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
   buff.lava_shock = make_buff( this, "lava_shock", azerite.lava_shock )
-                        ->set_trigger_spell( find_spell( 273453 ) )
                         ->set_default_value( azerite.lava_shock.value() )
+                        ->set_trigger_spell( find_spell( 273453 ) )
                         ->set_max_stack( find_spell( 273453 )->max_stacks() )
                         ->set_duration( find_spell( 273453 )->duration() );
+
+  buff.synapse_shock = make_buff<stat_buff_t>( this, "synapse_shock", find_spell( 277960 ) )
+                           ->add_stat( STAT_AGI_INT, azerite.synapse_shock.value() )
+                           ->set_trigger_spell( azerite.synapse_shock );
 
   //
   // Enhancement
