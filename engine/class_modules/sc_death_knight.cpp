@@ -589,10 +589,11 @@ public:
     const spell_data_t* frostscythe;
     const spell_data_t* frozen_pulse;
     const spell_data_t* gathering_storm;
-
+    
     // Tier 7
     const spell_data_t* obliteration;
     const spell_data_t* breath_of_sindragosa;
+    const spell_data_t* frostwyrms_fury;
 
     // Unholy
 
@@ -4645,6 +4646,23 @@ struct frostscythe_t : public death_knight_melee_attack_t
   }
 };
 
+// Frostwyrm's Fury ========================================================
+
+// TODO: Fancy targeting
+struct frostwyrms_fury_t : public death_knight_spell_t
+{
+  frostwyrms_fury_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "frostwyrms_fury", p, p -> talent.frostwyrms_fury )
+  {
+    parse_options( options_str );
+
+    aoe = -1;
+
+    parse_effect_data( p -> find_spell( 279303 ) -> effectN( 1 ) );
+  }
+};
+
+
 // Frost Strike =============================================================
 
 struct frost_strike_strike_t : public death_knight_melee_attack_t
@@ -6614,6 +6632,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
   if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
   if ( name == "obliteration"             ) return new obliteration_t             ( this, options_str );
+  if ( name == "frostwyrms_fury"          ) return new frostwyrms_fury_t          ( this, options_str );
 
   // Unholy Actions
   if ( name == "army_of_the_dead"         ) return new army_of_the_dead_t         ( this, options_str );
@@ -6936,6 +6955,7 @@ void death_knight_t::init_spells()
   // Tier 7
   talent.obliteration          = find_talent_spell( "Obliteration" );
   talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
+  talent.frostwyrms_fury       = find_talent_spell( "Frostwyrm's Fury" );
 	
 
   // Unholy Talents
