@@ -6629,7 +6629,8 @@ void shaman_t::create_buffs()
                         ->set_duration( find_spell( 273453 )->duration() );
 
   buff.synapse_shock = make_buff<stat_buff_t>( this, "synapse_shock", find_spell( 277960 ) )
-                           ->add_stat( STAT_AGI_INT, azerite.synapse_shock.value() )
+                           ->add_stat( STAT_INTELLECT, azerite.synapse_shock.value() )
+                           ->add_stat( STAT_AGILITY, azerite.synapse_shock.value() )
                            ->set_trigger_spell( azerite.synapse_shock );
 
   //
