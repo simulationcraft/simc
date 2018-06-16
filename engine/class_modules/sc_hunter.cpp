@@ -1556,7 +1556,7 @@ public:
     ab::init();
 
     if ( affected_by.aspect_of_the_beast )
-      base_multiplier *= 1.0 + ab::o() -> talents.aspect_of_the_beast -> effectN( 1 ).percent();
+      ab::base_multiplier *= 1.0 + ab::o() -> talents.aspect_of_the_beast -> effectN( 1 ).percent();
   }
 
   hunter_main_pet_td_t* td( player_t* t = nullptr ) const
