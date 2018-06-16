@@ -1688,15 +1688,17 @@ struct kill_command_sv_t: public hunter_pet_action_t < hunter_main_pet_t, attack
   double composite_attack_power() const override
   { return o() -> cache.attack_power() * o() -> composite_attack_power_multiplier(); }
 
-  void execute() override
+  void trigger_dot( action_state_t* s ) override
   {
-    base_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) && o() -> talents.bloodseeker -> ok() )
+    if ( o() -> talents.bloodseeker -> ok() )
     {
-      p() -> buffs.predator -> trigger();
-      o() -> buffs.predator -> trigger();
+      if ( ! get_dot( s -> target ) -> is_ticking() )
+      {
+        p() -> buffs.predator -> trigger();
+        o() -> buffs.predator -> trigger();
+      }
     }
+    base_t::trigger_dot( s );
   }
 
   void last_tick( dot_t* d ) override
