@@ -3960,13 +3960,12 @@ struct chain_lightning_t : public chained_base_t
     return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
   }
 
-  void execute() override
+  void impact( action_state_t* state ) override
   {
-    shaman_spell_t::execute();
-
+    chained_base_t::impact( state );
     if ( p()->azerite.volcanic_lightning.ok() )
     {
-      td( target )->debuff.volcanic_lightning->trigger();
+      td( state->target )->debuff.volcanic_lightning->trigger();
     }
   }
 };
