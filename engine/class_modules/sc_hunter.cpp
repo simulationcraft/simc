@@ -3381,7 +3381,7 @@ struct harpoon_t: public hunter_melee_attack_t
       terms_of_engagement -> execute();
     }
 
-    first_harpoon = false;
+    first_harpoon = true;
 
     if ( p() -> legendary.sv_waist -> ok() )
       td( execute_state -> target ) -> debuffs.mark_of_helbrine -> trigger();
