@@ -415,8 +415,8 @@ public:
     buff_t* vampiric_blood;
     buff_t* will_of_the_necropolis;
     buff_t* remorseless_winter;
-    buff_t* hungering_rune_weapon;
-    haste_buff_t* hungering_rune_weapon_haste;
+    buff_t* empower_rune_weapon;
+    haste_buff_t* empower_rune_weapon_haste;
     buff_t* t20_2pc_unholy;
     buff_t* t20_4pc_frost;
     buff_t* t20_blood;
@@ -460,7 +460,6 @@ public:
     cooldown_t* defile;
     cooldown_t* empower_rune_weapon;
     cooldown_t* frost_fever;
-    cooldown_t* hungering_rune_weapon;
     cooldown_t* icecap;
     cooldown_t* pillar_of_frost;
     cooldown_t* rune_strike;
@@ -492,7 +491,6 @@ public:
     gain_t* festering_wound;
     gain_t* frost_fever;
     gain_t* horn_of_winter;
-    gain_t* hungering_rune_weapon;
     gain_t* murderous_efficiency;
     gain_t* power_refund;
     gain_t* rune;
@@ -595,7 +593,6 @@ public:
     // Tier 7
     const spell_data_t* obliteration;
     const spell_data_t* breath_of_sindragosa;
-    const spell_data_t* hungering_rune_weapon;
 
     // Unholy
 
@@ -796,7 +793,6 @@ public:
     cooldown.death_and_decay = get_cooldown( "death_and_decay" );
     cooldown.defile = get_cooldown( "defile" );
     cooldown.empower_rune_weapon = get_cooldown( "empower_rune_weapon" );
-    cooldown.hungering_rune_weapon = get_cooldown( "hungering_rune_weapon" );
     cooldown.icecap = get_cooldown( "icecap" );
     cooldown.pillar_of_frost = get_cooldown( "pillar_of_frost" );
     cooldown.rune_strike = get_cooldown( "rune_strike" );
@@ -4420,6 +4416,25 @@ struct death_strike_t : public death_knight_melee_attack_t
 
 // Empower Rune Weapon ======================================================
 
+struct empower_rune_weapon_buff_t : public buff_t
+{
+  empower_rune_weapon_buff_t( death_knight_t* p ) :
+    buff_t( buff_creator_t( p, "empower_rune_weapon", p -> spec.empower_rune_weapon )
+            .cd( timespan_t::zero() ) // Handled in the action
+            .period( p -> spec.empower_rune_weapon -> effectN( 1 ).period() )
+            .tick_callback( [ this, p ]( buff_t* b, int, const timespan_t& ) {
+    p -> replenish_rune( b -> data().effectN( 1 ).base_value(),
+                         p -> gains.empower_rune_weapon );
+
+    p -> resource_gain( RESOURCE_RUNIC_POWER,
+                        b -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                        p -> gains.empower_rune_weapon );
+    } ) )
+  {
+    tick_zero = true;
+  }
+};
+
 struct empower_rune_weapon_t : public death_knight_spell_t
 {
   empower_rune_weapon_t( death_knight_t* p, const std::string& options_str ) :
@@ -4430,6 +4445,9 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     harmful = false;
     // Handle energize in a custom way
     energize_type = ENERGIZE_NONE;
+
+    // Buff handles the ticking, this one just triggers the buff
+    dot_duration = base_tick_time = timespan_t::zero();
   }
 
   void init() override
@@ -4446,40 +4464,8 @@ struct empower_rune_weapon_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> resource_gain( RESOURCE_RUNIC_POWER,
-                          p() -> spec.empower_rune_weapon -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER ) * 10 ,
-                          p() -> gains.empower_rune_weapon );
-
-    double filled = 0, overflow = 0;
-    for ( auto& rune: p() -> _runes.slot )
-    {
-      if ( rune.is_depleted() )
-      {
-        filled += 1;
-      }
-      else if ( rune.is_regenerating() )
-      {
-        auto fill_level = rune.fill_level();
-        filled += 1.0 - fill_level;
-        overflow += fill_level;
-      }
-      else
-      {
-        continue;
-      }
-
-      rune.fill_rune( p() -> gains.empower_rune_weapon );
-    }
-  }
-
-  bool ready() override
-  {
-    if ( p() -> talent.hungering_rune_weapon -> ok() )
-    {
-      return false;
-    }
-
-    return death_knight_spell_t::ready();
+    p() -> buffs.empower_rune_weapon -> trigger();
+    p() -> buffs.empower_rune_weapon_haste -> trigger();
   }
 };
 
@@ -5015,47 +5001,6 @@ struct howling_blast_t : public death_knight_spell_t
 
     if ( result_is_hit( s -> result ) )
       p() -> apply_diseases( s, DISEASE_FROST_FEVER );
-  }
-};
-
-// Hungering Rune Weapon ======================================================
-
-struct hungering_rune_weapon_t : public death_knight_spell_t
-{
-  hungering_rune_weapon_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "hungering_rune_weapon", p, p -> talent.hungering_rune_weapon )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-    // Handle energize in a custom way
-    energize_type = ENERGIZE_NONE;
-
-    // Buff handles the ticking, this one just triggers the buff
-    dot_duration = base_tick_time = timespan_t::zero();
-  }
-
-  void init() override
-  {
-    death_knight_spell_t::init();
-
-    cooldown -> charges = data().charges() + 
-      p() -> legendary.seal_of_necrofantasia -> effectN( 1 ).base_value();
-    cooldown -> duration = data().charge_cooldown() *
-      ( 1.0 + p() -> legendary.seal_of_necrofantasia -> effectN( 2 ).percent() );
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    // Emulate immediate gain
-    p() -> replenish_rune( data().effectN( 1 ).base_value(), p() -> gains.hungering_rune_weapon );
-    p() -> resource_gain( RESOURCE_RUNIC_POWER,
-                          data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                          p() -> gains.hungering_rune_weapon );
-    p() -> buffs.hungering_rune_weapon -> trigger();
-    p() -> buffs.hungering_rune_weapon_haste -> trigger();
   }
 };
 
@@ -6216,41 +6161,6 @@ struct remorseless_winter_buff_t : public buff_t
   }
 };
 
-// Hungering Rune Weapon
-
-// Hungering Rune Weapon buff needs two tick periods for the Rune and Runic Power replenishment.
-// Simc does not really support this, so we fake it by ticking faster (every 500ms), and triggering
-// the replenishment every third and second tick, respectively.
-struct hungering_rune_weapon_buff_t : public buff_t
-{
-  int rune_divisor, rp_divisor;
-
-  hungering_rune_weapon_buff_t( death_knight_t* p ) :
-    buff_t( buff_creator_t( p, "hungering_rune_weapon", p -> talent.hungering_rune_weapon )
-            .cd( timespan_t::zero() ) // Handled in the action
-                                      // 500MS tick time
-            .period( p -> talent.hungering_rune_weapon -> effectN( 1 ).period() / 3.0 )
-            .tick_callback( [ this, p ]( buff_t* b, int, const timespan_t& ) {
-    if ( b -> current_tick % rune_divisor == 0 )
-    {
-      p -> replenish_rune( b -> data().effectN( 1 ).base_value(),
-                           p -> gains.hungering_rune_weapon );
-    }
-
-    if ( b -> current_tick % rp_divisor == 0 )
-    {
-      p -> resource_gain( RESOURCE_RUNIC_POWER,
-                          b -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                          p -> gains.hungering_rune_weapon );
-    }
-  } ) ),
-    rune_divisor( p -> talent.hungering_rune_weapon -> ok() ? as<int>(p -> talent.hungering_rune_weapon -> effectN( 1 ).period() / buff_period) : 1 ),
-    rp_divisor( p -> talent.hungering_rune_weapon -> ok() ? as<int>(p -> talent.hungering_rune_weapon -> effectN( 2 ).period() / buff_period) : 1)
-  {
-
-  }
-};
-
 } // UNNAMED NAMESPACE
 
 void runeforge::fallen_crusader( special_effect_t& effect )
@@ -6703,7 +6613,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "frostscythe"              ) return new frostscythe_t              ( this, options_str );
   if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
   if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
-  if ( name == "hungering_rune_weapon"    ) return new hungering_rune_weapon_t    ( this, options_str );
   if ( name == "obliteration"             ) return new obliteration_t             ( this, options_str );
 
   // Unholy Actions
@@ -6868,7 +6777,7 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.unholy_frenzy -> check_value() );
 	
-  haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );
+  haste *= 1.0 / ( 1.0 + buffs.empower_rune_weapon_haste -> check_value() );
   
   if ( buffs.bone_shield -> up() )
   {
@@ -6895,7 +6804,7 @@ double death_knight_t::composite_spell_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.unholy_frenzy -> check_value() );
 	
-  haste *= 1.0 / ( 1.0 + buffs.hungering_rune_weapon_haste -> check_value() );
+  haste *= 1.0 / ( 1.0 + buffs.empower_rune_weapon_haste -> check_value() );
   
   if ( buffs.bone_shield -> up() )
   {
@@ -7027,7 +6936,6 @@ void death_knight_t::init_spells()
   // Tier 7
   talent.obliteration          = find_talent_spell( "Obliteration" );
   talent.breath_of_sindragosa  = find_talent_spell( "Breath of Sindragosa" );
-  talent.hungering_rune_weapon = find_talent_spell( "Hungering Rune Weapon" );
 	
 
   // Unholy Talents
@@ -7341,19 +7249,17 @@ void death_knight_t::default_apl_frost()
                            "if=!talent.obliteration.enabled|buff.obliteration.up" );
 
   // In-combat potion
-  cooldowns -> add_action( "potion,if=buff.pillar_of_frost.up&(dot.breath_of_sindragosa.ticking|buff.obliteration.up|talent.hungering_rune_weapon.enabled)" );
+  cooldowns -> add_action( "potion,if=buff.pillar_of_frost.up&(dot.breath_of_sindragosa.ticking|buff.obliteration.up)" );
 
   // Pillar of Frost
   cooldowns -> add_action( this, "Pillar of Frost", "if=talent.obliteration.enabled&(cooldown.obliteration.remains>20|cooldown.obliteration.remains<10|!talent.icecap.enabled)", "Pillar of frost conditions" );
   cooldowns -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.ready&runic_power>50" );
   cooldowns -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>40" );
-  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.hungering_rune_weapon.enabled" );
 
   // Tier 100 cooldowns + Cold Heart
   cooldowns -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
   cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&!buff.obliteration.up&debuff.razorice.stack=5)|target.time_to_die<=gcd)" );
   cooldowns -> add_talent( this, "Obliteration", "if=rune>=1&runic_power>=20&(!talent.frozen_pulse.enabled|rune<2|buff.pillar_of_frost.remains<=12)&(!talent.gathering_storm.enabled|!cooldown.remorseless_winter.ready)&(buff.pillar_of_frost.up|!talent.icecap.enabled)" );
-  cooldowns -> add_talent( this, "Hungering Rune Weapon", "if=!buff.hungering_rune_weapon.up&rune.time_to_2>gcd&runic_power<40" );
 
   // Cold Heart conditionals
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack=20&buff.unholy_strength.react&cooldown.pillar_of_frost.remains>6", "Cold heart conditions" );
@@ -7377,11 +7283,11 @@ void death_knight_t::default_apl_frost()
   standard -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<=gcd", "Standard rotation" );
   standard -> add_action( this, "Frost Strike", "if=talent.shattering_strikes.enabled&debuff.razorice.stack=5&buff.gathering_storm.stack<2&!buff.rime.up" );
   standard -> add_action( this, "Remorseless Winter", "if=(buff.rime.up&equipped.perseverance_of_the_ebon_martyr)|talent.gathering_storm.enabled" );
-  standard -> add_action( this, "Obliterate", "if=(equipped.koltiras_newfound_will&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1)|rune.time_to_4<gcd&buff.hungering_rune_weapon.up" );
+  standard -> add_action( this, "Obliterate", "if=(equipped.koltiras_newfound_will&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1)|rune.time_to_4<gcd" );
   standard -> add_action( this, "Frost Strike", "if=(!talent.shattering_strikes.enabled|debuff.razorice.stack<5)&runic_power.deficit<10" );
   standard -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   standard -> add_action( this, "Obliterate", "if=(equipped.koltiras_newfound_will&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1)|rune.time_to_5<gcd" );
-  standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<10&!buff.hungering_rune_weapon.up" );
+  standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<10" );
   standard -> add_talent( this, "Frostscythe", "if=buff.killing_machine.react&(!equipped.koltiras_newfound_will|spell_targets.frostscythe>=2)" );
   standard -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
   standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<20" );
@@ -7389,7 +7295,7 @@ void death_knight_t::default_apl_frost()
   standard -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
   standard -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
   standard -> add_action( this, "Obliterate", "if=!talent.gathering_storm.enabled|cooldown.remorseless_winter.remains>(gcd*2)" );
-  standard -> add_talent( this, "Horn of Winter", "if=!buff.hungering_rune_weapon.up&(rune.time_to_2>gcd|!talent.frozen_pulse.enabled)" );
+  standard -> add_talent( this, "Horn of Winter", "if=rune.time_to_2>gcd|!talent.frozen_pulse.enabled" );
   standard -> add_action( this, "Frost Strike", "if=!(runic_power<50&talent.obliteration.enabled&cooldown.obliteration.remains<=gcd)" );
   standard -> add_action( this, "Obliterate", "if=!talent.gathering_storm.enabled|talent.icy_talons.enabled" );
   standard -> add_action( this, "Empower Rune Weapon", "if=!talent.breath_of_sindragosa.enabled|target.time_to_die<cooldown.breath_of_sindragosa.remains" );
@@ -7627,10 +7533,10 @@ void death_knight_t::create_buffs()
   // Must be created after Gathering Storms buff (above) to get correct linkage
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
-  buffs.hungering_rune_weapon = new hungering_rune_weapon_buff_t( this );
-  buffs.hungering_rune_weapon_haste = make_buff<haste_buff_t>( this, "hungering_rune_weapon_haste", talent.hungering_rune_weapon );
-  buffs.hungering_rune_weapon_haste->set_default_value( talent.hungering_rune_weapon -> effectN( 3 ).percent() )
-    ->set_trigger_spell( talent.hungering_rune_weapon );
+  buffs.empower_rune_weapon = new empower_rune_weapon_buff_t( this );
+  buffs.empower_rune_weapon_haste = make_buff<haste_buff_t>( this, "empower_rune_weapon_haste", spec.empower_rune_weapon );
+  buffs.empower_rune_weapon_haste->set_default_value( spec.empower_rune_weapon -> effectN( 3 ).percent() )
+    ->set_trigger_spell( spec.empower_rune_weapon );
 
   buffs.t20_2pc_unholy = buff_creator_t( this, "master_of_ghouls", find_spell( 246995 ) )
     .trigger_spell( sets -> set( DEATH_KNIGHT_UNHOLY, T20, B2 ) )
@@ -7654,7 +7560,6 @@ void death_knight_t::init_gains()
 
   gains.antimagic_shell                  = get_gain( "Antimagic Shell"            );
   gains.horn_of_winter                   = get_gain( "Horn of Winter"             );
-  gains.hungering_rune_weapon            = get_gain( "Hungering Rune Weapon"      );
   gains.frost_fever                      = get_gain( "Frost Fever"                );
   gains.festering_wound                  = get_gain( "Festering Wound"            );
   gains.murderous_efficiency             = get_gain( "Murderous Efficiency"       );
