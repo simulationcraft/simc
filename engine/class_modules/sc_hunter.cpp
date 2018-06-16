@@ -3332,7 +3332,10 @@ struct harpoon_t: public hunter_melee_attack_t
     cooldown -> duration += p -> find_spell( 231550 ) -> effectN( 1 ).time_value(); // Harpoon (Rank 2)
 
     if ( p -> talents.terms_of_engagement -> ok() )
+    {
       terms_of_engagement = p -> get_background_action<terms_of_engagement_t>( "harpoon_terms_of_engagement" );
+      add_child( terms_of_engagement );
+    }
   }
 
   void execute() override
