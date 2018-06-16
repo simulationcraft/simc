@@ -3318,14 +3318,10 @@ struct harpoon_t: public hunter_melee_attack_t
       p() -> buffs.terms_of_engagement -> trigger();
     }
   };
-  terms_of_engagement_t* terms_of_engagement;
-
-  bool first_harpoon;
+  terms_of_engagement_t* terms_of_engagement = nullptr;
 
   harpoon_t( hunter_t* p, const std::string& options_str ):
-    hunter_melee_attack_t( "harpoon", p, p -> specs.harpoon ),
-    terms_of_engagement( nullptr ),
-    first_harpoon( true )
+    hunter_melee_attack_t( "harpoon", p, p -> specs.harpoon )
   {
     parse_options( options_str );
 
@@ -3349,27 +3345,17 @@ struct harpoon_t: public hunter_melee_attack_t
       terms_of_engagement -> execute();
     }
 
-    first_harpoon = false;
-
     if ( p() -> legendary.sv_waist -> ok() )
       td( execute_state -> target ) -> debuffs.mark_of_helbrine -> trigger();
   }
 
   bool ready() override
   {
-    if ( first_harpoon )
-      return hunter_melee_attack_t::ready();
-
-    if ( p() -> current.distance_to_move < data().min_range() )
-      return false;
+    // XXX: disable this for now to actually make it usable without explicit apl support for movement
+    //if ( p() -> current.distance_to_move < data().min_range() )
+    //  return false;
 
     return hunter_melee_attack_t::ready();
-  }
-
-  void reset() override
-  {
-    action_t::reset();
-    first_harpoon = true;
   }
 };
 
@@ -4294,7 +4280,8 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
 {
   debuffs.mark_of_helbrine =
     make_buff( *this, "mark_of_helbrine", p -> find_spell( 213156 ) )
-    ->set_default_value( p -> find_spell( 213154 ) -> effectN( 1 ).percent() );
+      -> set_default_value( p -> find_spell( 213154 ) -> effectN( 1 ).percent() )
+      -> set_cooldown( p -> sim -> max_time * 3 );
 
   debuffs.unseen_predators_cloak =
     make_buff( *this, "unseen_predators_cloak", p -> find_spell( 248212 ) )
