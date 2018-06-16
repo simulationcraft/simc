@@ -767,7 +767,7 @@ void paladin_t::trigger_grand_crusader()
 
 void paladin_t::trigger_holy_shield( action_state_t* s )
 {
-  // escape if we don't have Holy Shield 
+  // escape if we don't have Holy Shield
   if ( ! talents.holy_shield -> ok() )
     return;
 

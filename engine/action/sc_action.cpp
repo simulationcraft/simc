@@ -3059,7 +3059,13 @@ expr_t* action_t::create_expression( const std::string& name_str )
         action_expr_t( "prev_gcd", a ),
         gcd( gcd ), // prevgcd.1.action will mean 1 gcd ago, prevgcd.2.action will mean 2 gcds ago, etc.
         previously_used( a.player -> find_action( prev_action ) )
-      { }
+      {
+        if (!previously_used)
+        {
+          a.sim->print_debug("{} could not find action '{}' while setting up prev_gcd expression.",
+              a.player->name(), prev_action);
+        }
+      }
 
       virtual double evaluate() override
       {
@@ -3079,7 +3085,14 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     if ( dot_t* dot = target -> find_dot( splits[ 1 ], player ) )
     {
-      return dot_t::create_expression( dot, this, splits[ 2 ], false );
+      if (auto expr = dot_t::create_expression( dot, this, splits[ 2 ], false ))
+      {
+        return expr;
+      }
+      else
+      {
+        throw std::invalid_argument(fmt::format("Cannot create a valid dot expression from '{}'", splits[ 2 ]));
+      }
     }
     throw std::invalid_argument(fmt::format("Cannot find any dot with name '{}'.", splits[ 1 ]));
   }

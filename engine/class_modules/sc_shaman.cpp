@@ -19,6 +19,16 @@
 //   - Add Spirit Wolf
 // - Add Meteor to Primal Fire Elemental instead of Fire Nova
 // - Add Eye of the Storm to Primal Storm Elemental instead of Gale Force
+// - Add Azerite traits
+//
+//      Name                        ID        Source (h head, s shoulders, c chest)
+//    - Echo of the Elementals      275381    Atal'Dazar (h), Kings' Rest (s|c), The Motherlode!! (c)
+//    - Synapse Shock               277671    Freehold (h|s), Siege of Boralus (s|c), Tol Dagor (h|s)
+//    - Natural Harmony             278697    Shrine of the Storm (c)
+//    - Volcanic Lightning          272978    Temple of Sethraliss (h|c), The Motherlode!! (s), The Underrot (s),
+//    Waycrest Manor (h|c)
+//    - Rumbling Tremors            278709    The Underrot (h)
+//    - Lava Shock                  273448    ?
 //
 // Enhancement
 // - Azerite stuff
@@ -184,6 +194,7 @@ struct shaman_td_t : public actor_target_data_t
   {
     // Elemental
     buff_t* exposed_elements;
+    buff_t* volcanic_lightning;
 
     // Enhancement
     buff_t* earthen_spike;
@@ -503,6 +514,18 @@ public:
   struct artifact_spell_data_t
   {
   } artifact;
+
+  // Azerite traits
+  struct
+  {
+    // Elemental
+    azerite_power_t echo_of_the_elementals;
+    azerite_power_t lava_shock;
+    azerite_power_t natural_harmony;
+    azerite_power_t rumbling_tremors;
+    azerite_power_t synapse_shock;
+    azerite_power_t volcanic_lightning;
+  } azerite;
 
   // Misc Spells
   struct
@@ -887,6 +910,10 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   debuff.exposed_elements = buff_creator_t( *this, "exposed_elements", p->talent.exposed_elements )
                                 .default_value( p->find_spell( 269808 )->effectN( 1 ).base_value() )
                                 .duration( p->find_spell( 269808 )->duration() );
+  debuff.volcanic_lightning = buff_creator_t( *this, "volcanic_lightning", p->azerite.volcanic_lightning )
+                                  .trigger_spell( p->find_spell( 272981 ) )
+                                  .duration( p->find_spell( 272981 )->duration() )
+                                  .default_value( p->azerite.volcanic_lightning.value() );
 
   // Enhancement
   dot.searing_assault  = target->get_dot( "searing_assault", p );
@@ -3932,6 +3959,15 @@ struct chain_lightning_t : public chained_base_t
   {
     return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
   }
+
+  void impact( action_state_t* state ) override
+  {
+    chained_base_t::impact( state );
+    if ( p()->azerite.volcanic_lightning.ok() )
+    {
+      td( state->target )->debuff.volcanic_lightning->trigger();
+    }
+  }
 };
 
 struct lava_beam_t : public chained_base_t
@@ -3989,9 +4025,9 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::composite_target_crit_chance( t );
 
-    if ( p()->spec.lava_burst_2->ok() && td( target )->dot.flame_shock->is_ticking() )
+    if ( p()->spec.elemental_shaman->ok() )
     {
-      // hardcoded because Lava Burst 2 does not have a corresponding value
+      // hardcoded because I didn't find it in spelldata yet
       m = 1.0;
     }
 
@@ -4156,6 +4192,13 @@ struct lava_burst_t : public shaman_spell_t
     }
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = shaman_spell_t::bonus_da( s );
+    b += td( target )->debuff.volcanic_lightning->stack_value();
+    return b;
+  }
+
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
@@ -4172,9 +4215,9 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_crit_chance( t );
 
-    if ( p()->spec.lava_burst_2->ok() && td( target )->dot.flame_shock->is_ticking() )
+    if ( p()->spec.elemental_shaman->ok() )
     {
-      // hardcoded because Lava Burst 2 does not have a corresponding value
+      // hardcoded because I didn't find it it spell data yet
       m = 1.0;
     }
 
@@ -4333,6 +4376,11 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( !p()->talent.overcharge->ok() && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
       reset_swing_timers();
+    }
+
+    if ( p()->azerite.volcanic_lightning.ok() )
+    {
+      td( target )->debuff.volcanic_lightning->trigger();
     }
   }
 
@@ -6067,7 +6115,20 @@ void shaman_t::init_spells()
   // Restoration
   talent.gust_of_wind = find_talent_spell( "Gust of Wind" );
 
+  //
+  // Azerite traits
+  //
+  // Elemental
+  azerite.echo_of_the_elementals = find_azerite_spell( "Echo of the Elementals" );
+  azerite.lava_shock             = find_azerite_spell( "Lava Shock" );
+  azerite.natural_harmony        = find_azerite_spell( "Natural Harmony" );
+  azerite.rumbling_tremors       = find_azerite_spell( "Rumbling Tremor" );
+  azerite.synapse_shock          = find_azerite_spell( "Synapse Shock" );
+  azerite.volcanic_lightning     = find_azerite_spell( "Volcanic Lightning" );
+
+  //
   // Misc spells
+  //
   spell.resurgence           = find_spell( 101033 );
   spell.maelstrom_melee_gain = find_spell( 187890 );
 
@@ -7176,8 +7237,7 @@ double shaman_t::composite_spell_power( school_e school ) const
       added_spell_power = 0.5 * WEAPON_POWER_COEFFICIENT;
     }
 
-    sp = composite_attack_power_multiplier() * cache.attack_power() *
-         spec.enhancement_shaman->effectN( 4 ).percent() +
+    sp = composite_attack_power_multiplier() * cache.attack_power() * spec.enhancement_shaman->effectN( 4 ).percent() +
          added_spell_power;
   }
   else
