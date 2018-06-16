@@ -19,6 +19,7 @@ namespace { // UNNAMED NAMESPACE
   Still need AP Coeff for Treants
 
   Guardian ==================================================================
+  Azerite traits
 
   Resto =====================================================================
 
@@ -3922,6 +3923,22 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     base_t( n, p, s ), gore( false )
   {
     parse_options( options_str );
+
+    // Apply Guardian Druid aura damage modifiers
+    if (p -> specialization() == DRUID_GUARDIAN)
+    {
+      // direct damage
+      if ( s -> affected_by( p -> spec.guardian -> effectN( 1 ) ) )
+      {
+        base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 1 ).percent();
+      }
+
+      // ticking damage
+      if ( s -> affected_by( p -> spec.guardian -> effectN( 2 ) ) )
+      {
+        base_td_multiplier *= 1.0 + p -> spec.guardian -> effectN( 2 ).percent();
+      }
+    }
   }
 
   virtual void execute() override
@@ -4267,7 +4284,6 @@ void druid_heal_t::init_living_seed()
 }
 
 // Frenzied Regeneration ====================================================
-// TOCHECK: Verify healing calculations match alpha.
 
 struct frenzied_regeneration_t : public heals::druid_heal_t
 {
@@ -4283,6 +4299,7 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
     target = p;
     cooldown -> hasted = true;
     hasted_ticks = false;
+    tick_zero = true;
 
     if ( p -> specialization() == DRUID_GUARDIAN )
       cooldown -> charges += p -> spec.frenzied_regeneration_2 -> effectN( 1 ).base_value();
