@@ -325,6 +325,12 @@ public:
     spell_data_ptr_t sephuzs_secret;
   } legendary;
 
+  struct azerite_t
+  {
+    // Survival
+    azerite_power_t up_close_and_personal;
+  } azerite;
+
   // Buffs
   struct buffs_t
   {
@@ -370,8 +376,10 @@ public:
     buff_t* the_mantle_of_command;
     buff_t* celerity_of_the_windrunners;
     buff_t* parsels_tongue;
-
     buff_t* sephuzs_secret;
+
+    // azerite
+    buff_t* up_close_and_personal;
   } buffs;
 
   // Cooldowns
@@ -3075,18 +3083,67 @@ struct internal_bleeding_t
   }
 };
 
+// Raptor Strike (Base) ================================================================
+// Shared part between Raptor Strike & Mongoose Bite
+
+struct raptor_strike_base_t: hunter_melee_attack_t
+{
+  internal_bleeding_t internal_bleeding;
+
+  raptor_strike_base_t( const std::string& n, hunter_t* p, const spell_data_t* s ):
+    hunter_melee_attack_t( n, p, s ),
+    internal_bleeding( p )
+  {
+  }
+
+  double cost() const override
+  {
+    double c = hunter_melee_attack_t::cost();
+
+    c += p() -> buffs.up_close_and_personal -> check_value();
+
+    return c;
+  }
+
+  void execute() override
+  {
+    hunter_melee_attack_t::execute();
+
+    p() -> buffs.vipers_venom -> trigger();
+
+    trigger_birds_of_prey( execute_state );
+
+    p() -> buffs.up_close_and_personal -> expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_melee_attack_t::impact( s );
+
+    internal_bleeding.trigger( s );
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = hunter_melee_attack_t::bonus_da( s );
+
+    if ( p() -> buffs.up_close_and_personal -> up() )
+      b += p() -> azerite.up_close_and_personal.value( 1 );
+
+    return b;
+  }
+};
+
 // Mongoose Bite =======================================================================
 
-struct mongoose_bite_t: hunter_melee_attack_t
+struct mongoose_bite_t: raptor_strike_base_t
 {
   struct {
     std::array<proc_t*, 7> at_fury;
   } stats_;
-  internal_bleeding_t internal_bleeding;
 
   mongoose_bite_t( hunter_t* p, const std::string& options_str ):
-    hunter_melee_attack_t( "mongoose_bite", p, p -> talents.mongoose_bite ),
-    internal_bleeding( p )
+    raptor_strike_base_t( "mongoose_bite", p, p -> talents.mongoose_bite )
   {
     parse_options( options_str );
 
@@ -3096,7 +3153,7 @@ struct mongoose_bite_t: hunter_melee_attack_t
 
   void execute() override
   {
-    hunter_melee_attack_t::execute();
+    raptor_strike_base_t::execute();
 
     stats_.at_fury[ p() -> buffs.mongoose_fury -> check() ] -> occur();
 
@@ -3104,27 +3161,17 @@ struct mongoose_bite_t: hunter_melee_attack_t
       p() -> buffs.t19_4p_mongoose_power -> trigger();
 
     p() -> buffs.mongoose_fury -> trigger();
-    p() -> buffs.vipers_venom -> trigger();
     p() -> buffs.butchers_bone_apron -> trigger();
     p() -> buffs.t21_4p_in_for_the_kill -> trigger();
-
-    trigger_birds_of_prey( execute_state );
   }
 
   double action_multiplier() const override
   {
-    double am = hunter_melee_attack_t::action_multiplier();
+    double am = raptor_strike_base_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.mongoose_fury -> stack_value();
 
     return am;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_melee_attack_t::impact( s );
-
-    internal_bleeding.trigger( s );
   }
 };
 
@@ -3233,13 +3280,10 @@ struct butchery_t: public hunter_melee_attack_t
 
 // Raptor Strike Attack ==============================================================
 
-struct raptor_strike_t: public hunter_melee_attack_t
+struct raptor_strike_t: public raptor_strike_base_t
 {
-  internal_bleeding_t internal_bleeding;
-
   raptor_strike_t( hunter_t* p, const std::string& options_str ):
-    hunter_melee_attack_t( "raptor_strike", p, p -> specs.raptor_strike ),
-    internal_bleeding( p )
+    raptor_strike_base_t( "raptor_strike", p, p -> specs.raptor_strike )
   {
     parse_options( options_str );
 
@@ -3251,21 +3295,16 @@ struct raptor_strike_t: public hunter_melee_attack_t
 
   void execute() override
   {
-    hunter_melee_attack_t::execute();
-
-    p() -> buffs.vipers_venom -> trigger();
-
-    trigger_birds_of_prey( execute_state );
+    raptor_strike_base_t::execute();
 
     p() -> buffs.tip_of_the_spear -> expire();
-
     p() -> buffs.t21_2p_exposed_flank -> expire();
     p() -> buffs.t21_4p_in_for_the_kill -> expire();
   }
 
   double action_multiplier() const override
   {
-    double am = hunter_melee_attack_t::action_multiplier();
+    double am = raptor_strike_base_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.tip_of_the_spear -> stack_value();
     am *= 1.0 + p() -> buffs.t21_4p_in_for_the_kill -> stack_value();
@@ -3275,7 +3314,7 @@ struct raptor_strike_t: public hunter_melee_attack_t
 
   double composite_crit_chance() const override
   {
-    double cc = hunter_melee_attack_t::composite_crit_chance();
+    double cc = raptor_strike_base_t::composite_crit_chance();
 
     cc += p() -> buffs.t21_2p_exposed_flank -> value();
 
@@ -3284,20 +3323,13 @@ struct raptor_strike_t: public hunter_melee_attack_t
 
   double composite_crit_damage_bonus_multiplier() const override
   {
-    double cdm = hunter_melee_attack_t::composite_crit_damage_bonus_multiplier();
+    double cdm = raptor_strike_base_t::composite_crit_damage_bonus_multiplier();
 
     // TODO: check if it's a "bonus" or an "extra bonus"
     if ( p() -> buffs.t21_2p_exposed_flank -> check() )
       cdm *= 1.0 + p() -> buffs.t21_2p_exposed_flank -> data().effectN( 2 ).percent();
 
     return cdm;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_melee_attack_t::impact( s );
-
-    internal_bleeding.trigger( s );
   }
 };
 
@@ -3352,6 +3384,8 @@ struct harpoon_t: public hunter_melee_attack_t
 
     if ( p() -> legendary.sv_waist -> ok() )
       td( execute_state -> target ) -> debuffs.mark_of_helbrine -> trigger();
+
+    p() -> buffs.up_close_and_personal -> trigger();
   }
 
   bool ready() override
@@ -4613,6 +4647,8 @@ void hunter_t::init_spells()
   specs.raptor_strike        = find_specialization_spell( "Raptor Strike" );
   specs.wildfire_bomb        = find_specialization_spell( "Wildfire Bomb" );
   specs.carve                = find_specialization_spell( "Carve" );
+
+  azerite.up_close_and_personal = find_azerite_spell( "Up Close And Personal" );
 }
 
 // hunter_t::init_base ======================================================
@@ -4839,6 +4875,13 @@ void hunter_t::create_buffs()
     make_buff( this, "t21_4p_in_for_the_kill", find_spell( 252095 ) )
       -> set_default_value( find_spell( 252095 ) -> effectN( 1 ).percent() )
       -> set_trigger_spell( sets -> set( HUNTER_SURVIVAL, T21, B4 ) );
+
+  // Azerite
+
+  buffs.up_close_and_personal =
+    make_buff( this, "up_close_and_personal", find_spell( 279593 ) )
+      -> set_default_value( azerite.up_close_and_personal.spell() -> effectN( 2 ).base_value() )
+      -> set_trigger_spell( azerite.up_close_and_personal );
 }
 
 // hunter_t::init_special_effects ===========================================
