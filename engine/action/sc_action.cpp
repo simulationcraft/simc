@@ -3167,7 +3167,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     // Return target(.n).tail expression if we have one
     if ( expr_target )
     {
-      if ( expr_t* e = expr_target -> create_expression( tail ) )
+      if ( expr_t* e = expr_target -> create_action_expression( *this, tail ) )
       {
         return e;
       }
@@ -3200,7 +3200,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
         if ( !expr )
         {
-          expr = action.target -> create_expression( suffix_expr_str );
+          expr = action.target -> create_action_expression( action, suffix_expr_str );
           if (!expr)
           {
             throw std::invalid_argument(fmt::format("Cannot create dynamic target expression for target '{}' from '{}'.",
@@ -3296,7 +3296,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     std::string rest = splits[1];
     for ( size_t i = 2; i < splits.size(); ++i )
       rest += '.' + splits[i];
-    return player -> create_expression( rest );
+    return player -> create_action_expression( *this, rest );
   }
 
   // necessary for sim.target.*
@@ -3308,7 +3308,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return sim -> create_expression( rest );
   }
 
-  return player -> create_expression( name_str );
+  return player -> create_action_expression( *this, name_str );
 }
 
 // action_t::ppm_proc_chance ================================================

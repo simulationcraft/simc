@@ -4068,6 +4068,7 @@ struct player_t : public actor_t
   virtual void dismiss_pet( const std::string& name );
 
   virtual expr_t* create_expression( const std::string& name );
+  virtual expr_t* create_action_expression( action_t&, const std::string& name );
 
   virtual void create_options();
   void recreate_talent_str( talent_format_e format = TALENT_FORMAT_NUMBERS );

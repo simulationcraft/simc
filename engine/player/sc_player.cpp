@@ -9056,6 +9056,17 @@ expr_t* deprecated_player_expressions( player_t& player, const std::string& expr
 
 }  // namespace
 
+/**
+ * Player specific action expressions
+ *
+ * Use this function for expressions which are bound to some action property (eg. target, cast_time, etc.) and not just
+ * to the player itself.
+ */
+expr_t* player_t::create_action_expression( action_t&, const std::string& name )
+{
+  return create_expression( name );
+}
+
 expr_t* player_t::create_expression( const std::string& expression_str )
 {
   if (expr_t* e = deprecated_player_expressions(*this, expression_str))
