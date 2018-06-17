@@ -17,7 +17,7 @@
 // Elemental
 // - Add Talents
 //   - Add Spirit Wolf
-// - Add Meteor to Primal Fire Elemental instead of Fire Nova
+// - Add Fire Elemental passive effect
 // - Add Eye of the Storm to Primal Storm Elemental instead of Gale Force
 // - Add Azerite traits
 //
@@ -335,6 +335,7 @@ public:
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
     stat_buff_t* elemental_blast_mastery;
+    buff_t* wind_gust;  // Storm Elemental passive 263806
 
     buff_t* lava_shock;
 
@@ -393,7 +394,6 @@ public:
     gain_t* feral_spirit;
     gain_t* spirit_of_the_maelstrom;
     gain_t* resonance_totem;
-    gain_t* wind_gust;
     gain_t* forceful_winds;
     gain_t* lightning_shield_overcharge;
   } gain;
@@ -2461,6 +2461,12 @@ struct storm_elemental_t : public primal_elemental_t
 
     return primal_elemental_t::create_action( name, options_str );
   }
+
+  void dismiss( bool expired ) override
+  {
+    primal_elemental_t::dismiss( expired );
+    o()->buff.wind_gust->expire();
+  }
 };
 
 }  // namespace pet
@@ -3958,7 +3964,7 @@ struct chain_lightning_t : public chained_base_t
       return ( shaman_spell_t::execute_time() * ( 1 + p()->talent.stormkeeper->effectN( 1 ).percent() ) );
     }
 
-    return shaman_spell_t::execute_time();
+    return shaman_spell_t::execute_time() * ( 1.0 + p()->buff.wind_gust->stack_value() );
   }
 
   bool ready() override
@@ -3987,6 +3993,31 @@ struct chain_lightning_t : public chained_base_t
     if ( p()->azerite.synapse_shock.ok() )
     {
       p()->buff.synapse_shock->trigger();
+    }
+  }
+
+  void execute() override
+  {
+    chained_base_t::execute();
+
+    // Storm Elemental Wind Gust passive buff trigger
+    if ( p()->talent.storm_elemental->ok() )
+    {
+      if ( p()->talent.primal_elementalist->ok() && p()->pet.pet_storm_elemental &&
+           !p()->pet.pet_storm_elemental->is_sleeping() )
+      {
+        p()->buff.wind_gust->trigger();
+      }
+      else if ( !p()->talent.primal_elementalist->ok() )
+      {
+        auto it = range::find_if( p()->pet.guardian_storm_elemental,
+                                  []( const pet_t* p ) { return p && !p->is_sleeping(); } );
+
+        if ( it != p()->pet.guardian_storm_elemental.end() )
+        {
+          p()->buff.wind_gust->trigger();
+        }
+      }
     }
   }
 };
@@ -4394,7 +4425,7 @@ struct lightning_bolt_t : public shaman_spell_t
       return timespan_t::zero();
     }
 
-    return shaman_spell_t::execute_time();
+    return shaman_spell_t::execute_time() * ( 1.0 + p()->buff.wind_gust->stack_value() );
   }
 
   void execute() override
@@ -4409,6 +4440,27 @@ struct lightning_bolt_t : public shaman_spell_t
       reset_swing_timers();
     }
 
+    // Storm Elemental Wind Gust passive buff trigger
+    if ( p()->talent.storm_elemental->ok() )
+    {
+      if ( p()->talent.primal_elementalist->ok() && p()->pet.pet_storm_elemental &&
+           !p()->pet.pet_storm_elemental->is_sleeping() )
+      {
+        p()->buff.wind_gust->trigger();
+      }
+      else if ( !p()->talent.primal_elementalist->ok() )
+      {
+        auto it = range::find_if( p()->pet.guardian_storm_elemental,
+                                  []( const pet_t* p ) { return p && !p->is_sleeping(); } );
+
+        if ( it != p()->pet.guardian_storm_elemental.end() )
+        {
+          p()->buff.wind_gust->trigger();
+        }
+      }
+    }
+
+    // Azerite trait
     if ( p()->azerite.volcanic_lightning.ok() )
     {
       td( target )->debuff.volcanic_lightning->trigger();
@@ -6617,12 +6669,17 @@ void shaman_t::create_buffs()
   buff.unlimited_power->add_invalidate( CACHE_HASTE )
       ->set_default_value( 1.0 / ( 1.0 + find_spell( 272737 )->effectN( 1 ).percent() ) )
       ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+  buff.wind_gust = make_buff( this, "wind_gust", find_spell( 263806 ) )
+                       ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
+
   // Tier
   buff.t21_2pc_elemental =
       make_buff( this, "earthen_strength", sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger() )
           ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T21, B2 ) )
           ->set_default_value( sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
+  // Azerite Traits
   buff.lava_shock = make_buff( this, "lava_shock", azerite.lava_shock )
                         ->set_default_value( azerite.lava_shock.value() )
                         ->set_trigger_spell( find_spell( 273453 ) )
@@ -6682,7 +6739,6 @@ void shaman_t::init_gains()
   gain.feral_spirit                = get_gain( "Feral Spirit" );
   gain.spirit_of_the_maelstrom     = get_gain( "Spirit of the Maelstrom" );
   gain.resonance_totem             = get_gain( "Resonance Totem" );
-  gain.wind_gust                   = get_gain( "Wind Gust" );
   gain.lightning_shield_overcharge = get_gain( "Lightning Shield Overcharge" );
   gain.forceful_winds              = get_gain( "Forceful Winds" );
 }
@@ -6935,7 +6991,8 @@ void shaman_t::init_action_list_enhancement()
   // All Shamans Bloodlust and Wind Shear by default
   def->add_action( this, "Wind Shear" );
   def->add_action(
-      "variable,name=hailstormCheck,value=((talent.hailstorm.enabled&!buff.frostbrand.up)|!talent.hailstorm.enabled)" );
+      "variable,name=hailstormCheck,value=((talent.hailstorm.enabled&!buff.frostbrand.up)|!talent.hailstorm."
+      "enabled)" );
   def->add_action(
       "variable,name=furyCheck80,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>80))" );
   def->add_action(
@@ -7001,8 +7058,8 @@ void shaman_t::init_action_list_enhancement()
   cds->add_action( "berserking,if=buff.ascendance.up|(cooldown.doom_winds.up)|level<100" );
   cds->add_action( "blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
   cds->add_action(
-      "potion,if=buff.ascendance.up|(!talent.ascendance.enabled&!variable.heartEquipped&feral_spirit.remains>5)|target."
-      "time_to_die<=60" );
+      "potion,if=buff.ascendance.up|(!talent.ascendance.enabled&!variable.heartEquipped&feral_spirit.remains>5)|"
+      "target.time_to_die<=60" );
   cds->add_action( this, "Feral Spirit" );
   cds->add_action( this, "Doom Winds",
                    "if=cooldown.ascendance.remains>6|talent.boulderfist.enabled|debuff.earthen_spike.up" );
@@ -7033,9 +7090,9 @@ void shaman_t::init_action_list_enhancement()
 
   filler->add_action( this, "Rockbiter", "if=maelstrom<120&charges_fractional>1.7" );
   filler->add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8" );
-  filler->add_action(
-      this, "Crash Lightning",
-      "if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool80" );
+  filler->add_action( this, "Crash Lightning",
+                      "if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&"
+                      "variable.OCPool80" );
   filler->add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40" );
   filler->add_action( this, "Frostbrand", "if=variable.akainuEquipped&!buff.frostbrand.up&maelstrom>=75" );
   filler->add_talent( this, "Sundering" );
@@ -7676,8 +7733,8 @@ public:
                                   row_class_str = " class=\"odd\"";
 
                     os.format("<tr%s><td class=\"left\">%s</td><td class=\"right\">%.2f</td><td class=\"right\">%.2f
-  (%.2f%%)</td></tr>\n", row_class_str.c_str(), name_str.c_str(), util::round( n_generated, 2 ), util::round( n_wasted,
-  2 ), util::round( 100.0 * n_wasted / n_generated, 2 ) );
+  (%.2f%%)</td></tr>\n", row_class_str.c_str(), name_str.c_str(), util::round( n_generated, 2 ), util::round(
+  n_wasted, 2 ), util::round( 100.0 * n_wasted / n_generated, 2 ) );
                   }
     }
 
@@ -7780,7 +7837,8 @@ public:
                                     pct = 100.0 * n_executed[ j ] / n_executed[ n_mwstack + 1 ];
 
                                   if ( j < end2 - 1 )
-                                    os.format("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_executed[ j ], 1
+                                    os.format("<td class=\"right\">%.1f (%.1f%%)</td>", util::round( n_executed[ j ],
+  1
   ), util::round( pct, 1 )
   ); else
                                   {
@@ -7911,8 +7969,8 @@ struct shaman_module_t : public module_t
   void register_hotfixes() const override
   {
     /*
-    hotfix::register_spell( "Shaman", "2016-08-23", "Windfury base proc rate has been increased to 10% (was 5%.)", 33757
-    ) .field( "proc_chance" ) .operation( hotfix::HOTFIX_SET ) .modifier( 10 ) .verification_value( 5 );
+    hotfix::register_spell( "Shaman", "2016-08-23", "Windfury base proc rate has been increased to 10% (was 5%.)",
+    33757 ) .field( "proc_chance" ) .operation( hotfix::HOTFIX_SET ) .modifier( 10 ) .verification_value( 5 );
 
     hotfix::register_effect( "Shaman", "2016-08-23", "Rockbiter damage has been increased to 155% Attack Power (was
     135%).", 284355 ) .field( "ap_coefficient" ) .operation( hotfix::HOTFIX_SET ) .modifier( 1.55 )
@@ -7922,23 +7980,27 @@ struct shaman_module_t : public module_t
     Spell Power (was 25%).", 273980 ) .field( "sp_coefficient" ) .operation( hotfix::HOTFIX_SET ) .modifier( 0.3 )
       .verification_value( 0.25 );
 
-    hotfix::register_effect( "Shaman", "2016-08-23", "Earthen Spike debuff damage has been increased to 15% (was 10%).",
-    274448 ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( 15 ) .verification_value( 10 );
+    hotfix::register_effect( "Shaman", "2016-08-23", "Earthen Spike debuff damage has been increased to 15% (was
+    10%).", 274448 ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( 15 ) .verification_value( 10
+    );
 
-    hotfix::register_effect( "Shaman", "2016-08-23", "Storm Elemental Wind Gust now generates 10 Maelstrom per cast (was
-    8).", 339432 ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( 10 ) .verification_value( 8 );
+    hotfix::register_effect( "Shaman", "2016-08-23", "Storm Elemental Wind Gust now generates 10 Maelstrom per cast
+    (was 8).", 339432 ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( 10 ) .verification_value( 8
+    );
 
-    hotfix::register_effect( "Shaman", "2016-08-23", "Frost Shock damage has been increased slightly to 56% (was 52%).",
-    288995 ) .field( "sp_coefficient" ) .operation( hotfix::HOTFIX_SET ) .modifier( 0.56 ) .verification_value( 0.52 );
+    hotfix::register_effect( "Shaman", "2016-08-23", "Frost Shock damage has been increased slightly to 56% (was
+    52%).", 288995 ) .field( "sp_coefficient" ) .operation( hotfix::HOTFIX_SET ) .modifier( 0.56 )
+    .verification_value( 0.52 );
 
-    hotfix::register_effect( "Shaman", "2016-08-23", "Liquid Magma Totem damage has been increased to 80% (was 70%)).",
-    282015 ) .field( "sp_coefficient" ) .operation( hotfix::HOTFIX_SET ) .modifier( 0.8 ) .verification_value( 0.7 );
+    hotfix::register_effect( "Shaman", "2016-08-23", "Liquid Magma Totem damage has been increased to 80% (was
+    70%)).", 282015 ) .field( "sp_coefficient" ) .operation( hotfix::HOTFIX_SET ) .modifier( 0.8 )
+    .verification_value( 0.7 );
 
     hotfix::register_effect( "Shaman", "2016-09-23", "Chain Lightning (Elemental) damage has been increased by 23%",
     275203 ) .field( "sp_coefficient" ) .operation( hotfix::HOTFIX_MUL ) .modifier( 1.23 ) .verification_value( 1.3 );
 
-    hotfix::register_effect( "Shaman", "2016-09-23", "Chain Lightning (Elemental) maelstrom generation increased to 6.",
-    325428 ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( 6 ) .verification_value( 4 );
+    hotfix::register_effect( "Shaman", "2016-09-23", "Chain Lightning (Elemental) maelstrom generation increased
+    to 6.", 325428 ) .field( "base_value" ) .operation( hotfix::HOTFIX_SET ) .modifier( 6 ) .verification_value( 4 );
 
     hotfix::register_effect( "Shaman", "2016-09-23", "Lightning bolt damaged increased by 23%", 274643 )
       .field( "sp_coefficient" )
@@ -7952,14 +8014,12 @@ struct shaman_module_t : public module_t
       .modifier( 1.05 )
       .verification_value( 2.1 );
 
-    hotfix::register_effect( "Shaman", "2016-09-23", "Elemental Mastery effects have been increased by 12.5%", 238582 )
-      .field( "sp_coefficient" )
-      .operation( hotfix::HOTFIX_MUL )
-      .modifier( 1.125 )
-      .verification_value( 2 );
+    hotfix::register_effect( "Shaman", "2016-09-23", "Elemental Mastery effects have been increased by 12.5%", 238582
+    ) .field( "sp_coefficient" ) .operation( hotfix::HOTFIX_MUL ) .modifier( 1.125 ) .verification_value( 2 );
 
     hotfix::register_effect( "Shaman", "2016-09-23", "Storm Elemental's Call Lightning damage has been increased by
-    20%", 219409 ) .field( "sp_coefficient" ) .operation( hotfix::HOTFIX_MUL ) .modifier( 1.2 ) .verification_value( 0.7
+    20%", 219409 ) .field( "sp_coefficient" ) .operation( hotfix::HOTFIX_MUL ) .modifier( 1.2 ) .verification_value(
+    0.7
     );
 
     hotfix::register_effect( "Shaman", "2016-09-23", "Storm Elemental's Wind Gust damage has been increased by 20%",
