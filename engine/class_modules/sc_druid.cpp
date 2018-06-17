@@ -1831,6 +1831,22 @@ public:
       stellar_empowerment( false )
   {
     parse_options( options );
+
+    // Apply Guardian Druid aura damage modifiers
+    if (p -> specialization() == DRUID_GUARDIAN)
+    {
+      // direct damage
+      if ( s -> affected_by( p -> spec.guardian -> effectN( 1 ) ) )
+      {
+        base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 1 ).percent();
+      }
+
+      // ticking damage
+      if ( s -> affected_by( p -> spec.guardian -> effectN( 2 ) ) )
+      {
+        base_td_multiplier *= 1.0 + p -> spec.guardian -> effectN( 2 ).percent();
+      }
+    }
   }
 
   virtual double composite_energize_amount( const action_state_t* s ) const override
@@ -4896,6 +4912,8 @@ struct brambles_t : public druid_spell_t
   brambles_t( druid_t* p ) :
     druid_spell_t( "brambles_reflect", p, p -> find_spell( 203958 ) )
   {
+    // Ensure reflect scales with damage multipliers
+    snapshot_flags |= STATE_VERSATILITY | STATE_TGT_MUL_DA;
     background = may_crit = proc = may_miss = true;
   }
 };
@@ -6206,7 +6224,8 @@ double brambles_handler( const action_state_t* s )
 
   /* Calculate the maximum amount absorbed. This is not affected by
      versatility (and likely other player modifiers). */
-  double absorb_cap = 0.24 * p -> cache.attack_power() *
+  // TODO: is this coefficient in spelldata somewhere?
+  double absorb_cap = 0.20 * p -> cache.attack_power() *
     p -> composite_attack_power_multiplier();
 
   // Calculate actual amount absorbed.
