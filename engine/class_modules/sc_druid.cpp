@@ -3648,6 +3648,9 @@ struct shred_t : public cat_attack_t
   {
     base_crit += p -> artifact.feral_power.percent();
     base_multiplier *= 1.0 + p -> artifact.shredder_fangs.percent();
+
+    // This was removed from spelldata for some reason, but it still awards 1CP in game.
+    energize_amount = 1;
   }
 
   virtual void impact( action_state_t* s ) override
