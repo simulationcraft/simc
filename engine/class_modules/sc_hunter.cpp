@@ -327,6 +327,8 @@ public:
 
   struct azerite_t
   {
+    // Beast Mastery
+    azerite_power_t haze_of_rage;
     // Marksmanship
     azerite_power_t focused_fire;
     // Survival
@@ -381,6 +383,7 @@ public:
     buff_t* sephuzs_secret;
 
     // azerite
+    buff_t* haze_of_rage;
     buff_t* up_close_and_personal;
   } buffs;
 
@@ -3899,8 +3902,11 @@ struct bestial_wrath_t: public hunter_spell_t
 
   void execute() override
   {
+    hunter_spell_t::execute();
+
     p() -> buffs.bestial_wrath  -> trigger();
     p() -> buffs.t20_4p_bestial_rage -> trigger();
+    p() -> buffs.haze_of_rage -> trigger();
 
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
     {
@@ -3913,8 +3919,6 @@ struct bestial_wrath_t: public hunter_spell_t
 
       p() -> pets.main -> buffs.tier19_2pc_bm -> trigger();
     }
-
-    hunter_spell_t::execute();
   }
 
   bool ready() override
@@ -4675,6 +4679,7 @@ void hunter_t::init_spells()
   specs.wildfire_bomb        = find_specialization_spell( "Wildfire Bomb" );
   specs.carve                = find_specialization_spell( "Carve" );
 
+  azerite.haze_of_rage          = find_azerite_spell( "Haze of Rage" );
   azerite.focused_fire          = find_azerite_spell( "Focused Fire" );
   azerite.up_close_and_personal = find_azerite_spell( "Up Close And Personal" );
 }
@@ -4905,6 +4910,11 @@ void hunter_t::create_buffs()
       -> set_trigger_spell( sets -> set( HUNTER_SURVIVAL, T21, B4 ) );
 
   // Azerite
+
+  buffs.haze_of_rage =
+    make_buff<stat_buff_t>( this, "haze_of_rage", find_spell( 273264 ) )
+      -> add_stat( STAT_AGILITY, azerite.haze_of_rage.value( 1 ) )
+      -> set_trigger_spell( azerite.haze_of_rage );
 
   buffs.up_close_and_personal =
     make_buff( this, "up_close_and_personal", find_spell( 279593 ) )
