@@ -327,6 +327,8 @@ public:
 
   struct azerite_t
   {
+    // Marksmanship
+    azerite_power_t focused_fire;
     // Survival
     azerite_power_t up_close_and_personal;
   } azerite;
@@ -2794,6 +2796,11 @@ struct rapid_fire_t: public hunter_spell_t
   struct rapid_fire_damage_t: public hunter_ranged_attack_t
   {
     const int trick_shots_targets;
+    struct {
+      double chance = 0.0;
+      double amount = 0.0;
+      gain_t* gain = nullptr;
+    } focused_fire;
 
     rapid_fire_damage_t( const std::string& n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 257044 ) -> effectN( 2 ).trigger() ),
@@ -2804,6 +2811,14 @@ struct rapid_fire_t: public hunter_spell_t
       radius = 8.0;
 
       parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
+
+      if ( p -> azerite.focused_fire.ok() )
+      {
+        auto trigger_ = p -> azerite.focused_fire.spell() -> effectN( 1 ).trigger();
+        focused_fire.chance = trigger_ -> proc_chance();
+        focused_fire.amount = trigger_ -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
+        focused_fire.gain = p -> get_gain( "focused_fire" );
+      }
     }
 
     int n_targets() const override
@@ -2818,6 +2833,9 @@ struct rapid_fire_t: public hunter_spell_t
       hunter_ranged_attack_t::execute();
 
       p() -> buffs.trick_shots -> up(); // benefit tracking
+
+      if ( rng().roll( focused_fire.chance ) )
+        p() -> resource_gain( RESOURCE_FOCUS, focused_fire.amount, focused_fire.gain, this );
     }
 
     double composite_crit_chance() const override
@@ -2827,6 +2845,15 @@ struct rapid_fire_t: public hunter_spell_t
       cc += p() -> buffs.lethal_shots -> value();
 
       return cc;
+    }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      double b = hunter_ranged_attack_t::bonus_da( s );
+
+      b += p() -> azerite.focused_fire.value( 2 );
+
+      return b;
     }
   };
 
@@ -4648,6 +4675,7 @@ void hunter_t::init_spells()
   specs.wildfire_bomb        = find_specialization_spell( "Wildfire Bomb" );
   specs.carve                = find_specialization_spell( "Carve" );
 
+  azerite.focused_fire          = find_azerite_spell( "Focused Fire" );
   azerite.up_close_and_personal = find_azerite_spell( "Up Close And Personal" );
 }
 
