@@ -2974,6 +2974,33 @@ Description      : Call down a lightning strike on an enemy, dealing $s1 Nature 
 While charged, the Storm Elemental's damage is increased by $s2%.
 Tooltip          : Damage done increased by $w2%.
 
+Name             : Eye of the Storm (id=157375) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Level      : 1
+Range            : 40 yards
+Duration         : 8 seconds
+Cooldown         : 40 seconds
+Attributes       : ........ ........ x....... ........   ..x..... ......x. .x...... .....x.. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Channeled (34), Periodic effect affected by haste (173)
+Effects          :
+#1 (id=219451)   : Apply Aura (6) | Periodic Trigger Spell (23): Eye of the Storm every 1 seconds
+                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.10000 | Trigger Spell: 269005 | Target: Enemy (6)
+#2 (id=713318)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+Description      : Channel the energy of the storms at your target, causing $269005s1 Nature damage to all enemies within $269005A1 yards every $t1 sec.
+
+The damage of this ability increases by $s2% every time it deals damage.
+Tooltip          : Suffering $<damage> Nature damage every $t1 sec.
+
+Damage increases by $s2% every $t1 sec.
+Variables        : $damage=${0.1*($SP*1.8)*(1+$@versadmg)*(1+0.01*$137040m3)}
+
 Name             : Critical Strikes (Passive) (id=157444) [Passive, Hidden] 
 Class            : Enhancement Shaman
 School           : Physical
@@ -7421,6 +7448,23 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
 Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $270661t1 sec.
+
+Name             : Eye of the Storm (id=269005) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Level      : 1
+Range            : 40 yards
+Triggered by     : Eye of the Storm (157375)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=716785)   : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : $@spelldesc157375
 
 Name             : Hex (id=269352) [Spell Family (11)] 
 Class            : Shaman
