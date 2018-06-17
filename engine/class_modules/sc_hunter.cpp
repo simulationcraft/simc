@@ -12,14 +12,14 @@ namespace
 struct spell_data_ptr_t
 {
   spell_data_ptr_t():
-    data_( spell_data_t::nil() ) {}
+    data_( spell_data_t::not_found() ) {}
 
   spell_data_ptr_t( const spell_data_t* s ):
-    data_( s ? s : spell_data_t::nil() ) {}
+    data_( s ? s : spell_data_t::not_found() ) {}
 
   spell_data_ptr_t& operator=( const spell_data_t* s )
   {
-    data_ = s ? s : spell_data_t::nil();
+    data_ = s ? s : spell_data_t::not_found();
     return *this;
   }
 
