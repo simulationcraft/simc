@@ -392,6 +392,7 @@ public:
     gain_t* ascendance;
     gain_t* resurgence;
     gain_t* feral_spirit;
+    gain_t* fire_elemental;
     gain_t* spirit_of_the_maelstrom;
     gain_t* resonance_totem;
     gain_t* forceful_winds;
@@ -4989,6 +4990,28 @@ struct flame_shock_t : public shaman_spell_t
       p()->buff.lava_surge->trigger();
     }
 
+    // Fire Elemental passive effect (MS generation on FS tick)
+    if ( !p()->talent.storm_elemental->ok() )
+    {
+      if ( p()->talent.primal_elementalist->ok() && p()->pet.pet_fire_elemental &&
+           !p()->pet.pet_fire_elemental->is_sleeping() )
+      {
+        p()->resource_gain( RESOURCE_MAELSTROM, p()->find_spell( 263819 )->effectN( 1 ).base_value(),
+                            p()->gain.fire_elemental );
+      }
+      else if ( !p()->talent.primal_elementalist->ok() )
+      {
+        auto it =
+            range::find_if( p()->pet.guardian_fire_elemental, []( const pet_t* p ) { return p && !p->is_sleeping(); } );
+
+        if ( it != p()->pet.guardian_fire_elemental.end() )
+        {
+          p()->resource_gain( RESOURCE_MAELSTROM, p()->find_spell( 263819 )->effectN( 1 ).base_value(),
+                              p()->gain.fire_elemental );
+        }
+      }
+    }
+
     if ( p()->azerite.lava_shock.ok() )
     {
       p()->buff.lava_shock->trigger();
@@ -6737,6 +6760,7 @@ void shaman_t::init_gains()
   gain.ascendance                  = get_gain( "Ascendance" );
   gain.resurgence                  = get_gain( "resurgence" );
   gain.feral_spirit                = get_gain( "Feral Spirit" );
+  gain.fire_elemental              = get_gain( "Fire Elemental" );
   gain.spirit_of_the_maelstrom     = get_gain( "Spirit of the Maelstrom" );
   gain.resonance_totem             = get_gain( "Resonance Totem" );
   gain.lightning_shield_overcharge = get_gain( "Lightning Shield Overcharge" );
