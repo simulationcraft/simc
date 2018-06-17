@@ -3187,9 +3187,6 @@ struct mongoose_bite_t: raptor_strike_base_t
 
     stats_.at_fury[ p() -> buffs.mongoose_fury -> check() ] -> occur();
 
-    if ( p() -> buffs.mongoose_fury -> stack() == 5 )
-      p() -> buffs.t19_4p_mongoose_power -> trigger();
-
     p() -> buffs.mongoose_fury -> trigger();
     p() -> buffs.butchers_bone_apron -> trigger();
     p() -> buffs.t21_4p_in_for_the_kill -> trigger();
@@ -4824,8 +4821,8 @@ void hunter_t::create_buffs()
       -> set_chance( talents.tip_of_the_spear -> ok() );
 
   buffs.mongoose_fury =
-    make_buff( this, "mongoose_fury", find_spell( 190931 ) )
-      -> set_default_value( find_spell( 190931 ) -> effectN( 1 ).percent() )
+    make_buff( this, "mongoose_fury", find_spell( 259388 ) )
+      -> set_default_value( find_spell( 259388 ) -> effectN( 1 ).percent() )
       -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   buffs.predator =
