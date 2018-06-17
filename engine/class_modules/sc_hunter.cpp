@@ -4592,7 +4592,7 @@ void hunter_t::init_spells()
   talents.volley                            = find_talent_spell( "Volley" );
   talents.explosive_shot                    = find_talent_spell( "Explosive Shot" );
 
-  talents.guerrilla_tactics                 = find_talent_spell( "Guerilla Tactics" );
+  talents.guerrilla_tactics                 = find_talent_spell( "Guerrilla Tactics" );
   talents.hydras_bite                       = find_talent_spell( "Hydra's Bite" );
   talents.butchery                          = find_talent_spell( "Butchery" );
 
