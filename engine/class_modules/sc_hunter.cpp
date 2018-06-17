@@ -331,6 +331,7 @@ public:
     azerite_power_t haze_of_rage;
     // Marksmanship
     azerite_power_t focused_fire;
+    azerite_power_t in_the_rhythm;
     // Survival
     azerite_power_t up_close_and_personal;
   } azerite;
@@ -384,6 +385,7 @@ public:
 
     // azerite
     buff_t* haze_of_rage;
+    buff_t* in_the_rhythm;
     buff_t* up_close_and_personal;
   } buffs;
 
@@ -2903,6 +2905,8 @@ struct rapid_fire_t: public hunter_spell_t
     p() -> buffs.lethal_shots -> decrement();
     p() -> buffs.double_tap -> decrement();
 
+    p() -> buffs.in_the_rhythm -> trigger();
+
     // schedule auto shot
     if ( p() -> main_hand_attack )
       p() -> main_hand_attack -> schedule_execute();
@@ -4678,6 +4682,7 @@ void hunter_t::init_spells()
 
   azerite.haze_of_rage          = find_azerite_spell( "Haze of Rage" );
   azerite.focused_fire          = find_azerite_spell( "Focused Fire" );
+  azerite.in_the_rhythm         = find_azerite_spell( "In The Rhythm" );
   azerite.up_close_and_personal = find_azerite_spell( "Up Close And Personal" );
 }
 
@@ -4912,6 +4917,11 @@ void hunter_t::create_buffs()
     make_buff<stat_buff_t>( this, "haze_of_rage", find_spell( 273264 ) )
       -> add_stat( STAT_AGILITY, azerite.haze_of_rage.value( 1 ) )
       -> set_trigger_spell( azerite.haze_of_rage );
+
+  buffs.in_the_rhythm =
+    make_buff<stat_buff_t>( this, "in_the_rhythm", find_spell( 272733 ) )
+      -> add_stat( STAT_HASTE_RATING, azerite.in_the_rhythm.value( 1 ) )
+      -> set_trigger_spell( azerite.in_the_rhythm );
 
   buffs.up_close_and_personal =
     make_buff( this, "up_close_and_personal", find_spell( 279593 ) )
