@@ -1226,6 +1226,7 @@ class SpellDataGenerator(DataGenerator):
           ( 267666, 3 ), # Chakrams
           # Wildfire Infusion (Volatile Bomb spells)
           ( 271048, 3 ), ( 271049, 3 ), ( 260231, 3 ),
+          ( 273289, 0 ), # Latent Poison (Azerite)
         ),
 
         # Rogue:
@@ -1315,7 +1316,7 @@ class SpellDataGenerator(DataGenerator):
           ( 25504, 0, False ), ( 33750, 0, False ),     # Windfury passives are not directly activatable
           ( 8034, 0, False ),                           # Frostbrand false positive for activatable
           ( 145002, 0, False ),                         # Lightning Elemental nuke
-          ( 157348, 5 ), ( 157331, 5 ), ( 157375, 5 )   # Storm elemental spells
+          ( 157348, 5 ), ( 157331, 5 ), ( 157375, 5 ),  # Storm elemental spells
           ( 159101, 0 ), ( 159105, 0 ), ( 159103, 0 ),  # Echo of the Elements spec buffs
           ( 173184, 0 ), ( 173185, 0 ), ( 173186, 0 ),  # Elemental Blast buffs
           ( 173183, 0 ),                                # Elemental Blast buffs
