@@ -2074,8 +2074,8 @@ public:
         if ( windwalker_damage_increase_dot_four )
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 8 ).percent();
 
-        if ( ab::data().affected_by( player -> spec.stance_of_the_fierce_tiger -> effectN( 3 ) ) )
-          ab::trigger_gcd += player -> spec.stance_of_the_fierce_tiger -> effectN( 3 ).time_value(); // Saved as -500 milliseconds
+        if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 14 ) ) )
+          ab::trigger_gcd += player -> spec.windwalker_monk -> effectN( 14 ).time_value(); // Saved as -500 milliseconds
       // Technically minimum GCD is 750ms but all but the level 15 spells have a minimum GCD of 1 sec
         ab::min_gcd = timespan_t::from_seconds( 1.0 );
         // Hasted Cooldown
@@ -6826,13 +6826,13 @@ void monk_t::init_base_stats()
     {
       if ( base.distance < 1 )
         base.distance = 5;
-      base_gcd += spec.stance_of_the_fierce_tiger -> effectN( 3 ).time_value(); // Saved as -500 milliseconds
+      base_gcd += spec.windwalker_monk -> effectN( 14 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;
       resources.base[RESOURCE_ENERGY] += talent.ascension -> effectN( 3 ).base_value();
       resources.base[RESOURCE_MANA] = 0;
       resources.base[RESOURCE_CHI] = 4;
-      resources.base[RESOURCE_CHI] += spec.stance_of_the_fierce_tiger -> effectN( 4 ).base_value();
+      resources.base[RESOURCE_CHI] += spec.windwalker_monk -> effectN( 12 ).base_value();
       resources.base[RESOURCE_CHI] += talent.ascension -> effectN( 1 ).base_value();
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
       break;
