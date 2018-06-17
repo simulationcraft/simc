@@ -26,7 +26,7 @@
 //    + Lava Shock                  273448    ?
 //    - Natural Harmony             278697    Shrine of the Storm (c)
 //    - Rumbling Tremors            278709    The Underrot (h)
-//    - Synapse Shock               277671    Freehold (h|s), Siege of Boralus (s|c), Tol Dagor (h|s)
+//    + Synapse Shock               277671    Freehold (h|s), Siege of Boralus (s|c), Tol Dagor (h|s)
 //    + Volcanic Lightning          272978    Temple of Sethraliss (h|c), The Motherlode!! (s), The Underrot (s),
 //    Waycrest Manor (h|c)
 //
@@ -2314,10 +2314,10 @@ struct fire_elemental_t : public primal_elemental_t
     owner_coeff.sp_from_sp = 1.0;
   }
 
-  struct fire_nova_t : public pet_spell_t<fire_elemental_t>
+  struct meteor_t : public pet_spell_t<fire_elemental_t>
   {
-    fire_nova_t( fire_elemental_t* player, const std::string& options )
-      : super( player, "fire_nova", player->find_spell( 117588 ), options )
+    meteor_t( fire_elemental_t* player, const std::string& options )
+      : super( player, "meteor", player->find_spell( 117588 ), options )
     {
       aoe = -1;
     }
@@ -2353,7 +2353,7 @@ struct fire_elemental_t : public primal_elemental_t
 
     if ( o()->talent.primal_elementalist->ok() )
     {
-      def->add_action( "fire_nova,if=active_enemies>2" );
+      def->add_action( "meteor,if=active_enemies>2" );
       def->add_action( "immolate,target_if=!ticking" );
     }
     else
@@ -2367,8 +2367,8 @@ struct fire_elemental_t : public primal_elemental_t
   {
     if ( name == "fire_blast" )
       return new fire_blast_t( this, options_str );
-    if ( name == "fire_nova" )
-      return new fire_nova_t( this, options_str );
+    if ( name == "meteor" )
+      return new meteor_t( this, options_str );
     if ( name == "immolate" )
       return new immolate_t( this, options_str );
 
@@ -2382,21 +2382,18 @@ struct fire_elemental_t : public primal_elemental_t
 
 struct storm_elemental_t : public primal_elemental_t
 {
+  // struct eye_of_the_storm_t : public pet_spell_t<storm_elemental_t>
+  //{
+  //  eye_of_the_storm_t( storm_elemental_t* player, const std::string& options )
+  //    : super( player, "eye_of_the_storm", player->find_spell( 157331 ), options )
+  //  {}
+  //};
+
   struct wind_gust_t : public pet_spell_t<storm_elemental_t>
   {
-    const spell_data_t* energize;
-
     wind_gust_t( storm_elemental_t* player, const std::string& options )
-      : super( player, "wind_gust", player->find_spell( 157331 ), options ), energize( player->find_spell( 226180 ) )
+      : super( player, "wind_gust", player->find_spell( 157331 ), options )
     {
-    }
-
-    void execute() override
-    {
-      super::execute();
-
-      p()->o()->resource_gain( RESOURCE_MAELSTROM, energize->effectN( 1 ).resource( RESOURCE_MAELSTROM ),
-                               p()->o()->gain.wind_gust, this );
     }
   };
 
@@ -2430,6 +2427,8 @@ struct storm_elemental_t : public primal_elemental_t
     primal_elemental_t::create_default_apl();
 
     action_priority_list_t* def = get_action_priority_list( "default" );
+    // if ( o()->talent.primal_elementalist->ok() )
+    //  def->add_action("eye_of_the_storm", "if=buff.call_lightning.remains>=10");
     def->add_action( "call_lightning" );
     def->add_action( "wind_gust" );
   }
@@ -2453,6 +2452,8 @@ struct storm_elemental_t : public primal_elemental_t
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
+    // if ( name == "eye_of_the_storm" )
+    //  return new eye_of_the_storm_t( this, options_str );
     if ( name == "call_lightning" )
       return new call_lightning_t( this, options_str );
     if ( name == "wind_gust" )
