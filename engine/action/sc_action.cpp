@@ -3083,18 +3083,22 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( splits.size() == 3 && splits[ 0 ] == "dot" )
   {
-    if ( dot_t* dot = target -> find_dot( splits[ 1 ], player ) )
+    dot_t* dot = target -> find_dot( splits[ 1 ], player );
+    if (!dot)
     {
-      if (auto expr = dot_t::create_expression( dot, this, splits[ 2 ], false ))
-      {
-        return expr;
-      }
-      else
-      {
-        throw std::invalid_argument(fmt::format("Cannot create a valid dot expression from '{}'", splits[ 2 ]));
-      }
+      // If we cannot find a dot, create a dummy expression with it, which will just evaluate to false.
+      dot = target->get_dot( splits[ 1 ], player );
+      sim->print_debug("{} action {} cannot find any dot with name '{}' for expression {}.",
+          player->name(), name(), splits[ 1 ], name_str);
     }
-    throw std::invalid_argument(fmt::format("Cannot find any dot with name '{}'.", splits[ 1 ]));
+    if (auto expr = dot_t::create_expression( dot, this, splits[ 2 ], false ))
+    {
+      return expr;
+    }
+    else
+    {
+      throw std::invalid_argument(fmt::format("Cannot create a valid dot expression from '{}'", splits[ 2 ]));
+    }
   }
 
   if ( splits.size() == 3 && splits[ 0 ] == "enemy_dot" )
