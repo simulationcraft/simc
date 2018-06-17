@@ -1143,7 +1143,7 @@ class SpellDataGenerator(DataGenerator):
          191259,
          # 7.1.5 Entwined Elemental Foci buffs
          225729, 225730,
-         # 7.1.5 Archimonde's Hatred Reborn damage spell 
+         # 7.1.5 Archimonde's Hatred Reborn damage spell
          235188,
          # 7.2.0 Dreadstone of Endless Shadows stat buffs
          238499, 238500, 238501,
@@ -1158,7 +1158,7 @@ class SpellDataGenerator(DataGenerator):
          # 7.3.0 Gorshalach's Legacy
          255672,
          # 7.3.0 Forgefiend's Fabricator
-         253322, 256025, 
+         253322, 256025,
          # 7.3.0 Riftworld Codex buffs and damage component
          252545, 251938, 256415, 252550,
          # 7.3.2 Norgannon pantheon "random school" nukes
@@ -1265,7 +1265,7 @@ class SpellDataGenerator(DataGenerator):
             ( 217676, 3 ),			# Mind Spike Detonation
             ( 194249, 3, False ),   # Void Form extra data
             ( 212570, 3, False ),   # Surrendered Soul (Surrender To Madness Death)
-	    ( 269555, 3 ),          # Azerite Trait Torment of Torments 
+	    ( 269555, 3 ),          # Azerite Trait Torment of Torments
         ),
 
         # Death Knight:
@@ -1315,7 +1315,7 @@ class SpellDataGenerator(DataGenerator):
           ( 25504, 0, False ), ( 33750, 0, False ),     # Windfury passives are not directly activatable
           ( 8034, 0, False ),                           # Frostbrand false positive for activatable
           ( 145002, 0, False ),                         # Lightning Elemental nuke
-          ( 157348, 5 ), ( 157331, 5 ),                 # Storm elemental spells
+          ( 157348, 5 ), ( 157331, 5 ), ( 157375, 5 )   # Storm elemental spells
           ( 159101, 0 ), ( 159105, 0 ), ( 159103, 0 ),  # Echo of the Elements spec buffs
           ( 173184, 0 ), ( 173185, 0 ), ( 173186, 0 ),  # Elemental Blast buffs
           ( 173183, 0 ),                                # Elemental Blast buffs
@@ -1441,7 +1441,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 272012, 5 ),		# Illidari Satyr - Shadow Slash
 		  ( 272131, 5 ),		# Eye of Gul'dan - Eye of Gul'dan
 		  ( 267964, 0 ),		# new soul strike?
-		  
+
         ),
 
         # Monk:
