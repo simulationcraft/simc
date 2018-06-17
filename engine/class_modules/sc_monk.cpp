@@ -56,7 +56,7 @@ struct storm_earth_and_fire_pet_t;
 }
 struct monk_t;
 
-enum combo_strikes_e {// Fist of the 
+enum combo_strikes_e {
   CS_NONE = -1,
   // Attacks begin here
   CS_TIGER_PALM,
@@ -9200,7 +9200,7 @@ struct the_wind_blows_t : public unique_gear::scoped_actor_callback_t<monk_t>
   void manipulate( monk_t* monk, const special_effect_t& e ) override
   { 
     monk -> legendary.the_wind_blows = e.driver();
-    monk -> cooldown.fist_of_the_white_tiger -> duration *= 1 + monk -> legendary.the_wind_blows -> effectN( 1 ).percent();
+    monk -> cooldown.fist_of_the_white_tiger -> duration *= 1 - monk -> legendary.the_wind_blows -> effectN( 1 ).percent();
   }
 };
 
