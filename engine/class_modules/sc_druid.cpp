@@ -3644,7 +3644,7 @@ struct savage_roar_t : public cat_attack_t
 struct shred_t : public cat_attack_t
 {
   shred_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "shred", p, p -> find_affinity_spell( "Shred" ), options_str )
+    cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ), options_str )
   {
     base_crit += p -> artifact.feral_power.percent();
     base_multiplier *= 1.0 + p -> artifact.shredder_fangs.percent();
