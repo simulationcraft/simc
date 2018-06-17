@@ -1257,9 +1257,9 @@ void enemy_t::init_defense()
       case 117: a = 2766; break;
       case 118: a = 2766; break;
       case 119: a = 2766; break;
-      case 120: a = 2766; break;
-      case 121: a = 2766; break;
-      case 122: a = 2766; break;
+      case 120: a = 3326; break; // checked
+      case 121: a = 3326; break;
+      case 122: a = 3326; break;
       case 123: a = 3326; break; // checked
       default: a = std::floor(0.006464588162215 * std::exp(0.123782410252464 * level()) + 0.5); break;
     }

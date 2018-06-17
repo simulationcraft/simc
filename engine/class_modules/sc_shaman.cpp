@@ -23,12 +23,12 @@
 //
 //      Name                        ID        Source (h head, s shoulders, c chest)
 //    - Echo of the Elementals      275381    Atal'Dazar (h), Kings' Rest (s|c), The Motherlode!! (c)
-//    - Synapse Shock               277671    Freehold (h|s), Siege of Boralus (s|c), Tol Dagor (h|s)
+//    + Lava Shock                  273448    ?
 //    - Natural Harmony             278697    Shrine of the Storm (c)
-//    - Volcanic Lightning          272978    Temple of Sethraliss (h|c), The Motherlode!! (s), The Underrot (s),
-//    Waycrest Manor (h|c)
 //    - Rumbling Tremors            278709    The Underrot (h)
-//    - Lava Shock                  273448    ?
+//    - Synapse Shock               277671    Freehold (h|s), Siege of Boralus (s|c), Tol Dagor (h|s)
+//    + Volcanic Lightning          272978    Temple of Sethraliss (h|c), The Motherlode!! (s), The Underrot (s),
+//    Waycrest Manor (h|c)
 //
 // Enhancement
 // - Azerite stuff
@@ -321,6 +321,8 @@ public:
     buff_t* ascendance;
     buff_t* ghost_wolf;
 
+    buff_t* synapse_shock;
+
     // Elemental, Restoration
     buff_t* lava_surge;
 
@@ -333,6 +335,8 @@ public:
     stat_buff_t* elemental_blast_crit;
     stat_buff_t* elemental_blast_haste;
     stat_buff_t* elemental_blast_mastery;
+
+    buff_t* lava_shock;
 
     // Enhancement
     buff_t* crash_lightning;
@@ -3857,6 +3861,16 @@ struct chain_lightning_overload_t : public chained_overload_base_t
                                p->find_spell( 190493 )->effectN( 6 ).resource( RESOURCE_MAELSTROM ) )
   {
   }
+
+  void impact( action_state_t* state ) override
+  {
+    chained_overload_base_t::impact( state );
+
+    if ( p()->azerite.synapse_shock.ok() )
+    {
+      p()->buff.synapse_shock->trigger();
+    }
+  }
 };
 
 struct lava_beam_overload_t : public chained_overload_base_t
@@ -3963,9 +3977,15 @@ struct chain_lightning_t : public chained_base_t
   void impact( action_state_t* state ) override
   {
     chained_base_t::impact( state );
+
     if ( p()->azerite.volcanic_lightning.ok() )
     {
       td( state->target )->debuff.volcanic_lightning->trigger();
+    }
+
+    if ( p()->azerite.synapse_shock.ok() )
+    {
+      p()->buff.synapse_shock->trigger();
     }
   }
 };
@@ -4284,6 +4304,16 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   {
     maelstrom_gain = player->find_spell( 190493 )->effectN( 4 ).resource( RESOURCE_MAELSTROM );
   }
+
+  void impact( action_state_t* state ) override
+  {
+    elemental_overload_spell_t::impact( state );
+
+    if ( p()->azerite.synapse_shock.ok() )
+    {
+      p()->buff.synapse_shock->trigger();
+    }
+  }
 };
 
 struct lightning_bolt_t : public shaman_spell_t
@@ -4381,6 +4411,10 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( p()->azerite.volcanic_lightning.ok() )
     {
       td( target )->debuff.volcanic_lightning->trigger();
+    }
+    if ( p()->azerite.synapse_shock.ok() )
+    {
+      p()->buff.synapse_shock->trigger();
     }
   }
 
@@ -4797,6 +4831,13 @@ struct earth_shock_t : public shaman_spell_t
     }
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = shaman_spell_t::bonus_da( s );
+    b += p()->buff.lava_shock->stack_value();
+    return b;
+  }
+
   double action_multiplier() const override
   {
     auto m = shaman_spell_t::action_multiplier();
@@ -4816,6 +4857,7 @@ struct earth_shock_t : public shaman_spell_t
     }
 
     p()->buff.t21_2pc_elemental->expire();
+    p()->buff.lava_shock->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -4892,6 +4934,11 @@ struct flame_shock_t : public shaman_spell_t
       }
 
       p()->buff.lava_surge->trigger();
+    }
+
+    if ( p()->azerite.lava_shock.ok() )
+    {
+      p()->buff.lava_shock->trigger();
     }
   }
 };
@@ -6574,6 +6621,17 @@ void shaman_t::create_buffs()
       make_buff( this, "earthen_strength", sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger() )
           ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T21, B2 ) )
           ->set_default_value( sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+
+  buff.lava_shock = make_buff( this, "lava_shock", azerite.lava_shock )
+                        ->set_default_value( azerite.lava_shock.value() )
+                        ->set_trigger_spell( find_spell( 273453 ) )
+                        ->set_max_stack( find_spell( 273453 )->max_stacks() )
+                        ->set_duration( find_spell( 273453 )->duration() );
+
+  buff.synapse_shock = make_buff<stat_buff_t>( this, "synapse_shock", find_spell( 277960 ) )
+                           ->add_stat( STAT_INTELLECT, azerite.synapse_shock.value() )
+                           ->add_stat( STAT_AGILITY, azerite.synapse_shock.value() )
+                           ->set_trigger_spell( azerite.synapse_shock );
 
   //
   // Enhancement

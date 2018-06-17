@@ -4023,8 +4023,18 @@ struct t21_death_coil_t : public death_knight_spell_t
 
     attack_power_mod.direct = p -> spell.death_coil_damage -> effectN( 1 ).ap_coeff();
 
-    // TODO: Wrong damage spell so generic application does not work
+    // Wrong damage spell so generic application of damage aura and mastery doesn't work
     base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    // Wrong damage spell so generic application of damage aura and mastery doesn't work
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+
+    m *= 1.0 + p() -> cache.mastery_value();
+
+    return m;
   }
 
   double cost() const override
@@ -4094,9 +4104,9 @@ struct death_coil_t : public death_knight_spell_t
 
     attack_power_mod.direct = p -> spell.death_coil_damage -> effectN( 1 ).ap_coeff();
     
-    // TODO: Wrong damage spell so generic application does not work
+    // Wrong damage spell so generic application of damage aura and mastery doesn't work
     base_multiplier *= 1.0 + p -> spec.unholy_death_knight -> effectN( 1 ).percent();
-    
+
     if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY , T21, B2 ) )
     {
       coils_of_devastation = new coils_of_devastation_t( p );
@@ -4108,6 +4118,16 @@ struct death_coil_t : public death_knight_spell_t
       t21_death_coil = new t21_death_coil_t( p, coils_of_devastation, options_str );
       add_child( t21_death_coil );
     }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    // Wrong damage spell so generic application of damage aura and mastery doesn't work
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+
+    m *= 1.0 + p() -> cache.mastery_value();
+
+    return m;
   }
 
   double cost() const override
@@ -5727,7 +5747,11 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
   void impact( action_state_t* s ) override
   {
     if ( s -> target == target )
+    {
       death_knight_spell_t::impact( s );
+      p() -> buffs.icy_talons -> trigger();
+    }
+
     else
     {
       double damage = s -> result_amount;
