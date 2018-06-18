@@ -2819,6 +2819,7 @@ struct rapid_fire_t: public hunter_spell_t
 
       parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
 
+      base_dd_adder += p -> azerite.focused_fire.value( 2 );
       if ( p -> azerite.focused_fire.ok() )
       {
         auto trigger_ = p -> azerite.focused_fire.spell() -> effectN( 1 ).trigger();
@@ -2852,15 +2853,6 @@ struct rapid_fire_t: public hunter_spell_t
       cc += p() -> buffs.lethal_shots -> value();
 
       return cc;
-    }
-
-    double bonus_da( const action_state_t* s ) const override
-    {
-      double b = hunter_ranged_attack_t::bonus_da( s );
-
-      b += p() -> azerite.focused_fire.value( 2 );
-
-      return b;
     }
   };
 
@@ -2907,6 +2899,7 @@ struct rapid_fire_t: public hunter_spell_t
     p() -> buffs.lethal_shots -> decrement();
     p() -> buffs.double_tap -> decrement();
 
+    // XXX: this triggers *only* after a *full* uninterrupted channel
     p() -> buffs.in_the_rhythm -> trigger();
 
     // schedule auto shot
