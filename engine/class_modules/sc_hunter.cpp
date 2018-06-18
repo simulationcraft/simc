@@ -3097,6 +3097,8 @@ struct internal_bleeding_t
       hunter_melee_attack_t( n, p, p -> find_spell( 270343 ) )
     {
       dual = true;
+      dot_max_stack = as<int>( data().max_stacks() );
+      hasted_ticks = true;
     }
   };
   internal_bleeding_action_t* action = nullptr;
