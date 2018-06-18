@@ -151,6 +151,7 @@ namespace special_effects
 void resounding_protection( special_effect_t& effect );
 void elemental_whirl( special_effect_t& effect );
 void blood_siphon( special_effect_t& effect );
+void champion_of_azeroth( special_effect_t& effect );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
