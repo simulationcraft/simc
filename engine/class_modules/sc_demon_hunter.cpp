@@ -174,7 +174,6 @@ public:
 
     // Vengeance
     buff_t* demon_spikes;
-    buff_t* empower_wards;
     absorb_buff_t* soul_barrier;
   } buff;
 
@@ -314,7 +313,6 @@ public:
 
     // Vengeance
     cooldown_t* demon_spikes;
-    cooldown_t* empower_wards;
     cooldown_t* fiery_brand;
     cooldown_t* sigil_of_chains;
     cooldown_t* sigil_of_flame;
@@ -356,6 +354,8 @@ public:
     proc_t* demon_blades_wasted;
     proc_t* demonic_appetite;
     proc_t* demons_bite_in_meta;
+    proc_t* chaos_strike_in_dark_slash;
+    proc_t* annihilation_in_dark_slash;
     proc_t* felblade_reset;
 
     // Vengeance
@@ -1500,26 +1500,6 @@ struct demon_spikes_t : public demon_hunter_spell_t
   }
 };
 
-// Empower Wards ===========================================================
-
-struct empower_wards_t : public demon_hunter_spell_t
-{
-  empower_wards_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "empower_wards", p, p -> find_specialization_spell( "Empower Wards" ), options_str )
-  {
-    may_miss = may_block = may_dodge = may_parry = may_crit = false;
-    use_off_gcd = true;
-    harmful = false;
-    base_dd_min = base_dd_max = 0;
-  }
-
-  void execute() override
-  {
-    demon_hunter_spell_t::execute();
-    p()->buff.empower_wards->trigger();
-  }
-};
-
 // Eye Beam =================================================================
 
 struct eye_beam_t : public demon_hunter_spell_t
@@ -1639,6 +1619,8 @@ struct fel_devastation_t : public demon_hunter_spell_t
     {
       background = dual = true;
       aoe = -1;
+
+
     }
 
     dmg_e amount_type( const action_state_t*, bool ) const override
@@ -2205,7 +2187,7 @@ struct nemesis_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::impact( s );
 
-    td( s -> target ) -> debuffs.nemesis -> trigger();
+    td( s->target )->debuffs.nemesis->trigger();
   }
 };
 
@@ -2874,7 +2856,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       double m = demon_hunter_attack_t::composite_target_multiplier( target );
 
       demon_hunter_td_t* td = p()->get_target_data( target );
-      if(td->debuffs.dark_slash && td->debuffs.dark_slash->up())
+      if ( td->debuffs.dark_slash && td->debuffs.dark_slash->up() )
       {
         m *= 1.0 + td->debuffs.dark_slash->current_value;
       }
@@ -2932,8 +2914,22 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       make_event<delayed_execute_event_t>( *sim, p(), attacks[ i ], target, attacks[ i ]->delay );
     }
 
-    // Metamorphosis benefit
-    p() -> buff.metamorphosis -> up();
+    // Metamorphosis benefit and Dark Slash stats tracking
+    demon_hunter_td_t* target_data = td( target );
+    if ( p()->buff.metamorphosis->up() )
+    {
+      if ( target_data->debuffs.dark_slash && target_data->debuffs.dark_slash->check() )
+      {
+        p()->proc.annihilation_in_dark_slash->occur();
+      }
+    }
+    else
+    {
+      if ( target_data->debuffs.dark_slash && target_data->debuffs.dark_slash->check() )
+      {
+        p()->proc.chaos_strike_in_dark_slash->occur();
+      }
+    }
 
     // Demonic Appetite
     if (p()->talent.demonic_appetite->ok() && p()->rppm.demonic_appetite->trigger())
@@ -3475,21 +3471,19 @@ private:
 struct nemesis_debuff_t : public demon_hunter_buff_t<buff_t>
 {
   nemesis_debuff_t( demon_hunter_td_t& td )
-    : base_t(td, "nemesis", td.dh().talent.nemesis )
+    : base_t( td, "nemesis", td.dh().talent.nemesis )
   {
-    set_default_value( p().talent.nemesis -> effectN( 1 ).percent() );
+    set_default_value( p().talent.nemesis->effectN( 1 ).percent() );
     set_cooldown( timespan_t::zero() );
   }
 
-  virtual void expire_override( int expiration_stacks,
-                                timespan_t remaining_duration ) override
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
-    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks,
-        remaining_duration );
+    demon_hunter_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
 
     if ( remaining_duration > timespan_t::zero() )
     {
-      p().buff.nemesis -> trigger( 1, player -> race, -1.0, remaining_duration );
+      p().buff.nemesis->trigger( 1, player->race, -1.0, remaining_duration );
     }
   }
 };
@@ -3711,8 +3705,8 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
     if ( p.talent.dark_slash->ok() )
     {
       const spell_data_t* dark_slash = p.find_talent_spell( "Dark Slash" );
-      debuffs.dark_slash = buff_creator_t( target, "dark_slash", dark_slash )
-        .default_value( dark_slash->effectN( 3 ).percent() );
+      debuffs.dark_slash = make_buff( *this, "dark_slash", dark_slash )
+        ->set_default_value( dark_slash->effectN( 3 ).percent() );
     }
     debuffs.nemesis = new buffs::nemesis_debuff_t(*this);
   }
@@ -3720,9 +3714,9 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
   {
     dots.fiery_brand = target->get_dot("fiery_brand", &p);
     dots.sigil_of_flame = target->get_dot("sigil_of_flame", &p);
-    debuffs.frailty = make_buff( target, "frailty", p.find_spell( 247456 ) )
+    debuffs.frailty = make_buff( *this, "frailty", p.find_spell( 247456 ) )
       ->set_default_value( p.find_spell( 247456 )->effectN( 1 ).percent() );
-    debuffs.void_reaver = make_buff( target, "void_reaver", p.find_spell( 268178 ) )
+    debuffs.void_reaver = make_buff( *this, "void_reaver", p.find_spell( 268178 ) )
       ->set_default_value( p.find_spell( 268178 )->effectN( 1 ).percent() );
   }
 
@@ -3835,8 +3829,6 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new demon_spikes_t( this, options_str );
   if ( name == "eye_beam" )
     return new eye_beam_t( this, options_str );
-  if ( name == "empower_wards" )
-    return new empower_wards_t( this, options_str );
   if ( name == "fel_barrage" )
     return new fel_barrage_t( this, options_str );
   if ( name == "fel_eruption" )
@@ -4001,10 +3993,6 @@ void demon_hunter_t::create_buffs()
     .duration( spec.vengeful_retreat -> duration() ) );
 
   buff.demon_spikes = new buffs::demon_spikes_t(this);
-
-  buff.empower_wards =
-    buff_creator_t(this, "empower_wards", find_specialization_spell("Empower Wards"))
-    .default_value(find_specialization_spell("Empower Wards")->effectN(1).percent());
 
   buff.soul_barrier = make_buff<absorb_buff_t>( this, "soul_barrier", talent.soul_barrier );
   buff.soul_barrier->set_absorb_source( get_stats( "soul_barrier" ) )
@@ -4323,9 +4311,11 @@ void demon_hunter_t::init_procs()
   proc.felblade_reset         = get_proc( "felblade_reset" );
 
   // Havoc
-  proc.demon_blades_wasted    = get_proc( "demon_blades_wasted" );
-  proc.demonic_appetite       = get_proc( "demonic_appetite" );
-  proc.demons_bite_in_meta    = get_proc( "demons_bite_in_meta" );
+  proc.demon_blades_wasted        = get_proc( "demon_blades_wasted" );
+  proc.demonic_appetite           = get_proc( "demonic_appetite" );
+  proc.demons_bite_in_meta        = get_proc( "demons_bite_in_meta" );
+  proc.chaos_strike_in_dark_slash = get_proc( "chaos_strike_in_dark_slash" );
+  proc.annihilation_in_dark_slash = get_proc( "annihilation_in_dark_slash" );
 
   // Vengeance
   proc.gluttony                     = get_proc( "gluttony" );
@@ -4692,27 +4682,70 @@ void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
 
 void demon_hunter_t::apl_havoc()
 {
-  action_priority_list_t* def = get_action_priority_list( "default" );
-  def->add_action( "auto_attack" );
-  def->add_action( "pick_up_fragment" );
-  def->add_action( this, "Consume Magic" );
-  def->add_talent( this, "Nemesis" );
-  def->add_action( this, "Metamorphosis" );
-  def->add_action( this, "Vengeful Retreat" );
-  def->add_action( this, "Fel Rush" );
-  def->add_talent( this, "Fel Barrage" );
-  def->add_talent( this, "Dark Slash" );
-  def->add_action( this, "Throw Glaive" );
-  def->add_talent( this, "Felblade" );
-  def->add_talent( this, "Immolation Aura" );
-  def->add_action( this, spec.death_sweep, "death_sweep" );
-  def->add_talent( this, "Fel Eruption" );
-  def->add_action( this, "Blade Dance" );
-  def->add_action( this, "Eye Beam" );
-  def->add_action( this, spec.annihilation, "annihilation" );
-  def->add_action( this, "Chaos Strike" );
-  def->add_action( this, "Demon's Bite" );
-  def->add_action( "potion" );
+  action_priority_list_t* apl_default = get_action_priority_list( "default" );
+  apl_default->add_action( "auto_attack" );
+  apl_default->add_action( "variable,name=waiting_for_nemesis,value=!(!talent.nemesis.enabled|cooldown.nemesis.ready|cooldown.nemesis.remains>target.time_to_die|cooldown.nemesis.remains>60)" );
+  apl_default->add_action( "variable,name=pooling_for_meta,value=!talent.demonic.enabled&cooldown.metamorphosis.remains<6&fury.deficit>30&(!variable.waiting_for_nemesis|cooldown.nemesis.remains<10)" );
+  apl_default->add_action( "variable,name=blade_dance,value=talent.first_blood.enabled|set_bonus.tier20_4pc|spell_targets.blade_dance1>=3" );
+  apl_default->add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)" );
+  apl_default->add_action( "variable,name=waiting_for_dark_slash,value=talent.dark_slash.enabled&!variable.pooling_for_blade_dance&!variable.pooling_for_meta&cooldown.dark_slash.up" );
+  apl_default->add_action( "variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up" );
+  apl_default->add_action( this, "Consume Magic" );
+  apl_default->add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
+  apl_default->add_action( "pick_up_fragment,if=fury.deficit>=35&((cooldown.eye_beam.remains>5|!talent.blind_fury.enabled&!set_bonus.tier21_4pc)|(buff.metamorphosis.up&!set_bonus.tier21_4pc))" );
+  apl_default->add_action( "call_action_list,name=dark_slash,if=talent.dark_slash.enabled&(variable.waiting_for_dark_slash|debuff.dark_slash.up)" );
+  apl_default->add_action( "run_action_list,name=demonic,if=talent.demonic.enabled" );
+  apl_default->add_action( "run_action_list,name=normal" );
+  
+  action_priority_list_t* apl_cooldown = get_action_priority_list( "cooldown" );
+  apl_cooldown->add_action( this, "Metamorphosis", "if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis)|target.time_to_die<25" );
+  apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&buff.metamorphosis.up" );
+  apl_cooldown->add_talent( this, "Nemesis", "target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)" );
+  apl_cooldown->add_talent( this, "Nemesis", "if=!raid_event.adds.exists&(buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)" );
+  apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|target.time_to_die<60" );
+
+  action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
+  apl_normal->add_action( this, "Vengeful Retreat", "if=talent.momentum.enabled&buff.prepared.down" );
+  apl_normal->add_action( this, "Fel Rush", "if=(variable.waiting_for_momentum|talent.fel_mastery.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
+  apl_normal->add_talent( this, "Fel Barrage", "if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>30)" );
+  apl_normal->add_talent( this, "Immolation Aura" );
+  apl_normal->add_talent( this, "Felblade", "if=fury<15&(cooldown.death_sweep.remains<2*gcd|cooldown.blade_dance.remains<2*gcd)" );
+  apl_normal->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
+  apl_normal->add_action( this, "Blade Dance", "if=variable.blade_dance" );
+  apl_normal->add_talent( this, "Felblade", "if=fury.deficit>=40" );
+  apl_normal->add_action( this, "Eye Beam", "if=!talent.blind_fury.enabled&!variable.waiting_for_dark_slash&raid_event.adds.in>cooldown" );
+  apl_normal->add_action( this, spec.annihilation, "annihilation", "if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30|buff.metamorphosis.remains<5)"
+                                                                   "&!variable.pooling_for_blade_dance&!variable.waiting_for_dark_slash" );
+  apl_normal->add_action( this, "Chaos Strike", "if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30)"
+                                                "&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&!variable.waiting_for_dark_slash" );
+  apl_normal->add_action( this, "Eye Beam", "if=talent.blind_fury.enabled" );
+  apl_normal->add_action( this, "Demon's Bite" );
+  apl_normal->add_action( this, "Fel Rush", "if=!talent.momentum.enabled&raid_event.movement.in>charges*10&talent.demon_blades.enabled" );
+  apl_normal->add_talent( this, "Felblade", "if=movement.distance>15|buff.out_of_range.up" );
+  apl_normal->add_action( this, "Fel Rush", "if=movement.distance>15|(buff.out_of_range.up&!talent.momentum.enabled)" );
+  apl_normal->add_action( this, "Vengeful Retreat", "if=movement.distance>15" );
+  apl_normal->add_action( this, "Throw Glaive", "if=talent.demon_blades.enabled" );
+
+  action_priority_list_t* apl_demonic = get_action_priority_list( "demonic" );
+  apl_demonic->add_talent( this, "Fel Barrage", "if=active_enemies>desired_targets|raid_event.adds.in>30" );
+  apl_demonic->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
+  apl_demonic->add_action( this, "Blade Dance", "if=variable.blade_dance&cooldown.eye_beam.remains>5&!cooldown.metamorphosis.ready" );
+  apl_demonic->add_talent( this, "Immolation Aura" );
+  apl_demonic->add_talent( this, "Felblade", "if=fury<40|(buff.metamorphosis.down&fury.deficit>=40)" );
+  apl_demonic->add_action( this, "Eye Beam", "if=(!talent.blind_fury.enabled|fury.deficit>=70)&(!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>16))" );
+  apl_demonic->add_action( this, spec.annihilation, "annihilation", "if=(fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance" );
+  apl_demonic->add_action( this, "Chaos Strike", "if=fury.deficit<30&!variable.pooling_for_meta&!variable.pooling_for_blade_dance" );
+  apl_demonic->add_action( this, "Fel Rush", "if=talent.demon_blades.enabled&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
+  apl_demonic->add_action( this, "Demon's Bite" );
+  apl_demonic->add_action( this, "Throw Glaive", "if=buff.out_of_range.up" );
+  apl_demonic->add_action( this, "Fel Rush", "if=movement.distance>15|buff.out_of_range.up" );
+  apl_demonic->add_action( this, "Vengeful Retreat", "if=movement.distance>15" );
+  apl_demonic->add_action( this, "Throw Glaive", "if=talent.demon_blades.enabled" );
+
+  action_priority_list_t* apl_dark_slash = get_action_priority_list( "dark_slash" );
+  apl_dark_slash->add_talent( this, "Dark Slash", "if=fury>=80&(!variable.blade_dance|!cooldown.blade_dance.ready)" );
+  apl_dark_slash->add_action( this, spec.annihilation, "annihilation", "if=debuff.dark_slash.up" );
+  apl_dark_slash->add_action( this, "Chaos Strike", "if=debuff.dark_slash.up" );
 }
 
 // demon_hunter_t::apl_vengeance ============================================
@@ -4736,7 +4769,6 @@ void demon_hunter_t::apl_vengeance()
   def->add_action( this, "Metamorphosis" );
   def->add_action( this, "Fiery Brand" );
   def->add_action( this, "Demon Spikes" );
-  def->add_action( this, "Empower Wards" );
   def->add_action( this, "Infernal Strike" );
   def->add_action( this, "Immolation Aura" );
   def->add_talent( this, "Felblade" );
@@ -4777,7 +4809,6 @@ void demon_hunter_t::create_cooldowns()
 
   // Vengeance
   cooldown.demon_spikes         = get_cooldown( "demon_spikes" );
-  cooldown.empower_wards        = get_cooldown( "empower_wards");
   cooldown.fiery_brand          = get_cooldown( "fiery_brand" );
   cooldown.sigil_of_chains      = get_cooldown( "sigil_of_chains" );
   cooldown.sigil_of_flame       = get_cooldown( "sigil_of_flame" );
@@ -4796,7 +4827,7 @@ void demon_hunter_t::create_gains()
   gain.blind_fury               = get_gain("blind_fury");
   gain.demonic_appetite         = get_gain("demonic_appetite");
   gain.momentum                 = get_gain("momentum");
-
+  
   // Vengeance
   gain.metamorphosis            = get_gain("metamorphosis");
 }
@@ -5313,11 +5344,6 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt, action_state_
   else // DEMON_HUNTER_VENGEANCE
   {
     s->result_amount *= 1.0 + spec.demonic_wards->effectN( 1 ).percent();
-
-    if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
-    {
-      s->result_amount *= 1.0 + buff.empower_wards->value();
-    }
 
     const demon_hunter_td_t* td = get_target_data( s->action->player );
     if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
