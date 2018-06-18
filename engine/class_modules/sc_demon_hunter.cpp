@@ -1248,7 +1248,7 @@ struct consume_soul_t : public demon_hunter_heal_t
     demonic_appetite_t( demon_hunter_t* p )
       : demon_hunter_spell_t( "demonic_appetite_fury", p, p->spec.demonic_appetite_fury)
     {
-      may_miss = may_crit = callbacks = false;
+      may_miss = may_block = may_dodge = may_parry = may_crit = callbacks = false;
       background = quiet = true;
       energize_type = ENERGIZE_ON_CAST;
     }
@@ -1257,6 +1257,7 @@ struct consume_soul_t : public demon_hunter_heal_t
   const soul_fragment type;
   const spell_data_t* vengeance_heal;
   timespan_t vengeance_heal_interval;
+  demon_hunter_spell_t* demonic_appetite_energize;
 
   consume_soul_t( demon_hunter_t* p, const std::string& n, const spell_data_t* s, soul_fragment t )
     : demon_hunter_heal_t( n, p, s ), 
@@ -1267,9 +1268,19 @@ struct consume_soul_t : public demon_hunter_heal_t
     may_miss = may_crit = false;
     background = true;
 
-    if (p->talent.demonic_appetite->ok())
+    if ( p->talent.demonic_appetite->ok() & !demonic_appetite_energize )
     {
-      execute_action = new demonic_appetite_t(p);
+      demonic_appetite_energize = new demonic_appetite_t( p );
+    }
+  }
+
+  void execute() override
+  {
+    demon_hunter_heal_t::execute();
+
+    if ( demonic_appetite_energize )
+    {
+      demonic_appetite_energize->execute();
     }
   }
 
