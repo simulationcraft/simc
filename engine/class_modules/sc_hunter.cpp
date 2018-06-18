@@ -3130,7 +3130,7 @@ struct raptor_strike_base_t: hunter_melee_attack_t
   {
     double c = hunter_melee_attack_t::cost();
 
-    c += p() -> buffs.up_close_and_personal -> check_value();
+    c -= p() -> buffs.up_close_and_personal -> check_value();
 
     return c;
   }
