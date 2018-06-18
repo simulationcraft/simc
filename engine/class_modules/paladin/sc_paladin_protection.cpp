@@ -829,12 +829,12 @@ void paladin_t::create_buffs_protection()
                                           -> add_invalidate( CACHE_BONUS_ARMOR );
   buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
   buffs.aegis_of_light                 = make_buff( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
-  buffs.seraphim                       = stat_buff_creator_t( this, "seraphim", talents.seraphim )
-                                          .add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                                          .add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                                          .add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                                          .add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                                          .cd( timespan_t::zero() ); // let the ability handle the cooldown
+  buffs.seraphim                       = make_buff<stat_buff_t>( this, "seraphim", talents.seraphim )
+    ->add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                                          ->add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                                          ->add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                                          ->add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) );
+  buffs.seraphim->set_cooldown( timespan_t::zero() ); // let the ability handle the cooldown
   buffs.bulwark_of_order               = make_buff<absorb_buff_t>( this, "bulwark_of_order", find_spell( 209388 ) );
   buffs.bulwark_of_order->set_absorb_source( get_stats( "bulwark_of_order" ) )
     ->set_absorb_gain( get_gain( "bulwark_of_order" ) )

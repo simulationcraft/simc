@@ -165,35 +165,6 @@ public:
   operator buff_t* () const;
 };
 
-struct stat_buff_creator_t : public buff_creator_helper_t<stat_buff_creator_t>
-{
-private:
-
-  struct buff_stat_t
-  {
-    stat_e stat;
-    double amount;
-    std::function<bool(const stat_buff_t&)> check_func;
-
-    buff_stat_t( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() ) :
-      stat( s ), amount( a ), check_func( c ) {}
-  };
-
-  std::vector<buff_stat_t> stats;
-
-  friend struct ::stat_buff_t;
-public:
-  stat_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
-    base_t( q, name, s, item ) {}
-  stat_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr ) :
-    base_t( sim, name, s, item ) {}
-
-  bufftype& add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() )
-  { stats.push_back( buff_stat_t( s, a, c ) ); return *this; }
-
-  operator stat_buff_t* () const;
-};
-
 } // END NAMESPACE buff_creation
 
 using namespace buff_creation;
@@ -476,9 +447,6 @@ struct stat_buff_t : public buff_t
   stat_buff_t* add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() );
 
   stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
-protected:
-  stat_buff_t( const stat_buff_creator_t& params );
-  friend struct buff_creation::stat_buff_creator_t;
 };
 
 struct absorb_buff_t : public buff_t

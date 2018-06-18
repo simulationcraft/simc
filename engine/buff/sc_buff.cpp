@@ -2064,83 +2064,66 @@ rng::rng_t& buff_t::rng()
 // ==========================================================================
 
 stat_buff_t::stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
-  : stat_buff_t( stat_buff_creator_t( q, name, spell, item ) )
-{
-}
-// stat_buff_t::stat_buff_t =================================================
-
-stat_buff_t::stat_buff_t( const stat_buff_creator_t& params )
-  : buff_t( params ),
-    stat_gain( player->get_gain( std::string( name() ) + "_buff" ) ),  // append _buff for now to check usage
+  : buff_t( q, name, spell, item ),
+    stat_gain( player->get_gain( name + "_buff" ) ),  // append _buff for now to check usage
     manual_stats_added(false)
 {
-  if ( params.stats.empty() )
-  {
-    bool has_ap = false;
+   bool has_ap = false;
 
-    for ( size_t i = 1; i <= data().effect_count(); i++ )
-    {
-      stat_e s                         = STAT_NONE;
-      double amount                    = 0;
-      const spelleffect_data_t& effect = data().effectN( i );
+   for ( size_t i = 1; i <= data().effect_count(); i++ )
+   {
+     stat_e s                         = STAT_NONE;
+     double amount                    = 0;
+     const spelleffect_data_t& effect = data().effectN( i );
 
-      if ( params.item )
-        amount = util::round( effect.average( params.item ) );
-      else
-        amount = util::round( effect.average( player, std::min( MAX_LEVEL, player->level() ) ) );
+     if ( item )
+       amount = util::round( effect.average( item ) );
+     else
+       amount = util::round( effect.average( player, std::min( MAX_LEVEL, player->level() ) ) );
 
-      if ( effect.subtype() == A_MOD_STAT )
-      {
-        if ( effect.misc_value1() >= 0 )
-        {
-          s = static_cast<stat_e>( effect.misc_value1() + 1 );
-        }
-        else if ( effect.misc_value1() == -1 )
-        {
-          s = STAT_ALL;
-        }
-      }
-      else if ( effect.subtype() == A_MOD_RATING )
-      {
-        std::vector<stat_e> k = util::translate_all_rating_mod( effect.misc_value1() );
-        if ( params.item )
-        {
-          amount = item_database::apply_combat_rating_multiplier( *params.item, amount );
-        }
+     if ( effect.subtype() == A_MOD_STAT )
+     {
+       if ( effect.misc_value1() >= 0 )
+       {
+         s = static_cast<stat_e>( effect.misc_value1() + 1 );
+       }
+       else if ( effect.misc_value1() == -1 )
+       {
+         s = STAT_ALL;
+       }
+     }
+     else if ( effect.subtype() == A_MOD_RATING )
+     {
+       std::vector<stat_e> k = util::translate_all_rating_mod( effect.misc_value1() );
+       if ( item )
+       {
+         amount = item_database::apply_combat_rating_multiplier( *item, amount );
+       }
 
-        for ( size_t j = 0; j < k.size(); j++ )
-        {
-          stats.push_back( buff_stat_t( k[ j ], amount ) );
-        }
-      }
-      else if ( effect.subtype() == A_MOD_DAMAGE_DONE && ( effect.misc_value1() & 0x7E ) )
-        s = STAT_SPELL_POWER;
-      else if ( effect.subtype() == A_MOD_RESISTANCE )
-        s = STAT_BONUS_ARMOR;
-      else if ( !has_ap && ( effect.subtype() == A_MOD_ATTACK_POWER || effect.subtype() == A_MOD_RANGED_ATTACK_POWER ) )
-      {
-        s      = STAT_ATTACK_POWER;
-        has_ap = true;
-      }
-      else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 || effect.subtype() == A_MOD_INCREASE_HEALTH )
-        s = STAT_MAX_HEALTH;
-      else if ( effect.subtype() == A_465 )
-        s = STAT_BONUS_ARMOR;
+       for ( size_t j = 0; j < k.size(); j++ )
+       {
+         stats.push_back( buff_stat_t( k[ j ], amount ) );
+       }
+     }
+     else if ( effect.subtype() == A_MOD_DAMAGE_DONE && ( effect.misc_value1() & 0x7E ) )
+       s = STAT_SPELL_POWER;
+     else if ( effect.subtype() == A_MOD_RESISTANCE )
+       s = STAT_BONUS_ARMOR;
+     else if ( !has_ap && ( effect.subtype() == A_MOD_ATTACK_POWER || effect.subtype() == A_MOD_RANGED_ATTACK_POWER ) )
+     {
+       s      = STAT_ATTACK_POWER;
+       has_ap = true;
+     }
+     else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 || effect.subtype() == A_MOD_INCREASE_HEALTH )
+       s = STAT_MAX_HEALTH;
+     else if ( effect.subtype() == A_465 )
+       s = STAT_BONUS_ARMOR;
 
-      if ( s != STAT_NONE )
-      {
-        stats.push_back( buff_stat_t( s, amount ) );
-      }
-    }
-  }
-  else  // parse stats from params
-  {
-    for ( size_t i = 0; i < params.stats.size(); ++i )
-    {
-      stats.push_back( buff_stat_t( params.stats[ i ].stat, params.stats[ i ].amount, params.stats[ i ].check_func ) );
-      manual_stats_added = true;
-    }
-  }
+     if ( s != STAT_NONE )
+     {
+       stats.push_back( buff_stat_t( s, amount ) );
+     }
+   }
 }
 
 stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c )
@@ -2607,6 +2590,3 @@ buff_creator_basics_t::buff_creator_basics_t( sim_t* s, const std::string& n, co
 
 buff_creator_t::operator buff_t* () const
 { return new buff_t( *this ); }
-
-stat_buff_creator_t::operator stat_buff_t* () const
-{ return new stat_buff_t( *this ); }

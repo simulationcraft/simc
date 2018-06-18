@@ -7544,10 +7544,10 @@ void death_knight_t::create_buffs()
   buffs.rime                = buff_creator_t( this, "rime", spec.rime -> effectN( 1 ).trigger() )
                               .trigger_spell( spec.rime )
                               .chance( spec.rime -> effectN( 2 ).percent() + sets -> set( DEATH_KNIGHT_FROST, T19, B2 ) -> effectN( 1 ).percent() );
-  buffs.riposte             = stat_buff_creator_t( this, "riposte", spec.riposte -> effectN( 1 ).trigger() )
-                              .cd( spec.riposte -> internal_cooldown() )
-                              .chance( spec.riposte -> proc_chance() )
-                              .add_stat( STAT_CRIT_RATING, 0 );
+  buffs.riposte             = make_buff<stat_buff_t>( this, "riposte", spec.riposte -> effectN( 1 ).trigger() )
+                              ->add_stat( STAT_CRIT_RATING, 0 );
+  buffs.riposte ->set_cooldown( spec.riposte -> internal_cooldown() )
+      -> set_chance( spec.riposte -> proc_chance() );
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
   buffs.sudden_doom         = buff_creator_t( this, "sudden_doom", spec.sudden_doom -> effectN( 1 ).trigger() )
                               .rppm_scale( RPPM_ATTACK_SPEED ) // 2016-08-08: Hotfixed, not in spell data
@@ -7576,8 +7576,8 @@ void death_knight_t::create_buffs()
   buffs.soul_reaper -> set_default_value( find_spell( 215711 ) -> effectN( 1 ).percent() );
   buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.tombstone );
   buffs.tombstone -> set_cooldown( timespan_t::zero() ); // Handled by the action
-  buffs.t19oh_8pc = stat_buff_creator_t( this, "deathlords_might", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() )
-    .trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
+  buffs.t19oh_8pc = make_buff<stat_buff_t>( this, "deathlords_might", sets -> set( specialization(), T19OH, B8 ) -> effectN( 1 ).trigger() );
+  buffs.t19oh_8pc -> set_trigger_spell( sets -> set( specialization(), T19OH, B8 ) );
 
   buffs.frozen_pulse = buff_creator_t( this, "frozen_pulse", talent.frozen_pulse );
 
@@ -7597,8 +7597,8 @@ void death_knight_t::create_buffs()
   buffs.t20_4pc_frost = buff_creator_t( this, "icy edge" )
     .default_value( 0.01 )
     .chance( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) );
-  buffs.t20_blood = stat_buff_creator_t( this, "gravewarden", spell.gravewarden )
-    .add_stat( STAT_VERSATILITY_RATING, spell.gravewarden -> effectN( 1 ).base_value() );
+  buffs.t20_blood = make_buff<stat_buff_t>( this, "gravewarden", spell.gravewarden )
+    ->add_stat( STAT_VERSATILITY_RATING, spell.gravewarden -> effectN( 1 ).base_value() );
   buffs.t21_4p_blood = new rune_master_buff_t( this );
     
 }

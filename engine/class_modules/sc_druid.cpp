@@ -6968,10 +6968,10 @@ void druid_t::create_buffs()
                                .cd( timespan_t::zero() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  buff.fury_of_ashamane      = stat_buff_creator_t(this, "fury_of_ashamane", find_spell(240670))
-                               .chance(artifact.fury_of_ashamane.rank() > 0)
-                               .add_stat(STAT_VERSATILITY_RATING, 600) //TODO(feral): fix hardcoded spelldata
-                               .add_invalidate(CACHE_VERSATILITY);
+  buff.fury_of_ashamane      = make_buff<stat_buff_t>(this, "fury_of_ashamane", find_spell(240670))
+                               ->add_stat(STAT_VERSATILITY_RATING, 600) //TODO(feral): fix hardcoded spelldata
+                               ->set_chance(artifact.fury_of_ashamane.rank() > 0)
+                               ->add_invalidate(CACHE_VERSATILITY);
 
   // Guardian
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
