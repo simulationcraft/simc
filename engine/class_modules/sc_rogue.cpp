@@ -246,6 +246,7 @@ struct rogue_t : public player_t
     buff_t* slice_and_dice;
     // Subtlety
     buff_t* master_of_shadows;
+    buff_t* secret_technique; // Only to simplify APL tracking
     buff_t* shuriken_tornado;
     buff_t* death_from_above;
 
@@ -472,6 +473,7 @@ struct rogue_t : public player_t
     const spell_data_t* dark_shadow;
 
     const spell_data_t* master_of_shadows;
+    const spell_data_t* secret_technique;
     const spell_data_t* shuriken_tornado;
     const spell_data_t* death_from_above;
   } talent;
@@ -3524,23 +3526,88 @@ struct rupture_t : public rogue_attack_t
   }
 };
 
-// Shadow Blades ============================================================
+// Secret Technique =========================================================
 
-struct shadow_blades_t : public rogue_attack_t
+struct secret_technique_t : public rogue_attack_t
 {
-  shadow_blades_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shadow_blades", p, p -> find_specialization_spell( "Shadow Blades" ), options_str )
+  struct secret_clone_attack_t : public rogue_attack_t
   {
-    harmful = may_miss = may_crit = false;
+    secret_technique_t* parent_action;
+
+    secret_clone_attack_t( rogue_t* p, secret_technique_t* s ) :
+      rogue_attack_t( "secret_clone_attack", p, p -> find_spell( 280720 ) ),
+      parent_action( s )
+    {
+      weapon = &(p -> main_hand_weapon);
+      background = true;
+      aoe = -1;
+
+      // Temp HAX until spell data is fixed
+      base_dd_multiplier *= 1.0 + p -> talent.deeper_stratagem -> effectN( 5 ).percent();
+    }
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = rogue_attack_t::composite_da_multiplier( state );
+
+      // Temp HAX until spell data is fixed
+      m *= 1.0 + p() -> cache.mastery_value();
+      m *= parent_action -> last_cast_cp;
+
+      return m;
+    }
+
+    double composite_target_multiplier( player_t* target ) const override
+    {
+      double m = rogue_attack_t::composite_target_multiplier( target );
+
+      if ( target != this -> target )
+        m *= p() -> talent.secret_technique -> effectN( 2 ).percent();
+
+      return m;
+    }
+  };
+
+  secret_clone_attack_t* secret_clone_attack;
+  int last_cast_cp;
+
+  secret_technique_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "secret_technique", p, p -> talent.secret_technique, options_str ),
+    last_cast_cp( 0 )
+  {
+    requires_weapon = WEAPON_DAGGER;
+    may_miss = false;
+    aoe = -1;
+
+    secret_clone_attack = new secret_clone_attack_t( p, this );
+    add_child( secret_clone_attack );
   }
 
   void execute() override
   {
     rogue_attack_t::execute();
 
-    p() -> buffs.shadow_blades -> trigger();
+    last_cast_cp = cast_state( execute_state ) -> cp;
+
+    timespan_t delay = timespan_t::from_seconds( 2 ); // Hardcoded delay guess, while the spell is not working ingame
+    p() -> buffs.secret_technique -> trigger( 1, buff_t::DEFAULT_VALUE(), (-1.0), delay ); // Trigger tracking buff until clone damage
+    for ( size_t i = 0; i < data().effectN( 3 ).base_value(); i++ )
+    {
+      // Guessing clones spawn on target's position when cast
+      make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+          .target( execute_state -> target )
+          .x( execute_state -> target -> x_position )
+          .y( execute_state -> target -> y_position )
+          .duration( delay )
+          .pulse_time( delay )
+          .start_time( sim -> current_time() )
+          .action( secret_clone_attack )
+          .n_pulses( 1 ));
+    }
   }
 };
+
+// Shadow Blades ============================================================
 
 struct shadow_blades_attack_t : public rogue_attack_t
 {
@@ -3557,6 +3624,25 @@ struct shadow_blades_attack_t : public rogue_attack_t
     rogue_attack_t::init();
 
     snapshot_flags = update_flags = 0;
+  }
+};
+
+struct shadow_blades_t : public rogue_attack_t
+{
+  shadow_blades_t( rogue_t* p, const std::string& options_str ) :
+    rogue_attack_t( "shadow_blades", p, p -> find_specialization_spell( "Shadow Blades" ), options_str )
+  {
+    harmful = may_miss = may_crit = false;
+
+    school = SCHOOL_SHADOW;
+    add_child( p -> shadow_blades_attack );
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.shadow_blades -> trigger();
   }
 };
 
@@ -6451,6 +6537,7 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "poisoned_knife"      ) return new poisoned_knife_t     ( this, options_str );
   if ( name == "roll_the_bones"      ) return new roll_the_bones_t     ( this, options_str );
   if ( name == "rupture"             ) return new rupture_t            ( this, options_str );
+  if ( name == "secret_technique"    ) return new secret_technique_t   ( this, options_str );
   if ( name == "shadow_blades"       ) return new shadow_blades_t      ( this, options_str );
   if ( name == "shadow_dance"        ) return new shadow_dance_t       ( this, options_str );
   if ( name == "shadowstep"          ) return new shadowstep_t         ( this, options_str );
@@ -6961,6 +7048,7 @@ void rogue_t::init_spells()
   talent.dark_shadow        = find_talent_spell( "Dark Shadow" );
 
   talent.master_of_shadows  = find_talent_spell( "Master of Shadows" );
+  talent.secret_technique   = find_talent_spell( "Secret Technique" );
   talent.shuriken_tornado   = find_talent_spell( "Shuriken Tornado" );
   talent.death_from_above   = find_talent_spell( "Death from Above" );
 
@@ -7243,6 +7331,9 @@ void rogue_t::create_buffs()
                                     resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.master_of_shadows );
                                   } )
                                   -> set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.secret_technique        = make_buff( this, "secret_technique", talent.secret_technique )
+                                  -> set_cooldown( timespan_t::zero() )
+                                  -> set_quiet( true );
   buffs.shuriken_tornado        = new buffs::shuriken_tornado_t( this );
   buffs.death_from_above        = make_buff( this, "death_from_above", spell.death_from_above )
                                   // Note: Duration is set to 1.475s (+/- gauss RNG) on action execution in order to match the current model
