@@ -15,7 +15,6 @@ enum
 enum secondary_trigger_e
 {
   TRIGGER_NONE = 0U,
-  TRIGGER_DEATH_FROM_ABOVE,
   TRIGGER_WEAPONMASTER,
   TRIGGER_SHURIKEN_TORNADO
 };
@@ -248,7 +247,6 @@ struct rogue_t : public player_t
     buff_t* master_of_shadows;
     buff_t* secret_technique; // Only to simplify APL tracking
     buff_t* shuriken_tornado;
-    buff_t* death_from_above;
 
 
     // Legendaries
@@ -308,7 +306,6 @@ struct rogue_t : public player_t
     cooldown_t* ghostly_strike;
     cooldown_t* grappling_hook;
     cooldown_t* marked_for_death;
-    cooldown_t* death_from_above;
     cooldown_t* weaponmaster;
     cooldown_t* vendetta;
     cooldown_t* toxic_blade;
@@ -397,7 +394,6 @@ struct rogue_t : public player_t
   {
     const spell_data_t* poison_bomb_driver;
     const spell_data_t* critical_strikes;
-    const spell_data_t* death_from_above;
     const spell_data_t* fan_of_knives;
     const spell_data_t* fleet_footed;
     const spell_data_t* master_of_shadows;
@@ -475,7 +471,6 @@ struct rogue_t : public player_t
     const spell_data_t* master_of_shadows;
     const spell_data_t* secret_technique;
     const spell_data_t* shuriken_tornado;
-    const spell_data_t* death_from_above;
   } talent;
 
   // Masteries
@@ -585,7 +580,6 @@ struct rogue_t : public player_t
     cooldowns.blind                    = get_cooldown( "blind"                    );
     cooldowns.gouge                    = get_cooldown( "gouge"                    );
     cooldowns.cloak_of_shadows         = get_cooldown( "cloak_of_shadows"         );
-    cooldowns.death_from_above         = get_cooldown( "death_from_above"         );
     cooldowns.ghostly_strike           = get_cooldown( "ghostly_strike"           );
     cooldowns.grappling_hook           = get_cooldown( "grappling_hook"           );
     cooldowns.marked_for_death         = get_cooldown( "marked_for_death"         );
@@ -2273,7 +2267,6 @@ struct adrenaline_rush_t : public rogue_attack_t
     rogue_attack_t( "adrenaline_rush", p, p -> find_specialization_spell( "Adrenaline Rush" ), options_str )
   {
     harmful = may_miss = may_crit = false;
-    use_off_gcd = p -> talent.death_from_above -> ok();
   }
 
   void execute() override
@@ -2589,9 +2582,6 @@ struct dispatch_t: public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( p() -> buffs.death_from_above -> up() )
-      m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
-
     if ( p() -> legendary.thraxis_tricksy_treads )
     {
       const double increased_speed = ( p() -> cache.run_speed() / p() -> base_movement_speed ) - 1.0;
@@ -2604,16 +2594,6 @@ struct dispatch_t: public rogue_attack_t
     }
 
     return m;
-  }
-
-  double cost() const override
-  {
-    double c = rogue_attack_t::cost();
-
-    if ( p() -> buffs.death_from_above -> check() )
-      c = 0;
-
-    return c;
   }
 
   void execute() override
@@ -2678,26 +2658,6 @@ struct envenom_t : public rogue_attack_t
     return m;
   }
 
-  double action_multiplier() const override
-  {
-    double m = rogue_attack_t::action_multiplier();
-
-    if ( p() -> buffs.death_from_above -> up() )
-      m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
-
-    return m;
-  }
-
-  double cost() const override
-  {
-    double c = rogue_attack_t::cost();
-
-    if ( p() -> buffs.death_from_above -> check() )
-      c = 0;
-
-    return c;
-  }
-
   virtual void execute() override
   {
     rogue_attack_t::execute();
@@ -2708,12 +2668,6 @@ struct envenom_t : public rogue_attack_t
       envenom_duration += p() -> azerite.twist_the_knife.spell_ref().effectN( 2 ).time_value();
 
     p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
-
-    if ( p() -> buffs.death_from_above -> check() )
-    {
-      timespan_t extend_increase = p() -> buffs.envenom -> remains() * p() -> buffs.death_from_above -> data().effectN( 4 ).percent();
-      p() -> buffs.envenom -> extend_duration( player, extend_increase );
-    }
 
     p() -> trigger_poison_bomb( execute_state );
 
@@ -2745,24 +2699,9 @@ struct eviscerate_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    if ( p() -> buffs.death_from_above -> up() )
-      m *= 1.0 + p() -> buffs.death_from_above -> data().effectN( 2 ).percent();
-
     m *= 1.0 + p() -> buffs.shuriken_combo -> check_stack_value();
 
     return m;
-  }
-
-  double cost() const override
-  {
-    double c = rogue_attack_t::cost();
-
-    if ( p() -> buffs.death_from_above -> check() )
-    {
-      c = 0;
-    }
-
-    return c;
   }
 
   void execute() override
@@ -3663,10 +3602,6 @@ struct shadow_dance_t : public rogue_attack_t
     {
       cooldown -> charges += p -> talent.enveloping_shadows -> effectN( 2 ).base_value();
     }
-
-    // Note: Let usage of Shadow Dance while DfA is in flight.
-    // We disable it if we don't have DfA and DSh to improve the simulation speed.
-    use_off_gcd = p -> talent.death_from_above -> ok() && p -> talent.dark_shadow -> ok();
   }
 
   void execute() override
@@ -4048,7 +3983,6 @@ struct sprint_t : public rogue_attack_t
     harmful = callbacks = false;
     cooldown = p -> cooldowns.sprint;
     ignore_false_positive = true;
-    use_off_gcd = p -> talent.death_from_above -> ok();
 
     cooldown -> duration = data().cooldown()
                             + p -> spell.sprint_2 -> effectN( 1 ).time_value();
@@ -4164,170 +4098,6 @@ struct vendetta_t : public rogue_attack_t
 
     rogue_td_t* td = this -> td( execute_state -> target );
     td -> debuffs.vendetta -> trigger();
-  }
-};
-
-// Death From Above
-
-struct death_from_above_driver_t : public rogue_attack_t
-{
-  action_t* ability;
-
-  death_from_above_driver_t( rogue_t* p , action_t* finisher) :
-    rogue_attack_t( "death_from_above_driver", p, p -> talent.death_from_above ),
-    ability( finisher )
-  {
-    callbacks = tick_may_crit = false;
-    quiet = dual = background = harmful = true;
-    attack_power_mod.direct = 0;
-    base_dd_min = base_dd_max = 0;
-    base_costs[ RESOURCE_ENERGY ] = 0;
-    base_costs[ RESOURCE_COMBO_POINT ] = 0;
-  }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    memset( &affected_by, 0, sizeof( affected_by ) );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    rogue_attack_t::tick( d );
-
-    action_state_t* ability_state = ability -> get_state();
-    ability -> snapshot_state( ability_state, DMG_DIRECT );
-    ability_state -> target = d -> target;
-    cast_state( ability_state ) -> cp = cast_state( d -> state ) -> cp;
-    make_event<secondary_ability_trigger_t>( *sim, ability_state, TRIGGER_DEATH_FROM_ABOVE );
-
-    p() -> buffs.death_from_above -> expire();
-  }
-};
-
-struct death_from_above_t : public rogue_attack_t
-{
-  death_from_above_driver_t* driver;
-
-  death_from_above_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "death_from_above", p, p -> talent.death_from_above, options_str )
-  {
-    attack_power_mod.direct /= 5;
-
-    base_tick_time = timespan_t::zero();
-    dot_duration = timespan_t::zero();
-
-    aoe = -1;
-
-    // Create appropriate finisher for the players spec. Associate its stats
-    // with the DfA's stats.
-    action_t* finisher = nullptr;
-    switch ( p -> specialization() )
-    {
-      case ROGUE_ASSASSINATION:
-      {
-        finisher = new envenom_t( p, "" );
-        finisher -> stats = player -> get_stats( "envenom_dfa", finisher );
-        stats -> add_child( finisher->stats );
-        break;
-      }
-      case ROGUE_SUBTLETY:
-      {
-        finisher = new eviscerate_t( p, "" );
-        finisher -> stats = player -> get_stats( "eviscerate_dfa", finisher );
-        stats -> add_child( finisher -> stats );
-        break;
-      }
-      case ROGUE_OUTLAW:
-      {
-        finisher = new dispatch_t( p, "" );
-        finisher -> stats = player -> get_stats( "dispatch_dfa", finisher );
-        stats -> add_child( finisher->stats );
-        break;
-      }
-      default:
-        background = true;
-        assert(0);
-    }
-    if ( finisher )
-    {
-      driver = new death_from_above_driver_t( p, finisher );
-    }
-  }
-
-  void init() override
-  {
-    rogue_attack_t::init();
-
-    affected_by.ruthlessness = false;
-    affected_by.relentless_strikes = false;
-    affected_by.deepening_shadows = false;
-    affected_by.alacrity = false;
-  }
-
-  void adjust_attack( attack_t* attack, const timespan_t& oor_delay )
-  {
-    if ( ! attack || ! attack -> execute_event )
-    {
-      return;
-    }
-
-    if ( attack -> execute_event -> remains() >= oor_delay )
-    {
-      return;
-    }
-
-    timespan_t next_swing = attack -> execute_event -> remains();
-    timespan_t initial_next_swing = next_swing;
-    // Fit the next autoattack swing into a set of increasing 500ms values,
-    // which seems to be what is occurring with OOR+autoattacks in game.
-    while ( next_swing <= oor_delay )
-    {
-      next_swing += timespan_t::from_millis( 500 );
-    }
-
-    if ( attack == player -> main_hand_attack )
-    {
-      p() -> dfa_mh -> add( ( next_swing - oor_delay ).total_seconds() );
-    }
-    else if ( attack == player -> off_hand_attack )
-    {
-      p() -> dfa_oh -> add( ( next_swing - oor_delay ).total_seconds() );
-    }
-
-    attack -> execute_event -> reschedule( next_swing );
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "%s %s swing pushback: oor_time=%.3f orig_next=%.3f next=%.3f lands=%.3f",
-          player -> name(), name(), oor_delay.total_seconds(), initial_next_swing.total_seconds(),
-          next_swing.total_seconds(),
-          attack -> execute_event -> occurs().total_seconds() );
-    }
-  }
-
-  void execute() override
-  {
-    rogue_attack_t::execute();
-
-    timespan_t oor_delay = timespan_t::from_seconds( rng().gauss( 1.475, 0.025 ) );
-
-    // Make Dfa buff longer than driver since driver tick will expire it and DfA should not run out first.
-    p() -> buffs.death_from_above -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, oor_delay + timespan_t::from_millis( 50 ) );
-
-    adjust_attack( player -> main_hand_attack, oor_delay );
-    adjust_attack( player -> off_hand_attack, oor_delay );
-
-    // DfA spell used to be implemented as a DoT where the finisher would
-    // trigger on the first tick. This is no longer the case, but as a bandaid fix,
-    // we're going to continue to model it as one, so force the DfA driver to
-    // behave like a DoT.
-    driver -> base_tick_time = oor_delay;
-    driver -> dot_duration = oor_delay;
-
-    action_state_t* driver_state = driver -> get_state( execute_state );
-    driver_state -> target = target;
-    driver -> schedule_execute( driver_state );
   }
 };
 
@@ -5698,7 +5468,6 @@ void rogue_t::trigger_true_bearing( const action_state_t* state )
   cooldowns.grappling_hook -> adjust( v, false );
   cooldowns.killing_spree -> adjust( v, false );
   cooldowns.marked_for_death -> adjust( v, false );
-  cooldowns.death_from_above -> adjust( v, false );
 }
 
 void rogue_t::trigger_restless_blades( const action_state_t* state )
@@ -6516,7 +6285,6 @@ action_t* rogue_t::create_action( const std::string& name,
   if ( name == "blade_rush"          ) return new blade_rush_t         ( this, options_str );
   if ( name == "blindside"           ) return new blindside_t          ( this, options_str );
   if ( name == "crimson_tempest"     ) return new crimson_tempest_t    ( this, options_str );
-  if ( name == "death_from_above"    ) return new death_from_above_t   ( this, options_str );
   if ( name == "dispatch"            ) return new dispatch_t           ( this, options_str );
   if ( name == "envenom"             ) return new envenom_t            ( this, options_str );
   if ( name == "eviscerate"          ) return new eviscerate_t         ( this, options_str );
@@ -6976,7 +6744,6 @@ void rogue_t::init_spells()
   // Misc spells
   spell.poison_bomb_driver            = find_spell( 255545 );
   spell.critical_strikes              = find_spell( 157442 );
-  spell.death_from_above              = find_spell( 163786 );
   spell.fan_of_knives                 = find_class_spell( "Fan of Knives" );
   spell.fleet_footed                  = find_spell( 31209 );
   spell.master_of_shadows             = find_spell( 196980 );
@@ -7050,7 +6817,6 @@ void rogue_t::init_spells()
   talent.master_of_shadows  = find_talent_spell( "Master of Shadows" );
   talent.secret_technique   = find_talent_spell( "Secret Technique" );
   talent.shuriken_tornado   = find_talent_spell( "Shuriken Tornado" );
-  talent.death_from_above   = find_talent_spell( "Death from Above" );
 
   azerite.deadshot          = find_azerite_spell( "Deadshot" );
   azerite.nights_vengeance  = find_azerite_spell( "Night's Vengeance" );
@@ -7136,12 +6902,6 @@ void rogue_t::init_procs()
   procs.t21_4pc_outlaw           = get_proc( "Tier 21 4PC Set Bonus"   );
 
   procs.deepening_shadows        = get_proc( "Deepening Shadows"       );
-
-  if ( talent.death_from_above -> ok() )
-  {
-    dfa_mh = get_sample_data( "dfa_mh" );
-    dfa_oh = get_sample_data( "dfa_oh" );
-  }
 }
 
 // rogue_t::init_scaling ====================================================
@@ -7335,11 +7095,6 @@ void rogue_t::create_buffs()
                                   -> set_cooldown( timespan_t::zero() )
                                   -> set_quiet( true );
   buffs.shuriken_tornado        = new buffs::shuriken_tornado_t( this );
-  buffs.death_from_above        = make_buff( this, "death_from_above", spell.death_from_above )
-                                  // Note: Duration is set to 1.475s (+/- gauss RNG) on action execution in order to match the current model
-                                  // and then let it be trackable in the APL. The driver will also expire this buff when the finisher is scheduled.
-                                  //.duration( timespan_t::from_seconds( 1.475 ) )
-                                  -> set_quiet( true );
 
 
   // Legendaries
@@ -8001,60 +7756,14 @@ stat_e rogue_t::convert_hybrid_stat( stat_e s ) const
 class rogue_report_t : public player_report_extension_t
 {
 public:
-  rogue_report_t( rogue_t& player ) :
-      p( player )
+  rogue_report_t( rogue_t& player ) : p( player )
   {
-
   }
 
   virtual void html_customsection( report::sc_html_stream& os ) override
   {
-    os << "<div class=\"player-section custom_section\">\n";
-    if ( p.talent.death_from_above -> ok() )
-    {
-      os << "<h3 class=\"toggle open\">Death from Above swing time loss</h3>\n"
-         << "<div class=\"toggle-content\">\n";
-
-      os << "<p>";
-      os <<
-        "Death from Above causes out of range time for the Rogue while the"
-        " animation is performing. This out of range time translates to a"
-        " potential loss of auto-attack swing time. The following table"
-        " represents the total auto-attack swing time loss, when performing Death"
-        " from Above during the length of the combat. It is computed as the"
-        " interval between the out of range delay (an average of 1.3 seconds in"
-        " simc), and the next time the hand swings after the out of range delay"
-        " elapsed.";
-      os << "</p>";
-      os << "<table class=\"sc\" style=\"float: left;margin-right: 10px;\">\n";
-
-      os << "<tr><th></th><th colspan=\"3\">Lost time per iteration (sec)</th></tr>";
-      os << "<tr><th>Weapon hand</th><th>Minimum</th><th>Average</th><th>Maximum</th></tr>";
-
-      os << "<tr>";
-      os << "<td class=\"left\">Main hand</td>";
-      os.printf("<td class=\"right\">%.3f</td>", p.dfa_mh -> min() );
-      os.printf("<td class=\"right\">%.3f</td>", p.dfa_mh -> mean() );
-      os.printf("<td class=\"right\">%.3f</td>", p.dfa_mh -> max() );
-      os << "</tr>";
-
-      os << "<tr>";
-      os << "<td class=\"left\">Off hand</td>";
-      os.printf("<td class=\"right\">%.3f</td>", p.dfa_oh -> min() );
-      os.printf("<td class=\"right\">%.3f</td>", p.dfa_oh -> mean() );
-      os.printf("<td class=\"right\">%.3f</td>", p.dfa_oh -> max() );
-      os << "</tr>";
-
-      os << "</table>";
-
-      os << "</div>\n";
-
-      os << "<div class=\"clear\"></div>\n";
-    }
-    os << "</div>\n";
-
-    os << "<div class=\"player-section custom_section\">\n";
-    os << "</div>\n";
+    ( void )p; // NOOP
+    // Custom Class Section can be added here
   }
 private:
   rogue_t& p;
