@@ -862,14 +862,10 @@ bool parse_process_priority( sim_t*             sim,
 }
 
 bool parse_target_error_role( sim_t * sim,
-                              const std::string& name,
+                              const std::string& /* name */,
                               const std::string& value )
 {
-  role_e parsed_role = util::parse_role_type( value );
-
-  if (parsed_role != ROLE_NONE) {
-    sim -> target_error_role = util::parse_role_type( value );
-  }
+  sim -> target_error_role = util::parse_role_type( value );
 
   return true;
 }
