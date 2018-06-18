@@ -17,7 +17,6 @@
 // Elemental
 // - Add Talents
 //   - Add Spirit Wolf
-// - Add Fire Elemental passive effect
 // - Add Eye of the Storm to Primal Storm Elemental instead of Gale Force
 // - Add Azerite traits
 //
@@ -375,7 +374,6 @@ public:
   struct
   {
     cooldown_t* ascendance;
-    cooldown_t* earth_shock;
     cooldown_t* fire_elemental;
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
@@ -585,7 +583,6 @@ public:
 
     // Cooldowns
     cooldown.ascendance        = get_cooldown( "ascendance" );
-    cooldown.earth_shock       = get_cooldown( "Earth Shock" );
     cooldown.fire_elemental    = get_cooldown( "fire_elemental" );
     cooldown.storm_elemental   = get_cooldown( "storm_elemental" );
     cooldown.feral_spirits     = get_cooldown( "feral_spirit" );
@@ -4565,7 +4562,7 @@ struct icefury_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p()->buff.icefury->trigger( data().initial_stacks(), ( p()->talent.icefury->effectN( 3 ).percent() ) );
+    p()->buff.icefury->trigger( data().initial_stacks() );
   }
 };
 
@@ -5039,13 +5036,10 @@ struct frost_shock_overload_t : public elemental_overload_spell_t
 
 struct frost_shock_t : public shaman_spell_t
 {
-  double damage_coefficient;
-
   action_t* t21_4pc;
 
   frost_shock_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "frost_shock", player, player->find_specialization_spell( "Frost Shock" ), options_str ),
-      damage_coefficient( data().effectN( 3 ).percent() / secondary_costs[ RESOURCE_MAELSTROM ] ),
       t21_4pc( nullptr )
   {
     if ( player->sets->has_set_bonus( SHAMAN_ELEMENTAL, T21, B4 ) )
@@ -5058,8 +5052,6 @@ struct frost_shock_t : public shaman_spell_t
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
-
-    m *= 1.0 + cost() * damage_coefficient;
 
     m *= 1.0 + p()->buff.icefury->value();
 
@@ -6686,6 +6678,7 @@ void shaman_t::create_buffs()
   buff.icefury = make_buff( this, "icefury", talent.icefury )
                      ->set_cooldown( timespan_t::zero() )  // Handled by the action
                      ->set_default_value( talent.icefury->effectN( 3 ).percent() );
+
   buff.master_of_the_elements = make_buff( this, "master_of_the_elements", find_spell( 260734 ) )
                                     ->set_default_value( find_spell( 260734 )->effectN( 1 ).percent() );
   buff.unlimited_power = make_buff<haste_buff_t>( this, "unlimited_power", find_spell( 272737 ) );
@@ -6963,7 +6956,7 @@ void shaman_t::init_action_list_elemental()
   single_target->add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50",
                              "Keep SK for large or soon add waves." );
   single_target->add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
-  single_target->add_action( this, "Frost Shock", "if=buff.icefury.up&maelstrom>=20" );
+  single_target->add_action( this, "Frost Shock", "if=buff.icefury.up" );
   single_target->add_action( this, "Earth Shock" );
   single_target->add_action( this, "Lava Burst",
                              "if=dot.flame_shock.remains>cast_time&(cooldown_react|buff.ascendance.up)" );
