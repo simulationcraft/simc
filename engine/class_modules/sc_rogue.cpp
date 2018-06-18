@@ -3974,10 +3974,13 @@ struct slice_and_dice_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    timespan_t snd_duration = ( cast_state( execute_state ) -> cp + 1 ) * p() -> buffs.slice_and_dice -> data().duration();
+    int cp = cast_state( execute_state ) -> cp;
+    timespan_t snd_duration = ( cp + 1 ) * p() -> buffs.slice_and_dice -> data().duration();
 
     double snd_mod = 1.0; // Multiplier for the SnD effects. Was changed in Legion for Loaded Dice artifact trait.
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
+
+    p() -> buffs.snake_eyes -> trigger( 1, cp * p() -> azerite.snake_eyes.value() );
   }
 };
 
