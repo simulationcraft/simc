@@ -3752,6 +3752,14 @@ struct shuriken_storm_t: public rogue_attack_t
     ap_type = AP_WEAPON_BOTH;
   }
 
+  void init() override
+  {
+    rogue_attack_t::init();
+
+    // As of 2018-06-18 not in BfA spell data.
+    affected_by.shadow_blades = true;
+  }
+
   bool procs_insignia_of_ravenholdt() const override
   { return false; }
 
