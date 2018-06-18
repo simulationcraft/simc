@@ -11745,7 +11745,11 @@ void player_collected_data_t::collect_data( const player_t& p )
   {
     double metric=0;
 
-    switch( p.primary_role() )
+    // ROLE is used here primarily to stay in-line with the previous version of the code.
+    // An ideal implementation is probably to rewrite this to allow specification of a scale_metric_e
+    // to make it more flexible. That was beyond my capability/available time and it would also likely be
+    // very, very low use (as of legion/bfa, almost all tanks are simming DPS, not survival).
+    switch( p.sim -> target_error_role )
     {
     case ROLE_ATTACK:
     case ROLE_SPELL:
