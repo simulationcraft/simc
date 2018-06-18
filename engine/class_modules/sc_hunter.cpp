@@ -399,6 +399,7 @@ public:
     buff_t* sephuzs_secret;
 
     // azerite
+    buff_t* arcane_flurry;
     buff_t* haze_of_rage;
     buff_t* in_the_rhythm;
     buff_t* up_close_and_personal;
@@ -2744,6 +2745,8 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     p() -> buffs.master_marksman -> up(); // benefit tracking
     p() -> buffs.master_marksman -> decrement();
 
+    p() -> buffs.arcane_flurry -> trigger();
+
     if ( p() -> talents.calling_the_shots -> ok() )
       p() -> cooldowns.trueshot -> adjust( - p() -> talents.calling_the_shots -> effectN( 1 ).time_value() );
   }
@@ -2755,6 +2758,15 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     am *= 1.0 + p() -> buffs.precise_shots -> value();
 
     return am;
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = hunter_ranged_attack_t::bonus_da( s );
+
+    b += p() -> buffs.arcane_flurry -> stack_value();
+
+    return b;
   }
 };
 
@@ -4989,6 +5001,11 @@ void hunter_t::create_buffs()
       -> set_trigger_spell( sets -> set( HUNTER_SURVIVAL, T21, B4 ) );
 
   // Azerite
+
+  buffs.arcane_flurry =
+    make_buff( this, "arcane_flurry", find_spell( 273267 ) )
+      -> set_default_value( azerite.arcane_flurry.value( 1 ) )
+      -> set_trigger_spell( azerite.arcane_flurry );
 
   buffs.haze_of_rage =
     make_buff<stat_buff_t>( this, "haze_of_rage", find_spell( 273264 ) )
