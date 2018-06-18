@@ -269,6 +269,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* mark_of_helbrine;
     buff_t* unseen_predators_cloak;
     buff_t* hunters_mark;
+    buff_t* latent_poison;
   } debuffs;
 
   struct dots_t
@@ -333,6 +334,7 @@ public:
     azerite_power_t focused_fire;
     azerite_power_t in_the_rhythm;
     // Survival
+    azerite_power_t latent_poison;
     azerite_power_t up_close_and_personal;
   } azerite;
 
@@ -3122,12 +3124,45 @@ struct internal_bleeding_t
 
 struct raptor_strike_base_t: hunter_melee_attack_t
 {
+  struct latent_poison_t: hunter_spell_t
+  {
+    latent_poison_t( const std::string& n, hunter_t* p ):
+      hunter_spell_t( n, p, p -> find_spell( 273289 ) )
+    {
+      dual = true;
+    }
+
+    void trigger( player_t* target )
+    {
+      auto debuff = td( target ) -> debuffs.latent_poison;
+      if ( ! debuff -> check() )
+        return;
+
+      base_dd_min = base_dd_max = debuff -> check_stack_value();
+      set_target( target );
+      execute();
+
+      debuff -> expire();
+    }
+  };
+
   internal_bleeding_t internal_bleeding;
+  latent_poison_t* latent_poison = nullptr;
 
   raptor_strike_base_t( const std::string& n, hunter_t* p, const spell_data_t* s ):
     hunter_melee_attack_t( n, p, s ),
     internal_bleeding( p )
   {
+    if ( p -> azerite.latent_poison.ok() )
+      latent_poison = p -> get_background_action<latent_poison_t>( "latent_poison" );
+  }
+
+  void init() override
+  {
+    hunter_melee_attack_t::init();
+
+    if ( !background && latent_poison )
+      add_child( latent_poison );
   }
 
   double cost() const override
@@ -3155,6 +3190,9 @@ struct raptor_strike_base_t: hunter_melee_attack_t
     hunter_melee_attack_t::impact( s );
 
     internal_bleeding.trigger( s );
+
+    if ( latent_poison )
+      latent_poison -> trigger( s -> target );
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -3474,6 +3512,14 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return dot_duration * ( tick_time( s ) / base_tick_time );
+  }
+
+  void assess_damage( dmg_e type, action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::assess_damage( type, s );
+
+    if ( s -> result_amount > 0 && p() -> azerite.latent_poison.ok() )
+      td( s -> target ) -> debuffs.latent_poison -> trigger();
   }
 };
 
@@ -4362,6 +4408,11 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
     make_buff( *this, "hunters_mark", p -> talents.hunters_mark )
       -> set_default_value( p -> talents.hunters_mark -> effectN( 1 ).percent() );
 
+  debuffs.latent_poison =
+    make_buff( *this, "latent_poison", p -> find_spell( 273286 ) )
+      -> set_default_value( p -> azerite.latent_poison.value( 1 ) )
+      -> set_trigger_spell( p -> azerite.latent_poison );
+
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
   dots.scorching_pheromones = target -> get_dot( "scorching_pheromones", p );
@@ -4683,6 +4734,7 @@ void hunter_t::init_spells()
   azerite.haze_of_rage          = find_azerite_spell( "Haze of Rage" );
   azerite.focused_fire          = find_azerite_spell( "Focused Fire" );
   azerite.in_the_rhythm         = find_azerite_spell( "In The Rhythm" );
+  azerite.latent_poison         = find_azerite_spell( "Latent Poison" );
   azerite.up_close_and_personal = find_azerite_spell( "Up Close And Personal" );
 }
 
