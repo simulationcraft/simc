@@ -23,8 +23,8 @@
 //      Name                        ID        Source (h head, s shoulders, c chest)
 //    - Echo of the Elementals      275381    Atal'Dazar (h), Kings' Rest (s|c), The Motherlode!! (c)
 //    + Lava Shock                  273448    ?
-//    - Natural Harmony             278697    Shrine of the Storm (c)
-//    - Rumbling Tremors            278709    The Underrot (h)
+//    + Natural Harmony             278697    Shrine of the Storm (c)
+//    + Rumbling Tremors            278709    The Underrot (h)
 //    + Synapse Shock               277671    Freehold (h|s), Siege of Boralus (s|c), Tol Dagor (h|s)
 //    + Volcanic Lightning          272978    Temple of Sethraliss (h|c), The Motherlode!! (s), The Underrot (s),
 //    Waycrest Manor (h|c)
@@ -2322,6 +2322,60 @@ struct earth_elemental_t : public primal_elemental_t
   {
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     owner_coeff.ap_from_sp      = 0.25;
+  }
+
+  attack_t* create_auto_attack() override
+  {
+    auto attack = primal_elemental_t::create_auto_attack();
+    if ( o()->azerite.rumbling_tremors.ok() )
+    {
+      attack->base_dd_adder += o()->azerite.rumbling_tremors.value( 3 );
+    }
+    return attack;
+  }
+
+  struct rumbling_tremors_t : public pet_spell_t<earth_elemental_t>
+  {
+    rumbling_tremors_t( earth_elemental_t* player, const std::string& options )
+      : super( player, "rumbling_tremors", player->find_spell( 279523 ), options )
+    {
+      parse_options( options );
+
+      hasted_ticks = false;
+
+      aoe           = -1;
+      tick_may_crit = true;
+      base_td += player->o()->azerite.rumbling_tremors.value( 1 );
+    }
+
+    double target_armor( player_t* ) const override
+    {
+      return 0;
+    }
+  };
+
+  void create_default_apl() override
+  {
+    primal_elemental_t::create_default_apl();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+
+    if ( o()->talent.primal_elementalist->ok() )
+    {
+      def->add_action( "rumbling_tremors,if=!ticking" );
+    }
+    else
+    {
+    }
+    def->add_action( "auto_attack" );
+  }
+
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "rumbling_tremors" )
+      return new rumbling_tremors_t( this, options_str );
+
+    return primal_elemental_t::create_action( name, options_str );
   }
 };
 
@@ -6262,7 +6316,7 @@ void shaman_t::init_spells()
   azerite.echo_of_the_elementals = find_azerite_spell( "Echo of the Elementals" );
   azerite.lava_shock             = find_azerite_spell( "Lava Shock" );
   azerite.natural_harmony        = find_azerite_spell( "Natural Harmony" );
-  azerite.rumbling_tremors       = find_azerite_spell( "Rumbling Tremor" );
+  azerite.rumbling_tremors       = find_azerite_spell( "Rumbling Tremors" );
   azerite.synapse_shock          = find_azerite_spell( "Synapse Shock" );
   azerite.volcanic_lightning     = find_azerite_spell( "Volcanic Lightning" );
 
@@ -6955,6 +7009,9 @@ void shaman_t::init_action_list_elemental()
   def->add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<2" );
   def->add_action( this, "Fire Elemental" );
   def->add_talent( this, "Storm Elemental" );
+  def->add_action( this, "earth elemental",
+                   "if=cooldown.fire_elemental.remains<120&!talent.storm_elemental.enabled|cooldown.storm_elemental."
+                   "remains<120&talent.storm_elemental.enabled" );
   // On-use items
   def->add_action( "use_items" );
   // Racials
