@@ -337,6 +337,9 @@ public:
     buff_t* wind_gust;  // Storm Elemental passive 263806
 
     buff_t* lava_shock;
+    stat_buff_t* natural_harmony_fire;    // crit
+    stat_buff_t* natural_harmony_frost;   // mastery
+    stat_buff_t* natural_harmony_nature;  // haste
 
     // Enhancement
     buff_t* crash_lightning;
@@ -1607,6 +1610,28 @@ public:
     base_t::impact( state );
 
     p()->trigger_stormbringer( state );
+
+    // On main spells and no dot ticks
+    if ( state->action->harmful && !state->action->background && state->result_amount > 0 &&
+         p()->azerite.natural_harmony.ok() )
+    {
+      auto school = state->action->get_school();
+
+      if ( dbc::is_school( school, SCHOOL_FIRE ) )
+      {
+        p()->buff.natural_harmony_fire->trigger();
+      }
+
+      if ( dbc::is_school( school, SCHOOL_NATURE ) )
+      {
+        p()->buff.natural_harmony_nature->trigger();
+      }
+
+      if ( dbc::is_school( school, SCHOOL_FROST ) )
+      {
+        p()->buff.natural_harmony_frost->trigger();
+      }
+    }
   }
 
   virtual double stormbringer_proc_chance() const
@@ -6701,6 +6726,15 @@ void shaman_t::create_buffs()
                         ->set_trigger_spell( find_spell( 273453 ) )
                         ->set_max_stack( find_spell( 273453 )->max_stacks() )
                         ->set_duration( find_spell( 273453 )->duration() );
+
+  buff.natural_harmony_fire = make_buff<stat_buff_t>( this, "natural_harmony_fire", find_spell( 279028 ) )
+                                  ->add_stat( STAT_CRIT_RATING, azerite.natural_harmony.value() );
+
+  buff.natural_harmony_frost = make_buff<stat_buff_t>( this, "natural_harmony_frost", find_spell( 279029 ) )
+                                   ->add_stat( STAT_MASTERY_RATING, azerite.natural_harmony.value() );
+
+  buff.natural_harmony_nature = make_buff<stat_buff_t>( this, "natural_harmony_nature", find_spell( 279033 ) )
+                                    ->add_stat( STAT_HASTE_RATING, azerite.natural_harmony.value() );
 
   buff.synapse_shock = make_buff<stat_buff_t>( this, "synapse_shock", find_spell( 277960 ) )
                            ->add_stat( STAT_INTELLECT, azerite.synapse_shock.value() )
