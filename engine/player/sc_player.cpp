@@ -9142,15 +9142,20 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     {
       if (parts.size() == 4 )
       {
-        // eg. time_to_pct_90
+        // eg. time_to_pct_90.1
         percent = std::stod( parts[ 3 ] );
       }
+      else
+      {
+        throw std::invalid_argument(fmt::format("No pct value given for time_to_pct_ expression."));
+      }
+    }
+    else
+    {
+      throw std::invalid_argument(fmt::format("Unsupported time_to_ expression '{}'.", parts[ 2 ]));
     }
 
-    if ( percent >= 0.0 ) // skip construction if the percent is nonsensical
-    {
-      return make_fn_expr( expression_str, [this, percent] { return time_to_percent( percent ).total_seconds(); } );
-    }
+    return make_fn_expr( expression_str, [this, percent] { return time_to_percent( percent ).total_seconds(); } );
   }
 
   // incoming_damage_X expressions
@@ -9162,12 +9167,16 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     if ( util::str_in_str_ci( parts[ 2 ], "ms" ) )
       window_duration = timespan_t::from_millis( std::stoi( parts[ 2 ] ) );
     else
-      window_duration = timespan_t::from_seconds( std::stoi( parts[ 2 ] ) );
+      window_duration = timespan_t::from_seconds( std::stod( parts[ 2 ] ) );
 
     // skip construction if the duration is nonsensical
     if ( window_duration > timespan_t::zero() )
     {
       return make_fn_expr(expression_str, [this, window_duration] {return compute_incoming_damage( window_duration );});
+    }
+    else
+    {
+      throw std::invalid_argument(fmt::format("Non-positive window duration '{}'.", window_duration));
     }
   }
 
@@ -9621,7 +9630,8 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
     }
   }
 
-  return nullptr;
+  std::string tail = name_str.substr(splits[ 0 ].length() + 1);
+  throw std::invalid_argument(fmt::format("Unsupported resource expression '{}'.", tail));
 }
 
 double player_t::compute_incoming_damage( timespan_t interval ) const

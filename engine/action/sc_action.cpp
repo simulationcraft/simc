@@ -3142,8 +3142,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( splits.size() == 3 && splits[ 0 ] == "debuff" )
   {
-    if ( expr_t* debuff_expr = buff_t::create_expression( splits[ 1 ], splits[ 2 ], *this ) )
-      return debuff_expr;
+    return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *this );
   }
 
   if ( splits.size() >= 2 && splits[ 0 ] == "target" )
@@ -3293,19 +3292,15 @@ expr_t* action_t::create_expression( const std::string& name_str )
   // necessary for self.target.*, self.dot.*
   if ( splits.size() >= 2 && splits[ 0 ] == "self" )
   {
-    std::string rest = splits[1];
-    for ( size_t i = 2; i < splits.size(); ++i )
-      rest += '.' + splits[i];
-    return player -> create_action_expression( *this, rest );
+    std::string tail = name_str.substr(splits[ 0 ].length() + 1);
+    return player -> create_action_expression( *this, tail );
   }
 
   // necessary for sim.target.*
   if ( splits.size() >= 2 && splits[ 0 ] == "sim" )
   {
-    std::string rest = splits[ 1 ];
-    for ( size_t i = 2; i < splits.size(); ++i )
-      rest += '.' + splits[ i ];
-    return sim -> create_expression( rest );
+    std::string tail = name_str.substr(splits[ 0 ].length() + 1);
+    return sim -> create_expression( tail );
   }
 
   return player -> create_action_expression( *this, name_str );
