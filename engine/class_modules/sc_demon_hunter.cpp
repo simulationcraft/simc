@@ -1243,10 +1243,10 @@ namespace heals
 
 struct consume_soul_t : public demon_hunter_heal_t
 {
-  struct demonic_appetite_t : public demon_hunter_spell_t
+  struct demonic_appetite_energize_t : public demon_hunter_spell_t
   {
-    demonic_appetite_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "demonic_appetite_fury", p, p->spec.demonic_appetite_fury)
+    demonic_appetite_energize_t( demon_hunter_t* p )
+      : demon_hunter_spell_t( "demonic_appetite_fury", p, p->spec.demonic_appetite_fury )
     {
       may_miss = may_block = may_dodge = may_parry = may_crit = callbacks = false;
       background = quiet = true;
@@ -1254,23 +1254,25 @@ struct consume_soul_t : public demon_hunter_heal_t
     }
   };
 
+  demonic_appetite_energize_t* demonic_appetite_energize;
+
   const soul_fragment type;
   const spell_data_t* vengeance_heal;
-  timespan_t vengeance_heal_interval;
-  demon_hunter_spell_t* demonic_appetite_energize;
+  const timespan_t vengeance_heal_interval;
 
   consume_soul_t( demon_hunter_t* p, const std::string& n, const spell_data_t* s, soul_fragment t )
     : demon_hunter_heal_t( n, p, s ), 
     type( t ),
     vengeance_heal( p->find_specialization_spell( 203783 ) ),
-    vengeance_heal_interval( timespan_t::from_seconds( vengeance_heal->effectN( 4 ).base_value() ) )
+    vengeance_heal_interval( timespan_t::from_seconds( vengeance_heal->effectN( 4 ).base_value() ) ),
+    demonic_appetite_energize( nullptr )
   {
     may_miss = may_crit = false;
     background = true;
 
-    if ( p->talent.demonic_appetite->ok() & !demonic_appetite_energize )
+    if ( p->talent.demonic_appetite->ok() )
     {
-      demonic_appetite_energize = new demonic_appetite_t( p );
+      demonic_appetite_energize = new demonic_appetite_energize_t( p );
     }
   }
 
@@ -4454,7 +4456,7 @@ void demon_hunter_t::init_spells()
 
   talent.trail_of_ruin        = find_talent_spell( "Trail of Ruin" );
   talent.fel_mastery          = find_talent_spell( "Fel Mastery" );
-  talent.fel_barrage          = find_spell( 258925 ); // find_talent_spell( "Fel Barrage" );
+  talent.fel_barrage          = find_talent_spell( "Fel Barrage" );
 
   // talent.soul_rending
   talent.desperate_instincts  = find_talent_spell( "Desperate Instincts" );
