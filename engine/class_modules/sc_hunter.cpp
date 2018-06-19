@@ -4370,6 +4370,16 @@ struct steel_trap_t: public hunter_spell_t
 
 struct wildfire_bomb_t: public hunter_spell_t
 {
+  struct wildfire_cluster_t : public hunter_spell_t
+  {
+    wildfire_cluster_t( const std::string& n, hunter_t* p ):
+      hunter_spell_t( n, p, p -> find_spell( 272745 ) )
+    {
+      aoe = -1;
+      base_dd_min = base_dd_max = p -> azerite.wildfire_cluster.value( 1 );
+    }
+  };
+
   struct bomb_base_t : public hunter_spell_t
   {
     struct dot_action_t : public hunter_spell_t
@@ -4480,6 +4490,7 @@ struct wildfire_bomb_t: public hunter_spell_t
 
   std::array<bomb_base_t*, 3> bombs;
   bomb_base_t* current_bomb = nullptr;
+  wildfire_cluster_t* wildfire_cluster = nullptr;
 
   wildfire_bomb_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "wildfire_bomb", p, p -> specs.wildfire_bomb )
@@ -4499,6 +4510,12 @@ struct wildfire_bomb_t: public hunter_spell_t
     else
     {
       bombs[ WILDFIRE_INFUSION_SHRAPNEL ] = p -> get_background_action<wildfire_bomb_damage_t>( "wildfire_bomb_damage", this );
+    }
+
+    if ( p -> azerite.wildfire_cluster.ok() )
+    {
+      wildfire_cluster = p -> get_background_action<wildfire_cluster_t>( "wildfire_cluster" );
+      add_child( wildfire_cluster );
     }
   }
 
@@ -4524,6 +4541,14 @@ struct wildfire_bomb_t: public hunter_spell_t
 
     current_bomb -> set_target( s -> target );
     current_bomb -> execute();
+
+    if ( wildfire_cluster )
+    {
+      // XXX: they are 'missiles' that explode after a short delay, whatever
+      wildfire_cluster -> set_target( s -> target );
+      for ( int i = 0; i < 3; i++ )
+        wildfire_cluster -> execute();
+    }
   }
 };
 
