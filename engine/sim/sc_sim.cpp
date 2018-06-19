@@ -861,6 +861,15 @@ bool parse_process_priority( sim_t*             sim,
   return true;
 }
 
+bool parse_target_error_role( sim_t * sim,
+                              const std::string& /* name */,
+                              const std::string& value )
+{
+  sim -> target_error_role = util::parse_role_type( value );
+
+  return true;
+}
+
 bool parse_maximize_reporting( sim_t*             sim,
                                    const std::string& name,
                                    const std::string& v )
@@ -1335,6 +1344,7 @@ sim_t::sim_t() :
   iterations( 0 ),
   canceled( 0 ),
   target_error( 0 ),
+  target_error_role( ROLE_DPS ),
   current_error( 0 ),
   current_mean( 0 ),
   analyze_error_interval( 100 ),
@@ -3171,6 +3181,7 @@ void sim_t::create_options()
   add_option( opt_int( "iterations", iterations ) );
   add_option( opt_bool( "cleanup_threads", cleanup_threads ) );
   add_option( opt_float( "target_error", target_error ) );
+  add_option( opt_func( "target_error_role", parse_target_error_role ) );
   add_option( opt_int( "analyze_error_interval", analyze_error_interval ) );
   add_option( opt_func( "process_priority", parse_process_priority ) );
   add_option( opt_timespan( "max_time", max_time, timespan_t::zero(), timespan_t::max() ) );
