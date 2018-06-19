@@ -7,7 +7,6 @@ typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
 typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
 struct paladin_t;
 struct blessing_of_sacrifice_redirect_t;
-struct paladin_ground_aoe_t;
 namespace buffs {
                   struct avenging_wrath_buff_t;
                   struct crusade_buff_t;
@@ -469,7 +468,7 @@ public:
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
 
-  std::vector<paladin_ground_aoe_t*> active_consecrations;
+ ground_aoe_event_t* active_consecration;
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -865,43 +864,6 @@ public:
   {
   }
 
-};
-
-// paladin_ground_aoe_t for consecration and blessed hammer
-
-struct paladin_ground_aoe_t : public ground_aoe_event_t
-{
-  double radius;
-  paladin_t* paladin;
-
-public:
-  paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t* param, action_state_t* ps, bool first_tick = false ):
-    ground_aoe_event_t( p, param, ps, first_tick ), radius( param -> action() -> radius ), paladin( p )
-  {}
-
-  paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t& param, bool first_tick = false ) :
-    ground_aoe_event_t( p, param, first_tick ), radius( param.action() -> radius ), paladin( p )
-  {}
-
-
-  void schedule_event() override
-  {
-    paladin_ground_aoe_t* foo = make_event<paladin_ground_aoe_t>( sim(), paladin, params, pulse_state );
-    paladin -> active_consecrations.push_back( foo );
-    // If the ground-aoe event is a pulse-based one, increase the current pulse of the newly created
-    // event.
-    if ( params -> n_pulses() > 0 )
-    {
-      foo -> set_current_pulse( current_pulse + 1 );
-    }
-  }
-
-  void execute() override
-  {
-    auto it = range::find( paladin -> active_consecrations, this );
-    paladin -> active_consecrations.erase( it );
-    ground_aoe_event_t::execute();
-  }
 };
 
 // ==========================================================================
