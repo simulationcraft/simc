@@ -329,13 +329,26 @@ public:
   struct azerite_t
   {
     // Beast Mastery
+    azerite_power_t dance_of_death;
+    azerite_power_t feeding_frenzy;
     azerite_power_t haze_of_rage;
+    azerite_power_t pack_alpha;
+    azerite_power_t primal_instincts;
+    azerite_power_t serrated_jaws;
     // Marksmanship
+    azerite_power_t arcane_flurry;
     azerite_power_t focused_fire;
     azerite_power_t in_the_rhythm;
+    azerite_power_t rapid_reload;
+    azerite_power_t steady_aim;
+    azerite_power_t unerring_vision;
     // Survival
+    azerite_power_t blur_of_talons;
     azerite_power_t latent_poison;
     azerite_power_t up_close_and_personal;
+    azerite_power_t venomous_fangs;
+    azerite_power_t wilderness_survival;
+    azerite_power_t wildfire_cluster;
   } azerite;
 
   // Buffs
@@ -4726,11 +4739,28 @@ void hunter_t::init_spells()
   specs.wildfire_bomb        = find_specialization_spell( "Wildfire Bomb" );
   specs.carve                = find_specialization_spell( "Carve" );
 
+  // Azerite
+
+  azerite.dance_of_death        = find_azerite_spell( "Dance of Death" );
+  azerite.feeding_frenzy        = find_azerite_spell( "Feeding Frenzy" );
   azerite.haze_of_rage          = find_azerite_spell( "Haze of Rage" );
+  azerite.pack_alpha            = find_azerite_spell( "Pack Alpha" );
+  azerite.primal_instincts      = find_azerite_spell( "Primal Instincts" );
+  azerite.serrated_jaws         = find_azerite_spell( "Serrated Jaws" );
+
+  azerite.arcane_flurry         = find_azerite_spell( "Arcane Flurry" );
   azerite.focused_fire          = find_azerite_spell( "Focused Fire" );
   azerite.in_the_rhythm         = find_azerite_spell( "In The Rhythm" );
+  azerite.rapid_reload          = find_azerite_spell( "Rapid Reload" );
+  azerite.steady_aim            = find_azerite_spell( "Steady Aim" );
+  azerite.unerring_vision       = find_azerite_spell( "Unerring Vision" );
+
+  azerite.blur_of_talons        = find_azerite_spell( "Blur of Talons" );
   azerite.latent_poison         = find_azerite_spell( "Latent Poison" );
   azerite.up_close_and_personal = find_azerite_spell( "Up Close And Personal" );
+  azerite.venomous_fangs        = find_azerite_spell( "Venomous Fangs" );
+  azerite.wilderness_survival   = find_azerite_spell( "Wilderness Survival" );
+  azerite.wildfire_cluster      = find_azerite_spell( "Wildfire Cluster" );
 }
 
 // hunter_t::init_base ======================================================
