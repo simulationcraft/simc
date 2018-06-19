@@ -3288,11 +3288,15 @@ struct raptor_strike_base_t: hunter_melee_attack_t
 
   internal_bleeding_t internal_bleeding;
   latent_poison_t* latent_poison = nullptr;
+  timespan_t wilderness_survival_reduction;
 
   raptor_strike_base_t( const std::string& n, hunter_t* p, const spell_data_t* s ):
     hunter_melee_attack_t( n, p, s ),
-    internal_bleeding( p )
+    internal_bleeding( p ),
+    wilderness_survival_reduction( p -> azerite.wilderness_survival.spell() -> effectN( 1 ).time_value() )
   {
+    base_dd_adder += p -> azerite.wilderness_survival.value( 2 );
+
     if ( p -> azerite.latent_poison.ok() )
       latent_poison = p -> get_background_action<latent_poison_t>( "latent_poison" );
   }
@@ -3323,6 +3327,8 @@ struct raptor_strike_base_t: hunter_melee_attack_t
       p() -> buffs.blur_of_talons -> trigger();
 
     trigger_birds_of_prey( execute_state );
+    if ( wilderness_survival_reduction != timespan_t::zero() )
+      p() -> cooldowns.wildfire_bomb -> adjust( -wilderness_survival_reduction );
 
     p() -> buffs.up_close_and_personal -> expire();
   }
