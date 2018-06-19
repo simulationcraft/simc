@@ -217,9 +217,10 @@ public:
     const spell_data_t* shadow_crash;
     // T90
     const spell_data_t* lingering_insanity;
+    const spell_data_t* void_torrent;
     // T100
     const spell_data_t* legacy_of_the_void;
-    const spell_data_t* void_torrent;
+    const spell_data_t* dark_ascension;
     const spell_data_t* surrender_to_madness;
   } talents;
 

@@ -3,8 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_priest.hpp"
 #include "simulationcraft.hpp"
+#include "sc_priest.hpp"
 
 namespace priestspace
 {
@@ -1209,7 +1209,8 @@ struct dark_ascension_t final : public priest_spell_t
   const spell_data_t* data_spell;
 
   dark_ascension_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "void_eruption", p, p.find_spell( 280711 ) ), data_spell( p.find_spell( 280800 ) )
+    : priest_spell_t( "void_eruption", p, p.talents.dark_ascension ),
+    data_spell( p.find_spell( 280800 ) )
   {
     parse_options( options_str );
 
@@ -1219,7 +1220,7 @@ struct dark_ascension_t final : public priest_spell_t
     may_miss         = false;
     is_mastery_spell = true;
     aoe              = -1;
-    radius           = data().effectN( 1 ).radius_max;
+    radius           = data().effectN( 1 ).radius_max();
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
@@ -1588,8 +1589,7 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 {
   if ( specialization() == PRIEST_SHADOW )
   {
-    double amount                               = num_amount;
-    double amount_from_power_infusion           = 0.0;
+    double amount                               = num_amount;   
     double amount_from_surrender_to_madness     = 0.0;
     double amount_wasted_surrendered_to_madness = 0.0;
 
@@ -1598,36 +1598,22 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
       amount_wasted_surrendered_to_madness = amount * buffs.surrendered_to_madness->data().effectN( 1 ).percent();
       amount += amount_wasted_surrendered_to_madness;
     }
-    else if ( buffs.surrender_to_madness->check() && buffs.power_infusion->check() )
+    else if ( buffs.surrender_to_madness->check() )
     {
-      double total_amount = amount * ( 1.0 + buffs.power_infusion->data().effectN( 2 ).percent() ) *
-                            ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() );
+      double total_amount = amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() );
 
       amount_from_surrender_to_madness = amount * talents.surrender_to_madness->effectN( 1 ).percent();
 
-      // Since this effect is multiplicitive, we'll give the extra to Power Infusion since it does not last as long as
-      // Surrender to Madness
-      amount_from_power_infusion = total_amount - amount - amount_from_surrender_to_madness;
-
       // Make sure the maths line up.
-      assert( total_amount == amount + amount_from_power_infusion + amount_from_surrender_to_madness );
+      assert( total_amount == amount + amount_from_surrender_to_madness );
     }
     else if ( buffs.surrender_to_madness->check() )
     {
       amount_from_surrender_to_madness =
           ( amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() ) ) - amount;
-    }
-    else if ( buffs.power_infusion->check() )
-    {
-      amount_from_power_infusion = ( amount * ( 1.0 + buffs.power_infusion->data().effectN( 2 ).percent() ) ) - amount;
-    }
+    }   
 
     insanity.gain( amount, g, action );
-
-    if ( amount_from_power_infusion > 0.0 )
-    {
-      insanity.gain( amount_from_power_infusion, gains.insanity_power_infusion, action );
-    }
 
     if ( amount_from_surrender_to_madness > 0.0 )
     {
@@ -1987,10 +1973,10 @@ void priest_t::init_spells_shadow()
   // T90
   talents.lingering_insanity = find_talent_spell( "Lingering Insanity" );
   talents.mindbender         = find_talent_spell( "Mindbender" );
-  talents.power_infusion     = find_talent_spell( "Power Infusion" );
+  talents.void_torrent       = find_talent_spell( "Void Torrent" );
   // T100
   talents.legacy_of_the_void   = find_talent_spell( "Legacy of the Void" );
-  talents.void_torrent         = find_talent_spell( "Void Torrent" );
+  talents.dark_ascension       = find_talent_spell( "Dark Ascension" );
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
   // General Spells
