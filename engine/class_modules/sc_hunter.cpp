@@ -401,6 +401,7 @@ public:
 
     // azerite
     buff_t* arcane_flurry;
+    buff_t* dance_of_death;
     buff_t* haze_of_rage;
     buff_t* in_the_rhythm;
     buff_t* unerring_vision_driver;
@@ -2512,6 +2513,9 @@ struct barbed_shot_t: public hunter_ranged_attack_t
       p() -> cooldowns.kill_command -> adjust( p() -> legendary.bm_feet -> effectN( 1 ).time_value() );
 
     p() -> buffs.the_mantle_of_command -> trigger();
+
+    if ( p() -> azerite.dance_of_death.ok() && rng().roll( p() -> cache.attack_crit_chance() ) )
+      p() -> buffs.dance_of_death -> trigger();
 
     if ( auto pet = p() -> pets.main )
     {
@@ -5070,6 +5074,10 @@ void hunter_t::create_buffs()
     make_buff( this, "arcane_flurry", find_spell( 273267 ) )
       -> set_default_value( azerite.arcane_flurry.value( 1 ) )
       -> set_trigger_spell( azerite.arcane_flurry );
+
+  buffs.dance_of_death =
+    make_buff<stat_buff_t>( this, "dance_of_death", find_spell( 274443 ) )
+      -> add_stat( STAT_AGILITY, azerite.dance_of_death.value( 1 ) );
 
   buffs.haze_of_rage =
     make_buff<stat_buff_t>( this, "haze_of_rage", find_spell( 273264 ) )
