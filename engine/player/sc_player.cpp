@@ -11745,7 +11745,23 @@ void player_collected_data_t::collect_data( const player_t& p )
   {
     double metric=0;
 
-    switch( p.primary_role() )
+    role_e target_error_role = p.sim -> target_error_role;
+    // use player's role if sim didn't provide an override
+    if (target_error_role == ROLE_NONE)
+    {
+      target_error_role = p.primary_role();
+      // exception for tanks - use DPS by default.
+      if (target_error_role == ROLE_TANK)
+      {
+        target_error_role = ROLE_DPS;
+      }
+    }
+
+    // ROLE is used here primarily to stay in-line with the previous version of the code.
+    // An ideal implementation is probably to rewrite this to allow specification of a scale_metric_e
+    // to make it more flexible. That was beyond my capability/available time and it would also likely be
+    // very, very low use (as of legion/bfa, almost all tanks are simming DPS, not survival).
+    switch( target_error_role )
     {
     case ROLE_ATTACK:
     case ROLE_SPELL:
