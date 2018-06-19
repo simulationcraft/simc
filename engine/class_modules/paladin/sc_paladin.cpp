@@ -1021,6 +1021,7 @@ void paladin_t::reset()
 {
   player_t::reset();
 
+  active_consecration = nullptr;
   last_extra_regen = timespan_t::zero();
   last_jol_proc = timespan_t::zero();
 }
