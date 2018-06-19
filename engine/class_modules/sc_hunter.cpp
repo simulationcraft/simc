@@ -2279,6 +2279,22 @@ struct barrage_t: public hunter_spell_t
 
 struct multi_shot_t: public hunter_ranged_attack_t
 {
+  struct rapid_reload_t: public hunter_ranged_attack_t
+  {
+    rapid_reload_t( const std::string& n, hunter_t* p ):
+      hunter_ranged_attack_t( n, p, p -> find_spell( 278565 ) )
+    {
+      aoe = -1;
+      base_dd_adder += p -> azerite.rapid_reload.value( 1 );
+      // TODO: check if it reduces aotw cd
+    }
+  };
+
+  struct {
+    rapid_reload_t* action = nullptr;
+    int min_targets = 0;
+  } rapid_reload;
+
   multi_shot_t( hunter_t* p, const std::string& options_str ):
     hunter_ranged_attack_t( "multishot", p, p -> find_specialization_spell( "Multi-Shot" ) )
   {
@@ -2288,6 +2304,13 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     if ( p -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B2 ) )
       base_multiplier *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
+
+    if ( p -> azerite.rapid_reload.ok() )
+    {
+      rapid_reload.action = p -> get_background_action<rapid_reload_t>( "multishot_rapid_reload" );
+      rapid_reload.min_targets = p -> azerite.rapid_reload.spell() -> effectN( 2 ).base_value();
+      add_child( rapid_reload.action );
+    }
   }
 
   double cost() const override
@@ -2329,6 +2352,12 @@ struct multi_shot_t: public hunter_ranged_attack_t
       p() -> cooldowns.trueshot -> adjust( - p() -> talents.calling_the_shots -> effectN( 1 ).time_value() );
 
     trigger_t20_2pc_bm( p() );
+
+    if ( num_targets_hit > rapid_reload.min_targets )
+    {
+      rapid_reload.action -> set_target( execute_state -> target );
+      rapid_reload.action -> execute();
+    }
   }
 
   void impact( action_state_t* s ) override
