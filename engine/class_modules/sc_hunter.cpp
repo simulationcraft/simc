@@ -270,6 +270,7 @@ struct hunter_td_t: public actor_target_data_t
     buff_t* unseen_predators_cloak;
     buff_t* hunters_mark;
     buff_t* latent_poison;
+    buff_t* steady_aim;
   } debuffs;
 
   struct dots_t
@@ -2618,6 +2619,24 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
 
     return m;
   }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = hunter_ranged_attack_t::bonus_da( s );
+
+    if ( auto td_ = find_td( s -> target ) )
+      b += td_ -> debuffs.steady_aim -> stack_value();
+
+    return b;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( auto td_ = find_td( s -> target ) )
+      td_ -> debuffs.steady_aim -> expire();
+  }
 };
 
 // Aimed Shot =========================================================================
@@ -2842,6 +2861,14 @@ struct steady_shot_t: public hunter_ranged_attack_t
       t *= 1.0 + p() -> buffs.steady_focus -> check_value();
 
     return t;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    if ( p() -> azerite.steady_aim.ok() )
+      td( s -> target ) -> debuffs.steady_aim -> trigger();
   }
 
   void try_steady_focus() override
@@ -4461,6 +4488,11 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
     make_buff( *this, "latent_poison", p -> find_spell( 273286 ) )
       -> set_default_value( p -> azerite.latent_poison.value( 1 ) )
       -> set_trigger_spell( p -> azerite.latent_poison );
+
+  debuffs.steady_aim =
+    make_buff( *this, "steady_aim", p -> find_spell( 277959 ) )
+      -> set_default_value( p -> azerite.steady_aim.value( 1 ) )
+      -> set_trigger_spell( p -> azerite.steady_aim );
 
   dots.serpent_sting = target -> get_dot( "serpent_sting", p );
   dots.a_murder_of_crows = target -> get_dot( "a_murder_of_crows", p );
