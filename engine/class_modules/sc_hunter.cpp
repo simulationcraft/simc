@@ -1896,10 +1896,12 @@ struct pet_auto_attack_t: public hunter_main_pet_attack_t
 struct basic_attack_t : public hunter_main_pet_attack_t
 {
   const double wild_hunt_cost_pct;
+  const double venomous_fangs_bonus_da;
 
   basic_attack_t( hunter_main_pet_t* p, const std::string& n, const std::string& options_str ):
     hunter_main_pet_attack_t( n, p, p -> find_pet_spell( n ) ),
-    wild_hunt_cost_pct( p -> specs.wild_hunt -> effectN( 2 ).percent() )
+    wild_hunt_cost_pct( p -> specs.wild_hunt -> effectN( 2 ).percent() ),
+    venomous_fangs_bonus_da( p -> o() -> azerite.venomous_fangs.value( 1 ) )
   {
     parse_options( options_str );
 
@@ -1947,6 +1949,16 @@ struct basic_attack_t : public hunter_main_pet_attack_t
       c *= 1.0 + wild_hunt_cost_pct;
 
     return c;
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = hunter_main_pet_attack_t::bonus_da( s );
+
+    if ( o() -> get_target_data( s -> target ) -> dots.serpent_sting -> is_ticking() )
+      b += venomous_fangs_bonus_da;
+
+    return b;
   }
 };
 
