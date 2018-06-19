@@ -401,6 +401,7 @@ public:
 
     // azerite
     buff_t* arcane_flurry;
+    buff_t* blur_of_talons;
     buff_t* dance_of_death;
     buff_t* haze_of_rage;
     buff_t* in_the_rhythm;
@@ -3306,6 +3307,8 @@ struct raptor_strike_base_t: hunter_melee_attack_t
     hunter_melee_attack_t::execute();
 
     p() -> buffs.vipers_venom -> trigger();
+    if ( p() -> buffs.coordinated_assault -> check() )
+      p() -> buffs.blur_of_talons -> trigger();
 
     trigger_birds_of_prey( execute_state );
 
@@ -5122,6 +5125,12 @@ void hunter_t::create_buffs()
     make_buff( this, "arcane_flurry", find_spell( 273267 ) )
       -> set_default_value( azerite.arcane_flurry.value( 1 ) )
       -> set_trigger_spell( azerite.arcane_flurry );
+
+  buffs.blur_of_talons =
+    make_buff<stat_buff_t>( this, "blur_of_talons", find_spell( 277969 ) )
+      -> add_stat( STAT_AGILITY, azerite.blur_of_talons.value( 1 ) )
+      -> add_stat( STAT_SPEED_RATING, azerite.blur_of_talons.value( 2 ) )
+      -> set_trigger_spell( azerite.blur_of_talons );
 
   buffs.dance_of_death =
     make_buff<stat_buff_t>( this, "dance_of_death", find_spell( 274443 ) )
