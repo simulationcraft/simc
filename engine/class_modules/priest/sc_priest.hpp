@@ -288,6 +288,7 @@ public:
     propagate_const<cooldown_t*> mind_bomb;
     propagate_const<cooldown_t*> psychic_horror;
     propagate_const<cooldown_t*> sephuzs_secret;
+    propagate_const<cooldown_t*> dark_ascension;
   } cooldowns;
 
   // Gains
@@ -319,6 +320,7 @@ public:
     propagate_const<gain_t*> vampiric_touch_health;
     propagate_const<gain_t*> insanity_call_to_the_void;
     propagate_const<gain_t*> insanity_dark_void;
+    propagate_const<gain_t*> insanity_dark_ascension;
   } gains;
 
   // Benefits
