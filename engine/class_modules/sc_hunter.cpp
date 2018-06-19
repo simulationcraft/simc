@@ -403,6 +403,8 @@ public:
     buff_t* arcane_flurry;
     buff_t* haze_of_rage;
     buff_t* in_the_rhythm;
+    buff_t* unerring_vision_driver;
+    buff_t* unerring_vision;
     buff_t* up_close_and_personal;
   } buffs;
 
@@ -4172,6 +4174,7 @@ struct trueshot_t: public hunter_spell_t
 
     p() -> cooldowns.aimed_shot -> reset( true );
     p() -> buffs.trueshot -> trigger();
+    p() -> buffs.unerring_vision_driver -> trigger();
   }
 };
 
@@ -5077,6 +5080,16 @@ void hunter_t::create_buffs()
     make_buff<stat_buff_t>( this, "in_the_rhythm", find_spell( 272733 ) )
       -> add_stat( STAT_HASTE_RATING, azerite.in_the_rhythm.value( 1 ) )
       -> set_trigger_spell( azerite.in_the_rhythm );
+
+  buffs.unerring_vision_driver =
+    make_buff( this, "unerring_vision_driver", find_spell( 274446 ) )
+      -> set_quiet( true )
+      -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) { buffs.unerring_vision -> trigger(); } )
+      -> set_trigger_spell( azerite.unerring_vision );
+
+  buffs.unerring_vision =
+    make_buff<stat_buff_t>( this, "unerring_vision", find_spell( 274447 ) )
+      -> add_stat( STAT_CRIT_RATING, azerite.unerring_vision.value( 1 ) );
 
   buffs.up_close_and_personal =
     make_buff( this, "up_close_and_personal", find_spell( 279593 ) )
