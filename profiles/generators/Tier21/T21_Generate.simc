@@ -18,13 +18,13 @@
 T21_Generate_Death_Knight.simc
 
 # Demon Hunter
-#T21_Generate_Demon_Hunter.simc
+T21_Generate_Demon_Hunter.simc
 
 # Druid
 #T21_Generate_Druid.simc
 
 # Hunter
-#T21_Generate_Hunter.simc
+T21_Generate_Hunter.simc
 
 # Mage
 T21_Generate_Mage.simc
@@ -42,7 +42,7 @@ T21_Generate_Priest.simc
 T21_Generate_Rogue.simc
 
 # Shaman
-#T21_Generate_Shaman.simc
+T21_Generate_Shaman.simc
 
 # Warlock
 T21_Generate_Warlock.simc

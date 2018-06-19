@@ -12,47 +12,6 @@ flask=seventh_demon
 food=nightborne_delicacy_platter
 augmentation=defiled
 
-# This default action priority list is automatically created based on your character.
-# It is a attempt to provide you with a action list that is both simple and practicable,
-# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
-# Feel free to edit, adapt and improve it to your own needs.
-# SimulationCraft is always looking for updates and improvements to the default action lists.
-
-# Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask
-actions.precombat+=/augmentation
-actions.precombat+=/food
-actions.precombat+=/summon_pet
-# Snapshot raid buffed stats before combat begins and pre-potting is done.
-actions.precombat+=/snapshot_stats
-actions.precombat+=/potion
-actions.precombat+=/hunters_mark,if=debuff.hunters_mark.down
-actions.precombat+=/double_tap,precast_time=5
-actions.precombat+=/aimed_shot,if=active_enemies<3
-
-# Executed every time the actor is available.
-actions=auto_shot
-actions+=/counter_shot,if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up
-actions+=/use_items
-actions+=/berserking,if=buff.trueshot.up
-actions+=/blood_fury,if=buff.trueshot.up
-actions+=/potion,if=(buff.trueshot.react&buff.bloodlust.react)|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)
-actions+=/hunters_mark,if=debuff.hunters_mark.down
-actions+=/trueshot,if=action.aimed_shot.charges=0&buff.precise_shots.down
-actions+=/arcane_shot,if=buff.precise_shots.up
-actions+=/double_tap
-actions+=/multishot,if=enemies>2&buff.trick_shots.down
-actions+=/aimed_shot,if=charges>=2|buff.lock_and_load.react
-actions+=/a_murder_of_crows
-actions+=/explosive_shot
-actions+=/barrage
-actions+=/serpent_sting,if=refreshable|!ticking
-actions+=/piercing_shot
-actions+=/rapid_fire
-actions+=/aimed_shot
-actions+=/arcane_shot,if=(focus>40&spell_targets.multishot<3)|(focus>80)
-actions+=/steady_shot
-
 head=serpentstalker_helmet,id=152133,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
 shoulders=serpentstalker_mantle,id=152135,bonus_id=3612/1502
