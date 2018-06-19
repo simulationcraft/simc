@@ -404,6 +404,7 @@ public:
     buff_t* dance_of_death;
     buff_t* haze_of_rage;
     buff_t* in_the_rhythm;
+    buff_t* primal_instincts;
     buff_t* unerring_vision_driver;
     buff_t* unerring_vision;
     buff_t* up_close_and_personal;
@@ -4083,6 +4084,9 @@ struct aspect_of_the_wild_t: public hunter_spell_t
     // p() -> pets.main -> buffs.aspect_of_the_wild -> trigger();
 
     hunter_spell_t::execute();
+
+    if ( p() -> buffs.primal_instincts -> trigger() )
+      p() -> cooldowns.barbed_shot -> reset( true );
   }
 };
 
@@ -5091,6 +5095,11 @@ void hunter_t::create_buffs()
     make_buff<stat_buff_t>( this, "in_the_rhythm", find_spell( 272733 ) )
       -> add_stat( STAT_HASTE_RATING, azerite.in_the_rhythm.value( 1 ) )
       -> set_trigger_spell( azerite.in_the_rhythm );
+
+  buffs.primal_instincts =
+    make_buff<stat_buff_t>( this, "primal_instincts", find_spell( 279810 ) )
+      -> add_stat( STAT_MASTERY_RATING, azerite.primal_instincts.value( 1 ) )
+      -> set_trigger_spell( azerite.primal_instincts );
 
   buffs.unerring_vision_driver =
     make_buff( this, "unerring_vision_driver", find_spell( 274446 ) )
