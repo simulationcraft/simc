@@ -6586,7 +6586,6 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 void shaman_t::trigger_searing_assault( const action_state_t* state )
 {
   assert( debug_cast<shaman_spell_t*>( state->action ) != nullptr && "Searing Assault called on invalid action type" );
-  shaman_spell_t* attack = debug_cast<shaman_spell_t*>( state->action );
 
   if ( talent.searing_assault->ok() )
   {
