@@ -1203,6 +1203,7 @@ public:
       make_buff<haste_buff_t>( this, "frenzy", o() -> find_spell( 272790 ) )
         -> set_default_value ( o() -> find_spell( 272790 ) -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_ATTACK_SPEED );
+    buffs.frenzy -> buff_duration += o() -> azerite.feeding_frenzy.spell() -> effectN( 1 ).time_value();
 
     buffs.predator =
       make_buff<haste_buff_t>( this, "predator", o() -> find_spell( 260249 ) )
@@ -2482,6 +2483,8 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "barbed_shot", p, p -> specs.barbed_shot )
   {
     parse_options(options_str);
+
+    base_ta_adder += p -> azerite.feeding_frenzy.value( 2 );
   }
 
   bool init_finished() override
