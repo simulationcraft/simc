@@ -1939,7 +1939,9 @@ private:
         if (count) {
             GenericValue* e = static_cast<GenericValue*>(allocator.Malloc(count * sizeof(GenericValue)));
             SetElementsPointer(e);
-            std::memcpy(e, values, count * sizeof(GenericValue));
+            // Hack: Fix GCC8 -Wclass-memaccess warnings.
+            // This is moving non-POD structures and should rather use copy-assignment instead.
+            std::memcpy(reinterpret_cast<void*>(e), reinterpret_cast<const void*>(values), count * sizeof(GenericValue));
         }
         else
             SetElementsPointer(0);
@@ -1952,7 +1954,9 @@ private:
         if (count) {
             Member* m = static_cast<Member*>(allocator.Malloc(count * sizeof(Member)));
             SetMembersPointer(m);
-            std::memcpy(m, members, count * sizeof(Member));
+            // Hack: Fix GCC8 -Wclass-memaccess warnings.
+            // This is moving non-POD structures and should rather use copy-assignment instead.
+            std::memcpy(reinterpret_cast<void*>(m), reinterpret_cast<const void*>(members), count * sizeof(Member));
         }
         else
             SetMembersPointer(0);

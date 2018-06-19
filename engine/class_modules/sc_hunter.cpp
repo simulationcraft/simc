@@ -3446,12 +3446,12 @@ struct flanking_strike_t: hunter_melee_attack_t
 struct carve_t: public hunter_melee_attack_t
 {
   const timespan_t wfb_reduction;
-  const unsigned wfb_reduction_target_cap;
+  const int wfb_reduction_target_cap;
 
   carve_t( hunter_t* p, const std::string& options_str ):
     hunter_melee_attack_t( "carve", p, p -> specs.carve ),
     wfb_reduction( p -> specs.carve -> effectN( 2 ).time_value() ),
-    wfb_reduction_target_cap( as<unsigned>( p -> specs.carve -> effectN( 3 ).base_value() ) )
+    wfb_reduction_target_cap( p -> specs.carve -> effectN( 3 ).base_value() )
   {
     parse_options( options_str );
 

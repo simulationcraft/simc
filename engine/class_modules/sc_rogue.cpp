@@ -4805,7 +4805,7 @@ struct shuriken_tornado_t : public buff_t
   {
     set_cooldown( timespan_t::zero() );
     set_period( timespan_t::from_seconds( 1.0 ) ); // Not explicitly in spell data
-    set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+    set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
       if ( !shuriken_storm_action )
         shuriken_storm_action = rogue -> find_action( "shuriken_storm" );
       if ( shuriken_storm_action )
@@ -7771,9 +7771,8 @@ public:
   {
   }
 
-  virtual void html_customsection( report::sc_html_stream& os ) override
+  virtual void html_customsection( report::sc_html_stream& ) override
   {
-    ( void )p; // NOOP
     // Custom Class Section can be added here
   }
 private:

@@ -4985,7 +4985,7 @@ public:
   double last_resource_cost;
 
   /** Last available number of targets effectively hit */
-  unsigned num_targets_hit;
+  int num_targets_hit;
 
   /** Marker for sample action priority list reporting */
   char marker;
