@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26812
+// Class based active abilities, wow build 26871
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -287,7 +287,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     },
     // Pet tree, 48 abilities
     {
-      263446, // Acid Spit (Exotic Ability)
+      263446, // Acid Spit (Special Ability)
       160011, // Agile Reflexes (Special Ability)
        50433, // Ankle Crack (Special Ability)
       118459, // Beast Cleave
@@ -1241,9 +1241,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     },
   },
 };
-#define TREE_SPECIALIZATION_SIZE (36)
+#define TREE_SPECIALIZATION_SIZE (35)
 
-// Talent tree specialization abilities, wow build 26812
+// Talent tree specialization abilities, wow build 26871
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2194,7 +2194,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     {
        24858, // Moonkin Form
        78675, // Solar Beam
-      108299, // Killer Instinct
        86104, // Leather Specialization
        77492, // Mastery: Starlight
       137013, // Balance Druid
@@ -2213,7 +2212,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         2782, // Remove Corruption
       231021, // Starsurge (Rank 2)
       231042, // Moonkin Form (Rank 2)
-      231049, // Starfall (Rank 2)
       231050, // Sunfire (Rank 2)
       159456, // Travel Form (Rank 2)
       228545, // Shapeshift Form (Shapeshift)
@@ -2229,7 +2227,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
        16949, // Feral Instinct
         1079, // Rip
        16974, // Predatory Swiftness
-       33873, // Nurturing Instinct
        16864, // Omen of Clarity
        86097, // Leather Specialization
       106839, // Skull Bash
@@ -2264,7 +2261,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     // Specialization abilities for Guardian
     {
       106734, // Guardian Overrides Passive (Passive)
-       33873, // Nurturing Instinct
        16931, // Thick Hide
        86096, // Leather Specialization
       106839, // Skull Bash
@@ -2298,7 +2294,6 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
     {
        18562, // Swiftmend
        88423, // Nature's Cure
-      108299, // Killer Instinct
       102342, // Ironbark
       113043, // Omen of Clarity
        86093, // Leather Specialization
@@ -2376,7 +2371,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26812
+// Class mastery abilities, wow build 26871
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2615,7 +2610,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26812
+// Racial abilities, wow build 26871
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3527,7 +3522,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26812
+// Set bonus data, wow build 26871
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4246,9 +4241,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
 };
-#define RPPMMOD_SIZE (932)
+#define RPPMMOD_SIZE (937)
 
-// 932 RPPM Modifiers, wow build level 26812
+// 937 RPPM Modifiers, wow build level 26871
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -4605,7 +4600,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 230257,  255,  4, -0.5000 },
   { 230257,  257,  4, -0.5000 },
   { 230257,  264,  4, -0.5000 },
-  { 231832,    1,  1,  1.0000 },
   { 235003,    4,  1,  1.0000 },
   { 235011,    4,  1,  1.0000 },
   { 236167,    4,  1,  1.0000 },
@@ -5166,6 +5160,12 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 278152,    4,  1,  1.0000 },
   { 278161,    4,  1,  1.0000 },
   { 278824,    4,  1,  1.0000 },
+  { 278874,    4,  1,  1.0000 },
+  { 278876,    4,  1,  1.0000 },
+  { 278880,    4,  1,  1.0000 },
+  { 278897,    4,  1,  1.0000 },
+  { 278908,    4,  1,  1.0000 },
+  { 278911,    4,  1,  1.0000 },
   { 279426,    4,  1,  1.0000 },
   { 279449,    4,  1,  1.0000 },
   { 279786,    4,  1,  1.0000 },
