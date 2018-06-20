@@ -1129,6 +1129,7 @@ public:
   // Buffs
   struct buffs_t
   {
+    buff_t* bestial_wrath;
     buff_t* beast_cleave;
     buff_t* frenzy;
     buff_t* predator;
@@ -1187,6 +1188,12 @@ public:
   void create_buffs() override
   {
     base_t::create_buffs();
+
+    buffs.bestial_wrath =
+      make_buff( this, "bestial_wrath", find_spell( 186254 ) )
+        -> set_default_value(  find_spell( 186254 ) -> effectN( 1 ).percent() )
+        -> set_cooldown( timespan_t::zero() )
+        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     buffs.beast_cleave =
       make_buff( this, "beast_cleave", find_spell( 118455 ) )
@@ -1290,6 +1297,7 @@ public:
   {
     double m = base_t::composite_player_multiplier( school );
 
+    m *= 1.0 + buffs.bestial_wrath -> check_value();
     m *= 1.0 + buffs.tier19_2pc_bm -> check_value();
 
     // Pet combat experience
@@ -1563,7 +1571,6 @@ public:
   struct {
     // bm
     bool aspect_of_the_beast;
-    bool bestial_wrath;
     bool thrill_of_the_hunt;
     // sv
     bool spirit_bond;
@@ -1573,9 +1580,8 @@ public:
   hunter_main_pet_action_t( const std::string& n, hunter_main_pet_t* p, const spell_data_t* s = spell_data_t::nil() ):
                             ab( n, p, s ), affected_by()
   {
-    affected_by.bestial_wrath = ab::data().affected_by( ab::o() -> specs.bestial_wrath -> effectN( 1 ) );
-    affected_by.thrill_of_the_hunt = ab::data().affected_by( ab::o() -> talents.thrill_of_the_hunt -> effectN( 1 ) );
     affected_by.aspect_of_the_beast = ab::data().affected_by( ab::o() -> talents.aspect_of_the_beast -> effectN( 1 ) );
+    affected_by.thrill_of_the_hunt = ab::data().affected_by( ab::o() -> talents.thrill_of_the_hunt -> effectN( 1 ) );
 
     affected_by.spirit_bond = ab::data().affected_by( ab::o() -> mastery.spirit_bond -> effectN( 1 ) );
     affected_by.sv_legendary_cloak = ab::data().affected_by( ab::o() -> find_spell( 248212 ) -> effectN( 1 ) );
@@ -1595,9 +1601,6 @@ public:
   double action_multiplier() const override
   {
     double am = ab::action_multiplier();
-
-    if ( affected_by.bestial_wrath )
-      am *= 1.0 + ab::o() -> buffs.bestial_wrath -> check_value();
 
     if ( affected_by.spirit_bond && ab::o() -> mastery.spirit_bond -> ok() )
       am *= 1.0 + ab::o() -> cache.mastery() * ab::o() -> mastery.spirit_bond -> effectN( 1 ).mastery_value();
@@ -2136,7 +2139,10 @@ void trigger_t20_2pc_bm( hunter_t* p )
   if ( p -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T20, B2 ) && p -> buffs.bestial_wrath -> check() )
   {
     const spell_data_t* driver = p -> sets -> set( HUNTER_BEAST_MASTERY, T20, B2 ) -> effectN( 1 ).trigger();
-    p -> buffs.bestial_wrath -> current_value += driver -> effectN( 1 ).percent() / 10.0;
+    const double bonus = driver -> effectN( 1 ).percent() / 10.0;
+    p -> buffs.bestial_wrath -> current_value += bonus;
+    if ( auto pet = p -> pets.main )
+      pet -> buffs.bestial_wrath -> current_value += bonus;
 
     if ( p -> sim -> debug )
     {
@@ -4091,6 +4097,7 @@ struct bestial_wrath_t: public hunter_spell_t
     p() -> buffs.bestial_wrath  -> trigger();
     p() -> buffs.t20_4p_bestial_rage -> trigger();
     p() -> buffs.haze_of_rage -> trigger();
+    p() -> pets.main -> buffs.bestial_wrath -> trigger();
 
     if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
     {
