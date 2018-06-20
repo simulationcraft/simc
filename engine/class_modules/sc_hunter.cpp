@@ -1882,11 +1882,13 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 {
   const double wild_hunt_cost_pct;
   const double venomous_fangs_bonus_da;
+  const double pack_alpha_bonus_da;
 
   basic_attack_t( hunter_main_pet_t* p, const std::string& n, const std::string& options_str ):
     hunter_main_pet_attack_t( n, p, p -> find_pet_spell( n ) ),
     wild_hunt_cost_pct( p -> specs.wild_hunt -> effectN( 2 ).percent() ),
-    venomous_fangs_bonus_da( p -> o() -> azerite.venomous_fangs.value( 1 ) )
+    venomous_fangs_bonus_da( p -> o() -> azerite.venomous_fangs.value( 1 ) ),
+    pack_alpha_bonus_da( p -> o() -> azerite.pack_alpha.value( 1 ) )
   {
     parse_options( options_str );
 
@@ -1942,6 +1944,18 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
     if ( o() -> get_target_data( s -> target ) -> dots.serpent_sting -> is_ticking() )
       b += venomous_fangs_bonus_da;
+
+    if ( o() -> azerite.pack_alpha.ok() )
+    {
+      int pet_count = 0;
+      if ( o() -> pets.animal_companion && !o() -> pets.animal_companion -> is_sleeping() )
+        pet_count++;
+      if ( o() -> pets.dire_beast && !o() -> pets.dire_beast -> is_sleeping() )
+        pet_count++;
+      if ( o() -> pets.spitting_cobra && !o() -> pets.spitting_cobra -> is_sleeping() )
+        pet_count++;
+      b += pack_alpha_bonus_da * pet_count;
+    }
 
     return b;
   }
