@@ -1129,7 +1129,6 @@ public:
   // Buffs
   struct buffs_t
   {
-    buff_t* aspect_of_the_wild;
     buff_t* beast_cleave;
     buff_t* frenzy;
     buff_t* predator;
@@ -1189,14 +1188,6 @@ public:
   {
     base_t::create_buffs();
 
-    buffs.aspect_of_the_wild =
-      make_buff( this, "aspect_of_the_wild", o() -> specs.aspect_of_the_wild )
-        -> set_cooldown( timespan_t::zero() )
-        -> set_default_value( o() -> specs.aspect_of_the_wild -> effectN( 1 ).percent() )
-        -> set_tick_callback( [ this ]( buff_t *buff, int, const timespan_t& ){
-                          resource_gain( RESOURCE_FOCUS, buff -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild );
-                        } );
-
     buffs.beast_cleave =
       make_buff( this, "beast_cleave", find_spell( 118455 ) )
         -> set_default_value( o() -> specs.beast_cleave -> effectN( 1 ).percent() );
@@ -1251,6 +1242,9 @@ public:
     double ac = base_t::composite_melee_crit_chance();
 
     ac += specs.spiked_collar -> effectN( 3 ).percent();
+
+    if ( o() -> buffs.aspect_of_the_wild -> check() )
+      ac += o() -> specs.aspect_of_the_wild -> effectN( 4 ).percent();
 
     return ac;
   }
@@ -1568,7 +1562,6 @@ public:
 
   struct {
     // bm
-    bool aotw_crit_chance;
     bool aspect_of_the_beast;
     bool bestial_wrath;
     bool thrill_of_the_hunt;
@@ -1580,7 +1573,6 @@ public:
   hunter_main_pet_action_t( const std::string& n, hunter_main_pet_t* p, const spell_data_t* s = spell_data_t::nil() ):
                             ab( n, p, s ), affected_by()
   {
-    affected_by.aotw_crit_chance = ab::data().affected_by( ab::o() -> specs.aspect_of_the_wild -> effectN( 1 ) );
     affected_by.bestial_wrath = ab::data().affected_by( ab::o() -> specs.bestial_wrath -> effectN( 1 ) );
     affected_by.thrill_of_the_hunt = ab::data().affected_by( ab::o() -> talents.thrill_of_the_hunt -> effectN( 1 ) );
     affected_by.aspect_of_the_beast = ab::data().affected_by( ab::o() -> talents.aspect_of_the_beast -> effectN( 1 ) );
@@ -1616,9 +1608,6 @@ public:
   double composite_crit_chance() const override
   {
     double cc = ab::composite_crit_chance();
-
-    if ( affected_by.aotw_crit_chance )
-      cc += ab::p() -> buffs.aspect_of_the_wild -> check_value();
 
     if ( affected_by.thrill_of_the_hunt )
       cc += ab::o() -> buffs.thrill_of_the_hunt -> check_stack_value();
@@ -4142,9 +4131,6 @@ struct aspect_of_the_wild_t: public hunter_spell_t
   {
     p() -> buffs.aspect_of_the_wild -> trigger();
 
-    // XXX: the pet doesn't actually gain the buff
-    // p() -> pets.main -> buffs.aspect_of_the_wild -> trigger();
-
     hunter_spell_t::execute();
 
     if ( p() -> buffs.primal_instincts -> trigger() )
@@ -4982,6 +4968,8 @@ void hunter_t::create_buffs()
       -> set_default_value( specs.aspect_of_the_wild -> effectN( 1 ).percent() )
       -> set_tick_callback( [ this ]( buff_t *b, int, const timespan_t& ){
                         resource_gain( RESOURCE_FOCUS, b -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild );
+                        if ( auto pet = pets.main )
+                          pet -> resource_gain( RESOURCE_FOCUS, b -> data().effectN( 5 ).resource( RESOURCE_FOCUS ), pet -> gains.aspect_of_the_wild );
                       } );
 
   buffs.bestial_wrath =
