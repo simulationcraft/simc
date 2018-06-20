@@ -1949,6 +1949,8 @@ public:
     double le = p() -> buff.lunar_empowerment -> check_value();
 
     le += p() -> mastery.starlight -> ok() * p() -> cache.mastery_value();
+    if (p ()->talent.soul_of_the_forest->ok ())
+      le *= (1.0 + p ()->talent.soul_of_the_forest->effectN (1).percent ());
 
     return le;
   }
@@ -6859,8 +6861,7 @@ void druid_t::create_buffs()
                                  gain.fury_of_elune); });
 
   buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
-                               .default_value( find_spell( 164547 ) -> effectN( 1 ).percent()
-                                 * (1.0+talent.soul_of_the_forest -> effectN( 1 ).percent()))
+                               .default_value( find_spell( 164547 ) -> effectN( 1 ).percent())
                                .max_stack( find_spell( 164547 ) -> max_stacks() + spec.starsurge_2 -> effectN( 1 ).base_value() );
 
   buff.moonkin_form          = new buffs::moonkin_form_t( *this );
@@ -8788,9 +8789,12 @@ void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
 
 void druid_t::trigger_solar_empowerment (const action_state_t* state)
 {
-  double dm = buff.solar_empowerment->data ().effectN (1).percent () * (1.0+talent.soul_of_the_forest->effectN (1).percent ());
+  double dm = buff.solar_empowerment->data ().effectN (1).percent ();
 
   dm += mastery.starlight->ok () * cache.mastery()*mastery.starlight->effectN(5).mastery_value();
+  if(talent.soul_of_the_forest->ok())
+    dm *= (1.0 + talent.soul_of_the_forest->effectN (1).percent ());
+  dm = floor(dm*100)/100; //Currently Solar Wrath Empowerment is rounded down to the next %
 
   double amount = state->result_amount * dm;
   active.solar_empowerment->base_dd_min = amount;
