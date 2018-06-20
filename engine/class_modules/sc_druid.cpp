@@ -475,8 +475,6 @@ public:
     // Generic
     const spell_data_t* druid;
     const spell_data_t* critical_strikes;       // Feral & Guardian
-    const spell_data_t* killer_instinct;        // Feral & Guardian
-    const spell_data_t* nurturing_instinct;     // Balance & Restoration
     const spell_data_t* leather_specialization; // All Specializations
     const spell_data_t* omen_of_clarity;        // Feral & Restoration
 
@@ -756,8 +754,8 @@ public:
   virtual timespan_t available() const override;
   virtual double    composite_armor() const override;
   virtual double    composite_armor_multiplier() const override;
+  virtual double    composite_melee_attack_power() const override;
   virtual double    composite_attack_power_multiplier() const override;
-  virtual double    composite_attribute( attribute_e attr ) const override;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_block() const override { return 0; }
   virtual double    composite_crit_avoidance() const override;
@@ -1134,9 +1132,6 @@ public:
     add_invalidate( CACHE_ARMOR );
     add_invalidate( CACHE_EXP );
     add_invalidate( CACHE_CRIT_AVOIDANCE );
-
-    if ( p.spec.killer_instinct -> ok() )
-      add_invalidate( CACHE_AGILITY );
   }
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -1254,9 +1249,6 @@ struct cat_form_t : public druid_buff_t< buff_t >
     base_t( p, "cat_form", p.find_class_spell( "Cat Form" ) )
   {
     add_invalidate( CACHE_ATTACK_POWER );
-
-    if ( p.spec.killer_instinct -> ok() )
-      add_invalidate( CACHE_AGILITY );
   }
 
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -6473,9 +6465,7 @@ void druid_t::init_spells()
   // Generic / Multiple specs
   spec.critical_strikes           = find_specialization_spell( "Critical Strikes" );
   spec.druid                      = find_spell( 137009 );
-  spec.killer_instinct            = find_specialization_spell( "Killer Instinct" );
   spec.leather_specialization     = find_specialization_spell( "Leather Specialization" );
-  spec.nurturing_instinct         = find_specialization_spell( "Nurturing Instinct" );
   spec.omen_of_clarity            = find_specialization_spell( "Omen of Clarity" );
 
   // Balance
@@ -6499,7 +6489,6 @@ void druid_t::init_spells()
   spec.feral_overrides2           = specialization() == DRUID_FERAL ? find_spell( 106733 ) : spell_data_t::not_found();
   spec.gushing_wound              = sets -> has_set_bonus( DRUID_FERAL, T17, B4 ) ? find_spell( 165432 ) : spell_data_t::not_found();
   spec.bloody_gash                = sets -> has_set_bonus( DRUID_FERAL, T21, B2 ) ? find_spell( 252750 ) : spell_data_t::not_found();
-  spec.nurturing_instinct         = find_specialization_spell( "Nurturing Instinct" );
   spec.predatory_swiftness        = find_specialization_spell( "Predatory Swiftness" );
   spec.primal_fury                = find_spell( 16953 );
   spec.rip                        = find_specialization_spell( "Rip" );
@@ -7960,12 +7949,12 @@ void druid_t::invalidate_cache( cache_e c )
   switch ( c )
   {
   case CACHE_ATTACK_POWER:
-    if ( spec.nurturing_instinct -> ok() )
+    if ( specialization() == DRUID_GUARDIAN || specialization() == DRUID_FERAL )
       invalidate_cache( CACHE_SPELL_POWER );
     break;
-  case CACHE_INTELLECT:
-    if ( spec.killer_instinct -> ok() && ( buff.cat_form -> check() || buff.bear_form -> check() ) )
-      invalidate_cache( CACHE_AGILITY );
+  case CACHE_SPELL_POWER:
+    if ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
+      invalidate_cache( CACHE_ATTACK_POWER );
     break;
   case CACHE_MASTERY:
     if ( mastery.natures_guardian -> ok() )
@@ -7987,10 +7976,37 @@ void druid_t::invalidate_cache( cache_e c )
   }
 }
 
+// druid_t::composite_melee_attack_power ===============================
+
+double druid_t::composite_melee_attack_power() const
+{
+
+  // In 8.0 Killer Instinct is gone, replaced with modifiers in balance/resto auras.
+  if ( specialization() == DRUID_BALANCE )
+  {
+    return spec.balance -> effectN( 9 ).percent() * cache.spell_power( SCHOOL_MAX ) *
+      composite_spell_power_multiplier();
+  }
+
+  if ( specialization() == DRUID_RESTORATION )
+  {
+    return spec.restoration -> effectN( 10 ).percent() * cache.spell_power( SCHOOL_MAX ) *
+      composite_spell_power_multiplier();
+  }
+
+  return player_t::composite_melee_attack_power();
+}
+
 // druid_t::composite_attack_power_multiplier ===============================
 
 double druid_t::composite_attack_power_multiplier() const
 {
+
+  if ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
+  {
+    return 1.0;
+  }
+
   double ap = player_t::composite_attack_power_multiplier();
 
   // All modifiers MUST invalidate CACHE_ATTACK_POWER or Nurturing Instinct will break.
@@ -8202,10 +8218,16 @@ double druid_t::composite_melee_haste() const
 
 double druid_t::composite_spell_power( school_e school ) const
 {
-  // Nurturing Instinct overrides SP from other sources.
-  if ( spec.nurturing_instinct -> ok() )
+  // In 8.0 Nurturing Instinct is gone, replaced with modifiers in feral/guardian auras.
+  if ( specialization() == DRUID_GUARDIAN )
   {
-    return spec.nurturing_instinct -> effectN( 1 ).percent() * cache.attack_power() *
+    return spec.guardian -> effectN( 11 ).percent() * cache.attack_power() *
+      composite_attack_power_multiplier();
+  }
+
+  if ( specialization() == DRUID_FERAL )
+  {
+    return spec.feral -> effectN( 11 ).percent() * cache.attack_power() *
       composite_attack_power_multiplier();
   }
 
@@ -8216,34 +8238,12 @@ double druid_t::composite_spell_power( school_e school ) const
 
 double druid_t::composite_spell_power_multiplier() const
 {
-  if ( spec.nurturing_instinct -> ok() )
+  if ( specialization() == DRUID_GUARDIAN || specialization() == DRUID_FERAL)
   {
     return 1.0;
   }
 
   return player_t::composite_spell_power_multiplier();
-}
-
-// druid_t::composite_attribute =============================================
-
-double druid_t::composite_attribute( attribute_e attr ) const
-{
-  double a = player_t::composite_attribute( attr );
-
-  switch ( attr )
-  {
-  case ATTR_AGILITY:
-    if ( spec.killer_instinct -> ok() && ( buff.bear_form -> up() || buff.cat_form -> up() ) )
-    {
-      // 100% of non-base Intellect added as Agility
-      a += spec.killer_instinct -> effectN( 1 ).percent() * ( cache.intellect() - base.stats.attribute[ STAT_INTELLECT ] );
-    }
-    break;
-  default:
-    break;
-  }
-
-  return a;
 }
 
 // druid_t::composite_attribute_multiplier ==================================
