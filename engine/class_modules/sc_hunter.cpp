@@ -3442,11 +3442,13 @@ struct carve_t: public hunter_melee_attack_t
 {
   const timespan_t wfb_reduction;
   const int wfb_reduction_target_cap;
+  internal_bleeding_t internal_bleeding;
 
   carve_t( hunter_t* p, const std::string& options_str ):
     hunter_melee_attack_t( "carve", p, p -> specs.carve ),
     wfb_reduction( p -> specs.carve -> effectN( 2 ).time_value() ),
-    wfb_reduction_target_cap( p -> specs.carve -> effectN( 3 ).base_value() )
+    wfb_reduction_target_cap( p -> specs.carve -> effectN( 3 ).base_value() ),
+    internal_bleeding( p )
   {
     parse_options( options_str );
 
@@ -3464,6 +3466,13 @@ struct carve_t: public hunter_melee_attack_t
     p() -> cooldowns.wildfire_bomb -> adjust( -reduction, true );
 
     trigger_birds_of_prey( execute_state );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_melee_attack_t::impact( s );
+
+    internal_bleeding.trigger( s );
   }
 };
 
