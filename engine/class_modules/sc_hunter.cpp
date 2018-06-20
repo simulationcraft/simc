@@ -947,6 +947,7 @@ void trigger_sephuzs_secret( hunter_t* p, const action_state_t* state, spell_mec
   }
 }
 
+void trigger_bloodseeker_update( hunter_t* );
 
 struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
@@ -1081,12 +1082,10 @@ struct hunter_main_pet_td_t: public actor_target_data_t
 public:
   struct dots_t
   {
-    dot_t* bloodseeker;
+    dot_t* bloodseeker = nullptr;
   } dots;
 
   hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p );
-
-  void target_demise();
 };
 
 struct hunter_main_pet_t: public hunter_pet_t
@@ -1761,23 +1760,16 @@ struct kill_command_sv_t: public kill_command_base_t
 
   void trigger_dot( action_state_t* s ) override
   {
-    if ( o() -> talents.bloodseeker -> ok() )
-    {
-      if ( ! get_dot( s -> target ) -> is_ticking() )
-      {
-        p() -> buffs.predator -> trigger();
-        o() -> buffs.predator -> trigger();
-      }
-    }
     kill_command_base_t::trigger_dot( s );
+
+    trigger_bloodseeker_update( o() );
   }
 
   void last_tick( dot_t* d ) override
   {
     kill_command_base_t::last_tick( d );
 
-    p() -> buffs.predator -> decrement();
-    o() -> buffs.predator -> decrement();
+    trigger_bloodseeker_update( o() );
   }
 };
 
@@ -2032,25 +2024,9 @@ struct froststorm_breath_t: public hunter_main_pet_spell_t
 
 
 hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p ):
-  actor_target_data_t( target, p ),
-  dots()
+  actor_target_data_t( target, p )
 {
   dots.bloodseeker = target -> get_dot( "kill_command", p );
-
-  target -> callbacks_on_demise.push_back( std::bind( &hunter_main_pet_td_t::target_demise, this ) );
-}
-
-void hunter_main_pet_td_t::target_demise()
-{
-  if ( source -> sim -> event_mgr.canceled )
-    return;
-
-  auto pet = static_cast<hunter_main_pet_t*>( source );
-  if ( dots.bloodseeker -> is_ticking() )
-  {
-    pet -> buffs.predator -> decrement();
-    pet -> o() -> buffs.predator -> decrement();
-  }
 }
 
 // hunter_pet_t::create_action ==============================================
@@ -2150,6 +2126,31 @@ void trigger_t20_2pc_bm( hunter_t* p )
                                    p -> name(), p -> buffs.bestial_wrath -> name(),
                                    p -> buffs.bestial_wrath -> check_value() );
     }
+  }
+}
+
+void trigger_bloodseeker_update( hunter_t* p )
+{
+  int bleeding_targets = 0;
+  for ( const player_t* t : p -> sim -> target_non_sleeping_list )
+  {
+    if ( t -> is_enemy() && t -> debuffs.bleeding -> check() )
+      bleeding_targets++;
+  }
+  bleeding_targets = std::min( bleeding_targets, p -> buffs.predator -> max_stack() );
+
+  const int current = p -> buffs.predator -> check();
+  if ( current < bleeding_targets )
+  {
+    p -> buffs.predator -> trigger( bleeding_targets - current );
+    if ( auto pet = p -> pets.main )
+      pet -> buffs.predator -> trigger( bleeding_targets - current );
+  }
+  else if ( current > bleeding_targets )
+  {
+    p -> buffs.predator -> decrement( current - bleeding_targets );
+    if ( auto pet = p -> pets.main )
+      pet -> buffs.predator -> decrement( current - bleeding_targets );
   }
 }
 
@@ -4562,6 +4563,33 @@ struct muzzle_t: public interrupt_base_t
 //end spells
 }
 
+namespace events {
+
+struct bloodseeker_t : public event_t
+{
+  static constexpr timespan_t period = timespan_t::from_seconds( 1.0 );
+
+  hunter_t* p;
+
+  bloodseeker_t( hunter_t* p )
+    : event_t( *p, period ), p( p )
+  {}
+
+  const char* name() const override
+  {
+    return "bloodseeker_driver";
+  }
+
+  void execute() override
+  {
+    trigger_bloodseeker_update( p );
+    make_event<bloodseeker_t>( sim(), p );
+  }
+};
+constexpr timespan_t bloodseeker_t::period;
+
+} // namespace events
+
 hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   actor_target_data_t( target, p ),
   damaged( false ),
@@ -5604,6 +5632,10 @@ void hunter_t::combat_begin()
       }
     }
   }
+
+  if ( talents.bloodseeker -> ok() && ( talents.wildfire_infusion -> ok() || sim -> player_no_pet_list.size() > 1 ) )
+    make_event<events::bloodseeker_t>( *sim, this );
+
   player_t::combat_begin();
 }
 
