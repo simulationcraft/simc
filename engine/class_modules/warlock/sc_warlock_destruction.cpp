@@ -113,15 +113,16 @@ namespace warlock {
         warlock_spell_t("soul_fire", p, p -> talents.soul_fire)
       {
         parse_options(options_str);
+
+        can_havoc = true;
       }
 
       void execute() override
       {
         warlock_spell_t::execute();
+        p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(281490)->effectN(1).base_value()) / 10), p()->gains.soul_fire);
 
         p()->buffs.backdraft->decrement();
-
-        p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(281490)->effectN(1).base_value())/10), p()->gains.soul_fire);
       }
     };
     struct internal_combustion_t : public warlock_spell_t
@@ -951,6 +952,7 @@ namespace warlock {
     gains.reverse_entropy               = get_gain("reverse_entropy");
     gains.incinerate                    = get_gain("incinerate");
     gains.incinerate_crits              = get_gain("incinerate_crits");
+    gains.soul_fire                     = get_gain("soul_fire");
     gains.infernal                      = get_gain("infernal");
     gains.shadowburn_shard              = get_gain("shadowburn_shard");
     gains.inferno                       = get_gain("inferno");

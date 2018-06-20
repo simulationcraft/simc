@@ -376,7 +376,7 @@ namespace warlock
 
         if (p()->talents.soul_fire->ok())
         {
-          p()->cooldowns.soul_fire->adjust(p()->talents.soul_fire->effectN(2).time_value());
+          p()->cooldowns.soul_fire->adjust(-1 * p()->talents.soul_fire->effectN(2).time_value());
         }
       }
     }
