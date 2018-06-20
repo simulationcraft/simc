@@ -2131,6 +2131,8 @@ void priest_t::generate_apl_shadow()
 
   // single APL
   single->add_action( this, "Void Eruption" );
+  single->add_talent( this, "Dark Ascension",
+                      "if=talent.dark_ascension.enabled&buff.voidform.down" );
   single->add_action( this, "Void Bolt" );
   single->add_talent( this, "Shadow Word: Death",
                       "if=target.time_to_die<3|"
@@ -2166,6 +2168,8 @@ void priest_t::generate_apl_shadow()
 
   // cleave APL
   cleave->add_action( this, "Void Eruption" );
+  cleave->add_talent( this, "Dark Ascension",
+                      "if=talent.dark_ascension.enabled&buff.voidform.down" );
   cleave->add_action( this, "Void Bolt" );
   cleave->add_talent( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
   cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
@@ -2192,6 +2196,8 @@ void priest_t::generate_apl_shadow()
 
   // aoe APL
   aoe->add_action( this, "Void Eruption" );
+  aoe->add_talent( this, "Dark Ascension",
+                     "if=talent.dark_ascension.enabled&buff.voidform.down" );
   aoe->add_action( this, "Void Bolt",
                    "if=talent.dark_void.enabled&"
                    "dot.shadow_word_pain.remains>travel_time" );
