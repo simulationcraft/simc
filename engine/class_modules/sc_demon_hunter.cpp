@@ -4468,7 +4468,7 @@ void demon_hunter_t::init_base_stats()
   switch ( specialization() )
   {
     case DEMON_HUNTER_HAVOC:
-      resources.base[ RESOURCE_FURY ] = 100;
+      resources.base[ RESOURCE_FURY ] = 120;
       break;
     case DEMON_HUNTER_VENGEANCE:
       resources.base[ RESOURCE_PAIN ] = 100;
@@ -4893,7 +4893,7 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( "variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up" );
   apl_default->add_action( this, "Consume Magic" );
   apl_default->add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
-  apl_default->add_action( "pick_up_fragment,if=fury.deficit>=35&((cooldown.eye_beam.remains>5|!talent.blind_fury.enabled&!set_bonus.tier21_4pc)|(buff.metamorphosis.up&!set_bonus.tier21_4pc))" );
+  apl_default->add_action( "pick_up_fragment,if=fury.deficit>=35" );
   apl_default->add_action( "call_action_list,name=dark_slash,if=talent.dark_slash.enabled&(variable.waiting_for_dark_slash|debuff.dark_slash.up)" );
   apl_default->add_action( "run_action_list,name=demonic,if=talent.demonic.enabled" );
   apl_default->add_action( "run_action_list,name=normal" );
@@ -4934,8 +4934,8 @@ void demon_hunter_t::apl_havoc()
   apl_demonic->add_talent( this, "Immolation Aura" );
   apl_demonic->add_talent( this, "Felblade", "if=fury<40|(buff.metamorphosis.down&fury.deficit>=40)" );
   apl_demonic->add_action( this, "Eye Beam", "if=(!talent.blind_fury.enabled|fury.deficit>=70)&(!buff.metamorphosis.extended_by_demonic|(set_bonus.tier21_4pc&buff.metamorphosis.remains>16))" );
-  apl_demonic->add_action( this, spec.annihilation, "annihilation", "if=(fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance" );
-  apl_demonic->add_action( this, "Chaos Strike", "if=fury.deficit<30&!variable.pooling_for_meta&!variable.pooling_for_blade_dance" );
+  apl_demonic->add_action( this, spec.annihilation, "annihilation", "if=(talent.blind_fury.enabled|fury.deficit<30|buff.metamorphosis.remains<5)&!variable.pooling_for_blade_dance" );
+  apl_demonic->add_action( this, "Chaos Strike", "if=(talent.blind_fury.enabled|fury.deficit<30)&!variable.pooling_for_meta&!variable.pooling_for_blade_dance" );
   apl_demonic->add_action( this, "Fel Rush", "if=talent.demon_blades.enabled&!cooldown.eye_beam.ready&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_demonic->add_action( this, "Demon's Bite" );
   apl_demonic->add_action( this, "Throw Glaive", "if=buff.out_of_range.up" );
