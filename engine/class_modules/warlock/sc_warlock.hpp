@@ -280,6 +280,7 @@ namespace warlock
       {
         propagate_const<cooldown_t*> haunt;
         propagate_const<cooldown_t*> shadowburn;
+        propagate_const<cooldown_t*> soul_fire;
         propagate_const<cooldown_t*> sindorei_spite_icd;
         propagate_const<cooldown_t*> call_dreadstalkers;
       } cooldowns;
@@ -381,6 +382,7 @@ namespace warlock
         gain_t* incinerate_crits;
         gain_t* immolate;
         gain_t* immolate_crits;
+        gain_t* soul_fire;
         gain_t* infernal;
         gain_t* shadowburn_shard;
         gain_t* inferno;
@@ -555,7 +557,6 @@ namespace warlock
 
           propagate_const<buff_t*> the_expendables;
           propagate_const<buff_t*> rage_of_guldan;
-          propagate_const<buff_t*> demonic_power;
           propagate_const<buff_t*> demonic_strength;
           propagate_const<buff_t*> demonic_consumption;
           propagate_const<buff_t*> grimoire_of_service;
@@ -1286,6 +1287,12 @@ namespace warlock
               chaotic_energies_rng = rng().range( 0, destro_mastery_value );
 
             pm *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+          }
+
+          if (p()->specialization() == WARLOCK_DEMONOLOGY)
+          {
+            if (this->data().affected_by(p()->mastery_spells.master_demonologist->effectN(2)))
+              pm *= 1.0 + p()->cache.mastery_value();
           }
 
           return pm;

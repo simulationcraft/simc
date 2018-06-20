@@ -190,7 +190,7 @@ namespace warlock {
 
         bool ready() override
         {
-          if (!p()->resource_available(p()->primary_resource(), 20) & !p()->buffs.demonic_power->check())
+          if (!p()->resource_available(p()->primary_resource(), 20) & !p()->o()->buffs.demonic_power->check())
             p()->demise();
 
           return spell_t::ready();
@@ -200,9 +200,9 @@ namespace warlock {
         {
           double c = warlock_pet_spell_t::cost();
 
-          if (p()->o()->buffs.tyrant->check())
+          if (p()->o()->buffs.demonic_power->check())
           {
-            c *= 1.0 + p()->buffs.demonic_power->data().effectN(3).percent();
+            c *= 1.0 + p()->o()->buffs.demonic_power->data().effectN(4).percent();
           }
 
           return c;
@@ -317,6 +317,7 @@ namespace warlock {
       {
         action_list_str = "travel/dreadbite";
         regen_type = REGEN_DISABLED;
+        owner_coeff.ap_from_sp = 0.33;
       }
 
       void dreadstalker_t::init_base_stats()
@@ -373,7 +374,7 @@ namespace warlock {
       vilefiend_t::vilefiend_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "vilefiend", PET_VILEFIEND)
       {
         action_list_str += "travel/headbutt";
-        owner_coeff.ap_from_sp = 0.7;
+        owner_coeff.ap_from_sp = 0.46;
       }
 
       void vilefiend_t::init_base_stats()
@@ -508,7 +509,7 @@ namespace warlock {
       action_t* shivarra_t::create_action(const std::string& name, const std::string& options_str) {
         if (name == "multi_slash")
         {
-          assert(multi_slash == nullptr);
+          //assert(multi_slash == nullptr);
           multi_slash = new multi_slash_t(this);
           return multi_slash;
         }
@@ -549,7 +550,7 @@ namespace warlock {
       action_t* darkhound_t::create_action(const std::string& name, const std::string& options_str) {
         if (name == "fel_bite")
         {
-          assert(fel_bite == nullptr);
+          //assert(fel_bite == nullptr);
           fel_bite = new fel_bite_t(this);
           return fel_bite;
         }
@@ -888,11 +889,6 @@ namespace warlock {
     }
 
     void warlock_pet_t::create_buffs_demonology() {
-      buffs.demonic_power = make_buff(this, "demonic_power", find_spell(265273))
-        ->set_default_value(find_spell(265273)->effectN(1).percent())
-        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-        ->set_cooldown(timespan_t::zero())
-        ->set_quiet(this->pet_type == PET_WILD_IMP or this->pet_type == PET_WARLOCK_RANDOM ? true : false);
       buffs.demonic_strength = make_buff(this, "demonic_strength", find_spell(267171))
         ->set_default_value(find_spell(267171)->effectN(2).percent())
         ->set_cooldown(timespan_t::zero());
@@ -1001,7 +997,7 @@ namespace warlock {
           void impact(action_state_t* s) override {
               warlock_spell_t::impact(s);
 
-              if (result_is_hit(s->result)) {
+              if (result_is_hit(s->result) & td(s->target) == td(target)) {
                 int j = 0;
 
                 for (auto imp : p()->warlock_pet_list.wild_imps)
@@ -1159,6 +1155,8 @@ namespace warlock {
     {
       struct implosion_aoe_t : public warlock_spell_t
       {
+        double casts_left = 5.0;
+
         implosion_aoe_t(warlock_t* p) :
           warlock_spell_t("implosion_aoe", p, p -> find_spell(196278))
         {
@@ -1170,12 +1168,15 @@ namespace warlock {
           p->spells.implosion_aoe = this;
         }
 
-        double action_multiplier() const override
+        double composite_target_multiplier(player_t* t) const override
         {
-          double m = warlock_spell_t::action_multiplier();
+          double m = warlock_spell_t::composite_target_multiplier(t);
 
-          m *= 1.0 + p()->cache.mastery_value();
-
+          if (t == this->target)
+          {
+            m *= (casts_left / 5.0);
+          }
+          
           return m;
         }
       };
@@ -1211,8 +1212,10 @@ namespace warlock {
         {
           if (!imp->is_sleeping())
           {
+            explosion->casts_left = (imp->resources.current[RESOURCE_ENERGY] / 20);
+            explosion->set_target(this->target);
             explosion->execute();
-            imp->demise();
+            imp->dismiss();
           }
         }
       }
@@ -1240,25 +1243,6 @@ namespace warlock {
         }
 
         p()->buffs.demonic_power->trigger();
-        for (auto& pet : p()->pet_list)
-        {
-          auto lock_pet = dynamic_cast<pets::warlock_pet_t*>(pet);
-
-          if (lock_pet == nullptr)
-            continue;
-          if (lock_pet->is_sleeping())
-            continue;
-
-          if ( lock_pet->pet_type == PET_DEMONIC_TYRANT )
-            continue;
-
-          if ( lock_pet -> expiration)
-          {
-            timespan_t new_time = lock_pet->expiration->time + lock_pet -> buffs.demonic_power->data().effectN(2).time_value();
-            lock_pet->expiration->reschedule_time = new_time;
-          }
-          lock_pet -> buffs.demonic_power -> trigger();
-        }
 
         if (p()->talents.demonic_consumption->ok())
         {
@@ -1282,19 +1266,38 @@ namespace warlock {
           }
         }
 
+        for (auto& pet : p()->pet_list)
+        {
+          auto lock_pet = dynamic_cast<pets::warlock_pet_t*>(pet);
+
+          if (lock_pet == nullptr)
+            continue;
+          if (lock_pet->is_sleeping())
+            continue;
+
+          if (lock_pet->pet_type == PET_DEMONIC_TYRANT)
+            continue;
+
+          if (lock_pet->expiration)
+          {
+            timespan_t new_time = lock_pet->expiration->time + p()->buffs.demonic_power->data().effectN(3).time_value();
+            lock_pet->expiration->reschedule_time = new_time;
+          }
+        }
+
         p()->buffs.tyrant->set_duration(data().duration());
         p()->buffs.tyrant->trigger();
         if (p()->buffs.dreadstalkers->check())
         {
-          p()->buffs.dreadstalkers->extend_duration(p(), p()->buffs.demonic_power->data().effectN(2).time_value());
+          p()->buffs.dreadstalkers->extend_duration(p(), p()->buffs.demonic_power->data().effectN(3).time_value());
         }
         if (p()->buffs.grimoire_felguard->check())
         {
-          p()->buffs.grimoire_felguard->extend_duration(p(), p()->buffs.demonic_power->data().effectN(2).time_value());
+          p()->buffs.grimoire_felguard->extend_duration(p(), p()->buffs.demonic_power->data().effectN(3).time_value());
         }
         if (p()->buffs.vilefiend->check())
         {
-          p()->buffs.vilefiend->extend_duration(p(), p()->buffs.demonic_power->data().effectN(2).time_value());
+          p()->buffs.vilefiend->extend_duration(p(), p()->buffs.demonic_power->data().effectN(3).time_value());
         }
       }
     };
@@ -1310,6 +1313,8 @@ namespace warlock {
 
       bool ready() override
       {
+        if (p()->warlock_pet_list.active->pet_type != PET_FELGUARD)
+          return false;
         if (p()->get_dot("felstorm", p()->warlock_pet_list.active)->is_ticking())
           return false;
         if (p()->get_dot("demonic_strength_felstorm", p()->warlock_pet_list.active)->is_ticking())
@@ -1343,15 +1348,6 @@ namespace warlock {
           background = dual = direct_tick = true;
           callbacks = false;
           radius = p->talents.bilescourge_bombers->effectN(1).radius();
-        }
-
-        double action_multiplier() const override
-        {
-          double m = warlock_spell_t::action_multiplier();
-
-          m *= 1.0 + p()->cache.mastery_value();
-
-          return m;
         }
       };
 
@@ -1436,6 +1432,10 @@ namespace warlock {
           dot_duration = data().duration();
           spell_power_mod.tick = p->find_spell(265469)->effectN(1).sp_coeff();
 
+          energize_type = ENERGIZE_PER_TICK;
+          energize_resource = RESOURCE_SOUL_SHARD;
+          energize_amount = 1;
+
           may_crit = true;
           hasted_ticks = true;
       }
@@ -1447,7 +1447,6 @@ namespace warlock {
 
       void tick(dot_t* d) override {
           warlock_spell_t::tick(d);
-
           if (d->state->result == RESULT_HIT || result_is_hit(d->state->result)) {
               if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T19, B2) && rng().roll(p()->sets->set(WARLOCK_DEMONOLOGY, T19, B2)->effectN(1).percent()))
                   p()->resource_gain(RESOURCE_SOUL_SHARD, 1, p()->gains.t19_2pc_demonology);
@@ -1476,7 +1475,7 @@ namespace warlock {
       }
       bool ready() override
       {
-        if (p()->warlock_pet_list.active->pet_type == PET_FELGUARD) // Range check from the pet.
+        if (p()->warlock_pet_list.active->pet_type == PET_FELGUARD)
           return warlock_spell_t::ready();
 
         return false;
@@ -1737,8 +1736,7 @@ namespace warlock {
   void warlock_t::create_buffs_demonology() {
     buffs.demonic_core = make_buff(this, "demonic_core", find_spell(264173));
     buffs.demonic_power = make_buff(this, "demonic_power", find_spell(265273))
-      ->set_default_value(find_spell(265273)->effectN(1).percent())
-      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      ->set_default_value(find_spell(265273)->effectN(2).percent())
       ->set_cooldown(timespan_t::zero());
     //Talents
     buffs.demonic_calling = make_buff(this, "demonic_calling", talents.demonic_calling->effectN(1).trigger())

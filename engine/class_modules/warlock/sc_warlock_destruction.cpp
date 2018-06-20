@@ -115,21 +115,13 @@ namespace warlock {
         parse_options(options_str);
       }
 
-      double composite_crit_chance() const override
+      void execute() override
       {
-        return 1.0;
-      }
+        warlock_spell_t::execute();
 
-      double calculate_direct_amount(action_state_t* state) const override
-      {
-        warlock_spell_t::calculate_direct_amount(state);
+        p()->buffs.backdraft->decrement();
 
-        // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
-        // player spell crit instead. The state target crit chance of the state object is correct.
-        // Targeted Crit debuffs function as a separate multiplier.
-        state->result_total *= 1.0 + player->cache.spell_crit_chance() + state->target_crit_chance;
-
-        return state->result_total;
+        p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(281490)->effectN(1).base_value())/10), p()->gains.soul_fire);
       }
     };
     struct internal_combustion_t : public warlock_spell_t
@@ -187,7 +179,7 @@ namespace warlock {
         if (result_is_hit(s->result))
         {
           td(s->target)->debuffs_shadowburn->trigger();
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.3, p()->gains.shadowburn);
+          p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(245731)->effectN(1).base_value()) / 10), p()->gains.shadowburn);
         }
       }
     };
@@ -267,7 +259,7 @@ namespace warlock {
       {
         warlock_spell_t::tick(d);
 
-        if (d->state->result == RESULT_CRIT && rng().roll(0.5))
+        if (d->state->result == RESULT_CRIT && rng().roll(data().effectN(2).percent()))
           p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits);
 
         p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate);
@@ -313,7 +305,7 @@ namespace warlock {
           if (p()->talents.roaring_blaze->ok())
             roaring_blaze->execute();
 
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.5, p()->gains.conflagrate);
+          p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(245330)->effectN(1).base_value()) / 10), p()->gains.conflagrate);
         }
       }
 
@@ -377,7 +369,7 @@ namespace warlock {
 
         p()->buffs.backdraft->decrement();
 
-        p()->resource_gain(RESOURCE_SOUL_SHARD, 0.2 * (p()->talents.fire_and_brimstone->ok() ? execute_state->n_targets : 1), p()->gains.incinerate);
+        p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(244670)->effectN(1).base_value()) / 10) * (p()->talents.fire_and_brimstone->ok() ? execute_state->n_targets : 1), p()->gains.incinerate);
         if (execute_state->result == RESULT_CRIT)
           p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1 * (p()->talents.fire_and_brimstone->ok() ? execute_state->n_targets : 1), p()->gains.incinerate_crits);
         if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T20, B2))
@@ -673,7 +665,6 @@ namespace warlock {
         channeled = true;
         hasted_ticks = true;
         may_crit = false;
-        //can_havoc = true;
 
         channel_demonfire = new channel_demonfire_tick_t(p);
         add_child(channel_demonfire);

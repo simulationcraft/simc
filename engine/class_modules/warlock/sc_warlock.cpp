@@ -220,6 +220,10 @@ namespace warlock
       if (o()->specialization() == WARLOCK_DEMONOLOGY)
       {
         m *= 1.0 + o()->cache.mastery_value();
+        if (o()->buffs.demonic_power->check())
+        {
+          m *= 1.0 + o()->buffs.demonic_power->default_value;
+        }
       }
 
       if ( buffs.rage_of_guldan->check() )
@@ -232,9 +236,6 @@ namespace warlock
 
       m *= 1.0 + o()->buffs.sindorei_spite->check_stack_value();
       m *= 1.0 + o()->buffs.lessons_of_spacetime->check_stack_value();
-
-      if ( buffs.demonic_power -> check() )
-        m *= 1.0 + ( buffs.demonic_power -> default_value );
 
       return m;
     }
@@ -371,6 +372,11 @@ namespace warlock
           p()->active.summon_random_demon->execute();
           p()->buffs.portal_summons->trigger();
           p()->procs.portal_summon->occur();
+        }
+
+        if (p()->talents.soul_fire->ok())
+        {
+          p()->cooldowns.soul_fire->adjust(p()->talents.soul_fire->effectN(2).time_value());
         }
       }
     }
@@ -562,6 +568,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   {
     cooldowns.haunt = get_cooldown( "haunt" );
     cooldowns.shadowburn = get_cooldown("shadowburn");
+    cooldowns.soul_fire = get_cooldown("soul_fire");
     cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
     cooldowns.call_dreadstalkers = get_cooldown("call_dreadstalkers");
 
@@ -638,11 +645,6 @@ double warlock_t::composite_player_target_multiplier( player_t* target, school_e
 double warlock_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  // The warlock benefits from demonic power as well, even though this is not mentioned in the tooltip/description.
-  // Confirmed 2018-04-05 by Pip.
-  if ( buffs.demonic_power -> check() )
-    m *= 1.0 + buffs.demonic_power -> default_value;
 
   if ( legendary.stretens_insanity )
     m *= 1.0 + buffs.stretens_insanity->check() * buffs.stretens_insanity->data().effectN( 1 ).percent();
@@ -1311,6 +1313,58 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
             }
           }
           return t;});
+  }
+  else if (name_str == "last_cast_imps")
+  {
+    struct wild_imp_last_cast_expression_t : public expr_t
+    {
+      warlock_t& player;
+
+      wild_imp_last_cast_expression_t(warlock_t& p) :
+        expr_t("last_cast_imps"), player(p) { }
+
+      virtual double evaluate() override
+      {
+        int t = 0;
+        for (auto& imp : player.warlock_pet_list.wild_imps)
+        {
+          if (!imp->is_sleeping())
+          {
+            if (imp->resources.current[RESOURCE_ENERGY] <= 20)
+              t++;
+          }
+        }
+        return t;
+      }
+    };
+
+    return new wild_imp_last_cast_expression_t(*this);
+  }
+  else if (name_str == "two_cast_imps")
+  {
+    struct wild_imp_two_cast_expression_t : public expr_t
+    {
+      warlock_t& player;
+
+      wild_imp_two_cast_expression_t(warlock_t& p) :
+        expr_t("two_cast_imps"), player(p) { }
+
+      virtual double evaluate() override
+      {
+        int t = 0;
+        for (auto& imp : player.warlock_pet_list.wild_imps)
+        {
+          if (!imp->is_sleeping())
+          {
+            if (imp->resources.current[RESOURCE_ENERGY] <= 40)
+              t++;
+          }
+        }
+        return t;
+      }
+    };
+
+    return new wild_imp_two_cast_expression_t(*this);
   }
 
   return player_t::create_expression( name_str );

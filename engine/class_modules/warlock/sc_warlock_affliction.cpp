@@ -204,7 +204,12 @@ namespace warlock
 
         double tier_bonus = 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T19, B4 )->effectN( 1 ).percent();
         double active_agonies = p()->get_active_dots( internal_id );
-        double accumulator_increment = rng().range( 0.0, p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.368 * tier_bonus : 0.368 ) / std::sqrt( active_agonies );
+        double accumulator_increment = rng().range( 0.0, p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.368 * tier_bonus : 0.32 ) / std::sqrt( active_agonies );
+
+        if (active_agonies == 1)
+        {
+          accumulator_increment *= 1.15;
+        }
 
         p()->agony_accumulator += accumulator_increment;
 
