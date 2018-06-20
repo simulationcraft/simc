@@ -6187,7 +6187,7 @@ double brambles_handler( const action_state_t* s )
   /* Calculate the maximum amount absorbed. This is not affected by
      versatility (and likely other player modifiers). */
   // TODO: is this coefficient in spelldata somewhere?
-  double absorb_cap = 0.20 * p -> cache.attack_power() *
+  double absorb_cap = 0.06 * p -> cache.attack_power() *
     p -> composite_attack_power_multiplier();
 
   // Calculate actual amount absorbed.
