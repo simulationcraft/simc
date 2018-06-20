@@ -322,7 +322,6 @@ public:
     buff_t* warrior_of_elune;
     buff_t* balance_tier18_4pc; // T18 4P Balance
     buff_t* solar_solstice; //T21 4P Balance
-    buff_t* stellar_empowerment;
     buff_t* starfall;
     haste_buff_t* astral_acceleration; //T20 4P Balance
     haste_buff_t* starlord; //talent
@@ -399,6 +398,7 @@ public:
     gain_t* force_of_nature;
     gain_t* warrior_of_elune;
     gain_t* fury_of_elune;
+    gain_t* stellar_flare;
     gain_t* lunar_strike;
     gain_t* moonfire;
     gain_t* shooting_stars;
@@ -510,7 +510,6 @@ public:
     const spell_data_t* celestial_alignment;
     const spell_data_t* moonkin_form;
     const spell_data_t* starfall;
-    const spell_data_t* stellar_empowerment;
     const spell_data_t* balance_tier19_2pc;
     const spell_data_t* starsurge_2;
     const spell_data_t* moonkin_2;
@@ -1821,14 +1820,12 @@ private:
   typedef druid_spell_base_t<spell_t> ab;
 public:
   bool warrior_of_elune;
-  bool stellar_empowerment;
 
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s      = spell_data_t::nil(),
                  const std::string& options = std::string() )
     : base_t( token, p, s ),
-      warrior_of_elune( data().affected_by( p -> talent.warrior_of_elune -> effectN( 1 ) ) ),
-      stellar_empowerment( false )
+      warrior_of_elune( data().affected_by( p -> talent.warrior_of_elune -> effectN( 1 ) ) )
   {
     parse_options( options );
 
@@ -1882,11 +1879,6 @@ public:
   virtual double composite_ta_multiplier(const action_state_t* s) const override
   {
     double tm = base_t::composite_ta_multiplier(s);
-
-    if (p()->buff.stellar_empowerment->check())
-    {
-        tm *= 1.0 + composite_stellar_empowerment(s->target);
-    }
 
     return tm;
   }
@@ -1952,26 +1944,6 @@ public:
     p() -> cooldown.incarnation -> adjust( reduction );
   };
 
-  // Empowerment multiplier functions to prevent putting this mess in several places.
-
-  virtual double composite_stellar_empowerment( player_t* ) const
-  {
-    double se = p() -> buff.stellar_empowerment -> check_value();
-
-    se += p() -> mastery.starlight -> ok() * p() -> cache.mastery_value();
-
-    return se;
-  }
-
-  virtual double composite_solar_empowerment() const
-  {
-    double se = p() -> buff.solar_empowerment -> check_value();
-
-    se += p() -> mastery.starlight -> ok() * p() -> cache.mastery_value();
-
-    return se;
-  }
-
   virtual double composite_lunar_empowerment() const
   {
     double le = p() -> buff.lunar_empowerment -> check_value();
@@ -2034,7 +2006,6 @@ struct moonfire_t : public druid_spell_t
         galactic_guardian_dd_multiplier = p->find_spell(213708)->effectN(3).percent();
       }
 
-      stellar_empowerment = true;
       may_miss = false;
       triggers_galactic_guardian = false;
       benefits_from_galactic_guardian = true;
@@ -2069,6 +2040,9 @@ struct moonfire_t : public druid_spell_t
 
         if (p()->buff.solar_solstice->check())
             am *= 1.0 + p()->find_spell(252767)->effectN(1).percent();
+
+        if (p ()->mastery.starlight->ok ())
+          am *= 1.0 + p ()->cache.mastery_value ();
 
         return am;
     }
@@ -5019,15 +4993,6 @@ struct fury_of_elune_t : public druid_spell_t
       background = dual = ground_aoe = true;
       aoe = -1;
     }
-    double action_multiplier() const override
-    {
-        double am = druid_spell_t::action_multiplier();
-
-        if (p()->mastery.starlight->ok())
-            am *= 1.0 + p()->cache.mastery_value();
-
-        return am;
-    }
   };
 
   fury_of_elune_t( druid_t* p, const std::string& options_str ) :
@@ -5530,7 +5495,6 @@ struct sunfire_t : public druid_spell_t
       aoe = -1;
       base_aoe_multiplier = 0;
       dot_duration += p -> spec.balance -> effectN( 3 ).time_value();
-      stellar_empowerment = true;
 
       if ( p -> artifact.persistence )
       {
@@ -5544,6 +5508,9 @@ struct sunfire_t : public druid_spell_t
 
         if (p()->buff.solar_solstice->check())
             am *= 1.0 + p()->find_spell(252767)->effectN(1).percent();
+
+        if (p ()->mastery.starlight->ok ())
+          am *= 1.0 + p ()->cache.mastery_value ();
 
         return am;
     }
@@ -5934,10 +5901,6 @@ struct starfall_t : public druid_spell_t
         if (p()->buff.oneths_overconfidence->up()) // benefit tracking
             p()->buff.oneths_overconfidence->decrement();
         p()->buff.oneths_intuition->trigger();
-        timespan_t duration = p()->buff.stellar_empowerment->buff_duration;
-        if (p()->bugs)
-            duration = timespan_t::from_millis(rng().range(9000, 10000));
-        p()->buff.stellar_empowerment->trigger(1, p()->buff.stellar_empowerment->data().effectN(1).percent(), 1, duration);
         p()->buff.starfall->trigger();
     }
 };
@@ -5985,10 +5948,10 @@ struct starsurge_t : public druid_spell_t
     double am = druid_spell_t::action_multiplier();
 
     if ( p() -> mastery.starlight -> ok() )
-      am *= 1.0 + p() -> cache.mastery_value();
+      am *= 1.0 + p() -> cache.mastery()*p()->mastery.starlight->effectN(3).mastery_value();
 
     if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
-        am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(2).percent();
+      am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(2).percent();
 
     return am;
   }
@@ -6061,7 +6024,9 @@ struct stellar_flare_t : public druid_spell_t
 {
   stellar_flare_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "stellar_flare", player, player -> talent.stellar_flare, options_str )
-  {}
+  {
+    energize_amount = player->talent.stellar_flare->effectN (3).resource (RESOURCE_ASTRAL_POWER);
+  }
   double action_multiplier() const override
   {
       double am = druid_spell_t::action_multiplier();
@@ -6518,7 +6483,6 @@ void druid_t::init_spells()
   spec.moonkin_form               = find_specialization_spell( "Moonkin Form" );
   spec.eclipse                    = find_specialization_spell( "Eclipse");
   spec.starfall                   = find_specialization_spell( "Starfall" );
-  spec.stellar_empowerment        = spec.starfall -> ok() ? find_spell( 197637 ) : spell_data_t::not_found();
   spec.balance_tier19_2pc         = sets -> has_set_bonus( DRUID_BALANCE, T19, B2 ) ? find_spell( 211089 ) : spell_data_t::not_found();
   spec.starsurge_2                = find_specialization_spell( 231021 );
   spec.moonkin_2                  = find_specialization_spell( 231042 );
@@ -6896,7 +6860,7 @@ void druid_t::create_buffs()
 
   buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
                                .default_value( find_spell( 164547 ) -> effectN( 1 ).percent()
-                                 + talent.soul_of_the_forest -> effectN( 1 ).percent())
+                                 * (1.0+talent.soul_of_the_forest -> effectN( 1 ).percent()))
                                .max_stack( find_spell( 164547 ) -> max_stacks() + spec.starsurge_2 -> effectN( 1 ).base_value() );
 
   buff.moonkin_form          = new buffs::moonkin_form_t( *this );
@@ -6904,8 +6868,6 @@ void druid_t::create_buffs()
   buff.moonkin_form_affinity = new buffs::moonkin_form_affinity_t(*this);
 
   buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) )
-                               .default_value( find_spell( 164545 ) -> effectN( 1 ).percent()
-                                 + talent.soul_of_the_forest -> effectN( 1 ).percent())
                                .max_stack( find_spell( 164545 ) -> max_stacks() + spec.starsurge_2 -> effectN( 1 ).base_value() );
 
   buff.warrior_of_elune      = new warrior_of_elune_buff_t( *this );
@@ -6922,10 +6884,6 @@ void druid_t::create_buffs()
 
   buff.solar_solstice = buff_creator_t(this, "solar_solstice", find_spell(252767))
       .default_value(find_spell(252767)->effectN(1).percent());
-
-  buff.stellar_empowerment = buff_creator_t(this, "stellar_empowerment", find_spell(197637))
-      .default_value(spec.stellar_empowerment->effectN(1).percent())
-      .duration(timespan_t::from_seconds(8)); //seems blizzard removed any useful spelldata, so hardcore this for now.
 
   buff.starfall = buff_creator_t(this, "starfall", find_spell(191034))
       .duration(timespan_t::from_seconds(8));
@@ -7550,10 +7508,10 @@ void druid_t::apl_balance()
   ST -> add_action( this, "Solar Wrath");
 
   AoE -> add_talent( this, "Fury of Elune", "if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)");
-  AoE -> add_action( this, "Starfall", "if=(cooldown.fury_of_elune.remains>15|astral_power.deficit<15)&(buff.stellar_empowerment.remains<gcd.max*2|(buff.celestial_alignment.remains>8|buff.incarnation.remains>8))|target.time_to_die<8");
   AoE -> add_talent( this, "Stellar Flare", "target_if=refreshable,if=target.time_to_die>10");
   AoE -> add_action( this, "Sunfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
   AoE -> add_action( this, "Moonfire", "target_if=refreshable,if=astral_power.deficit>7&target.time_to_die>4");
+  AoE -> add_action( this, "Starfall", "if=target.time_to_die<4");
   AoE -> add_talent( this, "Force of Nature");
   AoE -> add_action( this, "New Moon", "if=astral_power.deficit>14&(!(buff.celestial_alignment.up|buff.incarnation.up)|(charges=2&recharge_time<5)|charges=3)");
   AoE -> add_action( this, "Half Moon", "if=astral_power.deficit>24");
@@ -7733,6 +7691,7 @@ void druid_t::init_gains()
   gain.natures_balance       = get_gain("natures_balance");
   gain.force_of_nature       = get_gain("force_of_nature");
   gain.fury_of_elune         = get_gain("fury_of_elune");
+  gain.stellar_flare         = get_gain("stellar_flare");
   gain.lunar_strike          = get_gain( "lunar_strike"          );
   gain.moonfire              = get_gain( "moonfire"              );
   gain.shooting_stars        = get_gain( "shooting_stars"        );
@@ -8829,9 +8788,9 @@ void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
 
 void druid_t::trigger_solar_empowerment (const action_state_t* state)
 {
-  double dm = buff.solar_empowerment->data ().effectN (1).percent () + talent.soul_of_the_forest->effectN (1).percent ();
+  double dm = buff.solar_empowerment->data ().effectN (1).percent () * (1.0+talent.soul_of_the_forest->effectN (1).percent ());
 
-  dm += mastery.starlight->ok () * cache.mastery_value()/2;  //Only scales with half the mastery value
+  dm += mastery.starlight->ok () * cache.mastery()*mastery.starlight->effectN(5).mastery_value();
 
   double amount = state->result_amount * dm;
   active.solar_empowerment->base_dd_min = amount;
