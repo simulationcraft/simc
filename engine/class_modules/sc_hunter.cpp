@@ -756,7 +756,7 @@ public:
     affected_by.bestial_wrath = ab::data().affected_by( p() -> specs.bestial_wrath -> effectN( 1 ) );
     affected_by.thrill_of_the_hunt = ab::data().affected_by( p() -> talents.thrill_of_the_hunt -> effectN( 1 ).trigger() -> effectN( 1 ) );
 
-    affected_by.lone_wolf = ab::data().affected_by( p() -> specs.lone_wolf -> effectN( 3 ) );
+    affected_by.lone_wolf = ab::data().affected_by( p() -> specs.lone_wolf -> effectN( 1 ) );
     affected_by.sniper_training = ab::data().affected_by( p() -> mastery.sniper_training -> effectN( 2 ) );
 
     affected_by.spirit_bond = ab::data().affected_by( p() -> mastery.spirit_bond -> effectN( 1 ) );
@@ -829,7 +829,7 @@ public:
       am *= 1.0 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( 1 ).mastery_value();
 
     if ( affected_by.lone_wolf && p() -> pets.main == nullptr )
-      am *= 1.0 + p() -> specs.lone_wolf -> effectN( 3 ).percent();
+      am *= 1.0 + p() -> specs.lone_wolf -> effectN( 1 ).percent();
 
     return am;
   }
