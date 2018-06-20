@@ -2408,7 +2408,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     trigger_t20_2pc_bm( p() );
 
-    if ( num_targets_hit > rapid_reload.min_targets )
+    if ( num_targets_hit >= rapid_reload.min_targets )
     {
       rapid_reload.action -> set_target( execute_state -> target );
       rapid_reload.action -> execute();
