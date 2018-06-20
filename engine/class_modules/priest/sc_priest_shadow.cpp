@@ -1209,7 +1209,7 @@ struct dark_ascension_t final : public priest_spell_t
   const spell_data_t* data_spell;
 
   dark_ascension_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "dark_ascension", p, p.talents.dark_ascension ),
+    : priest_spell_t( "dark_ascension", p, p.find_talent_spell( "Dark Ascension" ) ),
     data_spell( p.find_spell( 280800 ) )
   {
     parse_options( options_str );
@@ -1221,11 +1221,7 @@ struct dark_ascension_t final : public priest_spell_t
     is_mastery_spell = true;
     aoe              = -1;
     radius           = data().effectN( 1 ).radius_max();
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* ) const override
-  {
-    return data_spell->effectN( 1 ).sp_coeff();
+    spell_power_mod.direct = data_spell->effectN( 1 ).sp_coeff();
   }
 
   void execute() override
@@ -1271,7 +1267,7 @@ struct dark_ascension_t final : public priest_spell_t
 struct void_torrent_t final : public priest_spell_t
 {
   void_torrent_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "void_torrent", p, p.talents.void_torrent )
+    : priest_spell_t( "void_torrent", p, p.find_talent_spell( "Void Torrent" ) )
   {
     parse_options( options_str );
 
