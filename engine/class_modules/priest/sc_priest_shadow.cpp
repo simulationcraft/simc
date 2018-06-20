@@ -1655,7 +1655,7 @@ priest_t::insanity_state_t::insanity_state_t( priest_t& a )
     last_drained( timespan_t::zero() ),
     actor( a ),
     base_drain_per_sec( a.find_spell( 194249 )->effectN( 3 ).base_value() / -500.0 ),
-    stack_drain_multiplier( 0.92 ),  // Hardcoded Patch 8.0 (2018-02-22)
+    stack_drain_multiplier( 0.79 ),  // Hardcoded Patch 8.0 (2018-06-20)
     base_drain_multiplier( 1.0 )
 {
 }
