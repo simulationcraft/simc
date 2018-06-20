@@ -919,6 +919,7 @@ struct sim_t : private sc_thread_t
   int current_iteration, iterations;
   bool canceled;
   double target_error;
+  role_e target_error_role;
   double current_error;
   double current_mean;
   int analyze_error_interval, analyze_number;
@@ -4984,7 +4985,7 @@ public:
   double last_resource_cost;
 
   /** Last available number of targets effectively hit */
-  unsigned num_targets_hit;
+  int num_targets_hit;
 
   /** Marker for sample action priority list reporting */
   char marker;

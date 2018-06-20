@@ -115,7 +115,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Mechanic         : Bleed
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... .x...... ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -138,7 +138,7 @@ Resource         : 20 Rage (1) (id=99)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -198,7 +198,6 @@ Effects          :
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 #4 (id=298857)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
-                   Affected Spells: Cleave (845), Whirlwind (1680), Thunder Clap (6343), Heroic Leap (6544), Revenge (6572), Overpower (7384), Devastate (20243), Shield Slam (23922), Whirlwind Off-Hand (44949), Bladestorm (46924), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Bladestorm Off-Hand (95738), Avatar (107574), Enrage (184361), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Bladestorm (227847), Devastator (236282)
 #5 (id=298858)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self (1)
 Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s2% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they deal to you by $s1% for $d.]$?s202743[
@@ -213,7 +212,7 @@ Resource         : 20 Rage (1) (id=127)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T18 Arms 4P Bonus (185804 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Crushing Assault (278826 effect#2), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T18 Arms 4P Bonus (185804 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Crushing Assault (278826 effect#2), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -232,7 +231,7 @@ School           : Physical
 Resource         : 30 Rage (1) (id=135)
 Spell Level      : 40 (max 80)
 GCD              : 1.5 seconds
-Affecting spells : Demoralizing Shout (1160 effect#4), Warrior (137047 effect#2), Fervor of Battle (202316 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1)
+Affecting spells : Warrior (137047 effect#2), Fervor of Battle (202316 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .......x ........ ........ 
@@ -259,7 +258,7 @@ Spell Level      : 32
 Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Hamstring Rage Reduction (22778 effect#1), Improved Hamstring (24428 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Hamstring Rage Reduction (22778 effect#1), Improved Hamstring (24428 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ........ ........ x.x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ....x... ........ ........   ...x.... ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -298,7 +297,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: rage | Target: Self (1)
 #4 (id=341514)   : Apply Aura (6) | Unknown(213)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 #5 (id=737891)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: War Machine (262232), Endless Rage (280283)
@@ -442,7 +440,7 @@ Spell Level      : 8
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -469,7 +467,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 6 seconds
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Crackling Thunder (203201 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Deafening Crash (272824 effect#2), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -500,7 +498,7 @@ Cooldown         : 0.8 seconds
 Charges          : 1 (45 seconds cooldown)
 Category         : 1211
 Category Cooldown: 0.8 seconds
-Affecting spells : Demoralizing Shout (1160 effect#4), Weight of the Earth (208177 effect#1)
+Affecting spells : Weight of the Earth (208177 effect#1)
 Attributes       : ....x... x....... x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -544,7 +542,7 @@ Spell Level      : 22
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 3 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Revenge! (5302 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vengeance: Revenge (202573 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Callous Reprisal (278760 effect#2), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Revenge! (5302 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vengeance: Revenge (202573 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Callous Reprisal (278760 effect#2), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -594,7 +592,7 @@ Stacks           : 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Dreadnaught (262150 effect#2), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Dreadnaught (262150 effect#2), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -620,7 +618,7 @@ Spell Level      : 1
 Range            : 50000 yards
 Proc Chance      : 101%
 Mechanic         : Stun
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -640,7 +638,7 @@ School           : Physical
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -667,7 +665,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Overpower (7384 effect#2), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T17 Arms 4P Bonus (165336 effect#1), Vicious Strike (165638 effect#1), Archavon's Heavy Hand (205144 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Overpower (7384 effect#2), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T17 Arms 4P Bonus (165336 effect#1), Vicious Strike (165638 effect#1), Archavon's Heavy Hand (205144 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -788,7 +786,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#4), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#4), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -852,7 +850,7 @@ GCD              : 1.5 seconds
 Cooldown         : 4.5 seconds
 Category         : 971: Warrior (137047 effect#6)
 Category Cooldown: 4.5 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165640 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165640 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -907,7 +905,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#2), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165642 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), The Walls Fell (215057 effect#2), Frothing Berserker (215572 effect#1), Wall of Iron (253428 effect#1), Punish (275334 effect#1), Brace for Impact (278124 effect#2), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#2), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165642 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), The Walls Fell (215057 effect#2), Frothing Berserker (215572 effect#1), Wall of Iron (253428 effect#1), Punish (275334 effect#1), Brace for Impact (278124 effect#2), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -961,8 +959,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Periodic effect affected by haste (173)
 Effects          :
 #1 (id=18390)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 4 | Scaled Value: 4 | Target: Friend (21)
-#2 (id=106031)   : None (0)
+                   Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
+#2 (id=106031)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : Heals the target for $s2% of the caster's total health over $d.
 Tooltip          : Healing $/5;s2% every $t1 seconds.
@@ -1050,7 +1048,7 @@ School           : Physical
 Spell Level      : 5
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .x...... ........ ........   ........ ........ ........ ........ 
@@ -1084,7 +1082,7 @@ Name             : Whirlwind Off-Hand (id=44949) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1 (max 80)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Whirlwind (190411)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x....... 
@@ -1124,7 +1122,7 @@ GCD              : 1.5 seconds
 Velocity         : 10 yards/sec
 Duration         : 4 seconds
 Cooldown         : 60 seconds
-Affecting spells : Demoralizing Shout (1160 effect#4), Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Gathering Storm (273415 effect#1), 
+Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Gathering Storm (273415 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -1160,7 +1158,7 @@ Cooldown         : 30 seconds
 Category         : 1201
 Category Cooldown: 30 seconds
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1184,7 +1182,7 @@ Name             : Bladestorm (id=50622) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Bladestorm (46924), Bladestorm (227847)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1205,7 +1203,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 26
 Range            : 50000 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Weight of the Earth (208177 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Weight of the Earth (208177 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ..x..... ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ..x...x. 
@@ -1242,7 +1240,7 @@ Range            : 8 - 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 6 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1476,7 +1474,6 @@ Effects          :
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 #3 (id=739444)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 Description      : Increases damage done while Enraged by ${$s1}.1%.
 
 Name             : Mastery: Critical Block (id=76857) [Spell Family (4), Passive] 
@@ -1501,7 +1498,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 12880 | Target: Self (1)
 #5 (id=217532)   : Apply Aura (6) | Modify Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases your chance to block by ${$s2}.1% and your chance to critically block (gaining twice your block value) by ${$s1}.1%.
+Description      : Increases your chance to block by ${$s2}.1% and your chance to critically block (blocking twice the amount) by ${$s1}.1%.
 
 Also increases your attack power by ${$s5}.1%.
 
@@ -1513,7 +1510,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 2 (8 seconds cooldown)
 Category         : 1672: Fury Warrior (137050 effect#5)
-Affecting spells : Recklessness (1719 effect#6), Whirlwind (85739 effect#1), Warrior (137047 effect#1), Fury Warrior (137050 effect#5), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1)
+Affecting spells : Recklessness (1719 effect#6), Whirlwind (85739 effect#1), Warrior (137047 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1542,7 +1539,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Raging Blow (85288)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .x...... ........ x.....x. 
@@ -1578,10 +1575,8 @@ Effects          :
                    Affected Spells: Bloodthirst (23881), Raging Blow (85288), Raging Blow (85384), Raging Blow (96103), Furious Slash (100130), Execute Off-Hand (163558), Execute (260798), Siegebreaker (280772), Execute (280849)
 #2 (id=333347)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881)
 #3 (id=349763)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Bloodthirst (23881)
 Description      : Causes your next single-target attack to strike up to $s1 additional targets for $s3% damage.
 Tooltip          : Your next single-target attack strikes up to $w1 additional targets for $w3% damage.
 
@@ -1689,7 +1684,7 @@ Name             : Bladestorm Off-Hand (id=95738) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Bladestorm (50622)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ x....... 
@@ -1708,7 +1703,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 20
 Range            : 100 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Inner Rage (215573 effect#2), Raging Thirst (242300 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Raging Blow (85288)
 Attributes       : ....x... ........ x.x..... ........   ....x... ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ......x. 
@@ -1729,7 +1724,7 @@ School           : Physical
 Spell Level      : 80
 GCD              : 1.5 seconds
 Cooldown         : 180 seconds
-Affecting spells : Bladestorm (46924 effect#3), Warrior (137047 effect#2), Bladestorm (227847 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Warrior (137047 effect#2), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1746,7 +1741,7 @@ Class            : Warrior
 School           : Physical
 Range            : 100 yards
 Duration         : 10 seconds
-Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3)
+Affecting spells : Bladestorm (46924 effect#3), Bladestorm (227847 effect#3), Moment of Glory (280209 effect#2)
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -1768,7 +1763,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T18 Fury 2P Bonus (185798 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T18 Fury 2P Bonus (185798 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1849,7 +1844,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Cooldown         : 30 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1872,7 +1867,7 @@ Spell Level      : 40
 GCD              : 1.5 seconds
 Duration         : 20 seconds
 Cooldown         : 90 seconds
-Affecting spells : Demoralizing Shout (1160 effect#4), Recklessness (1719 effect#9), Warrior (137047 effect#2), Unstoppable Force (275336 effect#1), 
+Affecting spells : Recklessness (1719 effect#9), Warrior (137047 effect#2), Unstoppable Force (275336 effect#1), 
 Attributes       : ....x... ........ ..x..... ...x....   ........ ..x....x x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1885,7 +1880,6 @@ Effects          :
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 #2 (id=118391)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 #3 (id=118664)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343)
@@ -1962,7 +1956,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 15 seconds
 Mechanic         : Bleed
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Deep Wounds (115768)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x....x ........ ........ ........   ........ ..x..... ..x..... ..x...x. 
@@ -2126,7 +2120,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 35 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Bladestorm (46924 effect#3), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Neltharion's Fury (203524 effect#4), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Bladestorm (222634 effect#3), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Bladestorm (46924 effect#3), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Neltharion's Fury (203524 effect#4), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Bladestorm (222634 effect#3), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2262,7 +2256,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 10
 Range            : 50000 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ..x..... ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
@@ -2337,7 +2331,6 @@ Effects          :
                    Affected Spells: Shield Slam (23922)
 #3 (id=268763)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7e | Target: Self (1)
-                   Affected Spells: Shield Slam (23922)
 #4 (id=738490)   : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 7 | Target: Self (1)
                    Affected Spells: Devastate (20243), Shield Slam (23922), Devastator (236282)
@@ -2426,7 +2419,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Heroic Throw (57755)
 #6 (id=261027)   : Apply Aura (6) | Threat (10)
-                   Base Value: 300 | Scaled Value: 300 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 350 | Scaled Value: 350 | Misc Value: 127 | Target: Self (1)
 #7 (id=261028)   : Apply Aura (6) | Unknown(213)
                    Base Value: -56 | Scaled Value: -56 | Target: Self (1)
 #8 (id=261029)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -2531,10 +2524,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191012)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: -25 | Scaled Value: -25 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 #5 (id=191013)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1672 | Target: Self (1)
-                   Affected Spells: Raging Blow (85288)
                    Affected Spells (Category): Raging Blow (85288)
 #6 (id=261037)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
@@ -2693,7 +2684,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 7 seconds
 Cooldown         : 60 seconds
-Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Gathering Storm (273415 effect#1), 
+Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Gathering Storm (273415 effect#1)
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -2759,7 +2750,7 @@ Name             : Ravager (id=156287) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Range            : 100 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Gathering Storm (273415 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -2840,7 +2831,7 @@ School           : Physical
 Spell Level      : 7
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Execute (5308)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ........ ..x..... x....... 
@@ -2861,7 +2852,7 @@ Spell Level      : 50
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Colossal Might (76838 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Colossal Might (76838 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2882,7 +2873,7 @@ Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x... ........ ........ 
                  : Yellow Melee, AOE Heal, AOE Hostile Spell
-Affecting spells : Demoralizing Shout (1160 effect#4), Fresh Meat (215568 effect#1)
+Affecting spells : Fresh Meat (215568 effect#1)
 Attributes       : ....x.x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2985,7 +2976,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Outrage (253385 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Outrage (253385 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -3005,7 +2996,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Outrage (253385 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Outrage (253385 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3112,14 +3103,14 @@ Attributes       : ....x... ........ ..x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
 Effects          :
 #1 (id=279107)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.50000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.50000 | Misc Value: 127 | Target: Self (1)
 #2 (id=299580)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #3 (id=342429)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
 Description      : Fight through the pain, ignoring $s2% of damage taken, up to $<absorb> total damage prevented.
 Tooltip          : Ignoring $s2% of damage taken, preventing $w1 total damage.
-Variables        : $absorb=${($s1+$AP*2.5)*(1+$@versadmg)}
+Variables        : $absorb=${($s1+$AP*3.5)*(1+$@versadmg)}
 
 Name             : Defensive Stance (id=197690) [Spell Family (4)] 
 Class            : Warrior
@@ -3283,7 +3274,7 @@ Name             : Whirlwind (id=199658) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1 (max 80)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Whirlwind (1680)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -3301,7 +3292,7 @@ Name             : Whirlwind (id=199667) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1 (max 80)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Whirlwind (190411)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ........ 
@@ -3321,7 +3312,7 @@ Name             : Whirlwind (id=199850) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1 (max 80)
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Fervor of Battle (202316 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Whirlwind (1680)
 Attributes       : ....x... ........ x.x..... ........   ....x... .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3362,7 +3353,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Outrage (253385 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Outrage (253385 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3382,7 +3373,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Outrage (253385 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Outrage (253385 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -3496,7 +3487,7 @@ Resource         : 10 Rage (1) (id=10852)
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Victorious (32216 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Victorious (32216 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3814,7 +3805,7 @@ Name             : Opportunity Strikes (id=203178) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Range            : 100 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4324,7 +4315,6 @@ Effects          :
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 #4 (id=739446)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 Description      : $@spelldesc215571
 Tooltip          : Damage done increased by $s1%.
 Haste increased by $s2%.
@@ -4515,7 +4505,7 @@ School           : Physical
 Range            : 40 yards
 Velocity         : 30 yards/sec
 Duration         : 12 seconds
-Affecting spells : Protection Warrior (137048 effect#8), Gathering Storm (273415 effect#1), 
+Affecting spells : Protection Warrior (137048 effect#8), Gathering Storm (273415 effect#1)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4537,7 +4527,7 @@ GCD              : 1.5 seconds
 Velocity         : 10 yards/sec
 Duration         : 6 seconds
 Cooldown         : 90 seconds
-Affecting spells : Demoralizing Shout (1160 effect#4), Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Gathering Storm (273415 effect#1), 
+Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Gathering Storm (273415 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -4567,7 +4557,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Duration         : 7 seconds
 Cooldown         : 60 seconds
-Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Gathering Storm (273415 effect#1), 
+Affecting spells : Warrior (137047 effect#2), Protection Warrior (137048 effect#8), Gathering Storm (273415 effect#1)
 Attributes       : ....x... ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -4699,7 +4689,7 @@ Spell Level      : 10
 Range            : 5 yards
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#4), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#4), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Devastator (236279)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4991,9 +4981,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 32900.48 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 33251.41 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 32900.48 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 33251.41 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -5005,7 +4995,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 21 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Sweeping Strikes (260708 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5042,7 +5032,6 @@ Effects          :
                    Affected Spells: Rend (772), Slam (1464), Hamstring (1715), Overpower (7384), Mortal Strike (12294), Victory Rush (34428), Colossus Smash (167105), Impending Victory (202168), Skullsplitter (260643), Execute (260798)
 #2 (id=486062)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Mortal Strike (12294)
 Description      : For $d your single-target damaging abilities hit $s1 additional $Ltarget:targets; within 8 yds for $s2% damage.
 Tooltip          : Your single-target damaging abilities hit $s1 additional $Ltarget:targets; within 8 yds for $s2% damage.
 
@@ -5051,7 +5040,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 1
 Range            : 5 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Execute (163201)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ......x.   ........ .xx..... ........ ........ 
@@ -5114,7 +5103,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 3 seconds
 Mechanic         : Bleed
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Mastery: Deep Wounds (262111 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Mastery: Deep Wounds (262111 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Mastery: Deep Wounds (262111), Deep Wounds (262304)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
                  : ..x....x ........ ........ ........   ........ ..x..... ..x..... ..x...x. 
@@ -5152,7 +5141,7 @@ Class            : Warrior
 School           : Physical
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Lord of War (278752 effect#2), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -5169,7 +5158,6 @@ Name             : Deadly Calm (id=262228) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
-GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 60 seconds
 Affecting spells : Warrior (137047 effect#2), Raging Fury (222266 effect#1)
@@ -5299,6 +5287,25 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 270667 | Target: Self (1)
 Description      : Your damaging abilities have a chance to grant you Elemental Whirl, increasing your Critical Strike, Haste, Mastery, or Versatility by $s1 for $268956d.
 
+Name             : Heed My Call (id=263987) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 22
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=707069)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 622 (avg=2) | Misc Value: 1792 | Trigger Spell: 271681 | Target: Self (1)
+#2 (id=713642)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 62.2 (avg=0.2)
+Description      : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
+Tooltip          : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
+
 Name             : Blood Siphon (id=264108) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
@@ -5319,7 +5326,7 @@ Description      : Increases your Mastery by $s1 and your Leech by $s2.
 Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 
 Name             : Overwhelming Power (id=266180) [Scaling Spell (-7), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Death Knight, Shaman, Mage, Warlock
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 30
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5355,7 +5362,7 @@ Description      : Your damaging abilities have a chance to implant an Azerite G
 Tooltip          : Your damaging abilities have a chance to implant an Azerite Globule on your enemies. When an enemy collects $s2 Azerite Globules, they explode, dealing $s1 Fire damage to nearby enemies.
 
 Name             : Gutripper (id=266937) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 31
 Triggered by     : Gutripper (270668)
@@ -5488,7 +5495,7 @@ Description      : When you take damage, heal for $s1. Cannot occur more than on
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 
 Name             : Longstrider (id=268594) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Hunter, Shaman
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 14
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -5500,9 +5507,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716157)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 42.02699 (avg=0.135135) | Misc Value: 8 | Trigger Spell: 270653 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 13.79161 (avg=0.044346) | Misc Value: 8 | Trigger Spell: 270653 | Target: Self (1)
 #2 (id=716158)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 14.009 (avg=0.045045) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.137544 (avg=0.013304) | Target: Self (1)
 Description      : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 Tooltip          : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 
@@ -5608,7 +5615,7 @@ Effects          :
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s2 Armor and cause melee attackers to suffer $s1 Physical damage. Lasts $271538d.
 
 Name             : Ablative Shielding (id=271540) [Scaling Spell (-7), Passive] 
-Class            : Warrior, Paladin, Death Knight
+Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 99
 Triggered by     : Ablative Shielding (271543)
@@ -5623,6 +5630,22 @@ Effects          :
 #1 (id=721842)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=7.469655) | Trigger Spell: 271542 | Target: Self (1)
 Description      : Falling below $271542s1% health grants you $s1 Armor for $271543d. Taking further Physical damage reduces the Armor granted. May only occur every $271544d.
+
+Name             : Strength in Numbers (id=271546) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 100
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=721853)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 4395.509 (avg=14.13347) | Trigger Spell: 271547 | Target: Self (1)
+Description      : Taking damage has a chance to increase your maximum health by $s1 for each enemy within $271548A1 yds, up to $271550u enemies. Lasts $271550d.
 
 Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
@@ -5695,6 +5718,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 948.1706 (avg=3.04878) | Trigger Spell: 272867 | Target: Self (1)
 Description      : Execute increases the damage of your next Mortal Strike against the target by $s1, stacking up to $272870u times.
 
+Name             : Ruinous Bolt (Drustvar) (id=273150) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 156
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=724558)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 799.9999 (avg=2.572347) | Trigger Spell: 273825 | Target: Self (1)
+Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
+
 Name             : Gathering Storm (id=273409) [Scaling Spell (-1), Spell Family (4), Passive] 
 Class            : Warrior
 School           : Physical
@@ -5744,9 +5783,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725525)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 273684 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273684 | Target: Self (1)
 #2 (id=725608)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=725609)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 273684 | Target: Self (1)
 #4 (id=725610)   : Apply Aura (6) | Dummy (4)
@@ -5824,23 +5863,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 273835 | Target: Self (1)
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
-Name             : Breach (id=274563) [Scaling Spell (-1), Passive] 
-Class            : Warrior
-School           : Physical
-Azerite Power Id : 216
-Triggered by     : Breach (274571)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : Passive (6), Scales with item level (354)
-Effects          :
-#1 (id=726959)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 235.3337 (avg=0.7567) | Trigger Spell: 274570 | Target: Self (1)
-Description      : When you damage an enemy with Heroic Leap, gain $s1 Leech for $274571d.
-
 Name             : Bloodbath (id=274818) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -5849,7 +5871,7 @@ Duration         : 20 seconds
 Proc Chance      : 100%
 Proc Flags       : ..x.x... x...x... x.x..... ........ 
                  : White Melee, Yellow Melee, Yellow Ranged, AOE Hostile Spell, Hostile Spell, Periodic
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Bloodbath (12292)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -6041,7 +6063,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=0.409091) | Trigger Spell: 278130 | Target: Self (1)
 Description      : When Recklessness expires, your Critical Strike is increased by $s1 for $278134d. Your auto attacks will refresh the duration of this effect.
 
-Name             : Seismic Wave (id=277639) [Scaling Spell (-1), Passive] 
+Name             : Seismic Wave (id=277639) [Scaling Spell (-8), Passive] 
 Class            : Warrior
 School           : Physical
 Azerite Power Id : 433
@@ -6054,7 +6076,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732931)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 278495 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 693.5022 (avg=8.919643) | Trigger Spell: 278495 | Target: Self (1)
 #2 (id=732932)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
 Description      : Overpower causes a seismic wave that deals $s1 Physical damage to enemies in a $s2 yd line.
@@ -6211,7 +6233,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Your auto attack critical strikes generate $s1% more Rage.
 
-Name             : Unstable Flames (id=279899) [Scaling Spell (-1), Passive] 
+Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 459
@@ -6225,10 +6247,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 93.3 (avg=0.3) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
-Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $s2 times.
+                   Base Value: 0 | Scaled Value: 0 (avg=0.447912) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
+Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $279902u times.
 
-Name             : Earthlink (id=279926) [Scaling Spell (-7), Passive] 
+Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 461
@@ -6241,7 +6263,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 279927 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 31.03096 (avg=0.099778) | Trigger Spell: 279927 | Target: Self (1)
 Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
 Name             : Bolster (id=280001) [Spell Family (4), Passive, Hidden] 
@@ -6263,6 +6285,202 @@ Effects          :
                    Affected Spells: Last Stand (12975)
 Description      : Last Stand's cooldown is reduced by ${$s1/-1000} sec, and it additionally causes you to block all melee attacks.
 
+Name             : Moment of Glory (id=280023) [Scaling Spell (-1), Passive] 
+Class            : Warrior
+School           : Physical
+Azerite Power Id : 476
+Triggered by     : Moment of Glory (280210)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737283)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1555 (avg=5) | Trigger Spell: 280209 | Target: Self (1)
+#2 (id=737284)   : Dummy (3)
+                   Base Value: 12 | Scaled Value: 12
+Description      : Your Rallying Cry grants $s1 additional Max Health to affected allies, and its duration is increased to $s2 sec.
+
+Name             : Bury the Hatchet (id=280128) [Scaling Spell (-1), Passive] 
+Class            : Warrior
+School           : Physical
+Azerite Power Id : 477
+Triggered by     : Bury the Hatchet (280212)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737445)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 6550.998 (avg=21.0643) | Trigger Spell: 280211 | Target: Self (1)
+#2 (id=737446)   : Dummy (3)
+                   Base Value: 12 | Scaled Value: 12
+Description      : When you use $?s202168[Impending Victory][Victory Rush], gain $s1 Physical absorb for $280212d.
+
+Name             : Barrage Of Many Bombs (Goblin Engineering) (id=280163) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Proc Chance      : 101%
+Real PPM         : 1.5
+Azerite Power Id : 498
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs
+                   Base Value: 0 | Scaled Value: 904.1361 (avg=2.90719) | Trigger Spell: 280662 | Target: Self (1)
+#2 (id=737506)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4
+#3 (id=737507)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+#4 (id=738960)   : Apply Aura (6) | Skill (30)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+
+Increases your Kul Tiran or Zandalari Engineering by $s4.
+
+Name             : Ricocheting Inflatable Pyrosaw (Goblin Engineering) (id=280168) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Proc Chance      : 101%
+Real PPM         : 1.5
+Azerite Power Id : 499
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737518)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=737519)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4
+#3 (id=738961)   : Apply Aura (6) | Skill (30)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
+Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
+
+Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
+Name             : Auto-Self-Cauterizer (Goblin Engineering) (id=280172) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Proc Chance      : 101%
+Real PPM         : 1.5
+Azerite Power Id : 503
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737533)   : Apply Aura (6) | Proc Trigger Spell (42): Cauterized
+                   Base Value: 0 | Scaled Value: 7266.355 (avg=93.45795) | Trigger Spell: 280583 | Target: Self (1)
+#2 (id=737534)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30
+#3 (id=738963)   : Apply Aura (6) | Skill (30)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
+Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
+*Efficacy may vary.
+
+Name             : Synaptic Spark Capacitor (Gnomish Engineering) (id=280174) [Spell Family (7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Proc Chance      : 101%
+Real PPM         : 1.5
+Azerite Power Id : 500
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737542)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+#2 (id=738958)   : Apply Aura (6) | Skill (30)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+
+Increases your Kul Tiran or Zandalari Engineering by $s2.
+
+Name             : Relational Normalization Gizmo (Gnomish Engineering) (id=280178) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Internal Cooldown: 10 seconds
+Proc Chance      : 101%
+Real PPM         : 1.5
+Azerite Power Id : 501
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737551)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 311 (avg=1) | Target: Self (1)
+#2 (id=738959)   : Apply Aura (6) | Skill (30)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
+Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s2.
+
+Name             : Personal Absorb-o-Tron (Gnomish Engineering) (id=280181) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Internal Cooldown: 60 seconds
+Proc Chance      : 101%
+Real PPM         : 1.5
+Azerite Power Id : 502
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737557)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=738962)   : Apply Aura (6) | Skill (30)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s2.
+
 Name             : Endless Rage (id=280283) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
@@ -6278,6 +6496,44 @@ Effects          :
 #1 (id=737713)   : Energize Power (30)
                    Base Value: 60 | Scaled Value: 60 | Misc Value: rage | Target: Self (1)
 Description      : $@spelldesc202296
+
+Name             : Dagger in the Back (Tiragarde Sound) (id=280284) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 479
+Triggered by     : Dagger in the Back (280286)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737714)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 75.77297 (avg=0.243643) | Trigger Spell: 280285 | Target: Self (1)
+#2 (id=737715)   : Dummy (3)
+                   Base Value: 2 | Scaled Value: 2
+Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
+
+Name             : Thunderous Blast (Vol'dun) (id=280380) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 482
+Triggered by     : Thunderous Blast (280384)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737878)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 233.25 (avg=3) | Trigger Spell: 280383 | Target: Self (1)
+#2 (id=738006)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
 
 Name             : Meat Cleaver (id=280392) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -6298,7 +6554,61 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 Description      : Whirlwind has a $s3% chance to Enrage you and generates an additional $s1 Rage per target hit (up to $s2 additional Rage).
 
-Name             : Swirling Sands (Vol'dun) (id=280429) [Scaling Spell (-1), Passive] 
+Name             : Tidal Surge (Stormsong Valley) (id=280402) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Frost
+Azerite Power Id : 478
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737915)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 827.733 (avg=2.661521) | Trigger Spell: 280403 | Target: Self (1)
+Description      : Your damaging spells and abilities have a chance to release a tidal surge, dealing $s1 Frost damage to your target and slowing their movement speed by $280404s2% for $280404d.
+
+Name             : Blood Rite (Nazmir) (id=280407) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 480
+Triggered by     : Blood Rite (280409)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737922)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.129518) | Trigger Spell: 280408 | Target: Self (1)
+Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $280409d. Killing an enemy refreshes the duration of this effect.
+
+Name             : Incite the Pack (Zuldazar) (id=280410) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 481
+Triggered by     : Incite the Pack (280412), Incite the Pack (280413)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737926)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 227.3186 (avg=0.730928) | Trigger Spell: 280411 | Target: Self (1)
+#2 (id=737927)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 52.96828 (avg=0.170316) | Target: Self (1)
+#3 (id=737931)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+Description      : You occasionally loose a tremendous roar, increasing your Mastery by $s1 and granting $s2 Mastery to up to $280413i nearby allies. Lasts $280412d.
+
+Name             : Swirling Sands (Vol'dun) (id=280429) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 196
@@ -6311,7 +6621,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737972)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 280432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=2.853365) | Trigger Spell: 280432 | Target: Self (1)
 #2 (id=737973)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
 #3 (id=737974)   : Dummy (3)
@@ -6355,6 +6665,239 @@ Effects          :
 Description      : Your spells and abilities have a chance to release a barrage of lasers that burns enemies for $s1 Arcane damage and cauterizes allies' wounds to restore $s2 health.
 
 Enables $@spellname280573 within Uldir.
+
+Name             : Glory in Battle (Horde) (id=280577) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 486
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738189)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.244076) | Trigger Spell: 280778 | Target: Self (1)
+#2 (id=738555)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.779789) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
+Attacking a member of the opposite faction significantly increases this chance.
+
+Name             : Retaliatory Fury (Horde) (id=280579) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 487
+Triggered by     : Retaliatory Fury (280788)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738191)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 622 (avg=2) | Trigger Spell: 280785 | Target: Self (1)
+#2 (id=738573)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 2488 (avg=8) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
+Attacking a member of the opposite faction is more likely to activate this effect.
+
+Name             : Combined Might (Horde) (id=280580) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 490
+Triggered by     : Might of the Orcs (280841)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738192)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 280848 | Target: Self (1)
+#2 (id=738695)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4
+Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
+
+Name             : Collective Will (Horde) (id=280581) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 491
+Triggered by     : Collective Will (280830)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738193)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 311 (avg=1) | Trigger Spell: 280837 | Target: Self (1)
+#2 (id=738669)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1866 (avg=6) | Target: Self (1)
+Description      : Your abilities have a chance to drop a Horde Banner for $280830d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
+
+Name             : Battlefield Focus (Horde) (id=280582) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 488
+Triggered by     : Battlefield Focus (280817), Battlefield Precision (280855)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738194)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 206.9391 (avg=0.665399) | Trigger Spell: 280816 | Target: Self (1)
+#2 (id=738645)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20
+#3 (id=738646)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+Description      : Your abilities have a chance to apply $s2 stacks of Battlefield Focus to an enemy, increasing damage taken from members of the Horde by $s1. Applying Battlefield Focus to a member of the Alliance grants an additional $s3 stacks. 
+
+Name             : Sylvanas' Resolve (Horde) (id=280598) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 489
+Triggered by     : Sylvanas' Resolve (280809)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738213)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 344.7892 (avg=1.108647) | Trigger Spell: 280806 | Target: Self (1)
+#2 (id=738618)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280810 | Target: Self (1)
+Description      : Your abilities have a chance to increase your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 for $280809d. If an ally dies nearby, you gain this effect.
+
+Name             : Liberator's Might (Alliance) (id=280623) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 492
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738283)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.244076) | Trigger Spell: 280851 | Target: Self (1)
+#2 (id=738699)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.780731) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
+Attacking a member of the opposite faction significantly increases this chance.
+
+Name             : Last Gift (Alliance) (id=280624) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 493
+Triggered by     : Last Gift (280862)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738284)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 622 (avg=2) | Trigger Spell: 280860 | Target: Self (1)
+#2 (id=738721)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 2488 (avg=8) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
+Taking damage from a member of the opposite faction has a chance to activate this effect. 
+
+Name             : Stronger Together (Alliance) (id=280625) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 496
+Triggered by     : Strength of the Humans (280866)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738285)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Target: Self (1)
+#2 (id=738730)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4
+Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
+
+Name             : Stand As One (Alliance) (id=280626) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 497
+Triggered by     : Stand As One (280858)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738286)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 311 (avg=1) | Trigger Spell: 280856 | Target: Self (1)
+#2 (id=738712)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1866 (avg=6) | Target: Self (1)
+Description      : Your abilities have a chance to drop an Alliance Banner for $280858d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
+
+Name             : Battlefield Precision (Alliance) (id=280627) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 494
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738287)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 206.9391 (avg=0.665399) | Trigger Spell: 280854 | Target: Self (1)
+#2 (id=738705)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20
+#3 (id=738706)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+Description      : Your abilities have a chance to apply $s2 stacks of Battlefield Focus to an enemy, increasing damage taken from members of the Alliance by $s1. Applying Battlefield Focus to a member of the Horde grants an additional $s3 stacks. 
+
+Name             : Anduin's Dedication (Alliance) (id=280628) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 495
+Triggered by     : Anduin's Dedication (280876)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738288)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 344.8987 (avg=1.108999) | Trigger Spell: 280872 | Target: Self (1)
+#2 (id=738747)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280874 | Target: Self (1)
+Description      : Your abilities have a chance to increase your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 for $280876d. If an ally dies nearby, you gain this effect.
 
 Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -6412,7 +6955,7 @@ Name             : Bloodbath (id=280736) [Spell Family (4)]
 Class            : Warrior
 School           : Physical
 Range            : 5 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6431,7 +6974,7 @@ School           : Physical
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#2), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6467,7 +7010,6 @@ Effects          :
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 #2 (id=739447)   : Apply Aura (6) | Modify Auto Attack Damage Taken% from Caster (343)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy (6)
-                   Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 Description      : $@spelldesc280772
 Tooltip          : Taking $w1% increased damage from the Warrior.
 
@@ -6476,7 +7018,7 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 8
 Range            : 5 yards
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1), 
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Whirlwind (85739 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Death Sentence (144442 effect#1), Colossus Smash (208086 effect#1), Precise Strikes (209493 effect#1), Frothing Berserker (215572 effect#1), Stone Heart (225947 effect#1), Execute (231827 effect#1), Deadly Calm (262228 effect#1), Siegebreaker (280773 effect#1)
 Triggered by     : Execute (5308)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ......x.   ........ .xx..... ........ ........ 

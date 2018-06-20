@@ -63,9 +63,9 @@ private:
 
 public:
   mind_blast_t( priest_t& player, const std::string& options_str )
-    : priest_spell_t( "mind_blast", player, player.talents.shadow_word_void->ok()
-                                    ? player.find_talent_spell( "Shadow Word: Void" )
-                                    : player.find_class_spell( "Mind Blast" )  )
+    : priest_spell_t( "mind_blast", player,
+                      player.talents.shadow_word_void->ok() ? player.find_talent_spell( "Shadow Word: Void" )
+                                                            : player.find_class_spell( "Mind Blast" ) )
   {
     parse_options( options_str );
     is_sphere_of_insanity_spell = true;
@@ -81,14 +81,13 @@ public:
     {
       crit_bonus_multiplier *= 1.0 + priest().sets->set( PRIEST_SHADOW, T21, B2 )->effectN( 1 ).percent();
     }
-    //background = ( priest().talents.shadow_word_void->ok() );
+    // background = ( priest().talents.shadow_word_void->ok() );
   }
 
   void init() override
   {
-    if (    priest().active_items.mangazas_madness
-         && priest().cooldowns.mind_blast->charges == 1
-         && !priest().talents.shadow_word_void->ok() )
+    if ( priest().active_items.mangazas_madness && priest().cooldowns.mind_blast->charges == 1 &&
+         !priest().talents.shadow_word_void->ok() )
     {
       priest().cooldowns.mind_blast->charges +=
           priest().active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
@@ -166,7 +165,7 @@ public:
     timespan_t cd = priest_spell_t::cooldown_base_duration( cooldown );
     if ( priest().buffs.voidform->check() )
     {
-      cd += priest().buffs.voidform->data().effectN(6).time_value();
+      cd += priest().buffs.voidform->data().effectN( 6 ).time_value();
     }
     return cd;
   }
@@ -203,14 +202,14 @@ struct mind_sear_tick_t final : public priest_spell_t
     : priest_spell_t( "mind_sear_tick", p, mind_sear->effectN( 1 ).trigger() ),
       insanity_gain( p.find_spell( 208232 )->effectN( 1 ).percent() )
   {
-    background    = true;
-    dual          = true;
-    aoe           = -1;
-    callbacks     = false;
-    direct_tick   = true;
-    use_off_gcd   = true;
+    background       = true;
+    dual             = true;
+    aoe              = -1;
+    callbacks        = false;
+    direct_tick      = true;
+    use_off_gcd      = true;
     is_mastery_spell = true;
-    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
+    energize_type    = ENERGIZE_NONE;  // disable resource generation from spell data
   }
 
   void impact( action_state_t* s ) override
@@ -243,8 +242,7 @@ struct mind_sear_t final : public priest_spell_t
 
 struct new_void_tendril_mind_flay_t final : public priest_spell_t
 {
-  new_void_tendril_mind_flay_t( priest_t& p ) :
-    priest_spell_t( "mind_flay_void_tendril", p, p.find_spell( 193473 ) )
+  new_void_tendril_mind_flay_t( priest_t& p ) : priest_spell_t( "mind_flay_void_tendril", p, p.find_spell( 193473 ) )
 
   {
     aoe                    = 1;
@@ -994,10 +992,10 @@ struct void_bolt_t final : public priest_spell_t
     is_sphere_of_insanity_spell = true;
     is_mastery_spell            = true;
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data.
-    cooldown->hasted = true;
+    cooldown->hasted            = true;
 
     auto rank2 = player.find_specialization_spell( 231688 );
-    if ( rank2 -> ok() )
+    if ( rank2->ok() )
     {
       void_bolt_extension = new void_bolt_extension_t( player );
     }
@@ -1072,18 +1070,18 @@ struct dark_void_t final : public priest_spell_t
 
   dark_void_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "dark_void", p, p.find_talent_spell( "Dark Void" ) ),
-       child_swp( new shadow_word_pain_t( priest(), std::string( "" ), false ) ),
-       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
+      child_swp( new shadow_word_pain_t( priest(), std::string( "" ), false ) ),
+      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
 
   {
     parse_options( options_str );
     base_costs[ RESOURCE_INSANITY ] = 0.0;
-    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data.
-    child_swp->background = true;
+    energize_type                   = ENERGIZE_NONE;  // disable resource generation from spell data.
+    child_swp->background           = true;
 
-    may_miss          = false;
-    aoe               = -1;
-    radius            = data().effectN( 1 ).radius_max();
+    may_miss = false;
+    aoe      = -1;
+    radius   = data().effectN( 1 ).radius_max();
   }
 
   void impact( action_state_t* s ) override
@@ -1098,7 +1096,7 @@ struct dark_void_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    priest().generate_insanity(insanity_gain, priest().gains.insanity_dark_void, execute_state->action);
+    priest().generate_insanity( insanity_gain, priest().gains.insanity_dark_void, execute_state->action );
   }
 };
 
@@ -1115,17 +1113,16 @@ struct void_eruption_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    if( priest().talents.legacy_of_the_void->ok() )
+    if ( priest().talents.legacy_of_the_void->ok() )
     {
-
-      insanity_required = (double) priest().talents.legacy_of_the_void->effectN( 6 ).base_value();
+      insanity_required = (double)priest().talents.legacy_of_the_void->effectN( 6 ).base_value();
     }
     else
     {
       insanity_required = data_spell->cost( POWER_INSANITY ) / 100.0;
     }
 
-    sim->print_debug("Void Eruption requires {} insanity", insanity_required );
+    sim->print_debug( "Void Eruption requires {} insanity", insanity_required );
 
     // We don't want to lose insanity when casting it!
     base_costs[ RESOURCE_INSANITY ] = 0;
@@ -1196,8 +1193,7 @@ struct void_eruption_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest().buffs.voidform->check()
-       && priest().resources.current[ RESOURCE_INSANITY ] >= insanity_required )
+    if ( !priest().buffs.voidform->check() && priest().resources.current[ RESOURCE_INSANITY ] >= insanity_required )
     {
       return priest_spell_t::ready();
     }
@@ -1205,6 +1201,70 @@ struct void_eruption_t final : public priest_spell_t
     {
       return false;
     }
+  }
+};
+
+struct dark_ascension_t final : public priest_spell_t
+{
+  const spell_data_t* data_spell;
+
+  dark_ascension_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "void_eruption", p, p.talents.dark_ascension ),
+    data_spell( p.find_spell( 280800 ) )
+  {
+    parse_options( options_str );
+
+    // We don't want to lose insanity when casting it!
+    base_costs[ RESOURCE_INSANITY ] = 0;
+
+    may_miss         = false;
+    is_mastery_spell = true;
+    aoe              = -1;
+    radius           = data().effectN( 1 ).radius_max();
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* ) const override
+  {
+    return data_spell->effectN( 1 ).sp_coeff();
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    priest().buffs.voidform->expire();
+    priest().generate_insanity( data().effectN( 2 ).percent(), priest().gains.insanity_dark_ascension, execute_state->action );
+    priest().buffs.voidform->trigger();
+    priest().cooldowns.void_bolt->reset( true );
+        
+    if ( priest().active_items.mother_shahrazs_seduction )
+    {
+      int mss_vf_stacks = priest().active_items.mother_shahrazs_seduction->driver()->effectN( 1 ).base_value();
+
+      priest().buffs.voidform->bump( mss_vf_stacks - 1 );  // You start with 3 Stacks of Voidform 2017/01/17
+      if ( priest().buffs.overwhelming_darkness->check() )
+      {
+        priest().buffs.overwhelming_darkness->bump( mss_vf_stacks - 1 );
+      }
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+    priest_spell_t::impact( s );
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    if ( priest().active_items.heart_of_the_void )
+    {
+      d *= 1.0 + ( priest().active_items.heart_of_the_void->driver()->effectN( 1 ).percent() );
+    }
+
+    return d;
   }
 };
 
@@ -1504,9 +1564,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
 
 struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
 {
-
-  lingering_insanity_t( priest_t& p )
-    : base_t( p, "lingering_insanity", p.talents.lingering_insanity )
+  lingering_insanity_t( priest_t& p ) : base_t( p, "lingering_insanity", p.talents.lingering_insanity )
   {
     set_reverse( true );
     set_duration( timespan_t::from_seconds( 50 ) );
@@ -1531,8 +1589,7 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 {
   if ( specialization() == PRIEST_SHADOW )
   {
-    double amount                               = num_amount;
-    double amount_from_power_infusion           = 0.0;
+    double amount                               = num_amount;   
     double amount_from_surrender_to_madness     = 0.0;
     double amount_wasted_surrendered_to_madness = 0.0;
 
@@ -1541,37 +1598,22 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
       amount_wasted_surrendered_to_madness = amount * buffs.surrendered_to_madness->data().effectN( 1 ).percent();
       amount += amount_wasted_surrendered_to_madness;
     }
-    else if ( buffs.surrender_to_madness->check() && buffs.power_infusion->check() )
+    else if ( buffs.surrender_to_madness->check() )
     {
-      double total_amount = amount * ( 1.0 + buffs.power_infusion->data().effectN( 2 ).percent() ) *
-                            ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() );
+      double total_amount = amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() );
 
       amount_from_surrender_to_madness = amount * talents.surrender_to_madness->effectN( 1 ).percent();
 
-      // Since this effect is multiplicitive, we'll give the extra to Power Infusion since it does not last as long as
-      // Surrender to Madness
-      amount_from_power_infusion = total_amount - amount - amount_from_surrender_to_madness;
-
       // Make sure the maths line up.
-      assert( total_amount == amount + amount_from_power_infusion + amount_from_surrender_to_madness );
+      assert( total_amount == amount + amount_from_surrender_to_madness );
     }
     else if ( buffs.surrender_to_madness->check() )
     {
       amount_from_surrender_to_madness =
           ( amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() ) ) - amount;
-    }
-    else if ( buffs.power_infusion->check() )
-    {
-      amount_from_power_infusion =
-          ( amount * ( 1.0 + buffs.power_infusion->data().effectN( 2 ).percent() ) ) - amount;
-    }
+    }   
 
     insanity.gain( amount, g, action );
-
-    if ( amount_from_power_infusion > 0.0 )
-    {
-      insanity.gain( amount_from_power_infusion, gains.insanity_power_infusion, action );
-    }
 
     if ( amount_from_surrender_to_madness > 0.0 )
     {
@@ -1858,8 +1900,8 @@ void priest_t::create_buffs_shadow()
   buffs.shadowform = make_buff( this, "shadowform", find_class_spell( "Shadowform" ) )
                          ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.shadowform_state = make_buff( this, "shadowform_state" )->set_chance( 1.0 )->set_quiet( true );
-  buffs.shadowy_insight  = make_buff( this, "shadowy_insight", talents.shadowy_insight->effectN(1).trigger() )
-                              ->set_trigger_spell(talents.shadowy_insight);
+  buffs.shadowy_insight  = make_buff( this, "shadowy_insight", talents.shadowy_insight->effectN( 1 ).trigger() )
+                              ->set_trigger_spell( talents.shadowy_insight );
   buffs.voidform              = new buffs::voidform_t( *this );
   buffs.insanity_drain_stacks = new buffs::insanity_drain_stacks_t( *this );
   buffs.vampiric_embrace      = make_buff( this, "vampiric_embrace", find_class_spell( "Vampiric Embrace" ) );
@@ -1870,24 +1912,30 @@ void priest_t::create_buffs_shadow()
                                                      sets->set( specialization(), T19OH, B8 )->effectN( 1 ).trigger() );
   buffs.power_overwhelming->set_trigger_spell( sets->set( specialization(), T19OH, B8 ) );
   buffs.void_vb    = make_buff( this, "void", find_spell( 211657 ) )->set_chance( 1.0 );
-  buffs.empty_mind = make_buff( this, "empty_mind", sets->set( PRIEST_SHADOW, T20, B2 )->effectN(1).trigger() )
+  buffs.empty_mind = make_buff( this, "empty_mind", sets->set( PRIEST_SHADOW, T20, B2 )->effectN( 1 ).trigger() )
                          ->set_trigger_spell( sets->set( PRIEST_SHADOW, T20, B2 ) );
   buffs.overwhelming_darkness = new buffs::overwhelming_darkness_t( *this );
 
   // Talents
-  buffs.void_torrent           = make_buff( this, "void_torrent", talents.void_torrent );
-  buffs.surrender_to_madness   = make_buff( this, "surrender_to_madness", talents.surrender_to_madness )
-                                         ->set_stack_change_callback( [ this ] ( buff_t*, int, int after )
-                                               { if( after == 0 ) buffs.surrendered_to_madness->trigger(); } );
+  buffs.void_torrent         = make_buff( this, "void_torrent", talents.void_torrent );
+  buffs.surrender_to_madness = make_buff( this, "surrender_to_madness", talents.surrender_to_madness )
+                                   ->set_stack_change_callback( [this]( buff_t*, int, int after ) {
+                                     if ( after == 0 )
+                                       buffs.surrendered_to_madness->trigger();
+                                   } );
   buffs.surrendered_to_madness = make_buff( this, "surrendered_to_madness", find_spell( 263406 ) );
-  buffs.lingering_insanity = new buffs::lingering_insanity_t( *this );
+  buffs.lingering_insanity     = new buffs::lingering_insanity_t( *this );
 
   // Legendaries
   buffs.anunds_last_breath = make_buff( this, "anunds_last_breath", find_spell( 215210 ) );
   buffs.iridis_empowerment = make_buff( this, "iridis_empowerment", find_spell( 224999 ) )
                                  ->set_chance( active_items.zenkaram_iridis_anadem ? 1.0 : 0.0 );
-  buffs.the_twins_painful_touch = make_buff( this, "the_twins_painful_touch", find_spell( 207724 ) )
-      ->set_chance(0.0); // By default, set chance to 0. Set trigger spell chance in the_twins_painful_touch if item is available.
+  buffs.the_twins_painful_touch =
+      make_buff( this, "the_twins_painful_touch", find_spell( 207724 ) )->set_chance( 0.0 );  // By default, set chance
+                                                                                              // to 0. Set trigger spell
+                                                                                              // chance in
+                                                                                              // the_twins_painful_touch
+                                                                                              // if item is available.
   buffs.zeks_exterminatus = make_buff( this, "zeks_exterminatus", find_spell( 236545 ) )->set_rppm( RPPM_HASTE );
 
   // Artifact
@@ -1896,7 +1944,7 @@ void priest_t::create_buffs_shadow()
 
 void priest_t::init_rng_shadow()
 {
-  rppm.shadowy_insight  = get_rppm( "shadowy_insighty", talents.shadowy_insight );
+  rppm.shadowy_insight = get_rppm( "shadowy_insighty", talents.shadowy_insight );
 }
 
 void priest_t::init_spells_shadow()
@@ -1925,10 +1973,10 @@ void priest_t::init_spells_shadow()
   // T90
   talents.lingering_insanity = find_talent_spell( "Lingering Insanity" );
   talents.mindbender         = find_talent_spell( "Mindbender" );
-  talents.power_infusion     = find_talent_spell( "Power Infusion" );
+  talents.void_torrent       = find_talent_spell( "Void Torrent" );
   // T100
   talents.legacy_of_the_void   = find_talent_spell( "Legacy of the Void" );
-  talents.void_torrent         = find_talent_spell( "Void Torrent" );
+  talents.dark_ascension       = find_talent_spell( "Dark Ascension" );
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
   // General Spells
@@ -2017,6 +2065,10 @@ action_t* priest_t::create_action_shadow( const std::string& name, const std::st
   {
     return new mind_blast_t( *this, options_str );
   }
+  if ( name == "dark_ascension" )
+  {
+    return new dark_ascension_t( *this, options_str );
+  }
 
   return nullptr;
 }
@@ -2074,8 +2126,7 @@ void priest_t::generate_apl_shadow()
   default_list->add_action(
       "run_action_list,name=aoe,"
       "if=spell_targets.mind_sear>(5+1*talent.misery.enabled)" );
-  default_list->add_action(
-      "run_action_list,name=cleave,if=active_enemies>1" );
+  default_list->add_action( "run_action_list,name=cleave,if=active_enemies>1" );
   default_list->add_action( "run_action_list,name=single,if=active_enemies=1" );
 
   // single APL
@@ -2099,8 +2150,7 @@ void priest_t::generate_apl_shadow()
                       "if=!buff.voidform.up|"
                       "(cooldown.shadow_word_death.charges=2&"
                       "buff.voidform.stack<15)" );
-  single->add_talent( this, "Shadow Crash",
-                      "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
+  single->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
   single->add_action( this, "Mind Blast",
                       "if=dot.shadow_word_pain.ticking&"
                       "dot.vampiric_touch.ticking" );
@@ -2110,24 +2160,19 @@ void priest_t::generate_apl_shadow()
   single->add_action( this, "Shadow Word: Pain",
                       "if=refreshable&target.time_to_die>4&"
                       "!talent.misery.enabled&!talent.dark_void.enabled" );
-  single->add_action( this, "Vampiric Touch",
-                      "if=refreshable&target.time_to_die>6" );
-  single->add_action( this, "Mind Flay",
-                      "interrupt=1,chain=1");
+  single->add_action( this, "Vampiric Touch", "if=refreshable&target.time_to_die>6" );
+  single->add_action( this, "Mind Flay", "interrupt=1,chain=1" );
   single->add_action( this, "Shadow Word: Pain" );
 
   // cleave APL
   cleave->add_action( this, "Void Eruption" );
   cleave->add_action( this, "Void Bolt" );
-  cleave->add_talent( this, "Shadow Word: Death",
-                      "target_if=target.time_to_die<3|buff.voidform.down" );
-  cleave->add_talent( this, "Surrender to Madness",
-                      "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
+  cleave->add_talent( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
+  cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
   cleave->add_talent( this, "Dark Void" );
   cleave->add_action( this, "Shadowfiend" );
   cleave->add_talent( this, "Mindbender" );
-  cleave->add_action( this, "Mind Blast",
-                      "if=buff.voidform.down&talent.misery.enabled" );
+  cleave->add_action( this, "Mind Blast", "if=buff.voidform.down&talent.misery.enabled" );
   cleave->add_talent( this, "Shadow Crash",
                       "if=(raid_event.adds.in>5&raid_event.adds.duration<2)|"
                       "raid_event.adds.duration>2" );
@@ -2142,8 +2187,7 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Mind Sear",
                       "target_if=spell_targets.mind_sear>2"
                       ",chain=1,interrupt=1" );
-  cleave->add_action( this, "Mind Flay",
-                      "interrupt=1,chain=1" );
+  cleave->add_action( this, "Mind Flay", "interrupt=1,chain=1" );
   cleave->add_action( this, "Shadow Word: Pain" );
 
   // aoe APL
@@ -2151,15 +2195,12 @@ void priest_t::generate_apl_shadow()
   aoe->add_action( this, "Void Bolt",
                    "if=talent.dark_void.enabled&"
                    "dot.shadow_word_pain.remains>travel_time" );
-  aoe->add_talent( this, "Surrender to Madness",
-                   "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
+  aoe->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
   aoe->add_talent( this, "Dark Void" );
   aoe->add_action( this, "Shadowfiend" );
   aoe->add_talent( this, "Mindbender" );
-  aoe->add_talent( this, "Shadow Crash",
-                   "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
-  aoe->add_action( this, "Mind Sear",
-                   "chain=1,interrupt=1");
+  aoe->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
+  aoe->add_action( this, "Mind Sear", "chain=1,interrupt=1" );
   aoe->add_action( this, "Shadow Word: Pain" );
 }
 }  // namespace priestspace

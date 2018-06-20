@@ -217,9 +217,10 @@ public:
     const spell_data_t* shadow_crash;
     // T90
     const spell_data_t* lingering_insanity;
+    const spell_data_t* void_torrent;
     // T100
     const spell_data_t* legacy_of_the_void;
-    const spell_data_t* void_torrent;
+    const spell_data_t* dark_ascension;
     const spell_data_t* surrender_to_madness;
   } talents;
 
@@ -288,6 +289,7 @@ public:
     propagate_const<cooldown_t*> mind_bomb;
     propagate_const<cooldown_t*> psychic_horror;
     propagate_const<cooldown_t*> sephuzs_secret;
+    propagate_const<cooldown_t*> dark_ascension;
   } cooldowns;
 
   // Gains
@@ -319,6 +321,7 @@ public:
     propagate_const<gain_t*> vampiric_touch_health;
     propagate_const<gain_t*> insanity_call_to_the_void;
     propagate_const<gain_t*> insanity_dark_void;
+    propagate_const<gain_t*> insanity_dark_ascension;
   } gains;
 
   // Benefits

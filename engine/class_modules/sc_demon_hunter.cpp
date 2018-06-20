@@ -1280,11 +1280,10 @@ struct consume_soul_t : public demon_hunter_heal_t
     }
   };
 
-  demonic_appetite_energize_t* demonic_appetite_energize;
-
   const soul_fragment type;
   const spell_data_t* vengeance_heal;
   const timespan_t vengeance_heal_interval;
+  demonic_appetite_energize_t* demonic_appetite_energize;
 
   consume_soul_t( demon_hunter_t* p, const std::string& n, const spell_data_t* s, soul_fragment t )
     : demon_hunter_heal_t( n, p, s ), 
@@ -3295,8 +3294,9 @@ struct fel_rush_t : public demon_hunter_attack_t
 
   fel_rush_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "fel_rush", p, p -> find_class_spell( "Fel Rush" ) ),
-    a_cancel( false ),
-    unbound_chaos_damage( nullptr )
+      damage( new fel_rush_damage_t( p ) ),
+      unbound_chaos_damage( nullptr ),
+      a_cancel( false )
   {
     add_option( opt_bool( "animation_cancel", a_cancel ) );
     parse_options( options_str );
@@ -3304,7 +3304,6 @@ struct fel_rush_t : public demon_hunter_attack_t
     may_miss = may_dodge = may_parry = may_block = may_crit = false;
     min_gcd = trigger_gcd;
 
-    damage = new fel_rush_damage_t( p );
     damage -> stats = stats;
 
     if ( !a_cancel )
@@ -4190,20 +4189,6 @@ void demon_hunter_t::create_buffs()
   buff.thirsting_blades = make_buff<buff_t>( this, "thirsting_blades", find_spell( 278736 ) )
     ->set_trigger_spell( azerite.thirsting_blades )
     ->set_default_value( azerite.thirsting_blades.value( 1 ) );
-}
-
-std::string parse_abbreviation( const std::string& s )
-{
-  if ( s == "cs" )
-    return "chaos_strike";
-  if ( s == "bd" || s == "dance" )
-    return "blade_dance";
-  if ( s == "sweep" )
-    return "death_sweep";
-  if ( s == "annihilate" )
-    return "annihilation";
-
-  return s;
 }
 
 struct metamorphosis_buff_demonic_expr_t : public expr_t

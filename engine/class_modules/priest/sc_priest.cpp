@@ -611,10 +611,11 @@ void priest_t::create_cooldowns()
   cooldowns.shadowfiend       = get_cooldown( "shadowfiend" );
   cooldowns.silence           = get_cooldown( "silence" );
   cooldowns.mind_blast        = get_cooldown( "mind_blast" );
-  cooldowns.void_bolt        = get_cooldown( "void_bolt" );
-  cooldowns.mind_bomb        = get_cooldown( "mind_bomb" );
-  cooldowns.psychic_horror   = get_cooldown( "psychic_horror" );
-  cooldowns.sephuzs_secret   = get_cooldown( "sephuzs_secret" );
+  cooldowns.void_bolt         = get_cooldown( "void_bolt" );
+  cooldowns.mind_bomb         = get_cooldown( "mind_bomb" );
+  cooldowns.psychic_horror    = get_cooldown( "psychic_horror" );
+  cooldowns.sephuzs_secret    = get_cooldown( "sephuzs_secret" );
+  cooldowns.dark_ascension    = get_cooldown( "dark_ascension" );
 
   if ( specialization() == PRIEST_DISCIPLINE )
   {
@@ -679,20 +680,14 @@ void priest_t::create_procs()
   procs.void_tendril = get_proc( "Void Tendril spawned from Call to the Void" );
 
   procs.legendary_anunds_last_breath = get_proc(
-      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% "
-      "per)" );
+      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% per)" );
   procs.legendary_anunds_last_breath_overflow = get_proc(
-      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% "
-      "per) lost to overflow" );
+      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% per) lost to overflow" );
 
   procs.legendary_zeks_exterminatus = get_proc(
-      "Legendary - Zek's Exterminatus - Shadow Word Death damage increases "
-      "(25% "
-      "per)" );
+      "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (25% per)" );
   procs.legendary_zeks_exterminatus_overflow = get_proc(
-      "Legendary - Zek's Exterminatus - Shadow Word Death damage increases "
-      "(100% "
-      "per) lost to overflow" );
+      "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (100% per) lost to overflow" );
 }
 
 /** Construct priest benefits */

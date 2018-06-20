@@ -51,6 +51,7 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   active_sotr                         = nullptr;
   active_protector_of_the_innocent    = nullptr;
   active_zeal                         = nullptr;
+  active_consecration                 = nullptr;
 
   cooldowns.avengers_shield           = get_cooldown( "avengers_shield" );
   cooldowns.judgment                  = get_cooldown("judgment");
@@ -247,92 +248,57 @@ struct consecration_tick_t: public paladin_spell_t {
   }
 };
 
-// healing tick from Consecrated Ground talent
-struct consecrated_ground_tick_t : public paladin_heal_t
-{
-  consecrated_ground_tick_t( paladin_t* p )
-    : paladin_heal_t( "consecrated_ground", p, p -> find_spell( 204241 ) )
-  {
-    aoe = 6;
-    ground_aoe = true;
-    background = true;
-    direct_tick = true;
-  }
-};
-
 struct consecration_t : public paladin_spell_t
 {
   consecration_tick_t* damage_tick;
-  consecrated_ground_tick_t* heal_tick;
-  timespan_t ground_effect_duration;
 
   consecration_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "consecration", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 205228 ) : p -> find_class_spell( "Consecration" ) ),
-    damage_tick( new consecration_tick_t( p ) ), heal_tick( new consecrated_ground_tick_t( p ) ),
-    ground_effect_duration( data().duration() )
+    : paladin_spell_t( "consecration", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> talents.consecration : p -> find_specialization_spell( "Consecration" ) ),
+    damage_tick( new consecration_tick_t( p ) )
   {
     parse_options( options_str );
-
-    // disable if Ret and not talented
-    if ( p -> specialization() == PALADIN_RETRIBUTION ) {
-      background = ! ( p -> talents.consecration -> ok() );
-    }
+  
     dot_duration = timespan_t::zero(); // the periodic event is handled by ground_aoe_event_t
     may_miss       = false;
 
     add_child( damage_tick );
   }
 
-  virtual void execute() override
+  void execute() override
   {
-    paladin_spell_t::execute();
-
-    paladin_ground_aoe_t* alt_aoe = nullptr;
-    // create a new ground aoe event
-    if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
-      alt_aoe =
-        make_event<paladin_ground_aoe_t>( *sim, p(), ground_aoe_params_t()
-        .target( execute_state -> target )
-        // spawn at feet of player
-        .x( execute_state -> action -> player -> x_position )
-        .y( execute_state -> action -> player -> y_position )
-        .duration( ground_effect_duration )
-        .start_time( sim -> current_time()  )
-        .action( damage_tick )
-        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
-    } else {
-      alt_aoe =
-        make_event<paladin_ground_aoe_t>( *sim, p(), ground_aoe_params_t()
-        .target( execute_state -> target )
-        // spawn at feet of player
-        .x( execute_state -> action -> player -> x_position )
-        .y( execute_state -> action -> player -> y_position )
-        // TODO: this is a hack that doesn't work properly, fix this correctly
-        .duration( ground_effect_duration )
-        .start_time( sim -> current_time()  )
-        .action( damage_tick )
-        .hasted( ground_aoe_params_t::NOTHING ), true );
-    }
-
-    // push the pointer to the list of active consecrations
-    // execute() and schedule_event() methods of paladin_ground_aoe_t handle updating the list
-    p() -> active_consecrations.push_back( alt_aoe );
-
-    // if we've talented consecrated ground, make a second healing ground effect for that
-    // this can be a normal ground_aoe_event_t, since we don't need the extra stuff
-    if ( p() -> talents.consecrated_ground -> ok() )
+    
+    // Cancel the current consecration if it exists
+    if ( p() -> active_consecration != nullptr )
     {
-      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-          .target( execute_state -> action -> player )
-          // spawn at feet of player
-          .x( execute_state -> action -> player -> x_position )
-          .y( execute_state -> action -> player -> y_position )
-          .duration( ground_effect_duration )
-          .start_time( sim -> current_time()  )
-          .action( heal_tick )
-          .hasted( ground_aoe_params_t::NOTHING ), true );
+      event_t::cancel( p() -> active_consecration );
     }
-  }
+
+    paladin_spell_t::execute();
+    
+    // create a new ground aoe event 
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+      .target( execute_state -> target )
+      // spawn at feet of player
+      .x( execute_state -> action -> player -> x_position )
+      .y( execute_state -> action -> player -> y_position )
+      .duration( data().duration() )
+      .start_time( sim -> current_time() )
+      .hasted( ground_aoe_params_t::SPELL_HASTE )
+      .action( damage_tick )
+      .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) { 
+        switch ( type )
+        {
+          case ground_aoe_params_t::EVENT_CREATED:
+            p() -> active_consecration = event;
+            break;
+          case ground_aoe_params_t::EVENT_DESTRUCTED:
+            p() -> active_consecration = nullptr;
+            break;
+          default:
+            break;
+        }
+      } ), true /* Immediate pulse */ );
+    }
 };
 
 // Divine Shield ==============================================================
@@ -1055,7 +1021,7 @@ void paladin_t::reset()
 {
   player_t::reset();
 
-  active_consecrations.clear();
+  active_consecration = nullptr;
   last_extra_regen = timespan_t::zero();
   last_jol_proc = timespan_t::zero();
 }

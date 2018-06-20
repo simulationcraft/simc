@@ -1227,6 +1227,8 @@ class SpellDataGenerator(DataGenerator):
           # Wildfire Infusion (Volatile Bomb spells)
           ( 271048, 3 ), ( 271049, 3 ), ( 260231, 3 ),
           ( 273289, 0 ), # Latent Poison (Azerite)
+          ( 272745, 0 ), # Wildfire Cluster (Azerite)
+          ( 278565, 0 ), # Rapid Reload (Azerite)
         ),
 
         # Rogue:

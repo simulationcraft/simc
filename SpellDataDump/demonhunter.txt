@@ -141,7 +141,7 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -188,7 +188,6 @@ Effects          :
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685)
 #6 (id=296792)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Strike (162794), Immolation Aura (178740), Chaos Nova (179057), Throw Glaive (185123), Blade Dance (188499), Metamorphosis (191427), Annihilation (201427), Sigil of Silence (202137), Sigil of Chains (202138), Shear (203782), Demon Blades (203796), Throw Glaive (204157), Sigil of Flame (204596), Sigil of Misery (207684), Fracture (209795), Death Sweep (210152), Fel Eruption (211881), Soul Cleave (228477), Felblade (232893), Spirit Bomb (247454), Dark Slash (258860), Immolation Aura (258920), Fracture (263642)
 #7 (id=297855)   : Apply Aura (6) | Periodic Dummy (226): every 0.25 seconds
                    Base Value: 0 | Scaled Value: 0
 #8 (id=329388)   : Apply Aura (6) | Unknown(312)
@@ -278,7 +277,6 @@ Effects          :
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926)
 #3 (id=479920)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926)
 Description      : $@spelldesc163063
 Tooltip          : Dealing $s1% increased damage.
 
@@ -291,7 +289,7 @@ Duration         : 6 seconds
 Cooldown         : 15 seconds
 Category         : 1676
 Category Cooldown: 15 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Agonizing Flames (207548 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4), 
+Affecting spells : Agonizing Flames (207548 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -392,7 +390,7 @@ Resource         : 30 Fury (17) (id=10418)
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Unleashed Power (206477 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Unleashed Power (206477 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4)
 Attributes       : ....x... ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -451,15 +449,15 @@ Effects          :
 #1 (id=266245)   : Apply Aura (6) | Proc Trigger Spell (42): Disrupt
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 218903 | Target: Self (1)
 
-Name             : Throw Glaive (id=185123) [Spell Family (107)] 
+Name             : Throw Glaive (id=185123) [Scaling Spell (-1), Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
 Range            : 30 yards
 GCD              : 1.5 seconds
-Velocity         : 50 yards/sec
+Velocity         : 40 yards/sec
 Charges          : 1 (9 seconds cooldown)
 Category         : 1612: Havoc Demon Hunter (212612 effect#6)
-Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4), 
+Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4), 
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ .......x ........ ........ 
@@ -706,7 +704,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=278012)   : Apply Aura (6) | Threat (10)
-                   Base Value: 300 | Scaled Value: 300 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 350 | Scaled Value: 350 | Misc Value: 127 | Target: Self (1)
 
 Name             : Metamorphosis (id=191427) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -716,7 +714,7 @@ GCD              : 1.5 seconds
 Cooldown         : 240 seconds
 Category         : 1577
 Category Cooldown: 240 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1118,7 +1116,7 @@ School           : Chaos
 Resource         : 40 Fury (17) (id=10809)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4), Thirsting Blades (278736 effect#2)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4), Thirsting Blades (278736 effect#2)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ....x... ........ ........ 
@@ -1274,7 +1272,7 @@ Duration         : 2 seconds
 Cooldown         : 60 seconds
 Category         : 1608
 Category Cooldown: 60 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1300,7 +1298,7 @@ Duration         : 2 seconds
 Cooldown         : 90 seconds
 Category         : 1606
 Category Cooldown: 90 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1398,9 +1396,6 @@ Class            : Vengeance Demon Hunter
 Race             : Blood Elf (0x200)
 School           : Physical
 Spell Level      : 1
-Proc Chance      : 100%
-Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
-                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ....x.x. ........ ..x..... x..x.x.x   ........ ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -1418,7 +1413,7 @@ Effects          :
 #4 (id=306421)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 65 | Scaled Value: 65 | Misc Value 2: 0x4 | Target: Self (1)
 #5 (id=306893)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 75 | Scaled Value: 75 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 85 | Scaled Value: 85 | Misc Value: 1 | Target: Self (1)
 Description      : Your tattoos reduce all damage taken by $s1%, and increase your Stamina by $s4% and your Armor by $s5%.
 
 Name             : Blind Fury (id=203550) [Spell Family (107), Passive] 
@@ -1440,7 +1435,6 @@ Effects          :
                    Affected Spells: Eye Beam (198013), Eye Beam (198030)
 #3 (id=355951)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-                   Affected Spells: Eye Beam (198013), Eye Beam (198030)
 Description      : Eye Beam generates ${$s3/5} Fury every sec. and its duration is increased by $s1%.
 
 Name             : Prepared (id=203551) [Spell Family (107), Passive] 
@@ -1600,7 +1594,7 @@ Class            : Vengeance Demon Hunter
 School           : Physical
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#2), 
+Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1690,7 +1684,7 @@ Class            : Demon Hunter
 School           : Shadow
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4)
 Triggered by     : Demon Blades (203555)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1721,7 +1715,7 @@ Effects          :
 #1 (id=300687)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
 #2 (id=300915)   : Apply Aura (6) | Modify Armor by Primary Stat% (268)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 85 | Scaled Value: 85 | Misc Value: 1 | Target: Self (1)
 #3 (id=341634)   : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 0x1 | Target: Self (1)
                    Affected School(s): Physical
@@ -1763,7 +1757,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
 Cooldown         : 3 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#2), 
+Affecting spells : Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#2), 
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ .......x ........ ........ 
@@ -1875,7 +1869,7 @@ Duration         : 2 seconds
 Cooldown         : 30 seconds
 Category         : 1605
 Category Cooldown: 30 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2175,7 +2169,6 @@ Effects          :
                    Affected Spells: Infernal Strike (189110), Infernal Strike (189112)
 #2 (id=306994)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -8000 | Scaled Value: -8000 | Misc Value: 1553 | Target: Self (1)
-                   Affected Spells: Infernal Strike (189110), Infernal Strike (189112)
 Description      : Infernal Strike's range is increased by $s1 yards, and its cooldown is reduced by ${$s2/-1000} sec.
 
 Name             : Concentrated Sigils (id=207666) [Spell Family (107), Passive, Hidden] 
@@ -2212,7 +2205,7 @@ Duration         : 2 seconds
 Cooldown         : 60 seconds
 Category         : 1607
 Category Cooldown: 60 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Quickened Sigils (209281 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2385,7 +2378,6 @@ Effects          :
                    Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926)
 #3 (id=479918)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926)
 Description      : Increases all damage done by $s1%.
 Tooltip          : Damage done increased by $s1%.
 
@@ -2530,7 +2522,7 @@ School           : Physical
 Resource         : 30 Pain (18) (id=11169)
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2606,7 +2598,7 @@ Duration         : 1 seconds
 Cooldown         : 9 seconds
 Category         : 1640
 Category Cooldown: 9 seconds
-Affecting spells : Metamorphosis (162264 effect#6), First Blood (206416 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
+Affecting spells : First Blood (206416 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2712,7 +2704,7 @@ Range            : 20 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3416,7 +3408,7 @@ Resource         : 30 Pain (18) (id=11545)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
 Attributes       : ....x... ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3480,7 +3472,7 @@ School           : Physical
 Range            : 15 yards
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4), 
+Affecting spells : Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4), 
 Attributes       : ....x... ........ ..x..... .....x..   ........ .x...... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
@@ -3543,7 +3535,7 @@ Resource         : 30 Pain (18) (id=191871)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 1.5 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
 Attributes       : ....x... ........ ..x..... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3761,9 +3753,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 32900.48 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 33251.41 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 32900.48 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 33251.41 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -3775,7 +3767,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 20 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3866,7 +3858,7 @@ School           : Fire
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 30 seconds
-Affecting spells : Metamorphosis (162264 effect#6), Agonizing Flames (207548 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4), 
+Affecting spells : Agonizing Flames (207548 effect#1), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3981,7 +3973,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Charges          : 2 (4.5 seconds cooldown)
 Category         : 1552: Vengeance Demon Hunter (212613 effect#7)
-Affecting spells : Metamorphosis (162264 effect#6), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#4)
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4077,7 +4069,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to grant you Elemental Whirl, increasing your Critical Strike, Haste, Mastery, or Versatility by $s1 for $268956d.
 
 Name             : Heed My Call (id=263987) [Scaling Spell (-1), Passive] 
-Class            : Paladin, Hunter, Rogue, Priest, Shaman, Mage, Warlock, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 22
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -4149,6 +4141,23 @@ Effects          :
 Description      : Increases your Mastery by $s1 and your Leech by $s2.
 Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 
+Name             : Overwhelming Power (id=266180) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 30
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=711012)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.05) | Misc Value: 1792 | Trigger Spell: 271705 | Target: Self (1)
+Description      : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 1 sec or whenever you take damage.
+Tooltip          : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 3 sec or whenever you take damage.
+
 Name             : Azerite Globules (id=266936) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
@@ -4169,7 +4178,7 @@ Description      : Your damaging abilities have a chance to implant an Azerite G
 Tooltip          : Your damaging abilities have a chance to implant an Azerite Globule on your enemies. When an enemy collects $s2 Azerite Globules, they explode, dealing $s1 Fire damage to nearby enemies.
 
 Name             : Gutripper (id=266937) [Scaling Spell (-1), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 31
 Triggered by     : Gutripper (270668)
@@ -4225,6 +4234,23 @@ Effects          :
 #1 (id=714511)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 (avg=0.178571) | Trigger Spell: 270675 | Target: Self (1)
 Description      : Taking damage grants you $s1 Dodge for $269214d, stacking up to $269214u times.
+
+Name             : Blinding Mists (id=267682) [Scaling Spell (-1), Passive] 
+Class            : Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 464
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=714530)   : Apply Aura (6) | Modify Rating (189)
+                   Base Value: 0 | Scaled Value: 155.5 (avg=0.5) | Misc Value: 1792 | Target: Self (1)
+Description      : Your damaging abilities have a chance to apply Blinding Mists to all targets within 8 yards, reducing the damage dealt by their next 3 melee hits by $s1.
+Tooltip          : Your damaging abilities have a chance to apply Blinding Mists to all targets within 8 yards, reducing the damage dealt by their next 3 melee hits by $s1.
 
 Name             : Azerite Veins (id=267683) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
@@ -4318,6 +4344,25 @@ Effects          :
                    Base Value: 0 | Scaled Value: 559.856 (avg=1.80018) | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
+
+Name             : Longstrider (id=268594) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 14
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=716157)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 13.79161 (avg=0.044346) | Misc Value: 8 | Trigger Spell: 270653 | Target: Self (1)
+#2 (id=716158)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 4.137544 (avg=0.013304) | Target: Self (1)
+Description      : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
+Tooltip          : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 
 Name             : Bulwark of the Masses (id=268595) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -4420,6 +4465,39 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s2 Armor and cause melee attackers to suffer $s1 Physical damage. Lasts $271538d.
 
+Name             : Ablative Shielding (id=271540) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 99
+Triggered by     : Ablative Shielding (271543)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=721842)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=7.469655) | Trigger Spell: 271542 | Target: Self (1)
+Description      : Falling below $271542s1% health grants you $s1 Armor for $271543d. Taking further Physical damage reduces the Armor granted. May only occur every $271544d.
+
+Name             : Strength in Numbers (id=271546) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 100
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=721853)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 4395.509 (avg=14.13347) | Trigger Spell: 271547 | Target: Self (1)
+Description      : Taking damage has a chance to increase your maximum health by $s1 for each enemy within $271548A1 yds, up to $271550u enemies. Lasts $271550d.
+
 Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Death Knight, Monk, Druid, Demon Hunter
 School           : Physical
@@ -4453,6 +4531,22 @@ Effects          :
 #1 (id=724250)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 18963.41 (avg=60.97561) | Trigger Spell: 272985 | Target: Self (1)
 Description      : When Fiery Brand expires on your primary target, you gain a shield that absorbs up to $s1 damage for $272987d, based on your damage dealt to them while Fiery Brand was active. 
+
+Name             : Ruinous Bolt (Drustvar) (id=273150) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 156
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=724558)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 799.9999 (avg=2.572347) | Trigger Spell: 273825 | Target: Self (1)
+Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
 Name             : Furious Gaze (id=273231) [Scaling Spell (-7), Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -4504,9 +4598,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725525)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 273684 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273684 | Target: Self (1)
 #2 (id=725608)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #3 (id=725609)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 273684 | Target: Self (1)
 #4 (id=725610)   : Apply Aura (6) | Dummy (4)
@@ -4780,7 +4874,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 59.8675 (avg=0.77) | Trigger Spell: 278766 | Target: Self (1)
 #2 (id=734240)   : Dummy (3)
                    Base Value: 6 | Scaled Value: 6
-Description      : Afflicting an enemy with a Sigil grants you $s1 Agility for $278769d and reduces the cooldown of your other Sigils by $s2 sec. 
+Description      : Afflicting an enemy with a Sigil grants you $s1 Agility for $278769d and reduces the cooldown of your Sigils by $s2 sec. 
 
 Name             : Revolving Blades (id=279581) [Scaling Spell (-1), Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -4801,7 +4895,7 @@ Effects          :
                    Affected Spells: Blade Dance (188499), Blade Dance (199552), Blade Dance (200685), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155)
 Description      : Blade Dance deals ${$s2*4} additional damage, and the cost of your next Blade Dance is reduced by $279584s1 Fury for each enemy struck by the final slash.
 
-Name             : Unstable Flames (id=279899) [Scaling Spell (-1), Passive] 
+Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 459
@@ -4815,10 +4909,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736523)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 93.3 (avg=0.3) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
-Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $s2 times.
+                   Base Value: 0 | Scaled Value: 0 (avg=0.447912) | Misc Value: 1792 | Trigger Spell: 279900 | Target: Self (1)
+Description      : Your damaging abilities have a chance to grant $s1 critical strike rating for $279902d. This effect stacks up to $279902u times.
 
-Name             : Earthlink (id=279926) [Scaling Spell (-7), Passive] 
+Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 461
@@ -4831,10 +4925,277 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 279927 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 31.03096 (avg=0.099778) | Trigger Spell: 279927 | Target: Self (1)
 Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
-Name             : Swirling Sands (Vol'dun) (id=280429) [Scaling Spell (-1), Passive] 
+Name             : Burning Soul (id=280012) [Scaling Spell (-1), Passive] 
+Class            : Demon Hunter
+School           : Physical
+Azerite Power Id : 466
+Triggered by     : Burning Soul (274289)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737265)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1647.367 (avg=5.297) | Target: Self (1)
+Description      : When your Consume Magic consumes a beneficial Magic effect from the target, gain $s1 Absorb for $274289d and shatter a Soul Fragment from the target.
+
+Name             : Barrage Of Many Bombs (Goblin Engineering) (id=280163) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Proc Chance      : 101%
+Real PPM         : 1.5
+Azerite Power Id : 498
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs
+                   Base Value: 0 | Scaled Value: 904.1361 (avg=2.90719) | Trigger Spell: 280662 | Target: Self (1)
+#2 (id=737506)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4
+#3 (id=737507)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+#4 (id=738960)   : Apply Aura (6) | Skill (30)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+
+Increases your Kul Tiran or Zandalari Engineering by $s4.
+
+Name             : Ricocheting Inflatable Pyrosaw (Goblin Engineering) (id=280168) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Proc Chance      : 101%
+Real PPM         : 1.5
+Azerite Power Id : 499
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737518)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=737519)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4
+#3 (id=738961)   : Apply Aura (6) | Skill (30)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
+Description      : Your spells and abilities have a chance to hurl a R.I.P that bounces among $s2 enemies, dealing $280656s1 Fire damage to each. 
+
+Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, healing up to $s2 allies for $280658s1.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
+Name             : Auto-Self-Cauterizer (Goblin Engineering) (id=280172) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Proc Chance      : 101%
+Real PPM         : 1.5
+Azerite Power Id : 503
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737533)   : Apply Aura (6) | Proc Trigger Spell (42): Cauterized
+                   Base Value: 0 | Scaled Value: 7266.355 (avg=93.45795) | Trigger Spell: 280583 | Target: Self (1)
+#2 (id=737534)   : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30
+#3 (id=738963)   : Apply Aura (6) | Skill (30)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
+Description      : Taking damage has a chance to unleash your Auto-Self-Cauterizer, healing you for $280583s1, removing most* bleed effects, and snaring nearby enemies by $280583s2% for $280583d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s3.
+
+*Efficacy may vary.
+
+Name             : Synaptic Spark Capacitor (Gnomish Engineering) (id=280174) [Spell Family (7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Proc Chance      : 101%
+Real PPM         : 1.5
+Azerite Power Id : 500
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737542)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+#2 (id=738958)   : Apply Aura (6) | Skill (30)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
+Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
+
+Increases your Kul Tiran or Zandalari Engineering by $s2.
+
+Name             : Relational Normalization Gizmo (Gnomish Engineering) (id=280178) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Internal Cooldown: 10 seconds
+Proc Chance      : 101%
+Real PPM         : 1.5
+Azerite Power Id : 501
+Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
+                 : Yellow Melee, Yellow Ranged, AOE Heal, AOE Hostile Spell, Heal, Hostile Spell, Periodic, Trap Triggered
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737551)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 311 (avg=1) | Target: Self (1)
+#2 (id=738959)   : Apply Aura (6) | Skill (30)
+                   Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
+Description      : Your spells and abilities have a chance to grow or shrink the world. Shrinking the world grants you $280654s4 primary stat and $280654s6 maximum health for $280654d. Growing the world grants you $280653s1 Haste and $280653s3% movement speed for $280653d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s2.
+
+Name             : Personal Absorb-o-Tron (Gnomish Engineering) (id=280181) [Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Internal Cooldown: 60 seconds
+Proc Chance      : 101%
+Real PPM         : 1.5
+Azerite Power Id : 502
+Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737557)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#2 (id=738962)   : Apply Aura (6) | Skill (30)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 2499 | Target: Self (1)
+Description      : Taking damage has a chance to call your Personal Absorb-o-Tron, absorbing the next $280660s1 damage you take over $280660d.
+
+Increases your Kul Tiran or Zandalari Engineering by $s2.
+
+Name             : Dagger in the Back (Tiragarde Sound) (id=280284) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 479
+Triggered by     : Dagger in the Back (280286)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737714)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 75.77297 (avg=0.243643) | Trigger Spell: 280285 | Target: Self (1)
+#2 (id=737715)   : Dummy (3)
+                   Base Value: 2 | Scaled Value: 2
+Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
+
+Name             : Thunderous Blast (Vol'dun) (id=280380) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 482
+Triggered by     : Thunderous Blast (280384)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737878)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 233.25 (avg=3) | Trigger Spell: 280383 | Target: Self (1)
+#2 (id=738006)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
+
+Name             : Tidal Surge (Stormsong Valley) (id=280402) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Frost
+Azerite Power Id : 478
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737915)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 827.733 (avg=2.661521) | Trigger Spell: 280403 | Target: Self (1)
+Description      : Your damaging spells and abilities have a chance to release a tidal surge, dealing $s1 Frost damage to your target and slowing their movement speed by $280404s2% for $280404d.
+
+Name             : Blood Rite (Nazmir) (id=280407) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 480
+Triggered by     : Blood Rite (280409)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737922)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.129518) | Trigger Spell: 280408 | Target: Self (1)
+Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $280409d. Killing an enemy refreshes the duration of this effect.
+
+Name             : Incite the Pack (Zuldazar) (id=280410) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 481
+Triggered by     : Incite the Pack (280412), Incite the Pack (280413)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=737926)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 227.3186 (avg=0.730928) | Trigger Spell: 280411 | Target: Self (1)
+#2 (id=737927)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 52.96828 (avg=0.170316) | Target: Self (1)
+#3 (id=737931)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
+Description      : You occasionally loose a tremendous roar, increasing your Mastery by $s1 and granting $s2 Mastery to up to $280413i nearby allies. Lasts $280412d.
+
+Name             : Swirling Sands (Vol'dun) (id=280429) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 196
@@ -4847,12 +5208,245 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737972)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 840.5406 (avg=2.702703) | Trigger Spell: 280432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=2.853365) | Trigger Spell: 280432 | Target: Self (1)
 #2 (id=737973)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
 #3 (id=737974)   : Dummy (3)
                    Base Value: 6000 | Scaled Value: 6000
 Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
+
+Name             : Glory in Battle (Horde) (id=280577) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 486
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738189)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.244076) | Trigger Spell: 280778 | Target: Self (1)
+#2 (id=738555)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.779789) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
+Attacking a member of the opposite faction significantly increases this chance.
+
+Name             : Retaliatory Fury (Horde) (id=280579) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 487
+Triggered by     : Retaliatory Fury (280788)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738191)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 622 (avg=2) | Trigger Spell: 280785 | Target: Self (1)
+#2 (id=738573)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 2488 (avg=8) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
+Attacking a member of the opposite faction is more likely to activate this effect.
+
+Name             : Combined Might (Horde) (id=280580) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 490
+Triggered by     : Might of the Orcs (280841)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738192)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 280848 | Target: Self (1)
+#2 (id=738695)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4
+Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
+
+Name             : Collective Will (Horde) (id=280581) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 491
+Triggered by     : Collective Will (280830)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738193)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 311 (avg=1) | Trigger Spell: 280837 | Target: Self (1)
+#2 (id=738669)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1866 (avg=6) | Target: Self (1)
+Description      : Your abilities have a chance to drop a Horde Banner for $280830d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
+
+Name             : Battlefield Focus (Horde) (id=280582) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 488
+Triggered by     : Battlefield Focus (280817), Battlefield Precision (280855)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738194)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 206.9391 (avg=0.665399) | Trigger Spell: 280816 | Target: Self (1)
+#2 (id=738645)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20
+#3 (id=738646)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+Description      : Your abilities have a chance to apply $s2 stacks of Battlefield Focus to an enemy, increasing damage taken from members of the Horde by $s1. Applying Battlefield Focus to a member of the Alliance grants an additional $s3 stacks. 
+
+Name             : Sylvanas' Resolve (Horde) (id=280598) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 489
+Triggered by     : Sylvanas' Resolve (280809)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738213)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 344.7892 (avg=1.108647) | Trigger Spell: 280806 | Target: Self (1)
+#2 (id=738618)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280810 | Target: Self (1)
+Description      : Your abilities have a chance to increase your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 for $280809d. If an ally dies nearby, you gain this effect.
+
+Name             : Liberator's Might (Alliance) (id=280623) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 492
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738283)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.244076) | Trigger Spell: 280851 | Target: Self (1)
+#2 (id=738699)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.780731) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
+Attacking a member of the opposite faction significantly increases this chance.
+
+Name             : Last Gift (Alliance) (id=280624) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 493
+Triggered by     : Last Gift (280862)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738284)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 622 (avg=2) | Trigger Spell: 280860 | Target: Self (1)
+#2 (id=738721)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 2488 (avg=8) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
+Taking damage from a member of the opposite faction has a chance to activate this effect. 
+
+Name             : Stronger Together (Alliance) (id=280625) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 496
+Triggered by     : Strength of the Humans (280866)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738285)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Target: Self (1)
+#2 (id=738730)   : Dummy (3)
+                   Base Value: 4 | Scaled Value: 4
+Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
+
+Name             : Stand As One (Alliance) (id=280626) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 497
+Triggered by     : Stand As One (280858)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738286)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 311 (avg=1) | Trigger Spell: 280856 | Target: Self (1)
+#2 (id=738712)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1866 (avg=6) | Target: Self (1)
+Description      : Your abilities have a chance to drop an Alliance Banner for $280858d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
+
+Name             : Battlefield Precision (Alliance) (id=280627) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 494
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738287)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 206.9391 (avg=0.665399) | Trigger Spell: 280854 | Target: Self (1)
+#2 (id=738705)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20
+#3 (id=738706)   : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5
+Description      : Your abilities have a chance to apply $s2 stacks of Battlefield Focus to an enemy, increasing damage taken from members of the Alliance by $s1. Applying Battlefield Focus to a member of the Horde grants an additional $s3 stacks. 
+
+Name             : Anduin's Dedication (Alliance) (id=280628) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 495
+Triggered by     : Anduin's Dedication (280876)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738288)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 344.8987 (avg=1.108999) | Trigger Spell: 280872 | Target: Self (1)
+#2 (id=738747)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280874 | Target: Self (1)
+Description      : Your abilities have a chance to increase your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 for $280876d. If an ally dies nearby, you gain this effect.
 
 Name             : Champion of Azeroth (id=280710) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter

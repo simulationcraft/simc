@@ -1,0 +1,43 @@
+hunter="T21_Hunter_Marksmanship"
+spec=marksmanship
+level=110
+race=troll
+role=attack
+position=ranged_back
+talents=1303013
+
+# Default consumables
+potion=prolonged_power
+flask=seventh_demon
+food=nightborne_delicacy_platter
+augmentation=defiled
+
+head=serpentstalker_helmet,id=152133,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+shoulders=serpentstalker_mantle,id=152135,bonus_id=3612/1502
+back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant_id=5435
+chest=wildstalker_chestguard,id=147139,bonus_id=1512/3563
+wrists=wristguards_of_ominous_forging,id=152089,bonus_id=3612/1502
+hands=serpentstalker_grips,id=152132,bonus_id=3612/1502
+waist=depraved_tacticians_waistguard,id=152006,bonus_id=3612/1502
+legs=serpentstalker_legguards,id=152134,bonus_id=3612/1502
+feet=ullrs_feather_snowshoes,id=137033,bonus_id=3630
+finger1=soul_of_the_huntmaster,id=151641,bonus_id=3630,gem_id=151584,enchant=binding_of_mastery
+finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
+trinket1=amanthuls_vision,id=154172,bonus_id=4213
+trinket2=shadowsinged_fang,id=151968,bonus_id=3612/1502
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,gem_id=155853/155847/152291,relic_id=3612:1512/3612:1512/3612:1502
+
+# Gear Summary
+# gear_ilvl=245.73
+# gear_agility=705
+# gear_stamina=1292
+# gear_crit_rating=458
+# gear_haste_rating=363
+# gear_mastery_rating=508
+# gear_versatility_rating=190
+# gear_armor=583
+# set_bonus=tier20_2pc=1
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1
+summon_pet=cat
