@@ -1209,7 +1209,7 @@ struct dark_ascension_t final : public priest_spell_t
   const spell_data_t* data_spell;
 
   dark_ascension_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "void_eruption", p, p.talents.dark_ascension ),
+    : priest_spell_t( "dark_ascension", p, p.talents.dark_ascension ),
     data_spell( p.find_spell( 280800 ) )
   {
     parse_options( options_str );
