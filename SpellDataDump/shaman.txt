@@ -7896,6 +7896,73 @@ Effects          :
                    Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
 Description      : When your $?s192249[Storm Elemental][Fire Elemental] expires, it leaves behind a $?s192249[Spark Elemental][Ember Elemental] to continue attacking your enemies for $275385d.
 
+Name             : Ember Blast (id=275382) [Spell Family (11)] 
+Class            : Shaman
+School           : Fire
+Range            : 40 yards
+Cast Time        : 3 seconds
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=728387)   : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Enemy (6)
+Description      : Inflicts Fire damage to an enemy.
+
+Name             : Shocking Blast (id=275384) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Range            : 40 yards
+Cast Time        : 2 seconds
+Velocity         : 30 yards/sec
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+Effects          :
+#1 (id=728390)   : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | Target: Enemy (6)
+Description      : Inflicts Nature damage to an enemy.
+
+Name             : Ember Elemental (id=275385) [Scaling Spell (-1), Spell Family (11)] 
+Class            : Shaman
+School           : Fire
+Range            : 30 yards
+Duration         : 20 seconds
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ .x...... ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Disable target procs (113), Scales with item level (354)
+Effects          :
+#1 (id=728392)   : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 140787 | Misc Value 2: 0x10f4 | Radius: 5 yards | Target: Unknown(50)
+Description      : $@spelldesc275381
+
+Name             : Spark Elemental (id=275386) [Scaling Spell (-1), Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Range            : 30 yards
+Duration         : 20 seconds
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ .x...... ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : Disable target procs (113), Scales with item level (354)
+Effects          :
+#1 (id=728393)   : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 140789 | Misc Value 2: 0x10f4 | Radius: 5 yards | Target: Unknown(50)
+Description      : $@spelldesc275381
+
 Name             : Lightning Conduit (id=275388) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical

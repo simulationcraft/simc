@@ -699,16 +699,19 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 9 abilities
+    // Pet tree, 12 abilities
     {
        36213, // Angered Earth
       157348, // Call Lightning
+      275382, // Ember Blast
       157375, // Eye of the Storm
        57984, // Fire Blast
       118337, // Harden Skin
       118297, // Immolate
       117588, // Meteor
       118345, // Pulverize
+      275384, // Shocking Blast
+      275386, // Spark Elemental
       157331, // Wind Gust
            0,
     },
