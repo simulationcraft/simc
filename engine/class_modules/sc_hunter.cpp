@@ -4450,7 +4450,7 @@ struct wildfire_bomb_t: public hunter_spell_t
         hunter_spell_t( n, p, p -> find_spell( 260231 ) )
       {
         dual = true;
-        hasted_ticks = false;
+        aoe = -1;
       }
     };
     violent_reaction_t* violent_reaction;
@@ -4464,11 +4464,13 @@ struct wildfire_bomb_t: public hunter_spell_t
 
     void execute() override
     {
+      player_t* initial_target = target;
+
       bomb_base_t::execute();
 
-      if ( td( execute_state -> target ) -> dots.serpent_sting -> is_ticking() )
+      if ( td( initial_target ) -> dots.serpent_sting -> is_ticking() )
       {
-        violent_reaction -> set_target( execute_state -> target );
+        violent_reaction -> set_target( initial_target );
         violent_reaction -> execute();
       }
     }
