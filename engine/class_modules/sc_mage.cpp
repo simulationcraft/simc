@@ -318,7 +318,7 @@ public:
   event_t* ignite_spread_event;
 
   // Evocation
-  event_t* temporal_flux_event;
+
 
   // Active
   player_t* last_bomb_target;
@@ -602,7 +602,6 @@ public:
 
     // Tier 100
     const spell_data_t* overpowered;
-    const spell_data_t* temporal_flux;
     const spell_data_t* arcane_orb;
     const spell_data_t* kindling;
     const spell_data_t* pyroclasm;
@@ -2951,26 +2950,6 @@ struct evocation_t : public arcane_mage_spell_t
     mage -> buffs.evocation -> trigger( 1, mana_regen_multiplier, -1.0, duration );
   }
 
-  struct temporal_flux_event_t : public event_t
-  {
-    mage_t* mage;
-
-    temporal_flux_event_t( mage_t* m, timespan_t delay )
-      : event_t( *m, delay ), mage( m )
-    { }
-
-    virtual const char* name() const override
-    {
-      return "temporal_flux_event";
-    }
-
-    virtual void execute() override
-    {
-      mage -> temporal_flux_event = nullptr;
-      trigger_evocation_buff( mage );
-    }
-  };
-
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
@@ -2984,11 +2963,6 @@ struct evocation_t : public arcane_mage_spell_t
 
     p() -> buffs.evocation -> expire();
 
-    if ( p() -> talents.temporal_flux -> ok() )
-    {
-      timespan_t delay = 1000 * p() -> talents.temporal_flux -> effectN( 1 ).time_value();
-      p() -> temporal_flux_event = make_event<temporal_flux_event_t>( *sim, p(), delay );
-    }
   }
 
   virtual bool usable_moving() const override
@@ -5277,7 +5251,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   icicle( icicles_t() ),
   ignite( nullptr ),
   ignite_spread_event( nullptr ),
-  temporal_flux_event( nullptr ),
   last_bomb_target( nullptr ),
   distance_from_rune( 0.0 ),
   firestarter_time( timespan_t::zero() ),
@@ -5313,11 +5286,11 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
     // Soul of the Archmage
     if ( find_item( 151642 ) )
     {
-      // TODO: Ring is giving AF, SI and the new NYI Temporal Flux on beta, probably not intended.
+      // TODO: Ring is giving AF, SI and the new Time Anomaly on beta, probably not intended.
       switch ( specialization() )
       {
         case MAGE_ARCANE:
-          return spell -> id() == 234302; // Temporal Flux
+          return spell -> id() == 210805; // Time Anomaly
         case MAGE_FIRE:
           return spell -> id() == 205029; // Flame On
         case MAGE_FROST:
@@ -5728,7 +5701,6 @@ void mage_t::init_spells()
   talents.comet_storm        = find_talent_spell( "Comet Storm"        );
   // Tier 100
   talents.overpowered        = find_talent_spell( "Overpowered"        );
-  talents.temporal_flux      = find_talent_spell( "Temporal Flux"      );
   talents.arcane_orb         = find_talent_spell( "Arcane Orb"         );
   talents.kindling           = find_talent_spell( "Kindling"           );
   talents.pyroclasm          = find_talent_spell( "Pyroclasm"          );
@@ -6731,7 +6703,6 @@ void mage_t::reset()
   icicles.clear();
   event_t::cancel( icicle_event );
   event_t::cancel( ignite_spread_event );
-  event_t::cancel( temporal_flux_event );
 
   if ( spec.savant -> ok() )
   {
@@ -7049,51 +7020,6 @@ expr_t* mage_t::create_expression( const std::string& name_str )
   }
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
-
-  // Temporal Flux expressions ================================================
-  if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "temporal_flux_delay" ) )
-  {
-    enum temporal_flux_expr_type_e
-    {
-      DELAY_ACTIVE,
-      DELAY_REMAINS
-    };
-
-    struct temporal_flux_expr_t : public mage_expr_t
-    {
-      temporal_flux_expr_type_e type;
-
-      temporal_flux_expr_t( mage_t& m, const std::string& name, temporal_flux_expr_type_e type ) :
-        mage_expr_t( name, m ), type( type )
-      { }
-
-      virtual double evaluate() override
-      {
-        switch ( type )
-        {
-          case DELAY_ACTIVE:
-            return mage.temporal_flux_event ? 1.0 : 0.0;
-          case DELAY_REMAINS:
-            return mage.temporal_flux_event ? mage.temporal_flux_event -> remains().total_seconds() : 0.0;
-          default:
-            return 0.0;
-        }
-      }
-    };
-
-    if ( util::str_compare_ci( splits[ 1 ], "active" ) )
-    {
-      return new temporal_flux_expr_t( *this, name_str, DELAY_ACTIVE );
-    }
-    else if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
-    {
-      return new temporal_flux_expr_t( *this, name_str, DELAY_REMAINS );
-    }
-    else
-    {
-      sim -> errorf( "Player %s temporal_flux_delay expression: unknown operation '%s'", name(), splits[ 1 ].c_str() );
-    }
-  }
 
   // Ground AoE expressions ===================================================
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
