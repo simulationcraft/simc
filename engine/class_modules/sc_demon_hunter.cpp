@@ -1698,11 +1698,25 @@ struct fel_barrage_t : public demon_hunter_spell_t
 {
   struct fel_barrage_tick_t : public demon_hunter_spell_t
   {
+    double tick_factor;
+
     fel_barrage_tick_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "fel_barrage_tick", p, p->talent.fel_barrage->effectN( 1 ).trigger() )
+      : demon_hunter_spell_t( "fel_barrage_tick", p, p->talent.fel_barrage->effectN( 1 ).trigger() ),
+      tick_factor( 1.0 )
     {
       background = dual = true;
       aoe = -1;
+    }
+
+    virtual double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double dm = demon_hunter_spell_t::composite_da_multiplier( s );
+
+      // 6/20/2018 - As we aren't using a tick_action and because of the mismatch between hasted 
+      //             ticks but non-hasted channel duration, manually implement last_tick_factor 
+      dm *= tick_factor;
+
+      return dm;
     }
 
     dmg_e amount_type( const action_state_t*, bool ) const override
@@ -1711,20 +1725,26 @@ struct fel_barrage_t : public demon_hunter_spell_t
     }
   };
 
-  action_t* tick_damage;
+  fel_barrage_tick_t* tick_damage;
 
   fel_barrage_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t("fel_barrage", p, p->talent.fel_barrage, options_str)
   {
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
-    channeled = tick_zero = true;
+    channeled = tick_zero = hasted_ticks = true;
 
-    tick_damage = p->find_action("fel_barrage_tick");
+    tick_damage = debug_cast<fel_barrage_tick_t*>( p->find_action( "fel_barrage_tick" ) );
     if (!tick_damage )
     {
       tick_damage = new fel_barrage_tick_t(p);
     }
     tick_damage->stats = stats;
+  }
+
+  virtual timespan_t composite_dot_duration( const action_state_t* s ) const
+  {
+    // 6/20/2018 -- Channel duration is currently not affected by Haste, although tick rate is
+    return dot_duration;
   }
 
   virtual bool init_finished() override
@@ -1740,6 +1760,7 @@ struct fel_barrage_t : public demon_hunter_spell_t
     demon_hunter_spell_t::tick( d );
 
     tick_damage->set_target( d->target );
+    tick_damage->tick_factor = d->get_last_tick_factor();
     tick_damage->execute();
   }
 
@@ -4326,43 +4347,42 @@ struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
   {
     double reduction_per_second = 0.0;
 
-    if (item_convergence)
+    if ( item_convergence )
     {
-      const spell_data_t* driver = dh->find_spell(item_convergence->special_effect()->spell_id);
+      const spell_data_t* driver = dh->find_spell( item_convergence->special_effect()->spell_id );
       const double rppm = driver->real_ppm();
       const double rppm_mod = item_convergence->special_effect()->rppm_modifier();
-      const double reduction = driver->effectN(1).base_value();
-      reduction_per_second += (reduction / (60.0 / (rppm * rppm_mod)));
+      const double reduction = driver->effectN( 1 ).base_value();
+      reduction_per_second += ( reduction / ( 60.0 / ( rppm * rppm_mod ) ) );
     }
 
-    if (has_grandeur)
+    if ( has_grandeur || dh->talent.cycle_of_hatred->ok() )
     {
-      // Fury estimates are on the conservative end, intended to be rough approximation only
-      double approx_fury_per_second = 10.2;
+      action_t* chaos_strike = dh->find_action( "chaos_strike" );
+      assert( chaos_strike );
 
-      // Basic adjustment for Demonic specs, assuming Blind Fury+Appetite
-      if (dh->talent.demonic->ok())
-        approx_fury_per_second += 1.2;
+      // Fury estimates are on the conservative end, intended to be rough approximation only
+      double approx_fury_per_second = 15.5;
 
       // Use base haste only for approximation, don't want to calculate with temp buffs
       const double base_haste = 1.0 / dh->collected_data.buffed_stats_snapshot.attack_haste;
       approx_fury_per_second *= base_haste;
 
-      action_t* chaos_strike = dh->find_action("chaos_strike");
-      if (chaos_strike)
-      {
-        // Assume 90% of Fury used on Chaos Strike/Annihilation
-        approx_fury_per_second += (approx_fury_per_second * 0.9) * 0.5 * chaos_strike->composite_crit_chance();
-      }
+      // Assume 90% of Fury used on Chaos Strike/Annihilation
+      const double approx_seconds_per_refund = ( chaos_strike->cost() / ( approx_fury_per_second * 0.9 ) )
+        / dh->spec.chaos_strike_refund->proc_chance();
+
+      if ( dh->talent.cycle_of_hatred->ok() )
+        reduction_per_second += dh->talent.cycle_of_hatred->effectN( 1 ).base_value() / approx_seconds_per_refund;
     }
 
-    cooldown_multiplier = 1.0 / (1.0 + reduction_per_second);
+    cooldown_multiplier = 1.0 / ( 1.0 + reduction_per_second );
   }
 
   double evaluate() override
   {
     // Need to calculate shoulders on first evaluation because we don't have crit/haste values on init
-    if (cooldown_multiplier == 1 && (has_grandeur || item_convergence))
+    if ( cooldown_multiplier == 1 && ( has_grandeur || item_convergence || dh->talent.cycle_of_hatred->ok() ) )
     {
       calculate_multiplier();
     }
@@ -4424,7 +4444,7 @@ expr_t* demon_hunter_t::create_expression( const std::string& name_str )
         item_convergence = &this->items[i];
     }
  
-    if(item_grandeur || item_convergence)
+    if(item_grandeur || item_convergence || this->talent.cycle_of_hatred->ok() )
     {
       return new metamorphosis_adjusted_cooldown_expr_t(this, name_str, item_convergence, item_grandeur != nullptr );
     }
