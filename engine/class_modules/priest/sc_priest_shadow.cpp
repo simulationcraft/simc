@@ -1221,7 +1221,7 @@ struct dark_ascension_t final : public priest_spell_t
     is_mastery_spell = true;
     aoe              = -1;
     radius           = data().effectN( 1 ).radius_max();
-    spell_power_mod.direct = data_spell->effectN( 1 ).sp_coeff();
+    spell_power_mod.direct = data_spell->effectN( 1 ).sp_coeff() * ( 1 + p.find_spell(137033).effectN(1).pct ) ;
   }
 
   void execute() override
@@ -1231,7 +1231,6 @@ struct dark_ascension_t final : public priest_spell_t
     priest().buffs.voidform->expire();
     priest().generate_insanity( data().effectN( 2 ).percent(), priest().gains.insanity_dark_ascension, execute_state->action );
     priest().buffs.voidform->trigger();
-    priest().cooldowns.void_bolt->reset( true );
         
     if ( priest().active_items.mother_shahrazs_seduction )
     {
