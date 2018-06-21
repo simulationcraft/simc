@@ -592,6 +592,7 @@ public:
     const spell_data_t* frigid_winds; // NYI
 
     // Tier 90
+    const spell_data_t* reverberate;
     const spell_data_t* nether_tempest;
     const spell_data_t* flame_patch;
     const spell_data_t* conflagration;
@@ -2264,6 +2265,11 @@ struct arcane_explosion_t : public arcane_mage_spell_t
       trigger_arcane_charge();
     }
 
+    if ( p() -> talents.reverberate -> ok() && num_targets_hit > 2 &&
+         rng().roll( p() -> talents.reverberate -> effectN( 1 ).percent() ) )
+    {
+        trigger_arcane_charge();
+    }
     p() -> buffs.quick_thinker -> trigger();
   }
 };
@@ -5692,6 +5698,7 @@ void mage_t::init_spells()
   talents.frenetic_speed     = find_talent_spell( "Frenetic Speed"     );
   talents.frigid_winds       = find_talent_spell( "Frigid Winds"       );
   // Tier 90
+  talents.reverberate        = find_talent_spell( "Reverberate"        );
   talents.nether_tempest     = find_talent_spell( "Nether Tempest"     );
   talents.flame_patch        = find_talent_spell( "Flame Patch"        );
   talents.conflagration      = find_talent_spell( "Conflagration"      );
