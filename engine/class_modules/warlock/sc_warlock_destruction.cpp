@@ -113,6 +113,9 @@ namespace warlock {
         warlock_spell_t("soul_fire", p, p -> talents.soul_fire)
       {
         parse_options(options_str);
+        energize_type = ENERGIZE_ON_CAST;
+        energize_resource = RESOURCE_SOUL_SHARD;
+        energize_amount = (std::double_t(p->find_spell(281490)->effectN(1).base_value()) / 10);
 
         can_havoc = true;
       }
@@ -120,7 +123,6 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
-        p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(281490)->effectN(1).base_value()) / 10), p()->gains.soul_fire);
 
         p()->buffs.backdraft->decrement();
       }
@@ -330,13 +332,17 @@ namespace warlock {
         warlock_spell_t(p, "Incinerate")
       {
         parse_options(options_str);
-        if (p->talents.fire_and_brimstone->ok())
+        if (p->talents.fire_and_brimstone->ok() && !havocd)
           aoe = -1;
 
         can_havoc = true;
 
         backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN(1).percent();
         backdraft_gcd = 1.0 + p->buffs.backdraft->data().effectN(2).percent();
+
+        energize_type = ENERGIZE_ON_CAST;
+        energize_resource = RESOURCE_SOUL_SHARD;
+        energize_amount = std::double_t(p->find_spell(244670)->effectN(1).base_value()) / 10;
       }
 
       virtual timespan_t execute_time() const override
@@ -367,14 +373,17 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
+        if (execute_state->target == p()->havoc_target)
+          havocd = true;
 
         p()->buffs.backdraft->decrement();
 
-        p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(244670)->effectN(1).base_value()) / 10) * (p()->talents.fire_and_brimstone->ok() ? execute_state->n_targets : 1), p()->gains.incinerate);
+        if (!(execute_state->target == this->target))
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1 * (p()->talents.fire_and_brimstone->ok() ? 1 : 0), p()->gains.fnb_bits);
         if (execute_state->result == RESULT_CRIT)
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1 * (p()->talents.fire_and_brimstone->ok() ? execute_state->n_targets : 1), p()->gains.incinerate_crits);
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits);
         if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T20, B2))
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1 * (p()->talents.fire_and_brimstone->ok() ? execute_state->n_targets : 1), p()->gains.destruction_t20_2pc);
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.destruction_t20_2pc);
       }
 
       virtual double composite_crit_chance() const override
@@ -952,6 +961,7 @@ namespace warlock {
     gains.reverse_entropy               = get_gain("reverse_entropy");
     gains.incinerate                    = get_gain("incinerate");
     gains.incinerate_crits              = get_gain("incinerate_crits");
+    gains.fnb_bits                      = get_gain("fnb_bits");
     gains.soul_fire                     = get_gain("soul_fire");
     gains.infernal                      = get_gain("infernal");
     gains.shadowburn_shard              = get_gain("shadowburn_shard");

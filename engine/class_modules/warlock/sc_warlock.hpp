@@ -380,6 +380,7 @@ namespace warlock
         gain_t* shadowburn;
         gain_t* incinerate;
         gain_t* incinerate_crits;
+        gain_t* fnb_bits;
         gain_t* immolate;
         gain_t* immolate_crits;
         gain_t* soul_fire;
@@ -1079,6 +1080,7 @@ namespace warlock
 
         mutable std::vector<player_t*> havoc_targets;
         bool can_havoc;
+        bool havocd;
         bool affected_by_destruction_t20_4pc;
         bool affected_by_flamelicked;
         bool affected_by_odr_shawl_of_the_ymirjar;
@@ -1141,6 +1143,7 @@ namespace warlock
           action_t::init();
 
           affected_by_flamelicked = false;
+          havocd = false;
 
           affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p()->find_spell( 212173 )->effectN( 1 ) );
 
@@ -1171,47 +1174,26 @@ namespace warlock
           }
         }
 
-        int n_targets() const override
-        {
-          if ( aoe == 0 && use_havoc() )
-            return 2;
-
-          return spell_t::n_targets();
-        }
-
-        std::vector<player_t*>& target_list() const override
-        {
-          if ( use_havoc() )
-          {
-            if ( !target_cache.is_valid )
-            {
-              available_targets( target_cache.list );
-              check_distance_targeting( target_cache.list );
-              target_cache.is_valid = true;
-            }
-
-            havoc_targets.clear();
-            if ( range::find( target_cache.list, target ) != target_cache.list.end() )
-              havoc_targets.push_back( target );
-
-            if ( !p()->havoc_target->is_sleeping() &&
-              range::find( target_cache.list, p()->havoc_target ) != target_cache.list.end() )
-              havoc_targets.push_back( p()->havoc_target );
-            return havoc_targets;
-          }
-          else
-            return spell_t::target_list();
-        }
-
         double cost() const override
         {
           double c = spell_t::cost();
+          if (havocd)
+          {
+            return 0.0;
+          }
           return c;
         }
 
         void execute() override
         {
           spell_t::execute();
+          if (use_havoc() && execute_state->target == this->target && !havocd)
+          {
+            this->set_target(p()->havoc_target);
+            this->havocd = true;
+            spell_t::execute();
+            this->havocd = false;
+          }
 
           if ( hit_any_target && result_is_hit( execute_state->result ) && p()->talents.grimoire_of_sacrifice->ok() && p()->buffs.grimoire_of_sacrifice->up() )
           {
