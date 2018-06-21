@@ -2177,12 +2177,10 @@ void priest_t::generate_apl_shadow()
                       "if=(raid_event.adds.in>5&raid_event.adds.duration<2)|"
                       "raid_event.adds.duration>2" );
   cleave->add_action( this, "Shadow Word: Pain",
-                      "target_if=min:dot.shadow_word_pain.remains&refreshable&"
-                      "target.time_to_die>4,if=!talent.misery.enabled&"
-                      "!talent.dark_void.enabled" );
+                      "target_if=refreshable&target.time_to_die>4,"
+                      "if=!talent.misery.enabled&!talent.dark_void.enabled" );
   cleave->add_action( this, "Vampiric Touch",
-                      "target_if=min:dot.vampiric_touch.remains&"
-                      "refreshable&target.time_to_die>6" );
+                      "target_if=refreshable&target.time_to_die>6" );
   cleave->add_talent( this, "Void Torrent" );
   cleave->add_action( this, "Mind Sear",
                       "target_if=spell_targets.mind_sear>2"
