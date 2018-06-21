@@ -376,10 +376,11 @@ namespace warlock {
         if (execute_state->target == p()->havoc_target)
           havocd = true;
 
-        p()->buffs.backdraft->decrement();
+        if(!havocd)
+          p()->buffs.backdraft->decrement();
 
         if (!(execute_state->target == this->target))
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1 * (p()->talents.fire_and_brimstone->ok() ? 1 : 0), p()->gains.fnb_bits);
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.fnb_bits);
         if (execute_state->result == RESULT_CRIT)
           p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits);
         if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T20, B2))
