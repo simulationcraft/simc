@@ -348,7 +348,6 @@ public:
     action_t* legendary_arcane_orb;
     action_t* legendary_meteor;
     action_t* legendary_comet_storm;
-    action_t* unstable_magic_explosion;
   } action;
 
   // Benefits
@@ -594,7 +593,6 @@ public:
     const spell_data_t* frigid_winds; // NYI
 
     // Tier 90
-    const spell_data_t* unstable_magic;
     const spell_data_t* erosion;
     const spell_data_t* nether_tempest;
     const spell_data_t* flame_patch;
@@ -1525,7 +1523,6 @@ public:
     }
   }
 
-  void trigger_unstable_magic( action_state_t* state );
 
   // Helper methods for 7.2.5 fire shoulders and frost head.
   void trigger_legendary_effect( buff_t* tracking_buff, buff_t* primed_buff, action_t* action, player_t* target )
@@ -2274,10 +2271,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
 
-    if ( p -> specialization() == MAGE_ARCANE && p -> action.unstable_magic_explosion )
-    {
-      add_child( p -> action.unstable_magic_explosion );
-    }
   }
 
   virtual double cost() const override
@@ -2349,16 +2342,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
                 p() -> spec.arcane_charge -> effectN( 4 ).percent();
 
     return t;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      trigger_unstable_magic( s );
-    }
   }
 
 };
@@ -5125,69 +5108,6 @@ struct stop_burn_phase_t : public action_t
   }
 };
 
-
-// Unstable Magic =============================================================
-
-struct unstable_magic_explosion_t : public mage_spell_t
-{
-  unstable_magic_explosion_t( mage_t* p ) :
-    mage_spell_t( "unstable_magic_explosion", p, p -> talents.unstable_magic )
-  {
-    may_miss = may_crit = false;
-    callbacks = false;
-    aoe = -1;
-    background = true;
-
-    base_dd_min = base_dd_max = 1.0;
-    school = SCHOOL_ARCANE;
-  }
-
-  virtual void init() override
-  {
-    mage_spell_t::init();
-    // disable the snapshot_flags for all multipliers
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_TGT_MUL_DA;
-  }
-
-  virtual void execute() override
-  {
-    double mult = data().effectN( 4 ).percent();
-    base_dd_min *= mult;
-    base_dd_max *= mult;
-
-    mage_spell_t::execute();
-  }
-};
-
-void mage_spell_t::trigger_unstable_magic( action_state_t* s )
-{
-  if ( ! p() -> talents.unstable_magic -> ok() )
-    return;
-
-  assert( p() -> action.unstable_magic_explosion );
-
-  double um_proc_rate;
-  switch ( p() -> specialization() )
-  {
-    case MAGE_ARCANE:
-      um_proc_rate = p() -> action.unstable_magic_explosion
-                         -> data().effectN( 1 ).percent();
-      break;
-    default:
-      um_proc_rate = 0.0;
-      break;
-  }
-
-  if ( p() -> rng().roll( um_proc_rate ) )
-  {
-    p() -> action.unstable_magic_explosion -> set_target( s -> target );
-    p() -> action.unstable_magic_explosion -> base_dd_min = s -> result_total;
-    p() -> action.unstable_magic_explosion -> base_dd_max = s -> result_total;
-    p() -> action.unstable_magic_explosion -> execute();
-  }
-}
-
 // Proxy Freeze action ========================================================
 
 struct freeze_t : public action_t
@@ -5680,11 +5600,6 @@ bool mage_t::create_actions()
     action.conflagration_flare_up = new conflagration_flare_up_t( this );
   }
 
-  if ( talents.unstable_magic -> ok() )
-  {
-    action.unstable_magic_explosion = new unstable_magic_explosion_t( this );
-  }
-
   // Global actions for 7.2.5 legendaries.
   // TODO: Probably a better idea to construct these in the legendary callbacks?
   switch ( specialization() )
@@ -5924,7 +5839,6 @@ void mage_t::init_spells()
   talents.frenetic_speed     = find_talent_spell( "Frenetic Speed"     );
   talents.frigid_winds       = find_talent_spell( "Frigid Winds"       );
   // Tier 90
-  talents.unstable_magic     = find_talent_spell( "Unstable Magic"     );
   talents.erosion            = find_talent_spell( "Erosion"            );
   talents.nether_tempest     = find_talent_spell( "Nether Tempest"     );
   talents.flame_patch        = find_talent_spell( "Flame Patch"        );
