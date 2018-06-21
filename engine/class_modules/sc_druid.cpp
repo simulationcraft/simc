@@ -2004,7 +2004,7 @@ struct moonfire_t : public druid_spell_t
       triggers_galactic_guardian = false;
       benefits_from_galactic_guardian = true;
       dual = background = true;
-      dot_duration       += p -> spec.balance -> effectN( 3 ).time_value();
+      dot_duration       += p -> spec.balance -> effectN( 4 ).time_value();
       base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 8 ).percent();
 
       if (p->talent.twin_moons->ok())
@@ -5488,7 +5488,7 @@ struct sunfire_t : public druid_spell_t
       dual = background = true;
       aoe = -1;
       base_aoe_multiplier = 0;
-      dot_duration += p -> spec.balance -> effectN( 3 ).time_value();
+      dot_duration += p -> spec.balance -> effectN( 4 ).time_value();
 
       if ( p -> artifact.persistence )
       {
