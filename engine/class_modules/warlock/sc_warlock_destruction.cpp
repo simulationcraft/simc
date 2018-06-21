@@ -273,14 +273,25 @@ namespace warlock {
       timespan_t total_duration;
       timespan_t base_duration;
       roaring_blaze_t* roaring_blaze;
+      conflagrate_t* havoc_cast;
 
       conflagrate_t(warlock_t* p, const std::string& options_str) :
         warlock_spell_t("Conflagrate", p, p -> find_spell(17962)), roaring_blaze(new roaring_blaze_t(p))
       {
-        parse_options(options_str);
-        energize_type = ENERGIZE_NONE;
+        //special case to stop havocd conflags using charges
+        if (options_str == "havoc")
+        {
+          can_havoc = false;
+          background = true;
+          cooldown = p->get_cooldown("conflag_havoc");
+        }
+        else
+        {
+          parse_options(options_str);
+          can_havoc = true;
+        }
 
-        can_havoc = true;
+        energize_type = ENERGIZE_NONE;
 
         cooldown->charges += p->spec.conflagrate_2->effectN(1).base_value();
 
@@ -295,6 +306,13 @@ namespace warlock {
         warlock_spell_t::init();
 
         cooldown->hasted = true;
+
+        //special case to stop havocd conflags using charges
+        if (can_havoc)
+        {
+          havoc_cast = new conflagrate_t(p(), "havoc");
+          add_child(havoc_cast);
+        }
       }
 
       void impact(action_state_t* s) override
@@ -305,10 +323,28 @@ namespace warlock {
 
         if (result_is_hit(s->result))
         {
-          if (p()->talents.roaring_blaze->ok())
+          if (p()->talents.roaring_blaze->ok() && !havocd)
             roaring_blaze->execute();
 
           p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(245330)->effectN(1).base_value()) / 10), p()->gains.conflagrate);
+        }
+      }
+
+      void execute() override
+      {
+        //special case to stop havocd conflags using charges
+        if (can_havoc && p()->havoc_target && havocd)
+        {
+          havoc_cast->set_target(p()->havoc_target);
+          havoc_cast->havocd = false;
+          havoc_cast->execute();
+          return;
+        }
+
+        warlock_spell_t::execute();
+        if (sim->log)
+        {
+          sim->out_log.printf("%d charges remain",this->cooldown->current_charge);
         }
       }
 
@@ -574,7 +610,7 @@ namespace warlock {
         trigger_internal_combustion(s);
         if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B2))
           td(s->target)->debuffs_chaotic_flames->trigger();
-        if (p()->legendary.magistrike && rng().roll(duplicate_chance))
+        if (!havocd && p()->legendary.magistrike && rng().roll(duplicate_chance))
         {
           duplicate->original_target = s->target;
           duplicate->target = s->target;
@@ -613,7 +649,9 @@ namespace warlock {
         warlock_spell_t::execute();
 
         p()->buffs.embrace_chaos->trigger();
-        p()->buffs.backdraft->decrement();
+
+        if(!havocd)
+          p()->buffs.backdraft->decrement();
       }
 
       double action_multiplier()const override
@@ -927,6 +965,7 @@ namespace warlock {
 
     spec.conflagrate                    = find_specialization_spell("Conflagrate");
     spec.conflagrate_2                  = find_specialization_spell(231793);
+    spec.havoc                          = find_specialization_spell("Havoc");
     // Talents
     talents.flashover                   = find_talent_spell("Flashover");
     talents.eradication                 = find_talent_spell("Eradication");

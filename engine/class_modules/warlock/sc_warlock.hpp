@@ -315,6 +315,7 @@ namespace warlock
         const spell_data_t* immolate;
         const spell_data_t* conflagrate;
         const spell_data_t* conflagrate_2;
+        const spell_data_t* havoc;
         const spell_data_t* unending_resolve;
         const spell_data_t* unending_resolve_2;
         const spell_data_t* firebolt;
@@ -1270,6 +1271,9 @@ namespace warlock
 
             pm *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
           }
+
+          if (havocd)
+            pm *= p()->spec.havoc->effectN(1).percent();
 
           if (p()->specialization() == WARLOCK_DEMONOLOGY)
           {
