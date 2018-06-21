@@ -513,7 +513,7 @@ public:
   void spawn_soul_fragment( soul_fragment, unsigned = 1 );
   double get_target_reach() const
   {
-    return target_reach >= 0 ? target_reach : sim -> target -> combat_reach;
+    return target_reach >= 0 ? target_reach : sim->target->combat_reach;
   }
   expr_t* create_sigil_expression( const std::string& );
 
@@ -529,7 +529,7 @@ struct delayed_execute_event_t : public event_t
   player_t* target;
 
   delayed_execute_event_t( demon_hunter_t* p, action_t* a, player_t* t, timespan_t delay )
-    : event_t( *p -> sim, delay ), action( a ), target( t )
+    : event_t( *p->sim, delay ), action( a ), target( t )
   {
     assert( action->background );
   }
@@ -587,8 +587,8 @@ bool movement_buff_t::trigger( int s, double v, double c, timespan_t d )
   assert( buff_duration > timespan_t::zero() );
 
   // Check if we're already moving away from the target, if so we will now be moving towards it
-  if ( dh -> current.distance_to_move || dh -> buff.out_of_range -> check() ||
-       dh -> buff.vengeful_retreat_move -> check() )
+  if ( dh->current.distance_to_move || dh->buff.out_of_range->check() ||
+       dh->buff.vengeful_retreat_move->check() )
   {
     dh->set_out_of_range(timespan_t::zero());
     yards_from_melee = 0.0;
@@ -640,14 +640,14 @@ struct soul_fragment_t
       if ( sim().debug )
       {
         sim().out_debug.printf(
-          "%s %s expires. active=%u total=%u", frag -> dh -> name(),
-          get_soul_fragment_str( frag -> type ),
-          frag -> dh -> get_active_soul_fragments( frag -> type ),
-          frag -> dh -> get_total_soul_fragments( frag -> type ) );
+          "%s %s expires. active=%u total=%u", frag->dh->name(),
+          get_soul_fragment_str( frag->type ),
+          frag->dh->get_active_soul_fragments( frag->type ),
+          frag->dh->get_total_soul_fragments( frag->type ) );
       }
 
-      frag -> expiration = nullptr;
-      frag -> remove();
+      frag->expiration = nullptr;
+      frag->remove();
     }
   };
 
@@ -655,7 +655,7 @@ struct soul_fragment_t
   {
     soul_fragment_t* frag;
 
-    fragment_activate_t( soul_fragment_t* s ) : event_t( *s -> dh ), frag( s )
+    fragment_activate_t( soul_fragment_t* s ) : event_t( *s->dh ), frag( s )
     {
       schedule( travel_time() );
     }
@@ -710,7 +710,7 @@ struct soul_fragment_t
 
   double get_distance( demon_hunter_t* p ) const
   {
-    return p -> get_position_distance( x, y );
+    return p->get_position_distance( x, y );
   }
 
   bool active() const
@@ -721,11 +721,11 @@ struct soul_fragment_t
   void remove() const
   {
     std::vector<soul_fragment_t*>::iterator it =
-      std::find( dh -> soul_fragments.begin(), dh -> soul_fragments.end(), this );
+      std::find( dh->soul_fragments.begin(), dh->soul_fragments.end(), this );
 
-    assert( it != dh -> soul_fragments.end() );
+    assert( it != dh->soul_fragments.end() );
 
-    dh -> soul_fragments.erase( it );
+    dh->soul_fragments.erase( it );
     delete this;
   }
 
@@ -733,11 +733,11 @@ struct soul_fragment_t
   {
     if ( expiration )
     {
-      return expiration -> remains();
+      return expiration->remains();
     }
     else
     {
-      return dh -> spec.soul_fragment -> duration();
+      return dh->spec.soul_fragment->duration();
     }
   }
 
@@ -749,8 +749,8 @@ struct soul_fragment_t
   void set_position()
   {
     // Set base position: 15 yards to the front right or front left.
-    x = dh -> x_position + ( dh -> next_fragment_spawn % 2 ? -10.6066 : 10.6066 );
-    y = dh -> y_position + 10.6066;
+    x = dh->x_position + ( dh->next_fragment_spawn % 2 ? -10.6066 : 10.6066 );
+    y = dh->y_position + 10.6066;
 
     // Calculate random offset, 2-5 yards from the base position.
     double r_min = 2.0, r_max = 5.0;
@@ -758,21 +758,21 @@ struct soul_fragment_t
     double a = 2.0 / ( r_max * r_max - r_min * r_min );
     // Calculate distance from origin using power-law distribution for
     // uniformity.
-    double dist = sqrt( 2.0 * dh -> rng().real() / a + r_min * r_min );
+    double dist = sqrt( 2.0 * dh->rng().real() / a + r_min * r_min );
     // Pick a random angle.
-    double theta = dh -> rng().range( 0.0, 2.0 * m_pi );
+    double theta = dh->rng().range( 0.0, 2.0 * m_pi );
     // And finally, apply the offsets to x and y;
     x += dist * cos( theta );
     y += dist * sin( theta );
 
-    dh -> next_fragment_spawn++;
+    dh->next_fragment_spawn++;
   }
 
   void schedule_activate()
   {
     set_position();
 
-    activate = make_event<fragment_activate_t>( *dh -> sim, this );
+    activate = make_event<fragment_activate_t>( *dh->sim, this );
   }
 
   void consume( bool heal = true, bool instant = false )
@@ -782,7 +782,7 @@ struct soul_fragment_t
     if ( heal )
     {
       action_t* consume_action = type == soul_fragment::GREATER ?
-        dh -> active.consume_soul_greater : dh -> active.consume_soul_lesser;
+        dh->active.consume_soul_greater : dh->active.consume_soul_lesser;
 
       if ( instant )
       {
@@ -883,9 +883,9 @@ struct demon_hunter_pet_t : public pet_t
 
   void schedule_ready( timespan_t delta_time, bool waiting ) override
   {
-    if ( main_hand_attack && !main_hand_attack -> execute_event )
+    if ( main_hand_attack && !main_hand_attack->execute_event )
     {
-      main_hand_attack -> schedule_execute();
+      main_hand_attack->schedule_execute();
     }
 
     pet_t::schedule_ready( delta_time, waiting );
@@ -896,7 +896,7 @@ struct demon_hunter_pet_t : public pet_t
     double m = pet_t::composite_player_multiplier( school );
 
     // Orc racial
-    m *= 1.0 + o().racials.command -> effectN( 1 ).percent();
+    m *= 1.0 + o().racials.command->effectN( 1 ).percent();
 
     return m;
   }
@@ -937,10 +937,10 @@ public:
   double energize_delta;
 
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
-                          const spell_data_t* s = spell_data_t::nil(),
-                          const std::string& o = std::string() )
+                         const spell_data_t* s = spell_data_t::nil(),
+                         const std::string& o = std::string() )
     : ab( n, p, s ),
-    demonic_presence( ab::data().affected_by( p->mastery.demonic_presence->effectN( 1 ) ) ),
+    demonic_presence( false ),
     hasted_gcd( false ),
     energize_delta( 0.0 )
   {
@@ -956,6 +956,10 @@ public:
 
       if ( ab::data().affected_by( p->spec.havoc->effectN( 2 ) ) )
         ab::base_td_multiplier *= 1.0 + p->spec.havoc->effectN( 2 ).percent();
+
+      // Mastery
+      if ( ab::data().affected_by( p->mastery.demonic_presence->effectN( 1 ) ) )
+        demonic_presence = true;
 
       // Hasted GCD
       hasted_gcd = ab::data().affected_by( p->spec.havoc->effectN( 3 ) );
@@ -1349,7 +1353,7 @@ struct consume_soul_t : public demon_hunter_heal_t
 struct fel_devastation_heal_t : public demon_hunter_heal_t
 {
   fel_devastation_heal_t( demon_hunter_t* p )
-    : demon_hunter_heal_t( "fel_devastation_heal", p, p -> find_spell( 212106 ) )
+    : demon_hunter_heal_t( "fel_devastation_heal", p, p->find_spell( 212106 ) )
   {
     background = true;
   }
@@ -1362,7 +1366,7 @@ struct soul_barrier_t : public demon_hunter_action_t<absorb_t>
   unsigned souls_consumed;
 
   soul_barrier_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_action_t( "soul_barrier", p, p -> talent.soul_barrier,
+    : demon_hunter_action_t( "soul_barrier", p, p->talent.soul_barrier,
                              options_str ),
     souls_consumed( 0 )
   {
@@ -1388,7 +1392,7 @@ struct soul_barrier_t : public demon_hunter_action_t<absorb_t>
 
   void impact( action_state_t* s ) override
   {
-    p() -> buff.soul_barrier -> trigger( 1, s -> result_amount );
+    p()->buff.soul_barrier->trigger( 1, s->result_amount );
   }
 };
 
@@ -1412,7 +1416,7 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
   demon_hunter_heal_t* feast_of_souls;
 
   soul_cleave_heal_t( demon_hunter_t* p )
-    : demon_hunter_heal_t( "soul_cleave_heal", p, p -> spec.soul_cleave ),
+    : demon_hunter_heal_t( "soul_cleave_heal", p, p->spec.soul_cleave ),
       feast_of_souls( nullptr )
   {
     background = true;
@@ -1443,7 +1447,7 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
 struct spirit_bomb_heal_t : public demon_hunter_heal_t
 {
   spirit_bomb_heal_t( demon_hunter_t* p )
-    : demon_hunter_heal_t( "spirit_bomb_heal", p, p -> find_spell( 227255 ) )
+    : demon_hunter_heal_t( "spirit_bomb_heal", p, p->find_spell( 227255 ) )
   {
     background = true;
     may_crit   = false;
@@ -1464,7 +1468,7 @@ namespace spells
 struct blur_t : public demon_hunter_spell_t
 {
   blur_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "blur", p, p -> spec.blur, options_str )
+    : demon_hunter_spell_t( "blur", p, p->spec.blur, options_str )
   {
     may_miss = may_block = may_dodge = may_parry = may_crit = false;
   }
@@ -1473,7 +1477,7 @@ struct blur_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
 
-    p() -> buff.blur -> trigger();
+    p()->buff.blur->trigger();
   }
 };
 
@@ -1482,11 +1486,11 @@ struct blur_t : public demon_hunter_spell_t
 struct chaos_nova_t : public demon_hunter_spell_t
 {
   chaos_nova_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "chaos_nova", p, p -> spec.chaos_nova, options_str )
+    : demon_hunter_spell_t( "chaos_nova", p, p->spec.chaos_nova, options_str )
   {
     aoe = -1;
-    cooldown -> duration += p -> talent.unleashed_power -> effectN( 1 ).time_value();
-    base_costs[ RESOURCE_FURY ] *= 1.0 + p -> talent.unleashed_power -> effectN( 2 ).percent();
+    cooldown->duration += p->talent.unleashed_power->effectN( 1 ).time_value();
+    base_costs[ RESOURCE_FURY ] *= 1.0 + p->talent.unleashed_power->effectN( 2 ).percent();
   }
 };
 
@@ -1498,7 +1502,7 @@ struct consume_magic_t : public demon_hunter_spell_t
   double resource_amount;
 
   consume_magic_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "consume_magic", p, p -> spec.consume_magic, options_str )
+    : demon_hunter_spell_t( "consume_magic", p, p->spec.consume_magic, options_str )
   {
     may_miss = may_block = may_dodge = may_parry = may_crit = false;
 
@@ -1512,7 +1516,7 @@ struct consume_magic_t : public demon_hunter_spell_t
 
   bool ready() override
   {
-    if ( ! target -> debuffs.casting || !target -> debuffs.casting -> check() )
+    if ( ! target->debuffs.casting || !target->debuffs.casting->check() )
       return false;
 
     return demon_hunter_spell_t::ready();
@@ -1545,10 +1549,11 @@ struct eye_beam_t : public demon_hunter_spell_t
   struct eye_beam_tick_t : public demon_hunter_spell_t
   {
     eye_beam_tick_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "eye_beam_tick", p, p -> find_spell( 198030 ) )
+      : demon_hunter_spell_t( "eye_beam_tick", p, p->find_spell( 198030 ) )
     {
       dual = background = true;
       aoe = -1;
+      base_crit += p->spec.havoc->effectN( 3 ).percent();
     }
 
     virtual double composite_target_multiplier( player_t* target ) const override
@@ -1571,22 +1576,37 @@ struct eye_beam_t : public demon_hunter_spell_t
 
       return b;
     }
+
+    dmg_e amount_type( const action_state_t*, bool ) const override
+    {
+      return DMG_OVER_TIME;
+    }
   };
 
+  action_t* tick_damage;
+
   eye_beam_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "eye_beam", p, p -> spec.eye_beam, options_str )
+    : demon_hunter_spell_t( "eye_beam", p, p->spec.eye_beam, options_str )
   {
     may_miss = may_crit = false;
     channeled = true;
 
-    dot_duration *= 1.0 + p -> talent.blind_fury -> effectN( 1 ).percent();
-    base_crit += p->spec.havoc->effectN( 3 ).percent();
+    dot_duration *= 1.0 + p->talent.blind_fury->effectN( 1 ).percent();
     
-    tick_action = p->find_action( "eye_beam_tick" );
-    if ( !tick_action )
+    tick_damage = p->find_action( "eye_beam_tick" );
+    if ( !tick_damage )
     {
-      tick_action = new eye_beam_tick_t( p );
+      tick_damage = new eye_beam_tick_t( p );
     }
+    tick_damage->stats = stats;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    demon_hunter_spell_t::tick( d );
+
+    tick_damage->set_target( d->target );
+    tick_damage->execute();
   }
 
   void last_tick( dot_t* d ) override
@@ -1642,27 +1662,46 @@ struct fel_barrage_t : public demon_hunter_spell_t
   struct fel_barrage_tick_t : public demon_hunter_spell_t
   {
     fel_barrage_tick_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "fel_barrage_tick", p, p -> talent.fel_barrage -> effectN( 1 ).trigger() )
+      : demon_hunter_spell_t( "fel_barrage_tick", p, p->talent.fel_barrage->effectN( 1 ).trigger() )
     {
       background = dual = true;
       aoe = -1;
     }
+
+    dmg_e amount_type( const action_state_t*, bool ) const override
+    {
+      return DMG_OVER_TIME;
+    }
   };
 
+  action_t* tick_damage;
+
   fel_barrage_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t("fel_barrage", p, p -> talent.fel_barrage, options_str)
+    : demon_hunter_spell_t("fel_barrage", p, p->talent.fel_barrage, options_str)
   {
+    may_miss = may_dodge = may_parry = may_crit = may_block = false;
     channeled = tick_zero = true;
 
-    tick_action = p->find_action("fel_barrage_tick");
-    if (!tick_action )
+    tick_damage = p->find_action("fel_barrage_tick");
+    if (!tick_damage )
     {
-      tick_action = new fel_barrage_tick_t(p);
+      tick_damage = new fel_barrage_tick_t(p);
     }
+    tick_damage->stats = stats;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    demon_hunter_spell_t::tick( d );
+
+    tick_damage->set_target( d->target );
+    tick_damage->execute();
   }
 
   bool usable_moving() const override
-  { return true; }
+  {
+    return true;
+  }
 };
 
 // Fel Devastation ==========================================================
@@ -1672,12 +1711,10 @@ struct fel_devastation_t : public demon_hunter_spell_t
   struct fel_devastation_tick_t : public demon_hunter_spell_t
   {
     fel_devastation_tick_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "fel_devastation_tick", p, p -> talent.fel_devastation->effectN( 1 ).trigger() )
+      : demon_hunter_spell_t( "fel_devastation_tick", p, p->talent.fel_devastation->effectN( 1 ).trigger() )
     {
       background = dual = true;
       aoe = -1;
-
-
     }
 
     dmg_e amount_type( const action_state_t*, bool ) const override
@@ -1690,7 +1727,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
   action_t* damage;
 
   fel_devastation_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "fel_devastation", p, p -> talent.fel_devastation, options_str )
+    : demon_hunter_spell_t( "fel_devastation", p, p->talent.fel_devastation, options_str )
   {
     may_miss = may_crit = false;
     channeled = true;
@@ -1706,7 +1743,7 @@ struct fel_devastation_t : public demon_hunter_spell_t
     {
       damage = new fel_devastation_tick_t( p );
     }
-    damage -> stats = stats;
+    damage->stats = stats;
   }
 
   void tick( dot_t* d ) override
@@ -1714,8 +1751,8 @@ struct fel_devastation_t : public demon_hunter_spell_t
     demon_hunter_spell_t::tick( d );
 
     // Heal happens first.
-    heal -> execute();
-    damage -> execute();
+    heal->execute();
+    damage->execute();
   }
 };
 
@@ -1724,10 +1761,10 @@ struct fel_devastation_t : public demon_hunter_spell_t
 struct fel_eruption_t : public demon_hunter_spell_t
 {
   fel_eruption_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "fel_eruption", p, p -> talent.fel_eruption, options_str )
+    : demon_hunter_spell_t( "fel_eruption", p, p->talent.fel_eruption, options_str )
   {
     may_crit         = false;
-    resource_current = p -> specialization() == DEMON_HUNTER_HAVOC
+    resource_current = p->specialization() == DEMON_HUNTER_HAVOC
                        ? RESOURCE_FURY
                        : RESOURCE_PAIN;
   }
@@ -1757,7 +1794,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
     {
       action_state_t::copy_state( s );
 
-      primary = debug_cast<const fiery_brand_state_t*>( s ) -> primary;
+      primary = debug_cast<const fiery_brand_state_t*>( s )->primary;
     }
 
     std::ostringstream& debug_str( std::ostringstream& s ) override
@@ -1773,17 +1810,17 @@ struct fiery_brand_t : public demon_hunter_spell_t
   struct fiery_brand_dot_t : public demon_hunter_spell_t
   {
     fiery_brand_dot_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "fiery_brand_dot", p, p -> find_spell( 207771 ) )
+      : demon_hunter_spell_t( "fiery_brand_dot", p, p->find_spell( 207771 ) )
     {
       background = dual = true;
       hasted_ticks = may_crit = false;
       school = p->find_specialization_spell("Fiery Brand")->get_school_type();
       base_dd_min = base_dd_max = 0;
 
-      if ( p -> talent.burning_alive -> ok() )
+      if ( p->talent.burning_alive->ok() )
       {
         // Spread radius used for Burning Alive.
-        radius = p -> find_spell( 207760 ) -> effectN( 1 ).radius();
+        radius = p->find_spell( 207760 )->effectN( 1 ).radius();
       }
       else
       {
@@ -1801,20 +1838,20 @@ struct fiery_brand_t : public demon_hunter_spell_t
       if ( ! t ) t = target;
       if ( ! t ) return nullptr;
 
-      return td( t ) -> dots.fiery_brand;
+      return td( t )->dots.fiery_brand;
     }
 
     void record_data( action_state_t* s ) override
     {
       // Don't record data direct hits for this action.
-      if ( s -> result_type != DMG_DIRECT )
+      if ( s->result_type != DMG_DIRECT )
       {
         demon_hunter_spell_t::record_data( s );
       }
 #ifndef NDEBUG
       else
       {
-        assert( s -> result_amount == 0.0 );
+        assert( s->result_amount == 0.0 );
       }
 #endif
     }
@@ -1828,12 +1865,12 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
     void trigger_burning_alive( dot_t* d )
     {
-      if ( ! p() -> talent.burning_alive -> ok() )
+      if ( !p()->talent.burning_alive->ok() )
       {
         return;
       }
 
-      if ( ! debug_cast<fiery_brand_state_t*>( d -> state ) -> primary )
+      if ( !debug_cast<fiery_brand_state_t*>( d->state )->primary )
       {
         return;
       }
@@ -1853,7 +1890,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
       for ( size_t i = 0; i < targets.size(); i++ )
       {
-        if ( ! td( targets[ i ] ) -> dots.fiery_brand -> is_ticking() )
+        if ( !td( targets[ i ] )->dots.fiery_brand->is_ticking() )
         {
           candidates.push_back( targets[ i ] );
         }
@@ -1876,18 +1913,17 @@ struct fiery_brand_t : public demon_hunter_spell_t
   action_t* dot;
 
   fiery_brand_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "fiery_brand", p, p -> find_specialization_spell( "Fiery Brand" ), options_str ),
+    : demon_hunter_spell_t( "fiery_brand", p, p->find_specialization_spell( "Fiery Brand" ), options_str ),
     dot( nullptr )
   {
     use_off_gcd = true;
 
-    dot = p -> find_action( "fiery_brand_dot" );
-    if (!dot)
+    dot = p->find_action( "fiery_brand_dot" );
+    if ( !dot )
     {
       dot = new fiery_brand_dot_t( p );
     }
-
-    dot -> stats = stats;
+    dot->stats = stats;
   }
 
   void impact( action_state_t* s ) override
@@ -1899,11 +1935,11 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
     /* Set this DoT as the primary DoT, enabling its ticks to spread the DoT
        to nearby targets when Burning Alive is talented. */
-    fiery_brand_state_t* fb_state = debug_cast<fiery_brand_state_t*>( dot -> get_state() );
-    fb_state -> target = s -> target;
-    dot -> snapshot_state( fb_state, DMG_DIRECT );
-    fb_state -> primary = true;
-    dot -> schedule_execute( fb_state );
+    fiery_brand_state_t* fb_state = debug_cast<fiery_brand_state_t*>( dot->get_state() );
+    fb_state->target = s->target;
+    dot->snapshot_state( fb_state, DMG_DIRECT );
+    fb_state->primary = true;
+    dot->schedule_execute( fb_state );
   }
 };
 
@@ -1912,7 +1948,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 struct sigil_of_flame_damage_t : public demon_hunter_spell_t
 {
   sigil_of_flame_damage_t(demon_hunter_t* p)
-    : demon_hunter_spell_t("sigil_of_flame_dmg", p, p -> find_spell(204598))
+    : demon_hunter_spell_t("sigil_of_flame_dmg", p, p->find_spell(204598))
   {
     aoe = -1;
     background = dual = ground_aoe = true;
@@ -1951,8 +1987,7 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
   sigil_of_flame_damage_t* damage;
 
   sigil_of_flame_t(demon_hunter_t* p, const std::string& options_str)
-    : demon_hunter_spell_t("sigil_of_flame", p,
-      p -> find_specialization_spell("Sigil of Flame"),
+    : demon_hunter_spell_t("sigil_of_flame", p, p->find_specialization_spell("Sigil of Flame"),
       options_str)
   {
     may_miss = may_crit = false;
@@ -1996,13 +2031,13 @@ struct infernal_strike_t : public demon_hunter_spell_t
     sigil_of_flame_damage_t* sigil;
 
     infernal_strike_impact_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "infernal_strike_impact", p,
-        p -> find_spell( 189112 ) ), sigil( nullptr )
+      : demon_hunter_spell_t( "infernal_strike_impact", p, p->find_spell( 189112 ) )
+      , sigil( nullptr )
     {
       background = dual = true;
       aoe = -1;
 
-      if ( p -> talent.flame_crash -> ok() )
+      if ( p->talent.flame_crash->ok() )
       {
         sigil = new sigil_of_flame_damage_t( p );
       }
@@ -2014,8 +2049,8 @@ struct infernal_strike_t : public demon_hunter_spell_t
 
       if ( sigil )
       {
-        p() -> sigil_of_flame_activates = sim -> current_time() + p() -> sigil_delay;
-        sigil->make_ground_aoe_event(p(), execute_state);
+        p()->sigil_of_flame_activates = sim->current_time() + p()->sigil_delay;
+        sigil->make_ground_aoe_event( p(), execute_state );
       }
     }
   };
@@ -2023,37 +2058,37 @@ struct infernal_strike_t : public demon_hunter_spell_t
   action_t* damage;
 
   infernal_strike_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "infernal_strike", p,
-      p -> find_specialization_spell( "Infernal Strike" ), options_str )
+    : demon_hunter_spell_t( "infernal_strike", p, p->find_specialization_spell( "Infernal Strike" ), 
+                            options_str )
   {
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
     base_teleport_distance  = data().max_range();
     movement_directionality = MOVEMENT_OMNI;
     travel_speed = 1.0;  // allows use precombat
 
-    damage = p -> find_action( "infernal_strike_impact" );
+    damage = p->find_action( "infernal_strike_impact" );
 
-    if ( ! damage )
+    if ( !damage )
     {
       infernal_strike_impact_t* a = new infernal_strike_impact_t( p );
-      a -> stats = stats;
-      if ( a -> sigil )
+      a->stats = stats;
+      if ( a->sigil )
       {
-        add_child( a -> sigil );
+        add_child( a->sigil );
       }
 
       damage = a;
     }
 
-    base_teleport_distance += p -> talent.abyssal_strike -> effectN( 1 ).base_value();
-    cooldown -> duration += p -> talent.abyssal_strike -> effectN( 2 ).time_value();
+    base_teleport_distance += p->talent.abyssal_strike->effectN( 1 ).base_value();
+    cooldown->duration += p->talent.abyssal_strike->effectN( 2 ).time_value();
   }
 
   // Don't record data for this action.
   void record_data( action_state_t* s ) override
   {
     ( void )s;
-    assert( s -> result_amount == 0.0 );
+    assert( s->result_amount == 0.0 );
   }
 
   // leap travel time, independent of distance
@@ -2074,12 +2109,12 @@ struct infernal_strike_t : public demon_hunter_spell_t
     if ( ! t ) t = target;
     if ( ! t ) return nullptr;
 
-    return td( t ) -> dots.sigil_of_flame;
+    return td( t )->dots.sigil_of_flame;
   }
 
   expr_t* create_expression( const std::string& name ) override
   {
-    if ( expr_t* e = p() -> create_sigil_expression( name ) )
+    if ( expr_t* e = p()->create_sigil_expression( name ) )
       return e;
 
     return demon_hunter_spell_t::create_expression( name );
@@ -2102,21 +2137,21 @@ struct immolation_aura_t : public demon_hunter_spell_t
       aoe = -1;
 
       // Rename gain for periodic energizes. Initial hit action doesn't energize.
-      gain = p -> get_gain( "immolation_aura_tick" );
+      gain = p->get_gain( "immolation_aura_tick" );
 
-      base_multiplier *= 1.0 + p -> talent.agonizing_flames -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p->talent.agonizing_flames->effectN( 1 ).percent();
     }
 
     void impact( action_state_t* s ) override
     {
       demon_hunter_spell_t::impact( s );
 
-      if ( result_is_hit( s -> result ) )
+      if ( result_is_hit( s->result ) )
       {
         // FIXME: placeholder proc chance, lack of info on real proc chance.
-        if ( initial && p() -> talent.fallout -> ok() && rng().roll( 0.60 ) )
+        if ( initial && p()->talent.fallout->ok() && rng().roll( 0.60 ) )
         {
-          p() -> spawn_soul_fragment( soul_fragment::LESSER, 1 );
+          p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
           p()->proc.soul_fragment_from_fallout->occur();
         }
       }
@@ -2131,14 +2166,14 @@ struct immolation_aura_t : public demon_hunter_spell_t
   immolation_aura_damage_t* initial_damage;
 
   immolation_aura_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "immolation_aura", p, p -> spec.immolation_aura, options_str )
+    : demon_hunter_spell_t( "immolation_aura", p, p->spec.immolation_aura, options_str )
   {
     may_miss = may_crit = false;
     dot_duration = timespan_t::zero(); 
 
-    if ( !p -> active.immolation_aura )
+    if ( !p->active.immolation_aura )
     {
-      p -> active.immolation_aura = new immolation_aura_damage_t( p, data().effectN( 1 ).trigger() );
+      p->active.immolation_aura = new immolation_aura_damage_t( p, data().effectN( 1 ).trigger() );
       add_child( p->active.immolation_aura );
     }
 
@@ -2166,7 +2201,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
   struct metamorphosis_impact_t : public demon_hunter_spell_t
   {
     metamorphosis_impact_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "metamorphosis_impact", p, p -> find_spell( 200166 ) )
+      : demon_hunter_spell_t( "metamorphosis_impact", p, p->find_spell( 200166 ) )
     {
       background   = true;
       aoe          = -1;
@@ -2177,7 +2212,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
   metamorphosis_impact_t* damage;
 
   metamorphosis_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "metamorphosis", p, p -> spec.metamorphosis, options_str ),
+    : demon_hunter_spell_t( "metamorphosis", p, p->spec.metamorphosis, options_str ),
     damage(nullptr)
   {
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
@@ -2235,7 +2270,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
 struct nemesis_t : public demon_hunter_spell_t
 {
   nemesis_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "nemesis", p, p -> talent.nemesis, options_str )
+    : demon_hunter_spell_t( "nemesis", p, p->talent.nemesis, options_str )
   {
     may_miss = may_block = may_dodge = may_parry = may_crit = false;
   }
@@ -2259,7 +2294,10 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     expr_t* expr;
 
     pick_up_event_t( soul_fragment_t* f, timespan_t time, expr_t* e )
-      : event_t( *f -> dh, time ), dh( f -> dh ), frag( f ), expr( e )
+      : event_t( *f->dh, time ), 
+      dh( f->dh ), 
+      frag( f ), 
+      expr( e )
     {
     }
 
@@ -2325,10 +2363,10 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     }
     else if ( value != "" )
     {
-      sim -> errorf(
+      sim->errorf(
         "%s uses bad parameter for pick_up_soul_fragment option "
         "\"mode\". Valid options: closest, newest, oldest",
-        sim -> active_player -> name() );
+        sim->active_player->name() );
     }
   }
 
@@ -2348,19 +2386,19 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     }
     else if ( value != "" )
     {
-      sim -> errorf(
+      sim->errorf(
         "%s uses bad parameter for pick_up_soul_fragment option "
         "\"type\". Valid options: greater, lesser, any",
-        sim -> active_player -> name() );
+        sim->active_player->name() );
     }
   }
 
   timespan_t calculate_movement_time( soul_fragment_t* frag )
   {
     // Fragments have a 6 yard trigger radius
-    double dtm = std::max( 0.0, frag -> get_distance( p() ) - 6.0 );
+    double dtm = std::max( 0.0, frag->get_distance( p() ) - 6.0 );
 
-    return timespan_t::from_seconds( dtm / p() -> cache.run_speed() );
+    return timespan_t::from_seconds( dtm / p()->cache.run_speed() );
   }
 
   soul_fragment_t* select_fragment()
@@ -2372,19 +2410,19 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
         double dist                = std::numeric_limits<double>::max();
         soul_fragment_t* candidate = nullptr;
 
-        for ( it = p() -> soul_fragments.begin(); it != p() -> soul_fragments.end();
+        for ( it = p()->soul_fragments.begin(); it != p()->soul_fragments.end();
               it++ )
         {
           soul_fragment_t* frag = *it;
 
-          if ( frag -> is_type( type ) && frag -> active() &&
-               frag -> remains() < calculate_movement_time( frag ) )
+          if ( frag->is_type( type ) && frag->active() &&
+               frag->remains() < calculate_movement_time( frag ) )
           {
-            double this_distance = frag -> get_distance( p() );
+            double this_distance = frag->get_distance( p() );
 
             if ( this_distance < dist )
             {
-              dist      = this_distance;
+              dist = this_distance;
               candidate = frag;
             }
           }
@@ -2394,13 +2432,13 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
       }
       break;
       case SOUL_FRAGMENT_SELECT_NEWEST:
-        for ( it = p() -> soul_fragments.end(); it != p() -> soul_fragments.begin();
+        for ( it = p()->soul_fragments.end(); it != p()->soul_fragments.begin();
               it-- )
         {
           soul_fragment_t* frag = *it;
 
-          if ( frag -> is_type( type ) &&
-               frag -> remains() > calculate_movement_time( frag ) )
+          if ( frag->is_type( type ) &&
+               frag->remains() > calculate_movement_time( frag ) )
           {
             return frag;
           }
@@ -2408,13 +2446,13 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
         break;
       case SOUL_FRAGMENT_SELECT_OLDEST:
       default:
-        for ( it = p() -> soul_fragments.begin(); it != p() -> soul_fragments.end();
+        for ( it = p()->soul_fragments.begin(); it != p()->soul_fragments.end();
               it++ )
         {
           soul_fragment_t* frag = *it;
 
-          if ( frag -> is_type( type ) &&
-               frag -> remains() > calculate_movement_time( frag ) )
+          if ( frag->is_type( type ) &&
+               frag->remains() > calculate_movement_time( frag ) )
           {
             return frag;
           }
@@ -2433,18 +2471,18 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
     assert( frag );
     timespan_t time = calculate_movement_time( frag );
 
-    assert( p() -> soul_fragment_pick_up == nullptr );
-    p() -> soul_fragment_pick_up = make_event<pick_up_event_t>( *sim, frag, time, if_expr );
+    assert( p()->soul_fragment_pick_up == nullptr );
+    p()->soul_fragment_pick_up = make_event<pick_up_event_t>( *sim, frag, time, if_expr );
   }
 
   bool ready() override
   {
-    if ( p() -> soul_fragment_pick_up )
+    if ( p()->soul_fragment_pick_up )
     {
       return false;
     }
 
-    if ( !p() -> get_active_soul_fragments( type ) )
+    if ( !p()->get_active_soul_fragments( type ) )
     {
       return false;
     }
@@ -2466,7 +2504,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
   struct spirit_bomb_damage_t : public demon_hunter_spell_t
   {
     spirit_bomb_damage_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "spirit_bomb_dmg", p, p -> find_spell(247455) )
+      : demon_hunter_spell_t( "spirit_bomb_dmg", p, p->find_spell(247455) )
     {
       background = dual = true;
       aoe = -1;
@@ -2487,7 +2525,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
   spirit_bomb_damage_t* damage;
 
   spirit_bomb_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_spell_t( "spirit_bomb", p, p -> talent.spirit_bomb, options_str ),
+    : demon_hunter_spell_t( "spirit_bomb", p, p->talent.spirit_bomb, options_str ),
     damage( new spirit_bomb_damage_t( p ) )
   {
     may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
@@ -2670,27 +2708,27 @@ struct auto_attack_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( "auto_attack", p, spell_data_t::nil(),
                              options_str )
   {
-    range                 = 5;
-    trigger_gcd           = timespan_t::zero();
+    range                   = 5;
+    trigger_gcd             = timespan_t::zero();
 
-    p -> melee_main_hand        = new auto_attack_damage_t("auto_attack_mh", p, &(p->main_hand_weapon));
-    p -> main_hand_attack       = p -> melee_main_hand;
+    p->melee_main_hand      = new auto_attack_damage_t( "auto_attack_mh", p, &( p->main_hand_weapon ) );
+    p->main_hand_attack     = p->melee_main_hand;
 
-    p -> melee_off_hand         = new auto_attack_damage_t("auto_attack_oh", p, &(p->off_hand_weapon));
-    p -> off_hand_attack        = p -> melee_off_hand;
-    p -> off_hand_attack -> id  = 1;
+    p->melee_off_hand       = new auto_attack_damage_t( "auto_attack_oh", p, &( p->off_hand_weapon ) );
+    p->off_hand_attack      = p->melee_off_hand;
+    p->off_hand_attack->id  = 1;
   }
 
   void execute() override
   {
-    if ( p() -> main_hand_attack -> execute_event == nullptr )
+    if ( p()->main_hand_attack->execute_event == nullptr )
     {
-      p() -> main_hand_attack -> schedule_execute();
+      p()->main_hand_attack->schedule_execute();
     }
 
-    if ( p() -> off_hand_attack -> execute_event == nullptr )
+    if ( p()->off_hand_attack->execute_event == nullptr )
     {
-      p() -> off_hand_attack -> schedule_execute();
+      p()->off_hand_attack->schedule_execute();
     }
   }
 
@@ -2700,10 +2738,10 @@ struct auto_attack_t : public demon_hunter_attack_t
 
     if ( ready )  // Range check
     {
-      if ( p() -> main_hand_attack -> execute_event == nullptr )
+      if ( p()->main_hand_attack->execute_event == nullptr )
         return ready;
 
-      if ( p() -> off_hand_attack -> execute_event == nullptr )
+      if ( p()->off_hand_attack->execute_event == nullptr )
         return ready;
     }
 
@@ -2718,7 +2756,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
   struct trail_of_ruin_dot_t : public demon_hunter_spell_t
   {
     trail_of_ruin_dot_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "trail_of_ruin", p, p -> talent.trail_of_ruin -> effectN( 1 ).trigger() )
+      : demon_hunter_spell_t( "trail_of_ruin", p, p->talent.trail_of_ruin->effectN( 1 ).trigger() )
     {
       background = dual = true;
       hasted_ticks = false;
@@ -2794,10 +2832,10 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( n, p, s, options_str ), dodge_buff( dodge_buff ), trail_of_ruin_dot ( nullptr )
   {
     may_miss = may_crit = may_parry = may_block = may_dodge = false;
-    cooldown = p -> get_cooldown( "blade_dance" );  // Blade Dance/Death Sweep Shared Cooldown
+    cooldown = p->get_cooldown( "blade_dance" );  // Blade Dance/Death Sweep Shared Cooldown
     range = 5.0; // Disallow use outside of melee range.
 
-    base_costs[ RESOURCE_FURY ] += p -> talent.first_blood -> effectN( 2 ).resource( RESOURCE_FURY );
+    base_costs[ RESOURCE_FURY ] += p->talent.first_blood->effectN( 2 ).resource( RESOURCE_FURY );
 
     if ( p->talent.trail_of_ruin->ok() )
     {
@@ -2824,7 +2862,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
 
     for ( size_t i = 0; i < attacks.size(); i++ )
     {
-      attacks[ i ] -> stats = stats;
+      attacks[ i ]->stats = stats;
     }
 
     if( attacks.back() )
@@ -2844,7 +2882,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
   virtual void execute() override
   {
     // Blade Dance/Death Sweep Shared Cooldown
-    cooldown -> duration = data().cooldown();
+    cooldown->duration = data().cooldown();
 
     demon_hunter_attack_t::execute();
 
@@ -2863,14 +2901,14 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       make_event<delayed_execute_event_t>( *sim, p(), attacks[ i ], target, attacks[ i ]->delay );
     }
 
-    dodge_buff -> trigger();
+    dodge_buff->trigger();
   }
 };
 
 struct blade_dance_t : public blade_dance_base_t
 {
   blade_dance_t( demon_hunter_t* p, const std::string& options_str )
-    : blade_dance_base_t( "blade_dance", p, p -> spec.blade_dance, options_str, p -> buff.blade_dance )
+    : blade_dance_base_t( "blade_dance", p, p->spec.blade_dance, options_str, p->buff.blade_dance )
   {
     if ( attacks.empty() )
     {
@@ -2883,7 +2921,7 @@ struct blade_dance_t : public blade_dance_base_t
 
   bool ready() override
   {
-    if ( p() -> buff.metamorphosis -> check() )
+    if ( p()->buff.metamorphosis->check() )
     {
       return false;
     }
@@ -2897,7 +2935,7 @@ struct blade_dance_t : public blade_dance_base_t
 struct death_sweep_t : public blade_dance_base_t
 {
   death_sweep_t( demon_hunter_t* p, const std::string& options_str )
-    : blade_dance_base_t( "death_sweep", p, p -> spec.death_sweep, options_str, p->buff.death_sweep )
+    : blade_dance_base_t( "death_sweep", p, p->spec.death_sweep, options_str, p->buff.death_sweep )
   {
     if ( attacks.empty() )
     {
@@ -3020,7 +3058,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     // Use one stats object for all parts of the attack.
     for ( size_t i = 0; i < attacks.size(); i++ )
     {
-      attacks[ i ] -> stats = stats;
+      attacks[ i ]->stats = stats;
     }
 
     return f;
@@ -3077,7 +3115,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
 struct chaos_strike_t : public chaos_strike_base_t
 {
   chaos_strike_t( demon_hunter_t* p, const std::string& options_str)
-    : chaos_strike_base_t( "chaos_strike", p, p -> spec.chaos_strike, options_str )
+    : chaos_strike_base_t( "chaos_strike", p, p->spec.chaos_strike, options_str )
   {
     if ( attacks.empty() )
     {
@@ -3102,7 +3140,7 @@ struct chaos_strike_t : public chaos_strike_base_t
 struct annihilation_t : public chaos_strike_base_t
 {
   annihilation_t( demon_hunter_t* p, const std::string& options_str )
-    : chaos_strike_base_t( "annihilation", p, p -> spec.annihilation, options_str )
+    : chaos_strike_base_t( "annihilation", p, p->spec.annihilation, options_str )
   {
     if ( attacks.empty() )
     {
@@ -3127,7 +3165,7 @@ struct annihilation_t : public chaos_strike_base_t
 struct demons_bite_t : public demon_hunter_attack_t
 {
   demons_bite_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "demons_bite", p, p -> find_class_spell( "Demon's Bite" ), options_str )
+    : demon_hunter_attack_t( "demons_bite", p, p->find_class_spell( "Demon's Bite" ), options_str )
   {
     energize_delta = energize_amount * data().effectN( 3 ).m_delta();
   }
@@ -3148,9 +3186,9 @@ struct demons_bite_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
-    if ( p() -> buff.metamorphosis -> check() )
+    if ( p()->buff.metamorphosis->check() )
     {
-      p() -> proc.demons_bite_in_meta -> occur();
+      p()->proc.demons_bite_in_meta->occur();
     }
   }
 
@@ -3162,7 +3200,7 @@ struct demons_bite_t : public demon_hunter_attack_t
 
   bool ready() override
   {
-    if ( p() -> talent.demon_blades -> ok() )
+    if ( p()->talent.demon_blades->ok() )
     {
       return false;
     }
@@ -3176,7 +3214,7 @@ struct demons_bite_t : public demon_hunter_attack_t
 struct demon_blades_t : public demon_hunter_attack_t
 {
   demon_blades_t( demon_hunter_t* p )
-    : demon_hunter_attack_t( "demon_blades", p, p -> find_spell( 203796 ) )
+    : demon_hunter_attack_t( "demon_blades", p, p->find_spell( 203796 ) )
   {
     background = true;
     energize_delta = energize_amount * data().effectN( 2 ).m_delta();
@@ -3194,7 +3232,7 @@ struct demon_blades_t : public demon_hunter_attack_t
 struct dark_slash_t : public demon_hunter_attack_t
 {
   dark_slash_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "dark_slash", p, p -> find_talent_spell( "Dark Slash" ), options_str )
+    : demon_hunter_attack_t( "dark_slash", p, p->find_talent_spell( "Dark Slash" ), options_str )
   {
   }
 
@@ -3217,14 +3255,14 @@ struct felblade_t : public demon_hunter_attack_t
   struct felblade_damage_t : public demon_hunter_attack_t
   {
     felblade_damage_t( demon_hunter_t* p )
-      : demon_hunter_attack_t( "felblade_dmg", p, p -> find_spell( 213243 ) )
+      : demon_hunter_attack_t( "felblade_dmg", p, p->find_spell( 213243 ) )
     {
       dual = background = true;
       may_miss = may_dodge = may_parry = false;
 
       // Clear energize and then manually pick which effect to parse.
       energize_type = ENERGIZE_NONE;
-      parse_effect_data( data().effectN( p -> specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 ) );
+      parse_effect_data( data().effectN( p->specialization() == DEMON_HUNTER_HAVOC ? 4 : 3 ) );
       gain = p->get_gain( "felblade" );
     }
   };
@@ -3232,7 +3270,7 @@ struct felblade_t : public demon_hunter_attack_t
   felblade_damage_t* damage;
 
   felblade_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "felblade", p, p -> talent.felblade, options_str )
+    : demon_hunter_attack_t( "felblade", p, p->talent.felblade, options_str )
   {
     may_crit = may_block = false;
     
@@ -3293,7 +3331,7 @@ struct fel_rush_t : public demon_hunter_attack_t
   bool a_cancel;
 
   fel_rush_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "fel_rush", p, p -> find_class_spell( "Fel Rush" ) ),
+    : demon_hunter_attack_t( "fel_rush", p, p->find_class_spell( "Fel Rush" ) ),
       damage( new fel_rush_damage_t( p ) ),
       unbound_chaos_damage( nullptr ),
       a_cancel( false )
@@ -3304,12 +3342,12 @@ struct fel_rush_t : public demon_hunter_attack_t
     may_miss = may_dodge = may_parry = may_block = may_crit = false;
     min_gcd = trigger_gcd;
 
-    damage -> stats = stats;
+    damage->stats = stats;
 
     if ( !a_cancel )
     {
       // Fel Rush does damage in a further line than it moves you
-      base_teleport_distance  = damage -> radius - 5;
+      base_teleport_distance  = damage->radius - 5;
       movement_directionality = MOVEMENT_OMNI;
       p->buff.fel_rush_move->distance_moved = base_teleport_distance;
     }
@@ -3329,7 +3367,7 @@ struct fel_rush_t : public demon_hunter_attack_t
 
     // Fel Rush's loss of control causes a GCD lag after the loss ends.
     // TOCHECK: Does this delay happen when jump cancelling?
-    g += rng().gauss( sim -> gcd_lag, sim -> gcd_lag_stddev );
+    g += rng().gauss( sim->gcd_lag, sim->gcd_lag_stddev );
 
     return g;
   }
@@ -3345,7 +3383,7 @@ struct fel_rush_t : public demon_hunter_attack_t
     damage->schedule_execute( s );
 
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
-    p() -> cooldown.movement_shared -> start( timespan_t::from_seconds( 1.0 ) );
+    p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
 
     if (!a_cancel)
     {
@@ -3390,13 +3428,13 @@ struct fracture_t : public demon_hunter_attack_t
   fracture_damage_t* mh, *oh;
 
   fracture_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "fracture", p, p -> talent.fracture, options_str )
+    : demon_hunter_attack_t( "fracture", p, p->talent.fracture, options_str )
   {
     may_crit = false;
 
     mh = new fracture_damage_t( "fracture_mh", p, data().effectN( 2 ).trigger() );
     oh = new fracture_damage_t( "fracture_oh", p, data().effectN( 3 ).trigger() );
-    mh -> stats = oh -> stats = stats;
+    mh->stats = oh->stats = stats;
   }
 
   void impact( action_state_t* s ) override
@@ -3404,7 +3442,7 @@ struct fracture_t : public demon_hunter_attack_t
     demon_hunter_attack_t::impact( s );
     trigger_felblade( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s->result ) )
     {
       mh->set_target( s->target );
       oh->set_target( s->target );
@@ -3423,7 +3461,7 @@ struct fracture_t : public demon_hunter_attack_t
 struct shear_t : public demon_hunter_attack_t
 {
   shear_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t("shear", p, p -> find_specialization_spell( "Shear" ), options_str )
+    : demon_hunter_attack_t("shear", p, p->find_specialization_spell( "Shear" ), options_str )
   {
   }
 
@@ -3478,7 +3516,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
   soul_cleave_damage_t* damage;
 
   soul_cleave_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "soul_cleave", p, p -> spec.soul_cleave, options_str ),
+    : demon_hunter_attack_t( "soul_cleave", p, p->spec.soul_cleave, options_str ),
       heal(new heals::soul_cleave_heal_t(p)),
       damage(new soul_cleave_damage_t("soul_cleave_damage", p, data().effectN(2).trigger()))
   {
@@ -3519,7 +3557,7 @@ struct soul_cleave_t : public demon_hunter_attack_t
 struct throw_glaive_t : public demon_hunter_attack_t
 {
   throw_glaive_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t("throw_glaive", p, p -> find_class_spell("Throw Glaive"), options_str)
+    : demon_hunter_attack_t("throw_glaive", p, p->find_class_spell("Throw Glaive"), options_str)
   {
     aoe                  = 3;     // Ricochets to 2 additional enemies
     radius               = 10.0;  // with 10 yards.
@@ -3533,7 +3571,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
   struct vengeful_retreat_damage_t : public demon_hunter_attack_t
   {
     vengeful_retreat_damage_t(demon_hunter_t* p)
-      : demon_hunter_attack_t("vengeful_retreat_dmg", p, p -> find_spell(198813))
+      : demon_hunter_attack_t("vengeful_retreat_dmg", p, p->find_spell(198813))
     {
       background = dual = true;
       aoe = -1;
@@ -3553,7 +3591,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
   vengeful_retreat_damage_t* damage;
 
   vengeful_retreat_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_attack_t( "vengeful_retreat", p, p -> spec.vengeful_retreat, options_str )
+    : demon_hunter_attack_t( "vengeful_retreat", p, p->spec.vengeful_retreat, options_str )
   {
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
     // use_off_gcd = true;
@@ -3837,7 +3875,7 @@ struct spirit_bomb_event_t : public event_t
   {
     assert( dh ->spirit_bomb_accumulator >= 0.0 );
 
-    if ( dh -> spirit_bomb_accumulator > 0 )
+    if ( dh->spirit_bomb_accumulator > 0 )
     {
       action_t* a = dh->active.spirit_bomb_heal;
       a->base_dd_min = a->base_dd_max = dh->spirit_bomb_accumulator;
@@ -3846,7 +3884,7 @@ struct spirit_bomb_event_t : public event_t
       dh->spirit_bomb_accumulator = 0.0;
     }
 
-    dh -> spirit_bomb_driver = make_event<spirit_bomb_event_t>( sim(), dh );
+    dh->spirit_bomb_driver = make_event<spirit_bomb_event_t>( sim(), dh );
   }
 };
 
@@ -3965,7 +4003,7 @@ void demon_hunter_t::copy_from( player_t* source )
 
   auto source_p = debug_cast<demon_hunter_t*>( source );
 
-  options = source_p -> options;
+  options = source_p->options;
 }
 
 // demon_hunter_t::create_action ============================================
@@ -4092,7 +4130,7 @@ void demon_hunter_t::create_buffs()
 
   buff.blade_dance =
     buff_creator_t( this, "blade_dance", spec.blade_dance )
-    .default_value( spec.blade_dance -> effectN( 2 ).percent() )
+    .default_value( spec.blade_dance->effectN( 2 ).percent() )
     .add_invalidate( CACHE_DODGE )
     .cd( timespan_t::zero() );
 
@@ -4106,18 +4144,18 @@ void demon_hunter_t::create_buffs()
 
   buff.death_sweep =
     buff_creator_t( this, "death_sweep", spec.death_sweep )
-    .default_value( spec.death_sweep -> effectN( 2 ).percent() )
+    .default_value( spec.death_sweep->effectN( 2 ).percent() )
     .add_invalidate( CACHE_DODGE )
     .cd( timespan_t::zero() );
 
   buff.fel_rush_move = new movement_buff_t(
     this, buff_creator_t( this, "fel_rush_movement", spell_data_t::nil() )
     .chance( 1.0 )
-    .duration( find_class_spell( "Fel Rush" ) -> gcd() ) );
+    .duration( find_class_spell( "Fel Rush" )->gcd() ) );
 
   buff.momentum =
     buff_creator_t( this, "momentum", find_spell( 208628 ) )
-    .default_value( find_spell( 208628 ) -> effectN( 1 ).percent() )
+    .default_value( find_spell( 208628 )->effectN( 1 ).percent() )
     .trigger_spell( talent.momentum )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -4153,7 +4191,7 @@ void demon_hunter_t::create_buffs()
   buff.vengeful_retreat_move = new movement_buff_t(this,
     buff_creator_t( this, "vengeful_retreat_movement", spell_data_t::nil() )
     .chance( 1.0 )
-    .duration( spec.vengeful_retreat -> duration() ) );
+    .duration( spec.vengeful_retreat->duration() ) );
 
   // Vengeance ==============================================================
 
@@ -4298,7 +4336,7 @@ expr_t* demon_hunter_t::create_expression( const std::string& name_str )
 
       virtual double evaluate() override
       {
-        return dh -> get_active_soul_fragments( type );
+        return dh->get_active_soul_fragments( type );
       }
     };
 
@@ -4371,7 +4409,7 @@ pet_t* demon_hunter_t::create_pet( const std::string& pet_name,
 
   // Add pets here
 
-  sim -> errorf( "No demon hunter pet with name '%s' available.",
+  sim->errorf( "No demon hunter pet with name '%s' available.",
                pet_name.c_str() );
 
   return nullptr;
@@ -4406,7 +4444,7 @@ void demon_hunter_t::init_action_list()
   {
     if ( !quiet )
     {
-      sim -> errorf(
+      sim->errorf(
         "Player %s does not have a valid main-hand and off-hand weapon.",
         name() );
     }
@@ -4540,12 +4578,12 @@ void demon_hunter_t::init_scaling()
 {
   base_t::init_scaling();
 
-  scaling -> enable( STAT_WEAPON_OFFHAND_DPS );
+  scaling->enable( STAT_WEAPON_OFFHAND_DPS );
 
   if ( specialization() == DEMON_HUNTER_VENGEANCE )
-    scaling -> enable( STAT_BONUS_ARMOR );
+    scaling->enable( STAT_BONUS_ARMOR );
 
-  scaling -> disable( STAT_STRENGTH );
+  scaling->disable( STAT_STRENGTH );
 }
 
 // demon_hunter_t::init_spells ==============================================
@@ -4687,16 +4725,16 @@ void demon_hunter_t::init_spells()
   active.consume_soul_lesser 
     = new consume_soul_t(this, "consume_soul_lesser", spec.consume_soul_lesser, soul_fragment::LESSER);
 
-  if ( talent.demon_blades -> ok() )
+  if ( talent.demon_blades->ok() )
   {
     active.demon_blades = new demon_blades_t( this );
   }
 
-  sigil_delay = find_specialization_spell( "Sigil of Flame" ) -> duration();
+  sigil_delay = find_specialization_spell( "Sigil of Flame" )->duration();
 
-  if ( talent.quickened_sigils -> ok() )
+  if ( talent.quickened_sigils->ok() )
   {
-    sigil_delay += talent.quickened_sigils -> effectN( 1 ).time_value();
+    sigil_delay += talent.quickened_sigils->effectN( 1 ).time_value();
   }
 }
 
@@ -4715,7 +4753,7 @@ void demon_hunter_t::invalidate_cache( cache_e c )
         invalidate_cache( CACHE_ARMOR );
       break;
     case CACHE_CRIT_CHANCE:
-      if ( spec.riposte -> ok() )
+      if ( spec.riposte->ok() )
         invalidate_cache( CACHE_PARRY );
       break;
     case CACHE_RUN_SPEED:
@@ -4854,14 +4892,14 @@ void demon_hunter_t::apl_default()
 void add_havoc_use_items( demon_hunter_t* p, action_priority_list_t* apl )
 {
   // On-Use Items
-  for ( size_t i = 0; i < p -> items.size(); i++ )
+  for ( size_t i = 0; i < p->items.size(); i++ )
   {
-    auto effect = p -> items[ i ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
-    if ( effect && effect -> source != SPECIAL_EFFECT_SOURCE_ADDON )
+    auto effect = p->items[ i ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+    if ( effect && effect->source != SPECIAL_EFFECT_SOURCE_ADDON )
     {
-      std::string line = std::string( "use_item,name=" ) + p -> items[ i ].name_str;
+      std::string line = std::string( "use_item,name=" ) + p->items[ i ].name_str;
 
-      apl -> add_action( line );
+      apl->add_action( line );
     }
   }
 }
@@ -4887,7 +4925,7 @@ void demon_hunter_t::apl_havoc()
   apl_cooldown->add_action( this, "Metamorphosis", "if=!(talent.demonic.enabled|variable.pooling_for_meta|variable.waiting_for_nemesis)|target.time_to_die<25" );
   apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&buff.metamorphosis.up" );
   apl_cooldown->add_talent( this, "Nemesis", "target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)" );
-  apl_cooldown->add_talent( this, "Nemesis", "if=!raid_event.adds.exists&(buff.metamorphosis.up|cooldown.metamorphosis.adjusted_remains<20|target.time_to_die<=60)" );
+  apl_cooldown->add_talent( this, "Nemesis", "if=!raid_event.adds.exists" );
   apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|target.time_to_die<60" );
 
   action_priority_list_t* apl_normal = get_action_priority_list( "normal" );
@@ -5068,7 +5106,7 @@ double demon_hunter_t::composite_attack_power_multiplier() const
 {
   double ap = player_t::composite_attack_power_multiplier();
 
-  ap *= 1.0 + cache.mastery() * mastery.fel_blood -> effectN( 2 ).mastery_value();
+  ap *= 1.0 + cache.mastery() * mastery.fel_blood->effectN( 2 ).mastery_value();
 
   return ap;
 }
@@ -5114,10 +5152,10 @@ double demon_hunter_t::composite_dodge() const
 {
   double d = player_t::composite_dodge();
 
-  d += buff.blade_dance -> check_value();
-  d += buff.death_sweep -> check_value();
+  d += buff.blade_dance->check_value();
+  d += buff.death_sweep->check_value();
 
-  d += buff.blur -> check() * buff.blur -> data().effectN( 2 ).percent();
+  d += buff.blur->check() * buff.blur->data().effectN( 2 ).percent();
 
   return d;
 }
@@ -5180,7 +5218,7 @@ double demon_hunter_t::composite_melee_crit_chance() const
 {
   double mc = player_t::composite_melee_crit_chance();
 
-  mc += spec.critical_strikes -> effectN( 1 ).percent();
+  mc += spec.critical_strikes->effectN( 1 ).percent();
 
   return mc;
 }
@@ -5205,7 +5243,7 @@ double demon_hunter_t::composite_parry() const
 {
   double cp = player_t::composite_parry();
 
-  cp += buff.demon_spikes -> check_value();
+  cp += buff.demon_spikes->check_value();
 
   return cp;
 }
@@ -5316,7 +5354,7 @@ double demon_hunter_t::composite_spell_crit_chance() const
 {
   double sc = player_t::composite_spell_crit_chance();
 
-  sc += spec.critical_strikes -> effectN( 1 ).percent();
+  sc += spec.critical_strikes->effectN( 1 ).percent();
 
   return sc;
 }
@@ -5328,7 +5366,7 @@ double demon_hunter_t::matching_gear_multiplier( attribute_e attr ) const
   if ( ( specialization() == DEMON_HUNTER_HAVOC && attr == ATTR_AGILITY ) ||
        ( specialization() == DEMON_HUNTER_VENGEANCE && attr == ATTR_STAMINA ) )
   {
-    return spec.leather_specialization -> effectN( 1 ).percent();
+    return spec.leather_specialization->effectN( 1 ).percent();
   }
 
   return 0.0;
@@ -5340,9 +5378,9 @@ double demon_hunter_t::passive_movement_modifier() const
 {
   double ms = player_t::passive_movement_modifier();
 
-  if ( mastery.demonic_presence -> ok() )
+  if ( mastery.demonic_presence->ok() )
   {
-    ms += cache.mastery() * mastery.demonic_presence -> effectN( 2 ).mastery_value();
+    ms += cache.mastery() * mastery.demonic_presence->effectN( 2 ).mastery_value();
   }
 
   return ms;
@@ -5375,8 +5413,8 @@ double demon_hunter_t::calculate_expected_max_health() const
   for (size_t i = 0; i < items.size(); i++)
   {
     const item_t* item = &items[i];
-    if ( ! item || item -> slot == SLOT_SHIRT || item -> slot == SLOT_RANGED ||
-      item -> slot == SLOT_TABARD || item -> item_level() <= 0 )
+    if ( ! item || item->slot == SLOT_SHIRT || item->slot == SLOT_RANGED ||
+      item->slot == SLOT_TABARD || item->item_level() <= 0 )
     {
       continue;
     }
@@ -5416,9 +5454,9 @@ void demon_hunter_t::assess_damage( school_e school, dmg_e dt,
   player_t::assess_damage( school, dt, s );
 
   // Benefit tracking
-  if ( s -> action -> may_parry )
+  if ( s->action->may_parry )
   {
-    buff.demon_spikes -> up();
+    buff.demon_spikes->up();
   }
 }
 
@@ -5429,7 +5467,7 @@ void demon_hunter_t::combat_begin()
   player_t::combat_begin();
 
   // Start event drivers
-  if ( talent.spirit_bomb -> ok() )
+  if ( talent.spirit_bomb->ok() )
   {
     spirit_bomb_driver = make_event<spirit_bomb_event_t>( *sim, this, true );
   }
@@ -5463,16 +5501,16 @@ void demon_hunter_t::recalculate_resource_max( resource_e r )
       assert( metamorphosis_health > 0 );
 
       double base_health = max_health() - metamorphosis_health;
-      double new_health  = base_health * buff.metamorphosis -> check_value();
+      double new_health  = base_health * buff.metamorphosis->check_value();
       double diff        = new_health - metamorphosis_health;
 
       if ( diff != 0.0 )
       {
-        if ( sim -> debug )
+        if ( sim->debug )
         {
-          sim -> out_debug.printf(
+          sim->out_debug.printf(
             "%s adjusts %s temporary health. old=%.0f new=%.0f diff=%.0f",
-            name(), buff.metamorphosis -> name(), metamorphosis_health,
+            name(), buff.metamorphosis->name(), metamorphosis_health,
             new_health, diff );
         }
 
@@ -5521,7 +5559,7 @@ void demon_hunter_t::target_mitigation( school_e school, dmg_e dt, action_state_
 {
   base_t::target_mitigation( school, dt, s );
 
-  if ( s -> result_amount <= 0 )
+  if ( s->result_amount <= 0 )
   {
     return;
   }
@@ -5586,15 +5624,15 @@ void demon_hunter_t::set_out_of_range(timespan_t duration)
 
 void demon_hunter_t::adjust_movement()
 {
-  if ( buff.out_of_range -> check() &&
-       buff.out_of_range -> remains() > timespan_t::zero() )
+  if ( buff.out_of_range->check() &&
+       buff.out_of_range->remains() > timespan_t::zero() )
   {
     // Recalculate movement duration.
-    assert( buff.out_of_range -> value() > 0 );
-    assert( buff.out_of_range -> expiration.size() );
+    assert( buff.out_of_range->value() > 0 );
+    assert( buff.out_of_range->expiration.size() );
 
-    timespan_t remains = buff.out_of_range -> remains();
-    remains *= buff.out_of_range -> check_value() / cache.run_speed();
+    timespan_t remains = buff.out_of_range->remains();
+    remains *= buff.out_of_range->check_value() / cache.run_speed();
 
     set_out_of_range(remains);
   }
@@ -5650,13 +5688,13 @@ unsigned demon_hunter_t::get_active_soul_fragments( soul_fragment type ) const
     case soul_fragment::LESSER:
       return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
       [&type]( unsigned acc, soul_fragment_t* frag ) {
-        return acc + ( frag -> is_type( type ) && frag -> active() );
+        return acc + ( frag->is_type( type ) && frag->active() );
       } );
     case soul_fragment::ALL:
     default:
       return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
       []( unsigned acc, soul_fragment_t* frag ) {
-        return acc + frag -> active();
+        return acc + frag->active();
       } );
   }
 }
@@ -5671,7 +5709,7 @@ unsigned demon_hunter_t::get_total_soul_fragments( soul_fragment type ) const
     case soul_fragment::LESSER:
       return std::accumulate( soul_fragments.begin(), soul_fragments.end(), 0,
       [&type]( unsigned acc, soul_fragment_t* frag ) {
-        return acc + frag -> is_type( type );
+        return acc + frag->is_type( type );
       } );
     case soul_fragment::ALL:
     default:
@@ -5734,9 +5772,9 @@ void demon_hunter_t::spawn_soul_fragment( soul_fragment type, unsigned n )
     soul_proc->occur();
   }
 
-  if ( sim -> debug )
+  if ( sim->debug )
   {
-    sim -> out_debug.printf( "%s creates %u %ss. active=%u total=%u", name(), n,
+    sim->out_debug.printf( "%s creates %u %ss. active=%u total=%u", name(), n,
                            get_soul_fragment_str( type ),
                            get_active_soul_fragments( type ),
                            get_total_soul_fragments( type ) );
@@ -5750,7 +5788,7 @@ expr_t* demon_hunter_t::create_sigil_expression( const std::string& name )
   if ( util::str_compare_ci( name, "activation_time" ) ||
     util::str_compare_ci( name, "delay" ) )
   {
-    if ( sim -> optimize_expressions )
+    if ( sim->optimize_expressions )
     {
       return expr_t::create_constant( name, sigil_delay.total_seconds() );
     }
@@ -5772,7 +5810,7 @@ expr_t* demon_hunter_t::create_sigil_expression( const std::string& name )
 
       double evaluate() override
       {
-        if ( dh -> sim -> current_time() < dh -> sigil_of_flame_activates )
+        if ( dh->sim->current_time() < dh->sigil_of_flame_activates )
         {
           return 1;
         }
@@ -5845,7 +5883,7 @@ public:
                            race_e r = RACE_NONE ) const override
   {
     auto p = new demon_hunter_t( sim, name, r );
-    p -> report_extension = std::unique_ptr<player_report_extension_t>( new demon_hunter_report_t( *p ) );
+    p->report_extension = std::unique_ptr<player_report_extension_t>( new demon_hunter_report_t( *p ) );
     return p;
   }
 
