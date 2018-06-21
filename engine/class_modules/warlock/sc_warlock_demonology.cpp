@@ -12,6 +12,7 @@ namespace warlock {
           base_dd_min = base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
         }
       };
+
       struct axe_toss_t : public warlock_pet_spell_t {
         axe_toss_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_spell_t("Axe Toss", p, p -> find_spell(89766)) {
           parse_options(options_str);
@@ -22,6 +23,7 @@ namespace warlock {
           p()->trigger_sephuzs_secret(execute_state, MECHANIC_STUN);
         }
       };
+
       struct felstorm_tick_t : public warlock_pet_melee_attack_t {
         felstorm_tick_t(warlock_pet_t* p, const spell_data_t& s) : warlock_pet_melee_attack_t("felstorm_tick", p, s.effectN(1).trigger()) {
           aoe = -1;
@@ -33,6 +35,7 @@ namespace warlock {
         double action_multiplier() const override
         {
           double m = warlock_pet_melee_attack_t::action_multiplier();
+
           if (p()->buffs.demonic_strength->check())
           {
             m *= p()->buffs.demonic_strength->default_value;
@@ -41,6 +44,7 @@ namespace warlock {
           return m;
         }
       };
+
       struct felstorm_t : public warlock_pet_melee_attack_t {
         felstorm_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_melee_attack_t("felstorm", p, p -> find_spell(89751)) {
           parse_options(options_str);
@@ -58,21 +62,8 @@ namespace warlock {
         {
           return s->action->tick_time(s) * 5.0;
         }
-
-        void cancel() override {
-          warlock_pet_melee_attack_t::cancel();
-          //()->cancel();
-        }
-
-        void execute() override 
-        {
-          warlock_pet_melee_attack_t::execute();
-        }
-
-        void last_tick(dot_t* d) override {
-          warlock_pet_melee_attack_t::last_tick(d);
-        }
       };
+
       struct demonic_strength_t : public warlock_pet_melee_attack_t {
         bool queued;
 
@@ -99,6 +90,7 @@ namespace warlock {
         double action_multiplier() const override
         {
           double m = warlock_pet_melee_attack_t::action_multiplier();
+
           if (p()->buffs.demonic_strength->check())
           {
             m *= p()->buffs.demonic_strength->default_value;
@@ -131,6 +123,7 @@ namespace warlock {
           return warlock_pet_melee_attack_t::ready();
         }
       };
+
       struct soul_strike_t : public warlock_pet_melee_attack_t {
         soul_strike_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("Soul Strike", p, p->find_spell(267964)) {
           background = true;
@@ -256,6 +249,7 @@ namespace warlock {
         o()->buffs.demonic_core->trigger(1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN(1).percent());
       }
     }
+
     namespace dreadstalker {
       struct dreadbite_t : public warlock_pet_melee_attack_t
       {
@@ -460,34 +454,31 @@ namespace warlock {
 
       struct multi_slash_t : public warlock_pet_melee_attack_t
       {
-        multi_slash_damage_t* slash_1;
-        multi_slash_damage_t* slash_2;
-        multi_slash_damage_t* slash_3;
-        multi_slash_damage_t* slash_4;
+        std::array<multi_slash_damage_t*,4> slashs;
 
         multi_slash_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("multi-slash", p, p -> find_spell(272172))
         {
-          slash_1 = new multi_slash_damage_t(p, 1);
-          slash_2 = new multi_slash_damage_t(p, 2);
-          slash_3 = new multi_slash_damage_t(p, 3);
-          slash_4 = new multi_slash_damage_t(p, 4);
-          add_child(slash_1);
-          add_child(slash_2);
-          add_child(slash_3);
-          add_child(slash_4);
+          for (unsigned i = 0; i < slashs.size(); ++i)
+          {
+            slashs[i] = new multi_slash_damage_t(p, i);
+            add_child(slashs[i]);
+          }
         }
 
         void execute() override
         {
           cooldown->start(timespan_t::from_millis(rng().range(7000, 9000)));
-          slash_1->execute();
-          slash_2->execute();
-          slash_3->execute();
-          slash_4->execute();
+
+          for(auto& slash : slashs)
+          {
+            slash->execute();
+          }
         }
       };
 
-      shivarra_t::shivarra_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "shivarra")
+      shivarra_t::shivarra_t(sim_t* sim, warlock_t* owner, const std::string& name) :
+          warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "shivarra"),
+          multi_slash()
       {
         action_list_str = "travel/multi_slash";
         owner_coeff.ap_from_sp = 0.065;
@@ -509,7 +500,7 @@ namespace warlock {
       action_t* shivarra_t::create_action(const std::string& name, const std::string& options_str) {
         if (name == "multi_slash")
         {
-          //assert(multi_slash == nullptr);
+          assert(multi_slash == nullptr);
           multi_slash = new multi_slash_t(this);
           return multi_slash;
         }
@@ -528,7 +519,8 @@ namespace warlock {
         }
       };
 
-      darkhound_t::darkhound_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "darkhound") 
+      darkhound_t::darkhound_t(sim_t* sim, warlock_t* owner, const std::string& name) :
+          warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "darkhound")
       {
         action_list_str = "travel/fel_bite";
         owner_coeff.ap_from_sp = 0.065;
@@ -550,7 +542,7 @@ namespace warlock {
       action_t* darkhound_t::create_action(const std::string& name, const std::string& options_str) {
         if (name == "fel_bite")
         {
-          //assert(fel_bite == nullptr);
+          assert(fel_bite == nullptr);
           fel_bite = new fel_bite_t(this);
           return fel_bite;
         }

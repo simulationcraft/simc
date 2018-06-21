@@ -24,17 +24,21 @@ namespace warlock
 
           for (const auto target : sim->target_non_sleeping_list)
           {
-            if (td(target)->dots_agony->is_ticking())
+            auto td = find_td(target);
+            if (!td)
+              continue;
+
+            if (td->dots_agony->is_ticking())
               dots += 1.0;
-            if (td(target)->dots_corruption->is_ticking())
+            if (td->dots_corruption->is_ticking())
               dots += 1.0;
-            if (td(target)->dots_siphon_life->is_ticking())
+            if (td->dots_siphon_life->is_ticking())
               dots += 1.0;
-            if (td(target)->dots_phantom_singularity->is_ticking())
+            if (td->dots_phantom_singularity->is_ticking())
               dots += 1.0;
-            if (td(target)->dots_vile_taint->is_ticking())
+            if (td->dots_vile_taint->is_ticking())
               dots += 1.0;
-            for (auto& current_ua : td(target)->dots_unstable_affliction)
+            for (auto& current_ua : td->dots_unstable_affliction)
             {
               if (current_ua->is_ticking())
                 dots += 1.0;
@@ -162,9 +166,11 @@ namespace warlock
       double composite_target_multiplier( player_t* target ) const override
       {
         double m = warlock_spell_t::composite_target_multiplier( target );
-        auto td = this->td( target );
 
-        m *= td->agony_stack;
+        if (auto td = find_td( target ) )
+        {
+          m *= td->agony_stack;
+        }
 
         return m;
       }
@@ -230,12 +236,13 @@ namespace warlock
 
         if ( rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->proc_chance() ) )
         {
-          warlock_td_t* target_data = td( d->state->target );
-
-          for ( auto& current_ua : target_data->dots_unstable_affliction )
+          if (warlock_td_t* target_data = find_td( d->state->target ))
           {
-            if ( current_ua->is_ticking() )
-              current_ua->extend_duration( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->effectN( 1 ).time_value(), true );
+            for ( auto& current_ua : target_data->dots_unstable_affliction )
+            {
+              if ( current_ua->is_ticking() )
+                current_ua->extend_duration( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->effectN( 1 ).time_value(), true );
+            }
           }
 
           p()->procs.affliction_t21_2pc->occur();
@@ -380,18 +387,17 @@ namespace warlock
           real_ua_t* real_ua = nullptr;
           timespan_t min_duration = timespan_t::from_seconds( 100 );
 
+          auto td = find_td( s->target );
           for ( int i = 0; i < MAX_UAS; i++ )
           {
-            dot_t* curr_ua = td( s->target )->dots_unstable_affliction[i];
-
-            if ( !( curr_ua->is_ticking() ) )
+            if ( ! td || !td->dots_unstable_affliction[i]->is_ticking() )
             {
               real_ua = ua_dots[i];
               p()->buffs.active_uas->increment( 1 );
               break;
             }
 
-            timespan_t rem = curr_ua->remains();
+            timespan_t rem = td->dots_unstable_affliction[i]->remains();
 
             if ( rem < min_duration )
             {
@@ -435,12 +441,13 @@ namespace warlock
 
           if ( result_is_hit( s->result ) )
           {
-            warlock_td_t* tdata = td( s->target );
-
-            if ( tdata->dots_seed_of_corruption->is_ticking() && tdata->soc_threshold > 0 )
+            if (warlock_td_t* tdata = find_td( s->target ))
             {
-              tdata->soc_threshold = 0;
-              tdata->dots_seed_of_corruption->cancel();
+              if ( tdata->dots_seed_of_corruption->is_ticking() && tdata->soc_threshold > 0 )
+              {
+                tdata->soc_threshold = 0;
+                tdata->dots_seed_of_corruption->cancel();
+              }
             }
           }
         }
@@ -490,6 +497,7 @@ namespace warlock
           td( s->target )->soc_threshold = s->composite_spell_power();
         }
 
+        assert(p()->active.corruption);
         p()->active.corruption->target = s->target;
         p()->active.corruption->schedule_execute();
 
@@ -582,10 +590,12 @@ namespace warlock
       double composite_target_multiplier(player_t* target) const override
       {
         double m = warlock_spell_t::composite_target_multiplier(target);
-        auto td = this->td(target);
 
-        if (td->debuffs_tormented_agony->check())
-          m *= 1.0 + td->debuffs_tormented_agony->data().effectN(1).percent();
+        if (auto td = find_td(target))
+        {
+          if (td->debuffs_tormented_agony->check())
+            m *= 1.0 + td->debuffs_tormented_agony->data().effectN(1).percent();
+        }
 
         return m;
       }
@@ -835,27 +845,32 @@ namespace warlock
 
         for (const auto target : sim->target_non_sleeping_list)
         {
-          if (td(target)->dots_agony->is_ticking())
+          auto td = find_td(target);
+          if (!td)
           {
-            td(target)->dots_agony->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+            continue;
           }
-          if (td(target)->dots_corruption->is_ticking())
+          if (td->dots_agony->is_ticking())
           {
-            td(target)->dots_corruption->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+            td->dots_agony->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
           }
-          if (td(target)->dots_siphon_life->is_ticking())
+          if (td->dots_corruption->is_ticking())
           {
-            td(target)->dots_siphon_life->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+            td->dots_corruption->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
           }
-          if (td(target)->dots_phantom_singularity->is_ticking())
+          if (td->dots_siphon_life->is_ticking())
           {
-            td(target)->dots_phantom_singularity->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+            td->dots_siphon_life->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
           }
-          if (td(target)->dots_vile_taint->is_ticking())
+          if (td->dots_phantom_singularity->is_ticking())
           {
-            td(target)->dots_vile_taint->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+            td->dots_phantom_singularity->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
           }
-          for (auto& current_ua : td(target)->dots_unstable_affliction)
+          if (td->dots_vile_taint->is_ticking())
+          {
+            td->dots_vile_taint->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+          }
+          for (auto& current_ua : td->dots_unstable_affliction)
           {
             if (current_ua->is_ticking())
               current_ua->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
@@ -907,10 +922,13 @@ namespace warlock
 
         for ( const auto target : sim->target_non_sleeping_list )
         {
-          if ( td( target )->dots_agony->is_ticking() )
+          if ( auto td = find_td(target) )
           {
-            tormented_agony->set_target( target );
-            tormented_agony->execute();
+            if ( td->dots_agony->is_ticking() )
+            {
+              tormented_agony->set_target( target );
+              tormented_agony->execute();
+            }
           }
         }
       }

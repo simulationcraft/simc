@@ -504,6 +504,11 @@ namespace warlock
         return td;
       }
 
+      warlock_td_t* find_target_data( player_t* target ) const
+      {
+        return target_data[target];
+      }
+
       // sc_warlock_affliction
       action_t* create_action_affliction( const std::string& action_name, const std::string& options_str );
       void create_buffs_affliction();
@@ -708,6 +713,16 @@ namespace warlock
         const warlock_td_t* td( player_t* t ) const
         {
           return p()->o()->get_target_data( t );
+        }
+
+        warlock_td_t* find_td( player_t* t )
+        {
+          return p()->o()->find_target_data( t );
+        }
+
+        const warlock_td_t* find_td( player_t* t ) const
+        {
+          return p()->o()->find_target_data( t );
         }
 
         void init() override
@@ -1124,6 +1139,16 @@ namespace warlock
         const warlock_td_t* td( player_t* t ) const
         {
           return p()->get_target_data( t );
+        }
+
+        warlock_td_t* find_td( player_t* t )
+        {
+          return p()->find_target_data( t );
+        }
+
+        const warlock_td_t* find_td( player_t* t ) const
+        {
+          return p()->find_target_data( t );
         }
 
         bool use_havoc() const
