@@ -567,6 +567,10 @@ public:
 
   player_t* current_hunters_mark_target;
   wildfire_infusion_e next_wi_bomb = WILDFIRE_INFUSION_SHRAPNEL;
+  struct {
+    bool enabled = false;
+    double cost_multiplier = 0;
+  } t19_mm_4pc;
 
   hunter_t( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) :
     player_t( sim, HUNTER, name, r ),
@@ -864,8 +868,8 @@ public:
   {
     double cost = ab::cost();
 
-    if ( p() -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T19, B4 ) && p() -> buffs.trueshot -> check() )
-      cost += cost * p() -> find_spell( 211327 ) -> effectN( 1 ).percent();
+    if ( p() -> t19_mm_4pc.enabled && p() -> buffs.trueshot -> check() )
+      cost += cost * p() -> t19_mm_4pc.cost_multiplier;
 
     if ( p() -> legendary.bm_waist -> ok() && p() -> buffs.bestial_wrath -> check() )
       cost *= 1.0 + p() -> legendary.bm_waist -> effectN( 1 ).trigger() -> effectN( 1 ).percent();
@@ -4969,6 +4973,9 @@ void hunter_t::init_spells()
   azerite.venomous_fangs        = find_azerite_spell( "Venomous Fangs" );
   azerite.wilderness_survival   = find_azerite_spell( "Wilderness Survival" );
   azerite.wildfire_cluster      = find_azerite_spell( "Wildfire Cluster" );
+
+  t19_mm_4pc.enabled = sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T19, B4 );
+  t19_mm_4pc.cost_multiplier = find_spell( 211327 ) -> effectN( 1 ).percent();
 }
 
 // hunter_t::init_base ======================================================
