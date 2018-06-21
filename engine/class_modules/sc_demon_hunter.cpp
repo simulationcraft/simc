@@ -255,6 +255,7 @@ public:
     const spell_data_t* consume_soul_greater;
     const spell_data_t* consume_soul_lesser;
     const spell_data_t* critical_strikes;
+    const spell_data_t* disrupt;
     const spell_data_t* leather_specialization;
     const spell_data_t* metamorphosis;
     const spell_data_t* metamorphosis_buff;
@@ -309,6 +310,7 @@ public:
   {
     // General
     cooldown_t* consume_magic;
+    cooldown_t* disrupt;
     cooldown_t* felblade;
     cooldown_t* fel_eruption;
 
@@ -1506,8 +1508,8 @@ struct consume_magic_t : public demon_hunter_spell_t
   {
     may_miss = may_block = may_dodge = may_parry = may_crit = false;
 
-    const spelleffect_data_t effect = p->find_spell(218903)->effectN(
-      p->specialization() == DEMON_HUNTER_HAVOC ? 1 : 2);
+    const spelleffect_data_t effect = data().effectN(
+      p->specialization() == DEMON_HUNTER_HAVOC ? 2 : 3);
 
     energize_type = ENERGIZE_ON_CAST;
     energize_resource = effect.resource_gain_type();
@@ -1516,10 +1518,8 @@ struct consume_magic_t : public demon_hunter_spell_t
 
   bool ready() override
   {
-    if ( ! target->debuffs.casting || !target->debuffs.casting->check() )
-      return false;
-
-    return demon_hunter_spell_t::ready();
+    // Currently no support for magic debuffs on bosses, just return FALSE
+    return false;
   }
 };
 
@@ -1539,6 +1539,35 @@ struct demon_spikes_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
     p()->buff.demon_spikes->trigger();
+  }
+};
+
+// Disrupt ==================================================================
+
+struct disrupt_t : public demon_hunter_spell_t
+{
+  resource_e resource;
+  double resource_amount;
+
+  disrupt_t( demon_hunter_t* p, const std::string& options_str )
+    : demon_hunter_spell_t( "disrupt", p, p->spec.disrupt, options_str )
+  {
+    may_miss = may_block = may_dodge = may_parry = may_crit = false;
+
+    const spelleffect_data_t effect = p->find_spell( 218903 )->effectN(
+      p->specialization() == DEMON_HUNTER_HAVOC ? 1 : 2 );
+
+    energize_type = ENERGIZE_ON_CAST;
+    energize_resource = effect.resource_gain_type();
+    energize_amount = effect.resource( energize_resource );
+  }
+
+  bool ready() override
+  {
+    if ( !target->debuffs.casting || !target->debuffs.casting->check() )
+      return false;
+
+    return demon_hunter_spell_t::ready();
   }
 };
 
@@ -2047,8 +2076,8 @@ struct infernal_strike_t : public demon_hunter_spell_t
     sigil_of_flame_damage_t* sigil;
 
     infernal_strike_impact_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "infernal_strike_impact", p, p->find_spell( 189112 ) )
-      , sigil( nullptr )
+      : demon_hunter_spell_t( "infernal_strike_impact", p, p->find_spell( 189112 ) ),
+      sigil( nullptr )
     {
       background = dual = true;
       aoe = -1;
@@ -4050,6 +4079,8 @@ action_t* demon_hunter_t::create_action( const std::string& name,
     return new consume_magic_t( this, options_str );
   if ( name == "demon_spikes" )
     return new demon_spikes_t( this, options_str );
+  if ( name == "disrupt" )
+    return new disrupt_t( this, options_str );
   if ( name == "eye_beam" )
     return new eye_beam_t( this, options_str );
   if ( name == "fel_barrage" )
@@ -4626,6 +4657,7 @@ void demon_hunter_t::init_spells()
   spec.consume_soul_lesser    = specialization() == DEMON_HUNTER_HAVOC ? 
                                   find_spell( 178963 ) : find_spell( 203794 );
   spec.critical_strikes       = find_spell( 221351 );  // not a class spell
+  spec.disrupt                = find_class_spell( "Disrupt" );
   spec.leather_specialization = specialization() == DEMON_HUNTER_HAVOC ? 
                                   find_spell( 178976 ) : find_spell( 226359 );
   spec.metamorphosis          = find_class_spell("Metamorphosis");
@@ -4938,7 +4970,7 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( "variable,name=pooling_for_blade_dance,value=variable.blade_dance&(fury<75-talent.first_blood.enabled*20)" );
   apl_default->add_action( "variable,name=waiting_for_dark_slash,value=talent.dark_slash.enabled&!variable.pooling_for_blade_dance&!variable.pooling_for_meta&cooldown.dark_slash.up" );
   apl_default->add_action( "variable,name=waiting_for_momentum,value=talent.momentum.enabled&!buff.momentum.up" );
-  apl_default->add_action( this, "Consume Magic" );
+  apl_default->add_action( this, "Disrupt" );
   apl_default->add_action( "call_action_list,name=cooldown,if=gcd.remains=0" );
   apl_default->add_action( "pick_up_fragment,if=fury.deficit>=35" );
   apl_default->add_action( "call_action_list,name=dark_slash,if=talent.dark_slash.enabled&(variable.waiting_for_dark_slash|debuff.dark_slash.up)" );
@@ -5035,6 +5067,7 @@ void demon_hunter_t::create_cooldowns()
 {
   // General
   cooldown.consume_magic        = get_cooldown( "consume_magic" );
+  cooldown.disrupt              = get_cooldown( "disrupt" );
   cooldown.felblade             = get_cooldown( "felblade" );
   cooldown.fel_eruption         = get_cooldown( "fel_eruption" );
 
