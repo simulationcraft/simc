@@ -93,7 +93,6 @@ struct mage_td_t : public actor_target_data_t
 
   struct debuffs_t
   {
-    buff_t* erosion;
     buff_t* winters_chill;
     buff_t* frozen;
   } debuffs;
@@ -593,7 +592,6 @@ public:
     const spell_data_t* frigid_winds; // NYI
 
     // Tier 90
-    const spell_data_t* erosion;
     const spell_data_t* nether_tempest;
     const spell_data_t* flame_patch;
     const spell_data_t* conflagration;
@@ -748,7 +746,6 @@ struct mage_spell_base_t : public spell_t
 
     // Misc
     bool combustion;
-    bool erosion;
     bool ice_floes;
     bool shatter;
 
@@ -762,7 +759,6 @@ struct mage_spell_base_t : public spell_t
       incanters_flow( true ),
       rune_of_power( true ),
       combustion( true ),
-      erosion( true ),
       ice_floes( false ),
       shatter( false )
     { }
@@ -826,17 +822,6 @@ struct mage_spell_base_t : public spell_t
     return c;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double tm = spell_t::composite_target_multiplier( target );
-
-    if ( affected_by.erosion && mage -> target_data[ target ] )
-    {
-      tm *= 1.0 + mage -> target_data[ target ] -> debuffs.erosion -> check_stack_value();
-    }
-
-    return tm;
-  }
 };
 
 namespace pets
@@ -875,7 +860,6 @@ struct mage_pet_spell_t : public mage_spell_base_t
     affected_by.rune_of_power = false;
 
     affected_by.combustion = false;
-    affected_by.erosion = false;
   }
 
   mage_t* o()
@@ -1092,85 +1076,6 @@ action_t* mirror_image_pet_t::create_action( const std::string& name,
 }  // pets
 
 namespace buffs {
-struct erosion_t : public buff_t
-{
-  // Erosion debuff =============================================================
-
-  struct erosion_event_t : public event_t
-  {
-    erosion_t* debuff;
-    const spell_data_t* data;
-
-    static timespan_t delta_time( const spell_data_t* data, bool triggered )
-    {
-      // Erosion debuff decays 3 seconds after direct application,
-      // followed by a 1 stack every second
-      if ( triggered )
-      {
-        return data -> duration();
-      }
-      return data -> effectN( 1 ).period();
-    }
-
-    erosion_event_t( actor_t& m, erosion_t* _debuff, const spell_data_t* _data, bool triggered = false ) :
-      event_t( m, delta_time( _data, triggered ) ),
-      debuff( _debuff ),
-      data( _data )
-    { }
-
-    virtual const char* name() const override
-    { return "erosion_decay_event"; }
-
-    virtual void execute() override
-    {
-      debuff -> decay_event = nullptr;
-      debuff -> decrement();
-
-      // Always update the parent debuff's reference to the decay event, so that it
-      // can be cancelled upon a new application of the debuff
-      if ( debuff -> check() > 0 )
-      {
-        debuff -> decay_event = make_event<erosion_event_t>( sim(), *debuff -> source, debuff, data );
-      }
-    }
-  };
-
-  const spell_data_t* erosion_event_data;
-  event_t* decay_event;
-
-  erosion_t( mage_td_t* td ) :
-    buff_t( *td, "erosion", td -> source -> find_spell( 210134 ) ),
-    erosion_event_data( td -> source -> find_spell( 210154 ) ),
-    decay_event( nullptr )
-  {
-    set_default_value( data().effectN( 1 ).percent() );
-  }
-
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    bool triggered = buff_t::trigger( stacks, value, chance, duration );
-    if ( triggered )
-    {
-      event_t::cancel( decay_event );
-      decay_event = make_event<erosion_event_t>( *sim, *source, this, erosion_event_data, true );
-    }
-
-    return triggered;
-  }
-
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    event_t::cancel( decay_event );
-  }
-
-  virtual void reset() override
-  {
-    event_t::cancel( decay_event );
-    buff_t::reset();
-  }
-};
-
 
 // Custom buffs ===============================================================
 struct brain_freeze_buff_t : public buff_t
@@ -1558,23 +1463,11 @@ typedef residual_action::residual_periodic_action_t<mage_spell_t> residual_actio
 
 struct arcane_mage_spell_t : public mage_spell_t
 {
-  bool triggers_erosion;
 
   arcane_mage_spell_t( const std::string& n, mage_t* p,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    mage_spell_t( n, p, s ),
-    triggers_erosion( true )
+    mage_spell_t( n, p, s )
   { }
-
-  virtual void init() override
-  {
-    mage_spell_t::init();
-
-    if ( ! harmful )
-    {
-      triggers_erosion = false;
-    }
-  }
 
   double savant_damage_bonus() const
   {
@@ -1626,15 +1519,6 @@ struct arcane_mage_spell_t : public mage_spell_t
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
   }
 
-  virtual void impact( action_state_t* s ) override
-  {
-    mage_spell_t::impact( s );
-
-    if ( p() -> talents.erosion -> ok() && result_is_hit( s -> result ) && triggers_erosion )
-    {
-      td( s -> target ) -> debuffs.erosion -> trigger();
-    }
-  }
 };
 
 
@@ -2468,7 +2352,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     may_miss = false;
-    triggers_erosion = false;
     dot_duration      = data().duration();
     base_tick_time    = data().effectN( 2 ).period();
     tick_zero         = true;
@@ -2626,7 +2509,6 @@ struct arcane_orb_t : public arcane_mage_spell_t
 
     may_miss = false;
     may_crit = false;
-    triggers_erosion = false;
 
     if ( legendary )
     {
@@ -4844,7 +4726,6 @@ struct slow_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     ignore_false_positive = true;
-    triggers_erosion = false;
   }
 };
 
@@ -5384,7 +5265,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 {
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
 
-  debuffs.erosion       = make_buff<buffs::erosion_t>( this );
   debuffs.frozen        = make_buff( *this, "frozen" )
                             -> set_duration( timespan_t::from_seconds( 0.5 ) );
   debuffs.winters_chill = make_buff( *this, "winters_chill", mage -> find_spell( 228358 ) )
@@ -5839,7 +5719,6 @@ void mage_t::init_spells()
   talents.frenetic_speed     = find_talent_spell( "Frenetic Speed"     );
   talents.frigid_winds       = find_talent_spell( "Frigid Winds"       );
   // Tier 90
-  talents.erosion            = find_talent_spell( "Erosion"            );
   talents.nether_tempest     = find_talent_spell( "Nether Tempest"     );
   talents.flame_patch        = find_talent_spell( "Flame Patch"        );
   talents.conflagration      = find_talent_spell( "Conflagration"      );
