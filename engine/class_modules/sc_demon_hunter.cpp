@@ -1601,6 +1601,14 @@ struct eye_beam_t : public demon_hunter_spell_t
     tick_damage->stats = stats;
   }
 
+  virtual bool init_finished() override
+  {
+    // For reporting purposes only as is technically SCHOOL_CHROMATIC
+    stats->school = SCHOOL_CHAOS;
+
+    return demon_hunter_spell_t::init_finished();
+  }
+
   void tick( dot_t* d ) override
   {
     demon_hunter_spell_t::tick( d );
@@ -1688,6 +1696,14 @@ struct fel_barrage_t : public demon_hunter_spell_t
       tick_damage = new fel_barrage_tick_t(p);
     }
     tick_damage->stats = stats;
+  }
+
+  virtual bool init_finished() override
+  {
+    // For reporting purposes only as is technically SCHOOL_CHROMATIC
+    stats->school = SCHOOL_CHAOS; 
+
+    return demon_hunter_spell_t::init_finished();
   }
 
   void tick( dot_t* d ) override
@@ -2206,6 +2222,14 @@ struct metamorphosis_t : public demon_hunter_spell_t
       background   = true;
       aoe          = -1;
       dot_duration = timespan_t::zero();
+    }
+
+    virtual bool init_finished() override
+    {
+      // For reporting purposes only as is technically SCHOOL_CHROMATIC
+      stats->school = SCHOOL_CHAOS;
+
+      return demon_hunter_spell_t::init_finished();
     }
   };
 
