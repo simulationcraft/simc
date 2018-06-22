@@ -2343,7 +2343,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
       hunter_ranged_attack_t( n, p, p -> find_spell( 278565 ) )
     {
       aoe = -1;
-      base_dd_adder += p -> azerite.rapid_reload.value( 1 );
+      base_dd_min = base_dd_max = p -> azerite.rapid_reload.value( 1 );
       // TODO: check if it reduces aotw cd
     }
   };
