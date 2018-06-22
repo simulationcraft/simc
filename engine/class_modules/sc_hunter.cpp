@@ -1575,7 +1575,6 @@ public:
   struct {
     // bm
     bool aspect_of_the_beast;
-    bool thrill_of_the_hunt;
     // sv
     bool spirit_bond;
     bool sv_legendary_cloak;
@@ -1585,7 +1584,6 @@ public:
                             ab( n, p, s ), affected_by()
   {
     affected_by.aspect_of_the_beast = ab::data().affected_by( ab::o() -> talents.aspect_of_the_beast -> effectN( 1 ) );
-    affected_by.thrill_of_the_hunt = ab::data().affected_by( ab::o() -> talents.thrill_of_the_hunt -> effectN( 1 ) );
 
     affected_by.spirit_bond = ab::data().affected_by( ab::o() -> mastery.spirit_bond -> effectN( 1 ) );
     affected_by.sv_legendary_cloak = ab::data().affected_by( ab::o() -> find_spell( 248212 ) -> effectN( 1 ) );
@@ -1610,16 +1608,6 @@ public:
       am *= 1.0 + ab::o() -> cache.mastery() * ab::o() -> mastery.spirit_bond -> effectN( 1 ).mastery_value();
 
     return am;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = ab::composite_crit_chance();
-
-    if ( affected_by.thrill_of_the_hunt )
-      cc += ab::o() -> buffs.thrill_of_the_hunt -> check_stack_value();
-
-    return cc;
   }
 
   double composite_target_crit_chance( player_t* t ) const override
