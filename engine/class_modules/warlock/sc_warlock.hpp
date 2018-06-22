@@ -1277,7 +1277,7 @@ namespace warlock
             if (havocd)
               pm *= p()->spec.havoc->effectN(1).percent();
 
-            if (p()->buffs.grimoire_of_supremacy->check() && this->data().affected_by(p()->talents.grimoire_of_supremacy->effectN(1)))
+            if (p()->buffs.grimoire_of_supremacy->check() && this->data().affected_by(p()->find_spell(266091)->effectN(1)))
             {
               pm *= 1.0 + p()->buffs.grimoire_of_supremacy->check_stack_value();
             }
