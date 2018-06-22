@@ -647,6 +647,13 @@ class WDC1Column:
         elif self.__block_type == COLUMN_TYPE_SPARSE:
             self.__default_value = ext_data[4]
 
+            # Sparse float fields definitely have float-valued defaults.
+            # This likely generalizes to arbitrary field types, but for now,
+            # we conservatively use this hack.
+            if self.__format.data_type == 'f':
+                packed = Struct('<I').pack(self.__default_value)
+                self.__default_value = Struct('<f').unpack(packed)[0]
+
             if ext_data[5] > 0 or ext_data[6] > 0:
                 logging.warn('Sparse data field has unexpted non-zero values (%d, %d)',
                     ext_data[5], ext_data[6])
