@@ -7493,7 +7493,7 @@ void druid_t::apl_balance()
   ST -> add_action( this, "Half Moon", "if=astral_power.deficit>20");
   ST -> add_action( this, "Full Moon", "if=astral_power.deficit>40");
   ST -> add_action( this, "Solar Wrath", "if=buff.solar_empowerment.up");
-  ST -> add_action( this, "Lunar Strike", "buff.lunar_empowerment.up&(!talent.warrior_of_elune.enabled|cooldown.warrior_of_elune.remains>20)|spell_targets.lunar_strike>=2");
+  ST -> add_action( this, "Lunar Strike", "if=buff.lunar_empowerment.up&(!talent.warrior_of_elune.enabled|cooldown.warrior_of_elune.remains>20)|spell_targets.lunar_strike>=2");
   ST -> add_action( this, "Solar Wrath");
 
   AoE -> add_talent( this, "Fury of Elune", "if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)");
