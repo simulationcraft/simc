@@ -1221,7 +1221,7 @@ struct dark_ascension_t final : public priest_spell_t
     is_mastery_spell = true;
     aoe              = -1;
     radius           = data().effectN( 1 ).radius_max();
-    spell_power_mod.direct = data_spell->effectN( 1 ).sp_coeff() * ( 1 + p.find_spell( 137033 )->effectN( 1 ).percent() ) ;
+    spell_power_mod.direct = data_spell->effectN( 1 ).sp_coeff();
   }
 
   void execute() override

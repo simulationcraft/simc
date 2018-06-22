@@ -900,7 +900,7 @@ public:
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
-    if ( shadow_damage_increase )
+    if ( shadow_damage_increase || s->id() == 280711u )
       ab::base_dd_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 1 ).percent();
     if ( shadow_dot_increase )
       ab::base_td_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 2 ).percent();
