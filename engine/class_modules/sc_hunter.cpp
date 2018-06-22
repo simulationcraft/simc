@@ -1939,7 +1939,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
     if ( o() -> azerite.pack_alpha.ok() )
     {
-      const pet_t* pets[] = { o() -> pets.animal_companion, o() -> pets.dire_beast, o() -> pets.spitting_cobra };
+      const pet_t* pets[] = { o() -> pets.dire_beast, o() -> pets.spitting_cobra };
       const auto pet_count = range::count_if( pets, []( const pet_t* p ) { return p && !p -> is_sleeping(); } );
       b += pack_alpha_bonus_da * pet_count;
     }
