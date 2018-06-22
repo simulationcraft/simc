@@ -654,18 +654,6 @@ namespace warlock {
           p()->buffs.backdraft->decrement();
       }
 
-      double action_multiplier()const override
-      {
-        double m = warlock_spell_t::action_multiplier();
-
-        if (p()->buffs.grimoire_of_supremacy->check())
-        {
-          m *= 1.0 + p()->buffs.grimoire_of_supremacy->check_stack_value();
-        }
-
-        return m;
-      }
-
       // Force spell to always crit
       double composite_crit_chance() const override
       {

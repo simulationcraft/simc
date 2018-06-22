@@ -1272,8 +1272,16 @@ namespace warlock
             pm *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
           }
 
-          if (havocd)
-            pm *= p()->spec.havoc->effectN(1).percent();
+          if (p()->specialization() == WARLOCK_DESTRUCTION)
+          {
+            if (havocd)
+              pm *= p()->spec.havoc->effectN(1).percent();
+
+            if (p()->buffs.grimoire_of_supremacy->check() && this->data().affected_by(p()->talents.grimoire_of_supremacy->effectN(1)))
+            {
+              pm *= 1.0 + p()->buffs.grimoire_of_supremacy->check_stack_value();
+            }
+          }
 
           if (p()->specialization() == WARLOCK_DEMONOLOGY)
           {
@@ -1413,9 +1421,6 @@ namespace warlock
 
         virtual bool ready() override {
           if ( p()->warlock_pet_list.active == pet )
-            return false;
-
-          if ( p()->talents.grimoire_of_supremacy->ok() ) //if we have the uberpets, we can't summon our standard pets
             return false;
 
           return summon_pet_t::ready();
