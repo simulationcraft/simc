@@ -14,6 +14,10 @@ namespace { // UNNAMED NAMESPACE
 // Forward declarations
 struct mage_t;
 
+namespace buffs {
+  struct touch_of_the_magi_t;
+}
+
 namespace pets {
   namespace water_elemental {
     struct water_elemental_pet_t;
@@ -95,6 +99,9 @@ struct mage_td_t : public actor_target_data_t
   {
     buff_t* winters_chill;
     buff_t* frozen;
+
+    buffs::touch_of_the_magi_t* touch_of_the_magi;
+
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -344,6 +351,7 @@ public:
   {
     action_t* arcane_assault;
     action_t* conflagration_flare_up;
+    action_t* touch_of_the_magi_explosion;
     action_t* legendary_arcane_orb;
     action_t* legendary_meteor;
     action_t* legendary_comet_storm;
@@ -593,6 +601,7 @@ public:
 
     // Tier 90
     const spell_data_t* reverberate;
+    const spell_data_t* touch_of_the_magi;
     const spell_data_t* nether_tempest;
     const spell_data_t* flame_patch;
     const spell_data_t* conflagration;
@@ -628,6 +637,7 @@ public:
   virtual void        init_base_stats() override;
   virtual void        create_buffs() override;
   virtual void        create_options() override;
+  virtual void        init_assessors() override;
   virtual void        init_gains() override;
   virtual void        init_procs() override;
   virtual void        init_benefits() override;
@@ -1077,6 +1087,58 @@ action_t* mirror_image_pet_t::create_action( const std::string& name,
 
 namespace buffs {
 
+// Touch of the Magi debuff ===================================================
+
+struct touch_of_the_magi_t : public buff_t
+{
+  double accumulated_damage;
+
+  touch_of_the_magi_t( mage_td_t* td ) :
+    buff_t( buff_creator_t( *td, "touch_of_the_magi", td -> source -> find_spell( 210824 ) ) ),
+    accumulated_damage( 0.0 )
+  {
+    const spell_data_t* data = source -> find_spell( 210725 );
+
+    default_chance = data -> proc_chance();
+    set_cooldown( data -> internal_cooldown() );
+  }
+
+  virtual void reset() override
+  {
+    buff_t::reset();
+    accumulated_damage = 0.0;
+  }
+
+  virtual void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+
+    auto mage = debug_cast<mage_t*>( source );
+    assert( mage -> action.touch_of_the_magi_explosion );
+
+    mage -> action.touch_of_the_magi_explosion -> set_target( player );
+    mage -> action.touch_of_the_magi_explosion -> base_dd_min = accumulated_damage;
+    mage -> action.touch_of_the_magi_explosion -> base_dd_max = accumulated_damage;
+    mage -> action.touch_of_the_magi_explosion -> execute();
+
+    accumulated_damage = 0.0;
+  }
+
+  double accumulate_damage( action_state_t* state )
+  {
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf(
+        "%s's %s accumulates %f additional damage: %f -> %f",
+        player -> name(), name(), state -> result_total,
+        accumulated_damage, accumulated_damage + state -> result_total
+      );
+    }
+
+    accumulated_damage += state -> result_total;
+    return accumulated_damage;
+  }
+};
 // Custom buffs ===============================================================
 struct brain_freeze_buff_t : public buff_t
 {
@@ -2226,6 +2288,19 @@ struct arcane_blast_t : public arcane_mage_spell_t
                 p() -> spec.arcane_charge -> effectN( 4 ).percent();
 
     return t;
+  }
+
+  virtual void impact( action_state_t* s ) override
+  {
+      arcane_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+        if ( p() -> talents.touch_of_the_magi -> ok() )
+        {
+            p() -> get_target_data( s -> target ) -> debuffs.touch_of_the_magi -> trigger();
+        }
+    }
   }
 
 };
@@ -4854,6 +4929,47 @@ struct time_warp_t : public mage_spell_t
   }
 };
 
+// Touch of the Magi ==========================================================
+
+struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
+{
+  touch_of_the_magi_explosion_t( mage_t* p ) :
+    arcane_mage_spell_t( "touch_of_the_magi", p, p -> find_spell( 210833 ) )
+  {
+    background = true;
+    may_miss = may_crit = callbacks = false;
+    aoe = -1;
+    base_dd_min = base_dd_max = 1.0;
+  }
+
+  virtual void init() override
+  {
+    mage_spell_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = arcane_mage_spell_t::composite_target_multiplier( target );
+
+    // It seems that TotM explosion only double dips on target based damage reductions
+    // and not target based damage increases.
+    m = std::min( m, 1.0 );
+
+    return m;
+  }
+
+  virtual void execute() override
+  {
+    double mult = p() -> talents.touch_of_the_magi -> effectN( 1 ).percent();
+    base_dd_min *= mult;
+    base_dd_max *= mult;
+
+    mage_spell_t::execute();
+  }
+};
 
 // ============================================================================
 // Mage Custom Actions
@@ -5247,6 +5363,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
   debuffs.frozen        = make_buff( *this, "frozen" )
                             -> set_duration( timespan_t::from_seconds( 0.5 ) );
+  debuffs.touch_of_the_magi = new buffs::touch_of_the_magi_t( this );
   debuffs.winters_chill = make_buff( *this, "winters_chill", mage -> find_spell( 228358 ) )
                             -> set_chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
 }
@@ -5457,6 +5574,11 @@ bool mage_t::create_actions()
   if ( talents.conflagration -> ok() )
   {
     action.conflagration_flare_up = new conflagration_flare_up_t( this );
+  }
+
+  if ( talents.touch_of_the_magi -> ok() )
+  {
+    action.touch_of_the_magi_explosion = new touch_of_the_magi_explosion_t( this );
   }
 
   // Global actions for 7.2.5 legendaries.
@@ -5699,6 +5821,7 @@ void mage_t::init_spells()
   talents.frigid_winds       = find_talent_spell( "Frigid Winds"       );
   // Tier 90
   talents.reverberate        = find_talent_spell( "Reverberate"        );
+  talents.touch_of_the_magi  = find_talent_spell( "Touch of the Magi"  );
   talents.nether_tempest     = find_talent_spell( "Nether Tempest"     );
   talents.flame_patch        = find_talent_spell( "Flame Patch"        );
   talents.conflagration      = find_talent_spell( "Conflagration"      );
@@ -6051,6 +6174,33 @@ void mage_t::init_uptimes()
 
 }
 
+// mage_t::init_assessors =====================================================
+void mage_t::init_assessors()
+{
+  player_t::init_assessors();
+
+  if ( talents.touch_of_the_magi -> ok() )
+  {
+    auto assessor_fn = [ this ] ( dmg_e, action_state_t* state ) {
+      buffs::touch_of_the_magi_t* buff =
+        get_target_data( state -> target ) -> debuffs.touch_of_the_magi;
+
+      if ( buff -> check() )
+      {
+        buff -> accumulate_damage( state );
+      }
+
+      return assessor::CONTINUE;
+    };
+
+    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+
+    for ( auto pet : pet_list )
+    {
+      pet -> assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+    }
+  }
+}
 
 // mage_t::init_actions =====================================================
 
