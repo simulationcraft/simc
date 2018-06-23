@@ -1042,8 +1042,8 @@ public:
   virtual bool init_finished() override
   {
     // For reporting purposes only, as the game displays this as SCHOOL_CHAOS
-    if(stats->school == SCHOOL_CHROMATIC )
-      stats->school = SCHOOL_CHAOS;
+    if ( ab::stats->school == SCHOOL_CHROMATIC )
+      ab::stats->school = SCHOOL_CHAOS;
 
     return ab::init_finished();
   }
