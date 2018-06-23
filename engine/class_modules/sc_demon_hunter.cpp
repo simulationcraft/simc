@@ -1048,16 +1048,16 @@ public:
     return ab::init_finished();
   }
 
-  virtual double action_multiplier() const override
+  virtual double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double am = ab::action_multiplier();
+    double dm = ab::composite_da_multiplier( s );
 
     if ( demonic_presence )
     {
-      am *= 1.0 + p()->cache.mastery_value();
+      dm *= 1.0 + p()->cache.mastery_value();
     }
 
-    return am;
+    return dm;
   }
 
   virtual double composite_energize_amount( const action_state_t* s ) const override
@@ -1113,7 +1113,6 @@ public:
 
       if ( s->result_amount > 0 )
       {
-        // Benefit tracking
         track_benefits( s );
       }
     }
@@ -1127,11 +1126,6 @@ public:
     {
       trigger_refund();
     }
-  }
-
-  void consume_resource() override
-  {
-    ab::consume_resource();
   }
 
   virtual bool ready() override
@@ -1157,11 +1151,9 @@ public:
 
   void trigger_refund()
   {
-    if ( ab::resource_current == RESOURCE_FURY ||
-          ab::resource_current == RESOURCE_PAIN )
+    if ( ab::resource_current == RESOURCE_FURY || ab::resource_current == RESOURCE_PAIN )
     {
-      p()->resource_gain( ab::resource_current, ab::last_resource_cost * 0.80,
-                          p()->gain.miss_refund );
+      p()->resource_gain( ab::resource_current, ab::last_resource_cost * 0.80, p()->gain.miss_refund );
     }
   }
 
