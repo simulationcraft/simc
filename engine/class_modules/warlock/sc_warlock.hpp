@@ -446,7 +446,7 @@ namespace warlock
 
       timespan_t shard_react;
 
-      warlock_t( sim_t* sim, const std::string& name, race_e r = RACE_UNDEAD );
+      warlock_t( sim_t* sim, const std::string& name, race_e r );
 
       // Character Definition
       void      init_spells() override;
@@ -1074,23 +1074,6 @@ namespace warlock
 
       struct warlock_spell_t : public spell_t
       {
-      private:
-        void _init_warlock_spell_t()
-        {
-          may_crit = true;
-          tick_may_crit = true;
-          weapon_multiplier = 0.0;
-          gain = player->get_gain( name_str );
-
-          can_havoc = false;
-          affected_by_destruction_t20_4pc = false;
-          affected_by_deaths_embrace = false;
-          destro_mastery = true;
-          can_feretory = true;
-
-          parse_spell_coefficient( *this );
-        }
-
       public:
         gain_t * gain;
 
@@ -1105,21 +1088,30 @@ namespace warlock
         bool can_feretory;
 
         warlock_spell_t( warlock_t* p, const std::string& n ) :
-          spell_t( n, p, p -> find_class_spell( n ) )
+          warlock_spell_t( n, p, p -> find_class_spell( n ) )
         {
-          _init_warlock_spell_t();
         }
 
         warlock_spell_t( warlock_t* p, const std::string& n, specialization_e s ) :
-          spell_t( n, p, p -> find_class_spell( n, s ) )
+          warlock_spell_t( n, p, p -> find_class_spell( n, s ) )
         {
-          _init_warlock_spell_t();
         }
 
         warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() ) :
           spell_t( token, p, s )
         {
-          _init_warlock_spell_t();
+          may_crit = true;
+          tick_may_crit = true;
+          weapon_multiplier = 0.0;
+          gain = player->get_gain( name_str );
+
+          can_havoc = false;
+          affected_by_destruction_t20_4pc = false;
+          affected_by_deaths_embrace = false;
+          destro_mastery = true;
+          can_feretory = true;
+
+          parse_spell_coefficient( *this );
         }
 
         warlock_t* p()
@@ -1241,18 +1233,31 @@ namespace warlock
         {
           spell_t::tick( d );
 
-          if ( d->state->result > 0 && result_is_hit( d->state->result ) && td( d->target )->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id )
-            accumulate_seed_of_corruption( td( d->target ), d->state->result_amount );
+          if (d->state->result > 0 && result_is_hit( d->state->result ))
+          {
+            if (auto td = find_td( d->target ))
+            {
+              if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
+              {
+                accumulate_seed_of_corruption( td, d->state->result_amount );
+              }
+            }
+          }
         }
 
         void impact( action_state_t* s ) override
         {
           spell_t::impact( s );
 
-          if ( s->result_amount > 0 && result_is_hit( s->result ) && td( s->target )->dots_seed_of_corruption->is_ticking()
-            && id != p()->spells.seed_of_corruption_aoe->id )
+          if (s->result_amount > 0 && result_is_hit( s->result ))
           {
-            accumulate_seed_of_corruption( td( s->target ), s->result_amount );
+            if (auto td = find_td( s->target ))
+            {
+              if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
+              {
+                accumulate_seed_of_corruption( td, s->result_amount );
+              }
+            }
           }
 
           if (p()->talents.reverse_entropy->ok())
@@ -1269,10 +1274,11 @@ namespace warlock
         {
           double m = spell_t::composite_target_multiplier(t);
 
-          auto td = this->td( t );
-
-          if ( td->debuffs_eradication->check() )
-            m *= 1.0 + td->debuffs_eradication->data().effectN( 1 ).percent();
+          if (auto td = find_td( t ))
+          {
+            if ( td->debuffs_eradication->check() )
+              m *= 1.0 + td->debuffs_eradication->data().effectN( 1 ).percent();
+          }
 
           if ( p()->legendary.odr_shawl_of_the_ymirjar && target == p()->havoc_target && affected_by_odr_shawl_of_the_ymirjar  )
             m *= 1.0 + p()->legendary.odr_shawl_of_the_ymirjar->effectN( 1 ).percent();
@@ -1315,23 +1321,6 @@ namespace warlock
           }
 
           return pm;
-        }
-
-        resource_e current_resource() const override
-        {
-          return spell_t::current_resource();
-        }
-
-        double composite_target_crit_chance( player_t* target ) const override
-        {
-          double c = spell_t::composite_target_crit_chance( target );
-          return c;
-        }
-
-        bool consume_cost_per_tick( const dot_t& dot ) override
-        {
-          bool consume = spell_t::consume_cost_per_tick( dot );
-          return consume;
         }
 
         void extend_dot( dot_t* dot, timespan_t extend_duration )

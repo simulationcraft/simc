@@ -520,7 +520,8 @@ namespace warlock {
       };
 
       darkhound_t::darkhound_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-          warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "darkhound")
+          warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "darkhound"),
+          fel_bite()
       {
         action_list_str = "travel/fel_bite";
         owner_coeff.ap_from_sp = 0.065;
@@ -550,6 +551,7 @@ namespace warlock {
         return warlock_pet_t::create_action(name, options_str);
       }
     }
+
     namespace bilescourge {
       struct toxic_bile_t : public warlock_pet_spell_t
       {
@@ -575,6 +577,7 @@ namespace warlock {
         return warlock_pet_t::create_action(name, options_str);
       }
     }
+
     namespace urzul {
       struct many_faced_bite_t : public warlock_pet_melee_attack_t
       {
@@ -620,6 +623,7 @@ namespace warlock {
         return warlock_pet_t::create_action(name, options_str);
       }
     }
+
     namespace void_terror {
       struct double_breath_damage_t : public warlock_pet_spell_t
       {
@@ -681,6 +685,7 @@ namespace warlock {
         return warlock_pet_t::create_action(name, options_str);
       }
     }
+
     namespace wrathguard {
       struct overhead_assault_t : public warlock_pet_melee_attack_t
       {
@@ -726,6 +731,7 @@ namespace warlock {
         return warlock_pet_t::create_action(name, options_str);
       }
     }
+
     namespace vicious_hellhound {
       struct demon_fangs_t : public warlock_pet_melee_attack_t
       {
@@ -772,6 +778,7 @@ namespace warlock {
         return warlock_pet_t::create_action(name, options_str);
       }
     }
+
     namespace illidari_satyr {
       struct shadow_slash_t : public warlock_pet_melee_attack_t
       {
@@ -817,6 +824,7 @@ namespace warlock {
         return warlock_pet_t::create_action(name, options_str);
       }
     }
+
     namespace eyes_of_guldan {
       struct eye_of_guldan_t : public warlock_pet_spell_t
       {
@@ -854,6 +862,7 @@ namespace warlock {
         return warlock_pet_t::create_action(name, options_str);
       }
     }
+
     namespace prince_malchezaar {
       prince_malchezaar_t::prince_malchezaar_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "prince_malchezaar") {
         owner_coeff.ap_from_sp = 0.616;
@@ -989,22 +998,28 @@ namespace warlock {
           void impact(action_state_t* s) override {
               warlock_spell_t::impact(s);
 
-              if (result_is_hit(s->result) & td(s->target) == td(target)) {
-                int j = 0;
-
-                for (auto imp : p()->warlock_pet_list.wild_imps)
+              if (result_is_hit(s->result))
+              {
+                // Only trigger wild imps once for the original target impact.
+                // Still keep it in impact instead of execute because of travel delay.
+                if (s->target == target)
                 {
-                  if (imp->is_sleeping())
-                  {
-                    imp->summon(timespan_t::from_seconds(25));
-                    if (++j == shards_used) break;
-                  }
-                }
+                  int j = 0;
 
-                if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2)) {
-                    for (int i = 0; i < shards_used; i++) {
-                        p()->buffs.rage_of_guldan->trigger();
+                  for (auto imp : p()->warlock_pet_list.wild_imps)
+                  {
+                    if (imp->is_sleeping())
+                    {
+                      imp->summon(timespan_t::from_seconds(25));
+                      if (++j == shards_used) break;
                     }
+                  }
+
+                  if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2)) {
+                      for (int i = 0; i < shards_used; i++) {
+                          p()->buffs.rage_of_guldan->trigger();
+                      }
+                  }
                 }
               }
           }
@@ -1033,6 +1048,7 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
+
         p()->buffs.demonic_core->up(); // benefit tracking
         p()->buffs.demonic_core->decrement();
         p()->buffs.demonic_calling->trigger();
@@ -1044,7 +1060,7 @@ namespace warlock {
 
         if (p()->talents.sacrificed_souls->ok())
         {
-          double pets = 0;
+          int active_pets = 0;
           for (auto& pet : p()->pet_list)
           {
             auto lock_pet = dynamic_cast<pets::warlock_pet_t*>(pet);
@@ -1054,9 +1070,9 @@ namespace warlock {
             if (lock_pet->is_sleeping())
               continue;
 
-            pets++;
+            active_pets++;
           }
-          m *= 1.0 + (p()->talents.sacrificed_souls->effectN(1).percent() * pets);
+          m *= 1.0 + (p()->talents.sacrificed_souls->effectN(1).percent() * active_pets);
         }
 
         return m;
@@ -1077,6 +1093,7 @@ namespace warlock {
       double cost() const override
       {
         double c = warlock_spell_t::cost();
+
         if (p()->buffs.demonic_calling->check())
         {
           c -= p()->talents.demonic_calling->effectN(1).base_value();
@@ -1318,6 +1335,7 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
+
         if (p()->warlock_pet_list.active->pet_type == PET_FELGUARD)
         {
           p()->warlock_pet_list.active->buffs.demonic_strength->trigger();
@@ -1404,9 +1422,12 @@ namespace warlock {
         }
         
         std::sort(imps.begin(), imps.end(), lower_energy());
-        if(imps.size()>p()->talents.power_siphon->effectN(1).base_value()) imps.resize(p()->talents.power_siphon->effectN(1).base_value());
 
-        while (imps.size() > 0)
+        unsigned max_imps = p()->talents.power_siphon->effectN(1).base_value();
+        if(imps.size() > max_imps)
+          imps.resize(max_imps);
+
+        while (!imps.empty())
         {
           p()->buffs.demonic_core->trigger();
           pets::wild_imp::wild_imp_pet_t* imp = imps.front();
@@ -1496,6 +1517,7 @@ namespace warlock {
             vilefiend->summon(data().duration());
             vilefiend->active.bile_spit->set_target(execute_state->target);
             vilefiend->active.bile_spit->execute();
+            break;
           }
         }
       }
@@ -1558,16 +1580,112 @@ namespace warlock {
     };
 
     struct summon_random_demon_t : public warlock_spell_t {
-      summon_random_demon_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("summon_random_demon", p) {
+
+      enum class random_pet_e : int
+      {
+        prince_malchezaar = 1,
+        eyes_of_guldan = 2,
+        shivarra = 3,
+        darkhounds = 4,
+        bilescourges = 5,
+        urzuls = 6,
+        void_terrors = 7,
+        wrathguards = 8,
+        vicious_hellhounds = 9,
+        illidari_satyrs = 10,
+      };
+
+      timespan_t summon_duration;
+      summon_random_demon_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("summon_random_demon", p),
+        summon_duration(timespan_t::from_seconds(15))
+      {
         parse_options(options_str);
         background = true;
       }
 
       void execute() override
       {
+        warlock_spell_t::execute();
+
+        auto random_pet = roll_random_pet();
+        summon_random_pet(random_pet);
+      }
+
+    private:
+      /**
+       * Helper function to actually summon 'num_summons' random pets from a given pet list.
+       */
+      template<typename pet_list_type>
+      void summon_random_pet_helper(const pet_list_type& pet_list, int num_summons = 1)
+      {
+        int pets_summoned = 0;
+        for (auto demon : pet_list)
+        {
+          if (demon->is_sleeping())
+          {
+            demon->summon(summon_duration);
+            ++pets_summoned;
+            if (pets_summoned >= num_summons)
+            {
+              break;
+            }
+          }
+        }
+      }
+
+      /**
+       * Summon the random pet(s) specified.
+       */
+      void summon_random_pet(random_pet_e random_pet)
+      {
+        switch (random_pet) {
+          case random_pet_e::prince_malchezaar:
+            summon_random_pet_helper(p()->warlock_pet_list.prince_malchezaar);
+            break;
+          case random_pet_e::eyes_of_guldan: {
+            // Summon all eyes at once. Confirmed by pip 2018-06-23.
+            summon_random_pet_helper(p()->warlock_pet_list.eyes_of_guldan, p()->warlock_pet_list.eyes_of_guldan.size());
+            break;
+          case random_pet_e::shivarra:
+            summon_random_pet_helper(p()->warlock_pet_list.shivarra);
+            break;
+          case random_pet_e::darkhounds:
+            summon_random_pet_helper(p()->warlock_pet_list.darkhounds);
+            break;
+          case random_pet_e::bilescourges:
+            summon_random_pet_helper(p()->warlock_pet_list.bilescourges);
+            break;
+          case random_pet_e::urzuls:
+            summon_random_pet_helper(p()->warlock_pet_list.urzuls);
+            break;
+          case random_pet_e::void_terrors:
+            summon_random_pet_helper(p()->warlock_pet_list.void_terrors);
+            break;
+          case random_pet_e::wrathguards:
+            summon_random_pet_helper(p()->warlock_pet_list.wrathguards);
+            break;
+          case random_pet_e::vicious_hellhounds:
+            summon_random_pet_helper(p()->warlock_pet_list.vicious_hellhounds);
+            break;
+          case random_pet_e::illidari_satyrs:
+            summon_random_pet_helper(p()->warlock_pet_list.illidari_satyrs);
+            break;
+          default:
+            assert(false && "trying to summon invalid random demon.");
+            break;
+          }
+        }
+      }
+
+      /**
+       * Roll the dice and determine which random pet(s) to summon.
+       */
+      random_pet_e roll_random_pet()
+      {
         int demon_int = rng().range(10) + 1;
         int rare_check;
-        if (demon_int <= 2) 
+        if (demon_int <= 2)
         {
           rare_check = rng().range(10) + 1;
           if (rare_check > 1)
@@ -1575,127 +1693,13 @@ namespace warlock {
             demon_int = rng().range(8) + 3;
           }
         }
-        int summon_time = 15;
-
-        switch (demon_int) {
-          case 1 : {
-              for (auto demon : p()->warlock_pet_list.prince_malchezaar)
-              {
-                if (demon->is_sleeping())
-                {
-                  demon->summon(timespan_t::from_seconds(summon_time));
-                  break;
-                }
-              }
-              break;
-          }
-          case 2 : {
-            for (auto demon : p()->warlock_pet_list.eyes_of_guldan)
-            {
-              for (int x = 0; x < 4; x++)
-              {
-                if (demon->is_sleeping())
-                {
-                  demon->summon(timespan_t::from_seconds(summon_time));
-                  break;
-                }
-              }
-            }
-            break;
-          }
-          case 3 : {
-            for (auto demon : p()->warlock_pet_list.shivarra)
-            {
-              if (demon->is_sleeping())
-              {
-                demon->summon(timespan_t::from_seconds(summon_time));
-                break;
-              }
-            }
-            break;
-          }
-          case 4 : {
-            for (auto demon : p()->warlock_pet_list.darkhounds)
-            {
-              if (demon->is_sleeping())
-              {
-                demon->summon(timespan_t::from_seconds(summon_time));
-                break;
-              }
-            }
-            break;
-          }
-          case 5 : {
-            for (auto demon : p()->warlock_pet_list.bilescourges)
-            {
-              if (demon->is_sleeping())
-              {
-                demon->summon(timespan_t::from_seconds(summon_time));
-                break;
-              }
-            }
-            break;
-          }
-          case 6 : {
-            for (auto demon : p()->warlock_pet_list.urzuls)
-            {
-              if (demon->is_sleeping())
-              {
-                demon->summon(timespan_t::from_seconds(summon_time));
-                break;
-              }
-            }
-            break;
-          }
-          case 7 : {
-            for (auto demon : p()->warlock_pet_list.void_terrors)
-            {
-              if (demon->is_sleeping())
-              {
-                demon->summon(timespan_t::from_seconds(summon_time));
-                break;
-              }
-            }
-            break;
-          }
-          case 8 : {
-            for (auto demon : p()->warlock_pet_list.wrathguards)
-            {
-              if (demon->is_sleeping())
-              {
-                demon->summon(timespan_t::from_seconds(summon_time));
-                break;
-              }
-            }
-            break;
-          }
-          case 9 : {
-            for (auto demon : p()->warlock_pet_list.vicious_hellhounds)
-            {
-              if (demon->is_sleeping())
-              {
-                demon->summon(timespan_t::from_seconds(summon_time));
-                break;
-              }
-            }
-            break;
-          }
-          case 10 : {
-            for (auto demon : p()->warlock_pet_list.illidari_satyrs)
-            {
-              if (demon->is_sleeping())
-              {
-                demon->summon(timespan_t::from_seconds(summon_time));
-                break;
-              }
-            }
-            break;
-          }
-        }
+        assert( demon_int > 0 && demon_int <= 10);
+        return static_cast<random_pet_e>(demon_int);
       }
     };
 
   } // end actions namespace
+
   namespace buffs {
   } // end buffs namespace
 
@@ -1727,12 +1731,15 @@ namespace warlock {
 
   void warlock_t::create_buffs_demonology() {
     buffs.demonic_core = make_buff(this, "demonic_core", find_spell(264173));
+
     buffs.demonic_power = make_buff(this, "demonic_power", find_spell(265273))
       ->set_default_value(find_spell(265273)->effectN(2).percent())
       ->set_cooldown(timespan_t::zero());
+
     //Talents
     buffs.demonic_calling = make_buff(this, "demonic_calling", talents.demonic_calling->effectN(1).trigger())
       ->set_trigger_spell(talents.demonic_calling);
+
     buffs.inner_demons = make_buff(this, "inner_demons", find_spell(267216))
       ->set_period(timespan_t::from_seconds(talents.inner_demons->effectN(1).base_value()))
       ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
@@ -1750,32 +1757,42 @@ namespace warlock {
           active.summon_random_demon->execute();
         }
       });
+
     buffs.nether_portal = make_buff(this, "nether_portal", talents.nether_portal)
       ->set_duration(talents.nether_portal->duration());
+
     //Tier
     buffs.rage_of_guldan = make_buff(this, "rage_of_guldan", sets->set(WARLOCK_DEMONOLOGY, T21, B2)->effectN(1).trigger())
       ->set_duration(find_spell(257926)->duration())
       ->set_max_stack(find_spell(257926)->max_stacks())
       ->set_default_value(find_spell(257926)->effectN(1).base_value())
       ->set_refresh_behavior(buff_refresh_behavior::DURATION);
+
     buffs.dreaded_haste = make_buff<haste_buff_t>(this, "dreaded_haste", sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger())
       ->set_default_value(sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger()->effectN(1).percent());
 
     //to track imps
     buffs.wild_imps = make_buff(this, "wild_imps")
       ->set_max_stack(40);
+
     buffs.dreadstalkers = make_buff(this, "dreadstalkers")
       ->set_max_stack(4);
+
     buffs.vilefiend = make_buff(this, "vilefiend")
       ->set_max_stack(1);
+
     buffs.tyrant = make_buff(this, "tyrant")
       ->set_max_stack(1);
+
     buffs.grimoire_felguard = make_buff(this, "grimoire_felguard")
       ->set_max_stack(1);
+
     buffs.prince_malchezaar = make_buff(this, "prince_malchezaar")
       ->set_max_stack(1);
+
     buffs.eyes_of_guldan = make_buff(this, "eyes_of_guldan")
       ->set_max_stack(4);
+
     buffs.portal_summons = make_buff(this, "portal_summons")
       ->set_duration(timespan_t::from_seconds(15))
       ->set_max_stack(40)

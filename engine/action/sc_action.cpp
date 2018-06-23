@@ -16,8 +16,7 @@ struct player_gcd_event_t : public player_event_t
 {
   player_gcd_event_t( player_t& p, timespan_t delta_time ) : player_event_t( p, delta_time )
   {
-    if ( sim().debug )
-      sim().out_debug << "New Player-Ready-GCD Event: " << p.name();
+    sim().print_debug("New Player-Ready-GCD Event: {}", p.name());
   }
 
   const char* name() const override

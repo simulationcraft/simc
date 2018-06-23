@@ -6,7 +6,14 @@ namespace warlock
   namespace pets
   {
     warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ) :
-      pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_action_two( nullptr ), melee_attack( nullptr ), summon_stats( nullptr ), ascendance( nullptr )
+      pet_t( sim, owner, pet_name, pt, guardian ),
+      special_action( nullptr ),
+      special_action_two( nullptr ),
+      melee_attack( nullptr ),
+      summon_stats( nullptr ),
+      ascendance( nullptr ),
+      buffs(),
+      active()
     {
       owner_coeff.ap_from_sp = 0.5;
       owner_coeff.sp_from_sp = 1.0;
@@ -563,6 +570,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     spells(),
     initial_soul_shards( 3 ),
     allow_sephuz( false ),
+    deaths_embrace_fixed_time(),
     default_pet(),
     shard_react( timespan_t::zero() )
   {
@@ -1264,6 +1272,7 @@ void warlock_t::copy_from( player_t* source )
 
   initial_soul_shards = p->initial_soul_shards;
   allow_sephuz = p->allow_sephuz;
+  deaths_embrace_fixed_time = p->deaths_embrace_fixed_time;
   default_pet = p->default_pet;
 }
 
