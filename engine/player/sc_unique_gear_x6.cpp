@@ -2792,31 +2792,16 @@ struct memento_callback_t : public dbc_proc_callback_t
 
 void item::memento_of_angerboda( special_effect_t& effect )
 {
-  double rating_amount = item_database::apply_combat_rating_multiplier( *effect.item,
-      effect.driver() -> effectN( 2 ).average( effect.item ) );
-
-  struct common_buff_t : public stat_buff_t
-  {
-    common_buff_t( player_t* p, std::string n, const spell_data_t* spell, stat_e stat, double amount ) :
-      stat_buff_t ( p, "deathbringers_will_" + n, spell )
-    {
-      add_stat( stat, amount );
-    }
-  };
-
   auto howl_of_ingvar =
-      make_buff<stat_buff_t>( effect.player, "howl_of_ingvar", effect.player -> find_spell( 214802 ) )
-      -> add_stat( STAT_CRIT_RATING, rating_amount );
+      make_buff<stat_buff_t>( effect.player, "howl_of_ingvar", effect.player -> find_spell( 214802 ), effect.item );
   howl_of_ingvar->set_activated( false );
 
   auto wail_of_svala =
-      make_buff<stat_buff_t>( effect.player, "wail_of_svala", effect.player -> find_spell( 214803 ) )
-      ->add_stat( STAT_HASTE_RATING, rating_amount );
+      make_buff<stat_buff_t>( effect.player, "wail_of_svala", effect.player -> find_spell( 214803 ), effect.item );
   wail_of_svala->set_activated( false );
 
   auto dirge_of_angerboda =
-      make_buff<stat_buff_t>( effect.player, "dirge_of_angerboda", effect.player -> find_spell( 214807 ) )
-      ->add_stat( STAT_MASTERY_RATING, rating_amount );
+      make_buff<stat_buff_t>( effect.player, "dirge_of_angerboda", effect.player -> find_spell( 214807 ), effect.item );
   dirge_of_angerboda->set_activated( false );
 
   std::vector<buff_t*> buffs = {howl_of_ingvar, wail_of_svala, dirge_of_angerboda};
