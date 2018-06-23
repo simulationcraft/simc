@@ -4902,19 +4902,19 @@ struct roll_the_bones_t : public buff_t
     buffs[ 0 ] = rogue -> buffs.broadside;
     buffs[ 1 ] = rogue -> buffs.buried_treasure;
     buffs[ 2 ] = rogue -> buffs.grand_melee;
-    buffs[ 3 ] = rogue -> buffs.skull_and_crossbones;
-    buffs[ 4 ] = rogue -> buffs.ruthless_precision;
+    buffs[ 3 ] = rogue -> buffs.ruthless_precision;
+    buffs[ 4 ] = rogue -> buffs.skull_and_crossbones;
     buffs[ 5 ] = rogue -> buffs.true_bearing;
   }
 
   void expire_secondary_buffs()
   {
-    rogue -> buffs.skull_and_crossbones -> expire();
-    rogue -> buffs.grand_melee -> expire();
-    rogue -> buffs.ruthless_precision -> expire();
-    rogue -> buffs.true_bearing -> expire();
     rogue -> buffs.broadside -> expire();
     rogue -> buffs.buried_treasure -> expire();
+    rogue -> buffs.grand_melee -> expire();
+    rogue -> buffs.ruthless_precision -> expire();
+    rogue -> buffs.skull_and_crossbones -> expire();
+    rogue -> buffs.true_bearing -> expire();
   }
 
   std::vector<buff_t*> random_roll()
@@ -6492,8 +6492,8 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
       buffs.broadside,
       buffs.buried_treasure,
       buffs.grand_melee,
-      buffs.skull_and_crossbones,
       buffs.ruthless_precision,
+      buffs.skull_and_crossbones,
       buffs.true_bearing
     } };
 
