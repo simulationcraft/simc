@@ -1875,6 +1875,16 @@ public:
     return tm;
   }
 
+  virtual double action_multiplier () const override
+  {
+    double m = spell_t::action_multiplier ();
+
+    m *= 1.0 + p()->buff.celestial_alignment->check_value ();
+    m *= 1.0 + p()->buff.incarnation_moonkin->check_value ();
+
+    return m;
+  }
+
   virtual void execute() override
   {
     // Adjust buffs and cooldowns if we're in precombat.
@@ -8064,13 +8074,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
   // Tiger's Fury and Savage Roar are player multipliers. Their "snapshotting" for cat abilities is handled in cat_attack_t.
   m *= 1.0 + buff.tigers_fury -> check_value();
   m *= 1.0 + buff.savage_roar -> check_value();
-
-  // Damage modifier applies to all "magic" damage.
-  if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
-  {
-    m *= 1.0 + buff.celestial_alignment -> check_value();
-    m *= 1.0 + buff.incarnation_moonkin -> check_value();
-  }
 
   m *= 1.0 + buff.feral_instinct -> check_value();
 
