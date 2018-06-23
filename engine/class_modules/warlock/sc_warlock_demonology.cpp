@@ -460,7 +460,8 @@ namespace warlock {
         {
           for (unsigned i = 0; i < slashs.size(); ++i)
           {
-            slashs[i] = new multi_slash_damage_t(p, i);
+            // Slash number is the spelldata effects number, so increase by 1.
+            slashs[i] = new multi_slash_damage_t(p, i + 1);
             add_child(slashs[i]);
           }
         }
