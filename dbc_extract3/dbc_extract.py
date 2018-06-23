@@ -354,6 +354,7 @@ elif options.type == 'scale':
         'comment': '// Azerite level to item level 1 - %d, wow build %d\n' % (
             300, options.build),
         'values': [ 'Item Level' ],
+        'base_type': 'unsigned',
         'max_rows': 300
     })
     if not g.initialize():

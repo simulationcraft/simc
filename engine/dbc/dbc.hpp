@@ -1632,6 +1632,8 @@ public:
   const azerite_power_entry_t& azerite_power( const std::string& name, bool tokenized = false ) const;
   arv::array_view<azerite_power_entry_t> azerite_powers() const;
 
+  unsigned azerite_item_level( unsigned power_level ) const;
+
   // Child items
   unsigned child_item( unsigned ) const;
   unsigned parent_item( unsigned ) const;

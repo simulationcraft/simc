@@ -2145,6 +2145,7 @@ struct item_t
     unsigned                                         enchant_id;
     unsigned                                         addon_id;
     int                                              armor;
+    unsigned                                         azerite_level;
     std::array<int, MAX_ITEM_STAT>                   stat_val;
     std::array<int, MAX_GEM_SLOTS>                   gem_id;
     std::array<int, MAX_GEM_SLOTS>                   gem_color;
@@ -2167,7 +2168,7 @@ struct item_t
 
     parsed_input_t() :
       item_level( 0 ), upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
-      armor( 0 ), data(), initial_cd( timespan_t::zero() ), drop_level( 0 )
+      armor( 0 ), azerite_level( 0 ), data(), initial_cd( timespan_t::zero() ), drop_level( 0 )
     {
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_alloc, 0 );
@@ -2214,6 +2215,7 @@ struct item_t
   std::string option_relic_id_str;
   std::string option_relic_ilevel_str;
   std::string option_azerite_powers_str;
+  std::string option_azerite_level_str;
   double option_initial_cd;
 
   // Extracted data

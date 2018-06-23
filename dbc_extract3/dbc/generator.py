@@ -72,7 +72,7 @@ def output_hotfixes(generator, data_str, hotfix_data):
     generator._out.write('};\n\n')
 
 class CSVDataGenerator(object):
-    def __init__(self, options, csvs):
+    def __init__(self, options, csvs, base_type = None):
         self._options = options
         self._csv_options = {}
         if type(csvs) == dict:
@@ -93,7 +93,8 @@ class CSVDataGenerator(object):
             dimensions = '[][%d]' % self.max_rows(dbc)
         else:
             dimensions = '[%d]' % self.max_rows(dbc)
-        return 'static double _%s%s%s%s = {\n' % (
+        return 'static %s _%s%s%s%s = {\n' % (
+            self.base_type(dbc),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self.struct_name(dbc),
             self._options.suffix and ('_%s' % self._options.suffix) or '',
@@ -189,6 +190,9 @@ class CSVDataGenerator(object):
 
     def dbname(self, csvfile):
         return '_' + csvfile.split('.')[0].lower().replace('-', '_') + '_db'
+
+    def base_type(self, file_):
+        return self._csv_options.get(file_, {}).get('base_type', 'double')
 
     def initialize(self):
         if self._options.output:

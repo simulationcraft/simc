@@ -319,6 +319,12 @@ std::ostream& operator<<(std::ostream& s, const item_t& item )
   {
     s << " (" << item.player -> items[ item.parent_slot ].slot_name() << ")";
   }
+
+  if ( item.parsed.azerite_level > 0 )
+  {
+    s << " azerite_level=" << item.parsed.azerite_level;
+  }
+
   if ( item.parsed.data.lfr() )
     s << " LFR";
   if ( item.parsed.data.heroic() )
@@ -500,8 +506,18 @@ unsigned item_t::item_level() const
 
   unsigned ilvl;
 
+  // Overridden Option-based item level
   if ( parsed.item_level > 0 )
+  {
     ilvl = parsed.item_level;
+  }
+  // If azerite level is defined as an option for an item, use the azerite level to item level
+  // conversion
+  else if ( parsed.azerite_level > 0 )
+  {
+    ilvl = player -> dbc.azerite_item_level( parsed.azerite_level );
+  }
+  // Otherwise, normal ilevel processing (base ilevel + upgrade ilevel + artifact ilevel increase)
   else
   {
     ilvl = parsed.data.level + upgrade_item_level();
@@ -527,6 +543,10 @@ unsigned item_t::base_item_level() const
   else if ( parsed.item_level > 0 )
   {
     return parsed.item_level;
+  }
+  else if ( parsed.azerite_level > 0 )
+  {
+    return player -> dbc.azerite_item_level( parsed.azerite_level );
   }
   else
     return parsed.data.level;
@@ -680,6 +700,7 @@ bool item_t::parse_options()
   options.push_back(opt_string("relic_id", option_relic_id_str));
   options.push_back(opt_string("relic_ilevel", option_relic_ilevel_str));
   options.push_back(opt_string("azerite_powers", option_azerite_powers_str));
+  options.push_back(opt_string("azerite_level", option_azerite_level_str));
 
   try
   {
@@ -798,6 +819,9 @@ bool item_t::parse_options()
   if ( ! option_drop_level_str.empty() )
     parsed.drop_level = util::to_unsigned( option_drop_level_str );
 
+  if ( ! option_azerite_level_str.empty() )
+    parsed.azerite_level = util::to_unsigned( option_azerite_level_str );
+
   return true;
 }
 
@@ -847,6 +871,11 @@ std::string item_t::encoded_item() const
 
   if ( ! option_ilevel_str.empty() )
     s << ",ilevel=" << option_ilevel_str;
+
+  if ( ! option_ilevel_str.empty() )
+    s << ",azerite_level=" << option_ilevel_str;
+  else if ( parsed.azerite_level > 0 )
+    s << ",azerite_level=" << parsed.azerite_level;
 
   if ( ! option_armor_type_str.empty() )
     s << ",type=" << util::armor_type_string( parsed.data.item_subclass );

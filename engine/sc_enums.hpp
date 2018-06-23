@@ -43,6 +43,8 @@ enum
   MAX_GEM_SLOTS = 4, /// Global maximum number of gem slots in any specific item
 
   WEAPON_POWER_COEFFICIENT = 6, // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
+
+  MAX_AZERITE_LEVEL = 300, // Maximum Azerite level (for Heart of Azeroth) at the start of Battle for Azeroth
 };
 
 // Azerite control
