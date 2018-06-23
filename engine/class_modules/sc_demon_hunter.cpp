@@ -1039,9 +1039,13 @@ public:
     return g;
   }
 
-  virtual double cost() const override
+  virtual bool init_finished() override
   {
-    return ab::cost();
+    // For reporting purposes only, as the game displays this as SCHOOL_CHAOS
+    if(stats->school == SCHOOL_CHROMATIC )
+      stats->school = SCHOOL_CHAOS;
+
+    return ab::init_finished();
   }
 
   virtual double action_multiplier() const override
@@ -1605,14 +1609,7 @@ struct eye_beam_t : public demon_hunter_spell_t
 
       return b;
     }
-
-    dmg_e amount_type( const action_state_t*, bool ) const override
-    {
-      return DMG_OVER_TIME;
-    }
   };
-
-  action_t* tick_damage;
 
   eye_beam_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "eye_beam", p, p->spec.eye_beam, options_str )
@@ -1621,29 +1618,8 @@ struct eye_beam_t : public demon_hunter_spell_t
     channeled = true;
 
     dot_duration *= 1.0 + p->talent.blind_fury->effectN( 1 ).percent();
-    
-    tick_damage = p->find_action( "eye_beam_tick" );
-    if ( !tick_damage )
-    {
-      tick_damage = new eye_beam_tick_t( p );
-    }
-    tick_damage->stats = stats;
-  }
 
-  virtual bool init_finished() override
-  {
-    // For reporting purposes only as is technically SCHOOL_CHROMATIC
-    stats->school = SCHOOL_CHAOS;
-
-    return demon_hunter_spell_t::init_finished();
-  }
-
-  void tick( dot_t* d ) override
-  {
-    demon_hunter_spell_t::tick( d );
-
-    tick_damage->set_target( d->target );
-    tick_damage->execute();
+    tick_action = new eye_beam_tick_t( p );
   }
 
   void last_tick( dot_t* d ) override
@@ -1698,34 +1674,13 @@ struct fel_barrage_t : public demon_hunter_spell_t
 {
   struct fel_barrage_tick_t : public demon_hunter_spell_t
   {
-    double tick_factor;
-
     fel_barrage_tick_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "fel_barrage_tick", p, p->talent.fel_barrage->effectN( 1 ).trigger() ),
-      tick_factor( 1.0 )
+      : demon_hunter_spell_t( "fel_barrage_tick", p, p->talent.fel_barrage->effectN( 1 ).trigger() )
     {
       background = dual = true;
       aoe = -1;
     }
-
-    virtual double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double dm = demon_hunter_spell_t::composite_da_multiplier( s );
-
-      // 6/20/2018 - As we aren't using a tick_action and because of the mismatch between hasted 
-      //             ticks but non-hasted channel duration, manually implement last_tick_factor 
-      dm *= tick_factor;
-
-      return dm;
-    }
-
-    dmg_e amount_type( const action_state_t*, bool ) const override
-    {
-      return DMG_OVER_TIME;
-    }
   };
-
-  fel_barrage_tick_t* tick_damage;
 
   fel_barrage_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t("fel_barrage", p, p->talent.fel_barrage, options_str)
@@ -1733,35 +1688,13 @@ struct fel_barrage_t : public demon_hunter_spell_t
     may_miss = may_dodge = may_parry = may_crit = may_block = false;
     channeled = tick_zero = hasted_ticks = true;
 
-    tick_damage = debug_cast<fel_barrage_tick_t*>( p->find_action( "fel_barrage_tick" ) );
-    if (!tick_damage )
-    {
-      tick_damage = new fel_barrage_tick_t(p);
-    }
-    tick_damage->stats = stats;
+    tick_action = new fel_barrage_tick_t( p );
   }
 
-  virtual timespan_t composite_dot_duration( const action_state_t* s ) const
+  virtual timespan_t composite_dot_duration( const action_state_t* /* s */ ) const
   {
     // 6/20/2018 -- Channel duration is currently not affected by Haste, although tick rate is
     return dot_duration;
-  }
-
-  virtual bool init_finished() override
-  {
-    // For reporting purposes only as is technically SCHOOL_CHROMATIC
-    stats->school = SCHOOL_CHAOS; 
-
-    return demon_hunter_spell_t::init_finished();
-  }
-
-  void tick( dot_t* d ) override
-  {
-    demon_hunter_spell_t::tick( d );
-
-    tick_damage->set_target( d->target );
-    tick_damage->tick_factor = d->get_last_tick_factor();
-    tick_damage->execute();
   }
 
   bool usable_moving() const override
@@ -2272,14 +2205,6 @@ struct metamorphosis_t : public demon_hunter_spell_t
       background   = true;
       aoe          = -1;
       dot_duration = timespan_t::zero();
-    }
-
-    virtual bool init_finished() override
-    {
-      // For reporting purposes only as is technically SCHOOL_CHROMATIC
-      stats->school = SCHOOL_CHAOS;
-
-      return demon_hunter_spell_t::init_finished();
     }
   };
 

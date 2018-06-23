@@ -1643,12 +1643,19 @@ void action_t::tick( dot_t* d )
     if ( tick_action->pre_execute_state )
       action_state_t::release( tick_action->pre_execute_state );
 
-    action_state_t* state = tick_action->get_state( d->state );
+    // 6/22/2018 -- Update logic to use the state of the tick_action rather than the base DoT
+    //              This ensures that composite calculations on the tick_action are not ignored
+    action_state_t* state = tick_action->get_state();
+    tick_action->set_target( d->target );
+
     if ( dynamic_tick_action )
-      update_state( state, amount_type( state, tick_action->direct_tick ) );
-    state->da_multiplier        = state->ta_multiplier * d->get_last_tick_factor();
+      tick_action->update_state( state, amount_type( state, tick_action->direct_tick ) );
+
+    // Apply the last tick factor from the DoT to the base damage multipliers for partial ticks
+    // Also make sure we only use tick multipliers, even if direct modifiers exist
+    state->da_multiplier = state->ta_multiplier * d->get_last_tick_factor();
     state->target_da_multiplier = state->target_ta_multiplier;
-    tick_action->target         = d->target;
+
     tick_action->schedule_execute( state );
   }
   else
@@ -2177,9 +2184,11 @@ void action_t::init()
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 || tick_action ) &&
-       dot_duration > timespan_t::zero() )
+  if ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 ) && dot_duration > timespan_t::zero() )
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
+
+  if ( tick_action )
+    tick_action->snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
   if ( base_dd_min > 0 || ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
