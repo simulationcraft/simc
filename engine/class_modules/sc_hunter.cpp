@@ -885,7 +885,7 @@ public:
     ab::update_ready( cd );
   }
 
-  virtual double cast_regen() const
+  virtual double cast_regen( const action_state_t* s ) const
   {
     const timespan_t cast_time = std::max( this -> execute_time(), this -> gcd() );
     const double regen = p() -> resource_regen_per_second( RESOURCE_FOCUS );
@@ -897,7 +897,7 @@ public:
       targets_hit = ( num_targets < 0 ) ? tl_size : std::min( tl_size, as<size_t>( num_targets ) );
     }
     return ( regen * cast_time.total_seconds() ) +
-           ( targets_hit * this -> composite_energize_amount( nullptr ) );
+           ( targets_hit * this -> composite_energize_amount( s ) );
   }
 
   // action list expressions
@@ -906,7 +906,22 @@ public:
     if ( util::str_compare_ci( name, "cast_regen" ) )
     {
       // Return the focus that will be regenerated during the cast time or GCD of the target action.
-      return make_mem_fn_expr( "cast_regen", *this, &hunter_action_t::cast_regen );
+      struct cast_regen_expr_t : public expr_t
+      {
+        hunter_action_t& action;
+        std::unique_ptr<action_state_t> state;
+        cast_regen_expr_t( hunter_action_t& a ):
+          expr_t( "cast_regen" ), action( a ), state( a.get_state() )
+        {}
+
+        double evaluate() override
+        {
+          action.snapshot_state( state.get(), RESULT_TYPE_NONE );
+          state -> target = action.target;
+          return action.cast_regen( state.get() );
+        }
+      };
+      return new cast_regen_expr_t( *this );
     }
 
     return ab::create_expression( name );
@@ -2473,12 +2488,10 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     action_state_t::release( s );
   }
 
-  double cast_regen() const override
+  double cast_regen( const action_state_t* s ) const override
   {
-    const timespan_t cast_time = std::max( execute_time(), gcd() );
-    const double regen = p() -> resource_regen_per_second( RESOURCE_FOCUS );
     const size_t targets_hit = std::min( target_list().size(), as<size_t>( n_targets() ) );
-    return ( regen * cast_time.total_seconds() ) +
+    return hunter_ranged_attack_t::cast_regen( s ) +
            ( targets_hit * damage[ 0 ] -> composite_energize_amount( nullptr ) );
   }
 };
@@ -3067,13 +3080,13 @@ struct rapid_fire_t: public hunter_spell_t
     return dot_duration * ( tick_time( s ) / base_tick_time_ );
   }
 
-  double cast_regen() const override
+  double cast_regen( const action_state_t* s ) const override
   {
     timespan_t base_tick_time_ = base_tick_time;
     base_tick_time_ *= 1.0 + p() -> buffs.double_tap -> check_value();
     auto num_ticks = as<int>( std::ceil( dot_duration / base_tick_time_ ) );
 
-    return hunter_spell_t::cast_regen() + num_ticks * damage -> composite_energize_amount( nullptr );
+    return hunter_spell_t::cast_regen( s ) + num_ticks * damage -> composite_energize_amount( nullptr );
   }
 };
 
