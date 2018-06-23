@@ -2956,6 +2956,32 @@ struct steady_shot_t: public hunter_ranged_attack_t
 
 struct rapid_fire_t: public hunter_spell_t
 {
+  // this is required because Double Tap 'snapshots' on channel start
+  struct rapid_fire_state_t : public action_state_t
+  {
+    bool double_tapped = false;
+    rapid_fire_state_t( action_t* a, player_t* t ) : action_state_t( a, t ) {}
+
+    void initialize() override
+    {
+      action_state_t::initialize();
+      double_tapped = false;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      action_state_t::debug_str( s );
+      s << " double_tapped=" << double_tapped;
+      return s;
+    }
+
+    void copy_state( const action_state_t* o ) override
+    {
+      action_state_t::copy_state( o );
+      double_tapped = debug_cast<const rapid_fire_state_t*>( o ) -> double_tapped;
+    }
+  };
+
   struct rapid_fire_damage_t: public hunter_ranged_attack_t
   {
     const int trick_shots_targets;
@@ -3013,10 +3039,12 @@ struct rapid_fire_t: public hunter_spell_t
   };
 
   rapid_fire_damage_t* damage;
+  int base_num_ticks;
 
   rapid_fire_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "rapid_fire", p, p -> find_spell( 257044 ) ),
-    damage( p -> get_background_action<rapid_fire_damage_t>( "rapid_fire_damage" ) )
+    damage( p -> get_background_action<rapid_fire_damage_t>( "rapid_fire_damage" ) ),
+    base_num_ticks( data().effectN( 1 ).base_value() )
   {
     parse_options( options_str );
 
@@ -3024,14 +3052,14 @@ struct rapid_fire_t: public hunter_spell_t
 
     may_miss = may_crit = false;
     callbacks = false;
-    hasted_ticks = false;
     channeled = true;
     tick_zero = true;
 
+    base_num_ticks *= 1.0 + p -> talents.streamline -> effectN( 2 ).percent();
     dot_duration += p -> talents.streamline -> effectN( 1 ).time_value();
   }
 
-  void schedule_execute( action_state_t* state = nullptr ) override
+  void schedule_execute( action_state_t* state ) override
   {
     hunter_spell_t::schedule_execute( state );
 
@@ -3067,26 +3095,41 @@ struct rapid_fire_t: public hunter_spell_t
   {
     timespan_t t = hunter_spell_t::tick_time( s );
 
-    t *= 1.0 + p() -> buffs.double_tap -> check_value();
+    if ( debug_cast<const rapid_fire_state_t*>( s ) -> double_tapped )
+      t *= 1.0 + p() -> talents.double_tap -> effectN( 1 ).percent();
 
     return t;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    timespan_t base_tick_time_ = base_tick_time;
-    base_tick_time_ *= 1.0 + p() -> buffs.double_tap -> check_value();
-
-    return dot_duration * ( tick_time( s ) / base_tick_time_ );
+    // substract 1 here because RF has a tick at zero
+    return ( num_ticks( s ) - 1 ) * tick_time( s );
   }
 
   double cast_regen( const action_state_t* s ) const override
   {
-    timespan_t base_tick_time_ = base_tick_time;
-    base_tick_time_ *= 1.0 + p() -> buffs.double_tap -> check_value();
-    auto num_ticks = as<int>( std::ceil( dot_duration / base_tick_time_ ) );
+    return hunter_spell_t::cast_regen( s ) +
+           num_ticks( s ) * damage -> composite_energize_amount( nullptr );
+  }
 
-    return hunter_spell_t::cast_regen( s ) + num_ticks * damage -> composite_energize_amount( nullptr );
+  int num_ticks( const action_state_t* s ) const
+  {
+    int num_ticks_ = base_num_ticks;
+    if ( debug_cast<const rapid_fire_state_t*>( s ) -> double_tapped )
+      num_ticks_ *= 1.0 + p() -> talents.double_tap -> effectN( 3 ).percent();
+    return num_ticks_;
+  }
+
+  action_state_t* new_state() override
+  {
+    return new rapid_fire_state_t( this, target );
+  }
+
+  void snapshot_state( action_state_t* s, dmg_e type ) override
+  {
+    hunter_spell_t::snapshot_state( s, type );
+    debug_cast<rapid_fire_state_t*>( s ) -> double_tapped = p() -> buffs.double_tap -> check();
   }
 };
 
