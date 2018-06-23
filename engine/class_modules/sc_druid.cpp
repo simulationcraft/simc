@@ -5682,6 +5682,32 @@ struct skull_bash_t : public druid_spell_t
 };
 
 // Solar Wrath ==============================================================
+struct solar_wrath_state_t :public action_state_t
+{
+  bool empowered;
+  solar_wrath_state_t (action_t* action, player_t* target) :
+    action_state_t (action, target), empowered (false)
+  {}
+
+  void initialize () override
+  {
+    action_state_t::initialize (); empowered = false;
+  }
+
+  std::ostringstream& debug_str (std::ostringstream& s) override
+  {
+    action_state_t::debug_str (s) << " empowered=" << empowered;
+    return s;
+  }
+
+  void copy_state (const action_state_t* o) override
+  {
+    action_state_t::copy_state (o);
+    const solar_wrath_state_t* st = debug_cast<const solar_wrath_state_t*>(o);
+    empowered = st->empowered;
+  }
+};
+
 struct solar_empowerment_t : public druid_spell_t
 {
   solar_empowerment_t (druid_t* p) :
@@ -5702,10 +5728,8 @@ struct solar_empowerment_t : public druid_spell_t
 
 struct solar_wrath_t : public druid_spell_t
 {
-  int empowered;
   solar_wrath_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "solar_wrath", player, player -> find_affinity_spell( "Solar Wrath" ), options_str ),
-    empowered(0)
+    druid_spell_t( "solar_wrath", player, player -> find_affinity_spell( "Solar Wrath" ), options_str )
   {
     form_mask = MOONKIN_FORM;
 
@@ -5728,14 +5752,29 @@ struct solar_wrath_t : public druid_spell_t
     return cc;
   }
 
-  void impact (action_state_t* s) 
+  action_state_t* new_state () override
+  {
+    return new solar_wrath_state_t (this, target);
+  }
+
+  void snapshot_state (action_state_t* state, dmg_e type) override
+  {
+    druid_spell_t::snapshot_state (state, type);
+
+    if (p ()->buff.solar_empowerment->check ())
+    {
+      debug_cast<solar_wrath_state_t*>(state)->empowered = true;
+    }
+  }
+
+  void impact (action_state_t* s) override
   {
     druid_spell_t::impact (s);
-    if (empowered)
+    solar_wrath_state_t* st = debug_cast<solar_wrath_state_t*>(s);
+    if (st->empowered)
     {
       p ()->trigger_solar_empowerment (s);
-      empowered--;
-    }    
+    }
   }
 
   timespan_t gcd() const override
@@ -5771,8 +5810,6 @@ struct solar_wrath_t : public druid_spell_t
       p() -> cooldown.celestial_alignment ->
         adjust( -p() -> sets -> set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
     }
-    if (p ()->buff.solar_empowerment->check ())
-      empowered++;
     
     p() -> buff.solar_empowerment -> decrement();
 
@@ -5785,11 +5822,6 @@ struct solar_wrath_t : public druid_spell_t
     }
 
     p() -> buff.power_of_elune -> trigger();
-  }
-
-  void reset () override
-  {
-    empowered = 0;
   }
 };
 
