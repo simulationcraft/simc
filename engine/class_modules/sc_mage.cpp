@@ -2424,7 +2424,8 @@ struct am_state_t : public mage_spell_state_t
 
 struct arcane_missiles_t : public arcane_mage_spell_t
 {
-  double amplification_reduction;
+  double cc_duration_reduction;
+  double cc_tick_time_reduction;
 
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_missiles", p,
@@ -2440,10 +2441,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
 
-    if ( p -> talents.amplification -> ok() )
-    {
-      amplification_reduction = p -> find_spell( 277726 ) -> effectN( 1 ).percent();
-    }
+    auto cc_data = p -> find_spell( 277726 );
+    cc_duration_reduction  = cc_data -> effectN( 1 ).percent();
+    cc_tick_time_reduction = cc_data -> effectN( 2 ).percent() + p -> talents.amplification -> effectN( 1 ).percent();
   }
 
   // Flag Arcane Missiles as direct damage for triggering effects
@@ -2461,9 +2461,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::snapshot_state( state, rt );
 
-    if ( p() -> talents.amplification -> ok() && p() -> buffs.clearcasting -> check() )
+    if ( p() -> buffs.clearcasting -> check() )
     {
-      debug_cast<am_state_t*>( state ) -> tick_time_multiplier = 1.0 + amplification_reduction;
+      debug_cast<am_state_t*>( state ) -> tick_time_multiplier = 1.0 + cc_tick_time_reduction;
     }
   }
 
@@ -2473,6 +2473,12 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     // to make sure it has the correct number of ticks.
 
     timespan_t full_duration = dot_duration * s -> haste;
+
+    if ( p() -> buffs.clearcasting -> check() )
+    {
+      full_duration *= 1.0 + cc_duration_reduction;
+    }
+
     timespan_t tick_duration = tick_time( s );
 
     double ticks = std::round( full_duration / tick_duration );
