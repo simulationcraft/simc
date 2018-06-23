@@ -4419,7 +4419,7 @@ struct death_strike_t : public death_knight_melee_attack_t
       }
     }
 
-
+    p() -> buffs.icy_talons -> trigger();
     p() -> trigger_death_march( execute_state );
     p() -> buffs.skullflowers_haemostasis -> expire();
     p() -> buffs.hemostasis -> expire();
@@ -4810,6 +4810,13 @@ struct glacial_advance_t : public death_knight_spell_t
 
     execute_action = new glacial_advance_damage_t( player );
     add_child( execute_action );
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    p() -> buffs.icy_talons -> trigger();
   }
 };
 
@@ -7524,7 +7531,7 @@ void death_knight_t::create_buffs()
   buffs.icebound_fortitude  = buff_creator_t( this, "icebound_fortitude", spec.icebound_fortitude )
                               .duration( spec.icebound_fortitude -> duration() )
                               .cd( timespan_t::zero() );
-  buffs.icy_talons          = make_buff<haste_buff_t>( this, "icy_talons", find_spell( 194879 ) );
+  buffs.icy_talons          = make_buff<haste_buff_t>( this, "icy_talons", talent.icy_talons -> effectN( 1 ).trigger() ) ;
   buffs.icy_talons->add_invalidate( CACHE_ATTACK_SPEED )
       ->set_default_value( find_spell( 194879 ) -> effectN( 1 ).percent() )
       ->set_trigger_spell( talent.icy_talons );
@@ -8054,7 +8061,7 @@ double death_knight_t::composite_attack_power_multiplier() const
 {
   double m = player_t::composite_attack_power_multiplier();
 
-  m *= 1.0 + mastery.blood_shield -> effectN( 3 ).mastery_value() * composite_mastery();
+  m *= 1.0 + mastery.blood_shield -> effectN( 2 ).mastery_value() * composite_mastery();
 
   return m;
 }
