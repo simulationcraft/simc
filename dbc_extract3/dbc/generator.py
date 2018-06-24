@@ -1552,6 +1552,7 @@ class SpellDataGenerator(DataGenerator):
           ( 209245, 2 ), # Fiery Brand damage reduction
           ( 213011, 2 ), # Charred Warblades heal
           ( 212818, 2 ), # Fiery Demise debuff
+		  ( 207760, 2 ), # Burning Alive spread radius 
        ),
     ]
 

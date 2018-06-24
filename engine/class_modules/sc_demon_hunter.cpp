@@ -1951,13 +1951,11 @@ struct fiery_brand_t : public demon_hunter_spell_t
     {
       background = dual = true;
       hasted_ticks = may_crit = false;
-      school = p->find_specialization_spell("Fiery Brand")->get_school_type();
-      base_dd_min = base_dd_max = 0;
 
       if ( p->talent.burning_alive->ok() )
       {
         // Spread radius used for Burning Alive.
-        radius = p->find_spell( 207760 )->effectN( 1 ).radius();
+        radius = 8; // TODO: p->find_spell( 207760 )->effectN( 1 ).radius();
       }
       else
       {
@@ -1972,25 +1970,10 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
     dot_t* get_dot( player_t* t ) override
     {
-      if ( ! t ) t = target;
-      if ( ! t ) return nullptr;
+      if ( !t ) t = target;
+      if ( !t ) return nullptr;
 
       return td( t )->dots.fiery_brand;
-    }
-
-    void record_data( action_state_t* s ) override
-    {
-      // Don't record data direct hits for this action.
-      if ( s->result_type != DMG_DIRECT )
-      {
-        demon_hunter_spell_t::record_data( s );
-      }
-#ifndef NDEBUG
-      else
-      {
-        assert( s->result_amount == 0.0 );
-      }
-#endif
     }
 
     void tick( dot_t* d ) override
@@ -2014,9 +1997,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
       // Retrieve target list, checking for distance if necessary.
       std::vector<player_t*> targets = target_list();
-      
       targets = check_distance_targeting( targets );
-
       if ( targets.size() == 1 )
       {
         return;
@@ -2024,7 +2005,6 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
       // Filter target list down to targets that are not already branded.
       std::vector<player_t*> candidates;
-
       for ( size_t i = 0; i < targets.size(); i++ )
       {
         if ( !td( targets[ i ] )->dots.fiery_brand->is_ticking() )
@@ -2039,7 +2019,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
       }
 
       // Pick a random target.
-      player_t* target = candidates[static_cast<int>(p()->rng().range(0, (double)candidates.size()))];
+      player_t* target = candidates[static_cast<int>(p()->rng().range(0, static_cast<double>(candidates.size())))];
 
       // Execute a dot on that target.
       this->set_target(target);
