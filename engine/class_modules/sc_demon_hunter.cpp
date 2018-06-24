@@ -1607,6 +1607,11 @@ struct chaos_nova_t : public demon_hunter_spell_t
 
     if ( execute_state->target->type == ENEMY_ADD )
     {
+      if ( p()->rng().roll( data().effectN( 3 ).percent() ) )
+      {
+        p()->spawn_soul_fragment( soul_fragment::LESSER );
+      }
+
       if ( p()->legendary.sephuzs_secret )
       {
         p()->buff.sephuzs_secret->trigger();
@@ -3742,8 +3747,8 @@ struct throw_glaive_t : public demon_hunter_attack_t
   throw_glaive_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t("throw_glaive", p, p->find_class_spell("Throw Glaive"), options_str)
   {
-    aoe                  = 3;     // Ricochets to 2 additional enemies
-    radius               = 10.0;  // with 10 yards.
+    radius = 10.0;
+    cooldown->charges += p->talent.master_of_the_glaive->effectN( 2 ).base_value();
   }
 };
 
