@@ -3383,8 +3383,14 @@ struct demon_blades_t : public demon_hunter_attack_t
 
     if ( p()->legendary.anger_of_the_halfgiants_fury > 0 )
     {
-      const int range = p()->legendary.anger_of_the_halfgiants_fury + p()->talent.demon_blades->effectN( 2 ).base_value();
-      p()->resource_gain( RESOURCE_FURY, static_cast<int>( rng().range( 1, 1 + range ) ), p()->gain.anger_of_the_halfgiants );
+      int range = p()->legendary.anger_of_the_halfgiants_fury;
+      
+      // 6/24/2018 - Spell data for the DBlades nerf on AotHG is broken on beta due to no spell ID reference
+      if ( !p()->bugs )
+        range += p()->talent.demon_blades->effectN( 2 ).base_value();
+
+      const double gain = static_cast<int>( rng().range( 1, 1 + range ) );
+      p()->resource_gain( RESOURCE_FURY, gain, p()->gain.anger_of_the_halfgiants );
     }
   }
 };
