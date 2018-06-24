@@ -61,13 +61,15 @@ struct mind_blast_t final : public priest_spell_t
 private:
   double insanity_gain;
   double whispers_of_the_damned_value;
+  double harvested_thoughts_value;
 
 public:
   mind_blast_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "mind_blast", player,
                       player.talents.shadow_word_void->ok() ? player.find_talent_spell( "Shadow Word: Void" )
                                                             : player.find_class_spell( "Mind Blast" ) ),
-      whispers_of_the_damned_value( priest().azerite.whispers_of_the_damned.value( 1 ) )
+      whispers_of_the_damned_value( priest().azerite.whispers_of_the_damned.value( 1 ) ),
+      harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) )
   {
     parse_options( options_str );
     is_sphere_of_insanity_spell = true;
@@ -147,6 +149,11 @@ public:
     {
       d +=   whispers_of_the_damned_value
            * priest().buffs.whispers_of_the_damned->check();
+    }
+
+    if ( priest().buffs.harvested_thoughts->check() )
+    {
+      d += harvested_thoughts_value;
     }
 
     return d;
@@ -749,7 +756,7 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
       priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
     }
   }
-
+  
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
@@ -964,6 +971,11 @@ struct vampiric_touch_t final : public priest_spell_t
 
     priest().generate_insanity( insanity_gain, priest().gains.insanity_vampiric_touch_onhit, s->action );
 
+    if ( priest().azerite.thought_harvester.enabled() )
+    {
+      priest().buffs.harvested_thoughts->trigger();
+    }
+
     if ( priest().talents.misery->ok() )
     {
       child_swp->target = s->target;
@@ -1069,7 +1081,7 @@ struct void_bolt_t final : public priest_spell_t
       cooldown->reset( false );
     }
 
-    if ( priest().azerite.whispers_of_the_damned )
+    if ( priest().azerite.whispers_of_the_damned.enabled() )
     {
       priest().buffs.whispers_of_the_damned->trigger();
     }
@@ -2050,9 +2062,9 @@ void priest_t::init_spells_shadow()
   azerite.chorus_of_insanity     = find_azerite_spell( "Chorus of Insanity" );
   azerite.death_throes           = find_azerite_spell( "Death Throes" );
   azerite.depth_of_the_shadows   = find_azerite_spell( "Depth of the Shadows" );
-  azerite.harvested_thoughts     = find_azerite_spell( "Harvested Thoughts" );
   azerite.searing_dialogue       = find_azerite_spell( "Searing Dialogue" );
   azerite.spiteful_apparitions   = find_azerite_spell( "Spiteful Apparitions" );
+  azerite.thought_harvester      = find_azerite_spell( "Thought Harvester" );
   azerite.torment_of_torments    = find_azerite_spell( "Torment of Torments" );
   azerite.whispers_of_the_damned = find_azerite_spell( "Whispers of the Damned" );
 

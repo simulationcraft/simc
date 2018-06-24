@@ -408,13 +408,13 @@ public:
     azerite_power_t sanctum;
     // Holy
     // Disc
+    azerite_power_t depth_of_the_shadows;
     // Shadow
     azerite_power_t chorus_of_insanity;
     azerite_power_t death_throes;
-    azerite_power_t depth_of_the_shadows;
-    azerite_power_t harvested_thoughts;
     azerite_power_t searing_dialogue;
     azerite_power_t spiteful_apparitions;
+    azerite_power_t thought_harvester;
     azerite_power_t torment_of_torments;
     azerite_power_t whispers_of_the_damned;
   } azerite;
