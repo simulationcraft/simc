@@ -2045,7 +2045,12 @@ void priest_t::create_buffs_shadow()
   buffs.sphere_of_insanity = make_buff( this, "sphere_of_insanity", find_spell( 194182 ) );
 
   // Azerite Powers
-  buffs.chorus_of_insanity     = make_buff( this, "chorus_of_insanity", find_spell( 279572 ) );
+  buffs.chorus_of_insanity = make_buff<stat_buff_t>( this, "chorus_of_insanity", find_spell( 279572 ) )
+                                 ->add_stat( STAT_CRIT_RATING, azerite.chorus_of_insanity.value( 1 ) )
+                                 ->set_reverse( true )
+                                 ->set_tick_behavior( buff_tick_behavior::REFRESH )
+                                 ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
+
   buffs.harvested_thoughts     = make_buff( this, "harvested_thoughts", find_spell( 273321 ) );
   buffs.whispers_of_the_damned = make_buff( this, "whispers_of_the_damned", find_spell( 275726 ) );
 }
