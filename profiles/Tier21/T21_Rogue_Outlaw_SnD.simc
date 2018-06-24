@@ -30,13 +30,13 @@ main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152295/155855/155853,rel
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=245.25
-# gear_agility=907
-# gear_stamina=1317
-# gear_crit_rating=365
+# gear_ilvl=233.25
+# gear_agility=853
+# gear_stamina=1235
+# gear_crit_rating=347
 # gear_haste_rating=244
-# gear_mastery_rating=255
-# gear_versatility_rating=395
+# gear_mastery_rating=235
+# gear_versatility_rating=393
 # gear_armor=415
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

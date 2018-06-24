@@ -30,12 +30,12 @@ main_hand=spine_of_thalkiel,id=137246,gem_id=0/0/0/0,relic_id=0/0
 off_hand=skull_of_the_manari,id=128943,bonus_id=748,gem_id=152056/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
 
 # Gear Summary
-# gear_ilvl=246.25
-# gear_stamina=1325
-# gear_intellect=1149
-# gear_crit_rating=391
-# gear_haste_rating=646
-# gear_mastery_rating=386
+# gear_ilvl=234.63
+# gear_stamina=1243
+# gear_intellect=910
+# gear_crit_rating=384
+# gear_haste_rating=629
+# gear_mastery_rating=371
 # gear_versatility_rating=98
 # gear_armor=257
 # set_bonus=tier21_2pc=1

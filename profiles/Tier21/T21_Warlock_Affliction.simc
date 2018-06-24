@@ -29,12 +29,12 @@ trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=152057/152092/152057,relic_id=3612:1502/3612:1502/3612:1502
 
 # Gear Summary
-# gear_ilvl=247.47
-# gear_stamina=1330
-# gear_intellect=1127
+# gear_ilvl=241.47
+# gear_stamina=1256
+# gear_intellect=907
 # gear_crit_rating=433
-# gear_haste_rating=531
-# gear_mastery_rating=483
+# gear_haste_rating=512
+# gear_mastery_rating=464
 # gear_versatility_rating=111
 # gear_armor=257
 # set_bonus=tier21_2pc=1

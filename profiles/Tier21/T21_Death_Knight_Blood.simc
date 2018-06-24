@@ -29,12 +29,12 @@ trinket2=astral_alchemist_stone,id=151607,bonus_id=3609/601/3608
 main_hand=maw_of_the_damned,id=128402,gem_id=155847/155855/155852,relic_id=3612:1512/3612:1512/3612:1512,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=243.60
-# gear_strength=849
-# gear_stamina=1309
-# gear_crit_rating=493
+# gear_ilvl=237.00
+# gear_strength=792
+# gear_stamina=1224
+# gear_crit_rating=472
 # gear_haste_rating=364
-# gear_mastery_rating=250
+# gear_mastery_rating=230
 # gear_versatility_rating=185
 # gear_armor=897
 # set_bonus=tier20_2pc=1

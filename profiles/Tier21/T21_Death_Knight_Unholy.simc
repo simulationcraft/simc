@@ -29,12 +29,12 @@ trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
 main_hand=apocalypse,id=128403,gem_id=155849/152056/155847,relic_id=3612:1512/3612:1502/3612:1512,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=247.20
-# gear_strength=863
-# gear_stamina=1327
-# gear_crit_rating=154
+# gear_ilvl=240.80
+# gear_strength=808
+# gear_stamina=1246
+# gear_crit_rating=134
 # gear_haste_rating=369
-# gear_mastery_rating=631
+# gear_mastery_rating=612
 # gear_versatility_rating=175
 # gear_armor=908
 # set_bonus=tier21_2pc=1

@@ -30,12 +30,12 @@ main_hand=oathseeker,id=128867
 off_hand=truthguard,id=128866,bonus_id=736,gem_id=155851/152293/152024,relic_id=3612:1512/3612:1502/3612:1502
 
 # Gear Summary
-# gear_ilvl=286.75
-# gear_strength=42328
-# gear_stamina=1310
-# gear_crit_rating=503
+# gear_ilvl=275.13
+# gear_strength=42273
+# gear_stamina=1228
+# gear_crit_rating=483
 # gear_haste_rating=559
-# gear_mastery_rating=197
+# gear_mastery_rating=178
 # gear_versatility_rating=260
 # gear_armor=893
 # set_bonus=tier20_2pc=1
