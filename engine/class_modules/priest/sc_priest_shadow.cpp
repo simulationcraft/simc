@@ -1661,6 +1661,10 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
       priest().buffs.overwhelming_darkness->expire();
     }
 
+    if ( priest().azerite.chorus_of_insanity.enabled() )
+    {
+      priest().buffs.chorus_of_insanity->trigger( expiration_stacks );
+    }
     base_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
