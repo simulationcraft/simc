@@ -234,6 +234,23 @@ struct mind_sear_tick_t final : public priest_spell_t
     energize_type    = ENERGIZE_NONE;  // disable resource generation from spell data
   }
 
+  double bonus_ta( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::bonus_ta( state );
+
+    if ( priest().azerite.searing_dialogue.enabled() )
+    {
+      auto shadow_word_pain_dot = state->target->get_dot( "shadow_word_pain", player );
+
+      if ( shadow_word_pain_dot != nullptr && shadow_word_pain_dot->is_ticking() )
+      {
+        d += priest().azerite.searing_dialogue.value( 1 );
+      }
+    }
+
+    return d;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
