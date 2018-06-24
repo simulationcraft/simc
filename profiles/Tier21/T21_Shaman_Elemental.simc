@@ -30,13 +30,13 @@ main_hand=the_fist_of_raden,id=128935,bonus_id=744,gem_id=155853/155850/155853,r
 off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary
-# gear_ilvl=248.88
-# gear_strength=53
-# gear_stamina=1353
-# gear_intellect=1176
-# gear_crit_rating=490
+# gear_ilvl=236.50
+# gear_strength=21
+# gear_stamina=1262
+# gear_intellect=913
+# gear_crit_rating=468
 # gear_haste_rating=381
-# gear_mastery_rating=471
+# gear_mastery_rating=450
 # gear_versatility_rating=203
 # gear_armor=611
 # set_bonus=tier21_2pc=1

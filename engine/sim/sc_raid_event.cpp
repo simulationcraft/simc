@@ -1338,8 +1338,8 @@ void raid_event_t::init( sim_t* sim )
         throw std::invalid_argument("Cooldown lower than cooldown standard deviation.");
       }
 
+      sim ->print_debug("Successfully created '{}'.", *(raid_event.get()));
       sim->raid_events.push_back(std::move(raid_event));
-      sim ->print_debug("Successfully created '{}'.", *raid_event);
     }
     catch (const std::exception& ex) {
       sim->error("Could not create raid event from '{}': {}", split, ex.what());

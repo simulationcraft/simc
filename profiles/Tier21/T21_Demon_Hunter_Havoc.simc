@@ -30,12 +30,12 @@ main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=155848/155852
 off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0
 
 # Gear Summary
-# gear_ilvl=248.25
-# gear_agility=858
-# gear_stamina=1337
-# gear_crit_rating=889
+# gear_ilvl=235.88
+# gear_agility=802
+# gear_stamina=1251
+# gear_crit_rating=869
 # gear_haste_rating=262
-# gear_mastery_rating=243
+# gear_mastery_rating=223
 # gear_versatility_rating=163
 # gear_armor=418
 # set_bonus=tier21_2pc=1
