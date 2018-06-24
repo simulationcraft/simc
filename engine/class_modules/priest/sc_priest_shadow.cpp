@@ -779,10 +779,12 @@ struct shadow_word_pain_t final : public priest_spell_t
 {
   double insanity_gain;
   bool casted;
+  timespan_t increased_time;
 
   shadow_word_pain_t( priest_t& p, const std::string& options_str, bool _casted = true )
     : priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) ),
-      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) )
+      insanity_gain( data().effectN( 3 ).resource( RESOURCE_INSANITY ) ),
+      increased_time( timespan_t::from_millis( priest().azerite.torment_of_torments.value( 1 ) ) )
   {
     parse_options( options_str );
     casted           = _casted;
@@ -821,17 +823,29 @@ struct shadow_word_pain_t final : public priest_spell_t
     return d;
   }
 
-  // This assumes death_thoes also affects the direct damage portion - didn't test if it does
+  // TODO: This assumes death_thoes doesn't affect the direct damage portion - didn't test it
   double bonus_da( const action_state_t* state ) const override
   {
     double d = priest_spell_t::bonus_da( state );
 
-    if ( priest().azerite.death_throes.enabled() )
+    if ( casted && priest().azerite.torment_of_torments.enabled() )
     {
-      d += priest().azerite.death_throes.value( 1 );
+      d += priest().azerite.torment_of_torments.value( 2 );
     }
 
     return d;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* state ) const override
+  {
+    timespan_t t = priest_spell_t::composite_dot_duration( state );
+
+    if ( priest().azerite.torment_of_torments.enabled() )
+    {
+      t += increased_time;
+    }
+
+    return t;
   }
 
   void impact( action_state_t* s ) override
