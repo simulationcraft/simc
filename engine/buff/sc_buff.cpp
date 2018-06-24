@@ -608,6 +608,7 @@ void buff_t::update_trigger_calculations()
   else
   {
     default_chance = manual_chance;
+    rppm = nullptr;
   }
 }
 
