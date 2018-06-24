@@ -79,7 +79,6 @@ public:
     buff_t* bladestorm;
     buff_t* bounding_stride;
     buff_t* charge_movement;
-    buff_t* commanding_shout;
     buff_t* defensive_stance;
     buff_t* demoralizing_shout;
     buff_t* die_by_the_sword;
@@ -97,6 +96,7 @@ public:
     buff_t* meat_cleaver;
     buff_t* neltharions_fury;
     buff_t* overpower;
+    buff_t* rallying_cry;
     buff_t* ravager;
     buff_t* ravager_protection;
     buff_t* renewed_fury;
@@ -222,7 +222,6 @@ public:
     const spell_data_t* bloodthirst;
     const spell_data_t* cleave;
     const spell_data_t* colossus_smash;
-    const spell_data_t* commanding_shout;
     const spell_data_t* deep_wounds;
     const spell_data_t* defensive_stance;
     const spell_data_t* demoralizing_shout;
@@ -241,6 +240,7 @@ public:
     const spell_data_t* piercing_howl;
     const spell_data_t* protection; // Weird spec passive that increases damage of bladestorm/execute.
     const spell_data_t* raging_blow;
+    const spell_data_t* rallying_cry;
     const spell_data_t* rampage;
     const spell_data_t* revenge;
     const spell_data_t* riposte;
@@ -1407,14 +1407,13 @@ struct bloodthirst_heal_t: public warrior_heal_t
 struct bloodthirst_t: public warrior_attack_t
 {
   bloodthirst_heal_t* bloodthirst_heal;
-  double fresh_meat_crit_chance, rage_gain;
   int aoe_targets;
+  double enrage_chance;
   bloodthirst_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
     bloodthirst_heal( nullptr ),
-    fresh_meat_crit_chance( p -> talents.fresh_meat -> effectN( 1 ).percent() ),
-    rage_gain( data().effectN( 3 ).resource( RESOURCE_RAGE ) ),
-    aoe_targets( p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() )
+    aoe_targets( p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() ),
+	enrage_chance ( p -> spec.enrage -> effectN( 2 ).percent() )
   {
     parse_options( options_str );
 
@@ -1425,6 +1424,11 @@ struct bloodthirst_t: public warrior_attack_t
       bloodthirst_heal = new bloodthirst_heal_t( p );
     }
     base_aoe_multiplier = p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 3 ).percent();
+
+	if (p->talents.fresh_meat->ok())
+	{
+      enrage_chance += p -> talents.fresh_meat -> effectN( 1 ).percent();
+	}
   }
 
   double action_multiplier() const override
@@ -1445,17 +1449,6 @@ struct bloodthirst_t: public warrior_attack_t
     return warrior_attack_t::n_targets();
   }
 
-  double composite_target_crit_chance( player_t* target ) const override
-  {
-    double tc = warrior_attack_t::composite_target_crit_chance( target );
-
-    if ( fresh_meat_crit_chance > 0 && target -> health_percentage() >= 80.0 )
-    {
-      tc += fresh_meat_crit_chance;
-    }
-    return tc;
-  }
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -1471,10 +1464,10 @@ struct bloodthirst_t: public warrior_attack_t
         p() -> buff.furious_charge -> expire();
       }
       p() -> buff.t20_fury_4p -> expire();
-      if ( execute_state -> result == RESULT_CRIT )
+
+      if ( rng().roll(enrage_chance))
       {
         p() -> enrage();
-        p() -> buff.raging_thirst -> trigger();
       }
     }
   }
@@ -1489,26 +1482,6 @@ struct furious_slash_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> off_hand_weapon );
-    base_crit += p -> sets -> set( WARRIOR_FURY, T18, B2 ) -> effectN( 1 ).percent();
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-    if ( execute_state -> result == RESULT_CRIT && p() -> sets -> has_set_bonus( WARRIOR_FURY, T18, B4 ) )
-    {
-      p() -> cooldown.battle_cry -> adjust( timespan_t::from_millis( p() -> sets -> set( WARRIOR_FURY, T18, B4 ) -> effectN( 1 ).base_value() ) );
-    }
-    p() -> buff.frenzy -> trigger( 1 );
-  }
-
-  double total_crit_bonus( action_state_t* state ) const override
-  {
-    double bonus = warrior_attack_t::total_crit_bonus( state );
-
-    bonus *= 1.0 + p() -> sets -> set( WARRIOR_FURY, T18, B2 ) -> effectN( 2 ).percent();
-
-    return bonus;
   }
 
   bool ready() override
@@ -1991,8 +1964,10 @@ struct execute_off_hand_t: public warrior_attack_t
 struct execute_t: public warrior_attack_t
 {
   execute_off_hand_t* oh_attack;
+  double execute_pct;
   execute_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "execute", p, p -> spec.execute ), oh_attack( nullptr )
+    warrior_attack_t( "execute", p, p -> spec.execute ), oh_attack( nullptr ),
+	  execute_pct(20) 
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
@@ -2000,17 +1975,11 @@ struct execute_t: public warrior_attack_t
     oh_attack = new execute_off_hand_t( p, "execute_offhand", p -> find_spell( 163558 ) );
     add_child( oh_attack );
     weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
-  }
 
-  double cost() const override
-  {
-    double c = warrior_attack_t::cost();
-
-    if ( p() -> buff.ayalas_stone_heart -> check() )
+	 if ( p -> talents.massacre -> ok() )
     {
-      return c *= 1.0 + p() -> buff.ayalas_stone_heart -> data().effectN( 2 ).percent();
+      execute_pct = p -> talents.massacre -> effectN( 2 )._base_value;
     }
-    return c;
   }
 
   void execute() override
@@ -2021,6 +1990,7 @@ struct execute_t: public warrior_attack_t
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
       oh_attack -> execute();
 
+    //p() -> buff.sudden_death -> expire(); FIX ME - BUFF NYI
     p() -> buff.ayalas_stone_heart -> expire();
   }
 
@@ -2036,8 +2006,13 @@ struct execute_t: public warrior_attack_t
       return warrior_attack_t::ready();
     }
 
+    //if ( p() -> buff.sudden_death -> check() ) FIX ME - BUFF NYI
+    //{
+      //return warrior_attack_t::ready();
+    //{
+
     // Call warrior_attack_t::ready() first for proper targeting support.
-    if ( warrior_attack_t::ready() && target -> health_percentage() <= 20 )
+    if ( warrior_attack_t::ready() && target -> health_percentage() <= execute_pct )
     {
       return true;
     }
@@ -2408,7 +2383,7 @@ struct raging_blow_attack_t: public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
 
-    weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 3 ).percent();
+    weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 2 ).percent();
   }
 
   double action_multiplier() const override
@@ -2425,10 +2400,12 @@ struct raging_blow_t: public warrior_attack_t
 {
   raging_blow_attack_t* mh_attack;
   raging_blow_attack_t* oh_attack;
+  double cd_reset_chance;
   raging_blow_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "raging_blow", p, p -> spec.raging_blow ),
     mh_attack( nullptr ),
-    oh_attack( nullptr )
+    oh_attack( nullptr ),
+	cd_reset_chance( p -> spec.raging_blow -> effectN( 1 ).percent()  )
   {
     parse_options( options_str );
 
@@ -2438,9 +2415,8 @@ struct raging_blow_t: public warrior_attack_t
     mh_attack = new raging_blow_attack_t( p, "raging_blow_mh", p -> spec.raging_blow -> effectN( 3 ).trigger() );
     mh_attack -> weapon = &( p -> main_hand_weapon );
     add_child( mh_attack );
-    cooldown -> duration = p -> talents.inner_rage -> effectN( 1 ).time_value();
-    if ( p -> talents.inner_rage -> ok() )
-      track_cd_waste = true;
+    cooldown -> reset( false );
+    track_cd_waste = true;
   }
 
   void execute() override
@@ -2451,7 +2427,22 @@ struct raging_blow_t: public warrior_attack_t
       mh_attack -> execute();
       oh_attack -> execute();
     }
+    if ( rng().roll ( cd_reset_chance ) )
+    {
+      cooldown -> reset( true );
+    }
     p() -> buff.t20_fury_4p -> trigger( 1 );
+  }
+
+  double recharge_multiplier() const override
+  {
+    auto m = warrior_attack_t::recharge_multiplier();
+
+    if ( p() -> talents.inner_rage -> ok() )
+    {
+      m *= 1.0 + p() -> talents.inner_rage -> effectN( 1 ).percent();
+    }
+    return m;
   }
 
   bool ready() override
@@ -2462,11 +2453,6 @@ struct raging_blow_t: public warrior_attack_t
     {
       return false;
     }
-    if ( !p() -> buff.enrage -> check() && !p() -> talents.inner_rage -> ok() )
-    {
-      return false;
-    }
-    return warrior_attack_t::ready();
   }
 };
 
@@ -3643,12 +3629,12 @@ struct last_stand_t: public warrior_spell_t
   }
 };
 
-// Commanding Shout ===============================================================
+// Rallying Cry ===============================================================
 
-struct commanding_shout_t: public warrior_spell_t
+struct rallying_cry_t: public warrior_spell_t
 {
-  commanding_shout_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "commanding_shout", p, p -> spec.commanding_shout )
+  rallying_cry_t( warrior_t* p, const std::string& options_str ):
+    warrior_spell_t( "rallying_cry", p, p -> spec.rallying_cry )
   {
     parse_options( options_str );
     callbacks = false;
@@ -3658,7 +3644,7 @@ struct commanding_shout_t: public warrior_spell_t
   void execute() override
   {
     warrior_spell_t::execute();
-    p() -> buff.commanding_shout -> trigger();
+    p() -> buff.rallying_cry -> trigger();
   }
 };
 
@@ -3952,7 +3938,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "charge"               ) return new charge_t               ( this, options_str );
   if ( name == "cleave"               ) return new cleave_t               ( this, options_str );
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
-  if ( name == "commanding_shout"     ) return new commanding_shout_t     ( this, options_str );
   if ( name == "defensive_stance"     ) return new defensive_stance_t     ( this, options_str );
   if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
   if ( name == "devastate"            ) return new devastate_t            ( this, options_str );
@@ -3978,6 +3963,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "piercing_howl"        ) return new piercing_howl_t        ( this, options_str );
   if ( name == "pummel"               ) return new pummel_t               ( this, options_str );
   if ( name == "raging_blow"          ) return new raging_blow_t          ( this, options_str );
+  if ( name == "rallying_cry"         ) return new rallying_cry_t         ( this, options_str );
   if ( name == "rampage"              ) return new rampage_parent_t       ( this, options_str );
   if ( name == "ravager"              ) return new ravager_t              ( this, options_str );
   if ( name == "rend"                 ) return new rend_t                 ( this, options_str );
@@ -4030,7 +4016,6 @@ void warrior_t::init_spells()
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
   spec.cleave                   = find_specialization_spell( "Cleave" );
   spec.colossus_smash           = find_specialization_spell( "Colossus Smash" );
-  spec.commanding_shout         = find_specialization_spell( "Commanding Shout" );
   spec.deep_wounds              = find_specialization_spell( "Deep Wounds" );
   spec.defensive_stance         = find_specialization_spell( "Defensive Stance" );
   spec.demoralizing_shout       = find_specialization_spell( "Demoralizing Shout" );
@@ -4057,6 +4042,7 @@ void warrior_t::init_spells()
   spec.protection               = find_specialization_spell( "Protection" );
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.rampage                  = find_specialization_spell( "Rampage" );
+  spec.rallying_cry             = find_specialization_spell( "Rallying Cry" );
   spec.revenge                  = find_specialization_spell( "Revenge" );
   spec.revenge_trigger          = find_specialization_spell( "Revenge Trigger" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
@@ -4192,6 +4178,7 @@ void warrior_t::init_spells()
   cooldown.berserker_rage           = get_cooldown( "berserker_rage" );
   cooldown.bladestorm               = get_cooldown( "bladestorm" );
   cooldown.bloodthirst              = get_cooldown( "bloodthirst" );
+  
   cooldown.charge                   = get_cooldown( "charge" );
   cooldown.colossus_smash           = get_cooldown( "colossus_smash" );
   cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
@@ -4699,19 +4686,19 @@ protected:
   warrior_t& warrior;
 };
 
-// Commanding Shout ==============================================================
+// Rallying Cry ==============================================================
 
-struct commanding_shout_t: public warrior_buff_t < buff_t >
+struct rallying_cry_t: public warrior_buff_t < buff_t >
 {
   int health_gain;
-  commanding_shout_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
+  rallying_cry_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s ) ),
     health_gain( 0 )
   {}
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    health_gain = static_cast<int>( util::floor( warrior.resources.max[RESOURCE_HEALTH] * warrior.spec.commanding_shout -> effectN( 1 ).percent() ) );
+    health_gain = static_cast<int>( util::floor( warrior.resources.max[RESOURCE_HEALTH] * warrior.spec.rallying_cry -> effectN( 1 ).percent() ) );
     warrior.stat_gain( STAT_MAX_HEALTH, health_gain, ( gain_t* )nullptr, ( action_t* )nullptr, true );
     return base_t::trigger( stacks, value, chance, duration );
   }
@@ -4753,11 +4740,11 @@ struct enrage_t: public warrior_buff_t < buff_t >
   int health_gain;
   enrage_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
     base_t( p, buff_creator_t( &p, n, s )
-            .duration( p.spec.enrage -> effectN( 1 ).trigger() -> duration()+ p.sets -> set(WARRIOR_FURY, T19, B4 ) -> effectN( 1 ).time_value() )
             .can_cancel( false )
-            .add_invalidate( CACHE_ATTACK_SPEED )
+            .add_invalidate( CACHE_HASTE )
             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  {}
+  {
+  }
 };
 
 // Demoralizing Shout ================================================================
@@ -4892,7 +4879,11 @@ void warrior_t::create_buffs()
     .chance( artifact.dragon_scales.data().proc_chance() )
     .default_value( artifact.dragon_scales.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
-  buff.enrage = new buffs::enrage_t( *this, "enrage", spec.enrage -> effectN( 1 ).trigger() );
+  buff.enrage = buff_creator_t( this, "enrage", find_spell( 184362 ) )
+	.add_invalidate( CACHE_HASTE )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+	.default_value( find_spell( 184362 ) -> effectN( 1 ).percent() );
+
 
   buff.frenzy = buff_creator_t( this, "frenzy", talents.frenzy -> effectN( 1 ).trigger() )
     .add_invalidate( CACHE_HASTE )
@@ -4912,7 +4903,7 @@ void warrior_t::create_buffs()
 
   buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.whirlwind -> effectN( 1 ).trigger() );
 
-  buff.commanding_shout = new buffs::commanding_shout_t( *this, "commanding_shout", find_spell( 97463 ) );
+  buff.rallying_cry = new buffs::rallying_cry_t( *this, "rallying_cry", find_spell( 97463 ) );
 
   buff.overpower = buff_creator_t( this, "overpower", spell.overpower_driver -> effectN( 1 ).trigger() )
     .trigger_spell( spell.overpower_driver );
@@ -5413,6 +5404,8 @@ double warrior_t::composite_melee_haste() const
 {
   double a = player_t::composite_melee_haste();
 
+  a *= 1.0 / ( 1.0 + buff.enrage -> check_value() );
+
   a *= 1.0 / ( 1.0 + buff.frenzy -> check_stack_value() );
 
   a *= 1.0 / ( 1.0 + buff.into_the_fray -> check_stack_value() );
@@ -5598,10 +5591,6 @@ double warrior_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
 
-  if ( buff.enrage -> check() )
-  {
-    s /= 1.0 + buff.enrage -> data().effectN( 1 ).percent();
-  }
   return s;
 }
 
