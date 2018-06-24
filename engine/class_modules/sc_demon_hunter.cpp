@@ -1995,34 +1995,28 @@ struct fiery_brand_t : public demon_hunter_spell_t
         return;
       }
 
-      // Retrieve target list, checking for distance if necessary.
+      // Invalidate and retrieve the new target list
+      target_cache.is_valid = false;
       std::vector<player_t*> targets = target_list();
-      targets = check_distance_targeting( targets );
       if ( targets.size() == 1 )
       {
         return;
       }
 
-      // Filter target list down to targets that are not already branded.
-      std::vector<player_t*> candidates;
-      for ( size_t i = 0; i < targets.size(); i++ )
-      {
-        if ( !td( targets[ i ] )->dots.fiery_brand->is_ticking() )
-        {
-          candidates.push_back( targets[ i ] );
-        }
-      }
+      // Remove all the targets with existing Fiery Brand DoTs
+      auto it = std::remove_if( targets.begin(), targets.end(), [ this ]( player_t* target ) { 
+        return this->td( target )->dots.fiery_brand->is_ticking(); 
+      } );
+      targets.erase( it, targets.end() );
 
-      if ( candidates.size() == 0 )
+      if ( targets.size() == 0 )
       {
         return;
       }
 
-      // Pick a random target.
-      player_t* target = candidates[static_cast<int>(p()->rng().range(0, static_cast<double>(candidates.size())))];
-
-      // Execute a dot on that target.
-      this->set_target(target);
+      // Execute a dot on a random target
+      player_t* target = targets[ static_cast<int>( p()->rng().range( 0, static_cast<double>( targets.size() ) ) ) ];
+      this->set_target( target );
       schedule_execute();
     }
   };
@@ -2291,7 +2285,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
     if ( !p->active.immolation_aura )
     {
       p->active.immolation_aura = new immolation_aura_damage_t( p, data().effectN( 1 ).trigger() );
-      add_child( p->active.immolation_aura );
+      p->active.immolation_aura->stats = stats;
     }
 
     initial_damage = new immolation_aura_damage_t( p, data().effectN( 2 ).trigger() );
