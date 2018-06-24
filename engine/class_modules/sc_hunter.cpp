@@ -2112,17 +2112,15 @@ void dire_critter_t::init_spells()
 
 } // end namespace pets
 
-void trigger_birds_of_prey( const action_state_t* state )
+void trigger_birds_of_prey( hunter_t* p, player_t* t )
 {
-  auto p = static_cast<hunter_t*>( state -> action -> player );
-
   if ( ! p -> talents.birds_of_prey -> ok() )
     return;
 
   if ( ! p -> pets.main )
     return;
 
-  if ( state -> target == p -> pets.main -> target )
+  if ( t == p -> pets.main -> target )
     p -> buffs.coordinated_assault -> extend_duration( p, p -> talents.birds_of_prey -> effectN( 1 ).time_value() );
 }
 
@@ -2428,7 +2426,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     if ( rapid_reload.action && num_targets_hit >= rapid_reload.min_targets )
     {
-      rapid_reload.action -> set_target( execute_state -> target );
+      rapid_reload.action -> set_target( target );
       rapid_reload.action -> execute();
     }
   }
@@ -2777,7 +2775,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     if ( double_tap && p() -> buffs.double_tap -> check() )
     {
-      double_tap -> set_target( execute_state -> target );
+      double_tap -> set_target( target );
       double_tap -> execute();
       p() -> buffs.double_tap -> decrement();
     }
@@ -3380,7 +3378,7 @@ struct raptor_strike_base_t: hunter_melee_attack_t
     if ( p() -> buffs.coordinated_assault -> check() )
       p() -> buffs.blur_of_talons -> trigger();
 
-    trigger_birds_of_prey( execute_state );
+    trigger_birds_of_prey( p(), target );
     if ( wilderness_survival_reduction != timespan_t::zero() )
       p() -> cooldowns.wildfire_bomb -> adjust( -wilderness_survival_reduction );
 
@@ -3482,12 +3480,12 @@ struct flanking_strike_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    damage -> set_target( execute_state -> target );
+    damage -> set_target( target );
     damage -> execute();
 
     if ( auto pet = p() -> pets.main )
     {
-      pet -> active.flanking_strike -> set_target( execute_state -> target );
+      pet -> active.flanking_strike -> set_target( target );
       pet -> active.flanking_strike -> execute();
     }
 
@@ -3524,7 +3522,7 @@ struct carve_t: public hunter_melee_attack_t
     auto reduction = wfb_reduction * std::min( num_targets_hit, wfb_reduction_target_cap );
     p() -> cooldowns.wildfire_bomb -> adjust( -reduction, true );
 
-    trigger_birds_of_prey( execute_state );
+    trigger_birds_of_prey( p(), target );
   }
 
   void impact( action_state_t* s ) override
@@ -3658,12 +3656,12 @@ struct harpoon_t: public hunter_melee_attack_t
 
     if ( terms_of_engagement )
     {
-      terms_of_engagement -> set_target( execute_state -> target );
+      terms_of_engagement -> set_target( target );
       terms_of_engagement -> execute();
     }
 
     if ( p() -> legendary.sv_waist -> ok() )
-      td( execute_state -> target ) -> debuffs.mark_of_helbrine -> trigger();
+      td( target ) -> debuffs.mark_of_helbrine -> trigger();
 
     p() -> buffs.up_close_and_personal -> trigger();
   }
@@ -3788,7 +3786,7 @@ struct chakrams_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    damage -> set_target( execute_state -> target );
+    damage -> set_target( target );
     damage -> execute();
     damage -> execute(); // to simulate the 'return' & hitting the main target twice
   }
@@ -4033,7 +4031,7 @@ struct kill_command_t: public hunter_spell_t
 
     if ( auto pet = p() -> pets.main )
     {
-      pet -> active.kill_command -> set_target( execute_state -> target );
+      pet -> active.kill_command -> set_target( target );
       pet -> active.kill_command -> execute();
     }
 
@@ -4044,7 +4042,7 @@ struct kill_command_t: public hunter_spell_t
       double chance = data().effectN( 2 ).percent();
       if ( p() -> buffs.coordinated_assault -> check() )
         chance += p() -> specs.coordinated_assault -> effectN( 4 ).percent();
-      if ( td( execute_state -> target ) -> dots.pheromone_bomb -> is_ticking() )
+      if ( td( target ) -> dots.pheromone_bomb -> is_ticking() )
         chance += p() -> find_spell( 270323 ) -> effectN( 2 ).percent();
       if ( rng().roll( chance ) )
       {
@@ -4331,8 +4329,8 @@ struct hunters_mark_t: public hunter_spell_t
     if ( p() -> current_hunters_mark_target != nullptr )
       td( p() -> current_hunters_mark_target ) -> debuffs.hunters_mark -> expire();
 
-    p() -> current_hunters_mark_target = execute_state -> target;
-    td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
+    p() -> current_hunters_mark_target = target;
+    td( target ) -> debuffs.hunters_mark -> trigger();
   }
 };
 
@@ -4523,13 +4521,11 @@ struct wildfire_bomb_t: public hunter_spell_t
 
     void execute() override
     {
-      player_t* initial_target = target;
-
       bomb_base_t::execute();
 
-      if ( td( initial_target ) -> dots.serpent_sting -> is_ticking() )
+      if ( td( target ) -> dots.serpent_sting -> is_ticking() )
       {
-        violent_reaction -> set_target( initial_target );
+        violent_reaction -> set_target( target );
         violent_reaction -> execute();
       }
     }
