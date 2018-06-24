@@ -1253,7 +1253,7 @@ void enemy_t::init_defense()
       case 113: a = 1515; break; // checked
       case 114: a = 1605; break; // checked
       case 115: a = 1693; break; // checked
-      case 116: a = 2766; break;
+      case 116: a = 2207; break; // checked
       case 117: a = 2766; break;
       case 118: a = 2766; break;
       case 119: a = 2766; break;
