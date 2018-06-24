@@ -2961,8 +2961,8 @@ struct rapid_fire_t: public hunter_spell_t
       hunter_ranged_attack_t( n, p, p -> find_spell( 257044 ) -> effectN( 2 ).trigger() ),
       trick_shots_targets( as<int>( p -> specs.trick_shots -> effectN( 3 ).base_value() ) )
     {
-      background = true;
       dual = true;
+      direct_tick = true;
       radius = 8.0;
 
       parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
@@ -3014,8 +3014,6 @@ struct rapid_fire_t: public hunter_spell_t
   {
     parse_options( options_str );
 
-    add_child( damage );
-
     may_miss = may_crit = false;
     callbacks = false;
     channeled = true;
@@ -3023,6 +3021,15 @@ struct rapid_fire_t: public hunter_spell_t
 
     base_num_ticks *= 1.0 + p -> talents.streamline -> effectN( 2 ).percent();
     dot_duration += p -> talents.streamline -> effectN( 1 ).time_value();
+  }
+
+  void init()
+  {
+    hunter_spell_t::init();
+
+    damage -> stats      = stats;
+    damage -> parent_dot = target -> get_dot( name_str, player );
+    stats -> action_list.push_back( damage );
   }
 
   void schedule_execute( action_state_t* state ) override
