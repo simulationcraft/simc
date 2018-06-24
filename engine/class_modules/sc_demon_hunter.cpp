@@ -283,6 +283,7 @@ public:
     const spell_data_t* eye_beam;
     const spell_data_t* fel_rush_damage;
     const spell_data_t* vengeful_retreat;
+    const spell_data_t* momentum_buff;
 
     // Vengeance
     const spell_data_t* vengeance;
@@ -962,21 +963,33 @@ template <typename Base>
 class demon_hunter_action_t : public Base
 {
 public:
-  bool demonic_presence;
   bool hasted_gcd;
   double energize_delta;
+
+  // Affect flags for various dynamic effects
+  struct
+  {
+    // Havoc
+    bool demonic_presence;
+    bool momentum_da;
+    bool momentum_ta;
+
+    // Vengeance
+    bool charred_flesh;
+  } affected_by;
 
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
                          const spell_data_t* s = spell_data_t::nil(),
                          const std::string& o = std::string() )
     : ab( n, p, s ),
-    demonic_presence( false ),
     hasted_gcd( false ),
     energize_delta( 0.0 )
   {
     ab::parse_options( o );
     ab::may_crit = true;
     ab::tick_may_crit = true;
+
+    memset( &affected_by, 0, sizeof( affected_by ) );
 
     if ( p->specialization() == DEMON_HUNTER_HAVOC )
     {
@@ -986,10 +999,6 @@ public:
 
       if ( ab::data().affected_by( p->spec.havoc->effectN( 2 ) ) )
         ab::base_td_multiplier *= 1.0 + p->spec.havoc->effectN( 2 ).percent();
-
-      // Mastery
-      if ( ab::data().affected_by( p->mastery.demonic_presence->effectN( 1 ) ) )
-        demonic_presence = true;
 
       // Hasted GCD
       hasted_gcd = ab::data().affected_by( p->spec.havoc->effectN( 3 ) );
@@ -1001,6 +1010,20 @@ public:
       // Hasted Category Cooldowns
       if ( as<int>( ab::data().category() ) == p->spec.havoc->effectN( 6 ).misc_value1() )
         ab::cooldown->hasted = true;
+
+      // Mastery
+      if ( ab::data().affected_by( p->mastery.demonic_presence->effectN( 1 ) ) )
+        affected_by.demonic_presence = true;
+
+      // Momemtum
+      if ( p->talent.momentum->ok() )
+      {
+        if ( ab::data().affected_by( p->spec.momentum_buff->effectN( 1 ) ) )
+          affected_by.momentum_da = true;
+
+        if ( ab::data().affected_by( p->spec.momentum_buff->effectN( 2 ) ) )
+          affected_by.momentum_ta = true;
+      }
     }
     else // DEMON_HUNTER_VENGEANCE
     {
@@ -1031,6 +1054,10 @@ public:
 
       if ( ab::data().affected_by( p->spec.vengeance->effectN( 9 ) ) )
         ab::base_multiplier *= 1.0 + p->spec.vengeance->effectN( 9 ).percent();
+
+      // Charred Flesh Whitelist
+      if ( ab::data().affected_by( p->spec.fiery_brand_dr->effectN( 2 ) ) )
+        affected_by.charred_flesh = true;
     }
   }
 
@@ -1076,16 +1103,49 @@ public:
     return ab::init_finished();
   }
 
-  virtual double composite_da_multiplier( const action_state_t* s ) const override
+  virtual double composite_target_multiplier( player_t* target ) const override
   {
-    double dm = ab::composite_da_multiplier( s );
+    double m = ab::composite_target_multiplier( target );
 
-    if ( demonic_presence )
+    if ( p()->talent.charred_flesh->ok() && affected_by.charred_flesh )
     {
-      dm *= 1.0 + p()->cache.mastery_value();
+      demon_hunter_td_t* td = p()->get_target_data( target );
+      if ( td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
+      {
+        m *= 1.0 + p()->talent.charred_flesh->effectN( 1 ).percent();
+      }
     }
 
-    return dm;
+    return m;
+  }
+
+  virtual double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = ab::composite_da_multiplier( s );
+
+    if ( affected_by.demonic_presence )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    if ( affected_by.momentum_da )
+    {
+      m *= 1.0 + p()->buff.momentum->check_value();
+    }
+
+    return m;
+  }
+
+  virtual double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = ab::composite_ta_multiplier( s );
+
+    if ( affected_by.momentum_ta )
+    {
+      m *= 1.0 + p()->buff.momentum->check_value();
+    }
+
+    return m;
   }
 
   virtual double composite_energize_amount( const action_state_t* s ) const override
@@ -1113,10 +1173,14 @@ public:
 
     if ( ab::snapshot_flags & STATE_MUL_TA )
     {
-      p()->buff.momentum->up();
       p()->buff.demon_soul->up();
     }
-  }
+
+    if ( affected_by.momentum_ta || affected_by.momentum_da )
+    {
+      p()->buff.momentum->up();
+    }
+  } 
 
   virtual void tick( dot_t* d ) override
   {
@@ -1278,8 +1342,8 @@ private:
 struct demon_hunter_heal_t : public demon_hunter_action_t<heal_t>
 {
   demon_hunter_heal_t( const std::string& n, demon_hunter_t* p,
-                        const spell_data_t* s = spell_data_t::nil(),
-                        const std::string& o = std::string() )
+                       const spell_data_t* s = spell_data_t::nil(),
+                       const std::string& o = std::string() )
     : base_t( n, p, s, o )
   {
     harmful = false;
@@ -1299,8 +1363,8 @@ struct demon_hunter_spell_t : public demon_hunter_action_t<spell_t>
 struct demon_hunter_attack_t : public demon_hunter_action_t<melee_attack_t>
 {
   demon_hunter_attack_t( const std::string& n, demon_hunter_t* p,
-                          const spell_data_t* s = spell_data_t::nil(),
-                          const std::string& o = std::string() )
+                         const spell_data_t* s = spell_data_t::nil(),
+                         const std::string& o = std::string() )
     : base_t( n, p, s, o )
   {
     special = true;
@@ -1411,8 +1475,7 @@ struct soul_barrier_t : public demon_hunter_action_t<absorb_t>
   unsigned souls_consumed;
 
   soul_barrier_t( demon_hunter_t* p, const std::string& options_str )
-    : demon_hunter_action_t( "soul_barrier", p, p->talent.soul_barrier,
-                             options_str ),
+    : demon_hunter_action_t( "soul_barrier", p, p->talent.soul_barrier, options_str ),
     souls_consumed( 0 )
   {
     // Doesn't get populated from spell data correctly since this is not actually an AP coefficient
@@ -2259,6 +2322,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
     demon_hunter_spell_t::execute();
 
+    initial_damage->set_target( execute_state->target );
     initial_damage->execute();
   }
 };
@@ -2606,10 +2670,12 @@ struct spirit_bomb_t : public demon_hunter_spell_t
   };
 
   spirit_bomb_damage_t* damage;
+  unsigned max_fragments_consumed;
 
   spirit_bomb_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "spirit_bomb", p, p->talent.spirit_bomb, options_str ),
-    damage( new spirit_bomb_damage_t( p ) )
+    damage( new spirit_bomb_damage_t( p ) ),
+    max_fragments_consumed( data().effectN( 2 ).base_value() )
   {
     may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
 
@@ -2626,11 +2692,11 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     demon_hunter_spell_t::execute();
 
     // Soul fragments consumed are capped for Spirit Bomb
-    const int fragments_consumed = 
-      p()->consume_soul_fragments(soul_fragment::ALL, true, (unsigned)data().effectN(2).base_value());
+    const int fragments_consumed =
+      p()->consume_soul_fragments( soul_fragment::ALL, true, max_fragments_consumed );
 
-    action_state_t* damage_state = damage->get_state();
     damage->set_target( execute_state->target );
+    action_state_t* damage_state = damage->get_state();
     damage->snapshot_state( damage_state, DMG_DIRECT );
     damage_state->da_multiplier *= fragments_consumed;
     damage->schedule_execute( damage_state );
@@ -2683,6 +2749,8 @@ namespace attacks
       weapon = w;
       weapon_multiplier = 1.0;
       base_execute_time = weapon->swing_time;
+      
+      affected_by.momentum_da = true;
 
       status.main_hand = status.off_hand = LOST_CONTACT_RANGE;
 
@@ -4002,7 +4070,7 @@ struct chaos_blades_t : public demon_hunter_buff_t<buff_t>
     {
       double am = action_t::action_multiplier();
 
-      if ( demonic_presence )
+      if ( affected_by.demonic_presence )
       {
         am *= 1.0 + p()->cache.mastery_value();
       }
@@ -4015,7 +4083,7 @@ struct chaos_blades_t : public demon_hunter_buff_t<buff_t>
   chaos_blade_t* chaos_blade_off_hand;
 
   chaos_blades_t( demon_hunter_t* p )
-    : demon_hunter_buff_t<buff_t>( *p, "chaos_blades", p -> find_spell( 247938 ) ),
+    : demon_hunter_buff_t<buff_t>( *p, "chaos_blades", p->find_spell( 247938 ) ),
     chaos_blade_main_hand( nullptr ),
     chaos_blade_off_hand( nullptr )
   {
@@ -4394,8 +4462,8 @@ void demon_hunter_t::create_buffs()
     .duration( find_class_spell( "Fel Rush" )->gcd() ) );
 
   buff.momentum =
-    buff_creator_t( this, "momentum", find_spell( 208628 ) )
-    .default_value( find_spell( 208628 )->effectN( 1 ).percent() )
+    buff_creator_t( this, "momentum", spec.momentum_buff )
+    .default_value( spec.momentum_buff->effectN( 1 ).percent() )
     .trigger_spell( talent.momentum )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
@@ -4406,8 +4474,7 @@ void demon_hunter_t::create_buffs()
   buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605 ) )
                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
-  const double prepared_value = 
-    ( find_spell( 203650 )->effectN( 1 ).resource( RESOURCE_FURY ) / 50 );
+  const double prepared_value = ( find_spell( 203650 )->effectN( 1 ).resource( RESOURCE_FURY ) / 50 );
   buff.prepared =
     buff_creator_t(this, "prepared", find_spell( 203650 ) )
     .default_value( prepared_value )
@@ -4881,6 +4948,7 @@ void demon_hunter_t::init_spells()
   spec.eye_beam               = find_class_spell( "Eye Beam" );
   spec.fel_rush_damage        = find_spell( 192611 );
   spec.vengeful_retreat       = find_class_spell( "Vengeful Retreat" );
+  spec.momentum_buff          = find_spell( 208628 );
 
   // Vengeance
   spec.vengeance              = find_specialization_spell( "Vengeance Demon Hunter" );
@@ -5576,11 +5644,6 @@ double demon_hunter_t::composite_player_dd_multiplier( school_e school, const ac
     m *= 1.0 + buff.demon_soul->value();
   }
 
-  if ( buff.momentum->check() && a->data().affected_by( buff.momentum->data().effectN( 1 ) ) )
-  {
-    m *= 1.0 + buff.momentum->check_value();
-  }
-
   return m;
 }
 
@@ -5600,11 +5663,6 @@ double demon_hunter_t::composite_player_td_multiplier( school_e school, const ac
     m *= 1.0 + buff.demon_soul->value();
   }
 
-  if ( buff.momentum->check() && a->data().affected_by( buff.momentum->data().effectN( 2 ) ) )
-  {
-    m *= 1.0 + buff.momentum->check_value();
-  }
-
   return m;
 }
 
@@ -5619,14 +5677,6 @@ double demon_hunter_t::composite_player_target_multiplier( player_t* target, sch
   if ( td->debuffs.nemesis && td->debuffs.nemesis->up() )
   {
     m *= 1.0 + td->debuffs.nemesis->current_value;
-  }
-
-  if ( talent.charred_flesh->ok() )
-  {
-    if ( dbc::is_school( school, SCHOOL_FIRE ) && td->dots.fiery_brand && td->dots.fiery_brand->is_ticking() )
-    {
-      m *= 1.0 + talent.charred_flesh->effectN( 1 ).percent();
-    }
   }
 
   return m;
