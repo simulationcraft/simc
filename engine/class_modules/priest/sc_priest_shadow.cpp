@@ -729,10 +729,12 @@ struct vampiric_embrace_t final : public priest_spell_t
 struct shadowy_apparition_spell_t final : public priest_spell_t
 {
   double insanity_gain;
+  double spiteful_apparitions_bonus;
 
   shadowy_apparition_spell_t( priest_t& p )
     : priest_spell_t( "shadowy_apparitions", p, p.find_spell( 78203 ) ),
-      insanity_gain( priest().talents.auspicious_spirits->effectN( 2 ).percent() )
+      insanity_gain( priest().talents.auspicious_spirits->effectN( 2 ).percent() ),
+      spiteful_apparitions_bonus( priest().azerite.spiteful_apparitions.value( 1 ) )
   {
     background                   = true;
     proc                         = false;
@@ -756,7 +758,24 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
       priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
     }
   }
-  
+
+  double bonus_da( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::bonus_da( state );
+
+    if ( priest().azerite.spiteful_apparitions.enabled() )
+    {
+      auto vampiric_touch_dot = state->target->get_dot( "vampiric_touch", player );
+
+      if ( vampiric_touch_dot != nullptr && vampiric_touch_dot->is_ticking() )
+      {
+        d += spiteful_apparitions_bonus;
+      }      
+    }
+
+    return d;
+  }
+
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double d = priest_spell_t::composite_da_multiplier( state );
