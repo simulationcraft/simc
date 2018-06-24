@@ -897,6 +897,7 @@ buff_t* buff_t::set_rppm( rppm_scale_e scale, double freq, double mod )
 {
   if ( scale == RPPM_DISABLE )
   {
+    rppm = nullptr;
     return this;
   }
 
