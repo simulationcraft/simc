@@ -1431,6 +1431,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 267972, 5 ),		# Demonic Tyrant - Demonic Consumption (not sure which is needed)
 		  ( 267997, 5 ),		# Vilefiend - Bile Spit
 		  ( 267999, 5 ),		# Vilefiend - Headbutt
+		  ( 279910, 2 ),		# Summon Wild Imp - Inner Demons version
 		  ( 267994, 2 ),		# Summon Shivarra
 		  ( 267996, 2 ),		# Summon Darkhound
 		  ( 267992, 2 ),		# Summon Bilescourge
