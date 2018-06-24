@@ -566,6 +566,12 @@ void priest_td_t::reset()
 
 void priest_td_t::target_demise()
 {
+  if ( priest().azerite.death_throes.enabled() && dots.shadow_word_pain->is_ticking() )
+  {
+    priest().generate_insanity( priest().azerite.death_throes.value( 2 ),
+                                priest().gains.insanity_death_throes,
+                                nullptr );
+  }
   priest().sim->print_debug( "Player '{}' demised. Priest '{}' resets targetdata for him.",
       target->name(), priest().name() );
 

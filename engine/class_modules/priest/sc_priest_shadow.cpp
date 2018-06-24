@@ -809,6 +809,31 @@ struct shadow_word_pain_t final : public priest_spell_t
     return casted ? priest_spell_t::spell_direct_power_coefficient( s ) : 0.0;
   }
 
+  double bonus_ta( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::bonus_ta( state );
+
+    if ( priest().azerite.death_throes.enabled() )
+    {
+      d += priest().azerite.death_throes.value( 1 );
+    }
+
+    return d;
+  }
+
+  // This assumes death_thoes also affects the direct damage portion - didn't test if it does
+  double bonus_da( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::bonus_da( state );
+
+    if ( priest().azerite.death_throes.enabled() )
+    {
+      d += priest().azerite.death_throes.value( 1 );
+    }
+
+    return d;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );

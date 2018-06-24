@@ -328,6 +328,7 @@ public:
     propagate_const<gain_t*> insanity_call_to_the_void;
     propagate_const<gain_t*> insanity_dark_void;
     propagate_const<gain_t*> insanity_dark_ascension;
+    propagate_const<gain_t*> insanity_death_throes;
   } gains;
 
   // Benefits
