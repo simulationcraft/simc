@@ -2008,32 +2008,15 @@ struct froststorm_breath_t: public hunter_main_pet_spell_t
       hunter_main_pet_spell_t( "froststorm_breath_tick", player, player -> find_spell( 95725 ) )
     {
       attack_power_mod.direct = 0.144; // hardcoded into tooltip, 2012/08 checked 2015/02/21
-      background = true;
-      direct_tick = true;
     }
   };
 
-  froststorm_breath_tick_t* tick_spell;
   froststorm_breath_t( hunter_main_pet_t* player, const std::string& options_str ):
     hunter_main_pet_spell_t( "froststorm_breath", player, player -> find_pet_spell( "Froststorm Breath" ) )
   {
     parse_options( options_str );
     channeled = true;
-    tick_spell = new froststorm_breath_tick_t( player );
-    add_child( tick_spell );
-  }
-
-  void init() override
-  {
-    hunter_main_pet_spell_t::init();
-
-    tick_spell -> stats = stats;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick, d -> state -> target );
+    tick_action = new froststorm_breath_tick_t( player );
   }
 };
 
@@ -2299,34 +2282,25 @@ struct barrage_t: public hunter_spell_t
     barrage_damage_t( const std::string& n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> talents.barrage -> effectN( 1 ).trigger() )
     {
-      background = true;
-      dual = true;
-
-      may_crit = true;
       aoe = -1;
       radius = 0; //Barrage attacks all targets in front of the hunter, so setting radius to 0 will prevent distance targeting from using a 40 yard radius around the target.
       // Todo: Add in support to only hit targets in the frontal cone.
     }
   };
 
-  barrage_damage_t* primary;
-
   barrage_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "barrage", p, p -> talents.barrage ),
-    primary( p -> get_background_action<barrage_damage_t>( "barrage_damage" ) )
+    hunter_spell_t( "barrage", p, p -> talents.barrage )
   {
     parse_options( options_str );
 
-    add_child( primary );
-
     may_miss = may_crit = false;
     callbacks = false;
-    hasted_ticks = false;
     channeled = true;
 
     tick_zero = true;
     travel_speed = 0.0;
 
+    tick_action = p -> get_background_action<barrage_damage_t>( "barrage_damage" );
     starved_proc = p -> get_proc( "starved: barrage" );
   }
 
@@ -2337,12 +2311,6 @@ struct barrage_t: public hunter_spell_t
     // Delay auto shot, add 500ms to simulate "wind up"
     if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
       p() -> main_hand_attack -> reschedule_execute( dot_duration * composite_haste() + timespan_t::from_millis( 500 ) );
-  }
-
-  void tick( dot_t*d ) override
-  {
-    hunter_spell_t::tick( d );
-    primary -> execute();
   }
 };
 
@@ -3834,10 +3802,6 @@ struct moc_t : public hunter_spell_t
     peck_t( const std::string& n, hunter_t* p ) :
       hunter_ranged_attack_t( n, p, p -> find_spell( 131900 ) )
     {
-      background = true;
-      dual = true;
-
-      may_crit = true;
       may_parry = may_block = may_dodge = false;
       travel_speed = 0.0;
     }
@@ -3856,15 +3820,10 @@ struct moc_t : public hunter_spell_t
     }
   };
 
-  peck_t* peck;
-
   moc_t( hunter_t* p, const std::string& options_str ) :
-    hunter_spell_t( "a_murder_of_crows", p, p -> talents.a_murder_of_crows ),
-    peck( p -> get_background_action<peck_t>( "crow_peck" ) )
+    hunter_spell_t( "a_murder_of_crows", p, p -> talents.a_murder_of_crows )
   {
     parse_options( options_str );
-
-    add_child( peck );
 
     hasted_ticks = false;
     callbacks = false;
@@ -3872,15 +3831,8 @@ struct moc_t : public hunter_spell_t
 
     tick_zero = true;
 
+    tick_action = p -> get_background_action<peck_t>( "crow_peck" );
     starved_proc = p -> get_proc( "starved: a_murder_of_crows" );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    hunter_spell_t::tick( d );
-
-    peck -> set_target( d -> target );
-    peck -> execute();
   }
 };
 
