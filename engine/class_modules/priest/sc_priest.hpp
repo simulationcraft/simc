@@ -132,6 +132,12 @@ public:
     propagate_const<buff_t*> zeks_exterminatus;        // Aura for Zeks proc
     propagate_const<buff_t*> iridis_empowerment;       // Fake aura for Helm
 
+    // Azerite Powers
+    // Shadow
+    propagate_const<buff_t*> chorus_of_insanity;
+    propagate_const<buff_t*> harvested_thoughts;
+    propagate_const<buff_t*> whispers_of_the_damned;
+
   } buffs;
 
   // Talents
@@ -236,10 +242,10 @@ public:
   // Specialization Spells
   struct
   {
-    const spell_data_t* priest; /// General priest data
+    const spell_data_t* priest;  /// General priest data
 
     // Discipline
-    const spell_data_t* discipline; /// General discipline data
+    const spell_data_t* discipline;  /// General discipline data
     const spell_data_t* archangel;
     const spell_data_t* atonement;
     const spell_data_t* borrowed_time;
@@ -251,7 +257,7 @@ public:
     const spell_data_t* enlightenment;
 
     // Holy
-    const spell_data_t* holy; /// General holy data
+    const spell_data_t* holy;  /// General holy data
     const spell_data_t* rapid_renewal;
     const spell_data_t* serendipity;
     const spell_data_t* divine_providence;
@@ -259,7 +265,7 @@ public:
     const spell_data_t* focused_will;
 
     // Shadow
-    const spell_data_t* shadow; /// General shadow data
+    const spell_data_t* shadow;  /// General shadow data
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* voidform;
     const spell_data_t* void_eruption;
@@ -394,6 +400,23 @@ public:
     bool priest_suppress_sephuz      = false;  // Sephuz's Secret won't proc if set true
     int priest_set_voidform_duration = 0;      // Voidform will always have this duration
   } options;
+
+  // Azerite
+  struct azerite_t
+  {
+    azerite_power_t sanctum;
+    // Holy
+    // Disc
+    // Shadow
+    azerite_power_t chorus_of_insanity;
+    azerite_power_t death_throes;
+    azerite_power_t depth_of_the_shadows;
+    azerite_power_t harvested_thoughts;
+    azerite_power_t searing_dialogue;
+    azerite_power_t spiteful_apparitions;
+    azerite_power_t torment_of_torments;
+    azerite_power_t whispers_of_the_damned;
+  } azerite;
 
   struct insanity_end_event_t;
 
@@ -679,12 +702,10 @@ namespace fiend
  */
 struct base_fiend_pet_t : public priest_pet_t
 {
-
   struct gains_t
   {
     propagate_const<gain_t*> fiend;
   } gains;
-
 
   double direct_power_mod;
 
@@ -701,7 +722,7 @@ struct base_fiend_pet_t : public priest_pet_t
   virtual double insanity_gain() const       = 0;
 
   void init_action_list() override;
-  
+
   void init_gains() override
   {
     priest_pet_t::init_gains();
@@ -803,7 +824,6 @@ struct shadowcrawl_t final : public priest_pet_spell_t
   {
     return static_cast<base_fiend_pet_t&>( *player );
   }
-    
 };
 
 struct fiend_melee_t : public priest_pet_melee_t
@@ -825,7 +845,7 @@ struct fiend_melee_t : public priest_pet_melee_t
   {
     return static_cast<base_fiend_pet_t&>( *player );
   }
-  
+
   timespan_t execute_time() const override
   {
     if ( base_execute_time == timespan_t::zero() )
@@ -1176,12 +1196,14 @@ struct priest_buff_t : public Base
 public:
   using base_t = priest_buff_t;  // typedef for priest_buff_t<buff_base_t>
 
-  priest_buff_t( priest_td_t& td, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
+  priest_buff_t( priest_td_t& td, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+                 const item_t* item = nullptr )
     : Base( td, name, s, item )
   {
   }
 
-  priest_buff_t( priest_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
+  priest_buff_t( priest_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+                 const item_t* item = nullptr )
     : Base( &p, name, s, item )
   {
   }

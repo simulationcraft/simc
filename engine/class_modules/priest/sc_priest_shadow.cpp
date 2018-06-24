@@ -60,12 +60,14 @@ struct mind_blast_t final : public priest_spell_t
 {
 private:
   double insanity_gain;
+  double whispers_of_the_damned_value;
 
 public:
   mind_blast_t( priest_t& player, const std::string& options_str )
     : priest_spell_t( "mind_blast", player,
                       player.talents.shadow_word_void->ok() ? player.find_talent_spell( "Shadow Word: Void" )
-                                                            : player.find_class_spell( "Mind Blast" ) )
+                                                            : player.find_class_spell( "Mind Blast" ) ),
+      whispers_of_the_damned_value( priest().azerite.whispers_of_the_damned.value( 1 ) )
   {
     parse_options( options_str );
     is_sphere_of_insanity_spell = true;
@@ -132,6 +134,19 @@ public:
     if ( priest().buffs.empty_mind->check() )
     {
       d *= 1.0 + ( priest().buffs.empty_mind->check() * priest().buffs.empty_mind->data().effectN( 1 ).percent() );
+    }
+
+    return d;
+  }
+
+  double bonus_da( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::bonus_da( state );
+
+    if ( priest().buffs.whispers_of_the_damned->check() )
+    {
+      d +=   whispers_of_the_damned_value
+           * priest().buffs.whispers_of_the_damned->check();
     }
 
     return d;
@@ -1014,6 +1029,11 @@ struct void_bolt_t final : public priest_spell_t
     {
       cooldown->reset( false );
     }
+
+    if ( priest().azerite.whispers_of_the_damned )
+    {
+      priest().buffs.whispers_of_the_damned->trigger();
+    }
   }
 
   virtual double composite_crit_chance() const override
@@ -1210,17 +1230,17 @@ struct dark_ascension_t final : public priest_spell_t
 
   dark_ascension_t( priest_t& p, const std::string& options_str )
     : priest_spell_t( "dark_ascension", p, p.find_talent_spell( "Dark Ascension" ) ),
-    data_spell( p.find_spell( 280800 ) )
+      data_spell( p.find_spell( 280800 ) )
   {
     parse_options( options_str );
 
     // We don't want to lose insanity when casting it!
     base_costs[ RESOURCE_INSANITY ] = 0;
 
-    may_miss         = false;
-    is_mastery_spell = true;
-    aoe              = -1;
-    radius           = data().effectN( 1 ).radius_max();
+    may_miss               = false;
+    is_mastery_spell       = true;
+    aoe                    = -1;
+    radius                 = data().effectN( 1 ).radius_max();
     spell_power_mod.direct = data_spell->effectN( 1 ).sp_coeff();
   }
 
@@ -1229,9 +1249,10 @@ struct dark_ascension_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.voidform->expire();
-    priest().generate_insanity( data().effectN( 2 ).percent(), priest().gains.insanity_dark_ascension, execute_state->action );
+    priest().generate_insanity( data().effectN( 2 ).percent(), priest().gains.insanity_dark_ascension,
+                                execute_state->action );
     priest().buffs.voidform->trigger();
-        
+
     if ( priest().active_items.mother_shahrazs_seduction )
     {
       int mss_vf_stacks = priest().active_items.mother_shahrazs_seduction->driver()->effectN( 1 ).base_value();
@@ -1584,7 +1605,7 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 {
   if ( specialization() == PRIEST_SHADOW )
   {
-    double amount                               = num_amount;   
+    double amount                               = num_amount;
     double amount_from_surrender_to_madness     = 0.0;
     double amount_wasted_surrendered_to_madness = 0.0;
 
@@ -1606,7 +1627,7 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
     {
       amount_from_surrender_to_madness =
           ( amount * ( 1.0 + talents.surrender_to_madness->effectN( 1 ).percent() ) ) - amount;
-    }   
+    }
 
     insanity.gain( amount, g, action );
 
@@ -1935,6 +1956,11 @@ void priest_t::create_buffs_shadow()
 
   // Artifact
   buffs.sphere_of_insanity = make_buff( this, "sphere_of_insanity", find_spell( 194182 ) );
+
+  // Azerite Powers
+  buffs.chorus_of_insanity     = make_buff( this, "chorus_of_insanity", find_spell( 279572 ) );
+  buffs.harvested_thoughts     = make_buff( this, "harvested_thoughts", find_spell( 273321 ) );
+  buffs.whispers_of_the_damned = make_buff( this, "whispers_of_the_damned", find_spell( 275726 ) );
 }
 
 void priest_t::init_rng_shadow()
@@ -1979,6 +2005,17 @@ void priest_t::init_spells_shadow()
   specs.void_eruption       = find_specialization_spell( "Void Eruption" );
   specs.shadowy_apparitions = find_specialization_spell( "Shadowy Apparitions" );
   specs.shadow_priest       = find_specialization_spell( "Shadow Priest" );
+
+  // Azerite
+  azerite.sanctum                = find_azerite_spell( "Sanctum" );
+  azerite.chorus_of_insanity     = find_azerite_spell( "Chorus of Insanity" );
+  azerite.death_throes           = find_azerite_spell( "Death Throes" );
+  azerite.depth_of_the_shadows   = find_azerite_spell( "Depth of the Shadows" );
+  azerite.harvested_thoughts     = find_azerite_spell( "Harvested Thoughts" );
+  azerite.searing_dialogue       = find_azerite_spell( "Searing Dialogue" );
+  azerite.spiteful_apparitions   = find_azerite_spell( "Spiteful Apparitions" );
+  azerite.torment_of_torments    = find_azerite_spell( "Torment of Torments" );
+  azerite.whispers_of_the_damned = find_azerite_spell( "Whispers of the Damned" );
 
   base.distance = 27.0;
 }
@@ -2126,8 +2163,7 @@ void priest_t::generate_apl_shadow()
 
   // single APL
   single->add_action( this, "Void Eruption" );
-  single->add_talent( this, "Dark Ascension",
-                      "if=talent.dark_ascension.enabled&buff.voidform.down" );
+  single->add_talent( this, "Dark Ascension", "if=talent.dark_ascension.enabled&buff.voidform.down" );
   single->add_action( this, "Void Bolt" );
   single->add_talent( this, "Shadow Word: Death",
                       "if=target.time_to_die<3|"
@@ -2163,8 +2199,7 @@ void priest_t::generate_apl_shadow()
 
   // cleave APL
   cleave->add_action( this, "Void Eruption" );
-  cleave->add_talent( this, "Dark Ascension",
-                      "if=talent.dark_ascension.enabled&buff.voidform.down" );
+  cleave->add_talent( this, "Dark Ascension", "if=talent.dark_ascension.enabled&buff.voidform.down" );
   cleave->add_action( this, "Void Bolt" );
   cleave->add_talent( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
   cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
@@ -2178,8 +2213,7 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Shadow Word: Pain",
                       "target_if=refreshable&target.time_to_die>4,"
                       "if=!talent.misery.enabled&!talent.dark_void.enabled" );
-  cleave->add_action( this, "Vampiric Touch",
-                      "target_if=refreshable&target.time_to_die>6" );
+  cleave->add_action( this, "Vampiric Touch", "target_if=refreshable&target.time_to_die>6" );
   cleave->add_talent( this, "Void Torrent" );
   cleave->add_action( this, "Mind Sear",
                       "target_if=spell_targets.mind_sear>2"
@@ -2189,8 +2223,7 @@ void priest_t::generate_apl_shadow()
 
   // aoe APL
   aoe->add_action( this, "Void Eruption" );
-  aoe->add_talent( this, "Dark Ascension",
-                     "if=talent.dark_ascension.enabled&buff.voidform.down" );
+  aoe->add_talent( this, "Dark Ascension", "if=talent.dark_ascension.enabled&buff.voidform.down" );
   aoe->add_action( this, "Void Bolt",
                    "if=talent.dark_void.enabled&"
                    "dot.shadow_word_pain.remains>travel_time" );
