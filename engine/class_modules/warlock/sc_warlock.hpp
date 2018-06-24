@@ -242,6 +242,37 @@ namespace warlock
         const spell_data_t* dark_soul_instability;
       } talents;
 
+      // Azerite traits
+      struct
+      {
+        //Shared
+        azerite_power_t desperate_power;
+        azerite_power_t lifeblood;
+
+        //Demo
+        azerite_power_t demonic_meteor;
+        azerite_power_t forbidden_knowledge;
+        azerite_power_t meteoric_flare;
+        azerite_power_t shadows_bite;
+        azerite_power_t supreme_commander;
+        azerite_power_t umbral_blaze;
+
+        //Aff
+        azerite_power_t cascading_calamity;
+        azerite_power_t dreadful_calling;
+        azerite_power_t inevitable_demise;
+        azerite_power_t sudden_onset;
+        azerite_power_t wracking_brilliance;
+
+        //Destro
+        azerite_power_t accelerant;
+        azerite_power_t bursting_flare;
+        azerite_power_t chaotic_inferno;
+        azerite_power_t crashing_chaos;
+        azerite_power_t rolling_havoc;
+
+      } azerite;
+
       struct legendary_t
       {
         const spell_data_t* odr_shawl_of_the_ymirjar;

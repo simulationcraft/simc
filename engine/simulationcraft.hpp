@@ -339,6 +339,7 @@ public:
   static void combat_end( sim_t* ) {}
   static double evaluate_raid_event_expression(sim_t* s, std::string& type, std::string& filter );
 };
+std::ostream& operator<<(std::ostream&, const raid_event_t&);
 
 // Gear Stats ===============================================================
 

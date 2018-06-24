@@ -202,6 +202,18 @@ namespace warlock
 
         if ( td( execute_state->target )->agony_stack < agony_max_stacks )
           td( execute_state->target )->agony_stack++;
+
+        if (p()->azerite.sudden_onset.ok() && td(execute_state->target)->agony_stack < (int)p()->azerite.sudden_onset.spell_ref().effectN(2).base_value())
+        {
+          td(execute_state->target)->agony_stack = (int)p()->azerite.sudden_onset.spell_ref().effectN(2).base_value();
+        }
+      }
+
+      double bonus_ta(const action_state_t* s) const override
+      {
+        double ta = warlock_spell_t::bonus_ta(s);
+        ta += p()->azerite.sudden_onset.value();
+        return ta;
       }
 
       void tick( dot_t* d ) override
@@ -1018,6 +1030,12 @@ namespace warlock
     talents.dark_soul_misery            = find_talent_spell( "Dark Soul: Misery" );
     // Tier
     active.tormented_agony              = new tormented_agony_t( this );
+    // Azerite
+    azerite.cascading_calamity          = find_azerite_spell("Cascading Calamity");
+    azerite.dreadful_calling            = find_azerite_spell("Dreadful Calling");
+    azerite.inevitable_demise           = find_azerite_spell("Inevitable Demise");
+    azerite.sudden_onset                = find_azerite_spell("Sudden Onset");
+    azerite.wracking_brilliance         = find_azerite_spell("Wracking Brilliance");
 
     // seed applies corruption
     if (specialization() == WARLOCK_AFFLICTION)

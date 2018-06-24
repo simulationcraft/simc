@@ -460,7 +460,8 @@ namespace warlock {
         {
           for (unsigned i = 0; i < slashs.size(); ++i)
           {
-            slashs[i] = new multi_slash_damage_t(p, i);
+            // Slash number is the spelldata effects number, so increase by 1.
+            slashs[i] = new multi_slash_damage_t(p, i + 1);
             add_child(slashs[i]);
           }
         }
@@ -1583,16 +1584,16 @@ namespace warlock {
 
       enum class random_pet_e : int
       {
-        prince_malchezaar = 1,
-        eyes_of_guldan = 2,
-        shivarra = 3,
-        darkhounds = 4,
-        bilescourges = 5,
-        urzuls = 6,
-        void_terrors = 7,
-        wrathguards = 8,
-        vicious_hellhounds = 9,
-        illidari_satyrs = 10,
+        shivarra = 0,
+        darkhounds = 1,
+        bilescourges = 2,
+        urzuls = 3,
+        void_terrors = 4,
+        wrathguards = 5,
+        vicious_hellhounds = 6,
+        illidari_satyrs = 7,
+        prince_malchezaar = 8,
+        eyes_of_guldan = 9,
       };
 
       timespan_t summon_duration;
@@ -1683,17 +1684,17 @@ namespace warlock {
        */
       random_pet_e roll_random_pet()
       {
-        int demon_int = rng().range(10) + 1;
+        int demon_int = rng().range(10);
         int rare_check;
-        if (demon_int <= 2)
+        if (demon_int > 7)
         {
-          rare_check = rng().range(10) + 1;
-          if (rare_check > 1)
+          rare_check = rng().range(10);
+          if (rare_check > 0)
           {
-            demon_int = rng().range(8) + 3;
+            demon_int = rng().range(8);
           }
         }
-        assert( demon_int > 0 && demon_int <= 10);
+        assert( demon_int >= 0 && demon_int <= 9);
         return static_cast<random_pet_e>(demon_int);
       }
     };

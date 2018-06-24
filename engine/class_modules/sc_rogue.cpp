@@ -4902,19 +4902,19 @@ struct roll_the_bones_t : public buff_t
     buffs[ 0 ] = rogue -> buffs.broadside;
     buffs[ 1 ] = rogue -> buffs.buried_treasure;
     buffs[ 2 ] = rogue -> buffs.grand_melee;
-    buffs[ 3 ] = rogue -> buffs.skull_and_crossbones;
-    buffs[ 4 ] = rogue -> buffs.ruthless_precision;
+    buffs[ 3 ] = rogue -> buffs.ruthless_precision;
+    buffs[ 4 ] = rogue -> buffs.skull_and_crossbones;
     buffs[ 5 ] = rogue -> buffs.true_bearing;
   }
 
   void expire_secondary_buffs()
   {
-    rogue -> buffs.skull_and_crossbones -> expire();
-    rogue -> buffs.grand_melee -> expire();
-    rogue -> buffs.ruthless_precision -> expire();
-    rogue -> buffs.true_bearing -> expire();
     rogue -> buffs.broadside -> expire();
     rogue -> buffs.buried_treasure -> expire();
+    rogue -> buffs.grand_melee -> expire();
+    rogue -> buffs.ruthless_precision -> expire();
+    rogue -> buffs.skull_and_crossbones -> expire();
+    rogue -> buffs.true_bearing -> expire();
   }
 
   std::vector<buff_t*> random_roll()
@@ -6125,37 +6125,18 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_OUTLAW )
   {
     // Pre-Combat
-    precombat -> add_action( this, "Roll the Bones", "if=!talent.slice_and_dice.enabled" );
+    precombat -> add_action( this, "Roll the Bones" );
+    precombat -> add_talent( this, "Slice and Dice" );
+    precombat -> add_action( this, "Adrenaline Rush" );
 
     // Main Rotation
-    def -> add_action( "variable,name=rtb_reroll,value=!talent.slice_and_dice.enabled&buff.loaded_dice.up&(rtb_buffs<2|(rtb_buffs<4&!buff.true_bearing.up))", "Reroll when Loaded Dice is up and if you have less than 2 buffs or less than 4 and no True Bearing. With SnD, consider that we never have to reroll." );
-    def -> add_action( "variable,name=ss_useable_noreroll,value=(combo_points<5+talent.deeper_stratagem.enabled)", "Condition to use Sinister Strike when not rerolling RtB or when using SnD" );
-    def -> add_action( "variable,name=ss_useable,value=variable.rtb_reroll&combo_points<5+talent.deeper_stratagem.enabled|!variable.rtb_reroll&variable.ss_useable_noreroll", "Condition to use Sinister Strike, when you have RtB or not" );
-    def -> add_action( "call_action_list,name=bf", "Normal rotation" );
+    def -> add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)", "Reroll for 2+ buffs with Loaded Dice up. Otherwise reroll for 2+ or Grand Melee or Ruthless Precision." );
+    def -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up" );
+    def -> add_action( "call_action_list,name=stealth,if=stealthed.all" );
     def -> add_action( "call_action_list,name=cds" );
-    def -> add_action( "call_action_list,name=stealth,if=stealthed.rogue|cooldown.vanish.up|cooldown.shadowmeld.up", "Conditions are here to avoid worthless check if nothing is available" );
-      // Pandemic is (6 + 6 * CP) * 0.3, ie (1 + CP) * 1.8
-    def -> add_talent( this, "Slice and Dice", "if=!variable.ss_useable&buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
-      // Reroll unless 3+ buffs or true bearing
-    def -> add_action( this, "Roll the Bones", "if=!variable.ss_useable&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)" );
-    def -> add_talent( this, "Killing Spree", "if=energy.time_to_max>5|energy<15" );
-    def -> add_talent( this, "Blade Rush" );
+    def -> add_action( "call_action_list,name=finish,if=combo_points>=cp_max_spend" );
     def -> add_action( "call_action_list,name=build" );
-    def -> add_action( "call_action_list,name=finish,if=!variable.ss_useable" );
-    def -> add_action( this, "Gouge", "if=talent.dirty_tricks.enabled&combo_points.deficit>=1", "Gouge is used as a CP Generator while nothing else is available and you have Dirty Tricks talent. It's unlikely that you'll be able to do this optimally in-game since it requires to move in front of the target, but it's here so you can quantifiy its value." );
     def -> add_action( "arcane_pulse" );
-
-    // Builders
-    action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_talent( this, "Ghostly Strike", "if=combo_points.deficit>=1+buff.broadside.up&refreshable" );
-    build -> add_action( this, "Pistol Shot", "if=combo_points.deficit>=1+buff.broadside.up+talent.quick_draw.enabled&buff.opportunity.up&(energy.time_to_max>2-talent.quick_draw.enabled|(buff.greenskins_waterlogged_wristcuffs.up&buff.greenskins_waterlogged_wristcuffs.remains<2))" );
-    build -> add_action( this, "Sinister Strike", "if=variable.ss_useable" );
-
-    // Blade Flurry
-    action_priority_list_t* bf = get_action_priority_list( "bf", "Blade Flurry" );
-      // Cancels Blade Flurry buff on CD to maximize Shiarran Symmetry effect
-    bf -> add_action( "cancel_buff,name=blade_flurry,if=equipped.shivarran_symmetry&cooldown.blade_flurry.charges>=1&buff.blade_flurry.up&spell_targets.blade_flurry>=2" );
-    bf -> add_action( this, "Blade Flurry", "if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up" );
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -6164,12 +6145,7 @@ void rogue_t::init_action_list()
     {
       if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
       {
-        if ( items[i].name_str == "specter_of_betrayal" )
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=(mantle_duration>0|buff.curse_of_the_dreadblades.up|(cooldown.vanish.remains>11&cooldown.curse_of_the_dreadblades.remains>11))" );
-        else if ( items[i].name_str == "void_stalkers_contract" )
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=mantle_duration>0|buff.curse_of_the_dreadblades.up" );
-        else
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2" );
+        cds -> add_action( "use_item,name=" + items[i].name_str + ",if=buff.bloodlust.react|target.time_to_die<=20|combo_points.deficit<=2", "Falling back to default item usage" );
       }
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -6181,22 +6157,30 @@ void rogue_t::init_action_list()
       else
         cds -> add_action( racial_actions[i] );
     }
-    cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&energy.deficit>0" );
+    cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&energy.time_to_max>1" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)" );
-    cds -> add_action( this, "Sprint", "if=equipped.thraxis_tricksy_treads&!variable.ss_useable" );
-    cds -> add_action( "darkflight,if=equipped.thraxis_tricksy_treads&!variable.ss_useable&buff.sprint.down" );
-
-    // Finishers
-    action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
-    finish -> add_action( this, "Between the Eyes", "if=equipped.greenskins_waterlogged_wristcuffs&!buff.greenskins_waterlogged_wristcuffs.up", "BTE in mantle used to be DPS neutral but is a loss due to t21" );
-    finish -> add_action( this, "Dispatch" );
+    cds -> add_action( this, "Blade Flurry", "if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up" );
+    cds -> add_talent( this, "Ghostly Strike", "if=combo_points.deficit>=1+buff.broadside.up" );
+    cds -> add_talent( this, "Killing Spree", "if=energy.time_to_max>5|energy<15" );
+    cds -> add_talent( this, "Blade Rush" );
+    cds -> add_action( this, "Vanish", "if=!stealthed.all&variable.ambush_condition", "Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell." );
+    cds -> add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
 
     // Stealth
     action_priority_list_t* stealth = get_action_priority_list( "stealth", "Stealth" );
-    stealth -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&!debuff.ghostly_strike.up)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up" );
-    stealth -> add_action( this, "Ambush", "if=variable.ambush_condition" );
-    stealth -> add_action( this, "Vanish", "if=(variable.ambush_condition|equipped.mantle_of_the_master_assassin&!variable.rtb_reroll&!variable.ss_useable)&mantle_duration=0" );
-    stealth -> add_action( "shadowmeld,if=variable.ambush_condition" );
+    stealth -> add_action( this, "Ambush" );
+
+    // Finishers
+    action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
+    finish -> add_talent( this, "Slice and Dice", "if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
+    finish -> add_action( this, "Roll the Bones", "if=(buff.roll_the_bones.remains<=3|variable.rtb_reroll)&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)" );
+    finish -> add_action( this, "Between the Eyes", "if=buff.ruthless_precision.up", "BTE worth being used with the boosted crit chance from Ruthless Precision" );
+    finish -> add_action( this, "Dispatch" );
+
+    // Builders
+    action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
+    build -> add_action( this, "Pistol Shot", "if=combo_points.deficit>=1+buff.broadside.up+talent.quick_draw.enabled&buff.opportunity.up" );
+    build -> add_action( this, "Sinister Strike" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
@@ -6492,8 +6476,8 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
       buffs.broadside,
       buffs.buried_treasure,
       buffs.grand_melee,
-      buffs.skull_and_crossbones,
       buffs.ruthless_precision,
+      buffs.skull_and_crossbones,
       buffs.true_bearing
     } };
 

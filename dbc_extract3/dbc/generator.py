@@ -1431,6 +1431,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 267972, 5 ),		# Demonic Tyrant - Demonic Consumption (not sure which is needed)
 		  ( 267997, 5 ),		# Vilefiend - Bile Spit
 		  ( 267999, 5 ),		# Vilefiend - Headbutt
+		  ( 279910, 2 ),		# Summon Wild Imp - Inner Demons version
 		  ( 267994, 2 ),		# Summon Shivarra
 		  ( 267996, 2 ),		# Summon Darkhound
 		  ( 267992, 2 ),		# Summon Bilescourge
@@ -1542,7 +1543,9 @@ class SpellDataGenerator(DataGenerator):
           ( 217060, 1 ), # Rage of the Illidari buff
           ( 202446, 1 ), # Anguish damage spell
           ( 222703, 1 ), # Fel Barrage proc rate
-          ( 211796, 1 ), # Chaos Blades damage spell
+		  ( 247938, 1 ), # Chaos Blades primary spell, still used by Chaos Theory
+          ( 211796, 1 ), # Chaos Blades MH damage spell
+		  ( 211797, 1 ), # Chaos Blades OH damage spell
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate

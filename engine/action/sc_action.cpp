@@ -1497,6 +1497,15 @@ void action_t::execute()
     player->in_combat = true;
   }
 
+  // Handle tick_action initial state snapshotting, primarily for handling STATE_MUL_PERSISTENT
+  if ( tick_action )
+  {
+    if ( !tick_action->execute_state )
+      tick_action->execute_state = tick_action->get_state();
+
+    tick_action->snapshot_state( tick_action->execute_state, amount_type( tick_action->execute_state, tick_action->direct_tick ) );
+  }
+
   size_t num_targets;
   if ( is_aoe() )  // aoe
   {
@@ -1640,16 +1649,30 @@ void action_t::tick( dot_t* d )
 
   if ( tick_action )
   {
+    // 6/22/2018 -- Update logic to use the state of the tick_action rather than the base DoT
+    //              This ensures that composite calculations on the tick_action are not ignored
+    //              Re-use the execute_state so that STATE_MUL_PERSISTENT snapshots are maintained
+    action_state_t* tick_state = tick_action->get_state( tick_action->execute_state );
     if ( tick_action->pre_execute_state )
+    {
+      tick_state->copy_state( tick_action->pre_execute_state );
       action_state_t::release( tick_action->pre_execute_state );
+    }
 
-    action_state_t* state = tick_action->get_state( d->state );
+    tick_state->target = d->target;
+    tick_action->set_target( d->target );
+
     if ( dynamic_tick_action )
-      update_state( state, amount_type( state, tick_action->direct_tick ) );
-    state->da_multiplier        = state->ta_multiplier * d->get_last_tick_factor();
-    state->target_da_multiplier = state->target_ta_multiplier;
-    tick_action->target         = d->target;
-    tick_action->schedule_execute( state );
+    {
+      tick_action->update_state( tick_state, amount_type( tick_state, tick_action->direct_tick ) );
+    }
+
+    // Apply the last tick factor from the DoT to the base damage multipliers for partial ticks
+    // 6/23/2018 -- Revert the previous logic of overwriting the da modifiers with ta modifiers
+    tick_state->da_multiplier *= d->get_last_tick_factor();
+    tick_state->ta_multiplier *= d->get_last_tick_factor();
+
+    tick_action->schedule_execute( tick_state );
   }
   else
   {
@@ -2177,8 +2200,7 @@ void action_t::init()
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
 
-  if ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 || tick_action ) &&
-       dot_duration > timespan_t::zero() )
+  if ( ( base_td > 0 || spell_power_mod.tick > 0 || attack_power_mod.tick > 0 ) && dot_duration > timespan_t::zero() )
     snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
 
   if ( base_dd_min > 0 || ( spell_power_mod.direct > 0 || attack_power_mod.direct > 0 ) || weapon_multiplier > 0 )
@@ -2192,13 +2214,6 @@ void action_t::init()
 
   if ( school == SCHOOL_PHYSICAL )
     snapshot_flags |= STATE_TGT_ARMOR;
-
-  // Tick actions use tick multipliers, so snapshot them too if direct
-  // multipliers are snapshot for "base" ability
-  if ( tick_action && ( snapshot_flags & STATE_MUL_DA ) > 0 )
-  {
-    snapshot_flags |= STATE_MUL_TA | STATE_TGT_MUL_TA;
-  }
 
   if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
   {
