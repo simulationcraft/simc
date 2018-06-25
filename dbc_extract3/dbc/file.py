@@ -9,7 +9,11 @@ _PARSERS = {
 
 class HotfixIterator:
     def __init__(self, f, wdb_parser):
-        self._data_class = getattr(dbc.data, wdb_parser.class_name().replace('-', '_'))
+        if f.options.raw:
+            self._data_class = dbc.data.RawDBCRecord
+        else:
+            self._data_class = getattr(dbc.data, wdb_parser.class_name().replace('-', '_'))
+
         self._parser = f.parser
         self._wdb_parser = wdb_parser
         self._records = f.parser.n_entries(wdb_parser)

@@ -3759,6 +3759,19 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
   bool ret = true;
   player_t* p = effect.player;
 
+  // Perform max level checking on the driver before anything
+  const spell_data_t* spell = p -> find_spell( spell_id );
+  if ( spell -> req_max_level() > 0 && as<unsigned>( p -> level() ) > spell -> req_max_level() )
+  {
+    if ( p -> sim -> debug )
+    {
+      p -> sim -> out_debug.printf( "%s disabled effect %s, player level %d higher than maximum effect level %u",
+        p -> name(), spell -> name_cstr(), p -> level(), spell -> req_max_level() );
+    }
+    effect.type = SPECIAL_EFFECT_NONE;
+    return ret;
+  }
+
   // Try to find the special effect from the custom effect database
   for ( const auto dbitem: find_special_effect_db_item( spell_id ) )
   {

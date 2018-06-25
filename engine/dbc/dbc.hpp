@@ -31,7 +31,7 @@ struct player_t;
 struct item_t;
 
 
-const unsigned NUM_SPELL_FLAGS = 12;
+const unsigned NUM_SPELL_FLAGS = 14;
 const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
 #define SC_USE_PTR 0
 
@@ -860,23 +860,25 @@ public:
   double      _c_scaling;          // 33 A scaling multiplier for level based scaling
   unsigned    _c_scaling_level;    // 34 A scaling divisor for level based scaling
   // SpecializationSpells.dbc
-  unsigned    _replace_spell_id;   // 35
+  unsigned    _replace_spell_id;   // Not included in hotfixed data, replaces spell with specialization specific spell
   // Spell.dbc flags
-  unsigned    _attributes[NUM_SPELL_FLAGS]; // 36 Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
-  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // 37 SpellClassOptions.dbc flags
-  unsigned    _class_flags_family; // 38 SpellClassOptions.dbc spell family
+  unsigned    _attributes[NUM_SPELL_FLAGS]; // 35 Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
+  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // 36 SpellClassOptions.dbc flags
+  unsigned    _class_flags_family; // 37 SpellClassOptions.dbc spell family
   // SpellShapeshift.db2
-  unsigned    _stance_mask;        // 39 Stance mask (used only for druid form restrictions?)
+  unsigned    _stance_mask;        // 38 Stance mask (used only for druid form restrictions?)
   // SpellMechanic.db2
-  unsigned    _mechanic;           // 40
-  unsigned    _power_id;           // 41 Azerite power id
+  unsigned    _mechanic;           // 39
+  unsigned    _power_id;           // 40 Azerite power id
   // Textual data
-  const char* _desc;               // 42 Spell.dbc description stringblock
-  const char* _tooltip;            // 43 Spell.dbc tooltip stringblock
+  const char* _desc;               // 41 Spell.dbc description stringblock
+  const char* _tooltip;            // 42 Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
-  const char* _desc_vars;          // 44 Spell description variable stringblock, if present
+  const char* _desc_vars;          // 43 Spell description variable stringblock, if present
   // SpellIcon.dbc
-  const char* _rank_str;           // 45
+  const char* _rank_str;           // 44
+
+  unsigned    _req_max_level;      // 45
 
   // Pointers for runtime linking
   std::vector<const spelleffect_data_t*>* _effects;
@@ -936,6 +938,9 @@ public:
 
   uint32_t max_level() const
   { return _max_level; }
+
+  unsigned req_max_level() const
+  { return _req_max_level; }
 
   uint32_t max_stacks() const
   { return _max_stack; }

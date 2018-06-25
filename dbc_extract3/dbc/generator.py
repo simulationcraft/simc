@@ -2495,7 +2495,7 @@ class SpellDataGenerator(DataGenerator):
             # 32, 33, 34
             fields += [u'0', u'0', u'0'] # cast_div, c_scaling, c_scaling_threshold
 
-            # 35
+            # NOTE: replace spell ID as it stands is not marked as a hotfixed field in spell query
             if id in ids and 'replace_spell_id' in ids[id]:
                 fields += [ '%6u' % ids[id]['replace_spell_id'] ]
             else:
@@ -2518,17 +2518,18 @@ class SpellDataGenerator(DataGenerator):
                             included_labels.add(getattr(effect, field))
 
             # Add spell flags
-            # 36
+            # 35
             fields += [ '{ %s }' % ', '.join(misc.field('flags_1', 'flags_2', 'flags_3', 'flags_4',
                 'flags_5', 'flags_6', 'flags_7', 'flags_8', 'flags_9', 'flags_10', 'flags_11',
-                'flags_12')) ]
+                'flags_12', 'flags_13', 'flags_14')) ]
             # Note, bunch up the flags checking into one field,
             f, hfd = misc.get_hotfix_info(('flags_1', 35), ('flags_2', 35), ('flags_3', 35),
                 ('flags_4', 35), ('flags_5', 35), ('flags_6', 35), ('flags_7', 35), ('flags_8', 35),
-                ('flags_9', 35), ('flags_10', 35), ('flags_11', 35), ('flags_12', 35))
+                ('flags_9', 35), ('flags_10', 35), ('flags_11', 35), ('flags_12', 35),
+                ('flags_13', 35), ('flags_14', 35))
             hotfix_flags |= f
             #hotfix_data += hfd
-            # 37, 38
+            # 36, 37
             fields += [ '{ %s }' % ', '.join(spell.get_link('class_option').field('flags_1', 'flags_2', 'flags_3', 'flags_4')) ]
             fields += spell.get_link('class_option').field('family')
             f, hfd = spell.get_link('class_option').get_hotfix_info(('flags_1', 36), ('flags_2', 36),
@@ -2537,23 +2538,23 @@ class SpellDataGenerator(DataGenerator):
             f, hfd = spell.get_link('class_option').get_hotfix_info(('family', 37))
             hotfix_flags |= f
             hotfix_data += hfd
-            # 39
+            # 38
             fields += spell.get_link('shapeshift').field('flags_1')
             f, hfd= spell.get_link('shapeshift').get_hotfix_info(('flags_1', 38))
             hotfix_flags |= f
             hotfix_data += hfd
-            # 40
+            # 39
             mechanic = self._spellmechanic_db[spell.get_link('categories').mechanic]
             fields += mechanic.field('mechanic')
             f, hfd = mechanic.get_hotfix_info(('mechanic', 39))
             hotfix_flags |= f
             hotfix_data += hfd
 
-            # 41
+            # 40
             power = spell.get_link('azerite_power')
             fields += power.field('id')
 
-            # 42, 43
+            # 41, 42
             spell_text = spell.get_link('text')
             fields += spell_text.field('desc', 'tt')
             f, hfd = spell_text.get_hotfix_info(('desc', 41), ('tt', 42))
@@ -2586,8 +2587,12 @@ class SpellDataGenerator(DataGenerator):
             hotfix_flags |= f
             hotfix_data += hfd
 
+            # 45
+            fields += spell.get_link('level').field('req_max_level')
+            f, hfd = spell.get_link('level').get_hotfix_info(('req_max_level', 45))
+
             # Pad struct with empty pointers for direct access to spell effect data
-            # 45, 46, 47, 48, 49
+            # 46, 47, 48, 49, 50
             fields += [ u'0', u'0', u'0', u'0', u'0', ]
 
             # Finally, update hotfix flags, they are located in the array of fields at position 2

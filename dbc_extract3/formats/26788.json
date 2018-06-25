@@ -516,7 +516,7 @@
     { "data_type": "H", "field": "base_level" },
     { "data_type": "H", "field": "max_level" },
     { "data_type": "H", "field": "spell_level" },
-    { "data_type": "B", "field": "unk_2" }
+    { "data_type": "B", "field": "req_max_level" }
   ],
   "SpellMechanic": [
     { "data_type": "I", "field": "mechanic", "formats": { "cpp": "%2u" } }

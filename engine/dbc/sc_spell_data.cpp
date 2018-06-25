@@ -109,6 +109,7 @@ const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_STR,      "tooltip",           O_SD( _tooltip )                },
   { SD_TYPE_STR,      "desc_vars",         O_SD( _desc_vars )              },
   { SD_TYPE_STR,      "rank",              O_SD( _rank_str )               },
+  { SD_TYPE_UNSIGNED, "req_max_level",     O_SD( _req_max_level )          },
 };
 
 const std::string _class_strings[] =

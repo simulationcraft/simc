@@ -1284,6 +1284,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
+  if ( spell -> req_max_level() > 0 )
+  {
+    s << "Req. Max Level   : " << ( int ) spell -> req_max_level();
+    s << std::endl;
+  }
+
   if ( spell -> min_range() || spell -> max_range() )
   {
     s << "Range            : ";
