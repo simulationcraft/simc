@@ -8,7 +8,7 @@ CONFIG(qt) {
   TARGET = SimulationCraft
 
   QT += core gui network
-  
+
   lessThan( QT_MAJOR_VERSION, 5 ) {
     error( "SimulationCraft requires QT 5 or higher." )
   }
@@ -98,7 +98,7 @@ macx {
 
     Resources.files = Welcome.html Welcome.png Error.html
     Resources.path = Contents/Resources
-    Profiles.files = profiles/Tier19 profiles/Tier20 profiles/Tier21 profiles/PreRaids
+    Profiles.files = profiles/Tier21 profiles/Tier22 profiles/PreRaids
     Profiles.path = Contents/Resources/profiles
     Localization.files = locale/sc_de.qm locale/sc_it.qm locale/sc_zh.qm
     Localization.path = Contents/Resources/locale
