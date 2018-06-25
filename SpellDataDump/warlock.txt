@@ -7161,6 +7161,23 @@ Effects          :
                    Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Trigger Spell: 279911 | Target: Self (1)
 Description      : Casting Conflagrate on a target affected by your Immolate increases your Mastery by $s1 for $279913d, stacking up to $279913u times.
 
+Name             : Wild Imp (id=279910) [Spell Family (5)] 
+Class            : Warlock
+School           : Shadow
+Range            : 100 yards
+Duration         : 20 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+Effects          :
+#1 (id=736536)   : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: 143622 | Misc Value 2: 0xc8a | Target: Unknown(32)
+Description      : $@spelldesc105174
+
 Name             : Earthlink (id=279926) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical

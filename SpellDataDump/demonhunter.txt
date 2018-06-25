@@ -149,7 +149,7 @@ Class            : Havoc Demon Hunter
 School           : Physical
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4), Chaos Blades (247938 effect#2), 
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -409,7 +409,7 @@ Resource         : 30 Fury (17) (id=10418)
 GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Unleashed Power (206477 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Unleashed Power (206477 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4), Chaos Blades (247938 effect#2), 
 Attributes       : ....x... ........ ........ ........   ...x...x .x...... ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -479,7 +479,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (9 seconds cooldown)
 Category         : 1612: Havoc Demon Hunter (212612 effect#6)
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4), 
+Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Mo'arg Bionic Stabilizers (208826 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4), Chaos Blades (247938 effect#2), 
 Attributes       : ....x... ........ ..x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ .......x ........ ........ 
@@ -507,7 +507,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=268563)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Target: Self (1)
-                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Chaos Blades (211796), Fel Eruption (211881), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Fel Barrage (258926)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Fel Barrage (258926)
 #2 (id=294810)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Self (1)
 Description      : Increases your Chaos damage by ${$s1}.1% and your movement speed by ${$s2}.1%.
@@ -772,7 +772,7 @@ Name             : Fel Rush (id=192611) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Fel Mastery (192939 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), 
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Fel Mastery (192939 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
                  : .......x ........ ........ ........   ........ ........ ........ ..x..... 
@@ -977,7 +977,7 @@ Name             : Eye Beam (id=198030) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chromatic
 Range            : 50000 yards
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Blind Fury (203550 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Soul Flame of Insight (226334 effect#1), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Eyes of Rage (278500 effect#2)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Blind Fury (203550 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Soul Flame of Insight (226334 effect#1), Chaos Blades (247938 effect#2), Item - Demon Hunter T21 Havoc 2P Bonus (251767 effect#1), Eyes of Rage (278500 effect#2)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1043,7 +1043,7 @@ Name             : Vengeful Retreat (id=198813) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Physical
 Duration         : 3 seconds
-Affecting spells : Demon Soul (163073 effect#1), Prepared (203551 effect#2), Momentum (206476 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), 
+Affecting spells : Demon Soul (163073 effect#1), Prepared (203551 effect#2), Momentum (206476 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Triggered by     : Vengeful Retreat (198793)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1064,7 +1064,7 @@ Name             : Chaos Strike (id=199547) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Range            : 15 yards
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Dark Slash (258860 effect#3), Thirsting Blades (278736 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Dark Slash (258860 effect#3), Thirsting Blades (278736 effect#1)
 Triggered by     : Chaos Strike (162794)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
@@ -1082,7 +1082,7 @@ Description      : $@spelldesc162794
 Name             : Blade Dance (id=199552) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : Metamorphosis (162264 effect#5), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
+Affecting spells : Metamorphosis (162264 effect#5), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
 Triggered by     : Blade Dance (188499)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1103,7 +1103,7 @@ Name             : Metamorphosis (id=200166) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chromatic
 Duration         : 3 seconds
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), 
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1124,7 +1124,7 @@ Tooltip          : Stunned.
 Name             : Blade Dance (id=200685) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : Metamorphosis (162264 effect#5), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
+Affecting spells : Metamorphosis (162264 effect#5), Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
 Triggered by     : Blade Dance (188499)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1191,7 +1191,7 @@ Name             : Annihilation (id=201428) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Range            : 15 yards
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Dark Slash (258860 effect#3), Thirsting Blades (278736 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Dark Slash (258860 effect#3), Thirsting Blades (278736 effect#1)
 Triggered by     : Annihilation (201427)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ .x...... ........ x.....x. 
@@ -1765,7 +1765,7 @@ Class            : Demon Hunter
 School           : Shadow
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4), Chaos Blades (247938 effect#2), 
 Triggered by     : Demon Blades (203555)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2428,6 +2428,21 @@ Effects          :
 Description      : $@spelldesc204021
 Tooltip          : Branded, dealing $204021s1% less damage to the branding Demon Hunter$?s264002[ and taking $s2% more Fire damage from them][].
 
+Name             : Burning Alive (id=207760) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+Effects          :
+#1 (id=307346)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+
 Name             : Fiery Brand (id=207771) [Scaling Spell (-1), Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
@@ -2753,7 +2768,7 @@ Tooltip          : Dodge chance increased by $s3%.
 Name             : Death Sweep (id=210153) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
 Triggered by     : Death Sweep (210152)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2773,7 +2788,7 @@ Description      : $@spelldesc210152
 Name             : Death Sweep (id=210155) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Physical
-Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), First Blood (206416 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Item - Demon Hunter T20 Havoc 4P Bonus (242227 effect#1), Chaos Blades (247938 effect#2), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1)
 Triggered by     : Death Sweep (210152)
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -2824,6 +2839,25 @@ Effects          :
 #1 (id=313818)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29835 | Target: Enemy (6)
 Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1% weapon damage.
+
+Name             : Chaos Blades (id=211797) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Chaos
+Range            : 30 yards
+Affecting spells : Mastery: Demonic Presence (185164 effect#1)
+Triggered by     : Chaos Blades (247938)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ .x...... ........ x.....x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .x......   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Not a proc (105), Requires off-hand weapon (120)
+Effects          :
+#1 (id=313820)   : School Damage (2): chaos
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.29835 | Target: Enemy (6)
+Description      : Attack with pure Fel power, dealing Chaos damage equal to $s1% off-hand weapon damage.
 
 Name             : Fel Eruption (id=211881) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -3153,7 +3187,7 @@ Class            : Demon Hunter
 School           : Fire
 Spell Level      : 98
 Range            : 15 yards
-Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#2), 
+Affecting spells : Demon Soul (163073 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Item - Demon Hunter T19 Havoc 2P Bonus (211054 effect#3), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#2), Chaos Blades (247938 effect#2), 
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
@@ -3402,7 +3436,7 @@ Name             : Chaos Strike (id=222031) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Range            : 15 yards
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Dark Slash (258860 effect#3), Thirsting Blades (278736 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Dark Slash (258860 effect#3), Thirsting Blades (278736 effect#1)
 Triggered by     : Chaos Strike (162794)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -3548,7 +3582,7 @@ Name             : Annihilation (id=227518) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Range            : 15 yards
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Dark Slash (258860 effect#3), Thirsting Blades (278736 effect#1)
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Dark Slash (258860 effect#3), Thirsting Blades (278736 effect#1)
 Triggered by     : Annihilation (201427)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ .xx..... ........ ......x. 
@@ -3764,6 +3798,36 @@ Effects          :
 Description      : $@spelldesc247454
 Tooltip          : The casting Demon Hunter is healed for $s1% of all damage they deal to you.
 
+Name             : Chaos Blades (id=247938) [Spell Family (107)] 
+Class            : Demon Hunter
+School           : Physical
+Duration         : 18 seconds
+Cooldown         : 120 seconds
+Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+Effects          :
+#1 (id=464519)   : Apply Aura (6) | Unknown(361)
+                   Base Value: 150 | Scaled Value: 150 | Misc Value: 211796 | Trigger Spell: 211797 | Target: Self (1)
+#2 (id=464520)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926)
+#3 (id=479915)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Demon's Bite (162243), Chaos Nova (179057), Throw Glaive (185123), Fel Rush (192611), Eye Beam (198030), Vengeful Retreat (198813), Chaos Strike (199547), Blade Dance (199552), Metamorphosis (200166), Blade Dance (200685), Annihilation (201428), Demon Blades (203796), Death Sweep (210153), Death Sweep (210155), Felblade (213243), Chaos Strike (222031), Annihilation (227518), Dark Slash (258860), Immolation Aura (258921), Immolation Aura (258922), Fel Barrage (258926)
+#4 (id=479916)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
+Description      : Increases all damage done by $s2% for $d.
+
+While active, your auto attack deals $s1% increased damage, and causes Chaos damage.
+Tooltip          : Damage done increased by $w2%.
+
+Auto attack damage increased by $s1%, and deal Chaos damage.
+
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
@@ -3948,7 +4012,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 20 seconds
-Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4)
+Affecting spells : Demon Soul (163073 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Vengeance Demon Hunter (212613 effect#4), Chaos Blades (247938 effect#2), 
 Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4067,7 +4131,7 @@ Tooltip          : Burning nearby enemies for $178741s1 Fire damage every $17874
 Name             : Immolation Aura (id=258921) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
-Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), 
+Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Triggered by     : Immolation Aura (258920)
 Attributes       : ........ ........ ..x..... ........   ...x...x .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4084,7 +4148,7 @@ Description      : $@spelldesc258920
 Name             : Immolation Aura (id=258922) [Spell Family (107)] 
 Class            : Demon Hunter
 School           : Fire
-Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), 
+Affecting spells : Demon Soul (163073 effect#1), Agonizing Flames (207548 effect#1), Fiery Brand (207744 effect#2), Fiery Brand (207771 effect#2), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Triggered by     : Immolation Aura (258920)
 Attributes       : ....x... ........ ..x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4127,7 +4191,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Range            : 100 yards
 Velocity         : 20 yards/sec
-Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), 
+Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), 
 Triggered by     : Fel Barrage (258925)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 

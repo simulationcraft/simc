@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26892
+// Class based active abilities, wow build 26918
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -857,7 +857,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        30108, // Unstable Affliction
            0,
     },
-    // Demonology tree, 22 abilities
+    // Demonology tree, 23 abilities
     {
       104316, // Call Dreadstalkers
       264178, // Demonbolt
@@ -881,6 +881,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       267988, // Summon Vicious Hellhound
       267991, // Summon Void Terror
       267995, // Summon Wrathguard
+      279910, // Wild Imp
            0,
     },
     // Destruction tree, 13 abilities
@@ -1204,10 +1205,12 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       198793, // Vengeful Retreat
            0,
     },
-    // Havoc tree, 7 abilities
+    // Havoc tree, 9 abilities
     {
       202446, // Anguish
       211796, // Chaos Blades
+      211797, // Chaos Blades
+      247938, // Chaos Blades
       196718, // Darkness
       203796, // Demon Blades
       162243, // Demon's Bite
@@ -1215,8 +1218,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       217070, // Rage of the Illidari
            0,
     },
-    // Vengeance tree, 14 abilities
+    // Vengeance tree, 15 abilities
     {
+      207760, // Burning Alive
       213011, // Charred Warblades
       203720, // Demon Spikes
       204021, // Fiery Brand
@@ -1246,7 +1250,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (35)
 
-// Talent tree specialization abilities, wow build 26892
+// Talent tree specialization abilities, wow build 26918
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2374,7 +2378,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26892
+// Class mastery abilities, wow build 26918
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2613,7 +2617,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26892
+// Racial abilities, wow build 26918
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3525,7 +3529,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26892
+// Set bonus data, wow build 26918
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4246,7 +4250,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define RPPMMOD_SIZE (937)
 
-// 937 RPPM Modifiers, wow build level 26892
+// 937 RPPM Modifiers, wow build level 26918
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
