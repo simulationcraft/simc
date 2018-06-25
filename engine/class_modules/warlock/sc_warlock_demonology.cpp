@@ -341,6 +341,8 @@ namespace warlock {
 
         o()->buffs.dreadstalkers->decrement();
         o()->buffs.demonic_core->trigger(1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN(2).percent());
+        if (o()->azerite.shadows_bite.ok())
+          o()->buffs.shadows_bite->trigger();
       }
 
       action_t* dreadstalker_t::create_action(const std::string& name, const std::string& options_str)
@@ -434,6 +436,16 @@ namespace warlock {
 
       void demonic_tyrant_t::init_base_stats() {
         warlock_pet_t::init_base_stats();
+      }
+
+      void demonic_tyrant_t::demise() {
+        warlock_pet_t::demise();
+
+        if (o()->azerite.supreme_commander.ok())
+        {
+          o()->buffs.demonic_core->trigger(1);
+          o()->buffs.supreme_commander->trigger();
+        }
       }
 
       action_t* demonic_tyrant_t::create_action(const std::string& name, const std::string& options_str) {
@@ -952,79 +964,108 @@ namespace warlock {
     };
 
     struct hand_of_guldan_t : public warlock_spell_t {
-          int shards_used;
+        int shards_used;
 
-          hand_of_guldan_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Hand of Gul'dan") {
-              parse_options(options_str);
-              aoe = -1;
-              shards_used = 0;
-
-              parse_effect_data(p->find_spell(86040)->effectN(1));
+        struct umbral_blaze_t : public warlock_spell_t{
+          umbral_blaze_t(warlock_t* p) : warlock_spell_t("Umbral Blaze", p, p->find_spell(273526)) {
+            base_td = p->azerite.umbral_blaze.value();
           }
+        };
 
-          timespan_t travel_time() const override {
-              return timespan_t::from_millis(700);
-          }
+        umbral_blaze_t* blaze;
 
-          bool ready() override {
-            if (p()->resources.current[RESOURCE_SOUL_SHARD] == 0.0)
+        hand_of_guldan_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Hand of Gul'dan"), blaze(new umbral_blaze_t(p)) {
+            parse_options(options_str);
+            aoe = -1;
+            shards_used = 0;
+            if (p->azerite.umbral_blaze.ok())
             {
-              return false;
+              add_child(blaze);
             }
-            return warlock_spell_t::ready();
-          }
+            parse_effect_data(p->find_spell(86040)->effectN(1));
+        }
 
-          double action_multiplier() const override
+        timespan_t travel_time() const override {
+            return timespan_t::from_millis(700);
+        }
+
+        bool ready() override {
+          if (p()->resources.current[RESOURCE_SOUL_SHARD] == 0.0)
           {
-            double m = warlock_spell_t::action_multiplier();
-
-            m *= last_resource_cost;
-
-            return m;
+            return false;
           }
+          return warlock_spell_t::ready();
+        }
 
-          void consume_resource() override {
-              warlock_spell_t::consume_resource();
+        double bonus_da(const action_state_t* s) const override
+        {
+          double da = warlock_spell_t::bonus_ta(s);
+          da += p()->azerite.demonic_meteor.value();
+          return da;
+        }
 
-              shards_used = as<int>(last_resource_cost);
+        double action_multiplier() const override
+        {
+          double m = warlock_spell_t::action_multiplier();
 
-              if (last_resource_cost == 1.0)
-                  p()->procs.one_shard_hog->occur();
-              if (last_resource_cost == 2.0)
-                  p()->procs.two_shard_hog->occur();
-              if (last_resource_cost == 3.0)
-                  p()->procs.three_shard_hog->occur();
-          }
+          m *= last_resource_cost;
 
-          void impact(action_state_t* s) override {
-              warlock_spell_t::impact(s);
+          return m;
+        }
 
-              if (result_is_hit(s->result))
+        void consume_resource() override {
+            warlock_spell_t::consume_resource();
+
+            shards_used = as<int>(last_resource_cost);
+
+            if (rng().roll(p()->azerite.demonic_meteor.spell_ref().effectN(2).base_value()*shards_used)) {
+              p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0);
+            }
+
+            if (last_resource_cost == 1.0)
+                p()->procs.one_shard_hog->occur();
+            if (last_resource_cost == 2.0)
+                p()->procs.two_shard_hog->occur();
+            if (last_resource_cost == 3.0)
+                p()->procs.three_shard_hog->occur();
+        }
+
+        void impact(action_state_t* s) override {
+            warlock_spell_t::impact(s);
+
+            
+
+            if (result_is_hit(s->result))
+            {
+              // Only trigger wild imps once for the original target impact.
+              // Still keep it in impact instead of execute because of travel delay.
+              if (s->target == target)
               {
-                // Only trigger wild imps once for the original target impact.
-                // Still keep it in impact instead of execute because of travel delay.
-                if (s->target == target)
+                if (p()->azerite.umbral_blaze.ok())
                 {
-                  int j = 0;
+                  blaze->set_target(target);
+                  blaze->execute();
+                }
+                int j = 0;
 
-                  for (auto imp : p()->warlock_pet_list.wild_imps)
+                for (auto imp : p()->warlock_pet_list.wild_imps)
+                {
+                  if (imp->is_sleeping())
                   {
-                    if (imp->is_sleeping())
-                    {
-                      imp->summon(timespan_t::from_seconds(25));
-                      if (++j == shards_used) break;
-                    }
-                  }
-
-                  if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2)) {
-                      for (int i = 0; i < shards_used; i++) {
-                          p()->buffs.rage_of_guldan->trigger();
-                      }
+                    imp->summon(p()->find_spell(104317)->duration());
+                    if (++j == shards_used) break;
                   }
                 }
+
+                if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2)) {
+                    for (int i = 0; i < shards_used; i++) {
+                        p()->buffs.rage_of_guldan->trigger();
+                    }
+                }
               }
-          }
-      };
+            }
+        }
+    };
 
     struct demonbolt_t : public warlock_spell_t {
       demonbolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Demonbolt") {
@@ -1046,12 +1087,31 @@ namespace warlock {
         return et;
       }
 
+      double bonus_da(const action_state_t* s) const override
+      {
+        double da = warlock_spell_t::bonus_ta(s);
+        if (s->action->execute_time() > timespan_t::from_millis(0) && p()->buffs.forbidden_knowledge->check())
+        {
+          da += p()->azerite.forbidden_knowledge.value();
+          if (sim->log)
+            sim->out_debug.printf("forbidden knowledge added %f", p()->azerite.forbidden_knowledge.value());
+        }
+        if (p()->buffs.shadows_bite->check())
+          da += p()->azerite.shadows_bite.value();
+        return da;
+      }
+
       void execute() override
       {
         warlock_spell_t::execute();
 
-        p()->buffs.demonic_core->up(); // benefit tracking
-        p()->buffs.demonic_core->decrement();
+        if (this->execute_time() > timespan_t::from_millis(0))
+          p()->buffs.forbidden_knowledge->decrement();
+        else
+        {
+          p()->buffs.demonic_core->up(); // benefit tracking
+          p()->buffs.demonic_core->decrement();
+        }
         p()->buffs.demonic_calling->trigger();
       }
 
@@ -1157,6 +1217,11 @@ namespace warlock {
         if (p()->talents.from_the_shadows->ok())
         {
           td(target)->debuffs_from_the_shadows->trigger();
+        }
+
+        if (p()->azerite.forbidden_knowledge.ok())
+        {
+          p()->buffs.forbidden_knowledge->trigger();
         }
       }
     };
@@ -1738,8 +1803,7 @@ namespace warlock {
       ->set_cooldown(timespan_t::zero());
 
     //Talents
-    buffs.demonic_calling = make_buff(this, "demonic_calling", talents.demonic_calling->effectN(1).trigger())
-      ->set_trigger_spell(talents.demonic_calling);
+    buffs.demonic_calling = make_buff(this, "demonic_calling", talents.demonic_calling->effectN(1).trigger());
 
     buffs.inner_demons = make_buff(this, "inner_demons", find_spell(267216))
       ->set_period(timespan_t::from_seconds(talents.inner_demons->effectN(1).base_value()))
@@ -1772,7 +1836,17 @@ namespace warlock {
     buffs.dreaded_haste = make_buff<haste_buff_t>(this, "dreaded_haste", sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger())
       ->set_default_value(sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger()->effectN(1).percent());
 
-    //to track imps
+    // Azerite
+    buffs.forbidden_knowledge = make_buff(this, "forbidden_knowledge", azerite.forbidden_knowledge.spell_ref().effectN(1).trigger())
+      ->set_refresh_behavior(buff_refresh_behavior::DURATION);
+      //->set_chance(azerite.forbidden_knowledge.spell_ref().effectN(1).trigger()->proc_chance());
+    buffs.shadows_bite = make_buff(this, "shadows_bite", azerite.shadows_bite)
+      ->set_duration(find_spell(272945)->duration());
+    buffs.supreme_commander = make_buff<stat_buff_t>(this, "supreme_commander", azerite.supreme_commander)
+      ->add_stat(STAT_INTELLECT, azerite.supreme_commander.value())
+      ->set_duration(find_spell(279885)->duration());
+
+    //to track pets
     buffs.wild_imps = make_buff(this, "wild_imps")
       ->set_max_stack(40);
 
@@ -1819,6 +1893,14 @@ namespace warlock {
     talents.sacrificed_souls                = find_talent_spell("Sacrificed Souls");
     talents.demonic_consumption             = find_talent_spell("Demonic Consumption");
     talents.nether_portal                   = find_talent_spell("Nether Portal");
+
+    // Azerite
+    azerite.demonic_meteor                  = find_azerite_spell("Demonic Meteor");
+    azerite.forbidden_knowledge             = find_azerite_spell("Forbidden Knowledge");
+    //azerite.meteoric_flare                  = find_azerite_spell("Meteoric Flare"); //no current data
+    azerite.shadows_bite                    = find_azerite_spell("Shadows Bite");
+    azerite.supreme_commander               = find_azerite_spell("Supreme Commander");
+    azerite.umbral_blaze                    = find_azerite_spell("Umbral Blaze");
 
     active.summon_random_demon              = new actions_demonology::summon_random_demon_t(this, "");
   }

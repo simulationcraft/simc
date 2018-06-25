@@ -93,6 +93,7 @@ namespace warlock
       
       //Demo
       propagate_const<dot_t*> dots_doom;
+      propagate_const<dot_t*> dots_umbral_blaze;
 
       propagate_const<buff_t*> debuffs_from_the_shadows;
       propagate_const<buff_t*> debuffs_jaws_of_shadow;
@@ -243,7 +244,7 @@ namespace warlock
       } talents;
 
       // Azerite traits
-      struct
+      struct azerite_t
       {
         //Shared
         azerite_power_t desperate_power;
@@ -252,7 +253,7 @@ namespace warlock
         //Demo
         azerite_power_t demonic_meteor;
         azerite_power_t forbidden_knowledge;
-        azerite_power_t meteoric_flare;
+        //azerite_power_t meteoric_flare; //no current data
         azerite_power_t shadows_bite;
         azerite_power_t supreme_commander;
         azerite_power_t umbral_blaze;
@@ -270,7 +271,6 @@ namespace warlock
         azerite_power_t chaotic_inferno;
         azerite_power_t crashing_chaos;
         azerite_power_t rolling_havoc;
-
       } azerite;
 
       struct legendary_t
@@ -380,6 +380,10 @@ namespace warlock
         propagate_const<buff_t*> grimoire_felguard;
         propagate_const<buff_t*> prince_malchezaar;
         propagate_const<buff_t*> eyes_of_guldan;
+
+        propagate_const<buff_t*> forbidden_knowledge;
+        propagate_const<buff_t*> shadows_bite;
+        propagate_const<buff_t*> supreme_commander;
 
         //destruction_buffs
         propagate_const<buff_t*> backdraft;
@@ -960,6 +964,7 @@ namespace warlock
         {
           demonic_tyrant_t(sim_t* sim, warlock_t* owner, const std::string& name = "demonic_tyrant");
           virtual void init_base_stats() override;
+          virtual void demise() override;
           virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }

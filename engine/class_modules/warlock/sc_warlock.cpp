@@ -503,6 +503,7 @@ namespace warlock
 
     //Demo
     dots_doom = target->get_dot("doom", &p);
+    dots_doom = target->get_dot("umbral_blaze", &p);
 
     debuffs_jaws_of_shadow = make_buff( *this, "jaws_of_shadow", source->find_spell( 242922 ) );
     debuffs_from_the_shadows = make_buff(*this, "from_the_shadows", source->find_spell(270569));
