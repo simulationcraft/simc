@@ -398,6 +398,20 @@ namespace warlock
         hasted_ticks = false;
         may_crit = false;
       }
+
+      double bonus_ta(const action_state_t* s) const override
+      {
+        double ta = warlock_spell_t::bonus_ta(s);
+        ta += p()->buffs.inevitable_demise->check_value();
+        return ta;
+      }
+
+      void execute() override
+      {
+        warlock_spell_t::execute();
+
+        p()->buffs.inevitable_demise->expire();
+      }
     };
 
     struct grimoire_of_sacrifice_t : public warlock_spell_t
@@ -557,6 +571,7 @@ namespace warlock
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
+    wracking_brilliance(false),
     agony_accumulator( 0.0 ),
     warlock_pet_list(),
     active(),
@@ -580,6 +595,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     cooldowns.soul_fire = get_cooldown("soul_fire");
     cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
     cooldowns.call_dreadstalkers = get_cooldown("call_dreadstalkers");
+    cooldowns.darkglare = get_cooldown("darkglare");
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;

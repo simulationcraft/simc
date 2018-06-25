@@ -969,6 +969,7 @@ namespace warlock {
         struct umbral_blaze_t : public warlock_spell_t{
           umbral_blaze_t(warlock_t* p) : warlock_spell_t("Umbral Blaze", p, p->find_spell(273526)) {
             base_td = p->azerite.umbral_blaze.value();
+            hasted_ticks = false;
           }
         };
 
@@ -1839,7 +1840,6 @@ namespace warlock {
     // Azerite
     buffs.forbidden_knowledge = make_buff(this, "forbidden_knowledge", azerite.forbidden_knowledge.spell_ref().effectN(1).trigger())
       ->set_refresh_behavior(buff_refresh_behavior::DURATION);
-      //->set_chance(azerite.forbidden_knowledge.spell_ref().effectN(1).trigger()->proc_chance());
     buffs.shadows_bite = make_buff(this, "shadows_bite", azerite.shadows_bite)
       ->set_duration(find_spell(272945)->duration());
     buffs.supreme_commander = make_buff<stat_buff_t>(this, "supreme_commander", azerite.supreme_commander)

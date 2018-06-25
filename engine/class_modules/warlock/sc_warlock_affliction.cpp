@@ -138,9 +138,28 @@ namespace warlock
     // Dots
     struct agony_t : public warlock_spell_t
     {
+      struct wracking_brilliance_t
+      {
+        wracking_brilliance_t()
+        {
+
+        }
+
+        void run(warlock_t* p) {
+          if (p->wracking_brilliance) {
+            p->wracking_brilliance = false;
+            p->buffs.wracking_brilliance->trigger();
+          }
+          else {
+            p->wracking_brilliance = true;
+          }
+        }
+      };
+
       int agony_action_id;
       int agony_max_stacks;
       double chance;
+      wracking_brilliance_t* wb;
 
       agony_t( warlock_t* p, const std::string& options_str ) :
         warlock_spell_t( p, "Agony" ),
@@ -151,6 +170,7 @@ namespace warlock
         parse_options( options_str );
         may_crit = false;
         affected_by_deaths_embrace = true;
+        wb = new wracking_brilliance_t();
       }
 
       double action_multiplier() const override
@@ -233,6 +253,8 @@ namespace warlock
 
         if ( p()->agony_accumulator >= 1 )
         {
+          if (p()->azerite.wracking_brilliance.ok())
+            wb->run(p());
           p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
           p()->agony_accumulator -= 1.0;
 
@@ -316,6 +338,11 @@ namespace warlock
 
           if ( procced )
             p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.affliction_t20_2pc ); //trigger the buff
+        }
+
+        if (result_is_hit(d->state->result) && p()->azerite.inevitable_demise.ok())
+        {
+          p()->buffs.inevitable_demise->trigger();
         }
 
         warlock_spell_t::tick( d );
@@ -418,9 +445,28 @@ namespace warlock
             }
           }
 
+          if (p()->azerite.cascading_calamity.ok())
+          {
+            for (int i = 0; i < MAX_UAS; i++)
+            {
+              if (td && td->dots_unstable_affliction[i]->is_ticking())
+              {
+                p()->buffs.cascading_calamity->trigger();
+                break;
+              }
+            }
+          }
+
           real_ua->target = s->target;
           real_ua->schedule_execute();
         }
+      }
+
+      double bonus_ta(const action_state_t* s) const override
+      {
+        double ta = warlock_spell_t::bonus_ta(s);
+        ta += p()->azerite.dreadful_calling.value();
+        return ta;
       }
 
       void execute() override
@@ -429,6 +475,68 @@ namespace warlock
 
         if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T21, B4 ) )
           p()->active.tormented_agony->schedule_execute();
+
+        if (p()->azerite.dreadful_calling.ok())
+        {
+          p()->cooldowns.darkglare->adjust(-1 * p()->azerite.dreadful_calling.spell_ref().effectN(1).time_value());
+        }
+      }
+    };
+
+    struct summon_darkglare_t : public warlock_spell_t
+    {
+      summon_darkglare_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("summon_darkglare", p, p -> spec.summon_darkglare)
+      {
+        parse_options(options_str);
+        harmful = may_crit = may_miss = false;
+      }
+
+      void execute() override
+      {
+        warlock_spell_t::execute();
+
+        for (auto& darkglare : p()->warlock_pet_list.darkglare)
+        {
+          if (darkglare->is_sleeping())
+          {
+            darkglare->summon(data().duration());
+          }
+        }
+
+        for (const auto target : sim->target_non_sleeping_list)
+        {
+          auto td = find_td(target);
+          if (!td)
+          {
+            continue;
+          }
+          if (td->dots_agony->is_ticking())
+          {
+            td->dots_agony->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+          }
+          if (td->dots_corruption->is_ticking())
+          {
+            td->dots_corruption->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+          }
+          if (td->dots_siphon_life->is_ticking())
+          {
+            td->dots_siphon_life->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+          }
+          if (td->dots_phantom_singularity->is_ticking())
+          {
+            td->dots_phantom_singularity->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+          }
+          if (td->dots_vile_taint->is_ticking())
+          {
+            td->dots_vile_taint->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+          }
+          for (auto& current_ua : td->dots_unstable_affliction)
+          {
+            if (current_ua->is_ticking())
+              current_ua->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
+          }
+        }
       }
     };
 
@@ -833,64 +941,6 @@ namespace warlock
       }
     };
 
-    // Buffs
-    struct summon_darkglare_t : public warlock_spell_t
-    {
-      summon_darkglare_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("summon_darkglare", p, p -> spec.summon_darkglare)
-      {
-        parse_options(options_str);
-        harmful = may_crit = may_miss = false;
-      }
-
-      void execute() override
-      {
-        warlock_spell_t::execute();
-        
-        for (auto& darkglare : p()->warlock_pet_list.darkglare)
-        {
-          if (darkglare->is_sleeping())
-          {
-            darkglare->summon(data().duration());
-          }
-        }
-
-        for (const auto target : sim->target_non_sleeping_list)
-        {
-          auto td = find_td(target);
-          if (!td)
-          {
-            continue;
-          }
-          if (td->dots_agony->is_ticking())
-          {
-            td->dots_agony->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-          if (td->dots_corruption->is_ticking())
-          {
-            td->dots_corruption->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-          if (td->dots_siphon_life->is_ticking())
-          {
-            td->dots_siphon_life->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-          if (td->dots_phantom_singularity->is_ticking())
-          {
-            td->dots_phantom_singularity->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-          if (td->dots_vile_taint->is_ticking())
-          {
-            td->dots_vile_taint->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-          for (auto& current_ua : td->dots_unstable_affliction)
-          {
-            if (current_ua->is_ticking())
-              current_ua->extend_duration(timespan_t::from_seconds(p()->spec.summon_darkglare->effectN(2).base_value()));
-          }
-        }
-      }
-    };
-
     // Tier
     struct tormented_agony_t : public warlock_spell_t
     {
@@ -997,10 +1047,22 @@ namespace warlock
     buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
       ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
       ->set_trigger_spell( talents.nightfall );
+    //azerite
+    buffs.cascading_calamity = make_buff<haste_buff_t>(this, "cascading_calamity", azerite.cascading_calamity)
+      ->set_default_value(azerite.cascading_calamity.value())
+      ->set_duration(find_spell(275378)->duration())
+      ->set_refresh_behavior(buff_refresh_behavior::DURATION);
+    buffs.wracking_brilliance = make_buff<stat_buff_t>(this, "wracking_brilliance", azerite.wracking_brilliance)
+      ->add_stat(STAT_INTELLECT, azerite.wracking_brilliance.value())
+      ->set_duration(find_spell(272893)->duration())
+      ->set_refresh_behavior(buff_refresh_behavior::DURATION);
     //tier
     buffs.demonic_speed = make_buff<haste_buff_t>( this, "demonic_speed", sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger() )
       ->set_chance( sets->set( WARLOCK_AFFLICTION, T20, B4 )->proc_chance() )
       ->set_default_value( sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+    buffs.inevitable_demise = make_buff(this, "inevitable_demise", azerite.inevitable_demise)
+      ->set_max_stack(find_spell(273525)->max_stacks())
+      ->set_default_value(azerite.inevitable_demise.value());
     //legendary
   }
 

@@ -117,6 +117,7 @@ namespace warlock
     {
     public:
       player_t * havoc_target;
+      bool wracking_brilliance;
       double agony_accumulator;
 
       // Active Pet
@@ -314,6 +315,8 @@ namespace warlock
         propagate_const<cooldown_t*> soul_fire;
         propagate_const<cooldown_t*> sindorei_spite_icd;
         propagate_const<cooldown_t*> call_dreadstalkers;
+
+        propagate_const<cooldown_t*> darkglare;
       } cooldowns;
 
       // Passives
@@ -364,6 +367,10 @@ namespace warlock
         propagate_const<buff_t*> nightfall;
         propagate_const<buff_t*> dark_soul_misery;
         propagate_const<buff_t*> demonic_speed; // t20 4pc
+
+        propagate_const<buff_t*> cascading_calamity;
+        propagate_const<buff_t*> inevitable_demise;
+        propagate_const<buff_t*> wracking_brilliance;
 
         //demonology buffs
         propagate_const<buff_t*> demonic_core;
