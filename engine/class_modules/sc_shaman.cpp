@@ -7210,7 +7210,7 @@ void shaman_t::init_action_list_elemental()
       this, "Totem Mastery",
       "if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+"
       "cooldown.ascendance.remains)&cooldown.ascendance.remains<15)" );
-  single_target->add_action( this, "Frost Shock", "if=buff.icefury.up" );
+  single_target->add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
   single_target->add_talent( this, "Icefury" );
   single_target->add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1" );
   single_target->add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
