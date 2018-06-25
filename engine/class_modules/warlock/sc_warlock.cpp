@@ -595,7 +595,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     cooldowns.soul_fire = get_cooldown("soul_fire");
     cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
     cooldowns.call_dreadstalkers = get_cooldown("call_dreadstalkers");
-    cooldowns.darkglare = get_cooldown("darkglare");
+    cooldowns.darkglare = get_cooldown("summon_darkglare");
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;

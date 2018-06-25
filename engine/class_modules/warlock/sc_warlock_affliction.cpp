@@ -465,7 +465,7 @@ namespace warlock
       double bonus_ta(const action_state_t* s) const override
       {
         double ta = warlock_spell_t::bonus_ta(s);
-        ta += p()->azerite.dreadful_calling.value();
+        ta += p()->azerite.dreadful_calling.value(2);
         return ta;
       }
 
@@ -478,7 +478,7 @@ namespace warlock
 
         if (p()->azerite.dreadful_calling.ok())
         {
-          p()->cooldowns.darkglare->adjust(-1 * p()->azerite.dreadful_calling.spell_ref().effectN(1).time_value());
+          p()->cooldowns.darkglare->adjust((-1 * p()->azerite.dreadful_calling.spell_ref().effectN(1).time_value()));
         }
       }
     };
@@ -1048,8 +1048,8 @@ namespace warlock
       ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
       ->set_trigger_spell( talents.nightfall );
     //azerite
-    buffs.cascading_calamity = make_buff<haste_buff_t>(this, "cascading_calamity", azerite.cascading_calamity)
-      ->set_default_value(azerite.cascading_calamity.value())
+    buffs.cascading_calamity = make_buff<stat_buff_t>(this, "cascading_calamity", azerite.cascading_calamity)
+      ->add_stat(STAT_HASTE_RATING, azerite.cascading_calamity.value())
       ->set_duration(find_spell(275378)->duration())
       ->set_refresh_behavior(buff_refresh_behavior::DURATION);
     buffs.wracking_brilliance = make_buff<stat_buff_t>(this, "wracking_brilliance", azerite.wracking_brilliance)
