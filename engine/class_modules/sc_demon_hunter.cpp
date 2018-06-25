@@ -1511,7 +1511,7 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
   struct feast_of_souls_heal_t : public demon_hunter_heal_t
   {
     feast_of_souls_heal_t(demon_hunter_t* p)
-      : demon_hunter_heal_t("feast_of_souls", p, p->find_spell(207693))
+      : demon_hunter_heal_t( "feast_of_souls", p, p->find_spell( 207693 ) )
     {
       background = true;
       hasted_ticks = false;
@@ -2059,7 +2059,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 struct sigil_of_flame_damage_t : public demon_hunter_spell_t
 {
   sigil_of_flame_damage_t(demon_hunter_t* p)
-    : demon_hunter_spell_t("sigil_of_flame_dmg", p, p->find_spell(204598))
+    : demon_hunter_spell_t( "sigil_of_flame_dmg", p, p->find_spell( 204598 ) )
   {
     aoe = -1;
     background = dual = ground_aoe = true;
@@ -2630,7 +2630,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
   struct spirit_bomb_damage_t : public demon_hunter_spell_t
   {
     spirit_bomb_damage_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "spirit_bomb_dmg", p, p->find_spell(247455) )
+      : demon_hunter_spell_t( "spirit_bomb_dmg", p, p->find_spell( 247455 ) )
     {
       background = dual = true;
       aoe = -1;
@@ -3976,8 +3976,7 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
   const timespan_t max_duration;
 
   demon_spikes_t(demon_hunter_t* p)
-    : base_t(
-      *p, "demon_spikes", p->find_spell( 203819 ) ),
+    : base_t( *p, "demon_spikes", p->find_spell( 203819 ) ),
       max_duration( buff_duration * 3 ) // Demon Spikes can only be extended to 3x its base duration
   {
     set_default_value( p->find_spell( 203819 )->effectN( 1 ).percent() );
@@ -4456,12 +4455,12 @@ void demon_hunter_t::create_buffs()
     buff_creator_t( this, "out_of_range", spell_data_t::nil() ).chance( 1.0 );
 
   // TODO: Buffs for each race?
-  buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605 ) )
-                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605, DEMON_HUNTER_HAVOC ) )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   const double prepared_value = ( find_spell( 203650 )->effectN( 1 ).resource( RESOURCE_FURY ) / 50 );
   buff.prepared =
-    buff_creator_t(this, "prepared", find_spell( 203650 ) )
+    buff_creator_t(this, "prepared", find_spell( 203650, DEMON_HUNTER_HAVOC ) )
     .default_value( prepared_value )
     .trigger_spell( talent.momentum )
     .period( timespan_t::from_millis( 100 ) )
@@ -4902,45 +4901,52 @@ void demon_hunter_t::init_spells()
   // General
   spec.demon_hunter           = find_class_spell( "Demon Hunter" );
   spec.consume_magic          = find_class_spell( "Consume Magic" );
-  spec.consume_soul_greater   = specialization() == DEMON_HUNTER_HAVOC ? 
-                                  find_spell( 178963 ) : find_spell( 210042 );
-  spec.consume_soul_lesser    = specialization() == DEMON_HUNTER_HAVOC ? 
-                                  find_spell( 178963 ) : find_spell( 203794 );
-  spec.critical_strikes       = find_spell( 221351 );  // not a class spell
-  spec.disrupt                = find_class_spell( "Disrupt" );
-  spec.leather_specialization = specialization() == DEMON_HUNTER_HAVOC ? 
-                                  find_spell( 178976 ) : find_spell( 226359 );
-  spec.metamorphosis          = find_class_spell("Metamorphosis");
-  spec.metamorphosis_buff     = specialization() == DEMON_HUNTER_HAVOC ?
-                                  find_spell( 162264 ) : find_spell( 187827 );
-  spec.soul_fragment          = find_spell( 204255 );
-  spec.immolation_aura        = specialization() == DEMON_HUNTER_HAVOC ? 
-                                  find_talent_spell( "Immolation Aura" ) : find_specialization_spell( "Immolation Aura" );
   spec.chaos_brand            = find_spell( 255260 );
+  spec.critical_strikes       = find_spell( 221351 );
   spec.demonic_wards          = find_specialization_spell( "Demonic Wards" ); // Two different spells with the same name
+  spec.disrupt                = find_class_spell( "Disrupt" );
+  spec.metamorphosis          = find_class_spell("Metamorphosis");  
+  spec.soul_fragment          = find_spell( 204255 );
+
+  if ( specialization() == DEMON_HUNTER_HAVOC )
+  {
+    spec.consume_soul_greater   = find_spell( 178963 );
+    spec.consume_soul_lesser    = spec.consume_soul_greater;
+    spec.immolation_aura        = find_talent_spell( "Immolation Aura" );
+    spec.leather_specialization = find_spell( 178976 );
+    spec.metamorphosis_buff     = find_spell( 162264 );
+  }
+  else
+  {
+    spec.consume_soul_greater   = find_spell( 210042 );
+    spec.consume_soul_lesser    = find_spell( 203794 );
+    spec.immolation_aura        = find_specialization_spell( "Immolation Aura" );
+    spec.leather_specialization = find_spell( 226359 );
+    spec.metamorphosis_buff     = find_spell( 187827 );
+  }
 
   // Havoc
   spec.havoc                  = find_specialization_spell( "Havoc Demon Hunter" );
-  spec.annihilation           = find_spell( 201427 );
-  spec.blade_dance            = find_class_spell( "Blade Dance" );
-  spec.blur                   = find_class_spell( "Blur" );
-  spec.chaos_nova             = find_class_spell( "Chaos Nova" );
-  spec.chaos_strike           = find_class_spell( "Chaos Strike" );
-  spec.chaos_strike_refund    = find_spell( 197125 );
-  spec.chaos_strike_fury      = find_spell( 193840 );
-  spec.death_sweep            = find_spell( 210152 );
-  spec.demonic_appetite_fury  = find_spell( 210041 );
-  spec.eye_beam               = find_class_spell( "Eye Beam" );
-  spec.fel_rush_damage        = find_spell( 192611 );
-  spec.vengeful_retreat       = find_class_spell( "Vengeful Retreat" );
-  spec.momentum_buff          = find_spell( 208628 );
+  spec.blade_dance            = find_class_spell( "Blade Dance",      DEMON_HUNTER_HAVOC );
+  spec.chaos_nova             = find_class_spell( "Chaos Nova",       DEMON_HUNTER_HAVOC );
+  spec.chaos_strike           = find_class_spell( "Chaos Strike",     DEMON_HUNTER_HAVOC );
+  spec.eye_beam               = find_class_spell( "Eye Beam",         DEMON_HUNTER_HAVOC );
+  spec.vengeful_retreat       = find_class_spell( "Vengeful Retreat", DEMON_HUNTER_HAVOC );
+  spec.annihilation           = find_spell( 201427, DEMON_HUNTER_HAVOC );
+  spec.blur                   = find_spell( 198589, DEMON_HUNTER_HAVOC );
+  spec.chaos_strike_refund    = find_spell( 197125, DEMON_HUNTER_HAVOC );
+  spec.chaos_strike_fury      = find_spell( 193840, DEMON_HUNTER_HAVOC );
+  spec.death_sweep            = find_spell( 210152, DEMON_HUNTER_HAVOC );
+  spec.demonic_appetite_fury  = find_spell( 210041, DEMON_HUNTER_HAVOC );
+  spec.fel_rush_damage        = find_spell( 192611, DEMON_HUNTER_HAVOC );  
+  spec.momentum_buff          = find_spell( 208628, DEMON_HUNTER_HAVOC );
 
   // Vengeance
   spec.vengeance              = find_specialization_spell( "Vengeance Demon Hunter" );
   spec.demon_spikes           = find_specialization_spell( "Demon Spikes" );
-  spec.fiery_brand_dr         = find_spell( 207744 );
   spec.riposte                = find_specialization_spell( "Riposte" );
   spec.soul_cleave            = find_specialization_spell( "Soul Cleave" );
+  spec.fiery_brand_dr         = find_spell( 207744, DEMON_HUNTER_VENGEANCE );
 
   // Masteries ==============================================================
 

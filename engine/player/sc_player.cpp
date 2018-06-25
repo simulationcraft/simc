@@ -8997,6 +8997,16 @@ const spell_data_t* player_t::find_spell( unsigned int id ) const
   return spell_data_t::not_found();
 }
 
+const spell_data_t* player_t::find_spell( unsigned int id, specialization_e s ) const
+{
+  if ( s == SPEC_NONE || s == _spec )
+  {
+    return find_spell( id );
+  }
+
+  return spell_data_t::not_found();
+}
+
 namespace
 {
 expr_t* deprecate_expression( player_t& p, const std::string& old_name, const std::string& new_name, action_t* a = nullptr  )
