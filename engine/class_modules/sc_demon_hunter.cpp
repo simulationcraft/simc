@@ -1856,15 +1856,9 @@ struct fel_devastation_t : public demon_hunter_spell_t
       background = dual = true;
       aoe = -1;
     }
-
-    dmg_e amount_type( const action_state_t*, bool ) const override
-    {
-      return DMG_OVER_TIME;
-    }
   };
 
   action_t* heal;
-  action_t* damage;
 
   fel_devastation_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "fel_devastation", p, p->talent.fel_devastation, options_str )
@@ -1878,21 +1872,17 @@ struct fel_devastation_t : public demon_hunter_spell_t
       heal = new heals::fel_devastation_heal_t( p );
     }
 
-    damage = p->find_action( "fel_devastation_tick" );
-    if ( !damage )
+    tick_action = p->find_action( "fel_devastation_tick" );
+    if ( !tick_action )
     {
-      damage = new fel_devastation_tick_t( p );
+      tick_action = new fel_devastation_tick_t( p );
     }
-    damage->stats = stats;
   }
 
   void tick( dot_t* d ) override
   {
+    heal->execute(); // Heal happens first.
     demon_hunter_spell_t::tick( d );
-
-    // Heal happens first.
-    heal->execute();
-    damage->execute();
   }
 };
 

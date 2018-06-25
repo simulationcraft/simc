@@ -1673,6 +1673,12 @@ void action_t::tick( dot_t* d )
     tick_state->ta_multiplier *= d->get_last_tick_factor();
 
     tick_action->schedule_execute( tick_state );
+
+    if ( sim->log )
+    {
+      sim->out_log.printf( "%s %s ticks (%d of %d) %s", player->name(), name(),
+                           d->current_tick, d->num_ticks, d->target->name() );
+    }
   }
   else
   {
@@ -3435,14 +3441,10 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, dmg_e r
 
 void action_t::consolidate_snapshot_flags()
 {
-  if ( tick_action )
-    tick_action->consolidate_snapshot_flags();
   if ( execute_action )
     execute_action->consolidate_snapshot_flags();
   if ( impact_action )
     impact_action->consolidate_snapshot_flags();
-  if ( tick_action )
-    snapshot_flags |= tick_action->snapshot_flags;
   if ( execute_action )
     snapshot_flags |= execute_action->snapshot_flags;
   if ( impact_action )
