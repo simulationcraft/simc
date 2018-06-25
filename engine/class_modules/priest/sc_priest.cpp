@@ -1167,10 +1167,7 @@ std::string priest_t::default_potion() const
 std::string priest_t::default_flask() const
 {
   return ( true_level >= 100 )
-             ? "whispered_pact"
-             : ( true_level >= 90 )
-                   ? "greater_draenic_intellect_flask"
-                   : ( true_level >= 85 ) ? "warm_sun" : ( true_level >= 80 ) ? "draconic_mind" : "disabled";
+             ? "endless_fathoms" : "disabled";
 }
 
 std::string priest_t::default_food() const
@@ -1178,11 +1175,7 @@ std::string priest_t::default_food() const
   std::string lvl100_food = "buttered_sturgeon";
 
   return ( true_level > 100 )
-             ? "azshari_salad"
-             : ( true_level > 90 )
-                   ? lvl100_food
-                   : ( true_level >= 90 ) ? "mogu_fish_stew"
-                                          : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+             ? "swamp_fish_n_chips": "disabled";
 }
 
 std::string priest_t::default_rune() const
