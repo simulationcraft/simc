@@ -390,6 +390,8 @@ namespace warlock
 
     struct drain_life_t : public warlock_spell_t
     {
+      double inevitable_demise;
+
       drain_life_t( warlock_t* p, const std::string& options_str ) :
         warlock_spell_t( p, "Drain Life" )
       {
@@ -402,14 +404,14 @@ namespace warlock
       double bonus_ta(const action_state_t* s) const override
       {
         double ta = warlock_spell_t::bonus_ta(s);
-        ta += p()->buffs.inevitable_demise->check_value();
+        ta += inevitable_demise;
         return ta;
       }
 
       void execute() override
       {
+        inevitable_demise = p()->buffs.inevitable_demise->check_stack_value();
         warlock_spell_t::execute();
-
         p()->buffs.inevitable_demise->expire();
       }
     };
