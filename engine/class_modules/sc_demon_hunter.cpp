@@ -1601,11 +1601,14 @@ struct chaos_nova_t : public demon_hunter_spell_t
     base_costs[ RESOURCE_FURY ] *= 1.0 + p->talent.unleashed_power->effectN( 2 ).percent();
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    demon_hunter_spell_t::execute();
+    demon_hunter_spell_t::impact( s );
 
-    if ( execute_state->target->type == ENEMY_ADD )
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    if ( s->target->type == ENEMY_ADD )
     {
       if ( p()->rng().roll( data().effectN( 3 ).percent() ) )
       {
@@ -1788,7 +1791,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     }
 
     demon_hunter_spell_t::execute();
-    timespan_t duration = composite_dot_duration(execute_state);
+    timespan_t duration = composite_dot_duration( execute_state );
 
     // Since Demonic triggers Meta with 8s + hasted duration, need to extend by the hasted duration after have an execute_state
     if (extend_meta)
@@ -2080,12 +2083,12 @@ struct sigil_of_flame_damage_t : public demon_hunter_spell_t
     return td(t)->dots.sigil_of_flame;
   }
 
-  void make_ground_aoe_event(demon_hunter_t* dh, action_state_t* execute_state)
+  void make_ground_aoe_event(demon_hunter_t* dh, action_state_t* s)
   {
     make_event<ground_aoe_event_t>(*sim, dh, ground_aoe_params_t()
-      .target(execute_state->target)
-      .x(dh->talent.concentrated_sigils->ok() ? dh->x_position : execute_state->target->x_position)
-      .y(dh->talent.concentrated_sigils->ok() ? dh->y_position : execute_state->target->y_position)
+      .target(s->target)
+      .x(dh->talent.concentrated_sigils->ok() ? dh->x_position : s->target->x_position)
+      .y(dh->talent.concentrated_sigils->ok() ? dh->y_position : s->target->y_position)
       .pulse_time(dh->sigil_delay)
       .duration(dh->sigil_delay)
       .start_time(sim->current_time())
@@ -2121,7 +2124,7 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
     p()->sigil_of_flame_activates = sim->current_time() + p()->sigil_delay;
-    damage->make_ground_aoe_event(p(), execute_state);
+    damage->make_ground_aoe_event( p(), execute_state );
   }
 
   expr_t* create_expression(const std::string& name) override
@@ -2301,7 +2304,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
     demon_hunter_spell_t::execute();
 
-    initial_damage->set_target( execute_state->target );
+    initial_damage->set_target( target );
     initial_damage->execute();
   }
 };
@@ -2328,7 +2331,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
         return;
 
       // Sephuz trigger off Havoc Metamorphosis impact stun 
-      if ( p()->legendary.sephuzs_secret && execute_state->target->type == ENEMY_ADD )
+      if ( p()->legendary.sephuzs_secret && s->target->type == ENEMY_ADD )
       {
         p()->buff.sephuzs_secret->trigger();
       }
@@ -2674,7 +2677,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     const int fragments_consumed =
       p()->consume_soul_fragments( soul_fragment::ALL, true, max_fragments_consumed );
 
-    damage->set_target( execute_state->target );
+    damage->set_target( target );
     action_state_t* damage_state = damage->get_state();
     damage->snapshot_state( damage_state, DMG_DIRECT );
     damage_state->da_multiplier *= fragments_consumed;
@@ -3456,7 +3459,7 @@ struct felblade_t : public demon_hunter_attack_t
 
     if ( hit_any_target )
     {
-      damage->set_target( execute_state->target );
+      damage->set_target( target );
       damage->execute();
     }
 
