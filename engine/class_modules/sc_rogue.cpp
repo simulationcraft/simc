@@ -6132,6 +6132,7 @@ void rogue_t::init_action_list()
     // Main Rotation
     def -> add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)", "Reroll for 2+ buffs with Loaded Dice up. Otherwise reroll for 2+ or Grand Melee or Ruthless Precision." );
     def -> add_action( "variable,name=ambush_condition,value=combo_points.deficit>=2+2*(talent.ghostly_strike.enabled&cooldown.ghostly_strike.remains<1)+buff.broadside.up&energy>60&!buff.skull_and_crossbones.up" );
+    def -> add_action( "variable,name=blade_flurry_sync,value=spell_targets.blade_flurry<2&raid_event.adds.in>20|buff.blade_flurry.up", "With multiple targets, this variable is checked to decide whether some CDs should be synced with Blade Flurry" );
     def -> add_action( "call_action_list,name=stealth,if=stealthed.all" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=cp_max_spend" );
@@ -6160,9 +6161,9 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&energy.time_to_max>1" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)" );
     cds -> add_action( this, "Blade Flurry", "if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up" );
-    cds -> add_talent( this, "Ghostly Strike", "if=combo_points.deficit>=1+buff.broadside.up" );
-    cds -> add_talent( this, "Killing Spree", "if=energy.time_to_max>5|energy<15" );
-    cds -> add_talent( this, "Blade Rush" );
+    cds -> add_talent( this, "Ghostly Strike", "if=variable.blade_flurry_sync&combo_points.deficit>=1+buff.broadside.up" );
+    cds -> add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&(energy.time_to_max>5|energy<15)" );
+    cds -> add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>1" );
     cds -> add_action( this, "Vanish", "if=!stealthed.all&variable.ambush_condition", "Using Vanish/Ambush is only a very tiny increase, so in reality, you're absolutely fine to use it as a utility spell." );
     cds -> add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
 
