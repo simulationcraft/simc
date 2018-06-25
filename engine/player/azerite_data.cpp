@@ -501,6 +501,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 263962, special_effects::resounding_protection );
   unique_gear::register_special_effect( 263984, special_effects::elemental_whirl       );
   unique_gear::register_special_effect( 264108, special_effects::blood_siphon          );
+  unique_gear::register_special_effect( 280710, special_effects::champion_of_azeroth   );
 }
 } // Namespace azerite ends
 
@@ -602,5 +603,28 @@ void blood_siphon( special_effect_t& effect )
   effect.player -> passive.mastery_rating += power.value( 1 );
   effect.player -> passive.leech_rating += power.value( 2 );
 }
+
+void champion_of_azeroth( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( ! power.enabled() )
+    return;
+
+  const double amount = power.value();
+  const spell_data_t* driver = effect.player -> find_spell( 280712 );
+  const spell_data_t* spell = effect.player -> find_spell( 280713 );
+
+  effect.custom_buff = make_buff<stat_buff_t>( effect.player, "champion_of_azeroth", spell )
+    -> add_stat( STAT_CRIT_RATING, amount )
+    -> add_stat( STAT_VERSATILITY_RATING, amount )
+    -> add_stat( STAT_MASTERY_RATING, amount )
+    -> add_stat( STAT_HASTE_RATING, amount );
+
+  // Replace the driver spell, the azerite power does not hold the RPPM value
+  effect.spell_id = driver -> id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 } // Namespace special effects ends
 } // Namespace azerite ends

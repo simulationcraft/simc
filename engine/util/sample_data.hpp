@@ -113,6 +113,9 @@ std::vector<size_t> create_histogram( Range r, size_t num_buckets,
   if ( std::begin( r ) == std::end( r ) )
     return result;
 
+  if ( std::isnan(min) || std::isnan(max) )
+    return result;
+
   assert( min <= *range::min_element( r ) );
   assert( max >= *range::max_element( r ) );
 

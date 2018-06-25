@@ -290,7 +290,12 @@ double pet_t::composite_melee_attack_power() const
   double ap = 0;
 
   if ( owner_coeff.ap_from_ap > 0.0 )
-    ap += owner -> cache.attack_power() * owner -> composite_attack_power_multiplier() * owner_coeff.ap_from_ap;
+  {
+    // Use owner's default attack power type for the inheritance
+    ap += owner -> composite_melee_attack_power( owner -> default_ap_type() ) *
+          owner -> composite_attack_power_multiplier() *
+          owner_coeff.ap_from_ap;
+  }
 
   if ( owner_coeff.ap_from_sp > 0.0 )
     ap += owner -> cache.spell_power( SCHOOL_MAX ) * owner -> composite_spell_power_multiplier() * owner_coeff.ap_from_sp;

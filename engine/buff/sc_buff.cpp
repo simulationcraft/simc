@@ -169,12 +169,11 @@ struct expiration_delay_t : public buff_event_t
   }
 };
 
-expr_t* create_buff_expression( std::string buff_name, const std::string& type, action_t* action,
-                                   buff_t* static_buff )
+expr_t* create_buff_expression( std::string buff_name, const std::string& type, action_t* action, buff_t* static_buff )
 {
-  if (!static_buff && !action)
+  if ( !static_buff && !action )
   {
-    assert(false && "Buff expressions require either a valid action or a valid static buff");
+    assert( false && "Buff expressions require either a valid action or a valid static buff" );
     return nullptr;
   }
 
@@ -192,7 +191,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
 
     virtual buff_t* create() const
     {
-      assert(action && "Cannot create dynamic buff expressions without a action.");
+      assert( action && "Cannot create dynamic buff expressions without a action." );
 
       action->player->get_target_data( action->target );
       auto buff = buff_t::find( action->target, buff_name, action->player );
@@ -200,9 +199,10 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
         buff = buff_t::find( action->target, buff_name, action->target );  // Raid debuffs
       if ( !buff )
       {
-        action->sim->error("Unable to build buff action expression for action '{}': "
-            "Reference to unknown buff/debuff '{}' by player {}.", action->name(), buff_name,
-            action->player->name());
+        action->sim->error(
+            "Unable to build buff action expression for action '{}': "
+            "Reference to unknown buff/debuff '{}' by player {}.",
+            action->name(), buff_name, action->player->name() );
         action->sim->cancel();
         // Prevent segfault
         buff = buff_creator_t( action->player, "dummy" );
@@ -413,7 +413,7 @@ expr_t* create_buff_expression( std::string buff_name, const std::string& type, 
     return new cooldown_react_expr_t( buff_name, action, static_buff );
   }
 
-  throw std::invalid_argument(fmt::format("Unsupported buff expression '{}'.", type));
+  throw std::invalid_argument( fmt::format( "Unsupported buff expression '{}'.", type ) );
   return nullptr;
 }
 
@@ -608,6 +608,7 @@ void buff_t::update_trigger_calculations()
   else
   {
     default_chance = manual_chance;
+    rppm = nullptr;
   }
 }
 
@@ -767,7 +768,7 @@ buff_t* buff_t::set_period( timespan_t period )
   }
 
   // Recheck tick behaviour, which is dependent on buff_period.
-  set_tick_behavior(tick_behavior);
+  set_tick_behavior( tick_behavior );
 
   return this;
 }
@@ -897,6 +898,7 @@ buff_t* buff_t::set_rppm( rppm_scale_e scale, double freq, double mod )
 {
   if ( scale == RPPM_DISABLE )
   {
+    rppm = nullptr;
     return this;
   }
 
@@ -1465,7 +1467,8 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   }
 
   timespan_t period = tick_time();
-  if ( tick_behavior != buff_tick_behavior::NONE && period > timespan_t::zero() && ( period <= d || d == timespan_t::zero() ) )
+  if ( tick_behavior != buff_tick_behavior::NONE && period > timespan_t::zero() &&
+       ( period <= d || d == timespan_t::zero() ) )
   {
     current_tick = 0;
 
@@ -1477,7 +1480,7 @@ void buff_t::start( int stacks, double value, timespan_t duration )
 
     if ( tick_zero && tick_callback )
     {
-      tick_callback( this, expiration.empty() ? -1 : static_cast<int>(remains() / period), timespan_t::zero() );
+      tick_callback( this, expiration.empty() ? -1 : static_cast<int>( remains() / period ), timespan_t::zero() );
     }
   }
 }
@@ -1548,7 +1551,7 @@ void buff_t::refresh( int stacks, double value, timespan_t duration )
 
     if ( tick_zero && tick_callback )
     {
-      tick_callback( this, expiration.empty() ? -1 : static_cast<int>(remains() / tick_time()), timespan_t::zero() );
+      tick_callback( this, expiration.empty() ? -1 : static_cast<int>( remains() / tick_time() ), timespan_t::zero() );
     }
   }
 }
@@ -2042,110 +2045,96 @@ void buff_t::invalidate_cache()
 
 buff_t* buff_t::find( sim_t* s, const std::string& name )
 {
-  return find( s -> buff_list, name );
+  return find( s->buff_list, name );
 }
 
 buff_t* buff_t::find( player_t* p, const std::string& name, player_t* source )
 {
-  return find( p -> buff_list, name, source );
+  return find( p->buff_list, name, source );
 }
 
 std::string buff_t::source_name() const
 {
-  if ( player ) return player -> name_str;
+  if ( player )
+    return player->name_str;
   return "noone";
 }
 
 rng::rng_t& buff_t::rng()
-{ return sim -> rng(); }
+{
+  return sim->rng();
+}
 
 // ==========================================================================
 // STAT_BUFF
 // ==========================================================================
 
 stat_buff_t::stat_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
-  : stat_buff_t( stat_buff_creator_t( q, name, spell, item ) )
+  : buff_t( q, name, spell, item ),
+    stat_gain( player->get_gain( name + "_buff" ) ),  // append _buff for now to check usage
+    manual_stats_added( false )
 {
-}
-// stat_buff_t::stat_buff_t =================================================
+  bool has_ap = false;
 
-stat_buff_t::stat_buff_t( const stat_buff_creator_t& params )
-  : buff_t( params ),
-    stat_gain( player->get_gain( std::string( name() ) + "_buff" ) ),  // append _buff for now to check usage
-    manual_stats_added(false)
-{
-  if ( params.stats.empty() )
+  for ( size_t i = 1; i <= data().effect_count(); i++ )
   {
-    bool has_ap = false;
+    stat_e s                         = STAT_NONE;
+    double amount                    = 0;
+    const spelleffect_data_t& effect = data().effectN( i );
 
-    for ( size_t i = 1; i <= data().effect_count(); i++ )
+    if ( item )
+      amount = util::round( effect.average( item ) );
+    else
+      amount = util::round( effect.average( player, std::min( MAX_LEVEL, player->level() ) ) );
+
+    if ( effect.subtype() == A_MOD_STAT )
     {
-      stat_e s                         = STAT_NONE;
-      double amount                    = 0;
-      const spelleffect_data_t& effect = data().effectN( i );
-
-      if ( params.item )
-        amount = util::round( effect.average( params.item ) );
-      else
-        amount = util::round( effect.average( player, std::min( MAX_LEVEL, player->level() ) ) );
-
-      if ( effect.subtype() == A_MOD_STAT )
+      if ( effect.misc_value1() >= 0 )
       {
-        if ( effect.misc_value1() >= 0 )
-        {
-          s = static_cast<stat_e>( effect.misc_value1() + 1 );
-        }
-        else if ( effect.misc_value1() == -1 )
-        {
-          s = STAT_ALL;
-        }
+        s = static_cast<stat_e>( effect.misc_value1() + 1 );
       }
-      else if ( effect.subtype() == A_MOD_RATING )
+      else if ( effect.misc_value1() == -1 )
       {
-        std::vector<stat_e> k = util::translate_all_rating_mod( effect.misc_value1() );
-        if ( params.item )
-        {
-          amount = item_database::apply_combat_rating_multiplier( *params.item, amount );
-        }
-
-        for ( size_t j = 0; j < k.size(); j++ )
-        {
-          stats.push_back( buff_stat_t( k[ j ], amount ) );
-        }
-      }
-      else if ( effect.subtype() == A_MOD_DAMAGE_DONE && ( effect.misc_value1() & 0x7E ) )
-        s = STAT_SPELL_POWER;
-      else if ( effect.subtype() == A_MOD_RESISTANCE )
-        s = STAT_BONUS_ARMOR;
-      else if ( !has_ap && ( effect.subtype() == A_MOD_ATTACK_POWER || effect.subtype() == A_MOD_RANGED_ATTACK_POWER ) )
-      {
-        s      = STAT_ATTACK_POWER;
-        has_ap = true;
-      }
-      else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 || effect.subtype() == A_MOD_INCREASE_HEALTH )
-        s = STAT_MAX_HEALTH;
-      else if ( effect.subtype() == A_465 )
-        s = STAT_BONUS_ARMOR;
-
-      if ( s != STAT_NONE )
-      {
-        stats.push_back( buff_stat_t( s, amount ) );
+        s = STAT_ALL;
       }
     }
-  }
-  else  // parse stats from params
-  {
-    for ( size_t i = 0; i < params.stats.size(); ++i )
+    else if ( effect.subtype() == A_MOD_RATING )
     {
-      stats.push_back( buff_stat_t( params.stats[ i ].stat, params.stats[ i ].amount, params.stats[ i ].check_func ) );
-      manual_stats_added = true;
+      std::vector<stat_e> k = util::translate_all_rating_mod( effect.misc_value1() );
+      if ( item )
+      {
+        amount = item_database::apply_combat_rating_multiplier( *item, amount );
+      }
+
+      for ( size_t j = 0; j < k.size(); j++ )
+      {
+        stats.push_back( buff_stat_t( k[ j ], amount ) );
+      }
+    }
+    else if ( effect.subtype() == A_MOD_DAMAGE_DONE && ( effect.misc_value1() & 0x7E ) )
+      s = STAT_SPELL_POWER;
+    else if ( effect.subtype() == A_MOD_RESISTANCE )
+      s = STAT_BONUS_ARMOR;
+    else if ( !has_ap && ( effect.subtype() == A_MOD_ATTACK_POWER || effect.subtype() == A_MOD_RANGED_ATTACK_POWER ) )
+    {
+      s      = STAT_ATTACK_POWER;
+      has_ap = true;
+    }
+    else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 || effect.subtype() == A_MOD_INCREASE_HEALTH )
+      s = STAT_MAX_HEALTH;
+    else if ( effect.subtype() == A_465 )
+      s = STAT_BONUS_ARMOR;
+
+    if ( s != STAT_NONE )
+    {
+      stats.push_back( buff_stat_t( s, amount ) );
     }
   }
 }
 
-stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c )
+stat_buff_t* stat_buff_t::add_stat( stat_e s, double a, std::function<bool( const stat_buff_t& )> c )
 {
-  if ( ! manual_stats_added )
+  if ( !manual_stats_added )
   {
     // If we are the first to add manual stats, clear the spell_data parsed ones.
     stats.clear();
@@ -2237,10 +2226,9 @@ void stat_buff_t::expire_override( int expiration_stacks, timespan_t remaining_d
 // COST_REDUCTION_BUFF
 // ==========================================================================
 
-cost_reduction_buff_t::cost_reduction_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
-  : buff_t(  q, name, spell, item  ),
-    amount(),
-    school(SCHOOL_NONE)
+cost_reduction_buff_t::cost_reduction_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell,
+                                              const item_t* item )
+  : buff_t( q, name, spell, item ), amount(), school( SCHOOL_NONE )
 {
   // Detect school / amount
   for ( size_t i = 1, e = data().effect_count(); i <= e; i++ )
@@ -2306,21 +2294,19 @@ void cost_reduction_buff_t::expire_override( int expiration_stacks, timespan_t r
   buff_t::expire_override( expiration_stacks, remaining_duration );
 }
 
-cost_reduction_buff_t* cost_reduction_buff_t::set_reduction(school_e school, double amount)
+cost_reduction_buff_t* cost_reduction_buff_t::set_reduction( school_e school, double amount )
 {
   this->amount = amount;
   this->school = school;
   return this;
 }
 
-
 // ==========================================================================
 // HASTE_BUFF
 // ==========================================================================
 
 haste_buff_t::haste_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
-  : buff_t( q, name, spell, item ),
-    haste_type( HASTE_NONE )
+  : buff_t( q, name, spell, item ), haste_type( HASTE_NONE )
 {
   // All haste > everything
   if ( range::find( invalidate_list, CACHE_HASTE ) != invalidate_list.end() )
@@ -2441,15 +2427,15 @@ bool tick_buff_t::trigger( int stacks, double value, double chance, timespan_t d
 
 absorb_buff_t::absorb_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
   : buff_t( q, name, spell, item ),
-    absorb_school(SCHOOL_CHAOS),
+    absorb_school( SCHOOL_CHAOS ),
     absorb_source(),
     absorb_gain(),
-    high_priority(false),
+    high_priority( false ),
     eligibility()
 {
   assert( player && "Absorb Buffs only supported for player!" );
 
-  set_absorb_school(absorb_school);
+  set_absorb_school( absorb_school );
 }
 
 void absorb_buff_t::start( int stacks, double value, timespan_t duration )
@@ -2568,7 +2554,7 @@ void buff_creator_basics_t::init()
   _activated          = -1;
   _can_cancel         = -1;
   _tick_time_behavior = buff_tick_time_behavior::UNHASTED;
-  _tick_behavior           = buff_tick_behavior::NONE;
+  _tick_behavior      = buff_tick_behavior::NONE;
   _refresh_behavior   = buff_refresh_behavior::NONE;
   _stack_behavior     = buff_stack_behavior::DEFAULT;
   _default_value      = buff_t::DEFAULT_VALUE();
@@ -2604,9 +2590,7 @@ buff_creator_basics_t::buff_creator_basics_t( sim_t* s, const std::string& n, co
   init();
 }
 
-
-buff_creator_t::operator buff_t* () const
-{ return new buff_t( *this ); }
-
-stat_buff_creator_t::operator stat_buff_t* () const
-{ return new stat_buff_t( *this ); }
+buff_creator_t::operator buff_t*() const
+{
+  return new buff_t( *this );
+}

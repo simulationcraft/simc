@@ -892,6 +892,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   attribute_multiplier(),
   spell_power_multiplier( 1.0 ),
   attack_power_multiplier( 1.0 ),
+  base_armor_multiplier( 1.0 ),
   armor_multiplier( 1.0 ),
   position( POSITION_BACK )
 {
@@ -927,6 +928,7 @@ std::string player_t::base_initial_current_t::to_string()
   // attribute_multiplier
   s << " spell_power_multiplier=" << spell_power_multiplier;
   s << " attack_power_multiplier=" << attack_power_multiplier;
+  s << " base_armor_multiplier=" << base_armor_multiplier;
   s << " armor_multiplier=" << armor_multiplier;
   s << " position=" << util::position_type_string( position );
   return s.str();
@@ -1390,7 +1392,7 @@ void player_t::init_meta_gem()
 
   if ( ( meta_gem == META_AUSTERE_EARTHSIEGE ) || ( meta_gem == META_AUSTERE_SHADOWSPIRIT ) )
   {
-    initial.armor_multiplier *= 1.02;
+    initial.base_armor_multiplier *= 1.02;
   }
 }
 
@@ -2935,6 +2937,54 @@ double player_t::composite_melee_attack_power() const
   return ap;
 }
 
+double player_t::composite_melee_attack_power( attack_power_e type ) const
+{
+  double base_ap = cache.attack_power();
+  double ap = 0;
+  bool has_mh = main_hand_weapon.type != WEAPON_NONE;
+  bool has_oh = off_hand_weapon.type != WEAPON_NONE;
+
+  switch ( type )
+  {
+    case AP_WEAPON_MH:
+      if ( has_mh )
+      {
+        ap = base_ap + main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
+      }
+      // Unarmed is apparently a 0.5 dps weapon, Bruce Lee would be ashamed.
+      else
+      {
+        ap = base_ap + .5 * WEAPON_POWER_COEFFICIENT;
+      }
+      break;
+    case AP_WEAPON_OH:
+      if ( has_oh )
+      {
+        ap = base_ap + off_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
+      }
+      else
+      {
+        ap = base_ap + .5 * WEAPON_POWER_COEFFICIENT;
+      }
+      break;
+    case AP_WEAPON_BOTH:
+    {
+      // Don't use with weapon = player -> off_hand_weapon or the OH penalty will be applied to the whole spell
+      ap = ( has_mh ? main_hand_weapon.dps : .5 ) + ( has_oh ? off_hand_weapon.dps : .5 ) / 2;
+      ap *= 2.0 / 3.0 * WEAPON_POWER_COEFFICIENT;
+      ap += base_ap;
+
+      break;
+    }
+    // Nohand, just base AP then
+    default:
+      ap = base_ap;
+      break;
+  }
+
+  return ap;
+}
+
 double player_t::composite_attack_power_multiplier() const
 {
   return current.attack_power_multiplier;
@@ -2978,12 +3028,25 @@ double player_t::composite_armor() const
 {
   double a = current.stats.armor;
 
+  a *= composite_base_armor_multiplier();
+
+  a += cache.bonus_armor();
+
+  // "Modify Armor%" effects affect all armor multiplicatively
+  // TODO: What constitutes "bonus armor" and "base armor" in terms of client data?
   a *= composite_armor_multiplier();
 
-  // Traditionally, armor multipliers have only applied to base armor from gear
-  // and not bonus armor. I'm assuming this will continue in WoD.
-  // TODO: need to test in beta to be sure - Theck, 2014-04-26
-  a += current.stats.bonus_armor;
+  return a;
+}
+
+double player_t::composite_base_armor_multiplier() const
+{
+  double a = current.base_armor_multiplier;
+
+  if ( meta_gem == META_AUSTERE_PRIMAL )
+  {
+    a += 0.02;
+  }
 
   return a;
 }
@@ -2991,11 +3054,6 @@ double player_t::composite_armor() const
 double player_t::composite_armor_multiplier() const
 {
   double a = current.armor_multiplier;
-
-  if ( meta_gem == META_AUSTERE_PRIMAL )
-  {
-    a += 0.02;
-  }
 
   return a;
 }
@@ -8939,6 +8997,16 @@ const spell_data_t* player_t::find_spell( unsigned int id ) const
   return spell_data_t::not_found();
 }
 
+const spell_data_t* player_t::find_spell( unsigned int id, specialization_e s ) const
+{
+  if ( s == SPEC_NONE || s == _spec )
+  {
+    return find_spell( id );
+  }
+
+  return spell_data_t::not_found();
+}
+
 namespace
 {
 expr_t* deprecate_expression( player_t& p, const std::string& old_name, const std::string& new_name, action_t* a = nullptr  )
@@ -8997,6 +9065,17 @@ expr_t* deprecated_player_expressions( player_t& player, const std::string& expr
 }
 
 }  // namespace
+
+/**
+ * Player specific action expressions
+ *
+ * Use this function for expressions which are bound to some action property (eg. target, cast_time, etc.) and not just
+ * to the player itself.
+ */
+expr_t* player_t::create_action_expression( action_t&, const std::string& name )
+{
+  return create_expression( name );
+}
 
 expr_t* player_t::create_expression( const std::string& expression_str )
 {
@@ -9073,15 +9152,20 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     {
       if (parts.size() == 4 )
       {
-        // eg. time_to_pct_90
+        // eg. time_to_pct_90.1
         percent = std::stod( parts[ 3 ] );
       }
+      else
+      {
+        throw std::invalid_argument(fmt::format("No pct value given for time_to_pct_ expression."));
+      }
+    }
+    else
+    {
+      throw std::invalid_argument(fmt::format("Unsupported time_to_ expression '{}'.", parts[ 2 ]));
     }
 
-    if ( percent >= 0.0 ) // skip construction if the percent is nonsensical
-    {
-      return make_fn_expr( expression_str, [this, percent] { return time_to_percent( percent ).total_seconds(); } );
-    }
+    return make_fn_expr( expression_str, [this, percent] { return time_to_percent( percent ).total_seconds(); } );
   }
 
   // incoming_damage_X expressions
@@ -9093,12 +9177,16 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     if ( util::str_in_str_ci( parts[ 2 ], "ms" ) )
       window_duration = timespan_t::from_millis( std::stoi( parts[ 2 ] ) );
     else
-      window_duration = timespan_t::from_seconds( std::stoi( parts[ 2 ] ) );
+      window_duration = timespan_t::from_seconds( std::stod( parts[ 2 ] ) );
 
     // skip construction if the duration is nonsensical
     if ( window_duration > timespan_t::zero() )
     {
       return make_fn_expr(expression_str, [this, window_duration] {return compute_incoming_damage( window_duration );});
+    }
+    else
+    {
+      throw std::invalid_argument(fmt::format("Non-positive window duration '{}'.", window_duration));
     }
   }
 
@@ -9552,7 +9640,8 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
     }
   }
 
-  return nullptr;
+  std::string tail = name_str.substr(splits[ 0 ].length() + 1);
+  throw std::invalid_argument(fmt::format("Unsupported resource expression '{}'.", tail));
 }
 
 double player_t::compute_incoming_damage( timespan_t interval ) const
@@ -9664,7 +9753,7 @@ std::string player_t::create_profile( save_e stype )
     profile_str += "# " + report_information.comment_str + term;
   }
 
-  if ( stype == SAVE_ALL )
+  if ( stype & SAVE_PLAYER )
   {
     profile_str += util::player_type_string( type );
     profile_str += "=\"" + name_str + '"' + term;
@@ -9692,7 +9781,7 @@ std::string player_t::create_profile( save_e stype )
     }
   }
 
-  if ( stype == SAVE_ALL || stype == SAVE_TALENTS )
+  if ( stype & SAVE_TALENTS )
   {
     if ( !talents_str.empty() )
     {
@@ -9719,7 +9808,7 @@ std::string player_t::create_profile( save_e stype )
     }
   }
 
-  if ( stype == SAVE_ALL )
+  if ( stype & SAVE_PLAYER )
   {
     std::string potion_option = potion_str.empty() ? default_potion() : potion_str;
     std::string flask_option  = flask_str.empty() ? default_flask() : flask_str;
@@ -9768,7 +9857,7 @@ std::string player_t::create_profile( save_e stype )
     }
   }
 
-  if ( stype == SAVE_ALL || stype == SAVE_ACTIONS )
+  if ( stype & SAVE_ACTIONS )
   {
     if ( !action_list_str.empty() || use_default_action_list )
     {
@@ -9808,7 +9897,7 @@ std::string player_t::create_profile( save_e stype )
     }
   }
 
-  if ( ( stype == SAVE_ALL || stype == SAVE_GEAR ) && !items.empty() )
+  if ( ( stype & SAVE_GEAR ) && !items.empty() )
   {
     profile_str += "\n";
     const slot_e SLOT_OUT_ORDER[] = {
@@ -9990,7 +10079,7 @@ void player_t::create_options()
   add_option( opt_func( "talent_override", parse_talent_override ) );
   add_option( opt_string( "race", race_str ) );
   add_option( opt_func( "timeofday", parse_timeofday ) );
-  add_option( opt_int( "level", true_level, 0, MAX_LEVEL ) );
+  add_option( opt_int( "level", true_level, 1, MAX_LEVEL ) );
   add_option( opt_bool( "ready_trigger", ready_type ) );
   add_option( opt_func( "role", parse_role_string ) );
   add_option( opt_string( "target", target_str ) );
@@ -11549,7 +11638,23 @@ void player_collected_data_t::collect_data( const player_t& p )
   {
     double metric = 0;
 
-    switch ( p.primary_role() )
+    role_e target_error_role = p.sim -> target_error_role;
+    // use player's role if sim didn't provide an override
+    if (target_error_role == ROLE_NONE)
+    {
+      target_error_role = p.primary_role();
+      // exception for tanks - use DPS by default.
+      if (target_error_role == ROLE_TANK)
+      {
+        target_error_role = ROLE_DPS;
+      }
+    }
+
+    // ROLE is used here primarily to stay in-line with the previous version of the code.
+    // An ideal implementation is probably to rewrite this to allow specification of a scale_metric_e
+    // to make it more flexible. That was beyond my capability/available time and it would also likely be
+    // very, very low use (as of legion/bfa, almost all tanks are simming DPS, not survival).
+    switch( target_error_role )
     {
       case ROLE_ATTACK:
       case ROLE_SPELL:

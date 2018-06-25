@@ -35,7 +35,7 @@ struct adds_event_t : public raid_event_t
   adds_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "adds" ),
     count( 1 ), health( 100000 ), master_str( "Fluffy_Pillow" ), name_str( "Add" ),
-    master( 0 ), count_range( false ), adds_to_remove( 0 ), spawn_x_coord( 0 ),
+    master(), count_range( false ), adds_to_remove( 0 ), spawn_x_coord( 0 ),
     spawn_y_coord( 0 ), spawn_stacked( 0 ), spawn_radius_min( 0 ), spawn_radius_max( 0 ),
     spawn_radius( 0 ), spawn_angle_start( -1 ), spawn_angle_end( -1 ), race(RACE_NONE)
   {
@@ -55,10 +55,23 @@ struct adds_event_t : public raid_event_t
     add_option( opt_string( "race", race_str ) );
     parse_options( options_str );
 
-    master = sim -> find_player( master_str );
+    if (!master_str.empty())
+    {
+      master = sim -> find_player( master_str );
+      if (!master)
+      {
+        throw std::invalid_argument(fmt::format("{} cannot find master '{}'.", *this, master_str));
+      }
+    }
+
     // If the master is not found, default the master to the first created enemy
-    if ( ! master ) master = sim -> target_list.data().front();
-    assert( master );
+    if ( ! master )
+      master = sim -> target_list.data().front();
+
+    if (!master)
+    {
+      throw std::invalid_argument(fmt::format("{} no enemy target available in the sim.", *this));
+    }
 
     double overlap = 1;
     timespan_t min_cd = cooldown;
@@ -68,27 +81,37 @@ struct adds_event_t : public raid_event_t
       min_cd -= cooldown_stddev * 6;
       if ( min_cd <= timespan_t::zero() )
       {
-        sim -> errorf( "The standard deviation of %.3f seconds is too large, creating a too short minimum cooldown (%.3f seconds)", cooldown_stddev.total_seconds(), min_cd.total_seconds() );
-        cooldown_stddev = timespan_t::zero();
+        throw std::invalid_argument(fmt::format("{} the cooldown standard deviation ({}) is too large, "
+            "creating a too short minimum cooldown ({})",
+            *this, cooldown_stddev, min_cd));
       }
     }
 
-    if ( min_cd > timespan_t::zero() ) overlap = duration / min_cd;
+    if ( min_cd > timespan_t::zero() )
+      overlap = duration / min_cd;
 
     if ( overlap > 1 )
     {
-      sim -> errorf( "Simc does not support overlapping add spawning in a single raid event (duration of %.3fs > reasonable minimum cooldown of %.3fs).", duration.total_seconds(), min_cd.total_seconds() );
-      overlap = 1;
-      duration = min_cd - timespan_t::from_seconds( 0.001 );
+      throw std::invalid_argument(fmt::format("{} does not support overlapping add spawning in a single raid event. "
+          "Duration ({}) > reasonable minimum cooldown ({}).", *this, duration, min_cd));
     }
 
     if (!race_str.empty())
     {
       race = util::parse_race_type(race_str);
+      if (race == RACE_NONE)
+      {
+        throw std::invalid_argument(fmt::format("{} could not parse race from '{}'.", *this, race_str));
+      }
     }
     else if (!sim->target_race.empty())
     {
       race = util::parse_race_type(sim->target_race);
+
+      if (race == RACE_NONE)
+      {
+        throw std::invalid_argument(fmt::format("{} could not parse race from sim target race '{}'.", *this, sim->target_race));
+      }
     }
 
     sim -> add_waves++;
@@ -215,14 +238,14 @@ struct adds_event_t : public raid_event_t
     {
       if ( i < adds.size() )
       {
-        if ( fabs( spawn_radius_max ) > 0 )
+        if ( std::fabs( spawn_radius_max ) > 0 )
         {
           if ( spawn_stacked == 0 || !offset_computed )
           {
             double angle_start = spawn_angle_start * ( m_pi / 180 );
             double angle_end = spawn_angle_end * ( m_pi / 180 );
             double angle = sim -> rng().range( angle_start, angle_end );
-            double radius = sim -> rng().range( fabs( spawn_radius_min ), fabs( spawn_radius_max ) );
+            double radius = sim -> rng().range( std::fabs( spawn_radius_min ), std::fabs( spawn_radius_max ) );
             x_offset = radius * cos(angle);
             y_offset = radius * sin(angle);
             offset_computed = true;
@@ -281,7 +304,8 @@ struct move_enemy_t : public raid_event_t
 
     if ( !enemy )
     {
-      sim -> out_log.printf( "Move enemy event cannot be created, there is no enemy named %s.", name.c_str() );
+      throw std::invalid_argument(fmt::format("Move enemy event cannot be created, there is no enemy named '{}'.",
+          name));
     }
   }
 
@@ -289,7 +313,6 @@ struct move_enemy_t : public raid_event_t
   {
     for (auto p : affected_players)
     {
-      
       // Invalidate target caches
       for ( size_t i = 0, end = p -> action_list.size(); i < end; i++ )
         p -> action_list[i] -> target_cache.is_valid = false; //Regenerate Cache.
@@ -371,7 +394,6 @@ struct distraction_event_t : public raid_event_t
   {
     for (auto p : affected_players)
     {
-      
       p -> current.skill_debuff += skill;
     }
   }
@@ -380,7 +402,6 @@ struct distraction_event_t : public raid_event_t
   {
     for (auto p : affected_players)
     {
-      
       p -> current.skill_debuff -= skill;
     }
   }
@@ -450,7 +471,6 @@ struct invulnerable_event_t : public raid_event_t
         p -> acquire_target( ACTOR_VULNERABLE, target );
       } );
     }
-
   }
 };
 
@@ -495,9 +515,6 @@ struct movement_ticker_t : public event_t
     {
       duration = next_execute( players );
     }
-
-    if ( sim().debug )
-      sim().out_debug.printf( "New movement event" );
   }
   virtual const char* name() const override
   {
@@ -564,6 +581,7 @@ struct movement_event_t : public raid_event_t
     move_distance( 0 ),
     direction( MOVEMENT_TOWARDS ),
     distance_range( 0 ),
+    move(),
     distance_min( 0 ),
     distance_max( 0 ),
     avg_player_movement_speed( 7.0 )
@@ -575,21 +593,47 @@ struct movement_event_t : public raid_event_t
     add_option( opt_float( "distance_max", distance_max ) );
     parse_options( options_str );
 
-    if ( duration > timespan_t::zero() ) move_distance = duration.total_seconds() * avg_player_movement_speed;
+    if ( duration > timespan_t::zero() )
+    {
+      move_distance = duration.total_seconds() * avg_player_movement_speed;
+    }
 
     double cooldown_move = cooldown.total_seconds();
-    if ( ( move_distance / avg_player_movement_speed ) > cooldown_move ) move_distance = cooldown_move * avg_player_movement_speed;
+    if ( ( move_distance / avg_player_movement_speed ) > cooldown_move )
+    {
+      sim->error("{} average player movement time ({}) is longer than cooldown movement time ({}). "
+          "Capping it the lower value.", *this, move_distance / avg_player_movement_speed, cooldown_move);
+      move_distance = cooldown_move * avg_player_movement_speed;
+    }
 
     double max = ( move_distance + distance_range ) / avg_player_movement_speed;
-    if ( max > cooldown_move ) distance_range = ( max - cooldown_move ) * avg_player_movement_speed;
+    if ( max > cooldown_move )
+    {
+      distance_range = ( max - cooldown_move ) * avg_player_movement_speed;
+    }
 
-    if ( distance_max < distance_min ) distance_max = distance_min;
+    if ( distance_max < distance_min )
+    {
+      distance_max = distance_min;
+    }
 
-    if ( distance_max / avg_player_movement_speed > cooldown_move ) distance_max = cooldown_move * avg_player_movement_speed;
-    if ( distance_min / avg_player_movement_speed > cooldown_move ) distance_min = cooldown_move * avg_player_movement_speed;
+    if ( distance_max / avg_player_movement_speed > cooldown_move )
+    {
+      distance_max = cooldown_move * avg_player_movement_speed;
+    }
+    if ( distance_min / avg_player_movement_speed > cooldown_move )
+    {
+      distance_min = cooldown_move * avg_player_movement_speed;
+    }
 
-    if ( move_distance > 0 ) name_str = "movement_distance";
-    if ( !move_direction.empty() ) direction = util::parse_movement_direction( move_direction );
+    if ( move_distance > 0 )
+    {
+      type = "movement_distance";
+    }
+    if ( !move_direction.empty() )
+    {
+      direction = util::parse_movement_direction( move_direction );
+    }
   }
 
   virtual void _start() override
@@ -645,7 +689,6 @@ struct stun_event_t : public raid_event_t
   {
     for (auto p : affected_players)
     {
-      
       p -> buffs.stunned -> increment();
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> stun();
@@ -656,8 +699,8 @@ struct stun_event_t : public raid_event_t
   {
     for (auto p : affected_players)
     {
-      
       p -> buffs.stunned -> decrement();
+      
       if ( ! p -> buffs.stunned -> check() )
       {
         // Don't schedule_ready players who are already working, like pets auto-summoned during the stun event ( ebon imp ).
@@ -682,7 +725,6 @@ struct interrupt_event_t : public raid_event_t
   {
     for (auto p : affected_players)
     {
-      
       p -> interrupt();
     }
   }
@@ -710,9 +752,12 @@ struct damage_event_t : public raid_event_t
     add_option( opt_string( "type", type_str ) );
     parse_options( options_str );
 
-    assert( duration == timespan_t::zero() );
+    if (duration != timespan_t::zero())
+    {
+      throw std::invalid_argument("Damage raid event does not allow a duration.");
+    }
 
-    name_str = "raid_damage_" + type_str;
+    type = "raid_damage_" + type_str;
     damage_type = util::parse_school_type( type_str );
   }
 
@@ -732,7 +777,7 @@ struct damage_event_t : public raid_event_t
         }
       };
 
-      raid_damage = new raid_damage_t( name_str.c_str(), sim -> target, damage_type );
+      raid_damage = new raid_damage_t( type.c_str(), sim -> target, damage_type );
       raid_damage -> init();
     }
 
@@ -766,15 +811,17 @@ struct heal_event_t : public raid_event_t
     add_option( opt_float( "to_pct_range", to_pct_range ) );
     parse_options( options_str );
 
-    assert( duration == timespan_t::zero() );
+    if (duration != timespan_t::zero())
+    {
+      throw std::invalid_argument("Heal raid event does not allow a duration.");
+    }
   }
 
   virtual void _start() override
   {
     for (auto p : affected_players)
     {
-      
-      double x; // amount to heal
+      double amount_to_heal = 0.0;
 
       // to_pct tells this event to heal each player up to a percent of their max health
       if ( to_pct > 0 )
@@ -782,31 +829,31 @@ struct heal_event_t : public raid_event_t
         double pct_actual = to_pct;
         if ( to_pct_range > 0 )
           pct_actual = sim -> rng().range( to_pct - to_pct_range, to_pct + to_pct_range );
-        if ( sim -> debug )
-          sim -> out_debug.printf( "%s healing to %.3f%% (%.0f) of max health, current health %.0f",
-              p -> name(), pct_actual, p -> resources.max[ RESOURCE_HEALTH ] * pct_actual / 100,
+
+        sim ->print_debug( "{} heals {} {}% ({}) of max health, current health {}",
+              *this, p -> name(), pct_actual, p -> resources.max[ RESOURCE_HEALTH ] * pct_actual / 100,
               p -> resources.current[ RESOURCE_HEALTH ] );
-        x = p -> resources.max[ RESOURCE_HEALTH ] * pct_actual / 100;
-        x -= p -> resources.current[ RESOURCE_HEALTH ];
+
+        amount_to_heal = p -> resources.max[ RESOURCE_HEALTH ] * pct_actual / 100;
+        amount_to_heal -= p -> resources.current[ RESOURCE_HEALTH ];
       }
       else
       {
-        x = sim -> rng().range( amount - amount_range, amount + amount_range );
-        p -> resource_gain( RESOURCE_HEALTH, x );
+        amount_to_heal = sim -> rng().range( amount - amount_range, amount + amount_range );
+        p -> resource_gain( RESOURCE_HEALTH, amount_to_heal );
       }
 
       // heal if there's any healing to be done
-      if ( x > 0 )
+      if ( amount_to_heal > 0.0 )
       {
-        if ( sim -> log )
-          sim -> out_log.printf( "%s takes %.0f raid heal.", p -> name(), x );
+        sim->print_log( "{} heals {} for '{}'.", *this, p -> name(), amount_to_heal );
 
-        p -> resource_gain( RESOURCE_HEALTH, x );
+        p -> resource_gain( RESOURCE_HEALTH, amount_to_heal );
       }
     }
   }
 
-  virtual void _finish() override
+  void _finish() override
   {}
 };
 
@@ -822,26 +869,25 @@ struct damage_taken_debuff_event_t : public raid_event_t
     add_option( opt_int( "amount", amount ) );
     parse_options( options_str );
 
-    assert( duration == timespan_t::zero() );
+    if (duration != timespan_t::zero())
+    {
+      throw std::invalid_argument("Damage taken raid event does not allow a duration.");
+    }
   }
 
   virtual void _start() override
   {
     for (auto p : affected_players)
     {
-      
-
-      if ( sim -> log ) sim -> out_log.printf( "%s gains %d stacks of damage_taken debuff.", p -> name(), amount );
+      sim -> print_log("{} gains {} stacks of damage_taken debuff from {}.", p -> name(), amount, *this );
 
       if ( p -> debuffs.damage_taken )
         p -> debuffs.damage_taken -> trigger( amount );
-
     }
   }
 
-  virtual void _finish() override
-  {
-  }
+  void _finish() override
+  {}
 };
 
 // Damage Done Buff =======================================================
@@ -904,7 +950,6 @@ struct vulnerable_event_t : public raid_event_t
 
 struct position_event_t : public raid_event_t
 {
-
   position_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "position_switch" )
   {
@@ -915,7 +960,6 @@ struct position_event_t : public raid_event_t
   {
     for (auto p : affected_players)
     {
-      
       if ( p -> position() == POSITION_BACK )
         p -> change_position( POSITION_FRONT );
       else if ( p -> position() == POSITION_RANGED_BACK )
@@ -927,8 +971,6 @@ struct position_event_t : public raid_event_t
   {
     for (auto p : affected_players)
     {
-      
-
       p -> change_position( p -> initial.position );
     }
   }
@@ -967,11 +1009,10 @@ expr_t* parse_player_if_expr( player_t& player, const std::string& expr_str )
 
 } // UNNAMED NAMESPACE
 
-// raid_event_t::raid_event_t ===============================================
-
-raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
+raid_event_t::raid_event_t( sim_t* s, const std::string& type ) :
   sim( s ),
-  name_str( n ),
+  name(),
+  type( type ),
   num_starts( 0 ),
   first( timespan_t::zero() ),
   last( timespan_t::zero() ),
@@ -993,6 +1034,7 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
   saved_duration( timespan_t::zero() ),
   player_expressions()
 {
+  add_option( opt_string( "name", name ) );
   add_option( opt_string( "first", first_str ) );
   add_option( opt_string( "last", last_str ) );
   add_option( opt_timespan( "period", cooldown ) );
@@ -1005,15 +1047,13 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
   add_option( opt_timespan( "duration_min", duration_min ) );
   add_option( opt_timespan( "duration_max", duration_max ) );
   add_option( opt_bool( "players_only",  players_only ) );
-  add_option( opt_float( "player_chance", player_chance ) );
+  add_option( opt_float( "player_chance", player_chance, 0.0, 1.0 ) );
   add_option( opt_float( "distance_min", distance_min ) );
   add_option( opt_float( "distance_max", distance_max ) );
   add_option( opt_string( "affected_role", affected_role_str ) );
   add_option( opt_string( "player_if", player_if_expr_str ) );
 
 }
-
-// raid_event_t::cooldown_time ==============================================
 
 timespan_t raid_event_t::cooldown_time()
 {
@@ -1040,8 +1080,6 @@ timespan_t raid_event_t::cooldown_time()
   return time;
 }
 
-// raid_event_t::duration_time ==============================================
-
 timespan_t raid_event_t::duration_time()
 {
   timespan_t time = sim -> rng().gauss( duration, duration_stddev );
@@ -1051,22 +1089,16 @@ timespan_t raid_event_t::duration_time()
   return time;
 }
 
-// raid_event_t::start ======================================================
-
 void raid_event_t::start()
 {
-  if ( sim -> log )
-    sim -> out_log.printf( "Raid event %s starts.", name_str.c_str() );
+  sim -> print_log("{} starts.", *this);
 
   num_starts++;
 
   affected_players.clear();
 
-  for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
+  for ( auto& p : sim -> player_non_sleeping_list )
   {
-    player_t* p = sim -> player_non_sleeping_list[ i ];
-
-
     // Filter players
     if ( filter_player( p ) )
       continue;
@@ -1088,8 +1120,6 @@ void raid_event_t::start()
   _start();
 }
 
-// raid_event_t::finish =====================================================
-
 void raid_event_t::finish()
 {
   // Make sure we dont have any players which were active on start, but are now sleeping
@@ -1098,15 +1128,12 @@ void raid_event_t::finish()
 
   _finish();
 
-  if ( sim -> log )
-    sim -> out_log.printf( "Raid event %s finishes.", name_str.c_str() );
+  sim -> print_log("{} finishes.", *this);
 }
-
-// raid_event_t::schedule ===================================================
 
 void raid_event_t::schedule()
 {
-  if ( sim -> debug ) sim -> out_debug.printf( "Scheduling raid event: %s", name_str.c_str() );
+  sim -> print_debug( "Scheduling {}", *this );
 
   struct duration_event_t : public event_t
   {
@@ -1118,8 +1145,10 @@ void raid_event_t::schedule()
     {
       re -> set_next( s.current_time() + time );
     }
+
     virtual const char* name() const override
-    { return raid_event -> name(); }
+    { return raid_event -> type.c_str(); }
+
     virtual void execute() override
     {
       raid_event -> finish();
@@ -1136,8 +1165,10 @@ void raid_event_t::schedule()
     {
       re -> set_next( s.current_time() + time );
     }
+
     virtual const char* name() const override
-    { return raid_event -> name(); }
+    { return raid_event -> type.c_str(); }
+
     virtual void execute() override
     {
       raid_event -> saved_duration = raid_event -> duration_time();
@@ -1183,58 +1214,69 @@ void raid_event_t::reset()
 
 void raid_event_t::parse_options( const std::string& options_str )
 {
-  if ( options_str.empty() ) return;
+  if ( options_str.empty() )
+    return;
 
-  try
-  {
-    opts::parse( sim, name_str, options, options_str );
-  }
-  catch( const std::exception& e )
-  {
-    sim -> errorf( "Raid Event %s: Unable to parse options str '%s': %s", name_str.c_str(), options_str.c_str(), e.what() );
-    sim -> cancel();
-  }
-
-  if ( player_chance > 1.0 || player_chance < 0.0 )
-  {
-    sim -> errorf( "Player Chance needs to be withing [ 0.0, 1.0 ]. Overriding to 1.0\n" );
-    player_chance = 1.0;
-  }
+  opts::parse( sim, type, options, options_str );
 
   if ( ! affected_role_str.empty() )
   {
     affected_role = util::parse_role_type( affected_role_str );
     if ( affected_role == ROLE_NONE )
-      sim -> errorf( "Unknown role '%s' specified for raid event.\n", affected_role_str.c_str() );
+    {
+      throw std::invalid_argument(fmt::format("Unknown affected role '{}'.", affected_role_str));
+    }
   }
 
-  // Parse first/last
+  // Parse first/last. TODO: Replace with something better, see Issue #4326
   if ( first_str.size() > 1 )
   {
-    if ( *( first_str.end() - 1 ) == '%' )
+    try
     {
-      double pct = atof( first_str.substr( 0, first_str.size() - 1 ).c_str() ) / 100.0;
-      first = sim -> max_time * pct;
-    }
-    else
-      first = timespan_t::from_seconds( atof( first_str.c_str() ) );
+      if ( first_str.back() == '%' )
+      {
+        double pct = std::stod( first_str.substr( 0, first_str.size() - 1 ) ) / 100.0;
+        first = sim -> max_time * pct;
+      }
+      else
+      {
+        first = timespan_t::from_seconds( std::stod( first_str ) );
+      }
 
-    if ( first.total_seconds() < 0 )
-      first = timespan_t::zero();
+      if ( first < timespan_t::zero() )
+      {
+        throw std::invalid_argument("first= option cannot be negative: {}");
+      }
+    }
+    catch (const std::exception& ex)
+    {
+      throw std::invalid_argument(fmt::format("Canot parse first= option: {}", ex.what()));
+    }
   }
 
   if ( last_str.size() > 1 )
   {
-    if ( *( last_str.end() - 1 ) == '%' )
+    try
     {
-      double pct = atof( last_str.substr( 0, last_str.size() - 1 ).c_str() ) / 100.0;
-      last = sim -> max_time * pct;
-    }
-    else
-      last = timespan_t::from_seconds( atof( last_str.c_str() ) );
+      if ( last_str.back() == '%' )
+      {
+        double pct = std::stod( last_str.substr( 0, last_str.size() - 1 ) ) / 100.0;
+        last = sim -> max_time * pct;
+      }
+      else
+      {
+        last = timespan_t::from_seconds( std::stod( last_str ) );
+      }
 
-    if ( last.total_seconds() < 0 )
-      last = timespan_t::zero();
+      if ( last < timespan_t::zero() )
+      {
+        throw std::invalid_argument("last= option cannot be negative: {}");
+      }
+    }
+    catch (const std::exception& ex)
+    {
+      throw std::invalid_argument(fmt::format("Canot parse last= option: {}", ex.what()));
+    }
   }
 }
 
@@ -1262,7 +1304,7 @@ std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim,
   if ( name == "damage_taken_debuff" ) return std::unique_ptr<raid_event_t>(new damage_taken_debuff_event_t( sim, options_str ));
   if ( name == "damage_done_buff"    ) return std::unique_ptr<raid_event_t>(new    damage_done_buff_event_t( sim, options_str ));
 
-  return std::unique_ptr<raid_event_t>();
+  throw std::invalid_argument(fmt::format("Invalid raid event type '{}'.", name));
 }
 
 // raid_event_t::init =======================================================
@@ -1271,12 +1313,12 @@ void raid_event_t::init( sim_t* sim )
 {
   std::vector<std::string> splits = util::string_split( sim -> raid_events_str, "/\\" );
 
-  for ( size_t i = 0; i < splits.size(); i++ )
+  for ( const auto& split : splits )
   {
-    std::string name = splits[ i ];
+    std::string name = split;
     std::string options = "";
 
-    if ( sim -> debug ) sim -> out_debug.printf( "Creating raid event: %s", name.c_str() );
+    sim -> print_debug("Creating raid event '{}'.", name );
 
     std::string::size_type cut_pt = name.find_first_of( "," );
 
@@ -1285,29 +1327,26 @@ void raid_event_t::init( sim_t* sim )
       options = name.substr( cut_pt + 1 );
       name    = name.substr( 0, cut_pt );
     }
-
-    auto raid_event = create( sim, name, options );
-
-    if ( ! raid_event )
+    try
     {
-      sim -> errorf( "Unknown raid event: %s\n", splits[ i ].c_str() );
-      sim -> cancel();
-      continue;
+      auto raid_event = create(sim, name, options);
+
+      if (raid_event->cooldown <= timespan_t::zero()) {
+        throw std::invalid_argument("Cooldown not set or negative.");
+      }
+      if (raid_event->cooldown <= raid_event->cooldown_stddev) {
+        throw std::invalid_argument("Cooldown lower than cooldown standard deviation.");
+      }
+
+      sim ->print_debug("Successfully created '{}'.", *(raid_event.get()));
+      sim->raid_events.push_back(std::move(raid_event));
     }
-
-    if ( raid_event -> cooldown == timespan_t::zero() )
-    {
-      continue;
+    catch (const std::exception& ex) {
+      sim->error("Could not create raid event from '{}': {}", split, ex.what());
+      sim->cancel();
     }
-
-    assert( raid_event -> cooldown > timespan_t::zero() );
-    assert( raid_event -> cooldown > raid_event -> cooldown_stddev );
-
-    sim -> raid_events.push_back( std::move(raid_event) );
   }
 }
-
-// raid_event_t::reset ======================================================
 
 void raid_event_t::reset( sim_t* sim )
 {
@@ -1317,8 +1356,6 @@ void raid_event_t::reset( sim_t* sim )
   }
 }
 
-// raid_event_t::combat_begin ===============================================
-
 void raid_event_t::combat_begin( sim_t* sim )
 {
   for ( auto& raid_event : sim -> raid_events )
@@ -1327,10 +1364,9 @@ void raid_event_t::combat_begin( sim_t* sim )
   }
 }
 
-/* This (virtual) function filters players which shouldn't be added to the
- * affected_players list.
+/**
+ * Filter players which shouldn't be added to the affected_players list.
  */
-
 bool raid_event_t::filter_player( const player_t* p )
 {
   if ( distance_min &&
@@ -1353,19 +1389,26 @@ bool raid_event_t::filter_player( const player_t* p )
   return false;
 }
 
-double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type, std::string& filter )
+double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type_or_name, std::string& filter )
 {
   // correct for "damage" type event
-  if ( util::str_compare_ci( type, "damage" ) )
-    type = "raid_damage_";
+  if ( util::str_compare_ci( type_or_name, "damage" ) )
+    type_or_name = "raid_damage_";
 
   // filter the list for raid events that match the type requested
-  std::vector<raid_event_t*> matching_type;
-  for ( const auto& raid_event : s -> raid_events )
-    if ( util::str_prefix_ci( raid_event -> name(), type ) )
-      matching_type.push_back( raid_event.get() );
+  std::vector<raid_event_t*> matching_events;
 
-  if ( matching_type.empty() )
+  // Add all raid event which match type or name
+  for ( const auto& raid_event : s -> raid_events )
+  {
+    if ( util::str_prefix_ci( raid_event -> type, type_or_name ) )
+      matching_events.push_back( raid_event.get() );
+
+    if ( util::str_prefix_ci( raid_event -> name, type_or_name ) )
+      matching_events.push_back( raid_event.get() );
+  }
+
+  if ( matching_events.empty() )
   {
     if ( util::str_compare_ci( filter, "in" ) || util::str_compare_ci( filter, "cooldown" ) )
       return 1.0e10; // ridiculously large number
@@ -1380,10 +1423,10 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type
   raid_event_t* e = 0;
   timespan_t time_to_event = timespan_t::from_seconds( -1 );
 
-  for ( size_t i = 0; i < matching_type.size(); i++ )
-    if ( time_to_event < timespan_t::zero() || matching_type[ i ] -> next_time() - s -> current_time() < time_to_event )
+  for ( size_t i = 0; i < matching_events.size(); i++ )
+    if ( time_to_event < timespan_t::zero() || matching_events[ i ] -> next_time() - s -> current_time() < time_to_event )
     {
-    e = matching_type[ i ];
+    e = matching_events[ i ];
     time_to_event = e -> next_time() - s -> current_time();
     }
   if ( e == 0 )
@@ -1403,14 +1446,39 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type
   else if ( util::str_compare_ci( filter, "min_distance" ) )
     return e -> min_distance();
   else if ( util::str_compare_ci( filter, "amount" ) )
-    return dynamic_cast<damage_event_t*>( e ) -> amount;
+  {
+    if (auto dmg_event = dynamic_cast<damage_event_t*>( e ))
+    {
+      return dmg_event -> amount;
+    }
+    else
+    {
+      throw std::invalid_argument(fmt::format("Invalid raid event expression '{}' for non-damage raid event '{}'.",
+          filter, type_or_name));
+    }
+  }
   else if ( util::str_compare_ci( filter, "to_pct" ) )
-    return dynamic_cast<heal_event_t*>( e ) -> to_pct;
+  {
+    if (auto heal_event = dynamic_cast<heal_event_t*>( e ))
+    {
+      return heal_event -> to_pct;
+    }
+  }
   else if ( util::str_compare_ci( filter, "count" ) )
-    return dynamic_cast<adds_event_t*>( e ) -> count;
+  {
+    if (auto adds_event = dynamic_cast<adds_event_t*>( e ))
+    {
+      return adds_event -> count;
+    }
+  }
 
   // if we have no idea what filter they've specified, return 0
   // todo: should this generate an error or something instead?
-  else
-    return 0.0;
+  return 0.0;
+}
+
+std::ostream& operator<<(std::ostream& os, const raid_event_t& r)
+{
+  os << fmt::format("Raid event (type={} name={})", r.type, r.name );
+  return os;
 }

@@ -30,7 +30,7 @@ T21_Generate_Hunter.simc
 T21_Generate_Mage.simc
 
 # Monk
-T21_Generate_Monk.simc
+#T21_Generate_Monk.simc
 
 # Paladin
 T21_Generate_Paladin.simc
@@ -42,10 +42,12 @@ T21_Generate_Priest.simc
 T21_Generate_Rogue.simc
 
 # Shaman
-#T21_Generate_Shaman.simc
+T21_Generate_Shaman.simc
 
 # Warlock
 T21_Generate_Warlock.simc
 
 # Warrior
-#T21_Generate_Warrior.simc
+T21_Generate_Warrior.simc
+
+save_profile_with_actions=0

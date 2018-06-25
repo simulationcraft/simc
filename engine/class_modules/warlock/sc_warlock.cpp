@@ -6,7 +6,14 @@ namespace warlock
   namespace pets
   {
     warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ) :
-      pet_t( sim, owner, pet_name, pt, guardian ), special_action( nullptr ), special_action_two( nullptr ), melee_attack( nullptr ), summon_stats( nullptr ), ascendance( nullptr )
+      pet_t( sim, owner, pet_name, pt, guardian ),
+      special_action( nullptr ),
+      special_action_two( nullptr ),
+      melee_attack( nullptr ),
+      summon_stats( nullptr ),
+      ascendance( nullptr ),
+      buffs(),
+      active()
     {
       owner_coeff.ap_from_sp = 0.5;
       owner_coeff.sp_from_sp = 1.0;
@@ -94,8 +101,6 @@ namespace warlock
 
         main_hand_weapon.swing_time = timespan_t::from_seconds(3.0);
         melee_attack = new warlock_pet_melee_t(this);
-        if (!util::str_compare_ci(name_str, "service_succubus"))
-          special_action = new whiplash_t(this);
       }
 
       action_t* succubus_pet_t::create_action(const std::string& name, const std::string& options_str)
@@ -222,6 +227,10 @@ namespace warlock
       if (o()->specialization() == WARLOCK_DEMONOLOGY)
       {
         m *= 1.0 + o()->cache.mastery_value();
+        if (o()->buffs.demonic_power->check())
+        {
+          m *= 1.0 + o()->buffs.demonic_power->default_value;
+        }
       }
 
       if ( buffs.rage_of_guldan->check() )
@@ -234,9 +243,6 @@ namespace warlock
 
       m *= 1.0 + o()->buffs.sindorei_spite->check_stack_value();
       m *= 1.0 + o()->buffs.lessons_of_spacetime->check_stack_value();
-
-      if ( buffs.demonic_power -> check() )
-        m *= 1.0 + ( buffs.demonic_power -> default_value );
 
       return m;
     }
@@ -357,14 +363,6 @@ namespace warlock
 
         p()->buffs.demonic_speed->trigger();
 
-        if (p()->talents.sacrificed_souls->ok())
-        {
-          for (int i = 0; i < last_resource_cost; i++)
-          {
-            p()->buffs.sacrificed_souls->trigger();
-          }
-        }
-
         if (p()->talents.grimoire_of_supremacy->ok())
         {
           for (auto& infernal : p()->warlock_pet_list.infernals)
@@ -375,11 +373,25 @@ namespace warlock
             }
           }
         }
+
+        if (p()->buffs.nether_portal->up())
+        {
+          p()->active.summon_random_demon->execute();
+          p()->buffs.portal_summons->trigger();
+          p()->procs.portal_summon->occur();
+        }
+
+        if (p()->talents.soul_fire->ok())
+        {
+          p()->cooldowns.soul_fire->adjust(-1 * p()->talents.soul_fire->effectN(2).time_value());
+        }
       }
     }
 
     struct drain_life_t : public warlock_spell_t
     {
+      double inevitable_demise;
+
       drain_life_t( warlock_t* p, const std::string& options_str ) :
         warlock_spell_t( p, "Drain Life" )
       {
@@ -387,6 +399,20 @@ namespace warlock
         channeled = true;
         hasted_ticks = false;
         may_crit = false;
+      }
+
+      double bonus_ta(const action_state_t* s) const override
+      {
+        double ta = warlock_spell_t::bonus_ta(s);
+        ta += inevitable_demise;
+        return ta;
+      }
+
+      void execute() override
+      {
+        inevitable_demise = p()->buffs.inevitable_demise->check_stack_value();
+        warlock_spell_t::execute();
+        p()->buffs.inevitable_demise->expire();
       }
     };
 
@@ -463,6 +489,7 @@ namespace warlock
     {
       dots_unstable_affliction[i] = target->get_dot("unstable_affliction_" + std::to_string(i + 1), &p);
     }
+    dots_drain_soul = target->get_dot("drain_soul", &p);
     dots_phantom_singularity = target->get_dot("phantom_singularity", &p);
     dots_siphon_life = target->get_dot("siphon_life", &p);
     dots_seed_of_corruption = target->get_dot("seed_of_corruption", &p);
@@ -492,6 +519,7 @@ namespace warlock
 
     //Demo
     dots_doom = target->get_dot("doom", &p);
+    dots_doom = target->get_dot("umbral_blaze", &p);
 
     debuffs_jaws_of_shadow = make_buff( *this, "jaws_of_shadow", source->find_spell( 242922 ) );
     debuffs_from_the_shadows = make_buff(*this, "from_the_shadows", source->find_spell(270569));
@@ -520,6 +548,11 @@ namespace warlock
           break;
         }
       }
+
+      if (dots_drain_soul->is_ticking())
+      {
+        warlock.resource_gain(RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul);
+      }
     }
 
     if ( debuffs_haunt->check() )
@@ -540,6 +573,7 @@ namespace warlock
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
   player_t( sim, WARLOCK, name, r ),
     havoc_target( nullptr ),
+    wracking_brilliance(false),
     agony_accumulator( 0.0 ),
     warlock_pet_list(),
     active(),
@@ -554,13 +588,16 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     spells(),
     initial_soul_shards( 3 ),
     allow_sephuz( false ),
+    deaths_embrace_fixed_time(),
     default_pet(),
     shard_react( timespan_t::zero() )
   {
     cooldowns.haunt = get_cooldown( "haunt" );
     cooldowns.shadowburn = get_cooldown("shadowburn");
+    cooldowns.soul_fire = get_cooldown("soul_fire");
     cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
     cooldowns.call_dreadstalkers = get_cooldown("call_dreadstalkers");
+    cooldowns.darkglare = get_cooldown("summon_darkglare");
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -636,11 +673,6 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  // The warlock benefits from demonic power as well, even though this is not mentioned in the tooltip/description.
-  // Confirmed 2018-04-05 by Pip.
-  if ( buffs.demonic_power -> check() )
-    m *= 1.0 + buffs.demonic_power -> default_value;
-
   if ( legendary.stretens_insanity )
     m *= 1.0 + buffs.stretens_insanity->check() * buffs.stretens_insanity->data().effectN( 1 ).percent();
 
@@ -659,7 +691,7 @@ double warlock_t::composite_spell_crit_chance() const
   double sc = player_t::composite_spell_crit_chance();
 
   if (buffs.dark_soul_instability->check())
-    sc *= 1.0 / (1.0 + buffs.dark_soul_instability->check_value());
+    sc += buffs.dark_soul_instability->check_value();
 
   return sc;
 }
@@ -730,7 +762,7 @@ double warlock_t::composite_melee_crit_chance() const
   double mc = player_t::composite_melee_crit_chance();
 
   if (buffs.dark_soul_instability->check())
-    mc *= 1.0 / (1.0 + buffs.dark_soul_instability->check_value());
+    mc += buffs.dark_soul_instability->check_value();
 
   return mc;
 }
@@ -782,7 +814,7 @@ action_t* warlock_t::create_action( const std::string& action_name, const std::s
 {
   using namespace actions;
 
-  if ( ( action_name == "summon_pet" || action_name == "service_pet" ) && default_pet.empty() ) {
+  if ( ( action_name == "summon_pet" ) && default_pet.empty() ) {
     sim->errorf( "Player %s used a generic pet summoning action without specifying a default_pet.\n", name() );
     return nullptr;
   }
@@ -832,17 +864,13 @@ pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& /*
   if ( p ) return p;
   using namespace pets;
 
-  if ( pet_name == "felhunter"          ) return new                felhunter::felhunter_pet_t( sim, this );
-  if ( pet_name == "imp"                ) return new                            imp::imp_pet_t( sim, this );
-  if ( pet_name == "succubus"           ) return new                  succubus::succubus_pet_t( sim, this );
-  if ( pet_name == "voidwalker"         ) return new              voidwalker::voidwalker_pet_t( sim, this );
-  if ( pet_name == "felguard"           ) return new                  felguard::felguard_pet_t( sim, this );
+  if ( pet_name == "felhunter"          )   return new                felhunter::felhunter_pet_t( sim, this );
+  if ( pet_name == "imp"                )   return new                            imp::imp_pet_t( sim, this );
+  if ( pet_name == "succubus"           )   return new                  succubus::succubus_pet_t( sim, this );
+  if ( pet_name == "voidwalker"         )   return new              voidwalker::voidwalker_pet_t( sim, this );
+  if ( pet_name == "felguard"           )   return new                  felguard::felguard_pet_t( sim, this );
 
-  if ( pet_name == "service_felhunter"  ) return new      felhunter::felhunter_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_imp"        ) return new                  imp::imp_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_succubus"   ) return new        succubus::succubus_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_voidwalker" ) return new    voidwalker::voidwalker_pet_t( sim, this, pet_name );
-  if ( pet_name == "service_felguard"   ) return new        felguard::felguard_pet_t( sim, this, pet_name );
+  if ( pet_name == "grimoire_felguard"   )  return new        felguard::felguard_pet_t( sim, this, pet_name );
 
   return nullptr;
 }
@@ -1056,6 +1084,7 @@ void warlock_t::init_procs()
   procs.one_shard_hog                   = get_proc( "one_shard_hog" );
   procs.two_shard_hog                   = get_proc( "two_shard_hog" );
   procs.three_shard_hog                 = get_proc( "three_shard_hog" );
+  procs.portal_summon                   = get_proc( "portal_summon" );
   procs.demonic_calling                 = get_proc( "demonic_calling" );
   procs.power_trip                      = get_proc( "power_trip" );
   procs.soul_conduit                    = get_proc( "soul_conduit" );
@@ -1101,15 +1130,16 @@ void warlock_t::apl_precombat()
   precombat->add_action( "flask" );
   precombat->add_action( "food" );
   precombat->add_action( "augmentation" );
-  if (specialization() == WARLOCK_DEMONOLOGY)
-    precombat->add_action("inner_demons,if=talent.inner_demons.enabled&!buff.inner_demons.remains");
-
   precombat->add_action("summon_pet");
+  if (specialization() == WARLOCK_DEMONOLOGY)
+    precombat->add_action("inner_demons,if=talent.inner_demons.enabled");
 
   precombat->add_action( "snapshot_stats" );
 
   if (specialization() != WARLOCK_DEMONOLOGY)
     precombat->add_action("grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled");
+  if (specialization() == WARLOCK_DEMONOLOGY)
+    precombat->add_action("demonbolt");
 
   if ( sim -> allow_potions )
   {
@@ -1243,7 +1273,7 @@ std::string warlock_t::create_profile( save_e stype )
 {
   std::string profile_str = player_t::create_profile( stype );
 
-  if ( stype == SAVE_ALL )
+  if ( stype & SAVE_PLAYER )
   {
     if ( initial_soul_shards != 3 )    profile_str += "soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
     if ( !default_pet.empty() )        profile_str += "default_pet=" + default_pet + "\n";
@@ -1261,6 +1291,7 @@ void warlock_t::copy_from( player_t* source )
 
   initial_soul_shards = p->initial_soul_shards;
   allow_sephuz = p->allow_sephuz;
+  deaths_embrace_fixed_time = p->deaths_embrace_fixed_time;
   default_pet = p->default_pet;
 }
 
@@ -1310,6 +1341,58 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
             }
           }
           return t;});
+  }
+  else if (name_str == "last_cast_imps")
+  {
+    struct wild_imp_last_cast_expression_t : public expr_t
+    {
+      warlock_t& player;
+
+      wild_imp_last_cast_expression_t(warlock_t& p) :
+        expr_t("last_cast_imps"), player(p) { }
+
+      virtual double evaluate() override
+      {
+        int t = 0;
+        for (auto& imp : player.warlock_pet_list.wild_imps)
+        {
+          if (!imp->is_sleeping())
+          {
+            if (imp->resources.current[RESOURCE_ENERGY] <= 20)
+              t++;
+          }
+        }
+        return t;
+      }
+    };
+
+    return new wild_imp_last_cast_expression_t(*this);
+  }
+  else if (name_str == "two_cast_imps")
+  {
+    struct wild_imp_two_cast_expression_t : public expr_t
+    {
+      warlock_t& player;
+
+      wild_imp_two_cast_expression_t(warlock_t& p) :
+        expr_t("two_cast_imps"), player(p) { }
+
+      virtual double evaluate() override
+      {
+        int t = 0;
+        for (auto& imp : player.warlock_pet_list.wild_imps)
+        {
+          if (!imp->is_sleeping())
+          {
+            if (imp->resources.current[RESOURCE_ENERGY] <= 40)
+              t++;
+          }
+        }
+        return t;
+      }
+    };
+
+    return new wild_imp_two_cast_expression_t(*this);
   }
 
   return player_t::create_expression( name_str );

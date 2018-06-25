@@ -10,6 +10,17 @@
 // Enumerations =============================================================
 // annex _e to enumerations
 
+// Attack power computation modes for Battle for Azeroth+
+enum attack_power_e : unsigned
+{
+  AP_WEAPON_MH = 0,     /// Default mode, Attack power is a composite of power and mainhand weapon dps
+  AP_WEAPON_OH,         /// Attack power is a composite of power and offhand weapon dps
+  AP_WEAPON_BOTH,       /// Attack power is a composite of power and both weapon dps
+  AP_NO_WEAPON,         /// Attack power is purely based on player power (main stat)
+  AP_DEFAULT = AP_WEAPON_MH,
+};
+
+
 // Retargeting request event sources. Context in ACTOR_ is the actor that triggered the event
 enum retarget_event_e
 {
@@ -32,6 +43,8 @@ enum
   MAX_GEM_SLOTS = 4, /// Global maximum number of gem slots in any specific item
 
   WEAPON_POWER_COEFFICIENT = 6, // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
+
+  MAX_AZERITE_LEVEL = 300, // Maximum Azerite level (for Heart of Azeroth) at the start of Battle for Azeroth
 };
 
 // Azerite control
@@ -1096,14 +1109,14 @@ enum role_e
   ROLE_MAX
 };
 
-enum save_e
+enum save_e : unsigned
 {
   // Specifies the type of profile data to be saved
-  SAVE_ALL = 0,
-  SAVE_GEAR,
-  SAVE_TALENTS,
-  SAVE_ACTIONS,
-  SAVE_MAX
+  SAVE_GEAR = 0x1,
+  SAVE_TALENTS = 0x2,
+  SAVE_ACTIONS = 0x4,
+  SAVE_PLAYER = 0x8,
+  SAVE_ALL = SAVE_GEAR | SAVE_TALENTS | SAVE_ACTIONS | SAVE_PLAYER,
 };
 
 enum power_e

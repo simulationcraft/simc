@@ -449,6 +449,54 @@ struct holy_avenger_t : public paladin_heal_t
     }
 };
 
+// Judgment - Holy =================================================================
+
+struct judgment_holy_t : public paladin_melee_attack_t
+{
+  judgment_holy_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "judgment", p, p -> find_specialization_spell( "Judgment" ) )
+  {
+    parse_options( options_str );
+
+    // no weapon multiplier
+    weapon_multiplier = 0.0;
+    may_block = may_parry = may_dodge = false;
+    cooldown -> charges = 1;
+
+    base_multiplier *= 1.0 + p -> passives.holy_paladin -> effectN( 6 ).percent();
+  }
+
+  virtual void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p() -> talents.fist_of_justice -> ok() )
+    {
+      double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
+      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+    }
+  }
+
+  proc_types proc_type() const override
+  {
+    return PROC1_MELEE_ABILITY;
+  }
+
+  // Special things that happen when Judgment damages target
+  void impact( action_state_t* s ) override
+  {
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> buffs.debuffs_judgment -> trigger();
+
+      if ( p() -> talents.judgment_of_light -> ok() )
+        td( s -> target ) -> buffs.judgment_of_light -> trigger( 40 );
+    }
+
+    paladin_melee_attack_t::impact( s );
+  }
+};
+
 // Light's Hammer =============================================================
 
 struct lights_hammer_damage_tick_t : public paladin_spell_t
@@ -583,6 +631,11 @@ action_t* paladin_t::create_action_holy( const std::string& name, const std::str
   if ( name == "holy_shock"                ) return new holy_shock_t               ( this, options_str );
   if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
   if ( name == "lights_hammer"             ) return new lights_hammer_t            ( this, options_str );
+
+  if ( specialization() == PALADIN_HOLY )
+  {
+    if ( name == "judgment") return new judgment_holy_t( this, options_str );
+  }
 
   return nullptr;
 }

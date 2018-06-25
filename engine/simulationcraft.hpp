@@ -280,7 +280,8 @@ private:
 struct raid_event_t : private noncopyable
 {
   sim_t* sim;
-  std::string name_str;
+  std::string name;
+  std::string type;
   int64_t num_starts;
   timespan_t first, last, next;
   timespan_t cooldown;
@@ -336,9 +337,9 @@ public:
   static void reset( sim_t* );
   static void combat_begin( sim_t* );
   static void combat_end( sim_t* ) {}
-  const char* name() const { return name_str.c_str(); }
   static double evaluate_raid_event_expression(sim_t* s, std::string& type, std::string& filter );
 };
+std::ostream& operator<<(std::ostream&, const raid_event_t&);
 
 // Gear Stats ===============================================================
 
@@ -792,10 +793,10 @@ struct sc_raw_ostream_t {
   sc_raw_ostream_t & operator<< (T const& rhs)
   { (*_stream) << rhs; return *this; }
 
-  template<typename... Args>
-  sc_raw_ostream_t& printf(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  sc_raw_ostream_t& printf(Format&& format, Args&& ... args)
   {
-    fmt::fprintf(*get_stream(), format, std::forward<Args>(args)... );
+    fmt::fprintf(*get_stream(), std::forward<Format>(format), std::forward<Args>(args)... );
     return *this;
   }
 
@@ -835,16 +836,16 @@ struct sim_ostream_t
   template <class T>
   sim_ostream_t & operator<< (T const& rhs);
 
-  template<typename... Args>
-  sim_ostream_t& printf(fmt::CStringRef format, Args&& ... args);
+  template<typename Format, typename... Args>
+  sim_ostream_t& printf(Format&& format, Args&& ... args);
 
   /**
    * Print using fmt libraries python-like formatting syntax.
    */
-  template<typename... Args>
-  sim_ostream_t& print(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  sim_ostream_t& print(Format&& format, Args&& ... args)
   {
-    *this << fmt::format(format, std::forward<Args>(args)... );
+    *this << fmt::format(std::forward<Format>(format), std::forward<Args>(args)... );
     return *this;
   }
 private:
@@ -919,6 +920,7 @@ struct sim_t : private sc_thread_t
   int current_iteration, iterations;
   bool canceled;
   double target_error;
+  role_e target_error_role;
   double current_error;
   double current_mean;
   int analyze_error_interval, analyze_number;
@@ -963,7 +965,9 @@ struct sim_t : private sc_thread_t
   int         current_slot;
   int         optimal_raid, log, debug_each;
   std::vector<uint64_t> debug_seed;
-  int         save_profiles, default_actions;
+  bool        save_profiles;
+  bool        save_profile_with_actions; // When saving full profiles, include actions or not
+  bool        default_actions;
   stat_e      normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str, save_suffix_str;
   int         save_talent_str;
@@ -1124,7 +1128,6 @@ struct sim_t : private sc_thread_t
   std::vector<std::string> id_dictionary;
   std::map<double, std::vector<double> > divisor_timeline_cache;
   std::string output_file_str, html_file_str, json_file_str;
-  std::string xml_file_str, xml_stylesheet_file_str;
   std::string reforge_plot_output_file_str;
   std::vector<std::string> error_list;
   int report_precision;
@@ -1332,13 +1335,13 @@ struct sim_t : private sc_thread_t
   /**
    * Create error with printf formatting.
    */
-  template<typename... Args>
-  void errorf(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  void errorf(Format&& format, Args&& ... args)
   {
     if ( thread_index != 0 )
       return;
 
-    auto s = fmt::sprintf(format, std::forward<Args>(args)... );
+    auto s = fmt::sprintf(std::forward<Format>(format), std::forward<Args>(args)... );
     util::replace_all( s, "\n", "" );
     std::cerr << s << "\n";
 
@@ -1348,13 +1351,13 @@ struct sim_t : private sc_thread_t
   /**
    * Create error using fmt libraries python-like formatting syntax.
    */
-  template<typename... Args>
-  void error(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  void error(Format&& format, Args&& ... args)
   {
     if ( thread_index != 0 )
       return;
 
-    auto s = fmt::format(format, std::forward<Args>(args)... );
+    auto s = fmt::format(std::forward<Format>(format), std::forward<Args>(args)... );
     util::replace_all( s, "\n", "" );
     std::cerr << s << "\n";
 
@@ -1401,13 +1404,13 @@ struct sim_t : private sc_thread_t
    * Checks if sim debug is enabled.
    * Print using fmt libraries python-like formatting syntax.
    */
-  template<typename... Args>
-  void print_debug(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  void print_debug(Format&& format, Args&& ... args)
   {
     if ( ! debug )
       return;
 
-    out_debug.print(format, std::forward<Args>(args)... );
+    out_debug.print(std::forward<Format>(format), std::forward<Args>(args)... );
   }
 
   /**
@@ -1416,13 +1419,13 @@ struct sim_t : private sc_thread_t
    * Checks if sim logging is enabled.
    * Print using fmt libraries python-like formatting syntax.
    */
-  template<typename... Args>
-  void print_log(fmt::CStringRef format, Args&& ... args)
+  template<typename Format, typename... Args>
+  void print_log(Format&& format, Args&& ... args)
   {
     if ( ! log )
       return;
 
-    out_log.print(format, std::forward<Args>(args)... );
+    out_log.print(std::forward<Format>(format), std::forward<Args>(args)... );
   }
 private:
   void do_pause();
@@ -2143,6 +2146,7 @@ struct item_t
     unsigned                                         enchant_id;
     unsigned                                         addon_id;
     int                                              armor;
+    unsigned                                         azerite_level;
     std::array<int, MAX_ITEM_STAT>                   stat_val;
     std::array<int, MAX_GEM_SLOTS>                   gem_id;
     std::array<int, MAX_GEM_SLOTS>                   gem_color;
@@ -2165,7 +2169,7 @@ struct item_t
 
     parsed_input_t() :
       item_level( 0 ), upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ),
-      armor( 0 ), data(), initial_cd( timespan_t::zero() ), drop_level( 0 )
+      armor( 0 ), azerite_level( 0 ), data(), initial_cd( timespan_t::zero() ), drop_level( 0 )
     {
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_alloc, 0 );
@@ -2212,6 +2216,7 @@ struct item_t
   std::string option_relic_id_str;
   std::string option_relic_ilevel_str;
   std::string option_azerite_powers_str;
+  std::string option_azerite_level_str;
   double option_initial_cd;
 
   // Extracted data
@@ -2249,7 +2254,6 @@ struct item_t
   bool has_item_stat( stat_e stat ) const;
 
   std::string encoded_item() const;
-  void encoded_item( xml_writer_t& writer );
   std::string encoded_comment();
 
   std::string encoded_stats() const;
@@ -2439,21 +2443,14 @@ struct set_bonus_t
   // Fast accessor to a set bonus spell, returns the spell, or spell_data_t::not_found()
   const spell_data_t* set( specialization_e spec, set_bonus_type_e set_bonus, set_bonus_e bonus ) const
   {
-#ifdef NDEBUG
-    switch ( set_bonus )
+    if ( specdata::spec_idx( spec ) < 0 )
     {
-      case PVP:
-      case T17LFR:
-      case T18LFR:
-      case T17:
-      case T18:
-      case T19:
-      case T20:
-      case T21:
-        break;
-      default:
-        assert( 0 && "Attempt to access role-based set bonus through specialization." );
+      return spell_data_t::nil();
     }
+#ifndef NDEBUG
+    assert(set_bonus_spec_data.size() > (unsigned)set_bonus );
+    assert(set_bonus_spec_data[ set_bonus ].size() > (unsigned)specdata::spec_idx( spec ) );
+    assert(set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( spec ) ].size() > (unsigned)bonus );
 #endif
     return set_bonus_spec_data[ set_bonus ][ specdata::spec_idx( spec ) ][ bonus ].spell;
   }
@@ -3395,7 +3392,7 @@ struct player_t : public actor_t
     rating_t rating;
 
     std::array<double, ATTRIBUTE_MAX> attribute_multiplier;
-    double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
+    double spell_power_multiplier, attack_power_multiplier, base_armor_multiplier, armor_multiplier;
     position_e position;
   }
   base, // Base values, from some database or overridden by user
@@ -3836,6 +3833,7 @@ struct player_t : public actor_t
   const spell_data_t* find_specialization_spell( unsigned spell_id, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_mastery_spell( specialization_e s, uint32_t idx = 0 ) const;
   const spell_data_t* find_spell( const std::string& name, specialization_e s = SPEC_NONE ) const;
+  const spell_data_t* find_spell( unsigned int id, specialization_e s ) const;
   const spell_data_t* find_spell( unsigned int id ) const;
 
   pet_t*      find_pet( const std::string& name ) const;
@@ -3929,6 +3927,7 @@ struct player_t : public actor_t
   virtual double composite_melee_haste() const;
   virtual double composite_melee_speed() const;
   virtual double composite_melee_attack_power() const;
+  virtual double composite_melee_attack_power( attack_power_e type ) const;
   virtual double composite_melee_hit() const;
   virtual double composite_melee_crit_chance() const;
   virtual double composite_melee_crit_chance_multiplier() const
@@ -3943,7 +3942,6 @@ struct player_t : public actor_t
   virtual double composite_spell_hit() const;
   virtual double composite_mastery() const;
   virtual double composite_mastery_value() const;
-  virtual double composite_bonus_armor() const;
   virtual double composite_damage_versatility() const;
   virtual double composite_heal_versatility() const;
   virtual double composite_mitigation_versatility() const;
@@ -3951,7 +3949,9 @@ struct player_t : public actor_t
   virtual double composite_run_speed() const;
   virtual double composite_avoidance() const;
   virtual double composite_armor() const;
-  virtual double composite_armor_multiplier() const;
+  virtual double composite_bonus_armor() const;
+  virtual double composite_base_armor_multiplier() const; // Modify Base Besistance
+  virtual double composite_armor_multiplier() const; // Modify Armor%, affects everything
   virtual double composite_miss() const;
   virtual double composite_dodge() const;
   virtual double composite_parry() const;
@@ -4073,6 +4073,7 @@ struct player_t : public actor_t
   virtual void dismiss_pet( const std::string& name );
 
   virtual expr_t* create_expression( const std::string& name );
+  virtual expr_t* create_action_expression( action_t&, const std::string& name );
 
   virtual void create_options();
   void recreate_talent_str( talent_format_e format = TALENT_FORMAT_NUMBERS );
@@ -4134,7 +4135,7 @@ struct player_t : public actor_t
 
   virtual void acquire_target( retarget_event_e /* event */, player_t* /* context */ = nullptr );
 
-  // Default consumable methods
+  // Various default values for the actor
   virtual std::string default_potion() const
   { return ""; }
   virtual std::string default_flask() const
@@ -4143,6 +4144,16 @@ struct player_t : public actor_t
   { return ""; }
   virtual std::string default_rune() const
   { return ""; }
+
+  /**
+   * Default attack power type to use for value computation.
+   *
+   * Defaults to BfA "new style" base_power + mh_weapon_dps * coefficient, can be overridden in
+   * class modules. Used by actions as a "last resort" to determine what attack power type drives
+   * the value calculation of the ability.
+   */
+  virtual attack_power_e default_ap_type() const
+  { return AP_DEFAULT; }
 
   // JSON Report extension. Overridable in class methods. Root element is an object assigned for
   // each JSON player object under "custom" property.
@@ -4791,6 +4802,9 @@ public:
   /// Used with tick_action, tells tick_action to update state on every tick.
   bool dynamic_tick_action;
 
+  /// Type of attack power used by the ability
+  attack_power_e ap_type;
+
   /// Did a channel action have an interrupt_immediate used to cancel it on it
   bool interrupt_immediate_occurred;
 
@@ -4975,7 +4989,7 @@ public:
   double last_resource_cost;
 
   /** Last available number of targets effectively hit */
-  unsigned num_targets_hit;
+  int num_targets_hit;
 
   /** Marker for sample action priority list reporting */
   char marker;
@@ -5333,24 +5347,11 @@ public:
   virtual double composite_haste() const
   { return 1.0; }
 
+  virtual attack_power_e attack_power_type() const
+  { return ap_type; }
+
   virtual double composite_attack_power() const
-  {
-    // BfA has added inherited attack power from WDPS for almost all attacks in the game
-    // This bonus is equal to 6x the WDPS of the weapon, and applies to anything using AP
-    // However, WDPS-based attacks or auto-attacks do not benefit from this bonus AP
-    if ( weapon_multiplier == 0 )
-    {
-      // All spells use the main-hand WDPS by default if one is not specifically assigned
-      // Otherwise use the assigned weapon so that OH attacks are calculated correctly
-      const weapon_t* w = ( weapon == nullptr ) ? &player->main_hand_weapon : weapon;
-      if ( w )
-      {
-        return player->cache.attack_power() + ( w->dps * WEAPON_POWER_COEFFICIENT );
-      }
-    }
-    
-    return player->cache.attack_power();
-  }
+  { return player -> composite_melee_attack_power( attack_power_type() ); }
 
   virtual double composite_spell_power() const
   {
@@ -6067,7 +6068,7 @@ public:
   // action's supporting methods (action_t::tick_time, action_t::composite_dot_ruration), otherwise
   // bad things will happen.
   void   exsanguinate( double coefficient );
-  expr_t* create_expression( action_t* action, const std::string& name_str, bool dynamic );
+  static expr_t* create_expression( dot_t* dot, action_t* action, const std::string& name_str, bool dynamic );
 
   timespan_t remains() const;
   timespan_t time_to_next_tick() const;
@@ -7608,11 +7609,11 @@ sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)
   return *this;
 }
 
-template<typename... Args>
-sim_ostream_t& sim_ostream_t::printf(fmt::CStringRef format, Args&& ... args)
+template<typename Format, typename... Args>
+sim_ostream_t& sim_ostream_t::printf(Format&& format, Args&& ... args)
 {
   _raw << util::to_string( sim.current_time().total_seconds(), 3 ) << " ";
-  fmt::fprintf(*_raw.get_stream(), format, std::forward<Args>(args)... );
+  fmt::fprintf(*_raw.get_stream(), std::forward<Format>(format), std::forward<Args>(args)... );
   _raw << "\n";
   return *this;
 }

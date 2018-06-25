@@ -67,7 +67,6 @@ class SC_WebView;
 //class SC_SpellQueryTab;
 class SC_CommandLine;
 class SC_SimulateThread;
-class SC_AutomationTab;
 class SC_AddonImportTab;
 class SC_ImportThread;
 

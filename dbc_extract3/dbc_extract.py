@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 
-import argparse, sys, os, glob, logging, importlib
-
-from dbc.data import initialize_data_model
-from dbc.db import DataStore
-from dbc.file import DBCFile, HotfixFile
-from dbc.generator import CSVDataGenerator, DataGenerator
-from dbc.config import Config
+import argparse, sys, os, glob, logging, importlib, json
 
 try:
     from bitarray import bitarray
 except Exception as error:
     print('ERROR: %s, dbc_extract.py requires the Python bitarray (https://pypi.python.org/pypi/bitarray) package to function' % error, file = sys.stderr)
     sys.exit(1)
+
+from dbc.data import initialize_data_model
+from dbc.db import DataStore
+from dbc.file import DBCFile, HotfixFile
+from dbc.generator import CSVDataGenerator, DataGenerator
+from dbc.config import Config
 
 def parse_fields(value):
     return [ x.strip() for x in value.split(',') ]
@@ -26,7 +26,7 @@ parser.add_argument("-t", "--type", dest = "type",
                   help    = "Processing type [output]", metavar = "TYPE", 
                   default = "output", action = "store",
                   choices = [ 'output', 'scale', 'view', 'csv', 'header',
-                              'class_flags', 'generator' ])
+                              'class_flags', 'generator', 'validate', 'generate_format' ])
 parser.add_argument("-o",            dest = "output")
 parser.add_argument("-a",            dest = "append")
 parser.add_argument("--raw",         dest = "raw",          default = False, action = "store_true")
@@ -60,7 +60,7 @@ parser.add_argument("--fields",      dest = "fields", default = [],
 parser.add_argument("args", metavar = "ARGS", type = str, nargs = argparse.REMAINDER)
 options = parser.parse_args()
 
-if options.build == 0 and options.type != 'header':
+if options.build == 0 and options.type not in['header', 'generate_format']:
     parser.error('-b is a mandatory parameter for extraction type "%s"' % options.type)
 
 if options.min_ilevel < 0 or options.max_ilevel > 1300:
@@ -75,14 +75,36 @@ if options.type == 'view' and len(options.args) == 0:
 if options.type == 'header' and len(options.args) == 0:
     parser.error('Header parsing requires at least a single DBC file to parse it from')
 
+if options.type == 'parse' and len(options.args) < 2:
+    parser.error('Parse needs at least two options, the wow binary and at least one db2 file')
+
 if options.debug:
     logging.getLogger().setLevel(logging.DEBUG)
+
+if options.type in ['validate', 'generate_format']:
+    from dbc.pe import PeStructParser
 
 # Initialize the base model for dbc.data, creating the relevant classes for all patch levels
 # up to options.build
 initialize_data_model(options)
 
-if options.type == 'output':
+if options.type == 'validate':
+    p = PeStructParser(options, options.args[0], options.args[1:])
+    if not p.initialize():
+        sys.exit(1)
+
+    p.validate()
+
+elif options.type == 'generate_format':
+    p = PeStructParser(options, options.args[0], options.args[1:])
+    if not p.initialize():
+        sys.exit(1)
+
+    json_obj = p.generate()
+
+    json.dump(json_obj, fp = sys.stdout, indent = 2)
+
+elif options.type == 'output':
     if len(options.args) < 1:
         logging.error('Output type requires an output configuration file')
         sys.exit(1)
@@ -332,6 +354,7 @@ elif options.type == 'scale':
         'comment': '// Azerite level to item level 1 - %d, wow build %d\n' % (
             300, options.build),
         'values': [ 'Item Level' ],
+        'base_type': 'unsigned',
         'max_rows': 300
     })
     if not g.initialize():

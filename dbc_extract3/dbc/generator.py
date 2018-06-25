@@ -72,7 +72,7 @@ def output_hotfixes(generator, data_str, hotfix_data):
     generator._out.write('};\n\n')
 
 class CSVDataGenerator(object):
-    def __init__(self, options, csvs):
+    def __init__(self, options, csvs, base_type = None):
         self._options = options
         self._csv_options = {}
         if type(csvs) == dict:
@@ -93,7 +93,8 @@ class CSVDataGenerator(object):
             dimensions = '[][%d]' % self.max_rows(dbc)
         else:
             dimensions = '[%d]' % self.max_rows(dbc)
-        return 'static double _%s%s%s%s = {\n' % (
+        return 'static %s _%s%s%s%s = {\n' % (
+            self.base_type(dbc),
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self.struct_name(dbc),
             self._options.suffix and ('_%s' % self._options.suffix) or '',
@@ -189,6 +190,9 @@ class CSVDataGenerator(object):
 
     def dbname(self, csvfile):
         return '_' + csvfile.split('.')[0].lower().replace('-', '_') + '_db'
+
+    def base_type(self, file_):
+        return self._csv_options.get(file_, {}).get('base_type', 'double')
 
     def initialize(self):
         if self._options.output:
@@ -1143,7 +1147,7 @@ class SpellDataGenerator(DataGenerator):
          191259,
          # 7.1.5 Entwined Elemental Foci buffs
          225729, 225730,
-         # 7.1.5 Archimonde's Hatred Reborn damage spell 
+         # 7.1.5 Archimonde's Hatred Reborn damage spell
          235188,
          # 7.2.0 Dreadstone of Endless Shadows stat buffs
          238499, 238500, 238501,
@@ -1158,7 +1162,7 @@ class SpellDataGenerator(DataGenerator):
          # 7.3.0 Gorshalach's Legacy
          255672,
          # 7.3.0 Forgefiend's Fabricator
-         253322, 256025, 
+         253322, 256025,
          # 7.3.0 Riftworld Codex buffs and damage component
          252545, 251938, 256415, 252550,
          # 7.3.2 Norgannon pantheon "random school" nukes
@@ -1215,15 +1219,20 @@ class SpellDataGenerator(DataGenerator):
 
         # Hunter:
         (
+          ( 75, 0 ),     # Auto Shot
           ( 131900, 0 ), # Murder of Crows damage spell
-          ( 171457, 0 ), # Chimaera Shot - Nature
-          ( 217207, 0 ), # Dire Frenzy (pet)
-          ( 201594, 0 ), # Stampede
+          ( 171457, 1 ), # Chimaera Shot - Nature
+          ( 201594, 1 ), # Stampede
           ( 118459, 5 ), # Beast Cleave
           ( 257622, 2 ), # Trick Shots buff
           ( 269502, 2 ), ( 260395, 2 ), # Lethal Shots buffs
           ( 259516, 3 ), # Flanking Strike
           ( 267666, 3 ), # Chakrams
+          # Wildfire Infusion (Volatile Bomb spells)
+          ( 271048, 3 ), ( 271049, 3 ), ( 260231, 3 ),
+          ( 273289, 0 ), # Latent Poison (Azerite)
+          ( 272745, 0 ), # Wildfire Cluster (Azerite)
+          ( 278565, 0 ), # Rapid Reload (Azerite)
         ),
 
         # Rogue:
@@ -1262,7 +1271,8 @@ class SpellDataGenerator(DataGenerator):
             ( 193473, 5 ),			# Void Tendril "Mind Flay"
             ( 217676, 3 ),			# Mind Spike Detonation
             ( 194249, 3, False ),   # Void Form extra data
-            ( 212570, 3, False )    # Surrendered Soul (Surrender To Madness Death)
+            ( 212570, 3, False ),   # Surrendered Soul (Surrender To Madness Death)
+	    ( 269555, 3 ),          # Azerite Trait Torment of Torments
         ),
 
         # Death Knight:
@@ -1312,7 +1322,10 @@ class SpellDataGenerator(DataGenerator):
           ( 25504, 0, False ), ( 33750, 0, False ),     # Windfury passives are not directly activatable
           ( 8034, 0, False ),                           # Frostbrand false positive for activatable
           ( 145002, 0, False ),                         # Lightning Elemental nuke
-          ( 157348, 5 ), ( 157331, 5 ),                 # Storm elemental spells
+          ( 157348, 5 ), ( 157331, 5 ), ( 157375, 5 ),  # Storm elemental spells
+          ( 275382, 5 ),                                # Azerite trait 'Echo of the Elementals' Ember Elemental attack
+          ( 275386, 5 ),                                # Azerite trait Spark Elemental
+          ( 275384, 5 ),                                # Spark Elemental attack
           ( 159101, 0 ), ( 159105, 0 ), ( 159103, 0 ),  # Echo of the Elements spec buffs
           ( 173184, 0 ), ( 173185, 0 ), ( 173186, 0 ),  # Elemental Blast buffs
           ( 173183, 0 ),                                # Elemental Blast buffs
@@ -1418,6 +1431,7 @@ class SpellDataGenerator(DataGenerator):
 		  ( 267972, 5 ),		# Demonic Tyrant - Demonic Consumption (not sure which is needed)
 		  ( 267997, 5 ),		# Vilefiend - Bile Spit
 		  ( 267999, 5 ),		# Vilefiend - Headbutt
+		  ( 279910, 2 ),		# Summon Wild Imp - Inner Demons version
 		  ( 267994, 2 ),		# Summon Shivarra
 		  ( 267996, 2 ),		# Summon Darkhound
 		  ( 267992, 2 ),		# Summon Bilescourge
@@ -1437,7 +1451,8 @@ class SpellDataGenerator(DataGenerator):
 		  ( 272013, 5 ),		# Vicious Hellhound - Demon Fangs
 		  ( 272012, 5 ),		# Illidari Satyr - Shadow Slash
 		  ( 272131, 5 ),		# Eye of Gul'dan - Eye of Gul'dan
-		  
+		  ( 267964, 0 ),		# new soul strike?
+
         ),
 
         # Monk:
@@ -1528,13 +1543,16 @@ class SpellDataGenerator(DataGenerator):
           ( 217060, 1 ), # Rage of the Illidari buff
           ( 202446, 1 ), # Anguish damage spell
           ( 222703, 1 ), # Fel Barrage proc rate
-          ( 211796, 1 ), # Chaos Blades damage spell
+		  ( 247938, 1 ), # Chaos Blades primary spell, still used by Chaos Theory
+          ( 211796, 1 ), # Chaos Blades MH damage spell
+		  ( 211797, 1 ), # Chaos Blades OH damage spell
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
           ( 209245, 2 ), # Fiery Brand damage reduction
           ( 213011, 2 ), # Charred Warblades heal
           ( 212818, 2 ), # Fiery Demise debuff
+          ( 207760, 2 ), # Burning Alive spread radius 
        ),
     ]
 
@@ -2477,7 +2495,7 @@ class SpellDataGenerator(DataGenerator):
             # 32, 33, 34
             fields += [u'0', u'0', u'0'] # cast_div, c_scaling, c_scaling_threshold
 
-            # 35
+            # NOTE: replace spell ID as it stands is not marked as a hotfixed field in spell query
             if id in ids and 'replace_spell_id' in ids[id]:
                 fields += [ '%6u' % ids[id]['replace_spell_id'] ]
             else:
@@ -2500,17 +2518,18 @@ class SpellDataGenerator(DataGenerator):
                             included_labels.add(getattr(effect, field))
 
             # Add spell flags
-            # 36
+            # 35
             fields += [ '{ %s }' % ', '.join(misc.field('flags_1', 'flags_2', 'flags_3', 'flags_4',
                 'flags_5', 'flags_6', 'flags_7', 'flags_8', 'flags_9', 'flags_10', 'flags_11',
-                'flags_12')) ]
+                'flags_12', 'flags_13', 'flags_14')) ]
             # Note, bunch up the flags checking into one field,
             f, hfd = misc.get_hotfix_info(('flags_1', 35), ('flags_2', 35), ('flags_3', 35),
                 ('flags_4', 35), ('flags_5', 35), ('flags_6', 35), ('flags_7', 35), ('flags_8', 35),
-                ('flags_9', 35), ('flags_10', 35), ('flags_11', 35), ('flags_12', 35))
+                ('flags_9', 35), ('flags_10', 35), ('flags_11', 35), ('flags_12', 35),
+                ('flags_13', 35), ('flags_14', 35))
             hotfix_flags |= f
             #hotfix_data += hfd
-            # 37, 38
+            # 36, 37
             fields += [ '{ %s }' % ', '.join(spell.get_link('class_option').field('flags_1', 'flags_2', 'flags_3', 'flags_4')) ]
             fields += spell.get_link('class_option').field('family')
             f, hfd = spell.get_link('class_option').get_hotfix_info(('flags_1', 36), ('flags_2', 36),
@@ -2519,23 +2538,23 @@ class SpellDataGenerator(DataGenerator):
             f, hfd = spell.get_link('class_option').get_hotfix_info(('family', 37))
             hotfix_flags |= f
             hotfix_data += hfd
-            # 39
+            # 38
             fields += spell.get_link('shapeshift').field('flags_1')
             f, hfd= spell.get_link('shapeshift').get_hotfix_info(('flags_1', 38))
             hotfix_flags |= f
             hotfix_data += hfd
-            # 40
+            # 39
             mechanic = self._spellmechanic_db[spell.get_link('categories').mechanic]
             fields += mechanic.field('mechanic')
             f, hfd = mechanic.get_hotfix_info(('mechanic', 39))
             hotfix_flags |= f
             hotfix_data += hfd
 
-            # 41
+            # 40
             power = spell.get_link('azerite_power')
             fields += power.field('id')
 
-            # 42, 43
+            # 41, 42
             spell_text = spell.get_link('text')
             fields += spell_text.field('desc', 'tt')
             f, hfd = spell_text.get_hotfix_info(('desc', 41), ('tt', 42))
@@ -2568,8 +2587,12 @@ class SpellDataGenerator(DataGenerator):
             hotfix_flags |= f
             hotfix_data += hfd
 
+            # 45
+            fields += spell.get_link('level').field('req_max_level')
+            f, hfd = spell.get_link('level').get_hotfix_info(('req_max_level', 45))
+
             # Pad struct with empty pointers for direct access to spell effect data
-            # 45, 46, 47, 48, 49
+            # 46, 47, 48, 49, 50
             fields += [ u'0', u'0', u'0', u'0', u'0', ]
 
             # Finally, update hotfix flags, they are located in the array of fields at position 2
@@ -3937,7 +3960,7 @@ class ArmorValueDataGenerator(DataGenerator):
                 if ilevel > self._options.scale_ilevel:
                     continue
 
-                fields = data.field('ilevel')
+                fields = data.field('id')
                 if dbname != 'ItemArmorTotal':
                     fields += [ '{ %s }' % ', '.join(data.field('v_1', 'v_2', 'v_3', 'v_4', 'v_5', 'v_6', 'v_7')) ]
                 else:

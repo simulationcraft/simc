@@ -319,6 +319,12 @@ std::ostream& operator<<(std::ostream& s, const item_t& item )
   {
     s << " (" << item.player -> items[ item.parent_slot ].slot_name() << ")";
   }
+
+  if ( item.parsed.azerite_level > 0 )
+  {
+    s << " azerite_level=" << item.parsed.azerite_level;
+  }
+
   if ( item.parsed.data.lfr() )
     s << " LFR";
   if ( item.parsed.data.heroic() )
@@ -500,8 +506,18 @@ unsigned item_t::item_level() const
 
   unsigned ilvl;
 
+  // Overridden Option-based item level
   if ( parsed.item_level > 0 )
+  {
     ilvl = parsed.item_level;
+  }
+  // If azerite level is defined as an option for an item, use the azerite level to item level
+  // conversion
+  else if ( parsed.azerite_level > 0 )
+  {
+    ilvl = player -> dbc.azerite_item_level( parsed.azerite_level );
+  }
+  // Otherwise, normal ilevel processing (base ilevel + upgrade ilevel + artifact ilevel increase)
   else
   {
     ilvl = parsed.data.level + upgrade_item_level();
@@ -527,6 +543,10 @@ unsigned item_t::base_item_level() const
   else if ( parsed.item_level > 0 )
   {
     return parsed.item_level;
+  }
+  else if ( parsed.azerite_level > 0 )
+  {
+    return player -> dbc.azerite_item_level( parsed.azerite_level );
   }
   else
     return parsed.data.level;
@@ -680,6 +700,7 @@ bool item_t::parse_options()
   options.push_back(opt_string("relic_id", option_relic_id_str));
   options.push_back(opt_string("relic_ilevel", option_relic_ilevel_str));
   options.push_back(opt_string("azerite_powers", option_azerite_powers_str));
+  options.push_back(opt_string("azerite_level", option_azerite_level_str));
 
   try
   {
@@ -798,6 +819,9 @@ bool item_t::parse_options()
   if ( ! option_drop_level_str.empty() )
     parsed.drop_level = util::to_unsigned( option_drop_level_str );
 
+  if ( ! option_azerite_level_str.empty() )
+    parsed.azerite_level = util::to_unsigned( option_azerite_level_str );
+
   return true;
 }
 
@@ -825,52 +849,6 @@ bool item_t::initialize_data()
   return true;
 }
 
-// item_t::encoded_item =====================================================
-
-void item_t::encoded_item( xml_writer_t& writer )
-{
-  writer.begin_tag( "item" );
-  writer.print_attribute( "name", name_str );
-
-  writer.print_attribute( "slot", util::to_string( slot ) );
-  
-  if ( parsed.data.id )
-    writer.print_attribute( "id", util::to_string( parsed.data.id ) );
-
-  if ( parsed.bonus_id.size() > 0 )
-  {
-    std::string bonus_id_str;
-    for ( size_t i = 0, end = parsed.bonus_id.size(); i < end; i++ )
-    {
-      bonus_id_str += util::to_string( parsed.bonus_id[ i ] );
-      if ( i < parsed.bonus_id.size() - 1 )
-        bonus_id_str += "/";
-    }
-
-    writer.print_attribute( "bonus_id", bonus_id_str );
-  }
-
-  if ( parsed.upgrade_level > 0 )
-    writer.print_attribute( "upgrade_level", encoded_upgrade_level() );
-
-  if ( parsed.suffix_id != 0 )
-    writer.print_attribute( "suffix", encoded_random_suffix_id() );
-
-  if ( parsed.gem_stats.size() > 0 || ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) )
-    writer.print_attribute( "gems", encoded_gems() );
-
-  if ( parsed.enchant_stats.size() > 0 || ! parsed.encoded_enchant.empty() )
-    writer.print_attribute( "enchant", encoded_enchant() );
-
-  if ( parsed.addon_stats.size() > 0 || ! parsed.encoded_addon.empty() )
-    writer.print_attribute( "addon", encoded_addon() );
-
-  if ( parsed.item_level > 0 )
-    writer.print_attribute( "item_level", std::to_string( item_level() ) );
-
-  writer.end_tag( "item" );
-}
-
 std::string item_t::encoded_item() const
 {
   std::ostringstream s;
@@ -893,6 +871,11 @@ std::string item_t::encoded_item() const
 
   if ( ! option_ilevel_str.empty() )
     s << ",ilevel=" << option_ilevel_str;
+
+  if ( ! option_ilevel_str.empty() )
+    s << ",azerite_level=" << option_ilevel_str;
+  else if ( parsed.azerite_level > 0 )
+    s << ",azerite_level=" << parsed.azerite_level;
 
   if ( ! option_armor_type_str.empty() )
     s << ",type=" << util::armor_type_string( parsed.data.item_subclass );

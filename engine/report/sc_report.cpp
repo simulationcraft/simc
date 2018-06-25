@@ -714,7 +714,12 @@ void report::print_profiles( sim_t* sim )
       continue;
     }
 
-    std::string profile_str = p->create_profile();
+    unsigned save_type = SAVE_ALL;
+    if ( !sim->save_profile_with_actions )
+    {
+      save_type &= ~(SAVE_ACTIONS);
+    }
+    std::string profile_str = p->create_profile( static_cast<save_e>(save_type) );
     fprintf( file, "%s", profile_str.c_str() );
   }
 
@@ -847,7 +852,6 @@ void report::print_suite( sim_t* sim )
   report::print_text( sim, sim->report_details != 0 );
 
   report::print_html( *sim );
-  report::print_xml( sim );
   report::print_json( *sim );
   report::print_profiles( sim );
 }

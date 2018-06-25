@@ -70,6 +70,7 @@ namespace warlock
       propagate_const<dot_t*> dots_corruption;
       propagate_const<dot_t*> dots_seed_of_corruption;
       std::array<propagate_const<dot_t*>, MAX_UAS> dots_unstable_affliction;
+      propagate_const<dot_t*> dots_drain_soul;
       propagate_const<dot_t*> dots_siphon_life;
       propagate_const<dot_t*> dots_phantom_singularity;
       propagate_const<dot_t*> dots_vile_taint;
@@ -92,6 +93,7 @@ namespace warlock
       
       //Demo
       propagate_const<dot_t*> dots_doom;
+      propagate_const<dot_t*> dots_umbral_blaze;
 
       propagate_const<buff_t*> debuffs_from_the_shadows;
       propagate_const<buff_t*> debuffs_jaws_of_shadow;
@@ -115,6 +117,7 @@ namespace warlock
     {
     public:
       player_t * havoc_target;
+      bool wracking_brilliance;
       double agony_accumulator;
 
       // Active Pet
@@ -143,7 +146,7 @@ namespace warlock
         std::array<pets::wrathguard::wrathguard_t*, RANDOM_LIMIT> wrathguards;
         std::array<pets::vicious_hellhound::vicious_hellhound_t*, RANDOM_LIMIT> vicious_hellhounds;
         std::array<pets::illidari_satyr::illidari_satyr_t*, RANDOM_LIMIT> illidari_satyrs;
-        std::array<pets::eyes_of_guldan::eyes_of_guldan_t*, RARE_RANDOM_LIMIT> eyes_of_guldan;
+        std::array<pets::eyes_of_guldan::eyes_of_guldan_t*, 4> eyes_of_guldan;
         std::array<pets::prince_malchezaar::prince_malchezaar_t*, RARE_RANDOM_LIMIT> prince_malchezaar;
         std::array<pets::darkglare::darkglare_t*, DARKGLARE_LIMIT> darkglare;
       } warlock_pet_list;
@@ -182,9 +185,9 @@ namespace warlock
         // tier 100
         const spell_data_t* soul_conduit;
         // AFF
-        const spell_data_t* shadow_embrace;
+        const spell_data_t* nightfall;
+        const spell_data_t* drain_soul;
         const spell_data_t* haunt;
-        const spell_data_t* deathbolt;
 
         const spell_data_t* writhe_in_agony;
         const spell_data_t* absolute_corruption;
@@ -194,9 +197,11 @@ namespace warlock
         const spell_data_t* phantom_singularity;
         const spell_data_t* vile_taint;
 
-        const spell_data_t* nightfall;
-        const spell_data_t* drain_soul;
+        const spell_data_t* shadow_embrace;
+        const spell_data_t* deathbolt;
+        // grimoire of sacrifice
 
+        // soul conduit
         const spell_data_t* creeping_death;
         const spell_data_t* dark_soul_misery;
         
@@ -214,7 +219,7 @@ namespace warlock
         const spell_data_t* summon_vilefiend;
         
         const spell_data_t* inner_demons;
-        const spell_data_t* grimoire_of_service;
+        const spell_data_t* grimoire_felguard;
 
         const spell_data_t* sacrificed_souls;
         const spell_data_t* demonic_consumption;
@@ -238,6 +243,36 @@ namespace warlock
         const spell_data_t* channel_demonfire;
         const spell_data_t* dark_soul_instability;
       } talents;
+
+      // Azerite traits
+      struct azerite_t
+      {
+        //Shared
+        azerite_power_t desperate_power;
+        azerite_power_t lifeblood;
+
+        //Demo
+        azerite_power_t demonic_meteor;
+        azerite_power_t forbidden_knowledge;
+        //azerite_power_t meteoric_flare; //no current data
+        azerite_power_t shadows_bite;
+        azerite_power_t supreme_commander;
+        azerite_power_t umbral_blaze;
+
+        //Aff
+        azerite_power_t cascading_calamity;
+        azerite_power_t dreadful_calling;
+        azerite_power_t inevitable_demise;
+        azerite_power_t sudden_onset;
+        azerite_power_t wracking_brilliance;
+
+        //Destro
+        azerite_power_t accelerant;
+        azerite_power_t bursting_flare;
+        azerite_power_t chaotic_inferno;
+        azerite_power_t crashing_chaos;
+        azerite_power_t rolling_havoc;
+      } azerite;
 
       struct legendary_t
       {
@@ -277,8 +312,11 @@ namespace warlock
       {
         propagate_const<cooldown_t*> haunt;
         propagate_const<cooldown_t*> shadowburn;
+        propagate_const<cooldown_t*> soul_fire;
         propagate_const<cooldown_t*> sindorei_spite_icd;
         propagate_const<cooldown_t*> call_dreadstalkers;
+
+        propagate_const<cooldown_t*> darkglare;
       } cooldowns;
 
       // Passives
@@ -311,6 +349,7 @@ namespace warlock
         const spell_data_t* immolate;
         const spell_data_t* conflagrate;
         const spell_data_t* conflagrate_2;
+        const spell_data_t* havoc;
         const spell_data_t* unending_resolve;
         const spell_data_t* unending_resolve_2;
         const spell_data_t* firebolt;
@@ -329,11 +368,14 @@ namespace warlock
         propagate_const<buff_t*> dark_soul_misery;
         propagate_const<buff_t*> demonic_speed; // t20 4pc
 
+        propagate_const<buff_t*> cascading_calamity;
+        propagate_const<buff_t*> inevitable_demise;
+        propagate_const<buff_t*> wracking_brilliance;
+
         //demonology buffs
         propagate_const<buff_t*> demonic_core;
         propagate_const<buff_t*> demonic_calling;
         propagate_const<buff_t*> inner_demons;
-        propagate_const<buff_t*> sacrificed_souls;
         propagate_const<buff_t*> nether_portal;
         propagate_const<buff_t*> dreaded_haste; // t20 4pc
         propagate_const<buff_t*> rage_of_guldan; // t21 2pc
@@ -341,7 +383,14 @@ namespace warlock
         propagate_const<buff_t*> dreadstalkers;
         propagate_const<buff_t*> vilefiend;
         propagate_const<buff_t*> tyrant;
-        propagate_const<buff_t*> service_pet;
+        propagate_const<buff_t*> portal_summons;
+        propagate_const<buff_t*> grimoire_felguard;
+        propagate_const<buff_t*> prince_malchezaar;
+        propagate_const<buff_t*> eyes_of_guldan;
+
+        propagate_const<buff_t*> forbidden_knowledge;
+        propagate_const<buff_t*> shadows_bite;
+        propagate_const<buff_t*> supreme_commander;
 
         //destruction_buffs
         propagate_const<buff_t*> backdraft;
@@ -363,31 +412,39 @@ namespace warlock
       // Gains
       struct gains_t
       {
+        gain_t* soul_conduit;
+
         gain_t* agony;
+        gain_t* drain_soul;
+        gain_t* seed_of_corruption;
+        gain_t* unstable_affliction_refund;
 
         gain_t* conflagrate;
         gain_t* shadowburn;
+        gain_t* incinerate;
+        gain_t* incinerate_crits;
+        gain_t* fnb_bits;
         gain_t* immolate;
         gain_t* immolate_crits;
+        gain_t* soul_fire;
         gain_t* infernal;
         gain_t* shadowburn_shard;
         gain_t* inferno;
+        gain_t* reverse_entropy;
 
         gain_t* miss_refund;
-        gain_t* seed_of_corruption;
-        gain_t* unstable_affliction_refund;
+        
         gain_t* power_trip;
         gain_t* shadow_bolt;
         gain_t* doom;
-        gain_t* soul_conduit;
-        gain_t* reverse_entropy;
+        
         gain_t* soulsnatcher;
         gain_t* t19_2pc_demonology;
+
         gain_t* recurrent_ritual;
         gain_t* feretory_of_souls;
         gain_t* power_cord_of_lethtendris;
-        gain_t* incinerate;
-        gain_t* incinerate_crits;
+
         gain_t* affliction_t20_2pc;
         gain_t* destruction_t20_2pc;
       } gains;
@@ -410,6 +467,7 @@ namespace warlock
         proc_t* wild_imp;
         proc_t* fragment_wild_imp;
         proc_t* dreadstalker_debug;
+        proc_t* portal_summon;
         proc_t* demonology_t20_2pc;
         //destro
         proc_t* t19_2pc_chaos_bolts;
@@ -430,7 +488,7 @@ namespace warlock
 
       timespan_t shard_react;
 
-      warlock_t( sim_t* sim, const std::string& name, race_e r = RACE_UNDEAD );
+      warlock_t( sim_t* sim, const std::string& name, race_e r );
 
       // Character Definition
       void      init_spells() override;
@@ -448,7 +506,7 @@ namespace warlock
       bool create_actions() override;
       pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
       void      create_pets() override;
-      std::string      create_profile( save_e = SAVE_ALL ) override;
+      std::string      create_profile( save_e ) override;
       void      copy_from( player_t* source ) override;
       resource_e primary_resource() const override { return RESOURCE_MANA; }
       role_e    primary_role() const override { return ROLE_SPELL; }
@@ -486,6 +544,11 @@ namespace warlock
           td = new warlock_td_t( target, const_cast< warlock_t& >( *this ) );
         }
         return td;
+      }
+
+      warlock_td_t* find_target_data( player_t* target ) const
+      {
+        return target_data[target];
       }
 
       // sc_warlock_affliction
@@ -543,7 +606,6 @@ namespace warlock
 
           propagate_const<buff_t*> the_expendables;
           propagate_const<buff_t*> rage_of_guldan;
-          propagate_const<buff_t*> demonic_power;
           propagate_const<buff_t*> demonic_strength;
           propagate_const<buff_t*> demonic_consumption;
           propagate_const<buff_t*> grimoire_of_service;
@@ -552,7 +614,7 @@ namespace warlock
         struct active_t
         {
           melee_attack_t* soul_strike;
-          melee_attack_t* demonic_strength_felstorm;
+          action_t* demonic_strength_felstorm;
           spell_t*        bile_spit;
         } active;
 
@@ -694,37 +756,57 @@ namespace warlock
         {
           return p()->o()->get_target_data( t );
         }
+
+        warlock_td_t* find_td( player_t* t )
+        {
+          return p()->o()->find_target_data( t );
+        }
+
+        const warlock_td_t* find_td( player_t* t ) const
+        {
+          return p()->o()->find_target_data( t );
+        }
+
+        void init() override
+        {
+          action_t::init();
+
+          if (p()->o()->specialization() == WARLOCK_DESTRUCTION)
+          {
+            ab::base_multiplier *= 1.0 + p()->o()->spec.destruction->effectN(3).percent();
+          }
+        }
       };
 
       struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
       {
         struct off_hand_swing : public warlock_pet_action_t<melee_attack_t>
         {
-          off_hand_swing( warlock_pet_t* p, const char* name = "melee_oh" ) :
+          off_hand_swing( warlock_pet_t* p, double wm, const char* name = "melee_oh" ) :
             warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() )
           {
             school = SCHOOL_PHYSICAL;
-            weapon = &( p->off_hand_weapon );
+            weapon = &(p->off_hand_weapon);
+            weapon_multiplier = wm;
             base_execute_time = weapon->swing_time;
-            may_crit = true;
-            background = true;
+            may_crit = background = true;
             base_multiplier = 0.5;
           }
         };
 
         off_hand_swing* oh;
 
-        warlock_pet_melee_t( warlock_pet_t* p, const char* name = "melee" ) :
-          warlock_pet_action_t<melee_attack_t>( name, p, spell_data_t::nil() ), oh( nullptr )
+        warlock_pet_melee_t(warlock_pet_t* p, double wm = 1.0, const char* name = "melee") :
+          warlock_pet_action_t<melee_attack_t>(name, p, spell_data_t::nil()), oh(nullptr)
         {
           school = SCHOOL_PHYSICAL;
           weapon = &(p->main_hand_weapon);
-          weapon_multiplier = 1.0;
+          weapon_multiplier = wm;
           base_execute_time = weapon->swing_time;
           may_crit = background = repeating = true;
 
-          if ( p->dual_wield() )
-            oh = new off_hand_swing( p );
+          if (p->dual_wield())
+            oh = new off_hand_swing(p, weapon_multiplier);
         }
 
         double action_multiplier() const override {
@@ -848,6 +930,7 @@ namespace warlock
           virtual void init_base_stats() override;
           virtual double composite_player_multiplier(school_e school) const override;
           virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
+          bool create_actions() override;
         };
       }
       namespace dreadstalker
@@ -866,17 +949,10 @@ namespace warlock
         {
           action_t* firebolt;
           bool isnotdoge;
-
           wild_imp_pet_t(sim_t* sim, warlock_t* owner);
-
           virtual void init_base_stats() override;
-
-          virtual void dismiss(bool expired) override;
-
           virtual action_t* create_action(const std::string& name,const std::string& options_str) override;
-
           virtual void arise() override;
-
           virtual void demise() override;
           //void trigger(int timespan, bool isdoge = false) override;
         };
@@ -895,6 +971,7 @@ namespace warlock
         {
           demonic_tyrant_t(sim_t* sim, warlock_t* owner, const std::string& name = "demonic_tyrant");
           virtual void init_base_stats() override;
+          virtual void demise() override;
           virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
@@ -911,15 +988,21 @@ namespace warlock
       namespace shivarra {
         struct shivarra_t : public warlock_pet_t
         {
+          action_t* multi_slash;
           shivarra_t(sim_t* sim, warlock_t* owner, const std::string& name = "shivarra");
           virtual void init_base_stats() override;
+          virtual void arise() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
       namespace darkhound {
         struct darkhound_t : public warlock_pet_t
         {
+          action_t* fel_bite;
           darkhound_t(sim_t* sim, warlock_t* owner, const std::string& name = "darkhound");
           virtual void init_base_stats() override;
+          virtual void arise() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
       namespace bilescourge {
@@ -927,41 +1010,57 @@ namespace warlock
         {
           bilescourge_t(sim_t* sim, warlock_t* owner, const std::string& name = "bilescourge");
           virtual void init_base_stats() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
       namespace urzul {
         struct urzul_t : public warlock_pet_t
         {
+          action_t* many_faced_bite;
           urzul_t(sim_t* sim, warlock_t* owner, const std::string& name = "urzul");
           virtual void init_base_stats() override;
+          virtual void arise() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
       namespace void_terror {
         struct void_terror_t : public warlock_pet_t
         {
+          action_t* double_breath;
           void_terror_t(sim_t* sim, warlock_t* owner, const std::string& name = "void_terror");
           virtual void init_base_stats() override;
+          virtual void arise() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
       namespace wrathguard {
         struct wrathguard_t : public warlock_pet_t
         {
+          action_t* overhead_assault;
           wrathguard_t(sim_t* sim, warlock_t* owner, const std::string& name = "wrathguard");
           virtual void init_base_stats() override;
+          virtual void arise() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
       namespace vicious_hellhound {
         struct vicious_hellhound_t : public warlock_pet_t
         {
+          action_t* demon_fang;
           vicious_hellhound_t(sim_t* sim, warlock_t* owner, const std::string& name = "vicious_hellhound");
           virtual void init_base_stats() override;
+          virtual void arise() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
       namespace illidari_satyr {
         struct illidari_satyr_t : public warlock_pet_t
         {
+          action_t* shadow_slash;
           illidari_satyr_t(sim_t* sim, warlock_t* owner, const std::string& name = "illidari_satyr");
           virtual void init_base_stats() override;
+          virtual void arise() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
       namespace eyes_of_guldan {
@@ -969,12 +1068,17 @@ namespace warlock
         {
           eyes_of_guldan_t(sim_t* sim, warlock_t* owner, const std::string& name = "eyes_of_guldan");
           virtual void init_base_stats() override;
+          virtual void arise() override;
+          virtual void demise() override;
+          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
       namespace prince_malchezaar {
         struct prince_malchezaar_t : public warlock_pet_t
         {
           prince_malchezaar_t(sim_t* sim, warlock_t* owner, const std::string& name = "prince_malchezaar");
+          virtual void arise() override;
+          virtual void demise() override;
           virtual void init_base_stats() override;
         };
       }
@@ -1013,8 +1117,31 @@ namespace warlock
 
       struct warlock_spell_t : public spell_t
       {
-      private:
-        void _init_warlock_spell_t()
+      public:
+        gain_t * gain;
+
+        mutable std::vector<player_t*> havoc_targets;
+        bool can_havoc;
+        bool havocd;
+        bool affected_by_destruction_t20_4pc;
+        bool affected_by_flamelicked;
+        bool affected_by_odr_shawl_of_the_ymirjar;
+        bool affected_by_deaths_embrace;
+        bool destro_mastery;
+        bool can_feretory;
+
+        warlock_spell_t( warlock_t* p, const std::string& n ) :
+          warlock_spell_t( n, p, p -> find_class_spell( n ) )
+        {
+        }
+
+        warlock_spell_t( warlock_t* p, const std::string& n, specialization_e s ) :
+          warlock_spell_t( n, p, p -> find_class_spell( n, s ) )
+        {
+        }
+
+        warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() ) :
+          spell_t( token, p, s )
         {
           may_crit = true;
           tick_may_crit = true;
@@ -1028,36 +1155,6 @@ namespace warlock
           can_feretory = true;
 
           parse_spell_coefficient( *this );
-        }
-
-      public:
-        gain_t * gain;
-
-        mutable std::vector<player_t*> havoc_targets;
-        bool can_havoc;
-        bool affected_by_destruction_t20_4pc;
-        bool affected_by_flamelicked;
-        bool affected_by_odr_shawl_of_the_ymirjar;
-        bool affected_by_deaths_embrace;
-        bool destro_mastery;
-        bool can_feretory;
-
-        warlock_spell_t( warlock_t* p, const std::string& n ) :
-          spell_t( n, p, p -> find_class_spell( n ) )
-        {
-          _init_warlock_spell_t();
-        }
-
-        warlock_spell_t( warlock_t* p, const std::string& n, specialization_e s ) :
-          spell_t( n, p, p -> find_class_spell( n, s ) )
-        {
-          _init_warlock_spell_t();
-        }
-
-        warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-          spell_t( token, p, s )
-        {
-          _init_warlock_spell_t();
         }
 
         warlock_t* p()
@@ -1079,6 +1176,16 @@ namespace warlock
           return p()->get_target_data( t );
         }
 
+        warlock_td_t* find_td( player_t* t )
+        {
+          return p()->find_target_data( t );
+        }
+
+        const warlock_td_t* find_td( player_t* t ) const
+        {
+          return p()->find_target_data( t );
+        }
+
         bool use_havoc() const
         {
           if ( !p()->havoc_target || target == p()->havoc_target || !can_havoc )
@@ -1097,20 +1204,27 @@ namespace warlock
           action_t::init();
 
           affected_by_flamelicked = false;
+          havocd = false;
 
           affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p()->find_spell( 212173 )->effectN( 1 ) );
 
-          if ( data().affected_by(p()->spec.destruction->effectN(1)) )
-            base_dd_multiplier *= 1.0 + p()->spec.destruction->effectN( 1 ).percent();
+          if (p()->specialization() == WARLOCK_DESTRUCTION)
+          {
+            if (data().affected_by(p()->spec.destruction->effectN(1)))
+              base_dd_multiplier *= 1.0 + p()->spec.destruction->effectN(1).percent();
 
-          if ( data().affected_by(p()->spec.destruction->effectN(2)) )
-            base_td_multiplier *= 1.0 + p()->spec.destruction->effectN( 2 ).percent();
+            if (data().affected_by(p()->spec.destruction->effectN(2)))
+              base_td_multiplier *= 1.0 + p()->spec.destruction->effectN(2).percent();
+          }
 
-          if ( data().affected_by(p()->spec.affliction->effectN(1)) )
-            base_dd_multiplier *= 1.0 + p()->spec.affliction->effectN( 1 ).percent();
+          if (p()->specialization() == WARLOCK_AFFLICTION)
+          {
+            if (data().affected_by(p()->spec.affliction->effectN(1)))
+              base_dd_multiplier *= 1.0 + p()->spec.affliction->effectN(1).percent();
 
-          if ( data().affected_by(p()->spec.affliction->effectN(2)) )
-            base_td_multiplier *= 1.0 + p()->spec.affliction->effectN( 2 ).percent();
+            if (data().affected_by(p()->spec.affliction->effectN(2)))
+              base_td_multiplier *= 1.0 + p()->spec.affliction->effectN(2).percent();
+          }
 
           if ( p()->talents.creeping_death->ok() )
           {
@@ -1121,47 +1235,26 @@ namespace warlock
           }
         }
 
-        int n_targets() const override
-        {
-          if ( aoe == 0 && use_havoc() )
-            return 2;
-
-          return spell_t::n_targets();
-        }
-
-        std::vector<player_t*>& target_list() const override
-        {
-          if ( use_havoc() )
-          {
-            if ( !target_cache.is_valid )
-            {
-              available_targets( target_cache.list );
-              check_distance_targeting( target_cache.list );
-              target_cache.is_valid = true;
-            }
-
-            havoc_targets.clear();
-            if ( range::find( target_cache.list, target ) != target_cache.list.end() )
-              havoc_targets.push_back( target );
-
-            if ( !p()->havoc_target->is_sleeping() &&
-              range::find( target_cache.list, p()->havoc_target ) != target_cache.list.end() )
-              havoc_targets.push_back( p()->havoc_target );
-            return havoc_targets;
-          }
-          else
-            return spell_t::target_list();
-        }
-
         double cost() const override
         {
           double c = spell_t::cost();
+          if (havocd)
+          {
+            return 0.0;
+          }
           return c;
         }
 
         void execute() override
         {
           spell_t::execute();
+          if (use_havoc() && execute_state->target == this->target && !havocd)
+          {
+            this->set_target(p()->havoc_target);
+            this->havocd = true;
+            spell_t::execute();
+            this->havocd = false;
+          }
 
           if ( hit_any_target && result_is_hit( execute_state->result ) && p()->talents.grimoire_of_sacrifice->ok() && p()->buffs.grimoire_of_sacrifice->up() )
           {
@@ -1183,18 +1276,31 @@ namespace warlock
         {
           spell_t::tick( d );
 
-          if ( d->state->result > 0 && result_is_hit( d->state->result ) && td( d->target )->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id )
-            accumulate_seed_of_corruption( td( d->target ), d->state->result_amount );
+          if (d->state->result > 0 && result_is_hit( d->state->result ))
+          {
+            if (auto td = find_td( d->target ))
+            {
+              if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
+              {
+                accumulate_seed_of_corruption( td, d->state->result_amount );
+              }
+            }
+          }
         }
 
         void impact( action_state_t* s ) override
         {
           spell_t::impact( s );
 
-          if ( s->result_amount > 0 && result_is_hit( s->result ) && td( s->target )->dots_seed_of_corruption->is_ticking()
-            && id != p()->spells.seed_of_corruption_aoe->id )
+          if (s->result_amount > 0 && result_is_hit( s->result ))
           {
-            accumulate_seed_of_corruption( td( s->target ), s->result_amount );
+            if (auto td = find_td( s->target ))
+            {
+              if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
+              {
+                accumulate_seed_of_corruption( td, s->result_amount );
+              }
+            }
           }
 
           if (p()->talents.reverse_entropy->ok())
@@ -1211,10 +1317,11 @@ namespace warlock
         {
           double m = spell_t::composite_target_multiplier(t);
 
-          auto td = this->td( t );
-
-          if ( td->debuffs_eradication->check() )
-            m *= 1.0 + td->debuffs_eradication->data().effectN( 1 ).percent();
+          if (auto td = find_td( t ))
+          {
+            if ( td->debuffs_eradication->check() )
+              m *= 1.0 + td->debuffs_eradication->data().effectN( 1 ).percent();
+          }
 
           if ( p()->legendary.odr_shawl_of_the_ymirjar && target == p()->havoc_target && affected_by_odr_shawl_of_the_ymirjar  )
             m *= 1.0 + p()->legendary.odr_shawl_of_the_ymirjar->effectN( 1 ).percent();
@@ -1239,24 +1346,24 @@ namespace warlock
             pm *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
           }
 
+          if (p()->specialization() == WARLOCK_DESTRUCTION)
+          {
+            if (havocd)
+              pm *= p()->spec.havoc->effectN(1).percent();
+
+            if (p()->buffs.grimoire_of_supremacy->check() && this->data().affected_by(p()->find_spell(266091)->effectN(1)))
+            {
+              pm *= 1.0 + p()->buffs.grimoire_of_supremacy->check_stack_value();
+            }
+          }
+
+          if (p()->specialization() == WARLOCK_DEMONOLOGY)
+          {
+            if (this->data().affected_by(p()->mastery_spells.master_demonologist->effectN(2)))
+              pm *= 1.0 + p()->cache.mastery_value();
+          }
+
           return pm;
-        }
-
-        resource_e current_resource() const override
-        {
-          return spell_t::current_resource();
-        }
-
-        double composite_target_crit_chance( player_t* target ) const override
-        {
-          double c = spell_t::composite_target_crit_chance( target );
-          return c;
-        }
-
-        bool consume_cost_per_tick( const dot_t& dot ) override
-        {
-          bool consume = spell_t::consume_cost_per_tick( dot );
-          return consume;
         }
 
         void extend_dot( dot_t* dot, timespan_t extend_duration )
@@ -1371,9 +1478,6 @@ namespace warlock
 
         virtual bool ready() override {
           if ( p()->warlock_pet_list.active == pet )
-            return false;
-
-          if ( p()->talents.grimoire_of_supremacy->ok() ) //if we have the uberpets, we can't summon our standard pets
             return false;
 
           return summon_pet_t::ready();

@@ -146,15 +146,15 @@ int to_int( const char* str );
 
 int64_t parse_date( const std::string& month_day_year );
 
-template<typename... Args>
-int printf(fmt::CStringRef format, Args&& ... args)
+template<typename Format, typename... Args>
+int printf(Format&& format, Args&& ... args)
 {
-  return fmt::printf(format, std::forward<Args>(args)... );
+  return fmt::printf(std::forward<Format>(format), std::forward<Args>(args)... );
 }
-template<typename... Args>
-int fprintf(std::FILE* stream, fmt::CStringRef format, Args&& ... args)
+template<typename Format, typename... Args>
+int fprintf(std::FILE* stream, Format&& format, Args&& ... args)
 {
-  return fmt::fprintf(stream, format, std::forward<Args>(args)... );
+  return fmt::fprintf(stream, std::forward<Format>(format), std::forward<Args>(args)... );
 }
 
 std::string encode_html( const std::string& );

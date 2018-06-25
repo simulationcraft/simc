@@ -418,8 +418,11 @@ void mangazas_madness( special_effect_t& effect )
   assert( priest );
   do_trinket_init( priest, PRIEST_SHADOW, priest->active_items.mangazas_madness, effect );
 
-  priest->cooldowns.shadow_word_void->charges +=
-      priest->active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
+  if ( priest->active_items.mangazas_madness )
+  {
+    priest->cooldowns.mind_blast->charges +=
+        priest->active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
+  }
 }
 
 void mother_shahrazs_seduction( special_effect_t& effect )
@@ -535,7 +538,7 @@ void base_fiend_pet_t::init_action_list()
 
 action_t* base_fiend_pet_t::create_action( const std::string& name, const std::string& options_str )
 {
-  
+
   return priest_pet_t::create_action( name, options_str );
 }
 }  // namespace fiend
@@ -563,6 +566,13 @@ void priest_td_t::reset()
 
 void priest_td_t::target_demise()
 {
+  if ( priest().azerite.death_throes.enabled() && dots.shadow_word_pain->is_ticking() )
+  {
+    priest().generate_insanity( priest().azerite.death_throes.value( 2 ),
+                                priest().gains.insanity_death_throes,
+                                nullptr );
+  }
+
   priest().sim->print_debug( "Player '{}' demised. Priest '{}' resets targetdata for him.",
       target->name(), priest().name() );
 
@@ -608,12 +618,11 @@ void priest_t::create_cooldowns()
   cooldowns.shadowfiend       = get_cooldown( "shadowfiend" );
   cooldowns.silence           = get_cooldown( "silence" );
   cooldowns.mind_blast        = get_cooldown( "mind_blast" );
-  // cooldowns.shadow_word_death = get_cooldown( "shadow_word_death" );
-  // cooldowns.shadow_word_void = get_cooldown( "shadow_word_void" );
-  cooldowns.void_bolt        = get_cooldown( "void_bolt" );
-  cooldowns.mind_bomb        = get_cooldown( "mind_bomb" );
-  cooldowns.psychic_horror   = get_cooldown( "psychic_horror" );
-  cooldowns.sephuzs_secret   = get_cooldown( "sephuzs_secret" );
+  cooldowns.void_bolt         = get_cooldown( "void_bolt" );
+  cooldowns.mind_bomb         = get_cooldown( "mind_bomb" );
+  cooldowns.psychic_horror    = get_cooldown( "psychic_horror" );
+  cooldowns.sephuzs_secret    = get_cooldown( "sephuzs_secret" );
+  cooldowns.dark_ascension    = get_cooldown( "dark_ascension" );
 
   if ( specialization() == PRIEST_DISCIPLINE )
   {
@@ -678,20 +687,14 @@ void priest_t::create_procs()
   procs.void_tendril = get_proc( "Void Tendril spawned from Call to the Void" );
 
   procs.legendary_anunds_last_breath = get_proc(
-      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% "
-      "per)" );
+      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% per)" );
   procs.legendary_anunds_last_breath_overflow = get_proc(
-      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% "
-      "per) lost to overflow" );
+      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% per) lost to overflow" );
 
   procs.legendary_zeks_exterminatus = get_proc(
-      "Legendary - Zek's Exterminatus - Shadow Word Death damage increases "
-      "(25% "
-      "per)" );
+      "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (25% per)" );
   procs.legendary_zeks_exterminatus_overflow = get_proc(
-      "Legendary - Zek's Exterminatus - Shadow Word Death damage increases "
-      "(100% "
-      "per) lost to overflow" );
+      "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (100% per) lost to overflow" );
 }
 
 /** Construct priest benefits */
@@ -1131,31 +1134,6 @@ void priest_t::create_apl_precombat()
   // do all kinds of calculations here to reduce CPU time
   if ( specialization() == PRIEST_SHADOW )
   {
-    precombat->add_action(
-        "variable,name=haste_eval,op=set,value=(raw_haste_pct-0.3)*(10+10*equipped."
-        "mangazas_madness+5*talent.fortress_of_the_mind.enabled)" );
-    precombat->add_action( "variable,name=haste_eval,op=max,value=0" );
-    precombat->add_action(
-        "variable,name=erupt_eval,op=set,value=26+1*talent.fortress_of_the_mind.enabled-"
-        "3*talent.Shadowy_insight.enabled+variable.haste_eval*1.5" );
-    precombat->add_action(
-        "variable,name=cd_time,op=set,value=(12+(2-2*talent.mindbender.enabled*set_"
-        "bonus.tier20_4pc)*set_bonus.tier19_2pc+(1-3*talent.mindbender.enabled*set_"
-        "bonus.tier20_4pc)*equipped.mangazas_madness+(6+5*talent.mindbender.enabled)"
-        "*set_bonus.tier20_4pc)" );
-    precombat->add_action(
-        "variable,name=dot_swp_dpgcd,op=set,value=36.5*1.2"
-        "*(1+0.2+stat.mastery_rating%16000)*0.75" );
-    precombat->add_action(
-        "variable,name=dot_vt_dpgcd,op=set,value=68*1.2*"
-        "*(1+0.2+stat.mastery_rating%16000)*0.5" );
-    precombat->add_action( "variable,name=sear_dpgcd,op=set,value=120*1.2" );
-    precombat->add_action(
-        "variable,name=s2msetup_time,op=set,value=(0.8*(83+(20+20*talent.fortress_of_the_mind"
-        ".enabled)*set_bonus.tier20_4pc+((33-13*set_bonus.tier20_4pc)*"
-        "talent.reaper_of_souls.enabled)+set_bonus.tier19_2pc*4+8*equipped.mangazas_madness+(raw_haste_"
-        "pct*10*(1+0.7*set_bonus.tier20_4pc))*(2+(0.8*set_bonus.tier19_2pc)+(1*talent.reaper_of_souls."
-        "enabled)))),if=talent.surrender_to_madness.enabled" );
     precombat->add_action( "potion" );
   }
 
@@ -1170,6 +1148,7 @@ void priest_t::create_apl_precombat()
     default:
       precombat->add_action( this, "Shadowform", "if=!buff.shadowform.up" );
       precombat->add_action( "mind_blast" );
+      precombat->add_action( "shadow_word_void" );
       break;
   }
 }
@@ -1431,7 +1410,7 @@ std::string priest_t::create_profile( save_e type )
 {
   std::string profile_str = base_t::create_profile( type );
 
-  if ( type == SAVE_ALL )
+  if ( type & SAVE_PLAYER )
   {
     if ( !options.autoUnshift )
     {

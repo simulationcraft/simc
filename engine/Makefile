@@ -55,11 +55,11 @@ endif
 
 MKDIR      = mkdir
 CXX        = g++
-CPP_FLAGS  = -Wall -Wextra -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++11 -O3 -MMD -MP \
+CPP_FLAGS  = -Wall -Wextra -W -I. -I./util -DSC_SHARED_DATA=\"$(SHARED_DATA)\" --std=c++11 -O3 -MMD -MP \
 -Wpedantic \
 -Wcast-qual \
 -Wconversion-null \
--Wno-implicit-fallthrough # Since we can not yet mark things with [[fallthrough]], disable to avoid false positives.
+-Wno-unknown-attributes
 
 OPTS       =
 GIT        = $(shell [ -d ../.git ] && which git)

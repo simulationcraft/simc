@@ -4,7 +4,6 @@
 // ==========================================================================
 
 #include "sc_AddonImportTab.hpp"
-#include "sc_AutomationTab.hpp"
 #include "simulationcraftqt.hpp"
 
 SC_ImportTab::SC_ImportTab( QWidget* parent )

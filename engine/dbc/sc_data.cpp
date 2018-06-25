@@ -29,6 +29,8 @@ bool spell_data_t::override_field( const std::string& field, double value )
     _spell_level = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "max_level" ) )
     _max_level = ( unsigned ) value;
+  else if ( util::str_compare_ci( field, "req_max_level" ) )
+    _req_max_level = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "min_range" ) )
     _min_range = value;
   else if ( util::str_compare_ci( field, "max_range" ) )
@@ -78,6 +80,8 @@ double spell_data_t::get_field( const std::string& field ) const
     return static_cast<double>( _spell_level );
   else if ( util::str_compare_ci( field, "max_level" ) )
     return static_cast<double>( _max_level );
+  else if ( util::str_compare_ci( field, "req_max_level" ) )
+    return static_cast<double>( _req_max_level );
   else if ( util::str_compare_ci( field, "min_range" ) )
     return _min_range;
   else if ( util::str_compare_ci( field, "max_range" ) )
@@ -768,6 +772,10 @@ spell_data_t* custom_dbc_data_t::create_clone( const spell_data_t* source, bool 
     // Drivers are set up in the parent's cloning of the trigger spell
     clone -> _driver = 0;
     add_spell( clone, ptr );
+  }
+  else
+  {
+    return clone;
   }
 
   // Clone effects

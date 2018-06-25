@@ -14,6 +14,7 @@ namespace warlock {
           may_crit = true;
         }
       };
+
       struct immolation_t : public warlock_pet_spell_t
       {
         immolation_t(warlock_pet_t* p, const std::string& options_str) :
@@ -46,6 +47,7 @@ namespace warlock {
           {
             dot->cancel();
           }
+
           action_t::cancel();
         }
       };
@@ -113,25 +115,21 @@ namespace warlock {
         warlock_spell_t("soul_fire", p, p -> talents.soul_fire)
       {
         parse_options(options_str);
+        energize_type = ENERGIZE_ON_CAST;
+        energize_resource = RESOURCE_SOUL_SHARD;
+        energize_amount = (std::double_t(p->find_spell(281490)->effectN(1).base_value()) / 10);
+
+        can_havoc = true;
       }
 
-      double composite_crit_chance() const override
+      void execute() override
       {
-        return 1.0;
-      }
+        warlock_spell_t::execute();
 
-      double calculate_direct_amount(action_state_t* state) const override
-      {
-        warlock_spell_t::calculate_direct_amount(state);
-
-        // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
-        // player spell crit instead. The state target crit chance of the state object is correct.
-        // Targeted Crit debuffs function as a separate multiplier.
-        state->result_total *= 1.0 + player->cache.spell_crit_chance() + state->target_crit_chance;
-
-        return state->result_total;
+        p()->buffs.backdraft->decrement();
       }
     };
+
     struct internal_combustion_t : public warlock_spell_t
     {
       internal_combustion_t(warlock_t* p) :
@@ -153,6 +151,7 @@ namespace warlock {
         warlock_td_t* td = this->td(target);
         dot_t* dot = td->dots_immolate;
 
+        assert(dot->current_action);
         action_state_t* state = dot->current_action->get_state(dot->state);
         dot->current_action->calculate_tick_amount(state, 1.0);
         double tick_base_damage = state->result_raw;
@@ -169,6 +168,7 @@ namespace warlock {
         td->dots_immolate->reduce_duration(remaining);
       }
     };
+
     struct shadowburn_t : public warlock_spell_t
     {
       shadowburn_t(warlock_t* p, const std::string& options_str) :
@@ -186,10 +186,11 @@ namespace warlock {
         if (result_is_hit(s->result))
         {
           td(s->target)->debuffs_shadowburn->trigger();
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.3, p()->gains.shadowburn);
+          p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(245731)->effectN(1).base_value()) / 10), p()->gains.shadowburn);
         }
       }
     };
+
     struct roaring_blaze_t : public warlock_spell_t {
       roaring_blaze_t(warlock_t* p) :
         warlock_spell_t("roaring_blaze", p, p -> find_spell(265931))
@@ -202,10 +203,11 @@ namespace warlock {
         hasted_ticks = true;
       }
     }; //damage is not correct
-    struct dark_soul_t : public warlock_spell_t
+
+    struct dark_soul_instability_t : public warlock_spell_t
     {
-      dark_soul_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("soul_harvest", p, p -> talents.dark_soul_instability)
+      dark_soul_instability_t(warlock_t* p, const std::string& options_str) :
+        warlock_spell_t("dark_soul_instability", p, p -> talents.dark_soul_instability)
       {
         parse_options(options_str);
         harmful = may_crit = may_miss = false;
@@ -214,9 +216,11 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
+
         p()->buffs.dark_soul_instability->trigger();
       }
     };
+
     //Spells
     struct havoc_t : public warlock_spell_t
     {
@@ -232,8 +236,8 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
-        p()->havoc_target = execute_state->target;
 
+        p()->havoc_target = execute_state->target;
         p()->buffs.active_havoc->trigger();
       }
 
@@ -244,6 +248,7 @@ namespace warlock {
         td(s->target)->debuffs_havoc->trigger(1, buff_t::DEFAULT_VALUE(), -1.0, havoc_duration);
       }
     };
+
     struct immolate_t : public warlock_spell_t
     {
       immolate_t(warlock_t* p, const std::string& options_str) :
@@ -266,25 +271,41 @@ namespace warlock {
       {
         warlock_spell_t::tick(d);
 
-        if (d->state->result == RESULT_CRIT && rng().roll(0.5))
+        if (d->state->result == RESULT_CRIT && rng().roll(data().effectN(2).percent()))
           p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits);
 
         p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate);
       }
     };
+
     struct conflagrate_t : public warlock_spell_t
     {
       timespan_t total_duration;
       timespan_t base_duration;
       roaring_blaze_t* roaring_blaze;
+      conflagrate_t* havoc_cast;
 
       conflagrate_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("Conflagrate", p, p -> find_spell(17962)), roaring_blaze(new roaring_blaze_t(p))
+        warlock_spell_t("Conflagrate", p, p -> find_spell(17962)),
+        total_duration(),
+        base_duration(),
+        roaring_blaze(new roaring_blaze_t(p)),
+        havoc_cast()
       {
-        parse_options(options_str);
-        energize_type = ENERGIZE_NONE;
+        //special case to stop havocd conflags using charges
+        if (options_str == "havoc")
+        {
+          can_havoc = false;
+          background = true;
+          cooldown = p->get_cooldown("conflag_havoc");
+        }
+        else
+        {
+          parse_options(options_str);
+          can_havoc = true;
+        }
 
-        can_havoc = true;
+        energize_type = ENERGIZE_NONE;
 
         cooldown->charges += p->spec.conflagrate_2->effectN(1).base_value();
 
@@ -299,6 +320,13 @@ namespace warlock {
         warlock_spell_t::init();
 
         cooldown->hasted = true;
+
+        //special case to stop havocd conflags using charges
+        if (can_havoc)
+        {
+          havoc_cast = new conflagrate_t(p(), "havoc");
+          add_child(havoc_cast);
+        }
       }
 
       void impact(action_state_t* s) override
@@ -309,11 +337,28 @@ namespace warlock {
 
         if (result_is_hit(s->result))
         {
-          if (p()->talents.roaring_blaze->ok())
+          if (p()->talents.roaring_blaze->ok() && !havocd)
             roaring_blaze->execute();
 
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.5, p()->gains.conflagrate);
+          p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(245330)->effectN(1).base_value()) / 10), p()->gains.conflagrate);
         }
+      }
+
+      void execute() override
+      {
+        //special case to stop havocd conflags using charges
+        if (can_havoc && p()->havoc_target && havocd)
+        {
+          assert(havoc_cast);
+          havoc_cast->set_target(p()->havoc_target);
+          havoc_cast->havocd = false;
+          havoc_cast->execute();
+          return;
+        }
+
+        warlock_spell_t::execute();
+
+        sim->print_log("{}: Action {} {} charges remain", player->name(), name(), this->cooldown->current_charge);
       }
 
       double action_multiplier()const override
@@ -328,21 +373,27 @@ namespace warlock {
         return m;
       }
     };
+
     struct incinerate_t : public warlock_spell_t
     {
       double backdraft_gcd;
       double backdraft_cast_time;
+
       incinerate_t(warlock_t* p, const std::string& options_str) :
         warlock_spell_t(p, "Incinerate")
       {
         parse_options(options_str);
-        if (p->talents.fire_and_brimstone->ok())
+        if (p->talents.fire_and_brimstone->ok() && !havocd)
           aoe = -1;
 
         can_havoc = true;
 
         backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN(1).percent();
         backdraft_gcd = 1.0 + p->buffs.backdraft->data().effectN(2).percent();
+
+        energize_type = ENERGIZE_ON_CAST;
+        energize_resource = RESOURCE_SOUL_SHARD;
+        energize_amount = std::double_t(p->find_spell(244670)->effectN(1).base_value()) / 10;
       }
 
       virtual timespan_t execute_time() const override
@@ -364,6 +415,7 @@ namespace warlock {
 
         if (p()->buffs.backdraft->check())
           t *= backdraft_gcd;
+
         if (t < min_gcd)
           t = min_gcd;
 
@@ -374,33 +426,34 @@ namespace warlock {
       {
         warlock_spell_t::execute();
 
-        p()->buffs.backdraft->decrement();
+        if (execute_state->target == p()->havoc_target)
+          havocd = true;
 
-        p()->resource_gain(RESOURCE_SOUL_SHARD, 0.2 * (p()->talents.fire_and_brimstone->ok() ? execute_state->n_targets : 1), p()->gains.incinerate);
+        if(!havocd)
+          p()->buffs.backdraft->decrement();
+
+        if (!(execute_state->target == this->target))
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.fnb_bits);
         if (execute_state->result == RESULT_CRIT)
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1 * (p()->talents.fire_and_brimstone->ok() ? execute_state->n_targets : 1), p()->gains.incinerate_crits);
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits);
         if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T20, B2))
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1 * (p()->talents.fire_and_brimstone->ok() ? execute_state->n_targets : 1), p()->gains.destruction_t20_2pc);
-      }
-
-      virtual double composite_crit_chance() const override
-      {
-        double cc = warlock_spell_t::composite_crit_chance();
-
-        return cc;
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.destruction_t20_2pc);
       }
 
       virtual double composite_target_crit_chance(player_t* target) const override
       {
         double m = warlock_spell_t::composite_target_crit_chance(target);
-        auto td = this->td( target );
 
-        if (td->debuffs_chaotic_flames->check())
-          m += p()->find_spell(253092)->effectN(1).percent();
+        if (auto td = this->find_td( target ))
+        {
+          if (td->debuffs_chaotic_flames->check())
+            m += p()->find_spell(253092)->effectN(1).percent();
+        }
 
         return m;
       }
     };
+
     struct duplicate_chaos_bolt_t : public warlock_spell_t
     {
       player_t* original_target;
@@ -556,6 +609,7 @@ namespace warlock {
 
         if (p()->buffs.backdraft->check())
           t *= backdraft_gcd;
+
         if (t < min_gcd)
           t = min_gcd;
 
@@ -567,11 +621,10 @@ namespace warlock {
         warlock_spell_t::impact(s);
         if (p()->talents.eradication->ok() && result_is_hit(s->result))
           td(s->target)->debuffs_eradication->trigger();
-        if (p()->talents.internal_combustion->ok() && result_is_hit(s->result))
-          internal_combustion->execute();
+        trigger_internal_combustion(s);
         if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B2))
           td(s->target)->debuffs_chaotic_flames->trigger();
-        if (p()->legendary.magistrike && rng().roll(duplicate_chance))
+        if (!havocd && p()->legendary.magistrike && rng().roll(duplicate_chance))
         {
           duplicate->original_target = s->target;
           duplicate->target = s->target;
@@ -591,24 +644,29 @@ namespace warlock {
         }
       }
 
+      void trigger_internal_combustion(action_state_t* s)
+      {
+        if (!p()->talents.internal_combustion->ok())
+          return;
+
+        if (!result_is_hit(s->result))
+          return;
+
+        auto td = this->find_td(s->target);
+        if (!td || !td->dots_immolate->is_ticking())
+          return;
+
+        internal_combustion->execute();
+      }
+
       void execute() override
       {
         warlock_spell_t::execute();
 
         p()->buffs.embrace_chaos->trigger();
-        p()->buffs.backdraft->decrement();
-      }
 
-      double action_multiplier()const override
-      {
-        double m = warlock_spell_t::action_multiplier();
-
-        if (p()->buffs.grimoire_of_supremacy->check())
-        {
-          m *= 1.0 + p()->buffs.grimoire_of_supremacy->check_stack_value();
-        }
-
-        return m;
+        if(!havocd)
+          p()->buffs.backdraft->decrement();
       }
 
       // Force spell to always crit
@@ -629,6 +687,7 @@ namespace warlock {
         return state->result_total;
       }
     };
+
     struct channel_demonfire_tick_t : public warlock_spell_t
     {
       channel_demonfire_tick_t(warlock_t* p) :
@@ -646,6 +705,7 @@ namespace warlock {
         base_aoe_multiplier = data().effectN(2).sp_coeff() / data().effectN(1).sp_coeff();
       }
     };
+
     struct channel_demonfire_t : public warlock_spell_t
     {
       channel_demonfire_tick_t* channel_demonfire;
@@ -653,15 +713,14 @@ namespace warlock {
 
       channel_demonfire_t(warlock_t* p, const std::string& options_str) :
         warlock_spell_t("channel_demonfire", p, p -> talents.channel_demonfire),
+        channel_demonfire(new channel_demonfire_tick_t(p)),
         immolate_action_id(0)
       {
         parse_options(options_str);
         channeled = true;
         hasted_ticks = true;
         may_crit = false;
-        //can_havoc = true;
 
-        channel_demonfire = new channel_demonfire_tick_t(p);
         add_child(channel_demonfire);
       }
 
@@ -681,8 +740,10 @@ namespace warlock {
         while (i > 0)
         {
           i--;
-          player_t* target_ = target_cache.list[i];
-          if (!td(target_)->dots_immolate->is_ticking())
+          player_t* current_target = target_cache.list[i];
+
+          auto td = find_td(current_target);
+          if (!td || !td->dots_immolate->is_ticking())
             target_cache.list.erase(target_cache.list.begin() + i);
         }
         return target_cache.list;
@@ -695,7 +756,7 @@ namespace warlock {
 
         const auto& targets = target_list();
 
-        if (targets.size() > 0)
+        if (!targets.empty())
         {
           channel_demonfire->set_target(targets[rng().range(size_t(), targets.size())]);
           channel_demonfire->execute();
@@ -719,6 +780,7 @@ namespace warlock {
         return warlock_spell_t::ready();
       }
     };
+
     struct infernal_awakening_t : public warlock_spell_t
     {
       infernal_awakening_t(warlock_t* p) :
@@ -731,6 +793,7 @@ namespace warlock {
         trigger_gcd = timespan_t::zero();
       }
     };
+
     struct summon_infernal_t : public warlock_spell_t
     {
       infernal_awakening_t* infernal_awakening;
@@ -765,6 +828,7 @@ namespace warlock {
         }
       }
     };
+
     //AOE
     struct rain_of_fire_t : public warlock_spell_t
     {
@@ -782,6 +846,7 @@ namespace warlock {
         void impact(action_state_t* s) override
         {
           warlock_spell_t::impact(s);
+
           if (p()->talents.inferno && result_is_hit(s->result))
           {
             if (rng().roll(p()->talents.inferno->effectN(1).percent()))
@@ -825,6 +890,7 @@ namespace warlock {
           p()->buffs.alythesss_pyrogenics->trigger(1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() * player->cache.spell_haste());
       }
     };
+
     //AOE talents
     struct cataclysm_t : public warlock_spell_t
     {
@@ -876,7 +942,7 @@ namespace warlock {
       if (action_name == "shadowburn") return new                       shadowburn_t(this, options_str);
       if (action_name == "cataclysm") return new                        cataclysm_t(this, options_str);
       if (action_name == "channel_demonfire") return new                channel_demonfire_t(this, options_str);
-      if (action_name == "dark_soul") return new                        dark_soul_t(this, options_str);
+      if (action_name == "dark_soul_instability") return new            dark_soul_instability_t(this, options_str);
 
       return nullptr;
   }
@@ -885,24 +951,30 @@ namespace warlock {
     buffs.backdraft = make_buff(this, "backdraft", find_spell(117828))
       ->set_refresh_behavior(buff_refresh_behavior::DURATION)
       ->set_max_stack( find_spell(117828)->max_stacks() + ( talents.flashover ? talents.flashover->effectN(2).base_value() : 0 ) );
+
     buffs.embrace_chaos = make_buff(this, "embrace_chaos", sets->set(WARLOCK_DESTRUCTION, T19, B2)->effectN(1).trigger())
       ->set_chance(sets->set(WARLOCK_DESTRUCTION, T19, B2)->proc_chance());
+
     buffs.active_havoc = make_buff(this, "active_havoc")
       ->set_tick_behavior(buff_tick_behavior::NONE)
       ->set_refresh_behavior(buff_refresh_behavior::DURATION)
       ->set_duration(timespan_t::from_seconds(10));
+
     buffs.reverse_entropy = make_buff<haste_buff_t>(this, "reverse_entropy", talents.reverse_entropy)
       ->set_default_value(find_spell(266030)->effectN(1).percent())
       ->set_duration(find_spell(266030)->duration())
       ->set_refresh_behavior(buff_refresh_behavior::DURATION)
       ->set_trigger_spell(talents.reverse_entropy);
+
     buffs.grimoire_of_supremacy = make_buff(this, "grimoire_of_supremacy", find_spell(266091))
       ->set_default_value(find_spell(266091)->effectN(1).percent());
-    buffs.dark_soul_instability = make_buff(this, "dark_soul", talents.dark_soul_instability)
+
+    buffs.dark_soul_instability = make_buff(this, "dark_soul_instability", talents.dark_soul_instability)
       ->add_invalidate(CACHE_SPELL_CRIT_CHANCE)
       ->add_invalidate(CACHE_CRIT_CHANCE)
       ->set_default_value(talents.dark_soul_instability->effectN(1).percent());
   }
+
   void warlock_t::init_spells_destruction() {
     using namespace actions_destruction;
 
@@ -911,6 +983,7 @@ namespace warlock {
 
     spec.conflagrate                    = find_specialization_spell("Conflagrate");
     spec.conflagrate_2                  = find_specialization_spell(231793);
+    spec.havoc                          = find_specialization_spell("Havoc");
     // Talents
     talents.flashover                   = find_talent_spell("Flashover");
     talents.eradication                 = find_talent_spell("Eradication");
@@ -930,14 +1003,10 @@ namespace warlock {
     talents.channel_demonfire           = find_talent_spell("Channel Demonfire");
     talents.dark_soul_instability       = find_talent_spell("Dark Soul: Instability");
 
-    /*
-    if (specialization() == WARLOCK_DESTRUCTION)
-    {
-      active.roaring_blaze              = new roaring_blaze_t(this);
-      active.internal_combustion        = new internal_combustion_t(this);
-    }
-    */
+    // Azerite
+
   }
+
   void warlock_t::init_gains_destruction() {
     gains.conflagrate                   = get_gain("conflagrate");
     gains.shadowburn                    = get_gain("shadowburn");
@@ -946,32 +1015,53 @@ namespace warlock {
     gains.reverse_entropy               = get_gain("reverse_entropy");
     gains.incinerate                    = get_gain("incinerate");
     gains.incinerate_crits              = get_gain("incinerate_crits");
+    gains.fnb_bits                      = get_gain("fnb_bits");
+    gains.soul_fire                     = get_gain("soul_fire");
     gains.infernal                      = get_gain("infernal");
     gains.shadowburn_shard              = get_gain("shadowburn_shard");
     gains.inferno                       = get_gain("inferno");
     gains.destruction_t20_2pc           = get_gain("destruction_t20_2pc");
   }
+
   void warlock_t::init_rng_destruction() {
   }
+
   void warlock_t::init_procs_destruction() {
     procs.reverse_entropy = get_proc("reverse_entropy");
   }
+
   void warlock_t::create_options_destruction() {
   }
 
   void warlock_t::create_apl_destruction() {
-      action_priority_list_t* def = get_action_priority_list("default");
+    action_priority_list_t* def = get_action_priority_list("default");
+    action_priority_list_t* aoe = get_action_priority_list("aoe");
 
-      def -> add_action("immolate,if=refreshable");
-      def -> add_action("summon_infernal");
-      def -> add_talent(this, "Dark SOul", "if=soul_shard>=4");
-      def -> add_talent(this, "Channel Demonfire");
-      def -> add_action("chaos_bolt,if=!talent.internal_combustion.enabled&soul_shard>=4|(talent.eradication.enabled&debuff.eradication.remains<=cast_time)|buff.dark_soul.remains>cast_time");
-      def -> add_action("chaos_bolt,if=talent.internal_combustion.enabled&dot.immolate.remains>8|soul_shard=5");
-      def -> add_talent(this, "Soul Fire");
-      def -> add_talent(this, "Shadowburn", "if=soul_shard<=4");
-      def -> add_action("conflagrate,if=(talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2)");
-      def -> add_action("incinerate");
+    def->add_action("run_action_list,name=aoe,if=spell_targets.infernal_awakening>=3");
+    def->add_action("immolate,cycle_targets=1,if=refreshable");
+    def->add_action("havoc,cycle_targets=1,if=!(target=sim.target)");
+    def->add_action("summon_infernal");
+    def->add_talent(this, "Dark Soul: Instability");
+    def->add_talent(this, "Soul Fire", "cycle_targets=1,if=!debuff.havoc.remains");
+    def->add_talent(this, "Channel Demonfire", "cycle_targets=1,if=target=sim.target");
+    def->add_talent(this, "Cataclysm", "cycle_targets=1,if=target=sim.target");
+    def->add_action("chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&!talent.internal_combustion.enabled&soul_shard>=4|(talent.eradication.enabled&debuff.eradication.remains<=cast_time)|buff.dark_soul_instability.remains>cast_time|pet.infernal.active&talent.grimoire_of_supremacy.enabled");
+    def->add_action("chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.internal_combustion.enabled&dot.immolate.remains>8|soul_shard=5");
+    def->add_action("conflagrate,cycle_targets=1,if=target=sim.target&(talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2)");
+    def->add_talent(this, "Sahdowburn", ",cycle_targets=1,if=target=sim.target&charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time");
+    def->add_action("incinerate,cycle_targets=1,if=target=sim.target");
+
+    aoe->add_action("summon_infernal");
+    aoe->add_talent(this, "Dark Soul: Instability");
+    aoe->add_talent(this, "Cataclysm");
+    aoe->add_action("rain_of_fire,if=soul_shard>=4.5");
+    aoe->add_action("immolate,if=!remains");
+    aoe->add_talent(this, "Channel Demonfire");
+    aoe->add_action("immolate,cycle_targets=1,if=refreshable&(!talent.fire_and_brimstone.enabled|talent.cataclysm.enabled&cooldown.cataclysm.remains>=12|talent.inferno.enabled)");
+    aoe->add_action("rain_of_fire");
+    aoe->add_action("conflagrate,if=(talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2)");
+    aoe->add_talent(this, "Shadowburn", "if=!talent.fire_and_brimstone.enabled&(charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time)");
+    aoe->add_action("incinerate");
   }
 
   using namespace unique_gear;

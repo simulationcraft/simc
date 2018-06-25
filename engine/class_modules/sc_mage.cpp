@@ -14,6 +14,10 @@ namespace { // UNNAMED NAMESPACE
 // Forward declarations
 struct mage_t;
 
+namespace buffs {
+  struct touch_of_the_magi_t;
+}
+
 namespace pets {
   namespace water_elemental {
     struct water_elemental_pet_t;
@@ -93,9 +97,11 @@ struct mage_td_t : public actor_target_data_t
 
   struct debuffs_t
   {
-    buff_t* erosion;
     buff_t* winters_chill;
     buff_t* frozen;
+
+    buffs::touch_of_the_magi_t* touch_of_the_magi;
+
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -319,7 +325,7 @@ public:
   event_t* ignite_spread_event;
 
   // Evocation
-  event_t* temporal_flux_event;
+
 
   // Active
   player_t* last_bomb_target;
@@ -345,10 +351,10 @@ public:
   {
     action_t* arcane_assault;
     action_t* conflagration_flare_up;
+    action_t* touch_of_the_magi_explosion;
     action_t* legendary_arcane_orb;
     action_t* legendary_meteor;
     action_t* legendary_comet_storm;
-    action_t* unstable_magic_explosion;
   } action;
 
   // Benefits
@@ -594,8 +600,8 @@ public:
     const spell_data_t* frigid_winds; // NYI
 
     // Tier 90
-    const spell_data_t* unstable_magic;
-    const spell_data_t* erosion;
+    const spell_data_t* reverberate;
+    const spell_data_t* touch_of_the_magi;
     const spell_data_t* nether_tempest;
     const spell_data_t* flame_patch;
     const spell_data_t* conflagration;
@@ -606,7 +612,6 @@ public:
 
     // Tier 100
     const spell_data_t* overpowered;
-    const spell_data_t* temporal_flux;
     const spell_data_t* arcane_orb;
     const spell_data_t* kindling;
     const spell_data_t* pyroclasm;
@@ -632,6 +637,7 @@ public:
   virtual void        init_base_stats() override;
   virtual void        create_buffs() override;
   virtual void        create_options() override;
+  virtual void        init_assessors() override;
   virtual void        init_gains() override;
   virtual void        init_procs() override;
   virtual void        init_benefits() override;
@@ -641,6 +647,7 @@ public:
   virtual void        recalculate_resource_max( resource_e rt ) override;
   virtual void        reset() override;
   virtual expr_t*     create_expression( const std::string& name ) override;
+  virtual expr_t*     create_action_expression( action_t&, const std::string& name ) override;
   virtual action_t*   create_action( const std::string& name, const std::string& options ) override;
   virtual bool        create_actions() override;
   virtual void        create_pets() override;
@@ -749,7 +756,6 @@ struct mage_spell_base_t : public spell_t
 
     // Misc
     bool combustion;
-    bool erosion;
     bool ice_floes;
     bool shatter;
 
@@ -763,7 +769,6 @@ struct mage_spell_base_t : public spell_t
       incanters_flow( true ),
       rune_of_power( true ),
       combustion( true ),
-      erosion( true ),
       ice_floes( false ),
       shatter( false )
     { }
@@ -827,85 +832,6 @@ struct mage_spell_base_t : public spell_t
     return c;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const override
-  {
-    double tm = spell_t::composite_target_multiplier( target );
-
-    if ( affected_by.erosion && mage -> target_data[ target ] )
-    {
-      tm *= 1.0 + mage -> target_data[ target ] -> debuffs.erosion -> check_stack_value();
-    }
-
-    return tm;
-  }
-
-  expr_t* create_expression(const std::string& name) override
-  {
-    std::vector<std::string> splits = util::string_split( name_str, "." );
-
-    // Firestarter expressions ==================================================
-    if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "firestarter" ) )
-    {
-      enum firestarter_expr_type_e
-      {
-        FIRESTARTER_ACTIVE,
-        FIRESTARTER_REMAINS
-      };
-
-      struct firestarter_expr_t : public expr_t
-      {
-        mage_t& mage;
-        action_t* a;
-        firestarter_expr_type_e type;
-
-        firestarter_expr_t( mage_t& m, const std::string& name, action_t* a, firestarter_expr_type_e type ) :
-          expr_t( name ), mage( m ), a( a ), type( type )
-        { }
-
-        double evaluate() override
-        {
-          if ( ! mage.talents.firestarter -> ok() )
-            return 0.0;
-
-          timespan_t remains;
-
-          if ( mage.firestarter_time > timespan_t::zero() )
-          {
-            remains = std::max( timespan_t::zero(), mage.firestarter_time - mage.sim -> current_time() );
-          }
-          else
-          {
-            remains = a -> target -> time_to_percent( mage.talents.firestarter -> effectN( 1 ).base_value() );
-          }
-
-          switch ( type )
-          {
-            case FIRESTARTER_ACTIVE:
-              return static_cast<double>( remains > timespan_t::zero() );
-            case FIRESTARTER_REMAINS:
-              return remains.total_seconds();
-            default:
-              return 0.0;
-          }
-        }
-      };
-
-      if ( util::str_compare_ci( splits[ 1 ], "active" ) )
-      {
-        return new firestarter_expr_t( *mage, name_str, this, FIRESTARTER_ACTIVE );
-      }
-      else if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
-      {
-        return new firestarter_expr_t( *mage, name_str, this, FIRESTARTER_REMAINS );
-      }
-      else
-      {
-        sim -> errorf( "Player %s firestarer expression: unknown operation '%s'", name.c_str(), splits[ 1 ].c_str() );
-      }
-    }
-
-    return spell_t::create_expression( name );
-  }
 };
 
 namespace pets
@@ -944,7 +870,6 @@ struct mage_pet_spell_t : public mage_spell_base_t
     affected_by.rune_of_power = false;
 
     affected_by.combustion = false;
-    affected_by.erosion = false;
   }
 
   mage_t* o()
@@ -1161,86 +1086,59 @@ action_t* mirror_image_pet_t::create_action( const std::string& name,
 }  // pets
 
 namespace buffs {
-struct erosion_t : public buff_t
+
+// Touch of the Magi debuff ===================================================
+
+struct touch_of_the_magi_t : public buff_t
 {
-  // Erosion debuff =============================================================
+  double accumulated_damage;
 
-  struct erosion_event_t : public event_t
+  touch_of_the_magi_t( mage_td_t* td ) :
+    buff_t( buff_creator_t( *td, "touch_of_the_magi", td -> source -> find_spell( 210824 ) ) ),
+    accumulated_damage( 0.0 )
   {
-    erosion_t* debuff;
-    const spell_data_t* data;
+    const spell_data_t* data = source -> find_spell( 210725 );
 
-    static timespan_t delta_time( const spell_data_t* data, bool triggered )
-    {
-      // Erosion debuff decays 3 seconds after direct application,
-      // followed by a 1 stack every second
-      if ( triggered )
-      {
-        return data -> duration();
-      }
-      return data -> effectN( 1 ).period();
-    }
-
-    erosion_event_t( actor_t& m, erosion_t* _debuff, const spell_data_t* _data, bool triggered = false ) :
-      event_t( m, delta_time( _data, triggered ) ),
-      debuff( _debuff ),
-      data( _data )
-    { }
-
-    virtual const char* name() const override
-    { return "erosion_decay_event"; }
-
-    virtual void execute() override
-    {
-      debuff -> decay_event = nullptr;
-      debuff -> decrement();
-
-      // Always update the parent debuff's reference to the decay event, so that it
-      // can be cancelled upon a new application of the debuff
-      if ( debuff -> check() > 0 )
-      {
-        debuff -> decay_event = make_event<erosion_event_t>( sim(), *debuff -> source, debuff, data );
-      }
-    }
-  };
-
-  const spell_data_t* erosion_event_data;
-  event_t* decay_event;
-
-  erosion_t( mage_td_t* td ) :
-    buff_t( *td, "erosion", td -> source -> find_spell( 210134 ) ),
-    erosion_event_data( td -> source -> find_spell( 210154 ) ),
-    decay_event( nullptr )
-  {
-    set_default_value( data().effectN( 1 ).percent() );
-  }
-
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    bool triggered = buff_t::trigger( stacks, value, chance, duration );
-    if ( triggered )
-    {
-      event_t::cancel( decay_event );
-      decay_event = make_event<erosion_event_t>( *sim, *source, this, erosion_event_data, true );
-    }
-
-    return triggered;
-  }
-
-  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-    event_t::cancel( decay_event );
+    default_chance = data -> proc_chance();
+    set_cooldown( data -> internal_cooldown() );
   }
 
   virtual void reset() override
   {
-    event_t::cancel( decay_event );
     buff_t::reset();
+    accumulated_damage = 0.0;
+  }
+
+  virtual void expire_override( int stacks, timespan_t duration ) override
+  {
+    buff_t::expire_override( stacks, duration );
+
+    auto mage = debug_cast<mage_t*>( source );
+    assert( mage -> action.touch_of_the_magi_explosion );
+
+    mage -> action.touch_of_the_magi_explosion -> set_target( player );
+    mage -> action.touch_of_the_magi_explosion -> base_dd_min = accumulated_damage;
+    mage -> action.touch_of_the_magi_explosion -> base_dd_max = accumulated_damage;
+    mage -> action.touch_of_the_magi_explosion -> execute();
+
+    accumulated_damage = 0.0;
+  }
+
+  double accumulate_damage( action_state_t* state )
+  {
+    if ( sim -> debug )
+    {
+      sim -> out_debug.printf(
+        "%s's %s accumulates %f additional damage: %f -> %f",
+        player -> name(), name(), state -> result_total,
+        accumulated_damage, accumulated_damage + state -> result_total
+      );
+    }
+
+    accumulated_damage += state -> result_total;
+    return accumulated_damage;
   }
 };
-
-
 // Custom buffs ===============================================================
 struct brain_freeze_buff_t : public buff_t
 {
@@ -1592,7 +1490,6 @@ public:
     }
   }
 
-  void trigger_unstable_magic( action_state_t* state );
 
   // Helper methods for 7.2.5 fire shoulders and frost head.
   void trigger_legendary_effect( buff_t* tracking_buff, buff_t* primed_buff, action_t* action, player_t* target )
@@ -1628,23 +1525,11 @@ typedef residual_action::residual_periodic_action_t<mage_spell_t> residual_actio
 
 struct arcane_mage_spell_t : public mage_spell_t
 {
-  bool triggers_erosion;
 
   arcane_mage_spell_t( const std::string& n, mage_t* p,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    mage_spell_t( n, p, s ),
-    triggers_erosion( true )
+    mage_spell_t( n, p, s )
   { }
-
-  virtual void init() override
-  {
-    mage_spell_t::init();
-
-    if ( ! harmful )
-    {
-      triggers_erosion = false;
-    }
-  }
 
   double savant_damage_bonus() const
   {
@@ -1696,15 +1581,6 @@ struct arcane_mage_spell_t : public mage_spell_t
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
   }
 
-  virtual void impact( action_state_t* s ) override
-  {
-    mage_spell_t::impact( s );
-
-    if ( p() -> talents.erosion -> ok() && result_is_hit( s -> result ) && triggers_erosion )
-    {
-      td( s -> target ) -> debuffs.erosion -> trigger();
-    }
-  }
 };
 
 
@@ -2341,10 +2217,6 @@ struct arcane_blast_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
 
-    if ( p -> specialization() == MAGE_ARCANE && p -> action.unstable_magic_explosion )
-    {
-      add_child( p -> action.unstable_magic_explosion );
-    }
   }
 
   virtual double cost() const override
@@ -2420,11 +2292,14 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-    arcane_mage_spell_t::impact( s );
+      arcane_mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
-      trigger_unstable_magic( s );
+        if ( p() -> talents.touch_of_the_magi -> ok() )
+        {
+            p() -> get_target_data( s -> target ) -> debuffs.touch_of_the_magi -> trigger();
+        }
     }
   }
 
@@ -2465,6 +2340,11 @@ struct arcane_explosion_t : public arcane_mage_spell_t
       trigger_arcane_charge();
     }
 
+    if ( p() -> talents.reverberate -> ok() && num_targets_hit > 2 &&
+         rng().roll( p() -> talents.reverberate -> effectN( 1 ).percent() ) )
+    {
+        trigger_arcane_charge();
+    }
     p() -> buffs.quick_thinker -> trigger();
   }
 };
@@ -2544,7 +2424,8 @@ struct am_state_t : public mage_spell_state_t
 
 struct arcane_missiles_t : public arcane_mage_spell_t
 {
-  double amplification_reduction;
+  double cc_duration_reduction;
+  double cc_tick_time_reduction;
 
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
     arcane_mage_spell_t( "arcane_missiles", p,
@@ -2552,7 +2433,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     may_miss = false;
-    triggers_erosion = false;
     dot_duration      = data().duration();
     base_tick_time    = data().effectN( 2 ).period();
     tick_zero         = true;
@@ -2561,10 +2441,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
 
-    if ( p -> talents.amplification -> ok() )
-    {
-      amplification_reduction = p -> find_spell( 277726 ) -> effectN( 1 ).percent();
-    }
+    auto cc_data = p -> find_spell( 277726 );
+    cc_duration_reduction  = cc_data -> effectN( 1 ).percent();
+    cc_tick_time_reduction = cc_data -> effectN( 2 ).percent() + p -> talents.amplification -> effectN( 1 ).percent();
   }
 
   // Flag Arcane Missiles as direct damage for triggering effects
@@ -2582,9 +2461,9 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::snapshot_state( state, rt );
 
-    if ( p() -> talents.amplification -> ok() && p() -> buffs.clearcasting -> check() )
+    if ( p() -> buffs.clearcasting -> check() )
     {
-      debug_cast<am_state_t*>( state ) -> tick_time_multiplier = 1.0 + amplification_reduction;
+      debug_cast<am_state_t*>( state ) -> tick_time_multiplier = 1.0 + cc_tick_time_reduction;
     }
   }
 
@@ -2594,6 +2473,12 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     // to make sure it has the correct number of ticks.
 
     timespan_t full_duration = dot_duration * s -> haste;
+
+    if ( p() -> buffs.clearcasting -> check() )
+    {
+      full_duration *= 1.0 + cc_duration_reduction;
+    }
+
     timespan_t tick_duration = tick_time( s );
 
     double ticks = std::round( full_duration / tick_duration );
@@ -2710,7 +2595,6 @@ struct arcane_orb_t : public arcane_mage_spell_t
 
     may_miss = false;
     may_crit = false;
-    triggers_erosion = false;
 
     if ( legendary )
     {
@@ -3153,26 +3037,6 @@ struct evocation_t : public arcane_mage_spell_t
     mage -> buffs.evocation -> trigger( 1, mana_regen_multiplier, -1.0, duration );
   }
 
-  struct temporal_flux_event_t : public event_t
-  {
-    mage_t* mage;
-
-    temporal_flux_event_t( mage_t* m, timespan_t delay )
-      : event_t( *m, delay ), mage( m )
-    { }
-
-    virtual const char* name() const override
-    {
-      return "temporal_flux_event";
-    }
-
-    virtual void execute() override
-    {
-      mage -> temporal_flux_event = nullptr;
-      trigger_evocation_buff( mage );
-    }
-  };
-
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
@@ -3186,11 +3050,6 @@ struct evocation_t : public arcane_mage_spell_t
 
     p() -> buffs.evocation -> expire();
 
-    if ( p() -> talents.temporal_flux -> ok() )
-    {
-      timespan_t delay = 1000 * p() -> talents.temporal_flux -> effectN( 1 ).time_value();
-      p() -> temporal_flux_event = make_event<temporal_flux_event_t>( *sim, p(), delay );
-    }
   }
 
   virtual bool usable_moving() const override
@@ -4928,7 +4787,6 @@ struct slow_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     ignore_false_positive = true;
-    triggers_erosion = false;
   }
 };
 
@@ -5077,6 +4935,47 @@ struct time_warp_t : public mage_spell_t
   }
 };
 
+// Touch of the Magi ==========================================================
+
+struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
+{
+  touch_of_the_magi_explosion_t( mage_t* p ) :
+    arcane_mage_spell_t( "touch_of_the_magi", p, p -> find_spell( 210833 ) )
+  {
+    background = true;
+    may_miss = may_crit = callbacks = false;
+    aoe = -1;
+    base_dd_min = base_dd_max = 1.0;
+  }
+
+  virtual void init() override
+  {
+    mage_spell_t::init();
+    // disable the snapshot_flags for all multipliers
+    snapshot_flags &= STATE_NO_MULTIPLIER;
+    snapshot_flags |= STATE_TGT_MUL_DA;
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = arcane_mage_spell_t::composite_target_multiplier( target );
+
+    // It seems that TotM explosion only double dips on target based damage reductions
+    // and not target based damage increases.
+    m = std::min( m, 1.0 );
+
+    return m;
+  }
+
+  virtual void execute() override
+  {
+    double mult = p() -> talents.touch_of_the_magi -> effectN( 1 ).percent();
+    base_dd_min *= mult;
+    base_dd_max *= mult;
+
+    mage_spell_t::execute();
+  }
+};
 
 // ============================================================================
 // Mage Custom Actions
@@ -5191,69 +5090,6 @@ struct stop_burn_phase_t : public action_t
     return action_t::ready();
   }
 };
-
-
-// Unstable Magic =============================================================
-
-struct unstable_magic_explosion_t : public mage_spell_t
-{
-  unstable_magic_explosion_t( mage_t* p ) :
-    mage_spell_t( "unstable_magic_explosion", p, p -> talents.unstable_magic )
-  {
-    may_miss = may_crit = false;
-    callbacks = false;
-    aoe = -1;
-    background = true;
-
-    base_dd_min = base_dd_max = 1.0;
-    school = SCHOOL_ARCANE;
-  }
-
-  virtual void init() override
-  {
-    mage_spell_t::init();
-    // disable the snapshot_flags for all multipliers
-    snapshot_flags &= STATE_NO_MULTIPLIER;
-    snapshot_flags |= STATE_TGT_MUL_DA;
-  }
-
-  virtual void execute() override
-  {
-    double mult = data().effectN( 4 ).percent();
-    base_dd_min *= mult;
-    base_dd_max *= mult;
-
-    mage_spell_t::execute();
-  }
-};
-
-void mage_spell_t::trigger_unstable_magic( action_state_t* s )
-{
-  if ( ! p() -> talents.unstable_magic -> ok() )
-    return;
-
-  assert( p() -> action.unstable_magic_explosion );
-
-  double um_proc_rate;
-  switch ( p() -> specialization() )
-  {
-    case MAGE_ARCANE:
-      um_proc_rate = p() -> action.unstable_magic_explosion
-                         -> data().effectN( 1 ).percent();
-      break;
-    default:
-      um_proc_rate = 0.0;
-      break;
-  }
-
-  if ( p() -> rng().roll( um_proc_rate ) )
-  {
-    p() -> action.unstable_magic_explosion -> set_target( s -> target );
-    p() -> action.unstable_magic_explosion -> base_dd_min = s -> result_total;
-    p() -> action.unstable_magic_explosion -> base_dd_max = s -> result_total;
-    p() -> action.unstable_magic_explosion -> execute();
-  }
-}
 
 // Proxy Freeze action ========================================================
 
@@ -5531,9 +5367,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 {
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
 
-  debuffs.erosion       = make_buff<buffs::erosion_t>( this );
   debuffs.frozen        = make_buff( *this, "frozen" )
                             -> set_duration( timespan_t::from_seconds( 0.5 ) );
+  debuffs.touch_of_the_magi = new buffs::touch_of_the_magi_t( this );
   debuffs.winters_chill = make_buff( *this, "winters_chill", mage -> find_spell( 228358 ) )
                             -> set_chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
 }
@@ -5544,7 +5380,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   icicle( icicles_t() ),
   ignite( nullptr ),
   ignite_spread_event( nullptr ),
-  temporal_flux_event( nullptr ),
   last_bomb_target( nullptr ),
   distance_from_rune( 0.0 ),
   firestarter_time( timespan_t::zero() ),
@@ -5580,11 +5415,11 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
     // Soul of the Archmage
     if ( find_item( 151642 ) )
     {
-      // TODO: Ring is giving AF, SI and the new NYI Temporal Flux on beta, probably not intended.
+      // TODO: Ring is giving AF, SI and the new Time Anomaly on beta, probably not intended.
       switch ( specialization() )
       {
         case MAGE_ARCANE:
-          return spell -> id() == 234302; // Temporal Flux
+          return spell -> id() == 210805; // Time Anomaly
         case MAGE_FIRE:
           return spell -> id() == 205029; // Flame On
         case MAGE_FROST:
@@ -5747,9 +5582,9 @@ bool mage_t::create_actions()
     action.conflagration_flare_up = new conflagration_flare_up_t( this );
   }
 
-  if ( talents.unstable_magic -> ok() )
+  if ( talents.touch_of_the_magi -> ok() )
   {
-    action.unstable_magic_explosion = new unstable_magic_explosion_t( this );
+    action.touch_of_the_magi_explosion = new touch_of_the_magi_explosion_t( this );
   }
 
   // Global actions for 7.2.5 legendaries.
@@ -5787,7 +5622,7 @@ std::string mage_t::create_profile( save_e save_type )
 {
   std::string profile = player_t::create_profile( save_type );
 
-  if ( save_type == SAVE_ALL )
+  if ( save_type & SAVE_PLAYER )
   {
     if ( firestarter_time > timespan_t::zero() )
     {
@@ -5991,8 +5826,8 @@ void mage_t::init_spells()
   talents.frenetic_speed     = find_talent_spell( "Frenetic Speed"     );
   talents.frigid_winds       = find_talent_spell( "Frigid Winds"       );
   // Tier 90
-  talents.unstable_magic     = find_talent_spell( "Unstable Magic"     );
-  talents.erosion            = find_talent_spell( "Erosion"            );
+  talents.reverberate        = find_talent_spell( "Reverberate"        );
+  talents.touch_of_the_magi  = find_talent_spell( "Touch of the Magi"  );
   talents.nether_tempest     = find_talent_spell( "Nether Tempest"     );
   talents.flame_patch        = find_talent_spell( "Flame Patch"        );
   talents.conflagration      = find_talent_spell( "Conflagration"      );
@@ -6002,7 +5837,6 @@ void mage_t::init_spells()
   talents.comet_storm        = find_talent_spell( "Comet Storm"        );
   // Tier 100
   talents.overpowered        = find_talent_spell( "Overpowered"        );
-  talents.temporal_flux      = find_talent_spell( "Temporal Flux"      );
   talents.arcane_orb         = find_talent_spell( "Arcane Orb"         );
   talents.kindling           = find_talent_spell( "Kindling"           );
   talents.pyroclasm          = find_talent_spell( "Pyroclasm"          );
@@ -6346,6 +6180,33 @@ void mage_t::init_uptimes()
 
 }
 
+// mage_t::init_assessors =====================================================
+void mage_t::init_assessors()
+{
+  player_t::init_assessors();
+
+  if ( talents.touch_of_the_magi -> ok() )
+  {
+    auto assessor_fn = [ this ] ( dmg_e, action_state_t* state ) {
+      buffs::touch_of_the_magi_t* buff =
+        get_target_data( state -> target ) -> debuffs.touch_of_the_magi;
+
+      if ( buff -> check() )
+      {
+        buff -> accumulate_damage( state );
+      }
+
+      return assessor::CONTINUE;
+    };
+
+    assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+
+    for ( auto pet : pet_list )
+    {
+      pet -> assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, assessor_fn );
+    }
+  }
+}
 
 // mage_t::init_actions =====================================================
 
@@ -7005,7 +6866,6 @@ void mage_t::reset()
   icicles.clear();
   event_t::cancel( icicle_event );
   event_t::cancel( ignite_spread_event );
-  event_t::cancel( temporal_flux_event );
 
   if ( spec.savant -> ok() )
   {
@@ -7117,6 +6977,87 @@ void mage_t::combat_end()
     uptime.burn_phase -> update( false, sim -> current_time() );
     uptime.conserve_phase -> update( false, sim -> current_time() );
   }
+}
+
+/**
+ * Mage specific action expressions
+ *
+ * Use this function for expressions which are bound to some action property (eg. target, cast_time, etc.) and not just
+ * to the player itself. For those use the normal mage_t::create_expression override.
+ */
+expr_t* mage_t::create_action_expression( action_t& action, const std::string& name )
+{
+  struct mage_action_expr_t : public expr_t
+  {
+    action_t& action;
+    mage_t& mage;
+    mage_action_expr_t( mage_t& mage, action_t& action, const std::string& n ) :
+      expr_t( n ), action( action ), mage( mage )
+    { }
+  };
+
+  std::vector<std::string> splits = util::string_split( name, "." );
+
+  // Firestarter expressions ==================================================
+  if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "firestarter" ) )
+  {
+    enum firestarter_expr_type_e
+    {
+      FIRESTARTER_ACTIVE,
+      FIRESTARTER_REMAINS
+    };
+
+    struct firestarter_expr_t : public mage_action_expr_t
+    {
+      firestarter_expr_type_e type;
+
+      firestarter_expr_t( mage_t& mage, action_t& action, const std::string& name, firestarter_expr_type_e type ) :
+        mage_action_expr_t( mage, action, name ), type( type )
+      { }
+
+      double evaluate() override
+      {
+        if ( ! mage.talents.firestarter -> ok() )
+          return 0.0;
+
+        timespan_t remains;
+
+        if ( mage.firestarter_time > timespan_t::zero() )
+        {
+          remains = std::max( timespan_t::zero(), mage.firestarter_time - mage.sim -> current_time() );
+        }
+        else
+        {
+          remains = action.target -> time_to_percent( mage.talents.firestarter -> effectN( 1 ).base_value() );
+        }
+
+        switch ( type )
+        {
+          case FIRESTARTER_ACTIVE:
+            return static_cast<double>( remains > timespan_t::zero() );
+          case FIRESTARTER_REMAINS:
+            return remains.total_seconds();
+          default:
+            return 0.0;
+        }
+      }
+    };
+
+    if ( util::str_compare_ci( splits[ 1 ], "active" ) )
+    {
+      return new firestarter_expr_t( *this, action, name, FIRESTARTER_ACTIVE );
+    }
+    else if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
+    {
+      return new firestarter_expr_t( *this, action, name, FIRESTARTER_REMAINS );
+    }
+    else
+    {
+      throw std::invalid_argument(fmt::format("Unknown firestarer operation '{}'", splits[ 1 ] ));
+    }
+  }
+
+  return player_t::create_action_expression( action, name );
 }
 
 // mage_t::create_expression ================================================
@@ -7242,52 +7183,6 @@ expr_t* mage_t::create_expression( const std::string& name_str )
   }
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
-
-
-  // Temporal Flux expressions ================================================
-  if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "temporal_flux_delay" ) )
-  {
-    enum temporal_flux_expr_type_e
-    {
-      DELAY_ACTIVE,
-      DELAY_REMAINS
-    };
-
-    struct temporal_flux_expr_t : public mage_expr_t
-    {
-      temporal_flux_expr_type_e type;
-
-      temporal_flux_expr_t( mage_t& m, const std::string& name, temporal_flux_expr_type_e type ) :
-        mage_expr_t( name, m ), type( type )
-      { }
-
-      virtual double evaluate() override
-      {
-        switch ( type )
-        {
-          case DELAY_ACTIVE:
-            return mage.temporal_flux_event ? 1.0 : 0.0;
-          case DELAY_REMAINS:
-            return mage.temporal_flux_event ? mage.temporal_flux_event -> remains().total_seconds() : 0.0;
-          default:
-            return 0.0;
-        }
-      }
-    };
-
-    if ( util::str_compare_ci( splits[ 1 ], "active" ) )
-    {
-      return new temporal_flux_expr_t( *this, name_str, DELAY_ACTIVE );
-    }
-    else if ( util::str_compare_ci( splits[ 1 ], "remains" ) )
-    {
-      return new temporal_flux_expr_t( *this, name_str, DELAY_REMAINS );
-    }
-    else
-    {
-      sim -> errorf( "Player %s temporal_flux_delay expression: unknown operation '%s'", name(), splits[ 1 ].c_str() );
-    }
-  }
 
   // Ground AoE expressions ===================================================
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )

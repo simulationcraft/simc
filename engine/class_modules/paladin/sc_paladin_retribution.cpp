@@ -284,10 +284,6 @@ struct blade_of_justice_t : public holy_power_generator_t
     : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ) )
   {
     parse_options( options_str );
-
-    // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
-    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
-    base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
   }
 
   virtual double action_multiplier() const override
@@ -465,6 +461,86 @@ struct templars_verdict_t : public holy_power_consumer_t
     }
   }
 };
+
+// Judgment - Retribution =================================================================
+
+struct judgment_ret_t : public paladin_melee_attack_t
+{
+  judgment_ret_t( paladin_t* p, const std::string& options_str )
+    : paladin_melee_attack_t( "judgment", p, p -> find_specialization_spell( "Judgment" ) )
+  {
+    parse_options( options_str );
+
+    // no weapon multiplier
+    weapon_multiplier = 0.0;
+    may_block = may_parry = may_dodge = false;
+    cooldown -> charges = 1;
+
+    // TODO: this is a hack; figure out what's really going on here.
+    if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
+      base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
+
+    // TODO: more hax; really this is spellpower but the ap -> sp conversion seems to also take into account weapondps
+    attack_power_mod.direct = spell_power_mod.direct;
+    spell_power_mod.direct = 0;
+  }
+
+  virtual void execute() override
+  {
+    paladin_melee_attack_t::execute();
+
+    if ( p() -> talents.fist_of_justice -> ok() )
+    {
+      double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
+      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
+    }
+    if ( p() -> talents.zeal -> ok() )
+    {
+      p() -> buffs.zeal -> trigger( p() -> talents.zeal -> effectN( 1 ).base_value() );
+    }
+    if ( p() -> talents.divine_judgment -> ok() )
+    {
+      p() -> buffs.divine_judgment -> expire();
+    }
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
+      p() -> buffs.sacred_judgment -> trigger();
+    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B4 ) )
+      p() -> buffs.ret_t21_4p -> trigger();
+  }
+
+  proc_types proc_type() const override
+  {
+    return PROC1_MELEE_ABILITY;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+    if ( p() -> buffs.divine_judgment -> up() )
+      am *= 1.0 + p() -> buffs.divine_judgment -> data().effectN( 1 ).percent() * p() -> buffs.divine_judgment -> stack();
+    return am;
+  }
+
+  // Special things that happen when Judgment damages target
+  void impact( action_state_t* s ) override
+  {
+    if ( result_is_hit( s -> result ) )
+    {
+      td( s -> target ) -> buffs.debuffs_judgment -> trigger();
+
+      if ( p() -> talents.judgment_of_light -> ok() )
+        td( s -> target ) -> buffs.judgment_of_light -> trigger( 40 );
+
+      if ( p() -> specialization() == PALADIN_RETRIBUTION )
+      {
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.judgment );
+      }
+    }
+
+    paladin_melee_attack_t::impact( s );
+  }
+};
+
 
 // Justicar's Vengeance
 struct justicars_vengeance_t : public holy_power_consumer_t
@@ -672,6 +748,11 @@ action_t* paladin_t::create_action_retribution( const std::string& name, const s
   if ( name == "wake_of_ashes"             ) return new wake_of_ashes_t            ( this, options_str );
   if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
   if ( name == "shield_of_vengeance"       ) return new shield_of_vengeance_t      ( this, options_str );
+
+  if ( specialization() == PALADIN_RETRIBUTION )
+  {
+    if ( name == "judgment") return new judgment_ret_t( this, options_str );
+  }
 
   return nullptr;
 }

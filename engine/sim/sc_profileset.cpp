@@ -540,7 +540,6 @@ bool profilesets_t::parse( sim_t* sim )
 
       return util::str_compare_ci( name, "output" ) ||
              util::str_compare_ci( name, "html" ) ||
-             util::str_compare_ci( name, "xml" ) ||
              util::str_compare_ci( name, "json2" );
     } ) != profileset_opts.end();
 

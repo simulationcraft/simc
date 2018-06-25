@@ -861,6 +861,15 @@ bool parse_process_priority( sim_t*             sim,
   return true;
 }
 
+bool parse_target_error_role( sim_t * sim,
+                              const std::string& /* name */,
+                              const std::string& value )
+{
+  sim -> target_error_role = util::parse_role_type( value );
+
+  return true;
+}
+
 bool parse_maximize_reporting( sim_t*             sim,
                                    const std::string& name,
                                    const std::string& v )
@@ -1335,6 +1344,7 @@ sim_t::sim_t() :
   iterations( 0 ),
   canceled( 0 ),
   target_error( 0 ),
+  target_error_role( ROLE_DPS ),
   current_error( 0 ),
   current_mean( 0 ),
   analyze_error_interval( 100 ),
@@ -1369,7 +1379,11 @@ sim_t::sim_t() :
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
   fixed_time( false ), optimize_expressions( false ),
   current_slot( -1 ),
-  optimal_raid( 0 ), log( 0 ), debug_each( 0 ), save_profiles( 0 ), default_actions( 0 ),
+  optimal_raid( 0 ), log( 0 ),
+  debug_each( 0 ),
+  save_profiles( false ),
+  save_profile_with_actions( true ),
+  default_actions( false ),
   normalized_stat( STAT_NONE ),
   default_region_str( "us" ),
   save_prefix_str( "save_" ),
@@ -2252,7 +2266,7 @@ bool sim_t::init_actor( player_t* p )
     if ( m ) m -> init( p );
   }
 
-  if ( default_actions != 0 && !p -> is_pet() )
+  if ( default_actions && !p -> is_pet() )
   {
     p -> clear_action_priority_lists();
     p -> action_list_str.clear();
@@ -3093,11 +3107,11 @@ expr_t* sim_t::create_expression( const std::string& name_str )
 
   if ( splits.size() >= 3 && util::str_compare_ci( splits[ 0 ], "raid_event" ) )
   {
-    std::string type = splits[ 1 ];
+    std::string type_or_name = splits[ 1 ];
     std::string filter = splits[ 2 ];
 
     if ( optimize_expressions && util::str_compare_ci( filter, "exists" ) )
-      return expr_t::create_constant( name_str, raid_event_t::evaluate_raid_event_expression( this, type, filter ) );
+      return expr_t::create_constant( name_str, raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter ) );
 
     struct raid_event_expr_t : public expr_t
     {
@@ -3116,7 +3130,7 @@ expr_t* sim_t::create_expression( const std::string& name_str )
 
     };
 
-    return new raid_event_expr_t( this, type, filter );
+    return new raid_event_expr_t( this, type_or_name, filter );
   }
 
   // If nothing else works, check to see if the string matches an actor in the sim.
@@ -3167,6 +3181,7 @@ void sim_t::create_options()
   add_option( opt_int( "iterations", iterations ) );
   add_option( opt_bool( "cleanup_threads", cleanup_threads ) );
   add_option( opt_float( "target_error", target_error ) );
+  add_option( opt_func( "target_error_role", parse_target_error_role ) );
   add_option( opt_int( "analyze_error_interval", analyze_error_interval ) );
   add_option( opt_func( "process_priority", parse_process_priority ) );
   add_option( opt_timespan( "max_time", max_time, timespan_t::zero(), timespan_t::max() ) );
@@ -3213,7 +3228,8 @@ void sim_t::create_options()
   add_option( opt_timespan( "ignite_sampling_delta", ignite_sampling_delta ) );
   // Output
   add_option( opt_bool( "save_profiles", save_profiles ) );
-  add_option( opt_int( "default_actions", default_actions ) );
+  add_option( opt_bool( "save_profile_with_actions", save_profile_with_actions ) );
+  add_option( opt_bool( "default_actions", default_actions ) );
   add_option( opt_bool( "debug", debug ) );
   add_option( opt_bool( "debug_each", debug_each ) );
   add_option( opt_func( "debug_seed", parse_debug_seed ) );
@@ -3222,8 +3238,6 @@ void sim_t::create_options()
   add_option( opt_string( "json2", json_file_str ) );
   add_option( opt_bool( "hosted_html", hosted_html ) );
   add_option( opt_int( "healing", healing ) );
-  add_option( opt_string( "xml", xml_file_str ) );
-  add_option( opt_string( "xml_style", xml_stylesheet_file_str ) );
   add_option( opt_bool( "log", log ) );
   add_option( opt_string( "output", output_file_str ) );
   add_option( opt_bool( "save_raid_summary", save_raid_summary ) );
@@ -3894,10 +3908,10 @@ void sim_t::activate_actors()
   current_iteration = -1;
 }
 
-bool sim_t::has_raid_event( const std::string& name ) const
+bool sim_t::has_raid_event( const std::string& type ) const
 {
-  auto it = range::find_if( raid_events, [ &name ]( const std::unique_ptr<raid_event_t>& event ) {
-      return util::str_compare_ci( name, event -> name() );
+  auto it = range::find_if( raid_events, [ &type ]( const std::unique_ptr<raid_event_t>& event ) {
+      return util::str_compare_ci( type, event -> type );
   } );
 
   return it != raid_events.end();

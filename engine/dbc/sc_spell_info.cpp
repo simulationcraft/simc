@@ -393,6 +393,7 @@ const std::map<unsigned, std::string> _attribute_strings = {
   { 173, "Periodic effect affected by haste" },
   { 186, "Requires line of sight"            },
   { 221, "Disable player multipliers"        },
+  { 354, "Scales with item level"            }
 };
 
 static const std::unordered_map<int, const std::string> _property_type_strings =
@@ -913,6 +914,10 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       // Technically this should check for the item type, but that's not possible right now
       coefficient = dbc.combat_rating_multiplier( level, CR_MULTIPLIER_TRINKET );
     }
+    else if ( spell -> scaling_class() == PLAYER_SPECIAL_SCALE8 )
+    {
+      item_budget = ilevel_data.item_effect;
+    }
 
     s << item_budget * e -> m_average() * coefficient;
 
@@ -1276,6 +1281,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell -> max_scaling_level() > 0 )
   {
     s << "Max Scaling Level: " << ( int ) spell -> max_scaling_level();
+    s << std::endl;
+  }
+
+  if ( spell -> req_max_level() > 0 )
+  {
+    s << "Req. Max Level   : " << ( int ) spell -> req_max_level();
     s << std::endl;
   }
 

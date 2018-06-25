@@ -2,6 +2,7 @@ ORG_NAME    = SimulationCraft
 APP_NAME    = SimulationCraft
 
 INCLUDEPATH = ../engine
+INCLUDEPATH += ../engine/util
 DEPENDPATH  = ../engine
 VPATH       = ..
 CONFIG     += c++11
@@ -75,6 +76,10 @@ win32 {
   win32-msvc2013|win32-msvc2015 {
     QMAKE_CXXFLAGS_RELEASE += /Ot /MP
     QMAKE_CXXFLAGS_WARN_ON += /w44800 /w44100 /w44065
+  }
+
+  win32-msvc2017 {
+    QMAKE_CXXFLAGS += /permissive-
   }
 
   # TODO: Mingw might want something more unixy here?

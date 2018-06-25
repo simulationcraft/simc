@@ -5,6 +5,8 @@ project(simc)
 
 set (CMAKE_CXX_STANDARD 11)
 
+option(BUILD_GUI "Build the Qt gui along with cli binary" ON)
+
 ### Git Hash ###
 # Get the current working branch
 execute_process(
@@ -27,7 +29,9 @@ add_custom_target(update_git_info ALL
                   DEPENDS engine/util/git_info.cpp)
 
 add_subdirectory(engine)
-add_subdirectory(qt)
+if ( BUILD_GUI )
+  add_subdirectory(qt)
+endif()
 add_dependencies(engine update_git_info)
 
 if ( CMAKE_COMPILER_IS_GNUCC )

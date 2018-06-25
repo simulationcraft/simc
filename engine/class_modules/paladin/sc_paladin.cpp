@@ -51,6 +51,7 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   active_sotr                         = nullptr;
   active_protector_of_the_innocent    = nullptr;
   active_zeal                         = nullptr;
+  active_consecration                 = nullptr;
 
   cooldowns.avengers_shield           = get_cooldown( "avengers_shield" );
   cooldowns.judgment                  = get_cooldown("judgment");
@@ -63,7 +64,6 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.blade_of_justice          = get_cooldown( "blade_of_justice" );
   cooldowns.blade_of_wrath            = get_cooldown( "blade_of_wrath" );
   cooldowns.divine_hammer             = get_cooldown( "divine_hammer" );
-  cooldowns.eye_of_tyr                = get_cooldown( "eye_of_tyr");
   cooldowns.holy_shock                = get_cooldown( "holy_shock");
   cooldowns.light_of_dawn             = get_cooldown( "light_of_dawn");
 
@@ -129,8 +129,8 @@ namespace buffs {
     // Map modifiers appropriately based on spec
     paladin_t* paladin = static_cast<paladin_t*>( player );
 
-    healing_modifier = data().effectN( 5 ).percent();
-    crit_bonus = data().effectN( 4 ).percent();
+    healing_modifier = data().effectN( 4 ).percent();
+    crit_bonus = data().effectN( 3 ).percent();
     damage_modifier = data().effectN( 1 ).percent();
 
     // invalidate crit
@@ -245,100 +245,60 @@ struct consecration_tick_t: public paladin_spell_t {
     background = true;
     may_crit = true;
     ground_aoe = true;
-
-    if (p->specialization() == PALADIN_PROTECTION)
-    {
-      base_multiplier *= 1.0 + p->passives.protection_paladin->effectN(4).percent();
-    }
-  }
-};
-
-// healing tick from Consecrated Ground talent
-struct consecrated_ground_tick_t : public paladin_heal_t
-{
-  consecrated_ground_tick_t( paladin_t* p )
-    : paladin_heal_t( "consecrated_ground", p, p -> find_spell( 204241 ) )
-  {
-    aoe = 6;
-    ground_aoe = true;
-    background = true;
-    direct_tick = true;
   }
 };
 
 struct consecration_t : public paladin_spell_t
 {
   consecration_tick_t* damage_tick;
-  consecrated_ground_tick_t* heal_tick;
-  timespan_t ground_effect_duration;
 
   consecration_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "consecration", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> find_spell( 205228 ) : p -> find_class_spell( "Consecration" ) ),
-    damage_tick( new consecration_tick_t( p ) ), heal_tick( new consecrated_ground_tick_t( p ) ),
-    ground_effect_duration( data().duration() )
+    : paladin_spell_t( "consecration", p, p -> specialization() == PALADIN_RETRIBUTION ? p -> talents.consecration : p -> find_specialization_spell( "Consecration" ) ),
+    damage_tick( new consecration_tick_t( p ) )
   {
     parse_options( options_str );
-
-    // disable if Ret and not talented
-    if ( p -> specialization() == PALADIN_RETRIBUTION ) {
-      background = ! ( p -> talents.consecration -> ok() );
-    }
+  
     dot_duration = timespan_t::zero(); // the periodic event is handled by ground_aoe_event_t
     may_miss       = false;
 
     add_child( damage_tick );
   }
 
-  virtual void execute() override
+  void execute() override
   {
-    paladin_spell_t::execute();
-
-    paladin_ground_aoe_t* alt_aoe = nullptr;
-    // create a new ground aoe event
-    if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
-      alt_aoe =
-        make_event<paladin_ground_aoe_t>( *sim, p(), ground_aoe_params_t()
-        .target( execute_state -> target )
-        // spawn at feet of player
-        .x( execute_state -> action -> player -> x_position )
-        .y( execute_state -> action -> player -> y_position )
-        .duration( ground_effect_duration )
-        .start_time( sim -> current_time()  )
-        .action( damage_tick )
-        .hasted( ground_aoe_params_t::SPELL_HASTE ), true );
-    } else {
-      alt_aoe =
-        make_event<paladin_ground_aoe_t>( *sim, p(), ground_aoe_params_t()
-        .target( execute_state -> target )
-        // spawn at feet of player
-        .x( execute_state -> action -> player -> x_position )
-        .y( execute_state -> action -> player -> y_position )
-        // TODO: this is a hack that doesn't work properly, fix this correctly
-        .duration( ground_effect_duration )
-        .start_time( sim -> current_time()  )
-        .action( damage_tick )
-        .hasted( ground_aoe_params_t::NOTHING ), true );
-    }
-
-    // push the pointer to the list of active consecrations
-    // execute() and schedule_event() methods of paladin_ground_aoe_t handle updating the list
-    p() -> active_consecrations.push_back( alt_aoe );
-
-    // if we've talented consecrated ground, make a second healing ground effect for that
-    // this can be a normal ground_aoe_event_t, since we don't need the extra stuff
-    if ( p() -> talents.consecrated_ground -> ok() )
+    
+    // Cancel the current consecration if it exists
+    if ( p() -> active_consecration != nullptr )
     {
-      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-          .target( execute_state -> action -> player )
-          // spawn at feet of player
-          .x( execute_state -> action -> player -> x_position )
-          .y( execute_state -> action -> player -> y_position )
-          .duration( ground_effect_duration )
-          .start_time( sim -> current_time()  )
-          .action( heal_tick )
-          .hasted( ground_aoe_params_t::NOTHING ), true );
+      event_t::cancel( p() -> active_consecration );
     }
-  }
+
+    paladin_spell_t::execute();
+    
+    // create a new ground aoe event 
+    make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+      .target( execute_state -> target )
+      // spawn at feet of player
+      .x( execute_state -> action -> player -> x_position )
+      .y( execute_state -> action -> player -> y_position )
+      .duration( data().duration() )
+      .start_time( sim -> current_time() )
+      .hasted( ground_aoe_params_t::SPELL_HASTE )
+      .action( damage_tick )
+      .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) { 
+        switch ( type )
+        {
+          case ground_aoe_params_t::EVENT_CREATED:
+            p() -> active_consecration = event;
+            break;
+          case ground_aoe_params_t::EVENT_DESTRUCTED:
+            p() -> active_consecration = nullptr;
+            break;
+          default:
+            break;
+        }
+      } ), true /* Immediate pulse */ );
+    }
 };
 
 // Divine Shield ==============================================================
@@ -400,11 +360,6 @@ struct divine_steed_t : public paladin_spell_t
     : paladin_spell_t( "divine_steed", p, p -> find_spell( "Divine Steed" ) )
   {
     parse_options( options_str );
-
-    // adjust cooldown based on Knight Templar talent for prot
-    if ( p -> talents.knight_templar -> ok() )
-      cooldown -> duration *= 1.0 + p -> talents.knight_templar -> effectN( 1 ).percent();
-
   }
 
   void execute() override
@@ -800,110 +755,16 @@ struct hammer_of_justice_t : public paladin_melee_attack_t
   }
 };
 
-// Judgment =================================================================
+// Holy Shield damage proc ====================================================
 
-struct judgment_t : public paladin_melee_attack_t
+struct holy_shield_proc_t : public paladin_spell_t
 {
-  timespan_t sotr_cdr; // needed for sotr interaction for protection
-  judgment_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "judgment", p, p -> find_spell( 20271 ) )
+  holy_shield_proc_t( paladin_t* p )
+    : paladin_spell_t( "holy_shield", p, p -> talents.holy_shield -> effectN( 2 ).trigger() )
   {
-    parse_options( options_str );
-
-    // no weapon multiplier
-    weapon_multiplier = 0.0;
-    may_block = may_parry = may_dodge = false;
-    cooldown -> charges = 1;
-
-    // TODO: this is a hack; figure out what's really going on here.
-    if ( p -> specialization() == PALADIN_RETRIBUTION )
-    {
-      base_costs[RESOURCE_MANA] = 0;
-      if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B2 ) )
-        base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T21, B2 ) -> effectN( 1 ).percent();
-
-      // TODO: more hax; really this is spellpower but the ap -> sp conversion seems to also take into account weapondps
-      attack_power_mod.direct = spell_power_mod.direct;
-      spell_power_mod.direct = 0;
-    }
-    else if ( p -> specialization() == PALADIN_HOLY )
-    {
-      base_multiplier *= 1.0 + p -> passives.holy_paladin -> effectN( 6 ).percent();
-    }
-    else if ( p -> specialization() == PALADIN_PROTECTION )
-    {
-      cooldown -> charges *= 1.0 + p->talents.crusaders_judgment->effectN( 1 ).base_value();
-      cooldown -> duration *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 5 ).percent();
-      base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
-      sotr_cdr = -1.0 * timespan_t::from_seconds( 2 ); // hack for p -> spec.judgment_2 -> effectN( 1 ).base_value()
-    }
-  }
-
-  virtual void execute() override
-  {
-    paladin_melee_attack_t::execute();
-
-    if ( p() -> talents.fist_of_justice -> ok() )
-    {
-      double reduction = p() -> talents.fist_of_justice -> effectN( 1 ).base_value();
-      p() -> cooldowns.hammer_of_justice -> ready -= timespan_t::from_seconds( reduction );
-    }
-    if ( p() -> talents.zeal -> ok() )
-    {
-      p() -> buffs.zeal -> trigger( p() -> talents.zeal -> effectN( 1 ).base_value() );
-    }
-    if ( p() -> talents.divine_judgment -> ok() )
-    {
-      p() -> buffs.divine_judgment -> expire();
-    }
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
-      p() -> buffs.sacred_judgment -> trigger();
-    if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T21, B4 ) )
-      p() -> buffs.ret_t21_4p -> trigger();
-  }
-
-  proc_types proc_type() const override
-  {
-    return PROC1_MELEE_ABILITY;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = paladin_melee_attack_t::action_multiplier();
-    if ( p() -> buffs.divine_judgment -> up() )
-      am *= 1.0 + p() -> buffs.divine_judgment -> data().effectN( 1 ).percent() * p() -> buffs.divine_judgment -> stack();
-    return am;
-  }
-
-  // Special things that happen when Judgment damages target
-  void impact( action_state_t* s ) override
-  {
-    if ( result_is_hit( s -> result ) )
-    {
-      td( s -> target ) -> buffs.debuffs_judgment -> trigger();
-
-      if ( p() -> talents.judgment_of_light -> ok() )
-        td( s -> target ) -> buffs.judgment_of_light -> trigger( 40 );
-
-      if ( p() -> specialization() == PALADIN_RETRIBUTION )
-      {
-        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.judgment );
-      }
-
-      // Judgment hits/crits reduce SotR recharge time
-      if ( p() -> specialization() == PALADIN_PROTECTION )
-      {
-        if ( p() -> sets -> has_set_bonus( PALADIN_PROTECTION, T20, B2 ) &&
-          rng().roll( p() -> sets -> set( PALADIN_PROTECTION, T20, B2 ) -> proc_chance() ) )
-        {
-          p() -> cooldowns.avengers_shield -> reset( true );
-        }
-
-        p() -> cooldowns.shield_of_the_righteous -> adjust( s -> result == RESULT_CRIT ? 2.0 * sotr_cdr : sotr_cdr );
-      }
-    }
-
-    paladin_melee_attack_t::impact( s );
+    background = true;
+    proc = true;
+    may_miss = false;
   }
 };
 
@@ -1060,7 +921,6 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   buffs.execution_sentence = buff_creator_t( *this, "execution_sentence", paladin -> find_spell( 267799 ) );
   buffs.debuffs_judgment = buff_creator_t( *this, "judgment", paladin -> find_spell( 197277 ));
   buffs.judgment_of_light = buff_creator_t( *this, "judgment_of_light", paladin -> find_spell( 196941 ) );
-  buffs.eye_of_tyr_debuff = buff_creator_t( *this, "eye_of_tyr", paladin -> find_class_spell( "Eye of Tyr" ) ).cd( timespan_t::zero() );
   buffs.blessed_hammer_debuff = buff_creator_t( *this, "blessed_hammer", paladin -> find_spell( 204301 ) );
 }
 
@@ -1090,7 +950,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
   if ( name == "blessing_of_sacrifice"     ) return new blessing_of_sacrifice_t    ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
-  if ( name == "judgment"                  ) return new judgment_t                 ( this, options_str );
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
   if ( name == "reckoning"                 ) return new reckoning_t                ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
@@ -1162,7 +1021,7 @@ void paladin_t::reset()
 {
   player_t::reset();
 
-  active_consecrations.clear();
+  active_consecration = nullptr;
   last_extra_regen = timespan_t::zero();
   last_jol_proc = timespan_t::zero();
 }
@@ -1203,7 +1062,8 @@ void paladin_t::init_procs()
   procs.the_fires_of_justice      = get_proc( "the_fires_of_justice"           );
   procs.tfoj_set_bonus            = get_proc( "t19_4p"                         );
   procs.blade_of_wrath            = get_proc( "blade_of_wrath"                 );
-  procs.topless_tower = get_proc( "topless_tower");
+  procs.topless_tower             = get_proc( "topless_tower"                  );
+  procs.grand_crusader            = get_proc( "grand_crusader"                 );
 }
 
 // paladin_t::init_scaling ==================================================
@@ -1477,6 +1337,9 @@ void paladin_t::init_spells()
 
   spells.avenging_wrath = find_spell( 31884 );
 
+  if ( talents.holy_shield -> ok() )
+    active_holy_shield_proc = new holy_shield_proc_t( this );
+
   if ( talents.judgment_of_light -> ok() )
     active_judgment_of_light_proc = new judgment_of_light_proc_t( this );
 }
@@ -1594,10 +1457,10 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
-  // Guarded by the Light buffs STA
+  // Protection gets increased stamina
   if ( attr == ATTR_STAMINA )
   {
-    m *= 1.0 + passives.guarded_by_the_light -> effectN( 2 ).percent();
+    m *= 1.0 + passives.protection_paladin -> effectN( 2 ).percent();
   }
 
   return m;
@@ -1730,12 +1593,16 @@ double paladin_t::composite_armor_multiplier() const
   return a;
 }
 
-
 // paladin_t::composite_bonus_armor =========================================
 
 double paladin_t::composite_bonus_armor() const
 {
   double ba = player_t::composite_bonus_armor();
+
+  if ( buffs.shield_of_the_righteous -> check() )
+  {
+    ba += spells.shield_of_the_righteous -> effectN( 1 ).percent() * cache.attack_power();
+  }
 
   return ba;
 }
@@ -1798,7 +1665,7 @@ double paladin_t::composite_spell_power( school_e school ) const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      sp = passives.guarded_by_the_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
+      sp = passives.protection_paladin -> effectN( 7 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
       break;
     case PALADIN_RETRIBUTION:
       sp = passives.retribution_paladin -> effectN( 10 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
@@ -1816,8 +1683,6 @@ double paladin_t::composite_melee_attack_power() const
   if ( specialization() == PALADIN_HOLY ) //thx for Mistweaver maintainer
     return composite_spell_power( SCHOOL_MAX );
   double ap = player_t::composite_melee_attack_power();
-  if ( specialization() == PALADIN_PROTECTION )
-    ap += passives.bladed_armor -> effectN( 1 ).percent() * current.stats.get_stat( STAT_BONUS_ARMOR );
 
   return ap;
 }
@@ -1830,7 +1695,7 @@ double paladin_t::composite_attack_power_multiplier() const
 
   // Mastery bonus is multiplicative with other effects
   if ( specialization() == PALADIN_PROTECTION )
-    ap *= 1.0 + cache.mastery() * passives.divine_bulwark -> effectN( 5 ).mastery_value();
+    ap *= 1.0 + cache.mastery() * passives.divine_bulwark -> effectN( 3 ).mastery_value();
 
   return ap;
 }
@@ -1839,7 +1704,7 @@ double paladin_t::composite_attack_power_multiplier() const
 
 double paladin_t::composite_spell_power_multiplier() const
 {
-  if ( specialization() == PALADIN_RETRIBUTION || passives.guarded_by_the_light -> ok() )
+  if ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION )
     return 1.0;
 
   return player_t::composite_spell_power_multiplier();
@@ -1853,10 +1718,6 @@ double paladin_t::composite_block() const
   double block_subject_to_dr = cache.mastery() * passives.divine_bulwark -> effectN( 1 ).mastery_value();
   double b = player_t::composite_block_dr( block_subject_to_dr );
 
-  // Guarded by the Light block not affected by diminishing returns
-  // TODO: spell data broken (0%, tooltip values pointing at wrong effects) - revisit once spell data updated
-  b += passives.guarded_by_the_light -> effectN( 4 ).percent();
-
   // Holy Shield (assuming for now that it's not affected by DR)
   b += talents.holy_shield -> effectN( 1 ).percent();
 
@@ -1869,8 +1730,6 @@ double paladin_t::composite_block_reduction() const
 {
   double br = player_t::composite_block_reduction();
 
-  br += passives.improved_block -> effectN( 1 ).percent();
-
   return br;
 }
 
@@ -1880,8 +1739,7 @@ double paladin_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  // Guarded by the Light grants -6% crit chance
-  c += passives.guarded_by_the_light -> effectN( 3 ).percent();
+  c += passives.protection_paladin -> effectN( 8 ).percent();
 
   return c;
 }
@@ -1932,7 +1790,7 @@ void paladin_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  if ( ( specialization() == PALADIN_RETRIBUTION || passives.guarded_by_the_light -> ok() || passives.divine_bulwark -> ok() )
+  if ( ( specialization() == PALADIN_RETRIBUTION || specialization() == PALADIN_PROTECTION )
        && ( c == CACHE_STRENGTH || c == CACHE_ATTACK_POWER )
      )
   {
@@ -1942,17 +1800,17 @@ void paladin_t::invalidate_cache( cache_e c )
   if ( c == CACHE_ATTACK_CRIT_CHANCE && specialization() == PALADIN_PROTECTION )
     player_t::invalidate_cache( CACHE_PARRY );
 
-  if ( c == CACHE_BONUS_ARMOR && passives.bladed_armor -> ok() )
-  {
-    player_t::invalidate_cache( CACHE_ATTACK_POWER );
-    player_t::invalidate_cache( CACHE_SPELL_POWER );
-  }
 
   if ( c == CACHE_MASTERY && passives.divine_bulwark -> ok() )
   {
     player_t::invalidate_cache( CACHE_BLOCK );
     player_t::invalidate_cache( CACHE_ATTACK_POWER );
     player_t::invalidate_cache( CACHE_SPELL_POWER );
+  }
+
+  if ( c == CACHE_ATTACK_POWER && specialization() == PALADIN_PROTECTION )
+  {
+    player_t::invalidate_cache( CACHE_BONUS_ARMOR );
   }
 }
 

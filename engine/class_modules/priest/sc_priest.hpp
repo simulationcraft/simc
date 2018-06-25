@@ -132,6 +132,12 @@ public:
     propagate_const<buff_t*> zeks_exterminatus;        // Aura for Zeks proc
     propagate_const<buff_t*> iridis_empowerment;       // Fake aura for Helm
 
+    // Azerite Powers
+    // Shadow
+    propagate_const<buff_t*> chorus_of_insanity;
+    propagate_const<buff_t*> harvested_thoughts;
+    propagate_const<buff_t*> whispers_of_the_damned;
+
   } buffs;
 
   // Talents
@@ -217,9 +223,10 @@ public:
     const spell_data_t* shadow_crash;
     // T90
     const spell_data_t* lingering_insanity;
+    const spell_data_t* void_torrent;
     // T100
     const spell_data_t* legacy_of_the_void;
-    const spell_data_t* void_torrent;
+    const spell_data_t* dark_ascension;
     const spell_data_t* surrender_to_madness;
   } talents;
 
@@ -235,10 +242,10 @@ public:
   // Specialization Spells
   struct
   {
-    const spell_data_t* priest; /// General priest data
+    const spell_data_t* priest;  /// General priest data
 
     // Discipline
-    const spell_data_t* discipline; /// General discipline data
+    const spell_data_t* discipline;  /// General discipline data
     const spell_data_t* archangel;
     const spell_data_t* atonement;
     const spell_data_t* borrowed_time;
@@ -250,7 +257,7 @@ public:
     const spell_data_t* enlightenment;
 
     // Holy
-    const spell_data_t* holy; /// General holy data
+    const spell_data_t* holy;  /// General holy data
     const spell_data_t* rapid_renewal;
     const spell_data_t* serendipity;
     const spell_data_t* divine_providence;
@@ -258,7 +265,7 @@ public:
     const spell_data_t* focused_will;
 
     // Shadow
-    const spell_data_t* shadow; /// General shadow data
+    const spell_data_t* shadow;  /// General shadow data
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* voidform;
     const spell_data_t* void_eruption;
@@ -284,12 +291,11 @@ public:
     propagate_const<cooldown_t*> silence;
 
     propagate_const<cooldown_t*> mind_blast;
-    // propagate_const<cooldown_t*> shadow_word_death;
-    propagate_const<cooldown_t*> shadow_word_void;
     propagate_const<cooldown_t*> void_bolt;
     propagate_const<cooldown_t*> mind_bomb;
     propagate_const<cooldown_t*> psychic_horror;
     propagate_const<cooldown_t*> sephuzs_secret;
+    propagate_const<cooldown_t*> dark_ascension;
   } cooldowns;
 
   // Gains
@@ -321,6 +327,8 @@ public:
     propagate_const<gain_t*> vampiric_touch_health;
     propagate_const<gain_t*> insanity_call_to_the_void;
     propagate_const<gain_t*> insanity_dark_void;
+    propagate_const<gain_t*> insanity_dark_ascension;
+    propagate_const<gain_t*> insanity_death_throes;
   } gains;
 
   // Benefits
@@ -394,6 +402,23 @@ public:
     int priest_set_voidform_duration = 0;      // Voidform will always have this duration
   } options;
 
+  // Azerite
+  struct azerite_t
+  {
+    azerite_power_t sanctum;
+    // Holy
+    // Disc
+    azerite_power_t depth_of_the_shadows;
+    // Shadow
+    azerite_power_t chorus_of_insanity;
+    azerite_power_t death_throes;
+    azerite_power_t searing_dialogue;
+    azerite_power_t spiteful_apparitions;
+    azerite_power_t thought_harvester;
+    azerite_power_t torment_of_torments;
+    azerite_power_t whispers_of_the_damned;
+  } azerite;
+
   struct insanity_end_event_t;
 
   priest_t( sim_t* sim, const std::string& name, race_e r );
@@ -408,7 +433,7 @@ public:
   void init_scaling() override;
   void reset() override;
   void create_options() override;
-  std::string create_profile( save_e = SAVE_ALL ) override;
+  std::string create_profile( save_e ) override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   virtual action_t* create_proc_action( const std::string& name, const special_effect_t& effect ) override;
   pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
@@ -678,12 +703,10 @@ namespace fiend
  */
 struct base_fiend_pet_t : public priest_pet_t
 {
-
   struct gains_t
   {
     propagate_const<gain_t*> fiend;
   } gains;
-
 
   double direct_power_mod;
 
@@ -700,7 +723,7 @@ struct base_fiend_pet_t : public priest_pet_t
   virtual double insanity_gain() const       = 0;
 
   void init_action_list() override;
-  
+
   void init_gains() override
   {
     priest_pet_t::init_gains();
@@ -802,7 +825,6 @@ struct shadowcrawl_t final : public priest_pet_spell_t
   {
     return static_cast<base_fiend_pet_t&>( *player );
   }
-    
 };
 
 struct fiend_melee_t : public priest_pet_melee_t
@@ -824,7 +846,7 @@ struct fiend_melee_t : public priest_pet_melee_t
   {
     return static_cast<base_fiend_pet_t&>( *player );
   }
-  
+
   timespan_t execute_time() const override
   {
     if ( base_execute_time == timespan_t::zero() )
@@ -899,7 +921,7 @@ public:
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
-    if ( shadow_damage_increase )
+    if ( shadow_damage_increase || s->id() == 280711u )
       ab::base_dd_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 1 ).percent();
     if ( shadow_dot_increase )
       ab::base_td_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 2 ).percent();
@@ -1175,12 +1197,14 @@ struct priest_buff_t : public Base
 public:
   using base_t = priest_buff_t;  // typedef for priest_buff_t<buff_base_t>
 
-  priest_buff_t( priest_td_t& td, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
+  priest_buff_t( priest_td_t& td, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+                 const item_t* item = nullptr )
     : Base( td, name, s, item )
   {
   }
 
-  priest_buff_t( priest_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = nullptr )
+  priest_buff_t( priest_t& p, const std::string& name, const spell_data_t* s = spell_data_t::nil(),
+                 const item_t* item = nullptr )
     : Base( &p, name, s, item )
   {
   }

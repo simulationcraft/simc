@@ -7,7 +7,6 @@ typedef std::pair<std::string, simple_sample_data_with_min_max_t> data_t;
 typedef std::pair<std::string, simple_sample_data_t> simple_data_t;
 struct paladin_t;
 struct blessing_of_sacrifice_redirect_t;
-struct paladin_ground_aoe_t;
 namespace buffs {
                   struct avenging_wrath_buff_t;
                   struct crusade_buff_t;
@@ -34,7 +33,6 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* execution_sentence;
     buff_t* debuffs_judgment;
     buff_t* judgment_of_light;
-    buff_t* eye_of_tyr_debuff;
     buff_t* blessed_hammer_debuff;
   } buffs;
 
@@ -232,7 +230,6 @@ public:
     cooldown_t* hand_of_the_protector;   // Righteous Protector (prot) / Saruin
     cooldown_t* judgment;         // Grand Crusader + Crusader's Judgment
     cooldown_t* guardian_of_ancient_kings; // legen chest
-    cooldown_t* eye_of_tyr; // legen shoulders
     cooldown_t* holy_shock; // Holy Shock for Crusader's Might && DP
     cooldown_t* light_of_dawn; // Light of Dawn for DP
 
@@ -247,11 +244,9 @@ public:
   // Passives
   struct passives_t
   {
-    const spell_data_t* bladed_armor;
     const spell_data_t* boundless_conviction;
     const spell_data_t* divine_bulwark;
     const spell_data_t* grand_crusader;
-    const spell_data_t* guarded_by_the_light;
     const spell_data_t* hand_of_light;
     const spell_data_t* holy_insight;
     const spell_data_t* infusion_of_light;
@@ -282,6 +277,7 @@ public:
     proc_t* tfoj_set_bonus;
     proc_t* blade_of_wrath;
     proc_t* topless_tower;
+    proc_t* grand_crusader;
   } procs;
 
     struct shuffled_rngs_t
@@ -309,6 +305,7 @@ public:
     const spell_data_t* heathcliffs_immortality;
     const spell_data_t* consecration_bonus;
     const spell_data_t* avenging_wrath;
+    const spell_data_t* shield_of_the_righteous;
   } spells;
 
   // Talents
@@ -349,14 +346,14 @@ public:
     const spell_data_t* crusaders_judgment;
     const spell_data_t* holy_shield;
     const spell_data_t* blessed_hammer;
-    const spell_data_t* consecrated_hammer;
+    const spell_data_t* redoubt; // NYI
     // skip T45
     const spell_data_t* blessing_of_spellwarding;
     const spell_data_t* blessing_of_salvation;
     const spell_data_t* retribution_aura;
     const spell_data_t* hand_of_the_protector;
-    const spell_data_t* knight_templar;
     const spell_data_t* final_stand;
+    // skip unbreakable spirit - NYI
     const spell_data_t* aegis_of_light;
     // Judgment of Light seems to be a recopy from Holy.
     //const spell_data_t* judgment_of_light;
@@ -471,7 +468,7 @@ public:
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
 
-  std::vector<paladin_ground_aoe_t*> active_consecrations;
+ ground_aoe_event_t* active_consecration;
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -665,9 +662,9 @@ public:
     ret_mastery_direct( ab::data().affected_by( player -> passives.hand_of_light -> effectN( 1 ) ) || ab::data().affected_by( player -> passives.hand_of_light -> effectN( 2 ) ) )
   {
     // Aura buff to protection paladin added in 7.3
-    if ( p() -> specialization() == PALADIN_PROTECTION && this -> data().affected_by( p() -> passives.protection_paladin -> effectN( 4 ) ) )
+    if ( p() -> specialization() == PALADIN_PROTECTION && this -> data().affected_by( p() -> passives.protection_paladin -> effectN( 1 ) ) )
     {
-      this -> base_dd_multiplier *= 1.0 + p() -> passives.protection_paladin -> effectN( 4 ).percent();
+      this -> base_dd_multiplier *= 1.0 + p() -> passives.protection_paladin -> effectN( 1 ).percent();
     }
 
     if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
@@ -867,43 +864,6 @@ public:
   {
   }
 
-};
-
-// paladin_ground_aoe_t for consecration and blessed hammer
-
-struct paladin_ground_aoe_t : public ground_aoe_event_t
-{
-  double radius;
-  paladin_t* paladin;
-
-public:
-  paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t* param, action_state_t* ps, bool first_tick = false ):
-    ground_aoe_event_t( p, param, ps, first_tick ), radius( param -> action() -> radius ), paladin( p )
-  {}
-
-  paladin_ground_aoe_t( paladin_t* p, const ground_aoe_params_t& param, bool first_tick = false ) :
-    ground_aoe_event_t( p, param, first_tick ), radius( param.action() -> radius ), paladin( p )
-  {}
-
-
-  void schedule_event() override
-  {
-    paladin_ground_aoe_t* foo = make_event<paladin_ground_aoe_t>( sim(), paladin, params, pulse_state );
-    paladin -> active_consecrations.push_back( foo );
-    // If the ground-aoe event is a pulse-based one, increase the current pulse of the newly created
-    // event.
-    if ( params -> n_pulses() > 0 )
-    {
-      foo -> set_current_pulse( current_pulse + 1 );
-    }
-  }
-
-  void execute() override
-  {
-    auto it = range::find( paladin -> active_consecrations, this );
-    paladin -> active_consecrations.erase( it );
-    ground_aoe_event_t::execute();
-  }
 };
 
 // ==========================================================================

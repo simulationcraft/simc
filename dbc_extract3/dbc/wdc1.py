@@ -65,6 +65,8 @@ def get_struct_type(is_float, is_signed, bit_size):
         base_type = 'h'
     elif bit_size == 8:
         base_type = 'b'
+    elif bit_size == 0:
+        base_type = 'f'
     else:
         logging.error('Invalid bit length %u', bit_size)
         raise NotImplementedError
@@ -298,11 +300,24 @@ class WDC1ExtendedColumnValue:
         raise NotImplementedError
 
 class WDC1BitPackedValue(WDC1ExtendedColumnValue):
-    def __call__(self, id_, data, bytes_):
-        value = int.from_bytes(bytes_, byteorder = 'little')
+    def __init__(self, column):
+        super().__init__(column)
 
-        if self.column.is_signed():
-            value = transform_sign(value, self.element_mask, self.column.value_bit_size())
+        self.unpacker = None
+        if column.value_bit_size() % 8 == 0:
+            struct_type = get_struct_type(column.is_float(),
+                                          column.is_signed(),
+                                          column.value_bit_size())
+            self.unpacker = Struct('<{}'.format(struct_type))
+
+    def __call__(self, id_, data, bytes_):
+        if self.unpacker:
+            value = self.unpacker.unpack_from(bytes_, 0)[0]
+        else:
+            value = int.from_bytes(bytes_, byteorder = 'little')
+
+            if self.column.is_signed():
+                value = transform_sign(value, self.element_mask, self.column.value_bit_size())
 
         return (value,)
 
@@ -356,11 +371,21 @@ class WDC1ArrayDataValue(WDC1ColumnDataValue):
     def __init__(self, column):
         super().__init__(column)
 
-        # Array values are stored as 32-bit values
+        bytes_per_element = self.column.format_bit_size() // 8
+        # Array values are stored as 32-bit values, however the data type may be <4 bytes
         self.__array_size = 4 * self.column.elements()
 
-        struct_type = get_struct_type(column.is_float(), column.is_signed(), 32)
-        self.unpacker = Struct('<{}{}'.format(column.elements(), struct_type))
+        pad_bytes = 4 - bytes_per_element
+        pad_str = ''
+        if pad_bytes > 0:
+            pad_str = '{}x'.format(pad_bytes)
+
+        struct_type = get_struct_type(column.is_float(), column.is_signed(), self.column.format_bit_size())
+        element_type = '{data}{pad}'.format(
+            data = struct_type,
+            pad = pad_str)
+
+        self.unpacker = Struct('<{}'.format(element_type * column.elements()))
 
     def __call__(self, id_, data, bytes_):
         # Convert the bytes to a proper int value (our id into the block)
@@ -594,13 +619,13 @@ class WDC1Column:
     def format_bit_size(self):
         if not self.__format:
             return 0
-        elif self.__format in ['b', 'B']:
+        elif self.__format.data_type in ['b', 'B']:
             return 8
-        elif self.__format in ['h', 'H']:
+        elif self.__format.data_type in ['h', 'H']:
             return 16
-        elif self.__format in ['i', 'I']:
+        elif self.__format.data_type in ['i', 'I', 'f']:
             return 32
-        elif self.__format in ['q', 'Q']:
+        elif self.__format.data_type in ['q', 'Q']:
             return 64
         else:
             return 0
@@ -622,6 +647,13 @@ class WDC1Column:
         elif self.__block_type == COLUMN_TYPE_SPARSE:
             self.__default_value = ext_data[4]
 
+            # Sparse float fields definitely have float-valued defaults.
+            # This likely generalizes to arbitrary field types, but for now,
+            # we conservatively use this hack.
+            if self.__format.data_type == 'f':
+                packed = Struct('<I').pack(self.__default_value)
+                self.__default_value = Struct('<f').unpack(packed)[0]
+
             if ext_data[5] > 0 or ext_data[6] > 0:
                 logging.warn('Sparse data field has unexpted non-zero values (%d, %d)',
                     ext_data[5], ext_data[6])
@@ -632,6 +664,10 @@ class WDC1Column:
             if self.__field_size != ext_data[5]:
                 logging.warn('Column %s field sizes differ (%d vs %d)',
                     self.__index, self.__field_size, ext_data[5])
+
+            if self.__block_type == COLUMN_TYPE_INDEXED and ext_data[6] != 0:
+                logging.warn('Column %s for %s has non-zero elements (%d)',
+                    self.__index, self.__parser.file_name(), ext_data[6])
 
             self.__field_size = ext_data[5]
             self.__elements   = ext_data[6]
@@ -658,7 +694,7 @@ class WDC1Column:
         else:
             return self.__offset * 8
 
-    def field_packet_bit_offset(self):
+    def field_packed_bit_offset(self):
         return self.__packed_bit_offset
 
     def field_byte_offset(self):
@@ -671,6 +707,21 @@ class WDC1Column:
             return (32 - self.__size_type)
         else:
             return self.__field_size
+
+    def field_whole_bytes(self):
+        if self.__size_type in [0, 8, 16, 24, -32]:
+            return (32 - self.__size_type) // 8
+        else:
+            if self.__field_size < 9:
+                return 1
+            elif self.__field_size < 17:
+                return 2
+            elif self.__field_size < 33:
+                return 4
+            elif self.__field_size < 65:
+                return 8
+
+            return 0
 
     def value_bit_size(self):
         if self.__size_type in [0, 8, 16, 24, -32]:
@@ -1044,7 +1095,10 @@ class WDC1Parser(DBCParserBase):
     # Parse column information (right after static header)
     def parse_column_info(self):
         if not self.options.raw:
-            formats = self.fmt.objs(self.class_name(), True)
+            try:
+                formats = self.fmt.objs(self.class_name(), True)
+            except Exception:
+                formats = None
         else:
             formats = None
 
@@ -1233,7 +1287,7 @@ class WDC1Parser(DBCParserBase):
             # TODO: Are sparse blocks always <dbc_id, value> tuples with 4 bytes for a value?
             # TODO: Do we want to preparse the sparse block? Would save an
             # unpack call at the cost of increased memory
-            if column.field_block_size() == 0 or column.field_block_size() % 8 != 0:
+            if column.field_block_size() % 8 != 0:
                 logging.error('%s: Unknown sparse block type for column %s',
                     self.class_name(), column)
                 return False
@@ -1266,11 +1320,6 @@ class WDC1Parser(DBCParserBase):
 
         offset = self.key_block_offset
         records, min_id, max_id = _WDC1_KEY_HEADER.unpack_from(self.data, offset)
-
-        if records != self.records:
-            logging.error('%s invalid number of keys, expected %u, got %u',
-                    self.full_name(), self.records, records)
-            return False
 
         offset += _WDC1_KEY_HEADER.size
 
