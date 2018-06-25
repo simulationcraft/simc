@@ -78,6 +78,10 @@ win32 {
     QMAKE_CXXFLAGS_WARN_ON += /w44800 /w44100 /w44065
   }
 
+  win32-msvc2017 {
+    QMAKE_CXXFLAGS += /permissive-
+  }
+
   # TODO: Mingw might want something more unixy here?
   exists(.git):system(where /q git) {
     DEFINES += SC_GIT_REV="\\\"$$system(git rev-parse --short HEAD)\\\""
