@@ -959,7 +959,6 @@ public:
   double maelstrom_gain;
   double maelstrom_gain_coefficient;
   bool enable_enh_mastery_scaling;
-  bool uses_composite_attack_power;
 
   // Generic procs
 
@@ -973,8 +972,7 @@ public:
       gain( player->get_gain( s->id() > 0 ? s->name_cstr() : n ) ),
       maelstrom_gain( 0 ),
       maelstrom_gain_coefficient( 1.0 ),
-      enable_enh_mastery_scaling( false ),
-	  uses_composite_attack_power( false )
+      enable_enh_mastery_scaling( false )
   {
     ab::may_crit = true;
 
@@ -1043,19 +1041,6 @@ public:
   {
     double m = ab::composite_attack_power();
 
-	if (uses_composite_attack_power)
-    {
-		double main_hand_dps = p()->main_hand_weapon.type == WEAPON_NONE ? 0.5 : p()->main_hand_weapon.dps;
-		double off_hand_dps = p()->off_hand_weapon.type == WEAPON_NONE ? 0.5 : p()->off_hand_weapon.dps;
-
-		double main_hand_ap = p()->cache.agility() + (main_hand_dps * WEAPON_POWER_COEFFICIENT);
-		double off_hand_ap = p()->cache.agility() + (off_hand_dps * (WEAPON_POWER_COEFFICIENT / 2));
-
-		double composite_ap = (main_hand_ap + off_hand_ap) * 2 / 3;
-
-		return composite_ap;	
-    }
-
     return m;
   }
 
@@ -1065,8 +1050,8 @@ public:
 
     if ( p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      if ( ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) ||
-        dbc::is_school( school, SCHOOL_NATURE ) ) && p()->mastery.enhanced_elements->ok() )
+      if ( ( dbc::is_school( this -> school, SCHOOL_FIRE ) || dbc::is_school( this -> school, SCHOOL_FROST ) ||
+        dbc::is_school( this -> school, SCHOOL_NATURE ) ) && p()->mastery.enhanced_elements->ok() )
 	  {
         if ( ab::data().affected_by( p()->mastery.enhanced_elements->effectN( 1 ) ) ||
              ab::data().affected_by( p()->mastery.enhanced_elements->effectN( 5 ) ) || enable_enh_mastery_scaling )
@@ -1902,23 +1887,6 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
       this->spell_power_mod.direct = 1.0;
     }
   }
-
-  // double action_multiplier() const override
-  //{
-  // double m = ab::action_multiplier();
-
-  // if (p()->specialization() == SHAMAN_ENHANCEMENT)
-  // {
-  //  if (ab::data().affected_by(p()->mastery.enhanced_elements->effectN(1)) ||
-  //  ab::data().affected_by(p()->mastery.enhanced_elements->effectN(5)) || enable_enh_mastery_scaling)
-  //  {
-  //	  //...hopefully blizzard never makes direct and periodic scaling different from eachother in our mastery..
-  //	  m *= 1.0 + p()->cache.mastery_value();
-  //  }
-  // }
-
-  // return m;
-  //}
 
   void init() override
   {
@@ -2794,7 +2762,6 @@ struct crash_lightning_attack_t : public shaman_attack_t
     callbacks  = false;
     aoe        = -1;
     base_multiplier *= 1.0;
-	uses_composite_attack_power = true;
   }
 
   void init() override
@@ -3607,7 +3574,7 @@ struct sundering_t : public shaman_attack_t
     : shaman_attack_t( "sundering", player, player->talent.sundering )
   {
     parse_options( options_str );
-
+	school = SCHOOL_FLAMESTRIKE;
     aoe = -1;  // TODO: This is likely not going to affect all enemies but it will do for now
   }
 
@@ -3935,7 +3902,6 @@ struct fury_of_air_aoe_t : public shaman_attack_t
     aoe        = -1;
     school     = SCHOOL_NATURE;
     ap_type    = AP_WEAPON_BOTH;
-	uses_composite_attack_power = true;
   }
 
   void init() override
@@ -7740,14 +7706,6 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
   // Enhancement
   m *= 1.0 + spec.enhancement_shaman->effectN( 3 ).percent();
-
-  // auto school = s->action->get_school();
-  // if ( ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) ||
-  //       dbc::is_school( school, SCHOOL_NATURE ) ) &&
-  //     mastery.enhanced_elements->ok() )
-  //{
-  //  m *= 1.0 + cache.mastery_value();
-  //}
 
   return m;
 }
