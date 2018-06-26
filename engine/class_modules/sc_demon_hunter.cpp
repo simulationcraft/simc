@@ -976,6 +976,10 @@ public:
 
     // Vengeance
     bool charred_flesh;
+
+    // Legendary
+    bool chaos_blades_da;
+    bool chaos_blades_ta;
   } affected_by;
 
   demon_hunter_action_t( const std::string& n, demon_hunter_t* p,
@@ -1024,6 +1028,14 @@ public:
         if ( ab::data().affected_by( p->spec.momentum_buff->effectN( 2 ) ) )
           affected_by.momentum_ta = true;
       }
+
+      // Chaos Theory Legendary
+      const spell_data_t* chaos_blades_data = p->find_spell( 247938 );
+      if ( ab::data().affected_by( chaos_blades_data->effectN( 2 ) ) )
+        affected_by.chaos_blades_da = true;
+
+      if ( ab::data().affected_by( chaos_blades_data->effectN( 3 ) ) )
+        affected_by.chaos_blades_ta = true;
     }
     else // DEMON_HUNTER_VENGEANCE
     {
@@ -1133,6 +1145,11 @@ public:
       m *= 1.0 + p()->buff.momentum->check_value();
     }
 
+    if ( p()->legendary.chaos_theory && affected_by.chaos_blades_da )
+    {
+      m *= 1.0 + p()->buff.chaos_blades->check_value();
+    }
+
     return m;
   }
 
@@ -1143,6 +1160,11 @@ public:
     if ( affected_by.momentum_ta )
     {
       m *= 1.0 + p()->buff.momentum->check_value();
+    }
+
+    if ( p()->legendary.chaos_theory && affected_by.chaos_blades_ta )
+    {
+      m *= 1.0 + p()->buff.chaos_blades->check_value();
     }
 
     return m;
@@ -1179,6 +1201,12 @@ public:
     if ( affected_by.momentum_ta || affected_by.momentum_da )
     {
       p()->buff.momentum->up();
+    }
+
+    // Chaos Theory Legendary
+    if ( p()->legendary.chaos_theory && ( affected_by.chaos_blades_ta || affected_by.chaos_blades_da ) )
+    {
+      p()->buff.chaos_blades->up();
     }
   } 
 
@@ -1948,7 +1976,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
       if ( p->talent.burning_alive->ok() )
       {
         // Spread radius used for Burning Alive.
-        radius = 8; // TODO: p->find_spell( 207760 )->effectN( 1 ).radius();
+        radius = p->find_spell( 207760 )->effectN( 1 ).radius_max();
       }
       else
       {
@@ -2647,7 +2675,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
   spirit_bomb_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "spirit_bomb", p, p->talent.spirit_bomb, options_str ),
     damage( new spirit_bomb_damage_t( p ) ),
-    max_fragments_consumed( data().effectN( 2 ).base_value() )
+    max_fragments_consumed( static_cast<unsigned>( data().effectN( 2 ).base_value() ) )
   {
     may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
 
@@ -3024,7 +3052,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     }
 
     // Chaos Theory Legendary Cloak
-    if ( p()->legendary.chaos_theory && p()->buff.chaos_blades )
+    if ( p()->legendary.chaos_theory )
     {
       if ( p()->shuffled_rngs.chaos_theory->trigger() )
       {
@@ -3380,7 +3408,7 @@ struct demon_blades_t : public demon_hunter_attack_t
       
       // 6/24/2018 - Spell data for the DBlades nerf on AotHG is broken on beta due to no spell ID reference
       if ( !p()->bugs )
-        range += p()->talent.demon_blades->effectN( 2 ).base_value();
+        range += static_cast<int>( p()->talent.demon_blades->effectN( 2 ).base_value() );
 
       const double gain = static_cast<int>( rng().range( 1, 1 + range ) );
       p()->resource_gain( RESOURCE_FURY, gain, p()->gain.anger_of_the_halfgiants );
@@ -3721,7 +3749,7 @@ struct throw_glaive_t : public demon_hunter_attack_t
     : demon_hunter_attack_t("throw_glaive", p, p->find_class_spell("Throw Glaive"), options_str)
   {
     radius = 10.0;
-    cooldown->charges += p->talent.master_of_the_glaive->effectN( 2 ).base_value();
+    cooldown->charges += static_cast<int>( p->talent.master_of_the_glaive->effectN( 2 ).base_value() );
   }
 };
 
@@ -4045,14 +4073,8 @@ struct chaos_blades_t : public demon_hunter_buff_t<buff_t>
 
     double action_multiplier() const override
     {
-      double am = action_t::action_multiplier();
-
-      if ( affected_by.demonic_presence )
-      {
-        am *= 1.0 + p()->cache.mastery_value();
-      }
-
-      return am; // skip attack_t's multiplier so we don't get the AA bonus.  Tested 2017/01/23
+      // skip attack_t's multiplier so we don't get the AA bonus. Tested 2017/01/23
+      return action_t::action_multiplier(); 
     }
   };
 
@@ -5604,11 +5626,6 @@ double demon_hunter_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + talent.razor_spikes->effectN( 1 ).percent();
   }
 
-  if ( buff.chaos_blades && buff.chaos_blades->check() )
-  {
-    m *= 1.0 + buff.chaos_blades->value();
-  }
-
   return m;
 }
 
@@ -6234,7 +6251,7 @@ namespace items
       if ( dh->level() > 115 )
         return;
 
-      dh->legendary.anger_of_the_halfgiants_fury = e.driver()->effectN( 1 ).base_value();
+      dh->legendary.anger_of_the_halfgiants_fury = static_cast<int>( e.driver()->effectN( 1 ).base_value() );
       dh->gain.anger_of_the_halfgiants = dh->get_gain( "anger_of_the_halfgiants" );
     }
   };
