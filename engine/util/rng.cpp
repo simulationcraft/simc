@@ -995,6 +995,7 @@ double stdnormal_inv( double p )
 
 #include <iostream>
 #include <iomanip>
+#include "util/fmt/format.h"
 
 namespace rng {
 static int64_t milliseconds()
@@ -1061,6 +1062,32 @@ static void monte_carlo( rng_t* rng, uint64_t n )
                ", numbers/sec = " << static_cast<uint64_t>( n * 1000.0 / elapsed_cpu ) << "\n\n";
 }
 
+static void test_uniform_int( rng_t* rng, uint64_t n, unsigned num_buckets )
+{
+  int64_t start_time = milliseconds();
+
+  std::vector<unsigned> histogram(num_buckets);
+
+  for ( uint64_t i = 0; i < n; ++i )
+  {
+    auto result = rng -> range(histogram.size());
+    histogram[ result ] += 1;
+  }
+
+  int64_t elapsed_cpu = milliseconds() - start_time;
+
+  double expected_bucket_size = static_cast<double>(n) / histogram.size();
+
+  fmt::print("{} call to rng::{}::range(size_t({}u))\n", n, rng -> name(), histogram.size());
+  for (unsigned i = 0; i < histogram.size(); ++i)
+  {
+    double pct = static_cast<double>(histogram[ i ]) / n;
+    double diff = static_cast<double>(histogram[ i ]) / expected_bucket_size - 1.0;
+    fmt::print("  bucket {:2n}: {:5.2f}% ({}) difference to expected: {:9.6f}%\n", i, pct, histogram[ i ], diff);
+  }
+  fmt::print("time = {} ms\n\n", elapsed_cpu);
+}
+
 } // namespace rng
 
 int main( int /*argc*/, char** /*argv*/ )
@@ -1111,6 +1138,14 @@ int main( int /*argc*/, char** /*argv*/ )
   test_seed( rng_xs128,  100000 );
   test_seed( rng_xs1024, 100000 );
 
+  unsigned num_buckets = 10;
+  uint64_t k = 10000;
+  test_uniform_int( rng_mt_cxx11,   k, num_buckets );
+  test_uniform_int( rng_murmurhash, k, num_buckets );
+  test_uniform_int( rng_sfmt,       k, num_buckets );
+  test_uniform_int( rng_tinymt,     k, num_buckets );
+  test_uniform_int( rng_xs128,      k, num_buckets );
+  test_uniform_int( rng_xs1024,     k, num_buckets );
 
   std::cout << "random device: min=" << rd.min() << " max=" << rd.max() << "\n\n";
 
