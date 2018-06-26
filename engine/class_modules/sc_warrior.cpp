@@ -679,7 +679,7 @@ public:
   {
     double ea = ab::composite_energize_amount( state );
 
-    if ( energize_resource == RESOURCE_RAGE )
+    if ( energize_resource_() == RESOURCE_RAGE )
     {
       if ( p() -> buff.recklessness ->check() )
       {
