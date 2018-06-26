@@ -188,9 +188,6 @@ public:
     // Set Bonuses
     buff_t* sacred_judgment;
     buff_t* ret_t21_4p;
-
-    // azerite
-    buff_t* avengers_might;
   } buffs;
 
   // Gains
@@ -266,15 +263,6 @@ public:
     const spell_data_t* judgment; // mystery, hidden
     const spell_data_t* execution_sentence;
   } passives;
-
-  // Azerite
-  struct azerite_t
-  {
-      // Holy
-      // Retribution
-      azerite_power_t avengers_might;
-      // Protection
-  } azerite;
 
   // Procs and RNG
   real_ppm_t* blade_of_wrath_rppm;

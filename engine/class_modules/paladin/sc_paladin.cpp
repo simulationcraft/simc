@@ -221,8 +221,6 @@ struct avenging_wrath_t : public paladin_spell_t
     {
       p() -> buffs.liadrins_fury_unleashed -> trigger();
     }
-
-    p()->buffs.avengers_might->trigger();
   }
 
   // TODO: is this needed? Question for Ret dev, since I don't think it is for Prot/Holy
@@ -1150,11 +1148,10 @@ std::string paladin_t::default_potion() const
 
 std::string paladin_t::default_food() const
 {
-  std::string retribution_food = (true_level >= 110) ? "swamp_fish_n_chips" : 
-                                 (true_level >= 101) ? "azshari_salad" :
-                                 (true_level >=  90) ? "sleeper_sushi" :
-                                 (true_level >=  85) ? "black_pepper_ribs_and_shrimp" :
-                                 (true_level >=  80) ? "beer_basted_crocolisk" :
+  std::string retribution_food = (true_level > 100) ? "azshari_salad" :
+                                 (true_level >= 90) ? "sleeper_sushi" :
+                                 (true_level >= 85) ? "black_pepper_ribs_and_shrimp" :
+                                 (true_level >= 80) ? "beer_basted_crocolisk" :
                                  "disabled";
 
   bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
@@ -1191,11 +1188,10 @@ std::string paladin_t::default_food() const
 
 std::string paladin_t::default_flask() const
 {
-  std::string retribution_flask = (true_level >  110) ? "flask_of_the_undertow" : 
-                                  (true_level >= 100) ? "flask_of_the_countless_armies" :
-                                  (true_level >=  90) ? "greater_draenic_strength_flask" :
-                                  (true_level >=  85) ? "winters_bite" :
-                                  (true_level >=  80) ? "titanic_strength" :
+  std::string retribution_flask = (true_level > 100) ? "flask_of_the_countless_armies" :
+                                  (true_level >= 90) ? "greater_draenic_strength_flask" :
+                                  (true_level >= 85) ? "winters_bite" :
+                                  (true_level >= 80) ? "titanic_strength" :
                                   "disabled";
 
   bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
@@ -1585,10 +1581,6 @@ double paladin_t::composite_mastery() const
 double paladin_t::composite_mastery_rating() const
 {
   double m = player_t::composite_mastery_rating();
-
-  if (buffs.avengers_might->check())
-      m += buffs.avengers_might->value();
-
   return m;
 }
 
