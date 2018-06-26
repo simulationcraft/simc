@@ -9,8 +9,8 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// todo:
-// Fury WW Cleave , Frenzy->Furious Slash, Fury Bladestorm time/rage, Arms Deep Wounds, implement new/changed talents
+// todo: Fury - Add Meat Cleaver to all single target Fury abilities (ref Bloodthirst)
+//       Arms - lol
 // ==========================================================================
 
 struct warrior_t;
@@ -85,6 +85,7 @@ public:
     haste_buff_t* enrage;
     buff_t* frenzy;
     haste_buff_t* frothing_berserker;
+    haste_buff_t* furious_slash;
     buff_t* furious_charge;
     buff_t* heroic_leap_movement;
     buff_t* ignore_pain;
@@ -241,7 +242,7 @@ public:
     const spell_data_t* enraged_regeneration;
     const spell_data_t* execute;
     const spell_data_t* execute_2;
-    const spell_data_t* furious_slash;
+    //const spell_data_t* furious_slash; now a talent
     const spell_data_t* hamstring;
     const spell_data_t* ignore_pain;
     const spell_data_t* intercept;
@@ -309,7 +310,7 @@ public:
     const spell_data_t* booming_voice;
     const spell_data_t* deadly_calm;
     const spell_data_t* devastator;
-    const spell_data_t* frenzy;
+    const spell_data_t* furious_slash;
     const spell_data_t* inner_rage;
     const spell_data_t* into_the_fray;
     const spell_data_t* titanic_might;
@@ -324,6 +325,7 @@ public:
     const spell_data_t* reckless_abandon;
     const spell_data_t* meat_cleaver;
     const spell_data_t* siegebreaker;
+    const spell_data_t* frenzy;
   } talents;
 
   struct legendary_t
@@ -1542,10 +1544,17 @@ struct bloodthirst_t: public warrior_attack_t
 struct furious_slash_t: public warrior_attack_t
 {
   furious_slash_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "furious_slash", p, p -> spec.furious_slash )
+    warrior_attack_t( "furious_slash", p, p -> talents.furious_slash )
   {
     parse_options( options_str );
     weapon = &( p -> off_hand_weapon );
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    p() -> buff.furious_slash -> trigger();
   }
 
   bool ready() override
@@ -2687,6 +2696,11 @@ struct rampage_attack_t: public warrior_attack_t
 
   void execute() override
   {
+    if ( p() -> talents.frothing_berserker->ok() )
+    {
+      p() -> buff.frothing_berserker -> trigger();
+    }
+    p() -> enrage();  // As of 6/26/2018 the first attack will benefit from the Enrage and Frothing it procs (Bloodthirst still does not)  
 	warrior_attack_t::execute();
 
     if ( first_attack && result_is_miss( execute_state -> result ) )
@@ -2778,9 +2792,8 @@ struct rampage_event_t: public event_t
     warrior -> rampage_attacks[attacks] -> execute();
     if ( attacks == 0 )
     {
-	  warrior -> buff.frothing_berserker -> trigger();
-      warrior -> enrage(); // As of 5/23/2016 the first attack does not get a damage bonus from the enrage that rampage triggers... even though it shows up in the combat log before the attack lands.
-    }                      // It will get a damage bonus if something else triggered the enrage beforehand, though.
+	            //Enrage/Frothing go here if not benefiting the first hit
+    }
     attacks++;
     if ( attacks < warrior -> rampage_attacks.size() )
     {
@@ -2806,18 +2819,19 @@ struct rampage_parent_t: public warrior_attack_t
     }
     track_cd_waste = false;
     base_costs[RESOURCE_RAGE] += p -> talents.carnage -> effectN( 1 ).resource( RESOURCE_RAGE );
+    base_costs[RESOURCE_RAGE] += p -> talents.frothing_berserker -> effectN( 2 ).resource( RESOURCE_RAGE );
   }
 
-  timespan_t gcd() const override
-  {
-    timespan_t t = warrior_attack_t::gcd();
+  // timespan_t gcd() const override
+  //{
+  // timespan_t t = warrior_attack_t::gcd();
 
-    if ( t >= timespan_t::from_millis( 1500 ) )
-    {
-      return timespan_t::from_millis( 1500 );
-    }
-    return t;
-  }
+  // if ( t >= timespan_t::from_millis( 1500 ) )
+  //{
+  // return timespan_t::from_millis( 1500 );
+  //}
+  // return t;
+  //}
 
   void execute() override
   {
@@ -3400,7 +3414,7 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
   {
     warrior_attack_t::last_tick( d );
 
-      p() -> buff.meat_cleaver -> trigger();
+      p() -> buff.meat_cleaver -> trigger( p() -> buff.meat_cleaver -> data().max_stacks() );
   }
 
   void execute() override
@@ -4147,7 +4161,7 @@ void warrior_t::init_spells()
   {
     spec.execute_2 = find_specialization_spell( 231830 );
   }
-  spec.furious_slash            = find_specialization_spell( "Furious Slash" );
+  //spec.furious_slash            = find_specialization_spell( "Furious Slash" ); Now a talent
   spec.hamstring                = find_specialization_spell( "Hamstring" );
   spec.ignore_pain              = find_specialization_spell( "Ignore Pain" );
   spec.intercept                = find_specialization_spell( "Intercept" );
@@ -4196,6 +4210,7 @@ void warrior_t::init_spells()
   talents.fresh_meat            = find_talent_spell( "Fresh Meat" );
   talents.frothing_berserker    = find_talent_spell( "Frothing Berserker" );
   talents.furious_charge        = find_talent_spell( "Furious Charge");
+  talents.furious_slash         = find_talent_spell( "Furious Slash" );
   talents.heavy_repercussions   = find_talent_spell( "Heavy Repercussions" );
   talents.in_for_the_kill       = find_talent_spell( "In For The Kill" );
   talents.indomitable           = find_talent_spell( "Indomitable" );
@@ -4976,9 +4991,9 @@ void warrior_t::create_buffs()
   buff.berserker_rage = buff_creator_t( this, "berserker_rage", spec.berserker_rage )
     .cd( timespan_t::zero() );
 
-  buff.frothing_berserker = make_buff<haste_buff_t>( this, "frothing_berserker", talents.frothing_berserker -> effectN( 1 ).trigger() );
-    buff.frothing_berserker -> set_default_value( talents.frothing_berserker -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
-    buff.frothing_berserker ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );;
+  buff.frothing_berserker = make_buff<haste_buff_t>( this, "frothing_berserker", find_spell( 215572 ) );
+    buff.frothing_berserker -> set_default_value( find_spell ( 215572 ) -> effectN( 2 ).percent() );
+    buff.frothing_berserker -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.bounding_stride = buff_creator_t( this, "bounding_stride", find_spell( 202164 ) )
     .chance( talents.bounding_stride -> ok() )
@@ -5008,12 +5023,15 @@ void warrior_t::create_buffs()
     .default_value( artifact.dragon_scales.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.enrage = make_buff<haste_buff_t>( this, "enrage", find_spell( 184362 ) );
-  buff.enrage->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.enrage->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() );
+    buff.enrage->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    buff.enrage->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() );
 
-  buff.frenzy = buff_creator_t( this, "frenzy", talents.frenzy -> effectN( 1 ).trigger() )
-    .add_invalidate( CACHE_HASTE )
-    .default_value( talents.frenzy -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+  //buff.frenzy = buff_creator_t( this, "frenzy", talents.frenzy -> effectN( 1 ).trigger() )
+    //.add_invalidate( CACHE_HASTE )
+    //.default_value( talents.frenzy -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+
+  buff.furious_slash = make_buff<haste_buff_t>( this, "furious_slash", find_spell( 202539 ) );
+    buff.furious_slash->set_default_value( find_spell( 202539 ) -> effectN( 1 ).percent() );
 
   buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
   buff.charge_movement = buff_creator_t( this, "charge_movement" );
@@ -5473,6 +5491,11 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + ( buff.tornados_eye -> current_stack * buff.tornados_eye -> data().effectN( 2 ).percent() );
   }
 
+  if ( buff.frothing_berserker -> check() )
+  {
+    m *= 1.0 + buff.frothing_berserker -> data().effectN( 1 ).percent();    
+  }
+
   if ( specialization() == WARRIOR_ARMS )
   {
     m *= 1.0 + spell.arms_warrior -> effectN( 4 ).percent();
@@ -5488,7 +5511,6 @@ double warrior_t::composite_player_multiplier( school_e school ) const
   }
 
   m *= 1.0 + buff.renewed_fury -> check_value();
-  m *= 1.0 + buff.frothing_berserker -> check_stack_value();
   m *= 1.0 + buff.fujiedas_fury -> check_stack_value();
   m *= 1.0 + artifact.protection_of_the_valarjar.percent();
 
@@ -5542,7 +5564,9 @@ double warrior_t::composite_melee_haste() const
 
   a *= 1.0 / ( 1.0 + buff.enrage -> check_value() );
 
-  a *= 1.0 / ( 1.0 + buff.frenzy -> check_stack_value() );
+  a *= 1.0 / ( 1.0 + buff.frothing_berserker -> check_value() );
+
+  a *= 1.0 / ( 1.0 + buff.furious_slash -> check_stack_value() );
 
   a *= 1.0 / ( 1.0 + buff.into_the_fray -> check_stack_value() );
 
@@ -5810,10 +5834,6 @@ double warrior_t::temporary_movement_modifier() const
   {
     temporary = std::max( buff.tornados_eye -> current_stack * buff.tornados_eye -> data().effectN( 1 ).percent(), temporary );
   }
-  else if ( buff.frothing_berserker -> up() )
-  {
-    temporary = std::max( buff.frothing_berserker -> data().effectN( 2 ).percent(), temporary );
-  }
   return temporary;
 }
 
@@ -5964,10 +5984,6 @@ void warrior_t::target_mitigation( school_e school,
     else if ( buff.die_by_the_sword -> up() )
     {
       s -> result_amount *= 1.0 + buff.die_by_the_sword -> default_value;
-    }
-    else if ( buff.enrage -> up() )
-    { // yay we're furious and we take more damage
-      s -> result_amount *= 1.0 + ( buff.enrage -> data().effectN( 2 ).percent() + talents.warpaint -> effectN( 1 ).percent() );
     }
   }
 
