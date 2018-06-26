@@ -2728,6 +2728,11 @@ void player_t::create_buffs()
     buffs.fortitude  = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).activated( false );
     buffs.shadowmeld = buff_creator_t( this, "shadowmeld", find_spell( 58984 ) ).cd( timespan_t::zero() );
 
+    buffs.ancestral_call[ 0 ] = make_buff<stat_buff_t>( this, "rictus_of_the_laughing_skull", find_spell( 274739 ) );
+    buffs.ancestral_call[ 1 ] = make_buff<stat_buff_t>( this, "zeal_of_the_burning_blade", find_spell( 274740 ) );
+    buffs.ancestral_call[ 2 ] = make_buff<stat_buff_t>( this, "ferocity_of_the_frostwolf", find_spell( 274741 ) );
+    buffs.ancestral_call[ 3 ] = make_buff<stat_buff_t>( this, "might_of_the_blackrock", find_spell( 274742 ) );
+
     buffs.archmages_greater_incandescence_agi =
         buff_creator_t( this, "archmages_greater_incandescence_agi", find_spell( 177172 ) )
             .add_invalidate( CACHE_AGILITY );
@@ -6959,6 +6964,25 @@ struct arcane_pulse_t : public racial_spell_t
   }
 };
 
+// Ancestral Call ===========================================================
+
+struct ancestral_call_t : public racial_spell_t
+{
+  ancestral_call_t( player_t* p, const std::string& options_str ) :
+    racial_spell_t( p, "ancestral_call", p->find_racial_spell( "Ancestral Call" ), options_str )
+  {
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    racial_spell_t::execute();
+
+    auto& buffs = player->buffs.ancestral_call;
+    buffs[ rng().range( buffs.size() ) ] -> trigger();
+  }
+};
+
 // Restart Sequence Action ==================================================
 
 struct restart_sequence_t : public action_t
@@ -8079,6 +8103,8 @@ struct pool_resource_t : public action_t
 
 action_t* player_t::create_action( const std::string& name, const std::string& options_str )
 {
+  if ( name == "ancestral_call" )
+    return new ancestral_call_t( this, options_str );
   if ( name == "arcane_pulse" )
     return new arcane_pulse_t( this, options_str );
   if ( name == "arcane_torrent" )

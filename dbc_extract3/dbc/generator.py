@@ -1171,6 +1171,8 @@ class SpellDataGenerator(DataGenerator):
          259756, 259760,
          # 8.0.1 Azerite power Elemental Whirl buffs
          268954, 268955, 268953,
+         # Mag'har Orc Ancestral Call buffs
+         274739, 274740, 274741, 274742,
         ),
 
         # Warrior:
