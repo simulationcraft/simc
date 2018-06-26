@@ -1019,8 +1019,8 @@ namespace warlock {
 
             shards_used = as<int>(last_resource_cost);
 
-            if (rng().roll(p()->azerite.demonic_meteor.spell_ref().effectN(2).base_value()*shards_used)) {
-              p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0);
+            if (rng().roll(p()->azerite.demonic_meteor.spell_ref().effectN(2).percent()*shards_used)) {
+              p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.demonic_meteor);
             }
 
             if (last_resource_cost == 1.0)
@@ -1097,8 +1097,7 @@ namespace warlock {
           if (sim->log)
             sim->out_debug.printf("forbidden knowledge added %f", p()->azerite.forbidden_knowledge.value());
         }
-        if (p()->buffs.shadows_bite->check())
-          da += p()->azerite.shadows_bite.value();
+        da += p()->buffs.shadows_bite->check_value();
         return da;
       }
 
@@ -1841,7 +1840,8 @@ namespace warlock {
     buffs.forbidden_knowledge = make_buff(this, "forbidden_knowledge", azerite.forbidden_knowledge.spell_ref().effectN(1).trigger())
       ->set_refresh_behavior(buff_refresh_behavior::DURATION);
     buffs.shadows_bite = make_buff(this, "shadows_bite", azerite.shadows_bite)
-      ->set_duration(find_spell(272945)->duration());
+      ->set_duration(find_spell(272945)->duration())
+      ->set_default_value(azerite.shadows_bite.value());
     buffs.supreme_commander = make_buff<stat_buff_t>(this, "supreme_commander", azerite.supreme_commander)
       ->add_stat(STAT_INTELLECT, azerite.supreme_commander.value())
       ->set_duration(find_spell(279885)->duration());
@@ -1898,7 +1898,7 @@ namespace warlock {
     azerite.demonic_meteor                  = find_azerite_spell("Demonic Meteor");
     azerite.forbidden_knowledge             = find_azerite_spell("Forbidden Knowledge");
     //azerite.meteoric_flare                  = find_azerite_spell("Meteoric Flare"); //no current data
-    azerite.shadows_bite                    = find_azerite_spell("Shadows Bite");
+    azerite.shadows_bite                    = find_azerite_spell("Shadow's Bite");
     azerite.supreme_commander               = find_azerite_spell("Supreme Commander");
     azerite.umbral_blaze                    = find_azerite_spell("Umbral Blaze");
 
@@ -1907,6 +1907,7 @@ namespace warlock {
 
   void warlock_t::init_gains_demonology() {
     gains.t19_2pc_demonology = get_gain("t19_2pc_demonology");
+    gains.demonic_meteor = get_gain("demonic_meteor");
   }
 
   void warlock_t::init_rng_demonology() {
