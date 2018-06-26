@@ -675,11 +675,11 @@ public:
     return ab::cost();
   }
 
-  virtual double composite_energize_amount( const action_state_t* state ) const override
+  double composite_energize_amount( const action_state_t* state ) const override
   {
     double ea = ab::composite_energize_amount( state );
 
-    if ( energize_resource_() == RESOURCE_RAGE )
+    if ( this -> energize_resource_() == RESOURCE_RAGE )
     {
       if ( p() -> buff.recklessness ->check() )
       {
