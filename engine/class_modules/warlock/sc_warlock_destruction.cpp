@@ -1003,13 +1003,8 @@ namespace warlock {
     talents.channel_demonfire           = find_talent_spell("Channel Demonfire");
     talents.dark_soul_instability       = find_talent_spell("Dark Soul: Instability");
 
-    /*
-    if (specialization() == WARLOCK_DESTRUCTION)
-    {
-      active.roaring_blaze              = new roaring_blaze_t(this);
-      active.internal_combustion        = new internal_combustion_t(this);
-    }
-    */
+    // Azerite
+
   }
 
   void warlock_t::init_gains_destruction() {

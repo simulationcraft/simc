@@ -20,6 +20,9 @@ namespace { // UNNAMED NAMESPACE
 
   Guardian ==================================================================
   Azerite traits
+  Rage from melees
+  Investigate Mastery-AP as a modifier on ability damage
+  Blacklist FR from trigger_natures_guardian()
 
   Resto =====================================================================
 
@@ -5810,7 +5813,7 @@ struct solar_wrath_t : public druid_spell_t
       p() -> cooldown.celestial_alignment ->
         adjust( -p() -> sets -> set( DRUID_BALANCE, T17, B4 ) -> effectN( 1 ).time_value() );
     }
-    
+
     p() -> buff.solar_empowerment -> decrement();
 
     if (player->specialization() == DRUID_BALANCE)
@@ -7928,7 +7931,7 @@ timespan_t druid_t::available() const
 void druid_t::arise()
 {
   player_t::arise();
-  
+
   if ( talent.earthwarden -> ok() )
     buff.earthwarden -> trigger( buff.earthwarden -> max_stack() );
 

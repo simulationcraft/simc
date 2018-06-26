@@ -885,7 +885,7 @@ public:
     ab::update_ready( cd );
   }
 
-  virtual double cast_regen() const
+  virtual double cast_regen( const action_state_t* s ) const
   {
     const timespan_t cast_time = std::max( this -> execute_time(), this -> gcd() );
     const double regen = p() -> resource_regen_per_second( RESOURCE_FOCUS );
@@ -897,7 +897,7 @@ public:
       targets_hit = ( num_targets < 0 ) ? tl_size : std::min( tl_size, as<size_t>( num_targets ) );
     }
     return ( regen * cast_time.total_seconds() ) +
-           ( targets_hit * this -> composite_energize_amount( nullptr ) );
+           ( targets_hit * this -> composite_energize_amount( s ) );
   }
 
   // action list expressions
@@ -906,7 +906,22 @@ public:
     if ( util::str_compare_ci( name, "cast_regen" ) )
     {
       // Return the focus that will be regenerated during the cast time or GCD of the target action.
-      return make_mem_fn_expr( "cast_regen", *this, &hunter_action_t::cast_regen );
+      struct cast_regen_expr_t : public expr_t
+      {
+        hunter_action_t& action;
+        std::unique_ptr<action_state_t> state;
+        cast_regen_expr_t( hunter_action_t& a ):
+          expr_t( "cast_regen" ), action( a ), state( a.get_state() )
+        {}
+
+        double evaluate() override
+        {
+          action.snapshot_state( state.get(), RESULT_TYPE_NONE );
+          state -> target = action.target;
+          return action.cast_regen( state.get() );
+        }
+      };
+      return new cast_regen_expr_t( *this );
     }
 
     return ab::create_expression( name );
@@ -1993,32 +2008,15 @@ struct froststorm_breath_t: public hunter_main_pet_spell_t
       hunter_main_pet_spell_t( "froststorm_breath_tick", player, player -> find_spell( 95725 ) )
     {
       attack_power_mod.direct = 0.144; // hardcoded into tooltip, 2012/08 checked 2015/02/21
-      background = true;
-      direct_tick = true;
     }
   };
 
-  froststorm_breath_tick_t* tick_spell;
   froststorm_breath_t( hunter_main_pet_t* player, const std::string& options_str ):
     hunter_main_pet_spell_t( "froststorm_breath", player, player -> find_pet_spell( "Froststorm Breath" ) )
   {
     parse_options( options_str );
     channeled = true;
-    tick_spell = new froststorm_breath_tick_t( player );
-    add_child( tick_spell );
-  }
-
-  void init() override
-  {
-    hunter_main_pet_spell_t::init();
-
-    tick_spell -> stats = stats;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    tick_spell -> execute();
-    stats -> add_tick( d -> time_to_tick, d -> state -> target );
+    tick_action = new froststorm_breath_tick_t( player );
   }
 };
 
@@ -2097,17 +2095,15 @@ void dire_critter_t::init_spells()
 
 } // end namespace pets
 
-void trigger_birds_of_prey( const action_state_t* state )
+void trigger_birds_of_prey( hunter_t* p, player_t* t )
 {
-  auto p = static_cast<hunter_t*>( state -> action -> player );
-
   if ( ! p -> talents.birds_of_prey -> ok() )
     return;
 
   if ( ! p -> pets.main )
     return;
 
-  if ( state -> target == p -> pets.main -> target )
+  if ( t == p -> pets.main -> target )
     p -> buffs.coordinated_assault -> extend_duration( p, p -> talents.birds_of_prey -> effectN( 1 ).time_value() );
 }
 
@@ -2286,34 +2282,25 @@ struct barrage_t: public hunter_spell_t
     barrage_damage_t( const std::string& n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> talents.barrage -> effectN( 1 ).trigger() )
     {
-      background = true;
-      dual = true;
-
-      may_crit = true;
       aoe = -1;
       radius = 0; //Barrage attacks all targets in front of the hunter, so setting radius to 0 will prevent distance targeting from using a 40 yard radius around the target.
       // Todo: Add in support to only hit targets in the frontal cone.
     }
   };
 
-  barrage_damage_t* primary;
-
   barrage_t( hunter_t* p, const std::string& options_str ):
-    hunter_spell_t( "barrage", p, p -> talents.barrage ),
-    primary( p -> get_background_action<barrage_damage_t>( "barrage_damage" ) )
+    hunter_spell_t( "barrage", p, p -> talents.barrage )
   {
     parse_options( options_str );
 
-    add_child( primary );
-
     may_miss = may_crit = false;
     callbacks = false;
-    hasted_ticks = false;
     channeled = true;
 
     tick_zero = true;
     travel_speed = 0.0;
 
+    tick_action = p -> get_background_action<barrage_damage_t>( "barrage_damage" );
     starved_proc = p -> get_proc( "starved: barrage" );
   }
 
@@ -2324,12 +2311,6 @@ struct barrage_t: public hunter_spell_t
     // Delay auto shot, add 500ms to simulate "wind up"
     if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
       p() -> main_hand_attack -> reschedule_execute( dot_duration * composite_haste() + timespan_t::from_millis( 500 ) );
-  }
-
-  void tick( dot_t*d ) override
-  {
-    hunter_spell_t::tick( d );
-    primary -> execute();
   }
 };
 
@@ -2413,7 +2394,7 @@ struct multi_shot_t: public hunter_ranged_attack_t
 
     if ( rapid_reload.action && num_targets_hit >= rapid_reload.min_targets )
     {
-      rapid_reload.action -> set_target( execute_state -> target );
+      rapid_reload.action -> set_target( target );
       rapid_reload.action -> execute();
     }
   }
@@ -2473,12 +2454,10 @@ struct chimaera_shot_t: public hunter_ranged_attack_t
     action_state_t::release( s );
   }
 
-  double cast_regen() const override
+  double cast_regen( const action_state_t* s ) const override
   {
-    const timespan_t cast_time = std::max( execute_time(), gcd() );
-    const double regen = p() -> resource_regen_per_second( RESOURCE_FOCUS );
     const size_t targets_hit = std::min( target_list().size(), as<size_t>( n_targets() ) );
-    return ( regen * cast_time.total_seconds() ) +
+    return hunter_ranged_attack_t::cast_regen( s ) +
            ( targets_hit * damage[ 0 ] -> composite_energize_amount( nullptr ) );
   }
 };
@@ -2764,7 +2743,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     if ( double_tap && p() -> buffs.double_tap -> check() )
     {
-      double_tap -> set_target( execute_state -> target );
+      double_tap -> set_target( target );
       double_tap -> execute();
       p() -> buffs.double_tap -> decrement();
     }
@@ -2943,6 +2922,32 @@ struct steady_shot_t: public hunter_ranged_attack_t
 
 struct rapid_fire_t: public hunter_spell_t
 {
+  // this is required because Double Tap 'snapshots' on channel start
+  struct rapid_fire_state_t : public action_state_t
+  {
+    bool double_tapped = false;
+    rapid_fire_state_t( action_t* a, player_t* t ) : action_state_t( a, t ) {}
+
+    void initialize() override
+    {
+      action_state_t::initialize();
+      double_tapped = false;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      action_state_t::debug_str( s );
+      s << " double_tapped=" << double_tapped;
+      return s;
+    }
+
+    void copy_state( const action_state_t* o ) override
+    {
+      action_state_t::copy_state( o );
+      double_tapped = debug_cast<const rapid_fire_state_t*>( o ) -> double_tapped;
+    }
+  };
+
   struct rapid_fire_damage_t: public hunter_ranged_attack_t
   {
     const int trick_shots_targets;
@@ -2956,8 +2961,8 @@ struct rapid_fire_t: public hunter_spell_t
       hunter_ranged_attack_t( n, p, p -> find_spell( 257044 ) -> effectN( 2 ).trigger() ),
       trick_shots_targets( as<int>( p -> specs.trick_shots -> effectN( 3 ).base_value() ) )
     {
-      background = true;
       dual = true;
+      direct_tick = true;
       radius = 8.0;
 
       parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
@@ -3000,25 +3005,34 @@ struct rapid_fire_t: public hunter_spell_t
   };
 
   rapid_fire_damage_t* damage;
+  int base_num_ticks;
 
   rapid_fire_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "rapid_fire", p, p -> find_spell( 257044 ) ),
-    damage( p -> get_background_action<rapid_fire_damage_t>( "rapid_fire_damage" ) )
+    damage( p -> get_background_action<rapid_fire_damage_t>( "rapid_fire_damage" ) ),
+    base_num_ticks( data().effectN( 1 ).base_value() )
   {
     parse_options( options_str );
 
-    add_child( damage );
-
     may_miss = may_crit = false;
     callbacks = false;
-    hasted_ticks = false;
     channeled = true;
     tick_zero = true;
 
+    base_num_ticks *= 1.0 + p -> talents.streamline -> effectN( 2 ).percent();
     dot_duration += p -> talents.streamline -> effectN( 1 ).time_value();
   }
 
-  void schedule_execute( action_state_t* state = nullptr ) override
+  void init()
+  {
+    hunter_spell_t::init();
+
+    damage -> stats      = stats;
+    damage -> parent_dot = target -> get_dot( name_str, player );
+    stats -> action_list.push_back( damage );
+  }
+
+  void schedule_execute( action_state_t* state ) override
   {
     hunter_spell_t::schedule_execute( state );
 
@@ -3054,26 +3068,41 @@ struct rapid_fire_t: public hunter_spell_t
   {
     timespan_t t = hunter_spell_t::tick_time( s );
 
-    t *= 1.0 + p() -> buffs.double_tap -> check_value();
+    if ( debug_cast<const rapid_fire_state_t*>( s ) -> double_tapped )
+      t *= 1.0 + p() -> talents.double_tap -> effectN( 1 ).percent();
 
     return t;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    timespan_t base_tick_time_ = base_tick_time;
-    base_tick_time_ *= 1.0 + p() -> buffs.double_tap -> check_value();
-
-    return dot_duration * ( tick_time( s ) / base_tick_time_ );
+    // substract 1 here because RF has a tick at zero
+    return ( num_ticks( s ) - 1 ) * tick_time( s );
   }
 
-  double cast_regen() const override
+  double cast_regen( const action_state_t* s ) const override
   {
-    timespan_t base_tick_time_ = base_tick_time;
-    base_tick_time_ *= 1.0 + p() -> buffs.double_tap -> check_value();
-    auto num_ticks = as<int>( std::ceil( dot_duration / base_tick_time_ ) );
+    return hunter_spell_t::cast_regen( s ) +
+           num_ticks( s ) * damage -> composite_energize_amount( nullptr );
+  }
 
-    return hunter_spell_t::cast_regen() + num_ticks * damage -> composite_energize_amount( nullptr );
+  int num_ticks( const action_state_t* s ) const
+  {
+    int num_ticks_ = base_num_ticks;
+    if ( debug_cast<const rapid_fire_state_t*>( s ) -> double_tapped )
+      num_ticks_ *= 1.0 + p() -> talents.double_tap -> effectN( 3 ).percent();
+    return num_ticks_;
+  }
+
+  action_state_t* new_state() override
+  {
+    return new rapid_fire_state_t( this, target );
+  }
+
+  void snapshot_state( action_state_t* s, dmg_e type ) override
+  {
+    hunter_spell_t::snapshot_state( s, type );
+    debug_cast<rapid_fire_state_t*>( s ) -> double_tapped = p() -> buffs.double_tap -> check();
   }
 };
 
@@ -3324,7 +3353,7 @@ struct raptor_strike_base_t: hunter_melee_attack_t
     if ( p() -> buffs.coordinated_assault -> check() )
       p() -> buffs.blur_of_talons -> trigger();
 
-    trigger_birds_of_prey( execute_state );
+    trigger_birds_of_prey( p(), target );
     if ( wilderness_survival_reduction != timespan_t::zero() )
       p() -> cooldowns.wildfire_bomb -> adjust( -wilderness_survival_reduction );
 
@@ -3426,12 +3455,12 @@ struct flanking_strike_t: hunter_melee_attack_t
   {
     hunter_melee_attack_t::execute();
 
-    damage -> set_target( execute_state -> target );
+    damage -> set_target( target );
     damage -> execute();
 
     if ( auto pet = p() -> pets.main )
     {
-      pet -> active.flanking_strike -> set_target( execute_state -> target );
+      pet -> active.flanking_strike -> set_target( target );
       pet -> active.flanking_strike -> execute();
     }
 
@@ -3468,7 +3497,7 @@ struct carve_t: public hunter_melee_attack_t
     auto reduction = wfb_reduction * std::min( num_targets_hit, wfb_reduction_target_cap );
     p() -> cooldowns.wildfire_bomb -> adjust( -reduction, true );
 
-    trigger_birds_of_prey( execute_state );
+    trigger_birds_of_prey( p(), target );
   }
 
   void impact( action_state_t* s ) override
@@ -3602,12 +3631,12 @@ struct harpoon_t: public hunter_melee_attack_t
 
     if ( terms_of_engagement )
     {
-      terms_of_engagement -> set_target( execute_state -> target );
+      terms_of_engagement -> set_target( target );
       terms_of_engagement -> execute();
     }
 
     if ( p() -> legendary.sv_waist -> ok() )
-      td( execute_state -> target ) -> debuffs.mark_of_helbrine -> trigger();
+      td( target ) -> debuffs.mark_of_helbrine -> trigger();
 
     p() -> buffs.up_close_and_personal -> trigger();
   }
@@ -3732,7 +3761,7 @@ struct chakrams_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    damage -> set_target( execute_state -> target );
+    damage -> set_target( target );
     damage -> execute();
     damage -> execute(); // to simulate the 'return' & hitting the main target twice
   }
@@ -3780,10 +3809,6 @@ struct moc_t : public hunter_spell_t
     peck_t( const std::string& n, hunter_t* p ) :
       hunter_ranged_attack_t( n, p, p -> find_spell( 131900 ) )
     {
-      background = true;
-      dual = true;
-
-      may_crit = true;
       may_parry = may_block = may_dodge = false;
       travel_speed = 0.0;
     }
@@ -3802,15 +3827,10 @@ struct moc_t : public hunter_spell_t
     }
   };
 
-  peck_t* peck;
-
   moc_t( hunter_t* p, const std::string& options_str ) :
-    hunter_spell_t( "a_murder_of_crows", p, p -> talents.a_murder_of_crows ),
-    peck( p -> get_background_action<peck_t>( "crow_peck" ) )
+    hunter_spell_t( "a_murder_of_crows", p, p -> talents.a_murder_of_crows )
   {
     parse_options( options_str );
-
-    add_child( peck );
 
     hasted_ticks = false;
     callbacks = false;
@@ -3818,15 +3838,8 @@ struct moc_t : public hunter_spell_t
 
     tick_zero = true;
 
+    tick_action = p -> get_background_action<peck_t>( "crow_peck" );
     starved_proc = p -> get_proc( "starved: a_murder_of_crows" );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    hunter_spell_t::tick( d );
-
-    peck -> set_target( d -> target );
-    peck -> execute();
   }
 };
 
@@ -3977,7 +3990,7 @@ struct kill_command_t: public hunter_spell_t
 
     if ( auto pet = p() -> pets.main )
     {
-      pet -> active.kill_command -> set_target( execute_state -> target );
+      pet -> active.kill_command -> set_target( target );
       pet -> active.kill_command -> execute();
     }
 
@@ -3988,7 +4001,7 @@ struct kill_command_t: public hunter_spell_t
       double chance = data().effectN( 2 ).percent();
       if ( p() -> buffs.coordinated_assault -> check() )
         chance += p() -> specs.coordinated_assault -> effectN( 4 ).percent();
-      if ( td( execute_state -> target ) -> dots.pheromone_bomb -> is_ticking() )
+      if ( td( target ) -> dots.pheromone_bomb -> is_ticking() )
         chance += p() -> find_spell( 270323 ) -> effectN( 2 ).percent();
       if ( rng().roll( chance ) )
       {
@@ -4275,8 +4288,8 @@ struct hunters_mark_t: public hunter_spell_t
     if ( p() -> current_hunters_mark_target != nullptr )
       td( p() -> current_hunters_mark_target ) -> debuffs.hunters_mark -> expire();
 
-    p() -> current_hunters_mark_target = execute_state -> target;
-    td( execute_state -> target ) -> debuffs.hunters_mark -> trigger();
+    p() -> current_hunters_mark_target = target;
+    td( target ) -> debuffs.hunters_mark -> trigger();
   }
 };
 
@@ -4467,13 +4480,11 @@ struct wildfire_bomb_t: public hunter_spell_t
 
     void execute() override
     {
-      player_t* initial_target = target;
-
       bomb_base_t::execute();
 
-      if ( td( initial_target ) -> dots.serpent_sting -> is_ticking() )
+      if ( td( target ) -> dots.serpent_sting -> is_ticking() )
       {
-        violent_reaction -> set_target( initial_target );
+        violent_reaction -> set_target( target );
         violent_reaction -> execute();
       }
     }

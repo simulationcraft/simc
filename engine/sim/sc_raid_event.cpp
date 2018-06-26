@@ -1304,7 +1304,7 @@ std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim,
   if ( name == "damage_taken_debuff" ) return std::unique_ptr<raid_event_t>(new damage_taken_debuff_event_t( sim, options_str ));
   if ( name == "damage_done_buff"    ) return std::unique_ptr<raid_event_t>(new    damage_done_buff_event_t( sim, options_str ));
 
-  throw new std::invalid_argument(fmt::format("Invalid raid event type '{}'.", name));
+  throw std::invalid_argument(fmt::format("Invalid raid event type '{}'.", name));
 }
 
 // raid_event_t::init =======================================================

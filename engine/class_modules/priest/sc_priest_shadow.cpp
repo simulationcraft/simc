@@ -94,7 +94,7 @@ public:
          !priest().talents.shadow_word_void->ok() )
     {
       priest().cooldowns.mind_blast->charges +=
-          priest().active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
+          (int)(float)priest().active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
     }
     priest().cooldowns.mind_blast->hasted = true;
 
@@ -443,7 +443,7 @@ struct shadow_word_death_t final : public priest_spell_t
     const spell_data_t* shadow_word_death_2 = p.find_specialization_spell( 231689 );
     if ( shadow_word_death_2 )
     {
-      cooldown->charges += shadow_word_death_2->effectN( 1 ).base_value();
+      cooldown->charges += (int)(float)shadow_word_death_2->effectN( 1 ).base_value();
     }
   }
 
@@ -535,6 +535,12 @@ struct shadow_crash_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().generate_insanity( insanity_gain, priest().gains.insanity_shadow_crash, execute_state->action );
+  }
+
+  timespan_t travel_time() const override
+  {
+    // Hardcoded based on in-game testing -- Anshlun 2018-06-25
+    return timespan_t::from_seconds( 1.5 );
   }
 };
 
@@ -1269,7 +1275,8 @@ struct void_eruption_t final : public priest_spell_t
 
     if ( priest().active_items.mother_shahrazs_seduction )
     {
-      int mss_vf_stacks = priest().active_items.mother_shahrazs_seduction->driver()->effectN( 1 ).base_value();
+      int mss_vf_stacks =
+          (int)(float)priest().active_items.mother_shahrazs_seduction->driver()->effectN( 1 ).base_value();
 
       priest().buffs.voidform->bump( mss_vf_stacks - 1 );  // You start with 3 Stacks of Voidform 2017/01/17
       if ( priest().buffs.overwhelming_darkness->check() )
@@ -1342,7 +1349,8 @@ struct dark_ascension_t final : public priest_spell_t
 
     if ( priest().active_items.mother_shahrazs_seduction )
     {
-      int mss_vf_stacks = priest().active_items.mother_shahrazs_seduction->driver()->effectN( 1 ).base_value();
+      int mss_vf_stacks =
+          (int)(float)priest().active_items.mother_shahrazs_seduction->driver()->effectN( 1 ).base_value();
 
       priest().buffs.voidform->bump( mss_vf_stacks - 1 );  // You start with 3 Stacks of Voidform 2017/01/17
       if ( priest().buffs.overwhelming_darkness->check() )
@@ -1678,7 +1686,7 @@ struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
     set_period( timespan_t::from_seconds( 1 ) );
     set_tick_behavior( buff_tick_behavior::REFRESH );
     set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
-    set_max_stack( p.find_spell( 185916 )->effectN( 4 ).base_value() );  // or 18?
+    set_max_stack( (int)(float)p.find_spell( 185916 )->effectN( 4 ).base_value() );  // or 18?
   }
 
   void expire_override( int stacks, timespan_t ) override

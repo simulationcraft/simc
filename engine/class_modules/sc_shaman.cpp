@@ -1037,17 +1037,28 @@ public:
     }
   }
 
+  double composite_attack_power() const override
+  {
+    double m = ab::composite_attack_power();
+
+    return m;
+  }
+
   double action_multiplier() const override
   {
     double m = ab::action_multiplier();
 
     if ( p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      if ( ab::data().affected_by( p()->mastery.enhanced_elements->effectN( 1 ) ) ||
-           ab::data().affected_by( p()->mastery.enhanced_elements->effectN( 5 ) ) || enable_enh_mastery_scaling )
-      {
-        //...hopefully blizzard never makes direct and periodic scaling different from eachother in our mastery..
-        m *= 1.0 + p()->cache.mastery_value();
+      if ( ( dbc::is_school( this -> school, SCHOOL_FIRE ) || dbc::is_school( this -> school, SCHOOL_FROST ) ||
+        dbc::is_school( this -> school, SCHOOL_NATURE ) ) && p()->mastery.enhanced_elements->ok() )
+	  {
+        if ( ab::data().affected_by( p()->mastery.enhanced_elements->effectN( 1 ) ) ||
+             ab::data().affected_by( p()->mastery.enhanced_elements->effectN( 5 ) ) || enable_enh_mastery_scaling )
+        {
+          //...hopefully blizzard never makes direct and periodic scaling different from eachother in our mastery..
+          m *= 1.0 + p()->cache.mastery_value();
+        }
       }
     }
 
@@ -1876,23 +1887,6 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
       this->spell_power_mod.direct = 1.0;
     }
   }
-
-  // double action_multiplier() const override
-  //{
-  // double m = ab::action_multiplier();
-
-  // if (p()->specialization() == SHAMAN_ENHANCEMENT)
-  // {
-  //  if (ab::data().affected_by(p()->mastery.enhanced_elements->effectN(1)) ||
-  //  ab::data().affected_by(p()->mastery.enhanced_elements->effectN(5)) || enable_enh_mastery_scaling)
-  //  {
-  //	  //...hopefully blizzard never makes direct and periodic scaling different from eachother in our mastery..
-  //	  m *= 1.0 + p()->cache.mastery_value();
-  //  }
-  // }
-
-  // return m;
-  //}
 
   void init() override
   {
@@ -2767,7 +2761,6 @@ struct crash_lightning_attack_t : public shaman_attack_t
     background = true;
     callbacks  = false;
     aoe        = -1;
-
     base_multiplier *= 1.0;
   }
 
@@ -2850,6 +2843,7 @@ struct stormstrike_attack_t : public shaman_attack_t
     weapon                           = w;
     base_multiplier *= 1.0;
     may_proc_lightning_shield = true;
+	school = SCHOOL_PHYSICAL;
   }
 
   void init() override
@@ -3580,7 +3574,7 @@ struct sundering_t : public shaman_attack_t
     : shaman_attack_t( "sundering", player, player->talent.sundering )
   {
     parse_options( options_str );
-
+	school = SCHOOL_FLAMESTRIKE;
     aoe = -1;  // TODO: This is likely not going to affect all enemies but it will do for now
   }
 
@@ -7210,7 +7204,7 @@ void shaman_t::init_action_list_elemental()
       this, "Totem Mastery",
       "if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+"
       "cooldown.ascendance.remains)&cooldown.ascendance.remains<15)" );
-  single_target->add_action( this, "Frost Shock", "if=buff.icefury.up" );
+  single_target->add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
   single_target->add_talent( this, "Icefury" );
   single_target->add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1" );
   single_target->add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
@@ -7712,14 +7706,6 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
 
   // Enhancement
   m *= 1.0 + spec.enhancement_shaman->effectN( 3 ).percent();
-
-  // auto school = s->action->get_school();
-  // if ( ( dbc::is_school( school, SCHOOL_FIRE ) || dbc::is_school( school, SCHOOL_FROST ) ||
-  //       dbc::is_school( school, SCHOOL_NATURE ) ) &&
-  //     mastery.enhanced_elements->ok() )
-  //{
-  //  m *= 1.0 + cache.mastery_value();
-  //}
 
   return m;
 }

@@ -1511,7 +1511,7 @@ struct soul_cleave_heal_t : public demon_hunter_heal_t
   struct feast_of_souls_heal_t : public demon_hunter_heal_t
   {
     feast_of_souls_heal_t(demon_hunter_t* p)
-      : demon_hunter_heal_t("feast_of_souls", p, p->find_spell(207693))
+      : demon_hunter_heal_t( "feast_of_souls", p, p->find_spell( 207693 ) )
     {
       background = true;
       hasted_ticks = false;
@@ -1601,11 +1601,14 @@ struct chaos_nova_t : public demon_hunter_spell_t
     base_costs[ RESOURCE_FURY ] *= 1.0 + p->talent.unleashed_power->effectN( 2 ).percent();
   }
 
-  void execute() override
+  void impact( action_state_t* s ) override
   {
-    demon_hunter_spell_t::execute();
+    demon_hunter_spell_t::impact( s );
 
-    if ( execute_state->target->type == ENEMY_ADD )
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    if ( s->target->type == ENEMY_ADD )
     {
       if ( p()->rng().roll( data().effectN( 3 ).percent() ) )
       {
@@ -1788,7 +1791,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     }
 
     demon_hunter_spell_t::execute();
-    timespan_t duration = composite_dot_duration(execute_state);
+    timespan_t duration = composite_dot_duration( execute_state );
 
     // Since Demonic triggers Meta with 8s + hasted duration, need to extend by the hasted duration after have an execute_state
     if (extend_meta)
@@ -1853,15 +1856,9 @@ struct fel_devastation_t : public demon_hunter_spell_t
       background = dual = true;
       aoe = -1;
     }
-
-    dmg_e amount_type( const action_state_t*, bool ) const override
-    {
-      return DMG_OVER_TIME;
-    }
   };
 
   action_t* heal;
-  action_t* damage;
 
   fel_devastation_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_spell_t( "fel_devastation", p, p->talent.fel_devastation, options_str )
@@ -1875,21 +1872,17 @@ struct fel_devastation_t : public demon_hunter_spell_t
       heal = new heals::fel_devastation_heal_t( p );
     }
 
-    damage = p->find_action( "fel_devastation_tick" );
-    if ( !damage )
+    tick_action = p->find_action( "fel_devastation_tick" );
+    if ( !tick_action )
     {
-      damage = new fel_devastation_tick_t( p );
+      tick_action = new fel_devastation_tick_t( p );
     }
-    damage->stats = stats;
   }
 
   void tick( dot_t* d ) override
   {
+    heal->execute(); // Heal happens first.
     demon_hunter_spell_t::tick( d );
-
-    // Heal happens first.
-    heal->execute();
-    damage->execute();
   }
 };
 
@@ -1951,13 +1944,11 @@ struct fiery_brand_t : public demon_hunter_spell_t
     {
       background = dual = true;
       hasted_ticks = may_crit = false;
-      school = p->find_specialization_spell("Fiery Brand")->get_school_type();
-      base_dd_min = base_dd_max = 0;
 
       if ( p->talent.burning_alive->ok() )
       {
         // Spread radius used for Burning Alive.
-        radius = p->find_spell( 207760 )->effectN( 1 ).radius();
+        radius = 8; // TODO: p->find_spell( 207760 )->effectN( 1 ).radius();
       }
       else
       {
@@ -1972,25 +1963,10 @@ struct fiery_brand_t : public demon_hunter_spell_t
 
     dot_t* get_dot( player_t* t ) override
     {
-      if ( ! t ) t = target;
-      if ( ! t ) return nullptr;
+      if ( !t ) t = target;
+      if ( !t ) return nullptr;
 
       return td( t )->dots.fiery_brand;
-    }
-
-    void record_data( action_state_t* s ) override
-    {
-      // Don't record data direct hits for this action.
-      if ( s->result_type != DMG_DIRECT )
-      {
-        demon_hunter_spell_t::record_data( s );
-      }
-#ifndef NDEBUG
-      else
-      {
-        assert( s->result_amount == 0.0 );
-      }
-#endif
     }
 
     void tick( dot_t* d ) override
@@ -2012,37 +1988,28 @@ struct fiery_brand_t : public demon_hunter_spell_t
         return;
       }
 
-      // Retrieve target list, checking for distance if necessary.
+      // Invalidate and retrieve the new target list
+      target_cache.is_valid = false;
       std::vector<player_t*> targets = target_list();
-      
-      targets = check_distance_targeting( targets );
-
       if ( targets.size() == 1 )
       {
         return;
       }
 
-      // Filter target list down to targets that are not already branded.
-      std::vector<player_t*> candidates;
+      // Remove all the targets with existing Fiery Brand DoTs
+      auto it = std::remove_if( targets.begin(), targets.end(), [ this ]( player_t* target ) { 
+        return this->td( target )->dots.fiery_brand->is_ticking(); 
+      } );
+      targets.erase( it, targets.end() );
 
-      for ( size_t i = 0; i < targets.size(); i++ )
-      {
-        if ( !td( targets[ i ] )->dots.fiery_brand->is_ticking() )
-        {
-          candidates.push_back( targets[ i ] );
-        }
-      }
-
-      if ( candidates.size() == 0 )
+      if ( targets.size() == 0 )
       {
         return;
       }
 
-      // Pick a random target.
-      player_t* target = candidates[static_cast<int>(p()->rng().range(0, (double)candidates.size()))];
-
-      // Execute a dot on that target.
-      this->set_target(target);
+      // Execute a dot on a random target
+      player_t* target = targets[ static_cast<int>( p()->rng().range( 0, static_cast<double>( targets.size() ) ) ) ];
+      this->set_target( target );
       schedule_execute();
     }
   };
@@ -2085,7 +2052,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 struct sigil_of_flame_damage_t : public demon_hunter_spell_t
 {
   sigil_of_flame_damage_t(demon_hunter_t* p)
-    : demon_hunter_spell_t("sigil_of_flame_dmg", p, p->find_spell(204598))
+    : demon_hunter_spell_t( "sigil_of_flame_dmg", p, p->find_spell( 204598 ) )
   {
     aoe = -1;
     background = dual = ground_aoe = true;
@@ -2106,12 +2073,12 @@ struct sigil_of_flame_damage_t : public demon_hunter_spell_t
     return td(t)->dots.sigil_of_flame;
   }
 
-  void make_ground_aoe_event(demon_hunter_t* dh, action_state_t* execute_state)
+  void make_ground_aoe_event(demon_hunter_t* dh, action_state_t* s)
   {
     make_event<ground_aoe_event_t>(*sim, dh, ground_aoe_params_t()
-      .target(execute_state->target)
-      .x(dh->talent.concentrated_sigils->ok() ? dh->x_position : execute_state->target->x_position)
-      .y(dh->talent.concentrated_sigils->ok() ? dh->y_position : execute_state->target->y_position)
+      .target(s->target)
+      .x(dh->talent.concentrated_sigils->ok() ? dh->x_position : s->target->x_position)
+      .y(dh->talent.concentrated_sigils->ok() ? dh->y_position : s->target->y_position)
       .pulse_time(dh->sigil_delay)
       .duration(dh->sigil_delay)
       .start_time(sim->current_time())
@@ -2147,7 +2114,7 @@ struct sigil_of_flame_t : public demon_hunter_spell_t
   {
     demon_hunter_spell_t::execute();
     p()->sigil_of_flame_activates = sim->current_time() + p()->sigil_delay;
-    damage->make_ground_aoe_event(p(), execute_state);
+    damage->make_ground_aoe_event( p(), execute_state );
   }
 
   expr_t* create_expression(const std::string& name) override
@@ -2311,7 +2278,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
     if ( !p->active.immolation_aura )
     {
       p->active.immolation_aura = new immolation_aura_damage_t( p, data().effectN( 1 ).trigger() );
-      add_child( p->active.immolation_aura );
+      p->active.immolation_aura->stats = stats;
     }
 
     initial_damage = new immolation_aura_damage_t( p, data().effectN( 2 ).trigger() );
@@ -2327,7 +2294,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
 
     demon_hunter_spell_t::execute();
 
-    initial_damage->set_target( execute_state->target );
+    initial_damage->set_target( target );
     initial_damage->execute();
   }
 };
@@ -2354,7 +2321,7 @@ struct metamorphosis_t : public demon_hunter_spell_t
         return;
 
       // Sephuz trigger off Havoc Metamorphosis impact stun 
-      if ( p()->legendary.sephuzs_secret && execute_state->target->type == ENEMY_ADD )
+      if ( p()->legendary.sephuzs_secret && s->target->type == ENEMY_ADD )
       {
         p()->buff.sephuzs_secret->trigger();
       }
@@ -2656,7 +2623,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
   struct spirit_bomb_damage_t : public demon_hunter_spell_t
   {
     spirit_bomb_damage_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "spirit_bomb_dmg", p, p->find_spell(247455) )
+      : demon_hunter_spell_t( "spirit_bomb_dmg", p, p->find_spell( 247455 ) )
     {
       background = dual = true;
       aoe = -1;
@@ -2700,7 +2667,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
     const int fragments_consumed =
       p()->consume_soul_fragments( soul_fragment::ALL, true, max_fragments_consumed );
 
-    damage->set_target( execute_state->target );
+    damage->set_target( target );
     action_state_t* damage_state = damage->get_state();
     damage->snapshot_state( damage_state, DMG_DIRECT );
     damage_state->da_multiplier *= fragments_consumed;
@@ -3409,8 +3376,14 @@ struct demon_blades_t : public demon_hunter_attack_t
 
     if ( p()->legendary.anger_of_the_halfgiants_fury > 0 )
     {
-      const int range = p()->legendary.anger_of_the_halfgiants_fury + p()->talent.demon_blades->effectN( 2 ).base_value();
-      p()->resource_gain( RESOURCE_FURY, static_cast<int>( rng().range( 1, 1 + range ) ), p()->gain.anger_of_the_halfgiants );
+      int range = p()->legendary.anger_of_the_halfgiants_fury;
+      
+      // 6/24/2018 - Spell data for the DBlades nerf on AotHG is broken on beta due to no spell ID reference
+      if ( !p()->bugs )
+        range += p()->talent.demon_blades->effectN( 2 ).base_value();
+
+      const double gain = static_cast<int>( rng().range( 1, 1 + range ) );
+      p()->resource_gain( RESOURCE_FURY, gain, p()->gain.anger_of_the_halfgiants );
     }
   }
 };
@@ -3476,7 +3449,7 @@ struct felblade_t : public demon_hunter_attack_t
 
     if ( hit_any_target )
     {
-      damage->set_target( execute_state->target );
+      damage->set_target( target );
       damage->execute();
     }
 
@@ -3996,8 +3969,7 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
   const timespan_t max_duration;
 
   demon_spikes_t(demon_hunter_t* p)
-    : base_t(
-      *p, "demon_spikes", p->find_spell( 203819 ) ),
+    : base_t( *p, "demon_spikes", p->find_spell( 203819 ) ),
       max_duration( buff_duration * 3 ) // Demon Spikes can only be extended to 3x its base duration
   {
     set_default_value( p->find_spell( 203819 )->effectN( 1 ).percent() );
@@ -4476,12 +4448,12 @@ void demon_hunter_t::create_buffs()
     buff_creator_t( this, "out_of_range", spell_data_t::nil() ).chance( 1.0 );
 
   // TODO: Buffs for each race?
-  buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605 ) )
-                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.nemesis = buff_creator_t( this, "nemesis_buff", find_spell( 208605, DEMON_HUNTER_HAVOC ) )
+    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   const double prepared_value = ( find_spell( 203650 )->effectN( 1 ).resource( RESOURCE_FURY ) / 50 );
   buff.prepared =
-    buff_creator_t(this, "prepared", find_spell( 203650 ) )
+    buff_creator_t(this, "prepared", find_spell( 203650, DEMON_HUNTER_HAVOC ) )
     .default_value( prepared_value )
     .trigger_spell( talent.momentum )
     .period( timespan_t::from_millis( 100 ) )
@@ -4922,45 +4894,52 @@ void demon_hunter_t::init_spells()
   // General
   spec.demon_hunter           = find_class_spell( "Demon Hunter" );
   spec.consume_magic          = find_class_spell( "Consume Magic" );
-  spec.consume_soul_greater   = specialization() == DEMON_HUNTER_HAVOC ? 
-                                  find_spell( 178963 ) : find_spell( 210042 );
-  spec.consume_soul_lesser    = specialization() == DEMON_HUNTER_HAVOC ? 
-                                  find_spell( 178963 ) : find_spell( 203794 );
-  spec.critical_strikes       = find_spell( 221351 );  // not a class spell
-  spec.disrupt                = find_class_spell( "Disrupt" );
-  spec.leather_specialization = specialization() == DEMON_HUNTER_HAVOC ? 
-                                  find_spell( 178976 ) : find_spell( 226359 );
-  spec.metamorphosis          = find_class_spell("Metamorphosis");
-  spec.metamorphosis_buff     = specialization() == DEMON_HUNTER_HAVOC ?
-                                  find_spell( 162264 ) : find_spell( 187827 );
-  spec.soul_fragment          = find_spell( 204255 );
-  spec.immolation_aura        = specialization() == DEMON_HUNTER_HAVOC ? 
-                                  find_talent_spell( "Immolation Aura" ) : find_specialization_spell( "Immolation Aura" );
   spec.chaos_brand            = find_spell( 255260 );
+  spec.critical_strikes       = find_spell( 221351 );
   spec.demonic_wards          = find_specialization_spell( "Demonic Wards" ); // Two different spells with the same name
+  spec.disrupt                = find_class_spell( "Disrupt" );
+  spec.metamorphosis          = find_class_spell("Metamorphosis");  
+  spec.soul_fragment          = find_spell( 204255 );
+
+  if ( specialization() == DEMON_HUNTER_HAVOC )
+  {
+    spec.consume_soul_greater   = find_spell( 178963 );
+    spec.consume_soul_lesser    = spec.consume_soul_greater;
+    spec.immolation_aura        = find_talent_spell( "Immolation Aura" );
+    spec.leather_specialization = find_spell( 178976 );
+    spec.metamorphosis_buff     = find_spell( 162264 );
+  }
+  else
+  {
+    spec.consume_soul_greater   = find_spell( 210042 );
+    spec.consume_soul_lesser    = find_spell( 203794 );
+    spec.immolation_aura        = find_specialization_spell( "Immolation Aura" );
+    spec.leather_specialization = find_spell( 226359 );
+    spec.metamorphosis_buff     = find_spell( 187827 );
+  }
 
   // Havoc
   spec.havoc                  = find_specialization_spell( "Havoc Demon Hunter" );
-  spec.annihilation           = find_spell( 201427 );
-  spec.blade_dance            = find_class_spell( "Blade Dance" );
-  spec.blur                   = find_class_spell( "Blur" );
-  spec.chaos_nova             = find_class_spell( "Chaos Nova" );
-  spec.chaos_strike           = find_class_spell( "Chaos Strike" );
-  spec.chaos_strike_refund    = find_spell( 197125 );
-  spec.chaos_strike_fury      = find_spell( 193840 );
-  spec.death_sweep            = find_spell( 210152 );
-  spec.demonic_appetite_fury  = find_spell( 210041 );
-  spec.eye_beam               = find_class_spell( "Eye Beam" );
-  spec.fel_rush_damage        = find_spell( 192611 );
-  spec.vengeful_retreat       = find_class_spell( "Vengeful Retreat" );
-  spec.momentum_buff          = find_spell( 208628 );
+  spec.blade_dance            = find_class_spell( "Blade Dance",      DEMON_HUNTER_HAVOC );
+  spec.chaos_nova             = find_class_spell( "Chaos Nova",       DEMON_HUNTER_HAVOC );
+  spec.chaos_strike           = find_class_spell( "Chaos Strike",     DEMON_HUNTER_HAVOC );
+  spec.eye_beam               = find_class_spell( "Eye Beam",         DEMON_HUNTER_HAVOC );
+  spec.vengeful_retreat       = find_class_spell( "Vengeful Retreat", DEMON_HUNTER_HAVOC );
+  spec.annihilation           = find_spell( 201427, DEMON_HUNTER_HAVOC );
+  spec.blur                   = find_spell( 198589, DEMON_HUNTER_HAVOC );
+  spec.chaos_strike_refund    = find_spell( 197125, DEMON_HUNTER_HAVOC );
+  spec.chaos_strike_fury      = find_spell( 193840, DEMON_HUNTER_HAVOC );
+  spec.death_sweep            = find_spell( 210152, DEMON_HUNTER_HAVOC );
+  spec.demonic_appetite_fury  = find_spell( 210041, DEMON_HUNTER_HAVOC );
+  spec.fel_rush_damage        = find_spell( 192611, DEMON_HUNTER_HAVOC );  
+  spec.momentum_buff          = find_spell( 208628, DEMON_HUNTER_HAVOC );
 
   // Vengeance
   spec.vengeance              = find_specialization_spell( "Vengeance Demon Hunter" );
   spec.demon_spikes           = find_specialization_spell( "Demon Spikes" );
-  spec.fiery_brand_dr         = find_spell( 207744 );
   spec.riposte                = find_specialization_spell( "Riposte" );
   spec.soul_cleave            = find_specialization_spell( "Soul Cleave" );
+  spec.fiery_brand_dr         = find_spell( 207744, DEMON_HUNTER_VENGEANCE );
 
   // Masteries ==============================================================
 
