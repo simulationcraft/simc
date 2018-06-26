@@ -1427,7 +1427,7 @@ Description      : $@spelldesc56382
 
 Name             : Sated (id=57724) 
 Class            : Hunter, Shaman, Mage
-Race             : Orc, Tauren, Troll, Goblin, Highmountain Tauren (0xa0021a2)
+Race             : Orc, Tauren, Troll, Goblin, Mag'har Orc, Highmountain Tauren (0xa0021a2)
 School           : Physical
 Range            : 50000 yards
 Duration         : 600 seconds
@@ -3330,7 +3330,7 @@ Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased healt
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
 Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
-Race              (0x800)
+Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3887,7 +3887,7 @@ Tooltip          : Frozen in place.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -5690,7 +5690,7 @@ Tooltip          : Your next Frostbolt or Flurry cast will also release a Comet 
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
@@ -5745,7 +5745,7 @@ Tooltip          : Damage of your next Ice Lance increased by $s1%.
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 

@@ -209,7 +209,7 @@ Leech increased by $w3%.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
 Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
-Race              (0x800)
+Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -229,7 +229,7 @@ Effects          :
 
 Name             : Stat Negation Aura - Agility Tank (id=162700) [Passive, Hidden] 
 Class            : Brewmaster Guardian Vengeance Monk, Druid, Demon Hunter
-Race              (0x800)
+Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1143,7 +1143,7 @@ Description      : $@spelldesc188499
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -3830,7 +3830,7 @@ Auto attack damage increased by $s1%, and deal Chaos damage.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
@@ -3868,7 +3868,7 @@ Description      : Your $?c1[Chaos][Fire] damage brands the target, increasing m
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 

@@ -4007,7 +4007,7 @@ This effect is disabled in battlegrounds and arenas.
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
 Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
-Race              (0x800)
+Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4027,7 +4027,7 @@ Effects          :
 
 Name             : Stat Negation Aura - Intellect DPS (id=162699) [Passive, Hidden] 
 Class            : Shadow Elemental Arcane Fire Frost Affliction Demonology Destruction Balance Priest, Shaman, Mage, Warlock, Druid
-Race              (0x800)
+Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4047,7 +4047,7 @@ Effects          :
 
 Name             : Stat Negation Aura - Agility Tank (id=162700) [Passive, Hidden] 
 Class            : Brewmaster Guardian Vengeance Monk, Druid, Demon Hunter
-Race              (0x800)
+Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4065,7 +4065,7 @@ Effects          :
 
 Name             : Stat Negation Aura - Intellect Healer (id=162701) [Passive, Hidden] 
 Class            : Holy Discipline Holy Restoration Mistweaver Restoration Paladin, Priest, Shaman, Monk, Druid
-Race              (0x800)
+Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5116,7 +5116,7 @@ Description      : When Rejuvenation heals a target below $s1% health, it applie
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -6989,7 +6989,7 @@ Description      : Summons a stand of $s2 Treants for $d which immediately taunt
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
@@ -7094,7 +7094,7 @@ Description      : $@spelldesc251789
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 

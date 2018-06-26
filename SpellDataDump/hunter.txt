@@ -1493,7 +1493,7 @@ Effects          :
 
 Name             : Sated (id=57724) 
 Class            : Hunter, Shaman, Mage
-Race             : Orc, Tauren, Troll, Goblin, Highmountain Tauren (0xa0021a2)
+Race             : Orc, Tauren, Troll, Goblin, Mag'har Orc, Highmountain Tauren (0xa0021a2)
 School           : Physical
 Range            : 50000 yards
 Duration         : 600 seconds
@@ -3389,7 +3389,7 @@ Description      : $@spelldesc162488
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
 Class            : Beast Mastery Marksmanship Survival Assassination Outlaw Subtlety Enhancement Windwalker Feral Havoc Hunter, Rogue, Shaman, Monk, Druid, Demon Hunter
-Race              (0x800)
+Race             : Dark Iron Dwarf (0x800)
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4378,7 +4378,7 @@ Description      : Your movement speed is increased by $231390s1% anytime you ha
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Range            : 50000 yards
 Cast Time        : 5 seconds
@@ -5034,7 +5034,7 @@ Variables        : $ilvl= ${5}
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
@@ -5052,7 +5052,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Mag'har Orc, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei (0xffffffffffffffff)
 School           : Physical
 Triggered by     : Activating Specialization (200749)
 Attributes       : .......x x....... .......x x..x.x..   ...x.x.x ..x..... ........ ........ 
