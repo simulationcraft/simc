@@ -675,7 +675,7 @@ public:
     return ab::cost();
   }
 
-  double composite_energize_amount( const action_state_t* state ) const override
+  virtual double composite_energize_amount( const action_state_t* state ) const override
   {
     double ea = ab::composite_energize_amount( state );
 
