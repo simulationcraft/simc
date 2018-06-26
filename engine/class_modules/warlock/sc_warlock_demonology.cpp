@@ -1000,7 +1000,7 @@ namespace warlock {
 
         double bonus_da(const action_state_t* s) const override
         {
-          double da = warlock_spell_t::bonus_ta(s);
+          double da = warlock_spell_t::bonus_da(s);
           da += p()->azerite.demonic_meteor.value();
           return da;
         }
@@ -1033,8 +1033,6 @@ namespace warlock {
 
         void impact(action_state_t* s) override {
             warlock_spell_t::impact(s);
-
-            
 
             if (result_is_hit(s->result))
             {
@@ -1090,7 +1088,7 @@ namespace warlock {
 
       double bonus_da(const action_state_t* s) const override
       {
-        double da = warlock_spell_t::bonus_ta(s);
+        double da = warlock_spell_t::bonus_da(s);
         if (s->action->execute_time() > timespan_t::from_millis(0) && p()->buffs.forbidden_knowledge->check())
         {
           da += p()->azerite.forbidden_knowledge.value();

@@ -351,12 +351,16 @@ namespace warlock {
         {
           assert(havoc_cast);
           havoc_cast->set_target(p()->havoc_target);
-          havoc_cast->havocd = false;
+          havoc_cast->havocd = true;
           havoc_cast->execute();
           return;
         }
 
         warlock_spell_t::execute();
+
+        auto td = find_td(this->target);
+        if (p()->azerite.bursting_flare.ok() & td->dots_immolate->is_ticking())
+          p()->buffs.bursting_flare->trigger();
 
         sim->print_log("{}: Action {} {} charges remain", player->name(), name(), this->cooldown->current_charge);
       }
@@ -403,6 +407,9 @@ namespace warlock {
         if (p()->buffs.backdraft->check())
           h *= backdraft_cast_time;
 
+        if (p()->buffs.chaotic_inferno->check())
+          h *= 1.0 + p()->buffs.chaotic_inferno->check_value();
+
         return h;
       }
 
@@ -425,6 +432,8 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
+
+        p()->buffs.chaotic_inferno->decrement();
 
         if (execute_state->target == p()->havoc_target)
           havocd = true;
@@ -514,6 +523,13 @@ namespace warlock {
         return 1.0;
       }
 
+      double bonus_da(const action_state_t* s) const override
+      {
+        double da = warlock_spell_t::bonus_da(s);
+        da += p()->azerite.chaotic_inferno.value(2);
+        return da;
+      }
+
       double calculate_direct_amount(action_state_t* state) const override
       {
         warlock_spell_t::calculate_direct_amount(state);
@@ -539,6 +555,7 @@ namespace warlock {
         }
       }
     };
+
     struct chaos_bolt_t : public warlock_spell_t
     {
       double backdraft_gcd;
@@ -664,6 +681,9 @@ namespace warlock {
         warlock_spell_t::execute();
 
         p()->buffs.embrace_chaos->trigger();
+        if(p()->azerite.chaotic_inferno.ok())
+          p()->buffs.chaotic_inferno->trigger();
+        p()->buffs.crashing_chaos->decrement();
 
         if(!havocd)
           p()->buffs.backdraft->decrement();
@@ -673,6 +693,14 @@ namespace warlock {
       double composite_crit_chance() const override
       {
         return 1.0;
+      }
+
+      double bonus_da(const action_state_t* s) const override
+      {
+        double da = warlock_spell_t::bonus_da(s);
+        da += p()->azerite.chaotic_inferno.value(2);
+        da += p()->buffs.crashing_chaos->check_value();
+        return da;
       }
 
       double calculate_direct_amount(action_state_t* state) const override
@@ -826,6 +854,9 @@ namespace warlock {
             p()->warlock_pet_list.infernals[i]->summon(infernal_duration);
           }
         }
+
+        if (p()->azerite.crashing_chaos.ok())
+          p()->buffs.crashing_chaos->trigger(p()->buffs.crashing_chaos->max_stack());
       }
     };
 
@@ -855,12 +886,20 @@ namespace warlock {
             }
           }
         }
+
+        virtual void execute() override
+        {
+          warlock_spell_t::execute();
+          if (this->num_targets_hit >= 3 & p()->azerite.accelerant.ok())
+            p()->buffs.accelerant->trigger();
+        }
       };
 
       rain_of_fire_t(warlock_t* p, const std::string& options_str) :
         warlock_spell_t("rain_of_fire", p, p -> find_spell(5740))
       {
         parse_options(options_str);
+        aoe = -1;
         dot_duration = timespan_t::zero();
         may_miss = may_crit = false;
         base_tick_time = data().duration() / 8.0; // ticks 8 times (missing from spell data)
@@ -973,6 +1012,21 @@ namespace warlock {
       ->add_invalidate(CACHE_SPELL_CRIT_CHANCE)
       ->add_invalidate(CACHE_CRIT_CHANCE)
       ->set_default_value(talents.dark_soul_instability->effectN(1).percent());
+
+    // Azerite
+    buffs.accelerant = make_buff<stat_buff_t>(this, "accelerant", azerite.accelerant)
+      ->add_stat(STAT_HASTE_RATING, azerite.accelerant.value())
+      ->set_duration(find_spell(272957)->duration());
+    buffs.bursting_flare = make_buff<stat_buff_t>(this, "bursting_flare", find_spell(279913))
+      ->add_stat(STAT_MASTERY_RATING, azerite.bursting_flare.value());
+    buffs.chaotic_inferno = make_buff(this, "chaotic_inferno", find_spell(279673))
+      ->set_default_value(find_spell(279673)->effectN(1).percent())
+      ->set_chance(find_spell(279672)->proc_chance());
+    buffs.crashing_chaos = make_buff(this, "crashing_chaos", azerite.crashing_chaos)
+      ->set_max_stack(azerite.crashing_chaos.spell_ref().effectN(2).base_value())
+      ->set_default_value(azerite.crashing_chaos.value());
+    buffs.rolling_havoc = make_buff<stat_buff_t>(this, "rolling_havoc", find_spell(278931))
+      ->add_stat(STAT_INTELLECT, azerite.rolling_havoc.value());
   }
 
   void warlock_t::init_spells_destruction() {
@@ -1004,7 +1058,11 @@ namespace warlock {
     talents.dark_soul_instability       = find_talent_spell("Dark Soul: Instability");
 
     // Azerite
-
+    azerite.accelerant                  = find_azerite_spell("Accelerant");
+    azerite.bursting_flare              = find_azerite_spell("Bursting Flare");
+    azerite.chaotic_inferno             = find_azerite_spell("Chaotic Inferno");
+    azerite.crashing_chaos              = find_azerite_spell("Crashing Chaos");
+    azerite.rolling_havoc               = find_azerite_spell("Rolling Havoc");
   }
 
   void warlock_t::init_gains_destruction() {

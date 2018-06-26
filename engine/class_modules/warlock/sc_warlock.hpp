@@ -400,6 +400,12 @@ namespace warlock
         propagate_const<buff_t*> grimoire_of_supremacy;
         propagate_const<buff_t*> dark_soul_instability;
 
+        propagate_const<buff_t*> accelerant;
+        propagate_const<buff_t*> bursting_flare;
+        propagate_const<buff_t*> chaotic_inferno;
+        propagate_const<buff_t*> crashing_chaos;
+        propagate_const<buff_t*> rolling_havoc;
+
         // legendary buffs
         buff_t* sindorei_spite;
         propagate_const<buff_t*> stretens_insanity;
@@ -1254,6 +1260,8 @@ namespace warlock
             this->set_target(p()->havoc_target);
             this->havocd = true;
             spell_t::execute();
+            if (p()->azerite.rolling_havoc.ok())
+              p()->buffs.rolling_havoc->trigger();
             this->havocd = false;
           }
 

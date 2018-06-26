@@ -382,9 +382,7 @@ namespace warlock
         }
 
         if (p()->talents.soul_fire->ok())
-        {
-          p()->cooldowns.soul_fire->adjust(-1 * p()->talents.soul_fire->effectN(2).time_value());
-        }
+          p()->cooldowns.soul_fire->adjust((-1 * (p()->talents.soul_fire->effectN(2).time_value()*last_resource_cost)));
       }
     }
 
@@ -510,7 +508,7 @@ namespace warlock
     dots_channel_demonfire = target->get_dot("channel_demonfire", &p);
 
     debuffs_eradication = make_buff( *this, "eradication", source->find_spell( 196414 ) )
-      ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION );
     debuffs_roaring_blaze = make_buff( *this, "roaring_blaze", source->find_spell( 205690 ) )
       ->set_max_stack( 100 );
     debuffs_shadowburn = make_buff(*this, "shadowburn", source->find_spell(17877));
