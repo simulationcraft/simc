@@ -3606,27 +3606,28 @@ struct touch_of_the_grave_t : public spell_t
   {
     background = may_crit = true;
     base_dd_min = base_dd_max = 0;
-    attack_power_mod.direct = 1.25;
-    spell_power_mod.direct = 1.0;
+    // these are sadly hardcoded in the tooltip
+    attack_power_mod.direct = 1.25 * .25;
+    spell_power_mod.direct = 1.0 * .25;
   }
 
   double attack_direct_power_coefficient( const action_state_t* ) const override
   {
-    if ( composite_attack_power() >= composite_spell_power() )
-    {
-      return attack_power_mod.direct;
-    }
+    const double ap = composite_attack_power() * player->composite_attack_power_multiplier();
+    const double sp = composite_spell_power() * player->composite_spell_power_multiplier();
 
+    if ( ap * attack_power_mod.direct >= sp * spell_power_mod.direct )
+      return attack_power_mod.direct;
     return 0;
   }
 
   double spell_direct_power_coefficient( const action_state_t* ) const override
   {
-    if ( composite_spell_power() > composite_attack_power() )
-    {
-      return spell_power_mod.direct;
-    }
+    const double ap = composite_attack_power() * player->composite_attack_power_multiplier();
+    const double sp = composite_spell_power() * player->composite_spell_power_multiplier();
 
+    if ( ap * attack_power_mod.direct < sp * spell_power_mod.direct )
+      return spell_power_mod.direct;
     return 0;
   }
 };
