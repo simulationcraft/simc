@@ -10,7 +10,7 @@ namespace
 // ==========================================================================
 // Warrior
 // todo:
-// T21 stuff =p
+// Fury WW Cleave , Frenzy->Furious Slash, Fury Bladestorm time/rage, Arms Deep Wounds, implement new/changed talents
 // ==========================================================================
 
 struct warrior_t;
@@ -52,7 +52,7 @@ public:
   event_t* heroic_charge, *rampage_driver;
   std::vector<attack_t*> rampage_attacks;
   std::vector<cooldown_t*> odyns_champion_cds;
-  bool non_dps_mechanics, warrior_fixed_time, frothing_may_trigger;
+  bool non_dps_mechanics, warrior_fixed_time;
   double expected_max_health;
 
   auto_dispose< std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
@@ -72,8 +72,6 @@ public:
   {
     buff_t* avatar;
     buff_t* ayalas_stone_heart;
-    buff_t* tornados_eye;
-    buff_t* battle_cry;
     buff_t* battle_cry_deadly_calm;
     buff_t* berserker_rage;
     buff_t* bladestorm;
@@ -83,9 +81,9 @@ public:
     buff_t* demoralizing_shout;
     buff_t* die_by_the_sword;
     buff_t* dragon_scales;
-    buff_t* enrage;
+    haste_buff_t* enrage;
     buff_t* frenzy;
-    buff_t* frothing_berserker;
+    haste_buff_t* frothing_berserker;
     buff_t* furious_charge;
     buff_t* heroic_leap_movement;
     buff_t* ignore_pain;
@@ -99,14 +97,18 @@ public:
     buff_t* rallying_cry;
     buff_t* ravager;
     buff_t* ravager_protection;
+	buff_t* recklessness;
+	buff_t* revenge;
     buff_t* renewed_fury;
     buff_t* shield_block;
     buff_t* shield_wall;
     buff_t* spell_reflection;
-    buff_t* revenge;
+	buff_t* sudden_death;
     buff_t* vengeance_revenge;
     buff_t* vengeance_ignore_pain;
+	buff_t* whirlwind;
     buff_t* scales_of_earth;
+	buff_t* tornados_eye;
     buff_t* protection_rage;
 
     buff_t* raging_thirst;
@@ -130,7 +132,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* avatar;
-    cooldown_t* battle_cry;
+    cooldown_t* recklessness;
     cooldown_t* berserker_rage;
     cooldown_t* bladestorm;
     cooldown_t* bloodthirst;
@@ -139,6 +141,7 @@ public:
     cooldown_t* demoralizing_shout;
     cooldown_t* dragon_roar;
     cooldown_t* enraged_regeneration;
+	cooldown_t* execute;
     cooldown_t* heroic_leap;
     cooldown_t* last_stand;
     cooldown_t* mortal_strike;
@@ -170,6 +173,7 @@ public:
     gain_t* booming_voice;
     gain_t* thunder_clap;
     gain_t* protection_t20_2p;
+    gain_t* endless_rage;
 
     // Legendarys
     gain_t* ceannar_rage;
@@ -217,7 +221,7 @@ public:
   {
     const spell_data_t* spell_reflection;
     const spell_data_t* bastion_of_defense;
-    const spell_data_t* battle_cry;
+    const spell_data_t* recklessness;
     const spell_data_t* bladestorm;
     const spell_data_t* bloodthirst;
     const spell_data_t* cleave;
@@ -280,6 +284,7 @@ public:
     const spell_data_t* fervor_of_battle;
     const spell_data_t* rend;
     const spell_data_t* renewed_fury;
+	const spell_data_t* sudden_death;
 
     const spell_data_t* bounding_stride;
     const spell_data_t* crackling_thunder;
@@ -415,7 +420,7 @@ public:
     artifact()
   {
     non_dps_mechanics = false; // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
-    warrior_fixed_time = frothing_may_trigger = true; //Frothing only triggers on the first ability that pushes you to 100 rage, until rage is consumed and then it may trigger again.
+    warrior_fixed_time  = true; 
     expected_max_health = 0;
 
     regen_type = REGEN_DISABLED;
@@ -529,6 +534,16 @@ public:
     {
       resource_gain( RESOURCE_RAGE, legendary.ceannar_charger -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RAGE ), gain.ceannar_rage );
     }
+
+    if ( talents.endless_rage ->ok() )
+    {
+      double gain_amount = talents.endless_rage -> effectN( 1 ).trigger() ->effectN( 1 ).resource( RESOURCE_RAGE );
+      if( buff.recklessness -> check() )
+	  {
+        gain_amount *= 1.0 + spec.recklessness -> effectN( 4 ).percent();
+	  }
+	  resource_gain( RESOURCE_RAGE, gain_amount, gain.endless_rage );
+    }
   }
 };
 
@@ -555,7 +570,7 @@ public:
     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
     sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
-    deadly_calm( ab::data().affected_by( player -> spec.battle_cry -> effectN( 4 ) ) ),
+    deadly_calm( ab::data().affected_by( player -> spec.recklessness -> effectN( 4 ) ) ),
     arms_damage_increase( player -> specialization() == WARRIOR_ARMS && ab::data().affected_by( player -> spell.arms_warrior -> effectN( 2 ) ) ),
     fury_damage_increase( player -> specialization() == WARRIOR_FURY && ab::data().affected_by( player -> spell.fury_warrior -> effectN( 1 ) ) ),
     fury_dot_damage_increase( player -> specialization() == WARRIOR_FURY && ab::data().affected_by( player -> spell.fury_warrior -> effectN( 2 ) ) ),
@@ -650,6 +665,21 @@ public:
                                    base_t::cost() );
     }
     return ab::cost();
+  }
+
+  double composite_energize_amount( const action_state_t* state ) const override
+  {
+    double ea = ab::composite_energize_amount( state );
+
+    if ( energize_resource == RESOURCE_RAGE )
+    {
+      if ( p() -> buff.recklessness ->check() )
+      {
+        ea *= 1.0 + p() -> spec.recklessness -> effectN( 4 ).percent();
+      }
+    }
+
+    return ea;
   }
 
   double cost() const override
@@ -773,10 +803,6 @@ public:
 
     double rage = ab::last_resource_cost;
 
-    if ( rage > 0 )
-    {
-      p() -> frothing_may_trigger = true;
-    }
     if ( p() -> talents.anger_management -> ok() )
     {
       anger_management( rage );
@@ -812,19 +838,30 @@ public:
   void anger_management( double rage )
   {
     if ( rage > 0 )
-    {
-      //Anger management takes the amount of rage spent and reduces the cooldown of abilities by 1 second per 10 rage.
-      rage /= p() -> talents.anger_management -> effectN( 1 ).base_value();
-      rage *= -1;
+    {	 
+	  //Anger management reduces some cds by 1 sec per n rage spent (different per spec)
+	  double cd_time_reduction = -1.0 * rage;
 
-      p() -> cooldown.battle_cry -> adjust( timespan_t::from_seconds( rage ) );
-      p() -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( rage ) );
 
-      if ( p() -> specialization() == WARRIOR_PROTECTION )
+	  if (p()->specialization() == WARRIOR_FURY)
+	  {
+		cd_time_reduction /= p() -> talents.anger_management -> effectN( 1 ).base_value();
+	    p() -> cooldown.recklessness -> adjust( timespan_t::from_seconds( cd_time_reduction ) );
+	  }
+
+      else if ( p() -> specialization() == WARRIOR_ARMS )
       {
-        p() -> cooldown.last_stand -> adjust( timespan_t::from_seconds( rage ) );
-        p() -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( rage ) );
-        p() -> cooldown.demoralizing_shout -> adjust( timespan_t::from_seconds( rage ) );
+	    cd_time_reduction /= p() -> talents.anger_management -> effectN( 2 ).base_value();
+        p() -> cooldown.colossus_smash -> adjust( timespan_t::from_seconds( cd_time_reduction ) ); // FIX ME - add Warbreaker once implemented; add Ravager to account for Soul of the Battlelord?
+        p() -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( cd_time_reduction ) );
+      }
+
+      else if ( p() -> specialization() == WARRIOR_PROTECTION ) 
+      {
+		cd_time_reduction /= p() -> talents.anger_management -> effectN( 3 ).base_value();
+        p() -> cooldown.last_stand -> adjust( timespan_t::from_seconds( cd_time_reduction ) );
+        p() -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( cd_time_reduction ) );
+        p() -> cooldown.demoralizing_shout -> adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
     }
   }
@@ -862,6 +899,11 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
   virtual void execute() override
   {
     base_t::execute();
+
+	if( p() -> talents.sudden_death -> ok() && p() -> buff.sudden_death -> trigger() )
+	{
+	  p() -> cooldown.execute -> reset(true);
+	}
 
     p() -> buff.ayalas_stone_heart -> trigger();
   }
@@ -948,7 +990,9 @@ struct melee_t: public warrior_attack_t
     // however in game testing suggest that actual value is 4.286
     // with 3.6 speed weapon, we generate 27 rage on hit, not 27.72
     // and crits generate 35 not 36
-    base_rage_generation( 1.75 ), arms_rage_multiplier( 4.286 ), fury_rage_multiplier( 0.80 ),
+
+	// beta testing suggest fury multiplier is now 1.0
+    base_rage_generation( 1.75 ), arms_rage_multiplier( 4.286 ), fury_rage_multiplier( 1.00 ),
     devastator( nullptr )
   {
     school = SCHOOL_PHYSICAL;
@@ -1053,7 +1097,10 @@ struct melee_t: public warrior_attack_t
     {
       rage_gain *= arms_rage_multiplier;
       if ( s -> result == RESULT_CRIT )
+      {
         rage_gain *= 1.3;
+      }
+      rage_gain *= 1.0 + p() -> talents.war_machine -> effectN( 2 ).percent();
     }
     else
     {
@@ -1062,7 +1109,11 @@ struct melee_t: public warrior_attack_t
       {
         rage_gain *= 0.5;
       }
-      rage_gain *= 1.0 + p() -> talents.endless_rage -> effectN( 1 ).percent();
+      rage_gain *= 1.0 + p() -> talents.war_machine -> effectN( 2 ).percent();
+      if ( p() -> buff.recklessness -> check() )
+      {
+        rage_gain *= 1.0 + p() -> spec.recklessness -> effectN( 4 ).percent();
+      }
     }
 
     rage_gain = util::round( rage_gain, 1 );
@@ -1948,6 +1999,15 @@ struct execute_arms_t: public warrior_attack_t
 };
 
 // Fury Execute ======================================================================
+struct execute_main_hand_t: public warrior_attack_t
+{
+  execute_main_hand_t( warrior_t* p, const char* name, const spell_data_t* s ):
+    warrior_attack_t( name, p, s )
+  {
+    dual = true;
+	base_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
+  }
+};
 
 struct execute_off_hand_t: public warrior_attack_t
 {
@@ -1957,26 +2017,29 @@ struct execute_off_hand_t: public warrior_attack_t
     dual = true;
     may_miss = may_dodge = may_parry = may_block = false;
     weapon = &( p -> off_hand_weapon );
-    weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
+	base_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
   }
 };
 
-struct execute_t: public warrior_attack_t
+struct fury_execute_parent_t: public warrior_attack_t
 {
+  execute_main_hand_t* mh_attack;
   execute_off_hand_t* oh_attack;
   double execute_pct;
-  execute_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "execute", p, p -> spec.execute ), oh_attack( nullptr ),
-	  execute_pct(20) 
+  fury_execute_parent_t( warrior_t* p, const std::string& options_str ):
+    warrior_attack_t( "execute", p, p -> spec.execute ),
+	execute_pct(20) 
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
+	weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
 
-    oh_attack = new execute_off_hand_t( p, "execute_offhand", p -> find_spell( 163558 ) );
-    add_child( oh_attack );
-    weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
+	mh_attack = new execute_main_hand_t( p, "execute_mainfhand", p -> spec.execute -> effectN ( 1 ).trigger() );
+	oh_attack = new execute_off_hand_t( p, "execute_offhand", p -> spec.execute -> effectN ( 2 ).trigger() );
+    add_child( mh_attack );
+	add_child( oh_attack );
 
-	 if ( p -> talents.massacre -> ok() )
+	if ( p -> talents.massacre -> ok() )
     {
       execute_pct = p -> talents.massacre -> effectN( 2 )._base_value;
     }
@@ -1986,11 +2049,13 @@ struct execute_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+	mh_attack -> execute();
+
     if ( p() -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) &&
          p() -> off_hand_weapon.type != WEAPON_NONE ) // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
       oh_attack -> execute();
 
-    //p() -> buff.sudden_death -> expire(); FIX ME - BUFF NYI
+    p() -> buff.sudden_death -> expire();
     p() -> buff.ayalas_stone_heart -> expire();
   }
 
@@ -2006,10 +2071,10 @@ struct execute_t: public warrior_attack_t
       return warrior_attack_t::ready();
     }
 
-    //if ( p() -> buff.sudden_death -> check() ) FIX ME - BUFF NYI
-    //{
-      //return warrior_attack_t::ready();
-    //{
+    if ( p() -> buff.sudden_death -> check() ) 
+    {
+      return warrior_attack_t::ready();
+	}
 
     // Call warrior_attack_t::ready() first for proper targeting support.
     if ( warrior_attack_t::ready() && target -> health_percentage() <= execute_pct )
@@ -2383,7 +2448,7 @@ struct raging_blow_attack_t: public warrior_attack_t
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
 
-    weapon_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 2 ).percent();
   }
 
   double action_multiplier() const override
@@ -2453,6 +2518,8 @@ struct raging_blow_t: public warrior_attack_t
     {
       return false;
     }
+
+	return warrior_attack_t::ready();
   }
 };
 
@@ -2578,14 +2645,16 @@ struct rampage_attack_t: public warrior_attack_t
     rage_from_valarjar_berserking( p -> find_spell( 248179 ) -> effectN( 1 ).base_value() / 10.0 )
   {
     dual = true;
-    base_aoe_multiplier = p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 3 ).percent();
+    base_multiplier *= 1.0 + p -> talents.carnage -> effectN( 4 ).percent();
+    // base_aoe_multiplier = p -> buff.whirlwind -> s_data -> effectN( 3 ).percent();
     if ( p -> spec.rampage -> effectN( 3 ).trigger() == rampage )
       first_attack = true;
   }
 
   void execute() override
   {
-    warrior_attack_t::execute();
+	warrior_attack_t::execute();
+
     if ( first_attack && result_is_miss( execute_state -> result ) )
       first_attack_missed = true;
     else if ( first_attack )
@@ -2658,16 +2727,13 @@ struct rampage_event_t: public event_t
     case 0:
     break; // First attack is instant.
     case 1:
-    time_till_next_attack = timespan_t::from_millis( warrior -> spec.rampage -> effectN( 4 ).misc_value1() );
+    time_till_next_attack = timespan_t::from_millis( warrior -> spec.rampage -> effectN( 3 ).misc_value1() );
     break;
     case 2:
-    time_till_next_attack = timespan_t::from_millis( warrior -> spec.rampage -> effectN( 5 ).misc_value1() - warrior -> spec.rampage -> effectN( 4 ).misc_value1() );
+    time_till_next_attack = timespan_t::from_millis( warrior -> spec.rampage -> effectN( 4 ).misc_value1() - warrior -> spec.rampage -> effectN( 3 ).misc_value1() );
     break;
     case 3:
-    time_till_next_attack = timespan_t::from_millis( warrior -> spec.rampage -> effectN( 6 ).misc_value1() - warrior -> spec.rampage -> effectN( 5 ).misc_value1() );
-    break;
-    case 4:
-    time_till_next_attack = timespan_t::from_millis( warrior -> spec.rampage -> effectN( 7 ).misc_value1() - warrior -> spec.rampage -> effectN( 6 ).misc_value1() );
+    time_till_next_attack = timespan_t::from_millis( warrior -> spec.rampage -> effectN( 5 ).misc_value1() - warrior -> spec.rampage -> effectN( 4 ).misc_value1() );
     break;
     }
     return time_till_next_attack;
@@ -2678,6 +2744,7 @@ struct rampage_event_t: public event_t
     warrior -> rampage_attacks[attacks] -> execute();
     if ( attacks == 0 )
     {
+	  warrior -> buff.frothing_berserker -> trigger();
       warrior -> enrage(); // As of 5/23/2016 the first attack does not get a damage bonus from the enrage that rampage triggers... even though it shows up in the combat log before the attack lands.
     }                      // It will get a damage bonus if something else triggered the enrage beforehand, though.
     attacks++;
@@ -3239,10 +3306,14 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
   whirlwind_off_hand_t* oh_attack;
   fury_whirlwind_mh_t* mh_attack;
   timespan_t spin_time;
+  double base_rage_gain;
+  double additional_rage_gain_per_target;
   fury_whirlwind_parent_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "whirlwind", p, p -> spec.whirlwind_2 ),
+    warrior_attack_t( "whirlwind", p, p -> spec.whirlwind ),
     oh_attack( nullptr ), mh_attack( nullptr ),
-    spin_time( timespan_t::from_millis( p -> spec.whirlwind_2 -> effectN( 3 ).misc_value1() ) )
+    spin_time( timespan_t::from_millis( p -> spec.whirlwind -> effectN( 3 ).misc_value1() ) ),
+	base_rage_gain( p -> spec.whirlwind -> effectN( 8 ).base_value() ),
+	additional_rage_gain_per_target( p -> spec.whirlwind -> effectN( 9 ).base_value() )
   {
     parse_options( options_str );
     radius = data().effectN( 1 ).trigger() -> effectN( 1 ).radius_max();
@@ -3302,6 +3373,10 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
+	p() -> resource_gain( RESOURCE_RAGE, 
+      base_rage_gain + additional_rage_gain_per_target * execute_state -> n_targets );
+
     p() -> buff.meat_cleaver -> trigger();
   }
 
@@ -3648,19 +3723,19 @@ struct rallying_cry_t: public warrior_spell_t
   }
 };
 
-// Battle Cry =============================================================
+// Recklessness =============================================================
 
-struct battle_cry_t: public warrior_spell_t
+struct recklessness_t: public warrior_spell_t
 {
   double bonus_crit;
-  battle_cry_t( warrior_t* p, const std::string& options_str ):
-    warrior_spell_t( "battle_cry", p, p -> spec.battle_cry ),
+  recklessness_t( warrior_t* p, const std::string& options_str ):
+    warrior_spell_t( "recklessness", p, p -> spec.recklessness ),
     bonus_crit( 0.0 )
   {
     parse_options( options_str );
     bonus_crit = data().effectN( 1 ).percent();
     callbacks = false;
-    use_off_gcd = true;
+    use_off_gcd = false;
 
     if ( p -> talents.reckless_abandon -> ok() )
     {
@@ -3674,7 +3749,7 @@ struct battle_cry_t: public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    p() -> buff.battle_cry -> trigger( 1, bonus_crit );
+    p() -> buff.recklessness -> trigger( 1, bonus_crit );
     p() -> buff.battle_cry_deadly_calm -> trigger();
   p() -> buff.outrage -> trigger();
   }
@@ -3931,7 +4006,7 @@ action_t* warrior_t::create_action( const std::string& name,
 {
   if ( name == "auto_attack"          ) return new auto_attack_t          ( this, options_str );
   if ( name == "avatar"               ) return new avatar_t               ( this, options_str );
-  if ( name == "battle_cry"           ) return new battle_cry_t           ( this, options_str );
+  if ( name == "recklessness"         ) return new recklessness_t         ( this, options_str );
   if ( name == "berserker_rage"       ) return new berserker_rage_t       ( this, options_str );
   if ( name == "bladestorm"           ) return new bladestorm_t           ( this, options_str );
   if ( name == "bloodthirst"          ) return new bloodthirst_t          ( this, options_str );
@@ -3948,7 +4023,7 @@ action_t* warrior_t::create_action( const std::string& name,
   {
     if ( specialization() == WARRIOR_ARMS )
     { return new execute_arms_t( this, options_str ); }
-    else { return new execute_t( this, options_str ); }
+    else { return new fury_execute_parent_t( this, options_str ); }
   }
   if ( name == "furious_slash"        ) return new furious_slash_t        ( this, options_str );
   if ( name == "hamstring"            ) return new hamstring_t            ( this, options_str );
@@ -4010,7 +4085,7 @@ void warrior_t::init_spells()
 
   // Spec Passives
   spec.bastion_of_defense       = find_specialization_spell( "Bastion of Defense" );
-  spec.battle_cry               = find_specialization_spell( "Battle Cry" );
+  spec.recklessness             = find_specialization_spell( "Recklessness" );
   spec.berserker_rage           = find_specialization_spell( "Berserker Rage" );
   spec.bladestorm               = find_specialization_spell( "Bladestorm" );
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
@@ -4057,8 +4132,9 @@ void warrior_t::init_spells()
   spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
   spec.victory_rush             = find_specialization_spell( "Victory Rush" );
-  spec.whirlwind                = find_specialization_spell( "Whirlwind" );
-  spec.whirlwind_2              = find_specialization_spell( 190411 );
+  spec.whirlwind				= find_specialization_spell( 190411 );
+  spec.whirlwind_2              = find_specialization_spell( "Whirlwind" );
+  
 
   // Talents
   talents.anger_management      = find_talent_spell( "Anger Management" );
@@ -4095,6 +4171,7 @@ void warrior_t::init_spells()
   talents.second_wind           = find_talent_spell( "Second Wind" );
   talents.shockwave             = find_talent_spell( "Shockwave" );
   talents.storm_bolt            = find_talent_spell( "Storm Bolt" );
+  talents.sudden_death			= find_talent_spell( "Sudden Death" );
   talents.sweeping_strikes      = find_talent_spell( "Sweeping Strikes" );
   talents.titanic_might         = find_talent_spell( "Titanic Might" );
   talents.vengeance             = find_talent_spell( "Vengeance" );
@@ -4174,7 +4251,7 @@ void warrior_t::init_spells()
 
   // Cooldowns
   cooldown.avatar                   = get_cooldown( "avatar" );
-  cooldown.battle_cry               = get_cooldown( "battle_cry" );
+  cooldown.recklessness             = get_cooldown( "recklessness" );
   cooldown.berserker_rage           = get_cooldown( "berserker_rage" );
   cooldown.bladestorm               = get_cooldown( "bladestorm" );
   cooldown.bloodthirst              = get_cooldown( "bloodthirst" );
@@ -4184,6 +4261,7 @@ void warrior_t::init_spells()
   cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
   cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
   cooldown.enraged_regeneration     = get_cooldown( "enraged_regeneration" );
+  cooldown.execute				= get_cooldown( "execute" );
   cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
   cooldown.last_stand               = get_cooldown( "last_stand" );
   cooldown.mortal_strike            = get_cooldown( "mortal_strike" );
@@ -4209,7 +4287,7 @@ void warrior_t::init_base_stats()
 
   player_t::init_base_stats();
 
-  resources.max[RESOURCE_RAGE] = resources.base[RESOURCE_RAGE];
+  resources.base[RESOURCE_RAGE] = 100; resources.max[RESOURCE_RAGE] = resources.base[RESOURCE_RAGE];
 
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility = 0.0;
@@ -4848,9 +4926,9 @@ void warrior_t::create_buffs()
   buff.berserker_rage = buff_creator_t( this, "berserker_rage", spec.berserker_rage )
     .cd( timespan_t::zero() );
 
-  buff.frothing_berserker = buff_creator_t( this, "frothing_berserker", talents.frothing_berserker -> effectN( 1 ).trigger() )
-    .default_value( talents.frothing_berserker -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.frothing_berserker = make_buff<haste_buff_t>( this, "frothing_berserker", talents.frothing_berserker -> effectN( 1 ).trigger() );
+    buff.frothing_berserker -> set_default_value( talents.frothing_berserker -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
+    buff.frothing_berserker ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );;
 
   buff.bounding_stride = buff_creator_t( this, "bounding_stride", find_spell( 202164 ) )
     .chance( talents.bounding_stride -> ok() )
@@ -4879,11 +4957,9 @@ void warrior_t::create_buffs()
     .chance( artifact.dragon_scales.data().proc_chance() )
     .default_value( artifact.dragon_scales.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
-  buff.enrage = buff_creator_t( this, "enrage", find_spell( 184362 ) )
-	.add_invalidate( CACHE_HASTE )
-    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-	.default_value( find_spell( 184362 ) -> effectN( 1 ).percent() );
-
+  buff.enrage = make_buff<haste_buff_t>( this, "enrage", find_spell( 184362 ) );
+  buff.enrage->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.enrage->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() );
 
   buff.frenzy = buff_creator_t( this, "frenzy", talents.frenzy -> effectN( 1 ).trigger() )
     .add_invalidate( CACHE_HASTE )
@@ -4926,13 +5002,15 @@ void warrior_t::create_buffs()
     .default_value( artifact.neltharions_fury.data().effectN( 1 ).percent() )
     .add_invalidate( CACHE_CRIT_BLOCK );
 
-  buff.battle_cry = buff_creator_t( this, "battle_cry", spec.battle_cry )
-    .duration( spec.battle_cry -> duration() + sets -> set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() + talents.reckless_abandon -> effectN( 1 ).time_value() )
+  buff.recklessness = buff_creator_t( this, "recklessness", spec.recklessness )
+    .duration( spec.recklessness -> duration() + sets -> set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() + talents.reckless_abandon -> effectN( 1 ).time_value() )
     .add_invalidate( CACHE_CRIT_CHANCE )
     .cd( timespan_t::zero() );
 
-  buff.battle_cry_deadly_calm = buff_creator_t( this, "battle_cry_deadly_calm", spec.battle_cry )
-    .duration( spec.battle_cry -> duration() + sets -> set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
+  buff.sudden_death = buff_creator_t( this, "sudden_death", talents.sudden_death );
+
+  buff.battle_cry_deadly_calm = buff_creator_t( this, "battle_cry_deadly_calm", spec.recklessness )
+    .duration( spec.recklessness -> duration() + sets -> set( WARRIOR_ARMS, T19, B4 ) -> effectN( 1 ).time_value() )
     .chance( talents.deadly_calm -> ok() )
     .cd( timespan_t::zero() )
     .quiet( true );
@@ -4985,6 +5063,8 @@ void warrior_t::create_buffs()
     .chance( sets -> has_set_bonus( WARRIOR_FURY, T21, B4) );
 
   buff.protection_rage = new protection_rage_t( *this, "protection_rage", find_spell( 242303 ) );
+
+  buff.whirlwind = buff_creator_t ( this, "whirlwind", find_spell( 85739) );  
 }
 
 // warrior_t::init_scaling ==================================================
@@ -5027,6 +5107,7 @@ void warrior_t::init_gains()
   gain.protection_t20_2p = get_gain( "t20_2p" );
 
   gain.ceannar_rage = get_gain( "ceannar_rage" );
+  gain.endless_rage = get_gain( "endless_rage" );
   gain.valarjar_berserking = get_gain( "valarjar_berserking" );
   gain.ravager = get_gain( "ravager" );
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
@@ -5283,7 +5364,6 @@ void warrior_t::reset()
 
   heroic_charge = nullptr;
   rampage_driver = nullptr;
-  frothing_may_trigger = true;
 }
 
 // Movement related overrides. =============================================
@@ -5600,7 +5680,7 @@ double warrior_t::composite_melee_crit_chance() const
 {
   double c = player_t::composite_melee_crit_chance();
 
-  c += buff.battle_cry -> check_value();
+  c += buff.recklessness -> check_value();
 
   return c;
 }
@@ -5639,14 +5719,6 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* gain, action_t*
 {
   double aa = player_t::resource_gain( r, a, gain, action );
 
-  if ( frothing_may_trigger &&
-       r == RESOURCE_RAGE &&
-       talents.frothing_berserker -> ok() &&
-       resources.current[r] > 99 )
-  {
-    buff.frothing_berserker -> trigger();
-    frothing_may_trigger = false;
-  }
   return aa;
 }
 
