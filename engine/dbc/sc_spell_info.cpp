@@ -318,6 +318,8 @@ const std::unordered_map<unsigned, std::string> _race_map {
   {  8, "Goblin"    },
   {  9, "Blood Elf" },
   { 10, "Draenei"   },
+  { 11, "Dark Iron Dwarf" },
+  { 13, "Mag'har Orc" },
   { 21, "Worgen"    },
   { 24, "Pandaren"  },
   { 26, "Nightborne" },

@@ -3053,8 +3053,16 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {     0, },
     {     0, },
   },
+  // Racial abilities for Dark Iron Dwarf
   {
-    {     0, },
+    // Generic racial abilities
+    {
+      265223, // Dungeon Delver
+      265221, // Fireblood
+      265224, // Forged in Flames
+      265222, // Mass Production
+      265225, // Mole Machine
+    },
     {     0, },
     {     0, },
     {     0, },
@@ -3083,8 +3091,16 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     {     0, },
     {     0, },
   },
+  // Racial abilities for Mag'har Orc
   {
-    {     0, },
+    // Generic racial abilities
+    {
+      274738, // Ancestral Call
+      273216, // Open Skies
+      273220, // Savage Blood
+      273217, // Sympathetic Vigor
+          0,
+    },
     {     0, },
     {     0, },
     {     0, },

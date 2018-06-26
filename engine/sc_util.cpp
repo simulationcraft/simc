@@ -286,6 +286,8 @@ const char* util::race_type_string( race_e type )
     case RACE_HIGHMOUNTAIN_TAUREN: return "highmountain_tauren";
     case RACE_LIGHTFORGED_DRAENEI: return "lightforged_draenei";
     case RACE_NIGHTBORNE:          return "nightborne";
+    case RACE_DARK_IRON_DWARF:     return "dark_iron_dwarf";
+    case RACE_MAGHAR_ORC:          return "maghar_orc";
     default:                       return "unknown";
   }
 }
@@ -1677,6 +1679,8 @@ unsigned util::race_id( race_e race )
     case RACE_HIGHMOUNTAIN_TAUREN: return 28;
     case RACE_VOID_ELF: return 29;
     case RACE_LIGHTFORGED_DRAENEI: return 30;
+    case RACE_DARK_IRON_DWARF: return 12;
+    case RACE_MAGHAR_ORC: return 14;
     default: return 0;
   }
 }
@@ -1788,6 +1792,8 @@ race_e util::translate_race_id( int rid )
     case  9: return RACE_GOBLIN;
     case 10: return RACE_BLOOD_ELF;
     case 11: return RACE_DRAENEI;
+    case 12: return RACE_DARK_IRON_DWARF;
+    case 14: return RACE_MAGHAR_ORC;
     case 22: return RACE_WORGEN;
     case 24: return RACE_PANDAREN;
     case 25: return RACE_PANDAREN_ALLIANCE;
