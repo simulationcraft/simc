@@ -21,6 +21,7 @@ struct warrior_td_t: public actor_target_data_t
   dot_t* dots_ravager;
   dot_t* dots_rend;
   buff_t* debuffs_colossus_smash;
+  buff_t* debuffs_siegebreaker;
   buff_t* debuffs_demoralizing_shout;
   buff_t* debuffs_taunt;
 
@@ -153,6 +154,7 @@ public:
     cooldown_t* shield_slam;
     cooldown_t* shield_wall;
     cooldown_t* shockwave;
+    cooldown_t* siegebreaker;
     cooldown_t* storm_bolt;
   } cooldown;
 
@@ -163,12 +165,14 @@ public:
     gain_t* avoided_attacks;
     gain_t* critical_block;
     gain_t* mannoroths_bloodletting_manacles;
+    gain_t* meat_cleaver;
     gain_t* melee_crit;
     gain_t* melee_main_hand;
     gain_t* melee_off_hand;
     gain_t* raging_blow;
     gain_t* revenge;
     gain_t* shield_slam;
+    gain_t* whirlwind;
     gain_t* will_of_the_first_king;
     gain_t* booming_voice;
     gain_t* thunder_clap;
@@ -193,6 +197,8 @@ public:
     const spell_data_t* indomitable;
     const spell_data_t* intervene;
     const spell_data_t* overpower_driver;
+    const spell_data_t* siegebreaker_debuff;
+    const spell_data_t* whirlwind_buff;
     const spell_data_t* arms_warrior;
     const spell_data_t* fury_warrior;
     const spell_data_t* prot_warrior;
@@ -316,6 +322,8 @@ public:
     const spell_data_t* heavy_repercussions;
     const spell_data_t* ravager;
     const spell_data_t* reckless_abandon;
+    const spell_data_t* meat_cleaver;
+    const spell_data_t* siegebreaker;
   } talents;
 
   struct legendary_t
@@ -845,20 +853,20 @@ public:
 
 	  if (p()->specialization() == WARRIOR_FURY)
 	  {
-		cd_time_reduction /= p() -> talents.anger_management -> effectN( 1 ).base_value();
+		cd_time_reduction /= p() -> talents.anger_management -> effectN( 3 ).base_value();
 	    p() -> cooldown.recklessness -> adjust( timespan_t::from_seconds( cd_time_reduction ) );
 	  }
 
       else if ( p() -> specialization() == WARRIOR_ARMS )
       {
-	    cd_time_reduction /= p() -> talents.anger_management -> effectN( 2 ).base_value();
+	    cd_time_reduction /= p() -> talents.anger_management -> effectN( 1 ).base_value();
         p() -> cooldown.colossus_smash -> adjust( timespan_t::from_seconds( cd_time_reduction ) ); // FIX ME - add Warbreaker once implemented; add Ravager to account for Soul of the Battlelord?
         p() -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( cd_time_reduction ) );
       }
 
       else if ( p() -> specialization() == WARRIOR_PROTECTION ) 
       {
-		cd_time_reduction /= p() -> talents.anger_management -> effectN( 3 ).base_value();
+		cd_time_reduction /= p() -> talents.anger_management -> effectN( 2 ).base_value();
         p() -> cooldown.last_stand -> adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p() -> cooldown.shield_wall -> adjust( timespan_t::from_seconds( cd_time_reduction ) );
         p() -> cooldown.demoralizing_shout -> adjust( timespan_t::from_seconds( cd_time_reduction ) );
@@ -1373,6 +1381,12 @@ struct bladestorm_t: public warrior_attack_t
         bladestorm_oh -> weapon = &( player -> off_hand_weapon );
         add_child( bladestorm_oh );
       }
+      if ( p -> specialization() == WARRIOR_FURY )
+      {
+      energize_type      = ENERGIZE_PER_TICK;
+      energize_resource  = RESOURCE_RAGE;
+      energize_amount    = data().effectN( 4 ).resource( energize_resource );
+      }
       if ( p -> sets -> has_set_bonus( WARRIOR_ARMS, T20, B4 ) )
       {
         mortal_strike = new mortal_strike_t20_t( p, "bladestorm_mortal_strike" );
@@ -1463,7 +1477,7 @@ struct bloodthirst_t: public warrior_attack_t
   bloodthirst_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "bloodthirst", p, p -> spec.bloodthirst ),
     bloodthirst_heal( nullptr ),
-    aoe_targets( p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() ),
+    aoe_targets( p -> spell.whirlwind_buff -> effectN( 1 ).base_value() ),
 	enrage_chance ( p -> spec.enrage -> effectN( 2 ).percent() )
   {
     parse_options( options_str );
@@ -1474,7 +1488,7 @@ struct bloodthirst_t: public warrior_attack_t
     {
       bloodthirst_heal = new bloodthirst_heal_t( p );
     }
-    base_aoe_multiplier = p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 3 ).percent();
+    base_aoe_multiplier = p -> spell.whirlwind_buff -> effectN( 3 ).percent();
 
 	if (p->talents.fresh_meat->ok())
 	{
@@ -1504,7 +1518,7 @@ struct bloodthirst_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
-    p() -> buff.meat_cleaver -> expire();
+    p() -> buff.meat_cleaver -> decrement();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -2034,7 +2048,7 @@ struct fury_execute_parent_t: public warrior_attack_t
     weapon = &( p -> main_hand_weapon );
 	weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
 
-	mh_attack = new execute_main_hand_t( p, "execute_mainfhand", p -> spec.execute -> effectN ( 1 ).trigger() );
+	mh_attack = new execute_main_hand_t( p, "execute_mainhand", p -> spec.execute -> effectN ( 1 ).trigger() );
 	oh_attack = new execute_off_hand_t( p, "execute_offhand", p -> spec.execute -> effectN ( 2 ).trigger() );
     add_child( mh_attack );
 	add_child( oh_attack );
@@ -2518,8 +2532,29 @@ struct raging_blow_t: public warrior_attack_t
     {
       return false;
     }
-
 	return warrior_attack_t::ready();
+  }
+};
+
+// Siegebreaker ===========================================================
+
+struct siegebreaker_t : public warrior_attack_t
+{
+  siegebreaker_t(warrior_t* p, const std::string& options_str) :
+    warrior_attack_t("siegebreaker", p, p -> talents.siegebreaker)
+  {
+    parse_options(options_str);
+    weapon = &(player->main_hand_weapon);
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if (result_is_hit(execute_state->result))
+    {
+      td(execute_state->target)->debuffs_siegebreaker->trigger();
+    }
   }
 };
 
@@ -2755,7 +2790,7 @@ struct rampage_event_t: public event_t
     else
     {
       warrior -> rampage_driver = nullptr;
-      warrior -> buff.meat_cleaver -> expire();
+      warrior -> buff.meat_cleaver -> decrement();
     }
   }
 };
@@ -3366,18 +3401,23 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
   {
     warrior_attack_t::last_tick( d );
 
-    if ( !p() -> buff.meat_cleaver -> up() ) //Meat Cleaver will no longer be canceled early if Whirlwind is cast while a Rampage animation is in progress. - Hotfix
-      p() -> buff.meat_cleaver -> trigger(); // Not entirely sure how they accomplish this in game, but this covers it. 
+      p() -> buff.meat_cleaver -> trigger();
   }
 
   void execute() override
   {
     warrior_attack_t::execute();
+    const int num_available_targets = target_list().size();
 
-	p() -> resource_gain( RESOURCE_RAGE, 
-      base_rage_gain + additional_rage_gain_per_target * execute_state -> n_targets );
+	p() -> resource_gain( RESOURCE_RAGE, base_rage_gain + additional_rage_gain_per_target * num_available_targets, p() -> gain.whirlwind );
 
-    p() -> buff.meat_cleaver -> trigger();
+      if ( p() -> talents.meat_cleaver -> ok() )
+      {
+        p() -> resource_gain( RESOURCE_RAGE,
+                              std::min( p() -> talents.meat_cleaver -> effectN( 2 ).base_value(),
+                                        p() -> talents.meat_cleaver -> effectN( 1 ).base_value() * num_available_targets ),
+                                        p() -> gain.meat_cleaver );
+      }
   }
 
   bool ready() override
@@ -4047,6 +4087,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "shield_slam"          ) return new shield_slam_t          ( this, options_str );
   if ( name == "shield_wall"          ) return new shield_wall_t          ( this, options_str );
   if ( name == "shockwave"            ) return new shockwave_t            ( this, options_str );
+  if ( name == "siegebreaker"         ) return new siegebreaker_t         ( this, options_str );
   if ( name == "slam"                 ) return new slam_t                 ( this, options_str );
   if ( name == "spell_reflection"     ) return new spell_reflection_t     ( this, options_str );
   if ( name == "storm_bolt"           ) return new storm_bolt_t           ( this, options_str );
@@ -4162,6 +4203,7 @@ void warrior_t::init_spells()
   talents.inner_rage            = find_talent_spell( "Inner Rage" );
   talents.into_the_fray         = find_talent_spell( "Into the Fray" );
   talents.massacre              = find_talent_spell( "Massacre" );
+  talents.meat_cleaver          = find_talent_spell( "Meat Cleaver" );
   talents.never_surrender       = find_talent_spell( "Never Surrender" );
   talents.overpower             = find_talent_spell( "Overpower" );
   talents.ravager               = find_talent_spell( "Ravager" );
@@ -4170,6 +4212,7 @@ void warrior_t::init_spells()
   talents.renewed_fury          = find_talent_spell( "Renewed Fury" );
   talents.second_wind           = find_talent_spell( "Second Wind" );
   talents.shockwave             = find_talent_spell( "Shockwave" );
+  talents.siegebreaker          = find_talent_spell( "Siegebreaker" );
   talents.storm_bolt            = find_talent_spell( "Storm Bolt" );
   talents.sudden_death			= find_talent_spell( "Sudden Death" );
   talents.sweeping_strikes      = find_talent_spell( "Sweeping Strikes" );
@@ -4215,6 +4258,8 @@ void warrior_t::init_spells()
   spell.headlong_rush           = find_spell( 137047 ); // Also may be used for other crap in the future.
   spell.heroic_leap             = find_class_spell( "Heroic Leap" );
   spell.overpower_driver        = find_spell( 119938 );
+  spell.siegebreaker_debuff     = find_spell( 280773 );
+  spell.whirlwind_buff          = find_spell( 85739, WARRIOR_FURY ); // Used to be called Meat Cleaver
 
   spell.arms_warrior            = find_spell( 137049 );
   spell.fury_warrior            = find_spell( 137050 );
@@ -4273,6 +4318,7 @@ void warrior_t::init_spells()
   cooldown.revenge_reset -> duration = spec.revenge_trigger -> internal_cooldown();
   cooldown.shield_slam              = get_cooldown( "shield_slam" );
   cooldown.shield_wall              = get_cooldown( "shield_wall" );
+  cooldown.siegebreaker             = get_cooldown( "siegebreaker" );
   cooldown.shockwave                = get_cooldown( "shockwave" );
   cooldown.storm_bolt               = get_cooldown( "storm_bolt" );
 
@@ -4896,6 +4942,11 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ):
     .duration( p.spell.colossus_smash_debuff -> duration())
     .cd( timespan_t::zero() );
 
+  debuffs_siegebreaker = buff_creator_t( static_cast<actor_pair_t>(*this), "siegebreaker" )
+    .default_value( p.spell.siegebreaker_debuff -> effectN( 2 ).percent() )
+    .duration( p.spell.siegebreaker_debuff -> duration())
+    .cd( timespan_t::zero() );
+
   debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( *this );
   debuffs_taunt = buff_creator_t( static_cast<actor_pair_t>(*this), "taunt", p.find_class_spell( "Taunt" ) );
 }
@@ -4977,7 +5028,7 @@ void warrior_t::create_buffs()
 
   buff.last_stand = new buffs::last_stand_t( *this, "last_stand", spec.last_stand );
 
-  buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spec.whirlwind -> effectN( 1 ).trigger() );
+  buff.meat_cleaver = buff_creator_t( this, "meat_cleaver", spell.whirlwind_buff );
 
   buff.rallying_cry = new buffs::rallying_cry_t( *this, "rallying_cry", find_spell( 97463 ) );
 
@@ -5105,9 +5156,11 @@ void warrior_t::init_gains()
   gain.booming_voice = get_gain( "booming_voice" );
   gain.thunder_clap = get_gain( "thunder_clap" );
   gain.protection_t20_2p = get_gain( "t20_2p" );
+  gain.whirlwind = get_gain( "whirlwind" );
 
   gain.ceannar_rage = get_gain( "ceannar_rage" );
   gain.endless_rage = get_gain( "endless_rage" );
+  gain.meat_cleaver = get_gain( "meat_cleaver" );
   gain.valarjar_berserking = get_gain( "valarjar_berserking" );
   gain.ravager = get_gain( "ravager" );
   gain.rage_from_damage_taken = get_gain( "rage_from_damage_taken" );
@@ -5454,6 +5507,10 @@ double warrior_t::composite_player_target_multiplier( player_t* target, school_e
   if ( td -> debuffs_colossus_smash -> check() )
   {
     m *= 1.0 + ( td -> debuffs_colossus_smash -> value() + cache.mastery_value() );
+  }
+  if ( td ->debuffs_siegebreaker ->check() )
+  {
+    m *= 1.0 + ( td ->debuffs_siegebreaker -> value() );
   }
 
   return m;
