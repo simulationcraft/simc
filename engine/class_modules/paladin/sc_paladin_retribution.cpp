@@ -787,6 +787,12 @@ void paladin_t::create_buffs_retribution()
 
   // Tier Bonuses
   buffs.ret_t21_4p             = buff_creator_t( this, "hidden_retribution_t21_4p", find_spell( 253806 ) );
+
+  // azerite
+  buffs.avengers_might =
+      make_buff<stat_buff_t>(this, "avengers_might", find_spell(272903))
+      ->add_stat(STAT_MASTERY_RATING, azerite.avengers_might.value(1))
+      ->set_trigger_spell(azerite.avengers_might);
 }
 
 void paladin_t::init_rng_retribution()
@@ -830,6 +836,9 @@ void paladin_t::init_spells_retribution()
 
   // Spec aura
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
+
+  // azerite
+  azerite.avengers_might = find_azerite_spell( 125 ); // Avenger's Might
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
