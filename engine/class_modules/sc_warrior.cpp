@@ -1326,7 +1326,6 @@ struct mortal_strike_t : public warrior_attack_t
   }
 };
 
-
 // Bladestorm ===============================================================
 
 struct bladestorm_tick_t: public warrior_attack_t
