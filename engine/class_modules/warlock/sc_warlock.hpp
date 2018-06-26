@@ -437,6 +437,7 @@ namespace warlock
         gain_t* power_trip;
         gain_t* shadow_bolt;
         gain_t* doom;
+        gain_t* demonic_meteor;
         
         gain_t* soulsnatcher;
         gain_t* t19_2pc_demonology;
