@@ -2733,6 +2733,9 @@ void player_t::create_buffs()
     buffs.ancestral_call[ 2 ] = make_buff<stat_buff_t>( this, "ferocity_of_the_frostwolf", find_spell( 274741 ) );
     buffs.ancestral_call[ 3 ] = make_buff<stat_buff_t>( this, "might_of_the_blackrock", find_spell( 274742 ) );
 
+    buffs.fireblood = make_buff<stat_buff_t>( this, "fireblood", find_spell( 265226 ) )
+                        ->add_stat( primary_stat(), util::round( find_spell( 265226 ) -> effectN( 1 ).average( this, level() ) ) * 3 );
+
     buffs.archmages_greater_incandescence_agi =
         buff_creator_t( this, "archmages_greater_incandescence_agi", find_spell( 177172 ) )
             .add_invalidate( CACHE_AGILITY );
@@ -6983,6 +6986,24 @@ struct ancestral_call_t : public racial_spell_t
   }
 };
 
+// Fireblood ================================================================
+
+struct fireblood_t : public racial_spell_t
+{
+  fireblood_t( player_t* p, const std::string& options_str ) :
+    racial_spell_t( p, "fireblood", p->find_racial_spell( "Fireblood" ), options_str )
+  {
+    harmful = false;
+  }
+
+  void execute() override
+  {
+    racial_spell_t::execute();
+
+    player->buffs.fireblood -> trigger();
+  }
+};
+
 // Restart Sequence Action ==================================================
 
 struct restart_sequence_t : public action_t
@@ -8115,6 +8136,8 @@ action_t* player_t::create_action( const std::string& name, const std::string& o
     return new blood_fury_t( this, options_str );
   if ( name == "darkflight" )
     return new darkflight_t( this, options_str );
+  if ( name == "fireblood" )
+    return new fireblood_t( this, options_str );
   if ( name == "lights_judgment" )
     return new lights_judgment_t( this, options_str );
   if ( name == "rocket_barrage" )

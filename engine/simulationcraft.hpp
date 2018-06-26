@@ -3585,6 +3585,7 @@ struct player_t : public actor_t
     buff_t* stoneform;
     buff_t* stunned;
     std::array<buff_t*, 4> ancestral_call;
+    buff_t* fireblood;
 
     haste_buff_t* berserking;
     haste_buff_t* bloodlust;
