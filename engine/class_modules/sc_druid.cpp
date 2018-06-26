@@ -5119,9 +5119,8 @@ struct full_moon_t : public druid_spell_t
   {
     druid_spell_t::execute();
     if (p()->moon_stage == FULL_MOON && radiant_moonlight) {
-      p()->moon_stage = FREE_FULL_MOON; //Requires hit
+      p()->moon_stage = FREE_FULL_MOON;
       p()->cooldown.moon_cd->reset(true);
-      p()->cooldown.moon_cd->reset(true); //currently gives 2 stacks in game (might be a bug)
     }
     else {
       p()->moon_stage = NEW_MOON; //Requires hit
