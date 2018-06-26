@@ -279,6 +279,7 @@ private:
 
 struct raid_event_t : private noncopyable
 {
+public:
   sim_t* sim;
   std::string name;
   std::string type;
@@ -310,10 +311,7 @@ struct raid_event_t : private noncopyable
   std::vector<std::unique_ptr<option_t>> options;
 
   raid_event_t( sim_t*, const std::string& );
-private:
-  virtual void _start() = 0;
-  virtual void _finish() = 0;
-public:
+
   virtual ~raid_event_t() {}
 
   virtual bool filter_player( const player_t* );
@@ -322,7 +320,10 @@ public:
   { options.insert( options.begin(), std::move(new_option) ); }
   timespan_t cooldown_time();
   timespan_t duration_time();
-  timespan_t next_time() { return next; }
+  timespan_t next_time() const { return next; }
+  timespan_t until_next() const;
+  timespan_t remains() const;
+  bool up() const;
   double distance() { return distance_max; }
   double min_distance() { return distance_min; }
   double max_distance() { return distance_max; }
@@ -337,7 +338,15 @@ public:
   static void reset( sim_t* );
   static void combat_begin( sim_t* );
   static void combat_end( sim_t* ) {}
-  static double evaluate_raid_event_expression(sim_t* s, std::string& type, std::string& filter );
+  static double evaluate_raid_event_expression(sim_t* s, std::string& type, std::string& filter,
+      bool test_filter = false);
+private:
+  virtual void _start() = 0;
+  virtual void _finish() = 0;
+
+  bool is_up;
+  event_t* cooldown_event;
+  event_t* duration_event;
 };
 std::ostream& operator<<(std::ostream&, const raid_event_t&);
 

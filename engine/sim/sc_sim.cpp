@@ -3110,6 +3110,9 @@ expr_t* sim_t::create_expression( const std::string& name_str )
     std::string type_or_name = splits[ 1 ];
     std::string filter = splits[ 2 ];
 
+    // Call once to see if we have a valid raid expression.
+    raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter, true );
+
     if ( optimize_expressions && util::str_compare_ci( filter, "exists" ) )
       return expr_t::create_constant( name_str, raid_event_t::evaluate_raid_event_expression( this, type_or_name, filter ) );
 

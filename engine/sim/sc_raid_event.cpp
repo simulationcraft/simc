@@ -1007,6 +1007,43 @@ expr_t* parse_player_if_expr( player_t& player, const std::string& expr_str )
   return nullptr;
 }
 
+raid_event_t* get_next_raid_event(const std::vector<raid_event_t*>& matching_events)
+{
+  raid_event_t* result = nullptr;
+  timespan_t time_to_event = timespan_t::from_seconds(-1);
+
+  for (const auto& event : matching_events)
+  {
+    if (time_to_event < timespan_t::zero() || event->until_next() < time_to_event)
+    {
+      result = event;
+      time_to_event = result->until_next();
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Create a list of raid events which are up, sorted descending by remaining uptime.
+ */
+std::vector<raid_event_t*> get_longest_active_raid_events(const std::vector<raid_event_t*>& matching_events)
+{
+  std::vector<raid_event_t*> result;
+
+  for (const auto& event : matching_events)
+  {
+    if (event->up())
+    {
+      result.push_back(event);
+    }
+  }
+
+  range::sort(result, [](const raid_event_t* l, const raid_event_t* r) {return l->remains() > r->remains();});
+
+  return result;
+}
+
 } // UNNAMED NAMESPACE
 
 raid_event_t::raid_event_t( sim_t* s, const std::string& type ) :
@@ -1032,7 +1069,10 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& type ) :
   affected_role( ROLE_NONE ),
   player_if_expr_str(),
   saved_duration( timespan_t::zero() ),
-  player_expressions()
+  player_expressions(),
+  is_up(false),
+  cooldown_event(),
+  duration_event()
 {
   add_option( opt_string( "name", name ) );
   add_option( opt_string( "first", first_str ) );
@@ -1089,11 +1129,37 @@ timespan_t raid_event_t::duration_time()
   return time;
 }
 
+timespan_t raid_event_t::until_next() const
+{
+  return next - sim -> current_time();
+}
+
+/**
+ * Remaining duration of currently active raid event.
+ *
+ * Returns timespan_t::max() if raid event is not active.
+ */
+timespan_t raid_event_t::remains() const
+{
+  assert(is_up);
+  return duration_event ? duration_event->remains() : timespan_t::max();
+}
+
+/**
+ * Check if raid event is currently up.
+ */
+bool raid_event_t::up() const
+{
+  assert(is_up == static_cast<bool>(duration_event));
+  return is_up;
+}
+
 void raid_event_t::start()
 {
   sim -> print_log("{} starts.", *this);
 
   num_starts++;
+  is_up = true;
 
   affected_players.clear();
 
@@ -1126,6 +1192,8 @@ void raid_event_t::finish()
   auto filter_sleeping = []( const player_t* p ) { return p -> is_sleeping(); };
   affected_players.erase( std::remove_if( affected_players.begin(), affected_players.end(), filter_sleeping ), affected_players.end() );
 
+  is_up = false;
+
   _finish();
 
   sim -> print_log("{} finishes.", *this);
@@ -1152,6 +1220,7 @@ void raid_event_t::schedule()
     virtual void execute() override
     {
       raid_event -> finish();
+      raid_event->duration_event = nullptr;
     }
   };
 
@@ -1180,19 +1249,23 @@ void raid_event_t::schedule()
 
       if ( raid_event -> saved_duration > timespan_t::zero() )
       {
-        make_event<duration_event_t>( sim(), sim(), raid_event, raid_event -> saved_duration );
+        raid_event -> duration_event = make_event<duration_event_t>( sim(), sim(), raid_event, raid_event -> saved_duration );
       }
       else raid_event -> finish();
 
       if ( raid_event -> last <= timespan_t::zero() ||
            raid_event -> last > ( sim().current_time() + ct ) )
       {
-        make_event<cooldown_event_t>( sim(), sim(), raid_event, ct );
+        raid_event -> cooldown_event = make_event<cooldown_event_t>( sim(), sim(), raid_event, ct );
+      }
+      else
+      {
+        raid_event -> cooldown_event = nullptr;
       }
     }
   };
 
-  make_event<cooldown_event_t>( *sim, *sim, this, cooldown_time() );
+  cooldown_event = make_event<cooldown_event_t>( *sim, *sim, this, cooldown_time() );
 }
 
 // raid_event_t::reset ======================================================
@@ -1200,6 +1273,9 @@ void raid_event_t::schedule()
 void raid_event_t::reset()
 {
   num_starts = 0;
+  is_up = false;
+  event_t::cancel(cooldown_event);
+  event_t::cancel(duration_event);
 
   if ( cooldown_min == timespan_t::zero() ) cooldown_min = cooldown * 0.5;
   if ( cooldown_max == timespan_t::zero() ) cooldown_max = cooldown * 1.5;
@@ -1389,7 +1465,7 @@ bool raid_event_t::filter_player( const player_t* p )
   return false;
 }
 
-double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type_or_name, std::string& filter )
+double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type_or_name, std::string& filter, bool test_filter )
 {
   // correct for "damage" type event
   if ( util::str_compare_ci( type_or_name, "damage" ) )
@@ -1410,42 +1486,72 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type
 
   if ( matching_events.empty() )
   {
-    if ( util::str_compare_ci( filter, "in" ) || util::str_compare_ci( filter, "cooldown" ) )
-      return 1.0e10; // ridiculously large number
-    else
+    if ( filter == "in" || filter == "cooldown" )
+      return timespan_t::max().total_seconds(); // ridiculously large number
+    else if (!test_filter) // When evaluating filter expr validity, let this one continue through
       return 0.0;
     // return constant based on filter
   }
-  else if ( util::str_compare_ci( filter, "exists" ) )
+  else if ( filter == "exists" )
     return 1.0;
 
-  // now go through the list of matching raid events and look for the one happening first
-  raid_event_t* e = 0;
-  timespan_t time_to_event = timespan_t::from_seconds( -1 );
-
-  for ( size_t i = 0; i < matching_events.size(); i++ )
-    if ( time_to_event < timespan_t::zero() || matching_events[ i ] -> next_time() - s -> current_time() < time_to_event )
+  if (filter == "remains")
+  {
+    auto events = get_longest_active_raid_events(matching_events);
+    if (events.empty())
     {
-    e = matching_events[ i ];
-    time_to_event = e -> next_time() - s -> current_time();
+      return 0.0;
     }
-  if ( e == 0 )
+    return events.front()->remains().total_seconds();
+  }
+
+  if (filter == "up")
+  {
+    for (const auto& event : matching_events)
+    {
+      if (event->up())
+      {
+        return 1.0;
+      }
+    }
+    return 0.0;
+  }
+
+  // For all remaining expression, go through the list of matching raid events and look for the one happening first
+  raid_event_t* e = get_next_raid_event(matching_events);
+  //timespan_t time_to_event = timespan_t::from_seconds( -1 );
+  if ( e == nullptr )
     return 0.0;
 
   // now that we have the event in question, use the filter to figure out return
-  if ( util::str_compare_ci( filter, "in" ) )
-    return time_to_event > timespan_t::zero() ? time_to_event.total_seconds() : 1.0e10;
-  else if ( util::str_compare_ci( filter, "duration" ) )
+  if (filter == "in")
+  {
+    if(e->until_next() > timespan_t::zero())
+    {
+      return e->until_next().total_seconds();
+    }
+    else
+    {
+      return timespan_t::max().total_seconds();
+    }
+  }
+
+  if (filter == "duration" )
     return e -> duration_time().total_seconds();
-  else if ( util::str_compare_ci( filter, "cooldown" ) )
+
+  if (filter == "cooldown")
     return e -> cooldown_time().total_seconds();
-  else if ( util::str_compare_ci( filter, "distance" ) )
+
+  if (filter == "distance")
     return e -> distance();
-  else if ( util::str_compare_ci( filter, "max_distance" ) )
+
+  if (filter == "max_distance")
     return e -> max_distance();
-  else if ( util::str_compare_ci( filter, "min_distance" ) )
+
+  if (filter == "min_distance")
     return e -> min_distance();
-  else if ( util::str_compare_ci( filter, "amount" ) )
+
+  if (filter == "amount")
   {
     if (auto dmg_event = dynamic_cast<damage_event_t*>( e ))
     {
@@ -1453,28 +1559,41 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, std::string& type
     }
     else
     {
-      throw std::invalid_argument(fmt::format("Invalid raid event expression '{}' for non-damage raid event '{}'.",
+      throw std::invalid_argument(fmt::format("Invalid filter expression '{}' for non-damage raid event '{}'.",
           filter, type_or_name));
     }
   }
-  else if ( util::str_compare_ci( filter, "to_pct" ) )
+
+  if (filter == "to_pct")
   {
     if (auto heal_event = dynamic_cast<heal_event_t*>( e ))
     {
       return heal_event -> to_pct;
     }
+    else
+    {
+      throw std::invalid_argument(fmt::format("Invalid filter expression '{}' for non-heal raid event '{}'.",
+          filter, type_or_name));
+    }
   }
-  else if ( util::str_compare_ci( filter, "count" ) )
+
+  if (filter == "count")
   {
     if (auto adds_event = dynamic_cast<adds_event_t*>( e ))
     {
       return adds_event -> count;
     }
+    else
+    {
+      throw std::invalid_argument(fmt::format("Invalid filter expression '{}' for non-adds raid event '{}'.",
+          filter, type_or_name));
+    }
   }
 
   // if we have no idea what filter they've specified, return 0
   // todo: should this generate an error or something instead?
-  return 0.0;
+
+  throw std::invalid_argument(fmt::format("Unknown filter expression '{}'.", filter));;
 }
 
 std::ostream& operator<<(std::ostream& os, const raid_event_t& r)
