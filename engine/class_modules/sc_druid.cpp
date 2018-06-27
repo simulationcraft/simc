@@ -20,7 +20,6 @@ namespace { // UNNAMED NAMESPACE
 
   Guardian ==================================================================
   Azerite traits
-  Rage from melees
   Investigate Mastery-AP as a modifier on ability damage
   Blacklist FR from trigger_natures_guardian()
 
@@ -435,6 +434,7 @@ public:
     gain_t* guardian_tier17_2pc;
     gain_t* guardian_tier18_2pc;
     gain_t* oakhearts_puny_quods;
+    gain_t* rage_from_melees;
   } gain;
 
   // Masteries
@@ -7753,6 +7753,7 @@ void druid_t::init_gains()
   gain.gore                  = get_gain( "gore"                  );
   gain.rage_refund           = get_gain( "rage_refund"           );
   gain.stalwart_guardian     = get_gain( "stalwart_guardian"     );
+  gain.rage_from_melees      = get_gain( "rage_from_melees"      );
 
   // Set Bonuses
   gain.feral_tier17_2pc      = get_gain( "feral_tier17_2pc"      );
@@ -8653,10 +8654,21 @@ void druid_t::assess_damage( school_e school,
 
 // Trigger effects based on being hit or taking damage.
 
-void druid_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s )
+void druid_t::assess_damage_imminent_pre_absorb( school_e school, dmg_e dmg, action_state_t* s )
 {
+  player_t::assess_damage_imminent_pre_absorb( school, dmg, s);
+
   if ( action_t::result_is_hit( s -> result ) && s -> result_amount > 0 )
   {
+
+    // Guardian rage from melees
+    if ( specialization() == DRUID_GUARDIAN && !s -> action -> special )
+    {
+      resource_gain( RESOURCE_RAGE,
+                     spec.bear_form -> effectN( 3 ).base_value(),
+                     gain.rage_from_melees );
+    }
+
     if ( buff.cenarion_ward -> up() )
       active.cenarion_ward_hot -> execute();
 
