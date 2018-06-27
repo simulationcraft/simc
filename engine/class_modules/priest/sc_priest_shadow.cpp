@@ -2297,7 +2297,9 @@ void priest_t::generate_apl_shadow()
   single->add_action( this, "Shadow Word: Pain",
                       "if=refreshable&target.time_to_die>4&"
                       "!talent.misery.enabled&!talent.dark_void.enabled" );
-  single->add_action( this, "Vampiric Touch", "if=refreshable&target.time_to_die>6" );
+  single->add_action( this, "Vampiric Touch", 
+                      "if=refreshable&target.time_to_die>6|"
+                      "(talent.misery.enabled&dot.shadow_word_pain.refreshable)" );
   single->add_action( this, "Mind Flay", "interrupt=1,chain=1" );
   single->add_action( this, "Shadow Word: Pain" );
 
@@ -2317,14 +2319,18 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Shadow Word: Pain",
                       "target_if=refreshable&target.time_to_die>4,"
                       "if=!talent.misery.enabled&!talent.dark_void.enabled" );
-  cleave->add_action( this, "Vampiric Touch", "target_if=refreshable&target.time_to_die>6" );
+  cleave->add_action( this, "Vampiric Touch", 
+                      "target_if=refreshable,if=(target.time_to_die>6)" );
+  cleave->add_action( this, "Vampiric Touch", 
+                      "target_if=dot.shadow_word_pain.refreshable,"
+                      "if=(talent.misery.enabled&target.time_to_die>4)" );
   cleave->add_talent( this, "Void Torrent" );
   cleave->add_action( this, "Mind Sear",
                       "target_if=spell_targets.mind_sear>2"
                       ",chain=1,interrupt=1" );
   cleave->add_action( this, "Mind Flay", "interrupt=1,chain=1" );
   cleave->add_action( this, "Shadow Word: Pain" );
-
+  
   // aoe APL
   aoe->add_action( this, "Void Eruption" );
   aoe->add_talent( this, "Dark Ascension", "if=talent.dark_ascension.enabled&buff.voidform.down" );
