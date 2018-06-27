@@ -2291,7 +2291,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       drw_attack_t::impact( state );
 
-      int stack_gain = data().effectN( 3 ).base_value();
+      int stack_gain = as<int>( data().effectN( 3 ).base_value() );
 
       p() -> o() -> buffs.bone_shield -> trigger( stack_gain );
     }
@@ -4445,7 +4445,7 @@ struct empower_rune_weapon_buff_t : public buff_t
             .cd( timespan_t::zero() ) // Handled in the action
             .period( p -> spec.empower_rune_weapon -> effectN( 1 ).period() )
             .tick_callback( [ this, p ]( buff_t* b, int, const timespan_t& ) {
-    p -> replenish_rune( b -> data().effectN( 1 ).base_value(),
+    p -> replenish_rune( as<unsigned int>( b -> data().effectN( 1 ).base_value() ),
                          p -> gains.empower_rune_weapon );
 
     p -> resource_gain( RESOURCE_RUNIC_POWER,
@@ -4477,7 +4477,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     death_knight_spell_t::init();
 
     cooldown -> charges = data().charges() +
-      p() -> legendary.seal_of_necrofantasia -> effectN( 1 ).base_value();
+      as<int>( p() -> legendary.seal_of_necrofantasia -> effectN( 1 ).base_value() );
     cooldown -> duration = data().charge_cooldown() *
       ( 1.0 + p() -> legendary.seal_of_necrofantasia -> effectN( 2 ).percent() );
   }
@@ -4893,7 +4893,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     p() -> resource_gain( RESOURCE_RUNIC_POWER, data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
         p() -> gains.horn_of_winter, this );
 
-    p() -> replenish_rune( data().effectN( 1 ).base_value(), p() -> gains.horn_of_winter );
+    p() -> replenish_rune( as<unsigned int>( data().effectN( 1 ).base_value() ), p() -> gains.horn_of_winter );
   }
 };
 
@@ -5114,7 +5114,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    int stack_gain = data().effectN( 3 ).base_value();
+    int stack_gain = as<int>( data().effectN( 3 ).base_value() );
 
     p() -> buffs.bone_shield -> trigger( stack_gain );
   }
@@ -5232,7 +5232,7 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( rng().roll( p() -> legendary.koltiras_newfound_will -> proc_chance() ) )
     {
-      p() -> replenish_rune( p() -> legendary.koltiras_newfound_will -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(),
+      p() -> replenish_rune( as<unsigned int>( p() -> legendary.koltiras_newfound_will -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() ),
           p() -> gains.koltiras_newfound_will );
     }
     
@@ -5478,7 +5478,7 @@ struct rune_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    p() -> replenish_rune( data().effectN( 2 ).base_value(), p() -> gains.rune_strike );
+    p() -> replenish_rune( as<unsigned int>( data().effectN( 2 ).base_value() ), p() -> gains.rune_strike );
   }
 };
 
@@ -5623,7 +5623,7 @@ struct soul_reaper_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> replenish_rune( p() -> talent.soul_reaper -> effectN( 2 ).base_value(), p() -> gains.soul_reaper );
+    p() -> replenish_rune( as<unsigned int>( p() -> talent.soul_reaper -> effectN( 2 ).base_value() ), p() -> gains.soul_reaper );
   }
 };
 
@@ -6331,7 +6331,7 @@ void death_knight_t::trigger_t20_2pc_frost( double consumed )
       sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 2 ).base_value() / 10.0 ) );
     buffs.toravons -> extend_duration( this, timespan_t::from_seconds(
       sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 2 ).base_value() / 10.0 ) );
-    t20_2pc_frost -= sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).base_value();
+    t20_2pc_frost -= as<int>( sets -> set( DEATH_KNIGHT_FROST, T20, B2 ) -> effectN( 1 ).base_value() );
   }
 }
 
@@ -6365,7 +6365,7 @@ void death_knight_t::trigger_t20_4pc_frost( double consumed )
     {
       buffs.t20_4pc_frost -> current_value += buffs.t20_4pc_frost -> default_value;
     }
-    t20_4pc_frost -= sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).base_value();
+    t20_4pc_frost -= as<int>( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 1 ).base_value() );
   }
 }
 
@@ -7560,8 +7560,8 @@ void death_knight_t::create_buffs()
                               .rppm_scale( RPPM_ATTACK_SPEED ) // 2016-08-08: Hotfixed, not in spell data
                               .rppm_mod( 1.0 + talent.harbinger_of_doom -> effectN( 2 ).percent() )
                               .trigger_spell( spec.sudden_doom )
-                              .max_stack( specialization() == DEATH_KNIGHT_UNHOLY ?
-                                spec.sudden_doom -> effectN( 1 ).trigger() -> max_stacks() + talent.harbinger_of_doom -> effectN( 1 ).base_value() :
+                              .max_stack( specialization() == DEATH_KNIGHT_UNHOLY ? as<unsigned int>(
+                                spec.sudden_doom -> effectN( 1 ).trigger() -> max_stacks() + talent.harbinger_of_doom -> effectN( 1 ).base_value() ):
                                 1 );
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
   buffs.voracious           = buff_creator_t( this, "voracious", find_spell( 274009 ) )
@@ -8492,7 +8492,7 @@ struct the_instructors_fourth_lesson_t : public scoped_actor_callback_t<death_kn
   { }
 
   void manipulate( death_knight_t* p, const special_effect_t& e ) override
-  { p -> legendary.the_instructors_fourth_lesson = e.driver() -> effectN( 1 ).base_value(); }
+  { p -> legendary.the_instructors_fourth_lesson = as<unsigned int>( e.driver() -> effectN( 1 ).base_value() ); }
 };
 
 struct draugr_girdle_everlasting_king_t : public scoped_actor_callback_t<death_knight_t>
