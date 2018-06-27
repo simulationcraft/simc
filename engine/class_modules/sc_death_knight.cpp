@@ -567,7 +567,6 @@ public:
     // Frost
 
     // Tier 1
-    const spell_data_t* shattering_strikes;
     const spell_data_t* icy_talons;
     const spell_data_t* runic_attenuation;
 
@@ -708,7 +707,6 @@ public:
     proc_t* ready_rune;
     proc_t* km_natural_expiration;
     proc_t* t19_2pc_unholy;
-    proc_t* shattering_strikes;
     proc_t* bloodworms;
     proc_t* pp_runic_corruption;
     proc_t* rp_runic_corruption;
@@ -4688,40 +4686,25 @@ struct frostwyrms_fury_t : public death_knight_spell_t
 
 struct frost_strike_strike_t : public death_knight_melee_attack_t
 {
-  bool shattered;
-
   frost_strike_strike_t( death_knight_t* p, const std::string& n, weapon_t* w, const spell_data_t* s ) :
     death_knight_melee_attack_t( n, p, s )
   {
     background = special = true;
     weapon = w;
-    shattered = false;
   }
 
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = death_knight_melee_attack_t::composite_target_multiplier( target );
 
-    if ( shattered )
-    {
-      m *= 1.0 + p() -> talent.shattering_strikes -> effectN( 1 ).percent();
-    }
-
     return m;
-  }
-
-  void execute( bool ss )
-  {
-    shattered = ss;
-    execute();
-    
-    // TODO: Both hands, or just main hand?
-    trigger_icecap( execute_state );
   }
 
   void execute() override
   {
     death_knight_melee_attack_t::execute();
+
+    trigger_icecap( execute_state );
   }
 };
 
@@ -4747,22 +4730,13 @@ struct frost_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
 
     death_knight_td_t* tdata = td( execute_state -> target );
-    bool shattered = false;
-    
-    if ( p() -> talent.shattering_strikes -> ok() &&
-      tdata -> debuff.razorice -> stack() == 5 ) // TODO: Hardcoded, sad face
-    {
-      tdata -> debuff.razorice -> expire();
-      shattered = true;
-      p() -> procs.shattering_strikes -> occur();
-    }
-        
+      
     if ( result_is_hit( execute_state -> result ) )
     {
       mh -> set_target( execute_state -> target );
-      mh -> execute( shattered );
+      mh -> execute();
       oh -> set_target( execute_state -> target );
-      oh -> execute( shattered );
+      oh -> execute();
 
       p() -> trigger_runic_empowerment( last_resource_cost );
     }
@@ -6970,7 +6944,6 @@ void death_knight_t::init_spells()
 
   // Frost Talents
   // Tier 1
-  talent.shattering_strikes    = find_talent_spell( "Shattering Strikes" );
   talent.icy_talons            = find_talent_spell( "Icy Talons" );
   talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
   // Tier 2
@@ -7264,24 +7237,23 @@ void death_knight_t::default_apl_frost()
   bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up&rune.time_to_4<(gcd*2)" );
   bos_pooling -> add_action( this, "Obliterate", "if=rune.time_to_6<gcd&!talent.gathering_storm.enabled" );
   bos_pooling -> add_action( this, "Obliterate", "if=rune.time_to_4<gcd&(cooldown.breath_of_sindragosa.remains|runic_power.deficit>=30)" );
-  bos_pooling -> add_action( this, "Frost Strike", "if=runic_power.deficit<5&set_bonus.tier19_4pc&cooldown.breath_of_sindragosa.remains&(!talent.shattering_strikes.enabled|debuff.razorice.stack<5|cooldown.breath_of_sindragosa.remains>6)" );
+  bos_pooling -> add_action( this, "Frost Strike", "if=runic_power.deficit<5&set_bonus.tier19_4pc&cooldown.breath_of_sindragosa.remains" );
   bos_pooling -> add_action( this, "Remorseless Winter", "if=buff.rime.up&equipped.perseverance_of_the_ebon_martyr" );
   bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up&(buff.remorseless_winter.up|cooldown.remorseless_winter.remains>gcd|(!equipped.perseverance_of_the_ebon_martyr&!talent.gathering_storm.enabled))" );
   bos_pooling -> add_action( this, "Obliterate", "if=!buff.rime.up&!(talent.gathering_storm.enabled&!(cooldown.remorseless_winter.remains>(gcd*2)|rune>4))&rune>3" );
-  bos_pooling -> add_action( this, "Frost Strike", "if=runic_power.deficit<30&(!talent.shattering_strikes.enabled|debuff.razorice.stack<5|cooldown.breath_of_sindragosa.remains>rune.time_to_4)" );
+  bos_pooling -> add_action( this, "Frost Strike", "if=runic_power.deficit<30" );
   bos_pooling -> add_talent( this, "Frostscythe", "if=buff.killing_machine.react&(!equipped.koltiras_newfound_will|spell_targets.frostscythe>=2)" );
   bos_pooling -> add_talent( this, "Glacial Advance", "if=spell_targets.glacial_advance>=2" );
   bos_pooling -> add_action( this, "Remorseless Winter", "if=spell_targets.remorseless_winter>=2" );
   bos_pooling -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
-  bos_pooling -> add_action( this, "Frost Strike", "if=(cooldown.remorseless_winter.remains<(gcd*2)|buff.gathering_storm.stack=10)&cooldown.breath_of_sindragosa.remains>rune.time_to_4&talent.gathering_storm.enabled&(!talent.shattering_strikes.enabled|debuff.razorice.stack<5|cooldown.breath_of_sindragosa.remains>6)" );
+  bos_pooling -> add_action( this, "Frost Strike", "if=(cooldown.remorseless_winter.remains<(gcd*2)|buff.gathering_storm.stack=10)&cooldown.breath_of_sindragosa.remains>rune.time_to_4&talent.gathering_storm.enabled" );
   bos_pooling -> add_action( this, "Obliterate", "if=!buff.rime.up&(!talent.gathering_storm.enabled|cooldown.remorseless_winter.remains>gcd)" );
-  bos_pooling -> add_action( this, "Frost Strike", "if=cooldown.breath_of_sindragosa.remains>rune.time_to_4&(!talent.shattering_strikes.enabled|debuff.razorice.stack<5|cooldown.breath_of_sindragosa.remains>6)" );
+  bos_pooling -> add_action( this, "Frost Strike", "if=cooldown.breath_of_sindragosa.remains>rune.time_to_4" );
 
   // Breath of Sindragosa uptime rotation
-  bos_ticking -> add_action( this, "Frost Strike", "if=talent.shattering_strikes.enabled&runic_power<40&rune.time_to_2>2&cooldown.empower_rune_weapon.remains&debuff.razorice.stack=5&(cooldown.horn_of_winter.remains|!talent.horn_of_winter.enabled)", "Breath of Sindragosa uptime rotation" );
-  bos_ticking -> add_action( this, "Remorseless Winter", "if=runic_power>=30&((buff.rime.up&equipped.perseverance_of_the_ebon_martyr)|(talent.gathering_storm.enabled&(buff.remorseless_winter.remains<=gcd|!buff.remorseless_winter.remains)))" );
+  bos_ticking -> add_action( this, "Remorseless Winter", "if=runic_power>=30&((buff.rime.up&equipped.perseverance_of_the_ebon_martyr)|(talent.gathering_storm.enabled&(buff.remorseless_winter.remains<=gcd|!buff.remorseless_winter.remains)))", "Breath of Sindragosa uptime rotation" );
   bos_ticking -> add_action( this, "Howling Blast", "if=((runic_power>=20&set_bonus.tier19_4pc)|runic_power>=30)&buff.rime.up" );
-  bos_ticking -> add_action( this, "Frost Strike", "if=set_bonus.tier20_2pc&runic_power.deficit<=15&rune<=3&buff.pillar_of_frost.up&!talent.shattering_strikes.enabled" );
+  bos_ticking -> add_action( this, "Frost Strike", "if=set_bonus.tier20_2pc&runic_power.deficit<=15&rune<=3&buff.pillar_of_frost.up" );
   bos_ticking -> add_action( this, "Obliterate", "if=runic_power<=45|rune.time_to_5<gcd" );
   bos_ticking -> add_talent( this, "Horn of Winter", "if=runic_power.deficit>=30&rune.time_to_3>gcd" );
   bos_ticking -> add_talent( this, "Frostscythe", "if=buff.killing_machine.react&(!equipped.koltiras_newfound_will|talent.gathering_storm.enabled|spell_targets.frostscythe>=2)" );
@@ -7325,7 +7297,6 @@ void death_knight_t::default_apl_frost()
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=16&(cooldown.obliteration.ready&talent.obliteration.enabled)&buff.pillar_of_frost.up" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.up&buff.pillar_of_frost.remains<gcd&(buff.cold_heart.stack>=11|(buff.cold_heart.stack>=10&set_bonus.tier20_4pc))" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=17&buff.unholy_strength.react&buff.unholy_strength.remains<gcd&cooldown.pillar_of_frost.remains>6" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=13&buff.unholy_strength.react&talent.shattering_strikes.enabled" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=4&target.time_to_die<=gcd" );
 
   // Obliteration rotation
@@ -7340,10 +7311,9 @@ void death_knight_t::default_apl_frost()
 
   // Standard rotation
   standard -> add_action( this, "Frost Strike", "if=talent.icy_talons.enabled&buff.icy_talons.remains<=gcd", "Standard rotation" );
-  standard -> add_action( this, "Frost Strike", "if=talent.shattering_strikes.enabled&debuff.razorice.stack=5&buff.gathering_storm.stack<2&!buff.rime.up" );
   standard -> add_action( this, "Remorseless Winter", "if=(buff.rime.up&equipped.perseverance_of_the_ebon_martyr)|talent.gathering_storm.enabled" );
   standard -> add_action( this, "Obliterate", "if=(equipped.koltiras_newfound_will&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1)|rune.time_to_4<gcd" );
-  standard -> add_action( this, "Frost Strike", "if=(!talent.shattering_strikes.enabled|debuff.razorice.stack<5)&runic_power.deficit<10" );
+  standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<10" );
   standard -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   standard -> add_action( this, "Obliterate", "if=(equipped.koltiras_newfound_will&talent.frozen_pulse.enabled&set_bonus.tier19_2pc=1)|rune.time_to_5<gcd" );
   standard -> add_action( this, "Frost Strike", "if=runic_power.deficit<10" );
@@ -7651,7 +7621,6 @@ void death_knight_t::init_procs()
   procs.runic_empowerment_wasted = get_proc( "Wasted Runic Empowerment"     );
   procs.oblit_killing_machine    = get_proc( "Killing Machine: Obliterate"  );
   procs.fs_killing_machine       = get_proc( "Killing Machine: Frostscythe" );
-  procs.shattering_strikes       = get_proc( "Shattering Strikes"           );
 
   procs.ready_rune               = get_proc( "Rune ready" );
 
