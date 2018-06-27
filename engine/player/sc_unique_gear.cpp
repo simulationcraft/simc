@@ -3606,29 +3606,30 @@ struct touch_of_the_grave_t : public spell_t
   {
     background = may_crit = true;
     base_dd_min = base_dd_max = 0;
+    ap_type = AP_NO_WEAPON;
     // these are sadly hardcoded in the tooltip
     attack_power_mod.direct = 1.25 * .25;
     spell_power_mod.direct = 1.0 * .25;
   }
 
-  double attack_direct_power_coefficient( const action_state_t* ) const override
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
-    const double ap = composite_attack_power() * player->composite_attack_power_multiplier();
-    const double sp = composite_spell_power() * player->composite_spell_power_multiplier();
+    const double ap = attack_power_mod.direct * s -> composite_attack_power();
+    const double sp = spell_power_mod.direct * s -> composite_spell_power();
 
-    if ( ap * attack_power_mod.direct >= sp * spell_power_mod.direct )
-      return attack_power_mod.direct;
-    return 0;
+    if ( ap <= sp )
+      return 0;
+    return spell_t::attack_direct_power_coefficient( s );
   }
 
-  double spell_direct_power_coefficient( const action_state_t* ) const override
+  double spell_direct_power_coefficient( const action_state_t* s ) const override
   {
-    const double ap = composite_attack_power() * player->composite_attack_power_multiplier();
-    const double sp = composite_spell_power() * player->composite_spell_power_multiplier();
+    const double ap = attack_power_mod.direct * s -> composite_attack_power();
+    const double sp = spell_power_mod.direct * s -> composite_spell_power();
 
-    if ( ap * attack_power_mod.direct < sp * spell_power_mod.direct )
-      return spell_power_mod.direct;
-    return 0;
+    if ( ap > sp )
+      return 0;
+    return spell_t::spell_direct_power_coefficient( s );
   }
 };
 
