@@ -301,9 +301,13 @@ struct mark_of_the_distant_army_t : public proc_spell_t
     proc_spell_t( "mark_of_the_distant_army",
       p, p -> find_spell( 191380 ), nullptr )
   {
+    // TODO: 2018-06-27 approximated for BfA, should be quite close. Seems to not use weapon dps
+    // for attack power calculations. Weird
+
     // Hardcoded somewhere in the bowels of the server
-    attack_power_mod.tick = ( 2.5 / 3.0 );
-    spell_power_mod.tick = ( 2.0 / 3.0 );
+    ap_type = AP_NO_WEAPON;
+    attack_power_mod.tick = ( 3.78 / 3.0 );
+    spell_power_mod.tick = ( 3.024 / 3.0 );
   }
 
   double amount_delta_modifier( const action_state_t* ) const override
