@@ -370,9 +370,13 @@ void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
       proc_spell_t( "mark_of_the_hidden_satyr", e.player,
         e.player -> find_spell( 191259 ), nullptr )
     {
+      // TODO: 2018-06-27 approximated for BfA, should be quite close. Seems to not use weapon dps
+      // for attack power calculations. Weird
+
       // Hardcoded somewhere in the bowels of the server
-      attack_power_mod.direct = 2.5;
-      spell_power_mod.direct = 2.0;
+      ap_type = AP_NO_WEAPON;
+      attack_power_mod.direct = 0.653;
+      spell_power_mod.direct = 0.522;
     }
 
     double amount_delta_modifier( const action_state_t* ) const override
