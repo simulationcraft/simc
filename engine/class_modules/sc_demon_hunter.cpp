@@ -4271,6 +4271,15 @@ demon_hunter_t::demon_hunter_t(sim_t* sim, const std::string& name, race_e r)
   create_benefits();
 
   regen_type = REGEN_DISABLED;
+
+  // Soul of the Slayer Legendary
+  // Register a custom talent validity function for talents added by Soul of the Slayer
+  talent_points.register_validity_fn( [ this ]( const spell_data_t* spell ) {
+    if ( specialization() == DEMON_HUNTER_HAVOC )
+      return spell->id() == 206416 /* First Blood */ && find_item( 151639 ) != nullptr;
+    else // DEMON_HUNTER_VENGEANCE
+      return spell->id() == 227174 /* Fallout */ && find_item( 151639 ) != nullptr;
+  } );
 }
 
 // ==========================================================================
@@ -4886,6 +4895,9 @@ void demon_hunter_t::init_rng()
   {
     rppm.felblade = get_rppm( "felblade", find_spell( 203557 ) );
     rppm.gluttony = get_rppm( "gluttony", talent.gluttony );
+    // 6/27/2018 -- Removed from spell data, but still seems to be RPPM
+    if ( rppm.gluttony->get_frequency() == 0 )
+      rppm.gluttony->set_frequency( 1.0 );
   }
 
   player_t::init_rng();
