@@ -248,8 +248,8 @@ namespace warlock
       struct azerite_t
       {
         //Shared
-        azerite_power_t desperate_power;
-        azerite_power_t lifeblood;
+        azerite_power_t desperate_power; //healing
+        azerite_power_t lifeblood; //healing
 
         //Demo
         azerite_power_t demonic_meteor;
@@ -258,6 +258,7 @@ namespace warlock
         azerite_power_t shadows_bite;
         azerite_power_t supreme_commander;
         azerite_power_t umbral_blaze;
+        azerite_power_t explosive_potential;
 
         //Aff
         azerite_power_t cascading_calamity;
@@ -272,6 +273,7 @@ namespace warlock
         azerite_power_t chaotic_inferno;
         azerite_power_t crashing_chaos;
         azerite_power_t rolling_havoc;
+        azerite_power_t flashpoint;
       } azerite;
 
       struct legendary_t
@@ -391,6 +393,7 @@ namespace warlock
         propagate_const<buff_t*> forbidden_knowledge;
         propagate_const<buff_t*> shadows_bite;
         propagate_const<buff_t*> supreme_commander;
+        propagate_const<buff_t*> explosive_potential;
 
         //destruction_buffs
         propagate_const<buff_t*> backdraft;
@@ -405,6 +408,7 @@ namespace warlock
         propagate_const<buff_t*> chaotic_inferno;
         propagate_const<buff_t*> crashing_chaos;
         propagate_const<buff_t*> rolling_havoc;
+        propagate_const<buff_t*> flashpoint;
 
         // legendary buffs
         buff_t* sindorei_spite;

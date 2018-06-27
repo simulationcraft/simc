@@ -275,6 +275,10 @@ namespace warlock {
           p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits);
 
         p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate);
+
+        auto td = find_td(this->target);
+        if (d->state->result_amount > 0.0 && p()->azerite.flashpoint.ok() && td->warlock.health_percentage() > 0.80)
+          p()->buffs.flashpoint->trigger();
       }
     };
 
@@ -359,7 +363,7 @@ namespace warlock {
         warlock_spell_t::execute();
 
         auto td = find_td(this->target);
-        if (p()->azerite.bursting_flare.ok() & td->dots_immolate->is_ticking())
+        if (p()->azerite.bursting_flare.ok() && td->dots_immolate->is_ticking())
           p()->buffs.bursting_flare->trigger();
 
         sim->print_log("{}: Action {} {} charges remain", player->name(), name(), this->cooldown->current_charge);
@@ -890,7 +894,7 @@ namespace warlock {
         virtual void execute() override
         {
           warlock_spell_t::execute();
-          if (this->num_targets_hit >= 3 & p()->azerite.accelerant.ok())
+          if (this->num_targets_hit >= 3 && p()->azerite.accelerant.ok())
             p()->buffs.accelerant->trigger();
         }
       };
@@ -1027,6 +1031,8 @@ namespace warlock {
       ->set_default_value(azerite.crashing_chaos.value());
     buffs.rolling_havoc = make_buff<stat_buff_t>(this, "rolling_havoc", find_spell(278931))
       ->add_stat(STAT_INTELLECT, azerite.rolling_havoc.value());
+    buffs.flashpoint = make_buff<stat_buff_t>(this, "flashpoint", find_spell(275429))
+      ->add_stat(STAT_HASTE_RATING, azerite.flashpoint.value());
   }
 
   void warlock_t::init_spells_destruction() {
@@ -1063,6 +1069,7 @@ namespace warlock {
     azerite.chaotic_inferno             = find_azerite_spell("Chaotic Inferno");
     azerite.crashing_chaos              = find_azerite_spell("Crashing Chaos");
     azerite.rolling_havoc               = find_azerite_spell("Rolling Havoc");
+    azerite.flashpoint                  = find_azerite_spell("Flashpoint");
   }
 
   void warlock_t::init_gains_destruction() {

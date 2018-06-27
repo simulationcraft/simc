@@ -1281,6 +1281,7 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
+        int imps_consumed = 0;
         for (auto imp : p()->warlock_pet_list.wild_imps)
         {
           if (!imp->is_sleeping())
@@ -1289,8 +1290,11 @@ namespace warlock {
             explosion->set_target(this->target);
             explosion->execute();
             imp->dismiss();
+            imps_consumed++;
           }
         }
+        if (p()->azerite.explosive_potential.ok() && imps_consumed >= 3)
+          p()->buffs.explosive_potential->trigger();
       }
     };
 
@@ -1843,6 +1847,8 @@ namespace warlock {
     buffs.supreme_commander = make_buff<stat_buff_t>(this, "supreme_commander", azerite.supreme_commander)
       ->add_stat(STAT_INTELLECT, azerite.supreme_commander.value())
       ->set_duration(find_spell(279885)->duration());
+    buffs.explosive_potential = make_buff<stat_buff_t>(this, "explosive_potential", find_spell(275398))
+      ->add_stat(STAT_HASTE_RATING, azerite.explosive_potential.value());
 
     //to track pets
     buffs.wild_imps = make_buff(this, "wild_imps")
@@ -1899,6 +1905,7 @@ namespace warlock {
     azerite.shadows_bite                    = find_azerite_spell("Shadow's Bite");
     azerite.supreme_commander               = find_azerite_spell("Supreme Commander");
     azerite.umbral_blaze                    = find_azerite_spell("Umbral Blaze");
+    azerite.explosive_potential             = find_azerite_spell("Explosive Potential");
 
     active.summon_random_demon              = new actions_demonology::summon_random_demon_t(this, "");
   }
