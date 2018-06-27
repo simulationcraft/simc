@@ -146,7 +146,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ x....... 
 Effects          :
 #1 (id=387)      : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.95000 | Chain Multiplier: 0.7 | Chain Targets: 3 | Target: Chain Friendly (45)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.05000 | Chain Multiplier: 0.7 | Chain Targets: 3 | Target: Chain Friendly (45)
 #2 (id=219186)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30 | Target: Chain Friendly (45)
 Description      : Heals the friendly target for $s1, then jumps to heal the most injured nearby party or raid members. Healing is reduced by $?a157154[15][30]% after each jump. Heals $x1 total targets.
@@ -341,7 +341,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=3235)     : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.25000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.30000 | Target: Friend (21)
 Description      : A quick surge of healing energy that restores $s1 of a friendly target's health.
 
 Name             : Earth Shock (id=8042) [Spell Family (11)] 
@@ -2779,18 +2779,18 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179724)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Searing Assault (268429), Icy Edge (271920), Lightning Shield Overcharge (273323), Lightning Shield (273324)
 #2 (id=191042)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Searing Assault (268429), Icy Edge (271920), Lightning Shield Overcharge (273323), Lightning Shield (273324)
 #3 (id=191043)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 9 | Scaled Value: 9 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
 #4 (id=191044)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Healing Surge (8004), Healing Surge (188070)
 #5 (id=191045)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 106 | Scaled Value: 106 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Healing Surge (8004), Healing Surge (188070)
 #6 (id=733898)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
@@ -2810,13 +2810,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179725)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -40 | Scaled Value: -40 | Target: Self (1)
+                   Base Value: -44 | Scaled Value: -44 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Searing Assault (268429), Icy Edge (271920), Lightning Shield Overcharge (273323), Lightning Shield (273324)
 #2 (id=191038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -44 | Scaled Value: -44 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Searing Assault (268429), Icy Edge (271920), Lightning Shield Overcharge (273323), Lightning Shield (273324)
 #3 (id=191039)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: -40 | Scaled Value: -40 | Target: Self (1)
+                   Base Value: -44 | Scaled Value: -44 | Target: Self (1)
 #4 (id=191040)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 101 | Scaled Value: 101 | Target: Self (1)
 #5 (id=191041)   : Apply Aura (6) | Unknown(179)
@@ -4994,7 +4994,7 @@ Effects          :
 #2 (id=297108)   : Summon (28)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 100943 | Misc Value 2: 0xe99 | Target: Unknown(87)
 #3 (id=324917)   : Dummy (3)
-                   Base Value: 140 | Scaled Value: 140
+                   Base Value: 35 | Scaled Value: 35
 Description      : Summons a totem with ${$m2*$MHP/100} health for $d. ${$m3*$SP/100} damage from each attack against allies within $198839s1 yards of the totem is redirected to the totem.
 
 Name             : Earthen Wall (id=198839) [Spell Family (11)] 
@@ -5560,7 +5560,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | Radius: 0 - 12 yards | Target: Unknown(87) -> AOE friendly (31)
 #2 (id=329508)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | Radius: 12 yards | Target: Unknown(87)
-Description      : A burst of water at the target location heals up to six injured allies within $A1 yards for $s1.  Cooldown increased by $s2 sec for each target effectively healed.
+Description      : A burst of water at the target location heals up to six injured allies within $A1 yards for $s1.
+
+Cooldown increased by $s2 sec for each target effectively healed.
 
 Name             : Stormlash (id=207835) [Spell Family (11)] 
 Class            : Shaman
@@ -5879,7 +5881,7 @@ Effects          :
 #2 (id=312135)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: maelstrom | Target: Self (1)
 #3 (id=312136)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 60 | Scaled Value: 60 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
                    Affected Spells: Frost Shock (196840)
 Description      : Hurls frigid ice at the target, dealing $s1 Frost damage and causing your next $n Frost Shocks to deal $s3% increased damage.
 
@@ -6363,9 +6365,11 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : Cannot cancel aura (31)
 Effects          :
 #1 (id=335390)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.24570 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | Target: Friend (21)
 Description      : $@spelldesc262624
-Tooltip          : All melee attacks now also strike the target with an Icy Edge, causing $271920sw1 Frost damage and snaring them by $271920s2% for $271920d.
+Tooltip          : All melee attacks now also strike the target with an Icy Edge, causing bonus Frost damage and snaring them by $271920s2% for $271920d.
+Variables        : $mastery=$?s77223[${1+0.01*$77223m1}][${1}]
+$damage=${($AP*0.35)*(1+($137041s1/100))*$<mastery>*(1+$@versadmg)}
 
 Name             : Crackling Surge (id=224127) [Spell Family (11)] 
 Class            : Shaman
@@ -6881,7 +6885,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=486355)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Lightning Bolt and Chain Lightning can now cause a second Elemental Overload.
 
 Name             : Unlimited Power (id=260895) [Spell Family (11), Passive] 
@@ -6978,9 +6982,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=623566)   : Summon (28)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 133514 | Misc Value 2: 0xeab | Target: Unknown(44)
-Description      : Summons a Storm Totem near the caster for $d that increases the chance for Lightning Bolt and Chain Lightning to trigger Elemental Overload by $210652s1%.
+Description      : Summons a Storm Totem near the caster for $d that increases the damage of Stormstrike by $262397s1%
 
-Name             : Storm Totem (id=262397) [Scaling Spell (10), Spell Family (11), Passive] 
+Name             : Storm Totem (id=262397) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
@@ -6998,7 +7002,7 @@ Effects          :
 #1 (id=623567)   : Apply Owner Area Aura (143) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Radius: 40 yards | Target: Self (1)
                    Affected Spells: Stormstrike (32175), Stormstrike Off-Hand (32176), Windstrike (115357), Windstrike Off-Hand (115360)
-Description      : $@spelldesc210651
+Description      : $@spelldesc262396
 Tooltip          : Stormstrike damage increased by $s1%.
 
 Name             : Ember Totem (id=262398) [Spell Family (11)] 
@@ -7022,9 +7026,9 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 133515 | Misc Value 2: 0xeab | Target: Water Totem (42)
 #2 (id=623569)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Summons an Ember Totem near the caster for $d that increases damage over time from your Flame Shock by $s2%.
+Description      : Summons an Ember Totem near the caster for $d that increases the damage of Lava Lash by $262399s1%.
 
-Name             : Ember Totem (id=262399) [Scaling Spell (10), Spell Family (11), Passive] 
+Name             : Ember Totem (id=262399) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Fire
 Spell Level      : 1
@@ -7042,7 +7046,7 @@ Effects          :
 #1 (id=623570)   : Apply Owner Area Aura (143) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Radius: 40 yards | Target: Self (1)
                    Affected Spells: Lava Lash (60103)
-Description      : $@spelldesc210657
+Description      : $@spelldesc262398
 Tooltip          : Increases the damage of Lava Lash by $s1%.
 
 Name             : Tailwind Totem (id=262400) [Scaling Spell (-1), Spell Family (11), Passive] 
@@ -7063,7 +7067,7 @@ Effects          :
 #1 (id=623571)   : Apply Owner Area Aura (143) | Add Flat Modifier (107): Spell Proc Chance (18)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 18 | Radius: 40 yards | Target: Self (1)
                    Affected Spells: Windfury (33757)
-Description      : $@spelldesc210660
+Description      : $@spelldesc262401
 Tooltip          : Increases the chance for Windfury Weapon to activate by $s1%.
 
 Name             : Tailwind Totem (id=262401) [Spell Family (11)] 
@@ -7087,9 +7091,9 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 133516 | Misc Value 2: 0xeab | Target: Unknown(43)
 #2 (id=623573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
-Description      : Summons a Tailwind Totem near the caster for $d that increases the Shaman's haste by $s2%.
+Description      : Summons a Tailwind Totem near the caster for $d that increases the chance for Windfury Weapon to activate by $262400s1%.
 
-Name             : Resonance Totem (id=262417) [Scaling Spell (10), Spell Family (11), Passive] 
+Name             : Resonance Totem (id=262417) [Scaling Spell (-1), Spell Family (11), Passive] 
 Class            : Shaman
 School           : Nature
 Spell Level      : 1
@@ -7107,7 +7111,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=623609)   : Apply Owner Area Aura (143) | Periodic Energize Power (24): every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 11 | Radius: 40 yards | Target: Self (1)
-Description      : $@spelldesc202188
+Description      : $@spelldesc262419
 Tooltip          : Generates $s1 Maelstrom every $t1 sec.
 
 Name             : Resonance Totem (id=262419) [Spell Family (11)] 
@@ -7131,7 +7135,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 133525 | Misc Value 2: 0xeab | Target: Unknown(41)
 #2 (id=623612)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-Description      : Summons a Resonance Totem near the caster for $d that generates $202192s1 Maelstrom every $202192t1 sec.
+Description      : Summons a Resonance Totem near the caster for $d that generates $262417s1 Maelstrom every $262417t1 sec.
 
 Name             : Elemental Spirits (id=262624) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -7645,7 +7649,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714807)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=0.009954) | Trigger Spell: 272570 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.019907) | Trigger Spell: 272570 | Target: Self (1)
 Description      : Casting a healing spell restores ${$s1*($272572d/$272572t1)} mana over $272572d. Stacks up to $272572u times.
 
 Name             : Blessed Portents (id=267889) [Scaling Spell (-1), Passive] 
@@ -8015,7 +8019,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724260)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 62.2 (avg=0.2) | Misc Value: 18 | Trigger Spell: 273005 | Target: Self (1)
-Description      : Melee attacks with Flametongue active increase the damage the target takes from your next Lava Lash by $s1, stacking up to 10 times.
+Description      : Melee attacks with Flametongue active increase the damage the target takes from your next Lava Lash by $s1, stacking up to $273006u times.
 
 Name             : Ruinous Bolt (Drustvar) (id=273150) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -8133,7 +8137,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725109)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 758.5365 (avg=2.439024) | Trigger Spell: 273463 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 416.74 (avg=1.34) | Trigger Spell: 273463 | Target: Self (1)
 Description      : Rockbiter causes your next melee ability, other than Rockbiter, to deal an additional $s1 Nature damage.
 
 Name             : Ebb and Flow (id=273597) [Scaling Spell (-1), Passive] 
@@ -8374,7 +8378,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728400)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Trigger Spell: 275389 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 56.913 (avg=0.183) | Trigger Spell: 275389 | Target: Self (1)
 Description      : Stormstrike marks the target as a Lightning Conduit for $275391d. Stormstrike deals $s1 Nature damage to all enemies you've marked as Conduits.
 
 Name             : Swelling Stream (id=275488) [Scaling Spell (-1), Passive] 
@@ -8432,7 +8436,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732968)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 62.2 (avg=0.2) | Trigger Spell: 277926 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 49.76 (avg=0.16) | Trigger Spell: 277926 | Target: Self (1)
 Description      : When you cast $?<s2825>[Bloodlust][Heroism], your Mastery increases by $s1 every second, stacking up to $277943u times.
 
 Name             : Synapse Shock (id=277671) [Scaling Spell (-1), Passive] 
@@ -8450,7 +8454,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732979)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 155.5 (avg=0.5) | Trigger Spell: 277958 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 20.68741 (avg=0.066519) | Trigger Spell: 277958 | Target: Self (1)
 Description      : Lightning Bolt and Chain Lightning increase your $?c2[Agility][Intellect] by $s1 per target hit for $277960d, stacking up to $277960u times.
 
 Name             : Hex (id=277778) [Spell Family (11)] 
@@ -8532,11 +8536,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734562)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 155.5 (avg=0.5) | Trigger Spell: 279027 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 41.985 (avg=0.135) | Trigger Spell: 279027 | Target: Self (1)
 #2 (id=734563)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 155.5 (avg=0.5)
+                   Base Value: 0 | Scaled Value: 41.985 (avg=0.135)
 #3 (id=734564)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 155.5 (avg=0.5)
+                   Base Value: 0 | Scaled Value: 41.985 (avg=0.135)
 Description      : Dealing Fire damage grants $s1 critical strike for $279028d. 
 Dealing Frost damage grants $s2 mastery for $279029d.
 Dealing Nature damage grants $s3 haste for $279033d.
@@ -8556,11 +8560,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734578)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 933 (avg=3) | Trigger Spell: 279522 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 311 (avg=1) | Trigger Spell: 279522 | Target: Self (1)
 #2 (id=734579)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=734580)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 933 (avg=3)
+                   Base Value: 0 | Scaled Value: 311 (avg=1)
 #4 (id=739329)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Your Earth Elemental spawns Tremors that deal $s1 Physical damage to enemies within $s4 yds every $s2 seconds. Earth Elemental's auto attack damage is increased by $s3.
@@ -8622,7 +8626,7 @@ Effects          :
 #1 (id=734600)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 31.1 (avg=0.1) | Trigger Spell: 279513 | Target: Self (1)
 #2 (id=734601)   : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1
+                   Base Value: 2 | Scaled Value: 2
 #3 (id=734602)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Every $m2 $lsecond:seconds;, reduce the cost of your next Stormstrike by $s3 Maelstrom and increase its damage by $s1. This effect stacks up to 15 times.
@@ -8881,7 +8885,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737714)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 75.77297 (avg=0.243643) | Trigger Spell: 280285 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 31.1 (avg=0.1) | Trigger Spell: 280285 | Target: Self (1)
 #2 (id=737715)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
@@ -8977,12 +8981,52 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737972)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=2.853365) | Trigger Spell: 280432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.5) | Trigger Spell: 280432 | Target: Self (1)
 #2 (id=737973)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
 #3 (id=737974)   : Dummy (3)
                    Base Value: 6000 | Scaled Value: 6000
 Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
+
+Name             : Archive of the Titans (Uldir) (id=280555) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 483
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738151)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 4.1363 (avg=0.0133) | Trigger Spell: 280708 | Target: Self (1)
+Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
+
+Enables $@spellname280573 within Uldir.
+
+Name             : Laser Matrix (Uldir) (id=280559) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 485
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=738156)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 3110 (avg=40) | Trigger Spell: 280702 | Target: Self (1)
+#2 (id=738401)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 1244 (avg=16) | Target: Self (1)
+Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
+
+Enables $@spellname280573 within Uldir.
 
 Name             : Glory in Battle (Horde) (id=280577) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -9019,7 +9063,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738191)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 622 (avg=2) | Trigger Spell: 280785 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 186.6 (avg=0.6) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2488 (avg=8) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
@@ -9069,7 +9113,7 @@ Name             : Battlefield Focus (Horde) (id=280582) [Scaling Spell (-1), Pa
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 488
-Triggered by     : Battlefield Focus (280817), Battlefield Precision (280855)
+Triggered by     : Battlefield Focus (280817)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9197,7 +9241,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738284)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 622 (avg=2) | Trigger Spell: 280860 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 186.6 (avg=0.6) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2488 (avg=8) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
@@ -9218,7 +9262,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738285)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 280865 | Target: Self (1)
 #2 (id=738730)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
@@ -9247,6 +9291,7 @@ Name             : Battlefield Precision (Alliance) (id=280627) [Scaling Spell (
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 494
+Triggered by     : Battlefield Precision (280855)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9298,7 +9343,24 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738417)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 17.23842 (avg=0.055429) | Trigger Spell: 280712 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 10.263 (avg=0.033) | Trigger Spell: 280712 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
+
+Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 504
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=740102)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 172.3948 (avg=0.554324) | Trigger Spell: 281515 | Target: Self (1)
+Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
 
 

@@ -1,5 +1,5 @@
-// Azerite powers, wow build 26918
-static constexpr std::array<azerite_power_entry_t, 310> __azerite_power_data { {
+// Azerite powers, wow build 26936
+static constexpr std::array<azerite_power_entry_t, 312> __azerite_power_data { {
   {  13, 263978, "Azerite Empowered"                  },
   {  14, 268594, "Longstrider"                        },
   {  15, 263962, "Resounding Protection"              },
@@ -273,7 +273,6 @@ static constexpr std::array<azerite_power_entry_t, 310> __azerite_power_data { {
   { 461, 279926, "Earthlink"                          },
   { 462, 266936, "Azerite Globules"                   },
   { 463, 267889, "Blessed Portents"                   },
-  { 464, 267682, "Blinding Mists"                     },
   { 465, 280011, "March of the Damned"                },
   { 466, 280012, "Burning Soul"                       },
   { 467, 280013, "Ursoc's Endurance"                  },
@@ -292,6 +291,8 @@ static constexpr std::array<azerite_power_entry_t, 310> __azerite_power_data { {
   { 480, 280407, "Blood Rite"                         },
   { 481, 280410, "Incite the Pack"                    },
   { 482, 280380, "Thunderous Blast"                   },
+  { 483, 280555, "Archive of the Titans"              },
+  { 485, 280559, "Laser Matrix"                       },
   { 486, 280577, "Glory in Battle"                    },
   { 487, 280579, "Retaliatory Fury"                   },
   { 488, 280582, "Battlefield Focus"                  },
@@ -310,4 +311,5 @@ static constexpr std::array<azerite_power_entry_t, 310> __azerite_power_data { {
   { 501, 280178, "Relational Normalization Gizmo"     },
   { 502, 280181, "Personal Absorb-o-Tron"             },
   { 503, 280172, "Auto-Self-Cauterizer"               },
+  { 504, 281514, "Unstable Catalyst"                  },
 } };

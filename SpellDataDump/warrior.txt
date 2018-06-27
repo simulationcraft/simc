@@ -155,7 +155,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=357)      : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.48360 | Radius: 8 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Radius: 8 yards | Target: Cone Front (104)
 #2 (id=722907)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Strikes all enemies in front of you with a sweeping attack for $s1 Physical damage. Hitting $s2 or more targets inflicts Deep Wounds.
@@ -760,12 +760,13 @@ Category         : 1251
 Category Cooldown: 20 seconds
 Affecting spells : Bladestorm (46924 effect#3), Item - Warrior T18 Protection 2P Bonus (185796 effect#1), Neltharion's Fury (203524 effect#4), Bladestorm (222634 effect#3), Bladestorm (227847 effect#3), Bolster (280001 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ .x...... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Cannot crit (93)
 Effects          :
 #1 (id=5787)     : Apply Aura (6) | Modify Max Health% (133)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
@@ -1010,7 +1011,7 @@ Class            : Warrior
 School           : Physical
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
-Real PPM         : 2.5 (Haste multiplier)
+Real PPM         : 1.69 (Haste multiplier)
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
@@ -1171,7 +1172,7 @@ Velocity         : 10 yards/sec
 Duration         : 4 seconds
 Cooldown         : 60 seconds
 Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Gathering Storm (273415 effect#1)
-Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
+Attributes       : ....x... ........ x.x..... .....x..   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1646,7 +1647,7 @@ Effects          :
 #2 (id=333347)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Misc Value: 17 | Target: Self (1)
 #3 (id=349763)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 40 | Scaled Value: 40 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 17 | Target: Self (1)
 Description      : Causes your next single-target attack to strike up to $s1 additional targets for $s3% damage.
 Tooltip          : Your next single-target attack strikes up to $w1 additional targets for $w3% damage.
 
@@ -2558,7 +2559,7 @@ Effects          :
                    Affected Spells (Label): Rethu's Incessant Courage (242597)
 #17 (id=368363)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 333 (Label) | Target: Self (1)
-                   Affected Spells (Label): Void Slash (251034), Isolated Strike (255609), Lightning Arc (255586), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
+                   Affected Spells (Label): Isolated Strike (255609), Lightning Arc (255586), Fire Mines (253321), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430)
 #18 (id=474888)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
                    Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 276 (Label) | Target: Self (1)
                    Affected Spells (Label): Xavaric's Magnum Opus (207472)
@@ -2588,13 +2589,13 @@ Effects          :
 #1 (id=179733)   : Apply Aura (6) | Unknown(213)
                    Base Value: 330 | Scaled Value: 330 | Target: Self (1)
 #2 (id=186754)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 #3 (id=191014)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 18 | Scaled Value: 18 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 #4 (id=191015)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847)
 #5 (id=191016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2628,10 +2629,10 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179734)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: -16 | Scaled Value: -16 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 #2 (id=191010)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -16 | Scaled Value: -16 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
 #3 (id=191011)   : Apply Aura (6) | Unknown(213)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
@@ -2640,35 +2641,6 @@ Effects          :
 #5 (id=191013)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1672 | Target: Self (1)
                    Affected Spells (Category): Raging Blow (85288)
-#6 (id=261037)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: -50 | Scaled Value: -50 | Misc Value: 3 | Misc Value 2: 247 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Contract (225140), Living Carapace (225033), Sands of Time (225124), Vampiric Aura (225130), Wailing Souls (242609), Unending Hunger (242536), Chilling Nova (251940), Bulwark of Flame (251946), Hammer-Forged (251952), Pool of Pure Void (250766), Wave of Flame (251948)
-#7 (id=261038)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: -40 | Scaled Value: -40 | Misc Value: 3 | Misc Value 2: 301 (Label) | Target: Self (1)
-                   Affected Spells (Label): Infernal Cinders (242218), Dread Torrent (246464), Umbral Glaive Storm (242556), Shattering Umbral Glaives (242557), Ceaseless Toxin (242497), Shadow Strike (253324), Isolated Strike (255609), Lightning Arc (255586), Fire Mines (253321), Chaotic Darkness (252896), Shadowbind (252879), Secure in the Light (253073), Infusion of Light (253098), Norgannon's Fireball (257241), Norgannon's Frostbolt (257242), Norgannon's Arcane Missile (257243), Ravaging Storm (257286), Golganneth's Thunderous Wrath (257430), Norgannon's Divine Smite (257532), Norgannon's Wrath (257533), Norgannon's Shadow Bolt (257534), Worldforger's Flame (257244), Gorshalach's Legacy (255673), Gorshalach's Legacy (253329)
-#8 (id=261039)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
-                   Base Value: -15 | Scaled Value: -15 | Misc Value: 3 | Misc Value 2: 313 (Label) | Target: Self (1)
-                   Affected Spells (Label): Fel-Crazed Rage (225777)
-#9 (id=261040)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#10 (id=261041)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#11 (id=261042)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#12 (id=261043)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#13 (id=261044)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#14 (id=261045)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#15 (id=261046)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#16 (id=348285)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#17 (id=737682)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-#18 (id=738678)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 
 Name             : Item - Warrior T16 DPS 4P Bonus (id=144441) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
@@ -3310,7 +3282,7 @@ When targeting an ally, intercepts the next melee or ranged attack against them 
 
 |cFFFFFFFFGenerates $/10;s2 Rage.|r
 
-Name             : Intercept (Honor Talent) (id=198758) [Spell Family (4)] 
+Name             : Intercept (PvP Talent) (id=198758) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Level      : 72
@@ -3341,7 +3313,7 @@ Generates $/10;s2 Rage.
 
 This ability replaces Charge.
 
-Name             : Morale Killer (Honor Talent) (id=199023) [Spell Family (4), Passive, Hidden] 
+Name             : Morale Killer (PvP Talent) (id=199023) [Spell Family (4), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3360,7 +3332,7 @@ Effects          :
                    Affected Spells: Demoralizing Shout (1160)
 Description      : Reduces the cooldown of Demoralizing Shout by ${($m2/1000)*-1} sec, and Demoralizing Shout now reduces the damage enemies deal to all targets, not just you.
 
-Name             : Thunderstruck (Honor Talent) (id=199042) [Spell Family (4)] 
+Name             : Thunderstruck (PvP Talent) (id=199042) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Level      : 1
@@ -3382,7 +3354,7 @@ Effects          :
 Description      : $@spelldesc199045
 Tooltip          : Rooted.
 
-Name             : Thunderstruck (Honor Talent) (id=199045) [Spell Family (3), Passive, Hidden] 
+Name             : Thunderstruck (PvP Talent) (id=199045) [Spell Family (3), Passive, Hidden] 
 Class            : Warrior
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3558,13 +3530,13 @@ Name             : Second Wind (id=202147) [Spell Family (4), Passive]
 Class            : Warrior
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ x....... ........ 
+                 : ........ .......x .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Passive (6), Cannot crit (93)
+                 : Passive (6), Cannot crit (93), Disable player procs (112), Disable weapon procs (151)
 Effects          :
 #1 (id=297920)   : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 6 | Scaled Value: 6 | Target: Self (1)
@@ -4379,7 +4351,7 @@ Effects          :
 #1 (id=312498)   : Unknown(164)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 209697 | Target: Self (1)
 
-Name             : Mass Spell Reflection (Honor Talent) (id=213915) [Spell Family (4)] 
+Name             : Mass Spell Reflection (PvP Talent) (id=213915) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Duration         : 3 seconds
@@ -4739,7 +4711,7 @@ Velocity         : 10 yards/sec
 Duration         : 6 seconds
 Cooldown         : 90 seconds
 Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Gathering Storm (273415 effect#1)
-Attributes       : ....x... ........ x.x..... ........   ....x... .xx....x ........ ........ 
+Attributes       : ....x... ........ x.x..... .....x..   ....x... .xx....x ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5268,7 +5240,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 17 | Target: Self (1)
                    Affected Spells: Rend (772), Slam (1464), Hamstring (1715), Overpower (7384), Mortal Strike (12294), Victory Rush (34428), Colossus Smash (167105), Impending Victory (202168), Skullsplitter (260643), Execute (260798)
 #2 (id=486062)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 100 | Scaled Value: 100 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 75 | Scaled Value: 75 | Misc Value: 17 | Target: Self (1)
 Description      : For $d your single-target damaging abilities hit $s1 additional $Ltarget:targets; within 8 yds for $s2% damage.
 Tooltip          : Your single-target damaging abilities hit $s1 additional $Ltarget:targets; within 8 yds for $s2% damage.
 
@@ -5970,7 +5942,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723998)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 250.411 (avg=0.80518) | Trigger Spell: 272837 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Trigger Spell: 272837 | Target: Self (1)
 Description      : Rampaging an enemy whose health percentage is lower than yours increases your Strength and Stamina by $s1 for $272838d.
 
 Name             : Executioner's Precision (id=272866) [Scaling Spell (-1), Spell Family (4), Passive] 
@@ -5988,7 +5960,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724045)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 948.1706 (avg=3.04878) | Trigger Spell: 272867 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 426.07 (avg=1.37) | Trigger Spell: 272867 | Target: Self (1)
 Description      : Execute increases the damage of your next Mortal Strike against the target by $s1, stacking up to $272870u times.
 
 Name             : Ruinous Bolt (Drustvar) (id=273150) [Scaling Spell (-1), Passive] 
@@ -6022,9 +5994,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725007)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 505.087 (avg=1.624074) | Trigger Spell: 273412 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 99.52 (avg=0.32) | Trigger Spell: 273412 | Target: Self (1)
 #2 (id=725008)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 88.49598 (avg=0.284553) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 62.2 (avg=0.2) | Target: Self (1)
 Description      : While $?s152277[Ravager is active][Bladestorming], every $273414t1 sec you gain $s2 Speed and $?s152277[Ravager's][Bladestorm's] damage increases by $s1. Lasts $273415d.
 
 Name             : Bloodcraze (id=273420) [Scaling Spell (-7), Spell Family (4), Passive] 
@@ -6277,7 +6249,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728612)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 37.92676 (avg=0.121951) | Trigger Spell: 275531 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 9.4855 (avg=0.0305) | Trigger Spell: 275531 | Target: Self (1)
 #2 (id=728613)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When $?s262161[Warbreaker][Colossus Smash] expires, your Strength is increased by $s1 for every $s2 Rage you spent during $?s262161[Warbreaker][Colossus Smash]. Lasts $275540d.
@@ -6369,7 +6341,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732931)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 693.5022 (avg=8.919643) | Trigger Spell: 278495 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 174.9375 (avg=2.25) | Trigger Spell: 278495 | Target: Self (1)
 #2 (id=732932)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
 Description      : Overpower causes a seismic wave that deals $s1 Physical damage to enemies in a $s2 yd line.
@@ -6410,7 +6382,7 @@ Effects          :
 #1 (id=734680)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 279202 | Target: Self (1)
 #2 (id=734681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 1000 (avg=3.215434) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 250.044 (avg=0.804) | Target: Self (1)
                    Affected Spells: Colossus Smash (167105), Colossus Smash (208086), Warbreaker (262161)
 Description      : $?s262161[Warbreaker][Colossus Smash] deals an additional $s2 damage and generates ${$s1/10} Rage.
 
@@ -6431,7 +6403,7 @@ Effects          :
 #1 (id=734698)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 278840 | Target: Self (1)
 #2 (id=734699)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 99.99987 (avg=0.321543) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 62.2 (avg=0.2) | Target: Self (1)
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
 Description      : Rampage deals an additional ${$184367s1*$s2} damage and generates ${$s1/10} Rage per strike.
 
@@ -6449,9 +6421,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734700)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 200 | Scaled Value: 200 | Trigger Spell: 279632 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Trigger Spell: 279632 | Target: Self (1)
 #2 (id=734701)   : Apply Aura (6) | Unknown(141)
-                   Base Value: 0 | Scaled Value: 224.1442 (avg=0.720721) | Misc Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 18.66 (avg=0.06) | Misc Value: 1 | Target: Self (1)
 Description      : Auto attacks deal $s2 additional damage and reduce the cooldown of Recklessness by ${$s1/1000}.1 sec.
 
 Name             : Callous Reprisal (id=278760) [Scaling Spell (-1), Spell Family (4), Passive] 
@@ -6825,7 +6797,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737714)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 75.77297 (avg=0.243643) | Trigger Spell: 280285 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 31.1 (avg=0.1) | Trigger Spell: 280285 | Target: Self (1)
 #2 (id=737715)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
@@ -6941,7 +6913,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737972)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 (avg=2.853365) | Trigger Spell: 280432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.5) | Trigger Spell: 280432 | Target: Self (1)
 #2 (id=737973)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
 #3 (id=737974)   : Dummy (3)
@@ -6949,7 +6921,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
 
 Name             : Archive of the Titans (Uldir) (id=280555) [Scaling Spell (-1), Passive] 
-Class            : Warrior
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 483
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6962,13 +6934,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 16.54987 (avg=0.053215) | Trigger Spell: 280708 | Target: Self (1)
-Description      : Your armor gathers and analyzes combat data every $280709t4 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
+                   Base Value: 0 | Scaled Value: 4.1363 (avg=0.0133) | Trigger Spell: 280708 | Target: Self (1)
+Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
 
 Enables $@spellname280573 within Uldir.
 
-Name             : Laser Matrix (Uldir) (id=280559) [Scaling Spell (-1), Passive] 
-Class            : Warrior
+Name             : Laser Matrix (Uldir) (id=280559) [Scaling Spell (-8), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 485
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6981,10 +6953,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738156)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 827.4945 (avg=2.660754) | Trigger Spell: 280702 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3110 (avg=40) | Trigger Spell: 280702 | Target: Self (1)
 #2 (id=738401)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 317.2063 (avg=1.019956) | Target: Self (1)
-Description      : Your spells and abilities have a chance to release a barrage of lasers that burns enemies for $s1 Arcane damage and cauterizes allies' wounds to restore $s2 health.
+                   Base Value: 0 | Scaled Value: 1244 (avg=16) | Target: Self (1)
+Description      : Your spells and abilities have a chance to release a barrage of lasers, dealing $s1 Arcane damage split among all enemies and restoring $s2 health split among injured allies.
 
 Enables $@spellname280573 within Uldir.
 
@@ -7023,7 +6995,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738191)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 622 (avg=2) | Trigger Spell: 280785 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 186.6 (avg=0.6) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2488 (avg=8) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
@@ -7073,7 +7045,7 @@ Name             : Battlefield Focus (Horde) (id=280582) [Scaling Spell (-1), Pa
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 488
-Triggered by     : Battlefield Focus (280817), Battlefield Precision (280855)
+Triggered by     : Battlefield Focus (280817)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7146,7 +7118,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738284)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 622 (avg=2) | Trigger Spell: 280860 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 186.6 (avg=0.6) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2488 (avg=8) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
@@ -7167,7 +7139,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738285)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 280865 | Target: Self (1)
 #2 (id=738730)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
@@ -7196,6 +7168,7 @@ Name             : Battlefield Precision (Alliance) (id=280627) [Scaling Spell (
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 494
+Triggered by     : Battlefield Precision (280855)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7247,7 +7220,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738417)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 17.23842 (avg=0.055429) | Trigger Spell: 280712 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 10.263 (avg=0.033) | Trigger Spell: 280712 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 Name             : Whirlwind (id=280714) [Spell Family (4)] 
@@ -7272,7 +7245,7 @@ Class            : Warrior
 School           : Physical
 Internal Cooldown: 3 seconds
 Proc Chance      : 100%
-Real PPM         : 2.5 (Haste multiplier)
+Real PPM         : 1.69 (Haste multiplier)
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ....x.xx ........ ........ ........   ........ ........ ........ ........ 
@@ -7392,5 +7365,22 @@ Effects          :
 #2 (id=738986)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | Target: Self (1)
 Description      : Execute is now usable on targets below $s2% health.
+
+Name             : Unstable Catalyst (id=281514) [Scaling Spell (-1), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 504
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=740102)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 172.3948 (avg=0.554324) | Trigger Spell: 281515 | Target: Self (1)
+Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
 
 

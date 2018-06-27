@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26918
+// Class based active abilities, wow build 26936
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -297,7 +297,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        93433, // Burrow Attack (Exotic Ability)
       263892, // Catlike Reflexes (Special Ability)
        16827, // Claw (Basic Attack)
-       61684, // Dash (Ferocity, Cunning Ability)
+       61684, // Dash (Basic Ability)
       160060, // Deadly Sting (Special Ability)
       263887, // Dragon's Guile (Special Ability)
        50285, // Dust Cloud (Special Ability)
@@ -343,7 +343,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
        22482, // Blade Flurry
        31224, // Cloak of Shadows
-      212205, // Create: Crimson Vial (Honor Talent)
+      212205, // Create: Crimson Vial (PvP Talent)
       185311, // Crimson Vial
       202665, // Curse of the Dreadblades (Artifact)
         2818, // Deadly Poison
@@ -450,7 +450,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        21562, // Power Word: Fortitude
         9484, // Shackle Undead
          585, // Smite
-      215769, // Spirit of Redemption (Honor Talent)
+      215769, // Spirit of Redemption (PvP Talent)
       205065, // Void Torrent (Artifact)
            0,
     },
@@ -741,18 +741,18 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        61305, // Polymorph (Black Cat)
        61721, // Polymorph (Rabbit)
        61780, // Polymorph (Turkey)
-      126819, // Polymorph (Pig)
+      126819, // Polymorph (Porcupine)
       161353, // Polymorph (Polar Bear Cub)
       161354, // Polymorph (Monkey)
       161355, // Polymorph (Penguin)
-      161372, // Polymorph (Turtle)
-      277787, // Polymorph (Turtle)
-      277792, // Polymorph (Turtle)
+      161372, // Polymorph (Peacock)
+      277787, // Polymorph (Direhorn)
+      277792, // Polymorph (Bumblebee)
          475, // Remove Curse
        80353, // Time Warp
            0,
     },
-    // Arcane tree, 13 abilities
+    // Arcane tree, 12 abilities
     {
        44425, // Arcane Barrage
        30451, // Arcane Blast
@@ -760,7 +760,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         5143, // Arcane Missiles
        12042, // Arcane Power
       195676, // Displacement
-      212801, // Displacement
        12051, // Evocation
       110959, // Greater Invisibility
           66, // Invisibility
@@ -966,7 +965,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       115546, // Provoke
       109132, // Roll
       205406, // Sheilun's Gift (Artifact)
-      209525, // Soothing Mist (Honor Talent)
+      209525, // Soothing Mist (PvP Talent)
       205320, // Strike of the Windlord (Artifact)
       100780, // Tiger Palm
       101643, // Transcendence
@@ -1059,7 +1058,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       127757, // Charm Woodland Creature
         1850, // Dash
       193753, // Dreamwalk
-      236716, // Enraged Maul (Honor Talent)
+      236716, // Enraged Maul (PvP Talent)
          339, // Entangling Roots
       208253, // Essence of G'Hanir (Artifact)
       164862, // Flap
@@ -1250,51 +1249,32 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (35)
 
-// Talent tree specialization abilities, wow build 26918
+// Talent tree specialization abilities, wow build 26936
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
     // Specialization abilities for Ferocity
     {
-       61684, // Dash (Ferocity, Cunning Ability)
-      264663, // Predator's Thirst
-       55709, // Heart of the Phoenix (Ferocity Ability)
+      264663, // Predator's Thirst (Ferocity Passive)
       264667, // Primal Rage (Ferocity Ability)
-       20782, // Combat Experience
-       53184, // Spiked Collar
-       53482, // Blood of the Rhino
-       19596, // Boar's Speed
-       53497, // Cornered
-       61688, // Great Stamina
+      264656, // Pathfinding (Cunning Passive)
+      264662, // Endurance Training (Tenacity Passive)
            0,
     },
     // Specialization abilities for Tenacity
     {
-       61685, // Charge (Tenacity Ability)
-       53478, // Last Stand (Tenacity Ability)
-       63900, // Thunderstomp (Tenacity Ability)
-       53482, // Blood of the Rhino
-       20782, // Combat Experience
-       61688, // Great Stamina
-       19596, // Boar's Speed
-      264662, // Endurance Training
-       53497, // Cornered
+      264662, // Endurance Training (Tenacity Passive)
       264735, // Survival of the Fittest (Tenacity Ability)
-       53184, // Spiked Collar
+      264663, // Predator's Thirst (Ferocity Passive)
+      264656, // Pathfinding (Cunning Passive)
            0,
     },
     // Specialization abilities for Cunning
     {
-       53490, // Bullheaded (Cunning Ability)
-       61684, // Dash (Ferocity, Cunning Ability)
-       19596, // Boar's Speed
-       20782, // Combat Experience
-       53497, // Cornered
-      264656, // Pathfinding
-       53482, // Blood of the Rhino
+      264656, // Pathfinding (Cunning Passive)
        53271, // Master's Call (Cunning Ability)
-       61688, // Great Stamina
-       53184, // Spiked Collar
+      264662, // Endurance Training (Tenacity Passive)
+      264663, // Predator's Thirst (Ferocity Passive)
            0,
     },
     {
@@ -1419,7 +1399,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       231667, // Crusader Strike (Rank 2)
       272906, // Holy Shock (Rank 2)
        31884, // Avenging Wrath
-      200327, // Blessing of Sacrifice ((Rank 2))
+      200327, // Blessing of Sacrifice (Rank 2)
       275773, // Judgment
       231644, // Judgment (Rank 2)
            0,
@@ -1973,14 +1953,13 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       190427, // Arcane Charge
       190740, // Mastery: Savant
       162699, // Stat Negation Aura - Intellect DPS
-      212801, // Displacement
-      195676, // Displacement
       110959, // Greater Invisibility
       231564, // Arcane Barrage (Rank 2)
       231565, // Evocation (Rank 2)
           66, // Invisibility
       235450, // Prismatic Barrier
       205025, // Presence of Mind
+      195676, // Displacement
            0,
     },
     // Specialization abilities for Fire
@@ -2378,7 +2357,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26918
+// Class mastery abilities, wow build 26936
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2617,7 +2596,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26918
+// Racial abilities, wow build 26936
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3545,7 +3524,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26918
+// Set bonus data, wow build 26936
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4264,9 +4243,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  577, 251769, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
   { "Felreaper Vestments"                        ,     "tier21",     14,  1329,   21,   4,  12,  581, 251774, { 152118, 152119, 152120, 152121, 152122, 152123,  0 } },
 };
-#define RPPMMOD_SIZE (937)
+#define RPPMMOD_SIZE (938)
 
-// 937 RPPM Modifiers, wow build level 26918
+// 938 RPPM Modifiers, wow build level 26936
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },
@@ -5205,5 +5184,6 @@ static struct rppm_modifier_t __rppmmodifier_data[] = {
   { 280854,    4,  1,  1.0000 },
   { 280855,    4,  1,  1.0000 },
   { 280860,    4,  1,  1.0000 },
+  { 281712,    4,  1,  1.0000 },
   {      0,    0,  0,  0.0000 },
 };
