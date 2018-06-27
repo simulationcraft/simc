@@ -571,7 +571,6 @@ public:
     const spell_data_t* runic_attenuation;
 
     // Tier 2
-    const spell_data_t* freezing_fog;
     const spell_data_t* murderous_efficiency;
     const spell_data_t* horn_of_winter;
 
@@ -3396,8 +3395,6 @@ struct frost_fever_t : public disease_t
 
   frost_fever_t( death_knight_t* p ) : disease_t( p, "frost_fever", 55095 )
   {
-    base_multiplier *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
-
     ap_type = AP_WEAPON_BOTH;
 
     p -> cooldown.frost_fever = p -> get_cooldown( "frost_fever" );
@@ -4883,8 +4880,6 @@ struct howling_blast_aoe_t : public death_knight_spell_t
     aoe = -1;
     background = true;
 
-    base_multiplier    *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
-
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
     if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ) )
     {
@@ -4942,8 +4937,6 @@ struct howling_blast_t : public death_knight_spell_t
     add_child( aoe_damage );
     ap_type = AP_WEAPON_BOTH;
 
-    base_multiplier    *= 1.0 + p -> talent.freezing_fog -> effectN( 1 ).percent();
-    
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
     if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T21, B2 ) )
     {
@@ -6947,7 +6940,6 @@ void death_knight_t::init_spells()
   talent.icy_talons            = find_talent_spell( "Icy Talons" );
   talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
   // Tier 2
-  talent.freezing_fog          = find_talent_spell( "Freezing Fog" );
   talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" );
   talent.horn_of_winter        = find_talent_spell( "Horn of Winter" );
   // Tier 3
@@ -7304,7 +7296,6 @@ void death_knight_t::default_apl_frost()
   obliteration -> add_talent( this, "Frostscythe", "if=(buff.killing_machine.up&(buff.killing_machine.react|prev_gcd.1.frost_strike|prev_gcd.1.howling_blast))&spell_targets.frostscythe>1" );
   obliteration -> add_action( this, "Obliterate", "if=(buff.killing_machine.up&(buff.killing_machine.react|prev_gcd.1.frost_strike|prev_gcd.1.howling_blast))|(spell_targets.howling_blast>=3&!buff.rime.up&!talent.frostscythe.enabled)" );
   obliteration -> add_action( this, "Howling Blast", "if=buff.rime.up&spell_targets.howling_blast>1" );
-  obliteration -> add_action( this, "Howling Blast", "if=!buff.rime.up&spell_targets.howling_blast>2&rune>3&talent.freezing_fog.enabled&talent.gathering_storm.enabled" );
   obliteration -> add_action( this, "Frost Strike", "if=!buff.rime.up|rune.time_to_1>=gcd|runic_power.deficit<20" );
   obliteration -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   obliteration -> add_action( this, "Obliterate" );
