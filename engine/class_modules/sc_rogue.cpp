@@ -4410,7 +4410,7 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   // Garrote and Rupture and APL lines using "exsanguinated"
   // TODO: Add Internal Bleeding (not the same id as Kidney Shot)
   else if ( util::str_compare_ci( name_str, "exsanguinated" ) &&
-            ( data().id() == 703 || data().id() == 1943 ) )
+            ( data().id() == 703 || data().id() == 1943 || data().id() == 121411 ) )
   {
     return new exsanguinated_expr_t( this );
   }
