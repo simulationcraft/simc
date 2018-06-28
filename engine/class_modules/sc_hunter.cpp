@@ -1120,30 +1120,6 @@ public:
     action_t* stomp;
   } active;
 
-  struct specs_t
-  {
-    // ferocity
-    const spell_data_t* heart_of_the_phoenix;
-    const spell_data_t* spiked_collar;
-    // tenacity
-    const spell_data_t* last_stand;
-    const spell_data_t* charge;
-    const spell_data_t* thunderstomp;
-    const spell_data_t* blood_of_the_rhino;
-    const spell_data_t* great_stamina;
-    // cunning
-    const spell_data_t* roar_of_sacrifice;
-    const spell_data_t* bullhead;
-    const spell_data_t* cornered;
-    const spell_data_t* boars_speed;
-
-    const spell_data_t* dash; // ferocity, cunning
-
-    // base for all pets
-    const spell_data_t* wild_hunt;
-    const spell_data_t* combat_experience;
-  } specs;
-
   // Buffs
   struct buffs_t
   {
@@ -1160,19 +1136,11 @@ public:
     gain_t* aspect_of_the_wild;
   } gains;
 
-  // Benefits
-  struct benefits_t
-  {
-    benefit_t* wild_hunt;
-  } benefits;
-
   hunter_main_pet_t( hunter_t* owner, const std::string& pet_name, pet_e pt ):
     base_t( owner, pet_name, pt ),
     active(),
-    specs(),
     buffs(),
-    gains(),
-    benefits()
+    gains()
   {
     stamina_per_owner = 0.7;
 
@@ -1242,13 +1210,6 @@ public:
     gains.aspect_of_the_wild = get_gain( "aspect_of_the_wild" );
   }
 
-  void init_benefits() override
-  {
-    base_t::init_benefits();
-
-    benefits.wild_hunt = get_benefit( "wild_hunt" );
-  }
-
   void init_action_list() override
   {
     if ( action_list_str.empty() )
@@ -1267,8 +1228,6 @@ public:
   {
     double ac = base_t::composite_melee_crit_chance();
 
-    ac += specs.spiked_collar -> effectN( 3 ).percent();
-
     if ( o() -> buffs.aspect_of_the_wild -> check() )
       ac += o() -> specs.aspect_of_the_wild -> effectN( 4 ).percent();
 
@@ -1285,8 +1244,6 @@ public:
   double composite_melee_speed() const override
   {
     double ah = base_t::composite_melee_speed();
-
-    ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent() );
 
     if ( buffs.frenzy -> check() )
       ah *= 1.0 / ( 1.0 + buffs.frenzy -> check_stack_value() );
@@ -1318,13 +1275,6 @@ public:
 
     m *= 1.0 + buffs.bestial_wrath -> check_value();
     m *= 1.0 + buffs.tier19_2pc_bm -> check_value();
-
-    // Pet combat experience
-    double combat_experience_mul = specs.combat_experience -> effectN( 2 ).percent();
-    if ( o() -> legendary.bm_ring -> ok() )
-        combat_experience_mul *= 1.0 + o() -> legendary.bm_ring -> effectN( 2 ).percent();
-
-    m *= 1.0 + combat_experience_mul;
 
     return m;
   }
@@ -1903,13 +1853,16 @@ struct pet_auto_attack_t: public hunter_main_pet_attack_t
 
 struct basic_attack_t : public hunter_main_pet_attack_t
 {
-  const double wild_hunt_cost_pct;
+  struct {
+    double cost_pct = 0;
+    double multiplier = 1.0;
+    benefit_t* benefit = nullptr;
+  } wild_hunt;
   const double venomous_fangs_bonus_da;
   const double pack_alpha_bonus_da;
 
   basic_attack_t( hunter_main_pet_t* p, const std::string& n, const std::string& options_str ):
     hunter_main_pet_attack_t( n, p, p -> find_pet_spell( n ) ),
-    wild_hunt_cost_pct( p -> specs.wild_hunt -> effectN( 2 ).percent() ),
     venomous_fangs_bonus_da( p -> o() -> azerite.venomous_fangs.value( 1 ) ),
     pack_alpha_bonus_da( p -> o() -> azerite.pack_alpha.value( 1 ) )
   {
@@ -1918,9 +1871,13 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     school = SCHOOL_PHYSICAL;
 
     attack_power_mod.direct = 1.0 / 3.0;
-    base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
     // 28-06-2018: While spell data says it has a base damage in-game testing shows that it doesn't use it.
     base_dd_min = base_dd_max = 0;
+
+    auto wild_hunt_spell = p -> find_spell( 62762 );
+    wild_hunt.cost_pct = 1.0 + wild_hunt_spell -> effectN( 2 ).percent();
+    wild_hunt.multiplier = 1.0 + wild_hunt_spell -> effectN( 1 ).percent();
+    wild_hunt.benefit = p -> get_benefit( "wild_hunt" );
   }
 
   // Override behavior so that Basic Attacks use hunter's attack power rather than the pet's
@@ -1929,7 +1886,6 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
   bool use_wild_hunt() const
   {
-    // comment out to avoid procs
     return p() -> resources.current[RESOURCE_FOCUS] > 50;
   }
 
@@ -1947,8 +1903,8 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
     const bool used_wild_hunt = use_wild_hunt();
     if ( used_wild_hunt )
-      am *= 1.0 + p() -> specs.wild_hunt -> effectN( 1 ).percent();
-    p() -> benefits.wild_hunt -> update( used_wild_hunt );
+      am *= wild_hunt.multiplier;
+    wild_hunt.benefit -> update( used_wild_hunt );
 
     return am;
   }
@@ -1958,7 +1914,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     double c = hunter_main_pet_attack_t::cost();
 
     if ( use_wild_hunt() )
-      c *= 1.0 + wild_hunt_cost_pct;
+      c *= wild_hunt.cost_pct;
 
     return c;
   }
@@ -2069,26 +2025,6 @@ action_t* hunter_main_pet_t::create_action( const std::string& name,
 void hunter_main_pet_t::init_spells()
 {
   base_t::init_spells();
-
-  // ferocity
-  specs.heart_of_the_phoenix = spell_data_t::not_found();
-  // tenacity
-  specs.last_stand = spell_data_t::not_found();
-  specs.charge = spell_data_t::not_found();
-  specs.thunderstomp = spell_data_t::not_found();
-  specs.blood_of_the_rhino = spell_data_t::not_found();
-  specs.great_stamina = spell_data_t::not_found();
-  // cunning
-  specs.roar_of_sacrifice = spell_data_t::not_found();
-  specs.bullhead = spell_data_t::not_found();
-  specs.cornered = spell_data_t::not_found();
-  specs.boars_speed = spell_data_t::not_found();
-  specs.dash = spell_data_t::not_found(); // ferocity, cunning
-
-  // ferocity
-  specs.spiked_collar = spell_data_t::not_found(); // find_specialization_spell( "Spiked Collar" );
-  specs.wild_hunt = find_spell( 62762 );
-  specs.combat_experience = spell_data_t::not_found(); // find_specialization_spell( "Combat Experience" );
 
   if ( o() -> specialization() == HUNTER_BEAST_MASTERY )
     active.kill_command = new actions::kill_command_bm_t( this );
