@@ -4410,7 +4410,7 @@ expr_t* actions::rogue_attack_t::create_expression( const std::string& name_str 
   // Garrote and Rupture and APL lines using "exsanguinated"
   // TODO: Add Internal Bleeding (not the same id as Kidney Shot)
   else if ( util::str_compare_ci( name_str, "exsanguinated" ) &&
-            ( data().id() == 703 || data().id() == 1943 || data().id() == 121411 ) )
+            ( data().id() == 703 || data().id() == 1943 || this -> name_str == "crimson_tempest" ) )
   {
     return new exsanguinated_expr_t( this );
   }
@@ -6429,11 +6429,12 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
       } );
     }
   }
-  // dot.(garrote|internal_bleeding|rupture).exsanguinated
-  else if ( split.size() == 3 && util::str_compare_ci( split[ 2 ], "exsanguinated" ) &&
+  // exsanguinated.(garrote|internal_bleeding|rupture|crimson_tempest)
+  else if ( split.size() == 2 && util::str_compare_ci( split[ 0 ], "exsanguinated" ) &&
     ( util::str_compare_ci( split[ 1 ], "garrote" ) ||
       util::str_compare_ci( split[ 1 ], "internal_bleeding" ) ||
-      util::str_compare_ci( split[ 1 ], "rupture" ) ) )
+      util::str_compare_ci( split[ 1 ], "rupture" ) ||
+      util::str_compare_ci( split[ 1 ], "crimson_tempest" ) ) )
   {
     action_t* action = find_action( split[ 1 ] );
     if ( !action )
