@@ -70,6 +70,14 @@ holy_power_consumer_t::holy_power_consumer_t( const std::string& n, paladin_t* p
   }
 }
 
+double holy_power_consumer_t::action_multiplier() const
+{
+  double am = paladin_melee_attack_t::action_multiplier();
+  if ( p() -> buffs.divine_purpose -> up() )
+    am *= 1.0 + p() -> buffs.divine_purpose -> data().effectN( 2 ).percent();
+  return am;
+}
+
 double holy_power_consumer_t::composite_target_multiplier( player_t* t ) const
 {
   double m = paladin_melee_attack_t::composite_target_multiplier( t );
