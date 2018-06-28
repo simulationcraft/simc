@@ -8482,6 +8482,18 @@ struct koltiras_newfound_will_t : public scoped_actor_callback_t<death_knight_t>
   { p -> legendary.koltiras_newfound_will = e.driver(); }
 };
 
+struct consorts_cold_core_t : public scoped_action_callback_t<frostwyrms_fury_t>
+{
+  consorts_cold_core_t() : super( DEATH_KNIGHT, "frostwyrms_fury" )
+  { }
+
+  void manipulate( frostwyrms_fury_t* action, const special_effect_t& e ) override
+  {
+    auto m = 1.0 + e.driver() -> effectN( 1 ).percent();
+    action -> cooldown -> duration = action -> data().cooldown() * m;
+  }
+};
+
 struct death_march_t : public scoped_actor_callback_t<death_knight_t>
 {
   death_march_t() : super( DEATH_KNIGHT )
@@ -8645,6 +8657,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 212974, lanathels_lament_t() );
     unique_gear::register_special_effect( 209228, shackles_of_bryndaor_t() );
     // 7.1.5
+    unique_gear::register_special_effect( 235605, consorts_cold_core_t() );
     unique_gear::register_special_effect( 235556, death_march_t() );
     unique_gear::register_special_effect( 235556, death_march_passive_t<death_knight_spell_t>( "death_coil" ) );
     unique_gear::register_special_effect( 235556, death_march_passive_t<death_knight_melee_attack_t>( "death_strike" ) );
