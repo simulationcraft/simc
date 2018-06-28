@@ -1919,6 +1919,8 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
     attack_power_mod.direct = 1.0 / 3.0;
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
+    // 28-06-2018: While spell data says it has a base damage in-game testing shows that it doesn't use it.
+    base_dd_min = base_dd_max = 0;
   }
 
   // Override behavior so that Basic Attacks use hunter's attack power rather than the pet's
