@@ -3647,7 +3647,7 @@ struct shred_t : public cat_attack_t
     double tm = cat_attack_t::composite_target_multiplier( t );
 
     if ( t -> debuffs.bleeding && t -> debuffs.bleeding -> up() )
-      tm *= 1.0 + p() -> spec.shred -> effectN( 5 ).percent();
+      tm *= 1.0 + p() -> spec.shred -> effectN( 4 ).percent();
 
     if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T19, B4 ) )
     {
