@@ -266,6 +266,7 @@ namespace warlock
         azerite_power_t inevitable_demise;
         azerite_power_t sudden_onset;
         azerite_power_t wracking_brilliance;
+        azerite_power_t deathbloom;
 
         //Destro
         azerite_power_t accelerant;
@@ -1392,8 +1393,10 @@ namespace warlock
         {
           td->soc_threshold -= amount;
 
-          if ( td->soc_threshold <= 0 )
+          if (td->soc_threshold <= 0)
+          {
             td->dots_seed_of_corruption->cancel();
+          }
         }
       };
 

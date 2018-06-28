@@ -547,14 +547,24 @@ namespace warlock
     {
       struct seed_of_corruption_aoe_t : public warlock_spell_t
       {
+        bool deathbloom; //azerite_trait
         seed_of_corruption_aoe_t( warlock_t* p ) :
           warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
         {
           aoe = -1;
           dual = true;
           background = true;
+          deathbloom = false;
           affected_by_deaths_embrace = true;
           p->spells.seed_of_corruption_aoe = this;
+        }
+
+        double bonus_da(const action_state_t* s) const override
+        {
+          double da = warlock_spell_t::bonus_da(s);
+          if(deathbloom)
+            da += p()->azerite.deathbloom.value();
+          return da;
         }
 
         void impact( action_state_t* s ) override
@@ -595,7 +605,7 @@ namespace warlock
       void init() override
       {
         warlock_spell_t::init();
-
+        exploded = false;
         snapshot_flags |= STATE_SP;
       }
 
@@ -630,6 +640,9 @@ namespace warlock
       {
         warlock_spell_t::last_tick( d );
 
+        if (!d->end_event) {
+          explosion->deathbloom = true;
+        }
         explosion->target = d->target;
         explosion->execute();
       }
@@ -1100,6 +1113,7 @@ namespace warlock
     azerite.inevitable_demise           = find_azerite_spell("Inevitable Demise");
     azerite.sudden_onset                = find_azerite_spell("Sudden Onset");
     azerite.wracking_brilliance         = find_azerite_spell("Wracking Brilliance");
+    azerite.deathbloom                  = find_azerite_spell("Deathbloom");
 
     // seed applies corruption
     if (specialization() == WARLOCK_AFFLICTION)
