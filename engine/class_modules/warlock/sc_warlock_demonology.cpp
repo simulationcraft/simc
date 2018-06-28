@@ -1504,7 +1504,7 @@ namespace warlock {
           pets::wild_imp::wild_imp_pet_t* imp = imps.front();
           imps.erase(imps.begin());
           imp->power_siphon = true;
-          imp->dismiss(true);
+          imp->dismiss();
         }
       }
     };
