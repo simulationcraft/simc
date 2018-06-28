@@ -605,7 +605,6 @@ namespace warlock
       void init() override
       {
         warlock_spell_t::init();
-        exploded = false;
         snapshot_flags |= STATE_SP;
       }
 
