@@ -1421,8 +1421,13 @@ struct animal_companion_t : public hunter_secondary_pet_t
     { }
   };
 
+  struct actives_t
+  {
+    action_t* kill_command;
+  } active;
+
   animal_companion_t( hunter_t* owner ):
-    hunter_secondary_pet_t( owner, "animal_companion" )
+    hunter_secondary_pet_t( owner, "animal_companion" ), active()
   {
   }
 
@@ -1432,6 +1437,8 @@ struct animal_companion_t : public hunter_secondary_pet_t
 
     main_hand_attack = new animal_companion_melee_t( this );
   }
+
+  void init_spells() override;
 };
 
 // ==========================================================================
@@ -1649,7 +1656,7 @@ using hunter_main_pet_spell_t = hunter_main_pet_action_t< spell_t >;
 
 // Kill Command (pet) =======================================================
 
-struct kill_command_base_t: public hunter_main_pet_attack_t
+struct kill_command_base_t: public hunter_pet_action_t<hunter_pet_t, melee_attack_t>
 {
   struct {
     double chance = 0;
@@ -1659,8 +1666,8 @@ struct kill_command_base_t: public hunter_main_pet_attack_t
     bool procced = false;
   } serrated_jaws;
 
-  kill_command_base_t( hunter_main_pet_t* p, const spell_data_t* s ):
-    hunter_main_pet_attack_t( "kill_command", p, s )
+  kill_command_base_t( hunter_pet_t* p, const spell_data_t* s ):
+    hunter_pet_action_t( "kill_command", p, s )
   {
     background = true;
     proc = true;
@@ -1670,7 +1677,7 @@ struct kill_command_base_t: public hunter_main_pet_attack_t
       serrated_jaws.chance = o() -> azerite.serrated_jaws.spell() -> effectN( 3 ).percent();
       serrated_jaws.energize_amount = o() -> azerite.serrated_jaws.spell() -> effectN( 2 ).base_value();
       serrated_jaws.bonus_da = o() -> azerite.serrated_jaws.value( 1 );
-      serrated_jaws.gain = p -> get_gain( "serrated_jaws" );
+      serrated_jaws.gain = p -> regen_type != REGEN_DISABLED ? p -> get_gain( "serrated_jaws" ) : nullptr;
     }
   }
 
@@ -1678,15 +1685,15 @@ struct kill_command_base_t: public hunter_main_pet_attack_t
   {
     serrated_jaws.procced = rng().roll( serrated_jaws.chance );
 
-    hunter_main_pet_attack_t::execute();
+    hunter_pet_action_t::execute();
 
-    if ( serrated_jaws.procced )
+    if ( serrated_jaws.procced && serrated_jaws.gain )
       p() -> resource_gain( RESOURCE_FOCUS, serrated_jaws.energize_amount, serrated_jaws.gain, this );
   }
 
   double bonus_da( const action_state_t* s ) const override
   {
-    double b = hunter_main_pet_attack_t::bonus_da( s );
+    double b = hunter_pet_action_t::bonus_da( s );
 
     if ( serrated_jaws.procced )
       b += serrated_jaws.bonus_da;
@@ -1697,18 +1704,29 @@ struct kill_command_base_t: public hunter_main_pet_attack_t
 
 struct kill_command_bm_t: public kill_command_base_t
 {
-  benefit_t *const killer_instinct;
+  struct {
+    double percent = 0;
+    double multiplier = 1.0;
+    benefit_t* benefit = nullptr;
+  } killer_instinct;
 
-  kill_command_bm_t( hunter_main_pet_t* p ):
-    kill_command_base_t( p, p -> find_spell( 83381 ) ),
-    killer_instinct( p -> o() -> talents.killer_instinct -> ok() ? p -> o() -> get_benefit( "killer_instinct" ) : nullptr )
+  kill_command_bm_t( hunter_pet_t* p ):
+    kill_command_base_t( p, p -> find_spell( 83381 ) )
   {
     // Kill Command seems to use base damage in BfA
-    base_dd_min = data().effectN( 1 ).min( p, p -> level() );
-    base_dd_max = data().effectN( 1 ).max( p, p -> level() );
+    base_dd_min = data().effectN( 1 ).min( p );
+    base_dd_max = data().effectN( 1 ).max( p );
 
+    base_multiplier *= 1.0 + o() -> talents.animal_companion -> effectN( 3 ).percent();
     if ( o() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T21, B2 ) )
       base_multiplier *= 1.0 + o() -> sets -> set( HUNTER_BEAST_MASTERY, T21, B2 ) -> effectN( 1 ).percent();
+
+    if ( o() -> talents.killer_instinct -> ok() )
+    {
+      killer_instinct.percent = o() -> talents.killer_instinct -> effectN( 2 ).base_value();
+      killer_instinct.multiplier = 1.0 + o() -> talents.killer_instinct -> effectN( 1 ).percent();
+      killer_instinct.benefit = o() -> get_benefit( "killer_instinct" );
+    }
   }
 
   double bonus_da( const action_state_t* s ) const override
@@ -1716,8 +1734,6 @@ struct kill_command_bm_t: public kill_command_base_t
     double b = kill_command_base_t::bonus_da( s );
     /* It looks like KC kept the owner ap part of its damage going into bfa,
      * with the same coefficient. Model it as a simple bonus damage adder.
-     * It's not strictly correct as we ideally have to snapshot it in the state
-     * but as KC is instant that doesn't really matter.
      */
     constexpr double owner_coeff_ = 3.0 / 4.0;
     return b + o() -> cache.attack_power() * o() -> composite_attack_power_multiplier() * owner_coeff_;
@@ -1736,12 +1752,12 @@ struct kill_command_bm_t: public kill_command_base_t
   {
     double am = kill_command_base_t::composite_target_multiplier( t );
 
-    if ( killer_instinct )
+    if ( killer_instinct.percent )
     {
-      const bool active = t -> health_percentage() < o() -> talents.killer_instinct -> effectN( 2 ).base_value();
-      killer_instinct -> update( active );
+      const bool active = t -> health_percentage() < killer_instinct.percent;
+      killer_instinct.benefit -> update( active );
       if ( active )
-        am *= 1.0 + o() -> talents.killer_instinct -> effectN( 1 ).percent();
+        am *= killer_instinct.multiplier;
     }
 
     return am;
@@ -2083,6 +2099,13 @@ void hunter_main_pet_t::init_spells()
 
   if ( o() -> talents.flanking_strike -> ok() )
     active.flanking_strike = new actions::flanking_strike_t( this );
+}
+
+void animal_companion_t::init_spells()
+{
+  hunter_secondary_pet_t::init_spells();
+
+  active.kill_command = new actions::kill_command_bm_t( this );
 }
 
 void dire_critter_t::init_spells()
@@ -3991,6 +4014,11 @@ struct kill_command_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     if ( auto pet = p() -> pets.main )
+    {
+      pet -> active.kill_command -> set_target( target );
+      pet -> active.kill_command -> execute();
+    }
+    if ( auto pet = p() -> pets.animal_companion )
     {
       pet -> active.kill_command -> set_target( target );
       pet -> active.kill_command -> execute();
