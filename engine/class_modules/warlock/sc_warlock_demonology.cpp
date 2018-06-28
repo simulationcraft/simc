@@ -1820,7 +1820,7 @@ namespace warlock {
         {
           if (imp->is_sleeping())
           {
-            imp->summon();
+            imp->summon(find_spell(279910)->duration());
             break;
           }
         }
