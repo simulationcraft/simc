@@ -807,7 +807,7 @@ void paladin_t::init_rng_retribution()
   if ( !( talents.blade_of_wrath -> ok() ) )
   {
     art_of_war_rppm -> set_modifier(
-      art_of_war_rppm -> get_modifier() / ( 1.0 + talents.blade_of_wrath -> effectN( 1 ).percent() ) );
+      art_of_war_rppm -> get_modifier() / ( 1.0 + spells.blade_of_wrath -> effectN( 1 ).percent() ) );
   }
 }
 
@@ -840,6 +840,7 @@ void paladin_t::init_spells_retribution()
   spells.justice_gaze                  = find_spell( 211557 );
   spells.chain_of_thrayn               = find_spell( 206338 );
   spells.ashes_to_dust                 = find_spell( 236106 );
+  spells.blade_of_wrath                = find_spell( 231832 );
 
   // Mastery
   passives.hand_of_light             = find_mastery_spell( PALADIN_RETRIBUTION );

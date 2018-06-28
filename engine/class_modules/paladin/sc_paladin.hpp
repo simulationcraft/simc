@@ -305,6 +305,7 @@ public:
     const spell_data_t* consecration_bonus;
     const spell_data_t* avenging_wrath;
     const spell_data_t* shield_of_the_righteous;
+    const spell_data_t* blade_of_wrath;
   } spells;
 
   // Talents
