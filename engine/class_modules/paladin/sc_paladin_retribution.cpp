@@ -292,6 +292,8 @@ struct blade_of_justice_t : public holy_power_generator_t
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B2 ) )
       if ( p() -> buffs.sacred_judgment -> up() )
         am *= 1.0 + p() -> buffs.sacred_judgment -> data().effectN( 1 ).percent();
+    if ( p() -> buffs.blade_of_wrath -> up() )
+      am *= 1.0 + p() -> buffs.blade_of_wrath -> data().effectN( 1 ).percent();
     return am;
   }
 
@@ -300,6 +302,8 @@ struct blade_of_justice_t : public holy_power_generator_t
     holy_power_generator_t::execute();
     if ( p() -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T20, B4 ) )
       p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
+    if ( p() -> buffs.blade_of_wrath -> up() )
+      p() -> buffs.blade_of_wrath -> expire();
   }
 };
 
@@ -765,7 +769,7 @@ void paladin_t::create_buffs_retribution()
   buffs.righteous_verdict              = make_buff( this, "righteous_verdict", find_spell( 267611 ) );
   buffs.inquisition                    = new buffs::inquisition_buff_t( this );
   buffs.the_fires_of_justice           = make_buff( this, "fires_of_justice", find_spell( 209785 ) );
-  buffs.blade_of_wrath                 = make_buff( this, "blade_of_wrath", find_spell( 231843 ) );
+  buffs.blade_of_wrath                 = make_buff( this, "blade_of_wrath", find_spell( 281178 ) );
   buffs.whisper_of_the_nathrezim       = make_buff( this, "whisper_of_the_nathrezim", find_spell( 207635 ) );
   buffs.liadrins_fury_unleashed        = new buffs::liadrins_fury_unleashed_t( this );
   buffs.shield_of_vengeance            = new buffs::shield_of_vengeance_buff_t( this );
@@ -791,7 +795,12 @@ void paladin_t::create_buffs_retribution()
 
 void paladin_t::init_rng_retribution()
 {
-  blade_of_wrath_rppm = get_rppm( "blade_of_wrath", find_spell( 231832 ) );
+  art_of_war_rppm = get_rppm( "art_of_war", find_spell( 267344 ) );
+  if ( !( talents.blade_of_wrath -> ok() ) )
+  {
+    art_of_war_rppm -> set_modifier(
+      art_of_war_rppm -> get_modifier() / ( 1.0 + talents.blade_of_wrath -> effectN( 1 ).percent() ) );
+  }
 }
 
 void paladin_t::init_spells_retribution()

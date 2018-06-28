@@ -62,7 +62,6 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.hand_of_the_protector     = get_cooldown( "hand_of_the_protector" );
   cooldowns.hammer_of_justice         = get_cooldown( "hammer_of_justice" );
   cooldowns.blade_of_justice          = get_cooldown( "blade_of_justice" );
-  cooldowns.blade_of_wrath            = get_cooldown( "blade_of_wrath" );
   cooldowns.divine_hammer             = get_cooldown( "divine_hammer" );
   cooldowns.holy_shock                = get_cooldown( "holy_shock");
   cooldowns.light_of_dawn             = get_cooldown( "light_of_dawn");
@@ -257,7 +256,7 @@ struct consecration_t : public paladin_spell_t
     damage_tick( new consecration_tick_t( p ) )
   {
     parse_options( options_str );
-  
+
     dot_duration = timespan_t::zero(); // the periodic event is handled by ground_aoe_event_t
     may_miss       = false;
 
@@ -266,7 +265,7 @@ struct consecration_t : public paladin_spell_t
 
   void execute() override
   {
-    
+
     // Cancel the current consecration if it exists
     if ( p() -> active_consecration != nullptr )
     {
@@ -274,8 +273,8 @@ struct consecration_t : public paladin_spell_t
     }
 
     paladin_spell_t::execute();
-    
-    // create a new ground aoe event 
+
+    // create a new ground aoe event
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
       .target( execute_state -> target )
       // spawn at feet of player
@@ -285,7 +284,7 @@ struct consecration_t : public paladin_spell_t
       .start_time( sim -> current_time() )
       .hasted( ground_aoe_params_t::SPELL_HASTE )
       .action( damage_tick )
-      .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) { 
+      .state_callback( [ this ]( ground_aoe_params_t::state_type type, ground_aoe_event_t* event ) {
         switch ( type )
         {
           case ground_aoe_params_t::EVENT_CREATED:
@@ -574,14 +573,15 @@ struct melee_t : public paladin_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       // Check for BoW procs
-      if ( p() -> talents.blade_of_wrath -> ok() )
+      if ( p() -> specialization() == PALADIN_RETRIBUTION )
       {
-        bool procced = p() -> blade_of_wrath_rppm -> trigger();
+        bool procced = p() -> art_of_war_rppm -> trigger();
 
         if ( procced )
         {
-          p() -> procs.blade_of_wrath -> occur();
-          p() -> buffs.blade_of_wrath -> trigger();
+          p() -> procs.art_of_war -> occur();
+          if ( p() -> talents.blade_of_wrath -> ok() )
+            p() -> buffs.blade_of_wrath -> trigger();
           p() -> cooldowns.blade_of_justice -> reset( true );
         }
       }
@@ -1061,7 +1061,7 @@ void paladin_t::init_procs()
   procs.divine_purpose            = get_proc( "divine_purpose"                 );
   procs.the_fires_of_justice      = get_proc( "the_fires_of_justice"           );
   procs.tfoj_set_bonus            = get_proc( "t19_4p"                         );
-  procs.blade_of_wrath            = get_proc( "blade_of_wrath"                 );
+  procs.art_of_war                = get_proc( "art_of_war"                     );
   procs.topless_tower             = get_proc( "topless_tower"                  );
   procs.grand_crusader            = get_proc( "grand_crusader"                 );
 }

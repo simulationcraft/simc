@@ -55,7 +55,7 @@ struct cooldown_waste_data_t : public noncopyable
   {
     return ( cd -> duration > timespan_t::zero() || cd_override > timespan_t::zero() )
         && ( ( cd -> charges == 1 && cd -> up() ) || ( cd -> charges >= 2 && cd -> current_charge == cd -> charges ) )
-        && ( cd -> last_charged > timespan_t::zero() && cd -> last_charged < cd -> sim.current_time() ); 
+        && ( cd -> last_charged > timespan_t::zero() && cd -> last_charged < cd -> sim.current_time() );
   }
 
   virtual double get_wasted_time()
@@ -237,7 +237,6 @@ public:
     cooldown_t* hammer_of_justice;
 
     cooldown_t* blade_of_justice;
-    cooldown_t* blade_of_wrath;
     cooldown_t* divine_hammer;
   } cooldowns;
 
@@ -265,7 +264,7 @@ public:
   } passives;
 
   // Procs and RNG
-  real_ppm_t* blade_of_wrath_rppm;
+  real_ppm_t* art_of_war_rppm;
   struct procs_t
   {
     proc_t* eternal_glory;
@@ -275,7 +274,7 @@ public:
     proc_t* divine_purpose;
     proc_t* the_fires_of_justice;
     proc_t* tfoj_set_bonus;
-    proc_t* blade_of_wrath;
+    proc_t* art_of_war;
     proc_t* topless_tower;
     proc_t* grand_crusader;
   } procs;
