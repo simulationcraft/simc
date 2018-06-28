@@ -3468,26 +3468,23 @@ struct flanking_strike_t: hunter_melee_attack_t
   }
 };
 
-// Carve =============================================================================
+// Carve (Base) ======================================================================
+// Shared part between Carve & Butchery
 
-struct carve_t: public hunter_melee_attack_t
+struct carve_base_t: public hunter_melee_attack_t
 {
   const timespan_t wfb_reduction;
   const int wfb_reduction_target_cap;
   internal_bleeding_t internal_bleeding;
 
-  carve_t( hunter_t* p, const std::string& options_str ):
-    hunter_melee_attack_t( "carve", p, p -> specs.carve ),
-    wfb_reduction( p -> specs.carve -> effectN( 2 ).time_value() ),
-    wfb_reduction_target_cap( p -> specs.carve -> effectN( 3 ).base_value() ),
+  carve_base_t( const std::string& n, hunter_t* p, const spell_data_t* s,
+                timespan_t wfb_reduction, int wfb_reduction_target_cap ):
+    hunter_melee_attack_t( n, p, s ),
+    wfb_reduction( wfb_reduction ),
+    wfb_reduction_target_cap( wfb_reduction_target_cap ),
     internal_bleeding( p )
   {
-    parse_options( options_str );
-
     aoe = -1;
-
-    if ( p -> talents.butchery -> ok() )
-      background = true;
   }
 
   void execute() override
@@ -3496,38 +3493,43 @@ struct carve_t: public hunter_melee_attack_t
 
     auto reduction = wfb_reduction * std::min( num_targets_hit, wfb_reduction_target_cap );
     p() -> cooldowns.wildfire_bomb -> adjust( -reduction, true );
-
-    trigger_birds_of_prey( p(), target );
   }
 
   void impact( action_state_t* s ) override
   {
     hunter_melee_attack_t::impact( s );
 
+    trigger_birds_of_prey( p(), s -> target );
     internal_bleeding.trigger( s );
+  }
+};
+
+// Carve =============================================================================
+
+struct carve_t: public carve_base_t
+{
+  carve_t( hunter_t* p, const std::string& options_str ):
+    carve_base_t( "carve", p, p -> specs.carve ,
+                  p -> specs.carve -> effectN( 2 ).time_value(),
+                  p -> specs.carve -> effectN( 3 ).base_value() )
+  {
+    parse_options( options_str );
+
+    if ( p -> talents.butchery -> ok() )
+      background = true;
   }
 };
 
 // Butchery ==========================================================================
 
-struct butchery_t: public hunter_melee_attack_t
+struct butchery_t: public carve_base_t
 {
-  internal_bleeding_t internal_bleeding;
-
   butchery_t( hunter_t* p, const std::string& options_str ):
-    hunter_melee_attack_t( "butchery", p, p -> talents.butchery ),
-    internal_bleeding( p )
+    carve_base_t( "butchery", p, p -> talents.butchery,
+                  p -> talents.butchery -> effectN( 2 ).time_value() ,
+                  p -> talents.butchery -> effectN( 3 ).base_value() )
   {
     parse_options( options_str );
-
-    aoe = -1;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_melee_attack_t::impact( s );
-
-    internal_bleeding.trigger( s );
   }
 };
 
