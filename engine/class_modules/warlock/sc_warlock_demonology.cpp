@@ -235,7 +235,7 @@ namespace warlock {
       void wild_imp_pet_t::arise()
       {
         warlock_pet_t::arise();
-
+        power_siphon = false;
         o()->buffs.wild_imps->increment();
         if (isnotdoge)
         {
