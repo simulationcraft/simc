@@ -126,6 +126,12 @@ void holy_power_consumer_t::execute()
     int num_stacks = (int)base_cost();
     p() -> buffs.crusade -> trigger( num_stacks );
   }
+
+  if ( p() -> azerite.relentless_inquisitor.ok() )
+  {
+    int num_stacks = (int)base_cost();
+    p() -> buffs.relentless_inquisitor -> trigger( num_stacks );
+  }
 }
 
 void holy_power_consumer_t::impact( action_state_t* s )
@@ -239,6 +245,9 @@ struct crusade_t : public paladin_heal_t
     {
       p() -> buffs.liadrins_fury_unleashed -> trigger();
     }
+
+    if ( p() -> azerite.avengers_might.ok() )
+      p() -> buffs.avengers_might -> trigger();
   }
 
   bool ready() override
@@ -288,10 +297,23 @@ struct execution_sentence_t : public holy_power_consumer_t
 
 struct blade_of_justice_t : public holy_power_generator_t
 {
+  struct expurgation_t : public paladin_spell_t {
+    expurgation_t( paladin_t* p ) : paladin_spell_t( "expurgation", p, p -> find_spell( 273481 ) )
+    {
+      base_td = p -> azerite.expurgation.value();
+    }
+  };
+
+  expurgation_t* expurgation;
+
   blade_of_justice_t( paladin_t* p, const std::string& options_str )
-    : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ) )
+    : holy_power_generator_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ) ),
+      expurgation( new expurgation_t( p ) )
   {
     parse_options( options_str );
+
+    if ( p -> azerite.expurgation.ok() )
+      add_child( expurgation );
   }
 
   virtual double action_multiplier() const override
@@ -312,6 +334,20 @@ struct blade_of_justice_t : public holy_power_generator_t
       p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_t20_2p );
     if ( p() -> buffs.blade_of_wrath -> up() )
       p() -> buffs.blade_of_wrath -> expire();
+  }
+
+  virtual void impact(action_state_t* state) override
+  {
+    holy_power_generator_t::impact( state );
+
+    if ( state -> result == RESULT_CRIT )
+    {
+      if ( p() -> azerite.expurgation.ok() )
+      {
+        expurgation -> set_target( state -> target );
+        expurgation -> execute();
+      }
+    }
   }
 };
 
@@ -387,6 +423,14 @@ struct divine_storm_t: public holy_power_consumer_t
     holy_power_consumer_t::impact(state);
     if ( p() -> talents.divine_judgment -> ok() )
       p() -> buffs.divine_judgment -> trigger();
+
+    if ( p() -> azerite.divine_right.ok() )
+    {
+      if ( state -> target -> health_percentage() < p() -> azerite.divine_right.value( 2 ) )
+      {
+        p() -> buffs.divine_right -> trigger();
+      }
+    }
   }
 
   void record_data( action_state_t* ) override {}
@@ -799,6 +843,16 @@ void paladin_t::create_buffs_retribution()
 
   // Tier Bonuses
   buffs.ret_t21_4p             = buff_creator_t( this, "hidden_retribution_t21_4p", find_spell( 253806 ) );
+
+  // Azerite
+  buffs.avengers_might = make_buff<stat_buff_t>(this, "avengers_might", find_spell( 272903 ))
+                            -> add_stat( STAT_MASTERY_RATING, azerite.avengers_might.value() );
+  buffs.divine_right = make_buff<stat_buff_t>(this, "divine_right", find_spell( 278523 ))
+                            -> add_stat( STAT_STRENGTH, azerite.divine_right.value() );
+  buffs.relentless_inquisitor = make_buff<stat_buff_t>(this, "relentless_inquisitor", find_spell( 279204 ))
+                                  -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
+  buffs.zealotry = make_buff( this, "zealotry", find_spell( 278989 ))
+                      -> set_default_value( azerite.zealotry.value() );
 }
 
 void paladin_t::init_rng_retribution()
@@ -853,6 +907,16 @@ void paladin_t::init_spells_retribution()
   {
     spec.judgment_2 = find_specialization_spell( 231663 );
   }
+
+  // azerite stuff
+  azerite.avengers_might        = find_azerite_spell( 125 );
+  azerite.deferred_sentence     = find_azerite_spell( 253 );
+  azerite.divine_right          = find_azerite_spell( 453 );
+  azerite.expurgation           = find_azerite_spell( 187 );
+  azerite.grace_of_the_justicar = find_azerite_spell( 393 );
+  azerite.indomitable_justice   = find_azerite_spell( 235 );
+  azerite.relentless_inquisitor = find_azerite_spell( 154 );
+  azerite.zealotry              = find_azerite_spell( 396 );
 }
 
 void paladin_t::init_assessors_retribution()

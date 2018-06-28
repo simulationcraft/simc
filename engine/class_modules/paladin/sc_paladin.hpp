@@ -188,6 +188,12 @@ public:
     // Set Bonuses
     buff_t* sacred_judgment;
     buff_t* ret_t21_4p;
+
+    // azerite
+    buff_t* avengers_might;
+    buff_t* divine_right;
+    buff_t* relentless_inquisitor;
+    buff_t* zealotry;
   } buffs;
 
   // Gains
@@ -279,12 +285,11 @@ public:
     proc_t* grand_crusader;
   } procs;
 
-    struct shuffled_rngs_t
-    {
-        // Holy
-        shuffled_rng_t* topless_tower;
-    } shuffled_rngs;
-
+  struct shuffled_rngs_t
+  {
+    // Holy
+    shuffled_rng_t* topless_tower;
+  } shuffled_rngs;
 
   // Spells
   struct spells_t
@@ -314,28 +319,28 @@ public:
     // Ignore fist of justice/repentance/blinding light
 
     // Holy
-      // T15
+    // T15
     const spell_data_t* bestow_faith;
     const spell_data_t* lights_hammer;
     const spell_data_t* crusaders_might;
-      // T30
+    // T30
     const spell_data_t* cavalier;
     const spell_data_t* unbreakable_spirit;
     const spell_data_t* rule_of_law;
-      // Skip T45
-      // T60
+    // Skip T45
+    // T60
     const spell_data_t* devotion_aura;
     const spell_data_t* aura_of_sacrifice;
     const spell_data_t* aura_of_mercy;
-      // T75
-//    const spell_data_t* divine_purpose;
+    // T75
+    // const spell_data_t* divine_purpose;
     const spell_data_t* holy_avenger;
     const spell_data_t* holy_prism;
-      // T90
+    // T90
     const spell_data_t* fervent_martyr;
     const spell_data_t* sanctified_wrath;
     const spell_data_t* judgment_of_light;
-      // T100
+    // T100
     const spell_data_t* beacon_of_faith;
     const spell_data_t* beacon_of_the_lightbringer;
     const spell_data_t* beacon_of_virtue;
@@ -386,6 +391,22 @@ public:
     const spell_data_t* crusade_talent;
     const spell_data_t* inquisition;
   } talents;
+
+  struct azerite_t
+  {
+    // shared
+    // holy
+    // protection
+    // retribution
+    azerite_power_t avengers_might;
+    azerite_power_t deferred_sentence; // NYI - spell data makes no sense
+    azerite_power_t divine_right;
+    azerite_power_t expurgation;
+    azerite_power_t grace_of_the_justicar; // healing
+    azerite_power_t indomitable_justice; // NYI
+    azerite_power_t relentless_inquisitor;
+    azerite_power_t zealotry;
+  } azerite;
 
   player_t* beacon_target;
 

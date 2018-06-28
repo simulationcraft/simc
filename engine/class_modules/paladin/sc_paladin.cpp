@@ -220,6 +220,8 @@ struct avenging_wrath_t : public paladin_spell_t
     {
       p() -> buffs.liadrins_fury_unleashed -> trigger();
     }
+    if ( p() -> azerite.avengers_might.ok() )
+      p() -> buffs.avengers_might -> trigger();
   }
 
   // TODO: is this needed? Question for Ret dev, since I don't think it is for Prot/Holy
@@ -656,6 +658,13 @@ struct crusader_strike_t : public holy_power_generator_t
     }
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = holy_power_generator_t::bonus_da( s );
+    b += p() -> buffs.zealotry -> stack_value();
+    return b;
+  }
+
   void impact( action_state_t* s ) override
   {
     holy_power_generator_t::impact( s );
@@ -685,9 +694,19 @@ struct crusader_strike_t : public holy_power_generator_t
     }
   }
 
+  void execute() override
+  {
+    holy_power_generator_t::execute();
+
+    if ( p() -> azerite.zealotry.ok() )
+    {
+      p() -> buffs.zealotry -> trigger();
+    }
+  }
+
   double composite_target_multiplier( player_t* t ) const override
   {
-    double m = paladin_melee_attack_t::composite_target_multiplier( t );
+    double m = holy_power_generator_t::composite_target_multiplier( t );
 
     if ( p() -> specialization() == PALADIN_HOLY ) {
       paladin_td_t* td = this -> td( t );
