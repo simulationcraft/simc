@@ -4457,6 +4457,8 @@ void player_t::reset()
   {
     active_off_gcd_list = default_action_list;
   }
+
+  reset_resource_callbacks();
 }
 
 void player_t::trigger_ready()
@@ -4724,8 +4726,10 @@ void player_t::demise()
    * need to be associated with eg. resolve Diminishing Return list.
    */
 
-  assert( arise_time >= timespan_t::zero() );
-  iteration_fight_length += sim->current_time() - arise_time;
+  if (arise_time >= timespan_t::zero())
+  {
+    iteration_fight_length += sim->current_time() - arise_time;
+  }
   // Arise time has to be set to default value before actions are canceled.
   arise_time               = timespan_t::min();
   current.distance_to_move = 0;
@@ -4985,6 +4989,13 @@ double player_t::resource_loss( resource_e resource_type, double amount, gain_t*
     uptimes.primary_resource_cap->update( false, sim->current_time() );
 
   double actual_amount;
+  double previous_amount;
+  double previous_pct_points;
+  if (has_active_resource_callbacks)
+  {
+    previous_amount = resources.current[ resource_type ];
+    previous_pct_points = resources.current[ resource_type ] / resources.max[ resource_type ] * 100.0;
+  }
 
   if ( !resources.is_infinite( resource_type ) || is_enemy() )
   {
@@ -5007,6 +5018,11 @@ double player_t::resource_loss( resource_e resource_type, double amount, gain_t*
   if ( resource_type == RESOURCE_MANA )
   {
     last_cast = sim->current_time();
+  }
+
+  if (has_active_resource_callbacks)
+  {
+    check_resource_change_for_callback(resource_type, previous_amount, previous_pct_points);
   }
 
   if ( sim->debug )
@@ -10524,6 +10540,98 @@ void player_t::change_position( position_e new_pos )
 
   current.position = new_pos;
 }
+
+/**
+ * Add a new resource callback, firing when a specified threshold for a resource is crossed.
+ * Can either be a absolute value, or if use_pct is set, a percent-point value.
+ *
+ * Warning: Does not work for main enemy target on sim->iterations==0 or sim->fixed_time==1
+ */
+void player_t::register_resource_callback(resource_e resource, double value, resource_callback_function_t callback,
+    bool use_pct, bool fire_once)
+{
+  resource_callback_entry_t entry{resource, value, use_pct, fire_once, false, callback};
+  resource_callbacks.push_back(entry);
+  has_active_resource_callbacks = true;
+  sim->print_debug("{} resource callback registered. resource={} value={} pct={} fire_once={}",
+      name(), util::resource_type_string(resource), value, use_pct, fire_once);
+}
+
+/**
+ * If we have trigered all active resource callbacks in a iteration, disable the player-wide flag to check for
+ * resource callbacks.
+ */
+void player_t::check_resource_callback_deactivation()
+{
+  for (auto& callback : resource_callbacks)
+  {
+    if (!callback.is_consumed)
+      return;
+  }
+  has_active_resource_callbacks = false;
+}
+
+/**
+ * Reset resource callback system.
+ */
+void player_t::reset_resource_callbacks()
+{
+  for (auto& callback : resource_callbacks)
+  {
+    callback.is_consumed = false;
+    has_active_resource_callbacks = true;
+  }
+}
+
+/**
+ * Checks if a resource callback condition has been met and if yes activate it.
+ */
+void player_t::check_resource_change_for_callback(resource_e resource, double previous_amount, double previous_pct_points)
+ {
+   for (auto& callback : resource_callbacks)
+   {
+     if (callback.is_consumed)
+       continue;
+     if (callback.resource != resource)
+       continue;
+
+     // Evaluate if callback condition is met.
+     bool callback_condition_valid = false;
+     if (callback.is_pct)
+     {
+       double current_pct_points = resources.current[ resource ] / resources.max[ resource ] * 100.0;
+       if ((callback.value < previous_pct_points && callback.value >= current_pct_points) ||
+           (callback.value >= previous_pct_points && callback.value < current_pct_points))
+       {
+         callback_condition_valid = true;
+       }
+     }
+     else
+     {
+       double current_amount = resources.current[ resource ];
+       if ((callback.value < previous_amount && callback.value >= current_amount) ||
+           (callback.value >= previous_amount && callback.value < current_amount))
+       {
+         callback_condition_valid = true;
+       }
+     }
+     if (!callback_condition_valid)
+     {
+       continue;
+     }
+
+     sim->print_debug("{} resource callback triggered.", name());
+     // We have a callback event, trigger stuff.
+     callback.callback();
+     if (callback.fire_once)
+     {
+       callback.is_consumed = true;
+     }
+  }
+
+  check_resource_callback_deactivation();
+}
+
 
 timespan_t player_t::time_to_move() const
 {

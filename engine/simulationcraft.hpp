@@ -284,7 +284,8 @@ public:
   std::string name;
   std::string type;
   int64_t num_starts;
-  timespan_t first, last, next;
+  timespan_t first, last;
+  double first_pct, last_pct;
   timespan_t cooldown;
   timespan_t cooldown_stddev;
   timespan_t cooldown_min;
@@ -299,6 +300,7 @@ public:
   double     distance_min; // Minimal player distance
   double     distance_max; // Maximal player distance
   bool players_only; // Don't affect pets
+  bool force_stop; // Stop immediately at last/last_pct
   double player_chance; // Chance for individual player to be affected by raid event
 
   std::string affected_role_str;
@@ -320,7 +322,7 @@ public:
   { options.insert( options.begin(), std::move(new_option) ); }
   timespan_t cooldown_time();
   timespan_t duration_time();
-  timespan_t next_time() const { return next; }
+  timespan_t next_time() const;
   timespan_t until_next() const;
   timespan_t remains() const;
   bool up() const;
@@ -329,9 +331,6 @@ public:
   double max_distance() { return distance_max; }
   void schedule();
   virtual void reset();
-  void start();
-  void finish();
-  void set_next( timespan_t t ) { next = t; }
   void parse_options( const std::string& options_str );
   static std::unique_ptr<raid_event_t> create( sim_t* sim, const std::string& name, const std::string& options_str );
   static void init( sim_t* );
@@ -343,10 +342,24 @@ public:
 private:
   virtual void _start() = 0;
   virtual void _finish() = 0;
+  void activate();
+  void deactivate();
+  void combat_begin();
+  void start();
+  void finish();
 
   bool is_up;
+  enum class activation_status_e
+  {
+    // three different states so we can detect when raid event is deactivated before it is activated.
+    not_yet_activated,
+    activated,
+    deactivated
+  } activation_status;
   event_t* cooldown_event;
   event_t* duration_event;
+  event_t* start_event;
+  event_t* end_event;
 };
 std::ostream& operator<<(std::ostream&, const raid_event_t&);
 
@@ -3736,6 +3749,25 @@ struct player_t : public actor_t
   unsigned action_list_id_;
 
 
+  using resource_callback_function_t = std::function<void()>;
+
+private:
+  /// Flag to activate/deactive resource callback checks. Motivation: performance.
+  bool has_active_resource_callbacks;
+
+  struct resource_callback_entry_t
+  {
+    resource_e resource;
+    double value;
+    bool is_pct;
+    bool fire_once;
+    bool is_consumed;
+    resource_callback_function_t callback;
+  };
+  std::vector<resource_callback_entry_t> resource_callbacks;
+
+public:
+
 
 
   player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e );
@@ -3763,6 +3795,8 @@ struct player_t : public actor_t
   void clear_action_priority_lists() const;
   void copy_action_priority_list( const std::string& old_list, const std::string& new_list );
   void change_position( position_e );
+  void register_resource_callback(resource_e resource, double value, resource_callback_function_t callback,
+      bool use_pct, bool fire_once = true);
   bool add_action( std::string action, std::string options = "", std::string alist = "default" );
   bool add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
   void add_option( std::unique_ptr<option_t> o )
@@ -4210,6 +4244,9 @@ public:
 
 private:
   void do_update_movement( double yards );
+  void check_resource_callback_deactivation();
+  void reset_resource_callbacks();
+  void check_resource_change_for_callback(resource_e resource, double previous_amount, double previous_pct_points);
 public:
 
 

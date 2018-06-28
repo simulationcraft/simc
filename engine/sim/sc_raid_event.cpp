@@ -1053,7 +1053,8 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& type ) :
   num_starts( 0 ),
   first( timespan_t::zero() ),
   last( timespan_t::zero() ),
-  next( timespan_t::zero() ),
+  first_pct(-1.0),
+  last_pct(-1.0),
   cooldown( timespan_t::zero() ),
   cooldown_stddev( timespan_t::zero() ),
   cooldown_min( timespan_t::zero() ),
@@ -1065,18 +1066,24 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& type ) :
   distance_min( 0 ),
   distance_max( 0 ),
   players_only( false ),
+  force_stop(false),
   player_chance( 1.0 ),
   affected_role( ROLE_NONE ),
   player_if_expr_str(),
   saved_duration( timespan_t::zero() ),
   player_expressions(),
   is_up(false),
+  activation_status(activation_status_e::not_yet_activated),
   cooldown_event(),
-  duration_event()
+  duration_event(),
+  start_event(),
+  end_event()
 {
   add_option( opt_string( "name", name ) );
   add_option( opt_string( "first", first_str ) );
   add_option( opt_string( "last", last_str ) );
+  add_option( opt_float( "first_pct", first_pct, 0.0, 100 ) );
+  add_option( opt_float( "last_pct", last_pct, 0.0, 100 ) );
   add_option( opt_timespan( "period", cooldown ) );
   add_option( opt_timespan( "cooldown", cooldown ) );
   add_option( opt_timespan( "cooldown_stddev", cooldown_stddev ) );
@@ -1092,6 +1099,7 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& type ) :
   add_option( opt_float( "distance_max", distance_max ) );
   add_option( opt_string( "affected_role", affected_role_str ) );
   add_option( opt_string( "player_if", player_if_expr_str ) );
+  add_option( opt_bool( "force_stop", force_stop ) );
 
 }
 
@@ -1101,14 +1109,7 @@ timespan_t raid_event_t::cooldown_time()
 
   if ( num_starts == 0 )
   {
-    if ( first > timespan_t::zero() )
-    {
-      time = first;
-    }
-    else
-    {
-      time = timespan_t::from_millis( 10 );
-    }
+      time = timespan_t::zero();
   }
   else
   {
@@ -1129,9 +1130,31 @@ timespan_t raid_event_t::duration_time()
   return time;
 }
 
+timespan_t raid_event_t::next_time() const
+{
+  return sim->current_time() + until_next();
+}
+
 timespan_t raid_event_t::until_next() const
 {
-  return next - sim -> current_time();
+  if (start_event)
+  {
+    return start_event->remains();
+  }
+  if (first_pct != -1 && num_starts == 0 && !sim->fixed_time && sim->current_iteration != 0)
+  {
+    return sim->target->time_to_percent(first_pct);
+  }
+  if (cooldown_event)
+  {
+    return cooldown_event->remains();
+  }
+  if (duration_event)
+  {
+    return duration_event->remains() + cooldown; // avg. estimate
+  }
+
+  return timespan_t::max();
 }
 
 /**
@@ -1199,6 +1222,111 @@ void raid_event_t::finish()
   sim -> print_log("{} finishes.", *this);
 }
 
+/**
+ * Raid event activation. When triggerd, raid event scheduling starts.
+ */
+void raid_event_t::activate()
+{
+  if (activation_status == activation_status_e::deactivated)
+  {
+    sim->print_debug("{} already deactivated. (last/last_pct happened before first/last_pct).", *this);
+    return;
+  }
+  if (activation_status == activation_status_e::activated)
+  {
+    // Already activated, do nothing.
+    return;
+  }
+  sim->print_debug("{} activated (first/first_pct reached).", *this);
+  activation_status = activation_status_e::activated;
+  schedule();
+}
+
+/**
+ * Raid event deactivatin. When called, raid event scheduling stops.
+ * Without force_stop, a currently up raid event will still finish.
+ * With force_stop, the currently up raid event will be stopped directly.
+ */
+void raid_event_t::deactivate()
+{
+  sim->print_debug("{} deactivated (last/last_pct reached).", *this);
+  activation_status = activation_status_e::deactivated;
+  event_t::cancel(cooldown_event);
+  if (force_stop)
+  {
+    sim->print_debug("{} is force stopped.", *this);
+    event_t::cancel(duration_event);
+    finish();
+  }
+}
+
+void raid_event_t::combat_begin()
+{
+  struct end_event_t : public event_t
+  {
+    raid_event_t* raid_event;
+
+    end_event_t( sim_t& s, raid_event_t* re, timespan_t time ) :
+      event_t( s, time ),
+      raid_event( re )
+    {
+    }
+
+    virtual const char* name() const override
+    { return raid_event -> type.c_str(); }
+
+    virtual void execute() override
+    {
+      raid_event -> deactivate();
+      raid_event->end_event = nullptr;
+    }
+  };
+
+  struct start_event_t : public event_t
+    {
+      raid_event_t* raid_event;
+
+      start_event_t( sim_t& s, raid_event_t* re, timespan_t time ) :
+        event_t( s, time ),
+        raid_event( re )
+      {
+      }
+
+      virtual const char* name() const override
+      { return raid_event -> type.c_str(); }
+
+      virtual void execute() override
+      {
+        raid_event -> activate();
+        raid_event->start_event = nullptr;
+      }
+    };
+
+  if (last_pct == -1 && last > timespan_t::zero())
+  {
+    end_event = make_event<end_event_t>( *sim, *sim, this, last );
+  }
+  if (last_pct != -1 && (sim -> current_iteration == 0 || sim -> fixed_time))
+  {
+    // There is no resource callback from fluffy pillow in these circumstances, thus use time based events as well.
+    timespan_t end_time = (1.0 - last_pct / 100.0) * sim -> expected_iteration_time;
+    end_event = make_event<end_event_t>( *sim, *sim, this, end_time );
+  }
+
+  if (first_pct == -1 )
+  {
+
+  timespan_t start_time = std::max(first, timespan_t::zero());
+  start_event = make_event<start_event_t>( *sim, *sim, this, start_time );
+  }
+  if (first_pct != -1 && (sim -> current_iteration == 0 || sim -> fixed_time))
+  {
+    // There is no resource callback from fluffy pillow in these circumstances, thus use time based events as well.
+    timespan_t start_time = (1.0 - first_pct / 100.0) * sim -> expected_iteration_time;
+    start_event = make_event<start_event_t>( *sim, *sim, this, start_time );
+  }
+}
+
 void raid_event_t::schedule()
 {
   sim -> print_debug( "Scheduling {}", *this );
@@ -1211,7 +1339,6 @@ void raid_event_t::schedule()
       event_t( s, time ),
       raid_event( re )
     {
-      re -> set_next( s.current_time() + time );
     }
 
     virtual const char* name() const override
@@ -1219,7 +1346,10 @@ void raid_event_t::schedule()
 
     virtual void execute() override
     {
-      raid_event -> finish();
+      if (raid_event -> is_up)
+      {
+        raid_event -> finish();
+      }
       raid_event->duration_event = nullptr;
     }
   };
@@ -1232,7 +1362,6 @@ void raid_event_t::schedule()
       event_t( s, time ),
       raid_event( re )
     {
-      re -> set_next( s.current_time() + time );
     }
 
     virtual const char* name() const override
@@ -1253,8 +1382,7 @@ void raid_event_t::schedule()
       }
       else raid_event -> finish();
 
-      if ( raid_event -> last <= timespan_t::zero() ||
-           raid_event -> last > ( sim().current_time() + ct ) )
+      if (raid_event -> activation_status == activation_status_e::activated)
       {
         raid_event -> cooldown_event = make_event<cooldown_event_t>( sim(), sim(), raid_event, ct );
       }
@@ -1274,8 +1402,11 @@ void raid_event_t::reset()
 {
   num_starts = 0;
   is_up = false;
+  activation_status = activation_status_e::not_yet_activated;
   event_t::cancel(cooldown_event);
   event_t::cancel(duration_event);
+  event_t::cancel(start_event);
+  event_t::cancel(end_event);
 
   if ( cooldown_min == timespan_t::zero() ) cooldown_min = cooldown * 0.5;
   if ( cooldown_max == timespan_t::zero() ) cooldown_max = cooldown * 1.5;
@@ -1304,8 +1435,28 @@ void raid_event_t::parse_options( const std::string& options_str )
     }
   }
 
+  if (first_pct != -1 && !first_str.empty())
+  {
+    throw std::invalid_argument("first= and first_pct= cannot be used together.");
+  }
+  if (last_pct != -1 && !last_str.empty())
+  {
+    throw std::invalid_argument("last= and last_pct= cannot be used together.");
+  }
+
+  if (last_pct != -1 && !sim->fixed_time)
+  {
+    assert(sim->target);
+    sim->target->register_resource_callback(RESOURCE_HEALTH, last_pct, [this](){deactivate();}, true);
+  }
+
+  if (first_pct != -1 && !sim->fixed_time)
+  {
+    assert(sim->target);
+    sim->target->register_resource_callback(RESOURCE_HEALTH, first_pct, [this](){activate();}, true);
+  }
   // Parse first/last. TODO: Replace with something better, see Issue #4326
-  if ( first_str.size() > 1 )
+  if ( !first_str.empty() )
   {
     try
     {
@@ -1321,7 +1472,7 @@ void raid_event_t::parse_options( const std::string& options_str )
 
       if ( first < timespan_t::zero() )
       {
-        throw std::invalid_argument("first= option cannot be negative: {}");
+        throw std::invalid_argument("first= option cannot be negative.");
       }
     }
     catch (const std::exception& ex)
@@ -1346,7 +1497,7 @@ void raid_event_t::parse_options( const std::string& options_str )
 
       if ( last < timespan_t::zero() )
       {
-        throw std::invalid_argument("last= option cannot be negative: {}");
+        throw std::invalid_argument("last= option cannot be negative.");
       }
     }
     catch (const std::exception& ex)
@@ -1436,7 +1587,7 @@ void raid_event_t::combat_begin( sim_t* sim )
 {
   for ( auto& raid_event : sim -> raid_events )
   {
-    raid_event -> schedule();
+    raid_event -> combat_begin();
   }
 }
 
