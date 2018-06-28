@@ -667,7 +667,6 @@ struct rogue_t : public player_t
   void trigger_deepening_shadows( const action_state_t* );
   void trigger_shadow_techniques( const action_state_t* );
   void trigger_weaponmaster( const action_state_t* );
-  void trigger_true_bearing( const action_state_t* );
   void trigger_restless_blades( const action_state_t* );
   void trigger_exsanguinate( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
@@ -2398,10 +2397,6 @@ struct between_the_eyes_t : public rogue_attack_t
 
     p() -> trigger_restless_blades( execute_state );
 
-    if ( p() -> buffs.true_bearing -> up() )
-    {
-      p() -> trigger_true_bearing( execute_state );
-    }
     if ( greenskins_waterlogged_wristcuffs )
     {
       const rogue_attack_state_t* rs = rogue_attack_t::cast_state( execute_state );
@@ -2601,11 +2596,6 @@ struct dispatch_t: public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> trigger_restless_blades( execute_state );
-
-    if ( p() -> buffs.true_bearing -> up() )
-    {
-      p() -> trigger_true_bearing( execute_state );
-    }
 
     p() -> buffs.t19_4pc_outlaw -> trigger();
 
@@ -3356,17 +3346,13 @@ struct roll_the_bones_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
+    // Restless Blades and thus True Bearing CDR triggers before buff roll.
+    p() -> trigger_restless_blades( execute_state );
+
     int cp = cast_state( execute_state ) -> cp;
     timespan_t d = ( cp + 1 ) * p() -> buffs.roll_the_bones -> data().duration();
 
     p() -> buffs.roll_the_bones -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
-
-    p() -> trigger_restless_blades( execute_state );
-
-    if ( p() -> buffs.true_bearing -> up() )
-    {
-      p() -> trigger_true_bearing( execute_state );
-    }
 
     p() -> buffs.snake_eyes -> trigger( 1, cp * p() -> azerite.snake_eyes.value() );
   }
@@ -5465,25 +5451,10 @@ void rogue_t::trigger_alacrity( const action_state_t* s )
   }
 }
 
-void rogue_t::trigger_true_bearing( const action_state_t* state )
-{
-  timespan_t v = timespan_t::from_seconds( buffs.true_bearing -> default_value );
-  v *= - actions::rogue_attack_t::cast_state( state ) -> cp;
-
-  // Abilities
-  cooldowns.adrenaline_rush -> adjust( v, false );
-  cooldowns.between_the_eyes -> adjust( v, false );
-  cooldowns.sprint -> adjust( v, false );
-  cooldowns.vanish -> adjust( v, false );
-  // Talents
-  cooldowns.grappling_hook -> adjust( v, false );
-  cooldowns.killing_spree -> adjust( v, false );
-  cooldowns.marked_for_death -> adjust( v, false );
-}
-
 void rogue_t::trigger_restless_blades( const action_state_t* state )
 {
   timespan_t v = timespan_t::from_seconds( spec.restless_blades -> effectN( 1 ).base_value() / 10.0 );
+  v += timespan_t::from_seconds( buffs.true_bearing -> value() );
   v *= - actions::rogue_attack_t::cast_state( state ) -> cp;
 
   // Abilities
