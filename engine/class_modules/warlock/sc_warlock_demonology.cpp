@@ -203,8 +203,9 @@ namespace warlock {
       };
 
       wild_imp_pet_t::wild_imp_pet_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "wild_imp", PET_WILD_IMP),
-          firebolt(),
-          isnotdoge()
+        firebolt(),
+        isnotdoge(),
+        power_siphon(false)
       {
       }
 
@@ -246,7 +247,8 @@ namespace warlock {
         warlock_pet_t::demise();
 
         o()->buffs.wild_imps->decrement();
-        o()->buffs.demonic_core->trigger(1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN(1).percent());
+        if(!power_siphon)
+          o()->buffs.demonic_core->trigger(1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN(1).percent());
       }
     }
 
@@ -1293,6 +1295,7 @@ namespace warlock {
             imps_consumed++;
           }
         }
+
         if (p()->azerite.explosive_potential.ok() && imps_consumed >= 3)
           p()->buffs.explosive_potential->trigger();
       }
@@ -1500,6 +1503,7 @@ namespace warlock {
           p()->buffs.demonic_core->trigger();
           pets::wild_imp::wild_imp_pet_t* imp = imps.front();
           imps.erase(imps.begin());
+          imp->power_siphon = true;
           imp->dismiss(true);
         }
       }

@@ -960,6 +960,7 @@ namespace warlock
         {
           action_t* firebolt;
           bool isnotdoge;
+          bool power_siphon;
           wild_imp_pet_t(sim_t* sim, warlock_t* owner);
           virtual void init_base_stats() override;
           virtual action_t* create_action(const std::string& name,const std::string& options_str) override;

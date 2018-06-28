@@ -361,7 +361,9 @@ namespace warlock
         {
           background = true;
           dual = true;
-          tick_may_crit = hasted_ticks = true;
+          tick_may_crit = true;
+          hasted_ticks = false;
+          tick_zero = true;
           affected_by_deaths_embrace = true;
           if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
             base_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T19, B2 )->effectN( 1 ).percent();
