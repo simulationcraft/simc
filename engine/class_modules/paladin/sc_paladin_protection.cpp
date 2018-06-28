@@ -52,6 +52,8 @@ struct ardent_defender_t : public paladin_spell_t
   {
     parse_options( options_str );
 
+    cooldown -> duration *= 1.0 + p -> spells.pillars_of_inmost_light -> effectN( 1 ).percent();
+
     harmful = false;
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
