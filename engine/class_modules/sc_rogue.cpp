@@ -3047,7 +3047,7 @@ struct killing_spree_t : public rogue_attack_t
 
     if ( player -> off_hand_weapon.type != WEAPON_NONE )
     {
-      attack_oh = new killing_spree_tick_t( p, "killing_spree_oh", p -> find_spell( 57841 ) -> effectN( 2 ).trigger() );
+      attack_oh = new killing_spree_tick_t( p, "killing_spree_oh", p -> find_spell( 57841 ) -> effectN( 1 ).trigger() );
       add_child( attack_oh );
     }
   }
