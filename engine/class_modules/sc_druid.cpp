@@ -75,7 +75,6 @@ struct druid_td_t : public actor_target_data_t
 {
   struct dots_t
   {
-    dot_t* ashamanes_frenzy;
     dot_t* fury_of_elune;
     dot_t* gushing_wound;
     //dot_t* bloody_gash;
@@ -85,9 +84,6 @@ struct druid_td_t : public actor_target_data_t
     dot_t* regrowth;
     dot_t* rejuvenation;
     dot_t* rip;
-    dot_t* shadow_rake;
-    dot_t* shadow_rip;
-    dot_t* shadow_thrash;
     dot_t* stellar_flare;
     dot_t* sunfire;
     dot_t* starfall;
@@ -103,8 +99,7 @@ struct druid_td_t : public actor_target_data_t
 
   struct debuffs_t
   {
-    buff_t* bloodletting;
-    buff_t* open_wounds;
+    buff_t* bloodletting; 
   } debuff;
 
   druid_td_t( player_t& target, druid_t& source );
@@ -120,7 +115,6 @@ struct druid_td_t : public actor_target_data_t
   unsigned feral_tier19_4pc_bleeds()
   {
      return dots.rip->is_ticking()
-           + dots.ashamanes_frenzy->is_ticking()
            + dots.rake -> is_ticking()
            + dots.thrash_cat -> is_ticking();
   }
@@ -239,7 +233,6 @@ public:
   {
     // Feral
     real_ppm_t* predator; // Optional RPPM approximation
-    real_ppm_t* shadow_thrash;
 
     // Balance
     real_ppm_t* balance_tier18_2pc;
@@ -259,12 +252,10 @@ public:
     action_t* gushing_wound;
     action_t* bloody_gash;
     heals::cenarion_ward_hot_t*     cenarion_ward_hot;
-    attack_t* ashamanes_rip;
     action_t* brambles;
     action_t* brambles_pulse;
     spell_t*  galactic_guardian;
     action_t* natures_guardian;
-    attack_t* shadow_thrash;
     spell_t*  shooting_stars;
     spell_t*  starfall;
     spell_t* solar_empowerment;
@@ -329,16 +320,13 @@ public:
     haste_buff_t* starlord; //talent
 
     // Feral
-    buff_t* ashamanes_energy;
     buff_t* apex_predator;
     buff_t* berserk;
     buff_t* bloodtalons;
     buff_t* elunes_guidance;
-    buff_t* feral_instinct;
     buff_t* fiery_red_maimers; // Legion Legendary
     buff_t* incarnation_cat;
     buff_t* predatory_swiftness;
-    buff_t* protection_of_ashamane;
     buff_t* savage_roar;
     buff_t* scent_of_blood;
     buff_t* tigers_fury;
@@ -408,8 +396,6 @@ public:
     gain_t* sunfire;
 
     // Feral (Cat)
-    gain_t* ashamanes_energy;
-    gain_t* ashamanes_frenzy;
     gain_t* brutal_slash;
     gain_t* energy_refund;
     gain_t* elunes_guidance;
@@ -458,7 +444,6 @@ public:
     proc_t* clearcasting_wasted;
 
     // Feral
-    proc_t* ashamanes_bite;
     proc_t* the_wildshapers_clutch;
     proc_t* predator;
     proc_t* predator_wasted;
@@ -620,42 +605,6 @@ public:
     const spell_data_t* stonebark;
     const spell_data_t* flourish;
   } talent;
-
-  // Artifacts
-  struct artifact_spell_data_t
-  {
-    // Feral -- Fangs of Ashamane
-    artifact_power_t ashamanes_bite;
-    artifact_power_t ashamanes_energy;
-    artifact_power_t ashamanes_frenzy;
-    artifact_power_t attuned_to_nature;
-    artifact_power_t feral_instinct;
-    artifact_power_t feral_power;
-    artifact_power_t honed_instincts;
-    artifact_power_t open_wounds;
-    artifact_power_t powerful_bite;
-    artifact_power_t protection_of_ashamane;
-    artifact_power_t razor_fangs;
-    artifact_power_t scent_of_blood;
-    artifact_power_t shadow_thrash;
-    artifact_power_t sharpened_claws;
-    artifact_power_t shredder_fangs;
-    artifact_power_t tear_the_flesh;
-    artifact_power_t fangs_of_the_first;
-    //7.2
-    artifact_power_t ferocity_of_the_cenarion_circle;
-    artifact_power_t thrashing_claws;
-    artifact_power_t fury_of_ashamane;
-    artifact_power_t bloodletters_frailty;
-
-    // NYI
-    artifact_power_t hardened_roots;
-
-    // Restoration
-    artifact_power_t grace_of_the_cenarion_circle;
-    artifact_power_t persistence;
-
-  } artifact;
 
   struct legendary_t
   {
@@ -1259,7 +1208,6 @@ struct cat_form_t : public druid_buff_t< buff_t >
     base_t::expire_override( expiration_stacks, remaining_duration );
 
     swap_melee( p().caster_melee_attack, p().caster_form_weapon );
-    p().buff.protection_of_ashamane -> trigger();
   }
 
   virtual void start( int stacks, double value, timespan_t duration ) override
@@ -1411,8 +1359,6 @@ public:
   {
     double a = ab::target_armor( t );
 
-    a *= 1.0 - td( t ) -> debuff.open_wounds -> value();
-
     return a;
   }
 
@@ -1422,12 +1368,6 @@ public:
 
     if ( rend_and_tear )
       tm *= 1.0 + p() -> talent.rend_and_tear -> effectN( 2 ).percent() * td( t ) -> dots.thrash_bear -> current_stack();
-
-    if ( p() -> artifact.bloodletters_frailty.rank() > 0
-       && td(t) -> dots.ashamanes_frenzy -> is_ticking() )
-    {
-      tm *= 1.0 + p() -> artifact.bloodletters_frailty.data().effectN(1).percent();
-    }
 
     return tm;
   }
@@ -2025,11 +1965,6 @@ struct moonfire_t : public druid_spell_t
           aoe = 1 + p->talent.twin_moons->effectN(1).base_value();
           base_dd_multiplier *= 1.0 + p->talent.twin_moons->effectN(2).percent();
           base_td_multiplier *= 1.0 + p->talent.twin_moons->effectN(3).percent();
-      }
-
-      if ( p -> artifact.persistence )
-      {
-        dot_duration += p -> artifact.persistence.time_value();
       }
 
       /* June 2016: This hotfix is negated if you shift into Moonkin Form (ever),
@@ -2660,8 +2595,6 @@ public:
 
     if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target )
     {
-      trigger_ashamanes_rip();
-
       if ( attack_critical && p() -> specialization() == DRUID_FERAL )
       {
         trigger_primal_fury();
@@ -2679,7 +2612,6 @@ public:
       // Track benefit of damage buffs
       p() -> buff.tigers_fury -> up();
       p() -> buff.savage_roar -> up();
-      p() -> buff.feral_instinct -> up();
       if ( special && base_costs[ RESOURCE_ENERGY ] > 0 )
         p() -> buff.berserk -> up();
     }
@@ -2741,25 +2673,6 @@ public:
     {
       p() -> proc.the_wildshapers_clutch -> occur();
       trigger_primal_fury();
-    }
-  }
-
-  virtual void trigger_ashamanes_rip()
-  {
-    if ( ! p() -> artifact.ashamanes_bite.rank() )
-      return;
-    if ( ! ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 ) )
-      return;
-    if ( ! hit_any_target )
-      return;
-
-    if ( p() -> rng().roll( p() -> artifact.ashamanes_bite.data().proc_chance() ) )
-    {
-      if ( td( execute_state -> target ) -> dots.rip -> is_ticking() )
-      {
-        p() -> active.ashamanes_rip -> target = execute_state -> target;
-        p() -> active.ashamanes_rip -> schedule_execute();
-      }
     }
   }
 }; // end druid_cat_attack_t
@@ -2834,181 +2747,6 @@ struct rip_state_t : public action_state_t
   }
 };
 
-// Ashamane's Frenzy ========================================================
-
-struct ashamanes_frenzy_driver_t : public cat_attack_t
-{
-  struct ashamanes_frenzy_t : public cat_attack_t
-  {
-    struct ashamanes_frenzy_ignite_t : public residual_action::residual_periodic_action_t<cat_attack_t>
-    {
-      ashamanes_frenzy_ignite_t( druid_t* p ) :
-        base_t( "ashamanes_frenzy_ignite", p, p -> find_spell( 210723 ) )
-      {
-        dual = true;
-        tick_may_crit = true; // Sep 22 2016
-      }
-
-      void init() override
-      {
-        base_t::init();
-
-        snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
-      }
-    };
-
-    ashamanes_frenzy_ignite_t* ignite;
-    double ignite_multiplier;
-
-    ashamanes_frenzy_t( druid_t* p ) :
-      cat_attack_t( "ashamanes_frenzy_hit", p, p -> find_spell( 210723 ) ),
-      ignite( new ashamanes_frenzy_ignite_t( p ) )
-    {
-      background = dual = true;
-      snapshots_sr = snapshots_tf = false; // Sep 22 2016
-      consumes_bloodtalons = false; // BT is applied by driver.
-      ignite_multiplier = dot_duration / data().effectN( 3 ).period();
-      dot_duration = timespan_t::zero(); // DoT is applied by ignite action.
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      cat_attack_t::impact( s );
-
-      residual_action::trigger( ignite, s -> target, s -> result_raw * ignite_multiplier );
-    }
-
-    // Does not trigger Ashamane's Rip.
-    void trigger_ashamanes_rip() override {}
-  };
-
-  ashamanes_frenzy_t* damage;
-
-  ashamanes_frenzy_driver_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "ashamanes_frenzy", p, &p -> artifact.ashamanes_frenzy.data(), options_str ),
-    damage( new ashamanes_frenzy_t( p ) )
-  {
-    may_miss = may_parry = may_dodge = may_crit = tick_may_crit = false;
-    damage -> stats = damage -> ignite -> stats = stats;
-  }
-
-  // Don't record data for this action.
-  void record_data( action_state_t* s ) override
-  { ( void ) s; assert( s -> result_amount == 0.0 ); }
-
-  // Assure the only persistent multiplier here is Bloodtalons.
-  double composite_persistent_multiplier( const action_state_t* ) const override
-  { return 1.0 + p() -> buff.bloodtalons -> check_value(); }
-
-  void tick( dot_t* d ) override
-  {
-    cat_attack_t::tick( d );
-
-    // Create & snapshot state
-    action_state_t* s = damage -> get_state();
-    s -> target = d -> state -> target;
-    damage -> snapshot_state( s, DMG_DIRECT );
-    // Apply Bloodtalons from driver.
-    s -> persistent_multiplier *= d -> state -> persistent_multiplier;
-    damage -> schedule_execute( s );
-  }
-
-  void execute() override
-  {
-    cat_attack_t::execute();
-
-    p() -> buff.fiery_red_maimers -> trigger();
-  }
-
-  // Does not trigger primal fury.
-  void trigger_primal_fury() override {}
-};
-
-// Ashamane's Rip ===========================================================
-
-struct ashamanes_rip_t : public cat_attack_t
-{
-  ashamanes_rip_t( druid_t* p ) :
-    cat_attack_t( "ashamanes_rip", p, p -> find_spell( 210705 ) )
-  {
-    background = true;
-    may_miss = may_block = may_dodge = may_parry = false;
-    // Copies benefit from rip, so need to flag this as snapshotting so its damage doesn't get modified dynamically.
-    snapshots_tf = true;
-    snapshots_sr = false;
-
-    // "dot_behavior" will have no effect, see ashamanes_rip_t::impact()
-
-    base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
-    if ( p->sets->has_set_bonus(DRUID_FERAL, T20, B4) )
-       base_multiplier *= (1.0 + p->find_spell(242235)->effectN(1).percent());
-
-
-  }
-
-  action_state_t* new_state() override
-  { return new rip_state_t( p(), this, target ); }
-
-  void snapshot_state( action_state_t* s, dmg_e rt ) override
-  {
-    assert( td( s -> target ) -> dots.rip -> is_ticking() );
-
-    cat_attack_t::snapshot_state( s, rt );
-
-    rip_state_t* shadow_rip = debug_cast<rip_state_t*>( s );
-    rip_state_t* rip = debug_cast<rip_state_t*>( td( s -> target ) -> dots.rip -> state );
-
-    shadow_rip -> combo_points = rip -> combo_points;
-    shadow_rip -> persistent_multiplier = rip -> persistent_multiplier;
-  }
-
-  double attack_tick_power_coefficient( const action_state_t* s ) const override
-  {
-    rip_state_t* s_rip = debug_cast<rip_state_t*>( td( s -> target ) -> dots.shadow_rip -> state );
-
-    if ( ! s_rip )
-      return 0;
-
-    return cat_attack_t::attack_tick_power_coefficient( s ) * s_rip -> combo_points;
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-     return td( s -> target ) -> dots.rip -> remains();
-  }
-
-  void tick(dot_t* d) override
-  {
-     base_t::tick(d);
-
-     trigger_wildshapers_clutch(d->state);
-
-     trigger_bloody_gash(d->target, d->state->result_total);
-     if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B4) )
-     {
-        p() -> buff.apex_predator -> trigger();
-     }
-  }
-
-  virtual void execute() override
-  {
-    assert( td( target ) -> dots.rip -> is_ticking() );
-    if ( target -> is_sleeping() ) return;
-
-    cat_attack_t::execute();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    // To mimick blizz-like behavior, DoT does not clip but instead ends the
-    // previous DoT prior to applying the new one.
-    td( s -> target ) -> dots.shadow_rip -> cancel();
-
-    cat_attack_t::impact( s );
-  }
-};
-
 // Berserk ==================================================================
 
 struct berserk_t : public cat_attack_t
@@ -3024,7 +2762,6 @@ struct berserk_t : public cat_attack_t
     cat_attack_t::execute();
 
     p() -> buff.berserk -> trigger();
-    p() -> buff.feral_instinct -> trigger();
 
     if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T17, B4 ) )
       p() -> buff.feral_tier17_4pc -> trigger();
@@ -3051,8 +2788,7 @@ struct brutal_slash_t : public cat_attack_t
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type = ENERGIZE_ON_HIT;
     cooldown -> hasted = true;
-
-    base_multiplier *= 1.0 + p -> artifact.sharpened_claws.percent();
+ 
   }
 
   double cost() const override
@@ -3099,7 +2835,6 @@ struct ferocious_bite_t : public cat_attack_t
 
     max_excess_energy = 1 * data().effectN( 2 ).base_value();
 
-    crit_bonus_multiplier *= 1.0 + p -> artifact.powerful_bite.percent();
     if ( p -> talent.sabertooth -> ok() )
     {
        base_multiplier *= 1.0 + p -> talent.sabertooth -> effectN(1).percent();
@@ -3406,7 +3141,6 @@ struct rake_t : public cat_attack_t
 
       // Direct damage modifiers go in rake_t!
       trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
-      base_multiplier *= 1.0 + p -> artifact.tear_the_flesh.percent();
     }
 
     dot_t* get_dot( player_t* t ) override
@@ -3437,8 +3171,7 @@ struct rake_t : public cat_attack_t
 
     // Periodic damage modifiers go in rake_bleed_t!
     trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
-    base_multiplier *= 1.0 + p -> artifact.tear_the_flesh.percent();
-  }
+ }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
@@ -3485,7 +3218,6 @@ struct rip_t : public cat_attack_t
 
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + p -> artifact.razor_fangs.percent();
 
     if ( p->sets -> has_set_bonus(DRUID_FERAL, T20, B2))
     {
@@ -3513,9 +3245,6 @@ struct rip_t : public cat_attack_t
   void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-      td( s -> target ) -> debuff.open_wounds -> trigger();
   }
 
   void tick( dot_t* d ) override
@@ -3532,8 +3261,6 @@ struct rip_t : public cat_attack_t
   void last_tick( dot_t* d ) override
   {
     cat_attack_t::last_tick( d );
-
-    td( d -> target ) -> debuff.open_wounds -> expire();
   }
 };
 
@@ -3627,9 +3354,6 @@ struct shred_t : public cat_attack_t
   shred_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ), options_str )
   {
-    base_crit += p -> artifact.feral_power.percent();
-    base_multiplier *= 1.0 + p -> artifact.shredder_fangs.percent();
-
     // This was removed from spelldata for some reason, but it still awards 1CP in game.
     energize_amount = 1;
   }
@@ -3693,7 +3417,6 @@ public:
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type = ENERGIZE_ON_HIT;
 
-    base_multiplier *= 1.0 + player -> artifact.sharpened_claws.percent();
   }
 
   double cost() const override
@@ -3771,10 +3494,6 @@ struct tigers_fury_t : public cat_attack_t
        p() -> buff.tigers_fury -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0, duration);
     }
 
-    if ( p() -> artifact.fury_of_ashamane.rank() > 0 )
-       p() -> buff.fury_of_ashamane -> trigger();
-
-    p() -> buff.ashamanes_energy -> trigger();
   }
 };
 
@@ -3782,65 +3501,6 @@ struct tigers_fury_t : public cat_attack_t
 
 struct thrash_cat_t : public cat_attack_t
 {
-  struct shadow_thrash_t : public cat_attack_t
-  {
-    struct shadow_thrash_tick_t : public cat_attack_t
-    {
-      shadow_thrash_tick_t( druid_t* p ):
-        cat_attack_t( "shadow_thrash", p, p -> find_spell( 210687 ) )
-      {
-        background = dual = true;
-        aoe = -1;
-        // Disable benefit from snapshotted damage bonuses, those will be applied in driver::tick().
-        snapshots_tf = snapshots_sr = moment_of_clarity = false;
-      }
-    };
-
-    cat_attack_t* damage;
-
-    shadow_thrash_t( druid_t* p ) :
-      cat_attack_t( "shadow_thrash", p, p -> artifact.shadow_thrash.data().effectN( 1 ).trigger() ),
-      damage( new shadow_thrash_tick_t( p ) )
-    {
-      background = true;
-      // Enable snapshotted damage bonuses so we can pass those on to the tick action (DoT-like behavior).
-      // TF and SR should be on by default, but just make sure since we are hard overriding.
-      snapshots_tf = moment_of_clarity = true;
-
-      snapshots_sr = false;
-
-      base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
-      // dot_duration doesn't matter but set it anyway to be safe.
-      dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
-
-      base_multiplier *= 1.0 + p -> artifact.thrashing_claws.rank() * p -> artifact.thrashing_claws.data().effectN(1).percent();
-      if ( p -> sets -> has_set_bonus( DRUID_FERAL, T19, B2 ) )
-      {
-        base_multiplier *= 1.0 + p -> find_spell(211140) -> effectN(1).percent();
-      }
-    }
-
-    // Shadow Thrash uses "legacy" refresh, carrying over no more than 1 tick.
-    timespan_t composite_dot_duration( const action_state_t* s ) const override
-    {
-      // Hardcode 2 base ticks because of Jagged Wounds granularity issue.
-      return base_tick_time * 2 + td( s -> target ) -> dots.shadow_thrash -> time_to_next_tick();
-    }
-
-    void tick( dot_t* d ) override
-    {
-      cat_attack_t::tick( d );
-
-      // Create & snapshot state
-      action_state_t* s = damage -> get_state();
-      s -> target = d -> state -> target;
-      damage -> snapshot_state( s, DMG_DIRECT );
-      // Apply snapshotted damage bonuses.
-      s -> persistent_multiplier = d -> state -> persistent_multiplier;
-      damage -> schedule_execute( s );
-    }
-  };
-
   thrash_cat_t( druid_t* p, const std::string& options_str ):
     cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
@@ -3861,19 +3521,8 @@ struct thrash_cat_t : public cat_attack_t
       base_multiplier *= 1.0 + p -> find_spell( 211140 ) -> effectN(1).percent();
     }
 
-    if ( p -> artifact.shadow_thrash.rank() )
-    {
-      if ( ! p -> active.shadow_thrash )
-      {
-        p -> active.shadow_thrash = new shadow_thrash_t( p );
-      }
-
-      add_child( p -> active.shadow_thrash );
-    }
-
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + p -> artifact.thrashing_claws.rank() * p -> artifact.thrashing_claws.data().effectN(1).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -3884,24 +3533,11 @@ struct thrash_cat_t : public cat_attack_t
   void execute() override
   {
      // Trigger before consume_resource(), so it can get the damage bonus from Moment of Clarity.
-    trigger_shadow_thrash( p() );
 
     cat_attack_t::execute();
 
     p() -> buff.scent_of_blood -> trigger( 1,
       num_targets_hit * p() -> buff.scent_of_blood -> default_value );
-  }
-
-  void trigger_shadow_thrash( const player_t* ts )
-  {
-    if ( ! rng().roll( p() -> artifact.shadow_thrash.data().proc_chance() ) )
-      return;
-
-    // Snapshot now so we can use schedule_execute().
-    action_state_t* s = p() -> active.shadow_thrash -> get_state();
-    s -> target = ts -> target;
-    p() -> active.shadow_thrash -> snapshot_state( s, DMG_OVER_TIME );
-    p() -> active.shadow_thrash -> schedule_execute( s );
   }
 };
 
@@ -4553,7 +4189,6 @@ struct regrowth_t: public druid_heal_t
     target = sim -> target;
     base_multiplier = 0;
 
-    base_multiplier *= 1.0 + p -> artifact.attuned_to_nature.percent();
   }
 
   double cost() const override
@@ -5217,7 +4852,6 @@ struct incarnation_t : public druid_spell_t
     druid_spell_t::execute();
 
     spec_buff -> trigger();
-    p() -> buff.feral_instinct -> trigger();
 
     if ( p() -> buff.incarnation_cat -> check() )
     {
@@ -5502,10 +5136,6 @@ struct sunfire_t : public druid_spell_t
       base_aoe_multiplier = 0;
       dot_duration += p -> spec.balance -> effectN( 4 ).time_value();
 
-      if ( p -> artifact.persistence )
-      {
-        dot_duration += p -> artifact.persistence.time_value();
-      }
     }
 
     double action_multiplier() const override
@@ -6342,8 +5972,7 @@ void druid_t::activate()
 
             if (get_target_data(target) ->       dots.thrash_cat -> is_ticking() ||
                 get_target_data(target) ->              dots.rip -> is_ticking() ||
-                get_target_data(target) ->             dots.rake -> is_ticking() ||
-                get_target_data(target) -> dots.ashamanes_frenzy -> is_ticking() )
+                get_target_data(target) ->             dots.rake -> is_ticking() )
             {
 
 
@@ -6367,8 +5996,7 @@ void druid_t::activate()
 
          if ( get_target_data( target ) -> dots.thrash_cat       -> is_ticking() ||
               get_target_data( target ) -> dots.rip              -> is_ticking() ||
-              get_target_data( target ) -> dots.rake             -> is_ticking() ||
-              get_target_data( target ) -> dots.ashamanes_frenzy -> is_ticking() )
+              get_target_data( target ) -> dots.rake             -> is_ticking() )
          {
             auto p = ( (druid_t*) sim -> active_player );
 
@@ -6394,8 +6022,6 @@ action_t* druid_t::create_action( const std::string& name,
   using namespace heals;
   using namespace spells;
 
-  if ( name == "ashamanes_frenzy" ||
-       name == "frenzy"                 ) return new ashamanes_frenzy_driver_t( this, options_str );
   if ( name == "auto_attack"            ) return new            auto_attack_t( this, options_str );
   if ( name == "barkskin"               ) return new               barkskin_t( this, options_str );
   if ( name == "berserk"                ) return new                berserk_t( this, options_str );
@@ -6676,39 +6302,6 @@ void druid_t::init_spells()
     find_spell( 159195 ) : spell_data_t::not_found();
   mastery.starlight           = find_mastery_spell( DRUID_BALANCE );
 
-  // Artifact ===============================================================
-
-  // Feral -- Fangs of Ashamane
-  artifact.ashamanes_frenzy             = find_artifact_spell( "Ashamane's Frenzy" );
-  artifact.open_wounds                  = find_artifact_spell( "Open Wounds" );
-  artifact.ashamanes_bite               = find_artifact_spell( "Ashamane's Bite" );
-  artifact.shadow_thrash                = find_artifact_spell( "Shadow Thrash" );
-  artifact.ashamanes_energy             = find_artifact_spell( "Ashamane's Energy" );
-  artifact.razor_fangs                  = find_artifact_spell( "Razor Fangs" );
-  artifact.attuned_to_nature            = find_artifact_spell( "Attuned to Nature" );
-  artifact.powerful_bite                = find_artifact_spell( "Powerful Bite" );
-  artifact.feral_power                  = find_artifact_spell( "Feral Power" );
-  artifact.sharpened_claws              = find_artifact_spell( "Sharpened Claws" );
-  artifact.shredder_fangs               = find_artifact_spell( "Shredder Fangs" );
-  artifact.tear_the_flesh               = find_artifact_spell( "Tear the Flesh" );
-  artifact.honed_instincts              = find_artifact_spell( "Honed Instincts" );
-  artifact.protection_of_ashamane       = find_artifact_spell( "Protection of Ashamane" );
-  artifact.scent_of_blood               = find_artifact_spell( "Scent of Blood" );
-  artifact.feral_instinct               = find_artifact_spell( "Feral Instinct" );
-  artifact.hardened_roots               = find_artifact_spell( "Hardened Roots" );
-  artifact.fangs_of_the_first           = find_artifact_spell( "Fangs of the First" );
-
-  //7.2 Feral
-  artifact.bloodletters_frailty            = find_artifact_spell("Bloodletter's Frailty");
-  artifact.fury_of_ashamane                = find_artifact_spell("Fury of Ashamane");
-  artifact.thrashing_claws                 = find_artifact_spell("Thrashing Claws");
-  artifact.ferocity_of_the_cenarion_circle = find_artifact_spell("Ferocity of the Cenarion Circle");
-
-  // Restoration
-  artifact.grace_of_the_cenarion_circle = find_artifact_spell("Grace of the Cenarion Circle");
-  artifact.persistence = find_artifact_spell("Persistence");
-
-
   // Active Actions =========================================================
 
   caster_melee_attack = new caster_attacks::druid_melee_t( this );
@@ -6745,9 +6338,7 @@ void druid_t::init_spells()
     active.galactic_guardian  = new spells::moonfire_t::galactic_guardian_damage_t( this );
     active.galactic_guardian -> stats = get_stats( "moonfire" );
   }
-
-  if ( artifact.ashamanes_bite.rank() )
-    active.ashamanes_rip = new cat_attacks::ashamanes_rip_t( this );
+ 
   if ( mastery.natures_guardian -> ok() )
     active.natures_guardian = new heals::natures_guardian_t( this );
 
@@ -6860,12 +6451,7 @@ void druid_t::create_buffs()
                                    talent.elunes_guidance -> effectN( 2 ).trigger() -> effectN( 1 ).resource( RESOURCE_COMBO_POINT ),
                                    gain.elunes_guidance ); } )
                                .cd( timespan_t::zero() )
-                               .period( talent.elunes_guidance -> effectN( 2 ).period() );
-
-  buff.feral_instinct        = buff_creator_t( this, "feral_instinct", find_spell( 210649 ) )
-                               .chance( artifact.feral_instinct.rank() > 0 )
-                               .default_value( artifact.feral_instinct.percent() )
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                               .period( talent.elunes_guidance -> effectN( 2 ).period() ); 
 
   buff.galactic_guardian     = buff_creator_t( this, "galactic_guardian", find_spell( 213708 ) )
                                .chance( talent.galactic_guardian -> ok() )
@@ -6924,12 +6510,6 @@ void druid_t::create_buffs()
 
   // Feral
 
-  buff.ashamanes_energy      = buff_creator_t( this, "ashamanes_energy", find_spell( 210583 ) )
-                               .chance( artifact.ashamanes_energy.rank() > 0 )
-                               .default_value( artifact.ashamanes_energy.value() )
-                               .tick_callback( [ this ]( buff_t* b , int, const timespan_t& ) {
-                                  resource_gain( RESOURCE_ENERGY, b -> check_value(), gain.ashamanes_energy ); } );
-
   buff.apex_predator        = buff_creator_t(this, "apex_predator", find_spell(252752))
                                .chance(  sets -> has_set_bonus( DRUID_FERAL, T21, B4) ? find_spell( 251790 ) -> proc_chance() : 0 /*: 0 )*/ );
 
@@ -6938,32 +6518,16 @@ void druid_t::create_buffs()
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", find_spell( 69369 ) )
                                .chance( spec.predatory_swiftness -> ok() );
 
-  buff.protection_of_ashamane = buff_creator_t( this, "protection_of_ashamane", find_spell( 210655 ) )
-                               .chance( artifact.protection_of_ashamane.rank() > 0 )
-                               .cd( find_spell( 213557 ) -> duration() )
-                               .default_value( find_spell( 210655 ) -> effectN( 1 ).percent() )
-                               .add_invalidate( CACHE_DODGE )
-                               .add_invalidate( CACHE_ARMOR );
-
   buff.savage_roar           = buff_creator_t( this, "savage_roar", talent.savage_roar )
                                .default_value( talent.savage_roar -> effectN( 2 ).percent() )
                                .refresh_behavior( buff_refresh_behavior::DURATION ) // Pandemic refresh is done by the action
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                .tick_behavior( buff_tick_behavior::NONE );
 
-  buff.scent_of_blood        = buff_creator_t( this, "scent_of_blood", find_spell( 210664 ) )
-                               .chance( artifact.scent_of_blood.rank() > 0 )
-                               .default_value( -artifact.scent_of_blood.data().effectN( 1 ).resource( RESOURCE_ENERGY ) );
-
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
-  buff.fury_of_ashamane      = make_buff<stat_buff_t>(this, "fury_of_ashamane", find_spell(240670))
-                               ->add_stat(STAT_VERSATILITY_RATING, 600) //TODO(feral): fix hardcoded spelldata
-                               ->set_chance(artifact.fury_of_ashamane.rank() > 0)
-                               ->add_invalidate(CACHE_VERSATILITY);
 
   // Guardian
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
@@ -7002,8 +6566,7 @@ void druid_t::create_buffs()
 
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
                                .cd( timespan_t::zero() )
-                               .default_value( -find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() )
-                               .duration( find_specialization_spell( "Survival Instincts" ) -> duration() + artifact.honed_instincts.time_value() );
+                               .default_value( -find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() );
 
   // Restoration
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
@@ -7262,7 +6825,6 @@ void druid_t::apl_feral()
    def->add_action("berserk");
    def->add_action("incarnation");
    def->add_action("tigers_fury");
-   def->add_action("ashamanes_frenzy");
    def->add_action("regrowth,if=(talent.sabertooth.enabled|buff.predatory_swiftness.up)&talent.bloodtalons.enabled&buff.bloodtalons.down&combo_points=5");
    def->add_action("rip,if=combo_points=5");
    def->add_action("thrash_cat,if=!ticking&variable.use_thrash>0");
@@ -7277,7 +6839,6 @@ void druid_t::apl_feral()
    cooldowns->add_action("elunes_guidance,if=combo_points=0&energy>=50");
    cooldowns->add_action("incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)");
    cooldowns->add_action("potion,name=prolonged_power,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))");
-   cooldowns->add_action("ashamanes_frenzy,if=combo_points>=2&(!talent.bloodtalons.enabled|buff.bloodtalons.up)");
    cooldowns->add_action("shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up");
    cooldowns->add_action("use_items");
 
@@ -7301,7 +6862,6 @@ void druid_t::apl_feral()
    finisher->add_action("maim,if=buff.fiery_red_maimers.up");
    finisher->add_action("ferocious_bite,max_energy=1");
 
-   generator->add_action("regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points>=2&cooldown.ashamanes_frenzy.remains<gcd");
    generator->add_action("regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4");
    generator->add_action("regrowth,if=equipped.ailuro_pouncers&talent.bloodtalons.enabled&(buff.predatory_swiftness.stack>2|(buff.predatory_swiftness.stack>1&dot.rake.remains<3))&buff.bloodtalons.down");
    generator->add_action("brutal_slash,if=spell_targets.brutal_slash>desired_targets");
@@ -7732,9 +7292,7 @@ void druid_t::init_gains()
   gain.sunfire               = get_gain( "sunfire"               );
 
 
-  // Feral
-  gain.ashamanes_energy      = get_gain( "ashamanes_energy"      );
-  gain.ashamanes_frenzy      = get_gain( "ashamanes_frenzy"      );
+  // Feral 
   gain.brutal_slash          = get_gain( "brutal_slash"          );
   gain.energy_refund         = get_gain( "energy_refund"         );
   gain.elunes_guidance       = get_gain( "elunes_guidance"       );
@@ -7772,7 +7330,6 @@ void druid_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.ashamanes_bite           = get_proc( "ashamanes_bite"         );
   proc.clearcasting             = get_proc( "clearcasting"           );
   proc.clearcasting_wasted      = get_proc( "clearcasting_wasted"    );
   proc.gore                     = get_proc( "gore"                   );
@@ -7805,7 +7362,6 @@ void druid_t::init_rng()
   // RPPM objects
   rppm.balance_tier18_2pc = get_rppm( "balance_tier18_2pc", sets -> set( DRUID_BALANCE, T18, B2 ) );
   rppm.predator           = get_rppm( "predator", predator_rppm_rate ); // Predator: optional RPPM approximation.
-  rppm.shadow_thrash      = get_rppm( "shadow_thrash", artifact.shadow_thrash );
 
   player_t::init_rng();
 }
@@ -8087,8 +7643,6 @@ double druid_t::composite_armor_multiplier() const
     a *= 1.0 + buff.incarnation_bear -> data().effectN( 5 ).percent();
   }
 
-  a *= 1.0 + buff.protection_of_ashamane -> check() * buff.protection_of_ashamane -> data().effectN( 2 ).percent();
-
   return a;
 }
 
@@ -8110,17 +7664,9 @@ double druid_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + buff.tigers_fury -> check_value();
   m *= 1.0 + buff.savage_roar -> check_value();
 
-  m *= 1.0 + buff.feral_instinct -> check_value();
-
   // Fury of Nature increases Arcane and Nature damage
   if ( buff.bear_form -> check() && ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) ) )
     m *= 1.0 + legendary.fury_of_nature;
-
-
-
-  m *= 1.0 + artifact.fangs_of_the_first.percent();
-  m *= 1.0 + artifact.ferocity_of_the_cenarion_circle.percent();
-  m *= 1.0 + artifact.grace_of_the_cenarion_circle.data().effectN(1).percent();
 
   return m;
 }
@@ -8343,8 +7889,6 @@ double druid_t::composite_crit_avoidance() const
 double druid_t::composite_dodge() const
 {
   double d = player_t::composite_dodge();
-
-  d += buff.protection_of_ashamane -> check_value();
 
   return d;
 }
@@ -8899,7 +8443,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     buff( buffs_t() ),
     debuff( debuffs_t() )
 {
-  dots.ashamanes_frenzy = target.get_dot( "ashamanes_frenzy_ignite", &source );
   dots.fury_of_elune    = target.get_dot( "fury_of_elune",    &source );
   dots.gushing_wound    = target.get_dot( "gushing_wound",    &source );
   dots.lifebloom        = target.get_dot( "lifebloom",        &source );
@@ -8909,9 +8452,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.regrowth         = target.get_dot( "regrowth",         &source );
   dots.rejuvenation     = target.get_dot( "rejuvenation",     &source );
   dots.rip              = target.get_dot( "rip",              &source );
-  dots.shadow_rake      = target.get_dot( "ashamanes_rake",   &source );
-  dots.shadow_rip       = target.get_dot( "ashamanes_rip",    &source );
-  dots.shadow_thrash    = target.get_dot( "shadow_thrash",    &source );
   dots.sunfire          = target.get_dot( "sunfire",          &source );
   dots.starfall         = target.get_dot( "starfall",         &source );
   dots.thrash_bear      = target.get_dot( "thrash_bear",      &source );
@@ -8922,9 +8462,6 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
 
   debuff.bloodletting        = buff_creator_t( *this, "bloodletting", source.find_spell( 165699 ) )
                                .default_value( source.find_spell( 165699 ) -> effectN( 1 ).percent() );
-  debuff.open_wounds         = buff_creator_t( *this, "open_wounds", source.find_spell( 210670 ) )
-                               .default_value( source.find_spell( 210670 ) -> effectN( 1 ).percent() )
-                               .trigger_spell( source.artifact.open_wounds );
 }
 
 
