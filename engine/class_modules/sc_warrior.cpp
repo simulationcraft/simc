@@ -9,7 +9,7 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// todo: Fury - Add Meat Cleaver to all single target Fury abilities (ref Bloodthirst)
+// todo: Fury - Add Meat Cleaver to all single target Fury abilities (ref Bloodthirst), add Battle Shout raid buff
 //       Arms - lol
 // ==========================================================================
 
@@ -915,7 +915,10 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
 	  p() -> cooldown.execute -> reset(true);
 	}
 
-    p() -> buff.ayalas_stone_heart -> trigger();
+    if( p() -> buff.ayalas_stone_heart -> trigger() )
+    {
+      p() ->cooldown.execute ->reset(true);
+    }
   }
 
   player_t* select_random_target() const
@@ -2696,11 +2699,6 @@ struct rampage_attack_t: public warrior_attack_t
 
   void execute() override
   {
-    if ( p() -> talents.frothing_berserker->ok() )
-    {
-      p() -> buff.frothing_berserker -> trigger();
-    }
-    p() -> enrage();  // As of 6/26/2018 the first attack will benefit from the Enrage and Frothing it procs (Bloodthirst still does not)  
 	warrior_attack_t::execute();
 
     if ( first_attack && result_is_miss( execute_state -> result ) )
@@ -2836,7 +2834,11 @@ struct rampage_parent_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-
+    if ( p() -> talents.frothing_berserker->ok() )
+    {
+      p() -> buff.frothing_berserker -> trigger();
+    }
+    p() -> enrage();  
     p() -> rampage_driver = make_event<rampage_event_t>( *sim, p(), 0 );
   }
 
@@ -3417,20 +3419,30 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
       p() -> buff.meat_cleaver -> trigger( p() -> buff.meat_cleaver -> data().max_stacks() );
   }
 
-  void execute() override
+void execute() override
   {
     warrior_attack_t::execute();
     const int num_available_targets = target_list().size();
 
-	p() -> resource_gain( RESOURCE_RAGE, base_rage_gain + additional_rage_gain_per_target * num_available_targets, p() -> gain.whirlwind );
+    double recklessness_bonus = 1.0;
+    if ( p()->buff.recklessness->check() )
+    {
+      recklessness_bonus += p()->spec.recklessness->effectN( 4 ).percent();
+    }
 
-      if ( p() -> talents.meat_cleaver -> ok() )
-      {
-        p() -> resource_gain( RESOURCE_RAGE,
-                              std::min( p() -> talents.meat_cleaver -> effectN( 2 ).base_value(),
-                                        p() -> talents.meat_cleaver -> effectN( 1 ).base_value() * num_available_targets ),
-                                        p() -> gain.meat_cleaver );
-      }
+    p()->resource_gain(
+        RESOURCE_RAGE,
+        ( base_rage_gain + additional_rage_gain_per_target * num_available_targets ) * recklessness_bonus,
+        p()->gain.whirlwind );
+
+    if ( p()->talents.meat_cleaver->ok() )
+    {
+      p()->resource_gain( RESOURCE_RAGE,
+                          std::min( p()->talents.meat_cleaver->effectN( 2 ).base_value(),
+                                    p()->talents.meat_cleaver->effectN( 1 ).base_value() * num_available_targets ) *
+                              recklessness_bonus,
+                          p()->gain.meat_cleaver );
+    }
   }
 
   bool ready() override
@@ -4139,7 +4151,6 @@ void warrior_t::init_spells()
 
   // Spec Passives
   spec.bastion_of_defense       = find_specialization_spell( "Bastion of Defense" );
-  spec.recklessness             = find_specialization_spell( "Recklessness" );
   spec.berserker_rage           = find_specialization_spell( "Berserker Rage" );
   spec.bladestorm               = find_specialization_spell( "Bladestorm" );
   spec.bloodthirst              = find_specialization_spell( "Bloodthirst" );
@@ -4172,6 +4183,7 @@ void warrior_t::init_spells()
   spec.raging_blow              = find_specialization_spell( "Raging Blow" );
   spec.rampage                  = find_specialization_spell( "Rampage" );
   spec.rallying_cry             = find_specialization_spell( "Rallying Cry" );
+  spec.recklessness             = find_specialization_spell( "Recklessness" );
   spec.revenge                  = find_specialization_spell( "Revenge" );
   spec.revenge_trigger          = find_specialization_spell( "Revenge Trigger" );
   spec.riposte                  = find_specialization_spell( "Riposte" );
@@ -4320,7 +4332,7 @@ void warrior_t::init_spells()
   cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
   cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
   cooldown.enraged_regeneration     = get_cooldown( "enraged_regeneration" );
-  cooldown.execute				= get_cooldown( "execute" );
+  cooldown.execute				    = get_cooldown( "execute" );
   cooldown.heroic_leap              = get_cooldown( "heroic_leap" );
   cooldown.last_stand               = get_cooldown( "last_stand" );
   cooldown.mortal_strike            = get_cooldown( "mortal_strike" );
@@ -5025,10 +5037,6 @@ void warrior_t::create_buffs()
   buff.enrage = make_buff<haste_buff_t>( this, "enrage", find_spell( 184362 ) );
     buff.enrage->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     buff.enrage->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() );
-
-  //buff.frenzy = buff_creator_t( this, "frenzy", talents.frenzy -> effectN( 1 ).trigger() )
-    //.add_invalidate( CACHE_HASTE )
-    //.default_value( talents.frenzy -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.furious_slash = make_buff<haste_buff_t>( this, "furious_slash", find_spell( 202539 ) );
     buff.furious_slash->set_default_value( find_spell( 202539 ) -> effectN( 1 ).percent() );
