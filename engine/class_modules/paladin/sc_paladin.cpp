@@ -647,7 +647,7 @@ struct crusader_strike_t : public holy_power_generator_t
 
     if ( p -> talents.fires_of_justice -> ok() )
     {
-      cooldown -> duration += timespan_t::from_millis( p -> talents.fires_of_justice -> effectN( 2 ).base_value() );
+      cooldown -> duration *= (1.0 + p -> talents.fires_of_justice -> effectN( 3 ).percent() );
     }
     const spell_data_t* crusader_strike_2 = p -> find_specialization_spell( 231667 );
     if ( crusader_strike_2 )
