@@ -310,6 +310,7 @@ struct rogue_t : public player_t
     cooldown_t* vendetta;
     cooldown_t* toxic_blade;
     cooldown_t* symbols_of_death;
+    cooldown_t* secret_technique;
   } cooldowns;
 
   // Gains
@@ -588,6 +589,7 @@ struct rogue_t : public player_t
     cooldowns.vendetta                 = get_cooldown( "vendetta"                 );
     cooldowns.toxic_blade              = get_cooldown( "toxic_blade"              );
     cooldowns.symbols_of_death         = get_cooldown( "symbols_of_death"         );
+    cooldowns.secret_technique         = get_cooldown( "secret_technique"         );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -3455,30 +3457,26 @@ struct rupture_t : public rogue_attack_t
 
 struct secret_technique_t : public rogue_attack_t
 {
-  struct secret_clone_attack_t : public rogue_attack_t
+  struct secret_technique_attack_t : public rogue_attack_t
   {
     secret_technique_t* parent_action;
 
-    secret_clone_attack_t( rogue_t* p, secret_technique_t* s ) :
-      rogue_attack_t( "secret_clone_attack", p, p -> find_spell( 280720 ) ),
+    secret_technique_attack_t( rogue_t* p, secret_technique_t* s ) :
+      rogue_attack_t( "secret_technique_attack", p, p -> find_spell( 280720 ) ),
       parent_action( s )
     {
       weapon = &(p -> main_hand_weapon);
       background = true;
       aoe = -1;
 
-      // Temp HAX until spell data is fixed
+      // Temp HAX to apply Deeper Stratagem until spell data is fixed
       base_dd_multiplier *= 1.0 + p -> talent.deeper_stratagem -> effectN( 5 ).percent();
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
     {
       double m = rogue_attack_t::composite_da_multiplier( state );
-
-      // Temp HAX until spell data is fixed
-      m *= 1.0 + p() -> cache.mastery_value();
       m *= parent_action -> last_cast_cp;
-
       return m;
     }
 
@@ -3487,13 +3485,13 @@ struct secret_technique_t : public rogue_attack_t
       double m = rogue_attack_t::composite_target_multiplier( target );
 
       if ( target != this -> target )
-        m *= p() -> talent.secret_technique -> effectN( 2 ).percent();
+        m *= p() -> talent.secret_technique -> effectN( 3 ).percent();
 
       return m;
     }
   };
 
-  secret_clone_attack_t* secret_clone_attack;
+  secret_technique_attack_t* secret_technique_attack;
   int last_cast_cp;
 
   secret_technique_t( rogue_t* p, const std::string& options_str ) :
@@ -3504,8 +3502,10 @@ struct secret_technique_t : public rogue_attack_t
     may_miss = false;
     aoe = -1;
 
-    secret_clone_attack = new secret_clone_attack_t( p, this );
-    add_child( secret_clone_attack );
+    secret_technique_attack = new secret_technique_attack_t( p, this );
+    add_child( secret_technique_attack );
+
+    radius = secret_technique_attack -> radius;
   }
 
   void execute() override
@@ -3514,9 +3514,9 @@ struct secret_technique_t : public rogue_attack_t
 
     last_cast_cp = cast_state( execute_state ) -> cp;
 
-    timespan_t delay = timespan_t::from_seconds( 2 ); // Hardcoded delay guess, while the spell is not working ingame
+    timespan_t delay = timespan_t::from_seconds( data().effectN( 2 ).base_value() ); // Assuming delay here, even if not the case on beta as of 2018-06-28.
     p() -> buffs.secret_technique -> trigger( 1, buff_t::DEFAULT_VALUE(), (-1.0), delay ); // Trigger tracking buff until clone damage
-    for ( size_t i = 0; i < data().effectN( 3 ).base_value(); i++ )
+    for ( size_t i = 0; i < data().effectN( 4 ).base_value(); i++ )
     {
       // Guessing clones spawn on target's position when cast
       make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
@@ -3526,7 +3526,7 @@ struct secret_technique_t : public rogue_attack_t
           .duration( delay )
           .pulse_time( delay )
           .start_time( sim -> current_time() )
-          .action( secret_clone_attack )
+          .action( secret_technique_attack )
           .n_pulses( 1 ));
     }
   }
@@ -5574,6 +5574,14 @@ void rogue_t::spend_combo_points( const action_state_t* state )
   {
     trigger_combo_point_gain( static_cast<int>(max_spend), gains.t21_4pc_subtlety, state -> action );
     buffs.t21_4pc_subtlety -> expire();
+  }
+
+  if ( state ->action->name_str != "secret_technique" )
+  {
+    // As of 2018-06-28 on beta, Secret Technique does not reduce its own cooldown. May be a bug or the cdr happening before CD start.
+    timespan_t sectec_cdr = timespan_t::from_seconds( talent.secret_technique -> effectN( 5 ).base_value() );
+    sectec_cdr *= -max_spend;
+    cooldowns.secret_technique -> adjust( sectec_cdr, false );
   }
 }
 
