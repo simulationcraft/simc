@@ -7,7 +7,7 @@ position=back
 talents=3310333
 talent_override=fel_barrage,if=(active_enemies>1|raid_event.adds.exists)&!talent.demonic.enabled
 talent_override=momentum,if=active_enemies>1|raid_event.adds.exists
-artifact=3:0:0:0:0:1000:4:1001:4:1002:4:1003:4:1004:4:1005:4:1006:4:1007:4:1008:4:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1:1362:1:1493:4:1494:1:1495:1:1496:24:1630:1
+artifact=3:0:0:0:0:1000:4:1001:4:1002:4:1003:4:1004:4:1005:4:1006:4:1007:4:1008:4:1010:1:1011:1:1012:1:1013:1:1014:1:1015:1:1016:1:1330:1:1362:1:1493:4:1494:1:1495:1:1496:75:1630:1
 crucible=1739:3:1777:3:1001:2:1002:1
 
 # Default consumables
