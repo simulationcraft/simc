@@ -966,7 +966,7 @@ struct force_of_nature_t : public pet_t
   force_of_nature_t( sim_t* sim, druid_t* owner ) :
     pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
   {
-    owner_coeff.ap_from_sp = 0; //Value currently unknown
+    owner_coeff.ap_from_sp = 0.6; //not confirmed
     regen_type = REGEN_DISABLED;
     main_hand_weapon.type = WEAPON_BEAST;
   }
