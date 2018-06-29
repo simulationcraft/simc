@@ -452,7 +452,6 @@ public:
     cooldown_t* antimagic_shell;
     cooldown_t* army_of_the_dead;
     cooldown_t* apocalypse;
-    cooldown_t* avalanche;
     cooldown_t* bone_shield_icd;
     cooldown_t* dancing_rune_weapon;
     cooldown_t* dark_transformation;
@@ -470,7 +469,6 @@ public:
   struct active_spells_t {
     spell_t* blood_plague;
     spell_t* frost_fever;
-    action_t* avalanche;
     action_t* festering_wound;
     action_t* virulent_plague;
     action_t* bursting_sores;
@@ -784,7 +782,6 @@ public:
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.army_of_the_dead = get_cooldown( "army_of_the_dead" );
     cooldown.apocalypse = get_cooldown( "apocalypse" );
-    cooldown.avalanche = get_cooldown( "avalanche" );
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.5 );
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
@@ -2629,7 +2626,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
 
   void consume_killing_machine( const action_state_t* state, proc_t* proc ) const;
   void trigger_icecap( const action_state_t* state ) const;
-  void trigger_avalanche( const action_state_t* state ) const;
   void trigger_freezing_death( const action_state_t* state ) const;
   void trigger_razorice( const action_state_t* state ) const;
 };
@@ -2721,7 +2717,6 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
 {
   base_t::impact( state );
 
-  trigger_avalanche( state );
   trigger_freezing_death( state );
 }
 
@@ -2781,36 +2776,6 @@ void death_knight_melee_attack_t::trigger_icecap( const action_state_t* state ) 
     - p() -> talent.icecap -> effectN( 1 ).base_value() / 10.0 ) );
 
   p() -> cooldown.icecap -> start( p() -> talent.icecap -> internal_cooldown() );
-}
-
-// death_knight_melee_attack_t::trigger_avalanche() ========================
-
-void death_knight_melee_attack_t::trigger_avalanche( const action_state_t* state ) const
-{
-  if ( state -> result != RESULT_CRIT || proc || ! callbacks )
-  {
-    return;
-  }
-
-  if ( ! p() -> talent.avalanche -> ok() )
-  {
-    return;
-  }
-
-  if ( ! p() -> buffs.pillar_of_frost -> up() )
-  {
-    return;
-  }
-
-  if ( p() -> cooldown.avalanche -> down() )
-  {
-    return;
-  }
-
-  p() -> active_spells.avalanche -> set_target( state -> target );
-  p() -> active_spells.avalanche -> schedule_execute();
-
-  p() -> cooldown.avalanche -> start( p() -> talent.avalanche -> internal_cooldown() );
 }
 
 // death_knight_melee_attack_t::trigger_freezing_death ===================
@@ -2977,18 +2942,6 @@ struct frozen_pulse_t : public death_knight_spell_t
 {
   frozen_pulse_t( death_knight_t* player ) :
     death_knight_spell_t( "frozen_pulse", player, player -> talent.frozen_pulse -> effectN( 1 ).trigger() )
-  {
-    aoe = -1;
-    background = true;
-  }
-};
-
-// Avalanche ===============================================================
-
-struct avalanche_t : public death_knight_spell_t
-{
-  avalanche_t( death_knight_t* player ) :
-    death_knight_spell_t( "avalanche", player, player -> talent.avalanche -> effectN( 1 ).trigger() )
   {
     aoe = -1;
     background = true;
@@ -4879,6 +4832,17 @@ struct horn_of_winter_t : public death_knight_spell_t
 
 // Howling Blast ============================================================
 
+struct avalanche_t : public death_knight_spell_t
+{
+  avalanche_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "avalanche", p, p -> find_spell( 207150 ) )
+  {
+    parse_options( options_str );
+    aoe = -1;
+    background = true;
+  }
+};
+
 struct howling_blast_aoe_t : public death_knight_spell_t
 {
   howling_blast_aoe_t( death_knight_t* p, const std::string& options_str ) :
@@ -4935,15 +4899,18 @@ struct howling_blast_aoe_t : public death_knight_spell_t
 struct howling_blast_t : public death_knight_spell_t
 {
   howling_blast_aoe_t* aoe_damage;
+  avalanche_t* avalanche;
 
   howling_blast_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "howling_blast", p, p -> find_specialization_spell( "Howling Blast" ) ),
-    aoe_damage( new howling_blast_aoe_t( p, options_str ) )
+    aoe_damage( new howling_blast_aoe_t( p, options_str ) ),
+    avalanche( new avalanche_t( p, options_str ) )
   {
     parse_options( options_str );
 
     aoe = 1;
     add_child( aoe_damage );
+    add_child( avalanche );
     ap_type = AP_WEAPON_BOTH;
 
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
@@ -5019,6 +4986,12 @@ struct howling_blast_t : public death_knight_spell_t
    
     aoe_damage -> set_target( execute_state -> target );
     aoe_damage -> execute();
+
+    if ( p() -> talent.avalanche -> ok() && p() -> buffs.rime -> up() )
+    {
+      avalanche -> set_target( execute_state -> target );
+      avalanche -> execute();
+    }
 
     p() -> buffs.rime -> decrement();
   }
@@ -6569,11 +6542,6 @@ void death_knight_t::trigger_death_march( const action_state_t* /* state */ )
 
 bool death_knight_t::create_actions()
 {
-  if ( talent.avalanche -> ok() )
-  {
-    active_spells.avalanche = new avalanche_t( this );
-  }
-
   if ( spec.festering_wound -> ok() )
   {
     active_spells.festering_wound = new festering_wound_t( this );
