@@ -597,12 +597,10 @@ public:
 
     if ( arms_damage_increase )
     {
-      ab::weapon_multiplier *= 1.0 + player -> spell.arms_warrior -> effectN( 2 ).percent();
       ab::attack_power_mod.direct *= 1.0 + player -> spell.arms_warrior -> effectN( 2 ).percent();
     }
     if ( fury_damage_increase )
     {
-      ab::weapon_multiplier *= 1.0 + player -> spell.fury_warrior ->effectN( 1 ).percent();
       ab::attack_power_mod.direct *= 1.0 + player -> spell.fury_warrior -> effectN( 1 ).percent();
     }
     if ( fury_dot_damage_increase )
@@ -615,7 +613,6 @@ public:
     }
     if ( prot_warrior_damage_increase )
     {
-      ab::weapon_multiplier *= 1.0 + player -> spell.prot_warrior -> effectN( 7 ).percent();
       ab::attack_power_mod.direct *= 1.0 + player -> spell.prot_warrior -> effectN( 7 ).percent();
     }
     if ( prot_dot_damage_increase )
@@ -701,6 +698,81 @@ public:
       c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
     }
     return c;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = ab::action_multiplier();
+
+    if ( p() -> specialization() == WARRIOR_FURY )
+    {
+      if ( p() -> buff.frothing_berserker -> check() )
+      {
+        am *= 1.0 + p() -> buff.frothing_berserker -> data().effectN( 1 ).percent();
+      }
+
+      if ( p() -> buff.enrage -> check() )
+      {
+        am *= 1.0 + p() -> cache.mastery_value();
+      }
+
+      if ( p()->buff.tornados_eye->check() )
+      {
+        am *= 1.0 + ( p() -> buff.tornados_eye -> current_stack * p() -> buff.tornados_eye -> data().effectN( 2 ).percent() );
+      }
+
+      am *= 1.0 + p() -> buff.fujiedas_fury -> check_stack_value();
+    }
+
+    if ( p()->specialization() == WARRIOR_ARMS )
+    {
+      if ( p() -> buff.avatar -> check() )
+      {
+        am *= 1.0 + p() -> buff.avatar -> data().effectN( 1 ).percent();
+      }
+
+      if ( p()->buff.tornados_eye->check() )
+      {
+        am *= 1.0 + ( p() -> buff.tornados_eye -> current_stack * p() -> buff.tornados_eye -> data().effectN( 2 ).percent() );
+      }
+    }
+
+    if ( p()->specialization() == WARRIOR_PROTECTION )
+    {
+      if ( p() -> talents.booming_voice -> ok() && p() -> buff.demoralizing_shout -> check() )
+      {
+        am *= 1.0 + p() -> talents.booming_voice -> effectN( 2 ).percent();
+      }
+
+      if ( p() -> buff.avatar -> check() )
+      {
+        am *= 1.0 + p() -> buff.avatar -> data().effectN( 1 ).percent();
+      }
+
+      am *= 1.0 + p() -> buff.renewed_fury -> check_value();
+      am *= 1.0 + p() -> artifact.protection_of_the_valarjar.percent();
+    }
+
+    return am;
+  }
+
+  virtual double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = ab::composite_target_multiplier( target );
+
+    warrior_td_t* td = p() -> get_target_data( target );
+
+    if ( td -> debuffs_colossus_smash->check() )
+    {
+      m *= 1.0 + ( td -> debuffs_colossus_smash->value() + p() -> cache.mastery_value() );
+    }
+
+    if ( td -> debuffs_siegebreaker -> check() )
+    {
+      m *= 1.0 + ( td -> debuffs_siegebreaker -> value() );
+    }
+
+    return m;
   }
 
   void execute() override
@@ -1022,6 +1094,10 @@ struct melee_t: public warrior_attack_t
       devastator = new devastate_t( p, "" );
       add_child( devastator );
     }
+    if ( p->specialization() == WARRIOR_FURY )
+    {
+      base_multiplier *= 1.0 + p->spell.fury_warrior->effectN( 4 ).percent();
+    }
   }
 
   void reset() override
@@ -1342,7 +1418,7 @@ struct bladestorm_tick_t: public warrior_attack_t
     aoe = -1;
     if ( p->specialization() == WARRIOR_ARMS )
     {
-      weapon_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 5 ).percent();
+      base_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 4 ).percent();
     }
   }
 
@@ -2057,7 +2133,7 @@ struct fury_execute_parent_t: public warrior_attack_t
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
-	weapon_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
+	base_multiplier *= 1.0 + p -> spec.execute_2 -> effectN( 1 ).percent();
 
 	mh_attack = new execute_main_hand_t( p, "execute_mainhand", p -> spec.execute -> effectN ( 1 ).trigger() );
 	oh_attack = new execute_off_hand_t( p, "execute_offhand", p -> spec.execute -> effectN ( 2 ).trigger() );
@@ -5488,40 +5564,6 @@ void warrior_t::trigger_movement( double distance, movement_direction_e directio
 double warrior_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  if ( buff.avatar -> check() )
-  {
-    m *= 1.0 + buff.avatar -> data().effectN( 1 ).percent();
-  }
-
-  if ( buff.tornados_eye -> check() )
-  {
-    m *= 1.0 + ( buff.tornados_eye -> current_stack * buff.tornados_eye -> data().effectN( 2 ).percent() );
-  }
-
-  if ( buff.frothing_berserker -> check() )
-  {
-    m *= 1.0 + buff.frothing_berserker -> data().effectN( 1 ).percent();    
-  }
-
-  if ( specialization() == WARRIOR_ARMS )
-  {
-    m *= 1.0 + spell.arms_warrior -> effectN( 4 ).percent();
-  }
-  // Arms no longer has enrage, so no need to check for it.
-  else if ( buff.enrage -> check() )
-  {
-    m *= 1.0 + cache.mastery_value();
-  }
-  else if ( talents.booming_voice -> ok() && buff.demoralizing_shout -> check() )
-  {
-    m *= 1.0 + talents.booming_voice -> effectN( 2 ).percent();
-  }
-
-  m *= 1.0 + buff.renewed_fury -> check_value();
-  m *= 1.0 + buff.fujiedas_fury -> check_stack_value();
-  m *= 1.0 + artifact.protection_of_the_valarjar.percent();
-
   return m;
 }
 
@@ -5532,20 +5574,10 @@ double warrior_t::composite_player_target_multiplier( player_t* target, school_e
   double m = player_t::composite_player_target_multiplier( target, school );
 
   warrior_td_t* td = get_target_data( target );
-
-  if ( td -> debuffs_colossus_smash -> check() )
-  {
-    m *= 1.0 + ( td -> debuffs_colossus_smash -> value() + cache.mastery_value() );
-  }
-  if ( td ->debuffs_siegebreaker ->check() )
-  {
-    m *= 1.0 + ( td ->debuffs_siegebreaker -> value() );
-  }
-
   return m;
 }
 
-// warrior_t::composite_attribute =============================================
+  // warrior_t::composite_attribute =============================================
 
 double warrior_t::composite_attribute( attribute_e attr ) const
 {
