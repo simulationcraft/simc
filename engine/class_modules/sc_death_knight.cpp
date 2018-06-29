@@ -407,7 +407,6 @@ public:
     buff_t* gathering_storm;
     buff_t* icebound_fortitude;
     buff_t* killing_machine;
-    buff_t* obliteration;
     buff_t* pillar_of_frost;
     buff_t* rime;
     buff_t* runic_corruption;
@@ -511,6 +510,7 @@ public:
     gain_t* drw_heart_strike;
     gain_t* rune_strike;
     gain_t* soul_reaper;
+    gain_t* obliteration;
   } gains;
 
   // Specialization
@@ -702,14 +702,15 @@ public:
   {
     proc_t* runic_empowerment;
     proc_t* runic_empowerment_wasted;
-    proc_t* oblit_killing_machine;
-    proc_t* fs_killing_machine;
+    proc_t* killing_machine_oblit;
+    proc_t* killing_machine_fsc;
     proc_t* ready_rune;
     proc_t* km_natural_expiration;
     proc_t* t19_2pc_unholy;
     proc_t* bloodworms;
     proc_t* pp_runic_corruption;
     proc_t* rp_runic_corruption;
+    proc_t* km_from_obliteration;
   } procs;
 
   // Legendaries
@@ -4620,7 +4621,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    consume_killing_machine( execute_state, p() -> procs.fs_killing_machine );
+    consume_killing_machine( execute_state, p() -> procs.killing_machine_fsc );
     trigger_icecap( execute_state );
 
     if ( p() -> buffs.inexorable_assault -> up() )
@@ -4725,10 +4726,15 @@ struct frost_strike_t : public death_knight_melee_attack_t
     // Note note, killing machine is a RPPM thing, but we need to trigger it unconditionally when
     // obliterate is up, so just bypas "trigger" and directly execute the buff, while making sure
     // correct bookkeeping information is kept. Ugly but will work for now.
-    if ( p() -> buffs.obliteration -> up() )
+    if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
-      //p() -> buffs.killing_machine -> trigger_attempts++;
       p() -> buffs.killing_machine -> execute();
+      p() -> procs.km_from_obliteration -> occur();
+      if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
+      {
+        // WTB spelldata for the rune gain
+        p() -> replenish_rune( 1, p() -> gains.obliteration );
+      }
     }
   }
 };
@@ -4768,6 +4774,20 @@ struct glacial_advance_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
+
+    // Note note, killing machine is a RPPM thing, but we need to trigger it unconditionally when
+    // obliterate is up, so just bypas "trigger" and directly execute the buff, while making sure
+    // correct bookkeeping information is kept. Ugly but will work for now.
+    if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
+    {
+      p() -> buffs.killing_machine -> execute();
+      p() -> procs.km_from_obliteration -> occur();
+      if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
+      {
+        // WTB spelldata for the rune gain
+        p() -> replenish_rune( 1, p() -> gains.obliteration );
+      }
+    }
 
     p() -> buffs.icy_talons -> trigger();
   }
@@ -4999,9 +5019,18 @@ struct howling_blast_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    if ( p() -> buffs.obliteration -> up() )
+    // Note note, killing machine is a RPPM thing, but we need to trigger it unconditionally when
+    // obliterate is up, so just bypas "trigger" and directly execute the buff, while making sure
+    // correct bookkeeping information is kept. Ugly but will work for now.
+    if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.obliteration -> ok() )
     {
       p() -> buffs.killing_machine -> execute();
+      p() -> procs.km_from_obliteration -> occur();
+      if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
+      {
+        // WTB spelldata for the rune gain
+        p() -> replenish_rune( 1, p() -> gains.obliteration );
+      }
     }
    
     aoe_damage -> set_target( execute_state -> target );
@@ -5212,17 +5241,12 @@ struct obliterate_t : public death_knight_melee_attack_t
           p() -> gains.koltiras_newfound_will );
     }
     
-    consume_killing_machine( execute_state, p() -> procs.oblit_killing_machine );
+    consume_killing_machine( execute_state, p() -> procs.killing_machine_oblit );
   }
 
   double cost() const override
   {
     double c = death_knight_melee_attack_t::cost();
-
-    if ( p() -> buffs.obliteration -> check() )
-    {
-      c += p() -> buffs.obliteration -> data().effectN( 1 ).base_value();
-    }
 
     if ( c < 0 )
     {
@@ -5230,26 +5254,6 @@ struct obliterate_t : public death_knight_melee_attack_t
     }
 
     return c;
-  }
-};
-
-// Obliteration =============================================================
-
-struct obliteration_t : public death_knight_spell_t
-{
-  obliteration_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "obliteration", p, p -> talent.obliteration )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-  }
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    p() -> buffs.obliteration -> trigger();
   }
 };
 
@@ -6678,7 +6682,6 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "frostscythe"              ) return new frostscythe_t              ( this, options_str );
   if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
   if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
-  if ( name == "obliteration"             ) return new obliteration_t             ( this, options_str );
   if ( name == "frostwyrms_fury"          ) return new frostwyrms_fury_t          ( this, options_str );
 
   // Unholy Actions
@@ -7263,7 +7266,7 @@ void death_knight_t::default_apl_frost()
   def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains<15" );
   def -> add_action( "run_action_list,name=bos_ticking,if=dot.breath_of_sindragosa.ticking" );
-  def -> add_action( "run_action_list,name=obliteration,if=buff.obliteration.up" );
+  def -> add_action( "run_action_list,name=obliteration,if=buff.pillar_of_frost.up&talent.obliteration.enabled" );
   def -> add_action( "call_action_list,name=standard" );
 
   // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"
@@ -7310,25 +7313,22 @@ void death_knight_t::default_apl_frost()
                            "if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|!cooldown.breath_of_sindragosa.remains)" );
   cooldowns -> add_action( "use_item,name=draught_of_souls,"
                            "if=rune.time_to_5<3&(!dot.breath_of_sindragosa.ticking|runic_power>60)" );
-  cooldowns -> add_action( "use_item,name=feloiled_infernal_machine,"
-                           "if=!talent.obliteration.enabled|buff.obliteration.up" );
 
   // In-combat potion
-  cooldowns -> add_action( "potion,if=buff.pillar_of_frost.up&(dot.breath_of_sindragosa.ticking|buff.obliteration.up)" );
+  cooldowns -> add_action( "potion,if=buff.pillar_of_frost.up&(!talent.breath_of_sindragosa.enabled|dot.breath_of_sindragosa.ticking)" );
 
   // Pillar of Frost
-  cooldowns -> add_action( this, "Pillar of Frost", "if=talent.obliteration.enabled&(cooldown.obliteration.remains>20|cooldown.obliteration.remains<10|!talent.icecap.enabled)", "Pillar of frost conditions" );
+  cooldowns -> add_action( this, "Pillar of Frost", "if=!talent.breath_of_sindragosa.enabled", "Pillar of frost conditions" );
   cooldowns -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.ready&runic_power>50" );
   cooldowns -> add_action( this, "Pillar of Frost", "if=talent.breath_of_sindragosa.enabled&cooldown.breath_of_sindragosa.remains>40" );
 
   // Tier 100 cooldowns + Cold Heart
   cooldowns -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
-  cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&!buff.obliteration.up&debuff.razorice.stack=5)|target.time_to_die<=gcd)" );
-  cooldowns -> add_talent( this, "Obliteration", "if=rune>=1&runic_power>=20&(!talent.frozen_pulse.enabled|rune<2|buff.pillar_of_frost.remains<=12)&(!talent.gathering_storm.enabled|!cooldown.remorseless_winter.ready)&(buff.pillar_of_frost.up|!talent.icecap.enabled)" );
+  cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.time_to_die<=gcd)" );
 
   // Cold Heart conditionals
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack=20&buff.unholy_strength.react&cooldown.pillar_of_frost.remains>6", "Cold heart conditions" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=16&(cooldown.obliteration.ready&talent.obliteration.enabled)&buff.pillar_of_frost.up" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=16&buff.pillar_of_frost.up" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.up&buff.pillar_of_frost.remains<gcd&(buff.cold_heart.stack>=11|(buff.cold_heart.stack>=10&set_bonus.tier20_4pc))" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=17&buff.unholy_strength.react&buff.unholy_strength.remains<gcd&cooldown.pillar_of_frost.remains>6" );
   cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=4&target.time_to_die<=gcd" );
@@ -7358,7 +7358,7 @@ void death_knight_t::default_apl_frost()
   standard -> add_talent( this, "Frostscythe", "if=spell_targets.frostscythe>=3" );
   standard -> add_action( this, "Obliterate", "if=!talent.gathering_storm.enabled|cooldown.remorseless_winter.remains>(gcd*2)" );
   standard -> add_talent( this, "Horn of Winter", "if=rune.time_to_2>gcd|!talent.frozen_pulse.enabled" );
-  standard -> add_action( this, "Frost Strike", "if=!(runic_power<50&talent.obliteration.enabled&cooldown.obliteration.remains<=gcd)" );
+  standard -> add_action( this, "Frost Strike" );
   standard -> add_action( this, "Obliterate", "if=!talent.gathering_storm.enabled|talent.icy_talons.enabled" );
   standard -> add_action( this, "Empower Rune Weapon", "if=!talent.breath_of_sindragosa.enabled|target.time_to_die<cooldown.breath_of_sindragosa.remains" );
 }
@@ -7541,8 +7541,6 @@ void death_knight_t::create_buffs()
   buffs.killing_machine     = buff_creator_t( this, "killing_machine", spec.killing_machine -> effectN( 1 ).trigger() )
                               .trigger_spell( spec.killing_machine )
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() );
-  buffs.obliteration        = buff_creator_t( this, "obliteration", talent.obliteration )
-                              .cd( timespan_t::zero() ); // Handled by action
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", spec.pillar_of_frost )
     .cd( timespan_t::zero() )
     .default_value( spec.pillar_of_frost -> effectN( 1 ).percent() )
@@ -7644,6 +7642,7 @@ void death_knight_t::init_gains()
   gains.drw_heart_strike                 = get_gain( "Rune Weapon Heart Strike"   );
   gains.rune_strike                      = get_gain( "Rune Strike"                );
   gains.soul_reaper                      = get_gain( "Soul Reaper"                );
+  gains.obliteration                     = get_gain( "Obliteration"               );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -7654,8 +7653,9 @@ void death_knight_t::init_procs()
 
   procs.runic_empowerment        = get_proc( "Runic Empowerment"            );
   procs.runic_empowerment_wasted = get_proc( "Wasted Runic Empowerment"     );
-  procs.oblit_killing_machine    = get_proc( "Killing Machine: Obliterate"  );
-  procs.fs_killing_machine       = get_proc( "Killing Machine: Frostscythe" );
+  procs.killing_machine_oblit    = get_proc( "Killing Machine: Obliterate"  );
+  procs.killing_machine_fsc      = get_proc( "Killing Machine: Frostscythe" );
+  procs.km_from_obliteration     = get_proc( "Killing Machine from Obliteration" );
 
   procs.ready_rune               = get_proc( "Rune ready" );
 
