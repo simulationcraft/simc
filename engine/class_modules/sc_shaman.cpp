@@ -17,13 +17,12 @@
 // Elemental
 // - Add Talents
 //   - Add Spirit Wolf
-// - does Master of the Elements affect overloads in simc?
-// - Add Eye of the Storm to Primal Storm Elemental instead of Gale Force
 // - Add Azerite traits
 //
 // + implemented
 // - missing
 //      Name                        ID
+//    - Ancestral Resonance (mastery during bloodlust)
 //    + Echo of the Elementals      275381
 //    + Igneous Potential           279829
 //    + Lava Shock                  273448
@@ -1050,9 +1049,10 @@ public:
 
     if ( p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      if ( ( dbc::is_school( this -> school, SCHOOL_FIRE ) || dbc::is_school( this -> school, SCHOOL_FROST ) ||
-        dbc::is_school( this -> school, SCHOOL_NATURE ) ) && p()->mastery.enhanced_elements->ok() )
-	  {
+      if ( ( dbc::is_school( this->school, SCHOOL_FIRE ) || dbc::is_school( this->school, SCHOOL_FROST ) ||
+             dbc::is_school( this->school, SCHOOL_NATURE ) ) &&
+           p()->mastery.enhanced_elements->ok() )
+      {
         if ( ab::data().affected_by( p()->mastery.enhanced_elements->effectN( 1 ) ) ||
              ab::data().affected_by( p()->mastery.enhanced_elements->effectN( 5 ) ) || enable_enh_mastery_scaling )
         {
@@ -2333,6 +2333,7 @@ struct earth_elemental_t : public primal_elemental_t
     return attack;
   }
 
+  // azerite trait aoe spell
   struct rumbling_tremors_t : public pet_spell_t<earth_elemental_t>
   {
     rumbling_tremors_t( earth_elemental_t* player, const std::string& options )
@@ -2350,6 +2351,11 @@ struct earth_elemental_t : public primal_elemental_t
     double target_armor( player_t* ) const override
     {
       return 0;
+    }
+
+    bool ready() override
+    {
+      return p()->o()->azerite.rumbling_tremors.ok();
     }
   };
 
@@ -2509,39 +2515,49 @@ struct ember_elemental_t : public primal_elemental_t
 
 struct storm_elemental_t : public primal_elemental_t
 {
+  struct eye_of_the_storm_aoe_t : public pet_spell_t<storm_elemental_t>
+  {
+    int tick_number = 0;
+    eye_of_the_storm_aoe_t( storm_elemental_t* player, const std::string& options )
+      : super( player, "eye_of_the_storm_aoe", player->find_spell( 269005 ), options )
+    {
+      aoe        = -1;
+      background = true;
+    }
+
+    double target_armor( player_t* ) const override
+    {
+      return 0;
+    }
+
+    double action_multiplier() const override
+    {
+      double m = pet_spell_t::action_multiplier();
+      m *= std::pow( 1.0 + p()->o()->find_spell( 157375 )->effectN( 2 ).percent(), tick_number );
+      return m;
+    }
+  };
+
   struct eye_of_the_storm_t : public pet_spell_t<storm_elemental_t>
   {
-    int tick_counter;
+    eye_of_the_storm_aoe_t* breeze = nullptr;
 
     eye_of_the_storm_t( storm_elemental_t* player, const std::string& options )
       : super( player, "eye_of_the_storm", player->find_spell( 157375 ), options )
     {
-      radius               = player->o()->find_spell( 269005 )->effectN( 1 ).radius();
-      spell_power_mod.tick = player->o()->find_spell( 269005 )->effectN( 1 ).sp_coeff();
-      aoe                  = -1;
-      tick_may_crit        = true;
-      tick_zero            = true;
-      tick_counter         = 0;
-      channeled            = true;
-    }
-
-    double action_ta_multiplier() const override
-    {
-      double m = pet_spell_t::action_ta_multiplier();
-      m *= std::pow( 1.0 + data().effectN( 2 ).percent(), tick_counter );
-      return m;
+      channeled   = true;
+      tick_action = breeze = new eye_of_the_storm_aoe_t( player, options );
     }
 
     void tick( dot_t* d ) override
     {
+      breeze->tick_number = d->current_tick;
       pet_spell_t::tick( d );
-      tick_counter++;
     }
 
-    void execute() override
+    bool ready() override
     {
-      tick_counter = 0;
-      pet_spell_t::execute();
+      return pet_spell_t::ready() && p()->o()->talent.primal_elementalist->ok();
     }
   };
 
@@ -2624,6 +2640,47 @@ struct storm_elemental_t : public primal_elemental_t
   {
     primal_elemental_t::dismiss( expired );
     o()->buff.wind_gust->expire();
+  }
+};
+
+// create baby azerite trait version
+
+struct spark_elemental_t : public primal_elemental_t
+{
+  spark_elemental_t( shaman_t* owner, bool guardian ) : primal_elemental_t( owner, "spark_elemental", guardian, false )
+  {
+  }
+
+  struct shocking_blast_t : public pet_spell_t<spark_elemental_t>
+  {
+    shocking_blast_t( spark_elemental_t* player, const std::string& options )
+      : super( player, "shocking_blast", player->find_spell( 275384 ), options )
+    {
+      may_crit    = true;
+      base_dd_min = base_dd_max = player->o()->azerite.echo_of_the_elementals.value();
+    }
+
+    bool usable_moving() const override
+    {
+      return true;
+    }
+  };
+
+  void create_default_apl() override
+  {
+    primal_elemental_t::create_default_apl();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+
+    def->add_action( "shocking_blast" );
+  }
+
+  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  {
+    if ( name == "shocking_blast" )
+      return new shocking_blast_t( this, options_str );
+
+    return primal_elemental_t::create_action( name, options_str );
   }
 };
 
@@ -2843,7 +2900,7 @@ struct stormstrike_attack_t : public shaman_attack_t
     weapon                           = w;
     base_multiplier *= 1.0;
     may_proc_lightning_shield = true;
-	school = SCHOOL_PHYSICAL;
+    school                    = SCHOOL_PHYSICAL;
   }
 
   void init() override
@@ -3574,8 +3631,8 @@ struct sundering_t : public shaman_attack_t
     : shaman_attack_t( "sundering", player, player->talent.sundering )
   {
     parse_options( options_str );
-	school = SCHOOL_FLAMESTRIKE;
-    aoe = -1;  // TODO: This is likely not going to affect all enemies but it will do for now
+    school = SCHOOL_FLAMESTRIKE;
+    aoe    = -1;  // TODO: This is likely not going to affect all enemies but it will do for now
   }
 
   void init() override
@@ -7172,8 +7229,7 @@ void shaman_t::init_action_list_elemental()
   aoe->add_talent( this, "Liquid Magma Totem" );
   aoe->add_action( this, "Flame Shock", "if=spell_targets.chain_lightning<4,target_if=refreshable" );
   aoe->add_action( this, "Earthquake" );
-  aoe->add_action( this, "Lava Burst",
-                   "if=dot.flame_shock.remains>cast_time&buff.lava_surge.up&spell_targets.chain_lightning<4",
+  aoe->add_action( this, "Lava Burst", "if=(buff.lava_surge.up|buff.ascendance.up)&spell_targets.chain_lightning<4",
                    "Only cast Lava Burst on three targets if it is an instant." );
   aoe->add_talent( this, "Elemental Blast", "if=spell_targets.chain_lightning<4" );
   aoe->add_action( this, "Lava Beam" );
@@ -7184,7 +7240,12 @@ void shaman_t::init_action_list_elemental()
 
   // Single target - Ascendance
   single_target->add_action( this, "Flame Shock", "if=!ticking|dot.flame_shock.remains<=gcd" );
-  single_target->add_talent( this, "Ascendance", "if=(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0" );
+  single_target->add_talent(
+      this, "Ascendance",
+      "if=(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&!talent.storm_elemental.enabled" );
+  single_target->add_talent(
+      this, "Ascendance",
+      "if=(time>=60|buff.bloodlust.up)&cooldown.lava_burst.remains>0&cooldown.storm_elemental.remains<=120" );
 
   single_target->add_talent(
       this, "Elemental Blast",
@@ -7204,7 +7265,7 @@ void shaman_t::init_action_list_elemental()
       this, "Totem Mastery",
       "if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+"
       "cooldown.ascendance.remains)&cooldown.ascendance.remains<15)" );
-  single_target->add_action( this, "Frost Shock", "moving=1,if=buff.icefury.up" );
+  single_target->add_action( this, "Frost Shock", "if=buff.icefury.up" );
   single_target->add_talent( this, "Icefury" );
   single_target->add_action( this, "Lava Beam", "if=active_enemies>1&spell_targets.lava_beam>1" );
   single_target->add_action( this, "Chain Lightning", "if=active_enemies>1&spell_targets.chain_lightning>1" );
