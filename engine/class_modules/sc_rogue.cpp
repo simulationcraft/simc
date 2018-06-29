@@ -6206,11 +6206,11 @@ void rogue_t::init_action_list()
 
     // Stealth Cooldowns
     action_priority_list_t* stealth_cds = get_action_priority_list( "stealth_cds", "Stealth Cooldowns" );
-    stealth_cds -> add_action( "variable,name=capping_shd,value=cooldown.shadow_dance.charges_fractional>=1.725+0.725*talent.enveloping_shadows.enabled", "Helper Variable" );
-    stealth_cds -> add_action( this, "Vanish", "if=!variable.capping_shd&debuff.find_weakness.remains<1", "Vanish unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
+    stealth_cds -> add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75", "Helper Variable" );
+    stealth_cds -> add_action( this, "Vanish", "if=!variable.shd_threshold&debuff.find_weakness.remains<1", "Vanish unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
     stealth_cds -> add_action( "pool_resource,for_next=1,extra_amount=40", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
-    stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.capping_shd&debuff.find_weakness.remains<1" );
-    stealth_cds -> add_action( this, "Shadow Dance", "if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(variable.capping_shd|buff.symbols_of_death.remains>=1.2|cooldown.symbols_of_death.remains>=12)", "With Dark Shadow only Dance when Nightblade will stay up. If not capping on charges, use during Symbols or if Symbols is at least 12 seconds away." );
+    stealth_cds -> add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&debuff.find_weakness.remains<1" );
+    stealth_cds -> add_action( this, "Shadow Dance", "if=(!talent.dark_shadow.enabled|dot.nightblade.remains>=5+talent.subterfuge.enabled)&(variable.shd_threshold|buff.symbols_of_death.remains>=1.2|spell_targets>=4&cooldown.symbols_of_death.remains>10)", "With Dark Shadow only Dance when Nightblade will stay up. Use during Symbols or above threshold." );
     stealth_cds -> add_action( this, "Shadow Dance", "if=target.time_to_die<cooldown.symbols_of_death.remains" );
 
     // Stealthed Rotation
