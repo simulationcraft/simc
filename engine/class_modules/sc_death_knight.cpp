@@ -439,6 +439,7 @@ public:
     buff_t* skullflowers_haemostasis;
     haste_buff_t* sephuzs_secret;
     buff_t* cold_heart;
+    buff_t* inexorable_assault;
     buff_t* toravons;
   } buffs;
 
@@ -452,7 +453,6 @@ public:
     cooldown_t* antimagic_shell;
     cooldown_t* army_of_the_dead;
     cooldown_t* apocalypse;
-    cooldown_t* avalanche;
     cooldown_t* bone_shield_icd;
     cooldown_t* dancing_rune_weapon;
     cooldown_t* dark_transformation;
@@ -470,16 +470,17 @@ public:
   struct active_spells_t {
     spell_t* blood_plague;
     spell_t* frost_fever;
-    action_t* avalanche;
     action_t* festering_wound;
     action_t* virulent_plague;
     action_t* bursting_sores;
     action_t* mark_of_blood;
     action_t* t20_2pc_unholy;
     action_t* cold_heart;
+    action_t* inexorable_assault;
     action_t* freezing_death;
     action_t* t20_blood;
     action_t* t21_4pc_blood;
+    action_t* inexorable_assault_driver;
 
     action_t* razorice_mh;
     action_t* razorice_oh;
@@ -580,7 +581,7 @@ public:
     const spell_data_t* avalanche;
     
     // Tier 4 
-    const spell_data_t* inexorable_assault; // Not yet implemented
+    const spell_data_t* inexorable_assault;
     const spell_data_t* volatile_shielding;
 
     // Tier 6
@@ -784,7 +785,6 @@ public:
     cooldown.antimagic_shell = get_cooldown( "antimagic_shell" );
     cooldown.army_of_the_dead = get_cooldown( "army_of_the_dead" );
     cooldown.apocalypse = get_cooldown( "apocalypse" );
-    cooldown.avalanche = get_cooldown( "avalanche" );
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.5 );
     cooldown.dancing_rune_weapon = get_cooldown( "dancing_rune_weapon" );
@@ -900,6 +900,7 @@ public:
   void      trigger_t20_2pc_frost( double consumed );
   void      trigger_t20_4pc_frost( double consumed );
   void      trigger_t20_4pc_unholy( double consumed );
+  void      start_inexorable_assault();
 
   void      trigger_soul_reaper_death( player_t* );
 
@@ -1260,8 +1261,6 @@ inline rune_t* rune_t::consume()
   {
     runes -> dk -> buffs.t19oh_8pc -> trigger();
   }
-
-  runes -> dk -> cooldown.rune_strike -> adjust( timespan_t::from_seconds( -1.0 * runes -> dk -> talent.rune_strike -> effectN( 3 ).base_value() ), false );
 
   return new_regenerating_rune;
 }
@@ -2524,6 +2523,17 @@ struct death_knight_action_t : public Base
       p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
     }
 
+    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 && this -> last_resource_cost > 0 )
+    {
+      p() -> cooldown.rune_strike -> adjust( timespan_t::from_seconds( -1.0 * p() -> talent.rune_strike -> effectN( 3 ).base_value() ), false );
+    }
+
+    if ( this -> base_costs[ RESOURCE_RUNE] > 0 && this -> last_resource_cost > 0 && p() -> buffs.pillar_of_frost -> up() )
+    {
+      p() -> buffs.pillar_of_frost -> current_value += this -> last_resource_cost / 100;
+      p() -> invalidate_cache( CACHE_STRENGTH );
+    }
+
     if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> last_resource_cost > 0 )
     {
       if ( p() -> talent.summon_gargoyle -> ok() && p() -> pets.gargoyle )
@@ -2620,7 +2630,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
 
   void consume_killing_machine( const action_state_t* state, proc_t* proc ) const;
   void trigger_icecap( const action_state_t* state ) const;
-  void trigger_avalanche( const action_state_t* state ) const;
   void trigger_freezing_death( const action_state_t* state ) const;
   void trigger_razorice( const action_state_t* state ) const;
 };
@@ -2712,7 +2721,6 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
 {
   base_t::impact( state );
 
-  trigger_avalanche( state );
   trigger_freezing_death( state );
 }
 
@@ -2772,36 +2780,6 @@ void death_knight_melee_attack_t::trigger_icecap( const action_state_t* state ) 
     - p() -> talent.icecap -> effectN( 1 ).base_value() / 10.0 ) );
 
   p() -> cooldown.icecap -> start( p() -> talent.icecap -> internal_cooldown() );
-}
-
-// death_knight_melee_attack_t::trigger_avalanche() ========================
-
-void death_knight_melee_attack_t::trigger_avalanche( const action_state_t* state ) const
-{
-  if ( state -> result != RESULT_CRIT || proc || ! callbacks )
-  {
-    return;
-  }
-
-  if ( ! p() -> talent.avalanche -> ok() )
-  {
-    return;
-  }
-
-  if ( ! p() -> buffs.pillar_of_frost -> up() )
-  {
-    return;
-  }
-
-  if ( p() -> cooldown.avalanche -> down() )
-  {
-    return;
-  }
-
-  p() -> active_spells.avalanche -> set_target( state -> target );
-  p() -> active_spells.avalanche -> schedule_execute();
-
-  p() -> cooldown.avalanche -> start( p() -> talent.avalanche -> internal_cooldown() );
 }
 
 // death_knight_melee_attack_t::trigger_freezing_death ===================
@@ -2974,18 +2952,6 @@ struct frozen_pulse_t : public death_knight_spell_t
   }
 };
 
-// Avalanche ===============================================================
-
-struct avalanche_t : public death_knight_spell_t
-{
-  avalanche_t( death_knight_t* player ) :
-    death_knight_spell_t( "avalanche", player, player -> talent.avalanche -> effectN( 1 ).trigger() )
-  {
-    aoe = -1;
-    background = true;
-  }
-};
-
 // Festering Wound ==========================================================
 
 struct festering_wound_t : public death_knight_spell_t
@@ -3060,6 +3026,15 @@ struct freezing_death_t : public death_knight_melee_attack_t
 {
   freezing_death_t( death_knight_t* p ) :
     death_knight_melee_attack_t( "freezing_death", p, p -> find_spell( 253590 ) )
+  {
+    background = true;
+  }
+};
+
+struct inexorable_assault_damage_t : public death_knight_spell_t
+{
+  inexorable_assault_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "inexorable_assault", p, p -> find_spell( 253597 ) )
   {
     background = true;
   }
@@ -4648,6 +4623,13 @@ struct frostscythe_t : public death_knight_melee_attack_t
     consume_killing_machine( execute_state, p() -> procs.fs_killing_machine );
     trigger_icecap( execute_state );
 
+    if ( p() -> buffs.inexorable_assault -> up() )
+    {
+      p() -> active_spells.inexorable_assault -> set_target( execute_state -> target );
+      p() -> active_spells.inexorable_assault -> schedule_execute();
+      p() -> buffs.inexorable_assault -> decrement();
+    }
+
     // Frostscythe procs rime at half the chance of Obliterate
     p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), rime_proc_chance );
   }
@@ -4870,6 +4852,17 @@ struct horn_of_winter_t : public death_knight_spell_t
 
 // Howling Blast ============================================================
 
+struct avalanche_t : public death_knight_spell_t
+{
+  avalanche_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "avalanche", p, p -> find_spell( 207150 ) )
+  {
+    parse_options( options_str );
+    aoe = -1;
+    background = true;
+  }
+};
+
 struct howling_blast_aoe_t : public death_knight_spell_t
 {
   howling_blast_aoe_t( death_knight_t* p, const std::string& options_str ) :
@@ -4926,15 +4919,18 @@ struct howling_blast_aoe_t : public death_knight_spell_t
 struct howling_blast_t : public death_knight_spell_t
 {
   howling_blast_aoe_t* aoe_damage;
+  avalanche_t* avalanche;
 
   howling_blast_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "howling_blast", p, p -> find_specialization_spell( "Howling Blast" ) ),
-    aoe_damage( new howling_blast_aoe_t( p, options_str ) )
+    aoe_damage( new howling_blast_aoe_t( p, options_str ) ),
+    avalanche( new avalanche_t( p, options_str ) )
   {
     parse_options( options_str );
 
     aoe = 1;
     add_child( aoe_damage );
+    add_child( avalanche );
     ap_type = AP_WEAPON_BOTH;
 
     // T21 2P bonus : damage increase to Howling Blast, Frostscythe and Obliterate
@@ -5010,6 +5006,12 @@ struct howling_blast_t : public death_knight_spell_t
    
     aoe_damage -> set_target( execute_state -> target );
     aoe_damage -> execute();
+
+    if ( p() -> talent.avalanche -> ok() && p() -> buffs.rime -> up() )
+    {
+      avalanche -> set_target( execute_state -> target );
+      avalanche -> execute();
+    }
 
     p() -> buffs.rime -> decrement();
   }
@@ -5193,6 +5195,13 @@ struct obliterate_t : public death_knight_melee_attack_t
 
       oh -> set_target( execute_state -> target );
       oh -> execute();
+
+      if ( p() -> buffs.inexorable_assault -> up() )
+      {
+        p() -> active_spells.inexorable_assault -> set_target( execute_state -> target );
+        p() -> active_spells.inexorable_assault -> schedule_execute();
+        p() -> buffs.inexorable_assault -> decrement();
+      }
 
       p() -> buffs.rime -> trigger();
     }
@@ -6552,6 +6561,39 @@ void death_knight_t::trigger_death_march( const action_state_t* /* state */ )
   cooldown.death_and_decay -> adjust( adjust );
 }
 
+void death_knight_t::start_inexorable_assault()
+{
+  struct inexorable_assault_tick_t : public event_t
+  {
+    timespan_t delay;
+    buff_t* buff;
+
+    // Constructor for first event where the delay is randomized
+    inexorable_assault_tick_t( buff_t* b, const timespan_t& d, const timespan_t& first ) :
+      event_t( *b -> sim, first ), delay( d ), buff( b )
+    { }
+
+    // Constructor for the following events
+    inexorable_assault_tick_t( buff_t* b, const timespan_t& d ) :
+      event_t( *b -> sim, d ), delay( d ), buff( b )
+    { }
+
+    void execute() override
+    {
+      buff -> trigger();
+      make_event<inexorable_assault_tick_t>( sim(), buff, delay );
+    }
+  };
+
+  // Inexorable assault keeps ticking out of combat and when it's at max stacks
+  // We solvee that by chosing a random number between 0 and the delay between each tick
+
+  timespan_t first = timespan_t::from_seconds(
+    rng().range( 0, talent.inexorable_assault -> effectN( 1 ).period().total_seconds() ) );
+
+  make_event<inexorable_assault_tick_t>( *sim, buffs.inexorable_assault, talent.inexorable_assault->effectN( 1 ).period(), first );
+}
+
 // ==========================================================================
 // Death Knight Character Definition
 // ==========================================================================
@@ -6560,11 +6602,6 @@ void death_knight_t::trigger_death_march( const action_state_t* /* state */ )
 
 bool death_knight_t::create_actions()
 {
-  if ( talent.avalanche -> ok() )
-  {
-    active_spells.avalanche = new avalanche_t( this );
-  }
-
   if ( spec.festering_wound -> ok() )
   {
     active_spells.festering_wound = new festering_wound_t( this );
@@ -6588,6 +6625,11 @@ bool death_knight_t::create_actions()
   if ( spec.frost_death_knight -> ok() )
   {
     active_spells.freezing_death = new freezing_death_t( this );
+  }
+
+  if ( talent.inexorable_assault -> ok() )
+  {
+    active_spells.inexorable_assault = new inexorable_assault_damage_t( this );
   }
 
   return player_t::create_actions();
@@ -6948,7 +6990,7 @@ void death_knight_t::init_spells()
   talent.avalanche             = find_talent_spell( "Avalanche" );
   
   // Tier 4  
-  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" ); // TODO ? NYI
+  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
   talent.volatile_shielding    = find_talent_spell( "Volatile Shielding" );
     
   // Tier 6
@@ -7502,9 +7544,9 @@ void death_knight_t::create_buffs()
   buffs.obliteration        = buff_creator_t( this, "obliteration", talent.obliteration )
                               .cd( timespan_t::zero() ); // Handled by action
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", spec.pillar_of_frost )
-                              .cd( timespan_t::zero() )
-                              .default_value( spec.pillar_of_frost -> effectN( 1 ).percent() )
-                              .add_invalidate( CACHE_STRENGTH );
+    .cd( timespan_t::zero() )
+    .default_value( spec.pillar_of_frost -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_STRENGTH );
   buffs.toravons            = buff_creator_t( this, "toravons_whiteout_bindings", find_spell( 205658 ) )
                               .default_value( find_spell( 205658 ) -> effectN( 1 ).percent() )
                               .duration( spec.pillar_of_frost -> duration() )
@@ -7563,12 +7605,14 @@ void death_knight_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .refresh_behavior( buff_refresh_behavior::EXTEND );
   buffs.t20_4pc_frost = buff_creator_t( this, "icy edge" )
-    .default_value( 0.01 )
+    .default_value( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value() )
     .chance( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) );
   buffs.t20_blood = make_buff<stat_buff_t>( this, "gravewarden", spell.gravewarden )
     ->add_stat( STAT_VERSATILITY_RATING, spell.gravewarden -> effectN( 1 ).base_value() );
   buffs.t21_4p_blood = new rune_master_buff_t( this );
-    
+  buffs.inexorable_assault = buff_creator_t( this, "inexorable_assault", find_spell( 253595 ) )
+    .trigger_spell( talent.inexorable_assault );
+
 }
 
 // death_knight_t::init_gains ===============================================
@@ -7832,6 +7876,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
     }
     m *= 1.0 + buffs.pillar_of_frost -> value();
   }
+
   else if ( attr == ATTR_STAMINA )
   {
     m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 4 ).percent();
@@ -8072,6 +8117,12 @@ void death_knight_t::combat_begin()
   player_t::combat_begin();
 
   buffs.cold_heart -> trigger( buffs.cold_heart -> max_stack() );
+
+  if ( talent.inexorable_assault -> ok() )
+  {
+    buffs.inexorable_assault -> trigger( buffs.inexorable_assault -> max_stack() );
+    start_inexorable_assault();
+  }
 
   auto rp_overflow = resources.current[ RESOURCE_RUNIC_POWER ] - MAX_START_OF_COMBAT_RP;
   if ( rp_overflow > 0 )

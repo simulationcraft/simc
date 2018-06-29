@@ -98,7 +98,6 @@ namespace warlock
       propagate_const<buff_t*> debuffs_from_the_shadows;
       propagate_const<buff_t*> debuffs_jaws_of_shadow;
 
-      int agony_stack;
       double soc_threshold;
 
       warlock_t& warlock;
@@ -106,7 +105,6 @@ namespace warlock
 
       void reset()
       {
-        agony_stack = 1;
         soc_threshold = 0;
       }
 

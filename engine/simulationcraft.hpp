@@ -1755,6 +1755,35 @@ inline event_t* make_event( sim_t& s, const timespan_t& t, const std::function<v
   return make_event<fn_event_t>( s, s, t, f );
 }
 
+inline event_t* make_repeating_event( sim_t& s, const timespan_t& t, const std::function<void(void)>& f, int n = -1 )
+{
+  class fn_event_repeating_t : public event_t
+  {
+    std::function<void(void)> fn;
+    timespan_t time;
+    int n;
+
+    public:
+      fn_event_repeating_t( sim_t& s, const timespan_t& t, const std::function<void(void)>& f, int n ) :
+        event_t( s, t ), fn( f ), time( t ), n( n )
+      { }
+
+      const char* name() const override
+      { return "repeating_function_event"; }
+
+      void execute() override
+      {
+        fn();
+        if ( n == -1 || --n > 0 )
+        {
+          make_event<fn_event_repeating_t>( sim(), sim(), time, fn, n );
+        }
+      }
+  };
+
+  return make_event<fn_event_repeating_t>( s, s, t, f, n );
+}
+
 inline event_t* make_event( sim_t* s, const timespan_t& t, const std::function<void(void)>& f )
 { return make_event( *s, t, f ); }
 
@@ -1763,6 +1792,9 @@ inline event_t* make_event( sim_t* s, const std::function<void(void)>& f )
 
 inline event_t* make_event( sim_t& s, const std::function<void(void)>& f )
 { return make_event( s, timespan_t::zero(), f ); }
+
+inline event_t* make_repeating_event( sim_t* s, const timespan_t& t, const std::function<void(void)>& f, int n = -1 )
+{ return make_repeating_event( *s, t, f, n ); }
 
 // Gear Rating Conversions ==================================================
 

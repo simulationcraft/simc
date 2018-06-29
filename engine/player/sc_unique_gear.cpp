@@ -3818,6 +3818,26 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
     return ret;
   }
 
+  // If the item is legendary, and it has an item effect, mandate that the item effect is actually
+  // created through custom means. This is to prevent the automatic inference below to create
+  // completely nonsensical special effects, when there is not enough client data to fully implement
+  // the effect properly.
+  //
+  // This is mostly relevant for "simple looking" legendary effects such as Recurrent Ritual that
+  // gets automatically inferred to affect all (warlock) spells globally.
+  if ( effect.custom_init_object.size() == 0 && effect.item &&
+       effect.item->parsed.data.quality == ITEM_QUALITY_LEGENDARY )
+  {
+    if ( p -> sim -> debug )
+    {
+      p -> sim -> out_debug.printf( "Player %s no custom special effect initializer for item %s, "
+                                    "spell %s (id=%u), disabling effect",
+        p -> name(), effect.item -> name(), p -> find_spell( spell_id ) -> name_cstr(), spell_id );
+    }
+    effect.type = SPECIAL_EFFECT_NONE;
+    return ret;
+  }
+
   // No custom effect found, so ensure that we have spell data for the driver
   if ( p -> find_spell( effect.spell_id ) -> id() != effect.spell_id )
   {

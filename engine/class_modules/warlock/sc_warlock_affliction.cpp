@@ -164,8 +164,7 @@ namespace warlock
       agony_t( warlock_t* p, const std::string& options_str ) :
         warlock_spell_t( p, "Agony" ),
         agony_action_id( 0 ),
-        agony_max_stacks( 0 ),
-        chance( p->find_spell( 199282 )->proc_chance() )
+        agony_max_stacks( 0 )
       {
         parse_options( options_str );
         may_crit = false;
@@ -189,7 +188,7 @@ namespace warlock
 
         if (auto td = find_td( target ) )
         {
-          m *= td->agony_stack;
+          m *= td->debuffs_agony->check();
         }
 
         return m;
@@ -197,8 +196,6 @@ namespace warlock
 
       void last_tick( dot_t* d ) override
       {
-        td( d->state->target )->agony_stack = 1;
-
         td( d->state->target )->debuffs_agony->expire();
 
         if ( p()->get_active_dots( internal_id ) == 1 )
@@ -212,6 +209,7 @@ namespace warlock
         agony_max_stacks = ( p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN( 2 ).base_value() : 10 );
 
         warlock_spell_t::init();
+        this->dot_max_stack = agony_max_stacks;
       }
 
       void execute() override
@@ -220,12 +218,9 @@ namespace warlock
 
         td( execute_state->target )->debuffs_agony->trigger();
 
-        if ( td( execute_state->target )->agony_stack < agony_max_stacks )
-          td( execute_state->target )->agony_stack++;
-
-        if (p()->azerite.sudden_onset.ok() && td(execute_state->target)->agony_stack < (int)p()->azerite.sudden_onset.spell_ref().effectN(2).base_value())
+        if (p()->azerite.sudden_onset.ok() && td(execute_state->target)->debuffs_agony->check() < (int)p()->azerite.sudden_onset.spell_ref().effectN(2).base_value())
         {
-          td(execute_state->target)->agony_stack = (int)p()->azerite.sudden_onset.spell_ref().effectN(2).base_value();
+          td(execute_state->target)->debuffs_agony->trigger((int)p()->azerite.sudden_onset.spell_ref().effectN(2).base_value() - td(execute_state->target)->debuffs_agony->check());
         }
       }
 
@@ -238,7 +233,7 @@ namespace warlock
 
       void tick( dot_t* d ) override
       {
-        td( d->state->target )->debuffs_agony->trigger();
+        td( d->state->target )->debuffs_agony->trigger(1);
 
         double tier_bonus = 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T19, B4 )->effectN( 1 ).percent();
         double active_agonies = p()->get_active_dots( internal_id );
@@ -283,9 +278,6 @@ namespace warlock
         }
 
         warlock_spell_t::tick( d );
-
-        if ( td( d->state->target )->agony_stack < agony_max_stacks )
-          td( d->state->target )->agony_stack++;
       }
     };
 
