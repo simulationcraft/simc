@@ -294,7 +294,6 @@ public:
   timespan_t duration_stddev;
   timespan_t duration_min;
   timespan_t duration_max;
-  std::string first_str, last_str;
 
   // Player filter options
   double     distance_min; // Minimal player distance

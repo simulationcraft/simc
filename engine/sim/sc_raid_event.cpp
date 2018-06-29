@@ -1051,8 +1051,8 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& type ) :
   name(),
   type( type ),
   num_starts( 0 ),
-  first( timespan_t::zero() ),
-  last( timespan_t::zero() ),
+  first( timespan_t::min() ),
+  last( timespan_t::min() ),
   first_pct(-1.0),
   last_pct(-1.0),
   cooldown( timespan_t::zero() ),
@@ -1080,8 +1080,8 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& type ) :
   end_event()
 {
   add_option( opt_string( "name", name ) );
-  add_option( opt_string( "first", first_str ) );
-  add_option( opt_string( "last", last_str ) );
+  add_option( opt_timespan( "first", first, timespan_t::zero(), timespan_t::max() ) );
+  add_option( opt_timespan( "last", last, timespan_t::zero(), timespan_t::max() ) );
   add_option( opt_float( "first_pct", first_pct, 0.0, 100 ) );
   add_option( opt_float( "last_pct", last_pct, 0.0, 100 ) );
   add_option( opt_timespan( "period", cooldown ) );
@@ -1435,11 +1435,11 @@ void raid_event_t::parse_options( const std::string& options_str )
     }
   }
 
-  if (first_pct != -1 && !first_str.empty())
+  if (first_pct != -1 && first >= timespan_t::zero())
   {
     throw std::invalid_argument("first= and first_pct= cannot be used together.");
   }
-  if (last_pct != -1 && !last_str.empty())
+  if (last_pct != -1 && last >= timespan_t::zero())
   {
     throw std::invalid_argument("last= and last_pct= cannot be used together.");
   }
@@ -1454,56 +1454,6 @@ void raid_event_t::parse_options( const std::string& options_str )
   {
     assert(sim->target);
     sim->target->register_resource_callback(RESOURCE_HEALTH, first_pct, [this](){activate();}, true);
-  }
-  // Parse first/last. TODO: Replace with something better, see Issue #4326
-  if ( !first_str.empty() )
-  {
-    try
-    {
-      if ( first_str.back() == '%' )
-      {
-        double pct = std::stod( first_str.substr( 0, first_str.size() - 1 ) ) / 100.0;
-        first = sim -> max_time * pct;
-      }
-      else
-      {
-        first = timespan_t::from_seconds( std::stod( first_str ) );
-      }
-
-      if ( first < timespan_t::zero() )
-      {
-        throw std::invalid_argument("first= option cannot be negative.");
-      }
-    }
-    catch (const std::exception& ex)
-    {
-      throw std::invalid_argument(fmt::format("Canot parse first= option: {}", ex.what()));
-    }
-  }
-
-  if ( last_str.size() > 1 )
-  {
-    try
-    {
-      if ( last_str.back() == '%' )
-      {
-        double pct = std::stod( last_str.substr( 0, last_str.size() - 1 ) ) / 100.0;
-        last = sim -> max_time * pct;
-      }
-      else
-      {
-        last = timespan_t::from_seconds( std::stod( last_str ) );
-      }
-
-      if ( last < timespan_t::zero() )
-      {
-        throw std::invalid_argument("last= option cannot be negative.");
-      }
-    }
-    catch (const std::exception& ex)
-    {
-      throw std::invalid_argument(fmt::format("Canot parse last= option: {}", ex.what()));
-    }
   }
 }
 
