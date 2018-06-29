@@ -4058,7 +4058,7 @@ struct touch_of_karma_t: public monk_melee_attack_t
   touch_of_karma_dot_t* touch_of_karma_dot;
   touch_of_karma_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "touch_of_karma", p, p -> spec.touch_of_karma ),
-    interval( 100 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), pct_health( 0.4 ),
+    interval( 100 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), pct_health( 0.5 ),
     touch_of_karma_dot( new touch_of_karma_dot_t( p ) )
   {
     add_option( opt_float( "interval", interval ) );
@@ -4069,6 +4069,10 @@ struct touch_of_karma_t: public monk_melee_attack_t
     base_dd_min = base_dd_max = 0;
 
     double max_pct = data().effectN( 3 ).percent();
+
+    if ( p -> talent.good_karma -> ok() )
+      max_pct += p -> talent.good_karma -> effectN( 1 ).percent();
+
     if ( pct_health > max_pct ) // Does a maximum of 50% of the monk's HP.
       pct_health = max_pct;
 
@@ -8294,7 +8298,8 @@ void monk_t::apl_combat_windwalker()
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
-  def -> add_action( this, "Touch of Karma", "interval=90,pct_health=0.5" );
+  def -> add_action( this, "Touch of Karma", "interval=90,pct_health=0.5", "Touch of Karma on cooldown, if Good Karma is enabled equal to 100% of maximum health" );
+  def -> add_action( this, "Touch of Karma", "interval=90,pct_health=1.0" );
 
   if ( sim -> allow_potions )
   {
