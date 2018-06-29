@@ -8371,7 +8371,7 @@ void monk_t::apl_combat_windwalker(){
                         "Cast ToD cycling through 2 targets if:\n# - You're using HMFT\n# - Your previous GCD was not ToD" );
   cd -> add_action( this, "Touch of Death", "target_if=min:debuff.touch_of_death.remains,if=((talent.serenity.enabled&cooldown.serenity.remains<=1)&cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death",
                         "The second cast of touch_of_death triggered by the legendary effect of hidden_masters_forbidden_touch:\n# - You've already cast the first ToD\n# - SEF is talented and will be available before your next Global Cooldown\n# - Your previous GCD was not ToD\n# - Remaining cooldown on Fist of Fury is lower or equal to 4 seconds\n# - Remaining cooldown on Rising Sun Kick is lower than 7 seconds" );
-  cd -> add_action( this, "Touch of Death", "target_if=min:debuff.touch_of_death.remains,if=(!talent.serenity.enabled&cooldown.storm_earth_and_fire.remains<=1|chi>=2)&|cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death",
+  cd -> add_action( this, "Touch of Death", "target_if=min:debuff.touch_of_death.remains,if=((!talent.serenity.enabled&cooldown.storm_earth_and_fire.remains<=1)|chi>=2)&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death",
                         "The second cast of touch_of_death triggered by the legendary effect of hidden_masters_forbidden_touch:\n# - You've already cast the first ToD\n# - Remaining cooldown on Fists of Fury is lower or equal to 4 seconds AND SEF is talented and will be available before your next Global Cooldown OR you have 2 or more Chi\n# - Your previous GCD was not ToD\n# - Remaining cooldown on Rising Sun Kick is greather than 7 seconds" );
 
   // Storm, Earth, and Fire Opener
@@ -8468,7 +8468,7 @@ void monk_t::apl_combat_windwalker(){
   aoe -> add_talent( this, "Chi Wave" );
 
   // Single Target
-  st -> add_talent( this, "Invoke Xuen, the White Tiger", "Default action list" );
+  st -> add_talent( this, "Invoke Xuen, the White Tiger", "", "Default action list" );
   st -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up" );
   st -> add_talent( this, "Energizing Elixir", "if=!prev_gcd.1.tiger_palm" );
   st -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&chi.max-chi>=1&set_bonus.tier21_4pc&buff.bok_proc.up",
