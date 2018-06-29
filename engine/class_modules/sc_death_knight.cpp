@@ -1261,8 +1261,6 @@ inline rune_t* rune_t::consume()
     runes -> dk -> buffs.t19oh_8pc -> trigger();
   }
 
-  runes -> dk -> cooldown.rune_strike -> adjust( timespan_t::from_seconds( -1.0 * runes -> dk -> talent.rune_strike -> effectN( 3 ).base_value() ), false );
-
   return new_regenerating_rune;
 }
 
@@ -2522,6 +2520,17 @@ struct death_knight_action_t : public Base
     if ( this -> base_costs[ RESOURCE_RUNE ] > 0 && this -> last_resource_cost > 0 )
     {
       p() -> trigger_t20_4pc_frost( this -> last_resource_cost );
+    }
+
+    if ( this -> base_costs[ RESOURCE_RUNE ] > 0 && this -> last_resource_cost > 0 )
+    {
+      p() -> cooldown.rune_strike -> adjust( timespan_t::from_seconds( -1.0 * p() -> talent.rune_strike -> effectN( 3 ).base_value() ), false );
+    }
+
+    if ( this -> base_costs[ RESOURCE_RUNE] > 0 && this -> last_resource_cost > 0 && p() -> buffs.pillar_of_frost -> up() )
+    {
+      p() -> buffs.pillar_of_frost -> current_value += last_resource_cost / 100;
+      p() -> invalidate_cache( CACHE_STRENGTH );
     }
 
     if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> last_resource_cost > 0 )
@@ -7502,9 +7511,9 @@ void death_knight_t::create_buffs()
   buffs.obliteration        = buff_creator_t( this, "obliteration", talent.obliteration )
                               .cd( timespan_t::zero() ); // Handled by action
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", spec.pillar_of_frost )
-                              .cd( timespan_t::zero() )
-                              .default_value( spec.pillar_of_frost -> effectN( 1 ).percent() )
-                              .add_invalidate( CACHE_STRENGTH );
+    .cd( timespan_t::zero() )
+    .default_value( spec.pillar_of_frost -> effectN( 1 ).percent() )
+    .add_invalidate( CACHE_STRENGTH );
   buffs.toravons            = buff_creator_t( this, "toravons_whiteout_bindings", find_spell( 205658 ) )
                               .default_value( find_spell( 205658 ) -> effectN( 1 ).percent() )
                               .duration( spec.pillar_of_frost -> duration() )
@@ -7563,7 +7572,7 @@ void death_knight_t::create_buffs()
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .refresh_behavior( buff_refresh_behavior::EXTEND );
   buffs.t20_4pc_frost = buff_creator_t( this, "icy edge" )
-    .default_value( 0.01 )
+    .default_value( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).base_value() )
     .chance( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) );
   buffs.t20_blood = make_buff<stat_buff_t>( this, "gravewarden", spell.gravewarden )
     ->add_stat( STAT_VERSATILITY_RATING, spell.gravewarden -> effectN( 1 ).base_value() );
@@ -7832,6 +7841,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
     }
     m *= 1.0 + buffs.pillar_of_frost -> value();
   }
+
   else if ( attr == ATTR_STAMINA )
   {
     m *= 1.0 + spec.veteran_of_the_third_war -> effectN( 4 ).percent();
