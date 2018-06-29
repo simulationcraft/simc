@@ -439,6 +439,7 @@ public:
     buff_t* skullflowers_haemostasis;
     haste_buff_t* sephuzs_secret;
     buff_t* cold_heart;
+    buff_t* inexorable_assault;
     buff_t* toravons;
   } buffs;
 
@@ -475,9 +476,11 @@ public:
     action_t* mark_of_blood;
     action_t* t20_2pc_unholy;
     action_t* cold_heart;
+    action_t* inexorable_assault;
     action_t* freezing_death;
     action_t* t20_blood;
     action_t* t21_4pc_blood;
+    action_t* inexorable_assault_driver;
 
     action_t* razorice_mh;
     action_t* razorice_oh;
@@ -578,7 +581,7 @@ public:
     const spell_data_t* avalanche;
     
     // Tier 4 
-    const spell_data_t* inexorable_assault; // Not yet implemented
+    const spell_data_t* inexorable_assault;
     const spell_data_t* volatile_shielding;
 
     // Tier 6
@@ -3027,6 +3030,15 @@ struct freezing_death_t : public death_knight_melee_attack_t
   }
 };
 
+struct inexorable_assault_damage_t : public death_knight_spell_t
+{
+  inexorable_assault_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "inexorable_assault", p, p -> find_spell( 253597 ) )
+  {
+    background = true;
+  }
+};
+
 // ==========================================================================
 // Death Knight Attacks
 // ==========================================================================
@@ -4610,6 +4622,13 @@ struct frostscythe_t : public death_knight_melee_attack_t
     consume_killing_machine( execute_state, p() -> procs.fs_killing_machine );
     trigger_icecap( execute_state );
 
+    if ( p() -> buffs.inexorable_assault -> up() )
+    {
+      p() -> active_spells.inexorable_assault -> set_target( execute_state -> target );
+      p() -> active_spells.inexorable_assault -> schedule_execute();
+      p() -> buffs.inexorable_assault -> decrement();
+    }
+
     // Frostscythe procs rime at half the chance of Obliterate
     p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), rime_proc_chance );
   }
@@ -5175,6 +5194,13 @@ struct obliterate_t : public death_knight_melee_attack_t
 
       oh -> set_target( execute_state -> target );
       oh -> execute();
+
+      if ( p() -> buffs.inexorable_assault -> up() )
+      {
+        p() -> active_spells.inexorable_assault -> set_target( execute_state -> target );
+        p() -> active_spells.inexorable_assault -> schedule_execute();
+        p() -> buffs.inexorable_assault -> decrement();
+      }
 
       p() -> buffs.rime -> trigger();
     }
@@ -6166,6 +6192,54 @@ struct remorseless_winter_buff_t : public buff_t
   }
 };
 
+// Inexorable Assault driver
+
+struct inexorable_assault_driver_t : public death_knight_spell_t
+{
+  inexorable_assault_driver_t( death_knight_t* p ):
+    death_knight_spell_t( "inexorable_assault", p, p -> talent.inexorable_assault )
+  { }
+
+  struct inexorable_assault_tick_t : public event_t
+  {
+    timespan_t delay;
+    buff_t* buff;
+
+    // Constructor for first event where the delay is randomized
+    inexorable_assault_tick_t( buff_t* b, const timespan_t& d, const timespan_t& first ) :
+      event_t( *b -> sim, first ), delay( d ), buff( b )
+    { }
+
+    // Constructor for the following events
+    inexorable_assault_tick_t( buff_t* b, const timespan_t& d ) :
+      event_t( *b -> sim, d ), delay( d ), buff( b )
+    { }
+
+    void execute() override
+    {
+      buff -> trigger();
+      make_event<inexorable_assault_tick_t>( sim(), buff, delay );
+    }
+  };
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    if ( ! p() -> talent.inexorable_assault )
+      return;
+
+    timespan_t delay = p() -> talent.inexorable_assault -> effectN( 1 ).period();
+    buff_t* buff = p() -> buffs.inexorable_assault;
+
+    // Inexorable assault keeps ticking out of combat and when it's at max stacks
+    // We solvee that by chosing a random number between 0 and the delay between each tick
+    timespan_t first = timespan_t::from_seconds( static_cast<int>( p() -> rng().range( 0, delay.total_seconds() ) ) );
+
+    make_event<inexorable_assault_tick_t>( *sim, buff, delay, first );
+  }
+};
+
 } // UNNAMED NAMESPACE
 
 void runeforge::fallen_crusader( special_effect_t& effect )
@@ -6567,6 +6641,12 @@ bool death_knight_t::create_actions()
     active_spells.freezing_death = new freezing_death_t( this );
   }
 
+  if ( talent.inexorable_assault -> ok() )
+  {
+    active_spells.inexorable_assault = new inexorable_assault_damage_t( this );
+    active_spells.inexorable_assault_driver = new inexorable_assault_driver_t( this );
+  }
+
   return player_t::create_actions();
 }
 
@@ -6925,7 +7005,7 @@ void death_knight_t::init_spells()
   talent.avalanche             = find_talent_spell( "Avalanche" );
   
   // Tier 4  
-  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" ); // TODO ? NYI
+  talent.inexorable_assault    = find_talent_spell( "Inexorable Assault" );
   talent.volatile_shielding    = find_talent_spell( "Volatile Shielding" );
     
   // Tier 6
@@ -7545,7 +7625,9 @@ void death_knight_t::create_buffs()
   buffs.t20_blood = make_buff<stat_buff_t>( this, "gravewarden", spell.gravewarden )
     ->add_stat( STAT_VERSATILITY_RATING, spell.gravewarden -> effectN( 1 ).base_value() );
   buffs.t21_4p_blood = new rune_master_buff_t( this );
-    
+  buffs.inexorable_assault = buff_creator_t( this, "inexorable_assault", find_spell( 253595 ) )
+    .trigger_spell( talent.inexorable_assault );
+
 }
 
 // death_knight_t::init_gains ===============================================
@@ -8050,6 +8132,12 @@ void death_knight_t::combat_begin()
   player_t::combat_begin();
 
   buffs.cold_heart -> trigger( buffs.cold_heart -> max_stack() );
+
+  if ( talent.inexorable_assault -> ok() )
+  {
+    buffs.inexorable_assault -> trigger( buffs.inexorable_assault -> max_stack() );
+    active_spells.inexorable_assault_driver -> execute();
+  }
 
   auto rp_overflow = resources.current[ RESOURCE_RUNIC_POWER ] - MAX_START_OF_COMBAT_RP;
   if ( rp_overflow > 0 )
