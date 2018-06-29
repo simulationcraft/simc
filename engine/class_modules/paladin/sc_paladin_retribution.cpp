@@ -892,7 +892,7 @@ void paladin_t::init_spells_retribution()
   spells.divine_purpose_ret            = find_spell( 223817 );
   spells.liadrins_fury_unleashed       = find_spell( 208408 );
   spells.justice_gaze                  = find_spell( 211557 );
-  spells.chain_of_thrayn               = find_spell( 206338 );
+  spells.chain_of_thrayn               = find_spell( 281573 );
   spells.ashes_to_dust                 = find_spell( 236106 );
   spells.blade_of_wrath                = find_spell( 231832 );
 

@@ -831,7 +831,7 @@ public:
         if ( p() -> buffs.crusade -> check() ) {
           double aw_multiplier = 1.0 + p() -> buffs.crusade -> get_damage_mod();
           if ( p() -> chain_of_thrayn ) {
-            aw_multiplier += p() -> spells.chain_of_thrayn -> effectN( 4 ).percent();
+            aw_multiplier += p() -> spells.chain_of_thrayn -> effectN( 3 ).percent();
           }
           am *= aw_multiplier;
         }
@@ -842,7 +842,7 @@ public:
       if ( p() -> buffs.avenging_wrath -> check() ) {
         double aw_multiplier = p() -> buffs.avenging_wrath -> get_damage_mod();
         if ( p() -> chain_of_thrayn ) {
-          aw_multiplier += p() -> spells.chain_of_thrayn -> effectN( 4 ).percent();
+          aw_multiplier += p() -> spells.chain_of_thrayn -> effectN( 3 ).percent();
         }
         am *= 1.0 + aw_multiplier;
       }
