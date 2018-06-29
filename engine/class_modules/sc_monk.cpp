@@ -3960,6 +3960,7 @@ struct touch_of_death_t: public monk_spell_t
     may_crit = hasted_ticks = false;
     parse_options( options_str );
     school = SCHOOL_PHYSICAL;
+    cooldown -> duration = data().cooldown();
   }
 
   virtual bool ready() override
@@ -8304,18 +8305,25 @@ void monk_t::apl_combat_windwalker()
   if ( sim -> allow_potions )
   {
     if ( true_level >= 100 )
-      def -> add_action( "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60" );
+      def -> add_action( "potion,if=buff.serenity.up|buff.storm_earth_and_fire.up|(!talent.serenity.enabled&trinket.proc.agility.react)|buff.bloodlust.react|target.time_to_die<=60", 
+                            "Potion if Serenity or Storm, Earth, and Fire are up or you are running serenity and a main stat trinket procs, or you are under the effect of bloodlust, or target time to die is greater or equal to 60" );
     else 
       def -> add_action( "potion,if=buff.storm_earth_and_fire.up|trinket.proc.agility.react|buff.bloodlust.react|target.time_to_die<=60" );
   }
 
   def -> add_action( this, "Touch of Death", "if=target.time_to_die<=9" );
-  def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up" );
-  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&(buff.storm_earth_and_fire.up|cooldown.storm_earth_and_fire.charges=2)" );
-  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&equipped.drinking_horn_cover&(cooldown.fist_of_the_white_tiger.remains<=18&cooldown.fists_of_fury.remains<=12&chi>=3&cooldown.rising_sun_kick.remains<=1|target.time_to_die<=25|cooldown.touch_of_death.remains>112)&cooldown.storm_earth_and_fire.charges=1" );
-  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&!equipped.drinking_horn_cover&(cooldown.fist_of_the_white_tiger.remains<=14&cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1|target.time_to_die<=15|cooldown.touch_of_death.remains>112)&cooldown.storm_earth_and_fire.charges=1" );
-  def -> add_action( "call_action_list,name=aoe,if=active_enemies>3" );
-  def -> add_action( "call_action_list,name=st,if=active_enemies<=3" );
+  def -> add_action( "call_action_list,name=serenity,if=(talent.serenity.enabled&cooldown.serenity.remains<=0)|buff.serenity.up",
+                        "Call the Serenity action list if you're using Serenity and Serenity is available (or you're currently in Serenity)" );
+  def -> add_action( "call_action_list,name=sef,if=!talent.serenity.enabled&(buff.storm_earth_and_fire.up|cooldown.storm_earth_and_fire.charges=2)", 
+                        "Call the SEF action list if you're using SEF and are currently in SEF or have 2 SEF stacks" );
+  def -> add_action( "call_action_list,name=sef,if=(!talent.serenity.enabled&cooldown.fists_of_fury.remains<=12&chi>=3&cooldown.rising_sun_kick.remains<=1)|target.time_to_die<=25|cooldown.touch_of_death.remains>112", 
+                        "Call the SEF action list if you're not using Serenity and:\n# - FoF cd <= 12\n# - Chi >= 3\n# - RSK cd >= 1\n# OR the target will die within 25 seconds OR ToD is on the target" );
+  def -> add_action( "call_action_list,name=sef,if=(!talent.serenity.enabled&cooldown.fists_of_fury.remains<=12&chi>=3&cooldown.rising_sun_kick.remains<=1)|target.time_to_die<=25|cooldown.touch_of_death.remains>112&cooldown.storm_earth_and_fire.charges=1", 
+                        "Exactly the same as previous line, but with an added check whether you have 1 stack of SEF" );
+  def -> add_action( "call_action_list,name=sef,if=(!talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1)|target.time_to_die<=15|cooldown.touch_of_death.remains>112&cooldown.storm_earth_and_fire.charges=1", 
+                        "Call the SEF action list if you're using Serenity and:\n# - Using DHC\n# - FoF cd <= 6\n# - Chi >= 3\n# - RSK cd <= 1\n# OR the target will die within 15 seconds OR ToD is on the target and you have 1 stack of SEF" );
+  def -> add_action( "call_action_list,name=aoe,if=active_enemies>3", "Call the AoE action list if there are more than 3 enemies" );
+  def -> add_action( "call_action_list,name=st,if=active_enemies<=3", "Call the ST action list if there are 3 or less enemies" );
 
   // Cooldowns
   cd -> add_talent( this, "Invoke Xuen, the White Tiger" );
@@ -8345,10 +8353,16 @@ void monk_t::apl_combat_windwalker()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[i] == "arcane_torrent" )
-      cd -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5" );
+      cd -> add_action( racial_actions[i] + ",if=chi.max-chi>=1&energy.time_to_max>=0.5", "Use Arcane Torrent if you are missing at least 1 Chi and won't cap energy within 0.5 seconds" );
     else
       cd -> add_action( racial_actions[i] );
   }
+//  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&!prev_gcd.1.touch_of_death",
+//                        "Cast ToD cycling through 2 targets if:\n# - You have the Gale Burst trait\n# - You're using HMFT\n# - Your previous GCD was not ToD" );
+//  cd ->add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&!prev_gcd.1.touch_of_death",
+//                        "Cast ToD cycling through 2 targets if:\n# - You have the Gale Burst trait\n# - You're using HMFT\n# - Your previous GCD was not ToD" );
+//  cd -> add_action( this, "Touch of Death", "cycle_targets=1,max_cycle_targets=2,if=!artifact.gale_burst.enabled&equipped.hidden_masters_forbidden_touch&!prev_gcd.1.touch_of_death",
+//                        "Cast ToD cycling through 2 targets if:\n# - You have the Gale Burst trait\n# - You're using HMFT\n# - Your previous GCD was not ToD" );
 
   // Storm, Earth, and Fire
   sef -> add_action( this, "Tiger Palm", "target_if=debuff.mark_of_the_crane.down,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1" );
