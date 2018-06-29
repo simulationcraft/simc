@@ -900,6 +900,7 @@ public:
   void      trigger_t20_2pc_frost( double consumed );
   void      trigger_t20_4pc_frost( double consumed );
   void      trigger_t20_4pc_unholy( double consumed );
+  void      start_inexorable_assault();
 
   void      trigger_soul_reaper_death( player_t* );
 
@@ -2529,7 +2530,7 @@ struct death_knight_action_t : public Base
 
     if ( this -> base_costs[ RESOURCE_RUNE] > 0 && this -> last_resource_cost > 0 && p() -> buffs.pillar_of_frost -> up() )
     {
-      p() -> buffs.pillar_of_frost -> current_value += last_resource_cost / 100;
+      p() -> buffs.pillar_of_frost -> current_value += this -> last_resource_cost / 100;
       p() -> invalidate_cache( CACHE_STRENGTH );
     }
 
@@ -6192,54 +6193,6 @@ struct remorseless_winter_buff_t : public buff_t
   }
 };
 
-// Inexorable Assault driver
-
-struct inexorable_assault_driver_t : public death_knight_spell_t
-{
-  inexorable_assault_driver_t( death_knight_t* p ):
-    death_knight_spell_t( "inexorable_assault", p, p -> talent.inexorable_assault )
-  { }
-
-  struct inexorable_assault_tick_t : public event_t
-  {
-    timespan_t delay;
-    buff_t* buff;
-
-    // Constructor for first event where the delay is randomized
-    inexorable_assault_tick_t( buff_t* b, const timespan_t& d, const timespan_t& first ) :
-      event_t( *b -> sim, first ), delay( d ), buff( b )
-    { }
-
-    // Constructor for the following events
-    inexorable_assault_tick_t( buff_t* b, const timespan_t& d ) :
-      event_t( *b -> sim, d ), delay( d ), buff( b )
-    { }
-
-    void execute() override
-    {
-      buff -> trigger();
-      make_event<inexorable_assault_tick_t>( sim(), buff, delay );
-    }
-  };
-
-  void execute() override
-  {
-    death_knight_spell_t::execute();
-
-    if ( ! p() -> talent.inexorable_assault )
-      return;
-
-    timespan_t delay = p() -> talent.inexorable_assault -> effectN( 1 ).period();
-    buff_t* buff = p() -> buffs.inexorable_assault;
-
-    // Inexorable assault keeps ticking out of combat and when it's at max stacks
-    // We solvee that by chosing a random number between 0 and the delay between each tick
-    timespan_t first = timespan_t::from_seconds( static_cast<int>( p() -> rng().range( 0, delay.total_seconds() ) ) );
-
-    make_event<inexorable_assault_tick_t>( *sim, buff, delay, first );
-  }
-};
-
 } // UNNAMED NAMESPACE
 
 void runeforge::fallen_crusader( special_effect_t& effect )
@@ -6608,6 +6561,39 @@ void death_knight_t::trigger_death_march( const action_state_t* /* state */ )
   cooldown.death_and_decay -> adjust( adjust );
 }
 
+void death_knight_t::start_inexorable_assault()
+{
+  struct inexorable_assault_tick_t : public event_t
+  {
+    timespan_t delay;
+    buff_t* buff;
+
+    // Constructor for first event where the delay is randomized
+    inexorable_assault_tick_t( buff_t* b, const timespan_t& d, const timespan_t& first ) :
+      event_t( *b -> sim, first ), delay( d ), buff( b )
+    { }
+
+    // Constructor for the following events
+    inexorable_assault_tick_t( buff_t* b, const timespan_t& d ) :
+      event_t( *b -> sim, d ), delay( d ), buff( b )
+    { }
+
+    void execute() override
+    {
+      buff -> trigger();
+      make_event<inexorable_assault_tick_t>( sim(), buff, delay );
+    }
+  };
+
+  // Inexorable assault keeps ticking out of combat and when it's at max stacks
+  // We solvee that by chosing a random number between 0 and the delay between each tick
+
+  timespan_t first = timespan_t::from_seconds(
+    rng().range( 0, talent.inexorable_assault -> effectN( 1 ).period().total_seconds() ) );
+
+  make_event<inexorable_assault_tick_t>( *sim, buffs.inexorable_assault, talent.inexorable_assault->effectN( 1 ).period(), first );
+}
+
 // ==========================================================================
 // Death Knight Character Definition
 // ==========================================================================
@@ -6644,7 +6630,6 @@ bool death_knight_t::create_actions()
   if ( talent.inexorable_assault -> ok() )
   {
     active_spells.inexorable_assault = new inexorable_assault_damage_t( this );
-    active_spells.inexorable_assault_driver = new inexorable_assault_driver_t( this );
   }
 
   return player_t::create_actions();
@@ -8136,7 +8121,7 @@ void death_knight_t::combat_begin()
   if ( talent.inexorable_assault -> ok() )
   {
     buffs.inexorable_assault -> trigger( buffs.inexorable_assault -> max_stack() );
-    active_spells.inexorable_assault_driver -> execute();
+    start_inexorable_assault();
   }
 
   auto rp_overflow = resources.current[ RESOURCE_RUNIC_POWER ] - MAX_START_OF_COMBAT_RP;
