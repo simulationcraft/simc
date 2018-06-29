@@ -8381,6 +8381,7 @@ void monk_t::apl_combat_windwalker(){
                                 "Call actions.cd if:\n# - Fist of Fury will be available on your next Global cooldown" );
   sef_opener -> add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3" );
   sef_opener -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(!prev_gcd.1.blackout_kick)", 
+                            "This line is outdated and probably incorrect in priority" );
   sef_opener -> add_action( this, "Fists of Fury", "if=cooldown.fists_of_fury.duration>cooldown.rising_sun_kick.remains", 
                                 "Cast Fist of Fury if:\n# - The remaining cooldown on rising_sun_kick is longer than the channel duration of Fists_of_fury" );
   sef_opener -> add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&chi=1" ); 
