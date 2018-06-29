@@ -266,6 +266,7 @@ public:
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
     buff_t* touch_of_karma;
+    buff_t* touch_of_death_amplifier;
 
     // Legendaries
     buff_t* hidden_masters_forbidden_touch;
@@ -449,6 +450,7 @@ public:
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* storm_earth_and_fire_2;
     const spell_data_t* touch_of_death;
+    const spell_data_t* touch_of_death_amplifier;
     const spell_data_t* touch_of_karma;
     const spell_data_t* windwalker_monk;
     const spell_data_t* windwalking;
@@ -6705,6 +6707,7 @@ void monk_t::init_spells()
   spec.storm_earth_and_fire_2        = find_specialization_spell( 231627 );
   spec.touch_of_karma                = find_specialization_spell( "Touch of Karma" );
   spec.touch_of_death                = find_specialization_spell( "Touch of Death" );
+  spec.touch_of_death_amplifier      = find_specialization_spell( "Touch of Death Amplifier" );
   spec.windwalker_monk               = find_specialization_spell( 137025 );
   spec.windwalking                   = find_specialization_spell( "Windwalking" );
 
@@ -7019,6 +7022,8 @@ void monk_t::create_buffs()
                         -> set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
+  buff.touch_of_death_amplifier = make_buff( this, "touch_of_death_amplifier", spec.touch_of_death )
+                                  -> set_quiet( true );
 
   // Legendaries
   buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( *this, "hidden_masters_forbidden_touch", find_spell( 213114 ) );
@@ -8472,7 +8477,7 @@ void monk_t::apl_combat_windwalker()
   st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3" );
   st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=14&cooldown.serenity.remains<13&talent.serenity.enabled&energy.time_to_max>3" );
   st -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
-  st -> add_talent( this, "Rushing Jade Wind", "if=chi.max-chi>1&!prev_gcd.1.rushing_jade_wind" );
+  st -> add_talent( this, "Rushing Jade Wind", "if=talent.rushing_jade_wind.enabled&!prev_gcd.1.rushing_jade_wind" );
   st -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(chi>1|buff.bok_proc.up|(talent.energizing_elixir.enabled&cooldown.energizing_elixir.remains<cooldown.fists_of_fury.remains))&((cooldown.rising_sun_kick.remains>1&(!talent.fist_of_the_white_tiger.enabled|cooldown.fist_of_the_white_tiger.remains>1)|chi>4)&(cooldown.fists_of_fury.remains>1|chi>2)|prev_gcd.1.tiger_palm)&!prev_gcd.1.blackout_kick" );
   st -> add_talent( this, "Chi Wave", "if=chi<=3&(cooldown.rising_sun_kick.remains>=5|cooldown.whirling_dragon_punch.remains>=5)&energy.time_to_max>1" );
   st -> add_talent( this, "Chi Burst", "if=chi<=3&(cooldown.rising_sun_kick.remains>=5|cooldown.whirling_dragon_punch.remains>=5)&energy.time_to_max>1" );
