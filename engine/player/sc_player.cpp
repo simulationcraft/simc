@@ -2210,6 +2210,7 @@ void player_t::init_scaling()
           if ( main_hand_weapon.damage > 0 )
           {
             main_hand_weapon.damage += main_hand_weapon.swing_time.total_seconds() * v;
+            main_hand_weapon.dps += v;
             main_hand_weapon.min_dmg += main_hand_weapon.swing_time.total_seconds() * v;
             main_hand_weapon.max_dmg += main_hand_weapon.swing_time.total_seconds() * v;
           }
@@ -2219,6 +2220,7 @@ void player_t::init_scaling()
           if ( off_hand_weapon.damage > 0 )
           {
             off_hand_weapon.damage += off_hand_weapon.swing_time.total_seconds() * v;
+            off_hand_weapon.dps += v;
             off_hand_weapon.min_dmg += off_hand_weapon.swing_time.total_seconds() * v;
             off_hand_weapon.max_dmg += off_hand_weapon.swing_time.total_seconds() * v;
           }
