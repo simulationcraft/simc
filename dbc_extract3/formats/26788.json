@@ -541,7 +541,7 @@
     { "data_type": "i", "field": "id",                  "formats": { "cpp": "%5u" } },
     { "data_type": "B", "field": "unk_5",     "formats": { "cpp": "%4u" } },
     { "data_type": "i", "field": "cost",                "formats": { "cpp": "%5u" } },
-    { "data_type": "b", "field": "unk_6" },
+    { "data_type": "i", "field": "unk_6" },
     { "data_type": "I", "field": "cost_per_second" },
     { "data_type": "I", "field": "unk_4" },
     { "data_type": "I", "field": "unk_3" },
