@@ -10,7 +10,7 @@ namespace
 // ==========================================================================
 // Warrior
 // todo: Fury - Add Meat Cleaver to all single target Fury abilities (ref Bloodthirst), add Battle Shout raid buff
-//       Arms - lol
+//       Arms - Mastery, new Overpower, Skullsplitter, Fervor, Rend Haste, Collateral Damage, new Warbreaker, new Cleave, Deadly Calm, In for the Kill, Avatar rage, and Dreadnaught
 // ==========================================================================
 
 struct warrior_t;
