@@ -102,6 +102,8 @@ struct mage_td_t : public actor_target_data_t
 
     buffs::touch_of_the_magi_t* touch_of_the_magi;
 
+    // Azerite
+    buff_t* packed_ice;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -3617,6 +3619,16 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
 
     return am;
   }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+
+    if ( p() -> azerite.packed_ice.enabled() )
+    {
+      td( s -> target ) -> debuffs.packed_ice -> trigger();
+    }
+  }
 };
 
 struct frozen_orb_t : public frost_mage_spell_t
@@ -3991,6 +4003,19 @@ struct ice_lance_t : public frost_mage_spell_t
     }
 
     return m;
+  }
+
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double da = frost_mage_spell_t::bonus_da( s );
+
+    const mage_td_t* td = p() -> target_data[ s -> target ];
+    if ( td )
+    {
+      da += td -> debuffs.packed_ice -> check_value();
+    }
+
+    return da;
   }
 };
 
@@ -5437,6 +5462,8 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.touch_of_the_magi = new buffs::touch_of_the_magi_t( this );
   debuffs.winters_chill = make_buff( *this, "winters_chill", mage -> find_spell( 228358 ) )
                             -> set_chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
+  debuffs.packed_ice    = make_buff( *this, "packed_ice", mage -> find_spell( 272970 ) )
+                            -> set_default_value( mage -> azerite.packed_ice.value() );
 }
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
