@@ -321,16 +321,13 @@ public:
     action_t* flurry;
   } icicle;
 
-
   // Ignite
   action_t* ignite;
   event_t* ignite_spread_event;
 
-  // Evocation
-
-
   // Active
   player_t* last_bomb_target;
+  player_t* last_frostbolt_target;
 
   // State switches for rotation selection
   state_switch_t burn_phase;
@@ -445,6 +442,7 @@ public:
 
     // Azerite
     buff_t* frigid_grasp;
+    buff_t* tunnel_of_ice;
 
     // Miscellaneous Buffs
     buff_t* greater_blessing_of_widsom;
@@ -3531,13 +3529,29 @@ struct frostbolt_t : public frost_mage_spell_t
     trigger_brain_freeze( bf_proc_chance );
 
     p() -> buffs.t19_oh_buff -> trigger();
+
+    if ( execute_state -> target != p() -> last_frostbolt_target )
+    {
+      p() -> buffs.tunnel_of_ice -> expire();
+    }
+    p() -> last_frostbolt_target = execute_state -> target;
   }
 
   virtual void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
 
+    p() -> buffs.tunnel_of_ice -> trigger();
     trigger_shattered_fragments( s -> target );
+  }
+
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double da = frost_mage_spell_t::bonus_da( s );
+
+    da += p() -> buffs.tunnel_of_ice -> check_stack_value();
+
+    return da;
   }
 };
 
@@ -5473,6 +5487,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   ignite( nullptr ),
   ignite_spread_event( nullptr ),
   last_bomb_target( nullptr ),
+  last_frostbolt_target( nullptr ),
   distance_from_rune( 0.0 ),
   firestarter_time( timespan_t::zero() ),
   blessing_of_wisdom_count( 0 ),
@@ -6137,8 +6152,11 @@ void mage_t::create_buffs()
                            -> set_default_value( find_spell( 116014 ) -> effectN( 1 ).percent() );
 
   // Azerite
-  buffs.frigid_grasp = make_buff<stat_buff_t>( this, "frigid_grasp", find_spell( 279684 ) )
-                         -> add_stat( STAT_INTELLECT, azerite.frigid_grasp.value() );
+  buffs.frigid_grasp  = make_buff<stat_buff_t>( this, "frigid_grasp", find_spell( 279684 ) )
+                          -> add_stat( STAT_INTELLECT, azerite.frigid_grasp.value() );
+  buffs.tunnel_of_ice = make_buff( this, "tunnel_of_ice", find_spell( 277904 ) )
+                          -> set_chance( azerite.tunnel_of_ice.enabled() ? 1.0 : 0.0 )
+                          -> set_default_value( azerite.tunnel_of_ice.value() );
 
   // Misc
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
@@ -6983,6 +7001,7 @@ void mage_t::reset()
   }
 
   last_bomb_target = nullptr;
+  last_frostbolt_target = nullptr;
   ground_aoe_expiration.clear();
   burn_phase.reset();
 
