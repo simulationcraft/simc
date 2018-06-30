@@ -3434,12 +3434,14 @@ struct fury_whirlwind_parent_t: public warrior_attack_t
   timespan_t spin_time;
   double base_rage_gain;
   double additional_rage_gain_per_target;
+  double enrage_chance;
   fury_whirlwind_parent_t( warrior_t* p, const std::string& options_str ):
     warrior_attack_t( "whirlwind", p, p -> spec.whirlwind ),
     oh_attack( nullptr ), mh_attack( nullptr ),
     spin_time( timespan_t::from_millis( p -> spec.whirlwind -> effectN( 3 ).misc_value1() ) ),
 	base_rage_gain( p -> spec.whirlwind -> effectN( 8 ).base_value() ),
-	additional_rage_gain_per_target( p -> spec.whirlwind -> effectN( 9 ).base_value() )
+	additional_rage_gain_per_target( p -> spec.whirlwind -> effectN( 9 ).base_value() ),
+    enrage_chance ( p-> talents.meat_cleaver -> effectN( 3 ).percent() )
   {
     parse_options( options_str );
     radius = data().effectN( 1 ).trigger() -> effectN( 1 ).radius_max();
@@ -3518,6 +3520,13 @@ void execute() override
                                     p()->talents.meat_cleaver->effectN( 1 ).base_value() * num_available_targets ) *
                               recklessness_bonus,
                           p()->gain.meat_cleaver );
+    }
+    if ( p() -> talents.meat_cleaver ->ok() )
+    {
+      if ( rng().roll(enrage_chance))
+      {
+        p() -> enrage();
+      }
     }
   }
 
