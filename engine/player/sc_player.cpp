@@ -9206,7 +9206,7 @@ expr_t* player_t::create_expression( const std::string& expression_str )
     return q;
 
   // time_to_pct expressions
-  if ( util::str_in_str_ci( expression_str, "time_to_" ) )
+  if ( util::str_begins_with_ci( expression_str, "time_to_" ) )
   {
     std::vector<std::string> parts = util::string_split( expression_str, "_" );
     double percent = -1.0;

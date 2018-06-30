@@ -169,6 +169,9 @@ bool str_compare_ci( const std::string& l, const std::string& r );
 bool str_in_str_ci ( const std::string& l, const std::string& r );
 bool str_prefix_ci ( const std::string& str, const std::string& prefix );
 
+bool str_begins_with( const std::string& str, const std::string& beginsWith );
+bool str_begins_with_ci( const std::string& str, const std::string& beginsWith );
+
 double floor( double X, unsigned int decplaces = 0 );
 double ceil( double X, unsigned int decplaces = 0 );
 double round( double X, unsigned int decplaces = 0 );
