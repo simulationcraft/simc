@@ -303,6 +303,7 @@ public:
     std::array<pet_t*, 2> guardian_fire_elemental;
     pet_t* guardian_ember_elemental;
     std::array<pet_t*, 2> guardian_storm_elemental;
+    pet_t* guardian_spark_elemental;
     pet_t* guardian_earth_elemental;
 
     std::array<pet_t*, 2> spirit_wolves;
@@ -2362,7 +2363,11 @@ struct earth_elemental_t : public primal_elemental_t
 
     bool ready() override
     {
-      return p()->o()->azerite.rumbling_tremors.ok();
+      if ( p()->o()->azerite.rumbling_tremors.ok() )
+      {
+        return false;
+      }
+      return pet_spell_t<earth_elemental_t>::ready();
     }
   };
 
@@ -2372,13 +2377,11 @@ struct earth_elemental_t : public primal_elemental_t
 
     action_priority_list_t* def = get_action_priority_list( "default" );
 
-    if ( o()->talent.primal_elementalist->ok() )
+    if ( o()->azerite.rumbling_tremors.ok() )
     {
       def->add_action( "rumbling_tremors,if=!ticking" );
     }
-    else
-    {
-    }
+
     def->add_action( "auto_attack" );
   }
 
@@ -2524,23 +2527,22 @@ struct storm_elemental_t : public primal_elemental_t
 {
   struct eye_of_the_storm_aoe_t : public pet_spell_t<storm_elemental_t>
   {
-    int tick_number = 0;
+    int tick_number   = 0;
+    double damage_amp = 0.0;
     eye_of_the_storm_aoe_t( storm_elemental_t* player, const std::string& options )
       : super( player, "eye_of_the_storm_aoe", player->find_spell( 269005 ), options )
     {
       aoe        = -1;
       background = true;
-    }
 
-    double target_armor( player_t* ) const override
-    {
-      return 0;
+      // parent spell (eye_of_the_storm_t) has the damage increase percentage
+      damage_amp = player->o()->find_spell( 157375 )->effectN( 2 ).percent();
     }
 
     double action_multiplier() const override
     {
       double m = pet_spell_t::action_multiplier();
-      m *= std::pow( 1.0 + p()->o()->find_spell( 157375 )->effectN( 2 ).percent(), tick_number );
+      m *= std::pow( 1.0 + damage_amp, tick_number );
       return m;
     }
   };
@@ -2564,7 +2566,11 @@ struct storm_elemental_t : public primal_elemental_t
 
     bool ready() override
     {
-      return pet_spell_t::ready() && p()->o()->talent.primal_elementalist->ok();
+      if ( p()->o()->talent.primal_elementalist->ok() )
+      {
+        return pet_spell_t<storm_elemental_t>::ready();
+      }
+      return false;
     }
   };
 
@@ -2647,6 +2653,10 @@ struct storm_elemental_t : public primal_elemental_t
   {
     primal_elemental_t::dismiss( expired );
     o()->buff.wind_gust->expire();
+    if ( o()->azerite.echo_of_the_elementals.ok() )
+    {
+      o()->pet.guardian_spark_elemental->summon( o()->find_spell( 275386 )->duration() );
+    }
   }
 };
 
@@ -3990,6 +4000,30 @@ struct storm_elemental_t : public shaman_spell_t
     {
       // Summon first non sleeping Storm Elemental
       pet::summon( p()->pet.guardian_storm_elemental, summon_spell->duration() );
+    }
+  }
+};
+
+// create baby summon of azerite trait Echo of the Elementals
+struct spark_elemental_t : public shaman_spell_t
+{
+  const spell_data_t* base_spell;
+
+  spark_elemental_t( shaman_t* player, const std::string& options_str )
+    : shaman_spell_t( "spark_elemental", player, player->find_specialization_spell( "Spark Elemental" ), options_str ),
+      base_spell( player->find_spell( 275386 ) )
+  {
+    harmful = may_crit = false;
+  }
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    // Summon first non sleeping Spark Elemental
+    if ( p()->azerite.echo_of_the_elementals.ok() )
+    {
+      p()->pet.guardian_spark_elemental->summon( base_spell->duration() );
     }
   }
 };
@@ -6237,6 +6271,8 @@ pet_t* shaman_t::create_pet( const std::string& pet_name, const std::string& /* 
     return new pet::fire_elemental_t( this, true );
   if ( pet_name == "ember_elemental" )
     return new pet::ember_elemental_t( this, true );
+  if ( pet_name == "spark_elemental" )
+    return new pet::spark_elemental_t( this, true );
   if ( pet_name == "primal_storm_elemental" )
     return new pet::storm_elemental_t( this, false );
   if ( pet_name == "greater_storm_elemental" )
@@ -6302,6 +6338,8 @@ void shaman_t::create_pets()
   {
     if ( !talent.storm_elemental->ok() )
       pet.guardian_ember_elemental = create_pet( "ember_elemental" );
+    if ( talent.storm_elemental->ok() )
+      pet.guardian_spark_elemental = create_pet( "spark_elemental" );
   }
 
   if ( talent.liquid_magma_totem->ok() && find_action( "liquid_magma_totem" ) )
