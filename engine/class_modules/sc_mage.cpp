@@ -351,6 +351,7 @@ public:
   {
     action_t* arcane_assault;
     action_t* conflagration_flare_up;
+    action_t* glacial_assault;
     action_t* touch_of_the_magi_explosion;
     action_t* legendary_arcane_orb;
     action_t* legendary_meteor;
@@ -3335,14 +3336,35 @@ struct flamestrike_t : public fire_mage_spell_t
 
 // Flurry Spell ===============================================================
 
+struct glacial_assault_t : public frost_mage_spell_t
+{
+  glacial_assault_t( mage_t* p ) :
+    frost_mage_spell_t( "glacial_assault", p, p -> find_spell( 279856 ) )
+  {
+    // TODO: Is this affected by shatter?
+    background = true;
+    aoe = -1;
+
+    base_dd_min = base_dd_max = p -> azerite.glacial_assault.value();
+  }
+};
+
 struct flurry_bolt_t : public frost_mage_spell_t
 {
+  double glacial_assault_chance;
+
   flurry_bolt_t( mage_t* p ) :
-    frost_mage_spell_t( "flurry_bolt", p, p -> find_spell( 228354 ) )
+    frost_mage_spell_t( "flurry_bolt", p, p -> find_spell( 228354 ) ),
+    glacial_assault_chance( 0.0 )
   {
     background = true;
     chills = true;
     base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
+
+    if ( p -> azerite.glacial_assault.enabled() )
+    {
+      glacial_assault_chance = p -> azerite.glacial_assault.spell_ref().effectN( 1 ).trigger() -> proc_chance();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3354,6 +3376,16 @@ struct flurry_bolt_t : public frost_mage_spell_t
     if ( p() -> state.brain_freeze_active )
     {
       td( s -> target ) -> debuffs.winters_chill -> trigger();
+    }
+
+    if ( rng().roll( glacial_assault_chance ) )
+    {
+      // TODO: Double check the delay.
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+        .pulse_time( timespan_t::from_seconds( 1.0 ) )
+        .target( s -> target )
+        .n_pulses( 1 )
+        .action( p() -> action.glacial_assault ) );
     }
   }
 
@@ -3397,6 +3429,10 @@ struct flurry_t : public frost_mage_spell_t
     if ( p -> spec.icicles -> ok() )
     {
       add_child( p -> icicle.flurry );
+    }
+    if ( p -> action.glacial_assault )
+    {
+      add_child( p -> action.glacial_assault );
     }
   }
 
@@ -5632,6 +5668,11 @@ bool mage_t::create_actions()
       break;
     default:
       break;
+  }
+
+  if ( azerite.glacial_assault.enabled() )
+  {
+    action.glacial_assault = new glacial_assault_t( this );
   }
 
   return player_t::create_actions();
