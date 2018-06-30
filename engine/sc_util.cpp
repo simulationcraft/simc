@@ -284,6 +284,7 @@ const char* util::race_type_string( race_e type )
     case RACE_DRAENEI:             return "draenei";
     case RACE_DRAGONKIN:           return "dragonkin";
     case RACE_DWARF:               return "dwarf";
+    case RACE_ELEMENTAL:           return "elemental";
     case RACE_GIANT:               return "giant";
     case RACE_GNOME:               return "gnome";
     case RACE_HUMAN:               return "human";
@@ -304,8 +305,11 @@ const char* util::race_type_string( race_e type )
     case RACE_NIGHTBORNE:          return "nightborne";
     case RACE_DARK_IRON_DWARF:     return "dark_iron_dwarf";
     case RACE_MAGHAR_ORC:          return "maghar_orc";
-    default:                       return "unknown";
+    case RACE_UNKNOWN:             return "unknown";
+    case RACE_MAX:                 return "unknown";
+    // no default statement so we get warnings if something is missing.
   }
+  return "unknown";
 }
 
 // race_type_string =========================================================
