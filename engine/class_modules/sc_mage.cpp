@@ -758,103 +758,6 @@ public:
   std::string       default_rune() const override;
 };
 
-// Common spell base for mage and mage pet spells.
-struct mage_spell_base_t : public spell_t
-{
-  struct affected_by_t
-  {
-    // Permanent damage increase.
-    bool arcane_mage;
-    bool fire_mage;
-    bool frost_mage;
-
-    // Temporary damage increase.
-    bool arcane_power;
-    bool bone_chilling;
-    bool crackling_energy;
-    bool incanters_flow;
-    bool rune_of_power;
-
-    // Misc
-    bool combustion;
-    bool ice_floes;
-    bool shatter;
-
-    affected_by_t() :
-      arcane_mage( true ),
-      fire_mage( true ),
-      frost_mage( true ),
-      arcane_power( true ),
-      bone_chilling( true ),
-      crackling_energy( true ),
-      incanters_flow( true ),
-      rune_of_power( true ),
-      combustion( true ),
-      ice_floes( false ),
-      shatter( false )
-    { }
-  } affected_by;
-
-  // Mage player or owner for pet spells.
-  mage_t* mage;
-
-  mage_spell_base_t( const std::string& n, player_t* p, const spell_data_t* s, mage_t* m ) :
-    spell_t( n, p, s ),
-    affected_by(),
-    mage( m )
-  {
-    may_crit = tick_may_crit = true;
-    weapon_multiplier = 0.0;
-  }
-
-  virtual void init() override
-  {
-    spell_t::init();
-
-    if ( affected_by.arcane_mage )
-      base_multiplier *= 1.0 + mage -> spec.arcane_mage -> effectN( 1 ).percent();
-
-    if ( affected_by.fire_mage )
-      base_multiplier *= 1.0 + mage -> spec.fire_mage -> effectN( 1 ).percent();
-
-    if ( affected_by.frost_mage )
-      base_multiplier *= 1.0 + mage -> spec.frost_mage -> effectN( 1 ).percent();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double m = spell_t::action_multiplier();
-
-    if ( affected_by.arcane_power )
-      m *= 1.0 + mage -> buffs.arcane_power -> check_value();
-
-    if ( affected_by.bone_chilling )
-      m *= 1.0 + mage -> buffs.bone_chilling -> check_stack_value();
-
-    if ( affected_by.crackling_energy )
-      m *= 1.0 + mage -> buffs.crackling_energy -> check_value();
-
-    if ( affected_by.incanters_flow )
-      m *= 1.0 + mage -> buffs.incanters_flow -> check_stack_value();
-
-    if ( affected_by.rune_of_power )
-      m *= 1.0 + mage -> buffs.rune_of_power -> check_value();
-
-    return m;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = spell_t::composite_crit_chance();
-
-    if ( affected_by.combustion )
-      c += mage -> buffs.combustion -> check_value();
-
-    return c;
-  }
-
-};
-
 namespace pets
 {
 struct mage_pet_t : public pet_t
@@ -875,22 +778,13 @@ struct mage_pet_t : public pet_t
   }
 };
 
-struct mage_pet_spell_t : public mage_spell_base_t
+struct mage_pet_spell_t : public spell_t
 {
   mage_pet_spell_t( const std::string& n, mage_pet_t* p, const spell_data_t* s )
-    : mage_spell_base_t( n, p, s, p -> o() )
+    : spell_t( n, p, s )
   {
-    affected_by.arcane_mage = false;
-    affected_by.fire_mage = false;
-    affected_by.frost_mage = false;
-
-    affected_by.arcane_power = false;
-    affected_by.bone_chilling = false;
-    affected_by.crackling_energy = false;
-    affected_by.incanters_flow = false;
-    affected_by.rune_of_power = false;
-
-    affected_by.combustion = false;
+    may_crit = tick_may_crit = true;
+    weapon_multiplier = 0.0;
   }
 
   mage_t* o()
@@ -1319,8 +1213,42 @@ struct mage_spell_state_t : public action_state_t
   }
 };
 
-struct mage_spell_t : public mage_spell_base_t
+struct mage_spell_t : public spell_t
 {
+  struct affected_by_t
+  {
+    // Permanent damage increase.
+    bool arcane_mage;
+    bool fire_mage;
+    bool frost_mage;
+
+    // Temporary damage increase.
+    bool arcane_power;
+    bool bone_chilling;
+    bool crackling_energy;
+    bool incanters_flow;
+    bool rune_of_power;
+
+    // Misc
+    bool combustion;
+    bool ice_floes;
+    bool shatter;
+
+    affected_by_t() :
+      arcane_mage( true ),
+      fire_mage( true ),
+      frost_mage( true ),
+      arcane_power( true ),
+      bone_chilling( true ),
+      crackling_energy( true ),
+      incanters_flow( true ),
+      rune_of_power( true ),
+      combustion( true ),
+      ice_floes( false ),
+      shatter( false )
+    { }
+  } affected_by;
+
   static const snapshot_state_e STATE_FROZEN = STATE_TGT_USER_1;
 
   enum frozen_type_e
@@ -1344,17 +1272,44 @@ public:
 
   mage_spell_t( const std::string& n, mage_t* p,
                 const spell_data_t* s = spell_data_t::nil() ) :
-    mage_spell_base_t( n, p, s, p ),
+    spell_t( n, p, s ),
+    affected_by(),
     track_cd_waste( false ),
     cd_waste( nullptr )
   {
+    may_crit = tick_may_crit = true;
+    weapon_multiplier = 0.0;
     affected_by.ice_floes = data().affected_by( p -> talents.ice_floes -> effectN( 1 ) );
     track_cd_waste = data().cooldown() > timespan_t::zero() || data().charge_cooldown() > timespan_t::zero();
   }
 
+  mage_t* p()
+  { return static_cast<mage_t*>( player ); }
+
+  const mage_t* p() const
+  { return static_cast<mage_t*>( player ); }
+
+  mage_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
+
+  virtual action_state_t* new_state() override
+  { return new mage_spell_state_t( this, target ); }
+
   virtual void init() override
   {
-    mage_spell_base_t::init();
+    if ( initialized )
+      return;
+
+    spell_t::init();
+
+    if ( affected_by.arcane_mage )
+      base_multiplier *= 1.0 + p() -> spec.arcane_mage -> effectN( 1 ).percent();
+
+    if ( affected_by.fire_mage )
+      base_multiplier *= 1.0 + p() -> spec.fire_mage -> effectN( 1 ).percent();
+
+    if ( affected_by.frost_mage )
+      base_multiplier *= 1.0 + p() -> spec.frost_mage -> effectN( 1 ).percent();
 
     if ( harmful && affected_by.shatter && p() -> spec.shatter -> ok() )
     {
@@ -1370,21 +1325,39 @@ public:
       cd_waste = p() -> get_cooldown_waste_data( cooldown );
     }
 
-    return mage_spell_base_t::init_finished();
+    return spell_t::init_finished();
   }
 
-  mage_t* p()
-  { return static_cast<mage_t*>( player ); }
-
-  const mage_t* p() const
-  { return static_cast<mage_t*>( player ); }
-
-  mage_td_t* td( player_t* t ) const
-  { return p() -> get_target_data( t ); }
-
-  virtual action_state_t* new_state() override
+  virtual double action_multiplier() const override
   {
-    return new mage_spell_state_t( this, target );
+    double m = spell_t::action_multiplier();
+
+    if ( affected_by.arcane_power )
+      m *= 1.0 + p() -> buffs.arcane_power -> check_value();
+
+    if ( affected_by.bone_chilling )
+      m *= 1.0 + p() -> buffs.bone_chilling -> check_stack_value();
+
+    if ( affected_by.crackling_energy )
+      m *= 1.0 + p() -> buffs.crackling_energy -> check_value();
+
+    if ( affected_by.incanters_flow )
+      m *= 1.0 + p() -> buffs.incanters_flow -> check_stack_value();
+
+    if ( affected_by.rune_of_power )
+      m *= 1.0 + p() -> buffs.rune_of_power -> check_value();
+
+    return m;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = spell_t::composite_crit_chance();
+
+    if ( affected_by.combustion )
+      c += p() -> buffs.combustion -> check_value();
+
+    return c;
   }
 
   virtual unsigned frozen( const action_state_t* s ) const
@@ -1412,12 +1385,12 @@ public:
       debug_cast<mage_spell_state_t*>( s ) -> frozen = frozen( s );
     }
 
-    mage_spell_base_t::snapshot_internal( s, flags, rt );
+    spell_t::snapshot_internal( s, flags, rt );
   }
 
   virtual double cost() const override
   {
-    double c = mage_spell_base_t::cost();
+    double c = spell_t::cost();
 
     if ( p() -> buffs.arcane_power -> check() )
     {
@@ -1449,7 +1422,7 @@ public:
 
   virtual void consume_resource() override
   {
-    mage_spell_base_t::consume_resource();
+    spell_t::consume_resource();
 
     if ( ! harmful || current_resource() != RESOURCE_MANA || ! p() -> spec.clearcasting -> ok() )
     {
@@ -1480,7 +1453,7 @@ public:
     if ( cd_waste )
       cd_waste -> add( cd, time_to_execute );
 
-    mage_spell_base_t::update_ready( cd );
+    spell_t::update_ready( cd );
   }
 
   virtual bool usable_moving() const override
@@ -1490,12 +1463,12 @@ public:
       return true;
     }
 
-    return mage_spell_base_t::usable_moving();
+    return spell_t::usable_moving();
   }
 
   virtual void execute() override
   {
-    mage_spell_base_t::execute();
+    spell_t::execute();
 
     if ( background )
       return;
@@ -1508,7 +1481,6 @@ public:
       p() -> buffs.ice_floes -> decrement();
     }
   }
-
 
   // Helper methods for 7.2.5 fire shoulders and frost head.
   void trigger_legendary_effect( buff_t* tracking_buff, buff_t* primed_buff, action_t* action, player_t* target )
@@ -1869,6 +1841,9 @@ struct frost_mage_spell_t : public mage_spell_t
 
   virtual void init() override
   {
+    if ( initialized )
+      return;
+
     mage_spell_t::init();
 
     if ( calculate_on_impact )
