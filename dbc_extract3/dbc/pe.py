@@ -57,12 +57,12 @@ _DB_STRUCT_HEADER_FORMATS = [
 ]
 
 _DB_FIELD_FORMATS = {
-    0: ('int32', 'i'),
-    1: ('int64', 'q'),
-    2: ('string', 'S'),
-    3: ('float', 'f'),
-    4: ('int8', 'b'),
-    5: ('int16', 'h')
+    0: ('int32', 'i', 4),
+    1: ('int64', 'q', 8),
+    2: ('string', 'S', 0),
+    3: ('float', 'f', 4),
+    4: ('int8', 'b', 1),
+    5: ('int16', 'h', 2)
 }
 
 # Calculate the negative offset from table_hash to the start, based on the struct info
@@ -265,32 +265,18 @@ class PeStructParser:
             col = dbfile.parser.column(field_idx)
             field_file_format = field_formats[field_idx].data_type.lower()
 
-            # For "bit" fields, allow tightening of the field size, since we
-            # only need to parse a specific number of bytes, even though
-            # internally (in the client) the value may be stored in whatever
-            # size
-            compare_widths = col.field_ext_type() in [wdc1.COLUMN_TYPE_BIT, wdc1.COLUMN_TYPE_BIT_S]
-
-            if compare_widths:
-                field_bytes = col.field_whole_bytes()
-                if field_bytes not in field_formats[field_idx].field_size():
-                    logging.warn(('Bitpacked field type discrepancy for {} field {} "{}", '
-                                  'wow_file={}, format_file={}, metadata={} ({})').format(
-                        os.path.basename(dbfile.file_name), field_idx + 1,
-                        field_formats[field_idx].base_name(),
-                        formats[field_idx][0],
-                        field_formats[field_idx].type_name(),
-                        col.short_type(),
-                        col.field_whole_bytes()))
-            else:
-                # Ensure formats match, without checking signedness. Signedness can
-                # be checked only for bit-packed fields.
-                if field_file_format != formats[field_idx][1].lower():
-                    logging.warn(('Field type discrepancy for {} field {} "{}", '
-                                  'wow_file={}, format_file={}').format(
-                        os.path.basename(dbfile.file_name), field_idx + 1,
-                        field_formats[field_idx].base_name(), formats[field_idx][0],
-                        field_formats[field_idx].type_name()))
+            # Ensure formats match (sizes, really), without checking
+            # signedness. Signedness can be checked only for bit-packed fields.
+            # Note that for direct bit-packed fields, the internal
+            # representation of the field is what the format file for simc
+            # should have. The actual data size in the db2 file is in the field
+            # width.
+            if field_file_format != formats[field_idx][1].lower():
+                logging.warn(('Field type discrepancy for {} field {} "{}", '
+                              'wow_file={}, format_file={}').format(
+                    os.path.basename(dbfile.file_name), field_idx + 1,
+                    field_formats[field_idx].base_name(), formats[field_idx][0],
+                    field_formats[field_idx].type_name()))
 
             # Check integer signedness on fields
             check_signed = field_file_format != 'f' and \

@@ -8,23 +8,23 @@
   ],
   "Artifact": [
     { "data_type": "S", "field": "f1" },
-    { "data_type": "b", "field": "id", "formats": { "cpp": "%2u" } },
-    { "data_type": "B", "field": "f2" },
+    { "data_type": "i", "field": "id", "formats": { "cpp": "%2u" } },
+    { "data_type": "H", "field": "f2" },
     { "data_type": "I", "field": "f3" },
     { "data_type": "I", "field": "unk_1" },
     { "data_type": "i", "field": "f5" },
     { "data_type": "H", "field": "id_spec", "formats": { "cpp": "%3u" } },
     { "data_type": "B", "field": "f7" },
     { "data_type": "B", "field": "f8" },
-    { "data_type": "B", "field": "f9" },
+    { "data_type": "I", "field": "f9" },
     { "data_type": "I", "field": "f10" }
   ],
   "ArtifactPower": [
     { "data_type": "f", "field": "coord", "elements": 2 },
-    { "data_type": "h", "field": "id" },
+    { "data_type": "i", "field": "id" },
     { "data_type": "B", "field": "id_artifact", "formats": { "cpp": "%3u" } },
     { "data_type": "B", "field": "max_rank", "formats": { "cpp": "%3u" } },
-    { "data_type": "b", "field": "index", "formats": { "cpp": "%2u" } },
+    { "data_type": "i", "field": "index", "formats": { "cpp": "%2u" } },
     { "data_type": "B", "field": "type", "formats": { "cpp": "%3u" } },
     { "data_type": "B", "field": "unk" }
   ],
@@ -40,8 +40,8 @@
   ],
   "AzeriteEmpoweredItem": [
     { "data_type": "i", "field": "id_item", "formats": { "cpp": "%6u" } },
-    { "data_type": "i", "field": "id_azerite_tier_unlock" },
-    { "data_type": "B", "field": "id_power_set" }
+    { "data_type": "I", "field": "id_azerite_tier_unlock" },
+    { "data_type": "I", "field": "id_power_set" }
   ],
   "AzeriteItem": [
     { "data_type": "i", "field": "id_item", "formats": { "cpp": "%6u" } }
@@ -49,7 +49,7 @@
   "AzeritePower": [
     { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" } },
     { "data_type": "i", "field": "unk_2" },
-    { "data_type": "h", "field": "spec_allowed" },
+    { "data_type": "i", "field": "spec_allowed" },
     { "data_type": "i", "field": "unk_4" }
   ],
   "AzeritePowerSetMember": [
@@ -67,7 +67,7 @@
     { "data_type": "S", "field": "unk_4",      "formats": { } },
     { "data_type": "S", "field": "name",       "formats": { "cpp": "%25s" } },
     { "data_type": "S", "field": "desc",       "formats": { } },
-    { "data_type": "h", "field": "id",         "formats": { "cpp": "%-6u" } },
+    { "data_type": "i", "field": "id",         "formats": { "cpp": "%-6u" } },
     { "data_type": "b", "field": "class_id",   "formats": { "cpp": "%-2u" } },
     { "data_type": "b", "field": "index",      "formats": { "cpp": "%-2u" } },
     { "data_type": "b", "field": "f9",         "formats": { } },
@@ -278,7 +278,7 @@
   "ItemSet": [
     { "data_type": "S", "field": "name" },
     { "data_type": "i", "field": "unk_1" },
-    { "data_type": "B", "field": "id_req_skill" },
+    { "data_type": "I", "field": "id_req_skill" },
     { "data_type": "H", "field": "val_req_skill" },
     { "data_type": "I", "field": "id_item", "elements": 17 }
   ],
@@ -298,7 +298,7 @@
     { "data_type": "H", "field": "id_tree", "formats": { "cpp": "%4u" } }
   ],
   "JournalEncounterItem": [
-    { "data_type": "H", "field": "id" },
+    { "data_type": "I", "field": "id" },
     { "data_type": "H", "field": "id_encounter" },
     { "data_type": "I", "field": "id_item" },
     { "data_type": "B", "field": "flags_2" },
@@ -311,7 +311,7 @@
   ],
   "MinorTalent": [
     { "data_type": "i", "field": "id_spell" },
-    { "data_type": "b", "field": "index" }
+    { "data_type": "i", "field": "index" }
   ],
   "RandPropPoints": [
     { "data_type": "i", "field": "item_effect", "formats": { "cpp": "%5u" } },
@@ -320,11 +320,11 @@
     { "data_type": "I", "field": "uncm_points", "elements": 5, "formats": { "cpp": "%5u" } }
   ],
   "RelicTalent": [
-    { "data_type": "b", "field": "row" },
+    { "data_type": "i", "field": "row" },
     { "data_type": "H", "field": "id_power" },
     { "data_type": "B", "field": "power_index" },
     { "data_type": "i", "field": "unk_3" },
-    { "data_type": "b", "field": "unk_4" }
+    { "data_type": "i", "field": "unk_4" }
   ],
   "RulesetItemUpgrade": [
     { "data_type": "I", "field": "id_item",         "formats": { "cpp": "%6u" } },
@@ -368,7 +368,7 @@
   ],
   "SpecializationSpells": [
     { "data_type": "S", "field": "unk_1" },
-    { "data_type": "h", "field": "id"  },
+    { "data_type": "i", "field": "id"  },
     { "data_type": "H", "field": "spec_id" },
     { "data_type": "i", "field": "spell_id" },
     { "data_type": "I", "field": "replace_spell_id" },
@@ -418,7 +418,7 @@
     { "data_type": "B", "field": "unk_2" },
     { "data_type": "b", "field": "charges" },
     { "data_type": "I", "field": "charge_cooldown" },
-    { "data_type": "b", "field": "unk_3" }
+    { "data_type": "i", "field": "unk_3" }
   ],
   "SpellClassOptions": [
     { "data_type": "i", "field": "id_spell" },
@@ -473,7 +473,7 @@
     { "data_type": "S", "field": "desc" },
     { "data_type": "S", "field": "tt" },
     { "data_type": "I", "field": "unk_3" },
-    { "data_type": "h", "field": "unk_4" },
+    { "data_type": "i", "field": "unk_4" },
     { "data_type": "b", "field": "unk_5" },
     { "data_type": "b", "field": "unk_6" },
     { "data_type": "b", "field": "school" },
@@ -600,7 +600,7 @@
   ],
   "SpellXDescriptionVariables": [
     { "data_type": "i", "field": "id_spell" },
-    { "data_type": "h", "field": "id_desc_var" }
+    { "data_type": "i", "field": "id_desc_var" }
   ],
   "Talent": [
     { "data_type": "S", "field": "desc"                                    },
