@@ -97,10 +97,9 @@ struct mage_td_t : public actor_target_data_t
 
   struct debuffs_t
   {
-    buff_t* winters_chill;
     buff_t* frozen;
-
-    buffs::touch_of_the_magi_t* touch_of_the_magi;
+    buff_t* winters_chill;
+    buff_t* touch_of_the_magi;
 
     // Azerite
     buff_t* packed_ice;
@@ -1116,12 +1115,12 @@ struct touch_of_the_magi_t : public buff_t
   double accumulated_damage;
 
   touch_of_the_magi_t( mage_td_t* td ) :
-    buff_t( buff_creator_t( *td, "touch_of_the_magi", td -> source -> find_spell( 210824 ) ) ),
+    buff_t( *td, "touch_of_the_magi", td -> source -> find_spell( 210824 ) ),
     accumulated_damage( 0.0 )
   {
     const spell_data_t* data = source -> find_spell( 210725 );
 
-    default_chance = data -> proc_chance();
+    set_chance( data -> proc_chance() );
     set_cooldown( data -> internal_cooldown() );
   }
 
@@ -1135,18 +1134,17 @@ struct touch_of_the_magi_t : public buff_t
   {
     buff_t::expire_override( stacks, duration );
 
-    auto mage = debug_cast<mage_t*>( source );
-    assert( mage -> action.touch_of_the_magi_explosion );
+    auto explosion = debug_cast<mage_t*>( source ) -> action.touch_of_the_magi_explosion;
+    assert( explosion );
 
-    mage -> action.touch_of_the_magi_explosion -> set_target( player );
-    mage -> action.touch_of_the_magi_explosion -> base_dd_min = accumulated_damage;
-    mage -> action.touch_of_the_magi_explosion -> base_dd_max = accumulated_damage;
-    mage -> action.touch_of_the_magi_explosion -> execute();
+    explosion -> set_target( player );
+    explosion -> base_dd_min = explosion -> base_dd_max = accumulated_damage;
+    explosion -> execute();
 
     accumulated_damage = 0.0;
   }
 
-  double accumulate_damage( action_state_t* state )
+  void accumulate_damage( const action_state_t* state )
   {
     if ( sim -> debug )
     {
@@ -1158,7 +1156,6 @@ struct touch_of_the_magi_t : public buff_t
     }
 
     accumulated_damage += state -> result_total;
-    return accumulated_damage;
   }
 };
 // Custom buffs ===============================================================
@@ -1256,7 +1253,7 @@ struct lady_vashjs_grasp_t : public buff_t
     buff_t( p, "lady_vashjs_grasp", p -> find_spell( 208147 ) )
   {
     // Disable by default.
-    default_chance = 0.0;
+    set_chance( 0.0 );
     tick_zero = true;
     set_tick_callback( [ this, p ] ( buff_t* /* buff */, int /* ticks */, const timespan_t& /* tick_time */ )
     {
@@ -2314,14 +2311,11 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
   virtual void impact( action_state_t* s ) override
   {
-      arcane_mage_spell_t::impact( s );
+    arcane_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) && p() -> talents.touch_of_the_magi -> ok() )
     {
-        if ( p() -> talents.touch_of_the_magi -> ok() )
-        {
-            p() -> get_target_data( s -> target ) -> debuffs.touch_of_the_magi -> trigger();
-        }
+      td( s -> target ) -> debuffs.touch_of_the_magi -> trigger();
     }
   }
 
@@ -5087,7 +5081,7 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
 
   virtual void init() override
   {
-    mage_spell_t::init();
+    arcane_mage_spell_t::init();
     // disable the snapshot_flags for all multipliers
     snapshot_flags &= STATE_NO_MULTIPLIER;
     snapshot_flags |= STATE_TGT_MUL_DA;
@@ -5110,7 +5104,7 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
     base_dd_min *= mult;
     base_dd_max *= mult;
 
-    mage_spell_t::execute();
+    arcane_mage_spell_t::execute();
   }
 };
 
@@ -5504,14 +5498,14 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 {
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
 
-  debuffs.frozen        = make_buff( *this, "frozen" )
-                            -> set_duration( timespan_t::from_seconds( 0.5 ) );
-  debuffs.touch_of_the_magi = new buffs::touch_of_the_magi_t( this );
-  debuffs.winters_chill = make_buff( *this, "winters_chill", mage -> find_spell( 228358 ) )
-                            -> set_chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
-  debuffs.packed_ice    = make_buff( *this, "packed_ice", mage -> find_spell( 272970 ) )
-                            -> set_chance( mage -> azerite.packed_ice.enabled() ? 1.0 : 0.0 )
-                            -> set_default_value( mage -> azerite.packed_ice.value() );
+  debuffs.frozen            = make_buff( *this, "frozen" )
+                                -> set_duration( timespan_t::from_seconds( 0.5 ) );
+  debuffs.winters_chill     = make_buff( *this, "winters_chill", mage -> find_spell( 228358 ) )
+                                -> set_chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
+  debuffs.touch_of_the_magi = make_buff<buffs::touch_of_the_magi_t>( this );
+  debuffs.packed_ice        = make_buff( *this, "packed_ice", mage -> find_spell( 272970 ) )
+                                -> set_chance( mage -> azerite.packed_ice.enabled() ? 1.0 : 0.0 )
+                                -> set_default_value( mage -> azerite.packed_ice.value() );
 }
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -6352,13 +6346,12 @@ void mage_t::init_assessors()
 
   if ( talents.touch_of_the_magi -> ok() )
   {
-    auto assessor_fn = [ this ] ( dmg_e, action_state_t* state ) {
-      buffs::touch_of_the_magi_t* buff =
-        get_target_data( state -> target ) -> debuffs.touch_of_the_magi;
+    auto assessor_fn = [ this ] ( dmg_e, action_state_t* s ) {
+      auto buff = debug_cast<buffs::touch_of_the_magi_t*>( get_target_data( s -> target ) -> debuffs.touch_of_the_magi );
 
       if ( buff -> check() )
       {
-        buff -> accumulate_damage( state );
+        buff -> accumulate_damage( s );
       }
 
       return assessor::CONTINUE;
@@ -8047,7 +8040,7 @@ struct lady_vashjs_grasp_t : public scoped_actor_callback_t<mage_t>
   { }
 
   virtual void manipulate( mage_t* actor, const special_effect_t& /* e */ ) override
-  { actor -> buffs.lady_vashjs_grasp -> default_chance = 1.0; }
+  { actor -> buffs.lady_vashjs_grasp -> set_chance( 1.0 ); }
 };
 
 struct ice_time_t : public scoped_action_callback_t<frozen_orb_t>
