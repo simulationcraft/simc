@@ -440,6 +440,9 @@ public:
 
     haste_buff_t* sephuzs_secret;
 
+    // Azerite
+    buff_t* frigid_grasp;
+
     // Miscellaneous Buffs
     buff_t* greater_blessing_of_widsom;
     buff_t* t19_oh_buff;
@@ -620,6 +623,22 @@ public:
     const spell_data_t* ray_of_frost;
     const spell_data_t* glacial_spike;
   } talents;
+
+  // Azerite Powers
+  struct azerite_powers_t
+  {
+    // Arcane
+
+    // Fire
+
+    // Frost
+    azerite_power_t frigid_grasp;
+    azerite_power_t glacial_assault;
+    azerite_power_t packed_ice;
+    azerite_power_t tunnel_of_ice;
+    azerite_power_t whiteout;
+    azerite_power_t winters_reach;
+  } azerite;
 
   struct uptimes_t {
     uptime_t* burn_phase;
@@ -3982,6 +4001,10 @@ struct icy_veins_t : public frost_mage_spell_t
       debug_cast<buffs::lady_vashjs_grasp_t*>( p() -> buffs.lady_vashjs_grasp )
         -> proc_fof = p() -> get_proc( "Fingers of Frost from Lady Vashj's Grasp" );
     }
+    if ( p() -> azerite.frigid_grasp.enabled() )
+    {
+      proc_fof = p() -> get_proc( "Fingers of Frost from Frigid Grasp" );
+    }
 
     return frost_mage_spell_t::init_finished();
   }
@@ -3996,6 +4019,12 @@ struct icy_veins_t : public frost_mage_spell_t
     // LVG manually and then trigger it again.
     p() -> buffs.lady_vashjs_grasp -> expire();
     p() -> buffs.lady_vashjs_grasp -> trigger();
+
+    if ( p() -> azerite.frigid_grasp.enabled() )
+    {
+      trigger_fof( 1.0 );
+      p() -> buffs.frigid_grasp -> trigger();
+    }
   }
 };
 
@@ -5395,7 +5424,8 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   sample_data( sample_data_t() ),
   spec( specializations_t() ),
   state( state_t() ),
-  talents( talents_list_t() )
+  talents( talents_list_t() ),
+  azerite( azerite_powers_t() )
 {
   // Cooldowns
   cooldowns.combustion       = get_cooldown( "combustion"       );
@@ -5873,6 +5903,14 @@ void mage_t::init_spells()
   spec.savant                = find_mastery_spell( MAGE_ARCANE );
   spec.ignite                = find_mastery_spell( MAGE_FIRE );
   spec.icicles               = find_mastery_spell( MAGE_FROST );
+
+  // Azerite
+  azerite.frigid_grasp       = find_azerite_spell( "Frigid Grasp" );
+  azerite.glacial_assault    = find_azerite_spell( "Glacial Assault" );
+  azerite.packed_ice         = find_azerite_spell( "Packed Ice" );
+  azerite.tunnel_of_ice      = find_azerite_spell( "Tunnel of Ice" );
+  azerite.whiteout           = find_azerite_spell( "Whiteout" );
+  azerite.winters_reach      = find_azerite_spell( "Winter's Reach" );
 }
 
 // mage_t::init_base ========================================================
@@ -6029,6 +6067,10 @@ void mage_t::create_buffs()
   buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this );
   buffs.rune_of_power  = make_buff( this, "rune_of_power", find_spell( 116014 ) )
                            -> set_default_value( find_spell( 116014 ) -> effectN( 1 ).percent() );
+
+  // Azerite
+  buffs.frigid_grasp = make_buff<stat_buff_t>( this, "frigid_grasp", find_spell( 279684 ) )
+                         -> add_stat( STAT_INTELLECT, azerite.frigid_grasp.value() );
 
   // Misc
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
