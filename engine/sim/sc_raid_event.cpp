@@ -34,7 +34,7 @@ struct adds_event_t : public raid_event_t
 
   adds_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "adds" ),
-    count( 1 ), health( 100000 ), master_str( "Fluffy_Pillow" ), name_str( "Add" ),
+    count( 1 ), health( 100000 ), master_str(), name_str( "Add" ),
     master(), count_range( false ), adds_to_remove( 0 ), spawn_x_coord( 0 ),
     spawn_y_coord( 0 ), spawn_stacked( 0 ), spawn_radius_min( 0 ), spawn_radius_max( 0 ),
     spawn_radius( 0 ), spawn_angle_start( -1 ), spawn_angle_end( -1 ), race(RACE_NONE)
