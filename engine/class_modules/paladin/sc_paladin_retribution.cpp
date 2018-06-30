@@ -426,7 +426,8 @@ struct divine_storm_t: public holy_power_consumer_t
 
     if ( p() -> azerite.divine_right.ok() )
     {
-      if ( state -> target -> health_percentage() < p() -> azerite.divine_right.value( 2 ) )
+      // TODO: figure out why using the value doesn't work here
+      if ( state -> target -> health_percentage() < 20 )
       {
         p() -> buffs.divine_right -> trigger();
       }
