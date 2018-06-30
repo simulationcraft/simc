@@ -1390,6 +1390,7 @@ class SpellDataGenerator(DataGenerator):
           ( 263725, 0 ),                            # Clearcasting buff
           ( 264774, 0 ),                            # Ro3 buff (talent)
           ( 277726, 0 ),                            # Amplification (?)
+          ( 279856, 0 ),                            # Glacial Assault
         ),
 
         # Warlock:
