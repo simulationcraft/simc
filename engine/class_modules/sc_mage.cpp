@@ -3856,6 +3856,8 @@ struct ice_lance_t : public frost_mage_spell_t
 
     base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
 
+    base_dd_adder = p -> azerite.whiteout.value( 3 );
+
     // TODO: Cleave distance for SI seems to be 8 + hitbox size.
     if ( p -> talents.splitting_ice -> ok() )
     {
@@ -3927,6 +3929,12 @@ struct ice_lance_t : public frost_mage_spell_t
     if ( ! p() -> talents.glacial_spike -> ok() )
     {
       p() -> trigger_icicle( execute_state, true, target );
+    }
+    if ( p() -> azerite.whiteout.enabled() )
+    {
+      p() -> cooldowns.frozen_orb -> adjust(
+        timespan_t::from_seconds( -0.1 * p() -> azerite.whiteout.spell_ref().effectN( 2 ).base_value() ),
+        false );
     }
   }
 
