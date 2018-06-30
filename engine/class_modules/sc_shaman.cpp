@@ -358,6 +358,7 @@ public:
     buff_t* icy_edge;
     buff_t* molten_weapon;
     buff_t* crackling_surge;
+    buff_t* gathering_storms;
 
     // Restoration
     buff_t* spirit_walk;
@@ -566,6 +567,7 @@ public:
 
   // Elemental Spirits attacks
   shaman_attack_t* molten_weapon;
+  shaman_attack_t* icy_edge;
 
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN )
     : player_t( sim, SHAMAN, name, r ),
@@ -611,8 +613,8 @@ public:
 
     // Elemental Spirits attacks
     molten_weapon = nullptr;
-
-    regen_type = REGEN_DISABLED;
+    icy_edge      = nullptr;
+    regen_type    = REGEN_DISABLED;
 
     // talent_points.register_validity_fn( [this]( const spell_data_t* spell ) {
     //  // Soul of the Farseer
@@ -886,6 +888,19 @@ struct crackling_surge_buff_t : public buff_t
     set_duration( s_data->duration() );
     set_default_value( s_data->effectN( 1 ).percent() );
     set_max_stack( 2 );
+  }
+};
+
+struct gathering_storms_buff_t : public buff_t
+{
+  gathering_storms_buff_t( shaman_t* p ) : buff_t( p, "gathering_storms", p->find_spell( 198300 ) )
+  {
+    set_duration( s_data->duration() );
+    // Buff applied to player is id# 198300, but appears to pull the value data from the crash lightning ability id
+    // instead.  Probably setting an override value on gathering storms from crash lightning data.
+    // set_default_value( s_data->effectN( 1 ).percent() ); --replace with this if ever changed
+    set_default_value( p->find_spell( 187874 )->effectN( 2 ).percent() );
+    // set_max_stack( 1 );
   }
 };
 
@@ -2107,40 +2122,27 @@ struct elemental_wolf_base_t : public base_wolf_t
 
 struct frost_wolf_t : public elemental_wolf_base_t
 {
-  struct
-  {
-    action_t* icy_edge;
-  } actions;
-
   frost_wolf_t( shaman_t* owner ) : elemental_wolf_base_t( owner, owner->raptor_glyph ? "frost_raptor" : "frost_wolf" )
   {
     wolf_type = FROST_WOLF;
   }
 
-  struct icy_edge_t : public wolf_base_attack_t<frost_wolf_t>
+  double composite_player_multiplier( school_e s ) const override
   {
-    icy_edge_t( frost_wolf_t* player ) : super( player, "icy_edge", player->find_spell( 271920 ) )
-    {
-      background              = true;
-      snapshot_flags          = STATE_AP;
-      attack_power_mod.direct = 0.065;
-      school                  = SCHOOL_FROST;
-    }
+    double m = elemental_wolf_base_t::composite_player_multiplier( s );
 
-    // Move this to pet base attack eventually.
-    double action_multiplier() const override
-    {
-      double m = super::action_multiplier();
+    return m;
+  }
 
-      if ( super::data().affected_by( p()->o()->mastery.enhanced_elements->effectN( 1 ) ) ||
-           super::data().affected_by( p()->o()->mastery.enhanced_elements->effectN( 5 ) ) )
-      {
-        m *= 1.0 + p()->o()->cache.mastery_value();
-      }
+  void create_buffs() override
+  {
+    elemental_wolf_base_t::create_buffs();
+  }
 
-      return m;
-    }
-  };
+  bool create_actions() override
+  {
+    return elemental_wolf_base_t::create_actions();
+  }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
   {
@@ -2153,13 +2155,6 @@ struct frost_wolf_t : public elemental_wolf_base_t
 
     action_priority_list_t* def = get_action_priority_list( "default" );
   }
-
-  void init_spells() override
-  {
-    elemental_wolf_base_t::init_spells();
-
-    actions.icy_edge = new icy_edge_t( this );
-  }
 };
 
 struct fire_wolf_t : public elemental_wolf_base_t
@@ -2167,6 +2162,18 @@ struct fire_wolf_t : public elemental_wolf_base_t
   fire_wolf_t( shaman_t* owner ) : elemental_wolf_base_t( owner, owner->raptor_glyph ? "fiery_raptor" : "fiery_wolf" )
   {
     wolf_type = FIRE_WOLF;
+  }
+
+  double composite_player_multiplier( school_e s ) const override
+  {
+    double m = elemental_wolf_base_t::composite_player_multiplier( s );
+
+    return m;
+  }
+
+  void create_buffs() override
+  {
+    elemental_wolf_base_t::create_buffs();
   }
 
   bool create_actions() override
@@ -2715,8 +2722,8 @@ struct searing_assault_t : public shaman_spell_t
 {
   searing_assault_t( shaman_t* player ) : shaman_spell_t( "searing_assault", player, player->find_spell( 268429 ) )
   {
-    tick_may_crit = false;
-    may_crit      = false;
+    tick_may_crit = true;
+    may_crit      = true;
     hasted_ticks  = false;
     school        = SCHOOL_FIRE;
     background    = true;
@@ -2890,6 +2897,24 @@ struct hailstorm_attack_t : public shaman_attack_t
   }
 };
 
+struct icy_edge_attack_t : public shaman_attack_t
+{
+  icy_edge_attack_t( const std::string& n, shaman_t* p, weapon_t* w ) : shaman_attack_t( n, p, p->find_spell( 271920 ) )
+  {
+    weapon     = w;
+    background = true;
+    callbacks  = false;
+  }
+
+  void init() override
+  {
+    shaman_attack_t::init();
+
+    may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_hot_hand = false;
+    may_proc_stormbringer = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
+  }
+};
+
 struct stormstrike_attack_t : public shaman_attack_t
 {
   stormstrike_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w )
@@ -2919,11 +2944,7 @@ struct stormstrike_attack_t : public shaman_attack_t
 
     if ( p()->buff.landslide->up() )
     {
-      // Currently bugged and only affects main hand.
-      if ( weapon->slot == SLOT_MAIN_HAND )
-      {
-        m *= 1.0 + p()->buff.landslide->value();
-      }
+      m *= 1.0 + p()->buff.landslide->value();
     }
 
     if ( p()->buff.crackling_surge->up() )
@@ -2932,6 +2953,16 @@ struct stormstrike_attack_t : public shaman_attack_t
       {
         m *= 1.0 + p()->buff.crackling_surge->value();
       }
+    }
+
+    if ( p()->buff.stormbringer->up() )
+    {
+      m *= 1.0 + p()->buff.stormbringer->data().effectN( 4 ).percent();
+    }
+
+    if ( p()->buff.gathering_storms->up() )
+    {
+      m *= p()->buff.gathering_storms->check_value();
     }
 
     return m;
@@ -3330,17 +3361,32 @@ struct auto_attack_t : public shaman_attack_t
   }
 };
 
+// Molten Weapon Dot ============================================================
+
+struct molten_weapon_dot_t : public residual_action::residual_periodic_action_t<shaman_spell_t>
+{
+  molten_weapon_dot_t( shaman_t* p ) : base_t( "molten_weapon", p, p->find_spell( 271924 ) )
+  {
+    // spell data seems messed up - need to whitelist?
+    dual           = true;
+    dot_duration   = timespan_t::from_seconds( 4 );
+    base_tick_time = timespan_t::from_seconds( 2 );
+    tick_zero      = false;
+    hasted_ticks   = false;
+  }
+};
+
 // Lava Lash Attack =========================================================
 
 struct lava_lash_t : public shaman_attack_t
 {
-  double aaj_multiplier;  // 7.0 legendary Akainu's Absolute Justice multiplier
   crash_lightning_attack_t* cl;
+  molten_weapon_dot_t* mw_dot;
 
   lava_lash_t( shaman_t* player, const std::string& options_str )
     : shaman_attack_t( "lava_lash", player, player->find_specialization_spell( "Lava Lash" ) ),
-      aaj_multiplier( 0 ),
-      cl( new crash_lightning_attack_t( player, "lava_lash_cl" ) )
+      cl( new crash_lightning_attack_t( player, "lava_lash_cl" ) ),
+      mw_dot( nullptr )
   {
     check_spec( SHAMAN_ENHANCEMENT );
     school = SCHOOL_FIRE;
@@ -3354,6 +3400,12 @@ struct lava_lash_t : public shaman_attack_t
       background = true;  // Do not allow execution.
 
     add_child( cl );
+
+	if ( player->talent.elemental_spirits->ok() )
+    {
+      mw_dot = new molten_weapon_dot_t( player );
+      add_child( mw_dot );
+    }
   }
 
   void init() override
@@ -3430,21 +3482,6 @@ struct lava_lash_t : public shaman_attack_t
   }
 };
 
-// Molten Weapon Dot ============================================================
-
-struct molten_weapon_dot_t : public residual_action::residual_periodic_action_t<shaman_spell_t>
-{
-  molten_weapon_dot_t( shaman_t* p ) : base_t( "molten_weapon", p, p->find_spell( 271924 ) )
-  {
-    // spell data seems messed up - need to whitelist?
-    dual           = true;
-    dot_duration   = timespan_t::from_seconds( 4 );
-    base_tick_time = timespan_t::from_seconds( 2 );
-    tick_zero      = false;
-    hasted_ticks   = false;
-  }
-};
-
 // Stormstrike Attack =======================================================
 
 struct stormstrike_base_t : public shaman_attack_t
@@ -3468,7 +3505,7 @@ struct stormstrike_base_t : public shaman_attack_t
     cooldown->duration = data().cooldown();
     weapon_multiplier  = 0.0;
     may_crit           = false;
-    school             = SCHOOL_NATURE;
+    school             = SCHOOL_PHYSICAL;
 
     add_child( cl );
   }
@@ -3521,6 +3558,7 @@ struct stormstrike_base_t : public shaman_attack_t
     }
 
     p()->buff.stormbringer->decrement();
+    p()->buff.gathering_storms->decrement();
   }
 
   void reset() override
@@ -3824,10 +3862,15 @@ struct crash_lightning_t : public shaman_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      if ( execute_state->n_targets > 1 )
+      if ( execute_state->n_targets > ( 1 - 0 ) )  // currently bugged and proc'ing on 1 target less than it should.
       {
         p()->buff.crash_lightning->trigger();
       }
+
+      double v = 1.0 + p()->buff.gathering_storms->default_value *
+                           ( execute_state->n_targets +
+                             0 );  // currently bugged and acting as if there's an extra target present
+      p()->buff.gathering_storms->trigger( 1, v );
     }
   }
 };
@@ -6810,14 +6853,12 @@ void shaman_t::trigger_icy_edge( const action_state_t* state )
     return;
   }
 
-  for ( auto wolf : pet.elemental_wolves )
+  if ( buff.icy_edge->up() )
   {
-    if ( wolf->is_sleeping() )
-      continue;
-    if ( debug_cast<pet::base_wolf_t*>( wolf )->wolf_type == FROST_WOLF )
+    for ( int x = 1; x <= buff.icy_edge->check(); x++ )
     {
-      debug_cast<pet::frost_wolf_t*>( wolf )->actions.icy_edge->set_target( state->target );
-      debug_cast<pet::frost_wolf_t*>( wolf )->actions.icy_edge->execute();
+      icy_edge->set_target( state->target );
+      icy_edge->execute();
     }
   }
 }
@@ -6974,13 +7015,7 @@ void shaman_t::create_buffs()
           ->set_trigger_spell( sets->set( SHAMAN_ELEMENTAL, T21, B2 ) )
           ->set_default_value( sets->set( SHAMAN_ELEMENTAL, T21, B2 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
-  // Azerite Traits
-  buff.lava_shock = make_buff( this, "lava_shock", azerite.lava_shock )
-                        ->set_default_value( azerite.lava_shock.value() )
-                        ->set_trigger_spell( find_spell( 273453 ) )
-                        ->set_max_stack( find_spell( 273453 )->max_stacks() )
-                        ->set_duration( find_spell( 273453 )->duration() );
-
+  // Azerite Traits - Shared
   buff.natural_harmony_fire = make_buff<stat_buff_t>( this, "natural_harmony_fire", find_spell( 279028 ) )
                                   ->add_stat( STAT_CRIT_RATING, azerite.natural_harmony.value() );
 
@@ -6995,6 +7030,15 @@ void shaman_t::create_buffs()
                            ->add_stat( STAT_AGILITY, azerite.synapse_shock.value() )
                            ->set_trigger_spell( azerite.synapse_shock );
 
+  // Azerite Traits - Ele
+  buff.lava_shock = make_buff( this, "lava_shock", azerite.lava_shock )
+                        ->set_default_value( azerite.lava_shock.value() )
+                        ->set_trigger_spell( find_spell( 273453 ) )
+                        ->set_max_stack( find_spell( 273453 )->max_stacks() )
+                        ->set_duration( find_spell( 273453 )->duration() );
+
+  // Azerite Traits - Enh
+
   //
   // Enhancement
   //
@@ -7007,6 +7051,7 @@ void shaman_t::create_buffs()
   buff.icy_edge                    = new icy_edge_buff_t( this );
   buff.molten_weapon               = new molten_weapon_buff_t( this );
   buff.crackling_surge             = new crackling_surge_buff_t( this );
+  buff.gathering_storms            = new gathering_storms_buff_t( this );
 
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
   buff.feral_spirit =
@@ -7459,6 +7504,8 @@ void shaman_t::init_action_list()
     }
     flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
 
+    icy_edge = new icy_edge_attack_t( "icy_edge_attack", this, &( main_hand_weapon ) );
+
     action.molten_weapon_dot = new molten_weapon_dot_t( this );
   }
 
@@ -7673,8 +7720,8 @@ double shaman_t::composite_spell_power( school_e school ) const
       added_spell_power = 0.5 * WEAPON_POWER_COEFFICIENT;
     }
 
-    sp = composite_attack_power_multiplier() * cache.attack_power() * spec.enhancement_shaman->effectN( 4 ).percent() +
-         added_spell_power;
+    sp = composite_attack_power_multiplier() * ( cache.attack_power() + added_spell_power ) *
+         spec.enhancement_shaman->effectN( 4 ).percent();
   }
   else
     sp = player_t::composite_spell_power( school );
