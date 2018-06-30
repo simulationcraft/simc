@@ -443,6 +443,7 @@ public:
     // Azerite
     buff_t* frigid_grasp;
     buff_t* tunnel_of_ice;
+    buff_t* winters_reach;
 
     // Miscellaneous Buffs
     buff_t* greater_blessing_of_widsom;
@@ -552,6 +553,7 @@ public:
   struct state_t
   {
     bool brain_freeze_active;
+    bool winters_reach_active;
     bool fingers_of_frost_active;
 
     int flurry_bolt_count;
@@ -3412,6 +3414,20 @@ struct flurry_bolt_t : public frost_mage_spell_t
 
     return am;
   }
+
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double da = frost_mage_spell_t::bonus_da( s );
+
+    if ( p() -> state.winters_reach_active )
+    {
+      // Buff most likely won't be active here, need to grab its default_value
+      // instead of using value/stack_value.
+      da += p() -> buffs.winters_reach -> default_value;
+    }
+
+    return da;
+  }
 };
 
 struct flurry_t : public frost_mage_spell_t
@@ -3465,8 +3481,17 @@ struct flurry_t : public frost_mage_spell_t
     p() -> state.flurry_bolt_count = 0;
     p() -> buffs.zannesu_journey -> trigger();
 
+    p() -> state.winters_reach_active = ! brain_freeze && p() -> buffs.winters_reach -> up();
+
     if ( brain_freeze )
+    {
+      p() -> buffs.winters_reach -> trigger();
       p() -> procs.brain_freeze_flurry -> occur();
+    }
+    else
+    {
+      p() -> buffs.winters_reach -> decrement();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -6166,6 +6191,9 @@ void mage_t::create_buffs()
   buffs.tunnel_of_ice = make_buff( this, "tunnel_of_ice", find_spell( 277904 ) )
                           -> set_chance( azerite.tunnel_of_ice.enabled() ? 1.0 : 0.0 )
                           -> set_default_value( azerite.tunnel_of_ice.value() );
+  buffs.winters_reach = make_buff( this, "winters_reach", find_spell( 273347 ) )
+                          -> set_chance( azerite.winters_reach.spell_ref().effectN( 2 ).percent() )
+                          -> set_default_value( azerite.winters_reach.value() );
 
   // Misc
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
