@@ -2356,8 +2356,9 @@ struct arcane_explosion_t : public arcane_mage_spell_t
       trigger_arcane_charge();
     }
 
-    if ( p() -> talents.reverberate -> ok() && num_targets_hit > 2 &&
-         rng().roll( p() -> talents.reverberate -> effectN( 1 ).percent() ) )
+    if ( p() -> talents.reverberate -> ok()
+      && num_targets_hit >= as<int>( p() -> talents.reverberate -> effectN( 2 ).base_value() )
+      && rng().roll( p() -> talents.reverberate -> effectN( 1 ).percent() ) )
     {
         trigger_arcane_charge();
     }
