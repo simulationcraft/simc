@@ -5477,6 +5477,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.winters_chill = make_buff( *this, "winters_chill", mage -> find_spell( 228358 ) )
                             -> set_chance( mage -> spec.brain_freeze_2 -> ok() ? 1.0 : 0.0 );
   debuffs.packed_ice    = make_buff( *this, "packed_ice", mage -> find_spell( 272970 ) )
+                            -> set_chance( mage -> azerite.packed_ice.enabled() ? 1.0 : 0.0 )
                             -> set_default_value( mage -> azerite.packed_ice.value() );
 }
 
