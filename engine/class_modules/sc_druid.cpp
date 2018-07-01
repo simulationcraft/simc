@@ -20,6 +20,10 @@ namespace { // UNNAMED NAMESPACE
 
   Balance ===================================================================
   Still need AP Coeff for Treants
+  Azerite traits:
+  Streaking Stars
+  High Noon
+  Double Check Azerite implementation
 
   Guardian ==================================================================
   Azerite traits
@@ -266,6 +270,7 @@ public:
     spell_t* fury_of_elune;
     spell_t*  starshards;
     action_t* yseras_gift;
+    spell_t* lunar_shrapnel;
   } active;
 
   // Pets
@@ -292,14 +297,10 @@ public:
   struct azerite_t
   {  // Not yet implemented
      // Balance
-    azerite_power_t dawning_sun;
     azerite_power_t high_noon;
-    azerite_power_t lively_spirit;
-    azerite_power_t long_night;
-    azerite_power_t lunar_sharpnel;
-    azerite_power_t power_of_the_moon;
+    azerite_power_t lively_spirit; //how to even implement
+    azerite_power_t long_night; //seems to be removed
     azerite_power_t streaking_stars;
-    azerite_power_t sunblaze;
 
     // Feral
     azerite_power_t wild_fleshrending;
@@ -316,6 +317,10 @@ public:
 
     // Implemented
     // Balance
+    azerite_power_t dawning_sun;
+    azerite_power_t lunar_sharpnel;
+    azerite_power_t power_of_the_moon;
+    azerite_power_t sunblaze;
     // Feral
     azerite_power_t blood_mist; //check spelldata
     azerite_power_t gushing_lacerations; //check spelldata
@@ -401,6 +406,8 @@ public:
     buff_t* moonkin_form_affinity;
 
     // Azerite
+    buff_t* dawning_sun;
+    buff_t* sunblaze;
     buff_t* shredding_fury;
     buff_t* iron_jaws;
     buff_t* raking_ferocity;
@@ -2041,6 +2048,15 @@ struct moonfire_t : public druid_spell_t
         return am;
     }
 
+    virtual double bonus_da(const action_state_t* s) const override
+    {
+      double da = druid_spell_t::bonus_da(s);
+
+      da += p()->azerite.power_of_the_moon.value(2);
+
+      return da;
+    }
+
     dot_t* get_dot( player_t* t ) override
     {
       if ( ! t ) t = target;
@@ -2064,6 +2080,8 @@ struct moonfire_t : public druid_spell_t
       return tdm;
     }
 
+    //virtual double bonus_dd
+
     void tick( dot_t* d ) override
     {
       druid_spell_t::tick( d );
@@ -2071,6 +2089,12 @@ struct moonfire_t : public druid_spell_t
       trigger_shooting_stars( d -> state );
 
       trigger_balance_tier18_2pc();
+
+      if (p()->rng().roll(p()->find_spell(273389)->proc_chance()) && p()->azerite.power_of_the_moon.ok())
+      {
+        p()->buff.lunar_empowerment->trigger();
+      }
+
     }
 
     void impact ( action_state_t* s ) override
@@ -5247,7 +5271,10 @@ struct lunar_strike_t : public druid_spell_t
 
     p() -> buff.power_of_elune -> trigger();
 
-
+    if (p()->azerite.dawning_sun.ok())
+    {
+      p()->buff.dawning_sun->trigger(1, p()->azerite.dawning_sun.value());
+    }
   }
 };
 
@@ -5301,6 +5328,11 @@ struct sunfire_t : public druid_spell_t
       aoe = -1;
       base_aoe_multiplier = 0;
       dot_duration += p -> spec.balance -> effectN( 4 ).time_value();
+
+      if (p->azerite.high_noon.ok())
+      {
+        radius += p->azerite.high_noon.value();
+      }
 
     }
 
@@ -5620,6 +5652,20 @@ struct solar_wrath_t : public druid_spell_t
     }
 
     p() -> buff.power_of_elune -> trigger();
+
+    if (p()->azerite.sunblaze.ok())
+    {
+      p()->buff.sunblaze->trigger(1, p()->azerite.sunblaze.value());
+    }
+  }
+
+  virtual double bonus_da(const action_state_t* s) const override
+  {
+    double da = druid_spell_t::bonus_da(s);
+
+    da += p()->buff.dawning_sun->value();
+
+    return da;
   }
 };
 
@@ -5655,88 +5701,119 @@ struct stampeding_roar_t : public druid_spell_t
 
 // Starfall Spell ===========================================================
 
+struct lunar_shrapnel_t : public druid_spell_t
+{
+  lunar_shrapnel_t(druid_t* p) :
+    druid_spell_t("lunar_shrapnel", p, p->azerite.lunar_sharpnel)
+  {
+    background = true;
+    aoe = -1;
+    base_dd_min = base_dd_max = p->azerite.lunar_sharpnel.value(1);
+  }
+};
+
 struct starfall_t : public druid_spell_t
 {
-    struct starfall_tick_t : public druid_spell_t
+  struct starfall_tick_t : public druid_spell_t
+  {
+    starfall_tick_t(const std::string& n, druid_t* p, const spell_data_t* s) :
+      druid_spell_t(n, p, s)
     {
-        starfall_tick_t(const std::string& n, druid_t* p, const spell_data_t* s) :
-            druid_spell_t(n, p, s)
-        {
-            aoe = -1;
-            background = dual = direct_tick = true; // Legion TOCHECK
-            callbacks = false;
-            radius = p->find_spell(191034)->effectN(1).radius();
-            radius *= 1.0 + p->talent.stellar_drift->effectN(1).percent();
+      aoe = -1;
+      background = dual = direct_tick = true; // Legion TOCHECK
+      callbacks = false;
+      radius = p->find_spell(191034)->effectN(1).radius();
+      radius *= 1.0 + p->talent.stellar_drift->effectN(1).percent();
 
-            base_multiplier *= 1.0 + p->talent.stellar_drift->effectN(2).percent();
-        }
-
-        double action_multiplier() const override
-        {
-            double am = druid_spell_t::action_multiplier();
-
-            if (p()->mastery.starlight->ok())
-                am *= 1.0 + p()->cache.mastery_value();
-
-            if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
-                am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(1).percent();
-
-            return am;
-        }
-    };
-
-    starfall_t(druid_t* p, const std::string& options_str) :
-        druid_spell_t("starfall", p, p -> find_specialization_spell("Starfall"), options_str)
-    {
-        may_miss = may_crit = false;
-        base_tick_time = data().duration() / 8.0; // ticks 9 times (missing from spell data)
-
-        if (!p->active.starfall)
-        {
-            p->active.starfall = new starfall_tick_t("starfall_tick", p, p->find_spell(191037));
-            p->active.starfall->stats = stats;
-        }
-
-
-        base_costs[RESOURCE_ASTRAL_POWER] +=
-            p->talent.soul_of_the_forest->effectN(2).resource(RESOURCE_ASTRAL_POWER);
+      base_multiplier *= 1.0 + p->talent.stellar_drift->effectN(2).percent();
     }
 
-    double cost() const override
+    timespan_t travel_time() const override
     {
-        if (p()->buff.oneths_overconfidence->check())
-            return 0;
-
-        return druid_spell_t::cost();
+      //Has a set travel time
+      return timespan_t::from_millis(800);
     }
 
-    virtual void execute() override
+    double action_multiplier() const override
     {
-        if (p()->sets->has_set_bonus(DRUID_BALANCE, T20, B4))
-        {
-            p()->buff.astral_acceleration->trigger();
-        }
-        if (p()->talent.starlord->ok())
-        {
-            p()->buff.starlord->trigger();
-        }
-        if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B4))
-        {
-            p()->buff.solar_solstice->trigger();
-        }
-        druid_spell_t::execute();
+      double am = druid_spell_t::action_multiplier();
 
-        make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
-            .target(execute_state->target)
-            .pulse_time(data().duration() / 9) //ticks 9 times
-            .duration(data().duration())
-            .action(p()->active.starfall));
+      if (p()->mastery.starlight->ok())
+        am *= 1.0 + p()->cache.mastery_value();
 
-        if (p()->buff.oneths_overconfidence->up()) // benefit tracking
-            p()->buff.oneths_overconfidence->decrement();
-        p()->buff.oneths_intuition->trigger();
-        p()->buff.starfall->trigger();
+      if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B2))
+        am *= 1.0 + p()->sets->set(DRUID_BALANCE, T21, B2)->effectN(1).percent();
+
+      return am;
     }
+
+    virtual void impact(action_state_t* s) override
+    {
+      druid_spell_t::impact(s);
+      if (p()->azerite.lunar_sharpnel.ok() && td(target)->dots.moonfire->is_ticking())
+      {
+        p()->active.lunar_shrapnel->set_target(s->target);
+        p()->active.lunar_shrapnel->execute();
+      }
+    }
+  };
+
+  starfall_t(druid_t* p, const std::string& options_str) :
+    druid_spell_t("starfall", p, p -> find_specialization_spell("Starfall"), options_str)
+  {
+    may_miss = may_crit = false;
+    base_tick_time = data().duration() / 8.0; // ticks 9 times (missing from spell data)
+
+    if (!p->active.starfall)
+    {
+      p->active.starfall = new starfall_tick_t("starfall_tick", p, p->find_spell(191037));
+      p->active.starfall->stats = stats;
+    }
+
+    if (p->azerite.lunar_sharpnel.ok())
+    {
+      add_child(p->active.lunar_shrapnel);
+    }
+
+    base_costs[RESOURCE_ASTRAL_POWER] +=
+      p->talent.soul_of_the_forest->effectN(2).resource(RESOURCE_ASTRAL_POWER);
+  }
+
+  double cost() const override
+  {
+    if (p()->buff.oneths_overconfidence->check())
+      return 0;
+
+    return druid_spell_t::cost();
+  }
+
+  virtual void execute() override
+  {
+    if (p()->sets->has_set_bonus(DRUID_BALANCE, T20, B4))
+    {
+      p()->buff.astral_acceleration->trigger();
+    }
+    if (p()->talent.starlord->ok())
+    {
+      p()->buff.starlord->trigger();
+    }
+    if (p()->sets->has_set_bonus(DRUID_BALANCE, T21, B4))
+    {
+      p()->buff.solar_solstice->trigger();
+    }
+    druid_spell_t::execute();
+
+    make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
+      .target(execute_state->target)
+      .pulse_time(data().duration() / 9) //ticks 9 times
+      .duration(data().duration())
+      .action(p()->active.starfall));
+
+    if (p()->buff.oneths_overconfidence->up()) // benefit tracking
+      p()->buff.oneths_overconfidence->decrement();
+    p()->buff.oneths_intuition->trigger();
+    p()->buff.starfall->trigger();
+  }
 };
 struct starshards_t : public starfall_t
 {
@@ -5849,7 +5926,20 @@ struct starsurge_t : public druid_spell_t
       p() -> buff.oneths_intuition -> decrement();
 
     p() -> buff.oneths_overconfidence -> trigger();
+
+    if (p()->buff.sunblaze->up())
+      p()->buff.sunblaze->expire();
   }
+
+  virtual double bonus_da(const action_state_t* s) const override
+  {
+    double da = druid_spell_t::bonus_da(s);
+
+    da += p()->azerite.sunblaze.value(1);
+
+    return da;
+  }
+
 };
 
 // Stellar Flare ============================================================
@@ -6539,6 +6629,11 @@ void druid_t::init_spells()
     active.natures_guardian = new heals::natures_guardian_t( this );
 
   active.solar_empowerment = new spells::solar_empowerment_t (this);
+
+  if (azerite.lunar_sharpnel.ok())
+  {
+    active.lunar_shrapnel = new spells::lunar_shrapnel_t(this);
+  }
 }
 
 // druid_t::init_base =======================================================
@@ -6615,6 +6710,10 @@ void druid_t::create_buffs()
   buff.iron_jaws = buff_creator_t( this, "iron_jaws", find_spell( 276026 ) ).duration( timespan_t::from_seconds( 30 ) );
 
   buff.raking_ferocity = buff_creator_t( this, "raking_ferocity", find_spell( 273340 ) );
+
+  buff.dawning_sun = buff_creator_t(this, "dawning_sun", find_spell(276154));
+
+  buff.sunblaze = buff_creator_t(this, "sunblaze", find_spell(274399));
 
   // Talent buffs
 
