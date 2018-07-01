@@ -2300,7 +2300,8 @@ void priest_t::generate_apl_shadow()
   single->add_action( this, "Vampiric Touch", 
                       "if=refreshable&target.time_to_die>6|"
                       "(talent.misery.enabled&dot.shadow_word_pain.refreshable)" );
-  single->add_action( this, "Mind Flay", "interrupt=1,chain=1" );
+  single->add_action( this, "Mind Flay", 
+                      "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up" );
   single->add_action( this, "Shadow Word: Pain" );
 
   // cleave APL
@@ -2328,7 +2329,8 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Mind Sear",
                       "target_if=spell_targets.mind_sear>2"
                       ",chain=1,interrupt=1" );
-  cleave->add_action( this, "Mind Flay", "interrupt=1,chain=1" );
+  cleave->add_action( this, "Mind Flay", 
+                      "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up" );
   cleave->add_action( this, "Shadow Word: Pain" );
   
   // aoe APL
@@ -2342,7 +2344,8 @@ void priest_t::generate_apl_shadow()
   aoe->add_action( this, "Shadowfiend" );
   aoe->add_talent( this, "Mindbender" );
   aoe->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
-  aoe->add_action( this, "Mind Sear", "chain=1,interrupt=1" );
+  aoe->add_action( this, "Mind Sear", 
+                   "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&cooldown.void_bolt.up" );
   aoe->add_action( this, "Shadow Word: Pain" );
 }
 }  // namespace priestspace
