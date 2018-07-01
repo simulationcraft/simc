@@ -409,6 +409,9 @@ public:
     gain_t* resonance_totem;
     gain_t* forceful_winds;
     gain_t* lightning_shield_overcharge;
+
+    // Legendary
+    gain_t* the_deceivers_blood_pact;
   } gain;
 
   // Tracked Procs
@@ -5258,10 +5261,12 @@ struct earth_shock_t : public shaman_spell_t
 {
   action_t* t21_4pc;
   double eotgs_base_chance;  // 7.0 legendary Echoes of the Great Sundering proc chance
+  double tdbp_proc_chance;   // 7.0 legendary The Deceiver's Blood Pact proc chance
 
   earth_shock_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "earth_shock", player, player->find_specialization_spell( "Earth Shock" ), options_str ),
       eotgs_base_chance( 0 ),
+      tdbp_proc_chance( 0 ),
       t21_4pc( nullptr )
   {
     // hardcoded because spelldata doesn't provide the resource type
@@ -5299,6 +5304,10 @@ struct earth_shock_t : public shaman_spell_t
     {
       p()->buff.echoes_of_the_great_sundering->trigger( 1, buff_t::DEFAULT_VALUE(),
                                                         eotgs_base_chance * last_resource_cost );
+    }
+    if ( rng().roll( tdbp_proc_chance ) )
+    {
+      p()->resource_gain( RESOURCE_MAELSTROM, last_resource_cost, p()->gain.the_deceivers_blood_pact, this );
     }
 
     if ( p()->talent.exposed_elements->ok() )
@@ -7209,6 +7218,9 @@ void shaman_t::init_gains()
   gain.resonance_totem             = get_gain( "Resonance Totem" );
   gain.lightning_shield_overcharge = get_gain( "Lightning Shield Overcharge" );
   gain.forceful_winds              = get_gain( "Forceful Winds" );
+
+  // Legendary
+  gain.the_deceivers_blood_pact = get_gain( "The Deceiver's Blood Pact" );
 }
 
 // shaman_t::init_procs =====================================================
@@ -8502,6 +8514,18 @@ struct eotn_buff_chill_t : public eotn_buff_base_t
   }
 };
 
+struct the_deceivers_blood_pact_t : public scoped_action_callback_t<earth_shock_t>
+{
+  the_deceivers_blood_pact_t() : super( SHAMAN, "earth_shock" )
+  {
+  }
+
+  void manipulate( earth_shock_t* action, const special_effect_t& e ) override
+  {
+    action->tdbp_proc_chance = e.driver()->proc_chance();
+  }
+};
+
 struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN )
@@ -8535,6 +8559,7 @@ struct shaman_module_t : public module_t
     register_special_effect( 207994, eotn_buff_fire_t(), true );
     register_special_effect( 207994, eotn_buff_shock_t(), true );
     register_special_effect( 207994, eotn_buff_chill_t(), true );
+    register_special_effect( 214131, the_deceivers_blood_pact_t() );
   }
 
   void register_hotfixes() const override
