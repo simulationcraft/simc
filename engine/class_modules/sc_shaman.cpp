@@ -291,6 +291,9 @@ public:
     spell_t* searing_assault;
     spell_t* molten_weapon;
     action_t* molten_weapon_dot;
+
+    // Legendary
+    action_t* ppsg;  // Pristine Proto-Scale Girdle legendary dot
   } action;
 
   // Pets
@@ -3174,6 +3177,19 @@ struct earthen_rage_driver_t : public spell_t
   }
 };
 
+// Legendary item dot
+struct pristine_protoscale_girdle_dot_t : public shaman_spell_t
+{
+  pristine_protoscale_girdle_dot_t( shaman_t* p )
+    : shaman_spell_t( "pristine_protoscale_girdle", p, p->find_spell( 224852 ) )
+  {
+    background = tick_may_crit = true;
+    callbacks = may_crit = false;
+
+    dot_max_stack = data().max_stacks();
+  }
+};
+
 // Elemental overloads
 
 struct elemental_overload_spell_t : public shaman_spell_t
@@ -4689,6 +4705,13 @@ struct lava_burst_t : public shaman_spell_t
     if ( result_is_hit( state->result ) )
     {
       p()->buff.t21_2pc_elemental->trigger();
+    }
+
+    // Pristine Proto-Scale Girdle legendary
+    if ( p()->action.ppsg )
+    {
+      p()->action.ppsg->set_target( state->target );
+      p()->action.ppsg->schedule_execute();
     }
   }
 };
@@ -8526,6 +8549,21 @@ struct the_deceivers_blood_pact_t : public scoped_action_callback_t<earth_shock_
   }
 };
 
+struct pristine_protoscale_girdle_t : public scoped_action_callback_t<lava_burst_t>
+{
+  pristine_protoscale_girdle_t() : super( SHAMAN, "lava_burst" )
+  {
+  }
+
+  void manipulate( lava_burst_t* action, const special_effect_t& ) override
+  {
+    if ( !action->p()->action.ppsg )
+    {
+      action->p()->action.ppsg = new pristine_protoscale_girdle_dot_t( action->p() );
+    }
+  }
+};
+
 struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN )
@@ -8560,6 +8598,7 @@ struct shaman_module_t : public module_t
     register_special_effect( 207994, eotn_buff_shock_t(), true );
     register_special_effect( 207994, eotn_buff_chill_t(), true );
     register_special_effect( 214131, the_deceivers_blood_pact_t() );
+    register_special_effect( 224837, pristine_protoscale_girdle_t() );
   }
 
   void register_hotfixes() const override
