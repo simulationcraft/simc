@@ -437,7 +437,8 @@ public:
     stat_buff_t* t19oh_8pc;
     buff_t* skullflowers_haemostasis;
     haste_buff_t* sephuzs_secret;
-    buff_t* cold_heart;
+    buff_t* cold_heart_item;
+    buff_t* cold_heart_talent;
     buff_t* inexorable_assault;
     buff_t* toravons;
   } buffs;
@@ -474,12 +475,12 @@ public:
     action_t* bursting_sores;
     action_t* mark_of_blood;
     action_t* t20_2pc_unholy;
-    action_t* cold_heart;
+    action_t* cold_heart_item;
+    action_t* cold_heart_talent;
     action_t* inexorable_assault;
     action_t* freezing_death;
     action_t* t20_blood;
     action_t* t21_4pc_blood;
-    action_t* inexorable_assault_driver;
 
     action_t* razorice_mh;
     action_t* razorice_oh;
@@ -570,6 +571,7 @@ public:
     // Tier 1
     const spell_data_t* icy_talons;
     const spell_data_t* runic_attenuation;
+    const spell_data_t* cold_heart;
 
     // Tier 2
     const spell_data_t* murderous_efficiency;
@@ -902,6 +904,7 @@ public:
   void      trigger_t20_4pc_frost( double consumed );
   void      trigger_t20_4pc_unholy( double consumed );
   void      start_inexorable_assault();
+  void      start_cold_heart_talent();
 
   void      trigger_soul_reaper_death( player_t* );
 
@@ -3003,11 +3006,11 @@ struct bursting_sores_t : public death_knight_spell_t
   }
 };
 
-// Cold Heart damage spell
-struct cold_heart_damage_t : public death_knight_spell_t
+// Cold Heart damage spell from the Legendary chest Cold Heart
+struct cold_heart_item_damage_t : public death_knight_spell_t
 {
-  cold_heart_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "cold_heart", p, p -> find_spell( 248397 ) )
+  cold_heart_item_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "cold_heart_(item)", p, p -> find_spell( 248397 ) )
   {
     background = true;
   }
@@ -3016,7 +3019,26 @@ struct cold_heart_damage_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::action_multiplier();
 
-    m *= 1.0 + ( p() -> buffs.cold_heart -> stack() - 1 );
+    m *= p() -> buffs.cold_heart_item -> stack() ;
+
+    return m;
+  }
+};
+
+// Cold Heart damage spell from the talent Cold Heart
+struct cold_heart_talent_damage_t : public death_knight_spell_t
+{
+  cold_heart_talent_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "cold_heart_(talent)", p, p -> find_spell( 281210 ) )
+  {
+    background = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = death_knight_spell_t::action_multiplier();
+
+    m *= p() -> buffs.cold_heart_talent -> stack();
 
     return m;
   }
@@ -3608,11 +3630,18 @@ struct chains_of_ice_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    if ( p() -> buffs.cold_heart -> check() > 0 )
+    if ( p() -> buffs.cold_heart_item -> check() > 0 )
     {
-      p() -> active_spells.cold_heart -> set_target( execute_state -> target );
-      p() -> active_spells.cold_heart -> execute();
-      p() -> buffs.cold_heart -> expire();
+      p() -> active_spells.cold_heart_item -> set_target( execute_state -> target );
+      p() -> active_spells.cold_heart_item -> execute();
+      p() -> buffs.cold_heart_item -> expire();
+    }
+
+    if ( p() -> buffs.cold_heart_talent -> check() > 0 )
+    {
+      p() -> active_spells.cold_heart_talent -> set_target( execute_state -> target );
+      p() -> active_spells.cold_heart_talent -> execute();
+      p() -> buffs.cold_heart_talent -> expire();
     }
   }
 };
@@ -6565,8 +6594,16 @@ void death_knight_t::trigger_death_march( const action_state_t* /* state */ )
   cooldown.death_and_decay -> adjust( adjust );
 }
 
+// Launches the repeating event for the Inexorable Assault talent
 void death_knight_t::start_inexorable_assault()
 {
+  if ( !talent.inexorable_assault -> ok() )
+  {
+    return;
+  }
+
+  buffs.inexorable_assault -> trigger( buffs.inexorable_assault -> max_stack() );
+
   struct inexorable_assault_tick_t : public event_t
   {
     timespan_t delay;
@@ -6596,6 +6633,30 @@ void death_knight_t::start_inexorable_assault()
     rng().range( 0, talent.inexorable_assault -> effectN( 1 ).period().total_seconds() ) );
 
   make_event<inexorable_assault_tick_t>( *sim, buffs.inexorable_assault, talent.inexorable_assault->effectN( 1 ).period(), first );
+}
+
+// Launches the repeting event for the cold heart talent
+void death_knight_t::start_cold_heart_talent()
+{
+  if ( !talent.cold_heart -> ok() )
+  {
+    return;
+  }
+
+  buffs.cold_heart_talent -> trigger( buffs.cold_heart_talent -> max_stack() );
+
+  // Cold Heart keeps ticking out of combat and when it's at max stacks
+  // We solvee that by chosing a random number between 0 and the delay between each tick
+
+  timespan_t first = timespan_t::from_seconds(
+    rng().range( 0, talent.cold_heart -> effectN( 1 ).period().total_seconds() ) );
+  
+  make_event( *sim, first, [ this ]() {
+    buffs.cold_heart_talent -> trigger();
+    make_repeating_event( *sim, talent.cold_heart -> effectN( 1 ).period(), [ this ]() {
+      buffs.cold_heart_talent -> trigger();
+    } );
+  } );
 }
 
 // ==========================================================================
@@ -6634,6 +6695,11 @@ bool death_knight_t::create_actions()
   if ( talent.inexorable_assault -> ok() )
   {
     active_spells.inexorable_assault = new inexorable_assault_damage_t( this );
+  }
+
+  if ( talent.cold_heart -> ok() )
+  {
+    active_spells.cold_heart_talent = new cold_heart_talent_damage_t( this );
   }
 
   return player_t::create_actions();
@@ -6984,6 +7050,7 @@ void death_knight_t::init_spells()
   // Tier 1
   talent.icy_talons            = find_talent_spell( "Icy Talons" );
   talent.runic_attenuation     = find_talent_spell( "Runic Attenuation" );
+  talent.cold_heart            = find_talent_spell( "Cold Heart" );
   // Tier 2
   talent.murderous_efficiency  = find_talent_spell( "Murderous Efficiency" );
   talent.horn_of_winter        = find_talent_spell( "Horn of Winter" );
@@ -7324,14 +7391,14 @@ void death_knight_t::default_apl_frost()
 
   // Tier 100 cooldowns + Cold Heart
   cooldowns -> add_talent( this, "Breath of Sindragosa", "if=buff.pillar_of_frost.up" );
-  cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart.stack>=10&debuff.razorice.stack=5)|target.time_to_die<=gcd)" );
+  cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&((buff.cold_heart_item.stack>=10&debuff.razorice.stack=5)|target.time_to_die<=gcd)" );
 
   // Cold Heart conditionals
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack=20&buff.unholy_strength.react&cooldown.pillar_of_frost.remains>6", "Cold heart conditions" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=16&buff.pillar_of_frost.up" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.up&buff.pillar_of_frost.remains<gcd&(buff.cold_heart.stack>=11|(buff.cold_heart.stack>=10&set_bonus.tier20_4pc))" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=17&buff.unholy_strength.react&buff.unholy_strength.remains<gcd&cooldown.pillar_of_frost.remains>6" );
-  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart.stack>=4&target.time_to_die<=gcd" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart_item.stack=20&buff.unholy_strength.react&cooldown.pillar_of_frost.remains>6", "Cold heart conditions" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart_item.stack>=16&buff.pillar_of_frost.up" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.pillar_of_frost.up&buff.pillar_of_frost.remains<gcd&(buff.cold_heart_item.stack>=11|(buff.cold_heart_item.stack>=10&set_bonus.tier20_4pc))" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart_item.stack>=17&buff.unholy_strength.react&buff.unholy_strength.remains<gcd&cooldown.pillar_of_frost.remains>6" );
+  cold_heart -> add_action( this, "Chains of Ice", "if=buff.cold_heart_item.stack>=4&target.time_to_die<=gcd" );
 
   // Obliteration rotation
   obliteration -> add_action( this, "Remorseless Winter", "if=talent.gathering_storm.enabled", "Obliteration rotation" );
@@ -7395,16 +7462,16 @@ void death_knight_t::default_apl_unholy()
   def -> add_action( "call_action_list,name=cooldowns" );
   def -> add_action( "call_action_list,name=generic" );
 
-  cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&buff.cold_heart.stack>10", "Cold heart and other on-gcd cooldowns" );
+  cooldowns -> add_action( "call_action_list,name=cold_heart,if=equipped.cold_heart&buff.cold_heart_item.stack>10", "Cold heart and other on-gcd cooldowns" );
   cooldowns -> add_action( this, "Army of the Dead" );
   cooldowns -> add_action( this, "Summon Gargoyle", "if=(!equipped.137075|cooldown.dark_transformation.remains<10)&rune.time_to_4>=gcd" );
   cooldowns -> add_talent( this, "Soul Reaper", "if=debuff.festering_wound.stack>=3&rune>=3" );
   cooldowns -> add_action( this, "Dark Transformation", "if=rune.time_to_4>=gcd" );
 
   // Cold Heart
-  cold_heart -> add_action( this, "Chains of ice", "if=buff.unholy_strength.remains<gcd&buff.unholy_strength.react&buff.cold_heart.stack>16", "Cold Heart legendary" );
-  cold_heart -> add_action( this, "Chains of ice", "if=buff.master_of_ghouls.remains<gcd&buff.master_of_ghouls.up&buff.cold_heart.stack>17" );
-  cold_heart -> add_action( this, "Chains of ice", "if=buff.cold_heart.stack=20&buff.unholy_strength.react" );
+  cold_heart -> add_action( this, "Chains of ice", "if=buff.unholy_strength.remains<gcd&buff.unholy_strength.react&buff.cold_heart_item.stack>16", "Cold Heart legendary" );
+  cold_heart -> add_action( this, "Chains of ice", "if=buff.master_of_ghouls.remains<gcd&buff.master_of_ghouls.up&buff.cold_heart_item.stack>17" );
+  cold_heart -> add_action( this, "Chains of ice", "if=buff.cold_heart_item.stack=20&buff.unholy_strength.react" );
 
   generic -> add_action( this, "Death Coil", "if=runic_power.deficit<22" );
   generic -> add_talent( this, "Defile" );
@@ -7610,6 +7677,8 @@ void death_knight_t::create_buffs()
   buffs.t21_4p_blood = new rune_master_buff_t( this );
   buffs.inexorable_assault = buff_creator_t( this, "inexorable_assault", find_spell( 253595 ) )
     .trigger_spell( talent.inexorable_assault );
+  buffs.cold_heart_talent = buff_creator_t( this, "cold_heart_talent", talent.cold_heart -> effectN( 1 ).trigger() )
+    .trigger_spell( talent.cold_heart );
 
 }
 
@@ -8116,14 +8185,11 @@ void death_knight_t::combat_begin()
 {
   player_t::combat_begin();
 
-  buffs.cold_heart -> trigger( buffs.cold_heart -> max_stack() );
+  buffs.cold_heart_item -> trigger( buffs.cold_heart_item -> max_stack() );
 
-  if ( talent.inexorable_assault -> ok() )
-  {
-    buffs.inexorable_assault -> trigger( buffs.inexorable_assault -> max_stack() );
-    start_inexorable_assault();
-  }
-
+  start_inexorable_assault();
+  start_cold_heart_talent();
+ 
   auto rp_overflow = resources.current[ RESOURCE_RUNIC_POWER ] - MAX_START_OF_COMBAT_RP;
   if ( rp_overflow > 0 )
   {
@@ -8636,20 +8702,20 @@ struct cold_heart_t : public scoped_actor_callback_t<death_knight_t>
   void manipulate( death_knight_t* p, const special_effect_t& e ) override
   {
     p -> callbacks_on_arise.push_back( [ p, &e ]() {
-      make_event<cold_heart_tick_t>( *p -> sim, p -> buffs.cold_heart, e.driver() -> effectN( 1 ).period() );
+      make_event<cold_heart_tick_t>( *p -> sim, p -> buffs.cold_heart_item, e.driver() -> effectN( 1 ).period() );
     } );
 
-    p -> active_spells.cold_heart = new cold_heart_damage_t( p );
+    p -> active_spells.cold_heart_item = new cold_heart_item_damage_t( p );
   }
 };
 
-struct cold_heart_buff_t: public class_buff_cb_t<buff_t>
+struct cold_heart_item_buff_t: public class_buff_cb_t<buff_t>
 {
-  cold_heart_buff_t() : super( DEATH_KNIGHT, "cold_heart" )
+  cold_heart_item_buff_t() : super( DEATH_KNIGHT, "cold_heart_item" )
   { }
 
   buff_t*& buff_ptr( const special_effect_t& e ) override
-  { return debug_cast<death_knight_t*>( e.player ) -> buffs.cold_heart; }
+  { return debug_cast<death_knight_t*>( e.player ) -> buffs.cold_heart_item; }
 
   buff_t* creator( const special_effect_t& e ) const override
   { return make_buff( e.player, buff_name, e.player -> find_spell( 235599 ) ); }
@@ -8717,7 +8783,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
     // 7.2.5
     unique_gear::register_special_effect( 235592, cold_heart_t() );
-    unique_gear::register_special_effect( 235592, cold_heart_buff_t(), true );
+    unique_gear::register_special_effect( 235592, cold_heart_item_buff_t(), true );
     unique_gear::register_special_effect( 248066, soulflayers_corruption_t() );
   }
 
