@@ -345,6 +345,9 @@ public:
     stat_buff_t* natural_harmony_frost;   // mastery
     stat_buff_t* natural_harmony_nature;  // haste
 
+    // Legendary Buffs
+    buff_t* echoes_of_the_great_sundering;
+
     // Enhancement
     buff_t* crash_lightning;
     buff_t* feral_spirit;
@@ -5143,6 +5146,11 @@ struct earthquake_damage_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_persistent_multiplier( state );
 
+    if ( p()->buff.echoes_of_the_great_sundering->up() )
+    {
+      m *= 1.0 + p()->buff.echoes_of_the_great_sundering->default_value;
+    }
+
     m *= 1.0 + p()->buff.t21_2pc_elemental->stack_value();
 
     return m;
@@ -5169,6 +5177,16 @@ struct earthquake_t : public shaman_spell_t
     add_child( rumble );
   }
 
+  double cost() const override
+  {
+    if ( p()->buff.echoes_of_the_great_sundering->check() )
+    {
+      return 0;
+    }
+
+    return shaman_spell_t::cost();
+  }
+
   void execute() override
   {
     shaman_spell_t::execute();
@@ -5176,6 +5194,10 @@ struct earthquake_t : public shaman_spell_t
     make_event<ground_aoe_event_t>(
         *sim, p(),
         ground_aoe_params_t().target( execute_state->target ).duration( data().duration() ).action( rumble ) );
+
+    // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
+    // buff multiplier as persistent.
+    p()->buff.echoes_of_the_great_sundering->decrement();
 
     p()->buff.t21_2pc_elemental->expire();
   }
@@ -5206,9 +5228,11 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
 struct earth_shock_t : public shaman_spell_t
 {
   action_t* t21_4pc;
+  double eotgs_base_chance;  // 7.0 legendary Echoes of the Great Sundering proc chance
 
   earth_shock_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "earth_shock", player, player->find_specialization_spell( "Earth Shock" ), options_str ),
+      eotgs_base_chance( 0 ),
       t21_4pc( nullptr )
   {
     // hardcoded because spelldata doesn't provide the resource type
@@ -5241,6 +5265,12 @@ struct earth_shock_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
+
+    if ( eotgs_base_chance > 0 )
+    {
+      p()->buff.echoes_of_the_great_sundering->trigger( 1, buff_t::DEFAULT_VALUE(),
+                                                        eotgs_base_chance * last_resource_cost );
+    }
 
     if ( p()->talent.exposed_elements->ok() )
     {
@@ -7336,6 +7366,7 @@ void shaman_t::init_action_list_elemental()
   single_target->add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50",
                              "Keep SK for large or soon add waves." );
   single_target->add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
+  single_target->add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up" );
   single_target->add_action( this, "Earth Shock",
                              "if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|maelstrom>=92)|!"
                              "talent.master_of_the_elements.enabled",
@@ -8331,6 +8362,37 @@ private:
 
 using namespace unique_gear;
 
+struct echoes_of_the_great_sundering_t : public scoped_action_callback_t<earth_shock_t>
+{
+  echoes_of_the_great_sundering_t() : super( SHAMAN, "earth_shock" )
+  {
+  }
+
+  void manipulate( earth_shock_t* action, const special_effect_t& e ) override
+  {
+    action->eotgs_base_chance = e.driver()->effectN( 1 ).percent() / action->base_cost();
+  }
+};
+
+struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t<buff_t>
+{
+  echoes_of_the_great_sundering_buff_t() : super( SHAMAN, "echoes_of_the_great_sundering" )
+  {
+  }
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  {
+    return debug_cast<shaman_t*>( e.player )->buff.echoes_of_the_great_sundering;
+  }
+
+  buff_t* creator( const special_effect_t& e ) const override
+  {
+    return make_buff( e.player, buff_name )
+        ->set_default_value( e.player->find_spell( 208723 )->effectN( 2 ).percent() )
+        ->set_duration( e.player->find_spell( 208723 )->duration() );
+  }
+};
+
 struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN )
@@ -8359,6 +8421,8 @@ struct shaman_module_t : public module_t
 
   void static_init() const override
   {
+    register_special_effect( 208722, echoes_of_the_great_sundering_t() );
+    register_special_effect( 208722, echoes_of_the_great_sundering_buff_t(), true );
   }
 
   void register_hotfixes() const override
