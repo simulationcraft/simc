@@ -29,7 +29,6 @@ def parse_qt(filename):
                 out.append(result)
     return out
 
-
 def header(system):
     if system == "VS":
         h = "<!--\n"
@@ -44,19 +43,9 @@ def header(system):
     h += "\n\n"
     return h
 
-
 def write_to_file(filename, out):
     with open(filename, "w") as f:
         f.write(out)
-
-
-def create_qt_str(entries):
-    prepare = header("QT")
-    for file_type, fullpath, _dirname, _corename, _ending in entries:
-        if file_type in ("SOURCES", "HEADERS", "PRECOMPILED_HEADER"):
-            prepare += "\n " + file_type + " += " + fullpath
-    return prepare
-
 
 def create_make_str(entries):
     modified_input = replace(entries, r"engine/", r"")
@@ -231,8 +220,6 @@ def create_file(file_type, build_systems):
             write_to_file("VS_" + file_type + ".props", create_vs_str(result))
         if "VS_GUI" in build_systems:
             write_to_file("VS_" + file_type + ".props", create_vs_str(result, True))
-        if "QT" in build_systems:
-            write_to_file("QT_" + file_type + ".pri", create_qt_str(result))
     except Exception as e:
         logging.error("Could not synchronize '{}' files: {}".format(file_type, e))
         logging.debug(traceback.format_exc())
@@ -245,9 +232,9 @@ def create_cmake():
 
 def main():
     logging.basicConfig(level=logging.DEBUG)
-    create_file("engine", ["make", "VS", "QT"])
-    create_file("engine_main", ["make", "VS", "QT"])
-    create_file("gui", ["QT", "VS_GUI"])  # TODO: finish mocing part of VS_GUI
+    create_file("engine", ["make", "VS"])
+    create_file("engine_main", ["make", "VS"])
+    create_file("gui", ["VS_GUI"])  # TODO: finish mocing part of VS_GUI
     # create_cmake()
     logging.info("Done")
 
