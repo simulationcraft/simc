@@ -284,6 +284,45 @@ public:
   // Druid Events
   std::vector<event_t*> persistent_buff_delay;
 
+  // Azerite
+  struct azerite_t
+  {  // Not yet implemented
+     // Balance
+    azerite_power_t dawning_sun;
+    azerite_power_t high_noon;
+    azerite_power_t lively_spirit;
+    azerite_power_t long_night;
+    azerite_power_t lunar_sharpnel;
+    azerite_power_t power_of_the_moon;
+    azerite_power_t streaking_stars;
+    azerite_power_t sunblaze;
+
+    // Feral
+    azerite_power_t blood_mist;
+    azerite_power_t gushing_lacerations;
+    azerite_power_t iron_jaws;
+    azerite_power_t primordial_rage;
+    azerite_power_t raking_ferocity;
+    azerite_power_t shredding_fury;
+    azerite_power_t wild_fleshrending;
+
+    // Guardian
+    azerite_power_t craggy_bark;
+    azerite_power_t gory_regeneration;
+    azerite_power_t grove_tending;
+    azerite_power_t guardians_wrath;
+    azerite_power_t heartblood;
+    azerite_power_t layered_mane;
+    azerite_power_t masterful_instincts;
+    azerite_power_t twisted_claws;
+
+    // Implemented
+    // Balance
+    // Feral
+    // Guardian
+
+  } azerite;
+
   // Buffs
   struct buffs_t
   {
@@ -6278,6 +6317,36 @@ void druid_t::init_spells()
         talent.earthwarden->id(),
         instant_absorb_t( this, find_spell( 203975 ), "earthwarden", &earthwarden_handler ) ) );
   }
+
+  // Azerite ================================================================
+  // Balance
+  azerite.dawning_sun = find_azerite_spell("Dawning Sun");
+  azerite.high_noon = find_azerite_spell("High Noon");
+  azerite.lively_spirit = find_azerite_spell("Lively Spirit");
+  azerite.long_night = find_azerite_spell("Long Night");
+  azerite.lunar_sharpnel = find_azerite_spell("Lunar Shrapnel");
+  azerite.power_of_the_moon = find_azerite_spell("Power of the Moon");
+  azerite.streaking_stars = find_azerite_spell("Streaking Stars");
+  azerite.sunblaze = find_azerite_spell("Sunblaze");
+
+  // Feral
+  azerite.blood_mist = find_azerite_spell("Blood Mist");
+  azerite.gushing_lacerations = find_azerite_spell("Gushing Lacerations");
+  azerite.iron_jaws = find_azerite_spell("Iron Jaws");
+  azerite.primordial_rage = find_azerite_spell("Primordial Rage");
+  azerite.raking_ferocity = find_azerite_spell("Raking Ferocity");
+  azerite.shredding_fury = find_azerite_spell("Shredding Fury");
+  azerite.wild_fleshrending = find_azerite_spell("Wild Fleshrending");
+
+  // Guardian
+  azerite.craggy_bark = find_azerite_spell("Craggy Bark");
+  azerite.gory_regeneration = find_azerite_spell("Gory Regeneration");
+  azerite.grove_tending = find_azerite_spell("Grove Tending");
+  azerite.guardians_wrath = find_azerite_spell("Guardian's Wrath");
+  azerite.heartblood = find_azerite_spell("Heartblood");
+  azerite.layered_mane = find_azerite_spell("Layered Mane");
+  azerite.masterful_instincts = find_azerite_spell("Masterful Instincts");
+  azerite.twisted_claws = find_azerite_spell("Twisted Claws");
 
   // Affinities =============================================================
 
