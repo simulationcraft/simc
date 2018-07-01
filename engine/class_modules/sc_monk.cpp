@@ -234,6 +234,7 @@ public:
     buff_t* storm_earth_and_fire;
     buff_t* serenity;
     buff_t* touch_of_karma;
+    buff_t* windwalking_driver;
 
     // Legendaries
     buff_t* hidden_masters_forbidden_touch;
@@ -2303,7 +2304,7 @@ public:
       if ( ab::cost() > 0 )
       {
         // Drinking Horn Cover Legendary
-        if ( p() -> legendary.drinking_horn_cover && p() -> level() <= 115 )
+        if ( p() -> legendary.drinking_horn_cover )
         {
           if ( p() -> buff.storm_earth_and_fire -> up() )
           {
@@ -2346,7 +2347,7 @@ public:
         }
 
         // The Emperor's Capacitor Legendary
-        if ( p() -> legendary.the_emperors_capacitor && p() -> level() <= 115 )
+        if ( p() -> legendary.the_emperors_capacitor )
           p() -> buff.the_emperors_capacitor -> trigger();
       }
       // Chi Savings on Dodge & Parry & Miss
@@ -3516,7 +3517,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
-    if ( p() -> legendary.katsuos_eclipse && !p() -> buff.serenity -> up() && p() -> level() <= 115 )
+    if ( p() -> legendary.katsuos_eclipse && !p() -> buff.serenity -> up()  )
       c += p() -> legendary.katsuos_eclipse -> effectN( 1 ).base_value(); // saved as -1
 
     return c;
@@ -3528,7 +3529,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
 
     if ( p() -> buff.serenity -> up() )
     {
-      if ( p() -> legendary.katsuos_eclipse && p() -> level() <= 115 )
+      if ( p() -> legendary.katsuos_eclipse )
         p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] + p() -> legendary.katsuos_eclipse -> effectN( 1 ).base_value() );
       else
         p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
@@ -3900,7 +3901,7 @@ struct keg_smash_t: public monk_melee_attack_t
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
 
-    if ( p() -> legendary.stormstouts_last_gasp && p() -> level() <= 115 )
+    if ( p() -> legendary.stormstouts_last_gasp )
       am *= 1 + p() -> legendary.stormstouts_last_gasp -> effectN( 2 ).percent();
 
     return am;
@@ -3927,7 +3928,7 @@ struct keg_smash_t: public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p() -> legendary.salsalabims_lost_tunic != nullptr && p() -> level() <= 115 )
+    if ( p() -> legendary.salsalabims_lost_tunic != nullptr )
       p() -> cooldown.breath_of_fire -> reset( true );
 
     // If cooldown was reset by Secret Ingredients talent, to end the buff
@@ -4014,7 +4015,7 @@ struct touch_of_death_t: public monk_spell_t
 
     amount *= 1 + p() -> cache.damage_versatility();
  
-    if ( p() -> legendary.hidden_masters_forbidden_touch && p() -> level() <= 115 )
+    if ( p() -> legendary.hidden_masters_forbidden_touch )
       amount *= 1 + p() -> legendary.hidden_masters_forbidden_touch -> effectN( 2 ).percent();
 
     if ( p() -> buff.combo_strikes -> up() )
@@ -4059,7 +4060,7 @@ struct touch_of_death_t: public monk_spell_t
 
     monk_spell_t::execute();
 
-    if ( p() -> legendary.hidden_masters_forbidden_touch && p() -> level() <= 115 )
+    if ( p() -> legendary.hidden_masters_forbidden_touch )
     {
       if ( p() -> buff.hidden_masters_forbidden_touch -> up() )
         p() -> buff.hidden_masters_forbidden_touch -> expire();
@@ -4176,7 +4177,7 @@ struct touch_of_karma_t: public monk_melee_attack_t
     if ( pct_health > 0 )
     {
       double damage_amount = pct_health * player -> resources.max[RESOURCE_HEALTH];
-      if ( p() -> legendary.cenedril_reflector_of_hatred && p() -> level() <= 115 )
+      if ( p() -> legendary.cenedril_reflector_of_hatred )
         damage_amount *= 1 + p() -> legendary.cenedril_reflector_of_hatred -> effectN( 1 ).percent();
 
       residual_action::trigger(
@@ -4335,7 +4336,7 @@ struct flying_serpent_kick_t: public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
-    if ( p() -> legendary.sephuzs_secret != spell_data_t::not_found() && execute_state -> target -> type == ENEMY_ADD && p() -> level() <= 115 )
+    if ( p() -> legendary.sephuzs_secret != spell_data_t::not_found() && execute_state -> target -> type == ENEMY_ADD )
     {
       p() -> buff.sephuzs_secret -> trigger();
     }
@@ -4718,7 +4719,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     double c = monk_spell_t::cost_per_tick( resource );
 
-    if ( p() -> buff.the_emperors_capacitor -> up() && resource == RESOURCE_ENERGY && p() -> level() <= 115 )
+    if ( p() -> buff.the_emperors_capacitor -> up() && resource == RESOURCE_ENERGY )
       c *= 1 + ( p() -> buff.the_emperors_capacitor -> current_stack * p() -> passives.the_emperors_capacitor -> effectN( 2 ).percent() );
 
     return c;
@@ -4728,7 +4729,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     double c = monk_spell_t::cost();
 
-    if ( p() -> buff.the_emperors_capacitor -> up() && p() -> level() <= 115 )
+    if ( p() -> buff.the_emperors_capacitor -> up() )
       c *= 1 + ( p() -> buff.the_emperors_capacitor -> current_stack * p() -> passives.the_emperors_capacitor -> effectN( 2 ).percent() );
 
     return c;
@@ -4741,7 +4742,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
     if ( p() -> buff.combo_strikes -> up() )
       pm *= 1 + p() -> cache.mastery_value();
 
-    if ( p() -> buff.the_emperors_capacitor -> up() && p() -> level() <= 115 )
+    if ( p() -> buff.the_emperors_capacitor -> up() )
       pm *= 1 + p() -> buff.the_emperors_capacitor -> stack_value();
 
     return pm;
@@ -4772,7 +4773,7 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     monk_spell_t::last_tick( dot );
 
-    if ( p() -> buff.the_emperors_capacitor -> up() && p() -> level() <= 115 )
+    if ( p() -> buff.the_emperors_capacitor -> up()  )
       p() -> buff.the_emperors_capacitor -> expire();
 
     // Reset swing timer
@@ -6342,6 +6343,29 @@ struct touch_of_karma_buff_t: public monk_buff_t < buff_t > {
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
+
+struct windwalking_driver_t: public monk_buff_t < buff_t >
+{
+  double movement_increase;
+  windwalking_driver_t( monk_t& p, const std::string& n, const spell_data_t* s ):
+    monk_buff_t( p, n, s ),
+    movement_increase( 0 )
+  {
+    set_tick_callback( [&p, this]( buff_t*, int /* total_ticks */, timespan_t /* tick_time */ ) {
+      range::for_each( p.windwalking_aura->target_list(), [&p, this]( player_t* target ) {
+        target -> buffs.windwalking_movement_aura -> trigger(
+            1, ( movement_increase +
+                 ( p.legendary.march_of_the_legion ? p.legendary.march_of_the_legion -> effectN( 1 ).percent() : 0.0 ) ),
+            1, timespan_t::from_seconds( 10 ) );
+      } );
+    } );
+    cooldown -> duration = timespan_t::zero();
+    buff_duration = timespan_t::zero();
+    buff_period = timespan_t::from_seconds( 1 );
+    tick_behavior = buff_tick_behavior::CLIP;
+    movement_increase = p.buffs.windwalking_movement_aura -> data().effectN( 1 ).percent();
+  }
+};
 }
 
 // ==========================================================================
@@ -6361,7 +6385,8 @@ monk( *p )
                                -> set_refresh_behavior( buff_refresh_behavior::DURATION );
     debuff.flying_serpent_kick = make_buff( *this, "flying_serpent_kick", p -> passives.flying_serpent_kick_damage )
                                  -> set_default_value( p -> passives.flying_serpent_kick_damage-> effectN( 2 ).percent() );
-    debuff.touch_of_death_amplifier = make_buff( *this, "touch_of_death_amplifier", p -> spec.touch_of_death )
+    debuff.touch_of_death_amplifier = make_buff( *this, "touch_of_death_amplifier", p -> spec.touch_of_death_amplifier )
+                               -> set_duration( p -> spec.touch_of_death -> duration() )
                                -> set_default_value( 0 )
                                -> set_quiet( true );
     debuff.touch_of_karma = make_buff( *this, "touch_of_karma_debuff", p -> spec.touch_of_karma )
@@ -7085,6 +7110,8 @@ void monk_t::create_buffs()
                         -> set_refresh_behavior( buff_refresh_behavior::NONE );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
+
+  buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 166646 ) );
 
   // Legendaries
   buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t( *this, "hidden_masters_forbidden_touch", find_spell( 213114 ) );
@@ -7820,6 +7847,16 @@ void monk_t::combat_begin()
 
   if ( specialization() == MONK_WINDWALKER)
   {
+    if ( sim -> distance_targeting_enabled )
+    {
+      buff.windwalking_driver -> trigger();
+    }
+    else
+    {
+      buffs.windwalking_movement_aura -> trigger(1, buffs.windwalking_movement_aura -> data().effectN( 1 ).percent() + 
+        ( legendary.march_of_the_legion ? legendary.march_of_the_legion -> effectN( 1 ).percent() : 0.0 ), 1, timespan_t::zero() );
+    }
+
     resources.current[RESOURCE_CHI] = 0;
   }
 
@@ -9382,7 +9419,12 @@ struct monk_module_t: public module_t
       .verification_value( -3000 );*/
   }
 
-  virtual void init( player_t* ) const override {}
+  virtual void init( player_t* p ) const override
+  {
+    p -> buffs.windwalking_movement_aura = buff_creator_t( p, "windwalking_movement_aura",
+                                                            p -> find_spell( 166646 ) )
+      .add_invalidate( CACHE_RUN_SPEED );
+  }
   virtual void combat_begin( sim_t* ) const override {}
   virtual void combat_end( sim_t* ) const override {}
 };
