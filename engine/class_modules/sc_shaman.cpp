@@ -630,21 +630,24 @@ public:
     icy_edge      = nullptr;
     regen_type    = REGEN_DISABLED;
 
-    // talent_points.register_validity_fn( [this]( const spell_data_t* spell ) {
-    //  // Soul of the Farseer
-    //  if ( find_item( 151647 ) )
-    //  {
-    //    switch ( specialization() )
-    //    {
-    //      case SHAMAN_ENHANCEMENT:
-    //        return util::str_compare_ci( spell->name_cstr(), "Tempest" );
-    //        break;
-    //      default:
-    //        return false;
-    //    }
-    //  }
-    //  return false;
-    //} );
+    talent_points.register_validity_fn( [this]( const spell_data_t* spell ) {
+      // Soul of the Farseer
+      if ( find_item( 151647 ) )
+      {
+        switch ( specialization() )
+        {
+          // case SHAMAN_ENHANCEMENT:
+          //  return util::str_compare_ci( spell->name_cstr(), "Tempest" );
+          //  break;
+          case SHAMAN_ELEMENTAL:
+            return util::str_compare_ci( spell->name_cstr(), "Echo of the Elements" );
+            break;
+          default:
+            return false;
+        }
+      }
+      return false;
+    } );
   }
 
   virtual ~shaman_t();
