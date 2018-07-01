@@ -4676,17 +4676,31 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
 // Frostwyrm's Fury ========================================================
 
-// TODO: Fancy targeting
+struct frost_breath_t : public death_knight_spell_t
+{
+  frost_breath_t( death_knight_t* p ) :
+    death_knight_spell_t( "frost_breath", p, p -> find_spell( 279303 ) )
+  {
+    aoe = -1;
+  }
+};
+
 struct frostwyrms_fury_t : public death_knight_spell_t
 {
+  death_knight_spell_t* damage;
+
   frostwyrms_fury_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "frostwyrms_fury", p, p -> talent.frostwyrms_fury )
+    death_knight_spell_t( "frostwyrms_fury", p, p -> talent.frostwyrms_fury ),
+    damage( new frost_breath_t( p ) )
   {
     parse_options( options_str );
+  }
 
-    aoe = -1;
-
-    parse_effect_data( p -> find_spell( 279303 ) -> effectN( 1 ) );
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    damage -> set_target( execute_state -> target );
+    damage -> execute();
   }
 };
 
@@ -4775,11 +4789,13 @@ struct frost_strike_t : public death_knight_melee_attack_t
 // TODO: Fancier targeting .. make it aoe for now
 struct glacial_advance_damage_t : public death_knight_spell_t
 {
-  glacial_advance_damage_t( death_knight_t* player ) :
-    death_knight_spell_t( "glacial_advance_damage", player, player -> find_spell( 195975 ) )
+  glacial_advance_damage_t( death_knight_t* player, const std::string& options_str ) :
+    death_knight_spell_t( "glacial_advance", player, player -> find_spell( 195975 ) )
   {
+    parse_options( options_str );
     aoe = -1;
     background = true;
+    ap_type = AP_WEAPON_BOTH;
   }
 
   void impact( action_state_t* state ) override
@@ -4795,11 +4811,8 @@ struct glacial_advance_t : public death_knight_spell_t
     death_knight_spell_t( "glacial_advance", player, player -> talent.glacial_advance )
   {
     parse_options( options_str );
-    school = SCHOOL_FROST; // Damage is frost so override this to make reports make more sense
-    ap_type = AP_WEAPON_BOTH;
 
-    execute_action = new glacial_advance_damage_t( player );
-    add_child( execute_action );
+    execute_action = new glacial_advance_damage_t( player, options_str );
   }
 
   void execute() override
