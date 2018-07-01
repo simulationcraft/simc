@@ -1487,6 +1487,7 @@ class SpellDataGenerator(DataGenerator):
           ( 240672, 3 ), # Master of Combinations Artifact trait buff
           ( 242387, 3 ), # Thunderfist Artifact trait buff
           ( 252768, 3 ), # Tier 21 2-piece DPS effect
+          ( 261682, 3 ), # Chi Burst Chi generation cap
           # Legendary
           ( 213114, 3 ), # Hidden Master's Forbidden Touch buff
         ),

@@ -6035,15 +6035,16 @@ struct chi_burst_t: public monk_spell_t
 
     heal -> execute();
     damage -> execute();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    monk_spell_t::impact( s );
 
     if ( p() -> specialization() == MONK_WINDWALKER )
-      // TODO: Hard code the 1 chi for now until the effect gets put in.
-      p() -> resource_gain( RESOURCE_CHI, 1, p() -> gain.chi_burst );
+    {
+      if ( num_targets_hit > p() -> talent.chi_burst -> effectN( 3 ).base_value() )
+        for (int i = 0; i < p() -> talent.chi_burst -> effectN( 3 ).base_value(); i++ )
+          p() -> resource_gain( RESOURCE_CHI, p() -> find_spell( 261682 ) -> effectN( 1 ).base_value(), p() -> gain.chi_burst );
+      else
+        for (int i = 0; i < num_targets_hit; i++ )
+          p() -> resource_gain( RESOURCE_CHI, p() -> find_spell( 261682 ) -> effectN( 1 ).base_value(), p() -> gain.chi_burst );
+    }
   }
 };
 
