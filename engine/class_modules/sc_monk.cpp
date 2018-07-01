@@ -2402,6 +2402,10 @@ public:
         }
       }
     }
+
+    if ( s -> action -> school == SCHOOL_PHYSICAL )
+      p() -> debuffs.mystic_touch -> trigger();
+
     ab::impact( s );
   }
 
