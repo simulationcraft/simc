@@ -6894,7 +6894,7 @@ void shaman_t::trigger_earthen_rage( const action_state_t* state )
 
 void shaman_t::trigger_eye_of_twisting_nether( const action_state_t* state )
 {
-  if ( state->action->harmful && state->result_amount > 0 )
+  if ( state->action->harmful && state->result_amount > 0 && specialization() == SHAMAN_ELEMENTAL )
   {
     auto school = state->action->get_school();
 
@@ -6948,6 +6948,8 @@ void shaman_t::trigger_smoldering_heart( double cost )
   {
     return;
   }
+  if ( specialization() != SHAMAN_ELEMENTAL )
+    return;
 
   auto sh_base_proc_chance = 0.0;
 
@@ -7825,7 +7827,7 @@ double shaman_t::composite_spell_haste() const
 
   // 7.2 Sephuz's Secret passive haste. If the item is missing, default_chance will be set to 0 (by
   // the fallback buff creator).
-  if ( legendary.sephuzs_secret->ok() )
+  if ( legendary.sephuzs_secret->ok() && specialization() == SHAMAN_ELEMENTAL )
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret->effectN( 3 ).percent() );
 
   return h;
@@ -7870,7 +7872,7 @@ double shaman_t::passive_movement_modifier() const
 
   // 7.2 Sephuz's Secret passive movement speed. If the item is missing, default_chance will be set
   // to 0 (by the fallback buff creator).
-  if ( legendary.sephuzs_secret->ok() )
+  if ( legendary.sephuzs_secret->ok() && specialization() == SHAMAN_ELEMENTAL )
   {
     ms += legendary.sephuzs_secret->effectN( 2 ).percent();
   }
@@ -8640,7 +8642,7 @@ struct uncertain_reminder_t : public scoped_actor_callback_t<shaman_t>
   void manipulate( shaman_t* shaman, const special_effect_t& e ) override
   {
     auto buff = buff_t::find( shaman, "bloodlust" );
-    if ( buff )
+    if ( buff && shaman->specialization() == SHAMAN_ELEMENTAL )
     {
       buff->buff_duration += timespan_t::from_seconds( e.driver()->effectN( 1 ).base_value() );
     }
