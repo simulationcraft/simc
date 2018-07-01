@@ -360,6 +360,7 @@ public:
     const spell_data_t* effuse_2;
     const spell_data_t* leather_specialization;
     const spell_data_t* leg_sweep;
+    const spell_data_t* mystic_touch;
     const spell_data_t* paralysis;
     const spell_data_t* provoke;
     const spell_data_t* rising_sun_kick;
@@ -2333,7 +2334,7 @@ public:
         }
 
         if ( p() -> talent.inner_strength )
-          p() -> buff.inner_stength -> trigger( ab::cost() );
+          p() -> buff.inner_stength -> trigger( (int)ab::cost() );
 
         if ( p() -> talent.spirtual_focus )
         {
@@ -2378,7 +2379,7 @@ public:
   virtual void impact( action_state_t* s ) override
   {
     if ( s -> action -> school == SCHOOL_PHYSICAL )
-      p() -> debuffs.mystic_touch -> trigger();
+      trigger_mystic_touch( s );
 
     if ( td( s -> target ) -> dots.touch_of_death -> is_ticking() && s -> action -> name_str != "touch_of_death_amplifier" )
     {
@@ -2450,6 +2451,29 @@ public:
          sef_ability == SEF_RISING_SUN_KICK ) )
     {
       p() -> retarget_storm_earth_and_fire_pets();
+    }
+  }
+
+  void trigger_mystic_touch( action_state_t* s )
+  {
+    if ( ab::sim -> overrides.mystic_touch )
+    {
+      return;
+    }
+
+    if ( ab::result_is_miss( s -> result ) )
+    {
+      return;
+    }
+
+    if ( s -> result_amount == 0.0 )
+    {
+      return;
+    }
+
+    if ( s -> target -> debuffs.mystic_touch && p() -> spec.mystic_touch -> ok() )
+    {
+      s -> target -> debuffs.mystic_touch -> trigger();
     }
   }
 };
@@ -4428,7 +4452,7 @@ struct roll_t: public monk_spell_t
     if ( player -> talent.celerity )
     {
       cooldown -> duration += player -> talent.celerity -> effectN( 1 ).time_value();
-      cooldown -> charges += player -> talent.celerity -> effectN( 2 ).base_value();
+      cooldown -> charges += (int)player -> talent.celerity -> effectN( 2 ).base_value();
     }
   }
 };
@@ -4570,7 +4594,7 @@ struct storm_earth_and_fire_t: public monk_spell_t
     trigger_gcd = timespan_t::zero();
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
 
-    cooldown -> charges += p -> spec.storm_earth_and_fire_2 -> effectN( 1 ).base_value();
+    cooldown -> charges += (int)p -> spec.storm_earth_and_fire_2 -> effectN( 1 ).base_value();
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -5081,7 +5105,7 @@ struct ironskin_brew_t : public monk_spell_t
     p.cooldown.brewmaster_active_mitigation -> duration = p.spec.ironskin_brew -> charge_cooldown();
     p.cooldown.brewmaster_active_mitigation -> charges  = p.spec.ironskin_brew -> charges();
     p.cooldown.brewmaster_active_mitigation -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
-    p.cooldown.brewmaster_active_mitigation -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
+    p.cooldown.brewmaster_active_mitigation -> charges  += (int)p.talent.light_brewing -> effectN( 2 ).base_value();
     p.cooldown.brewmaster_active_mitigation -> hasted   = true;
 
     cooldown             = p.cooldown.brewmaster_active_mitigation;
@@ -5137,7 +5161,7 @@ struct purifying_brew_t: public monk_spell_t
     p.cooldown.brewmaster_active_mitigation -> duration = p.spec.purifying_brew -> charge_cooldown();
     p.cooldown.brewmaster_active_mitigation -> charges  = p.spec.purifying_brew -> charges();
     p.cooldown.brewmaster_active_mitigation -> duration += p.talent.light_brewing -> effectN( 1 ).time_value(); // Saved as -3000
-    p.cooldown.brewmaster_active_mitigation -> charges  += p.talent.light_brewing -> effectN( 2 ).base_value();
+    p.cooldown.brewmaster_active_mitigation -> charges  += (int)p.talent.light_brewing -> effectN( 2 ).base_value();
     p.cooldown.brewmaster_active_mitigation -> hasted   = true;
 
     cooldown -> duration = p.spec.purifying_brew -> charge_cooldown();
@@ -5581,7 +5605,7 @@ struct vivify_t: public monk_heal_t
     parse_options( options_str );
 
     // 1 for the primary target, plus the value of the effect
-    aoe = 1 + data().effectN( 1 ).base_value();
+    aoe = (int)( 1 + data().effectN( 1 ).base_value() );
     spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
 
     mastery = new gust_of_mists_t( p );
@@ -5652,7 +5676,7 @@ struct essence_font_t: public monk_spell_t
       monk_heal_t( "essence_font_heal", p, p.spec.essence_font -> effectN( 1 ).trigger() )
     {
       background = dual = true;
-      aoe = p.spec.essence_font -> effectN( 1 ).base_value();
+      aoe = (int)p.spec.essence_font -> effectN( 1 ).base_value();
     }
 
     double action_multiplier() const override
@@ -6743,6 +6767,7 @@ void monk_t::init_spells()
   spec.effuse_2                      = find_specialization_spell( 231602 );
   spec.leather_specialization        = find_specialization_spell( "Leather Specialization" );
   spec.leg_sweep                     = find_class_spell( "Leg Sweep" );
+  spec.mystic_touch                  = find_class_spell( "Mystic Touch" );
   spec.paralysis                     = find_class_spell( "Paralysis" );
   spec.provoke                       = find_class_spell( "Provoke" );
   spec.resuscitate                   = find_class_spell( "Resuscitate" );
@@ -7073,7 +7098,7 @@ void monk_t::create_buffs()
                                     -> set_default_value( find_spell( 202090 ) -> effectN( 1 ).percent() );
 
   buff.thunder_focus_tea = make_buff( this, "thunder_focus_tea", spec.thunder_focus_tea )
-                           -> set_max_stack( 1 + ( talent.focused_thunder ? talent.focused_thunder -> effectN( 1 ).base_value() : 0 ) );
+                           -> set_max_stack( 1 + (int)( talent.focused_thunder ? talent.focused_thunder -> effectN( 1 ).base_value() : 0 ) );
 
   buff.uplifting_trance = make_buff( this, "uplifting_trance", find_spell( 197916 ) )
                           -> set_chance( spec.renewing_mist -> effectN( 2 ).percent() 
@@ -9211,7 +9236,7 @@ struct stormstouts_last_gasp_t : public unique_gear::scoped_actor_callback_t<mon
   void manipulate( monk_t* monk, const special_effect_t& e ) override
   {
     monk -> legendary.stormstouts_last_gasp = e.driver();
-    monk -> cooldown.keg_smash -> charges += monk -> legendary.stormstouts_last_gasp -> effectN( 1 ).base_value();
+    monk -> cooldown.keg_smash -> charges += (int)monk -> legendary.stormstouts_last_gasp -> effectN( 1 ).base_value();
   }
 };
 
