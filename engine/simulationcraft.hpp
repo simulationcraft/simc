@@ -6136,6 +6136,7 @@ public:
   void   cancel();
   void   trigger( timespan_t duration );
   void   decrement( int stacks );
+  void   increment(int stacks);
   void   copy( player_t* destination, dot_copy_e = DOT_COPY_START ) const;
   void   copy( dot_t* dest_dot ) const;
   // Scale on-going dot remaining time by a coefficient during a tick. Note that this should be

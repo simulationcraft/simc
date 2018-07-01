@@ -283,6 +283,25 @@ void dot_t::decrement( int stacks = 1 )
   }
 }
 
+void dot_t::increment(int stacks = 1)
+{
+  if (max_stack == 0 || stack <= 0 || stack == max_stack)
+    return;
+
+  if ( stack + stacks > max_stack )
+  {
+    stack = max_stack;
+  }
+  else
+  {
+    stack += stacks;
+
+    if (sim.debug)
+      sim.out_debug.printf("dot %s decremented by %d to %d stacks",
+        name_str.c_str(), stacks, stack);
+  }
+}
+
 // For copying a DoT to a different target.
 void dot_t::copy( player_t* other_target, dot_copy_e copy_type ) const
 {
