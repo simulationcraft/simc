@@ -300,9 +300,6 @@ public:
     azerite_power_t long_night; //seems to be removed
     azerite_power_t streaking_stars;
 
-    // Feral
-    azerite_power_t wild_fleshrending;
-
     // Guardian
     azerite_power_t craggy_bark;
     azerite_power_t gory_regeneration;
@@ -327,6 +324,7 @@ public:
     azerite_power_t primordial_rage; //-||-
     azerite_power_t raking_ferocity; //-||-
     azerite_power_t shredding_fury; //-||-
+    azerite_power_t wild_fleshrending; //-||-
     // Guardian
 
   } azerite;
@@ -2878,6 +2876,18 @@ struct brutal_slash_t : public cat_attack_t
     return c;
   }
 
+  virtual double bonus_da(const action_state_t* s) const override
+  {
+    double b = cat_attack_t::bonus_da(s);
+
+    if (td(s->target)->dots.thrash_cat->is_ticking())
+    {
+      b += p()->azerite.wild_fleshrending.value(2);
+    }
+
+    return b;
+  }
+
   virtual double composite_target_multiplier(player_t* t) const override
   {
      double tm = cat_attack_t::composite_target_multiplier(t);
@@ -3618,6 +3628,18 @@ public:
     return c;
   }
 
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double b = cat_attack_t::bonus_da( s );
+
+    if ( td( s->target )->dots.thrash_cat->is_ticking() )
+    {
+      b += p()->azerite.wild_fleshrending.value( 2 );
+    }
+
+    return b;
+  }
+
   virtual void execute() override
   {
     cat_attack_t::execute();
@@ -3724,8 +3746,8 @@ struct thrash_cat_t : public cat_attack_t
 
     cat_attack_t::execute();
 
-    p() -> buff.scent_of_blood -> trigger( 1,
-      num_targets_hit * p() -> buff.scent_of_blood -> default_value );
+    //p() -> buff.scent_of_blood -> trigger( 1,
+    //  num_targets_hit * p() -> buff.scent_of_blood -> default_value );
   }
 };
 
