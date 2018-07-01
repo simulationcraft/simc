@@ -6556,7 +6556,7 @@ void monk_t::trigger_sephuzs_secret( const action_state_t* state,
 
 void monk_t::trigger_mark_of_the_crane( action_state_t* s )
 {
-  if ( get_target_data( s -> target ) -> debuff.mark_of_the_crane -> up() || mark_of_the_crane_counter() <= passives.cyclone_strikes -> max_stacks() )
+  if ( get_target_data( s -> target ) -> debuff.mark_of_the_crane -> up() || mark_of_the_crane_counter() < passives.cyclone_strikes -> max_stacks() )
     get_target_data( s -> target ) -> debuff.mark_of_the_crane -> trigger();
 }
 
