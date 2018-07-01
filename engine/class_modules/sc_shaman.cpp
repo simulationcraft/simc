@@ -2363,7 +2363,7 @@ struct earth_elemental_t : public primal_elemental_t
 
     bool ready() override
     {
-      if ( p()->o()->azerite.rumbling_tremors.ok() )
+      if ( !p()->o()->azerite.rumbling_tremors.ok() )
       {
         return false;
       }
@@ -3411,7 +3411,7 @@ struct lava_lash_t : public shaman_attack_t
 
     add_child( cl );
 
-	if ( player->talent.elemental_spirits->ok() )
+    if ( player->talent.elemental_spirits->ok() )
     {
       mw_dot = new molten_weapon_dot_t( player );
       add_child( mw_dot );
@@ -3967,7 +3967,6 @@ struct ember_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    // Summon first non sleeping Ember Elemental
     if ( p()->azerite.echo_of_the_elementals.ok() )
     {
       p()->pet.guardian_ember_elemental->summon( base_spell->duration() );
@@ -4020,7 +4019,6 @@ struct spark_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    // Summon first non sleeping Spark Elemental
     if ( p()->azerite.echo_of_the_elementals.ok() )
     {
       p()->pet.guardian_spark_elemental->summon( base_spell->duration() );
