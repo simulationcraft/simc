@@ -9,8 +9,8 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// todo: Fury - Add Meat Cleaver to all single target Fury abilities (ref Bloodthirst), add Battle Shout raid buff
-//       Arms - DeepWounds-BS/Rav ticks, Cleave-needs 3 target, new Sweeping Strikes, FervorSlam, Collateral Damage, Deadly Calm, and Avatar-Hardcode Arms
+// todo: Fury - Add Meat Cleaver to all single target Fury abilities (ref Bloodthirst), Enrage-clean up movespeed/damage taken/health increase, add Battle Shout raid buff
+//       Arms - DeepWounds-BS/Rav ticks, Cleave-needs 3 target, Deadly Calm-tactician, Sweeping Strikes-only during buff & damage reduction, FervorSlam, Collateral Damage, and Avatar-Hardcode Arms
 // ==========================================================================
 
 struct warrior_t;
@@ -75,7 +75,7 @@ public:
   {
     buff_t* avatar;
     buff_t* ayalas_stone_heart;
-    buff_t* battle_cry_deadly_calm;
+    buff_t* deadly_calm;
     buff_t* berserker_rage;
     buff_t* bladestorm;
     buff_t* bounding_stride;
@@ -85,7 +85,6 @@ public:
     buff_t* die_by_the_sword;
     buff_t* dragon_scales;
     haste_buff_t* enrage;
-    buff_t* frenzy;
     haste_buff_t* frothing_berserker;
     haste_buff_t* furious_slash;
     buff_t* furious_charge;
@@ -108,6 +107,7 @@ public:
     buff_t* shield_wall;
     buff_t* spell_reflection;
 	buff_t* sudden_death;
+    buff_t* sweeping_strikes;
     buff_t* vengeance_revenge;
     buff_t* vengeance_ignore_pain;
 	buff_t* whirlwind;
@@ -142,6 +142,7 @@ public:
     cooldown_t* bloodthirst;
     cooldown_t* charge;
     cooldown_t* colossus_smash;
+    cooldown_t* deadly_calm;
     cooldown_t* demoralizing_shout;
     cooldown_t* dragon_roar;
     cooldown_t* enraged_regeneration;
@@ -265,6 +266,7 @@ public:
     const spell_data_t* shield_slam;
     const spell_data_t* shield_wall;
     const spell_data_t* slam;
+    const spell_data_t* sweeping_strikes;
     const spell_data_t* tactician;
     const spell_data_t* thunder_clap;
     const spell_data_t* titans_grip;
@@ -279,7 +281,6 @@ public:
   // Talents
   struct talents_t
   {
-    const spell_data_t* sweeping_strikes;
     const spell_data_t* endless_rage;
     const spell_data_t* fresh_meat;
     const spell_data_t* war_machine;
@@ -332,7 +333,6 @@ public:
     const spell_data_t* meat_cleaver;
     const spell_data_t* siegebreaker;
     const spell_data_t* skullsplitter;
-    const spell_data_t* frenzy;
     const spell_data_t* warbreaker;
   } talents;
 
@@ -570,7 +570,7 @@ namespace
 template <class Base>
 struct warrior_action_t: public Base
 {
-  bool headlongrush, headlongrushgcd, sweeping_strikes, dauntless, deadly_calm,
+  bool headlongrush, headlongrushgcd, sweeping_strikes, deadly_calm,
     arms_damage_increase, fury_damage_increase, fury_dot_damage_increase, arms_dot_damage_increase,
     prot_warrior_damage_increase, prot_dot_damage_increase;
   double tactician_per_rage;
@@ -586,8 +586,8 @@ public:
     ab( n, player, s ),
     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
-    sweeping_strikes( ab::data().affected_by( player -> talents.sweeping_strikes -> effectN( 1 ) ) ),
-    deadly_calm( ab::data().affected_by( player -> spec.recklessness -> effectN( 4 ) ) ),
+    sweeping_strikes( ab::data().affected_by( player -> spec.sweeping_strikes -> effectN( 1 ) ) ), // Help - only while buff is active
+    //deadly_calm( ab::data().affected_by( player -> talents.deadly_calm -> effectN( 4 ) ) ), whitelist unnessessary for now
     arms_damage_increase( player -> specialization() == WARRIOR_ARMS && ab::data().affected_by( player -> spell.arms_warrior -> effectN( 2 ) ) ),
     fury_damage_increase( player -> specialization() == WARRIOR_FURY && ab::data().affected_by( player -> spell.fury_warrior -> effectN( 1 ) ) ),
     fury_dot_damage_increase( player -> specialization() == WARRIOR_FURY && ab::data().affected_by( player -> spell.fury_warrior -> effectN( 2 ) ) ),
@@ -639,7 +639,7 @@ public:
     }
     if ( sweeping_strikes )
     {
-      ab::aoe = p() -> talents.sweeping_strikes -> effectN( 1 ).base_value() + 1;
+      ab::aoe = p() -> spec.sweeping_strikes -> effectN( 1 ).base_value() + 1;
     }
     if ( headlongrush )
     {
@@ -699,7 +699,7 @@ public:
   {
     double c = ab::cost();
 
-    if ( p() -> buff.battle_cry_deadly_calm -> check() && deadly_calm )
+    if ( p() -> buff.deadly_calm -> check() && deadly_calm )
     {
       c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
     }
@@ -969,7 +969,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
                     const spell_data_t* s = spell_data_t::nil() ):
     base_t( n, p, s )
   {
-    special = true; // Whats this, leftover from Overpower proc?
+    special = true; // Help, whats this, leftover from Overpower proc?
   }
 
   virtual void execute() override
@@ -1335,7 +1335,6 @@ struct mortal_strike_t : public warrior_attack_t
   {
     parse_options( options_str );
 
-    cooldown -> duration = data().charge_cooldown();
     weapon = &( p -> main_hand_weapon );
     cooldown -> hasted = true; // Doesn't show up in spelldata for some reason.
     impact_action = p -> active.deep_wounds_ARMS;
@@ -1948,24 +1947,25 @@ struct sweeping_execute_t: public event_t
   }
 };
 
-struct execute_arms_t: public warrior_attack_t
+struct execute_damage_t : public warrior_attack_t
 {
   execute_sweep_t* execute_sweeping_strike;
   double max_rage;
-  execute_arms_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "execute", p, p -> spec.execute ), execute_sweeping_strike( nullptr ),
-    max_rage( 0 )
+  execute_damage_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "execute", p, p -> spec.execute -> effectN( 1 ).trigger()),
+    execute_sweeping_strike( nullptr ),
+    max_rage( 40 )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
-    impact_action = p -> active.deep_wounds_ARMS;
 
-    if ( p -> talents.sweeping_strikes -> ok() )
+    if ( p -> spec.sweeping_strikes -> ok() )
     {
       execute_sweeping_strike = new execute_sweep_t( p );
       add_child( execute_sweeping_strike );
     }
   }
+
 
   double action_multiplier() const override
   {
@@ -1978,9 +1978,9 @@ struct execute_arms_t: public warrior_attack_t
     else
     {
       double temp_max_rage = max_rage;
-      if ( p() -> buff.battle_cry_deadly_calm -> check() )
+      if ( p() -> buff.deadly_calm -> check() )
       {
-        temp_max_rage *= 1.0 + p() -> buff.battle_cry_deadly_calm -> data().effectN( 2 ).percent();
+        temp_max_rage *= 1.0 + p() -> buff.deadly_calm -> data().effectN( 2 ).percent();
       }
       am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
     }
@@ -1989,6 +1989,34 @@ struct execute_arms_t: public warrior_attack_t
       execute_sweeping_strike -> dmg_mult = am; // Sweeping strikes uses damage multiplier from this.
 
     return am;
+  }
+
+  void execute() override
+  {
+    warrior_attack_t::execute();
+
+    if ( execute_sweeping_strike )
+    {
+      make_event<sweeping_execute_t>( *sim, p(),
+                                      execute_state -> target,
+                                      execute_sweeping_strike );
+    }
+  }
+};
+
+struct execute_arms_t: public warrior_attack_t
+{
+  execute_damage_t* trigger_attack;
+  double max_rage;
+  execute_arms_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "execute", p, p -> spec.execute ),
+    max_rage( 40 )
+  {
+    parse_options( options_str );
+    weapon = &( p -> main_hand_weapon );
+    impact_action = p -> active.deep_wounds_ARMS;
+
+    trigger_attack = new execute_damage_t(p,options_str);
   }
 
   double tactician_cost() const override
@@ -2019,7 +2047,7 @@ struct execute_arms_t: public warrior_attack_t
     {
       return c *= 1.0 + p() -> buff.ayalas_stone_heart -> data().effectN( 2 ).percent();
     }
-    if ( p() -> buff.battle_cry_deadly_calm -> check() )
+    if ( p() -> buff.deadly_calm -> check() )
     {
       c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
     }
@@ -2030,14 +2058,9 @@ struct execute_arms_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    trigger_attack -> execute();
     p() -> resource_gain( RESOURCE_RAGE, last_resource_cost * 0.3, p() -> gain.execute_refund ); //TODO, is it necessary to check if the target died? Probably too much trouble.
 
-    if ( execute_sweeping_strike )
-    {
-      make_event<sweeping_execute_t>( *sim, p(),
-                                      execute_state -> target,
-                                      execute_sweeping_strike );
-    }
     p() -> buff.ayalas_stone_heart -> expire();
     p() -> buff.executioners_precision -> trigger();
   }
@@ -2622,6 +2645,25 @@ struct skullsplitter_t : public warrior_attack_t
   }
 };
 
+// Sweeping Strikes ===================================================================
+
+struct sweeping_strikes_t : public warrior_spell_t
+{
+  sweeping_strikes_t( warrior_t* p, const std::string& options_str ) : warrior_spell_t( "sweeping_strikes", p, p->spec.sweeping_strikes )
+  {
+    parse_options( options_str );
+    callbacks   = false;
+    use_off_gcd = false;
+  }
+
+  void execute() override
+  {
+    warrior_spell_t::execute();
+
+    p() -> buff.sweeping_strikes -> trigger();
+  }
+};
+
 // Overpower ============================================================
 
 struct overpower_t: public warrior_attack_t
@@ -2740,7 +2782,7 @@ struct rampage_attack_t: public warrior_attack_t
   {
     dual = true;
     base_multiplier *= 1.0 + p -> talents.carnage -> effectN( 4 ).percent();
-    // base_aoe_multiplier = p -> buff.whirlwind -> s_data -> effectN( 3 ).percent();
+    // base_aoe_multiplier = p -> buff.whirlwind -> s_data -> effectN( 3 ).percent(); Fix Me - Copy Bloodthirst for cleave support
     if ( p -> spec.rampage -> effectN( 3 ).trigger() == rampage )
       first_attack = true;
   }
@@ -3608,6 +3650,10 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
       first_mh_attack -> weapon = &( p -> main_hand_weapon );
       first_mh_attack -> radius = radius;
       add_child( first_mh_attack );
+      //if ( p -> talents.fervor_of_battle -> ok() )
+      //{
+        //add_child( p -> active.slam); // Help - add new Slam initialization
+      //}
     }
     tick_zero = true;
     callbacks = hasted_ticks = false;
@@ -3708,6 +3754,25 @@ struct berserker_rage_t: public warrior_spell_t
                             p() -> gain.protection_t20_2p );
       p() -> buff.protection_rage -> trigger();
     }
+  }
+};
+
+// Deadly Calm ===================================================================
+
+struct deadly_calm_t : public warrior_spell_t
+{
+  deadly_calm_t( warrior_t* p, const std::string& options_str ) : warrior_spell_t( "deadly_calm", p, p->talents.deadly_calm )
+  {
+    parse_options( options_str );
+    callbacks   = false;
+    use_off_gcd = true;
+  }
+
+  void execute() override
+  {
+    warrior_spell_t::execute();
+
+    p() -> buff.deadly_calm -> trigger();
   }
 };
 
@@ -3896,8 +3961,7 @@ struct recklessness_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     p() -> buff.recklessness -> trigger( 1, bonus_crit );
-    p() -> buff.battle_cry_deadly_calm -> trigger();
-  p() -> buff.outrage -> trigger();
+    p() -> buff.outrage -> trigger();
   }
 };
 
@@ -4159,6 +4223,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "charge"               ) return new charge_t               ( this, options_str );
   if ( name == "cleave"               ) return new cleave_t               ( this, options_str );
   if ( name == "colossus_smash"       ) return new colossus_smash_t       ( this, options_str );
+  if ( name == "deadly_calm"          ) return new deadly_calm_t          ( this, options_str );
   if ( name == "defensive_stance"     ) return new defensive_stance_t     ( this, options_str );
   if ( name == "demoralizing_shout"   ) return new demoralizing_shout     ( this, options_str );
   if ( name == "devastate"            ) return new devastate_t            ( this, options_str );
@@ -4198,6 +4263,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "slam"                 ) return new slam_t                 ( this, options_str );
   if ( name == "spell_reflection"     ) return new spell_reflection_t     ( this, options_str );
   if ( name == "storm_bolt"           ) return new storm_bolt_t           ( this, options_str );
+  if ( name == "sweeping_strikes"     ) return new sweeping_strikes_t     ( this, options_str );
   if ( name == "taunt"                ) return new taunt_t                ( this, options_str );
   if ( name == "thunder_clap"         ) return new thunder_clap_t         ( this, options_str );
   if ( name == "victory_rush"         ) return new victory_rush_t         ( this, options_str );
@@ -4275,6 +4341,7 @@ void warrior_t::init_spells()
   spec.shield_wall              = find_specialization_spell( "Shield Wall" );
   spec.slam                     = find_specialization_spell( "Slam" );
   spec.spell_reflection         = find_specialization_spell( "Spell Reflection" );
+  spec.sweeping_strikes         = find_specialization_spell( "Sweeping Strikes" );
   spec.tactician                = find_specialization_spell( "Tactician" );
   spec.thunder_clap             = find_specialization_spell( "Thunder Clap" );
   spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
@@ -4286,7 +4353,7 @@ void warrior_t::init_spells()
 
   // Talents
   talents.anger_management      = find_talent_spell( "Anger Management" );
-  talents.avatar                = find_talent_spell( "Avatar", WARRIOR_ARMS );
+  talents.avatar                = find_talent_spell( "Avatar" );
   talents.best_served_cold      = find_talent_spell( "Best Served Cold" );
   talents.bladestorm            = find_talent_spell( "Bladestorm" );
   talents.booming_voice         = find_talent_spell( "Booming Voice" );
@@ -4302,7 +4369,6 @@ void warrior_t::init_spells()
   talents.dreadnaught           = find_talent_spell( "Dreadnaught" );
   talents.endless_rage          = find_talent_spell( "Endless Rage" );
   talents.fervor_of_battle      = find_talent_spell( "Fervor of Battle" );
-  talents.frenzy                = find_talent_spell( "Frenzy" );
   talents.fresh_meat            = find_talent_spell( "Fresh Meat" );
   talents.frothing_berserker    = find_talent_spell( "Frothing Berserker" );
   talents.furious_charge        = find_talent_spell( "Furious Charge");
@@ -4325,7 +4391,6 @@ void warrior_t::init_spells()
   talents.skullsplitter         = find_talent_spell( "Skullsplitter" );
   talents.storm_bolt            = find_talent_spell( "Storm Bolt" );
   talents.sudden_death			= find_talent_spell( "Sudden Death" );
-  talents.sweeping_strikes      = find_talent_spell( "Sweeping Strikes" );
   talents.titanic_might         = find_talent_spell( "Titanic Might" );
   talents.vengeance             = find_talent_spell( "Vengeance" );
   talents.war_machine           = find_talent_spell( "War Machine" );
@@ -4414,6 +4479,7 @@ void warrior_t::init_spells()
   
   cooldown.charge                   = get_cooldown( "charge" );
   cooldown.colossus_smash           = get_cooldown( "colossus_smash" );
+  cooldown.deadly_calm              = get_cooldown( "deadly_calm" );
   cooldown.demoralizing_shout       = get_cooldown( "demoralizing_shout" );
   cooldown.dragon_roar              = get_cooldown( "dragon_roar" );
   cooldown.enraged_regeneration     = get_cooldown( "enraged_regeneration" );
@@ -5161,6 +5227,9 @@ void warrior_t::create_buffs()
 
   buff.spell_reflection = buff_creator_t( this, "spell_reflection", spec.spell_reflection );
 
+  buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes", spec.sweeping_strikes )
+    .cd( timespan_t::zero() );
+
   buff.ignore_pain = new ignore_pain_buff_t( this );
 
   buff.neltharions_fury = buff_creator_t( this, "neltharions_fury", artifact.neltharions_fury )
@@ -5174,11 +5243,8 @@ void warrior_t::create_buffs()
 
   buff.sudden_death = buff_creator_t( this, "sudden_death", talents.sudden_death );
 
-  buff.battle_cry_deadly_calm = buff_creator_t( this, "battle_cry_deadly_calm", spec.recklessness )
-    .duration( spec.recklessness -> duration() )
-    .chance( talents.deadly_calm -> ok() )
-    .cd( timespan_t::zero() )
-    .quiet( true );
+  buff.deadly_calm = buff_creator_t( this, "deadly_calm", talents.deadly_calm )
+    .cd( timespan_t::zero() );
 
   buff.shield_block = buff_creator_t( this, "shield_block", find_spell( 132404 ) )
     .cd( timespan_t::zero() )
@@ -5211,9 +5277,6 @@ void warrior_t::create_buffs()
     .default_value( artifact.neltharions_thunder.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.sephuzs_secret = new buffs::sephuzs_secret_buff_t( this );
-
-  //buff.in_for_the_kill = make_buff<haste_buff_t>( this, "in_for_the_kill", talents.in_for_the_kill -> effectN( 1 ).trigger() );
-    //buff.in_for_the_kill->set_default_value( talents.in_for_the_kill -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.in_for_the_kill = new in_for_the_kill_t( *this, "in_for_the_kill", find_spell( 248622 ) );
 
