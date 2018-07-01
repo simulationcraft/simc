@@ -561,8 +561,9 @@ public:
   struct legendary_t
   {
     const spell_data_t* sephuzs_secret;
+    const spell_data_t* smoldering_heart;
 
-    legendary_t() : sephuzs_secret( spell_data_t::not_found() )
+    legendary_t() : sephuzs_secret( spell_data_t::not_found() ), smoldering_heart( spell_data_t::not_found() )
     {
     }
   } legendary;
@@ -662,6 +663,7 @@ public:
   void trigger_earthen_rage( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
+  void trigger_smoldering_heart( double cost );
 
   // Legendary
   void trigger_eye_of_twisting_nether( const action_state_t* state );
@@ -1181,6 +1183,7 @@ public:
   void consume_resource() override
   {
     ab::consume_resource();
+    p()->trigger_smoldering_heart( ab::last_resource_cost );
   }
 
   bool consume_cost_per_tick( const dot_t& dot ) override
@@ -1189,6 +1192,7 @@ public:
 
     if ( ab::consume_per_tick_ )
     {
+      p()->trigger_smoldering_heart( ab::last_resource_cost );
     }
 
     return ret;
@@ -6930,6 +6934,54 @@ void shaman_t::trigger_sephuzs_secret( const action_state_t* state, spell_mechan
   // proc chance of 0 (disabled) will be created
 }
 
+void shaman_t::trigger_smoldering_heart( double cost )
+{
+  if ( !legendary.smoldering_heart->ok() )
+  {
+    return;
+  }
+
+  if ( cost <= 0 )
+  {
+    return;
+  }
+
+  auto sh_base_proc_chance = 0.0;
+
+  switch ( specialization() )
+  {
+    case SHAMAN_ELEMENTAL:
+      sh_base_proc_chance = legendary.smoldering_heart->effectN( 2 ).percent();
+      break;
+    case SHAMAN_ENHANCEMENT:
+      sh_base_proc_chance = legendary.smoldering_heart->effectN( 3 ).percent();
+      break;
+    default:
+      break;
+  }
+
+  sh_base_proc_chance /= 100.0;
+
+  if ( rng().roll( sh_base_proc_chance * cost ) )
+  {
+    auto duration = legendary.smoldering_heart->effectN( 1 ).time_value();
+    // Smoldering Heart spell ID: 248029
+    if ( buff.ascendance->up() )
+    {
+      buff.ascendance->extend_duration( this, duration );
+    }
+    else
+    {
+      buff.ascendance->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+
+      if ( specialization() == SHAMAN_ENHANCEMENT )
+      {
+        cooldown.strike->reset( true );
+      }
+    }
+  }
+}
+
 void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 {
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr && "Windfury Weapon called on invalid action type" );
@@ -8564,6 +8616,18 @@ struct pristine_protoscale_girdle_t : public scoped_action_callback_t<lava_burst
   }
 };
 
+struct smoldering_heart_chance_t : public unique_gear::scoped_actor_callback_t<shaman_t>
+{
+  smoldering_heart_chance_t() : super( SHAMAN )
+  {
+  }
+
+  void manipulate( shaman_t* shaman, const special_effect_t& e ) override
+  {
+    shaman->legendary.smoldering_heart = e.driver();
+  }
+};
+
 struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN )
@@ -8599,6 +8663,7 @@ struct shaman_module_t : public module_t
     register_special_effect( 207994, eotn_buff_chill_t(), true );
     register_special_effect( 214131, the_deceivers_blood_pact_t() );
     register_special_effect( 224837, pristine_protoscale_girdle_t() );
+    register_special_effect( 248029, smoldering_heart_chance_t() );
   }
 
   void register_hotfixes() const override
