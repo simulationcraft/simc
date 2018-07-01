@@ -14,6 +14,9 @@ namespace { // UNNAMED NAMESPACE
   BfA TODO:
 
   Feral =====================================================================
+  Audit abilites
+  Feral Frenzy
+  Finish Azerite Traits
 
   Balance ===================================================================
   Still need AP Coeff for Treants
@@ -232,7 +235,8 @@ public:
   struct rppms_t
   {
     // Feral
-    real_ppm_t* predator; // Optional RPPM approximation
+    real_ppm_t* predator;  // Optional RPPM approximation
+    real_ppm_t* blood_mist;  // Azerite trait
 
     // Balance
     real_ppm_t* balance_tier18_2pc;
@@ -298,12 +302,6 @@ public:
     azerite_power_t sunblaze;
 
     // Feral
-    azerite_power_t blood_mist;
-    azerite_power_t gushing_lacerations;
-    azerite_power_t iron_jaws;
-    azerite_power_t primordial_rage;
-    azerite_power_t raking_ferocity;
-    azerite_power_t shredding_fury;
     azerite_power_t wild_fleshrending;
 
     // Guardian
@@ -319,6 +317,12 @@ public:
     // Implemented
     // Balance
     // Feral
+    azerite_power_t blood_mist; //check spelldata
+    azerite_power_t gushing_lacerations; //check spelldata
+    azerite_power_t iron_jaws; //-||-
+    azerite_power_t primordial_rage; //-||-
+    azerite_power_t raking_ferocity; //-||-
+    azerite_power_t shredding_fury; //-||-
     // Guardian
 
   } azerite;
@@ -395,6 +399,12 @@ public:
     buff_t* yseras_gift;
     buff_t* harmony; // NYI
     buff_t* moonkin_form_affinity;
+
+    // Azerite
+    buff_t* shredding_fury;
+    buff_t* iron_jaws;
+    buff_t* raking_ferocity;
+
   } buff;
 
   // Cooldowns
@@ -446,6 +456,7 @@ public:
     gain_t* feral_tier17_2pc;
     gain_t* feral_tier18_4pc;
     gain_t* feral_tier19_2pc;
+    gain_t* gushing_lacerations;
 
     // Guardian (Bear)
     gain_t* bear_form;
@@ -488,6 +499,8 @@ public:
     proc_t* predator_wasted;
     proc_t* primal_fury;
     proc_t* tier17_2pc_melee;
+    proc_t* blood_mist;
+    proc_t* gushing_lacerations;
 
     // Balance
     proc_t* starshards;
@@ -2924,9 +2937,25 @@ struct ferocious_bite_t : public cat_attack_t
     excess_energy = std::min( max_excess_energy,
       ( p() -> resources.current[ RESOURCE_ENERGY ] - cat_attack_t::cost() ) );
 
+    int combo_points = p()->resources.current[RESOURCE_COMBO_POINT];
+
     cat_attack_t::execute();
 
     max_excess_energy = 1 * data().effectN( 2 ).base_value();
+
+    p()->buff.iron_jaws->trigger( 1, p()->azerite.iron_jaws.value( 1 ),
+                                  p()->azerite.iron_jaws.percent( 2 ) * combo_points );
+
+    p()->buff.raking_ferocity->expire();
+  }
+
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double da = cat_attack_t::bonus_da(s);
+
+    da += p()->buff.raking_ferocity->value();
+
+    return da;
   }
 
   void impact( action_state_t* s ) override
@@ -3150,13 +3179,26 @@ struct maim_t : public cat_attack_t
     return am;
   }
 
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double da = cat_attack_t::bonus_da( s );
+
+    if ( p()->buff.iron_jaws->up() )
+      da += p()->buff.iron_jaws->check_value() * p()->resources.current[ RESOURCE_COMBO_POINT ];
+
+    return da;
+  }
+
   void execute() override
   {
     cat_attack_t::execute();
 
-    if ( p() -> buff.fiery_red_maimers -> up() )
+    if ( p()->buff.iron_jaws->up() )
+      p()->buff.iron_jaws->expire();
+
+    if ( p()->buff.fiery_red_maimers->up() )
     {
-      p() -> buff.fiery_red_maimers -> expire();
+      p()->buff.fiery_red_maimers->expire();
     }
   }
 };
@@ -3188,6 +3230,30 @@ struct rake_t : public cat_attack_t
       if ( ! t ) return nullptr;
 
       return td( t ) -> dots.rake;
+    }
+
+    virtual double bonus_ta( const action_state_t* s ) const override
+    {
+      double ta = cat_attack_t::bonus_ta( s );
+
+      ta += p()->azerite.blood_mist.value( 2 );
+
+      return ta;
+    }
+
+    void tick( dot_t* d ) override
+    {
+      cat_attack_t::tick( d );
+
+      if ( !p()->azerite.blood_mist.ok() )
+        return;
+      if ( p()->buff.berserk->check() || p()->buff.incarnation_cat->check() )
+        return;
+      if ( !p()->rppm.blood_mist->trigger() )
+        return;
+
+      p()->proc.blood_mist->occur();
+      p()->buff.berserk->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 6 ) );
     }
   };
 
@@ -3233,14 +3299,26 @@ struct rake_t : public cat_attack_t
     b_state -> persistent_multiplier = s -> persistent_multiplier;
     bleed -> schedule_execute( b_state );
   }
+
+  void execute() override
+  {
+    cat_attack_t::execute();
+
+    if ( p()->azerite.raking_ferocity.ok() )
+    {
+      p()->buff.raking_ferocity->trigger( 1, p()->azerite.raking_ferocity.value() );
+    }
+  }
 };
 
 // Rip ======================================================================
 
 struct rip_t : public cat_attack_t
 {
-  rip_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "rip", p, p -> find_affinity_spell( "Rip" ), options_str )
+  double combo_point_on_tick_proc_rate;
+
+  rip_t( druid_t* p, const std::string& options_str )
+    : cat_attack_t( "rip", p, p->find_affinity_spell( "Rip" ), options_str )
   {
     special      = true;
     may_crit     = false;
@@ -3264,6 +3342,12 @@ struct rip_t : public cat_attack_t
        energize_resource = RESOURCE_ENERGY;
        energize_type = ENERGIZE_PER_TICK;
     }
+
+    combo_point_on_tick_proc_rate = 0.0;
+    if ( p->azerite.gushing_lacerations.ok() )
+    {
+      combo_point_on_tick_proc_rate = p->find_spell( 279468 )->proc_chance();
+    }
   }
 
   action_state_t* new_state() override
@@ -3281,6 +3365,24 @@ struct rip_t : public cat_attack_t
     return cat_attack_t::attack_tick_power_coefficient( s ) * rip_state -> combo_points;
   }
 
+  virtual double bonus_ta( const action_state_t* s ) const override
+  {
+    rip_state_t* rip_state = (rip_state_t*)td( s->target )->dots.rip->state;
+
+    if ( !rip_state )
+      return cat_attack_t::bonus_ta( s );
+
+    double ta = cat_attack_t::bonus_ta( s );
+    ta += p()->azerite.gushing_lacerations.value( 2 ) * rip_state->combo_points;
+
+    if ( p()->buff.berserk->up() || p()->buff.incarnation_cat->up() )
+    {
+      ta += p()->azerite.primordial_rage.value();
+    }
+
+    return ta;
+  }
+
   void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
@@ -3295,6 +3397,11 @@ struct rip_t : public cat_attack_t
      trigger_bloody_gash(d->target, d->state->result_total);
      p() -> buff.apex_predator -> trigger();
 
+    if ( p()->rng().roll( combo_point_on_tick_proc_rate ) )
+    {
+      p()->resource_gain( RESOURCE_COMBO_POINT, 1, p()->gain.gushing_lacerations );
+      p()->proc.gushing_lacerations->occur();
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -3403,6 +3510,24 @@ struct shred_t : public cat_attack_t
 
     if ( s -> result == RESULT_CRIT && p() -> sets -> has_set_bonus( DRUID_FERAL, PVP, B4 ) )
       td( s -> target ) -> debuff.bloodletting -> trigger(); // Druid module debuff
+  }
+
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double b = cat_attack_t::bonus_da( s );
+
+    if ( td( s->target )->dots.thrash_cat->is_ticking() )
+    {
+      b += p()->azerite.wild_fleshrending.value( 1 );
+    }
+
+    if ( p()->buff.shredding_fury->up() )
+    {
+      b += p()->buff.shredding_fury->value();
+      p()->buff.shredding_fury->decrement();
+    }
+
+    return b;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
@@ -3533,6 +3658,8 @@ struct tigers_fury_t : public cat_attack_t
        p() -> buff.tigers_fury -> trigger(1, buff_t::DEFAULT_VALUE(), 1.0, duration);
     }
 
+    if ( p()->azerite.shredding_fury.ok() )
+      p()->buff.shredding_fury->trigger( p()->buff.shredding_fury->max_stack() );
   }
 };
 
@@ -6475,11 +6602,19 @@ void druid_t::create_buffs()
                                                ? talent.moment_of_clarity -> effectN( 4 ).percent()
                                                : 0.0 );
 
-  buff.dash                  = buff_creator_t( this, "dash", find_class_spell( "Dash" ) )
-                               .cd( timespan_t::zero() )
-                               .default_value( find_class_spell( "Dash" ) -> effectN( 1 ).percent() );
+  buff.dash = buff_creator_t( this, "dash", find_class_spell( "Dash" ) )
+                  .cd( timespan_t::zero() )
+                  .default_value( find_class_spell( "Dash" )->effectN( 1 ).percent() );
 
-  buff.prowl                 = buff_creator_t( this, "prowl", find_class_spell( "Prowl" ) );
+  buff.prowl = buff_creator_t( this, "prowl", find_class_spell( "Prowl" ) );
+
+  // Azerite
+  buff.shredding_fury =
+      buff_creator_t( this, "shredding_fury", find_spell( 274426 ) ).default_value( azerite.shredding_fury.value() );
+
+  buff.iron_jaws = buff_creator_t( this, "iron_jaws", find_spell( 276026 ) ).duration( timespan_t::from_seconds( 30 ) );
+
+  buff.raking_ferocity = buff_creator_t( this, "raking_ferocity", find_spell( 273340 ) );
 
   // Talent buffs
 
@@ -7429,8 +7564,9 @@ void druid_t::init_resources( bool force )
 void druid_t::init_rng()
 {
   // RPPM objects
-  rppm.balance_tier18_2pc = get_rppm( "balance_tier18_2pc", sets -> set( DRUID_BALANCE, T18, B2 ) );
-  rppm.predator           = get_rppm( "predator", predator_rppm_rate ); // Predator: optional RPPM approximation.
+  rppm.balance_tier18_2pc = get_rppm( "balance_tier18_2pc", sets->set( DRUID_BALANCE, T18, B2 ) );
+  rppm.predator           = get_rppm( "predator", predator_rppm_rate );  // Predator: optional RPPM approximation.
+  rppm.blood_mist         = get_rppm( "blood_mist", azerite.blood_mist.spell()->real_ppm() );
 
   player_t::init_rng();
 }
