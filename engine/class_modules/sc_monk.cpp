@@ -2377,6 +2377,9 @@ public:
 
   virtual void impact( action_state_t* s ) override
   {
+    if ( s -> action -> school == SCHOOL_PHYSICAL )
+      p() -> debuffs.mystic_touch -> trigger();
+
     if ( td( s -> target ) -> dots.touch_of_death -> is_ticking() && s -> action -> name_str != "touch_of_death_amplifier" )
     {
       if ( s -> action -> harmful )
@@ -2402,9 +2405,6 @@ public:
         }
       }
     }
-
-    if ( s -> action -> school == SCHOOL_PHYSICAL )
-      p() -> debuffs.mystic_touch -> trigger();
 
     ab::impact( s );
   }
