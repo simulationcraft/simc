@@ -347,6 +347,9 @@ public:
 
     // Legendary Buffs
     buff_t* echoes_of_the_great_sundering;
+    buff_t* eotn_fire;
+    buff_t* eotn_shock;
+    buff_t* eotn_chill;
 
     // Enhancement
     buff_t* crash_lightning;
@@ -653,6 +656,9 @@ public:
   void trigger_earthen_rage( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
+
+  // Legendary
+  void trigger_eye_of_twisting_nether( const action_state_t* state );
 
   // Character Definition
   void init_spells() override;
@@ -1115,6 +1121,15 @@ public:
     ab::execute();
 
     trigger_maelstrom_gain( ab::execute_state );
+
+    p()->trigger_eye_of_twisting_nether( ab::execute_state );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    ab::tick( d );
+
+    p()->trigger_eye_of_twisting_nether( d->state );
   }
 
   void impact( action_state_t* state ) override
@@ -2016,6 +2031,20 @@ struct wolf_base_attack_t : public pet_melee_attack_t<T>
     : pet_melee_attack_t<T>( wolf, n, spell )
   {
     this->parse_options( options_str );
+  }
+
+  void execute() override
+  {
+    pet_melee_attack_t<T>::execute();
+
+    this->p()->o()->trigger_eye_of_twisting_nether( this->execute_state );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    pet_melee_attack_t<T>::tick( d );
+
+    this->p()->o()->trigger_eye_of_twisting_nether( d->state );
   }
 };
 
@@ -6824,6 +6853,29 @@ void shaman_t::trigger_earthen_rage( const action_state_t* state )
   action.earthen_rage->schedule_execute();
 }
 
+void shaman_t::trigger_eye_of_twisting_nether( const action_state_t* state )
+{
+  if ( state->action->harmful && state->result_amount > 0 )
+  {
+    auto school = state->action->get_school();
+
+    if ( dbc::is_school( school, SCHOOL_FIRE ) )
+    {
+      buff.eotn_fire->trigger();
+    }
+
+    if ( dbc::is_school( school, SCHOOL_NATURE ) )
+    {
+      buff.eotn_shock->trigger();
+    }
+
+    if ( dbc::is_school( school, SCHOOL_FROST ) )
+    {
+      buff.eotn_chill->trigger();
+    }
+  }
+}
+
 void shaman_t::trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic,
                                        double override_proc_chance )
 {
@@ -7850,6 +7902,10 @@ double shaman_t::composite_player_multiplier( school_e school ) const
     }
   }
 
+  m *= 1.0 + buff.eotn_fire->stack_value();
+  m *= 1.0 + buff.eotn_shock->stack_value();
+  m *= 1.0 + buff.eotn_chill->stack_value();
+
   return m;
 }
 
@@ -8393,6 +8449,59 @@ struct echoes_of_the_great_sundering_buff_t : public class_buff_cb_t<buff_t>
   }
 };
 
+struct eotn_buff_base_t : public class_buff_cb_t<buff_t>
+{
+  unsigned sid;
+
+  eotn_buff_base_t( const std::string& name_str, unsigned spell_id ) : super( SHAMAN, name_str ), sid( spell_id )
+  {
+  }
+
+  buff_t* creator( const special_effect_t& e ) const override
+  {
+    return make_buff( e.player, buff_name, e.player->find_spell( sid ) )
+        ->set_default_value( e.player->find_spell( sid )->effectN( 1 ).percent() * ( .1 ) )
+        ->set_duration( e.player->find_spell( sid )->duration() )
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+};
+
+struct eotn_buff_fire_t : public eotn_buff_base_t
+{
+  eotn_buff_fire_t() : eotn_buff_base_t( "fire_of_the_twisting_nether", 207995 )
+  {
+  }
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  {
+    return debug_cast<shaman_t*>( e.player )->buff.eotn_fire;
+  }
+};
+
+struct eotn_buff_shock_t : public eotn_buff_base_t
+{
+  eotn_buff_shock_t() : eotn_buff_base_t( "shock_of_the_twisting_nether", 207999 )
+  {
+  }
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  {
+    return debug_cast<shaman_t*>( e.player )->buff.eotn_shock;
+  }
+};
+
+struct eotn_buff_chill_t : public eotn_buff_base_t
+{
+  eotn_buff_chill_t() : eotn_buff_base_t( "chill_of_the_twisting_nether", 207998 )
+  {
+  }
+
+  buff_t*& buff_ptr( const special_effect_t& e ) override
+  {
+    return debug_cast<shaman_t*>( e.player )->buff.eotn_chill;
+  }
+};
+
 struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN )
@@ -8423,6 +8532,9 @@ struct shaman_module_t : public module_t
   {
     register_special_effect( 208722, echoes_of_the_great_sundering_t() );
     register_special_effect( 208722, echoes_of_the_great_sundering_buff_t(), true );
+    register_special_effect( 207994, eotn_buff_fire_t(), true );
+    register_special_effect( 207994, eotn_buff_shock_t(), true );
+    register_special_effect( 207994, eotn_buff_chill_t(), true );
   }
 
   void register_hotfixes() const override
