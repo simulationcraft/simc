@@ -76,7 +76,6 @@ namespace warlock
       propagate_const<dot_t*> dots_vile_taint;
 
       propagate_const<buff_t*> debuffs_haunt;
-      propagate_const<buff_t*> debuffs_agony;
       propagate_const<buff_t*> debuffs_shadow_embrace;
       propagate_const<buff_t*> debuffs_tormented_agony;
 

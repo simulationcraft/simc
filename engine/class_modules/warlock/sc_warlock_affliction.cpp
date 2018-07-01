@@ -100,7 +100,6 @@ namespace warlock
         parse_options( options_str );
         may_crit = false;
         affected_by_deaths_embrace = true;
-        base_tick_time = p->find_spell(980)->effectN(1).period();
         wb = new wracking_brilliance_t();
       }
 
