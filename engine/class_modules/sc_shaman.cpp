@@ -4218,7 +4218,7 @@ struct chained_overload_base_t : public elemental_overload_spell_t
 
     if ( data().affected_by( p->spec.chain_lightning_2->effectN( 1 ) ) )
     {
-      aoe += p->spec.chain_lightning_2->effectN( 1 ).base_value();
+      aoe += (int)p->spec.chain_lightning_2->effectN( 1 ).base_value();
     }
   }
 
@@ -4279,7 +4279,7 @@ struct chained_base_t : public shaman_spell_t
 
     if ( data().affected_by( player->spec.chain_lightning_2->effectN( 1 ) ) )
     {
-      aoe += player->spec.chain_lightning_2->effectN( 1 ).base_value();
+      aoe += (int)player->spec.chain_lightning_2->effectN( 1 ).base_value();
     }
   }
 
@@ -4625,7 +4625,7 @@ struct lava_burst_t : public shaman_spell_t
     // Elemental and Restoration gain a second Lava Burst charge via Echo of the Elements
     if ( p()->talent.echo_of_the_elements->ok() )
     {
-      cooldown->charges = data().charges() + p()->talent.echo_of_the_elements->effectN( 2 ).base_value();
+      cooldown->charges = (int)data().charges() + (int)p()->talent.echo_of_the_elements->effectN( 2 ).base_value();
     }
   }
 
@@ -6068,7 +6068,7 @@ struct capacitor_totem_pulse_t : public totem_pulse_action_t
     {
       // This implementation assumes that every hit target counts. Ingame boss dummy testing showed that only
       // stunned targets count. TODO: check every hit target for whether it is stunned, or not.
-      int cd_reduction = num_targets_hit * ( totem->o()->talent.static_charge->effectN( 1 ).base_value() );
+      int cd_reduction = (int)( num_targets_hit * ( totem->o()->talent.static_charge->effectN( 1 ).base_value() ) );
       cd_reduction = -std::min( cd_reduction, as<int>( totem->o()->talent.static_charge->effectN( 2 ).base_value() ) );
       totem_cooldown->adjust( timespan_t::from_seconds( cd_reduction ) );
     }
@@ -8631,6 +8631,22 @@ struct smoldering_heart_chance_t : public unique_gear::scoped_actor_callback_t<s
   }
 };
 
+struct uncertain_reminder_t : public scoped_actor_callback_t<shaman_t>
+{
+  uncertain_reminder_t() : scoped_actor_callback_t( SHAMAN )
+  {
+  }
+
+  void manipulate( shaman_t* shaman, const special_effect_t& e ) override
+  {
+    auto buff = buff_t::find( shaman, "bloodlust" );
+    if ( buff )
+    {
+      buff->buff_duration += timespan_t::from_seconds( e.driver()->effectN( 1 ).base_value() );
+    }
+  }
+};
+
 struct shaman_module_t : public module_t
 {
   shaman_module_t() : module_t( SHAMAN )
@@ -8667,6 +8683,7 @@ struct shaman_module_t : public module_t
     register_special_effect( 214131, the_deceivers_blood_pact_t() );
     register_special_effect( 224837, pristine_protoscale_girdle_t() );
     register_special_effect( 248029, smoldering_heart_chance_t() );
+    register_special_effect( 234814, uncertain_reminder_t() );
   }
 
   void register_hotfixes() const override
