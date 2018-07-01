@@ -2089,11 +2089,6 @@ struct moonfire_t : public druid_spell_t
 
       trigger_balance_tier18_2pc();
 
-      if (p()->rng().roll(p()->find_spell(273389)->proc_chance()) && p()->azerite.power_of_the_moon.ok())
-      {
-        p()->buff.lunar_empowerment->trigger();
-      }
-
     }
 
     void impact ( action_state_t* s ) override
@@ -2177,6 +2172,10 @@ struct moonfire_t : public druid_spell_t
 
     void execute() override
     {
+      if (p()->rng().roll(p()->find_spell(273389)->proc_chance()) && p()->azerite.power_of_the_moon.ok())
+      {
+        p()->buff.lunar_empowerment->trigger();
+      }
       // Force invalidate target cache so that it will impact on the correct targets.
       target_cache.is_valid = false;
 
