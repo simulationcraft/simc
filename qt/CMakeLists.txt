@@ -1,28 +1,25 @@
 # SimulationCraft GUI
 
+# qt5 detection
 # brew does not link qt5 into PATH. Therefore we need to import it
 if(APPLE)
 list(APPEND CMAKE_PREFIX_PATH /usr/local/opt/qt5)
 endif()
-
 find_package(Qt5Core CONFIG REQUIRED)
 find_package(Qt5Gui CONFIG REQUIRED)
 find_package(Qt5WebEngine CONFIG REQUIRED)
 find_package(Qt5WebEngineWidgets CONFIG REQUIRED)
-
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-# Add all .cpp files recursively
-# Also add .hpp files for correct auto-moc
-file(GLOB_RECURSE gui_source *.cpp *.hpp)
 
 # Resource files
 FILE(COPY ../Welcome.png DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 FILE(COPY ../Welcome.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
 
-add_executable(SimulationCraft ${gui_source})
+# gui executeable
+include(../source_files/cmake_gui.txt)
+add_executable(SimulationCraft ${source_files})
 target_compile_definitions(SimulationCraft PUBLIC SC_USE_WEBENGINE)
-target_link_libraries(SimulationCraft engine Qt5::Core Qt5::Gui Qt5::WebEngine Qt5::WebEngineWidgets)
 target_include_directories(SimulationCraft PUBLIC ../engine/)
+target_link_libraries(SimulationCraft engine Qt5::Core Qt5::Gui Qt5::WebEngine Qt5::WebEngineWidgets)

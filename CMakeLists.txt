@@ -27,5 +27,7 @@ else()
 endif()
 
 # 'simc' command line interface target
-add_executable(simc engine/sc_main.cpp)
+include(source_files/cmake_engine_main.txt)
+string(REGEX REPLACE "([^;]+)" "engine/\\1" source_files "${source_files}")
+add_executable(simc ${source_files})
 target_link_libraries(simc engine)
