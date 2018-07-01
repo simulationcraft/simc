@@ -322,13 +322,13 @@ public:
 
     // Tier 90 Talents
     // Brewmaster
-    const spell_data_t* rushing_jade_wind_brm;
     const spell_data_t* special_delivery;
     const spell_data_t* invoke_niuzao;
     // Windwalker
     const spell_data_t* hit_combo;
-    const spell_data_t* rushing_jade_wind_ww;
     const spell_data_t* invoke_xuen;
+    // Brewmaster & Windwalker
+    const spell_data_t* rushing_jade_wind;
     // Mistweaver
     const spell_data_t* summon_jade_serpent_statue;
     const spell_data_t* refreshing_jade_wind;
@@ -1348,7 +1348,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
   struct sef_rushing_jade_wind_t : public sef_melee_attack_t
   {
     sef_rushing_jade_wind_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "rushing_jade_wind", player, player -> o() -> talent.rushing_jade_wind_ww )
+      sef_melee_attack_t( "rushing_jade_wind", player, player -> o() -> talent.rushing_jade_wind )
     {
       tick_zero = hasted_ticks = true;
 
@@ -1357,7 +1357,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
       weapon_power_mod = 0;
 
       tick_action = new sef_tick_action_t( "rushing_jade_wind_tick", player,
-          player -> o() -> talent.rushing_jade_wind_ww -> effectN( 1 ).trigger() );
+          player -> o() -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
     }
   };
 
@@ -3269,9 +3269,9 @@ struct tick_action_t : public monk_melee_attack_t
 struct rushing_jade_wind_t : public monk_melee_attack_t
 {
   rushing_jade_wind_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "rushing_jade_wind", p, p -> specialization() == MONK_BREWMASTER ? p -> talent.rushing_jade_wind_brm : p -> talent.rushing_jade_wind_ww )
+    monk_melee_attack_t( "rushing_jade_wind", p, p -> talent.rushing_jade_wind )
   {
-    sef_ability = SEF_RUSHING_JADE_WIND;
+    //sef_ability = SEF_RUSHING_JADE_WIND;
 
     parse_options( options_str );
 
@@ -3279,24 +3279,20 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     tick_zero = hasted_ticks = true;
 
     spell_power_mod.direct = 0.0;
-    if ( p -> specialization() == MONK_BREWMASTER )
-      cooldown -> duration = p -> talent.rushing_jade_wind_brm -> cooldown();
-    else
-      cooldown -> duration = p -> talent.rushing_jade_wind_ww -> cooldown();
+    cooldown -> duration = p -> talent.rushing_jade_wind -> cooldown();
     cooldown -> hasted = true;
     
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd = timespan_t::from_millis( 750 );
     gcd_haste = HASTE_ATTACK;
 
-    dot_duration *= 1 + p -> spec.brewmaster_monk -> effectN( 12 ).percent();
-    dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
-
     if ( p -> specialization() == MONK_BREWMASTER )
-      tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind_brm -> effectN( 1 ).trigger() );
-    else
-      tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind_ww -> effectN( 1 ).trigger() );
-    
+    {
+      dot_duration *= 1 + p -> spec.brewmaster_monk -> effectN( 12 ).percent();
+      dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
+    }
+
+    tick_action = new tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
   }
 
   void init() override
@@ -3309,7 +3305,10 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   // N full ticks, but never additional ones.
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    return dot_duration * ( tick_time( s ) / base_tick_time );
+    if ( p() -> specialization() == MONK_BREWMASTER )
+      return dot_duration * ( tick_time( s ) / base_tick_time );
+    else
+      return sim -> expected_iteration_time * 2;
   }
 
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
@@ -3343,14 +3342,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
       am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
 
     return am;
-  }
-
-  virtual void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    if ( p() -> buff.serenity -> up() )
-      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
   }
 
   void execute() override
@@ -6732,13 +6723,13 @@ void monk_t::init_spells()
 
   // Tier 90 Talents
   // Brewmaster
-  talent.rushing_jade_wind_brm       = find_spell( 116847 );
   talent.special_delivery            = find_talent_spell( "Special Delivery" );
   talent.invoke_niuzao               = find_talent_spell( "Invoke Niuzao, the Black Ox" );
   // Windwalker
   talent.hit_combo                   = find_talent_spell( "Hit Combo" );
-  talent.rushing_jade_wind_ww        = find_spell( 261715 );
   talent.invoke_xuen                 = find_talent_spell( "Invoke Xuen, the White Tiger" );
+  // Brewmaster & Windwalker
+  talent.rushing_jade_wind           = find_talent_spell( "Rushing Jade Wind" );
   // Mistweaver
   talent.summon_jade_serpent_statue  = find_talent_spell( "Summon Jade Serpent Statue" );
   talent.refreshing_jade_wind        = find_talent_spell( "Refreshing Jade Wind" );
@@ -7021,9 +7012,9 @@ void monk_t::create_buffs()
 
   buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", find_spell( 120954 ) );
 
-  buff.rushing_jade_wind = make_buff( this, "rushing_jade_wind", talent.rushing_jade_wind_brm )
+  buff.rushing_jade_wind = make_buff( this, "rushing_jade_wind", talent.rushing_jade_wind )
                            -> set_cooldown( timespan_t::zero() )
-                           -> set_duration( talent.rushing_jade_wind_brm -> duration() * ( 1 + spec.brewmaster_monk -> effectN( 11 ).percent() ) )
+                           -> set_duration( talent.rushing_jade_wind -> duration() * ( 1 + spec.brewmaster_monk -> effectN( 11 ).percent() ) )
                            -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.dampen_harm = make_buff( this, "dampen_harm", talent.dampen_harm );
