@@ -1733,14 +1733,15 @@ inline Event* make_event( sim_t& sim, Args&&... args )
   return r;
 }
 
-inline event_t* make_event( sim_t& s, const timespan_t& t, const std::function<void(void)>& f )
+template <typename T>
+inline event_t* make_event( sim_t& s, const timespan_t& t, const T& f )
 {
   class fn_event_t : public event_t
   {
-    std::function<void(void)> fn;
+    T fn;
 
     public:
-      fn_event_t( sim_t& s, const timespan_t& t, const std::function<void(void)>& f ) :
+      fn_event_t( sim_t& s, const timespan_t& t, const T& f ) :
         event_t( s, t ), fn( f )
       { }
 
@@ -1754,16 +1755,17 @@ inline event_t* make_event( sim_t& s, const timespan_t& t, const std::function<v
   return make_event<fn_event_t>( s, s, t, f );
 }
 
-inline event_t* make_repeating_event( sim_t& s, const timespan_t& t, const std::function<void(void)>& f, int n = -1 )
+template <typename T>
+inline event_t* make_repeating_event( sim_t& s, const timespan_t& t, const T& fn, int n = -1 )
 {
   class fn_event_repeating_t : public event_t
   {
-    std::function<void(void)> fn;
+    T fn;
     timespan_t time;
     int n;
 
     public:
-      fn_event_repeating_t( sim_t& s, const timespan_t& t, const std::function<void(void)>& f, int n ) :
+      fn_event_repeating_t( sim_t& s, const timespan_t& t, const T& f, int n ) :
         event_t( s, t ), fn( f ), time( t ), n( n )
       { }
 
@@ -1780,19 +1782,23 @@ inline event_t* make_repeating_event( sim_t& s, const timespan_t& t, const std::
       }
   };
 
-  return make_event<fn_event_repeating_t>( s, s, t, f, n );
+  return make_event<fn_event_repeating_t>( s, s, t, fn, n );
 }
 
-inline event_t* make_event( sim_t* s, const timespan_t& t, const std::function<void(void)>& f )
+template <typename T>
+inline event_t* make_event( sim_t* s, const timespan_t& t, const T& f )
 { return make_event( *s, t, f ); }
 
-inline event_t* make_event( sim_t* s, const std::function<void(void)>& f )
+template <typename T>
+inline event_t* make_event( sim_t* s, const T& f )
 { return make_event( *s, timespan_t::zero(), f ); }
 
-inline event_t* make_event( sim_t& s, const std::function<void(void)>& f )
+template <typename T>
+inline event_t* make_event( sim_t& s, const T& f )
 { return make_event( s, timespan_t::zero(), f ); }
 
-inline event_t* make_repeating_event( sim_t* s, const timespan_t& t, const std::function<void(void)>& f, int n = -1 )
+template <typename T>
+inline event_t* make_repeating_event( sim_t* s, const timespan_t& t, const T& f, int n = -1 )
 { return make_repeating_event( *s, t, f, n ); }
 
 // Gear Rating Conversions ==================================================
