@@ -1584,7 +1584,8 @@ void action_t::execute()
     if ( execute_state && execute_action && result_is_hit( execute_state->result ) )
     {
       assert( !execute_action->pre_execute_state );
-      execute_action->schedule_execute( execute_action->get_state( execute_state ) );
+      execute_action->set_target( execute_state->target );
+      execute_action->execute();
     }
 
     // Proc generic abilities on execute.
@@ -3455,18 +3456,6 @@ void action_t::snapshot_internal( action_state_t* state, unsigned flags, dmg_e r
     state->target_armor = target_armor( state->target );
 }
 
-void action_t::consolidate_snapshot_flags()
-{
-  if ( execute_action )
-    execute_action->consolidate_snapshot_flags();
-  if ( impact_action )
-    impact_action->consolidate_snapshot_flags();
-  if ( execute_action )
-    snapshot_flags |= execute_action->snapshot_flags;
-  if ( impact_action )
-    snapshot_flags |= impact_action->snapshot_flags;
-}
-
 timespan_t action_t::composite_dot_duration( const action_state_t* s ) const
 {
   if ( channeled )
@@ -3536,14 +3525,7 @@ void action_t::impact( action_state_t* s )
     if ( impact_action )
     {
       assert( !impact_action->pre_execute_state );
-
-      // If the action has no travel time, we can reuse the snapshoted state,
-      // otherwise let impact_action resnapshot modifiers
-      if ( time_to_travel == timespan_t::zero() )
-        impact_action->pre_execute_state = impact_action->get_state( s );
-
-      assert( impact_action->background );
-      impact_action->target = s->target;
+      impact_action->set_target( s->target );
       impact_action->execute();
     }
   }

@@ -2400,8 +2400,6 @@ bool player_t::init_actions()
     action_list[ i ] -> init();
   }
 
-  range::for_each( action_list, []( action_t* a ) { a->consolidate_snapshot_flags(); } );
-
   bool have_off_gcd_actions = false;
   for ( auto action : action_list )
   {
