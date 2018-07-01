@@ -6604,35 +6604,18 @@ void death_knight_t::start_inexorable_assault()
 
   buffs.inexorable_assault -> trigger( buffs.inexorable_assault -> max_stack() );
 
-  struct inexorable_assault_tick_t : public event_t
-  {
-    timespan_t delay;
-    buff_t* buff;
-
-    // Constructor for first event where the delay is randomized
-    inexorable_assault_tick_t( buff_t* b, const timespan_t& d, const timespan_t& first ) :
-      event_t( *b -> sim, first ), delay( d ), buff( b )
-    { }
-
-    // Constructor for the following events
-    inexorable_assault_tick_t( buff_t* b, const timespan_t& d ) :
-      event_t( *b -> sim, d ), delay( d ), buff( b )
-    { }
-
-    void execute() override
-    {
-      buff -> trigger();
-      make_event<inexorable_assault_tick_t>( sim(), buff, delay );
-    }
-  };
-
   // Inexorable assault keeps ticking out of combat and when it's at max stacks
   // We solvee that by chosing a random number between 0 and the delay between each tick
 
   timespan_t first = timespan_t::from_seconds(
     rng().range( 0, talent.inexorable_assault -> effectN( 1 ).period().total_seconds() ) );
 
-  make_event<inexorable_assault_tick_t>( *sim, buffs.inexorable_assault, talent.inexorable_assault->effectN( 1 ).period(), first );
+  make_event( *sim, first, [ this ]() {
+    buffs.inexorable_assault -> trigger();
+    make_repeating_event( *sim, talent.inexorable_assault -> effectN( 1 ).period(), [ this ]() {
+      buffs.inexorable_assault -> trigger();
+    } );
+  } );
 }
 
 // Launches the repeting event for the cold heart talent
