@@ -22,7 +22,6 @@ namespace { // UNNAMED NAMESPACE
   Still need AP Coeff for Treants
   Azerite traits:
   Streaking Stars
-  High Noon
   Double Check Azerite implementation
 
   Guardian ==================================================================
@@ -297,7 +296,6 @@ public:
   struct azerite_t
   {  // Not yet implemented
      // Balance
-    azerite_power_t high_noon;
     azerite_power_t lively_spirit; //how to even implement
     azerite_power_t long_night; //seems to be removed
     azerite_power_t streaking_stars;
@@ -321,6 +319,7 @@ public:
     azerite_power_t lunar_sharpnel;
     azerite_power_t power_of_the_moon;
     azerite_power_t sunblaze;
+    azerite_power_t high_noon;
     // Feral
     azerite_power_t blood_mist; //check spelldata
     azerite_power_t gushing_lacerations; //check spelldata
@@ -5364,6 +5363,18 @@ struct sunfire_t : public druid_spell_t
       trigger_shooting_stars( d -> state );
 
       trigger_balance_tier18_2pc();
+    }
+
+    double bonus_da(const action_state_t* s) const override
+    {
+      double da = druid_spell_t::bonus_da(s);
+
+      if (p()->azerite.high_noon.ok())
+      {
+        da += p()->azerite.high_noon.value(2);
+      }
+
+      return da;
     }
   };
 
