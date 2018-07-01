@@ -6293,7 +6293,7 @@ void shaman_t::create_pets()
 {
   if ( talent.primal_elementalist->ok() )
   {
-    if ( find_action( "fire_elemental" ) )
+    if ( find_action( "fire_elemental" ) && !talent.storm_elemental->ok() )
     {
       pet.pet_fire_elemental = create_pet( "primal_fire_elemental" );
     }
@@ -6310,7 +6310,7 @@ void shaman_t::create_pets()
   }
   else
   {
-    if ( find_action( "fire_elemental" ) )
+    if ( find_action( "fire_elemental" ) && !talent.storm_elemental->ok() )
     {
       for ( size_t i = 0; i < pet.guardian_fire_elemental.size(); ++i )
       {
