@@ -3,75 +3,6 @@
 
 namespace warlock
 {
-  namespace pets
-  {
-    namespace darkglare
-    {
-      struct dark_glare_t : public warlock_pet_spell_t
-      {
-        dark_glare_t(warlock_pet_t* p) : warlock_pet_spell_t("dark_glare", p, p -> find_spell(205231))
-        {
-          
-        }
-
-        double action_multiplier() const override
-        {
-          double m = warlock_pet_spell_t::action_multiplier();
-
-          double dots = 0.0;
-
-          //p()->o()->get_active_dots(agony_action_id);
-
-          for (const auto target : sim->target_non_sleeping_list)
-          {
-            auto td = find_td(target);
-            if (!td)
-              continue;
-
-            if (td->dots_agony->is_ticking())
-              dots += 1.0;
-            if (td->dots_corruption->is_ticking())
-              dots += 1.0;
-            if (td->dots_siphon_life->is_ticking())
-              dots += 1.0;
-            if (td->dots_phantom_singularity->is_ticking())
-              dots += 1.0;
-            if (td->dots_vile_taint->is_ticking())
-              dots += 1.0;
-            for (auto& current_ua : td->dots_unstable_affliction)
-            {
-              if (current_ua->is_ticking())
-                dots += 1.0;
-            }
-          }
-
-          m *= 1.0 + (dots * p()->o()->spec.summon_darkglare->effectN(3).percent());
-
-          return m;
-        }
-      };
-
-      darkglare_t::darkglare_t(sim_t* sim, warlock_t* owner, const std::string& name) : 
-        warlock_pet_t(sim, owner, name, PET_DARKGLARE, name != "darkglare")
-      {
-        action_list_str += "dark_glare";
-      }
-
-      double darkglare_t::composite_player_multiplier(school_e school) const
-      {
-        double m = warlock_pet_t::composite_player_multiplier(school);
-        return m;
-      }
-
-      action_t* darkglare_t::create_action(const std::string& name, const std::string& options_str)
-      {
-        if (name == "dark_glare") return new dark_glare_t(this);
-
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
-  }
-
   namespace actions_affliction
   {
     using namespace actions;
@@ -162,13 +93,14 @@ namespace warlock
       wracking_brilliance_t* wb;
 
       agony_t( warlock_t* p, const std::string& options_str ) :
-        warlock_spell_t( p, "Agony" ),
+        warlock_spell_t( p, "Agony"),
         agony_action_id( 0 ),
         agony_max_stacks( 0 )
       {
         parse_options( options_str );
         may_crit = false;
         affected_by_deaths_embrace = true;
+        base_tick_time = p->find_spell(980)->effectN(1).period();
         wb = new wracking_brilliance_t();
       }
 
@@ -182,22 +114,8 @@ namespace warlock
         return m;
       }
 
-      double composite_target_multiplier( player_t* target ) const override
-      {
-        double m = warlock_spell_t::composite_target_multiplier( target );
-
-        if (auto td = find_td( target ) )
-        {
-          m *= td->debuffs_agony->check();
-        }
-
-        return m;
-      }
-
       void last_tick( dot_t* d ) override
       {
-        td( d->state->target )->debuffs_agony->expire();
-
         if ( p()->get_active_dots( internal_id ) == 1 )
           p()->agony_accumulator = rng().range( 0.0, 0.99 );
 
@@ -216,11 +134,9 @@ namespace warlock
       {
         warlock_spell_t::execute();
 
-        td( execute_state->target )->debuffs_agony->trigger();
-
-        if (p()->azerite.sudden_onset.ok() && td(execute_state->target)->debuffs_agony->check() < (int)p()->azerite.sudden_onset.spell_ref().effectN(2).base_value())
+        if (p()->azerite.sudden_onset.ok() && td(execute_state->target)->dots_agony->current_stack() < (int)p()->azerite.sudden_onset.spell_ref().effectN(2).base_value())
         {
-          td(execute_state->target)->debuffs_agony->trigger((int)p()->azerite.sudden_onset.spell_ref().effectN(2).base_value() - td(execute_state->target)->debuffs_agony->check());
+          td(execute_state->target)->dots_agony->increment((int)p()->azerite.sudden_onset.spell_ref().effectN(2).base_value() - td(execute_state->target)->dots_agony->current_stack());
         }
       }
 
@@ -233,7 +149,7 @@ namespace warlock
 
       void tick( dot_t* d ) override
       {
-        td( d->state->target )->debuffs_agony->trigger(1);
+        td(d->state->target)->dots_agony->increment(1);
 
         double tier_bonus = 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T19, B4 )->effectN( 1 ).percent();
         double active_agonies = p()->get_active_dots( internal_id );
@@ -1007,15 +923,6 @@ namespace warlock
   {
     using namespace buffs;
 
-    struct debuff_agony_t : public warlock_buff_t < buff_t >
-    {
-      debuff_agony_t( warlock_td_t& p ) : base_t( p, "agony", p.source -> find_spell( 980 ) ) { }
-
-      void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-      {
-        base_t::expire_override( expiration_stacks, remaining_duration );
-      }
-    };
   } // end buffs namespace
 
   // add actions

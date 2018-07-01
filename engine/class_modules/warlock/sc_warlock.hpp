@@ -594,6 +594,10 @@ namespace warlock
       void create_apl_destruction();
       void legendaries_destruction();
 
+      // sc_warlock_pets
+      pet_t* create_main_pet(const std::string& pet_name, const std::string& options_str);
+      //void create_all_pets();
+
     private:
       void apl_precombat();
       void apl_default();
@@ -894,55 +898,6 @@ namespace warlock
         }
       };
 
-      namespace felhunter
-      {
-        struct felhunter_pet_t : public warlock_pet_t
-        {
-          felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felhunter" );
-
-          virtual void init_base_stats() override;
-
-          virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
-        };
-      }
-      namespace imp
-      {
-        struct imp_pet_t : public warlock_pet_t
-        {
-          imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "imp" );
-
-          virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
-        };
-      }
-      namespace succubus
-      {
-        struct succubus_pet_t : public warlock_pet_t
-        {
-          succubus_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "succubus" );
-          virtual void init_base_stats() override;
-          virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
-        };
-      }
-      namespace voidwalker
-      {
-        struct voidwalker_pet_t : public warlock_pet_t
-        {
-          voidwalker_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "voidwalker" );
-          virtual void init_base_stats() override;
-          virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
-        };
-      }
-      namespace felguard
-      {
-        struct felguard_pet_t : public warlock_pet_t
-        {
-          felguard_pet_t( sim_t* sim, warlock_t* owner, const std::string& name = "felguard" );
-          virtual void init_base_stats() override;
-          virtual double composite_player_multiplier(school_e school) const override;
-          virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
-          bool create_actions() override;
-        };
-      }
       namespace dreadstalker
       {
         struct dreadstalker_t : public warlock_pet_t

@@ -5,146 +5,12 @@ namespace warlock
 // Pets
   namespace pets
   {
-    warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian ) :
-      pet_t( sim, owner, pet_name, pt, guardian ),
-      special_action( nullptr ),
-      special_action_two( nullptr ),
-      melee_attack( nullptr ),
-      summon_stats( nullptr ),
-      ascendance( nullptr ),
-      buffs(),
-      active()
-    {
-      owner_coeff.ap_from_sp = 0.5;
-      owner_coeff.sp_from_sp = 1.0;
-      owner_coeff.health = 0.5;
-    }
-
-    namespace felhunter
-    {
-      struct shadow_bite_t : public warlock_pet_melee_attack_t
-      {
-        shadow_bite_t(warlock_pet_t* p) :
-          warlock_pet_melee_attack_t(p, "Shadow Bite") 
-        {
-          
-        }
-      };
-
-      felhunter_pet_t::felhunter_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-        warlock_pet_t(sim, owner, name, PET_FELHUNTER, name != "felhunter")
-      {
-        action_list_str = "shadow_bite";
-      }
-
-      void felhunter_pet_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-        melee_attack = new warlock_pet_melee_t(this);
-      }
-
-      action_t* felhunter_pet_t::create_action(const std::string& name, const std::string& options_str)
-      {
-        if (name == "shadow_bite") return new shadow_bite_t(this);
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
-
-    namespace imp
-    {
-      struct firebolt_t : public warlock_pet_spell_t
-      {
-        firebolt_t(warlock_pet_t* p) :
-          warlock_pet_spell_t("Firebolt", p, p -> find_spell(3110)) { }
-      };
-
-      imp_pet_t::imp_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-        warlock_pet_t(sim, owner, name, PET_IMP, name != "imp")
-      {
-        action_list_str = "firebolt";
-      }
-
-      action_t* imp_pet_t::create_action(const std::string& name, const std::string& options_str)
-      {
-        if (name == "firebolt") return new firebolt_t(this);
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
-
-    namespace succubus
-    {
-      struct lash_of_pain_t : public warlock_pet_spell_t
-      {
-        lash_of_pain_t(warlock_pet_t* p) :
-          warlock_pet_spell_t(p, "Lash of Pain") { }
-      };
-
-      struct whiplash_t : public warlock_pet_spell_t
-      {
-        whiplash_t(warlock_pet_t* p) :
-          warlock_pet_spell_t(p, "Whiplash")
-        {
-          aoe = -1;
-        }
-      };
-
-      succubus_pet_t::succubus_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-        warlock_pet_t(sim, owner, name, PET_SUCCUBUS, name != "succubus")
-      {
-        main_hand_weapon.swing_time = timespan_t::from_seconds(3.0);
-        action_list_str = "lash_of_pain";
-      }
-
-      void succubus_pet_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-
-        main_hand_weapon.swing_time = timespan_t::from_seconds(3.0);
-        melee_attack = new warlock_pet_melee_t(this);
-      }
-
-      action_t* succubus_pet_t::create_action(const std::string& name, const std::string& options_str)
-      {
-        if (name == "lash_of_pain") return new lash_of_pain_t(this);
-
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
-
-    namespace voidwalker
-    {
-      struct torment_t :
-        public warlock_pet_spell_t
-      {
-        torment_t(warlock_pet_t* p) :
-          warlock_pet_spell_t(p, "Torment") { }
-      };
-
-      voidwalker_pet_t::voidwalker_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-        warlock_pet_t(sim, owner, name, PET_VOIDWALKER, name != "voidwalker")
-      {
-        action_list_str = "torment";
-      }
-
-      void voidwalker_pet_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-        melee_attack = new warlock_pet_melee_t(this);
-      }
-
-      action_t* voidwalker_pet_t::create_action(const std::string& name, const std::string& options_str)
-      {
-        if (name == "torment") return new torment_t(this);
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
-
     void warlock_pet_t::init_base_stats()
     {
       pet_t::init_base_stats();
 
       resources.base[RESOURCE_ENERGY] = 200;
-      resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
+      resources.base_regen_per_second[RESOURCE_ENERGY] = 10;
 
       base.spell_power_per_intellect = 1;
 
@@ -152,13 +18,13 @@ namespace warlock
       stamina_per_owner = 0;
 
       main_hand_weapon.type = WEAPON_BEAST;
-      main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+      main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
     }
 
     bool warlock_pet_t::create_actions()
     {
       bool check = pet_t::create_actions();
-      if ( check )
+      if (check)
       {
         return true;
       }
@@ -168,27 +34,27 @@ namespace warlock
 
     void warlock_pet_t::init_action_list()
     {
-      if ( special_action )
+      if (special_action)
       {
-        if ( type == PLAYER_PET )
+        if (type == PLAYER_PET)
           special_action->background = true;
         else
-          special_action->action_list = get_action_priority_list( "default" );
+          special_action->action_list = get_action_priority_list("default");
       }
 
-      if ( special_action_two )
+      if (special_action_two)
       {
-        if ( type == PLAYER_PET )
+        if (type == PLAYER_PET)
           special_action_two->background = true;
         else
-          special_action_two->action_list = get_action_priority_list( "default" );
+          special_action_two->action_list = get_action_priority_list("default");
       }
 
       pet_t::init_action_list();
 
-      if ( summon_stats )
-        for ( size_t i = 0; i < action_list.size(); ++i )
-          summon_stats->add_child( action_list[i]->stats );
+      if (summon_stats)
+        for (size_t i = 0; i < action_list.size(); ++i)
+          summon_stats->add_child(action_list[i]->stats);
     }
 
     void warlock_pet_t::create_buffs()
@@ -198,7 +64,7 @@ namespace warlock
       create_buffs_demonology();
       create_buffs_destruction();
 
-      buffs.rage_of_guldan = make_buff( this, "rage_of_guldan", find_spell( 257926 ) )->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ); //change spell id to 253014 when whitelisted
+      buffs.rage_of_guldan = make_buff(this, "rage_of_guldan", find_spell(257926))->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER); //change spell id to 253014 when whitelisted
     }
 
     void warlock_pet_t::init_spells()
@@ -209,20 +75,20 @@ namespace warlock
         init_spells_demonology();
     }
 
-    void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
+    void warlock_pet_t::schedule_ready(timespan_t delta_time, bool waiting)
     {
       dot_t* d;
-      if ( melee_attack && !melee_attack->execute_event && !( special_action && ( d = special_action->get_dot() ) && d->is_ticking() ) )
+      if (melee_attack && !melee_attack->execute_event && !(special_action && (d = special_action->get_dot()) && d->is_ticking()))
       {
         melee_attack->schedule_execute();
       }
 
-      pet_t::schedule_ready( delta_time, waiting );
+      pet_t::schedule_ready(delta_time, waiting);
     }
 
-    double warlock_pet_t::composite_player_multiplier( school_e school ) const
+    double warlock_pet_t::composite_player_multiplier(school_e school) const
     {
-      double m = pet_t::composite_player_multiplier( school );
+      double m = pet_t::composite_player_multiplier(school);
 
       if (o()->specialization() == WARLOCK_DEMONOLOGY)
       {
@@ -233,12 +99,12 @@ namespace warlock
         }
       }
 
-      if ( buffs.rage_of_guldan->check() )
-        m *= 1.0 + ( buffs.rage_of_guldan->default_value / 100 );
+      if (buffs.rage_of_guldan->check())
+        m *= 1.0 + (buffs.rage_of_guldan->default_value / 100);
 
-      if ( buffs.grimoire_of_service->check() )
+      if (buffs.grimoire_of_service->check())
       {
-        m *= 1.0 + buffs.grimoire_of_service->data().effectN( 1 ).percent();
+        m *= 1.0 + buffs.grimoire_of_service->data().effectN(1).percent();
       }
 
       m *= 1.0 + o()->buffs.sindorei_spite->check_stack_value();
@@ -496,9 +362,6 @@ namespace warlock
     debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", source->find_spell( 32390 ) )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION )
       ->set_max_stack( 3 );
-    debuffs_agony = make_buff( *this, "agony", source->find_spell( 980 ) )
-      ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-      ->set_max_stack( ( warlock.talents.writhe_in_agony->ok() ? warlock.talents.writhe_in_agony->effectN( 2 ).base_value() : 10 ) );
     debuffs_tormented_agony = make_buff(*this, "tormented_agony", source->find_spell(252938));
 
     //Destro
@@ -855,19 +718,15 @@ bool warlock_t::create_actions()
 	return player_t::create_actions();
 }
 
-pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& /* pet_type */ )
+pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& pet_type )
 {
   pet_t* p = find_pet( pet_name );
   if ( p ) return p;
   using namespace pets;
 
-  if ( pet_name == "felhunter"          )   return new                felhunter::felhunter_pet_t( sim, this );
-  if ( pet_name == "imp"                )   return new                            imp::imp_pet_t( sim, this );
-  if ( pet_name == "succubus"           )   return new                  succubus::succubus_pet_t( sim, this );
-  if ( pet_name == "voidwalker"         )   return new              voidwalker::voidwalker_pet_t( sim, this );
-  if ( pet_name == "felguard"           )   return new                  felguard::felguard_pet_t( sim, this );
-
-  if ( pet_name == "grimoire_felguard"   )  return new        felguard::felguard_pet_t( sim, this, pet_name );
+  pet_t* summon_pet = create_main_pet(pet_name, pet_type );
+  if (summon_pet)
+    return summon_pet;
 
   return nullptr;
 }

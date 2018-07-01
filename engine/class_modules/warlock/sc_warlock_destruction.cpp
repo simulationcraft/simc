@@ -2,98 +2,6 @@
 #include "sc_warlock.hpp"
 
 namespace warlock {
-  namespace pets {
-    namespace infernal {
-      struct immolation_tick_t : public warlock_pet_spell_t
-      {
-        immolation_tick_t(warlock_pet_t* p, const spell_data_t& s) :
-          warlock_pet_spell_t("immolation_tick", p, s.effectN(1).trigger())
-        {
-          aoe = -1;
-          background = true;
-          may_crit = true;
-        }
-      };
-
-      struct immolation_t : public warlock_pet_spell_t
-      {
-        immolation_t(warlock_pet_t* p, const std::string& options_str) :
-          warlock_pet_spell_t("immolation", p, p -> find_spell(19483))
-        {
-          parse_options(options_str);
-
-          dynamic_tick_action = hasted_ticks = true;
-          tick_action = new immolation_tick_t(p, data());
-        }
-
-        void init() override
-        {
-          warlock_pet_spell_t::init();
-
-          // Explicitly snapshot haste, as the spell actually has no duration in spell data
-          snapshot_flags |= STATE_HASTE;
-          update_flags |= STATE_HASTE;
-        }
-
-        timespan_t composite_dot_duration(const action_state_t*) const override
-        {
-          return player->sim->expected_iteration_time * 2;
-        }
-
-        virtual void cancel() override
-        {
-          dot_t* dot = find_dot(target);
-          if (dot && dot->is_ticking())
-          {
-            dot->cancel();
-          }
-
-          action_t::cancel();
-        }
-      };
-
-      infernal_t::infernal_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-        warlock_pet_t(sim, owner, name, PET_INFERNAL, name != "infernal") {
-      }
-
-      void infernal_t::init_base_stats() {
-        warlock_pet_t::init_base_stats();
-        action_list_str = "immolation,if=!ticking";
-        melee_attack = new warlock_pet_melee_t(this);
-      }
-
-      void infernal_t::arise()
-      {
-        warlock_pet_t::arise();
-
-        buffs.embers->trigger();
-      }
-
-      void infernal_t::demise() {
-        warlock_pet_t::demise();
-
-        buffs.embers->expire();
-        o()->buffs.grimoire_of_supremacy->expire();
-      }
-
-      action_t* infernal_t::create_action(const std::string& name, const std::string& options_str) {
-        if (name == "immolation") return new immolation_t(this, options_str);
-
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
-
-    void warlock_pet_t::create_buffs_destruction() {
-      buffs.embers = make_buff(this, "embers", find_spell(264364))
-        ->set_period(timespan_t::from_seconds(0.5))
-        ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
-        ->set_tick_callback([this](buff_t*, int, const timespan_t&)
-        {
-          o()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, o()->gains.infernal);
-        });
-    }
-  }
-
   namespace actions_destruction {
     using namespace actions;
 
@@ -277,7 +185,7 @@ namespace warlock {
         p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate);
 
         auto td = find_td(this->target);
-        if (d->state->result_amount > 0.0 && p()->azerite.flashpoint.ok() && td->warlock.health_percentage() > 0.80)
+        if (d->state->result_amount > 0.0 && p()->azerite.flashpoint.ok() && target->health_percentage() > 0.80)
           p()->buffs.flashpoint->trigger();
       }
     };

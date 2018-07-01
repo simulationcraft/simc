@@ -60,6 +60,7 @@ SRC += \
     class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_affliction.cpp \
     class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_demonology.cpp \
     class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_destruction.cpp \
+	class_modules$(PATHSEP)warlock$(PATHSEP)sc_warlock_pets.cpp \
     class_modules$(PATHSEP)sc_shaman.cpp \
     class_modules$(PATHSEP)sc_rogue.cpp \
     class_modules$(PATHSEP)priest$(PATHSEP)sc_priest.cpp \
