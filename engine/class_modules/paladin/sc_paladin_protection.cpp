@@ -422,9 +422,9 @@ struct light_of_the_protector_t : public paladin_heal_t
 
     // heals for a base amount, increased by your missing health up to +200% (linear increase, each missing health % increase the healing by 2%)
 
-    double missing_health_percent = p() -> resources.max[ RESOURCE_HEALTH ] -  std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) / p() -> resources.max[ RESOURCE_HEALTH ];
+    double missing_health_percent = ( p() -> resources.max[ RESOURCE_HEALTH ] -  std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) ) / p() -> resources.max[ RESOURCE_HEALTH ];
 
-    m *= missing_health_percent * data().effectN( 2 ).percent();
+    m *= 1 + missing_health_percent * data().effectN( 2 ).percent();
 
     return m;
   }
@@ -480,9 +480,9 @@ struct hand_of_the_protector_t : public paladin_heal_t
 
     // heals for a base amount, increased by your missing health up to +200% (linear increase, each missing health % increase the healing by 2%)
 
-    double missing_health_percent = p() -> resources.max[ RESOURCE_HEALTH ] -  std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) / p() -> resources.max[ RESOURCE_HEALTH ];
+    double missing_health_percent = ( p() -> resources.max[ RESOURCE_HEALTH ] -  std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) ) / p() -> resources.max[ RESOURCE_HEALTH ];
 
-    m *= missing_health_percent * data().effectN( 2 ).percent();
+    m *= 1 + missing_health_percent * data().effectN( 2 ).percent();
 
     return m;
   }
