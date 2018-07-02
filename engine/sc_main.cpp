@@ -32,7 +32,10 @@ struct sim_signal_handler_t
   static void report( int signal )
   {
     const char* name = strsignal( signal );
+    std::cerr << "sim_signal_handler: " << name << "!";
     const sim_t* crashing_child = nullptr;
+
+#ifndef SC_NO_THREADING
     if ( signal == SIGSEGV )
     {
       for ( auto child : global_sim -> children )
@@ -44,8 +47,8 @@ struct sim_signal_handler_t
         }
       }
     }
+#endif
 
-    std::cerr << "sim_signal_handler: " << name << "!";
     if ( crashing_child )
     {
       fmt::print(stderr, " Thread={} Iteration={} Seed={} ({}) TargetHealth={}\n",
@@ -65,6 +68,7 @@ struct sim_signal_handler_t
     {
       std::cerr << " ProfileSet=" << profileset;
     }
+
     std::cerr << std::endl;
     fflush( stderr );
   }
@@ -335,7 +339,7 @@ int sim_t::main( const std::vector<std::string>& args )
         plot         -> analyze();
         reforge_plot -> analyze();
 
-        if ( canceled == 0 && ! profilesets.iterate( this ) )
+        if ( canceled == 0 && ! profilesets.iterate( this ))
         {
           canceled = 1;
         }

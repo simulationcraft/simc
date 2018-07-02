@@ -1188,8 +1188,20 @@ struct sim_t : private sc_thread_t
   struct work_queue_t
   {
     private:
+#ifndef SC_NO_THREADING
     std::recursive_mutex m;
     using G = std::lock_guard<std::recursive_mutex>;
+#else
+    struct no_m {
+      void lock() {}
+      void unlock() {}
+    };
+    struct nop {
+      nop(no_m i) { (void)i; }
+    };
+    no_m m;
+    using G = nop;
+#endif
     public:
     std::vector<int> _total_work, _work, _projected_work;
     size_t index;
@@ -1301,11 +1313,12 @@ struct sim_t : private sc_thread_t
 
   // Profilesets
   opts::map_list_t profileset_map;
-  profileset::profilesets_t profilesets;
   std::vector<scale_metric_e> profileset_metric;
   std::vector<std::string> profileset_output_data;
   bool profileset_enabled;
   int profileset_work_threads, profileset_init_threads;
+  profileset::profilesets_t profilesets;
+
 
   sim_t();
   sim_t( sim_t* parent, int thread_index = 0 );
@@ -1409,8 +1422,10 @@ struct sim_t : private sc_thread_t
   }
 
   // Thread id of this sim_t object
+#ifndef SC_NO_THREADING
   std::thread::id thread_id() const
   { return sc_thread_t::thread_id(); }
+#endif
 
   /**
    * Convenient stdout print function using python-like formatting.
@@ -1448,6 +1463,7 @@ struct sim_t : private sc_thread_t
 
     out_log.print(std::forward<Format>(format), std::forward<Args>(args)... );
   }
+
 private:
   void do_pause();
   void print_spell_query();
