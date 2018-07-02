@@ -696,6 +696,8 @@ class ItemDataGenerator(DataGenerator):
     _item_whitelist = [
         133578,     # Hearty Feast (7.0)
         133579,     # Lavish Suramar Feast (7.0)
+        156525,     # Galley Banquet (8.0)
+        156526,     # Bountiful Captain's Feast (8.0)
     ]
 
     _type_flags = {
@@ -1173,6 +1175,10 @@ class SpellDataGenerator(DataGenerator):
          268954, 268955, 268953,
          # Mag'har Orc Ancestral Call buffs
          274739, 274740, 274741, 274742,
+         # 8.0 Galley Banquet food buffs
+         259448, 259449, 259452, 259453,
+         # 8.0 Bountiful Captain's Feast food buffs
+         259454, 259455, 259456, 259457,
         ),
 
         # Warrior:
