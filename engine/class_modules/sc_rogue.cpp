@@ -6337,6 +6337,21 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
         return timespan_t::from_seconds( 0.0 );
     } );
   }
+  else if ( util::str_compare_ci(name_str, "master_assassin_remains") )
+  {
+    return make_fn_expr( name_str, [ this ]() {
+      if ( buffs.master_assassin_aura -> check() )
+      {
+        timespan_t nominal_master_assassin_duration = timespan_t::from_seconds( talent.master_assassin -> effectN( 1 ).base_value() );
+        timespan_t gcd_remains = timespan_t::from_seconds( std::max( ( gcd_ready - sim -> current_time() ).total_seconds(), 0.0 ) );
+        return gcd_remains + nominal_master_assassin_duration;
+      }
+      else if ( buffs.master_assassin -> check() )
+        return buffs.master_assassin -> remains();
+      else
+        return timespan_t::from_seconds( 0.0 );
+    } );
+  }
   else if ( util::str_compare_ci( name_str, "poisoned_enemies" ) )
     return make_ref_expr( name_str, poisoned_enemies );
   else if ( util::str_compare_ci( name_str, "poisoned" ) )
