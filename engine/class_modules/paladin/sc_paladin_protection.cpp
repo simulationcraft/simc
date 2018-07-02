@@ -830,28 +830,24 @@ action_t* paladin_t::create_action_protection( const std::string& name, const st
 
 void paladin_t::create_buffs_protection()
 {
-  buffs.guardian_of_ancient_kings      = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
-                                          -> set_cooldown( timespan_t::zero() ); // let the ability handle the CD
-  buffs.shield_of_the_righteous        = make_buff( this, "shield_of_the_righteous", spells.shield_of_the_righteous )
-                                          -> add_invalidate( CACHE_BONUS_ARMOR );
-  buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
-  buffs.aegis_of_light                 = make_buff( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
-  buffs.seraphim                       = make_buff<stat_buff_t>( this, "seraphim", talents.seraphim )
-    ->add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                                          ->add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                                          ->add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                                          ->add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) );
-  buffs.seraphim->set_cooldown( timespan_t::zero() ); // let the ability handle the cooldown
-  buffs.bulwark_of_order               = make_buff<absorb_buff_t>( this, "bulwark_of_order", find_spell( 209388 ) );
-  buffs.bulwark_of_order->set_absorb_source( get_stats( "bulwark_of_order" ) )
-    ->set_absorb_gain( get_gain( "bulwark_of_order" ) )
-    ->set_max_stack( 1 ); // not sure why data says 3 stacks
+  buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
+                                    -> set_cooldown( timespan_t::zero() ); // let the ability handle the CD
+  buffs.shield_of_the_righteous = make_buff( this, "shield_of_the_righteous", spells.shield_of_the_righteous )
+                                  -> add_invalidate( CACHE_BONUS_ARMOR );
+  buffs.ardent_defender = new buffs::ardent_defender_buff_t( this );
+  buffs.aegis_of_light = make_buff( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
+  buffs.seraphim = make_buff<stat_buff_t>( this, "seraphim", talents.seraphim )
+                  -> add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                  -> add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                  -> add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                  -> add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) );
+  buffs.seraphim -> set_cooldown( timespan_t::zero() ); // let the ability handle the cooldown
 
   // Talents
-  buffs.holy_shield_absorb     = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
-  buffs.holy_shield_absorb->set_absorb_school( SCHOOL_MAGIC )
-      ->set_absorb_source( get_stats( "holy_shield_absorb" ) )
-      ->set_absorb_gain( get_gain( "holy_shield_absorb" ) );
+  buffs.holy_shield_absorb = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
+  buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
+                           -> set_absorb_source( get_stats( "holy_shield_absorb" ) )
+                           -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
 }
 
 void paladin_t::init_spells_protection()

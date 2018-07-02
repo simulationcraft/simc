@@ -162,7 +162,6 @@ public:
     buff_t* grand_crusader;
     buff_t* infusion_of_light;
     buff_t* shield_of_the_righteous;
-    absorb_buff_t* bulwark_of_order;
     buff_t* last_defender;
 
     // talents
@@ -201,7 +200,6 @@ public:
   {
     // Healing/absorbs
     gain_t* holy_shield;
-    gain_t* bulwark_of_order;
 
     // Mana
     gain_t* extra_regen;
