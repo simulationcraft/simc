@@ -3173,13 +3173,13 @@ struct pistol_shot_t : public rogue_attack_t
 
 struct marked_for_death_t : public rogue_attack_t
 {
-  bool precombat;
+  double precombat_seconds;
 
   marked_for_death_t( rogue_t* p, const std::string& options_str ):
     rogue_attack_t( "marked_for_death", p, p -> find_talent_spell( "Marked for Death" ) ),
-    precombat (false)
+    precombat_seconds( 0.0 )
   {
-    add_option( opt_bool( "precombat", precombat ) );
+    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
     parse_options( options_str );
 
     may_miss = may_crit = harmful = callbacks = false;
@@ -3192,8 +3192,8 @@ struct marked_for_death_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    if ( precombat && ! p() -> in_combat ) {
-      p() -> cooldowns.marked_for_death -> adjust( - timespan_t::from_seconds( 15.0 ), false );
+    if ( precombat_seconds && ! p() -> in_combat ) {
+      p() -> cooldowns.marked_for_death -> adjust( - timespan_t::from_seconds( precombat_seconds ), false );
     }
   }
 
@@ -6167,7 +6167,7 @@ void rogue_t::init_action_list()
     // Pre-Combat
     precombat -> add_action( "variable,name=stealth_threshold,value=60+talent.vigor.enabled*35+talent.master_of_shadows.enabled*10", "Used to define when to use stealth CDs or builders" );
     precombat -> add_action( this, "Stealth" );
-    precombat -> add_talent( this, "Marked for Death", "precombat=1" );
+    precombat -> add_talent( this, "Marked for Death", "precombat_seconds=15" );
     precombat -> add_action( this, "Shadow Blades" );
     precombat -> add_action( "potion" );
 
