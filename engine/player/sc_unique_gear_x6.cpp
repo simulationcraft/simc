@@ -5528,7 +5528,7 @@ static const convergence_cd_t convergence_cds[] =
   { ROGUE_ASSASSINATION,  { "vendetta" } },
   { SHAMAN_ENHANCEMENT,   { "feral_spirit" } },
   { WARRIOR_ARMS,         { "battle_cry" } },
-  { WARRIOR_FURY,         { "battle_cry" } },
+  { WARRIOR_FURY,         { "recklessness" } },
   { DEMON_HUNTER_HAVOC,   { "metamorphosis" } },
   { SPEC_NONE,            { 0 } }
 };
