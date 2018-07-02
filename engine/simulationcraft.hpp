@@ -6941,6 +6941,7 @@ void register_hotfixes();
 void register_hotfixes_legion();
 void register_special_effects();
 void register_special_effects_legion(); // Legion special effects
+void register_special_effects_bfa(); // Battle for Azeroth special effects
 void sort_special_effects();
 void unregister_special_effects();
 
