@@ -6370,7 +6370,8 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
       rogue_td_t* tdata = get_target_data( target );
       return tdata -> dots.garrote -> is_ticking() +
              tdata -> dots.internal_bleeding -> is_ticking() +
-             tdata -> dots.rupture -> is_ticking();
+             tdata -> dots.rupture -> is_ticking() +
+             tdata -> dots.crimson_tempest -> is_ticking();
     } );
   }
   else if ( util::str_compare_ci( name_str, "poisoned_bleeds" ) )
@@ -6384,7 +6385,8 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
         if ( tdata -> lethal_poisoned() ) {
           poisoned_bleeds += tdata -> dots.garrote -> is_ticking() +
                              tdata -> dots.internal_bleeding -> is_ticking() +
-                             tdata -> dots.rupture -> is_ticking();
+                             tdata -> dots.rupture -> is_ticking() +
+                             tdata -> dots.crimson_tempest -> is_ticking();
         }
       }
       return poisoned_bleeds;
