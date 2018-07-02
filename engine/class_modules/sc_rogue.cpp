@@ -311,6 +311,7 @@ struct rogue_t : public player_t
     cooldown_t* toxic_blade;
     cooldown_t* symbols_of_death;
     cooldown_t* secret_technique;
+    cooldown_t* shadow_blades;
   } cooldowns;
 
   // Gains
@@ -590,6 +591,7 @@ struct rogue_t : public player_t
     cooldowns.toxic_blade              = get_cooldown( "toxic_blade"              );
     cooldowns.symbols_of_death         = get_cooldown( "symbols_of_death"         );
     cooldowns.secret_technique         = get_cooldown( "secret_technique"         );
+    cooldowns.shadow_blades            = get_cooldown( "shadow_blades"            );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -2264,9 +2266,15 @@ struct auto_melee_attack_t : public action_t
 
 struct adrenaline_rush_t : public rogue_attack_t
 {
+  double precombat_seconds;
+
   adrenaline_rush_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "adrenaline_rush", p, p -> find_specialization_spell( "Adrenaline Rush" ), options_str )
+    rogue_attack_t( "adrenaline_rush", p, p -> find_specialization_spell( "Adrenaline Rush" ) ),
+    precombat_seconds( 0.0 )
   {
+    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    parse_options( options_str );
+
     harmful = may_miss = may_crit = false;
   }
 
@@ -2277,6 +2285,13 @@ struct adrenaline_rush_t : public rogue_attack_t
     p() -> buffs.adrenaline_rush -> trigger();
     if ( p() -> talent.loaded_dice -> ok() )
       p() -> buffs.loaded_dice -> trigger();
+
+    if ( precombat_seconds && ! p() -> in_combat ) {
+      timespan_t precombat_lost_seconds = - timespan_t::from_seconds( precombat_seconds );
+      p() -> cooldowns.adrenaline_rush -> adjust( precombat_lost_seconds, false );
+      p() -> buffs.adrenaline_rush -> extend_duration( p(), precombat_lost_seconds );
+      p() -> buffs.loaded_dice -> extend_duration( p(), precombat_lost_seconds );
+    }
   }
 };
 
@@ -3337,9 +3352,15 @@ struct nightblade_t : public rogue_attack_t
 
 struct roll_the_bones_t : public rogue_attack_t
 {
+  double precombat_seconds;
+
   roll_the_bones_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "roll_the_bones", p, p -> spec.roll_the_bones, options_str )
+    rogue_attack_t( "roll_the_bones", p, p -> spec.roll_the_bones ),
+    precombat_seconds( 0.0 )
   {
+    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    parse_options( options_str );
+
     harmful = false;
     dot_duration = timespan_t::zero();
   }
@@ -3353,6 +3374,9 @@ struct roll_the_bones_t : public rogue_attack_t
 
     int cp = cast_state( execute_state ) -> cp;
     timespan_t d = ( cp + 1 ) * p() -> buffs.roll_the_bones -> data().duration();
+
+    if ( precombat_seconds && ! p() -> in_combat )
+      d -= timespan_t::from_seconds( precombat_seconds );
 
     p() -> buffs.roll_the_bones -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
 
@@ -3554,9 +3578,15 @@ struct shadow_blades_attack_t : public rogue_attack_t
 
 struct shadow_blades_t : public rogue_attack_t
 {
+  double precombat_seconds;
+
   shadow_blades_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shadow_blades", p, p -> find_specialization_spell( "Shadow Blades" ), options_str )
+    rogue_attack_t( "shadow_blades", p, p -> find_specialization_spell( "Shadow Blades" ) ),
+    precombat_seconds( 0.0 )
   {
+    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    parse_options( options_str );
+
     harmful = may_miss = may_crit = false;
 
     school = SCHOOL_SHADOW;
@@ -3568,6 +3598,12 @@ struct shadow_blades_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.shadow_blades -> trigger();
+
+    if ( precombat_seconds && ! p() -> in_combat ) {
+      timespan_t precombat_lost_seconds = - timespan_t::from_seconds( precombat_seconds );
+      p() -> cooldowns.shadow_blades -> adjust( precombat_lost_seconds, false );
+      p() -> buffs.shadow_blades -> extend_duration( p(), precombat_lost_seconds );
+    }
   }
 };
 
@@ -3948,9 +3984,15 @@ struct sinister_strike_t : public rogue_attack_t
 
 struct slice_and_dice_t : public rogue_attack_t
 {
+  double precombat_seconds;
+
   slice_and_dice_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "slice_and_dice", p, p -> talent.slice_and_dice, options_str )
+    rogue_attack_t( "slice_and_dice", p, p -> talent.slice_and_dice ),
+    precombat_seconds( 0.0 )
   {
+    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    parse_options( options_str );
+
     base_costs[ RESOURCE_COMBO_POINT ] = 1; // No resource cost in the spell .. sigh
     harmful = false;
     dot_duration = timespan_t::zero();
@@ -3962,6 +4004,9 @@ struct slice_and_dice_t : public rogue_attack_t
 
     int cp = cast_state( execute_state ) -> cp;
     timespan_t snd_duration = ( cp + 1 ) * p() -> buffs.slice_and_dice -> data().duration();
+
+    if ( precombat_seconds && ! p() -> in_combat )
+      snd_duration -= timespan_t::from_seconds( precombat_seconds );
 
     double snd_mod = 1.0; // Multiplier for the SnD effects. Was changed in Legion for Loaded Dice artifact trait.
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
@@ -4081,9 +4126,15 @@ struct vanish_t : public rogue_attack_t
 
 struct vendetta_t : public rogue_attack_t
 {
+  double precombat_seconds;
+
   vendetta_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "vendetta", p, p -> find_specialization_spell( "Vendetta" ), options_str )
+    rogue_attack_t( "vendetta", p, p -> find_specialization_spell( "Vendetta" ) ),
+    precombat_seconds( 0.0 )
   {
+    add_option( opt_float( "precombat_seconds", precombat_seconds ) );
+    parse_options( options_str );
+
     harmful = may_miss = may_crit = false;
   }
 
@@ -4091,10 +4142,17 @@ struct vendetta_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    p()->buffs.vendetta->trigger();
+    p() -> buffs.vendetta -> trigger();
 
     rogue_td_t* td = this -> td( execute_state -> target );
     td -> debuffs.vendetta -> trigger();
+
+    if ( precombat_seconds && ! p() -> in_combat ) {
+      timespan_t precombat_lost_seconds = - timespan_t::from_seconds( precombat_seconds );
+      p() -> cooldowns.vendetta -> adjust( precombat_lost_seconds, false );
+      p() -> buffs.vendetta -> extend_duration( p(), precombat_lost_seconds );
+      td -> debuffs.vendetta -> extend_duration( p(), precombat_lost_seconds );
+    }
   }
 };
 
@@ -6004,10 +6062,12 @@ void rogue_t::init_action_list()
     
 
   if ( specialization() != ROGUE_SUBTLETY )
-    precombat -> add_talent( this, "Marked for Death", "if=raid_event.adds.in>40" );
+    precombat -> add_talent( this, "Marked for Death", "precombat_seconds=5,if=raid_event.adds.in>40" );
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
+    precombat -> add_action( this, "Vendetta", "precombat_seconds=1" );
+
     def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7)%2" );
     def -> add_action( "variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined" );
     def -> add_action( "call_action_list,name=cds" );
@@ -6104,9 +6164,9 @@ void rogue_t::init_action_list()
   else if ( specialization() == ROGUE_OUTLAW )
   {
     // Pre-Combat
-    precombat -> add_action( this, "Roll the Bones" );
-    precombat -> add_talent( this, "Slice and Dice" );
-    precombat -> add_action( this, "Adrenaline Rush" );
+    precombat -> add_action( this, "Roll the Bones", "precombat_seconds=2" );
+    precombat -> add_talent( this, "Slice and Dice", "precombat_seconds=2" );
+    precombat -> add_action( this, "Adrenaline Rush", "precombat_seconds=1" );
 
     // Main Rotation
     def -> add_action( "variable,name=rtb_reroll,value=rtb_buffs<2&(buff.loaded_dice.up|!buff.grand_melee.up&!buff.ruthless_precision.up)", "Reroll for 2+ buffs with Loaded Dice up. Otherwise reroll for 2+ or Grand Melee or Ruthless Precision." );
@@ -6168,7 +6228,7 @@ void rogue_t::init_action_list()
     precombat -> add_action( "variable,name=stealth_threshold,value=60+talent.vigor.enabled*35+talent.master_of_shadows.enabled*10", "Used to define when to use stealth CDs or builders" );
     precombat -> add_action( this, "Stealth" );
     precombat -> add_talent( this, "Marked for Death", "precombat_seconds=15" );
-    precombat -> add_action( this, "Shadow Blades" );
+    precombat -> add_action( this, "Shadow Blades", "precombat_seconds=1" );
     precombat -> add_action( "potion" );
 
     // Main Rotation
