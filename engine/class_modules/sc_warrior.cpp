@@ -10,7 +10,7 @@ namespace
 // ==========================================================================
 // Warrior
 // todo: Fury - Add Meat Cleaver to all single target Fury abilities (ref Bloodthirst), Enrage-clean up movespeed/damage taken/health increase, add Battle Shout raid buff
-//       Arms - DeepWounds-BS/Rav ticks, Cleave-needs 3 target, Deadly Calm-tactician, Sweeping Strikes-only during buff & damage reduction, FervorSlam, Collateral Damage, and Avatar-Hardcode Arms
+//       Arms - DeepWounds-BS/Ravticks, 3 target for Cleave, Collateral Damage, and Avatar-Hardcode for Arms
 // ==========================================================================
 
 struct warrior_t;
@@ -586,7 +586,7 @@ public:
     ab( n, player, s ),
     headlongrush( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 1 ) ) ),
     headlongrushgcd( ab::data().affected_by( player -> spell.headlong_rush -> effectN( 2 ) ) ),
-    sweeping_strikes( ab::data().affected_by( player -> spec.sweeping_strikes -> effectN( 1 ) ) ), // Help - only while buff is active
+    sweeping_strikes( ab::data().affected_by( player -> spec.sweeping_strikes -> effectN( 1 ) ) ),
     //deadly_calm( ab::data().affected_by( player -> talents.deadly_calm -> effectN( 4 ) ) ), whitelist unnessessary for now
     arms_damage_increase( player -> specialization() == WARRIOR_ARMS && ab::data().affected_by( player -> spell.arms_warrior -> effectN( 2 ) ) ),
     fury_damage_increase( player -> specialization() == WARRIOR_FURY && ab::data().affected_by( player -> spell.fury_warrior -> effectN( 1 ) ) ),
@@ -637,10 +637,7 @@ public:
       cd_wasted_cumulative = get_data_entry<simple_sample_data_with_min_max_t, data_t>( ab::name_str, p() -> cd_waste_cumulative );
       cd_wasted_iter = get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p() -> cd_waste_iter );
     }
-    if ( sweeping_strikes )
-    {
-      ab::aoe = p() -> spec.sweeping_strikes -> effectN( 1 ).base_value() + 1;
-    }
+
     if ( headlongrush )
     {
       ab::cooldown -> hasted = headlongrush;
@@ -678,6 +675,18 @@ public:
                                    base_t::cost() );
     }
     return ab::cost();
+  }
+
+  int n_targets() const override
+  {
+    int targets = ab::n_targets();
+
+    if ( sweeping_strikes && p() -> buff.sweeping_strikes -> check() )
+    {
+      return targets = 1 + p() -> spec.sweeping_strikes -> effectN( 1 ).base_value();
+    }
+
+    return targets;
   }
 
   double composite_energize_amount( const action_state_t* state ) const override
@@ -779,6 +788,18 @@ public:
     }
 
     return m;
+  }
+
+  virtual double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double dm = ab::composite_da_multiplier( s );
+
+    if ( sweeping_strikes && s->chain_target > 0 )
+    {
+      dm *= p() -> spec.sweeping_strikes -> effectN ( 2 ).percent();
+    }
+
+    return dm;
   }
 
   void execute() override
@@ -969,7 +990,7 @@ struct warrior_attack_t: public warrior_action_t < melee_attack_t >
                     const spell_data_t* s = spell_data_t::nil() ):
     base_t( n, p, s )
   {
-    special = true; // Help, whats this, leftover from Overpower proc?
+    special = true;
   }
 
   virtual void execute() override
@@ -1890,80 +1911,16 @@ struct dragon_roar_t: public warrior_attack_t
 
 // Arms Execute ==================================================================
 
-struct execute_sweep_t: public warrior_attack_t
-{
-  double dmg_mult; // This number is set in the original parent attack.
-  execute_sweep_t( warrior_t* p ):
-    warrior_attack_t( "execute_sweep", p, p -> spec.execute ), dmg_mult( 0 )
-  {
-    weapon = &( p -> main_hand_weapon );
-  }
-
-  double action_multiplier() const override
-  {
-    return dmg_mult;
-  }
-
-  double cost() const override
-  {
-    return 0;
-  }
-};
-
-struct sweeping_execute_t: public event_t
-{
-  timespan_t duration;
-  player_t* original_target;
-  warrior_t* warrior;
-  execute_sweep_t* execute_sweeping_strike;
-  sweeping_execute_t( warrior_t*p, player_t* target, execute_sweep_t* execute_ss ):
-    event_t( *p -> sim, next_execute() ), original_target( target ), warrior( p ), execute_sweeping_strike( execute_ss )
-  {
-    duration = next_execute();
-  }
-
-  static timespan_t next_execute()
-  {
-    return timespan_t::from_millis( 250 );
-  }
-
-  void execute() override
-  {
-    player_t* new_target = nullptr;
-    size_t max_targets = 0;
-    execute_sweeping_strike -> available_targets( execute_sweeping_strike -> target_cache.list );
-    // Gotta find a target for this bastard to hit. Also if the target dies in the 0.25 seconds between the original execute and this, we don't want to continue.
-    for ( size_t i = 0; i < execute_sweeping_strike -> target_cache.list.size(); ++i )
-    {
-      if ( execute_sweeping_strike -> target_cache.list[i] == original_target )
-        continue;
-      new_target = execute_sweeping_strike -> target_cache.list[i];
-      execute_sweeping_strike -> target = new_target;
-      execute_sweeping_strike -> execute();
-      max_targets++;
-      if ( max_targets == 2 )
-        break;
-    }
-  }
-};
-
 struct execute_damage_t : public warrior_attack_t
 {
-  execute_sweep_t* execute_sweeping_strike;
   double max_rage;
+  double rage_spent;
   execute_damage_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "execute", p, p -> spec.execute -> effectN( 1 ).trigger()),
-    execute_sweeping_strike( nullptr ),
     max_rage( 40 )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
-
-    if ( p -> spec.sweeping_strikes -> ok() )
-    {
-      execute_sweeping_strike = new execute_sweep_t( p );
-      add_child( execute_sweeping_strike );
-    }
   }
 
 
@@ -1973,7 +1930,7 @@ struct execute_damage_t : public warrior_attack_t
 
     if ( p() -> buff.ayalas_stone_heart -> check() )
     {
-      am *= 4.0;
+      am *= 2.0;
     }
     else
     {
@@ -1982,25 +1939,10 @@ struct execute_damage_t : public warrior_attack_t
       {
         temp_max_rage *= 1.0 + p() -> buff.deadly_calm -> data().effectN( 2 ).percent();
       }
-      am *= 4.0 * ( std::min( temp_max_rage, p() -> resources.current[RESOURCE_RAGE] ) / temp_max_rage );
+      am *= 2.0 * ( std::min( temp_max_rage, rage_spent ) / temp_max_rage );
     }
-
-    if ( execute_sweeping_strike )
-      execute_sweeping_strike -> dmg_mult = am; // Sweeping strikes uses damage multiplier from this.
 
     return am;
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    if ( execute_sweeping_strike )
-    {
-      make_event<sweeping_execute_t>( *sim, p(),
-                                      execute_state -> target,
-                                      execute_sweeping_strike );
-    }
   }
 };
 
@@ -2051,6 +1993,7 @@ struct execute_arms_t: public warrior_attack_t
     {
       c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
     }
+    trigger_attack -> rage_spent = c;
     return c;
   }
 
@@ -3230,8 +3173,10 @@ struct shield_slam_t: public warrior_attack_t
 
 struct slam_t: public warrior_attack_t
 {
+  bool from_Fervor;
   slam_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "slam", p, p -> spec.slam )
+    warrior_attack_t( "slam", p, p -> spec.slam ),
+    from_Fervor(false)
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
@@ -3259,6 +3204,20 @@ struct slam_t: public warrior_attack_t
     cc += p() -> buff.weighted_blade -> stack_value();
 
     return cc;
+  }
+
+  double cost() const override
+  {
+    if(from_Fervor)
+      return 0;
+    return warrior_attack_t::cost();
+  }
+
+  double tactician_cost() const override
+  {
+    if ( from_Fervor )
+      return 0;
+    return warrior_attack_t::cost();
   }
 
   bool ready() override
@@ -3563,6 +3522,11 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
 
     am *= 1.0 + p() -> buff.weighted_blade -> stack_value();
 
+    if ( p()->talents.fervor_of_battle->ok() )
+    {
+      am *= 1.0 + p()->talents.fervor_of_battle->effectN( 1 ).percent();
+    }
+
     return am;
   }
 
@@ -3573,18 +3537,6 @@ struct arms_whirlwind_mh_t: public warrior_attack_t
     cc += p() -> buff.weighted_blade -> stack_value();
 
     return cc;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double am = warrior_attack_t::composite_target_multiplier( t );
-
-    if ( p() -> talents.fervor_of_battle -> ok() && t == target )
-    {
-      am *= 1.0 + p() -> talents.fervor_of_battle -> effectN( 1 ).percent();
-    }
-
-    return am;
   }
 };
 
@@ -3602,6 +3554,11 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
 
     am *= 1.0 + p() -> buff.weighted_blade -> stack_value();
 
+    if ( p() -> talents.fervor_of_battle -> ok() )
+    {
+      am *= 1.0 + p() -> talents.fervor_of_battle -> effectN( 1 ).percent();
+    }
+
     return am;
   }
 
@@ -3613,22 +3570,11 @@ struct first_arms_whirlwind_mh_t: public warrior_attack_t
 
     return cc;
   }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double am = warrior_attack_t::composite_target_multiplier( t );
-
-    if ( p() -> talents.fervor_of_battle -> ok() && t == target )
-    {
-      am *= 1.0 + p() -> talents.fervor_of_battle -> effectN( 1 ).percent();
-    }
-
-    return am;
-  }
 };
 
 struct arms_whirlwind_parent_t: public warrior_attack_t
 {
+  slam_t* fervor_slam;
   first_arms_whirlwind_mh_t* first_mh_attack;
   arms_whirlwind_mh_t* mh_attack;
   timespan_t spin_time;
@@ -3640,6 +3586,12 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
     parse_options( options_str );
     radius = data().effectN( 1 ).trigger() -> effectN( 1 ).radius_max();
 
+    if ( p -> talents.fervor_of_battle -> ok() )
+    {
+      fervor_slam = new slam_t(p,options_str);
+      fervor_slam -> from_Fervor = true;
+    }
+
     if ( p -> main_hand_weapon.type != WEAPON_NONE )
     {
       mh_attack = new arms_whirlwind_mh_t( p, data().effectN( 2 ).trigger() );
@@ -3650,10 +3602,6 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
       first_mh_attack -> weapon = &( p -> main_hand_weapon );
       first_mh_attack -> radius = radius;
       add_child( first_mh_attack );
-      //if ( p -> talents.fervor_of_battle -> ok() )
-      //{
-        //add_child( p -> active.slam); // Help - add new Slam initialization
-      //}
     }
     tick_zero = true;
     callbacks = hasted_ticks = false;
@@ -3677,6 +3625,10 @@ struct arms_whirlwind_parent_t: public warrior_attack_t
 
     if ( d -> current_tick == 1 )
     {
+      if ( p() -> talents.fervor_of_battle -> ok() )
+      {
+      fervor_slam -> execute();
+      }
       first_mh_attack -> execute();
     }
     else
@@ -4347,8 +4299,15 @@ void warrior_t::init_spells()
   spec.titans_grip              = find_specialization_spell( "Titan's Grip" );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
   spec.victory_rush             = find_specialization_spell( "Victory Rush" );
-  spec.whirlwind				= find_specialization_spell( 190411 );
-  spec.whirlwind_2              = find_specialization_spell( "Whirlwind" );
+  if ( specialization() == WARRIOR_FURY )
+  {
+    spec.whirlwind   = find_specialization_spell( 190411 );
+    spec.whirlwind_2 = find_specialization_spell( "Whirlwind" );
+  }
+  else
+  {
+    spec.whirlwind = find_specialization_spell( "Whirlwind" );
+  }
   
 
   // Talents
