@@ -4541,33 +4541,6 @@ struct muzzle_t: public interrupt_base_t
 //end spells
 }
 
-namespace events {
-
-struct bloodseeker_t : public event_t
-{
-  static constexpr timespan_t period = timespan_t::from_seconds( 1.0 );
-
-  hunter_t* p;
-
-  bloodseeker_t( hunter_t* p )
-    : event_t( *p, period ), p( p )
-  {}
-
-  const char* name() const override
-  {
-    return "bloodseeker_driver";
-  }
-
-  void execute() override
-  {
-    trigger_bloodseeker_update( p );
-    make_event<bloodseeker_t>( sim(), p );
-  }
-};
-constexpr timespan_t bloodseeker_t::period;
-
-} // namespace events
-
 hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   actor_target_data_t( target, p ),
   debuffs(),
@@ -5607,7 +5580,12 @@ void hunter_t::combat_begin()
   }
 
   if ( talents.bloodseeker -> ok() && ( talents.wildfire_infusion -> ok() || sim -> player_no_pet_list.size() > 1 ) )
-    make_event<events::bloodseeker_t>( *sim, this );
+  {
+    make_repeating_event( *sim, timespan_t::from_seconds( 1 ),
+      [ this ]() {
+        trigger_bloodseeker_update( this );
+      } );
+  }
 
   player_t::combat_begin();
 }
