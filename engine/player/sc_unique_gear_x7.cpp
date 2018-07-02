@@ -19,6 +19,11 @@ namespace consumables
   void bountiful_captains_feast( special_effect_t& );
 }
 
+namespace enchants
+{
+  void galeforce_striking( special_effect_t& );
+}
+
 namespace util
 {
 // feasts initialization helper
@@ -38,6 +43,11 @@ void init_feast( special_effect_t& effect, arv::array_view<std::pair<stat_e, int
     }
   }
   effect.stat_amount = effect.player -> find_spell( effect.trigger_spell_id ) -> effectN( 1 ).average( effect.player );
+}
+
+std::string tokenized_name( const spell_data_t* spell )
+{
+  return ::util::tokenize_fn( spell -> name_cstr() );
 }
 } // namespace util
 
@@ -63,6 +73,27 @@ void consumables::bountiful_captains_feast( special_effect_t& effect )
       { STAT_STAMINA,   259457 } } );
 }
 
+// Gale-Force Striking ======================================================
+
+void enchants::galeforce_striking( special_effect_t& effect )
+{
+  buff_t* buff = effect.player -> buffs.galeforce_striking;
+  if ( !buff )
+  {
+    auto spell = effect.trigger();
+    buff =
+      make_buff<haste_buff_t>( effect.player, util::tokenized_name( spell ), spell )
+        -> add_invalidate( CACHE_ATTACK_SPEED )
+        -> set_default_value( spell -> effectN( 1 ).percent() )
+        -> set_activated( false );
+    effect.player -> buffs.galeforce_striking = buff;
+  }
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 } // namespace bfa
 } // anon namespace
 
@@ -73,4 +104,7 @@ void unique_gear::register_special_effects_bfa()
   // Consumables
   register_special_effect( 259409, consumables::galley_banquet );
   register_special_effect( 259410, consumables::bountiful_captains_feast );
+
+  // Enchants
+  register_special_effect( 255151, enchants::galeforce_striking );
 }

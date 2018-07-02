@@ -2912,6 +2912,9 @@ double player_t::composite_melee_speed() const
     h *= 1.0 / ( 1.0 + buffs.fel_winds->check_value() );
   }
 
+  if ( buffs.galeforce_striking && buffs.galeforce_striking->check() )
+    h *= 1.0 / ( 1.0 + buffs.galeforce_striking->check_value() );
+
   return h;
 }
 

@@ -3687,6 +3687,9 @@ struct player_t : public actor_t
 
     // Darkmoon Faire versatility food
     buff_t* dmf_well_fed;
+
+    // 8.0
+    buff_t* galeforce_striking; // Gale-Force Striking weapon enchant
   } buffs;
 
   struct debuffs_t
