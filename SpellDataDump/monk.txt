@@ -3186,7 +3186,7 @@ Effects          :
                    Affected Spells: Rushing Jade Wind (116847), Rushing Jade Wind (148187), Rushing Jade Wind (261715)
 #7 (id=260838)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -10 | Scaled Value: -10 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Song of Chi-Ji (198898)
+                   Affected Spells: Tiger Palm (100780), Chi Burst (123986), Chi Burst (130654), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Song of Chi-Ji (198898), Chi Burst (261682)
 #8 (id=260839)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Eye of the Tiger (196608)
@@ -3203,7 +3203,7 @@ Effects          :
                    Base Value: -6 | Scaled Value: -6 | Target: Self (1)
 #14 (id=260845)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Moderate Stagger (124274), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649), Rushing Jade Wind (261715)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Moderate Stagger (124274), Chi Burst (130654), Chi Burst (148135), Rushing Jade Wind (148187), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682), Rushing Jade Wind (261715)
 #15 (id=260846)   : Apply Aura (6) | Modify Expertise% (240)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #16 (id=362030)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
@@ -3321,7 +3321,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 115 | Target: Self (1)
 #14 (id=739337)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Chi Burst (130654), Chi Burst (148135), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Chi Burst (130654), Chi Burst (148135), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682)
 #15 (id=739777)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 96 | Scaled Value: 96 | Target: Self (1)
 
@@ -3366,10 +3366,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=180816)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -55 | Scaled Value: -55 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Burst (123986), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Strike (205523), Blackout Kick (228649), Rushing Jade Wind (261715), Fist of the White Tiger (261947), Fist of the White Tiger (261977)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Burst (123986), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Strike (205523), Blackout Kick (228649), Chi Burst (261682), Rushing Jade Wind (261715), Fist of the White Tiger (261947), Fist of the White Tiger (261977)
 #2 (id=181516)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -55 | Scaled Value: -55 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Burst (123986), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Strike (205523), Blackout Kick (228649), Rushing Jade Wind (261715), Fist of the White Tiger (261947), Fist of the White Tiger (261977)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Rising Sun Kick (107428), Rushing Jade Wind (116847), Fists of Fury (117418), Crackling Jade Lightning (117952), Chi Burst (123986), Chi Burst (130654), Chi Wave (132463), Chi Wave (132466), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (152175), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Strike (205523), Blackout Kick (228649), Chi Burst (261682), Rushing Jade Wind (261715), Fist of the White Tiger (261947), Fist of the White Tiger (261977)
 #3 (id=181626)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: -55 | Scaled Value: -55 | Target: Self (1)
 #4 (id=289040)   : Apply Aura (6) | Dummy (4)
@@ -4995,7 +4995,7 @@ Description      : Stomps the ground, dealing $s1 Physical damage to all nearby 
 Name             : Surging Mist (PvP Talent) (id=227344) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 0% - 535% Base Mana (0) (id=11512) [Hotfixed: Aura Id (137024 -> 1073741824), Max Cost (0 -> 535), Percent Cost (1 -> 0), Max Percent Cost (0 -> 0)]
+Resource         : 2% Base Mana (0) (id=11512) w/ Mistweaver Monk (id=137024) [Hotfixed: Percent Cost (1 -> 2)]
 Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -5592,6 +5592,25 @@ Effects          :
 #1 (id=487505)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Misc Value: 917504 | Target: Self (1)
 Tooltip          : Increases haste by $s1.
+
+Name             : Chi Burst (id=261682) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Level      : 1
+Range            : 100 yards
+Affecting spells : Brewmaster Monk (137023 effect#7), Windwalker Monk (137025 effect#14), Storm, Earth, and Fire (137639 effect#1), Extend Life (185158 effect#2)
+Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
+                 : ........ ......x. ...x.... ........   ........ ........ ........ ......x. 
+                 : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Does not break stealth (37)
+Effects          :
+#1 (id=487657)   : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | Misc Value: chi | Target: Self (1)
+Description      : $@spelldesc123986
 
 Name             : Rushing Jade Wind (id=261715) [Spell Family (53)] 
 Class            : Monk
