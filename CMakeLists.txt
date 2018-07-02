@@ -5,7 +5,7 @@ project(simc)
 # all options to individualize the build
 option(BUILD_GUI "Build the Qt gui along with cli binary" ON)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 11)
 
 # enable colored output with ninja build system
 add_compile_options(-fcolor-diagnostics)
@@ -31,3 +31,4 @@ include(source_files/cmake_engine_main.txt)
 string(REGEX REPLACE "([^;]+)" "engine/\\1" source_files "${source_files}")
 add_executable(simc ${source_files})
 target_link_libraries(simc engine)
+
