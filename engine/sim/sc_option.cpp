@@ -603,7 +603,7 @@ void opts::parse( sim_t*                 sim,
 
     if ( index == std::string::npos )
     {
-        throw std::invalid_argument( fmt::format("{}: Unexpected parameter '{}'. Expected format: name=value", context, s) );
+        throw std::invalid_argument( fmt::format("Unexpected parameter '{}'. Expected format: name=value", s) );
     }
 
     std::string n = s.substr( 0, index );
@@ -611,7 +611,7 @@ void opts::parse( sim_t*                 sim,
 
     if ( ! opts::parse( sim, options, n, v ) )
     {
-      throw std::invalid_argument( fmt::format("{}: Unexpected parameter '{}'.", context, n) );
+      throw std::invalid_argument( fmt::format("Unexpected parameter '{}'.", n) );
     }
   }
 }

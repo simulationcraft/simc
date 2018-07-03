@@ -305,7 +305,6 @@ const char* util::race_type_string( race_e type )
     case RACE_NIGHTBORNE:          return "nightborne";
     case RACE_DARK_IRON_DWARF:     return "dark_iron_dwarf";
     case RACE_MAGHAR_ORC:          return "maghar_orc";
-    case RACE_UNKNOWN:             return "unknown";
     case RACE_MAX:                 return "unknown";
     // no default statement so we get warnings if something is missing.
   }
@@ -2367,18 +2366,7 @@ unsigned util::to_unsigned( const char* str )
 // to_int ===================================================================
 
 int util::to_int( const std::string& str )
-{ return util::to_int( str.c_str() ); }
-
-int util::to_int( const char* str )
-{
-  errno = 0;
-
-  long l = strtol( str, nullptr, 0 );
-  if ( errno != 0 )
-    return 0;
-
-  return l;
-}
+{ return std::stoi( str ); }
 
 // parse_date ===============================================================
 
@@ -2416,7 +2404,7 @@ int64_t util::parse_date( const std::string& month_day_year )
 
   std::string buffer = year + month + day;
 
-  return atoi( buffer.c_str() );
+  return std::stoi( buffer );
 }
 
 // urlencode ================================================================

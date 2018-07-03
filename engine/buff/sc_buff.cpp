@@ -1346,8 +1346,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
-    sim->errorf( "%s attempts to extend asynchronous buff %s.", p->name(), name() );
-    sim->cancel();
+    throw std::runtime_error(fmt::format("'{}' attempts to extend asynchronous buff '{}'.", p->name(), name() ));
   }
 
   assert( expiration.size() == 1 );

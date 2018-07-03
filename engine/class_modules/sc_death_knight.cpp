@@ -826,7 +826,7 @@ public:
   // Character Definition
   void      init_spells() override;
   void      init_action_list() override;
-  bool      init_actions() override;
+  void      init_actions() override;
   void      init_rng() override;
   void      init_base_stats() override;
   void      init_scaling() override;
@@ -834,7 +834,7 @@ public:
   void      init_gains() override;
   void      init_procs() override;
   void      init_absorb_priority() override;
-  bool      init_finished() override;
+  void      init_finished() override;
   double    composite_armor_multiplier() const override;
   double    composite_bonus_armor() const override;
   double    composite_melee_attack_power() const override;
@@ -866,7 +866,7 @@ public:
   void      assess_damage_imminent( school_e, dmg_e, action_state_t* ) override;
   void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
   void      do_damage( action_state_t* ) override;
-  bool      create_actions() override;
+  void      create_actions() override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
   expr_t*   create_expression( const std::string& name ) override;
   void      create_pets() override;
@@ -2556,9 +2556,9 @@ struct death_knight_action_t : public Base
     }
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
-    bool ret = action_base_t::init_finished();
+    action_base_t::init_finished();
 
     if ( this -> base_costs[ RESOURCE_RUNE ] || this -> base_costs[ RESOURCE_RUNIC_POWER ] )
     {
@@ -2574,8 +2574,6 @@ struct death_knight_action_t : public Base
     {
       this -> gcd_haste = HASTE_ATTACK;
     }
-
-    return ret;
   }
 
   timespan_t gcd() const override
@@ -6667,7 +6665,7 @@ void death_knight_t::start_cold_heart_talent()
 
 // death_knight_t::create_actions ===========================================
 
-bool death_knight_t::create_actions()
+void death_knight_t::create_actions()
 {
   if ( spec.festering_wound -> ok() )
   {
@@ -6704,7 +6702,7 @@ bool death_knight_t::create_actions()
     active_spells.cold_heart_talent = new cold_heart_talent_damage_t( this );
   }
 
-  return player_t::create_actions();
+  player_t::create_actions();
 }
 
 // death_knight_t::create_action  ===========================================
@@ -7532,12 +7530,12 @@ void death_knight_t::init_action_list()
   player_t::init_action_list();
 }
 
-bool death_knight_t::init_actions()
+void death_knight_t::init_actions()
 {
   active_spells.blood_plague = new blood_plague_t( this );
   active_spells.frost_fever = new frost_fever_t( this );
 
-  return player_t::init_actions();
+  player_t::init_actions();
 }
 
 // death_knight_t::init_scaling =============================================
@@ -7787,9 +7785,9 @@ void death_knight_t::init_absorb_priority()
 
 // death_knight_t::init_finished ============================================
 
-bool death_knight_t::init_finished()
+void death_knight_t::init_finished()
 {
-  auto ret = player_t::init_finished();
+  player_t::init_finished();
 
   if ( deprecated_dnd_expression )
   {
@@ -7797,8 +7795,6 @@ bool death_knight_t::init_finished()
                    "'dot.death_and_decay.X' have been deprecated. Use 'death_and_decay.ticking' "
                    "or death_and_decay.remains' instead.", name() );
   }
-
-  return ret;
 }
 
 // death_knight_t::reset ====================================================

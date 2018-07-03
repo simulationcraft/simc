@@ -21,17 +21,6 @@ namespace warlock
       main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
     }
 
-    bool warlock_pet_t::create_actions()
-    {
-      bool check = pet_t::create_actions();
-      if (check)
-      {
-        return true;
-      }
-      else
-        return false;
-    }
-
     void warlock_pet_t::init_action_list()
     {
       if (special_action)
@@ -711,11 +700,6 @@ action_t* warlock_t::create_action( const std::string& action_name, const std::s
   }
 
   return player_t::create_action( action_name, options_str );
-}
-
-bool warlock_t::create_actions()
-{
-	return player_t::create_actions();
 }
 
 pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& pet_type )

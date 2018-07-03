@@ -2432,7 +2432,7 @@ struct fire_mines_detonator_t : public proc_spell_t
     active_mines( nullptr )
   { }
 
-  bool init_finished() override
+  void init_finished() override
   {
     for ( auto cb : player -> callbacks.all_callbacks )
     {
@@ -2444,9 +2444,11 @@ struct fire_mines_detonator_t : public proc_spell_t
     }
 
     if ( ! active_mines )
-      return false;
+    {
+      throw std::invalid_argument("No active mines found to detonate.");
+    }
 
-    return proc_spell_t::init_finished();
+   proc_spell_t::init_finished();
   }
 
   bool ready() override

@@ -1012,7 +1012,7 @@ void print_json( sim_t& sim )
     }
     catch ( const std::exception& e )
     {
-      sim.errorf( "Failed to print JSON output! %s", e.what() );
+      sim.error( "Error generating JSON report: {}", e.what() );
     }
   }
 }

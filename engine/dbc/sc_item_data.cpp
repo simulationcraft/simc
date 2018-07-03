@@ -563,28 +563,27 @@ double item_database::curve_point_value( dbc_t& dbc, unsigned curve_id, double p
 // TODO: Needs some way to figure what value to pass, for now presume min of player level, max
 // level. Also presumes we are only scaling itemlevel for now, this is almost certainly not 100%
 // true in all cases for the use of curve data.
-bool item_database::apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level )
+void item_database::apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level )
 {
   // No scaling needed
   if ( scaling_id == 0 )
   {
-    return true;
+    return;
   }
 
   const scaling_stat_distribution_t* data = item.player -> dbc.scaling_stat_distribution( scaling_id );
   // Unable to find the scaling stat distribution
   if ( data == nullptr )
   {
-    item.sim -> errorf( "%s: Unable to find scaling information for %s scaling id %u",
-        item.player -> name(), item.name(), item.parsed.data.id_scaling_distribution );
-    return false;
+    throw std::invalid_argument(fmt::format("Unable to find scaling information for {} scaling id {}.",
+        item.name(), item.parsed.data.id_scaling_distribution));
   }
 
   // Player level lower than item minimum scaling level, shouldnt happen but let item init go
   // through
   if ( player_level < data -> min_level )
   {
-    return true;
+    return;
   }
 
   unsigned base_value = std::min( player_level, data -> max_level );
@@ -600,8 +599,6 @@ bool item_database::apply_item_scaling( item_t& item, unsigned scaling_id, unsig
   }
 
   item.parsed.data.level = static_cast<unsigned>( util::round( scaled_result, 0 ) );
-
-  return true;
 }
 
 bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& entry )
@@ -720,12 +717,7 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // ITEM_BONUS_SCALING_2).
     case ITEM_BONUS_SCALING:
     {
-      if ( ! item_database::apply_item_scaling( item, entry.value_1, item.player -> level() ) )
-      {
-        item.player -> sim -> errorf( "Player %s item '%s' unable to initialize item scaling for bonus id %u",
-            item.player -> name(), item.name(), entry.id );
-        return false;
-      }
+      item_database::apply_item_scaling( item, entry.value_1, item.player -> level() );
       break;
     }
     // This bonus type uses a curve point to scale the base item level, however it seems to also
@@ -737,12 +729,9 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
     // Simulationcraft will scale relics purely by using the (seemingly often) present item level
     // adjustment bonus type.
     case ITEM_BONUS_SCALING_2:
-      if ( item.parsed.drop_level > 0 &&
-           ! item_database::apply_item_scaling( item, entry.value_1, item.parsed.drop_level ) )
+      if ( item.parsed.drop_level > 0 )
       {
-        item.player -> sim -> errorf( "Player %s item '%s' unable to initialize item scaling for bonus id %u",
-            item.player -> name(), item.name(), entry.id );
-        return false;
+        item_database::apply_item_scaling( item, entry.value_1, item.parsed.drop_level );
       }
       break;
     // A new bonus type that sets the base item level of items, used in Legion for things like the
@@ -1399,7 +1388,7 @@ std::vector<item_database::token_t> item_database::parse_tokens( const std::stri
     int index = 0;
     while ( t.full[ index ] != '\0' &&
             t.full[ index ] != '%'  &&
-            ! isalpha( static_cast<unsigned char>( t.full[ index ] ) ) ) index++;
+            ! std::isalpha( static_cast<unsigned char>( t.full[ index ] ) ) ) index++;
     if ( index == 0 )
     {
       t.name = t.full;
@@ -1409,7 +1398,7 @@ std::vector<item_database::token_t> item_database::parse_tokens( const std::stri
     {
       t.name = t.full.substr( index );
       t.value_str = t.full.substr( 0, index );
-      t.value = atof( t.value_str.c_str() );
+      t.value = std::stod( t.value_str.c_str() );
     }
     tokens.push_back( std::move(t) );
   }

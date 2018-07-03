@@ -611,10 +611,10 @@ struct rogue_t : public player_t
   void      init_procs() override;
   void      init_scaling() override;
   void      init_resources( bool force ) override;
-  bool      init_items() override;
-  bool      init_special_effects() override;
+  void      init_items() override;
+  void      init_special_effects() override;
   void      init_rng() override;
-  bool      init_finished() override;
+  void      init_finished() override;
   void      create_buffs() override;
   void      create_options() override;
   void      copy_from( player_t* source ) override;
@@ -7449,13 +7449,9 @@ std::string rogue_t::create_profile( save_e stype )
 
 // rogue_t::init_items ======================================================
 
-bool rogue_t::init_items()
+void rogue_t::init_items()
 {
-  bool ret = player_t::init_items();
-  if ( ! ret )
-  {
-    return ret;
-  }
+  player_t::init_items();
 
   // Initialize weapon swapping data structures for primary weapons here
   weapon_data[ WEAPON_MAIN_HAND ].weapon_data[ WEAPON_PRIMARY ] = main_hand_weapon;
@@ -7465,11 +7461,7 @@ bool rogue_t::init_items()
 
   if ( ! weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.options_str.empty() )
   {
-    ret = weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.init();
-    if ( ! ret )
-    {
-      return false;
-    }
+    weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data.init();
     weapon_data[ WEAPON_MAIN_HAND ].weapon_data[ WEAPON_SECONDARY ] = main_hand_weapon;
     weapon_data[ WEAPON_MAIN_HAND ].item_data[ WEAPON_SECONDARY ] = &( weapon_data[ WEAPON_MAIN_HAND ].secondary_weapon_data );
 
@@ -7479,26 +7471,20 @@ bool rogue_t::init_items()
 
   if ( ! weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.options_str.empty() )
   {
-    ret = weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.init();
-    if ( ! ret )
-    {
-      return false;
-    }
+    weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data.init();
     weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_SECONDARY ] = off_hand_weapon;
     weapon_data[ WEAPON_OFF_HAND ].item_data[ WEAPON_SECONDARY ] = &( weapon_data[ WEAPON_OFF_HAND ].secondary_weapon_data );
 
     // Restore primary off hand weapon after secondary weapon init
     main_hand_weapon = weapon_data[ WEAPON_OFF_HAND ].weapon_data[ WEAPON_PRIMARY ];
   }
-
-  return ret;
 }
 
 // rogue_t::init_special_effects ============================================
 
-bool rogue_t::init_special_effects()
+void rogue_t::init_special_effects()
 {
-  bool ret = player_t::init_special_effects();
+  player_t::init_special_effects();
 
   if ( weapon_data[ WEAPON_MAIN_HAND ].item_data[ WEAPON_SECONDARY ] )
   {
@@ -7519,8 +7505,6 @@ bool rogue_t::init_special_effects()
       unique_gear::initialize_special_effect_2( effect );
     }
   }
-
-  return ret;
 }
 
 // rogue_t::init_rng ========================================================
@@ -7532,12 +7516,12 @@ void rogue_t::init_rng()
 
 // rogue_t::init_finished ===================================================
 
-bool rogue_t::init_finished()
+void rogue_t::init_finished()
 {
   weapon_data[ WEAPON_MAIN_HAND ].initialize();
   weapon_data[ WEAPON_OFF_HAND ].initialize();
 
-  return player_t::init_finished();
+  player_t::init_finished();
 }
 
 // rogue_t::reset ===========================================================

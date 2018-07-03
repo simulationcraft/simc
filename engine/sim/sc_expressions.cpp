@@ -1240,28 +1240,16 @@ expr_t* build_player_expression_tree(
 
     if ( t.type == expression::TOK_NUM )
     {
-      stack.push_back( new const_expr_t( t.label, atof( t.label.c_str() ) ) );
+      stack.push_back( new const_expr_t( t.label, std::stod( t.label ) ) );
     }
     else if ( t.type == expression::TOK_STR )
     {
-      try {
-        expr_t* e = player.create_expression( t.label );
-        if ( !e )
-        {
-          player.sim->errorf(
-              "Player %s: Unable to decode expression function '%s'\n",
-              player.name(), t.label.c_str() );
-          return nullptr;
-        }
-        stack.push_back( e );
-      }
-      catch ( const std::exception& exc)
+      expr_t* e = player.create_expression( t.label );
+      if ( !e )
       {
-        player.sim->errorf(
-            "Player %s : Exception while decoding expression function '%s': %s\n",
-            player.name(), t.label.c_str(), exc.what() );
-        return nullptr;
+        std::throw_with_nested(std::runtime_error("No expression found."));
       }
+      stack.push_back( e );
     }
     else if ( expression::is_unary( t.type ) )
     {
@@ -1327,28 +1315,16 @@ static expr_t* build_expression_tree(
 
     if ( t.type == expression::TOK_NUM )
     {
-      stack.push_back( new const_expr_t( t.label, atof( t.label.c_str() ) ) );
+      stack.push_back( new const_expr_t( t.label, std::stod( t.label ) ) );
     }
     else if ( t.type == expression::TOK_STR )
     {
-      try {
-        expr_t* e = action->create_expression( t.label );
-        if ( !e )
-        {
-          action->sim->errorf(
-              "Player %s action %s : Unable to decode expression function '%s'\n",
-              action->player->name(), action->name(), t.label.c_str() );
-          return nullptr;
-        }
-        stack.push_back( e );
-      }
-      catch ( const std::exception& exc)
+      expr_t* e = action->create_expression( t.label );
+      if ( !e )
       {
-        action->sim->errorf(
-            "Player %s action %s : Exception while decoding expression function '%s': %s\n",
-            action->player->name(), action->name(), t.label.c_str(), exc.what() );
-        return nullptr;
+        throw std::invalid_argument("No expression found.");
       }
+      stack.push_back( e );
     }
     else if ( expression::is_unary( t.type ) )
     {
@@ -1396,40 +1372,40 @@ static expr_t* build_expression_tree(
 expr_t* expr_t::parse( action_t* action, const std::string& expr_str,
                        bool optimize )
 {
-  if ( expr_str.empty() )
-    return nullptr;
-
-  std::vector<expression::expr_token_t> tokens =
-      expression::parse_tokens( action, expr_str );
-
-  if ( action->sim->debug )
-    expression::print_tokens( tokens, action->sim );
-
-  expression::convert_to_unary( tokens );
-
-  if ( action->sim->debug )
-    expression::print_tokens( tokens, action->sim );
-
-  if ( !expression::convert_to_rpn( tokens ) )
+  try
   {
-    action->sim->errorf( "%s-%s: Unable to convert %s into RPN\n",
-                         action->player->name(), action->name(),
-                         expr_str.c_str() );
-    action->sim->cancel();
-    return nullptr;
+    if ( expr_str.empty() )
+      return nullptr;
+
+    std::vector<expression::expr_token_t> tokens =
+        expression::parse_tokens( action, expr_str );
+
+    if ( action->sim->debug )
+      expression::print_tokens( tokens, action->sim );
+
+    expression::convert_to_unary( tokens );
+
+    if ( action->sim->debug )
+      expression::print_tokens( tokens, action->sim );
+
+    if ( !expression::convert_to_rpn( tokens ) )
+    {
+      throw std::invalid_argument("Unable to convert '{}' into RPN.");
+    }
+
+    if ( action->sim->debug )
+      expression::print_tokens( tokens, action->sim );
+
+    if ( expr_t* e = build_expression_tree( action, tokens, optimize ) )
+      return e;
+
+    throw std::invalid_argument("Unable to build expression tree.");
   }
-
-  if ( action->sim->debug )
-    expression::print_tokens( tokens, action->sim );
-
-  if ( expr_t* e = build_expression_tree( action, tokens, optimize ) )
-    return e;
-
-  action->sim->errorf( "%s-%s: Unable to build expression tree from %s\n",
-                       action->player->name(), action->name(),
-                       expr_str.c_str() );
-  action->sim->cancel();
-  return nullptr;
+  catch (const std::exception& e)
+  {
+    std::throw_with_nested(std::runtime_error(fmt::format("Cannot parse expression from '{}'",
+        expr_str)));
+  }
 }
 
 #ifdef UNIT_TEST

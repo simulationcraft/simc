@@ -103,7 +103,7 @@ void pantheon_state_t::parse_options()
 
     if ( split.size() >= 2 )
     {
-      haste = std::atof( split[ 1 ].c_str() );
+      haste = std::stod( split[ 1 ] );
       if ( haste <= 0 )
       {
         player -> sim -> errorf( "Invalid haste value %s", split[ 1 ].c_str() );

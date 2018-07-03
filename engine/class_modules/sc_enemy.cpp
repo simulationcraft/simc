@@ -1183,6 +1183,11 @@ void enemy_t::init_base_stats()
   {
     race = util::parse_race_type( sim -> target_race );
     race_str = util::race_type_string( race );
+    if (race == RACE_NONE)
+    {
+      throw std::invalid_argument(
+          fmt::format( "{} could not parse race from sim target race '{}'.", name(), sim->target_race ) );
+    }
   }
 
   base.attack_crit_chance = 0.05;

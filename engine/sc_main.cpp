@@ -48,16 +48,16 @@ struct sim_signal_handler_t
     std::cerr << "sim_signal_handler: " << name << "!";
     if ( crashing_child )
     {
-      std::cerr << " Thread=" << crashing_child -> thread_index
-                << " Iteration=" << crashing_child -> current_iteration
-                << " Seed=" << crashing_child -> seed << " (" << ( crashing_child -> seed + crashing_child -> thread_index ) << ")"
-                << " TargetHealth=" << crashing_child -> target -> resources.initial[ RESOURCE_HEALTH ];
+      fmt::print(stderr, " Thread={} Iteration={} Seed={} ({}) TargetHealth={}\n",
+          crashing_child -> thread_index, crashing_child -> current_iteration, crashing_child -> seed,
+          ( crashing_child -> seed + crashing_child -> thread_index ),
+          crashing_child -> target -> resources.initial[ RESOURCE_HEALTH ]);
     }
     else
     {
-      std::cerr << " Iteration=" << global_sim -> current_iteration
-                << " Seed=" << global_sim -> seed
-                << " TargetHealth=" << global_sim -> target -> resources.initial[ RESOURCE_HEALTH ];
+      fmt::print(stderr, " Iteration={} Seed={} TargetHealth={}\n",
+          global_sim -> current_iteration, global_sim -> seed,
+          global_sim -> target -> resources.initial[ RESOURCE_HEALTH ]);
     }
 
     auto profileset = global_sim -> profilesets.current_profileset_name();
@@ -218,128 +218,149 @@ struct special_effect_initializer_t
   { unique_gear::unregister_special_effects(); }
 };
 
+/**
+ * Print chained exceptions, separated by ' :'.
+ */
+void print_exception(const std::exception& e, int level =  0)
+{
+  fmt::print(stderr, "{}{}", level > 0 ? ": " : "", e.what());
+  try {
+      std::rethrow_if_nested(e);
+  } catch(const std::exception& e) {
+      print_exception(e, level+1);
+  } catch(...) {}
+}
+
 } // anonymous namespace ====================================================
 
 // sim_t::main ==============================================================
 
 int sim_t::main( const std::vector<std::string>& args )
 {
-  cache_initializer_t cache_init( get_cache_directory() + "/simc_cache.dat" );
-  dbc_initializer_t dbc_init;
-  module_t::init();
-  unique_gear::register_hotfixes();
-
-  special_effect_initializer_t special_effect_init;
-
-  sim_control_t control;
-
   try
   {
-    control.options.parse_args(args);
-  }
-  catch (const std::exception& e) {
-    std::cerr << "ERROR! Incorrect option format: " << e.what() << std::endl;
-    return 1;
-  }
+    cache_initializer_t cache_init( get_cache_directory() + "/simc_cache.dat" );
+    dbc_initializer_t dbc_init;
+    module_t::init();
+    unique_gear::register_hotfixes();
 
-  // Hotfixes are applies right before the sim context (control) is created, and simulator setup
-  // begins
-  hotfix::apply();
+    special_effect_initializer_t special_effect_init;
 
-  bool setup_success = true;
-  std::string errmsg;
-  try
-  {
-    setup( &control );
-  }
-  catch( const std::exception& e ){
-    errmsg = e.what();
-    setup_success = false;
-  }
+    // Print simc version info
+    if ( !git_info::available() )
+    {
+    util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s)\n",
+        SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str());
+    }
+    else
+    {
+    util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s, git build %s %s)\n",
+        SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str(), git_info::branch(), git_info::revision());
+    }
+    std::cout << std::endl;
 
-  if ( !git_info::available() )
-  {
-  util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s)\n",
-      SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str());
-  }
-  else
-  {
-  util::printf("SimulationCraft %s for World of Warcraft %s %s (wow build %s, git build %s %s)\n",
-      SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string(dbc.build_level()).c_str(), git_info::branch(), git_info::revision());
-  }
+    sim_control_t control;
 
-  if ( display_hotfixes )
-  {
-    std::cout << hotfix::to_str( dbc.ptr );
-    return 0;
-  }
-
-  if ( display_bonus_ids )
-  {
-    std::cout << dbc::bonus_ids_str( dbc );
-    return 0;
-  }
-
-  if ( ! setup_success )
-  {
-    std::cerr <<  "ERROR! Setup failure: " << errmsg << std::endl;
-    return 1;
-  }
-
-  if ( canceled ) { return 1;
-}
-
-  std::cout << std::endl;
-
-  if ( spell_query )
-  {
     try
     {
-      spell_query -> evaluate();
-      print_spell_query();
+      control.options.parse_args(args);
+    }
+    catch (const std::exception& e) {
+
+      std::throw_with_nested(std::invalid_argument("Incorrect option format"));
+    }
+
+    // Hotfixes are applies right before the sim context (control) is created, and simulator setup
+    // begins
+    hotfix::apply();
+
+    try
+    {
+      setup( &control );
     }
     catch( const std::exception& e ){
-      std::cerr <<  "ERROR! Spell Query failure: " << e.what() << std::endl;
+      std::throw_with_nested(std::runtime_error("Setup failure"));
+    }
+
+    if ( display_hotfixes )
+    {
+      std::cout << hotfix::to_str( dbc.ptr );
+      return 0;
+    }
+
+    if ( display_bonus_ids )
+    {
+      std::cout << dbc::bonus_ids_str( dbc );
+      return 0;
+    }
+
+    if ( canceled )
+    {
       return 1;
     }
-  }
-  else if ( need_to_save_profiles( this ) )
-  {
-    init();
-    std::cout << "\nGenerating profiles... \n";
-    report::print_profiles( this );
-  }
-  else
-  {
-    util::printf( "\nSimulating... ( iterations=%d, threads=%d, target_error=%.3f,  max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n\n",
-      iterations, threads, target_error, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
 
-    progress_bar.set_base( "Baseline" );
-    if ( execute() )
+
+    if ( spell_query )
     {
-      scaling      -> analyze();
-      plot         -> analyze();
-      reforge_plot -> analyze();
-
-      if ( canceled == 0 && ! profilesets.iterate( this ) )
+      try
       {
-        canceled = 1;
+        spell_query -> evaluate();
+        print_spell_query();
       }
-      else
+      catch( const std::exception& e ){
+        std::throw_with_nested(std::runtime_error("Spell Query Error"));
+      }
+    }
+    else if ( need_to_save_profiles( this ) )
+    {
+      try
       {
-        report::print_suite( this );
+        init();
+        std::cout << "\nGenerating profiles... \n";
+        report::print_profiles( this );
+      }
+      catch( const std::exception& e ){
+        std::throw_with_nested(std::runtime_error("Generating profiles"));
       }
     }
     else
     {
-      util::printf("Simulation was canceled.\n");
-      canceled = 1;
+      util::printf( "\nSimulating... ( iterations=%d, threads=%d, target_error=%.3f,  max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n\n",
+        iterations, threads, target_error, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
+
+      progress_bar.set_base( "Baseline" );
+      if ( execute() )
+      {
+        scaling      -> analyze();
+        plot         -> analyze();
+        reforge_plot -> analyze();
+
+        if ( canceled == 0 && ! profilesets.iterate( this ) )
+        {
+          canceled = 1;
+        }
+        else
+        {
+          report::print_suite( this );
+        }
+      }
+      else
+      {
+        util::printf("Simulation was canceled.\n");
+        canceled = 1;
+      }
     }
+
+    std::cout << std::endl;
+
+    return canceled;
   }
-
-  std::cout << std::endl;
-
-  return canceled;
+  catch (const std::exception& e) {
+    std::cerr << "Error: ";
+    print_exception(e);
+    std::cerr << std::endl;
+    return 1;
+  }
 }
 
 // ==========================================================================

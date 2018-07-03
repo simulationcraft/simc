@@ -691,11 +691,14 @@ namespace warlock {
           p()->buffs.grimoire_felguard->set_duration(timespan_t::from_seconds(p()->talents.grimoire_felguard->effectN(1).base_value()));
           p()->buffs.grimoire_felguard->trigger();
       }
-      bool init_finished() override {
-          if (pet) {
+      void init_finished() override
+      {
+          if (pet)
+          {
               pet->summon_stats = stats;
           }
-          return summon_pet_t::init_finished();
+
+          summon_pet_t::init_finished();
       }
       };
 

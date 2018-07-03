@@ -1106,13 +1106,13 @@ public:
     return g;
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
     // For reporting purposes only, as the game displays this as SCHOOL_CHAOS
     if ( ab::stats->school == SCHOOL_CHROMATIC )
       ab::stats->school = SCHOOL_CHAOS;
 
-    return ab::init_finished();
+    ab::init_finished();
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -3006,9 +3006,9 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     return c;
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
-    bool f = demon_hunter_attack_t::init_finished();
+    demon_hunter_attack_t::init_finished();
 
     for ( size_t i = 0; i < attacks.size(); i++ )
     {
@@ -3025,8 +3025,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
         attacks.back()->trail_of_ruin_dot = trail_of_ruin_dot;
       }
     }
-
-    return f;
   }
 
   virtual void execute() override
@@ -3216,17 +3214,15 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     return c;
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
-    bool f = demon_hunter_attack_t::init_finished();
+    demon_hunter_attack_t::init_finished();
 
     // Use one stats object for all parts of the attack.
     for ( size_t i = 0; i < attacks.size(); i++ )
     {
       attacks[ i ]->stats = stats;
     }
-
-    return f;
   }
 
   virtual void execute() override

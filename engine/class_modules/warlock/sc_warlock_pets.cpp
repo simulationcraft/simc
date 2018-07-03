@@ -266,13 +266,11 @@ namespace warlock {
         action_list_str += "/legion_strike,if=energy>=100";
       }
 
-      bool create_actions() {
-        auto r = warlock_pet_t::create_actions();
+      void create_actions() {
+        warlock_pet_t::create_actions();
 
         active.demonic_strength_felstorm = find_action("demonic_strength_felstorm");
         assert(active.demonic_strength_felstorm);
-
-        return r;
       }
 
       void init_base_stats() {

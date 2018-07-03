@@ -628,7 +628,7 @@ public:
   void      init_spells() override;
   void      init_base_stats() override;
   void      create_buffs() override;
-  bool      init_special_effects() override;
+  void      init_special_effects() override;
   void      init_gains() override;
   void      init_position() override;
   void      init_procs() override;
@@ -2455,12 +2455,12 @@ struct barbed_shot_t: public hunter_ranged_attack_t
     base_ta_adder += p -> azerite.feeding_frenzy.value( 2 );
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     for ( auto pet : p() -> pet_list )
       add_pet_stats( pet, { "stomp" } );
 
-    return hunter_ranged_attack_t::init_finished();
+    hunter_ranged_attack_t::init_finished();
   }
 
   void execute() override
@@ -3379,12 +3379,12 @@ struct flanking_strike_t: hunter_melee_attack_t
     add_child( damage );
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     for ( auto pet : p() -> pet_list )
       add_pet_stats( pet, { "flanking_strike" } );
 
-    return hunter_melee_attack_t::init_finished();
+    hunter_melee_attack_t::init_finished();
   }
 
   void execute() override
@@ -3831,18 +3831,17 @@ struct summon_pet_t: public hunter_spell_t
     opt_disabled = util::str_compare_ci( pet_name, "disabled" );
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     if ( ! pet && ! opt_disabled )
       pet = player -> find_pet( pet_name );
 
     if ( ! pet && p() -> specialization() != HUNTER_MARKSMANSHIP )
     {
-      sim -> error( "Player {} unable to find pet {} for summons.\n", p() -> name(), pet_name );
-      sim -> cancel();
+      throw std::invalid_argument(fmt::format("Unable to find pet '{}' for summons.", pet_name));
     }
 
-    return hunter_spell_t::init_finished();
+    hunter_spell_t::init_finished();
   }
 
   void execute() override
@@ -3936,12 +3935,12 @@ struct kill_command_t: public hunter_spell_t
     cooldown -> charges += static_cast<int>( p -> talents.alpha_predator -> effectN( 1 ).base_value() );
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     for ( auto pet : p() -> pet_list )
       add_pet_stats( pet, { "kill_command" } );
 
-    return hunter_spell_t::init_finished();
+    hunter_spell_t::init_finished();
   }
 
   void execute() override
@@ -4029,11 +4028,11 @@ struct dire_beast_t: public hunter_spell_t
     dot_duration = timespan_t::zero();
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     add_pet_stats( p() -> pets.dire_beast, { "dire_beast_melee", "stomp" } );
 
-    return hunter_spell_t::init_finished();
+    hunter_spell_t::init_finished();
   }
 
   void execute() override
@@ -4191,11 +4190,11 @@ struct spitting_cobra_t: public hunter_spell_t
     dot_duration = timespan_t::zero();
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     add_pet_stats( p() -> pets.spitting_cobra, { "cobra_spit" } );
 
-    return hunter_spell_t::init_finished();
+    hunter_spell_t::init_finished();
   }
 
   void execute() override
@@ -4746,8 +4745,7 @@ pet_t* hunter_t::create_pet( const std::string& pet_name,
     return new pets::hunter_main_pet_t( this, pet_name, type );
   else if ( !pet_type.empty() )
   {
-    sim -> error( "Player {} with pet {} has unknown type {}\n", name(), pet_name, pet_type );
-    sim -> cancel();
+    throw std::invalid_argument(fmt::format("Pet '{}' has unknown type '{}'.", pet_name, pet_type ));
   }
 
   return nullptr;
@@ -5184,9 +5182,9 @@ void hunter_t::create_buffs()
 
 // hunter_t::init_special_effects ===========================================
 
-bool hunter_t::init_special_effects()
+void hunter_t::init_special_effects()
 {
-  bool ret = player_t::init_special_effects();
+  player_t::init_special_effects();
 
   // Cooldown adjustments
 
@@ -5198,8 +5196,6 @@ bool hunter_t::init_special_effects()
   buffs.gyroscopic_stabilization -> set_trigger_spell( legendary.mm_gloves );
   buffs.the_mantle_of_command -> set_trigger_spell( legendary.bm_shoulders );
   buffs.parsels_tongue -> set_trigger_spell( legendary.bm_chest );
-
-  return ret;
 }
 
 // hunter_t::init_gains =====================================================

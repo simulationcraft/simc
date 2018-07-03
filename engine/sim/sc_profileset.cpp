@@ -546,19 +546,11 @@ bool profilesets_t::parse( sim_t* sim )
     // Test that profileset options are OK, up to the simulation initialization
     try
     {
-      auto test_sim = new sim_t();
+      std::unique_ptr<sim_t> test_sim = std::unique_ptr<sim_t>(new sim_t());
       test_sim -> profileset_enabled = true;
 
       test_sim -> setup( control );
-      auto ret = test_sim -> init();
-      if ( ! ret || ! validate( test_sim ) )
-      {
-        delete test_sim;
-        set_state( DONE );
-        return false;
-      }
-
-      delete test_sim;
+      test_sim -> init();
     }
     catch ( const std::exception& e )
     {

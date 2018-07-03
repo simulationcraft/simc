@@ -2972,9 +2972,9 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
       }
 
-  bool init_finished() override
+  void init_finished() override
   {
-    bool ret = monk_melee_attack_t::init_finished();
+    monk_melee_attack_t::init_finished();
     action_t* bok = player -> find_action( "blackout_kick" );
     if ( bok )
     {
@@ -2983,8 +2983,6 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
 
       bok -> add_child( this );
     }
-
-    return ret;
   }
 
   // Force 100 milliseconds for the animation, but not delay the overall GCD
@@ -4504,7 +4502,7 @@ public:
     harmful = false;
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     pet = player -> find_pet( pet_name );
     if ( ! pet )
@@ -4512,7 +4510,7 @@ public:
       background = true;
     }
 
-    return monk_spell_t::init_finished();
+    monk_spell_t::init_finished();
   }
 
   virtual void execute() override

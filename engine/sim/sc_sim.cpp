@@ -76,22 +76,19 @@ bool parse_debug_seed( sim_t* sim, const std::string&, const std::string& value 
 
   for ( const auto& seed_str : split )
   {
-#if defined( SC_WINDOWS ) && defined( SC_VS )
-    uint64_t seed = _strtoui64( seed_str.c_str(), nullptr, 10 );
-#else
-    uint64_t seed = strtoull( seed_str.c_str(), nullptr, 10 );
-#endif
-    if ( seed == 0 )
-    {
-      continue;
-    }
 
+    uint64_t seed = std::stoll( seed_str );
     sim -> debug_seed.push_back( seed );
   }
 
   range::sort( sim -> debug_seed );
 
-  return sim -> debug_seed.size() > 0;
+  if (sim->debug_seed.empty())
+  {
+    throw std::invalid_argument("Could not parse any debug seeds.");
+  }
+
+  return true;
 }
 
 // parse_ptr ================================================================
@@ -126,8 +123,7 @@ bool parse_active( sim_t*             sim,
     }
     else
     {
-      sim -> errorf( "Active Player is not a pet, cannot refer to 'owner'" );
-      return false;
+      throw std::invalid_argument("Active Player is not a pet, cannot refer to 'owner'" );
     }
   }
   else if ( value == "none" || value == "0" )
@@ -146,8 +142,7 @@ bool parse_active( sim_t*             sim,
     }
     if ( ! sim -> active_player )
     {
-      sim -> errorf( "Unable to find player %s to make active.\n", value.c_str() );
-      return false;
+      throw std::invalid_argument(fmt::format("Unable to find player '{}' to make active.", value ));
     }
   }
 
@@ -176,8 +171,7 @@ bool parse_player( sim_t*             sim,
 
   if ( name[ 0 ] >= '0' && name[ 0 ] <= '9' )
   {
-    sim -> errorf( "Invalid actor name %s - name cannot start with a digit.", name.c_str() );
-    return false;
+    throw std::invalid_argument(fmt::format("Invalid actor name '{}' - name cannot start with a digit.", name ));
   }
 
   if ( name == "pet" || name == "guardian" )
@@ -193,8 +187,7 @@ bool parse_player( sim_t*             sim,
 
     if ( ! sim -> active_player )
     {
-      sim -> errorf( "Pet profile ( name %s ) needs a player preceding it.", name.c_str() );
-      return false;
+      throw std::invalid_argument(fmt::format("Pet profile ({}) needs a player preceding it.", name ));
     }
 
     sim -> active_player = sim -> active_player -> create_pet( pet_name, pet_type );
@@ -206,18 +199,30 @@ bool parse_player( sim_t*             sim,
 
     player_t* source;
     if ( cut_pt == value.npos )
-      source = sim -> active_player;
-    else
-      source = sim -> find_player( value.substr( cut_pt + 1 ) );
-
-    if ( source == nullptr )
     {
-      sim -> errorf( "Invalid source for profile copy - format is copy=target[,source], source defaults to active player." );
-      return false;
+      source = sim -> active_player;
+      if (!source)
+      {
+        throw std::invalid_argument("No active player as source for profile copy available - format is copy=target[,source]" );
+      }
+    }
+    else
+    {
+      std::string source_name = value.substr( cut_pt + 1 );
+      source = sim -> find_player( source_name );
+      if (!source)
+      {
+        throw std::invalid_argument(fmt::format(
+            "Invalid source for profile copy - format is copy=target[,source]: Cannot find player '{}'.", source_name ));
+      }
     }
 
+    assert(source);
+
     sim -> active_player = module_t::get( source -> type ) -> create_player( sim, player_name );
-    if ( sim -> active_player != nullptr ) sim -> active_player -> copy_from ( source );
+
+    if ( sim -> active_player != nullptr )
+      sim -> active_player -> copy_from ( source );
   }
   else
   {
@@ -226,7 +231,7 @@ bool parse_player( sim_t*             sim,
 
     if ( ! module || ! module -> valid() )
     {
-      sim -> errorf( "\nModule for class %s is currently not available.\n", name.c_str() );
+      throw std::invalid_argument(fmt::format("Module for class '{}' is currently not available.", name ));
     }
     else
     {
@@ -234,8 +239,8 @@ bool parse_player( sim_t*             sim,
 
       if ( ! sim -> active_player )
       {
-        sim -> errorf( "\nUnable to create player %s with class %s.\n",
-                       value.c_str(), name.c_str() );
+        throw std::invalid_argument(fmt::format("Unable to create player '{}' with class '{}'.",
+                       value, name ));
       }
     }
   }
@@ -249,27 +254,29 @@ bool parse_player( sim_t*             sim,
 
 // parse_proxy ==============================================================
 
-bool parse_proxy( sim_t*             sim,
-                         const std::string& /* name */,
-                         const std::string& value )
+bool parse_proxy( sim_t* , const std::string& /* name */, const std::string& value )
 {
 
   std::vector<std::string> splits = util::string_split( value, "," );
 
   if ( splits.size() != 3 )
   {
-    sim -> errorf( "Expected format is: proxy=type,host,port\n" );
-    return false;
+    throw std::invalid_argument("Expected format is: proxy=type,host,port\n" );
+  }
+
+  if (splits[ 0 ] != "http")
+  {
+    throw std::invalid_argument(fmt::format("Proxy invalid type '{}'", splits[ 0 ] ));
   }
 
   unsigned port = std::stoul( splits[ 2 ] );
-  if ( splits[ 0 ] == "http" && port > 0 && port < 65536 )
+  if ( port <= 0 || port >= 65536 )
   {
-    http::set_proxy( splits[ 0 ], splits[ 1 ], port );
-    return true;
+    throw std::invalid_argument(fmt::format("Invalid proxy port, outside range", port ));
   }
 
-  return false;
+  http::set_proxy( splits[ 0 ], splits[ 1 ], port );
+  return true;
 }
 
 // parse_cache ==============================================================
@@ -454,23 +461,22 @@ bool parse_armory( sim_t*             sim,
       }
 
       player_t* p;
-      if ( name == "wowhead" )
+      try
+        {
+        if ( name == "local_json" )
+          p = bcp_api::from_local_json( sim, player_name, stuff.server, description );
+        else
+          p = bcp_api::download_player( sim, stuff.region, stuff.server,
+                                        player_name, description, stuff.cache );
+
+        sim -> active_player = p;
+        if ( ! p )
+          throw std::runtime_error("Could not download player.");
+        }
+      catch (const std::exception& e )
       {
-        sim -> errorf( "Wowhead profiler currently not support. "
-                       "Wowhead profiler does not provide spec or talent data.\n" );
-        return false;
-
-        //p = wowhead::download_player( sim, stuff.region, stuff.server, player_name, description, wowhead::LIVE, stuff.cache );
+        std::throw_with_nested(std::runtime_error("BCP API"));
       }
-      else if ( name == "local_json" )
-        p = bcp_api::from_local_json( sim, player_name, stuff.server, description );
-      else
-        p = bcp_api::download_player( sim, stuff.region, stuff.server,
-                                      player_name, description, stuff.cache );
-
-      sim -> active_player = p;
-      if ( ! p )
-        return false;
     }
   }
 
@@ -510,7 +516,7 @@ bool parse_guild( sim_t*             sim,
       std::vector<std::string> ranks = util::string_split( ranks_str, "/" );
 
       for ( size_t i = 0; i < ranks.size(); i++ )
-        ranks_list.push_back( atoi( ranks[i].c_str() ) );
+        ranks_list.push_back( std::stoi( ranks[i] ) );
     }
 
     player_e pt = PLAYER_NONE;
@@ -762,8 +768,7 @@ bool parse_spell_query( sim_t*             sim,
 
     if ( sq_lvl > MAX_ILEVEL )
     {
-      sim -> errorf( "Maximum item level supported in Simulationcraft is %u.", MAX_ILEVEL );
-      return 0;
+      throw std::invalid_argument(fmt::format("Maximum item level supported in Simulationcraft is {}.", MAX_ILEVEL ));
     }
 
     sim -> spell_query_level = as< unsigned >( sq_lvl );
@@ -772,6 +777,11 @@ bool parse_spell_query( sim_t*             sim,
   }
 
   sim -> spell_query = std::unique_ptr<spell_data_expr_t>( spell_data_expr_t::parse( sim, sq_str ) );
+
+  if (sim -> spell_query == nullptr)
+  {
+    throw std::invalid_argument("Could not build spell query");
+  }
   return sim -> spell_query != nullptr;
 }
 
@@ -879,7 +889,7 @@ bool parse_maximize_reporting( sim_t*             sim,
     sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name.c_str() );
     return false;
   }
-  bool r = atoi( v.c_str() ) != 0;
+  bool r = std::stoi( v ) != 0;
   if ( r )
   {
     sim -> maximize_reporting = true;
@@ -1731,9 +1741,7 @@ void sim_t::combat_begin()
     }
     else
     {
-      errorf( "Unable to open output file '%s'\n", output_file_str.c_str() );
-      cancel();
-      return;
+      throw std::runtime_error(fmt::format("Unable to open output file '{}'.", output_file_str ));
     }
   }
 
@@ -2083,7 +2091,7 @@ void sim_t::analyze_error()
  * This function just checks that the sim has at least 1 active player, and sets
  * fixed_time automatically if the only role present is a ROLE_HEAL.  Called in sim_t::init_actors()
  */
-bool sim_t::check_actors()
+void sim_t::check_actors()
 {
   bool too_quiet = true; // Check for at least 1 active player
   bool zero_dds = true; // Check for at least 1 player != HEAL
@@ -2106,8 +2114,7 @@ bool sim_t::check_actors()
 
   if ( too_quiet && ! debug )
   {
-    errorf( "No active players in sim!" );
-    return false;
+    throw std::runtime_error("No active players in sim!");
   }
 
   // Set Fixed_Time when there are no DD's present
@@ -2115,8 +2122,6 @@ bool sim_t::check_actors()
   {
     fixed_time = true;
   }
-
-  return true;
 }
 
 /**
@@ -2125,7 +2130,7 @@ bool sim_t::check_actors()
  * This function... builds parties? I guess it assigns each player in player_list to
  * a party based on party_encoding. Called in sim_t::init_actors()
  */
-bool sim_t::init_parties()
+void sim_t::init_parties()
 {
   if ( debug )
     out_debug.printf( "Building Parties." );
@@ -2159,8 +2164,7 @@ bool sim_t::init_parties()
         player_t* p = find_player( player_name );
         if ( ! p )
         {
-          errorf( "Unable to find player %s for party creation.\n", player_name.c_str() );
-          return false;
+          throw std::invalid_argument( fmt::format("Unable to find player '{}' for party creation.", player_name) );
         }
         p -> party = party_index;
         for ( auto& pet : p -> pet_list )
@@ -2170,29 +2174,19 @@ bool sim_t::init_parties()
       }
     }
   }
-  return true;
 }
 
 /// Initialize actors
-bool sim_t::init_actors()
+void sim_t::init_actors()
 {
   if ( debug )
   {
     out_debug.printf( "Initializing actors." );
   }
 
-  bool actor_init = true;
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
-    if ( ! init_actor( target_list[ i ] ) )
-    {
-      actor_init = false;
-    }
-  }
-
-  if ( actor_init == false )
-  {
-    return actor_init;
+    init_actor( target_list[ i ] );
   }
 
   if ( debug )
@@ -2201,7 +2195,6 @@ bool sim_t::init_actors()
   if ( decorated_tooltips == -1 )
     decorated_tooltips = 1;
 
-  actor_init = true;
   auto name_number = 1;
   for ( size_t j = 0; j < player_no_pet_list.size(); ++j )
   {
@@ -2224,136 +2217,108 @@ bool sim_t::init_actors()
 
   for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
   {
-    if ( ! init_actor( player_no_pet_list[ i ] ) )
-    {
-      actor_init = false;
-    }
-  }
-
-  if ( ! actor_init )
-  {
-    return actor_init;
+    init_actor( player_no_pet_list[ i ] );
   }
 
   // create actor entries for pets
-  if ( ! init_actor_pets() )
-  {
-    return false;
-  }
+  init_actor_pets();
 
   // check that we have at least one active player
-  if ( ! check_actors() )
-    return false;
+  check_actors();
 
   // organize parties if necessary
-  if ( ! init_parties() )
-    return false;
-
-  // If we make it here, everything initialized properly and we can return true to sim_t::init()
-  return true;
+  init_parties();
 }
 
 // sim_t::init_actor ========================================================
 
 // This method handles the bulk of player initialization. Order is pretty
 // critical here. Called in sim_t::init()
-bool sim_t::init_actor( player_t* p )
+void sim_t::init_actor( player_t* p )
 {
-  // initialize class/enemy modules
-  for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
+  try
   {
-    const module_t* m = module_t::get( i );
-    if ( m ) m -> init( p );
-  }
+    // initialize class/enemy modules
+    for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
+    {
+      const module_t* m = module_t::get( i );
+      if ( m ) m -> init( p );
+    }
 
-  if ( default_actions && !p -> is_pet() )
+    if ( default_actions && !p -> is_pet() )
+    {
+      p -> clear_action_priority_lists();
+      p -> action_list_str.clear();
+    }
+
+    p -> init();
+    p -> initialized = true;
+
+    // This next section handles all the ugly details of initialization. Ideally, each of these
+    // init_* methods will eventually return a bool to indicate success or failure, from which
+    // we can either continue or halt initialization.
+    // For now, we're only enforcing this condition for the particular init_* methods that can
+    // lead to a sim -> cancel() result ( player_t::init_items() and player_t::init_actions() ).
+
+    p -> init_target();
+    p -> init_character_properties();
+
+    // Initialize each actor's items, construct gear information & stats
+    p -> init_items();
+
+    // Must be done after init_items (processes item options, so we know selected azerite powers in
+    // each item), and before init_spells (class modules "find_azerite_spell" in these).
+    p -> init_azerite();
+    p -> init_spells();
+    p -> init_base_stats();
+    p -> create_buffs();
+
+    // First-phase creation of special effects from various sources. Needed to be able to create
+    // actions (APLs, really) based on the presence of special effects on items.
+    p -> create_special_effects();
+
+    // First, create all the action objects and set up action lists properly
+    p -> create_actions();
+
+    // Create all actor pets before special effects get initialized. This ensures that we can use
+    // stuff like the presence of an action (created with create_actions()) to determine if a pet
+    // needs to be created or not. Similarly, talent, artifact, spec, and item based qualifiers would
+    // work.
+    p -> create_pets();
+
+    // Second-phase initialize all special effects and register them to actors
+    p -> init_special_effects();
+
+    // Finally, initialize all action objects
+    p -> init_actions();
+
+    // Once all transient properties are initialized (e.g., base stats, spells, special effects,
+    // items), initialize the initial stats of the actor.
+    p -> init_initial_stats();
+    // And once initial stats are initialized, derive the passive defensive properties of the actor.
+    p -> init_defense();
+
+    p -> init_scaling();
+    p -> init_gains();
+    p -> init_procs();
+    p -> init_uptimes();
+    p -> init_benefits();
+    p -> init_rng();
+    p -> init_stats();
+    p -> init_distance_targeting();
+    p -> init_absorb_priority();
+    p -> init_assessors();
+  }
+  catch (const std::exception& e)
   {
-    p -> clear_action_priority_lists();
-    p -> action_list_str.clear();
+    std::throw_with_nested(std::runtime_error(fmt::format("Actor '{}'", p->name())));
   }
-
-  p -> init();
-  p -> initialized = true;
-
-  // This next section handles all the ugly details of initialization. Ideally, each of these
-  // init_* methods will eventually return a bool to indicate success or failure, from which
-  // we can either continue or halt initialization.
-  // For now, we're only enforcing this condition for the particular init_* methods that can
-  // lead to a sim -> cancel() result ( player_t::init_items() and player_t::init_actions() ).
-
-  p -> init_target();
-  p -> init_character_properties();
-
-  // Initialize each actor's items, construct gear information & stats
-  if ( ! p -> init_items() )
-  {
-    return false;
-  }
-
-  // Must be done after init_items (processes item options, so we know selected azerite powers in
-  // each item), and before init_spells (class modules "find_azerite_spell" in these).
-  p -> init_azerite();
-  p -> init_spells();
-  p -> init_base_stats();
-  p -> create_buffs();
-
-  // First-phase creation of special effects from various sources. Needed to be able to create
-  // actions (APLs, really) based on the presence of special effects on items.
-  if ( ! p -> create_special_effects() )
-  {
-    return false;
-  }
-
-  // First, create all the action objects and set up action lists properly
-  if ( ! p -> create_actions() )
-  {
-    return false;
-  }
-
-  // Create all actor pets before special effects get initialized. This ensures that we can use
-  // stuff like the presence of an action (created with create_actions()) to determine if a pet
-  // needs to be created or not. Similarly, talent, artifact, spec, and item based qualifiers would
-  // work.
-  p -> create_pets();
-
-  // Second-phase initialize all special effects and register them to actors
-  if ( ! p -> init_special_effects() )
-  {
-    return false;
-  }
-
-  // Finally, initialize all action objects
-  if ( ! p -> init_actions() )
-  {
-    return false;
-  }
-
-  // Once all transient properties are initialized (e.g., base stats, spells, special effects,
-  // items), initialize the initial stats of the actor.
-  p -> init_initial_stats();
-  // And once initial stats are initialized, derive the passive defensive properties of the actor.
-  p -> init_defense();
-
-  p -> init_scaling();
-  p -> init_gains();
-  p -> init_procs();
-  p -> init_uptimes();
-  p -> init_benefits();
-  p -> init_rng();
-  p -> init_stats();
-  p -> init_distance_targeting();
-  p -> init_absorb_priority();
-  p -> init_assessors();
-
-  return true;
 }
 
 // sim_t::init_actor_pets ===================================================
 
-bool sim_t::init_actor_pets()
+void sim_t::init_actor_pets()
 {
-  bool actor_init = true;
-
   if ( debug )
     out_debug.printf( "Creating and initializing pets." );
 
@@ -2363,10 +2328,7 @@ bool sim_t::init_actor_pets()
 
     for (auto & elem : p -> pet_list)
     {
-      if ( ! init_actor( elem ) )
-      {
-        actor_init = false;
-      }
+      init_actor( elem );
     }
   }
 
@@ -2376,24 +2338,19 @@ bool sim_t::init_actor_pets()
 
     for (auto & elem : p -> pet_list)
     {
-      if ( ! init_actor( elem ) )
-      {
-        actor_init = false;
-      }
+      init_actor( elem );
     }
   }
-
-  return actor_init;
 }
 
 // sim_t::init ==============================================================
 
-bool sim_t::init()
+void sim_t::init()
 {
   auto start = std::chrono::high_resolution_clock::now();
 
   if ( initialized )
-    return true;
+    return;
 
   event_mgr.init();
 
@@ -2447,8 +2404,7 @@ bool sim_t::init()
     scaling -> scaling_metric = util::parse_scale_metric( scaling -> scale_over );
     if ( scaling -> scaling_metric == SCALE_METRIC_NONE )
     {
-      errorf( "Unknown scaling metric '%s'", scaling -> scale_over.c_str() );
-      return false;
+      throw std::invalid_argument(fmt::format("Unknown scaling metric '{}'", scaling -> scale_over));
     }
   }
 
@@ -2480,7 +2436,7 @@ bool sim_t::init()
     active_player = module_t::enemy() -> create_player( this, "enemy" + util::to_string( target_list.size() + 1 ) );
     if ( ! active_player )
     {
-      errorf( "\nUnable to create enemy %d.\n", (unsigned)target_list.size() );
+      throw std::invalid_argument(fmt::format("Unable to create enemy {}.", target_list.size() ));
     }
   }
 
@@ -2522,7 +2478,7 @@ bool sim_t::init()
   raid_event_t::init( this );
 
   // Initialize actors
-  if ( ! init_actors() ) return false;
+  init_actors();
 
   if ( report_precision < 0 ) report_precision = 2;
 
@@ -2541,17 +2497,18 @@ bool sim_t::init()
   // need to do something.
   if ( ! canceled )
   {
-    bool ret = true;
     bool verify_use_items_state = true;
 
     for ( auto& actor : actor_list )
     {
-
-      if ( ! actor -> init_finished() )
+      try
       {
-        ret = false;
+        actor -> init_finished();
       }
-
+      catch (const std::exception& e)
+      {
+        std::throw_with_nested(std::runtime_error(fmt::format("Actor '{}'", actor->name())));
+      }
       // Some verification stuff to avoid user mistakes
 
       // .. nag if the user has not added an use_item line for each on-use item
@@ -2560,11 +2517,6 @@ bool sim_t::init()
         verify_use_items_state = false;
       }
 
-    }
-
-    if ( ! ret )
-    {
-      return false;
     }
 
     if ( ! verify_use_items_state )
@@ -2581,7 +2533,11 @@ bool sim_t::init()
 
   init_time = util::duration_fp_seconds( start );
 
-  return canceled ? false : true;
+  if (canceled)
+  {
+
+    throw std::runtime_error("Canceled");
+  }
 }
 
 
@@ -2660,8 +2616,18 @@ void sim_t::analyze_iteration_data()
 
 bool sim_t::iterate()
 {
-  if ( ! init() )
+  try
+  {
+    init();
+  }
+  catch( const std::exception& e ){
+    if (parent == nullptr)
+    {
+      std::throw_with_nested( std::runtime_error("Initializing"));
+      fmt::print("Error initializing: {}\n", e.what());
+    }
     return false;
+  }
 
   progress_bar.init();
 
@@ -2828,9 +2794,18 @@ void sim_t::merge()
 
 void sim_t::run()
 {
-  if( iterate() )
+  try
   {
-    parent -> merge( *this );
+    if( iterate() )
+    {
+      parent -> merge( *this );
+    }
+  }
+  catch (const std::exception& e )
+  {
+    if (parent)
+      parent -> error("Error in child simulation ({}): {}", thread_index, e.what());
+    cancel();
   }
 }
 
@@ -2921,9 +2896,13 @@ bool sim_t::execute()
   double start_cpu_time  = util::cpu_time();
   double start_wall_time = util::wall_time();
 
-  partition();
-  bool success = iterate();
-  merge(); // Always merge, even in cases of unsuccessful simulation!
+  bool success = false;
+  {
+    auto merge_final_action = gsl::finally([&](){ merge(); }); // Always merge, even in cases of unsuccessful simulation!
+    partition();
+    success = iterate();
+  }
+
   if( success )
     analyze();
 
@@ -3318,11 +3297,7 @@ void sim_t::create_options()
   add_option( opt_func( "guardian", parse_player ) );
   add_option( opt_func( "copy", parse_player ) );
   add_option( opt_func( "armory", parse_armory ) );
-  add_option( opt_func( "armory_html", parse_armory ) );
   add_option( opt_func( "guild", parse_guild ) );
-  add_option( opt_func( "wowhead", parse_armory ) );
-  add_option( opt_func( "mopdev", parse_armory ) );
-  add_option( opt_func( "mophead", parse_armory ) );
   add_option( opt_func( "local_json", parse_armory ) );
   add_option( opt_func( "http_clear_cache", http::clear_cache ) );
   add_option( opt_func( "cache_items", parse_cache ) );
@@ -3466,9 +3441,8 @@ void sim_t::setup( sim_control_t* c )
     if ( option.scope != "global" ) continue;
     if ( ! parse_option( option.name, option.value ) )
     {
-      std::stringstream s;
-      s << "Unknown option '" << option.name << "' with value '" << option.value << "'";
-      throw std::invalid_argument( s.str() );
+      throw std::invalid_argument(
+          fmt::format("Unknown option '{}' with value '{}'.", option.name, option.value ));
     }
   }
 
@@ -3491,9 +3465,9 @@ void sim_t::setup( sim_control_t* c )
     player_t* p = find_player( o.scope );
     if ( !p )
     {
-      std::stringstream s;
-      s << "Unable to locate player '" << o.scope << "' for option '" << o.name << "' with value '" << o.value << "'";
-      throw std::invalid_argument( s.str() );
+      throw std::invalid_argument(
+                fmt::format("Unable to locate player '{}' for option '{}' with value '{}'.",
+                    o.scope, o.name, o.value));
     }
     if ( ! opts::parse(this, p->options, o.name, o.value))
     {
@@ -3524,9 +3498,7 @@ void sim_t::setup( sim_control_t* c )
     }
     else
     {
-      std::stringstream s;
-      s << "Unable to open output file '" << output_file_str << "'";
-      throw std::runtime_error( s.str() );
+      throw std::runtime_error(fmt::format("Unable to open output file '{}'.", output_file_str));
     }
   }
   if ( debug_each )
@@ -3591,7 +3563,7 @@ void sim_t::setup( sim_control_t* c )
 
   if( deterministic && ( target_error != 0 ) )
   {
-    errorf( "deterministic=1 cannot be used with non-zero target_error values!\n" );
+    throw std::invalid_argument("deterministic=1 cannot be used with non-zero target_error values!");
   }
 }
 

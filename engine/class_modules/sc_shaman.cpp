@@ -676,7 +676,7 @@ public:
   void init_base_stats() override;
   void init_scaling() override;
   void create_buffs() override;
-  bool create_actions() override;
+  void create_actions() override;
   void create_options() override;
   void init_gains() override;
   void init_procs() override;
@@ -692,7 +692,7 @@ public:
   std::string default_rune() const override;
 
   void init_rng() override;
-  bool init_special_effects() override;
+  void init_special_effects() override;
 
   void moving() override;
   void invalidate_cache( cache_e c ) override;
@@ -1101,9 +1101,9 @@ public:
     return m;
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
-    return ab::init_finished();
+    ab::init_finished();
   }
 
   shaman_t* p()
@@ -1351,7 +1351,7 @@ public:
     may_proc_lightning_shield = ab::weapon != nullptr;
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     if ( may_proc_flametongue )
     {
@@ -1388,7 +1388,7 @@ public:
       proc_wf = player->get_proc( std::string( "Windfury: " ) + full_name() );
     }
 
-    return base_t::init_finished();
+    base_t::init_finished();
   }
 
   virtual double maelstrom_weapon_energize_amount( const action_state_t* /* source */ ) const
@@ -1530,13 +1530,14 @@ public:
     may_proc_stormbringer = false;
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     if ( may_proc_stormbringer )
     {
       proc_sb = player->get_proc( std::string( "Stormbringer: " ) + full_name() );
     }
-    return base_t::init_finished();
+
+    base_t::init_finished();
   }
 
   double action_multiplier() const override
@@ -2110,7 +2111,7 @@ struct spirit_wolf_t : public base_wolf_t
   {
   }
 
-  bool create_actions() override;
+  void create_actions() override;
 
   attack_t* create_auto_attack() override
   {
@@ -2118,9 +2119,9 @@ struct spirit_wolf_t : public base_wolf_t
   }
 };
 
-bool spirit_wolf_t::create_actions()
+void spirit_wolf_t::create_actions()
 {
-  return shaman_pet_t::create_actions();
+  shaman_pet_t::create_actions();
 }
 
 // ==========================================================================
@@ -2185,9 +2186,9 @@ struct frost_wolf_t : public elemental_wolf_base_t
     elemental_wolf_base_t::create_buffs();
   }
 
-  bool create_actions() override
+  void create_actions() override
   {
-    return elemental_wolf_base_t::create_actions();
+    elemental_wolf_base_t::create_actions();
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -2222,9 +2223,9 @@ struct fire_wolf_t : public elemental_wolf_base_t
     elemental_wolf_base_t::create_buffs();
   }
 
-  bool create_actions() override
+  void create_actions() override
   {
-    return elemental_wolf_base_t::create_actions();
+    elemental_wolf_base_t::create_actions();
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -2260,9 +2261,9 @@ struct lightning_wolf_t : public elemental_wolf_base_t
     elemental_wolf_base_t::create_buffs();
   }
 
-  bool create_actions() override
+  void create_actions() override
   {
-    return elemental_wolf_base_t::create_actions();
+    elemental_wolf_base_t::create_actions();
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override
@@ -2823,9 +2824,9 @@ struct windfury_attack_t : public shaman_attack_t
       stats_.at_fw[ i ] = player->get_proc( "Windfury-ForcefulWinds: " + std::to_string( i ) );
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
-    auto ret = shaman_attack_t::init_finished();
+    shaman_attack_t::init_finished();
 
     if ( may_proc_stormbringer )
     {
@@ -2839,8 +2840,6 @@ struct windfury_attack_t : public shaman_attack_t
         proc_sb = player->get_proc( std::string( "Stormbringer: " ) + full_name() + " Off-Hand" );
       }
     }
-
-    return ret;
   }
 
   double maelstrom_weapon_energize_amount( const action_state_t* source ) const override
@@ -5782,14 +5781,14 @@ struct shaman_totem_pet_t : public pet_t
   virtual void summon( timespan_t = timespan_t::zero() ) override;
   virtual void dismiss( bool expired = false ) override;
 
-  bool init_finished() override
+  void init_finished() override
   {
     if ( !pet_name.empty() )
     {
       summon_pet = owner->find_pet( pet_name );
     }
 
-    return pet_t::init_finished();
+    pet_t::init_finished();
   }
 
   shaman_t* o()
@@ -5849,11 +5848,11 @@ struct shaman_totem_t : public shaman_spell_t
     dot_duration                              = timespan_t::zero();
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     totem_pet = debug_cast<shaman_totem_pet_t*>( player->find_pet( name() ) );
 
-    return shaman_spell_t::init_finished();
+    shaman_spell_t::init_finished();
   }
 
   virtual void execute() override
@@ -6544,7 +6543,7 @@ expr_t* shaman_t::create_expression( const std::string& name )
 
 // shaman_t::create_actions =================================================
 
-bool shaman_t::create_actions()
+void shaman_t::create_actions()
 {
   if ( talent.lightning_shield->ok() )
   {
@@ -6566,7 +6565,7 @@ bool shaman_t::create_actions()
     action.searing_assault = new searing_assault_t( this );
   }
 
-  return player_t::create_actions();
+  player_t::create_actions();
 }
 
 // shaman_t::create_options =================================================
@@ -7328,11 +7327,9 @@ void shaman_t::init_rng()
 
 // shaman_t::init_special_effects ===========================================
 
-bool shaman_t::init_special_effects()
+void shaman_t::init_special_effects()
 {
-  bool ret = player_t::init_special_effects();
-
-  return ret;
+  player_t::init_special_effects();
 }
 
 // shaman_t::generate_bloodlust_options =====================================

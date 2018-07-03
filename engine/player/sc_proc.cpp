@@ -980,13 +980,11 @@ std::string special_effect_t::to_string() const
   return s.str();
 }
 
-bool special_effect::parse_special_effect_encoding( special_effect_t& effect,
+void special_effect::parse_special_effect_encoding( special_effect_t& effect,
                                           const std::string& encoding )
 {
-  if ( encoding.empty() || encoding == "custom" || encoding == "none" ) return true;
-
-  const item_t* item = effect.item;
-  const player_t* player = effect.player;
+  if ( encoding.empty() || encoding == "custom" || encoding == "none" )
+    return;
 
    auto tokens = item_database::parse_tokens( encoding );
 
@@ -1010,8 +1008,8 @@ bool special_effect::parse_special_effect_encoding( special_effect_t& effect,
       std::vector<std::string> splits = util::string_split( t.value_str, "+" );
       if ( splits.size() == 2 )
       {
-        effect.discharge_amount  = atof( splits[ 0 ].c_str() );
-        effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;
+        effect.discharge_amount  = std::stod( splits[ 0 ] );
+        effect.discharge_scaling = std::stod( splits[ 1 ] ) / 100.0;
       }
     }
     else if ( t.name == "stacks" || t.name == "stack" )
@@ -1137,13 +1135,12 @@ bool special_effect::parse_special_effect_encoding( special_effect_t& effect,
       parse_proc_flags( t.full, __proc2_opts, effect.proc_flags2_ );
     else
     {
-      player -> sim -> errorf( "Player %s has unknown 'use/equip=' token '%s' at slot %s\n",
-          player -> name(), t.full.c_str(), item ? item -> slot_name() : "none" );
-      return false;
+
+      throw std::invalid_argument(
+                fmt::format("Unknown 'use/equip=' token '{}'.",
+                    t.full));
     }
   }
-
-  return true;
 }
 
 /**
@@ -1159,27 +1156,30 @@ bool special_effect::usable_proc( const special_effect_t& effect )
   // Valid proc flags (either old- or new style), we can proc this effect.
   if ( effect.proc_flags() == 0 )
   {
-    if ( effect.item && effect.item -> sim -> debug )
-      effect.item -> sim -> out_debug.printf( "%s unusable proc %s: No proc flags / trigger type",
-          effect.item -> player -> name(), effect.name().c_str() );
+    if (effect.item)
+    {
+      effect.item->sim->print_debug("Effect '{}' no proc flags / trigger type", effect.name() );
+    }
     return false;
   }
     
   // A non-zero chance to proc it through one of the proc chance triggers
   if ( effect.ppm() == 0 && effect.rppm() == 0 && effect.proc_chance() == 0 )
   {
-    if ( effect.item && effect.item -> sim -> debug )
-      effect.item -> sim -> out_debug.printf( "%s unusable proc %s: No RPPM / PPM / Proc chance",
-          effect.item -> player -> name(), effect.name().c_str() );
+    if (effect.item)
+    {
+      effect.item->sim->print_debug("Effect '{}' No RPPM / PPM / Proc chance", effect.name() );
+    }
     return false;
   }
 
   // Require a valid buff or an action
   if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE && effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
   {
-    if ( effect.item && effect.item -> sim -> debug )
-      effect.item -> sim -> out_debug.printf( "%s unusable proc %s: No constructible buff or action",
-          effect.item -> player -> name(), effect.name().c_str() );
+    if (effect.item)
+    {
+      effect.item->sim->print_debug("Effect '{}' No constructible buff or action", effect.name() );
+    }
     return false;
   }
 

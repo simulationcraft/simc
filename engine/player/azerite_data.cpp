@@ -123,11 +123,11 @@ std::unique_ptr<azerite_state_t> create_state( player_t* p )
   return std::unique_ptr<azerite_state_t>( new azerite_state_t( p ) );
 }
 
-bool initialize_azerite_powers( player_t* actor )
+void initialize_azerite_powers( player_t* actor )
 {
   if ( ! actor -> azerite )
   {
-    return true;
+    return;
   }
 
   for ( auto azerite_spell : actor -> azerite -> enabled_spells() )
@@ -141,17 +141,15 @@ bool initialize_azerite_powers( player_t* actor )
     special_effect_t effect { actor };
     effect.source = SPECIAL_EFFECT_SOURCE_AZERITE;
 
-    auto ret = unique_gear::initialize_special_effect( effect, azerite_spell );
+    unique_gear::initialize_special_effect( effect, azerite_spell );
     // Note, only apply custom special effects for azerite for an abundance of safety
-    if ( ! ret || ! effect.is_custom() )
+    if ( ! effect.is_custom() )
     {
       continue;
     }
 
     actor -> special_effects.push_back( new special_effect_t( effect ) );
   }
-
-  return true;
 }
 
 azerite_state_t::azerite_state_t( player_t* p ) : m_player( p )

@@ -1328,12 +1328,12 @@ struct sim_t : private sc_thread_t
   void      datacollection_begin();
   void      datacollection_end();
   void      reset();
-  bool      check_actors();
-  bool      init_parties();
-  bool      init_actors();
-  bool      init_actor( player_t* );
-  bool      init_actor_pets();
-  bool      init();
+  void      check_actors();
+  void      init_parties();
+  void      init_actors();
+  void      init_actor( player_t* );
+  void      init_actor_pets();
+  void      init();
   void      analyze();
   void      merge( sim_t& other_sim );
   void      merge();
@@ -1710,8 +1710,8 @@ protected:
   {
     return sim.event_mgr.allocate_event( size );
   }
-  static void  operator delete( void*, sim_t& ) { std::terminate(); }
-  static void  operator delete( void* ) { std::terminate(); }
+  static void  operator delete( void*, sim_t& ) { }
+  static void  operator delete( void* ) { }
   static void* operator new( std::size_t ) = delete;
 };
 
@@ -2199,7 +2199,7 @@ struct item_t
   // from user options, or a data source such as the Blizzard API, or Wowhead
   struct parsed_input_t
   {
-    unsigned                                         item_level;
+    int                                              item_level;
     int                                              upgrade_level;
     int                                              suffix_id;
     unsigned                                         enchant_id;
@@ -2294,8 +2294,8 @@ struct item_t
   std::string full_name() const;
   const char* slot_name() const;
   weapon_t* weapon() const;
-  bool init();
-  bool parse_options();
+  void init();
+  void parse_options();
   bool initialize_data(); // Initializes item data from a data source
   inventory_type inv_type() const;
 
@@ -2323,27 +2323,27 @@ struct item_t
   std::string encoded_upgrade_level() const;
   std::string encoded_random_suffix_id() const;
 
-  bool decode_stats();
-  bool decode_gems();
-  bool decode_enchant();
-  bool decode_addon();
-  bool decode_weapon();
-  bool decode_warforged();
-  bool decode_lfr();
-  bool decode_heroic();
-  bool decode_mythic();
-  bool decode_armor_type();
-  bool decode_random_suffix();
-  bool decode_ilevel();
-  bool decode_quality();
-  bool decode_data_source();
-  bool decode_equip_effect();
-  bool decode_use_effect();
+  void decode_stats();
+  void decode_gems();
+  void decode_enchant();
+  void decode_addon();
+  void decode_weapon();
+  void decode_warforged();
+  void decode_lfr();
+  void decode_heroic();
+  void decode_mythic();
+  void decode_armor_type();
+  void decode_random_suffix();
+  void decode_ilevel();
+  void decode_quality();
+  void decode_data_source();
+  void decode_equip_effect();
+  void decode_use_effect();
 
 
   bool verify_slot();
 
-  bool init_special_effects();
+  void init_special_effects();
 
   static bool download_item( item_t& );
 
@@ -3841,7 +3841,7 @@ public:
     // Push_front so derived classes (eg. enemy_t) can override existing options
     options.insert( options.begin(), std::move( o ) );
   }
-  bool parse_talents_numbers( const std::string& talent_string );
+  void parse_talents_numbers( const std::string& talent_string );
   bool parse_talents_armory( const std::string& talent_string );
   bool parse_talents_armory2( const std::string& talent_string );
   bool parse_talents_wowhead( const std::string& talent_string );
@@ -3967,15 +3967,15 @@ public:
   virtual void init_position();
   virtual void init_professions();
   virtual void init_spells();
-  virtual bool init_items();
+  virtual void init_items();
   virtual void init_azerite(); /// Initialize azerite-related support structures for the actor
   virtual void init_weapon( weapon_t& );
   virtual void init_base_stats();
   virtual void init_initial_stats();
   virtual void init_defense();
   virtual void create_buffs();
-  virtual bool create_special_effects();
-  virtual bool init_special_effects();
+  virtual void create_special_effects();
+  virtual void init_special_effects();
   virtual void init_scaling();
   virtual void init_action_list() {}
   virtual void init_gains();
@@ -3987,9 +3987,9 @@ public:
   virtual void init_distance_targeting();
   virtual void init_absorb_priority();
   virtual void init_assessors();
-  virtual bool create_actions();
-  virtual bool init_actions();
-  virtual bool init_finished();
+  virtual void create_actions();
+  virtual void init_actions();
+  virtual void init_finished();
   virtual bool verify_use_items() const;
   virtual void reset();
   virtual void combat_begin();
@@ -4419,7 +4419,7 @@ public:
   virtual void init() override;
   virtual void init_base_stats() override;
   virtual void init_target() override;
-  virtual bool init_finished() override;
+  virtual void init_finished() override;
   virtual void reset() override;
   virtual void summon( timespan_t duration = timespan_t::zero() );
   virtual void dismiss( bool expired = false );
@@ -5602,7 +5602,7 @@ public:
 
   virtual void init();
 
-  virtual bool init_finished();
+  virtual void init_finished();
 
   virtual void reset();
 
@@ -6592,7 +6592,7 @@ inline bool mythic( unsigned f ) { return ( f & RAID_TYPE_MYTHIC ) == RAID_TYPE_
 bool apply_item_bonus( item_t& item, const item_bonus_entry_t& entry );
 
 double curve_point_value( dbc_t& dbc, unsigned curve_id, double point_value );
-bool apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level );
+void apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level );
 double apply_combat_rating_multiplier( const item_t& item, double amount );
 double apply_combat_rating_multiplier( const player_t* player, combat_rating_multiplier_type type, unsigned ilevel, double amount );
 
@@ -6618,7 +6618,7 @@ bool has_item_bonus_type( const item_t& item, item_bonus_type bonus_type );
 
 namespace special_effect
 {
-  bool parse_special_effect_encoding( special_effect_t& effect, const std::string& str );
+  void parse_special_effect_encoding( special_effect_t& effect, const std::string& str );
   bool usable_proc( const special_effect_t& effect );
 }
 
@@ -6641,7 +6641,7 @@ namespace enchant
   meta_gem_e meta_gem_type( const dbc_t& dbc, const item_enchantment_data_t& );
   bool passive_enchant( item_t& item, unsigned spell_id );
 
-  bool initialize_item_enchant( item_t& item, std::vector< stat_pair_t >& stats, special_effect_source_e source, const item_enchantment_data_t& enchant );
+  void initialize_item_enchant( item_t& item, std::vector< stat_pair_t >& stats, special_effect_source_e source, const item_enchantment_data_t& enchant );
   item_socket_color initialize_gem( item_t& item, size_t gem_idx );
   item_socket_color initialize_relic( item_t& item, size_t relic_idx, const gem_property_data_t& gem_property );
 }
@@ -6976,7 +6976,7 @@ void init( player_t* );
 special_effect_t* find_special_effect( player_t* actor, unsigned spell_id, special_effect_e = SPECIAL_EFFECT_NONE );
 
 // First-phase special effect initializers
-bool initialize_special_effect( special_effect_t& effect, unsigned spell_id );
+void initialize_special_effect( special_effect_t& effect, unsigned spell_id );
 void initialize_special_effect_fallbacks( player_t* actor );
 // Second-phase special effect initializer
 void initialize_special_effect_2( special_effect_t* effect );

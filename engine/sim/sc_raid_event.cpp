@@ -1024,8 +1024,7 @@ expr_t* parse_player_if_expr( player_t& player, const std::string& expr_str )
   if ( expr_t* e = expression::build_player_expression_tree( player, tokens, player.sim->optimize_expressions ) )
     return e;
 
-  player.sim->error( "{}: Unable to build expression tree from {}\n", player.name(), expr_str );
-  return nullptr;
+  throw std::invalid_argument("No player expression found");
 }
 
 raid_event_t* get_next_raid_event( const std::vector<raid_event_t*>& matching_events )
@@ -1565,8 +1564,7 @@ void raid_event_t::init( sim_t* sim )
     }
     catch ( const std::exception& ex )
     {
-      sim->error( "Could not create raid event from '{}': {}", split, ex.what() );
-      sim->cancel();
+      std::throw_with_nested(std::invalid_argument(fmt::format("Error creating raid event from '{}'", split)));
     }
   }
 }

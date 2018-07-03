@@ -142,7 +142,6 @@ std::string to_string( double f, int precision );
 unsigned to_unsigned( const std::string& str );
 unsigned to_unsigned( const char* str );
 int to_int( const std::string& str );
-int to_int( const char* str );
 
 int64_t parse_date( const std::string& month_day_year );
 

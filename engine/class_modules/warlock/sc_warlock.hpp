@@ -512,7 +512,6 @@ namespace warlock
       void      reset() override;
       void      create_options() override;
       action_t* create_action( const std::string& name, const std::string& options ) override;
-      bool create_actions() override;
       pet_t*    create_pet( const std::string& name, const std::string& type = std::string() ) override;
       void      create_pets() override;
       std::string      create_profile( save_e ) override;
@@ -643,7 +642,6 @@ namespace warlock
         void init_action_list() override;
         void create_buffs() override;
         void init_spells() override;
-        bool create_actions() override;
         void schedule_ready( timespan_t delta_time = timespan_t::zero(),
           bool   waiting = false ) override;
         double composite_player_multiplier( school_e school ) const override;
@@ -1399,11 +1397,11 @@ namespace warlock
           _init_summon_pet_t();
         }
 
-        bool init_finished() override
+        void init_finished() override
         {
           pet = debug_cast< pets::warlock_pet_t* >( player->find_pet( pet_name ) );
 
-          return warlock_spell_t::init_finished();
+          warlock_spell_t::init_finished();
         }
 
         virtual void execute() override

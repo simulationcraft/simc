@@ -233,7 +233,7 @@ const item_enchantment_data_t& enchant::find_item_enchant( const item_t& item,
  *    the proc initialization to the generalized initialize_special_effect()
  *    function in sc_unique_gear.cpp.
  */
-bool enchant::initialize_item_enchant( item_t& item,
+void enchant::initialize_item_enchant( item_t& item,
                                        std::vector< stat_pair_t >& stats,
                                        special_effect_source_e source,
                                        const item_enchantment_data_t& enchant )
@@ -250,7 +250,7 @@ bool enchant::initialize_item_enchant( item_t& item,
           enchant.req_skill_value, item.player -> profession[ profession ] );
       // Don't initialize the special effects, but do "succeed" the
       // initialization process.
-      return true;
+      return;
     }
   }
 
@@ -313,9 +313,10 @@ bool enchant::initialize_item_enchant( item_t& item,
     }
 
     // First phase initialize the spell effect
-    if ( effect.type != SPECIAL_EFFECT_NONE &&
-         ! unique_gear::initialize_special_effect( effect, enchant.ench_prop[ i ] ) )
-      return false;
+    if ( effect.type != SPECIAL_EFFECT_NONE )
+    {
+      unique_gear::initialize_special_effect( effect, enchant.ench_prop[ i ] );
+    }
 
     // If this enchant has any kind of special effect, we need to encode it's
     // name in the saved profiles, so when the profile is loaded, it's loaded
@@ -329,8 +330,6 @@ bool enchant::initialize_item_enchant( item_t& item,
       item.parsed.special_effects.push_back( new special_effect_t( effect ) );
     }
   }
-
-  return true;
 }
 
 /**
@@ -481,11 +480,15 @@ item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
 {
   auto gem_id = item.parsed.gem_id[ gem_idx ];
   if ( gem_id == 0 )
+  {
     return SOCKET_COLOR_NONE;
+  }
 
   const item_data_t* gem = item.player -> dbc.item( gem_id );
   if ( ! gem )
-    return SOCKET_COLOR_NONE;
+  {
+    throw std::invalid_argument(fmt::format("No gem data for id {}.", gem_id));
+  }
 
   const gem_property_data_t& gem_prop = item.player -> dbc.gem_property( gem -> gem_properties );
   if ( ! gem_prop.id )
@@ -499,17 +502,19 @@ item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
 
   const item_enchantment_data_t& data = item.player -> dbc.item_enchantment( gem_prop.enchant_id );
 
-  if ( ! enchant::initialize_item_enchant( item,
+  enchant::initialize_item_enchant( item,
                                            gem_prop.color != SOCKET_COLOR_META ? item.parsed.gem_stats : item.parsed.meta_gem_stats,
                                            SPECIAL_EFFECT_SOURCE_GEM,
-                                           data ) )
-    return SOCKET_COLOR_NONE;
+                                           data );
 
   // TODO: This should really be removed, as should player -> meta_gem
   if ( gem_prop.color == SOCKET_COLOR_META )
     item.player -> meta_gem = enchant::meta_gem_type( item.player -> dbc, data );
 
-  assert( dbc::valid_gem_color( gem_prop.color ) );
+  if (!dbc::valid_gem_color( gem_prop.color ) )
+  {
+    throw std::invalid_argument(fmt::format("Invalid gem color from id {}.", gem_id));
+  }
 
   return static_cast< item_socket_color >( gem_prop.color );
 }

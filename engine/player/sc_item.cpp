@@ -655,9 +655,10 @@ inventory_type item_t::inv_type() const
 
 // item_t::parse_options ====================================================
 
-bool item_t::parse_options()
+void item_t::parse_options()
 {
-  if ( options_str.empty() ) return true;
+  if ( options_str.empty() )
+    return;
 
   option_name_str = options_str;
   std::string remainder = "";
@@ -708,8 +709,7 @@ bool item_t::parse_options()
   }
   catch ( const std::exception& e )
   {
-    sim -> errorf( "%s item '%s': Unable to parse item options str '%s': %s", player -> name(), name(), options_str.c_str(), e.what() );
-    return false;
+    std::throw_with_nested(std::invalid_argument(fmt::format("Cannot parse option from '{}'", options_str)));
   }
 
   util::tokenize( option_name_str );
@@ -734,9 +734,7 @@ bool item_t::parse_options()
     std::vector<std::string> spl = util::string_split( option_gem_id_str, ":/" );
     for ( size_t i = 0, end = std::min( sizeof_array( parsed.gem_id ), spl.size() ); i < end; i++ )
     {
-      unsigned gem_id = util::to_unsigned( spl[ i ] );
-      if ( gem_id == 0 )
-        continue;
+      int gem_id = std::stoi( spl[ i ] );
 
       parsed.gem_id[ i ] = gem_id;
     }
@@ -771,7 +769,7 @@ bool item_t::parse_options()
     auto relic_idx = 0U;
     for ( const auto& ilevel_str : split )
     {
-      auto ilevel = util::to_int( ilevel_str );
+      auto ilevel = std::stoi( ilevel_str );
       if ( ilevel >= 0 && ilevel < MAX_ILEVEL )
       {
         parsed.relic_ilevel[ relic_idx ] = ilevel;
@@ -802,14 +800,23 @@ bool item_t::parse_options()
 
   if ( ! option_bonus_id_str.empty() )
   {
-    std::vector<std::string> split = util::string_split( option_bonus_id_str, "/:" );
-    for (auto & elem : split)
+    try
     {
-      int bonus_id = util::to_int( elem );
-      if ( bonus_id <= 0 )
-        continue;
+      std::vector<std::string> split = util::string_split( option_bonus_id_str, "/:" );
+      for (auto & elem : split)
+      {
+        int bonus_id = std::stoi( elem );
+        if ( bonus_id <= 0 )
+        {
+          throw std::invalid_argument("Negative or 0 bonus id.");
+        }
 
-      parsed.bonus_id.push_back( bonus_id );
+        parsed.bonus_id.push_back( bonus_id );
+      }
+    }
+    catch (const std::exception& e)
+    {
+      std::throw_with_nested(std::runtime_error("Bonus ID"));
     }
   }
 
@@ -821,8 +828,6 @@ bool item_t::parse_options()
 
   if ( ! option_azerite_level_str.empty() )
     parsed.azerite_level = util::to_unsigned( option_azerite_level_str );
-
-  return true;
 }
 
 // item_t::initialize_data ==================================================
@@ -834,8 +839,7 @@ bool item_t::initialize_data()
 {
   // Item specific source list has to be decoded first so we can properly
   // download the item from the correct source
-  if ( ! decode_data_source() )
-    return false;
+  decode_data_source();
 
   if ( parsed.data.id > 0 )
   {
@@ -1275,35 +1279,37 @@ bool item_t::verify_slot()
 
 // item_t::init =============================================================
 
-bool item_t::init()
+void item_t::init()
 {
   if ( name_str.empty() || name_str == "empty" || name_str == "none" )
-    return true;
+    return;
 
   // Process basic stats
-  if ( ! decode_warforged()                        ) return false;
-  if ( ! decode_lfr()                              ) return false;
-  if ( ! decode_heroic()                           ) return false;
-  if ( ! decode_mythic()                           ) return false;
-  if ( ! decode_quality()                          ) return false;
-  if ( ! decode_ilevel()                           ) return false;
-  if ( ! decode_armor_type()                       ) return false;
+  decode_warforged();
+  decode_lfr();
+  decode_heroic();
+  decode_mythic();
+  decode_quality();
+  decode_ilevel();
+  decode_armor_type();
 
   if ( parsed.upgrade_level > 0 && ( ! parsed.data.quality || ( ! parsed.data.level && ! parsed.item_level ) ) )
+  {
     sim -> errorf( "Player %s upgrading item %s at slot %s without quality or ilevel, upgrading will not work\n",
                    player -> name(), name(), slot_name() );
+  }
 
   // Process complex input, and initialize item in earnest
 
   // Gems need to be processed first, because in Legion, they may affect the item level of the item
-  if ( ! decode_gems()                             ) return false;
-  if ( ! decode_stats()                            ) return false;
-  if ( ! decode_weapon()                           ) return false;
-  if ( ! decode_random_suffix()                    ) return false;
-  if ( ! decode_equip_effect()                     ) return false;
-  if ( ! decode_use_effect()                       ) return false;
-  if ( ! decode_enchant()                          ) return false;
-  if ( ! decode_addon()                            ) return false;
+  decode_gems();
+  decode_stats();
+  decode_weapon();
+  decode_random_suffix();
+  decode_equip_effect();
+  decode_use_effect();
+  decode_enchant();
+  decode_addon();
 
   if ( ! option_name_str.empty() && ( option_name_str != name_str ) )
   {
@@ -1323,48 +1329,38 @@ bool item_t::init()
 
   if ( source_str.empty() )
     source_str = "Manual";
-
-  return true;
 }
 
 // item_t::decode_heroic ====================================================
 
-bool item_t::decode_heroic()
+void item_t::decode_heroic()
 {
   if ( ! option_heroic_str.empty() )
     parsed.data.type_flags |= RAID_TYPE_HEROIC;
-
-  return true;
 }
 
 // item_t::decode_lfr =======================================================
 
-bool item_t::decode_lfr()
+void item_t::decode_lfr()
 {
   if ( ! option_lfr_str.empty() )
     parsed.data.type_flags |= RAID_TYPE_LFR;
-
-  return true;
 }
 
 // item_t::decode_mythic =====================================================
 
-bool item_t::decode_mythic()
+void item_t::decode_mythic()
 {
   if ( ! option_mythic_str.empty() )
     parsed.data.type_flags |= RAID_TYPE_MYTHIC;
-
-  return true;
 }
 
 // item_t::decode_warforged ==================================================
 
-bool item_t::decode_warforged()
+void item_t::decode_warforged()
 {
   if ( ! option_warforged_str.empty() )
     parsed.data.type_flags |= RAID_TYPE_WARFORGED;
-
-  return true;
 }
 
 // item_t::is_matching_type =================================================
@@ -1389,52 +1385,49 @@ bool item_t::is_valid_type() const
 
 // item_t::decode_armor_type ================================================
 
-bool item_t::decode_armor_type()
+void item_t::decode_armor_type()
 {
   if ( ! option_armor_type_str.empty() )
   {
     parsed.data.item_subclass = util::parse_armor_type( option_armor_type_str );
     if ( parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_MISC )
-      return false;
+    {
+      throw std::invalid_argument(fmt::format("Invalid item armor type '{}'.", option_armor_type_str));
+    }
     parsed.data.item_class = ITEM_CLASS_ARMOR;
   }
-
-  return true;
 }
 
 // item_t::decode_ilevel ====================================================
 
-bool item_t::decode_ilevel()
+void item_t::decode_ilevel()
 {
   if ( ! option_ilevel_str.empty() )
   {
-    parsed.item_level = util::to_unsigned( option_ilevel_str );
+    parsed.item_level = std::stoi( option_ilevel_str );
     if ( parsed.item_level == 0 )
-      return false;
+    {
+      throw std::invalid_argument("Parsed item level is zero.");
+    }
 
     if ( parsed.item_level > MAX_ILEVEL )
     {
-      player -> sim -> errorf( "%s item '%s', too high ilevel %u, maximum ilevel supported is %u.",
-        player -> name(), name(), parsed.item_level, MAX_ILEVEL );
-      return false;
+      throw std::invalid_argument(fmt::format("Too high item level {}, maximum level supported is {}.",
+          parsed.item_level, MAX_ILEVEL));
     }
   }
-
-  return true;
 }
 
 // item_t::decode_quality ===================================================
 
-bool item_t::decode_quality()
+void item_t::decode_quality()
 {
   if ( ! option_quality_str.empty() )
     parsed.data.quality = util::parse_item_quality( option_quality_str );
-
-  return true;
 }
 // item_t::decode_stats =====================================================
 
-bool item_t::decode_stats()
+void item_t::decode_stats()
 {
   if ( ! option_stats_str.empty() && option_stats_str != "none" )
   {
@@ -1452,9 +1445,9 @@ bool item_t::decode_stats()
       stat_e s = util::parse_stat_type( tokens[ i ].name );
       if ( s == STAT_NONE )
       {
-        sim -> errorf( "Player %s has unknown 'stats=' token '%s' at slot %s\n",
-                       player -> name(), tokens[ i ].full.c_str(), slot_name() );
-        return false;
+
+        throw std::invalid_argument(fmt::format("Unknown 'stats=' token '{}' at slot {}.",
+            tokens[ i ].full, slot_name()));
       }
 
       if ( s != STAT_ARMOR )
@@ -1472,10 +1465,7 @@ bool item_t::decode_stats()
   // wrong.
   if ( ! has_scaling_stat_bonus_id() )
   {
-    if ( ! item_database::apply_item_scaling( *this, parsed.data.id_scaling_distribution, player -> level() ) )
-    {
-      return false;
-    }
+    item_database::apply_item_scaling( *this, parsed.data.id_scaling_distribution, player -> level() );
   }
 
   for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
@@ -1500,23 +1490,20 @@ bool item_t::decode_stats()
     base_stats.add_stat( STAT_ARMOR, item_database::armor_value( *this ) );
     stats.add_stat( STAT_ARMOR, item_database::armor_value( *this ) );
   }
-
-  return true;
 }
 
 // item_t::decode_random_suffix =============================================
 
-bool item_t::decode_random_suffix()
+void item_t::decode_random_suffix()
 {
   if ( parsed.suffix_id == 0 )
-    return true;
+    return;
 
   // We need the ilevel/quality data, otherwise we cannot figure out
   // the random suffix point allocation.
   if ( item_level() == 0 || parsed.data.quality == 0 )
   {
-    sim -> errorf( "Player %s with random suffix at slot %s requires both ilevel= and quality= information.\n", player -> name(), slot_name() );
-    return true;
+    throw std::invalid_argument("Random suffix requires both ilevel= and quality= information.");
   }
 
   // These stats will be automatically at the correct upgrade level, as the
@@ -1526,9 +1513,7 @@ bool item_t::decode_random_suffix()
 
   if ( ! suffix_data.id )
   {
-    sim -> errorf( "Warning: Unknown random suffix identifier %d at slot %s for item %s.\n",
-                   parsed.suffix_id, slot_name(), name() );
-    return true;
+    throw std::invalid_argument(fmt::format("Unknown random suffix id {}.", parsed.suffix_id ));
   }
 
   int f = item_database::random_suffix_type( *this );
@@ -1623,121 +1608,115 @@ bool item_t::decode_random_suffix()
       name_str += '_' + str;
     }
   }
-
-  return true;
 }
 
 // item_t::decode_gems ======================================================
 
-bool item_t::decode_gems()
+void item_t::decode_gems()
 {
-  // Disable gems in challenge modes.
-  if ( sim -> challenge_mode )
-    return true;
-
-  if ( option_gems_str.empty() || option_gems_str == "none" )
+  try
   {
-    // Gems
-    for ( size_t i = 0, end = parsed.gem_id.size(); i < end; i++ )
-      parsed.gem_color[ i ] = enchant::initialize_gem( *this, i );
+    // Disable gems in challenge modes.
+    if ( sim -> challenge_mode )
+      return;
 
-    // Socket bonus
-    if ( socket_color_match() && parsed.socket_bonus_stats.size() == 0 )
+    if ( option_gems_str.empty() || option_gems_str == "none" )
     {
-      const item_enchantment_data_t& socket_bonus = player -> dbc.item_enchantment( parsed.data.id_socket_bonus );
-      if ( ! enchant::initialize_item_enchant( *this, parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, socket_bonus ) )
+      // Gems
+      for ( size_t i = 0, end = parsed.gem_id.size(); i < end; i++ )
+        parsed.gem_color[ i ] = enchant::initialize_gem( *this, i );
+
+      // Socket bonus
+      if ( socket_color_match() && parsed.socket_bonus_stats.size() == 0 )
       {
-        return false;
+        const item_enchantment_data_t& socket_bonus = player -> dbc.item_enchantment( parsed.data.id_socket_bonus );
+        enchant::initialize_item_enchant( *this, parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, socket_bonus );
       }
+
+      return;
     }
 
-    return true;
-  }
+    // Parse user given gems= string. Stats are parsed as is, meta gem through
+    // DBC data
+    //
+    // Detect meta gem through DBC data, instead of clunky prefix matching
+    const item_enchantment_data_t& meta_gem_enchant = enchant::find_meta_gem( player -> dbc, option_gems_str );
+    meta_gem_e meta_gem = enchant::meta_gem_type( player -> dbc, meta_gem_enchant );
 
-  // Parse user given gems= string. Stats are parsed as is, meta gem through
-  // DBC data
-  //
-  // Detect meta gem through DBC data, instead of clunky prefix matching
-  const item_enchantment_data_t& meta_gem_enchant = enchant::find_meta_gem( player -> dbc, option_gems_str );
-  meta_gem_e meta_gem = enchant::meta_gem_type( player -> dbc, meta_gem_enchant );
+    if ( meta_gem != META_GEM_NONE )
+    {
+      player -> meta_gem = meta_gem;
+    }
 
-  if ( meta_gem != META_GEM_NONE )
-  {
-    player -> meta_gem = meta_gem;
-  }
+    auto tokens = item_database::parse_tokens( option_gems_str );
 
-  auto tokens = item_database::parse_tokens( option_gems_str );
-
-  for ( auto& t : tokens )
-  {
-    stat_e s;
-
-    if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
+    for ( auto& t : tokens )
+    {
+      stat_e s = util::parse_stat_type( t.name );
+      if (s == STAT_NONE )
+      {
+        throw std::invalid_argument(fmt::format("Invalid stat '{}'.", t.name));
+      }
       parsed.gem_stats.push_back( stat_pair_t( s, static_cast<int>( t.value ) ) );
+    }
   }
-
-  return true;
+  catch (const std::exception& e)
+  {
+    std::throw_with_nested(std::invalid_argument("Error decoding gems"));
+  }
 }
 
 // item_t::decode_equip_effect ==============================================
 
-bool item_t::decode_equip_effect()
+void item_t::decode_equip_effect()
 {
-  if ( option_equip_str.empty() || option_equip_str == "none" )
+  try
   {
-    return true;
+    if ( option_equip_str.empty() || option_equip_str == "none" )
+    {
+      return;
+    }
+
+    special_effect_t effect( this );
+
+    special_effect::parse_special_effect_encoding( effect, option_equip_str );
+
+    effect.name_str = name_str;
+    effect.type = SPECIAL_EFFECT_EQUIP;
+    effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+
+    if (!special_effect::usable_proc( effect ))
+    {
+      throw std::invalid_argument(fmt::format("No proc trigger flags found for effect '{}'.",
+        option_equip_str ));
+    }
+
+    if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
+         effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
+    {
+      throw std::invalid_argument(fmt::format("No buff or action found for effect '{}'.", option_equip_str));
+    }
+
+    parsed.special_effects.push_back( new special_effect_t( effect ) );
   }
-
-  special_effect_t effect( this );
-
-  if ( ! special_effect::parse_special_effect_encoding( effect, option_equip_str ) )
+  catch (const std::exception& e)
   {
-    sim -> errorf( "%s unable to parse special effect '%s' on item '%s'",
-        player -> name(), option_equip_str.c_str(), name() );
-    return false;
+    std::throw_with_nested(std::invalid_argument(fmt::format("Error decoding equip='{}'", option_equip_str )));
   }
-
-  effect.name_str = name_str;
-  effect.type = SPECIAL_EFFECT_EQUIP;
-  effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-
-  if ( ! special_effect::usable_proc( effect ) )
-  {
-    sim -> errorf( "%s no proc trigger flags found for effect '%s' on item '%s'",
-        player -> name(), option_equip_str.c_str(), name() );
-    return false;
-  }
-
-  if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
-       effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
-  {
-    sim -> errorf( "%s no buff or action found for effect '%s' on item '%s'",
-        player -> name(), option_equip_str.c_str(), name() );
-    return false;
-  }
-
-  parsed.special_effects.push_back( new special_effect_t( effect ) );
-
-  return true;
 }
 
 // item_t::decode_use_effect ================================================
 
-bool item_t::decode_use_effect()
+void item_t::decode_use_effect()
 {
   if ( option_use_str.empty() || option_use_str == "none" )
   {
-    return true;
+    return;
   }
 
   special_effect_t effect( this );
 
-  if ( ! special_effect::parse_special_effect_encoding( effect, option_use_str ) )
-  {
-    sim -> errorf( "%s unable to parse special effect '%s' on item '%s'",
-        player -> name(), option_use_str.c_str(), name() );
-    return false;
-  }
+  special_effect::parse_special_effect_encoding( effect, option_use_str );
 
   effect.name_str = name_str;
   effect.type = SPECIAL_EFFECT_USE;
@@ -1746,29 +1725,25 @@ bool item_t::decode_use_effect()
   if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
        effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
   {
-    sim -> errorf( "%s no buff or action found for effect '%s' on item '%s'",
-        player -> name(), option_equip_str.c_str(), name() );
-    return false;
+    throw std::invalid_argument(fmt::format("No buff or action found for use effect '{}'.", option_use_str));
   }
 
   parsed.special_effects.push_back( new special_effect_t( effect ) );
-
-  return true;
 }
 
 // item_t::decode_enchant ===================================================
 
-bool item_t::decode_enchant()
+void item_t::decode_enchant()
 {
   if ( option_enchant_str.empty() || option_enchant_str == "none" )
   {
-    return true;
+    return;
   }
 
   parsed.enchant_stats = str_to_stat_pair( option_enchant_str );
   if ( parsed.enchant_stats.size() > 0 )
   {
-    return true;
+    return;
   }
 
   const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( *this,
@@ -1778,23 +1753,25 @@ bool item_t::decode_enchant()
   {
     parsed.enchant_id = enchant_data.id;
   }
-
-  return true;
+  else
+  {
+    throw std::invalid_argument(fmt::format("Cannot find item enchant '{}'.", option_enchant_str));
+  }
 }
 
 // item_t::decode_addon =====================================================
 
-bool item_t::decode_addon()
+void item_t::decode_addon()
 {
   if ( option_addon_str.empty() || option_addon_str == "none" )
   {
-    return true;
+    return;
   }
 
   parsed.addon_stats = str_to_stat_pair( option_addon_str );
   if ( parsed.addon_stats.size() > 0 )
   {
-    return true;
+    return;
   }
 
   const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( *this,
@@ -1804,16 +1781,15 @@ bool item_t::decode_addon()
   {
     parsed.addon_id = enchant_data.id;
   }
-
-  return true;
 }
 
 // item_t::decode_weapon ====================================================
 
-bool item_t::decode_weapon()
+void item_t::decode_weapon()
 {
   weapon_t* w = weapon();
-  if ( ! w ) return true;
+  if ( ! w )
+    return;
 
   // Custom weapon stats cant be unloaded to the "proxy" item data at all,
   // so edit the weapon in question right away based on either the
@@ -1821,11 +1797,11 @@ bool item_t::decode_weapon()
   if ( option_weapon_str.empty() || option_weapon_str == "none" )
   {
     if ( parsed.data.item_class != ITEM_CLASS_WEAPON )
-      return true;
+      return;
 
     weapon_e wc = util::translate_weapon_subclass( parsed.data.item_subclass );
     if ( wc == WEAPON_NONE )
-      return true;
+      return;
 
     w -> type = wc;
     w -> swing_time = timespan_t::from_millis( parsed.data.delay );
@@ -1906,8 +1882,7 @@ bool item_t::decode_weapon()
       }
       else
       {
-        sim -> errorf( "Player %s has unknown 'weapon=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
-        return false;
+        throw std::invalid_argument(fmt::format("unknown 'weapon=' token '{}'.", t.full));
       }
     }
 
@@ -1932,22 +1907,18 @@ bool item_t::decode_weapon()
     w -> max_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
     w -> min_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
   }
-
-  return true;
 }
 
 // item_t::decode_data_source ===============================================
 
-bool item_t::decode_data_source()
+void item_t::decode_data_source()
 {
   if ( ! item_database::initialize_item_sources( *this, parsed.source_list ) )
   {
-    sim -> errorf( "Your item-specific data source string \"%s\" contained no valid sources to download item id %u.\n",
-                   option_data_source_str.c_str(), parsed.data.id );
-    return false;
+    throw std::invalid_argument(
+        fmt::format("Your item-specific data source string '{}' contained no valid sources to download item id {}.\n",
+        option_data_source_str, parsed.data.id));
   }
-
-  return true;
 }
 
 // item_t::str_to_stat_pair =================================================
@@ -2043,7 +2014,7 @@ bool item_t::download_item( item_t& item )
        item.parsed.data.id_socket_bonus > 0 )
   {
     const item_enchantment_data_t& bonus = item.player -> dbc.item_enchantment( item.parsed.data.id_socket_bonus );
-    success = enchant::initialize_item_enchant( item, item.parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, bonus );
+    enchant::initialize_item_enchant( item, item.parsed.socket_bonus_stats, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, bonus );
   }
 
   return success;
@@ -2051,21 +2022,19 @@ bool item_t::download_item( item_t& item )
 
 // item_t::init_special_effects =============================================
 
-bool item_t::init_special_effects()
+void item_t::init_special_effects()
 {
   special_effect_t proxy_effect( this );
 
   // Enchant
   const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( parsed.enchant_id );
-  if ( ! enchant::initialize_item_enchant( *this, parsed.enchant_stats,
-        SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
-    return false;
+  enchant::initialize_item_enchant( *this, parsed.enchant_stats,
+        SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data );
 
   // Addon (tinker)
   const item_enchantment_data_t& addon_data = player -> dbc.item_enchantment( parsed.addon_id );
-  if ( ! enchant::initialize_item_enchant( *this, parsed.addon_stats,
-        SPECIAL_EFFECT_SOURCE_ADDON, addon_data ) )
-    return false;
+  enchant::initialize_item_enchant( *this, parsed.addon_stats,
+        SPECIAL_EFFECT_SOURCE_ADDON, addon_data );
 
   // On-use effects
   for ( size_t i = 0, end = sizeof_array( parsed.data.id_spell ); i < end; ++i )
@@ -2080,10 +2049,7 @@ bool item_t::init_special_effects()
     proxy_effect.reset();
     proxy_effect.type = SPECIAL_EFFECT_USE;
     proxy_effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-    if ( ! unique_gear::initialize_special_effect( proxy_effect, parsed.data.id_spell[ i ] ) )
-    {
-      return false;
-    }
+    unique_gear::initialize_special_effect( proxy_effect, parsed.data.id_spell[ i ] );
 
     // First-phase special effect initialize decided it's a usable special effect, so add it
     if ( proxy_effect.type != SPECIAL_EFFECT_NONE )
@@ -2105,10 +2071,7 @@ bool item_t::init_special_effects()
     proxy_effect.reset();
     proxy_effect.type = SPECIAL_EFFECT_EQUIP;
     proxy_effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
-    if ( ! unique_gear::initialize_special_effect( proxy_effect, parsed.data.id_spell[ i ] ) )
-    {
-      return false;
-    }
+    unique_gear::initialize_special_effect( proxy_effect, parsed.data.id_spell[ i ] );
 
     // First-phase special effect initialize decided it's a usable special effect, so add it
     if ( proxy_effect.type != SPECIAL_EFFECT_NONE )
@@ -2116,7 +2079,4 @@ bool item_t::init_special_effects()
       parsed.special_effects.push_back( new special_effect_t( proxy_effect ) );
     }
   }
-
-
-  return true;
 }

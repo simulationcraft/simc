@@ -670,7 +670,7 @@ public:
   virtual expr_t*     create_expression( const std::string& name ) override;
   virtual expr_t*     create_action_expression( action_t&, const std::string& name ) override;
   virtual action_t*   create_action( const std::string& name, const std::string& options ) override;
-  virtual bool        create_actions() override;
+  virtual void        create_actions() override;
   virtual void        create_pets() override;
   virtual resource_e  primary_resource() const override { return RESOURCE_MANA; }
   virtual role_e      primary_role() const override { return ROLE_SPELL; }
@@ -924,14 +924,14 @@ struct mirror_image_spell_t : public mage_pet_spell_t
     : mage_pet_spell_t( n, p, s )
   { }
 
-  virtual bool init_finished() override
+  virtual void init_finished() override
   {
     if ( o() -> pets.mirror_images[ 0 ] )
     {
       stats = o() -> pets.mirror_images[ 0 ] -> get_stats( name_str );
     }
 
-    return mage_pet_spell_t::init_finished();
+    mage_pet_spell_t::init_finished();
   }
 
   mirror_image_pet_t* p() const
@@ -1318,14 +1318,14 @@ public:
     }
   }
 
-  virtual bool init_finished() override
+  virtual void init_finished() override
   {
     if ( track_cd_waste && sim -> report_details != 0 )
     {
       cd_waste = p() -> get_cooldown_waste_data( cooldown );
     }
 
-    return spell_t::init_finished();
+    spell_t::init_finished();
   }
 
   virtual double action_multiplier() const override
@@ -1852,14 +1852,14 @@ struct frost_mage_spell_t : public mage_spell_t
     }
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
     if ( track_shatter && sim -> report_details != 0 )
     {
       shatter_source = p() -> get_proc_source( "Shatter/" + name_str, FROZEN_MAX );
     }
 
-    return mage_spell_t::init_finished();
+    mage_spell_t::init_finished();
   }
 
   void trigger_fof( double chance, int stacks = 1, proc_t* source = nullptr )
@@ -3501,10 +3501,10 @@ struct frostbolt_t : public frost_mage_spell_t
     track_shatter = true;
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
     proc_fof = p() -> get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
-    return frost_mage_spell_t::init_finished();
+    frost_mage_spell_t::init_finished();
   }
 
   virtual void execute() override
@@ -3603,10 +3603,10 @@ struct frozen_orb_bolt_t : public frost_mage_spell_t
     chills = true;
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
     proc_fof = p() -> get_proc( "Fingers of Frost from Frozen Orb Tick" );
-    return frost_mage_spell_t::init_finished();
+    frost_mage_spell_t::init_finished();
   }
 
   virtual void execute() override
@@ -3661,10 +3661,10 @@ struct frozen_orb_t : public frost_mage_spell_t
     may_crit = affected_by.shatter = false;
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
     proc_fof = p() -> get_proc( "Fingers of Frost from Frozen Orb Initial Impact" );
-    return frost_mage_spell_t::init_finished();
+    frost_mage_spell_t::init_finished();
   }
 
   virtual timespan_t travel_time() const override
@@ -3864,14 +3864,14 @@ struct ice_lance_t : public frost_mage_spell_t
     track_shatter = true;
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
     if ( p() -> talents.thermal_void -> ok() && sim -> report_details != 0 )
     {
       extension_source = p() -> get_proc_source( "Shatter/Thermal Void extension", FROZEN_MAX );
     }
 
-    return frost_mage_spell_t::init_finished();
+    frost_mage_spell_t::init_finished();
   }
 
   virtual action_state_t* new_state() override
@@ -4072,7 +4072,7 @@ struct icy_veins_t : public frost_mage_spell_t
     harmful = false;
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
     if ( p() -> buffs.lady_vashjs_grasp -> default_chance != 0.0 )
     {
@@ -4084,7 +4084,7 @@ struct icy_veins_t : public frost_mage_spell_t
       proc_fof = p() -> get_proc( "Fingers of Frost from Frigid Grasp" );
     }
 
-    return frost_mage_spell_t::init_finished();
+    frost_mage_spell_t::init_finished();
   }
 
   virtual void execute() override
@@ -4386,7 +4386,7 @@ struct mirror_image_t : public mage_spell_t
     harmful = false;
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
     std::vector<pet_t*> images = p() -> pets.mirror_images;
 
@@ -4402,7 +4402,7 @@ struct mirror_image_t : public mage_spell_t
       stats -> add_child( image -> get_stats( "frostbolt" ) );
     }
 
-    return mage_spell_t::init_finished();
+    mage_spell_t::init_finished();
   }
 
   virtual void execute() override
@@ -4724,10 +4724,10 @@ struct ray_of_frost_t : public frost_mage_spell_t
     chills = true;
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
     proc_fof = p() -> get_proc( std::string( "Fingers of Frost from " ) + data().name_cstr() );
-    return frost_mage_spell_t::init_finished();
+    frost_mage_spell_t::init_finished();
   }
 
   virtual void tick( dot_t* d ) override
@@ -5092,27 +5092,9 @@ struct touch_of_the_magi_explosion_t : public arcane_mage_spell_t
 
 void report_burn_switch_error( action_t* a )
 {
-  sim_t* sim = a -> sim;
-
-  // Explicitly output this error message from all threads, so we always have an "error message"
-  // communicated to the user. Add it also to the parent's error list, so reporting will include
-  // it.
-  {
-    AUTO_LOCK( sim -> parent ? sim -> parent -> relatives_mutex : sim -> relatives_mutex );
-    auto s = fmt::sprintf( "%s %s infinite loop detected "
-                           "(no time passing between executes) at '%s'",
-                           a -> player -> name(), a -> name(), a -> signature_str.c_str());
-    util::replace_all( s, "\n", "" );
-    std::cerr << s << "\n";
-
-    if ( sim -> parent )
-    {
-      sim -> parent -> error_list.push_back( s );
-    }
-  }
-
-  sim -> cancel_iteration();
-  sim -> cancel();
+  throw std::runtime_error(fmt::format("{} action {} infinite loop detected "
+                           "(no time passing between executes) at '{}'",
+                           a -> player -> name(), a -> name(), a -> signature_str ));
 }
 
 struct start_burn_phase_t : public action_t
@@ -5220,14 +5202,17 @@ struct freeze_t : public action_t
       background = true;
   }
 
-  virtual bool init_finished() override
+  virtual void init_finished() override
   {
-    bool ret = action_t::init_finished();
+    action_t::init_finished();
 
     mage_t* m = debug_cast<mage_t*>( player );
 
     if ( ! m -> pets.water_elemental )
-      return ret;
+    {
+
+      throw std::invalid_argument("Initializing freeze without a water elemental.");
+    }
 
     pet_freeze = m -> pets.water_elemental -> find_action( "freeze" );
 
@@ -5236,8 +5221,6 @@ struct freeze_t : public action_t
       pet_freeze = new pets::water_elemental::freeze_t( m -> pets.water_elemental );
       pet_freeze -> init();
     }
-
-    return ret;
   }
 
   virtual void execute() override
@@ -5669,7 +5652,7 @@ action_t* mage_t::create_action( const std::string& name,
 
 // mage_t::create_actions =====================================================
 
-bool mage_t::create_actions()
+void mage_t::create_actions()
 {
   using namespace actions;
 
@@ -5721,7 +5704,7 @@ bool mage_t::create_actions()
     action.glacial_assault = new glacial_assault_t( this );
   }
 
-  return player_t::create_actions();
+  player_t::create_actions();
 }
 
 // mage_t::create_options =====================================================

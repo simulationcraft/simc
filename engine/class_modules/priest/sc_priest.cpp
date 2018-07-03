@@ -286,11 +286,11 @@ public:
     harmful = false;
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     pet = player->find_pet( pet_name );
 
-    return priest_spell_t::init_finished();
+    priest_spell_t::init_finished();
   }
 
   void execute() override
