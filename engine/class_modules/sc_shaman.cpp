@@ -3388,7 +3388,7 @@ struct auto_attack_t : public shaman_attack_t
     p()->melee_mh = new melee_t( "Main Hand", spell_data_t::nil(), player, &( p()->main_hand_weapon ), sync_weapons,
                                  swing_timer_variance );
     p()->melee_mh->school = SCHOOL_PHYSICAL;
-    p()->ascendance_mh = new windlash_t( "Wind Lash", player->find_spell( 114089 ), player, &( p()->main_hand_weapon ),
+    p()->ascendance_mh = new windlash_t( "Windlash", player->find_spell( 114089 ), player, &( p()->main_hand_weapon ),
                                          swing_timer_variance );
 
     p()->main_hand_attack = p()->melee_mh;
@@ -3401,7 +3401,7 @@ struct auto_attack_t : public shaman_attack_t
       p()->melee_oh = new melee_t( "Off-Hand", spell_data_t::nil(), player, &( p()->off_hand_weapon ), sync_weapons,
                                    swing_timer_variance );
       p()->melee_oh->school = SCHOOL_PHYSICAL;
-      p()->ascendance_oh    = new windlash_t( "Wind Lash Off-Hand", player->find_spell( 114093 ), player,
+      p()->ascendance_oh    = new windlash_t( "Windlash Off-Hand", player->find_spell( 114093 ), player,
                                            &( p()->off_hand_weapon ), swing_timer_variance );
 
       p()->off_hand_attack = p()->melee_oh;
@@ -7719,7 +7719,7 @@ void shaman_t::init_action_list()
     }
     flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
 
-    icy_edge = new icy_edge_attack_t( "icy_edge_attack", this, &( main_hand_weapon ) );
+    icy_edge = new icy_edge_attack_t( "icy_edge", this, &( main_hand_weapon ) );
 
     action.molten_weapon_dot = new molten_weapon_dot_t( this );
   }
