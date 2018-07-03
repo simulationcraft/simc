@@ -343,11 +343,6 @@ public:
     stat_buff_t* elemental_blast_mastery;
     buff_t* wind_gust;  // Storm Elemental passive 263806
 
-    buff_t* lava_shock;
-    stat_buff_t* natural_harmony_fire;    // crit
-    stat_buff_t* natural_harmony_frost;   // mastery
-    stat_buff_t* natural_harmony_nature;  // haste
-
     // Legendary Buffs
     buff_t* echoes_of_the_great_sundering;
     buff_t* eotn_fire;
@@ -385,6 +380,13 @@ public:
     buff_t* ember_totem;
     haste_buff_t* tailwind_totem_ele;
     buff_t* tailwind_totem_enh;
+
+    // Azerite traits
+    buff_t* ancestral_resonance;
+    buff_t* lava_shock;
+    stat_buff_t* natural_harmony_fire;    // crit
+    stat_buff_t* natural_harmony_frost;   // mastery
+    stat_buff_t* natural_harmony_nature;  // haste
   } buff;
 
   // Cooldowns
@@ -549,6 +551,9 @@ public:
     azerite_power_t rumbling_tremors;
     azerite_power_t synapse_shock;
     azerite_power_t volcanic_lightning;
+
+    // shared
+    azerite_power_t ancestral_resonance;
   } azerite;
 
   // Misc Spells
@@ -4183,18 +4188,27 @@ struct bloodlust_t : public shaman_spell_t
       p->buffs.bloodlust->trigger();
       p->buffs.exhaustion->trigger();
     }
+    if ( p()->azerite.ancestral_resonance.ok() )
+    {
+      p()->buff.ancestral_resonance->trigger();
+    }
   }
 
   virtual bool ready() override
   {
-    if ( sim->overrides.bloodlust )
-      return false;
+    // Allow Bloodlust as a normal spell if the Azerite Trait Ancestral Resonance is not present.
+    // If the Trait is not present the default behavior (external bloodlust) is kept.
+    if ( !p()->azerite.ancestral_resonance.ok() )
+    {
+      if ( sim->overrides.bloodlust )
+        return false;
 
-    if ( p()->buffs.exhaustion->check() )
-      return false;
+      if ( p()->buffs.exhaustion->check() )
+        return false;
 
-    if ( p()->buffs.bloodlust->cooldown->down() )
-      return false;
+      if ( p()->buffs.bloodlust->cooldown->down() )
+        return false;
+    }
 
     return shaman_spell_t::ready();
   }
@@ -4290,7 +4304,8 @@ struct chained_base_t : public shaman_spell_t
 
   double overload_chance( const action_state_t* s ) const override
   {
-    /*
+    /* // Don't enable this chance or else High Voltage would get unintended benefit from Stormkeeper.
+    // Please check shaman_spell_t for the overload logic of Stormkeeper and High Voltage
     if ( p()->buff.stormkeeper->check() )
     {
       return 1.0;
@@ -6701,6 +6716,9 @@ void shaman_t::init_spells()
   azerite.synapse_shock          = find_azerite_spell( "Synapse Shock" );
   azerite.volcanic_lightning     = find_azerite_spell( "Volcanic Lightning" );
 
+  // Shared
+  azerite.ancestral_resonance = find_azerite_spell( "Ancestral Resonance" );
+
   //
   // Misc spells
   //
@@ -7248,6 +7266,17 @@ void shaman_t::create_buffs()
                         ->set_duration( find_spell( 273453 )->duration() );
 
   // Azerite Traits - Enh
+
+  // Azerite Traits - Shared
+
+  buff.ancestral_resonance =
+      make_buff<stat_buff_t>( this, "ancestral_resonance", find_spell( 277943 ) )
+          ->add_stat( STAT_MASTERY_RATING, azerite.ancestral_resonance.value( 1 ) )
+          ->set_duration( find_spell( 277943 )->duration() *
+                          2 )  // buff lasts 20 seconds but is refreshed each second for the first 20 seconds/stacks
+          ->set_period( find_spell( 277942 )->effectN( 1 ).period() )
+          ->set_tick_behavior( buff_tick_behavior::REFRESH )
+          ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
 
   //
   // Enhancement
