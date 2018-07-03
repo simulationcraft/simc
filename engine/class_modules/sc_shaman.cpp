@@ -1653,7 +1653,7 @@ public:
     // roll for overload for each additional chance to trigger an overload
     for ( size_t i = 0; i < (unsigned)n_overload_chances( source_state ); i++ )
     {
-      overloads += rng().roll( overload_chance( source_state ) );
+      overloads += rng().roll( overload_chance( source_state ) * p()->talent.high_voltage->effectN( 1 ).percent() );
     }
 
     overloads += (unsigned)n_overloads( source_state );
@@ -3042,7 +3042,7 @@ struct stormstrike_attack_t : public shaman_attack_t
       p()->buff.lightning_shield->trigger();
 
       if ( p()->buff.lightning_shield->stack() >=
-           15 )  // if 15 or greater, trigger overcharge and remove all stacks, then trigger LS back to 1.
+           20 )  // if 20 or greater, trigger overcharge and remove all stacks, then trigger LS back to 1.
       {          // is there a way to do this without expiring lightning shield entirely?
         p()->buff.lightning_shield_overcharge->trigger();
         p()->buff.lightning_shield->expire();
@@ -3388,7 +3388,7 @@ struct auto_attack_t : public shaman_attack_t
     p()->melee_mh = new melee_t( "Main Hand", spell_data_t::nil(), player, &( p()->main_hand_weapon ), sync_weapons,
                                  swing_timer_variance );
     p()->melee_mh->school = SCHOOL_PHYSICAL;
-    p()->ascendance_mh = new windlash_t( "Wind Lash", player->find_spell( 114089 ), player, &( p()->main_hand_weapon ),
+    p()->ascendance_mh = new windlash_t( "Windlash", player->find_spell( 114089 ), player, &( p()->main_hand_weapon ),
                                          swing_timer_variance );
 
     p()->main_hand_attack = p()->melee_mh;
@@ -3401,7 +3401,7 @@ struct auto_attack_t : public shaman_attack_t
       p()->melee_oh = new melee_t( "Off-Hand", spell_data_t::nil(), player, &( p()->off_hand_weapon ), sync_weapons,
                                    swing_timer_variance );
       p()->melee_oh->school = SCHOOL_PHYSICAL;
-      p()->ascendance_oh    = new windlash_t( "Wind Lash Off-Hand", player->find_spell( 114093 ), player,
+      p()->ascendance_oh    = new windlash_t( "Windlash Off-Hand", player->find_spell( 114093 ), player,
                                            &( p()->off_hand_weapon ), swing_timer_variance );
 
       p()->off_hand_attack = p()->melee_oh;
@@ -4352,7 +4352,9 @@ struct chain_lightning_t : public chained_base_t
   /* Number of potential overloads */
   size_t n_overload_chances( const action_state_t* ) const override
   {
-    return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
+    if ( p()->talent.high_voltage->ok() )
+      return (size_t)1;
+    return (size_t)0;
   }
 
   void impact( action_state_t* state ) override
@@ -4420,8 +4422,8 @@ struct lava_beam_t : public chained_base_t
   /* Number of potential overloads */
   size_t n_overload_chances( const action_state_t* ) const override
   {
-    if ( !player->bugs )
-      return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
+    if ( p()->talent.high_voltage->ok() )
+      return (size_t)1;
     return (size_t)0;
   }
 };
@@ -4656,7 +4658,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_crit_chance( t );
 
-    if ( p()->spec.elemental_shaman->ok() )
+    if ( p()->spec.lava_burst_2->ok() && td( target )->dot.flame_shock->is_ticking() )
     {
       // hardcoded because I didn't find it it spell data yet
       m = 1.0;
@@ -4798,7 +4800,9 @@ struct lightning_bolt_t : public shaman_spell_t
   /* Number of potential overloads */
   size_t n_overload_chances( const action_state_t* ) const override
   {
-    return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
+    if ( p()->talent.high_voltage->ok() )
+      return (size_t)1;
+    return (size_t)0;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -7715,7 +7719,7 @@ void shaman_t::init_action_list()
     }
     flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
 
-    icy_edge = new icy_edge_attack_t( "icy_edge_attack", this, &( main_hand_weapon ) );
+    icy_edge = new icy_edge_attack_t( "icy_edge", this, &( main_hand_weapon ) );
 
     action.molten_weapon_dot = new molten_weapon_dot_t( this );
   }
