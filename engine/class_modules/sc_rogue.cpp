@@ -3492,9 +3492,6 @@ struct secret_technique_t : public rogue_attack_t
       weapon = &(p -> main_hand_weapon);
       background = true;
       aoe = -1;
-
-      // Temp HAX to apply Deeper Stratagem until spell data is fixed
-      base_dd_multiplier *= 1.0 + p -> talent.deeper_stratagem -> effectN( 5 ).percent();
     }
 
     double composite_da_multiplier( const action_state_t* state ) const override
