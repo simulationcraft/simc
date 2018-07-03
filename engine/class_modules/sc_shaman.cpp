@@ -3042,7 +3042,7 @@ struct stormstrike_attack_t : public shaman_attack_t
       p()->buff.lightning_shield->trigger();
 
       if ( p()->buff.lightning_shield->stack() >=
-           15 )  // if 15 or greater, trigger overcharge and remove all stacks, then trigger LS back to 1.
+           20 )  // if 20 or greater, trigger overcharge and remove all stacks, then trigger LS back to 1.
       {          // is there a way to do this without expiring lightning shield entirely?
         p()->buff.lightning_shield_overcharge->trigger();
         p()->buff.lightning_shield->expire();
