@@ -75,11 +75,6 @@ public:
     is_sphere_of_insanity_spell = true;
     is_mastery_spell            = true;
 
-    if ( priest().talents.shadow_word_void->ok() )
-    {
-      cooldown->duration = priest().talents.shadow_word_void->charge_cooldown();
-    }
-
     insanity_gain = data().effectN( 2 ).resource( RESOURCE_INSANITY );
     insanity_gain *= ( 1.0 + priest().talents.fortress_of_the_mind->effectN( 2 ).percent() );
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
