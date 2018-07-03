@@ -4,7 +4,7 @@
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26949
+// Class based active abilities, wow build 26970
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1181,7 +1181,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Demon Hunter
   {
-    // General tree, 19 abilities
+    // General tree, 18 abilities
     {
       188499, // Blade Dance
       198589, // Blur
@@ -1200,11 +1200,10 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       207407, // Soul Carver (Artifact)
       188501, // Spectral Sight
       185123, // Throw Glaive
-      185245, // Torment
       198793, // Vengeful Retreat
            0,
     },
-    // Havoc tree, 9 abilities
+    // Havoc tree, 10 abilities
     {
       202446, // Anguish
       211796, // Chaos Blades
@@ -1215,6 +1214,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       162243, // Demon's Bite
       208605, // Nemesis
       217070, // Rage of the Illidari
+      281854, // Torment
            0,
     },
     // Vengeance tree, 15 abilities
@@ -1249,7 +1249,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (35)
 
-// Talent tree specialization abilities, wow build 26949
+// Talent tree specialization abilities, wow build 26970
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1871,6 +1871,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
         8004, // Healing Surge
       231722, // Chain Lightning (Rank 2)
       280609, // Mastery: Elemental Overload (Rank 2)
+      231721, // Lava Burst (Rank 2)
            0,
     },
     // Specialization abilities for Enhancement
@@ -2319,6 +2320,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
       162697, // Stat Negation Aura - Agility DPS
       197125, // Chaos Strike (Passive)
       278386, // Demonic Wards
+      281854, // Torment
            0,
     },
     // Specialization abilities for Vengeance
@@ -2357,7 +2359,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26949
+// Class mastery abilities, wow build 26970
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2596,7 +2598,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26949
+// Racial abilities, wow build 26970
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3524,7 +3526,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26949
+// Set bonus data, wow build 26970
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -4245,7 +4247,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define RPPMMOD_SIZE (938)
 
-// 938 RPPM Modifiers, wow build level 26949
+// 938 RPPM Modifiers, wow build level 26970
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },

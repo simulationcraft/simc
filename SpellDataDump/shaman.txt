@@ -948,7 +948,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.53125 | Target: Enemy (6)
 #2 (id=287537)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: maelstrom | Target: Self (1)
-Description      : Hurls molten lava at the target, dealing $s1 Fire damage.$?a231721[ Lava Burst will always critically strike if the target is affected by Flame Shock.][]$?s137040[ Lava Burst will always critically strike the target.][]$?s137039[][
+Description      : Hurls molten lava at the target, dealing $s1 Fire damage.$?a231721[ Lava Burst will always critically strike if the target is affected by Flame Shock.][]$?s137039[][
 
 |cFFFFFFFFGenerates $190493s2 Maelstrom.|r ]
 
@@ -4119,7 +4119,7 @@ School           : Nature
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
-Stacks           : 15 maximum
+Stacks           : 20 maximum
 Proc Chance      : 100%
 Proc Flags       : ...xxx.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee, Yellow Melee Taken
@@ -4162,7 +4162,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Disable player procs (112), Disable target procs (113)
 Effects          :
 #1 (id=281806)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.09828 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.06000 | Target: Enemy (6)
 Description      : $@spelldesc192106
 
 Name             : Liquid Magma Totem (id=192222) [Spell Family (11)] 
@@ -6436,7 +6436,7 @@ Description      : $@spelldesc51533
 Variables        : $percent=$?s63271[${$58877m1*1.4}][${$58877m1}]
 
 Name             : Lava Burst (Rank 2) (id=231721) [Spell Family (11), Passive] 
-Class            : Restoration Shaman
+Class            : Elemental Restoration Shaman
 School           : Fire
 Spell Level      : 20
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -6886,7 +6886,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=486355)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
-Description      : Lightning Bolt and Chain Lightning can now cause a second Elemental Overload.
+Description      : Lightning Bolt and Chain Lightning have a $s1% of normal chance to cause a second Elemental Overload.
 
 Name             : Unlimited Power (id=260895) [Spell Family (11), Passive] 
 Class            : Shaman
@@ -8019,7 +8019,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=724260)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 62.2 (avg=0.2) | Misc Value: 18 | Trigger Spell: 273005 | Target: Self (1)
-Description      : Melee attacks with Flametongue active increase the damage the target takes from your next Lava Lash by $s1, stacking up to $273006u times.
+Description      : Melee attacks with Flametongue active increase the damage the target takes from your next Lava Lash by ${$s1/2}, stacking up to $273006u times.
 
 Name             : Ruinous Bolt (Drustvar) (id=273150) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -8731,7 +8731,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
 
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
@@ -9362,5 +9362,25 @@ Effects          :
 #1 (id=740102)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 172.3948 (avg=0.554324) | Trigger Spell: 281515 | Target: Self (1)
 Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
+
+Name             : Tradewinds (Tiragarde Sound) (id=281841) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 505
+Triggered by     : Tradewinds (281843), Tradewinds (281844)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=741004)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 281842 | Target: Self (1)
+#2 (id=741005)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.5) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
 
 

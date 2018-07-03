@@ -1481,7 +1481,7 @@ Effects          :
 #4 (id=306421)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 65 | Scaled Value: 65 | Misc Value 2: 0x4 | Target: Self (1)
 #5 (id=306893)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 85 | Scaled Value: 85 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 80 | Scaled Value: 80 | Misc Value: 1 | Target: Self (1)
 Description      : Your tattoos reduce all damage taken by $s1%, and increase your Stamina by $s4% and your Armor by $s5%.
 
 Name             : Blind Fury (id=203550) [Spell Family (107), Passive] 
@@ -1776,7 +1776,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=300651)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05967 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | Target: Enemy (6)
 #2 (id=300652)   : Energize Power (30)
                    Base Value: 16 | Scaled Value: 16 (avg=0, dl=0.5) | Misc Value: fury | Target: Self (1)
 Description      : Inflicts $s1 Shadow damage and generates $m2 to $M2 Fury.
@@ -2185,7 +2185,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
 Effects          :
 #1 (id=305378)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 127 | Target: Enemy (6)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Enemy (6)
 Description      : Increases damage you inflict against the target by $s1% for $d. 
 
 When the target is slain, you will inflict $s1% additional damage against all creature types matching the original target (Humanoid, Dragonkin, etc.) for the remaining duration.
@@ -2483,7 +2483,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=308699)   : Apply Aura (6) | Modify Damage Done% vs Race (168)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 64 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 64 | Target: Self (1)
 Description      : Increases damage against Humanoids by $s1%.
 Tooltip          : Damage against Humanoids increased by $s1%.
 
@@ -4267,13 +4267,13 @@ Effects          :
 #1 (id=706547)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Self (1)
 #2 (id=706548)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 120 | Scaled Value: 120 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 Description      : Shield yourself for $d, absorbing $<baseAbsorb> damage.
 
 Consumes all Soul Fragments within 25 yds to add $<fragmentAbsorb> to the shield per fragment.
 Tooltip          : Absorbs $w1 damage.
-Variables        : $baseAbsorb=${6*$AP*$pctH}
-$fragmentAbsorb=${1.2*$AP*$pctH}
+Variables        : $baseAbsorb=${5*$AP*$pctH}
+$fragmentAbsorb=${1*$AP*$pctH}
 
 Name             : Resounding Protection (id=263962) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -5259,7 +5259,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
 
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
@@ -5856,5 +5856,52 @@ Effects          :
 #1 (id=740102)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 172.3948 (avg=0.554324) | Trigger Spell: 281515 | Target: Self (1)
 Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
+
+Name             : Tradewinds (Tiragarde Sound) (id=281841) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 505
+Triggered by     : Tradewinds (281843), Tradewinds (281844)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=741004)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 281842 | Target: Self (1)
+#2 (id=741005)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.5) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
+
+Name             : Torment (id=281854) [Spell Family (107)] 
+Class            : Havoc Demon Hunter
+School           : Shadow
+Spell Level      : 110
+Range            : 30 yards
+Duration         : 3 seconds
+Cooldown         : 8 seconds
+Category         : 82
+Category Cooldown: 8 seconds
+Proc Flags       : ...x.x.x .x.x.x.. .x.x.... ........ 
+                 : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Hostile Spell Taken, Periodic Taken
+Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ..x.....   ........ ........ x.x..... ........ 
+                 : ........ ...x.... .......x ........   ........ ........ ........ ........ 
+                 : ........ ........ .......x ........   ........ ........ .......x x....... 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : Disable player procs (112), Disable weapon procs (151)
+Effects          :
+#1 (id=741051)   : Unknown(114)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Enemy (6)
+#2 (id=741052)   : Apply Aura (6) | Taunt (11)
+                   Base Value: 400 | Scaled Value: 400 | Target: Enemy (6)
+Description      : Taunts the target to attack you, and increases threat that you generate against the target for $d.
+Tooltip          : Taunted.
 
 

@@ -781,7 +781,7 @@ Attributes       : ....x.x. ........ x.x..... x..x.x.x   ........ ..x..... .x...
                  : Passive (6), Cannot cancel aura (31)
 Effects          :
 #1 (id=128720)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 130 | Scaled Value: 130 | Misc Value: 126 | Target: Self (1)
+                   Base Value: 140 | Scaled Value: 140 | Misc Value: 126 | Target: Self (1)
 #2 (id=128724)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Misc Value 2: 0xfffffff6 | Target: Self (1)
 #3 (id=134152)   : Apply Aura (6) | Absorb Damage (69)
@@ -1065,7 +1065,7 @@ Class            : Monk
 School           : Physical
 Spell Level      : 26
 GCD              : 1.5 seconds
-Duration         : 15 seconds
+Duration         : 5 seconds
 Cooldown         : 30 seconds
 Charges          : 0 (30 seconds cooldown)
 Category         : 1474
@@ -1081,7 +1081,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0xfffffff5 | Target: Self (1)
 Description      : Guard against future attacks, causing the next $<absorb> damage delayed by Stagger to instead be prevented.
 Tooltip          : The next $w1 damage you Stagger will be prevented instead.
-Variables        : $absorb=${($AP*7.5)*(1+$@versadmg)}
+Variables        : $absorb=${($AP*12)*(1+$@versadmg)}
 
 
 Name             : Ironskin Brew (id=115308) [Spell Family (53)] 
@@ -3419,7 +3419,7 @@ Attributes       : ....x... ........ ..x..... ...x....   ........ ........ .....
                  : Not a proc (105)
 Effects          :
 #1 (id=201670)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.10000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : $@spelldesc116847
 
 Name             : Serenity (id=152173) [Spell Family (53)] 
@@ -4995,7 +4995,7 @@ Description      : Stomps the ground, dealing $s1 Physical damage to all nearby 
 Name             : Surging Mist (PvP Talent) (id=227344) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 2% Base Mana (0) (id=11512) w/ Mistweaver Monk (id=137024) [Hotfixed: Percent Cost (1 -> 2)]
+Resource         : 1% Base Mana (0) (id=11512) w/ Mistweaver Monk (id=137024)
 Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -5013,8 +5013,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=341656)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.60000 | Target: Friend (21)
-                   Hotfixed: AP Coefficient (2 -> 1.6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | Target: Friend (21)
 #2 (id=731442)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 50 | Scaled Value: 50 | Target: Friend (21)
                    Affected Spells: Surging Mist (227344)
@@ -5615,7 +5614,7 @@ Description      : $@spelldesc123986
 Name             : Rushing Jade Wind (id=261715) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 4 Energy (3) and 4 Energy (3) per tick (id=12616)
+Resource         : 3 Energy (3) and 3 Energy (3) per tick (id=12616)
 Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
@@ -7114,7 +7113,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
 
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
@@ -7765,5 +7764,25 @@ Effects          :
 #1 (id=740102)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 172.3948 (avg=0.554324) | Trigger Spell: 281515 | Target: Self (1)
 Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
+
+Name             : Tradewinds (Tiragarde Sound) (id=281841) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 505
+Triggered by     : Tradewinds (281843), Tradewinds (281844)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=741004)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 281842 | Target: Self (1)
+#2 (id=741005)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.5) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
 
 

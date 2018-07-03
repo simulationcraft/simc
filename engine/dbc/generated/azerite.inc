@@ -1,5 +1,5 @@
-// Azerite powers, wow build 26949
-static constexpr std::array<azerite_power_entry_t, 312> __azerite_power_data { {
+// Azerite powers, wow build 26970
+static constexpr std::array<azerite_power_entry_t, 314> __azerite_power_data { {
   {  13, 263978, "Azerite Empowered"                  },
   {  14, 268594, "Longstrider"                        },
   {  15, 263962, "Resounding Protection"              },
@@ -255,6 +255,7 @@ static constexpr std::array<azerite_power_entry_t, 312> __azerite_power_data { {
   { 440, 278760, "Callous Reprisal"                   },
   { 441, 278765, "Iron Fortress"                      },
   { 442, 275974, "Deathbloom"                         },
+  { 443, 276007, "Excoriate"                          },
   { 444, 277644, "Crashing Chaos"                     },
   { 445, 277673, "Perforate"                          },
   { 446, 277676, "Brigand's Blitz"                    },
@@ -312,4 +313,5 @@ static constexpr std::array<azerite_power_entry_t, 312> __azerite_power_data { {
   { 502, 280181, "Personal Absorb-o-Tron"             },
   { 503, 280172, "Auto-Self-Cauterizer"               },
   { 504, 281514, "Unstable Catalyst"                  },
+  { 505, 281841, "Tradewinds"                         },
 } };

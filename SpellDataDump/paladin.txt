@@ -317,7 +317,7 @@ Duration         : 60 seconds
 Cooldown         : 15 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
-Mechanic         : Sap
+Mechanic         : Incapacitate
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken , Yellow Ranged Taken, AOE Heal Taken, AOE Hostile Spell Taken, Heal Taken, Hostile Spell Taken, Periodic Taken
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .xx..... .x...... 
@@ -940,7 +940,7 @@ School           : Holy
 Spell Level      : 20
 Range            : 5 yards
 Cooldown         : 1 seconds
-Charges          : 3 (20 seconds cooldown)
+Charges          : 3 (18 seconds cooldown)
 Category         : 1543: Paladin (137026 effect#2)
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#4), Retribution (183436 effect#1), Avenger's Valor (197561 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
@@ -1279,7 +1279,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #2 (id=92089)    : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: -0.35000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Consecration (188370)
 #3 (id=155890)   : Apply Aura (6) | Modify Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 Description      : Reduces all damage taken while inside your Consecration by ${-$s2}.1%.  Increases your chance to block melee attacks by ${$s1}.1%.
@@ -2111,7 +2110,7 @@ Class            : Paladin
 School           : Holy
 Spell Level      : 1
 Range            : 5 yards
-Duration         : 5 seconds
+Duration         : 4.5 seconds
 Affecting spells : Avenger's Valor (197561 effect#2)
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3045,30 +3044,6 @@ Description      : Creates a barrier of holy light that absorbs ${$s2/100*$MHP} 
 When the shield expires, it bursts to inflict Holy damage equal to the total amount absorbed, divided among all nearby enemies.
 Tooltip          : Absorbs $w1 damage and deals damage when the barrier fades or is fully consumed.
 Variables        : $shield=${($SP*$s2)*(1+$@versadmg)}
-
-Name             : Consecration (id=188370) [Spell Family (10)] 
-Class            : Paladin
-School           : Holy
-Range            : 50000 yards
-Duration         : Aura (infinite)
-Affecting spells : Mastery: Divine Bulwark (76671 effect#2), Item - Paladin T19 Protection 2P Bonus (211553 effect#2), 
-Attributes       : ........ ........ .......x x..x...x   .....x.. ..x..... ........ ........ 
-                 : ..x..... ......x. ...x.... ........   ........ ........ ........ ........ 
-                 : x......x ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ....x... ........ ........   ........ ...x.... ....x... ........ 
-                 : x....... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Cannot cancel aura (31), Does not break stealth (37)
-Effects          :
-#1 (id=274919)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 17 | Target: Self (1)
-#2 (id=336193)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x7f | Target: Self (1)
-Description      : $@spelldesc26573
-Tooltip          : Hammer of the Righteous also causes a wave of light that hits all other enemies near the target.
-
-$?$w2<0[Damage taken reduced by ${-$W2}.1%.][]
 
 Name             : Divine Steed (id=190784) [Spell Family (10)] 
 Class            : Paladin
@@ -4098,7 +4073,7 @@ Range            : 100 yards
 Affecting spells : Aura Mastery (31821 effect#1), Avenging Wrath (31884 effect#1), Holy Paladin (137029 effect#1), Beacon of Faith (156910 effect#3)
 Triggered by     : Aura of Mercy (183415)
 Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ......x. 
+                 : ..x..... ........ ........ ........   ........ ........ x....... ......x. 
                  : .......x .......x ........ ........   ...x.... ........ .xx..... ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4224,9 +4199,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.80000 | Target: Friend (21)
 #2 (id=317000)   : Dummy (3)
                    Base Value: 200 | Scaled Value: 200 | Target: Self (1)
-Description      : Calls down the Light to heal a friendly target for $s1, increased by up to $s2% based on your missing health.$?s26573&!s203785[
-
-While you are standing in your Consecration, Hand of the Protector's healing is increased by $188370s2%.][]
+Description      : Calls down the Light to heal a friendly target for $s1, increased by up to $s2% based on your missing health.
 
 Name             : Rule of Law (id=214202) [Spell Family (10)] 
 Class            : Paladin
@@ -6391,7 +6364,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=728560)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 485.16 (avg=1.56) | Target: Self (1)
-Description      : Judgment deals additional damage when your health exceeds the target's health, up to $s1 damage.
+Description      : Judgment deals additional damage when your health percentage exceeds the target's, up to $s1 damage.
 
 Name             : Judgment (id=275773) [Spell Family (10)] 
 Class            : Holy Paladin
@@ -6699,7 +6672,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
 
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
@@ -7367,5 +7340,25 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 0x17 | Target: Self (1)
                    Affected School(s): Physical, Holy, Fire, Frost
 Description      : $@spelldesc206338
+
+Name             : Tradewinds (Tiragarde Sound) (id=281841) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 505
+Triggered by     : Tradewinds (281843), Tradewinds (281844)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=741004)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 281842 | Target: Self (1)
+#2 (id=741005)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.5) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
 
 

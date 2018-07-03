@@ -559,8 +559,8 @@ Effects          :
 #1 (id=10779)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
                    Affected Spells: Auto Shot (75), Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
-#2 (id=10780)    : Trigger Spell (64): Bestial Wrath
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 186254
+#2 (id=10780)    : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0
 #3 (id=342782)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 #4 (id=479792)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
@@ -886,7 +886,7 @@ Spell Level      : 10
 Range            : 50 yards
 GCD              : 1.5 seconds
 Cooldown         : 7.5 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#2), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Roar of the Seven Lions (207318 effect#1), Mongoose Power (211362 effect#1), Bestial Rage (246116 effect#1), Unseen Predator's Cloak (248212 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1), Thrill of the Hunt (257946 effect#1), Rotting Jaws (264195 effect#1), Coordinated Assault (266779 effect#1), Animal Companion (267116 effect#3)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#2), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Roar of the Seven Lions (207318 effect#1), Mongoose Power (211362 effect#1), Bestial Rage (246116 effect#1), Unseen Predator's Cloak (248212 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1), Thrill of the Hunt (257946 effect#1), Rotting Jaws (264195 effect#1), Coordinated Assault (266779 effect#1), 
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ..xxx... 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1038,7 +1038,7 @@ Effects          :
 Description      : The Tallstrider kicks up a cloud of dust towards the target, slowing movement by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
-Name             : Ankle Crack (Special Ability) (id=50433) [Scaling Spell (4), Spell Family (9)] 
+Name             : Ankle Crack (Special Ability) (id=50433) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -1611,7 +1611,7 @@ Class            : Hunter
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1), Rotting Jaws (264195 effect#1), Animal Companion (267116 effect#3)
+Affecting spells : Roar of the Seven Lions (207318 effect#1), Bestial Rage (246116 effect#1), Item - Hunter T21 Beast Mastery 2P Bonus (251755 effect#1), Rotting Jaws (264195 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2105,7 +2105,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=134935)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Active Pet (5)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 3 | Target: Friend (21)
 Description      : $@spelldesc115939
 Tooltip          : Melee attacks also strike all other nearby enemy targets.
 
@@ -2951,7 +2951,7 @@ Description      : The Scorpion lashes out with its tail, stinging the target an
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Tendon Rip (Special Ability) (id=160065) [Scaling Spell (4), Spell Family (9)] 
+Name             : Tendon Rip (Special Ability) (id=160065) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -2973,7 +2973,7 @@ Effects          :
 Description      : The Silithid slashes at the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Web Spray (Special Ability) (id=160067) [Scaling Spell (4), Spell Family (9)] 
+Name             : Web Spray (Special Ability) (id=160067) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -3271,35 +3271,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : The cooldown of $?s217200[Barbed Shot][Dire Beast] is reset.
 Tooltip          : The cooldown of $?s217200[Barbed Shot][Dire Beast] is reset.
-
-Name             : Bestial Wrath (id=186254) [Spell Family (9)] 
-Class            : Hunter
-School           : Physical
-Spell Level      : 20
-Range            : 100 yards
-Duration         : 15 seconds
-Cooldown         : 90 seconds
-Affecting spells : Beastlord (184900 effect#1), Item - Hunter T19 Beast Mastery 2P Bonus (211172 effect#1)
-Triggered by     : Bestial Wrath (19574)
-Attributes       : ........ ........ x....... .....x..   ........ ..x....x ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
-                 : ........ ........ ......x. ........   ........ ........ ........ ........ 
-                 : .....x.. ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-Effects          :
-#1 (id=271164)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: 25 | Scaled Value: 25 | Misc Value: 0x7f | Target: Active Pet (5)
-                   Affected School(s): All
-#2 (id=271165)   : Apply Aura (6) | Scale% (Stacking) (61)
-                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | Target: Active Pet (5)
-#3 (id=271166)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Target: Active Pet (5)
-#4 (id=271167)   : Apply Aura (6) | Temporary Thread Reduction (103)
-                   Base Value: 0 | Scaled Value: 0 | Target: Active Pet (5)
-Description      : $@spelldesc19574
-Tooltip          : Damage dealt increased by $w1%.
 
 Name             : Aspect of the Cheetah (id=186257) [Spell Family (9)] 
 Class            : Hunter
@@ -4548,7 +4519,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Fire a shot that tears through your enemy, causing them to bleed for ${$s1*$d/$t1} damage over $d.
 
-Sends your pet into a frenzy, increasing attack speed by $272790s1% for $272790d sec, stacking up to $272790u times.
+Sends your pet into a frenzy, increasing attack speed by $272790s1% for $272790d, stacking up to $272790u times.
 
 |cFFFFFFFFGenerates ${$246152s1*$246152d/$246152t1} Focus over $246152d.|r
 Tooltip          : Suffering $sw1 damage every $t1 sec.
@@ -5123,7 +5094,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
 Effects          :
 #1 (id=483696)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
@@ -5300,7 +5271,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 60 yards/sec
 Duration         : 12 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Mongoose Power (211362 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Hydra's Bite (260241 effect#1), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Viper's Venom (268552 effect#1), 
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Aspect of the Wild (193530 effect#1), Mongoose Power (211362 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Hydra's Bite (260241 effect#2), Mastery: Spirit Bond (263135 effect#1), Coordinated Assault (266779 effect#1), Viper's Venom (268552 effect#1), 
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
@@ -5441,6 +5412,10 @@ Name             : Hydra's Bite (id=260241) [Spell Family (9), Passive]
 Class            : Hunter
 School           : Nature
 Spell Level      : 1
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 101%
+Proc Flags       : ........ x....... ........ ........ 
+                 : Yellow Ranged
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -5450,9 +5425,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=485307)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
-                   Base Value: 2 | Scaled Value: 2 | Misc Value: 17 | Target: Self (1)
-                   Affected Spells: Serpent Sting (259491)
+#1 (id=485307)   : Apply Aura (6) | Proc Trigger Spell (42): Twin Moons
+                   Base Value: 2 | Scaled Value: 2 | Trigger Spell: 281847 | Target: Self (1)
 #2 (id=485308)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Serpent Sting (259491)
@@ -6055,7 +6029,7 @@ Effects          :
 Description      : Adds an additional $s1% speed to the initial 3 seconds of Aspect of the Cheetah.
 Tooltip          : Adds an additional $s1% speed to the initial 3 seconds of Aspect of the Cheetah.
 
-Name             : Furious Bite (Special Ability) (id=263840) [Scaling Spell (4), Spell Family (9)] 
+Name             : Furious Bite (Special Ability) (id=263840) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -7042,11 +7016,8 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=713555)   : Apply Aura (6) | Unknown(493)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273277 | Target: Self (1)
-#2 (id=740947)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
-                   Base Value: -45 | Scaled Value: -45 | Target: Active Pet (5)
-#3 (id=740950)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -45 | Scaled Value: -45 | Target: Active Pet (5)
-                   Affected Spells: Kill Command (34026), Kill Command (83381)
+#2 (id=740947)   : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: -40 | Scaled Value: -40 | Target: Self (1)
 Description      : Your Call Pet additionally summons the first pet from your stable. This pet will obey your Kill Command, but cannot use pet family abilities.
 
 Name             : Chakrams (id=267605) [Spell Family (9)] 
@@ -7855,13 +7826,13 @@ Velocity         : 45 yards/sec
 Duration         : 12 seconds
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Mongoose Power (211362 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effect#1), 
 Attributes       : .x...... ........ x....... ........   ........ .x...... ........ ...x.... 
-                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : Ranged Ability (1)
+                 : Ranged Ability (1), Periodic effect affected by haste (173)
 Effects          :
 #1 (id=722198)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | Target: Enemy (6)
@@ -8063,7 +8034,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724756)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 252.8455 (avg=0.813008) | Trigger Spell: 273266 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 248.8 (avg=0.8) | Trigger Spell: 273266 | Target: Self (1)
 Description      : Arcane Shot increases the damage of Arcane Shot by $s1 for $273267d, stacking up to $273267u times.
 
 Name             : Summon Animal Companion (id=273277) [Hidden] 
@@ -8381,9 +8352,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732952)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 50.56922 (avg=0.162602) | Trigger Spell: 277966 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 46.65 (avg=0.15) | Trigger Spell: 277966 | Target: Self (1)
 #2 (id=733430)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 12.64215 (avg=0.04065) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 12.44 (avg=0.04) | Target: Self (1)
 Description      : During Coordinated Assault, $?s259387[Mongoose Bite][Raptor Strike] increases your Agility by $s1 and your Speed by $s2 for $277969d. Stacks up to $277969u times.
 
 Name             : Pack Alpha (id=278528) [Scaling Spell (-1), Spell Family (9), Passive] 
@@ -8526,6 +8497,50 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278530
 Description      : $@spelldesc278530
 
+Name             : Twin Moons (id=279620) [Spell Family (7), Passive, Hidden] 
+Class            : Hunter, Druid
+School           : Physical
+Internal Cooldown: 0.5 seconds
+Proc Chance      : 100%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Passive (6), Hidden (7)
+Effects          :
+#1 (id=736036)   : Apply Aura (6) | Proc Trigger Spell (42): Twin Moons
+                   Base Value: 1 | Scaled Value: 1 | Trigger Spell: 279621 | Target: Self (1)
+#2 (id=736037)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | Target: Self (1)
+                   Affected Spells: Moonfire (8921), Moonfire (164812)
+#3 (id=736038)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Moonfire (8921), Moonfire (164812)
+Description      : Moonfire deals $s2% increased damage and also hits another nearby enemy within $279621A1 yds of the target.
+
+Name             : Twin Moons (id=279621) [Hidden] 
+Class            : Hunter, Druid
+School           : Physical
+Range            : 100 yards
+Triggered by     : Twin Moons (279620)
+Attributes       : .......x ........ ........ ...x....   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ .x...... .x...... ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable target procs (113)
+Effects          :
+#1 (id=736039)   : Server Side Script (77)
+                   Base Value: 8921 | Scaled Value: 8921 | Radius: 0 - 15 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : $@spelldesc279620
+
 Name             : Primal Instincts (id=279806) [Scaling Spell (-1), Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
@@ -8658,7 +8673,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
 
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
@@ -9254,5 +9269,43 @@ Effects          :
 #1 (id=740102)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 172.3948 (avg=0.554324) | Trigger Spell: 281515 | Target: Self (1)
 Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
+
+Name             : Tradewinds (Tiragarde Sound) (id=281841) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 505
+Triggered by     : Tradewinds (281843), Tradewinds (281844)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=741004)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 281842 | Target: Self (1)
+#2 (id=741005)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.5) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
+
+Name             : Twin Moons (id=281847) [Hidden] 
+Class            : Hunter
+School           : Physical
+Range            : 100 yards
+Triggered by     : Hydra's Bite (260241)
+Attributes       : .......x ........ ........ ...x....   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ .x...... .x...... ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : Hidden (7), Does not break stealth (37), Not a proc (105), Disable target procs (113)
+Effects          :
+#1 (id=741016)   : Server Side Script (77)
+                   Base Value: 8921 | Scaled Value: 8921 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+Description      : $@spelldesc279620
 
 
