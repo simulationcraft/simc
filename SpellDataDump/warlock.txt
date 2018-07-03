@@ -2988,13 +2988,13 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179728)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Doom (265412), Doom (265469), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350)
 #2 (id=191027)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Immolate (348), Shadow Bolt (686), Agony (980), Soul Fire (6353), Shadowburn (17877), Conflagrate (17962), Seed of Corruption (27243), Seed of Corruption (27285), Incinerate (29722), Rain of Fire (42223), Haunt (48181), Siphon Life (63106), Hand of Gul'dan (86040), Chaos Bolt (116858), Corruption (146739), Cataclysm (152108), Demonbolt (157695), Immolate (157736), Grimoire of Sacrifice (196100), Implosion (196278), Channel Demonfire (196448), Drain Soul (198590), Phantom Singularity (205179), Phantom Singularity (205246), Shadow Bolt (232670), Unstable Affliction (233490), Unstable Affliction (233496), Unstable Affliction (233497), Unstable Affliction (233498), Unstable Affliction (233499), Drain Life (234153), Demonbolt (264178), Demonfire Blast (265279), Doom (265412), Doom (265469), Conflagrate (265931), Bilescourge Bombers (267213), Umbral Blaze (273526), Vile Taint (278350)
 #3 (id=191028)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 #4 (id=191029)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=191030)   : Apply Aura (6) | Dummy (4)
@@ -5921,7 +5921,7 @@ Attributes       : ......x. ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6)
 Effects          :
-#1 (id=713718)   : Apply Aura (6) | Periodic Dummy (226): every 10 seconds
+#1 (id=713718)   : Apply Aura (6) | Periodic Dummy (226): every 12 seconds
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #2 (id=715033)   : Dummy (3)
                    Base Value: 15 | Scaled Value: 15
@@ -6944,6 +6944,23 @@ Effects          :
                    Base Value: 0 | Scaled Value: 277.6786 (avg=3.571429) | Target: Self (1)
 Description      : If your Seed of Corruption detonates early, it deals $s1 additional damage.
 
+Name             : Excoriate (id=276007) [Scaling Spell (-1), Passive] 
+Class            : Warlock
+School           : Physical
+Azerite Power Id : 443
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=729381)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 313.7583 (avg=1.008869) | Target: Self (1)
+Description      : When you gain Demonic Core, the damage of your next Demonbolt is increased by $s1.
+
 Name             : Crashing Chaos (id=277644) [Scaling Spell (-1), Passive] 
 Class            : Warlock
 School           : Physical
@@ -7241,7 +7258,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 #4 (id=738960)   : Apply Aura (6) | Skill (30)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
-Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
+Description      : Your spells and abilities have a chance to fire a bomb at your target, which when in proximity breaks into $s3 smaller bombs. Upon hitting the ground, each smaller bomb deals $280984s1 damage to all nearby enemies.
 
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
@@ -7853,5 +7870,25 @@ Effects          :
 #1 (id=740102)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 172.3948 (avg=0.554324) | Trigger Spell: 281515 | Target: Self (1)
 Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
+
+Name             : Tradewinds (Tiragarde Sound) (id=281841) [Scaling Spell (-7), Passive] 
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+School           : Physical
+Azerite Power Id : 505
+Triggered by     : Tradewinds (281843), Tradewinds (281844)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Passive (6), Scales with item level (354)
+Effects          :
+#1 (id=741004)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=1) | Trigger Spell: 281842 | Target: Self (1)
+#2 (id=741005)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 (avg=0.5) | Target: Self (1)
+Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
 
 
