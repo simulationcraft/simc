@@ -228,7 +228,6 @@ struct adds_event_t : public raid_event_t
         assert( p );
         p->resources.base[ RESOURCE_HEALTH ] = health;
         p->race                              = race;
-        p->race_str                          = util::race_type_string( race );
         adds.push_back( p );
       }
     }

@@ -62,6 +62,7 @@ struct enemy_t : public player_t
   { return RESOURCE_HEALTH; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str ) override;
+  void init_race() override;
   virtual void init_base_stats() override;
   virtual void init_defense() override;
   virtual void create_buffs() override;
@@ -1154,6 +1155,21 @@ action_t* enemy_t::create_action( const std::string& name,
   return a;
 }
 
+void enemy_t::init_race()
+{
+  player_t::init_race();
+
+  // target_race override
+  if ( !sim -> target_race.empty() )
+  {
+    race = util::parse_race_type( sim -> target_race );
+    if (race == RACE_NONE)
+    {
+      throw std::invalid_argument(
+          fmt::format( "{} could not parse race from sim target race '{}'.", name(), sim->target_race ) );
+    }
+  }
+}
 // enemy_t::init_base =======================================================
 
 void enemy_t::init_base_stats()
@@ -1178,17 +1194,7 @@ void enemy_t::init_base_stats()
   if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
     waiting_time = timespan_t::from_seconds( 1.0 );
 
-  // target_race override
-  if ( !sim -> target_race.empty() )
-  {
-    race = util::parse_race_type( sim -> target_race );
-    race_str = util::race_type_string( race );
-    if (race == RACE_NONE)
-    {
-      throw std::invalid_argument(
-          fmt::format( "{} could not parse race from sim target race '{}'.", name(), sim->target_race ) );
-    }
-  }
+
 
   base.attack_crit_chance = 0.05;
 
