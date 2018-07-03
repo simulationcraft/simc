@@ -1653,7 +1653,7 @@ public:
     // roll for overload for each additional chance to trigger an overload
     for ( size_t i = 0; i < (unsigned)n_overload_chances( source_state ); i++ )
     {
-      overloads += rng().roll( overload_chance( source_state ) );
+      overloads += rng().roll( overload_chance( source_state ) * p()->talent.high_voltage->effectN( 1 ).percent() );
     }
 
     overloads += (unsigned)n_overloads( source_state );
@@ -4352,7 +4352,9 @@ struct chain_lightning_t : public chained_base_t
   /* Number of potential overloads */
   size_t n_overload_chances( const action_state_t* ) const override
   {
-    return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
+    if ( p()->talent.high_voltage->ok() )
+      return (size_t)1;
+    return (size_t)0;
   }
 
   void impact( action_state_t* state ) override
@@ -4420,8 +4422,8 @@ struct lava_beam_t : public chained_base_t
   /* Number of potential overloads */
   size_t n_overload_chances( const action_state_t* ) const override
   {
-    if ( !player->bugs )
-      return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
+    if ( p()->talent.high_voltage->ok() )
+      return (size_t)1;
     return (size_t)0;
   }
 };
@@ -4656,7 +4658,7 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_crit_chance( t );
 
-    if ( p()->spec.elemental_shaman->ok() )
+    if ( p()->spec.lava_burst_2->ok() && td( target )->dot.flame_shock->is_ticking() )
     {
       // hardcoded because I didn't find it it spell data yet
       m = 1.0;
@@ -4798,7 +4800,9 @@ struct lightning_bolt_t : public shaman_spell_t
   /* Number of potential overloads */
   size_t n_overload_chances( const action_state_t* ) const override
   {
-    return (size_t)p()->talent.high_voltage->effectN( 1 ).percent();
+    if ( p()->talent.high_voltage->ok() )
+      return (size_t)1;
+    return (size_t)0;
   }
 
   double composite_target_multiplier( player_t* target ) const override
