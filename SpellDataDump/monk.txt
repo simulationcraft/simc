@@ -4995,7 +4995,7 @@ Description      : Stomps the ground, dealing $s1 Physical damage to all nearby 
 Name             : Surging Mist (PvP Talent) (id=227344) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 1% Base Mana (0) (id=11512) w/ Mistweaver Monk (id=137024)
+Resource         : 2% Base Mana (0) (id=11512) w/ Mistweaver Monk (id=137024) [Hotfixed: Percent Cost (1 -> 2)]
 Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -5013,7 +5013,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=341656)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.60000 | Target: Friend (21)
+                   Hotfixed: AP Coefficient (2 -> 1.6)
 #2 (id=731442)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 50 | Scaled Value: 50 | Target: Friend (21)
                    Affected Spells: Surging Mist (227344)

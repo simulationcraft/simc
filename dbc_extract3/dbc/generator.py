@@ -1179,6 +1179,8 @@ class SpellDataGenerator(DataGenerator):
          259448, 259449, 259452, 259453,
          # 8.0 Bountiful Captain's Feast food buffs
          259454, 259455, 259456, 259457,
+         # 8.0 Incendiary Ammunition
+         265092,
         ),
 
         # Warrior:
