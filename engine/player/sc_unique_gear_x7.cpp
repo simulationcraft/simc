@@ -158,4 +158,8 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 268900, enchants::weapon_navigation( 268898 ) ); // Masterful Navigation
   register_special_effect( 268906, enchants::weapon_navigation( 268904 ) ); // Deadly Navigation
   register_special_effect( 268912, enchants::weapon_navigation( 268910 ) ); // Stalwart Navigation
+  register_special_effect( 264876, "264878Trigger" ); // Crow's Nest Scope
+  register_special_effect( 264958, "264957Trigger" ); // Monelite Scope of Alacrity
+  register_special_effect( 265090, "265092Trigger" ); // Incendiary Ammunition
+  register_special_effect( 265094, "265096Trigger" ); // Frost-Laced Ammunition
 }
