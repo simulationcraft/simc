@@ -107,6 +107,7 @@ struct mage_td_t : public actor_target_data_t
 
     // Azerite
     buff_t* packed_ice;
+    buff_t* preheat;
   } debuffs;
 
   mage_td_t( player_t* target, mage_t* mage );
@@ -644,6 +645,7 @@ public:
     // Fire
     azerite_power_t firemind;
     azerite_power_t trailing_embers;
+    azerite_power_t preheat;
 
     // Frost
     azerite_power_t frigid_grasp;
@@ -4113,6 +4115,19 @@ struct fire_blast_t : public fire_mage_spell_t
     // update_ready() assumes the ICD is affected by haste
     internal_cooldown -> start( data().cooldown() );
   }
+
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double da = fire_mage_spell_t::bonus_da( s );
+
+    const mage_td_t* td = p() -> target_data[ s -> target ];
+    if ( td )
+    {
+      da += td -> debuffs.preheat -> check_value();
+    }
+
+    return da;
+  }
 };
 
 
@@ -4860,6 +4875,11 @@ struct scorch_t : public fire_mage_spell_t
     {
       p() -> buffs.frenetic_speed -> trigger();
     }
+
+    if ( p() -> azerite.preheat.enabled() )
+    {
+      td( s -> target ) -> debuffs.preheat -> trigger();
+    }
   }
 
   virtual bool usable_moving() const override
@@ -5554,6 +5574,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs.packed_ice        = make_buff( *this, "packed_ice", mage -> find_spell( 272970 ) )
                                 -> set_chance( mage -> azerite.packed_ice.enabled() ? 1.0 : 0.0 )
                                 -> set_default_value( mage -> azerite.packed_ice.value() );
+  debuffs.preheat           = make_buff( *this, "preheat", mage -> find_spell( 273333 ) )
+                                -> set_chance( mage -> azerite.preheat.enabled() ? 1.0 : 0.0 )
+                                -> set_default_value( mage -> azerite.preheat.value() );
 }
 
 mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -6074,6 +6097,7 @@ void mage_t::init_spells()
   azerite.winters_reach      = find_azerite_spell( "Winter's Reach"  );
   azerite.firemind           = find_azerite_spell( "Firemind"        );
   azerite.trailing_embers    = find_azerite_spell( "Trailing Embers" );
+  azerite.preheat            = find_azerite_spell( "Preheat"         );
 }
 
 // mage_t::init_base ========================================================
