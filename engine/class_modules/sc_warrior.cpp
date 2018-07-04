@@ -1932,6 +1932,10 @@ struct execute_damage_t : public warrior_attack_t
     {
       am *= 2.0;
     }
+    if ( p() -> buff.sudden_death -> check() )
+    {
+      am *= 2.0;
+    }
     else
     {
       double temp_max_rage = max_rage;
@@ -1950,15 +1954,22 @@ struct execute_arms_t: public warrior_attack_t
 {
   execute_damage_t* trigger_attack;
   double max_rage;
+  double execute_pct;
   execute_arms_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "execute", p, p -> spec.execute ),
-    max_rage( 40 )
+    max_rage( 40 ),
+    execute_pct( 20 )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
     impact_action = p -> active.deep_wounds_ARMS;
 
     trigger_attack = new execute_damage_t(p,options_str);
+
+    if ( p -> talents.massacre -> ok() )
+    {
+      execute_pct = p -> talents.massacre -> effectN( 2 )._base_value;
+    }
   }
 
   double tactician_cost() const override
@@ -1989,6 +2000,10 @@ struct execute_arms_t: public warrior_attack_t
     {
       return c *= 1.0 + p() -> buff.ayalas_stone_heart -> data().effectN( 2 ).percent();
     }
+    if ( p() -> buff.sudden_death -> check() )
+    {
+      return c *= 1.0 + p() -> buff.ayalas_stone_heart -> data().effectN( 2 ).percent(); // Sudden Death doesn't show cost mod in spell data
+    }
     if ( p() -> buff.deadly_calm -> check() )
     {
       c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
@@ -2005,6 +2020,7 @@ struct execute_arms_t: public warrior_attack_t
     p() -> resource_gain( RESOURCE_RAGE, last_resource_cost * 0.3, p() -> gain.execute_refund ); //TODO, is it necessary to check if the target died? Probably too much trouble.
 
     p() -> buff.ayalas_stone_heart -> expire();
+    p() -> buff.sudden_death -> expire();
     p() -> buff.executioners_precision -> trigger();
   }
 
@@ -2018,8 +2034,13 @@ struct execute_arms_t: public warrior_attack_t
     {
       return warrior_attack_t::ready();
     }
+    if ( p() -> buff.sudden_death -> check() )
+    {
+      return warrior_attack_t::ready();
+    }
+
     // Call warrior_attack_t::ready() first for proper targeting support.
-    if ( warrior_attack_t::ready() && target -> health_percentage() <= 20 )
+    if ( warrior_attack_t::ready() && target -> health_percentage() <= execute_pct )
     {
       return true;
     }
