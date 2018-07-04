@@ -5418,30 +5418,27 @@ void hunter_t::apl_bm()
   default_list -> add_action( "use_items" );
 
   // Racials
-  default_list -> add_action( "berserking,if=buff.bestial_wrath.remains>7&(!set_bonus.tier20_2pc|buff.bestial_wrath.remains<11)" );
-  default_list -> add_action( "blood_fury,if=buff.bestial_wrath.remains>7" );
+  for ( std::string racial : { "berserking", "blood_fury", "ancestral_call", "fireblood" } )
+    default_list -> add_action( racial + ",if=cooldown.bestial_wrath.remains>30" );
 
   // In-combat potion
   default_list -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up" );
 
   // Generic APL
-  default_list -> add_talent( this, "A Murder of Crows", "if=cooldown.bestial_wrath.remains<3|target.time_to_die<16" );
-  default_list -> add_talent( this, "Spitting Cobra", "if=target.time_to_die>=cooldown+duration|target.time_to_die<21" );
-  default_list -> add_talent( this, "Stampede", "if=buff.bloodlust.up|buff.bestial_wrath.up|cooldown.bestial_wrath.remains<=2|target.time_to_die<=14" );
+  default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.up&pet.cat.buff.frenzy.remains<=gcd.max" );
+  default_list -> add_talent( this, "A Murder of Crows" );
+  default_list -> add_talent( this, "Spitting Cobra" );
+  default_list -> add_talent( this, "Stampede", "if=buff.bestial_wrath.up|cooldown.bestial_wrath.remains<gcd|target.time_to_die<15" );
+  default_list -> add_action( this, "Aspect of the Wild" );
   default_list -> add_action( this, "Bestial Wrath", "if=!buff.bestial_wrath.up" );
-  default_list -> add_action( this, "Aspect of the Wild", "if=(equipped.call_of_the_wild&equipped.convergence_of_fates&talent.one_with_the_pack.enabled)|buff.bestial_wrath.remains>7|target.time_to_die<12",
-                                    "With both AotW cdr sources and OwtP, use it on cd. Otherwise pair it with Bestial Wrath." );
-  default_list -> add_talent( this, "Dire Beast", "if=cooldown.bestial_wrath.remains>2&((!equipped.qapla_eredun_war_order|cooldown.kill_command.remains>=1)|full_recharge_time<gcd.max|cooldown.titans_thunder.up|spell_targets>1)" );
-  default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.remains<=gcd.max*1.2|(talent.one_with_the_pack.enabled&(cooldown.bestial_wrath.remains>3&charges_fractional>1.2))|full_recharge_time<gcd.max|target.time_to_die<9" );
-  default_list -> add_talent( this, "Barrage", "if=spell_targets.barrage>1" );
-  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>4&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)" );
+  default_list -> add_action( this, "Multi-Shot", "if=spell_targets>2&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)" );
+  default_list -> add_talent( this, "Chimaera Shot" );
   default_list -> add_action( this, "Kill Command" );
+  default_list -> add_talent( this, "Dire Beast" );
+  default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&charges_fractional>1.4|full_recharge_time<gcd.max|target.time_to_die<9" );
+  default_list -> add_talent( this, "Barrage" );
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)" );
-  default_list -> add_talent( this, "Chimaera Shot", "if=focus<90" );
-  default_list -> add_action( this, "Cobra Shot", "if=equipped.roar_of_the_seven_lions&spell_targets.multishot=1&(cooldown.kill_command.remains>focus.time_to_max*0.85&cooldown.bestial_wrath.remains>focus.time_to_max*0.85)",
-                                    "Pool less focus when wearing legendary belt." );
-  default_list -> add_action( this, "Cobra Shot", "if=(cooldown.kill_command.remains>focus.time_to_max&cooldown.bestial_wrath.remains>focus.time_to_max)|(buff.bestial_wrath.up&(spell_targets.multishot=1|focus.regen*cooldown.kill_command.remains>action.kill_command.cost))|target.time_to_die<cooldown.kill_command.remains|(equipped.parsels_tongue&buff.parsels_tongue.remains<=gcd.max*2)" );
-  default_list -> add_talent( this, "Dire Beast", "if=buff.bestial_wrath.up" );
+  default_list -> add_action( this, "Cobra Shot", "if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(buff.bestial_wrath.up&active_enemies>1|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains>focus.time_to_max|focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost)" );
 }
 
 // Marksman Action List ======================================================================
