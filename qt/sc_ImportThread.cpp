@@ -56,15 +56,19 @@ void SC_ImportThread::run()
     default: assert( 0 ); break;
   }
 
-  if ( player )
+  try
   {
-    player -> role = util::parse_role_type( m_role.toUtf8().constData() );
-
-    if ( sim->init() )
+    if ( player )
     {
+      player -> role = util::parse_role_type( m_role.toUtf8().constData() );
+
+      sim->init();
       std::string buffer = player -> create_profile();
       profile = QString::fromUtf8( buffer.c_str() );
     }
-    else player = 0;
+  }
+  catch (const std::exception&)
+  {
+    player = nullptr;
   }
 }
