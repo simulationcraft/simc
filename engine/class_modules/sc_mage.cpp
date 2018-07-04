@@ -747,6 +747,8 @@ public:
   // Public mage functions:
   action_t* get_icicle();
   void      trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
+  void      trigger_evocation( timespan_t duration_override = timespan_t::min() );
+  void      trigger_arcane_charge( int stacks = 1 );
   bool      apply_crowd_control( const action_state_t* state, spell_mechanic type );
 
   void              apl_precombat();
@@ -1526,48 +1528,14 @@ struct arcane_mage_spell_t : public mage_spell_t
     mage_spell_t( n, p, s )
   { }
 
-  double savant_damage_bonus() const
-  {
-    // TODO: Arcane Charge effect 2 and Savant effect 3 have the relevant into for Arcane Barrage,
-    // but the mastery snapshot bug makes it awkward to use (we can only store one in buff's value).
-    return p() -> spec.arcane_charge -> effectN( 1 ).percent() +
-           p() -> cache.mastery() * p() -> spec.savant -> effectN( 2 ).mastery_value();
-  }
-
-  void trigger_arcane_charge( int stacks = 1 )
-  {
-    buff_t* ac = p() -> buffs.arcane_charge;
-
-    int before = ac -> check();
-
-    if ( p() -> bugs )
-    {
-      // The damage bonus given by mastery seems to be snapshot at the moment
-      // Arcane Charge is gained. As long as the stack number remains the same,
-      // any future changes to mastery will have no effect.
-      // As of build 25881, 2018-01-22.
-      if ( ac -> check() < ac -> max_stack() )
-      {
-        ac -> trigger( stacks, savant_damage_bonus() );
-      }
-    }
-    else
-    {
-      ac -> trigger( stacks );
-    }
-
-    int after = ac -> check();
-
-    if ( p() -> talents.rule_of_threes -> ok() && before < 3 && after >= 3 )
-    {
-      p() -> buffs.rule_of_threes -> trigger();
-    }
-  }
-
   double arcane_charge_damage_bonus( bool arcane_barrage = false ) const
   {
-    double per_ac_bonus = p() -> bugs ? p() -> buffs.arcane_charge -> check_value() : savant_damage_bonus();
+    // To represent the mastery snapshot bug, the AC buff contains mage's mastery at the moment last charge was gained.
+    // If we do not want to model this bug, we simply grab fresh mastery value here.
+    double mastery = p() -> bugs ? p() -> buffs.arcane_charge -> check_value() : p() -> cache.mastery();
+    double per_ac_bonus = p() -> spec.arcane_charge -> effectN( 1 ).percent() + mastery * p() -> spec.savant -> effectN( 2 ).mastery_value();
 
+    // TODO: We can use spelldata for this rather than hardcoding a 50% penalty.
     if ( arcane_barrage )
     {
       per_ac_bonus *= 0.5;
@@ -1575,7 +1543,6 @@ struct arcane_mage_spell_t : public mage_spell_t
 
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
   }
-
 };
 
 
@@ -2069,7 +2036,7 @@ struct presence_of_mind_t : public arcane_mage_spell_t
 
     if ( p() -> sets -> has_set_bonus( MAGE_ARCANE, T20, B2 ) )
     {
-      trigger_arcane_charge( 4 );
+      p() -> trigger_arcane_charge( 4 );
       p() -> buffs.crackling_energy -> trigger();
     }
   }
@@ -2251,7 +2218,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
 
     if ( hit_any_target )
     {
-      trigger_arcane_charge();
+      p() -> trigger_arcane_charge();
     }
 
     if ( p() -> buffs.presence_of_mind -> up() )
@@ -2332,14 +2299,14 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
     if ( hit_any_target )
     {
-      trigger_arcane_charge();
+      p() -> trigger_arcane_charge();
     }
 
     if ( p() -> talents.reverberate -> ok()
       && num_targets_hit >= as<int>( p() -> talents.reverberate -> effectN( 2 ).base_value() )
       && rng().roll( p() -> talents.reverberate -> effectN( 1 ).percent() ) )
     {
-        trigger_arcane_charge();
+      p() -> trigger_arcane_charge();
     }
     p() -> buffs.quick_thinker -> trigger();
   }
@@ -2572,7 +2539,7 @@ struct arcane_orb_bolt_t : public arcane_mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      trigger_arcane_charge();
+      p() -> trigger_arcane_charge();
       p() -> buffs.quick_thinker -> trigger();
     }
   }
@@ -2604,7 +2571,7 @@ struct arcane_orb_t : public arcane_mage_spell_t
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
-    trigger_arcane_charge();
+    p() -> trigger_arcane_charge();
   }
 
   virtual timespan_t travel_time() const override
@@ -2792,7 +2759,7 @@ struct charged_up_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::execute();
 
-    trigger_arcane_charge( 4 );
+    p() -> trigger_arcane_charge( 4 );
 
     for ( int i = 0; i < 4; i++ )
       if ( p() -> buffs.quick_thinker -> trigger() )
@@ -3022,22 +2989,11 @@ struct evocation_t : public arcane_mage_spell_t
     cooldown -> duration *= 1.0 + p -> spec.evocation_2 -> effectN( 1 ).percent();
   }
 
-  static void trigger_evocation_buff( mage_t* mage )
-  {
-    double mana_regen_multiplier = 1.0 + mage -> buffs.evocation -> default_value;
-    mana_regen_multiplier /= mage -> cache.spell_speed();
-
-    timespan_t duration = mage -> buffs.evocation -> buff_duration;
-    duration *= mage -> cache.spell_speed();
-
-    mage -> buffs.evocation -> trigger( 1, mana_regen_multiplier, -1.0, duration );
-  }
-
   virtual void execute() override
   {
     arcane_mage_spell_t::execute();
 
-    trigger_evocation_buff( p() );
+    p() -> trigger_evocation();
   }
 
   virtual void last_tick( dot_t* d ) override
@@ -5501,13 +5457,25 @@ struct time_anomaly_tick_event_t : public event_t
       switch ( proc )
       {
         case TA_ARCANE_POWER:
-          // TODO: Trigger AP here.
+        {
+          timespan_t duration = timespan_t::from_seconds( mage -> talents.time_anomaly -> effectN( 1 ).base_value() );
+          mage -> buffs.arcane_power -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
           break;
+        }
         case TA_EVOCATION:
-          // TODO: Trigger Evo here.
+        {
+          timespan_t duration = timespan_t::from_seconds( mage -> talents.time_anomaly -> effectN( 2 ).base_value() );
+          mage -> trigger_evocation( duration );
           break;
+        }
         case TA_ARCANE_CHARGE:
-          // TODO: Trigger AC here.
+        {
+          unsigned charges = as<unsigned>( mage -> talents.time_anomaly -> effectN( 3 ).base_value() );
+          mage -> trigger_arcane_charge( charges );
+          break;
+        }
+        default:
+          assert( 0 );
           break;
       }
     }
@@ -7525,6 +7493,44 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
                                chain ? " (chained)" : "",
                                as<unsigned>( icicles.size() ) );
     }
+  }
+}
+
+void mage_t::trigger_evocation( timespan_t duration_override )
+{
+  double mana_regen_multiplier = 1.0 + buffs.evocation -> default_value;
+  mana_regen_multiplier /= cache.spell_speed();
+
+  timespan_t duration = duration_override;
+  if ( duration <= timespan_t::zero() )
+  {
+    duration = buffs.evocation -> buff_duration;
+  }
+  duration *= cache.spell_speed();
+
+  buffs.evocation -> trigger( 1, mana_regen_multiplier, -1.0, duration );
+}
+
+void mage_t::trigger_arcane_charge( int stacks )
+{
+  buff_t* ac = buffs.arcane_charge;
+
+  int before = ac -> check();
+
+  // The damage bonus given by mastery seems to be snapshot at the moment
+  // Arcane Charge is gained. As long as the stack number remains the same,
+  // any future changes to mastery will have no effect.
+  // As of build 25881, 2018-01-22.
+  if ( ac -> check() < ac -> max_stack() )
+  {
+    ac -> trigger( stacks, cache.mastery() );
+  }
+
+  int after = ac -> check();
+
+  if ( talents.rule_of_threes -> ok() && before < 3 && after >= 3 )
+  {
+    buffs.rule_of_threes -> trigger();
   }
 }
 
