@@ -871,7 +871,6 @@ spell_data_t* custom_dbc_data_t::clone_spell( unsigned clone_spell_id, bool ptr 
   }
 
   c = get_mutable_spell( clone_spell_id, ptr );
-  assert( c );
   // Return the cloned spell
   return c;
 }
@@ -910,23 +909,22 @@ namespace dbc_override
 }
 
 // Applies overrides immediately, and records an entry
-bool dbc_override::register_spell( dbc_t& dbc, unsigned spell_id, const std::string& field, double v )
+void dbc_override::register_spell( dbc_t& dbc, unsigned spell_id, const std::string& field, double v )
 {
-  spell_data_t* spell = override_db_.get_mutable_spell( spell_id, dbc.ptr );
-  if ( ! spell )
+  spell_data_t* spell = override_db_.clone_spell( spell_id, dbc.ptr );
+  if (!spell)
   {
-    spell = override_db_.clone_spell( spell_id, dbc.ptr );
+    throw std::invalid_argument("Could not find spell");
+  }
+  if (!spell -> override_field( field, v ))
+  {
+    throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
   }
 
-  assert( spell );
-  spell -> override_field( field, v );
-
   override_entries_.push_back( dbc_override_entry_t( DBC_OVERRIDE_SPELL, field, spell_id, v ) );
-
-  return true;
 }
 
-bool dbc_override::register_effect( dbc_t& dbc, unsigned effect_id, const std::string& field, double v )
+void dbc_override::register_effect( dbc_t& dbc, unsigned effect_id, const std::string& field, double v )
 {
   spelleffect_data_t* effect = override_db_.get_mutable_effect( effect_id, dbc.ptr );
   if ( ! effect )
@@ -935,17 +933,20 @@ bool dbc_override::register_effect( dbc_t& dbc, unsigned effect_id, const std::s
     override_db_.clone_spell( dbc_effect -> spell() -> id(), dbc.ptr );
     effect = override_db_.get_mutable_effect( effect_id, dbc.ptr );
   }
+  if (!effect)
+  {
+    throw std::runtime_error("Could not find effect");
+  }
 
-  assert( effect );
-
-  effect -> override_field( field, v );
+  if (!effect -> override_field( field, v ))
+  {
+    throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
+  }
 
   override_entries_.push_back( dbc_override_entry_t( DBC_OVERRIDE_EFFECT, field, effect_id, v ) );
-
-  return true;
 }
 
-bool dbc_override::register_power( dbc_t& dbc, unsigned power_id, const std::string& field, double v )
+void dbc_override::register_power( dbc_t& dbc, unsigned power_id, const std::string& field, double v )
 {
   auto power = override_db_.get_mutable_power( power_id, dbc.ptr );
   if ( power == nullptr )
@@ -954,14 +955,17 @@ bool dbc_override::register_power( dbc_t& dbc, unsigned power_id, const std::str
     override_db_.clone_spell( dbc_power -> spell_id(), dbc.ptr );
     power = override_db_.get_mutable_power( power_id, dbc.ptr );
   }
+  if (!power)
+  {
+    throw std::runtime_error("Could not find power");
+  }
 
-  assert( power );
-
-  power -> override_field( field, v );
+  if (!power -> override_field( field, v ))
+  {
+    throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
+  }
 
   override_entries_.push_back( dbc_override_entry_t( DBC_OVERRIDE_POWER, field, power_id, v ) );
-
-  return true;
 }
 
 const spell_data_t* dbc_override::find_spell( unsigned spell_id, bool ptr )

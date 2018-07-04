@@ -385,7 +385,7 @@ public:
     {
       if ( names[ i ].find( '=' ) != std::string::npos )
       {
-        opts::parse( sim, context.c_str(), options, names[ i ] );
+        opts::parse( sim, context, options, names[ i ] );
       }
       else
       {
@@ -398,7 +398,7 @@ public:
 
     if ( region.empty() )
     {
-      if ( names.size() > 2 && is_valid_region( names[ 0 ] ) )
+      if ( names.size() > 2 )
       {
         region = names[ 0 ];
         server = names[ 1 ];
@@ -409,6 +409,11 @@ public:
         region = sim -> default_region_str;
       }
     }
+    if (!is_valid_region( region ))
+    {
+      throw std::invalid_argument(fmt::format("Invalid region '{}'.", region));
+    }
+
     if ( server.empty() )
     {
       if ( names.size() > 1 )
@@ -430,8 +435,6 @@ bool parse_armory( sim_t*             sim,
                    const std::string& name,
                    const std::string& value )
 {
-  try
-  {
     std::string spec = "active";
 
     std::vector<std::unique_ptr<option_t>> options;
@@ -478,10 +481,6 @@ bool parse_armory( sim_t*             sim,
         std::throw_with_nested(std::runtime_error("BCP API"));
       }
     }
-  }
-
-  catch ( names_and_options_t::error& )
-  { return false; }
 
   // Create options for player
   if ( sim -> active_player )
@@ -683,47 +682,44 @@ bool parse_override_spell_data( sim_t*             sim,
   size_t v_pos = value.find( '=' );
 
   if ( v_pos == std::string::npos )
-    return false;
+  {
+    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
+  }
 
   std::vector< std::string > splits = util::string_split( value.substr( 0, v_pos ), "." );
 
   if ( splits.size() != 3 )
-    return false;
+  {
+    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
+  }
 
-  unsigned long int id = strtoul( splits[ 1 ].c_str(), nullptr, 10 );
-  if ( id == 0 || id == std::numeric_limits<unsigned long>::max() )
-    return false;
+  int parsed_id = std::stoi( splits[ 1 ] );
+  if ( parsed_id <= 0 )
+  {
+    throw std::invalid_argument("Invalid spell id (negative or zero).");
+  }
+  unsigned id = as<unsigned>(parsed_id);
 
-  double v = strtod( value.substr( v_pos + 1 ).c_str(), nullptr );
-  if ( v == std::numeric_limits<double>::min() || v == std::numeric_limits<double>::max() )
-    return false;
+  double v = std::stod( value.substr( v_pos + 1 ) );
 
   if ( util::str_compare_ci( splits[ 0 ], "spell" ) )
   {
-    if ( ! dbc_override::register_spell( sim -> dbc, id, splits[ 2 ], v ) )
-    {
-      return false;
-    }
-    return true;
+    dbc_override::register_spell( sim -> dbc, id, splits[ 2 ], v );
   }
   else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
   {
-    if ( ! dbc_override::register_effect( sim -> dbc, id, splits[ 2 ], v ) )
-    {
-      return false;
-    }
-    return true;
+    dbc_override::register_effect( sim -> dbc, id, splits[ 2 ], v );
   }
   else if ( util::str_compare_ci( splits[ 0 ], "power" ) )
   {
-    if ( ! dbc_override::register_power( sim -> dbc, id, splits[ 2 ], v ) )
-    {
-      return false;
-    }
-    return true;
+    dbc_override::register_power( sim -> dbc, id, splits[ 2 ], v );
   }
   else
-    return false;
+  {
+    throw std::invalid_argument("Invalid form. Spell data override takes the form <spell|effect|power>.<id>.<field>=value");
+  }
+
+  return true;
 }
 
 // parse_override_target_health =============================================
@@ -827,9 +823,8 @@ bool parse_item_sources( sim_t*             sim,
       all_known_sources += default_item_db_sources[ i ];
     }
 
-    sim -> errorf( "Your global data source string \"%s\" contained no valid data sources. Valid identifiers are:%s",
-                   value.c_str(), all_known_sources.c_str() );
-    return false;
+    throw std::invalid_argument(fmt::format("Your global data source string '{}' contained no valid data sources. "
+        "Valid identifiers are: {}", value, all_known_sources ));
   }
 
   return true;
@@ -877,6 +872,11 @@ bool parse_target_error_role( sim_t * sim,
 {
   sim -> target_error_role = util::parse_role_type( value );
 
+  if (sim -> target_error_role == ROLE_NONE)
+  {
+    throw std::invalid_argument("Invalid target error role");
+  }
+
   return true;
 }
 
@@ -886,8 +886,7 @@ bool parse_maximize_reporting( sim_t*             sim,
 {
   if ( v != "0" && v != "1" )
   {
-    sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name.c_str() );
-    return false;
+    throw std::invalid_argument("Acceptable values are '1' or '0'.");
   }
   bool r = std::stoi( v ) != 0;
   if ( r )
@@ -1187,7 +1186,7 @@ std::string get_api_key()
     }
     else
     {
-      std::cerr << "Blizzard API Key '" << line << "' from file '" << filename << "' was not properly entered." << std::endl;
+      std::cerr << "Blizzard API Key from file '" << filename << "' was not properly entered. (Size != 32)" << std::endl;
     }
   }
 

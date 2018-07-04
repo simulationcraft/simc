@@ -8,7 +8,7 @@ option(BUILD_GUI "Build the Qt gui along with cli binary" ON)
 set(CMAKE_CXX_STANDARD 11)
 
 # enable colored output with ninja build system
-add_compile_options(-fcolor-diagnostics)
+#add_compile_options(-fcolor-diagnostics)
 
 # output a compile_commands.json used for editor tooling
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

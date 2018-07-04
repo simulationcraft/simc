@@ -411,9 +411,9 @@ namespace dbc_override
     { }
   };
 
-  bool register_effect( dbc_t&, unsigned, const std::string&, double );
-  bool register_spell( dbc_t&, unsigned, const std::string&, double );
-  bool register_power( dbc_t&, unsigned, const std::string&, double );
+  void register_effect( dbc_t&, unsigned, const std::string&, double );
+  void register_spell( dbc_t&, unsigned, const std::string&, double );
+  void register_power( dbc_t&, unsigned, const std::string&, double );
 
   const spell_data_t* find_spell( unsigned, bool ptr = false );
   const spelleffect_data_t* find_effect( unsigned, bool ptr = false );

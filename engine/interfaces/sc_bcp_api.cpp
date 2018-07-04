@@ -807,13 +807,14 @@ player_t* bcp_api::download_player( sim_t*             sim,
   sim -> current_name = name;
 
   player_spec_t player;
+  bool use_new_endpoints = (region != "cn"); // China does not have new api endpoints yet.
 
-  if (!sim -> apikey.empty() && sim -> apikey.size() != 32)
+  if (use_new_endpoints && sim -> apikey.size() != 32)
   {
-    sim -> error( "Check api key, must be 32 characters long." );
+    throw std::runtime_error("No valid api key available. Cannot download from armory. See https://github.com/simulationcraft/simc/wiki/BattleArmoryAPI" );
   }
 
-  if ( sim -> apikey.size() == 32 && region != "cn" ) // China does not have new api endpoints yet.
+  if ( use_new_endpoints )
   {
     std::string battlenet = "https://" + region + ".api.battle.net/";
 
