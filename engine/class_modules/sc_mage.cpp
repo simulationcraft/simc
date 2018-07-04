@@ -324,6 +324,9 @@ public:
   action_t* ignite;
   event_t* ignite_spread_event;
 
+  // Time Anomaly
+  event_t* time_anomaly_tick_event;
+
   // Active
   player_t* last_bomb_target;
   player_t* last_frostbolt_target;
@@ -617,6 +620,7 @@ public:
 
     // Tier 100
     const spell_data_t* overpowered;
+    const spell_data_t* time_anomaly;
     const spell_data_t* arcane_orb;
     const spell_data_t* kindling;
     const spell_data_t* pyroclasm;
@@ -5442,6 +5446,76 @@ struct ignite_spread_event_t : public event_t
         sim(), *mage, timespan_t::from_seconds( 2.0 ) );
   }
 };
+
+struct time_anomaly_tick_event_t : public event_t
+{
+  mage_t* mage;
+
+  enum ta_proc_type_e
+  {
+    TA_ARCANE_POWER,
+    TA_EVOCATION,
+    TA_ARCANE_CHARGE
+  };
+
+  time_anomaly_tick_event_t( mage_t& m, timespan_t delta_time ) :
+    event_t( m, delta_time ), mage( &m )
+  { }
+
+  virtual const char* name() const override
+  { return "time_anomaly_tick_event"; }
+
+  virtual void execute() override
+  {
+    mage -> time_anomaly_tick_event = nullptr;
+
+    if ( mage -> sim -> log )
+    {
+      sim().out_log.printf( "%s Time Anomaly tick event occurs.", mage -> name() );
+    }
+
+    const double proc_chance = 0.06; // TODO: Improve this number as we get more data.
+
+    if ( rng().roll( proc_chance ) )
+    {
+      // Proc was successful, figure out which effect to apply.
+      if ( mage -> sim -> log )
+      {
+        sim().out_log.printf( "%s Time Anomaly proc successful, triggering effects.", mage -> name() );
+      }
+
+      std::vector<ta_proc_type_e> possible_procs;
+
+      if ( true ) // TODO: Adjust the condition or remove when we have more info.
+        possible_procs.push_back( TA_ARCANE_POWER );
+
+      if ( mage -> buffs.evocation -> check() == 0 )
+        possible_procs.push_back( TA_EVOCATION );
+
+      if ( mage -> buffs.arcane_charge -> check() < 3 )
+        possible_procs.push_back( TA_ARCANE_CHARGE );
+
+      auto random_index = static_cast<unsigned>( rng().range( 0, as<double>( possible_procs.size() ) ) );
+      auto proc = possible_procs[ random_index ];
+
+      switch ( proc )
+      {
+        case TA_ARCANE_POWER:
+          // TODO: Trigger AP here.
+          break;
+        case TA_EVOCATION:
+          // TODO: Trigger Evo here.
+          break;
+        case TA_ARCANE_CHARGE:
+          // TODO: Trigger AC here.
+          break;
+      }
+    }
+
+    mage -> time_anomaly_tick_event = make_event<events::time_anomaly_tick_event_t>(
+      sim(), *mage, mage -> talents.time_anomaly -> effectN( 1 ).period() );
+  }
+};
 } // namespace events
 
 // ==========================================================================
@@ -5473,6 +5547,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   icicle( icicles_t() ),
   ignite( nullptr ),
   ignite_spread_event( nullptr ),
+  time_anomaly_tick_event( nullptr ),
   last_bomb_target( nullptr ),
   last_frostbolt_target( nullptr ),
   distance_from_rune( 0.0 ),
@@ -5937,6 +6012,7 @@ void mage_t::init_spells()
   talents.comet_storm        = find_talent_spell( "Comet Storm"        );
   // Tier 100
   talents.overpowered        = find_talent_spell( "Overpowered"        );
+  talents.time_anomaly       = find_talent_spell( "Time Anomaly"       );
   talents.arcane_orb         = find_talent_spell( "Arcane Orb"         );
   talents.kindling           = find_talent_spell( "Kindling"           );
   talents.pyroclasm          = find_talent_spell( "Pyroclasm"          );
@@ -6010,6 +6086,7 @@ void mage_t::create_buffs()
   // Arcane
   buffs.arcane_charge    = make_buff( this, "arcane_charge", spec.arcane_charge );
   buffs.arcane_power     = make_buff( this, "arcane_power", find_spell( 12042 ) )
+                             -> set_cooldown( timespan_t::zero() )
                              -> set_default_value( find_spell( 12042 ) -> effectN( 1 ).percent()
                                                  + talents.overpowered -> effectN( 1 ).percent() );
   buffs.clearcasting     = make_buff( this, "clearcasting", find_spell( 263725 ) )
@@ -6983,6 +7060,7 @@ void mage_t::reset()
   icicles.clear();
   event_t::cancel( icicle_event );
   event_t::cancel( ignite_spread_event );
+  event_t::cancel( time_anomaly_tick_event );
 
   if ( spec.savant -> ok() )
   {
@@ -7072,6 +7150,11 @@ void mage_t::arise()
   {
     timespan_t first_spread = timespan_t::from_seconds( rng().real() * 2.0 );
     ignite_spread_event = make_event<events::ignite_spread_event_t>( *sim, *this, first_spread );
+  }
+  if ( talents.time_anomaly -> ok() )
+  {
+    timespan_t first_tick = rng().real() * talents.time_anomaly -> effectN( 1 ).period();
+    time_anomaly_tick_event = make_event<events::time_anomaly_tick_event_t>( *sim, *this, first_tick );
   }
 }
 
