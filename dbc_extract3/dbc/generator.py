@@ -1234,8 +1234,9 @@ class SpellDataGenerator(DataGenerator):
           ( 171457, 1 ), # Chimaera Shot - Nature
           ( 201594, 1 ), # Stampede
           ( 118459, 5 ), # Beast Cleave
+          ( 186254, 5 ), # Bestial Wrath
           ( 257622, 2 ), # Trick Shots buff
-          ( 269502, 2 ), ( 260395, 2 ), # Lethal Shots buffs
+          ( 260395, 2 ), # Lethal Shots buff
           ( 259516, 3 ), # Flanking Strike
           ( 267666, 3 ), # Chakrams
           # Wildfire Infusion (Volatile Bomb spells)

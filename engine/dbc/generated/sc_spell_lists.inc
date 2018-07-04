@@ -1,4 +1,4 @@
-#define CLASS_ABILITY_SIZE (48)
+#define CLASS_ABILITY_SIZE (49)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
 #ifndef MAX_CLASS
@@ -242,7 +242,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       187698, // Tar Trap
            0,
     },
-    // Marksmanship tree, 15 abilities
+    // Marksmanship tree, 14 abilities
     {
        19434, // Aimed Shot
       185358, // Arcane Shot
@@ -252,7 +252,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       109304, // Exhilaration
       187650, // Freezing Trap
       260395, // Lethal Shots
-      269502, // Lethal Shots
        34477, // Misdirection
       257620, // Multi-Shot
       257044, // Rapid Fire
@@ -285,12 +284,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 48 abilities
+    // Pet tree, 49 abilities
     {
       263446, // Acid Spit (Special Ability)
       160011, // Agile Reflexes (Special Ability)
        50433, // Ankle Crack (Special Ability)
       118459, // Beast Cleave
+      186254, // Bestial Wrath
        17253, // Bite (Basic Attack)
        24423, // Bloody Screech (Special Ability)
       263869, // Bristle (Special Ability)
