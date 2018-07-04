@@ -4677,7 +4677,7 @@ struct pyroblast_t : public fire_mage_spell_t
       std::vector<player_t*> tl = target_list();
       for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
       {
-        trailing_embers -> target = tl[ i ];
+        trailing_embers -> set_target( tl[ i ] );
         trailing_embers -> execute();
       }
     }
