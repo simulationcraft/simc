@@ -447,6 +447,9 @@ public:
     buff_t* tunnel_of_ice;
     buff_t* winters_reach;
 
+    buff_t* firemind;
+
+
     // Miscellaneous Buffs
     buff_t* greater_blessing_of_widsom;
     buff_t* t19_oh_buff;
@@ -636,6 +639,7 @@ public:
     // Arcane
 
     // Fire
+    azerite_power_t firemind;
 
     // Frost
     azerite_power_t frigid_grasp;
@@ -3201,6 +3205,11 @@ struct flamestrike_t : public fire_mage_spell_t
       p() -> buffs.kaelthas_ultimate_ability -> trigger();
       p() -> buffs.pyroclasm -> trigger();
 
+      if ( p() -> azerite.firemind.enabled() )
+      {
+          p() -> buffs.firemind -> trigger();
+      }
+
       if ( p() -> talents.pyromaniac -> ok()
         && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
       {
@@ -4595,6 +4604,11 @@ struct pyroblast_t : public fire_mage_spell_t
 
       p() -> buffs.kaelthas_ultimate_ability -> trigger();
       p() -> buffs.pyroclasm -> trigger();
+
+      if ( p() -> azerite.firemind.enabled() )
+      {
+          p() -> buffs.firemind -> trigger();
+      }
 
       if ( p() -> talents.pyromaniac -> ok()
         && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
@@ -6019,12 +6033,13 @@ void mage_t::init_spells()
   spec.icicles               = find_mastery_spell( MAGE_FROST );
 
   // Azerite
-  azerite.frigid_grasp       = find_azerite_spell( "Frigid Grasp" );
+  azerite.frigid_grasp       = find_azerite_spell( "Frigid Grasp"    );
   azerite.glacial_assault    = find_azerite_spell( "Glacial Assault" );
-  azerite.packed_ice         = find_azerite_spell( "Packed Ice" );
-  azerite.tunnel_of_ice      = find_azerite_spell( "Tunnel of Ice" );
-  azerite.whiteout           = find_azerite_spell( "Whiteout" );
-  azerite.winters_reach      = find_azerite_spell( "Winter's Reach" );
+  azerite.packed_ice         = find_azerite_spell( "Packed Ice"      );
+  azerite.tunnel_of_ice      = find_azerite_spell( "Tunnel of Ice"   );
+  azerite.whiteout           = find_azerite_spell( "Whiteout"        );
+  azerite.winters_reach      = find_azerite_spell( "Winter's Reach"  );
+  azerite.firemind           = find_azerite_spell( "Firemind"        );
 }
 
 // mage_t::init_base ========================================================
@@ -6186,6 +6201,8 @@ void mage_t::create_buffs()
   // Azerite
   buffs.frigid_grasp  = make_buff<stat_buff_t>( this, "frigid_grasp", find_spell( 279684 ) )
                           -> add_stat( STAT_INTELLECT, azerite.frigid_grasp.value() );
+  buffs.firemind      = make_buff<stat_buff_t>( this, "firemind", find_spell( 279715 ) )
+                          -> add_stat( STAT_INTELLECT, azerite.firemind.value() );
   buffs.tunnel_of_ice = make_buff( this, "tunnel_of_ice", find_spell( 277904 ) )
                           -> set_chance( azerite.tunnel_of_ice.enabled() ? 1.0 : 0.0 )
                           -> set_default_value( azerite.tunnel_of_ice.value() );
