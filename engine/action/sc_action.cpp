@@ -3137,15 +3137,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( splits.size() == 3 && splits[ 0 ] == "dot" )
   {
-    dot_t* dot = target->find_dot( splits[ 1 ], player );
-    if ( !dot )
-    {
-      // If we cannot find a dot, create a dummy expression with it, which will just evaluate to false.
-      dot = target->get_dot( splits[ 1 ], player );
-      sim->print_debug( "{} action {} cannot find any dot with name '{}' for expression {}.", player->name(), name(),
-                        splits[ 1 ], name_str );
-    }
-    if ( auto expr = dot_t::create_expression( dot, this, splits[ 2 ], false ) )
+    auto expr = dot_t::create_expression(nullptr, this, splits[ 2 ], true );
+    if ( expr )
     {
       return expr;
     }
