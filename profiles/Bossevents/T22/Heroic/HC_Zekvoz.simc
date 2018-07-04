@@ -11,7 +11,6 @@ optimal_raid=1
 
 enemy=Zekvoz
 target_level=123
-target_race=Aberration
 raid_events=
 
 # Boss attack pattern
@@ -29,12 +28,12 @@ raid_events+=/movement,distance=10,first_pct=70,cooldown=45,last_pct=40,player_c
 
 # Qiraji warrior's
 
-raid_events+=/adds,count=6,duration=15,cooldown=100000000,first=75,duration_stddev=20
+raid_events+=/adds,count=6,duration=15,cooldown=100000000,first=75,duration_stddev=20,name=add6
 
 # anub'ar voidweaver's 
 
-raid_events+=/adds,count=3,duration=20,cooldown=60,first=90,last_pct=40,duration_stddev=20
+raid_events+=/adds,count=3,duration=20,cooldown=60,first=90,last_pct=40,duration_stddev=20,name=add3
 
 # mind control
 
-raid_events+=/adds,count=1,duration=10,cooldown=15,first_pct=26,duration_stddev=20
+raid_events+=/adds,count=1,duration=10,cooldown=15,first_pct=26,duration_stddev=20,name=add1

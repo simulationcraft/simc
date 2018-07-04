@@ -1,4 +1,4 @@
-# Mythrax - Uldir heroic
+# Mythrax - Uldir mythic
 
 # General information
 
@@ -44,11 +44,15 @@ raid_events+=/stun,duration=2,player_chance=0.12,first_pct=76,cooldown=15,last_p
 raid_events+=/stun,duration=2,player_chance=0.12,first_pct=51,cooldown=15,last_pct=49,force_stop=0,players_only=1,duration_stddev=50
 
 # Visions of madness
-raid_events+=/adds,count=5,duration=20,cooldown=20,first_pct=76,last_pct=74,duration_stddev=15,name=min_distance=15,max_distance=25,force_stop=0,name=add5
+raid_events+=/adds,count=5,duration=20,cooldown=20,first_pct=76,last_pct=74,duration_stddev=15,min_distance=15,max_distance=25,force_stop=0,name=add5
 raid_events+=/adds,count=5,duration=20,cooldown=20,first_pct=51,last_pct=49,duration_stddev=15,min_distance=15,max_distance=25,force_stop=0,name=add5
 
 # N'raqi Destroyer's
-raid_events+=/adds,count=1,duration=70,cooldown=10000,first_pct=76,last_pct=74,duration_stddev=15,force_stop=0,name=add1
+raid_events+=/adds,count=1,duration=70,cooldown=10000,first_pct=76,last_pct=74,duration_stddev=15,force_stop=0,name=adds1
 raid_events+=/adds,count=1,duration=30,cooldown=10000,first_pct=76,last_pct=74,duration_stddev=15,force_stop=0,min_distance=25,max_distance=28,name=add1
-raid_events+=/adds,count=1,duration=70,cooldown=10000,first_pct=51,last_pct=49,duration_stddev=15,force_stop=0,name=add1
+raid_events+=/adds,count=1,duration=70,cooldown=10000,first_pct=51,last_pct=49,duration_stddev=15,force_stop=0,name=adds1
 raid_events+=/adds,count=1,duration=30,cooldown=10000,first_pct=51,last_pct=49,duration_stddev=15,force_stop=0,min_distance=25,max_distance=28,name=add1
+
+# Obliteration beam
+raid_events+=/movement,distance=10,cooldown=30,player_chance=0.125,player_only=1,force_stop=1,first_pct=76,last_pct=74
+raid_events+=/movement,distance=10,cooldown=30,player_chance=0.125,player_only=1,force_stop=1,first_pct=51,last_pct=49

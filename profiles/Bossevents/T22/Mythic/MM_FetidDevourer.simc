@@ -6,13 +6,12 @@
 fight_style=patchwerk
 vary_combat_length=0.2
 optimal_raid=1
-bloodlust_time=130
+override.bloodlust=0
 
 # General Boss info
 
 enemy="Fetid Devourer"
 target_level=123
-target_race=aberration
 raid_events=
 
 # Boss attack pattern
@@ -26,13 +25,19 @@ raid_events+=/stun,players_only=1,cooldown=30,first=30,duration=2.5
 
 # Fetid Frenzie
 
-raid_events+=/vulnerable,first_pct=50,cooldown=12000000000,duration=10000000000,multiplier=0.5,name=cds
+raid_events+=/vulnerable,first_pct=50,cooldown=12000000000,duration=10000000000,multiplier=0.5,name=vul50
 
 # Corruption adds
 
 raid_events+=/adds,count=1,first=60,cooldown=45,duration=15,duration_stddev=20
 raid_events+=/movement,duration=2,first=59,cooldown=45,duration_stddev=20
 
-# Rotting Regurgitation
+shaman="Bloodlust dummy"
+level=120
+race=orc
+role=spell
+talents=0
+spec=elemental
 
-raid_events+=/movement,distance=4,cooldown=45,first=45
+actions=bloodlust,if=raid_event.vul50.up
+actions+=/wait
