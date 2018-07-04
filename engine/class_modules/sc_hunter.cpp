@@ -5498,32 +5498,41 @@ void hunter_t::apl_surv()
   action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
 
   // Precombat actions
+  precombat -> add_talent( this, "Steel Trap" );
   precombat -> add_action( this, "Harpoon" );
+
+  default_list -> add_action( "auto_attack" );
+  default_list -> add_action( this, "Muzzle", "if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up" );
 
   // Item Actions
   default_list -> add_action( "use_items" );
 
   // Racials
-  default_list -> add_action( "berserking,if=buff.coordinated_assault.up" );
-  default_list -> add_action( "blood_fury,if=buff.coordinated_assault.up" );
+  for ( std::string racial : { "berserking", "blood_fury", "ancestral_call", "fireblood" } )
+    default_list -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
 
   // In-combat potion
   default_list -> add_action( "potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)" );
 
-  // TODO: actual APL
-  default_list -> add_action( this, "Muzzle", "if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up" );
-  default_list -> add_action( "auto_attack" );
+  // Generic APL
+  default_list -> add_action( "variable,name=can_gcd,value=!talent.mongoose_bite.enabled|buff.mongoose_fury.down|(buff.mongoose_fury.remains-(((buff.mongoose_fury.remains*focus.regen+focus)%action.mongoose_bite.cost)*gcd.max)>gcd.max)" );
   default_list -> add_talent( this, "Steel Trap" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_action( this, "Coordinated Assault" );
-  default_list -> add_action( this, "Wildfire Bomb" );
-  default_list -> add_action( this, "Serpent Sting", "if=(!ticking&refreshable)|buff.vipers_venom.up" );
-  default_list -> add_talent( this, "Butchery" );
+  default_list -> add_talent( this, "Chakrams", "if=active_enemies>1" );
+  default_list -> add_action( this, "Kill Command", "target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3&active_enemies<2" );
+  default_list -> add_action( this, "Wildfire Bomb", "if=(focus+cast_regen<focus.max|active_enemies>1)&(dot.wildfire_bomb.refreshable&buff.mongoose_fury.down|full_recharge_time<gcd)" );
+  default_list -> add_action( this, "Kill Command", "target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&buff.tip_of_the_spear.stack<3" );
+  default_list -> add_talent( this, "Butchery", "if=(!talent.wildfire_infusion.enabled|full_recharge_time<gcd)&active_enemies>3|(dot.shrapnel_bomb.ticking&dot.internal_bleeding.stack<3)" );
+  default_list -> add_action( this, "Serpent Sting", "if=(active_enemies<2&refreshable&(buff.mongoose_fury.down|(variable.can_gcd&!talent.vipers_venom.enabled)))|buff.vipers_venom.up" );
+  default_list -> add_action( this, "Carve", "if=active_enemies>2&(active_enemies<6&active_enemies+gcd<cooldown.wildfire_bomb.remains|5+gcd<cooldown.wildfire_bomb.remains)" );
+  default_list -> add_action( this, "Harpoon", "if=talent.terms_of_engagement.enabled" );
   default_list -> add_talent( this, "Flanking Strike" );
   default_list -> add_talent( this, "Chakrams" );
-  default_list -> add_action( this, "Kill Command" );
-  default_list -> add_action( this, "Raptor Strike" );
-  default_list -> add_talent( this, "Mongoose Bite" );
+  default_list -> add_action( this, "Serpent Sting", "target_if=min:remains,if=refreshable&buff.mongoose_fury.down|buff.vipers_venom.up" );
+  default_list -> add_talent( this, "Mongoose Bite", "target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60" );
+  default_list -> add_talent( this, "Butchery" );
+  default_list -> add_action( this, "Raptor Strike", "target_if=min:dot.internal_bleeding.stack" );
 }
 
 
