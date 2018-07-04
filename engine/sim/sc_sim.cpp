@@ -663,7 +663,7 @@ bool parse_fight_style( sim_t*             sim,
   }
   else
   {
-    sim -> fight_style = value;
+    throw std::invalid_argument("Unknown fight style.");
   }
 
   return true;
