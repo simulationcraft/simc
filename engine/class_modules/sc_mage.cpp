@@ -453,6 +453,7 @@ public:
     buff_t* winters_reach;
 
     buff_t* firemind;
+    buff_t* blaster_master;
 
     // Miscellaneous Buffs
     buff_t* greater_blessing_of_widsom;
@@ -646,6 +647,7 @@ public:
     azerite_power_t firemind;
     azerite_power_t trailing_embers;
     azerite_power_t preheat;
+    azerite_power_t blaster_master;
 
     // Frost
     azerite_power_t frigid_grasp;
@@ -4114,6 +4116,11 @@ struct fire_blast_t : public fire_mage_spell_t
 
     // update_ready() assumes the ICD is affected by haste
     internal_cooldown -> start( data().cooldown() );
+
+    if ( p() -> azerite.blaster_master.enabled() )
+    {
+      p() -> buffs.blaster_master -> trigger();
+    }
   }
 
   virtual double bonus_da( const action_state_t* s ) const override
@@ -6098,6 +6105,7 @@ void mage_t::init_spells()
   azerite.firemind           = find_azerite_spell( "Firemind"        );
   azerite.trailing_embers    = find_azerite_spell( "Trailing Embers" );
   azerite.preheat            = find_azerite_spell( "Preheat"         );
+  azerite.blaster_master     = find_azerite_spell( "Blaster Master"  );
 }
 
 // mage_t::init_base ========================================================
@@ -6261,6 +6269,8 @@ void mage_t::create_buffs()
                           -> add_stat( STAT_INTELLECT, azerite.frigid_grasp.value() );
   buffs.firemind      = make_buff<stat_buff_t>( this, "firemind", find_spell( 279715 ) )
                           -> add_stat( STAT_INTELLECT, azerite.firemind.value() );
+  buffs.blaster_master = make_buff<stat_buff_t>( this, "blaster_master", find_spell( 274598 ) )
+                          -> add_stat( STAT_MASTERY_RATING, azerite.blaster_master.value() );
   buffs.tunnel_of_ice = make_buff( this, "tunnel_of_ice", find_spell( 277904 ) )
                           -> set_chance( azerite.tunnel_of_ice.enabled() ? 1.0 : 0.0 )
                           -> set_default_value( azerite.tunnel_of_ice.value() );
