@@ -3,7 +3,6 @@
 # Notes
 # Survival hunter and Outlaw rogue are having troubles with the intermission
 # Survival hunter refuses to sim all to gether and rogue only sims about 20% of its input iterations, giving a false median
-# target_race doesnt work with adds
 
 # General information
 
@@ -44,7 +43,7 @@ raid_events+=/movement,players_only=1,first_pct=59,cooldown=40,players_only=1,pl
 
 # Intermission
 
-raid_events+=/invulnerable,first_pct=60,duration=90,cooldown=100000,name=invul
+raid_events+=/invulnerable,first_pct=60,duration=90,cooldown=100000,name=intermission
 raid_events+=/adds,count=1,duration=4,cooldown=9,first_pct=61,last_pct=59,force_stop=0,duration_stddev=20
 raid_events+=/adds,count=1,duration=7,cooldown=10,first_pct=61,last_pct=59,force_stop=0,duration_stddev=20
 raid_events+=/adds,count=1,duration=7,cooldown=11,first_pct=61,last_pct=59,force_stop=0,duration_stddev=20

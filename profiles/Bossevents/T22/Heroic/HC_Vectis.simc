@@ -16,7 +16,7 @@ raid_events=
  
 # Liquefy intermission
  
-raid_events+=/invulnerable,duration=30,cooldown=120,first=90,name=invul
+raid_events+=/invulnerable,duration=30,cooldown=120,first=90,name=intermission
 
 # Gestate
  
