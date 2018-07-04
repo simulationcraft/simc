@@ -93,6 +93,10 @@ struct mage_td_t : public actor_target_data_t
   struct dots_t
   {
     dot_t* nether_tempest;
+    
+    // Azerite
+    dot_t* trailing_embers;
+
   } dots;
 
   struct debuffs_t
@@ -449,7 +453,6 @@ public:
 
     buff_t* firemind;
 
-
     // Miscellaneous Buffs
     buff_t* greater_blessing_of_widsom;
     buff_t* t19_oh_buff;
@@ -640,6 +643,7 @@ public:
 
     // Fire
     azerite_power_t firemind;
+    azerite_power_t trailing_embers;
 
     // Frost
     azerite_power_t frigid_grasp;
@@ -4541,11 +4545,20 @@ struct phoenix_flames_t : public fire_mage_spell_t
   }
 };
 
-
-// Pyroblast Spell ============================================================
-
+// Pyroblast Spell ===================================================================
+struct trailing_embers_t : public fire_mage_spell_t
+{
+  trailing_embers_t( mage_t* p ) :
+    fire_mage_spell_t( "trailing_embers", p, p -> find_spell( 277703 ) )
+  {
+      base_td = p -> azerite.trailing_embers.value();
+      background = true;
+      hasted_ticks = false;
+  }
+};
 struct pyroblast_t : public fire_mage_spell_t
 {
+  trailing_embers_t* trailing_embers;
   pyroblast_t( mage_t* p, const std::string& options_str ) :
     fire_mage_spell_t( "pyroblast", p, p -> find_specialization_spell( "Pyroblast" ) )
   {
@@ -4554,6 +4567,12 @@ struct pyroblast_t : public fire_mage_spell_t
     triggers_ignite = true;
     triggers_hot_streak = true;
     triggers_kindling = true;
+
+    if ( p -> azerite.trailing_embers.enabled() ) 
+    {
+      trailing_embers = new trailing_embers_t( p );
+      add_child( trailing_embers );
+    }
   }
 
   virtual double action_multiplier() const override
@@ -4623,6 +4642,8 @@ struct pyroblast_t : public fire_mage_spell_t
       p() -> buffs.kaelthas_ultimate_ability -> decrement();
       p() -> buffs.pyroclasm -> decrement();
     }
+
+
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
@@ -4650,6 +4671,17 @@ struct pyroblast_t : public fire_mage_spell_t
 
       trigger_infernal_core( s -> target );
     }
+
+    if ( p() -> azerite.trailing_embers.enabled() )
+    {
+      std::vector<player_t*> tl = target_list();
+      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
+      {
+        trailing_embers -> target = tl[ i ];
+        trailing_embers -> execute();
+      }
+    }
+
   }
 
   virtual double composite_crit_chance() const override
@@ -5512,6 +5544,7 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs( debuffs_t() )
 {
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
+  dots.trailing_embers = target -> get_dot( "trailing_embers", mage );
 
   debuffs.frozen            = make_buff( *this, "frozen" )
                                 -> set_duration( timespan_t::from_seconds( 0.5 ) );
@@ -6040,6 +6073,7 @@ void mage_t::init_spells()
   azerite.whiteout           = find_azerite_spell( "Whiteout"        );
   azerite.winters_reach      = find_azerite_spell( "Winter's Reach"  );
   azerite.firemind           = find_azerite_spell( "Firemind"        );
+  azerite.trailing_embers    = find_azerite_spell( "Trailing Embers" );
 }
 
 // mage_t::init_base ========================================================
