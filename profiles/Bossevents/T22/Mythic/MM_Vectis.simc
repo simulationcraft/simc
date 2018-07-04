@@ -1,0 +1,28 @@
+# Vectis - Uldir mythic
+ 
+ 
+# General information
+ 
+fight_style=patchwerk
+vary_combat_length=0.2
+optimal_raid=1
+ 
+# General Boss info
+ 
+enemy=Vectis
+target_level=123
+target_race=Elemental
+raid_events=
+
+# Liquefy intermission
+ 
+raid_events+=/invulnerable,duration=40,cooldown=120,first=95,name=invul
+raid_events+=/movement,distance=5,cooldown=4,first=95,last=135
+raid_events+=/movement,distance=5,cooldown=4,first=215,last=255
+raid_events+=/movement,distance=5,cooldown=4,first=375,last=415
+raid_events+=/movement,distance=5,cooldown=4,first=535,last=575
+
+# Gestate
+ 
+raid_events+=/stun,players_only=1,duration=5,player_chance=0.05,first=30,cooldown=30
+raid_events+=/adds,count=1,duration=20,first=10,cooldown=25,duration_stddev=20

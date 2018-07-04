@@ -1,0 +1,55 @@
+# Mythrax - Uldir heroic
+
+# Naming add events is a dps decrease?
+
+# General information
+
+fight_style=patchwerk
+vary_combat_length=0.2
+optimal_raid=1
+
+# General Boss info
+
+enemy=Mythrax
+target_level=123
+target_race=Aberration
+raid_events=
+
+# Boss attack pattern
+
+actions=auto_attack,damage=30000,attack_speed=2
+
+# phase 1 "Oblivion's Call"
+
+# Oblivion blast
+raid_events+=/movement,distance=6,cooldown=15,first=15,player_chance=0.06,players_only=1,last_pct=76,force_stop=0
+raid_events+=/movement,distance=6,cooldown=15,first_pct=74,player_chance=0.06,players_only=1,last_pct=51,force_stop=0
+raid_events+=/movement,distance=6,cooldown=15,first_pct=49,player_chance=0.06,players_only=1
+
+# Oblivion sphere
+raid_events+=/stun,duration=2,player_chance=0.06,first=10,cooldown=15,last_pct=76,force_stop=0,players_only=1,duration_stddev=50
+raid_events+=/stun,duration=2,player_chance=0.06,first_pct=74,cooldown=15,last_pct=51,force_stop=0,players_only=1,duration_stddev=50
+raid_events+=/stun,duration=2,player_chance=0.06,first_pct=49,cooldown=15,players_only=1,duration_stddev=50
+
+# imminent ruin
+raid_events+=/movement,distance=8,cooldown=15,first=5,last_pct=76,force_stop=0,player_chance=0.1,players_only=1
+raid_events+=/movement,distance=8,cooldown=15,first_pct=74,last_pct=51,force_stop=0,player_chance=0.1,players_only=1
+raid_events+=/movement,distance=8,cooldown=15,first_pct=49,player_chance=0.1,players_only=1
+
+# phase 2 "Ancient Awakening"
+
+# Invulnerable
+raid_events+=/invulnerable,duration=65,first_pct=75,cooldown=1000000
+raid_events+=/invulnerable,duration=65,first_pct=50,cooldown=1000000
+
+# Oblivion sphere
+raid_events+=/stun,duration=2,player_chance=0.12,first_pct=76,cooldown=15,last_pct=74,force_stop=0,players_only=1,duration_stddev=50
+raid_events+=/stun,duration=2,player_chance=0.12,first_pct=51,cooldown=15,last_pct=49,force_stop=0,players_only=1,duration_stddev=50
+
+# Visions of madness
+raid_events+=/adds,count=5,duration=20,cooldown=20,first_pct=76,last_pct=74,duration_stddev=15,name="Visions_of_madness",min_distance=15,max_distance=25,force_stop=0
+raid_events+=/adds,count=5,duration=20,cooldown=20,first_pct=51,last_pct=49,duration_stddev=15,name="Visions_of_madness",min_distance=15,max_distance=25,force_stop=0
+
+# N'raqi Destroyer's
+raid_events+=/adds,count=1,duration=70,cooldown=10000,first_pct=76,last_pct=74,duration_stddev=15,name="N'raqi_Destroyer",force_stop=0
+raid_events+=/adds,count=1,duration=30,cooldown=10000,first_pct=76,last_pct=74,duration_stddev=15,name="N'raqi_Destroyer",force_stop=0,min_distance=25,max_distance=28
