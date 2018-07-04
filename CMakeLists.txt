@@ -2,45 +2,33 @@
 cmake_minimum_required (VERSION 3.1)
 project(simc)
 
-
-set (CMAKE_CXX_STANDARD 11)
-
+# all options to individualize the build
 option(BUILD_GUI "Build the Qt gui along with cli binary" ON)
 
-### Git Hash ###
-# Get the current working branch
-execute_process(
-  COMMAND git rev-parse --abbrev-ref HEAD
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  OUTPUT_VARIABLE GIT_BRANCH
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-)
+set(CMAKE_CXX_STANDARD 11)
 
-# Get the latest abbreviated commit hash of the working branch
-execute_process(
-  COMMAND git rev-parse --short HEAD
-  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  OUTPUT_VARIABLE GIT_COMMIT_HASH
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-)
-add_definitions("-DSC_GIT_REV=\"${GIT_COMMIT_HASH}\"")
-add_definitions("-DSC_GIT_BRANCH=\"${GIT_BRANCH}\"")
-add_custom_target(update_git_info ALL
-                  DEPENDS engine/util/git_info.cpp)
+# enable colored output with ninja build system
+add_compile_options(-fcolor-diagnostics)
 
+# output a compile_commands.json used for editor tooling
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# link in all activated targets
 add_subdirectory(engine)
-if ( BUILD_GUI )
+if (BUILD_GUI)
   add_subdirectory(qt)
 endif()
-add_dependencies(engine update_git_info)
 
-if ( CMAKE_COMPILER_IS_GNUCC )
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -Wextra")
-endif()
-if ( MSVC )
-    set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} /W4")
+# enable warnings
+if (MSVC)
+    target_compile_options(engine PUBLIC /W4)
+else()
+    target_compile_options(engine PUBLIC -Wall -Wextra)
 endif()
 
 # 'simc' command line interface target
-add_executable(simc engine/sc_main.cpp)
+include(source_files/cmake_engine_main.txt)
+string(REGEX REPLACE "([^;]+)" "engine/\\1" source_files "${source_files}")
+add_executable(simc ${source_files})
 target_link_libraries(simc engine)
+
