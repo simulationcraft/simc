@@ -690,9 +690,9 @@ public:
     return td;
   }
 
-  const hunter_td_t* find_target_data( player_t* target ) const
+  const hunter_td_t* find_target_data( const player_t* target ) const
   {
-    return target_data[target];
+    return target_data[ target ];
   }
 
   std::vector<action_t*> background_actions;
@@ -769,7 +769,7 @@ public:
   const hunter_t* p() const { return static_cast<hunter_t*>( ab::player ); }
 
   hunter_td_t* td( player_t* t )             { return p() -> get_target_data( t ); }
-  const hunter_td_t* find_td( player_t* t ) const { return p() -> find_target_data( t ); }
+  const hunter_td_t* find_td( const player_t* t ) const { return p() -> find_target_data( t ); }
 
   void init() override
   {
@@ -3618,6 +3618,10 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
 
   void execute() override
   {
+    // have to always reset target_cache because of smart targeting
+    if ( is_aoe() )
+      target_cache.is_valid = false;
+
     hunter_ranged_attack_t::execute();
 
     p() -> buffs.vipers_venom -> decrement();
@@ -3651,6 +3655,25 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
 
     if ( s -> result_amount > 0 && p() -> azerite.latent_poison.ok() )
       td( s -> target ) -> debuffs.latent_poison -> trigger();
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    hunter_ranged_attack_t::available_targets( tl );
+
+    if ( is_aoe() && tl.size() > 1 )
+    {
+      // 04-07-2018: HB smart targeting simply prefers targets without serpent
+      // sting (instead of the ones with the lowest remaining duration)
+      // simply move targets without ss to the front of the list
+      auto start = tl.begin();
+      std::partition( *start == target ? std::next( start ) : start, tl.end(),
+        [ this ]( const player_t* t ) {
+          return !( find_td( t ) && find_td( t ) -> dots.serpent_sting -> is_ticking() );
+        } );
+    }
+
+    return tl.size();
   }
 };
 
