@@ -93,10 +93,6 @@ struct mage_td_t : public actor_target_data_t
   struct dots_t
   {
     dot_t* nether_tempest;
-    
-    // Azerite
-    dot_t* trailing_embers;
-
   } dots;
 
   struct debuffs_t
@@ -448,13 +444,13 @@ public:
     haste_buff_t* sephuzs_secret;
 
     // Azerite
+    buff_t* blaster_master;
+    buff_t* firemind;
+    buff_t* flames_of_alacrity;
+
     buff_t* frigid_grasp;
     buff_t* tunnel_of_ice;
     buff_t* winters_reach;
-
-    buff_t* firemind;
-    buff_t* blaster_master;
-    buff_t* flames_of_alacrity;
 
     // Miscellaneous Buffs
     buff_t* greater_blessing_of_widsom;
@@ -645,12 +641,12 @@ public:
     // Arcane
 
     // Fire
-    azerite_power_t firemind;
-    azerite_power_t trailing_embers;
-    azerite_power_t preheat;
     azerite_power_t blaster_master;
-    azerite_power_t flames_of_alacrity;
     azerite_power_t duplicative_incineration;
+    azerite_power_t firemind;
+    azerite_power_t flames_of_alacrity;
+    azerite_power_t preheat;
+    azerite_power_t trailing_embers;
 
     // Frost
     azerite_power_t frigid_grasp;
@@ -3069,17 +3065,14 @@ struct fireball_t : public fire_mage_spell_t
     triggers_hot_streak = true;
     triggers_ignite = true;
     triggers_kindling = true;
-    
+
     if ( p -> talents.conflagration -> ok() )
     {
       conflagration = new conflagration_t( p );
       add_child( conflagration );
     }
 
-    if ( p -> azerite.duplicative_incineration.enabled() )
-    {
-      base_dd_adder = p -> azerite.duplicative_incineration.value( 2 );
-    }
+    base_dd_adder += p -> azerite.duplicative_incineration.value( 2 );
   }
 
   virtual timespan_t travel_time() const override
@@ -3099,9 +3092,7 @@ struct fireball_t : public fire_mage_spell_t
 
     p() -> buffs.t19_oh_buff -> trigger();
 
-    //TODO: Fix hardcoding the 5% proc chance
-    if ( p() -> azerite.duplicative_incineration.enabled() && 
-         rng().roll( 0.05 ) )
+    if ( rng().roll( p() -> azerite.duplicative_incineration.spell_ref().effectN( 1 ).percent() ) )
     {
       execute();
     }
@@ -3115,18 +3106,12 @@ struct fireball_t : public fire_mage_spell_t
       if ( s -> result == RESULT_CRIT )
       {
         p() -> buffs.enhanced_pyrotechnics -> expire();
-        if ( p() -> azerite.flames_of_alacrity.enabled() )
-        {
-           p() -> buffs.flames_of_alacrity -> expire();
-        }
+        p() -> buffs.flames_of_alacrity -> expire();
       }
       else
       {
         p() -> buffs.enhanced_pyrotechnics -> trigger();
-        if( p() -> azerite.flames_of_alacrity.enabled() )
-        {
-          p() -> buffs.flames_of_alacrity -> trigger();
-        }
+        p() -> buffs.flames_of_alacrity -> trigger();
       }
 
       if ( conflagration )
@@ -3235,11 +3220,7 @@ struct flamestrike_t : public fire_mage_spell_t
 
       p() -> buffs.kaelthas_ultimate_ability -> trigger();
       p() -> buffs.pyroclasm -> trigger();
-
-      if ( p() -> azerite.firemind.enabled() )
-      {
-          p() -> buffs.firemind -> trigger();
-      }
+      p() -> buffs.firemind -> trigger();
 
       if ( p() -> talents.pyromaniac -> ok()
         && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
@@ -3851,7 +3832,7 @@ struct ice_lance_t : public frost_mage_spell_t
 
     base_multiplier *= 1.0 + p -> talents.lonely_winter -> effectN( 1 ).percent();
 
-    base_dd_adder = p -> azerite.whiteout.value( 3 );
+    base_dd_adder += p -> azerite.whiteout.value( 3 );
 
     // TODO: Cleave distance for SI seems to be 8 + hitbox size.
     if ( p -> talents.splitting_ice -> ok() )
@@ -4140,10 +4121,7 @@ struct fire_blast_t : public fire_mage_spell_t
     // update_ready() assumes the ICD is affected by haste
     internal_cooldown -> start( data().cooldown() );
 
-    if ( p() -> azerite.blaster_master.enabled() )
-    {
-      p() -> buffs.blaster_master -> trigger();
-    }
+    p() -> buffs.blaster_master -> trigger();
   }
 
   virtual double bonus_da( const action_state_t* s ) const override
@@ -4596,16 +4574,19 @@ struct trailing_embers_t : public fire_mage_spell_t
   trailing_embers_t( mage_t* p ) :
     fire_mage_spell_t( "trailing_embers", p, p -> find_spell( 277703 ) )
   {
-      base_td = p -> azerite.trailing_embers.value();
-      background = true;
-      hasted_ticks = false;
+    base_td = p -> azerite.trailing_embers.value();
+    background = true;
+    hasted_ticks = false;
   }
 };
+
 struct pyroblast_t : public fire_mage_spell_t
 {
   trailing_embers_t* trailing_embers;
+
   pyroblast_t( mage_t* p, const std::string& options_str ) :
-    fire_mage_spell_t( "pyroblast", p, p -> find_specialization_spell( "Pyroblast" ) )
+    fire_mage_spell_t( "pyroblast", p, p -> find_specialization_spell( "Pyroblast" ) ),
+    trailing_embers( nullptr )
   {
     parse_options( options_str );
 
@@ -4668,11 +4649,7 @@ struct pyroblast_t : public fire_mage_spell_t
 
       p() -> buffs.kaelthas_ultimate_ability -> trigger();
       p() -> buffs.pyroclasm -> trigger();
-
-      if ( p() -> azerite.firemind.enabled() )
-      {
-          p() -> buffs.firemind -> trigger();
-      }
+      p() -> buffs.firemind -> trigger();
 
       if ( p() -> talents.pyromaniac -> ok()
         && rng().roll( p() -> talents.pyromaniac -> effectN( 1 ).percent() ) )
@@ -4687,8 +4664,6 @@ struct pyroblast_t : public fire_mage_spell_t
       p() -> buffs.kaelthas_ultimate_ability -> decrement();
       p() -> buffs.pyroclasm -> decrement();
     }
-
-
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e rt ) override
@@ -4726,7 +4701,6 @@ struct pyroblast_t : public fire_mage_spell_t
         trailing_embers -> execute();
       }
     }
-
   }
 
   virtual double composite_crit_chance() const override
@@ -5594,7 +5568,6 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
   debuffs( debuffs_t() )
 {
   dots.nether_tempest = target -> get_dot( "nether_tempest", mage );
-  dots.trailing_embers = target -> get_dot( "trailing_embers", mage );
 
   debuffs.frozen            = make_buff( *this, "frozen" )
                                 -> set_duration( timespan_t::from_seconds( 0.5 ) );
@@ -6119,18 +6092,19 @@ void mage_t::init_spells()
   spec.icicles               = find_mastery_spell( MAGE_FROST );
 
   // Azerite
-  azerite.frigid_grasp       = find_azerite_spell( "Frigid Grasp"       );
-  azerite.glacial_assault    = find_azerite_spell( "Glacial Assault"    );
-  azerite.packed_ice         = find_azerite_spell( "Packed Ice"         );
-  azerite.tunnel_of_ice      = find_azerite_spell( "Tunnel of Ice"      );
-  azerite.whiteout           = find_azerite_spell( "Whiteout"           );
-  azerite.winters_reach      = find_azerite_spell( "Winter's Reach"     );
-  azerite.firemind           = find_azerite_spell( "Firemind"           );
-  azerite.trailing_embers    = find_azerite_spell( "Trailing Embers"    );
-  azerite.preheat            = find_azerite_spell( "Preheat"            );
-  azerite.blaster_master     = find_azerite_spell( "Blaster Master"     );
-  azerite.flames_of_alacrity = find_azerite_spell( "Flames of Alacrity" );
+  azerite.blaster_master           = find_azerite_spell( "Blaster Master"           );
   azerite.duplicative_incineration = find_azerite_spell( "Duplicative Incineration" );
+  azerite.firemind                 = find_azerite_spell( "Firemind"                 );
+  azerite.flames_of_alacrity       = find_azerite_spell( "Flames of Alacrity"       );
+  azerite.preheat                  = find_azerite_spell( "Preheat"                  );
+  azerite.trailing_embers          = find_azerite_spell( "Trailing Embers"          );
+
+  azerite.frigid_grasp             = find_azerite_spell( "Frigid Grasp"             );
+  azerite.glacial_assault          = find_azerite_spell( "Glacial Assault"          );
+  azerite.packed_ice               = find_azerite_spell( "Packed Ice"               );
+  azerite.tunnel_of_ice            = find_azerite_spell( "Tunnel of Ice"            );
+  azerite.whiteout                 = find_azerite_spell( "Whiteout"                 );
+  azerite.winters_reach            = find_azerite_spell( "Winter's Reach"           );
 }
 
 // mage_t::init_base ========================================================
@@ -6290,20 +6264,24 @@ void mage_t::create_buffs()
                            -> set_default_value( find_spell( 116014 ) -> effectN( 1 ).percent() );
 
   // Azerite
-  buffs.frigid_grasp  = make_buff<stat_buff_t>( this, "frigid_grasp", find_spell( 279684 ) )
-                          -> add_stat( STAT_INTELLECT, azerite.frigid_grasp.value() );
-  buffs.firemind      = make_buff<stat_buff_t>( this, "firemind", find_spell( 279715 ) )
-                          -> add_stat( STAT_INTELLECT, azerite.firemind.value() );
-  buffs.blaster_master = make_buff<stat_buff_t>( this, "blaster_master", find_spell( 274598 ) )
-                          -> add_stat( STAT_MASTERY_RATING, azerite.blaster_master.value() );
+  buffs.blaster_master     = make_buff<stat_buff_t>( this, "blaster_master", find_spell( 274598 ) )
+                               -> add_stat( STAT_MASTERY_RATING, azerite.blaster_master.value() )
+                               -> set_chance( azerite.blaster_master.enabled() ? 1.0 : 0.0 );
+  buffs.firemind           = make_buff<stat_buff_t>( this, "firemind", find_spell( 279715 ) )
+                               -> add_stat( STAT_INTELLECT, azerite.firemind.value() )
+                               -> set_chance( azerite.firemind.enabled() ? 1.0 : 0.0 );
   buffs.flames_of_alacrity = make_buff<stat_buff_t>( this, "flames_of_alacrity", find_spell( 272934 ) )
-                          -> add_stat( STAT_HASTE_RATING, azerite.flames_of_alacrity.value() );
-  buffs.tunnel_of_ice = make_buff( this, "tunnel_of_ice", find_spell( 277904 ) )
-                          -> set_chance( azerite.tunnel_of_ice.enabled() ? 1.0 : 0.0 )
-                          -> set_default_value( azerite.tunnel_of_ice.value() );
-  buffs.winters_reach = make_buff( this, "winters_reach", find_spell( 273347 ) )
-                          -> set_chance( azerite.winters_reach.spell_ref().effectN( 2 ).percent() )
-                          -> set_default_value( azerite.winters_reach.value() );
+                               -> add_stat( STAT_HASTE_RATING, azerite.flames_of_alacrity.value() )
+                               -> set_chance( azerite.flames_of_alacrity.enabled() ? 1.0 : 0.0 );
+
+  buffs.frigid_grasp       = make_buff<stat_buff_t>( this, "frigid_grasp", find_spell( 279684 ) )
+                               -> add_stat( STAT_INTELLECT, azerite.frigid_grasp.value() );
+  buffs.tunnel_of_ice      = make_buff( this, "tunnel_of_ice", find_spell( 277904 ) )
+                               -> set_chance( azerite.tunnel_of_ice.enabled() ? 1.0 : 0.0 )
+                               -> set_default_value( azerite.tunnel_of_ice.value() );
+  buffs.winters_reach      = make_buff( this, "winters_reach", find_spell( 273347 ) )
+                               -> set_chance( azerite.winters_reach.spell_ref().effectN( 2 ).percent() )
+                               -> set_default_value( azerite.winters_reach.value() );
 
   // Misc
   // N active GBoWs are modeled by a single buff that gives N times as much mana.
