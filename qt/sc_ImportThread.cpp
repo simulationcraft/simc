@@ -63,6 +63,11 @@ void SC_ImportThread::run()
       player -> role = util::parse_role_type( m_role.toUtf8().constData() );
 
       sim->init();
+      if (sim->canceled)
+      {
+        player = nullptr;
+        return;
+      }
       std::string buffer = player -> create_profile();
       profile = QString::fromUtf8( buffer.c_str() );
     }
