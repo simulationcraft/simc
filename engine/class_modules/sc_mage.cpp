@@ -650,6 +650,7 @@ public:
     azerite_power_t preheat;
     azerite_power_t blaster_master;
     azerite_power_t flames_of_alacrity;
+    azerite_power_t duplicative_incineration;
 
     // Frost
     azerite_power_t frigid_grasp;
@@ -3068,11 +3069,16 @@ struct fireball_t : public fire_mage_spell_t
     triggers_hot_streak = true;
     triggers_ignite = true;
     triggers_kindling = true;
-
+    
     if ( p -> talents.conflagration -> ok() )
     {
       conflagration = new conflagration_t( p );
       add_child( conflagration );
+    }
+
+    if ( p -> azerite.duplicative_incineration.enabled() )
+    {
+      base_dd_adder = p -> azerite.duplicative_incineration.value( 2 );
     }
   }
 
@@ -3092,6 +3098,13 @@ struct fireball_t : public fire_mage_spell_t
     }
 
     p() -> buffs.t19_oh_buff -> trigger();
+
+    //TODO: Fix hardcoding the 5% proc chance
+    if ( p() -> azerite.duplicative_incineration.enabled() && 
+         rng().roll( 0.05 ) )
+    {
+      execute();
+    }
   }
 
   virtual void impact( action_state_t* s ) override
@@ -6117,6 +6130,7 @@ void mage_t::init_spells()
   azerite.preheat            = find_azerite_spell( "Preheat"            );
   azerite.blaster_master     = find_azerite_spell( "Blaster Master"     );
   azerite.flames_of_alacrity = find_azerite_spell( "Flames of Alacrity" );
+  azerite.duplicative_incineration = find_azerite_spell( "Duplicative Incineration" );
 }
 
 // mage_t::init_base ========================================================
