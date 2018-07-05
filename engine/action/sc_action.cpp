@@ -3140,17 +3140,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     auto action = player->find_action( splits[ 1 ] );
     if ( !action )
     {
-      action = player->create_action( splits[ 1 ], "" );
-      // Can't make an action for the given dot, and no action found. Just implicitly always return
-      // "false" (0) for the evaluated expression
-      if ( !action )
-      {
-        return expr_t::create_constant( splits[ 2 ], 0 );
-      }
-      else
-      {
-        action->quiet = action->background = true;
-      }
+      return expr_t::create_constant( splits[ 2 ], 0 );
     }
 
     auto expr = dot_t::create_expression(nullptr, action, splits[ 2 ], true );
