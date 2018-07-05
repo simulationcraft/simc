@@ -1,0 +1,14 @@
+# Ghuun - Uldir heroic
+
+
+# General information
+
+fight_style=patchwerk
+vary_combat_length=0.2
+optimal_raid=1
+
+# General Boss info
+
+enemy=Ghuun
+target_level=123
+raid_events=
