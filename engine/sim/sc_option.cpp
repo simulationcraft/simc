@@ -859,6 +859,34 @@ option_db_t::option_db_t()
     }
   }
 
+  // Bossevents
+  for ( auto path : paths )
+    {
+      // Skip empty SHARED_DATA define, as the default ("..") is already
+      // included.
+      if ( path.empty() )
+        continue;
+
+      // Skip current path, we arleady have that
+      if ( path == "." )
+        continue;
+
+      path += "/Bossevents";
+      auto_path.push_back( path );
+
+      path += "/";
+
+
+      // Add bossevents for each tier
+      for ( unsigned i = 0; i < N_TIER; ++i )
+      {
+        std::string base_tier_path = path + "T" + util::to_string( MIN_TIER + i );
+        auto_path.push_back( base_tier_path);
+        auto_path.push_back( base_tier_path + "/Heroic" );
+        auto_path.push_back( base_tier_path + "/Mythic" );
+      }
+    }
+
   // Make sure we only have unique entries
   auto it = std::unique(auto_path.begin(), auto_path.end());
   auto_path.resize( std::distance(auto_path.begin(), it) );
