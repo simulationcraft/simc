@@ -715,6 +715,11 @@ void SC_MainWindow::importFinished()
   {
     simulateTab -> setTabText( simulateTab -> currentIndex(), tr( "Import Failed" ) );
     simulateTab -> append_Text( tr("# Unable to generate profile from: ") + importThread -> url + "\n" );
+    if (!importThread->error.isEmpty())
+    {
+        simulateTab -> append_Text( QString( "# ") + importThread->error );
+    }
+
     for( const std::string& error : import_sim -> error_list )
     {
         simulateTab -> append_Text( QString( "# ") + QString::fromStdString( error ) );
