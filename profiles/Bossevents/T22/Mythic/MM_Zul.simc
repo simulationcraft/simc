@@ -1,0 +1,38 @@
+# Zul - Uldir mythic
+
+
+# General information
+
+fight_style=patchwerk
+vary_combat_length=0.2
+optimal_raid=1
+
+# General Boss info
+
+enemy=Zul
+target_level=123
+target_race=humanoid
+raid_events=
+
+# Phase	1 "The Forces of Blood"
+
+# Pool of Darkness
+raid_events+=/movement,distance=10,cooldown=50,first=30,players_only=1,player_chance=0.11,name=dispell
+
+# Bloodthirsty Crawg
+raid_events+=/adds,count=4,first=2,cooldown=90,duration=10,duration_stddev=30,last_pct=40
+
+# Nazmani Bloodhexer
+raid_events+=/adds,count=1,first=2,cooldown=10000000,duration=35,duration_stddev=30,last_pct=40
+raid_events+=/adds,count=4,first=90,cooldown=90,duration=70,duration_stddev=10,last_pct=40
+
+# Nazmani Crusher
+raid_events+=/adds,count=1,first=2,cooldown=90,duration=60,duration_stddev=20,last_pct=40
+
+# Call of Blood
+raid_events+=/movement,distance=15,cooldown=15,first=35,players_only=1,player_chance=0.11
+
+# Phase 2 "Zul, Awakened"
+
+# Deathwish
+raid_events+=/stun,duration=3,duration_stddev=50,players_only=1,player_chance=0.05,first_pct=40,cooldown=40
