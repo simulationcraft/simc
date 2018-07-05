@@ -6,7 +6,7 @@
 fight_style=patchwerk
 vary_combat_length=0.2
 optimal_raid=1
-override.bloodlust=0
+bloodlust_percent=50
 
 # General Boss info
 
@@ -43,13 +43,3 @@ raid_events+=/movement,distance=10,first_pct=47,cooldown=60,players_only=1
 # Mythic mechanic
 raid_events+=/movement,distance=5,first=115,last_pct=50,cooldown=50
 raid_events+=/movement,distance=5,first=150,last_pct=50,cooldown=50
-
-shaman="Bloodlust dummy"
-level=120
-race=orc
-role=spell
-talents=0
-spec=elemental
-
-actions=bloodlust,if=raid_event.vul100.up
-actions+=/wait

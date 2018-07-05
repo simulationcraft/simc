@@ -6,7 +6,7 @@
 fight_style=patchwerk
 vary_combat_length=0.2
 optimal_raid=1
-override.bloodlust=0
+bloodlust_percent=50
 
 # General Boss info
 
@@ -31,13 +31,3 @@ raid_events+=/vulnerable,first_pct=50,cooldown=12000000000,duration=10000000000,
 
 raid_events+=/adds,count=1,first=60,cooldown=45,duration=15,duration_stddev=20
 raid_events+=/movement,duration=2,first=59,cooldown=45,duration_stddev=20
-
-shaman="Bloodlust dummy"
-level=120
-race=orc
-role=spell
-talents=0
-spec=elemental
-
-actions=bloodlust,if=raid_event.vul50.up
-actions+=/wait
