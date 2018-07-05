@@ -50,8 +50,9 @@ namespace warlock
     {
       pet_t::create_buffs();
 
+      create_buffs_pets();
       create_buffs_demonology();
-      create_buffs_destruction();
+      //create_buffs_destruction();
 
       buffs.rage_of_guldan = make_buff(this, "rage_of_guldan", find_spell(257926))->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER); //change spell id to 253014 when whitelisted
     }
@@ -62,6 +63,7 @@ namespace warlock
 
       if (o()->specialization() == WARLOCK_DEMONOLOGY)
         init_spells_demonology();
+      init_spells_pets();
     }
 
     void warlock_pet_t::schedule_ready(timespan_t delta_time, bool waiting)
@@ -531,6 +533,26 @@ double warlock_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + buffs.sindorei_spite->check_stack_value();
   m *= 1.0 + buffs.lessons_of_spacetime->check_stack_value();
+
+  return m;
+}
+
+double warlock_t::composite_player_pet_damage_multiplier(const action_state_t* s) const
+{
+  double m = player_t::composite_player_pet_damage_multiplier(s);
+
+  if ( specialization() == WARLOCK_DESTRUCTION )
+  {
+    m *= 1.0 + spec.destruction->effectN(3).percent();
+  }
+  if ( specialization() == WARLOCK_DEMONOLOGY )
+  {
+    m *= 1.0 + spec.demonology->effectN(3).percent();
+  }
+  if ( specialization() == WARLOCK_AFFLICTION )
+  {
+    m *= 1.0 + spec.affliction->effectN(3).percent();
+  }
 
   return m;
 }

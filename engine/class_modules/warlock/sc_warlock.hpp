@@ -523,6 +523,7 @@ namespace warlock
       double    matching_gear_multiplier( attribute_e attr ) const override;
       double    composite_player_multiplier( school_e school ) const override;
       double    composite_player_target_multiplier( player_t* target, school_e school ) const override;
+      double    composite_player_pet_damage_multiplier( const action_state_t* ) const override;
       double    composite_rating_multiplier( rating_e rating ) const override;
       void      invalidate_cache( cache_e ) override;
       double    composite_spell_crit_chance() const override;
@@ -594,6 +595,7 @@ namespace warlock
 
       // sc_warlock_pets
       pet_t* create_main_pet(const std::string& pet_name, const std::string& options_str);
+      pet_t* create_demo_pet(const std::string& pet_name, const std::string& options_str);
       //void create_all_pets();
 
     private:
@@ -652,7 +654,9 @@ namespace warlock
         double composite_melee_speed() const override;
         double composite_spell_speed() const override;
 
+        void create_buffs_pets();
         void create_buffs_demonology();
+        void init_spells_pets();
         void init_spells_demonology();
 
         void create_buffs_destruction();
@@ -776,16 +780,6 @@ namespace warlock
         const warlock_td_t* find_td( player_t* t ) const
         {
           return p()->o()->find_target_data( t );
-        }
-
-        void init() override
-        {
-          action_t::init();
-
-          if (p()->o()->specialization() == WARLOCK_DESTRUCTION)
-          {
-            ab::base_multiplier *= 1.0 + p()->o()->spec.destruction->effectN(3).percent();
-          }
         }
       };
 
@@ -1187,6 +1181,15 @@ namespace warlock
 
             if (data().affected_by(p()->spec.affliction->effectN(2)))
               base_td_multiplier *= 1.0 + p()->spec.affliction->effectN(2).percent();
+          }
+
+          if (p()->specialization() == WARLOCK_DEMONOLOGY)
+          {
+            if (data().affected_by(p()->spec.demonology->effectN(1)))
+              base_dd_multiplier *= 1.0 + p()->spec.demonology->effectN(1).percent();
+
+            if (data().affected_by(p()->spec.demonology->effectN(2)))
+              base_td_multiplier *= 1.0 + p()->spec.demonology->effectN(2).percent();
           }
 
           if ( p()->talents.creeping_death->ok() )

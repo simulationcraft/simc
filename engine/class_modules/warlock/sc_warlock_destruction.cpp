@@ -935,7 +935,7 @@ namespace warlock {
       ->set_default_value(find_spell(279673)->effectN(1).percent())
       ->set_chance(find_spell(279672)->proc_chance());
     buffs.crashing_chaos = make_buff(this, "crashing_chaos", azerite.crashing_chaos)
-      ->set_max_stack(azerite.crashing_chaos.spell_ref().effectN(2).base_value())
+      ->set_max_stack(azerite.crashing_chaos.spell_ref().effectN(2).base_value() or 1)
       ->set_default_value(azerite.crashing_chaos.value());
     buffs.rolling_havoc = make_buff<stat_buff_t>(this, "rolling_havoc", find_spell(278931))
       ->add_stat(STAT_INTELLECT, azerite.rolling_havoc.value());
