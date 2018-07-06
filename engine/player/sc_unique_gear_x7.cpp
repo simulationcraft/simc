@@ -105,19 +105,18 @@ custom_cb_t enchants::weapon_navigation( unsigned buff_id )
 
     navigation_proc_callback_t( player_t* p, special_effect_t& e, buff_t* b )
       : dbc_proc_callback_t( p, e ), final_buff( b )
-    {}
-
-    void trigger( action_t* a, void* call_data ) override
-    {
-      // from logs it seems like the stacking buff
-      // can't trigger while the 'final' one is up
-      // XXX: check how it interacts with rppm (maybe it should go into execute)
-      if ( ! final_buff -> check() )
-        dbc_proc_callback_t::trigger( a, call_data );
-    }
+    { }
 
     void execute( action_t*, action_state_t* ) override
     {
+      // From logs it seems like the stacking buff can't trigger while the 'final' one is up. Logs
+      // also look like the RPPM effect is allowed to proc, but the stacking buff is not triggered
+      // during the final buff.
+      if ( final_buff -> check() )
+      {
+        return;
+      }
+
       if ( proc_buff && proc_buff -> trigger() &&
            proc_buff -> check() == proc_buff -> max_stack() )
       {
@@ -127,16 +126,27 @@ custom_cb_t enchants::weapon_navigation( unsigned buff_id )
     }
   };
 
+  // Both the stacking and the final buffs are unique
   return [ buff_id ] ( special_effect_t& effect ) {
-    // get (or create) the 'final' buff
-    // the stacking proc buff will be created automagically
-    auto spell_data = effect.player -> find_spell( buff_id );
-    const std::string spell_name = util::tokenized_name( spell_data ) + "_final";
+    auto spell_buff = effect.trigger();
+    const std::string spell_name = util::tokenized_name( spell_buff );
     buff_t* buff = buff_t::find( effect.player, spell_name );
-    if ( !buff )
-      buff = make_buff<stat_buff_t>( effect.player, spell_name, spell_data );
+    if ( ! buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, spell_name, spell_buff );
+    }
 
-    new navigation_proc_callback_t( effect.player, effect, buff );
+    effect.custom_buff = buff;
+
+    auto final_spell_data = effect.player -> find_spell( buff_id );
+    const std::string final_spell_name = util::tokenized_name( final_spell_data ) + "_final";
+    buff_t* final_buff = buff_t::find( effect.player, final_spell_name );
+    if ( ! final_buff )
+    {
+      final_buff = make_buff<stat_buff_t>( effect.player, final_spell_name, final_spell_data );
+    }
+
+    new navigation_proc_callback_t( effect.player, effect, final_buff );
   };
 }
 
