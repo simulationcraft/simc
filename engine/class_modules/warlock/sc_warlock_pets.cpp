@@ -319,6 +319,7 @@ namespace warlock {
         bile_spit_t(warlock_pet_t* p) : warlock_pet_spell_t("bile_spit", p, p -> find_spell(267997))
         {
           tick_may_crit = true;
+          hasted_ticks = false;
         }
       };
       struct headbutt_t : public warlock_pet_melee_attack_t {
@@ -330,13 +331,13 @@ namespace warlock {
       vilefiend_t::vilefiend_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "vilefiend", PET_VILEFIEND)
       {
         action_list_str += "travel/headbutt";
-        owner_coeff.ap_from_sp = 0.46;
+        owner_coeff.ap_from_sp = 0.23;
       }
 
       void vilefiend_t::init_base_stats()
       {
         warlock_pet_t::init_base_stats();
-        melee_attack = new warlock_pet_melee_t(this);
+        melee_attack = new warlock_pet_melee_t(this,2.0);
       }
 
       action_t* vilefiend_t::create_action(const std::string& name, const std::string& options_str)
