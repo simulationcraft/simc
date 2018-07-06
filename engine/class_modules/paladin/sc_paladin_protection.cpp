@@ -8,26 +8,6 @@
 
 namespace paladin {
 
-namespace buffs {
-
-  struct ardent_defender_buff_t: public buff_t
-  {
-    bool oneup_triggered;
-
-    ardent_defender_buff_t( player_t* p ):
-      buff_t( p, "ardent_defender", p -> find_specialization_spell( "Ardent Defender" ) ),
-      oneup_triggered( false )
-    {
-
-    }
-
-    void use_oneup()
-    {
-      oneup_triggered = true;
-    }
-  };
-}
-
 // Aegis of Light (Protection) ================================================
 
 struct aegis_of_light_t : public paladin_spell_t
@@ -729,7 +709,7 @@ void paladin_t::target_mitigation( school_e school,
 
   if ( standing_in_consecration() )
   {
-    s -> result_amount *= cache.mastery() * passives.divine_bulwark -> effectN( 2 ).mastery_value();
+    s -> result_amount *= 1.0 + ( cache.mastery() * passives.divine_bulwark -> effectN( 2 ).mastery_value() );
   }
 
   // Ardent Defender
@@ -737,9 +717,9 @@ void paladin_t::target_mitigation( school_e school,
   {
     if ( s -> result_amount > 0 && s -> result_amount >= resources.current[ RESOURCE_HEALTH ] )
     {
-      // Ardent defender is a little odd - it doesn't heal you *for* 12%, it heals you *to* 12%.
-      // It does this by either absorbing all damage and healing you for the difference between 12% and your current health (if current < 12%)
-      // or absorbing any damage that would take you below 12% (if current > 12%).
+      // Ardent defender is a little odd - it doesn't heal you *for* 20%, it heals you *to* 12%.
+      // It does this by either absorbing all damage and healing you for the difference between 20% and your current health (if current < 20%)
+      // or absorbing any damage that would take you below 20% (if current > 20%).
       // To avoid complications with absorb modeling, we're just going to kludge it by adjusting the amount gained or lost accordingly.
       // Also arbitrarily capping at 3x max health because if you're seriously simming bosses that hit for >300% player health I hate you.
       s -> result_amount = 0.0;
@@ -759,7 +739,6 @@ void paladin_t::target_mitigation( school_e school,
                        nullptr,
                        s -> action );
       }
-      buffs.ardent_defender -> use_oneup();
       buffs.ardent_defender -> expire();
     }
 
@@ -856,7 +835,6 @@ void paladin_t::create_buffs_protection()
                                     -> set_cooldown( timespan_t::zero() ); // let the ability handle the CD
   buffs.shield_of_the_righteous = make_buff( this, "shield_of_the_righteous", spells.shield_of_the_righteous )
                                   -> add_invalidate( CACHE_BONUS_ARMOR );
-  buffs.ardent_defender = new buffs::ardent_defender_buff_t( this );
   buffs.aegis_of_light = make_buff( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
   buffs.seraphim = make_buff<stat_buff_t>( this, "seraphim", talents.seraphim )
                   -> add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
@@ -872,6 +850,7 @@ void paladin_t::create_buffs_protection()
                            -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
   buffs.avengers_valor = make_buff( this, "avengers_valor", find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() );
   buffs.avengers_valor -> set_default_value( find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
+  buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) );
 }
 
 void paladin_t::init_spells_protection()
@@ -1038,7 +1017,6 @@ void paladin_t::generate_action_prio_list_prot()
 
   prot->add_talent(this,"Seraphim","if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2");
   prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&(buff.seraphim.up|cooldown.seraphim.remains<4)");
-  prot->add_action(this, "Ardent Defender", "if=talent.seraphim.enabled&buff.seraphim.up");
   prot->add_action(this, "Shield of the Righteous", "if=talent.seraphim.enabled&(cooldown.consecration.remains>=0.1&(action.shield_of_the_righteous.charges>2.5&cooldown.seraphim.remains>3)|(buff.seraphim.up))");
   prot->add_action(this, "Avenger's Shield", "if=talent.seraphim.enabled");
   prot->add_action(this, "Judgment", "if=talent.seraphim.enabled&(active_enemies<2|set_bonus.tier20_2pc)");
