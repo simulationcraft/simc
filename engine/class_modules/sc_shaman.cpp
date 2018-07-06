@@ -7114,6 +7114,11 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
 
 void shaman_t::trigger_lightning_shield( const action_state_t* state )
 {
+  if ( state->result_amount <= 0 )
+  {
+    return;
+  }
+
   if ( !buff.lightning_shield->up() )
   {
     return;
