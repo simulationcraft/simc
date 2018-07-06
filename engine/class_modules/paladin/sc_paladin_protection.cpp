@@ -1,6 +1,11 @@
 #include "simulationcraft.hpp"
 #include "sc_paladin.hpp"
 
+// TODO : 
+// Defensive stuff : 
+// - correctly update sotr's armor bonus on each cast
+// - avenger's valor defensive benefit
+
 namespace paladin {
 
 namespace buffs {
@@ -72,7 +77,7 @@ struct ardent_defender_t : public paladin_spell_t
 struct avengers_shield_t : public paladin_spell_t
 {
   avengers_shield_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "avengers_shield", p, p -> find_class_spell( "Avenger's Shield" ) )
+    : paladin_spell_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ) )
   {
     parse_options( options_str );
 
@@ -83,14 +88,11 @@ struct avengers_shield_t : public paladin_spell_t
     }
     may_crit     = true;
 
-    // TODO: add and legendary bonuses
-    base_multiplier *= 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent();
-  base_aoe_multiplier *= 1.0;
-  if ( p ->talents.first_avenger->ok() )
-    base_aoe_multiplier *= 2.0 / 3.0;
-  aoe = 3;
-  aoe = std::max( aoe, 0 );
+    aoe = data().effectN( 1 ).chain_target();
 
+    base_multiplier *= 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent();
+    // First Avenger only increases primary target damage
+    base_aoe_multiplier *= 1.0 / ( 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent() );
 
     // link needed for trigger_grand_crusader
     cooldown = p -> cooldowns.avengers_shield;
@@ -101,18 +103,26 @@ struct avengers_shield_t : public paladin_spell_t
   {
     paladin_spell_t::init();
 
-    if (p()->ferren_marcuss_strength){
-      aoe += (p()->spells.ferren_marcuss_strength->effectN(1).base_value());
-      base_multiplier *= 1.0 + p()->spells.ferren_marcuss_strength->effectN(2).percent();
+    if ( p() -> ferren_marcuss_strength )
+    {
+      aoe += ( p() -> spells.ferren_marcuss_strength -> effectN( 1 ).base_value() );
+      base_multiplier *= 1.0 + p() -> spells.ferren_marcuss_strength -> effectN( 2 ).percent();
     }
+  }
 
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.avengers_valor -> trigger();
   }
 
   void impact( action_state_t* s ) override
   {
     paladin_spell_t::impact( s );
 
-    if ( p() -> gift_of_the_golden_valkyr ) {
+    if ( p() -> gift_of_the_golden_valkyr )
+    {
       timespan_t reduction = timespan_t::from_seconds( -1.0 * p() -> spells.gift_of_the_golden_valkyr -> effectN(1).base_value() );
       p() -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
     }
@@ -136,7 +146,7 @@ struct bastion_of_light_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    p()->cooldowns.shield_of_the_righteous->reset(false, true);
+    p() -> cooldowns.shield_of_the_righteous -> reset(false, true);
   }
 };
 
@@ -601,12 +611,22 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     p -> active_sotr = this;
   }
 
+  double action_multiplier() const override
+  {
+    double m = paladin_melee_attack_t::action_multiplier();
+
+    m *= 1.0 + p() -> buffs.avengers_valor -> check_value();
+
+    return m;
+  }
+
   virtual void execute() override
   {
     paladin_melee_attack_t::execute();
 
     //Buff granted regardless of combat roll result
     //Duration is additive on refresh, stats not recalculated
+
     if ( p() -> buffs.shield_of_the_righteous -> check() )
     {
       p() -> buffs.shield_of_the_righteous -> extend_duration( p(), p() -> buffs.shield_of_the_righteous -> buff_duration );
@@ -625,6 +645,8 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
         p() -> cooldowns.hand_of_the_protector -> adjust( reduction );
       }
     }
+
+    p() -> buffs.avengers_valor -> expire();
   }
 };
 
@@ -848,6 +870,8 @@ void paladin_t::create_buffs_protection()
   buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
                            -> set_absorb_source( get_stats( "holy_shield_absorb" ) )
                            -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
+  buffs.avengers_valor = make_buff( this, "avenger's_valor", find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() );
+  buffs.avengers_valor -> set_default_value( find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
 }
 
 void paladin_t::init_spells_protection()

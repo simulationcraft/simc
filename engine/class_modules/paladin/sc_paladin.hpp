@@ -163,6 +163,7 @@ public:
     buff_t* infusion_of_light;
     buff_t* shield_of_the_righteous;
     buff_t* last_defender;
+    buff_t* avengers_valor;
 
     // talents
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
