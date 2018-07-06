@@ -138,10 +138,9 @@ namespace warlock {
       }
 
       void create_actions() {
-        active.demonic_strength_felstorm = find_action("demonic_strength_felstorm");
-        assert(active.demonic_strength_felstorm);
-
         warlock_pet_t::create_actions();
+        active.demonic_strength_felstorm = find_action( "demonic_strength_felstorm" );
+        assert(active.demonic_strength_felstorm);
       }
 
       void init_base_stats() {
@@ -450,7 +449,7 @@ namespace warlock {
               p()->warlock_pet_list.dreadstalkers[i]->buffs.rage_of_guldan->set_default_value(p()->buffs.rage_of_guldan->stack_value());
               p()->warlock_pet_list.dreadstalkers[i]->buffs.rage_of_guldan->trigger();
             }
-              
+
             /*
             if (p()->legendary.wilfreds_sigil_of_superior_summoning_flag && !p()->talents.grimoire_of_supremacy->ok())
             {
@@ -509,7 +508,7 @@ namespace warlock {
           {
             m *= (casts_left / 5.0);
           }
-          
+
           return m;
         }
       };
@@ -731,7 +730,7 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
-        
+
         struct lower_energy
         {
           inline bool operator() (const pets::wild_imp::wild_imp_pet_t* imp1, const pets::wild_imp::wild_imp_pet_t* imp2)
@@ -749,7 +748,7 @@ namespace warlock {
             imps.push_back(imp);
           }
         }
-        
+
         std::sort(imps.begin(), imps.end(), lower_energy());
 
         unsigned max_imps = p()->talents.power_siphon->effectN(1).base_value();
@@ -1209,7 +1208,7 @@ namespace warlock {
     action_priority_list_t* npb = get_action_priority_list("nether_portal_building");
     action_priority_list_t* npa = get_action_priority_list("nether_portal_active");
     action_priority_list_t* bas = get_action_priority_list("build_a_shard");
-    
+
     def->add_action("demonic_strength");
     def->add_action("call_action_list,name=nether_portal,if=talent.nether_portal.enabled");
 
