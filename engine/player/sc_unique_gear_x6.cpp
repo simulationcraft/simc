@@ -306,6 +306,7 @@ struct mark_of_the_distant_army_t : public proc_spell_t
 
     // Hardcoded somewhere in the bowels of the server
     ap_type = AP_NO_WEAPON;
+    tick_may_crit = false;
     attack_power_mod.tick = ( 0.6375 / 3.0 );
     spell_power_mod.tick = ( 0.51 / 3.0 );
   }
