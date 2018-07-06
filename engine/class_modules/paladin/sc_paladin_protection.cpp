@@ -105,7 +105,7 @@ struct avengers_shield_t : public paladin_spell_t
 
     if ( p() -> ferren_marcuss_strength )
     {
-      aoe += ( p() -> spells.ferren_marcuss_strength -> effectN( 1 ).base_value() );
+      aoe += as<int>( p() -> spells.ferren_marcuss_strength -> effectN( 1 ).base_value() );
       base_multiplier *= 1.0 + p() -> spells.ferren_marcuss_strength -> effectN( 2 ).percent();
     }
   }
@@ -362,7 +362,7 @@ struct judgment_prot_t : public paladin_melee_attack_t
     may_block = may_parry = may_dodge = false;
     cooldown -> charges = 1;
 
-    cooldown -> charges *= 1.0 + p -> talents.crusaders_judgment->effectN( 1 ).base_value();
+    cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
     cooldown -> duration *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 11 ).percent();
     sotr_cdr = -1.0 * timespan_t::from_seconds( p -> spec.judgment_2 -> effectN( 1 ).base_value() );
@@ -445,7 +445,7 @@ struct light_of_the_protector_t : public paladin_heal_t
 
     if ( p() -> saruans_resolve ) 
     {
-      cooldown -> charges += p() -> spells.saruans_resolve -> effectN( 1 ).base_value();
+      cooldown -> charges += as<int>( p() -> spells.saruans_resolve -> effectN( 1 ).base_value() );
     }
   }
 
@@ -504,7 +504,7 @@ struct hand_of_the_protector_t : public paladin_heal_t
 
     if ( p() -> saruans_resolve ) 
     {
-      cooldown -> charges += p() -> spells.saruans_resolve -> effectN( 1 ).base_value();
+      cooldown -> charges += as<int>( p() -> spells.saruans_resolve -> effectN( 1 ).base_value() );
     }
   }
 
@@ -615,7 +615,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   {
     double m = paladin_melee_attack_t::action_multiplier();
 
-    m *= 1.0 + p() -> buffs.avengers_valor -> check_value();
+    m *= 1.0 + p() -> buffs.avengers_valor -> value();
 
     return m;
   }
@@ -870,7 +870,7 @@ void paladin_t::create_buffs_protection()
   buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
                            -> set_absorb_source( get_stats( "holy_shield_absorb" ) )
                            -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
-  buffs.avengers_valor = make_buff( this, "avenger's_valor", find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() );
+  buffs.avengers_valor = make_buff( this, "avengers_valor", find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() );
   buffs.avengers_valor -> set_default_value( find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
 }
 
