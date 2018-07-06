@@ -375,7 +375,7 @@ struct melee_t : public enemy_action_t<melee_attack_t>
   {
     school = SCHOOL_PHYSICAL;
     trigger_gcd = timespan_t::zero();
-    base_dd_min = 26000;
+    base_dd_min = 1040;
     base_execute_time = timespan_t::from_seconds( 1.5 );
     may_crit = background = repeating = true;
     special = false;
@@ -602,7 +602,7 @@ struct melee_nuke_t : public enemy_action_t<attack_t>
     may_miss = may_dodge = may_parry = false;
     may_block = true;
     base_execute_time = timespan_t::from_seconds( 3.0 );
-    base_dd_min = 70000;
+    base_dd_min = 2800;
 
     parse_options( options_str );
   }
@@ -645,7 +645,7 @@ struct spell_nuke_t : public enemy_action_t<spell_t>
   {
     school            = SCHOOL_FIRE;
     base_execute_time = timespan_t::from_seconds( 3.0 );
-    base_dd_min       = 60000;
+    base_dd_min       = 2400;
 
     parse_options( options_str );
   }
@@ -690,7 +690,7 @@ struct spell_dot_t : public enemy_action_t<spell_t>
     base_tick_time = timespan_t::from_seconds( 1.0 );
     base_execute_time = timespan_t::from_seconds( 1.0 );
     dot_duration   = timespan_t::from_seconds( 10.0 );
-    base_td        = 5000;
+    base_td        = 200;
     tick_may_crit  = false;
     may_crit       = false;
 
@@ -753,7 +753,7 @@ struct spell_aoe_t : public enemy_action_t<spell_t>
   {
     school            = SCHOOL_FIRE;
     base_execute_time = timespan_t::from_seconds( 3.0 );
-    base_dd_min       = 5000;
+    base_dd_min       = 200;
     aoe               = -1;
     may_crit          = false;
 
@@ -1039,8 +1039,8 @@ struct tmi_enemy_t : public enemy_t
     std::string als = "";
     const int num_bosses = TMI_MAX;
     assert( tmi_boss_enum < TMI_MAX );
-    int aa_damage[ num_bosses ] = { 0, // L       N       H       M        T21
-                                        3000000, 4600000, 6200000, 8000000, 12000000// T18 -- L-H values are estimates
+    int aa_damage[ num_bosses ] = { 0, // L    N     H      M      T21
+                                        5000, 10000, 20000, 30000, 40000// T18 -- L-H values are estimates
                                   };
 
     als += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5,aoe_tanks=1";
@@ -1126,8 +1126,8 @@ struct tank_dummy_enemy_t : public enemy_t
   std::string generate_action_list() override
   {
     std::string als = "";
-    int aa_damage[ 5 ] = { 0, 5000, 37500, 125000, 175000 };
-    int aa_damage_var[ 5 ] = { 0, 0, 7500, 25000, 35000 };
+    int aa_damage[ 5 ] = { 0, 200, 1500, 5000, 7000 };
+    int aa_damage_var[ 5 ] = { 0, 0, 300, 1000, 1400 };
     int dummy_strike_damage[ 5 ] = { 0, 0, 50, 50, 50 }; // % weapon damage multipliers for dummy_strike
     int uber_strike_damage[ 5 ] = { 0, 0, 0, 0, 50 }; // % weapon damage multipliers for uber_strike
 
@@ -1373,10 +1373,10 @@ std::string enemy_t::generate_action_list()
   level_mult = std::pow( level_mult, 0.16 );
 
   // this is the standard Fluffy Pillow action list
-  als += "/auto_attack,damage=" + util::to_string( 2000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
-  als += "/spell_dot,damage=" + util::to_string( 8000 * level_mult ) + ",tick_time=2,dot_duration=20,cooldown=40,aoe_tanks=1,if=!ticking";
-  als += "/spell_nuke,damage=" + util::to_string( 3000 * level_mult ) + ",cooldown=35,attack_speed=2,aoe_tanks=1";
-  als += "/melee_nuke,damage=" + util::to_string( 6000 * level_mult ) + ",cooldown=27,attack_speed=2,aoe_tanks=1";
+  als += "/auto_attack,damage=" + util::to_string( 80 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
+  als += "/spell_dot,damage=" + util::to_string( 320 * level_mult ) + ",tick_time=2,dot_duration=20,cooldown=40,aoe_tanks=1,if=!ticking";
+  als += "/spell_nuke,damage=" + util::to_string( 120 * level_mult ) + ",cooldown=35,attack_speed=2,aoe_tanks=1";
+  als += "/melee_nuke,damage=" + util::to_string( 240 * level_mult ) + ",cooldown=27,attack_speed=2,aoe_tanks=1";
 
   return als;
 }
