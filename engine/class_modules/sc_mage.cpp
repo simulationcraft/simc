@@ -2232,7 +2232,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     {
       p() -> trigger_arcane_charge();
 
-      //TODO: Benefit tracking and remove hard coding
+      //TODO: Benefit tracking
       if ( p() -> azerite.galvanizing_spark.enabled() &&
            rng().roll( p() -> azerite.galvanizing_spark.spell_ref().effectN( 1 ).percent() ) )
       {
