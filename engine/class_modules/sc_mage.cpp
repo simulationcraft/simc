@@ -639,6 +639,7 @@ public:
   struct azerite_powers_t
   {
     // Arcane
+    azerite_power_t galvanizing_spark;
 
     // Fire
     azerite_power_t blaster_master;
@@ -2192,7 +2193,7 @@ struct arcane_blast_t : public arcane_mage_spell_t
     arcane_mage_spell_t( "arcane_blast", p, p -> find_specialization_spell( "Arcane Blast" ) )
   {
     parse_options( options_str );
-
+    base_dd_adder += p -> azerite.galvanizing_spark.value( 2 );
   }
 
   virtual double cost() const override
@@ -2230,6 +2231,13 @@ struct arcane_blast_t : public arcane_mage_spell_t
     if ( hit_any_target )
     {
       p() -> trigger_arcane_charge();
+
+      //TODO: Benefit tracking and remove hard coding
+      if ( p() -> azerite.galvanizing_spark.enabled() &&
+           rng().roll( p() -> azerite.galvanizing_spark.spell_ref().effectN( 1 ).percent() ) )
+      {
+        p() -> trigger_arcane_charge();
+      }
     }
 
     if ( p() -> buffs.presence_of_mind -> up() )
@@ -6092,6 +6100,9 @@ void mage_t::init_spells()
   spec.icicles               = find_mastery_spell( MAGE_FROST );
 
   // Azerite
+  azerite.galvanizing_spark        = find_azerite_spell( "Galvanizing Spark"        );
+
+
   azerite.blaster_master           = find_azerite_spell( "Blaster Master"           );
   azerite.duplicative_incineration = find_azerite_spell( "Duplicative Incineration" );
   azerite.firemind                 = find_azerite_spell( "Firemind"                 );
