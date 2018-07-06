@@ -1034,6 +1034,7 @@ namespace warlock {
 
     void warlock_pet_t::init_spells_pets() {
       active.bile_spit = new vilefiend::bile_spit_t(this);
+      init_spells_demonology();
     }
   }
 
