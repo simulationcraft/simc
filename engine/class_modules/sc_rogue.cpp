@@ -3514,11 +3514,16 @@ struct secret_technique_t : public rogue_attack_t
 
   secret_technique_attack_t* secret_technique_attack;
   int last_cast_cp;
+  double delay_seconds; // Temporary action parameter until we have confirmation that no delay is intended
 
   secret_technique_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "secret_technique", p, p -> talent.secret_technique, options_str ),
-    last_cast_cp( 0 )
+    rogue_attack_t( "secret_technique", p, p -> talent.secret_technique ),
+    last_cast_cp( 0 ),
+    delay_seconds( 0 )
   {
+    add_option( opt_float( "delay_seconds", delay_seconds ) );
+    parse_options( options_str );
+
     requires_weapon = WEAPON_DAGGER;
     may_miss = false;
     aoe = -1;
@@ -3535,7 +3540,8 @@ struct secret_technique_t : public rogue_attack_t
 
     last_cast_cp = cast_state( execute_state ) -> cp;
 
-    timespan_t delay = timespan_t::from_seconds( data().effectN( 2 ).base_value() ); // Assuming delay here, even if not the case on beta as of 2018-06-28.
+    // If no delay turns out to be a confirmed and intended thing until release, this can be removed/refactored.
+    timespan_t delay = timespan_t::from_seconds( delay_seconds );
     p() -> buffs.secret_technique -> trigger( 1, buff_t::DEFAULT_VALUE(), (-1.0), delay ); // Trigger tracking buff until clone damage
     for ( size_t i = 0; i < data().effectN( 4 ).base_value(); i++ )
     {
