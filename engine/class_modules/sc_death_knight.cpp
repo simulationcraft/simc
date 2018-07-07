@@ -4772,8 +4772,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
       p() -> buffs.killing_machine -> execute();
       p() -> procs.km_from_obliteration -> occur();
 
-      // Bugged on beta as of 26949, never happens
-      if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) && !p() -> bugs )
+      if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
       {
         // WTB spelldata for the rune gain
         p() -> replenish_rune( 1, p() -> gains.obliteration );
@@ -4825,8 +4824,7 @@ struct glacial_advance_t : public death_knight_spell_t
       p() -> buffs.killing_machine -> execute();
       p() -> procs.km_from_obliteration -> occur();
 
-      // Bugged on beta as of 26949, never happens
-      if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) && !p() -> bugs )
+      if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
       {
         // WTB spelldata for the rune gain
         p() -> replenish_rune( 1, p() -> gains.obliteration );
@@ -5071,8 +5069,7 @@ struct howling_blast_t : public death_knight_spell_t
       p() -> buffs.killing_machine -> execute();
       p() -> procs.km_from_obliteration -> occur();
 
-      // Bugged on beta as of 26949, never happens
-      if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) && !p() -> bugs )
+      if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
       {
         // WTB spelldata for the rune gain
         p() -> replenish_rune( 1, p() -> gains.obliteration );
