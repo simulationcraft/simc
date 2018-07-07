@@ -3476,7 +3476,7 @@ void sim_t::setup( sim_control_t* c )
 
   }
 
-  if ( player_list.empty() && spell_query == nullptr )
+  if ( player_list.empty() && spell_query == nullptr && ! display_bonus_ids )
   {
     throw std::runtime_error( "Nothing to sim!" );
   }
