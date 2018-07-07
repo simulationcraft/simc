@@ -1863,7 +1863,7 @@ Duration         : 15 seconds
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered by     : Selfless Healer (85804)
-Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2412,7 +2412,7 @@ Attributes       : ........ ........ ..x..... x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Cannot crit (93)
 Effects          :
 #1 (id=194348)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 1 | Scaled Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : $@spelldesc144580
 Tooltip          : Healing for $w1 every $t sec for $d.
 
@@ -4726,6 +4726,8 @@ Effects          :
 #4 (id=479842)   : Apply Aura (6) | Unknown(262)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
                    Affected Spells: Hammer of Wrath (24275)
+#5 (id=741274)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
+                   Base Value: 30 | Scaled Value: 30 | Target: Self (1)
 Description      : Call upon the Light and begin a crusade, increasing your damage done and Haste by $<damage>% for $d.
 
 Each Holy Power spent during Crusade increases damage done and Haste by an additional $<damage>%.
@@ -5801,7 +5803,7 @@ Range            : 30 yards
 Affecting spells : Avenging Wrath (31884 effect#1), Inquisition (84963 effect#1), Retribution Paladin (137027 effect#1), Protection Paladin (137028 effect#1), Holy Paladin (137029 effect#5), Retribution (183436 effect#1), Last Defender (203791 effect#5), Crusade (231895 effect#1), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effect#1), Execution Sentence (267799 effect#1)
 Triggered by     : Zeal (269571)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 

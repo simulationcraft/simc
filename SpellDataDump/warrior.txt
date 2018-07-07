@@ -292,7 +292,7 @@ Spell Level      : 50
 GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Affecting spells : Warrior (137047 effect#2), Reckless Abandon (202751 effect#1), Item - Warrior T19 Arms 2P Bonus (212149 effect#1)
+Affecting spells : Warrior (137047 effect#2), Reckless Abandon (202751 effect#1), 
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -524,7 +524,7 @@ Attributes       : ....x... x....... x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
                  : x....... ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=2307)     : Dummy (3)
@@ -954,8 +954,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=14132)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.80721 | Target: Enemy (6)
-#2 (id=155551)   : Dispel (38)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Enemy (6)
+#2 (id=155551)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 #3 (id=290322)   : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | Misc Value: rage | Target: Self (1)
 Description      : Slams the target with your shield, causing $s1 Physical damage.$?a231834[
@@ -3052,7 +3052,7 @@ Resource         : 85 Rage (1) (id=10117)
 Spell Level      : 12
 Range            : 5 yards
 GCD              : 1.5 seconds
-Affecting spells : Warrior (137047 effect#2), Carnage (202922 effect#1), Frothing Berserker (215571 effect#2), Outrage (253385 effect#1), Simmering Rage (278757 effect#2)
+Affecting spells : Warrior (137047 effect#2), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Frothing Berserker (215571 effect#2), Simmering Rage (278757 effect#2)
 Attributes       : ........ ........ ..x..... ........   ........ .xx..... ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3080,7 +3080,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Outrage (253385 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -3101,7 +3101,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Outrage (253385 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3474,7 +3474,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Outrage (253385 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ .xx..... ........ ........ 
@@ -3495,7 +3495,7 @@ School           : Physical
 Spell Level      : 1
 Range            : 8 yards
 Proc Chance      : 101%
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Outrage (253385 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Unstoppable (200853 effect#1), Carnage (202922 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215571 effect#2), Frothing Berserker (215572 effect#1), Simmering Rage (278757 effect#2), Siegebreaker (280773 effect#1)
 Triggered by     : Rampage (184367)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ x....... 
@@ -5287,9 +5287,6 @@ Replaces         : Deep Wounds (id=262304)
 Class            : Arms Warrior
 School           : Physical
 Spell Level      : 78
-Proc Chance      : 100%
-Proc Flags       : ....x... ........ ........ ........ 
-                 : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5302,8 +5299,6 @@ Effects          :
 #1 (id=623121)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 8 | Scaled Value: 8 | SP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Wounds (262115)
-#2 (id=623137)   : Apply Aura (6) | Proc Trigger Spell (42): Deep Wounds
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 262115 | Target: Self (1)
 Description      : Deep Wounds damage is increased by ${$s1}.1%, dealing $262115o1 Bleed damage over $262115d.
 
 Striking an enemy with Mortal Strike$?s845[, Cleave][], Execute, or $?s152277[Ravager][Bladestorm] inflicts Deep Wounds.
@@ -5313,20 +5308,20 @@ Class            : Warrior
 School           : Physical
 Spell Level      : 1
 Range            : 100 yards
-Duration         : 3 seconds
+Duration         : 6 seconds
 Mechanic         : Bleed
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Mastery: Deep Wounds (262111 effect#1), Siegebreaker (280773 effect#1)
-Triggered by     : Mastery: Deep Wounds (262111), Deep Wounds (262304)
+Triggered by     : Deep Wounds (262304)
 Attributes       : ....x... ........ ..x..x.. ........   ........ ........ ........ ........ 
-                 : ..x....x ........ ........ ........   ........ ..x..... ..x..... ..x...x. 
-                 : ........ .......x ....x... ........   ........ ........ ........ ........ 
+                 : ..x....x ........ ........ ........   ........ ..x..... ..x..... ......x. 
+                 : ........ .......x ....x... ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x..x... .x...... ........   ...x.... ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
-                 : Cannot dodge/parry/block (21), Requires main-hand weapon (106)
+                 : Cannot dodge/parry/block (21), Requires main-hand weapon (106), Periodic effect affected by haste (173)
 Effects          :
-#1 (id=623125)   : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
+#1 (id=623125)   : Apply Aura (6) | Periodic Damage (3): physical every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17940 | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc262111
 Tooltip          : Bleeding for $w1 every $t1 sec.
@@ -5388,7 +5383,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Whirlwind (1680), Hamstring (1715), Execute (5308), Mortal Strike (12294), Whirlwind Off-Hand (44949), Execute (163201), Execute Off-Hand (163558), Colossus Smash (167105), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Impending Victory (202168), Colossus Smash (208086), Execute (260798), Execute (280849)
 #2 (id=623342)   : Apply Aura (6) | Modify Max Cost (63)
-                   Base Value: -400 | Scaled Value: -400 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -200 | Scaled Value: -200 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280849)
 Description      : Reduces the Rage cost of your abilities by $s1% for $d.
 Tooltip          : Your abilities cost $s1% less Rage.
