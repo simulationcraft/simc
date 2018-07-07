@@ -13,6 +13,21 @@
 
 cache::cache_control_t cache::cache_control_t::singleton;
 
+#ifdef SC_NO_NETWORKING
+namespace http
+{
+void set_proxy( const std::string&, const std::string&, const unsigned) {}
+
+void cache_load( const std::string&) {}
+void cache_save( const std::string&) {}
+bool clear_cache( sim_t*, const std::string&, const std::string&) { return true;}
+
+bool get( std::string&, const std::string&, const std::string&, cache::behavior_e,
+          const std::string&) { return false; };
+}
+
+#else
+
 namespace { // UNNAMED NAMESPACE ==========================================
 
 http::proxy_t proxy;
@@ -999,5 +1014,7 @@ int main( int argc, char* argv[] )
 
   return 0;
 }
+
+#endif
 
 #endif

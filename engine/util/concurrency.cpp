@@ -16,7 +16,7 @@
 
 // C++11 STL multi-threading hook-ups
 
-
+#ifndef SC_NO_THREADING
 class mutex_t::native_t : private nonmoveable
 {
 private:
@@ -135,6 +135,102 @@ void sc_thread_t::sleep_seconds( double t )
  */
 unsigned sc_thread_t::cpu_thread_count()
 { return native_t::cpu_thread_count(); }
+
+#else
+
+class mutex_t::native_t : private nonmoveable
+{
+public:
+
+  void lock()
+  {}
+
+  void unlock()
+  {}
+};
+
+class sc_thread_t::native_t
+{
+private:
+
+  static void execute( sc_thread_t* t )
+  {
+    t -> run();
+  }
+public:
+
+  void launch( sc_thread_t* thr)
+  {
+    thr->run();
+  }
+
+  void join() {
+  }
+
+  static void sleep_seconds( double t )
+  {}
+
+  static int cpu_thread_count()
+  { return 1; }
+};
+
+mutex_t::mutex_t() :
+    native_handle( new native_t() )
+{
+}
+
+mutex_t::~mutex_t()
+{
+  // Keep in .cpp file so that std::unique_ptr deleter can see defined native_t class
+}
+
+void mutex_t::lock()
+{}
+
+void mutex_t::unlock()
+{}
+
+sc_thread_t::sc_thread_t() : native_handle( new native_t() )
+{}
+
+sc_thread_t::~sc_thread_t()
+{
+  // Keep in .cpp file so that std::unique_ptr deleter can see defined native_t class
+}
+
+// sc_thread_t::launch() ====================================================
+
+void sc_thread_t::launch()
+{ native_handle -> launch( this ); }
+
+/**
+ * @brief Wait for thread to finish its execution.
+ */
+void sc_thread_t::join()
+{
+  native_handle -> join();
+}
+
+/**
+ * @brief put calling thread to sleep
+ * @param t time in seconds
+ */
+void sc_thread_t::sleep_seconds( double t )
+{
+  native_t::sleep_seconds( t );
+}
+
+/**
+ * @brief Get the number of concurrent threads supported by the CPU.
+ *
+ * If the value is not well defined or not computable, returns ​0​.
+ *
+ * @return number of concurrent threads supported.
+ */
+unsigned sc_thread_t::cpu_thread_count()
+{ return native_t::cpu_thread_count(); }
+
+#endif
 
 #if defined(SC_WINDOWS)
 #include <windows.h>

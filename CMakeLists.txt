@@ -2,8 +2,12 @@
 cmake_minimum_required (VERSION 3.1)
 project(simc)
 
-# all options to individualize the build
+# switch on/off different build targets
 option(BUILD_GUI "Build the Qt gui along with cli binary" ON)
+
+# disable various features that may be anvailable or unneeded
+option(SC_NO_THREADING "Disable all dependencies on pthreads" OFF)
+option(SC_NO_NETWORKING "Disable all networking related stuff." OFF)
 
 set(CMAKE_CXX_STANDARD 11)
 

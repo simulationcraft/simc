@@ -14,7 +14,10 @@
 #include "config.hpp"
 #include "generic.hpp"
 #include <memory>
+
+#ifndef SC_NO_THREADING
 #include <thread>
+#endif
 
 
 class mutex_t : private noncopyable
@@ -41,7 +44,9 @@ protected:
   sc_thread_t();
   virtual ~sc_thread_t();
 public:
+#ifndef SC_NO_THREADING
   std::thread::id thread_id() const;
+#endif
   void launch();
   void join();
   static void sleep_seconds( double );

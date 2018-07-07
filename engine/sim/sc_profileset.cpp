@@ -3,10 +3,12 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include <future>
-
 #include "simulationcraft.hpp"
 #include "sc_profileset.hpp"
+
+#ifndef SC_NO_THREADING
+
+#include <future>
 
 namespace
 {
@@ -1322,3 +1324,21 @@ sim_control_t* filter_control( const sim_control_t* control )
 }
 
 } /* Namespace profileset ends */
+
+#else
+
+namespace profileset
+{
+profile_set_t::~profile_set_t() {}
+void create_options( sim_t* ) {}
+sim_control_t* filter_control( const sim_control_t* ) { return nullptr; }
+void profilesets_t::initialize( sim_t* ) {}
+std::string profilesets_t::current_profileset_name() { return "DUMMY"; }
+void profilesets_t::cancel() {}
+bool profilesets_t::iterate( sim_t*  ) { return true ;}
+void profilesets_t::output_json( const sim_t&, js::JsonOutput& ) const {}
+void profilesets_t::output_html( const sim_t&, std::ostream& ) const {}
+void profilesets_t::output_text( const sim_t&, std::ostream& ) const {}
+}
+
+#endif
