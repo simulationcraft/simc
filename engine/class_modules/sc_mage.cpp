@@ -2364,6 +2364,8 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
                            -> effectN( 2 ).trigger() )
   {
     background  = true;
+
+    base_multiplier *= 1.0 + p -> sets -> set( MAGE_ARCANE, T19, B2 ) -> effectN( 1 ).percent();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3966,7 +3968,6 @@ struct ice_lance_t : public frost_mage_spell_t
         }
       }
 
-      // TODO: Seems like this would be the intended behavior?
       if ( p() -> talents.chain_reaction -> ok() )
       {
         p() -> buffs.chain_reaction -> trigger();
