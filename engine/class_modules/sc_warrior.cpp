@@ -1822,11 +1822,10 @@ struct colossus_smash_t: public warrior_attack_t
 struct deep_wounds_ARMS_t: public warrior_attack_t
 {
   deep_wounds_ARMS_t( warrior_t* p ):
-    warrior_attack_t( "deep_wounds", p, p -> spec.deep_wounds_ARMS -> effectN( 2 ).trigger() )
+    warrior_attack_t( "deep_wounds", p, p -> find_spell ( 262115 ) )
   {
     background = tick_may_crit = true;
-    hasted_ticks = false;
-    dot_behavior = DOT_CLIP;
+    hasted_ticks = true;
   }
 
   double action_multiplier() const override
@@ -1834,6 +1833,7 @@ struct deep_wounds_ARMS_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p() -> cache.mastery_value();
+    am += 0.08; // Starts with an extra 8% on top of base mastery
 
     return am;
   }
