@@ -1833,7 +1833,6 @@ struct shaman_pet_t : public pet_t
     : pet_t( owner->sim, owner, name, guardian ), use_auto_attack( auto_attack )
   {
     regen_type             = REGEN_DISABLED;
-    owner_coeff.ap_from_ap = 1.0;
 
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
@@ -2031,6 +2030,8 @@ struct base_wolf_t : public shaman_pet_t
   base_wolf_t( shaman_t* owner, const std::string& name )
     : shaman_pet_t( owner, name ), alpha_wolf( nullptr ), alpha_wolf_buff( nullptr ), wolf_type( SPIRIT_WOLF )
   {
+    owner_coeff.ap_from_ap = 1.0;
+
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
 
