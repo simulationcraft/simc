@@ -36,6 +36,17 @@ std::string convert_tchar( const TCHAR* carr )
 #endif
 }
 
+/**
+ * Fix some GUI crashing
+ *
+ * Currently, some injected DLLs from the OS side crash the Qt WebEngine process when it tries to display
+ * Simulationcraft HTML reports. The general solution to this is to disable (WowDB) decorated tooltips from the HTML
+ * report. This function implements a very simple system that checks if the current Simulationcraft.exe process has
+ * loaded any offending DLLs, and then invokes a handler on the simulator object to manipulate its behavior.
+ *
+ * Specifically, LavasoftTcpService DLLs, when loaded should now automatically cause the simulator to disable decorated
+ * tooltips from the HTML reports.
+ */
 void win32_dll_workarounds( sim_t* sim )
 {
   HANDLE processHandle = CreateToolhelp32Snapshot( TH32CS_SNAPMODULE, 0 );
@@ -44,11 +55,12 @@ void win32_dll_workarounds( sim_t* sim )
     return;
   }
 
+  auto handle_closer = gsl::finally([&](){CloseHandle( processHandle );});
+
   MODULEENTRY32 module;
   module.dwSize = sizeof( MODULEENTRY32 );
   if ( ! Module32First( processHandle, &module ) )
   {
-    CloseHandle( processHandle );
     return;
   }
 
@@ -64,8 +76,6 @@ void win32_dll_workarounds( sim_t* sim )
       it->second( &module, sim );
     }
   } while ( Module32Next( processHandle, &module ) );
-
-  CloseHandle( processHandle );
 }
 }
 #endif
@@ -74,5 +84,7 @@ void workaround::apply_workarounds( sim_t* sim )
 {
 #if defined( SC_WINDOWS )
   win32_dll_workarounds( sim );
+#else
+  (void)sim;
 #endif
 }
