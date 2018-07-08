@@ -1360,6 +1360,12 @@ struct storm_earth_and_fire_pet_t : public pet_t
       tick_action = new sef_tick_action_t( "rushing_jade_wind_tick", player,
           player -> o() -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
     }
+
+    void tick( dot_t* d ) override
+    {
+      if ( !o() -> get_dot( "rushing_jade_wind", target ) )
+        d -> cancel();
+    }
   };
 
   struct sef_whirling_dragon_punch_tick_t : public sef_tick_action_t
