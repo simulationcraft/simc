@@ -129,7 +129,6 @@ public:
     haste_buff_t* in_for_the_kill;
   buff_t* war_veteran; // Arms T21 2PC
   buff_t* weighted_blade; // Arms T21 4PC
-  buff_t* outrage; // Fury T21 4PC
   } buff;
 
   // Cooldowns
@@ -198,6 +197,7 @@ public:
   struct spells_t
   {
     const spell_data_t* avatar;
+    const spell_data_t* battle_shout;
     const spell_data_t* charge;
     const spell_data_t* colossus_smash_debuff;
     const spell_data_t* headlong_rush;
@@ -2744,6 +2744,10 @@ struct rampage_attack_t: public warrior_attack_t
     rage_from_valarjar_berserking( p -> find_spell( 248179 ) -> effectN( 1 ).base_value() / 10.0 )
   {
     dual = true;
+    if ( p -> sets -> has_set_bonus( WARRIOR_FURY, T21, B4 ) )
+    {
+      base_multiplier *= ( 1.0 + p -> find_spell( 200853 ) -> effectN( 1 ).percent() );
+    }
     base_multiplier *= 1.0 + p -> talents.carnage -> effectN( 4 ).percent();
     // base_aoe_multiplier = p -> buff.whirlwind -> s_data -> effectN( 3 ).percent(); Fix Me - Copy Bloodthirst for cleave support
     if ( p -> spec.rampage -> effectN( 3 ).trigger() == rampage )
@@ -2758,18 +2762,6 @@ struct rampage_attack_t: public warrior_attack_t
       first_attack_missed = true;
     else if ( first_attack )
       first_attack_missed = false;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> buff.outrage -> check() )
-    {
-      am *= 1.0 + p() -> buff.outrage -> data().effectN( 1 ).percent();
-    }
-
-    return am;
   }
 
   void impact( action_state_t* s ) override
@@ -3699,6 +3691,27 @@ struct avatar_t: public warrior_spell_t
   }
 };
 
+// Battle Shout ===================================================================
+
+struct battle_shout_t : public warrior_spell_t
+{
+  battle_shout_t( warrior_t* p, const std::string& options_str ) : warrior_spell_t( "battle_shout", p, p-> spell.battle_shout )
+  {
+    parse_options( options_str );
+    harmful = false;
+    ignore_false_positive = true;
+
+  //  background = sim -> overrides.battle_shout !=0;
+  }
+
+  //virtual void execute() override
+  //{
+    //if ( ! sim -> overrides.battle_shout )
+      //sim -> auras.battle_shout -> trigger();
+  //}
+};
+
+
 // Berserker Rage ===========================================================
 
 struct berserker_rage_t: public warrior_spell_t
@@ -3933,7 +3946,6 @@ struct recklessness_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     p() -> buff.recklessness -> trigger( 1, bonus_crit );
-    p() -> buff.outrage -> trigger();
   }
 };
 
@@ -4188,6 +4200,7 @@ action_t* warrior_t::create_action( const std::string& name,
 {
   if ( name == "auto_attack"          ) return new auto_attack_t          ( this, options_str );
   if ( name == "avatar"               ) return new avatar_t               ( this, options_str );
+  if ( name == "battle_shout"         ) return new battle_shout_t         ( this, options_str );
   if ( name == "recklessness"         ) return new recklessness_t         ( this, options_str );
   if ( name == "berserker_rage"       ) return new berserker_rage_t       ( this, options_str );
   if ( name == "bladestorm"           ) return new bladestorm_t           ( this, options_str );
@@ -4406,6 +4419,7 @@ void warrior_t::init_spells()
   artifact.neltharions_thunder       = find_artifact_spell( "Neltarion's Thunder" );
 
   // Generic spells
+  spell.battle_shout            = find_class_spell( "Battle Shout" );
   spell.charge                  = find_class_spell( "Charge" );
   spell.colossus_smash_debuff   = find_spell( 208086 );
   spell.intervene               = find_class_spell( "Intervene" );
@@ -5266,10 +5280,6 @@ void warrior_t::create_buffs()
   buff.weighted_blade = buff_creator_t ( this, "weighted_blade", sets -> set( WARRIOR_ARMS, T21, B4) -> effectN( 1 ).trigger() )
     .default_value( sets -> set( WARRIOR_ARMS, T21, B4) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .chance( sets -> has_set_bonus( WARRIOR_ARMS, T21, B4) );
-
-  buff.outrage = buff_creator_t ( this, "outrage", sets -> set( WARRIOR_FURY, T21, B4) -> effectN( 1 ).trigger() )
-    .default_value( sets -> set( WARRIOR_FURY, T21, B4) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-    .chance( sets -> has_set_bonus( WARRIOR_FURY, T21, B4) );
 
   buff.protection_rage = new protection_rage_t( *this, "protection_rage", find_spell( 242303 ) );
 
