@@ -1119,7 +1119,6 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     buff_t* beast_cleave = nullptr;
     buff_t* frenzy = nullptr;
     buff_t* predator = nullptr;
-    buff_t* tier19_2pc_bm = nullptr;
   } buffs;
 
   hunter_main_pet_base_t( hunter_t* owner, const std::string& pet_name, pet_e pt ):
@@ -1170,9 +1169,6 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     double m = hunter_pet_t::composite_player_multiplier( school );
 
     m *= 1.0 + buffs.bestial_wrath -> check_value();
-
-    if ( buffs.tier19_2pc_bm )
-      m *= 1.0 + buffs.tier19_2pc_bm -> check_value();
 
     return m;
   }
@@ -1237,11 +1233,6 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
       make_buff<haste_buff_t>( this, "predator", o() -> find_spell( 260249 ) )
         -> set_default_value( o() -> find_spell( 260249 ) -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_ATTACK_SPEED );
-
-    buffs.tier19_2pc_bm =
-      make_buff( this, "tier19_2pc_bm", find_spell(211183) )
-      ->set_default_value( owner -> find_spell( 211183 ) -> effectN( 2 ).percent() )
-      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   void init_gains() override
@@ -1360,11 +1351,6 @@ struct dire_critter_t: public hunter_pet_t
     action_t* stomp;
   } active;
 
-  struct buffs_t
-  {
-    buff_t* bestial_wrath;
-  } buffs;
-
   dire_critter_t( hunter_t* owner ):
     hunter_pet_t( owner, "dire_beast", PET_HUNTER, true /*GUARDIAN*/ )
   {
@@ -1373,17 +1359,6 @@ struct dire_critter_t: public hunter_pet_t
   }
 
   void init_spells() override;
-
-  void arise() override
-  {
-    hunter_pet_t::arise();
-
-    if ( o() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) && o() -> buffs.bestial_wrath -> check() )
-    {
-      const timespan_t bw_duration = o() -> buffs.bestial_wrath -> remains();
-      buffs.bestial_wrath -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, bw_duration );
-    }
-  }
 
   void summon( timespan_t duration = timespan_t::zero() ) override
   {
@@ -1394,24 +1369,6 @@ struct dire_critter_t: public hunter_pet_t
 
     if ( main_hand_attack )
       main_hand_attack -> execute();
-  }
-
-  double composite_player_multiplier( school_e school ) const override
-  {
-    double cpm = hunter_pet_t::composite_player_multiplier( school );
-
-    cpm *= 1.0 + buffs.bestial_wrath -> check_value();
-
-    return cpm;
-  }
-
-  void create_buffs() override
-  {
-    hunter_pet_t::create_buffs();
-
-    buffs.bestial_wrath =
-      make_buff( this, "bestial_wrath", find_spell( 211183 ) )
-        -> set_default_value( find_spell( 211183 ) -> effectN( 1 ).percent() );
   }
 };
 
@@ -2267,6 +2224,8 @@ struct multi_shot_t: public hunter_ranged_attack_t
     if ( p -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B2 ) )
       base_multiplier *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
 
+    base_multiplier *= 1.0 + p -> sets -> set( HUNTER_BEAST_MASTERY, T19, B4 ) -> effectN( 1 ).percent();
+
     if ( p -> azerite.rapid_reload.ok() )
     {
       rapid_reload.action = p -> get_background_action<rapid_reload_t>( "multishot_rapid_reload" );
@@ -2401,6 +2360,8 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     base_multiplier *= 1.0 + p() -> find_spell( 262838 ) -> effectN( 1 ).percent(); // Cobra Shot (Rank 3)
     base_costs[ RESOURCE_FOCUS ] += player -> find_spell( 262837 ) -> effectN( 1 ).base_value(); // Cobra Shot (Rank 2)
+
+    base_multiplier *= 1.0 + p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B2 ) -> effectN( 1 ).percent();
   }
 
   void execute() override
@@ -2463,8 +2424,6 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
     // Adjust BW cd
     timespan_t t = timespan_t::from_seconds( p() -> specs.bestial_wrath -> effectN( 3 ).base_value() );
-    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B4 ) )
-      t += timespan_t::from_seconds( p() -> sets -> set( HUNTER_BEAST_MASTERY, T19, B4 ) -> effectN( 1 ).base_value() );
     p() -> cooldowns.bestial_wrath -> adjust( -t );
 
     if ( p() -> legendary.bm_feet -> ok() )
@@ -4101,18 +4060,6 @@ struct bestial_wrath_t: public hunter_spell_t
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
       pet -> buffs.bestial_wrath -> trigger();
-
-    if ( p() -> sets -> has_set_bonus( HUNTER_BEAST_MASTERY, T19, B2 ) )
-    {
-      // 2017-02-06 hotfix: "With the Dire Frenzy talent, the Eagletalon Battlegear Beast Mastery 2-piece bonus should now grant your pet 10% increased damage for 15 seconds."
-      if ( p() -> talents.dire_beast -> ok() )
-      {
-        if ( ! p() -> pets.dire_beast -> is_sleeping() )
-          p() -> pets.dire_beast -> buffs.bestial_wrath -> trigger();
-      }
-
-      p() -> pets.main -> buffs.tier19_2pc_bm -> trigger();
-    }
   }
 
   bool ready() override
