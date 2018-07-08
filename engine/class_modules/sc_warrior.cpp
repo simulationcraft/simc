@@ -10,7 +10,7 @@ namespace
 // ==========================================================================
 // Warrior
 // todo: Fury - Add Meat Cleaver to all single target Fury abilities (ref Bloodthirst), Enrage-clean up movespeed/damage taken/health increase, add Battle Shout raid buff
-//       Arms - DeepWounds-BS/Ravticks, 3 target for Cleave, Collateral Damage, and Avatar-Hardcode for Arms
+//       Arms - 3 target for Cleave, Collateral Damage, and Avatar-Hardcode for Arms
 // ==========================================================================
 
 struct warrior_t;
@@ -1914,7 +1914,6 @@ struct dragon_roar_t: public warrior_attack_t
 struct execute_damage_t : public warrior_attack_t
 {
   double max_rage;
-  double rage_spent;
   execute_damage_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "execute", p, p -> spec.execute -> effectN( 1 ).trigger()),
     max_rage( 40 )
@@ -1943,7 +1942,7 @@ struct execute_damage_t : public warrior_attack_t
       {
         temp_max_rage *= 1.0 + p() -> buff.deadly_calm -> data().effectN( 2 ).percent();
       }
-      am *= 2.0 * ( std::min( temp_max_rage, rage_spent ) / temp_max_rage );
+      am *= 2.0 * ( std::min( temp_max_rage, last_resource_cost ) / temp_max_rage );
     }
 
     return am;
@@ -2002,13 +2001,12 @@ struct execute_arms_t: public warrior_attack_t
     }
     if ( p() -> buff.sudden_death -> check() )
     {
-      return c *= 1.0 + p() -> buff.ayalas_stone_heart -> data().effectN( 2 ).percent(); // Sudden Death doesn't show cost mod in spell data
+      return 0; // The cost reduction isn't in the spell data
     }
     if ( p() -> buff.deadly_calm -> check() )
     {
       c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
     }
-    trigger_attack -> rage_spent = c;
     return c;
   }
 
@@ -2016,6 +2014,7 @@ struct execute_arms_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    trigger_attack -> last_resource_cost = last_resource_cost;
     trigger_attack -> execute();
     p() -> resource_gain( RESOURCE_RAGE, last_resource_cost * 0.3, p() -> gain.execute_refund ); //TODO, is it necessary to check if the target died? Probably too much trouble.
 
