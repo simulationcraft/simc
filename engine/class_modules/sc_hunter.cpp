@@ -2218,9 +2218,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
     may_proc_mm_feet = true;
     aoe = -1;
 
-    if ( p -> sets -> has_set_bonus( HUNTER_MARKSMANSHIP, T21, B2 ) )
-      base_multiplier *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
-
     base_multiplier *= 1.0 + p -> sets -> set( HUNTER_BEAST_MASTERY, T19, B4 ) -> effectN( 1 ).percent();
 
     if ( p -> azerite.rapid_reload.ok() )
@@ -2478,6 +2475,8 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     radius = 8.0;
     base_aoe_multiplier = p -> specs.trick_shots -> effectN( 4 ).percent();
+
+    base_multiplier *= 1.0 + p -> sets -> set( HUNTER_MARKSMANSHIP, T21, B4 ) -> effectN( 1 ).percent();
   }
 
   timespan_t execute_time() const override
@@ -5548,7 +5547,11 @@ void hunter_t::datacollection_end()
 
 double hunter_t::composite_attack_power_multiplier() const
 {
-  return player_t::composite_attack_power_multiplier();
+  double apm = player_t::composite_attack_power_multiplier();
+
+  apm *= 1.0 + sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
+
+  return apm;
 }
 
 // hunter_t::composite_melee_crit_chance ===========================================
