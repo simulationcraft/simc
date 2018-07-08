@@ -488,7 +488,7 @@ public:
     spell_data_ptr_t streamline;
     spell_data_ptr_t hunters_mark;
 
-    spell_data_ptr_t bloodseeker; // Partial
+    spell_data_ptr_t bloodseeker;
     spell_data_ptr_t steel_trap;
 
     // tier 75
@@ -518,7 +518,7 @@ public:
     spell_data_ptr_t piercing_shot;
 
     spell_data_ptr_t birds_of_prey;
-    spell_data_ptr_t wildfire_infusion; // NYI
+    spell_data_ptr_t wildfire_infusion;
     spell_data_ptr_t chakrams;
   } talents;
 
