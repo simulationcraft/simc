@@ -1542,10 +1542,8 @@ struct arcane_mage_spell_t : public mage_spell_t
 
   double arcane_charge_damage_bonus( bool arcane_barrage = false ) const
   {
-    // To represent the mastery snapshot bug, the AC buff contains mage's mastery at the moment last charge was gained.
-    // If we do not want to model this bug, we simply grab fresh mastery value here.
-    double mastery = p() -> bugs ? p() -> buffs.arcane_charge -> check_value() : p() -> cache.mastery();
-    double per_ac_bonus = p() -> spec.arcane_charge -> effectN( 1 ).percent() + mastery * p() -> spec.savant -> effectN( 2 ).mastery_value();
+    double per_ac_bonus = p() -> spec.arcane_charge -> effectN( 1 ).percent()
+                        + p() -> cache.mastery() * p() -> spec.savant -> effectN( 2 ).mastery_value();
 
     // TODO: We can use spelldata for this rather than hardcoding a 50% penalty.
     if ( arcane_barrage )
@@ -7601,16 +7599,7 @@ void mage_t::trigger_arcane_charge( int stacks )
   buff_t* ac = buffs.arcane_charge;
 
   int before = ac -> check();
-
-  // The damage bonus given by mastery seems to be snapshot at the moment
-  // Arcane Charge is gained. As long as the stack number remains the same,
-  // any future changes to mastery will have no effect.
-  // As of build 25881, 2018-01-22.
-  if ( ac -> check() < ac -> max_stack() )
-  {
-    ac -> trigger( stacks, cache.mastery() );
-  }
-
+  ac -> trigger( stacks );
   int after = ac -> check();
 
   if ( talents.rule_of_threes -> ok() && before < 3 && after >= 3 )
