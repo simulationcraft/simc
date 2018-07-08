@@ -386,8 +386,6 @@ public:
     buff_t* t20_2p_critical_aimed_damage;
     buff_t* pre_t20_2p_critical_aimed_damage;
     buff_t* t20_4p_bestial_rage;
-    buff_t* t21_2p_exposed_flank;
-    buff_t* t21_4p_in_for_the_kill;
 
     // legendaries
     buff_t* sentinels_sight;
@@ -3297,7 +3295,6 @@ struct mongoose_bite_t: raptor_strike_base_t
     stats_.at_fury[ p() -> buffs.mongoose_fury -> check() ] -> occur();
 
     p() -> buffs.mongoose_fury -> trigger();
-    p() -> buffs.t21_4p_in_for_the_kill -> trigger();
   }
 
   double action_multiplier() const override
@@ -3451,6 +3448,8 @@ struct raptor_strike_t: public raptor_strike_base_t
 
     base_multiplier *= 1.0 + p -> find_spell( 262839 ) -> effectN( 1 ).percent(); // Raptor Strike (Rank 2)
 
+    base_multiplier *= 1.0 + p -> sets -> set( HUNTER_SURVIVAL, T21, B4 ) -> effectN( 1 ).percent();
+
     if ( p -> talents.mongoose_bite -> ok() )
       background = true;
   }
@@ -3460,8 +3459,6 @@ struct raptor_strike_t: public raptor_strike_base_t
     raptor_strike_base_t::execute();
 
     p() -> buffs.tip_of_the_spear -> expire();
-    p() -> buffs.t21_2p_exposed_flank -> expire();
-    p() -> buffs.t21_4p_in_for_the_kill -> expire();
   }
 
   double action_multiplier() const override
@@ -3469,29 +3466,8 @@ struct raptor_strike_t: public raptor_strike_base_t
     double am = raptor_strike_base_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.tip_of_the_spear -> stack_value();
-    am *= 1.0 + p() -> buffs.t21_4p_in_for_the_kill -> stack_value();
 
     return am;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double cc = raptor_strike_base_t::composite_crit_chance();
-
-    cc += p() -> buffs.t21_2p_exposed_flank -> value();
-
-    return cc;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double cdm = raptor_strike_base_t::composite_crit_damage_bonus_multiplier();
-
-    // TODO: check if it's a "bonus" or an "extra bonus"
-    if ( p() -> buffs.t21_2p_exposed_flank -> check() )
-      cdm *= 1.0 + p() -> buffs.t21_2p_exposed_flank -> data().effectN( 2 ).percent();
-
-    return cdm;
   }
 };
 
@@ -3960,9 +3936,6 @@ struct kill_command_t: public hunter_spell_t
       auto reduction = p() -> sets -> set( HUNTER_BEAST_MASTERY, T21, B4 ) -> effectN( 1 ).time_value();
       p() -> cooldowns.aspect_of_the_wild -> adjust( - reduction );
     }
-
-    // BFA currently lets survival's Kill Command trigger the t21 2p
-    p() -> buffs.t21_2p_exposed_flank -> trigger();
   }
 
   bool ready() override
@@ -5086,16 +5059,6 @@ void hunter_t::create_buffs()
       -> set_default_value( find_spell( 246116 ) -> effectN( 1 ).percent() )
       -> set_trigger_spell( sets -> set( HUNTER_BEAST_MASTERY, T20, B4 ) );
 
-  buffs.t21_2p_exposed_flank =
-    make_buff( this, "t21_2p_exposed_flank", find_spell( 252094 ) )
-      -> set_default_value( find_spell( 252094 ) -> effectN( 1 ).percent() )
-      -> set_trigger_spell( sets -> set( HUNTER_SURVIVAL, T21, B2 ) );
-
-  buffs.t21_4p_in_for_the_kill =
-    make_buff( this, "t21_4p_in_for_the_kill", find_spell( 252095 ) )
-      -> set_default_value( find_spell( 252095 ) -> effectN( 1 ).percent() )
-      -> set_trigger_spell( sets -> set( HUNTER_SURVIVAL, T21, B4 ) );
-
   // Azerite
 
   buffs.arcane_flurry =
@@ -5692,6 +5655,8 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( school == SCHOOL_PHYSICAL )
     m *= 1.0 + sets -> set( HUNTER_SURVIVAL, T20, B4 ) -> effectN( 1 ).percent();
+
+  m *= 1.0 + sets -> set( HUNTER_SURVIVAL, T21, B2 ) -> effectN( 1 ).percent();
 
   return m;
 }
