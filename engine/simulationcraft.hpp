@@ -6614,6 +6614,8 @@ double curve_point_value( dbc_t& dbc, unsigned curve_id, double point_value );
 void apply_item_scaling( item_t& item, unsigned scaling_id, unsigned player_level );
 double apply_combat_rating_multiplier( const item_t& item, double amount );
 double apply_combat_rating_multiplier( const player_t* player, combat_rating_multiplier_type type, unsigned ilevel, double amount );
+double apply_stamina_multiplier( const item_t& item, double amount );
+double apply_stamina_multiplier( const player_t* player, combat_rating_multiplier_type type, unsigned ilevel, double amount );
 
 /// Convert stat values to stat allocation values based on the item data
 void convert_stat_values( item_t& item );

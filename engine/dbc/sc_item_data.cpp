@@ -932,9 +932,15 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
   if ( item.parsed.data.stat_alloc[ idx ] > 0 /* && orig_budget > 0 */ && item_budget > 0 )
   {
     double v_raw = util::round( item.parsed.data.stat_alloc[ idx ] * item_budget / 10000.0 );
-    if ( util::is_combat_rating( static_cast<item_mod_type>( item.parsed.data.stat_type_e[ idx ] ) ) )
+    auto stat_type = static_cast<item_mod_type>( item.parsed.data.stat_type_e[ idx ] );
+    if ( util::is_combat_rating( stat_type ) )
     {
       v_raw = apply_combat_rating_multiplier( item, v_raw );
+    }
+
+    if ( stat_type == ITEM_MOD_STAMINA )
+    {
+      v_raw = apply_stamina_multiplier( item, v_raw );
     }
 
     // Socket penalty is supposedly gone in Warlords of Draenor, but it really does not seem so in the latest alpha.
@@ -1788,6 +1794,20 @@ double item_database::apply_combat_rating_multiplier( const player_t*           
   return raw_amount;
 }
 
+double item_database::apply_stamina_multiplier( const player_t*               player,
+                                                combat_rating_multiplier_type type,
+                                                unsigned                      ilevel,
+                                                double                        raw_amount )
+{
+  auto multiplier = player -> dbc.stamina_multiplier( ilevel, type );
+  if ( multiplier != 0 )
+  {
+    return raw_amount * multiplier;
+  }
+
+  return raw_amount;
+}
+
 double item_database::apply_combat_rating_multiplier( const item_t& item, double amount )
 {
   auto type = item_combat_rating_type( &item.parsed.data );
@@ -1797,6 +1817,17 @@ double item_database::apply_combat_rating_multiplier( const item_t& item, double
   }
 
   return apply_combat_rating_multiplier( item.player, type, item.item_level(), amount );
+}
+
+double item_database::apply_stamina_multiplier( const item_t& item, double amount )
+{
+  auto type = item_combat_rating_type( &item.parsed.data );
+  if ( type == CR_MULTIPLIER_INVALID )
+  {
+    return amount;
+  }
+
+  return apply_stamina_multiplier( item.player, type, item.item_level(), amount );
 }
 
 combat_rating_multiplier_type item_database::item_combat_rating_type( const item_data_t* data )
