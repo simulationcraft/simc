@@ -3382,6 +3382,11 @@ double player_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.taste_of_mana->default_value;
   }
 
+  if ( buffs.torrent_of_elements && buffs.torrent_of_elements->check() && school != SCHOOL_PHYSICAL )
+  {
+    m *= 1.0 + buffs.torrent_of_elements->default_value;
+  }
+
   if ( buffs.damage_done && buffs.damage_done->check() )
   {
     m *= 1.0 + buffs.damage_done->check_stack_value();

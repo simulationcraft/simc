@@ -22,6 +22,7 @@ namespace consumables
 namespace enchants
 {
   void galeforce_striking( special_effect_t& );
+  void torrent_of_elements( special_effect_t& );
   custom_cb_t weapon_navigation( unsigned );
 }
 
@@ -88,6 +89,27 @@ void enchants::galeforce_striking( special_effect_t& effect )
         -> set_default_value( spell -> effectN( 1 ).percent() )
         -> set_activated( false );
     effect.player -> buffs.galeforce_striking = buff;
+  }
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Torrent of Elements ======================================================
+
+void enchants::torrent_of_elements( special_effect_t& effect )
+{
+  buff_t* buff = effect.player -> buffs.torrent_of_elements;
+  if ( !buff )
+  {
+    auto spell = effect.trigger();
+    buff =
+      make_buff<buff_t>( effect.player, util::tokenized_name( spell ), spell )
+        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+        -> set_default_value( spell -> effectN( 1 ).percent() )
+        -> set_activated( false );
+    effect.player -> buffs.torrent_of_elements = buff;
   }
 
   effect.custom_buff = buff;
@@ -163,6 +185,7 @@ void unique_gear::register_special_effects_bfa()
 
   // Enchants
   register_special_effect( 255151, enchants::galeforce_striking );
+  register_special_effect( 255150, enchants::torrent_of_elements );
   register_special_effect( 268855, enchants::weapon_navigation( 268856 ) ); // Versatile Navigation
   register_special_effect( 268888, enchants::weapon_navigation( 268893 ) ); // Quick Navigation
   register_special_effect( 268900, enchants::weapon_navigation( 268898 ) ); // Masterful Navigation
