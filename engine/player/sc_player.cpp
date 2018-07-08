@@ -3297,6 +3297,8 @@ double player_t::composite_damage_versatility() const
     cdv += buffs.dmf_well_fed->check_value();
   }
 
+  cdv += racials.mountaineer->effectN( 1 ).percent();
+
   return cdv;
 }
 
@@ -3315,6 +3317,8 @@ double player_t::composite_heal_versatility() const
     chv += buffs.dmf_well_fed->check_value();
   }
 
+  chv += racials.mountaineer->effectN( 1 ).percent();
+
   return chv;
 }
 
@@ -3332,6 +3336,8 @@ double player_t::composite_mitigation_versatility() const
   {
     cmv += buffs.dmf_well_fed->check_value() / 2;
   }
+
+  cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
 
   return cmv;
 }
@@ -3662,7 +3668,6 @@ double player_t::composite_rating( rating_e rating ) const
     case RATING_HEAL_VERSATILITY:
     case RATING_MITIGATION_VERSATILITY:
       v = current.stats.versatility_rating;
-      v += racials.mountaineer->effectN( 1 ).average( this );
       break;
     case RATING_EXPERTISE:
       v = current.stats.expertise_rating;
