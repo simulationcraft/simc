@@ -2822,9 +2822,19 @@ struct steady_shot_t: public hunter_ranged_attack_t
     timespan_t t = hunter_ranged_attack_t::execute_time();
 
     if ( p() -> buffs.steady_focus -> check() )
-      t *= 1.0 + p() -> buffs.steady_focus -> check_value();
+      t *= 1.0 + p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
 
     return t;
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = hunter_ranged_attack_t::gcd();
+
+    if ( p() -> buffs.steady_focus -> check() )
+      g *= 1.0 + p() -> buffs.steady_focus -> check_value();
+
+    return g < min_gcd ? min_gcd : g;
   }
 
   void impact( action_state_t* s ) override
@@ -5024,7 +5034,7 @@ void hunter_t::create_buffs()
 
   buffs.steady_focus =
     make_buff( this, "steady_focus", find_spell( 193534 ) )
-      -> set_default_value( find_spell( 193534 ) -> effectN( 1 ).percent() )
+      -> set_default_value( find_spell( 193534 ) -> effectN( 2 ).percent() )
       -> set_trigger_spell( talents.steady_focus );
 
   buffs.double_tap =
