@@ -5628,6 +5628,9 @@ double hunter_t::composite_melee_haste() const
   if ( legendary.sephuzs_secret -> ok() )
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
 
+  if ( sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B2 ) )
+    h *= 1.0 / ( 1.0 + sets -> set( HUNTER_SURVIVAL, T20, B2 ) -> effectN( 1 ).percent() );
+
   return h;
 }
 
@@ -5661,6 +5664,9 @@ double hunter_t::composite_spell_haste() const
   if ( legendary.sephuzs_secret -> ok() )
     h *= 1.0 / ( 1.0 + legendary.sephuzs_secret -> effectN( 3 ).percent() );
 
+  if ( sets -> has_set_bonus( HUNTER_SURVIVAL, T20, B2 ) )
+    h *= 1.0 / ( 1.0 + sets -> set( HUNTER_SURVIVAL, T20, B2 ) -> effectN( 1 ).percent() );
+
   return h;
 }
 
@@ -5683,6 +5689,9 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.parsels_tongue -> check() )
     m *= 1.0 + buffs.parsels_tongue -> data().effectN( 1 ).percent() * buffs.parsels_tongue -> check();
+
+  if ( school == SCHOOL_PHYSICAL )
+    m *= 1.0 + sets -> set( HUNTER_SURVIVAL, T20, B4 ) -> effectN( 1 ).percent();
 
   return m;
 }
