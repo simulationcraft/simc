@@ -22,7 +22,7 @@
 // + implemented
 // - missing
 //      Name                        ID
-//    - Ancestral Resonance (mastery during bloodlust)
+//    + Ancestral Resonance
 //    + Echo of the Elementals      275381
 //    + Igneous Potential           279829
 //    + Lava Shock                  273448
@@ -1832,7 +1832,7 @@ struct shaman_pet_t : public pet_t
   shaman_pet_t( shaman_t* owner, const std::string& name, bool guardian = true, bool auto_attack = true )
     : pet_t( owner->sim, owner, name, guardian ), use_auto_attack( auto_attack )
   {
-    regen_type             = REGEN_DISABLED;
+    regen_type = REGEN_DISABLED;
 
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
@@ -2608,6 +2608,7 @@ struct storm_elemental_t : public primal_elemental_t
     {
       channeled   = true;
       tick_action = breeze = new eye_of_the_storm_aoe_t( player, options );
+      hasted_ticks         = false;
     }
 
     void tick( dot_t* d ) override
@@ -4350,10 +4351,23 @@ struct chain_lightning_t : public chained_base_t
     if ( p()->buff.stormkeeper->up() )
     {
       // stormkeeper has a -100 millisec% value as effect 1
-      return ( shaman_spell_t::execute_time() * ( 1 + p()->talent.stormkeeper->effectN( 1 ).percent() ) );
+      return ( chained_base_t::execute_time() * ( 1 + p()->talent.stormkeeper->effectN( 1 ).percent() ) );
     }
 
-    return shaman_spell_t::execute_time() * ( 1.0 + p()->buff.wind_gust->stack_value() );
+    return chained_base_t::execute_time() * ( 1.0 + p()->buff.wind_gust->stack_value() );
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t t = chained_base_t::gcd();
+    t *= 1.0 + p()->buff.wind_gust->stack_value();
+
+    // testing shows the min GCD is 0.5 sec
+    if ( t < timespan_t::from_millis( 500 ) )
+    {
+      t = timespan_t::from_millis( 500 );
+    }
+    return t;
   }
 
   bool ready() override
@@ -4843,6 +4857,19 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     return shaman_spell_t::execute_time() * ( 1.0 + p()->buff.wind_gust->stack_value() );
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t t = shaman_spell_t::gcd();
+    t *= 1.0 + p()->buff.wind_gust->stack_value();
+
+    // testing shows the min GCD is 0.5 sec
+    if ( t < timespan_t::from_millis( 500 ) )
+    {
+      t = timespan_t::from_millis( 500 );
+    }
+    return t;
   }
 
   void execute() override
