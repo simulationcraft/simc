@@ -3488,6 +3488,7 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     aoe = -1;
 
     attack_power_mod.direct = p -> spec.fists_of_fury -> effectN( 5 ).ap_coeff();
+    ap_type = AP_WEAPON_MH;
     base_costs[ RESOURCE_CHI ] = 0;
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
@@ -3499,6 +3500,19 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
       return p() -> spec.fists_of_fury -> effectN( 6 ).percent(); // Saved as 50
 
     return 1.0;
+  }
+
+    virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
+
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+
+    return am;
   }
 };
 
@@ -3516,27 +3530,13 @@ struct fists_of_fury_t: public monk_melee_attack_t
     interrupt_auto_attack = true;
 
     attack_power_mod.direct = 0;
+    weapon_power_mod = 0;
 
     // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
     base_tick_time = dot_duration / 4;
     may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
     tick_action = new fists_of_fury_tick_t( p, "fists_of_fury_tick" );
-  }
-
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
-
-    if ( p() -> buff.combo_strikes -> up() )
-      pm *= 1 + p() -> cache.mastery_value();
-
-    if ( p() -> buff.storm_earth_and_fire -> up() )
-      pm *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
-
-    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
-    return pm;
   }
 
   virtual bool ready() override
