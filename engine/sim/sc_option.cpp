@@ -592,7 +592,7 @@ bool opts::parse( sim_t*                 sim,
 // option_t::parse ==========================================================
 
 void opts::parse( sim_t*                 sim,
-    const std::string&            context,
+    const std::string&            /*context*/,
     const std::vector<std::unique_ptr<option_t>>& options,
                       const std::vector<std::string>& splits )
 {

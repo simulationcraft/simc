@@ -5341,9 +5341,9 @@ struct earth_shock_t : public shaman_spell_t
 
   earth_shock_t( shaman_t* player, const std::string& options_str )
     : shaman_spell_t( "earth_shock", player, player->find_specialization_spell( "Earth Shock" ), options_str ),
+      t21_4pc( nullptr ),
       eotgs_base_chance( 0 ),
-      tdbp_proc_chance( 0 ),
-      t21_4pc( nullptr )
+      tdbp_proc_chance( 0 )
   {
     // hardcoded because spelldata doesn't provide the resource type
     resource_current                   = RESOURCE_MAELSTROM;

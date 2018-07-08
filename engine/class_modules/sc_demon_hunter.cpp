@@ -4258,9 +4258,9 @@ demon_hunter_t::demon_hunter_t(sim_t* sim, const std::string& name, race_e r)
   benefits(),
   proc(),
   active(),
+  legendary(),
   pets(),
-  options(),
-  legendary()
+  options()
 {
   create_cooldowns();
   create_gains();

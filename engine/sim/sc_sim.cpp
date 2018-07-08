@@ -881,7 +881,7 @@ bool parse_target_error_role( sim_t * sim,
 }
 
 bool parse_maximize_reporting( sim_t*             sim,
-                                   const std::string& name,
+                                   const std::string& /*name*/,
                                    const std::string& v )
 {
   if ( v != "0" && v != "1" )
