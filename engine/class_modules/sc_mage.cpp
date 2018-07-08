@@ -2412,17 +2412,13 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   double cc_tick_time_reduction;
 
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
-    arcane_mage_spell_t( "arcane_missiles", p,
-                         p -> find_specialization_spell( "Arcane Missiles" ) )
+    arcane_mage_spell_t( "arcane_missiles", p, p -> find_specialization_spell( "Arcane Missiles" ) )
   {
     parse_options( options_str );
     may_miss = false;
-    dot_duration      = data().duration();
-    base_tick_time    = data().effectN( 2 ).period();
-    tick_zero         = true;
-    channeled         = true;
-    hasted_ticks      = false;
-    dynamic_tick_action = true;
+    dot_duration = data().duration();
+    base_tick_time = data().effectN( 2 ).period();
+    tick_zero = channeled = true;
     tick_action = new arcane_missiles_tick_t( p );
 
     auto cc_data = p -> find_spell( 277726 );
@@ -2576,9 +2572,7 @@ struct arcane_orb_t : public arcane_mage_spell_t
     orb_bolt( new arcane_orb_bolt_t( p, legendary ) )
   {
     parse_options( options_str );
-
-    may_miss = false;
-    may_crit = false;
+    may_miss = may_crit = false;
 
     if ( legendary )
     {
@@ -2722,8 +2716,7 @@ struct blizzard_t : public frost_mage_spell_t
     add_child( blizzard_shard );
     cooldown -> hasted = true;
     dot_duration = timespan_t::zero(); // This is just a driver for the ground effect.
-    may_miss = false;
-    may_crit = affected_by.shatter = false;
+    may_miss = may_crit = affected_by.shatter = false;
   }
 
   virtual timespan_t execute_time() const override
@@ -2858,8 +2851,7 @@ struct comet_storm_t : public frost_mage_spell_t
     projectile( new comet_storm_projectile_t( p, legendary ) )
   {
     parse_options( options_str );
-    may_miss = false;
-    may_crit = affected_by.shatter = false;
+    may_miss = may_crit = affected_by.shatter = false;
     add_child( projectile );
 
     if ( legendary )
@@ -2913,8 +2905,6 @@ struct conflagration_t : public fire_mage_spell_t
   conflagration_t( mage_t* p ) :
     fire_mage_spell_t( "conflagration", p, p -> find_spell( 226757 ) )
   {
-    hasted_ticks = false;
-    tick_may_crit = may_crit = false;
     background = true;
   }
 };
@@ -2999,13 +2989,10 @@ struct evocation_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
 
-    // TODO: Let the user select the granularity (for early interrupts).
-    base_tick_time    = timespan_t::from_seconds( 0.5 );
-    channeled         = true;
-    dot_duration      = data().duration();
-    harmful           = false;
-    hasted_ticks      = false;
-    ignore_false_positive = true;
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    dot_duration = data().duration();
+    channeled = ignore_false_positive = true;
+    harmful = false;
 
     cooldown -> duration *= 1.0 + p -> spec.evocation_2 -> effectN( 1 ).percent();
   }
@@ -3400,8 +3387,7 @@ struct flurry_t : public frost_mage_spell_t
     flurry_bolt( new flurry_bolt_t( p ) )
   {
     parse_options( options_str );
-    may_miss = false;
-    may_crit = affected_by.shatter = false;
+    may_miss = may_crit = affected_by.shatter = false;
     add_child( flurry_bolt );
     if ( p -> spec.icicles -> ok() )
     {
@@ -3648,8 +3634,7 @@ struct frozen_orb_t : public frost_mage_spell_t
     parse_options( options_str );
     add_child( frozen_orb_bolt );
     add_child( ice_time_nova );
-    may_miss = false;
-    may_crit = affected_by.shatter = false;
+    may_miss = may_crit = affected_by.shatter = false;
   }
 
   void init_finished() override
@@ -4218,7 +4203,6 @@ living_bomb_t::living_bomb_t( mage_t* p, const std::string& options_str,
   }
 
   cooldown -> hasted = true;
-  hasted_ticks       = true;
   add_child( explosion );
 
   if ( ! casted )
@@ -4753,7 +4737,6 @@ struct ray_of_frost_t : public frost_mage_spell_t
     parse_options( options_str );
 
     channeled = true;
-    hasted_ticks = true;
     // Triggers on execute as well as each tick.
     chills = true;
   }
