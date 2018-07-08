@@ -382,7 +382,6 @@ public:
     buff_t* terms_of_engagement;
 
     // sets
-    buff_t* t19_4p_mongoose_power;
     buff_t* t20_4p_precision;
     buff_t* t20_2p_critical_aimed_damage;
     buff_t* pre_t20_2p_critical_aimed_damage;
@@ -3613,6 +3612,15 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
     return m;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = hunter_ranged_attack_t::composite_crit_chance();
+
+    cc += p() -> sets -> set( HUNTER_SURVIVAL, T19, B2 ) -> effectN( 1 ).percent();
+
+    return cc;
+  }
+
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return dot_duration * ( tick_time( s ) / base_tick_time );
@@ -5059,12 +5067,6 @@ void hunter_t::create_buffs()
 
   // Sets
 
-  buffs.t19_4p_mongoose_power =
-    make_buff( this, "mongoose_power", find_spell( 211362 ) )
-      -> set_default_value( find_spell( 211362 ) -> effectN( 1 ).percent() )
-      -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-      -> set_chance( sets -> has_set_bonus( HUNTER_SURVIVAL, T19, B4 ) );
-
   buffs.t20_4p_precision =
     make_buff( this, "t20_4p_precision", find_spell( 246153 ) )
       -> set_default_value( find_spell( 246153 ) -> effectN( 2 ).percent() )
@@ -5678,8 +5680,6 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 double hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  m *= 1.0 + buffs.t19_4p_mongoose_power -> check_value();
 
   if ( buffs.parsels_tongue -> check() )
     m *= 1.0 + buffs.parsels_tongue -> data().effectN( 1 ).percent() * buffs.parsels_tongue -> check();
