@@ -6849,10 +6849,8 @@ void death_knight_t::create_pets()
 {
   if ( specialization() == DEATH_KNIGHT_UNHOLY )
   {
-    if ( find_action( "summon_gargoyle" ) && talent.summon_gargoyle -> ok() )
-    {
-      pets.gargoyle = new pets::gargoyle_pet_t( this );
-    }
+    // Initialized even if the talent isn't picked for APL purpose
+    pets.gargoyle = new pets::gargoyle_pet_t( this );
 
     if ( find_action( "raise_dead" ) )
     {
