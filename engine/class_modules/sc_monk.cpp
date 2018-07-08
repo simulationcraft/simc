@@ -128,6 +128,7 @@ public:
     dot_t* breath_of_fire;
     dot_t* enveloping_mist;
     dot_t* renewing_mist;
+    dot_t* rushing_jade_wind;
     dot_t* soothing_mist;
     dot_t* touch_of_death;
     dot_t* touch_of_karma;
@@ -3269,7 +3270,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   rushing_jade_wind_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "rushing_jade_wind", p, p -> talent.rushing_jade_wind )
   {
-    //sef_ability = SEF_RUSHING_JADE_WIND;
+    sef_ability = SEF_RUSHING_JADE_WIND;
 
     parse_options( options_str );
 
@@ -3342,22 +3343,33 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     return am;
   }
 
+  void cancel() override
+  {
+    monk_melee_attack_t::cancel();
+    if ( dot_t* d = get_dot( target ) )
+      d -> cancel();
+  }
+
   void execute() override
   {
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_RUSHING_JADE_WIND );
 
-    monk_melee_attack_t::execute();
+    dot_t* d = get_dot( target );
 
-    if ( result_is_miss( execute_state -> result ) )
-      return;
+    if ( d -> is_ticking() && p() -> specialization() == MONK_WINDWALKER )
+      d -> cancel();
+    else
+    {
+      monk_melee_attack_t::execute();
 
-    if (p() -> specialization() == MONK_BREWMASTER )
-      p() -> buff.rushing_jade_wind -> trigger( 1,
-          buff_t::DEFAULT_VALUE(),
-          1.0,
-          composite_dot_duration( execute_state ) );
+      if (p() -> specialization() == MONK_BREWMASTER )
+        p() -> buff.rushing_jade_wind -> trigger( 1,
+            buff_t::DEFAULT_VALUE(),
+            1.0,
+            composite_dot_duration( execute_state ) );
+    }
   }
 };
 
@@ -4477,7 +4489,10 @@ struct serenity_t: public monk_spell_t
   {
     parse_options( options_str );
     harmful = false;
-    trigger_gcd = timespan_t::zero();
+    // Forcing the minimum GCD to 750 milliseconds for all 3 specs
+    min_gcd = timespan_t::from_millis(750);
+    gcd_haste = HASTE_SPELL;
+
   }
 
   void execute() override
@@ -4580,7 +4595,9 @@ struct storm_earth_and_fire_t: public monk_spell_t
   {
     parse_options( options_str );
 
-    trigger_gcd = timespan_t::zero();
+    // Forcing the minimum GCD to 750 milliseconds
+    min_gcd = timespan_t::from_millis(750);
+    gcd_haste = HASTE_ATTACK;
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
 
     cooldown -> charges += (int)p -> spec.storm_earth_and_fire_2 -> effectN( 1 ).base_value();
@@ -4730,6 +4747,10 @@ struct crackling_jade_lightning_t: public monk_spell_t
     channeled = tick_may_crit = true;
     hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
     interrupt_auto_attack = true;
+    // Forcing the minimum GCD to 750 milliseconds for all 3 specs
+    min_gcd = timespan_t::from_millis(750);
+    gcd_haste = HASTE_SPELL;
+
   }
 
   virtual double cost_per_tick( resource_e resource ) const override
@@ -6425,6 +6446,7 @@ monk( *p )
   dots.breath_of_fire = target -> get_dot( "breath_of_fire_dot", p );
   dots.enveloping_mist = target -> get_dot( "enveloping_mist", p );
   dots.renewing_mist = target -> get_dot( "renewing_mist", p );
+  dots.rushing_jade_wind = target -> get_dot( "rushing_jade_wind", p );
   dots.soothing_mist = target -> get_dot( "soothing_mist", p );
   dots.touch_of_death = target -> get_dot( "touch_of_death", p );
   dots.touch_of_karma = target -> get_dot( "touch_of_karma", p );
