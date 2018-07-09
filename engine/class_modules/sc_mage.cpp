@@ -6894,75 +6894,63 @@ void mage_t::apl_frost()
   action_priority_list_t* movement     = get_action_priority_list( "movement"          );
 
   default_list -> add_action( this, "Counterspell" );
-  default_list -> add_action( this, "Ice Lance", "if=!buff.fingers_of_frost.react&prev_gcd.1.flurry",
-    "Free Ice Lance after Flurry. This action has rather high priority to ensure that we don't cast Rune of Power, Ray of Frost, "
-    "etc. after Flurry and break up the combo. If FoF was already active, we do not lose anything by delaying the Ice Lance." );
-  default_list -> add_action( this, "Time Warp",
-    "if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(cooldown.icy_veins.remains<1|target.time_to_die<50)",
-
-    "Time Warp is used right at the start. If the actor has Shard of the Exodar, try to synchronize the second Time Warp with "
-    "Icy Veins. If the target is about to die, use Time Warp regardless." );
-  default_list -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
-  default_list -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
-  default_list -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
-  default_list -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
-  default_list -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
+  default_list -> add_action( this, "Ice Lance", "if=prev_gcd.1.flurry&!buff.fingers_of_frost.react" );
+  default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(prev_gcd.1.icy_veins|target.time_to_die<50)" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>=4" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>3&talent.freezing_rain.enabled|active_enemies>4" );
   default_list -> add_action( "call_action_list,name=single" );
 
-  single -> add_talent( this, "Ice Nova", "if=debuff.winters_chill.up",
-    "In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill." );
-  single -> add_action( this, "Flurry",
-    "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&"
-    "(!talent.glacial_spike.enabled|buff.icicles.stack<=4))" );
-  single -> add_action( this, "Frozen Orb", "if=set_bonus.tier20_2pc&buff.fingers_of_frost.react<2",
-    "With T20 2pc, Frozen Orb should be used as soon as it comes off CD." );
-  single -> add_action( this, "Blizzard", "if=active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2" );
-  single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
-  single -> add_talent( this, "Ebonbolt" );
+  single -> add_talent( this, "Ice Nova", "if=cooldown.ice_nova.ready&debuff.winters_chill.up" );
+  single -> add_action( this, "Flurry", "if=!talent.glacial_spike.enabled&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&prev_gcd.1.frostbolt)" );
+  single -> add_action( this, "Flurry", "if=talent.glacial_spike.enabled&buff.brain_freeze.react&(prev_gcd.1.frostbolt&buff.icicles.stack<4|prev_gcd.1.glacial_spike|prev_gcd.1.ebonbolt)" );
   single -> add_action( this, "Frozen Orb" );
+  single -> add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2" );
+  single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
+  single -> add_talent( this, "Ray of Frost", "if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0" );
   single -> add_talent( this, "Comet Storm" );
+  single -> add_talent( this, "Ebonbolt", "if=!talent.glacial_spike.enabled|buff.icicles.stack=5&!buff.brain_freeze.react" );
+  single -> add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled" );
+  single -> add_action( this, "Blizzard", "if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time" );
   single -> add_talent( this, "Ice Nova" );
-  single -> add_action( this, "Blizzard",
-    "if=active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time",
-
-    "Against low number of targets, Blizzard is used as a filler. Zann'esu buffed Blizzard is used only at 5 stacks." );
-  single -> add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react" );
-  single -> add_talent( this, "Ray of Frost" );
   single -> add_action( this, "Frostbolt" );
   single -> add_action( "call_action_list,name=movement" );
-  single -> add_action( this, "Ice Lance", "",
-    "Use Ice Lance to do at least some damage while moving." );
+  single -> add_action( this, "Ice Lance" );
 
   aoe -> add_action( this, "Frozen Orb" );
   aoe -> add_action( this, "Blizzard" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
-  aoe -> add_action( this, "Flurry",
-    "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&"
-    "(!talent.glacial_spike.enabled|buff.icicles.stack<=4))" );
+  aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.frostbolt&(buff.icicles.stack<4|!talent.glacial_spike.enabled)|prev_gcd.1.glacial_spike)" );
   aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
-  aoe -> add_talent( this, "Ebonbolt" );
-  aoe -> add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react" );
   aoe -> add_talent( this, "Ray of Frost" );
+  aoe -> add_talent( this, "Ebonbolt" );
+  aoe -> add_talent( this, "Glacial Spike" );
+  aoe -> add_action( this, "Cone of Cold" );
   aoe -> add_action( this, "Frostbolt" );
   aoe -> add_action( "call_action_list,name=movement" );
-  aoe -> add_action( this, "Cone of Cold" );
   aoe -> add_action( this, "Ice Lance" );
 
-  cooldowns -> add_talent( this, "Rune of Power",
-    "if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|"
-    "target.time_to_die+5<charges_fractional*10",
-
-    "Rune of Power is used when going into Icy Veins and while Icy Veins are up. Outside of Icy Veins, use Rune of Power "
-    "when about to cap on charges or the target is about to die." );
-  cooldowns -> add_action( "potion,if=cooldown.icy_veins.remains<1|target.time_to_die<70" );
   cooldowns -> add_action( this, "Icy Veins" );
   cooldowns -> add_talent( this, "Mirror Image" );
+  cooldowns -> add_talent( this, "Rune of Power", "if=time_to_die>10+cast_time&time_to_die<25" );
+  cooldowns -> add_talent( this, "Rune of Power",
+    "if=active_enemies=1&talent.glacial_spike.enabled&buff.icicles.stack=5&("
+    "!talent.ebonbolt.enabled&buff.brain_freeze.react"
+    "|talent.ebonbolt.enabled&(full_recharge_time<=cooldown.ebonbolt.remains&buff.brain_freeze.react"
+    "|cooldown.ebonbolt.remains<cast_time&!buff.brain_freeze.react))" );
+  cooldowns -> add_talent( this, "Rune of Power",
+    "if=active_enemies=1&!talent.glacial_spike.enabled&("
+    "prev_gcd.1.frozen_orb|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time"
+    "|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time"
+    "|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)" );
+  cooldowns -> add_talent( this, "Rune of Power", "if=active_enemies>1&prev_gcd.1.frozen_orb" );
+  cooldowns -> add_action( "potion,if=prev_gcd.1.icy_veins|target.time_to_die<70" );
   cooldowns -> add_action( "use_items" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
+    if ( racial_actions[ i ] == "arcane_torrent" )
+      continue;
+
     cooldowns -> add_action( racial_actions[ i ] );
   }
 
