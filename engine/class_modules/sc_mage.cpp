@@ -2176,10 +2176,10 @@ struct arcane_barrage_t : public arcane_mage_spell_t
   {
     double da = arcane_mage_spell_t::bonus_da( s );
 
-    if ( p() -> azerite.arcane_pressure.enabled() && 
-          ( s -> target -> health_percentage() < p() -> azerite.arcane_pressure.spell_ref().effectN( 2 ).base_value() ) )
+    if ( p() -> azerite.arcane_pressure.enabled()
+      && s -> target -> health_percentage() < p() -> azerite.arcane_pressure.spell_ref().effectN( 2 ).base_value() )
     {
-      da += p() -> azerite.arcane_pressure.value();
+      da += p() -> azerite.arcane_pressure.value() * p() -> buffs.arcane_charge -> check();
     }
 
     return da;
@@ -2316,7 +2316,7 @@ struct arcane_explosion_t : public arcane_mage_spell_t
 
     if ( p -> azerite.explosive_echo.enabled() )
     {
-       base_dd_adder += p -> azerite.explosive_echo.value( 2 );
+      base_dd_adder += p -> azerite.explosive_echo.value( 2 );
     }
   }
 
@@ -2356,14 +2356,11 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     double da = arcane_mage_spell_t::bonus_da( s );
 
-    std::vector<player_t*> tl = target_list();
-
-    if ( p() -> azerite.explosive_echo.enabled() && tl.size() > 2 )
+    if ( p() -> azerite.explosive_echo.enabled()
+      && target_list().size() >= as<size_t>( p() -> azerite.explosive_echo.spell_ref().effectN( 1 ).base_value() )
+      && rng().roll ( p() -> azerite.explosive_echo.spell_ref().effectN( 3 ).percent() ) )
     {
-      if ( rng().roll ( p() -> azerite.explosive_echo.spell_ref().effectN( 3 ).percent() ) )
-        {
-          da += p() -> azerite.explosive_echo.value( 4 );
-        }
+      da += p() -> azerite.explosive_echo.value( 4 );
     }
 
     return da;
@@ -2580,7 +2577,6 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     p() -> buffs.quick_thinker -> trigger();
   }
-
 
   virtual bool usable_moving() const override
   {
