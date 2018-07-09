@@ -1272,6 +1272,7 @@ class SpellDataGenerator(DataGenerator):
             ( 197496, 0 ), ( 197498, 0 ), # New nightblade buffs
             ( 246558, 0 ),          # Outlaw T20 4pc Lesser Adrenaline Rush
             ( 279043, 0 ),          # Shadow Blades damaging spell
+            ( 121153, 0 ),          # Blindside proc buff
         ),
 
         # Priest:
@@ -1565,7 +1566,7 @@ class SpellDataGenerator(DataGenerator):
           ( 209245, 2 ), # Fiery Brand damage reduction
           ( 213011, 2 ), # Charred Warblades heal
           ( 212818, 2 ), # Fiery Demise debuff
-          ( 207760, 2 ), # Burning Alive spread radius 
+          ( 207760, 2 ), # Burning Alive spread radius
        ),
     ]
 
