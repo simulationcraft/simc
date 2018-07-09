@@ -2748,16 +2748,6 @@ struct tiger_palm_t: public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
   }
 
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
-
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
-
-    return pm;
-  }
-
   double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
@@ -2773,9 +2763,6 @@ struct tiger_palm_t: public monk_melee_attack_t
       if ( p() -> buff.blackout_combo -> up() )
         am *= 1 + p() -> buff.blackout_combo -> data().effectN( 1 ).percent();
     }
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
 
     return am;
   }
@@ -2877,10 +2864,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     if ( p() -> spec.rising_sun_kick_2 )
       am *= 1 + p() -> spec.rising_sun_kick_2 -> effectN( 1 ).percent();
 
-    // Some spells does not seem to register the automated WW Mastery multiplier
-//    if ( p() -> buff.combo_strikes -> up() )
-//      am *= 1 + p() -> cache.mastery_value();
-
     return am;
   }
 };
@@ -2908,34 +2891,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
       ap_type = AP_WEAPON_BOTH;
 
     trigger_attack = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
-  }
-
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
-
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
-
-    return pm;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
-
-    // Windwalker Spec Effect 1 & 5 points to spell 185099 (the direct damage spell, not the trigger spell)
-//    am *= 1 + p() -> spec.windwalker_monk -> effectN( 1 ).percent();
-
-//    am *= 1 + p() -> spec.windwalker_monk -> effectN( 5 ).percent();
-
-//  am *= 1 + p() -> spec.mistweaver_monk -> effectN( 11 ).percent();
-
-    return am;
   }
 
   virtual double composite_crit_chance() const override
@@ -3138,16 +3093,6 @@ struct blackout_kick_t: public monk_melee_attack_t
     return monk_melee_attack_t::ready();
   }
 
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
-
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
-
-    return pm;
-  }
-
   virtual double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
@@ -3167,9 +3112,6 @@ struct blackout_kick_t: public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
-//        if ( p() -> buff.storm_earth_and_fire -> up() )
-//          am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
-
         if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T21, B4 ) && p() -> buff.bok_proc -> up() )
           am *= 1 + p() -> sets -> set( MONK_WINDWALKER, T21, B4) -> effectN( 1 ).percent();
         break;
@@ -3325,15 +3267,8 @@ struct rjw_tick_action_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
-
     switch ( p() -> specialization() )
     {
-      case MONK_WINDWALKER:
-//        am *= 1 + p() -> spec.windwalker_monk -> effectN( 4 ).percent();
-//        am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
-        break;
       case MONK_BREWMASTER:
         am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
         am *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
@@ -3393,15 +3328,8 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   {
     double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
 
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
-
     switch ( p() -> specialization() )
     {
-      case MONK_WINDWALKER:
-//        pm *= 1 + p() -> spec.windwalker_monk -> effectN( 4 ).percent();
-//        pm *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
-        break;
       case MONK_BREWMASTER:
         pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
         pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
@@ -3415,9 +3343,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   virtual double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
 
     return am;
   }
@@ -3494,11 +3419,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
     am *= 1 + ( mark_of_the_crane_counter() * p() -> passives.cyclone_strikes -> effectN( 1 ).percent() );
-
-    am *= 1 + p() -> spec.mistweaver_monk -> effectN( 14 ).percent();
 
     return am;
   }
@@ -3546,20 +3467,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
       }
     }
     return mark_of_the_crane_counter;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
-
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
-
-
-//    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 4 ).percent();
-//    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 8 ).percent();
-
-    return pm;
   }
 
   virtual void consume_resource() override
@@ -3621,9 +3528,6 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     // Some spells does not seem to register the automated WW Mastery multiplier
     if ( p() -> buff.combo_strikes -> up() )
       am *= 1 + p() -> cache.mastery_value();
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
 
     return am;
   }
@@ -3723,19 +3627,6 @@ struct whirling_dragon_punch_tick_t: public monk_melee_attack_t
     aoe = -1;
     radius = s -> effectN( 1 ).radius();
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-//    if ( p() -> buff.combo_strikes -> up() )
-//      am *= 1 + p() -> cache.mastery_value();
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
-
-    return am;
-  }
 };
 
 struct whirling_dragon_punch_t: public monk_melee_attack_t
@@ -3767,21 +3658,6 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
       return monk_melee_attack_t::ready();
 
     return false;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
-
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      pm *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
-
-//    pm *= 1 + p() -> spec.windwalker_monk -> effectN( 4 ).percent();
-
-    return pm;
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -3820,39 +3696,6 @@ struct fist_of_the_white_tiger_off_hand_t: public monk_melee_attack_t
     // attack_power_mod.direct = p -> talent.fist_of_the_white_tiger -> effectN( 1 ).ap_coeff();
     weapon = &( player -> main_hand_weapon ); 
   }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-//    if ( p() -> buff.combo_strikes -> up() )
-//      am *= 1 + p() -> cache.mastery_value();
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
-
-    return am;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
-
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      pm *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
-
-    return pm;
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    monk_melee_attack_t::impact( s );
-
-//    p() -> resource_gain( RESOURCE_CHI, data().effectN( 1 ).base_value(), p() -> gain.fist_of_the_white_tiger );
-  }
 };
 
 struct fist_of_the_white_tiger_t: public monk_melee_attack_t
@@ -3871,23 +3714,8 @@ struct fist_of_the_white_tiger_t: public monk_melee_attack_t
     weapon      = &( player -> off_hand_weapon ); 
     trigger_gcd = data().gcd();
 
-//    energize_type = ENERGIZE_NONE;
-
     mh_attack = new fist_of_the_white_tiger_off_hand_t( p, "fist_of_the_white_tiger_mainhand", p -> talent.fist_of_the_white_tiger -> effectN( 2 ).trigger() );
     add_child( mh_attack );
-  }
-
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
-
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      pm *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
-
-    return pm;
   }
 
   void execute() override
@@ -4923,9 +4751,6 @@ struct crackling_jade_lightning_t: public monk_spell_t
   {
     double pm = monk_spell_t::composite_persistent_multiplier( action_state );
 
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
-
     if ( p() -> buff.the_emperors_capacitor -> up() )
       pm *= 1 + p() -> buff.the_emperors_capacitor -> stack_value();
 
@@ -4939,9 +4764,6 @@ struct crackling_jade_lightning_t: public monk_spell_t
     am *= 1 + p() -> spec.mistweaver_monk -> effectN( 15 ).percent();
 
     am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
 
     return am;
   }
@@ -5987,20 +5809,6 @@ struct chi_wave_heal_tick_t: public monk_heal_t
     background = direct_tick = true;
     target = player;
   }
-
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 3 ).percent();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
-
-    return am;
-  }
 };
 
 struct chi_wave_dmg_tick_t: public monk_spell_t
@@ -6011,30 +5819,6 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
     ww_mastery = true;
 
     background = direct_tick = true;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = monk_spell_t::composite_persistent_multiplier( action_state );
-
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
-
-    return pm;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
-
-    return am;
   }
 };
 
@@ -6106,20 +5890,6 @@ struct chi_burst_heal_t: public monk_heal_t
     target = p();
     aoe = -1;
   }
-
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 3 ).percent();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
-
-    return am;
-  }
 };
 
 struct chi_burst_damage_t: public monk_spell_t
@@ -6131,30 +5901,6 @@ struct chi_burst_damage_t: public monk_spell_t
 
     background = true;
     aoe = -1;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = monk_spell_t::composite_persistent_multiplier( action_state );
-
-//    if ( p() -> buff.combo_strikes -> up() )
-//      pm *= 1 + p() -> cache.mastery_value();
-
-    return pm;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
-
-//    if ( p() -> buff.storm_earth_and_fire -> up() )
-//      am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
-
-    return am;
   }
 };
 
