@@ -7633,11 +7633,14 @@ void shaman_t::init_action_list_enhancement()
       "variable,name=hailstormCheck,value=((talent.hailstorm.enabled&!buff.frostbrand.up)|!talent.hailstorm."
       "enabled)" );
   def->add_action(
-      "variable,name=furyCheck80,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>80))" );
+      "variable,name=furyCheck80,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&((maelstrom>35&"
+      "cooldown.lightning_bolt.remains>=3*gcd)|maelstrom>80)))" );
   def->add_action(
       "variable,name=furyCheck70,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>70))" );
   def->add_action(
       "variable,name=furyCheck45,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>45))" );
+  def->add_action(
+      "variable,name=furyCheck35,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>35))" );
   def->add_action(
       "variable,name=furyCheck25,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>25))" );
   def->add_action( "variable,name=overcharge,value=(talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40)" );
@@ -7653,14 +7656,6 @@ void shaman_t::init_action_list_enhancement()
   def->add_action(
       "variable,name=OCPool60,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&(maelstrom>60|cooldown."
       "lightning_bolt.remains>gcd)))" );
-  def->add_action( "variable,name=heartEquipped,value=(equipped.151819)" );
-  def->add_action( "variable,name=akainuEquipped,value=(equipped.137084)" );
-  def->add_action( "variable,name=stormTempests,value=(equipped.137103&!debuff.storm_tempests.up)" );
-  def->add_action( "variable,name=akainuAS,value=(variable.akainuEquipped&buff.hot_hand.react&!buff.frostbrand.up)" );
-  def->add_action( "variable,name=LightningCrashNotUp,value=(!buff.lightning_crash.up&set_bonus.tier20_2pc)" );
-  def->add_action(
-      "variable,name=alphaWolfCheck,value=((pet.frost_wolf.buff.alpha_wolf.remains<2&pet.fiery_wolf.buff.alpha_wolf."
-      "remains<2&pet.lightning_wolf.buff.alpha_wolf.remains<2)&feral_spirit.remains>4)" );
 
   // Turn on auto-attack first thing
   def->add_action( "auto_attack" );
@@ -7677,68 +7672,49 @@ void shaman_t::init_action_list_enhancement()
   opener->add_action( this, "Rockbiter", "if=maelstrom<15&time<gcd" );
 
   asc->add_talent( this, "Earthen Spike" );
-  asc->add_action( this, "Doom Winds", "if=cooldown.strike.up" );
   asc->add_action( this, "Crash Lightning", "if=!buff.crash_lightning.up&active_enemies>=2" );
-  asc->add_action( this, "Windstrike", "target_if=variable.stormTempests" );
+  asc->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7" );
   asc->add_action( this, "Windstrike" );
 
-  buffs->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up" );
+  buffs->add_action( this, "Rockbiter", "if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7" );
   buffs->add_talent( this, "Fury of Air", "if=!ticking&maelstrom>22" );
-  buffs->add_action( this, "Crash Lightning", "if=artifact.alpha_wolf.rank&prev_gcd.1.feral_spirit" );
   buffs->add_action( this, "Flametongue", "if=!buff.flametongue.up" );
   buffs->add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck45" );
-  buffs->add_action( this, "Flametongue", "if=buff.flametongue.remains<6+gcd&cooldown.doom_winds.remains<gcd*2" );
-  buffs->add_action( this, "Frostbrand",
-                     "if=talent.hailstorm.enabled&buff.frostbrand.remains<6+gcd&cooldown.doom_winds.remains<gcd*2" );
+  buffs->add_action( this, "Flametongue", "if=buff.flametongue.remains<6+gcd" );
+  buffs->add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<6+gcd" );
+  buffs->add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<2" );
 
   cds->add_action( this, "Bloodlust", generate_bloodlust_options(),
                    "Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options "
                    "'bloodlust_percent', and 'bloodlust_time'. " );
-  cds->add_action( "berserking,if=buff.ascendance.up|(cooldown.doom_winds.up)|level<100" );
+  cds->add_action( "berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
   cds->add_action( "blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
-  cds->add_action(
-      "potion,if=buff.ascendance.up|(!talent.ascendance.enabled&!variable.heartEquipped&feral_spirit.remains>5)|"
-      "target.time_to_die<=60" );
+  cds->add_action( "potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60" );
   cds->add_action( this, "Feral Spirit" );
-  cds->add_action( this, "Doom Winds",
-                   "if=cooldown.ascendance.remains>6|talent.boulderfist.enabled|debuff.earthen_spike.up" );
   cds->add_talent( this, "Ascendance", "if=(cooldown.strike.remains>0)&buff.ascendance.down" );
+  cds->add_action( this, "Earth Elemental" );
 
   core->add_talent( this, "Earthen Spike", "if=variable.furyCheck25" );
   core->add_action( this, "Crash Lightning", "if=!buff.crash_lightning.up&active_enemies>=2" );
-  core->add_talent( this, "Windsong" );
   core->add_action( this, "Crash Lightning", "if=active_enemies>=8|(active_enemies>=6&talent.crashing_storm.enabled)" );
-  core->add_action( this, "Rockbiter", "if=buff.force_of_the_mountain.up&charges_fractional>1.7&active_enemies<=4" );
-  core->add_action( this, "Stormstrike", "target_if=variable.stormTempests" );
-  core->add_action( this, "Stormstrike", "if=buff.stormbringer.up&variable.furyCheck25" );
-  core->add_action( this, "Lightning Bolt", "if=variable.overcharge&debuff.exposed_elements.up" );
+  core->add_action( this, "Stormstrike", "if=buff.stormbringer.up" );
   core->add_action( this, "Crash Lightning", "if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)" );
-  core->add_action( this, "Rockbiter", "if=buff.force_of_the_mountain.up" );
-  core->add_action(
-      this, "Lava Lash",
-      "if=(buff.hot_hand.react&((variable.akainuEquipped&buff.frostbrand.up)|(!variable.akainuEquipped)))" );
-  core->add_action( this, "Lava Lash",
-                    "if=(maelstrom>=50&variable.OCPool70&variable.furyCheck80&debuff.exposed_elements.up&debuff."
-                    "lashing_flames.stack>90)" );
-  core->add_action( this, "Lightning Bolt", "if=variable.overcharge" );
-  core->add_action( this, "Stormstrike", "if=variable.furyCheck45&(variable.OCPool80|buff.doom_winds.up)" );
-  core->add_action( this, "Frostbrand", "if=variable.akainuAS" );
-  core->add_talent( this, "Sundering", "if=active_enemies>=3" );
-  core->add_action( this, "Crash Lightning",
-                    "if=active_enemies>=3|variable.LightningCrashNotUp|variable.alphaWolfCheck" );
+  core->add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40" );
+  core->add_action( this, "Stormstrike", "if=(!talent.overcharge.enabled&variable.furyCheck35)|"
+                    "(talent.overcharge.enabled&variable.furyCheck80)" );
+  core->add_talent( this, "Sundering" );
+  core->add_action( this, "Flametongue", "if=talent.searing_assault.enabled" );
+  core->add_action( this, "Lava Lash", "if=buff.hot_hand.react" );
+  core->add_action( this, "Crash Lightning", "if=active_enemies>=3" );
 
-  filler->add_action( this, "Rockbiter", "if=maelstrom<120&charges_fractional>1.7" );
-  filler->add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8" );
-  filler->add_action( this, "Crash Lightning",
-                      "if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&"
-                      "variable.OCPool80" );
+  filler->add_action( this, "Rockbiter", "if=maelstrom<70" );
+  filler->add_action( this, "Flametongue", "if=talent.searing_assault.enabled|buff.flametongue.remains<4.8" );
+  filler->add_action( this, "Crash Lightning", "if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60" );
   filler->add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40" );
-  filler->add_action( this, "Frostbrand", "if=variable.akainuEquipped&!buff.frostbrand.up&maelstrom>=75" );
-  filler->add_talent( this, "Sundering" );
-  filler->add_action( this, "Lava Lash", "if=maelstrom>=50&variable.OCPool100&variable.furyCheck70" );
+  filler->add_action( this, "Lava Lash", "if=maelstrom>=50&variable.OCPool70&variable.furyCheck80" );
   filler->add_action( this, "Rockbiter" );
-  filler->add_action( this, "Crash Lightning",
-                      "if=(maelstrom>=45|talent.crashing_storm.enabled|active_enemies>=2)&variable.OCPool80" );
+  filler->add_action( this, "Crash Lightning","if=(maelstrom>=65|talent.crashing_storm.enabled|active_enemies>=2)"
+                      "&variable.OCPool60&variable.furyCheck45" );
   filler->add_action( this, "Flametongue" );
 }
 
