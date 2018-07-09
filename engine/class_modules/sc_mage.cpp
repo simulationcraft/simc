@@ -3049,7 +3049,7 @@ struct evocation_t : public arcane_mage_spell_t
 
     base_tick_time = timespan_t::from_seconds( 1.0 );
     dot_duration = data().duration();
-    channeled = ignore_false_positive = true;
+    channeled = ignore_false_positive = tick_zero = true;
     harmful = false;
 
     cooldown -> duration *= 1.0 + p -> spec.evocation_2 -> effectN( 1 ).percent();
