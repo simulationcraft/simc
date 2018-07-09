@@ -276,23 +276,18 @@ namespace warlock
 
       struct legendary_t
       {
-        const spell_data_t* odr_shawl_of_the_ymirjar;
-        bool feretory_of_souls;
-        bool wilfreds_sigil_of_superior_summoning_flag;
-        bool stretens_insanity;
-        timespan_t wilfreds_sigil_of_superior_summoning;
-        double power_cord_of_lethtendris_chance;
-        bool wakeners_loyalty_enabled;
-        bool lessons_of_spacetime;
-        timespan_t lessons_of_spacetime1;
-        timespan_t lessons_of_spacetime2;
-        timespan_t lessons_of_spacetime3;
-        bool sephuzs_secret;
-        double sephuzs_passive;
-        bool magistrike;
-        bool the_master_harvester;
-        bool alythesss_pyrogenics;
-
+        const special_effect_t* insignia_of_the_grand_army;
+        const special_effect_t* the_master_harvester;
+        const special_effect_t* sindorei_spite;
+        const special_effect_t* stretens_sleepless_shackles;
+        const special_effect_t* hood_of_eternal_disdain;
+        const special_effect_t* power_cord_of_lethtendris;
+        const special_effect_t* lessons_of_spacetime;
+        const special_effect_t* wakeners_loyalty;
+        const special_effect_t* soul_of_the_netherlord;
+        const special_effect_t* reap_and_sow;
+        const special_effect_t* sacrolashs_dark_strike;
+        const special_effect_t* sephuzs_secret;
       } legendary;
 
       // Mastery Spells
@@ -313,7 +308,7 @@ namespace warlock
         propagate_const<cooldown_t*> haunt;
         propagate_const<cooldown_t*> shadowburn;
         propagate_const<cooldown_t*> soul_fire;
-        propagate_const<cooldown_t*> sindorei_spite_icd;
+        //propagate_const<cooldown_t*> sindorei_spite_icd;
         propagate_const<cooldown_t*> call_dreadstalkers;
 
         propagate_const<cooldown_t*> darkglare;
@@ -409,12 +404,12 @@ namespace warlock
         propagate_const<buff_t*> flashpoint;
 
         // legendary buffs
-        buff_t* sindorei_spite;
+        //buff_t* sindorei_spite;
         propagate_const<buff_t*> stretens_insanity;
-        propagate_const<buff_t*> lessons_of_spacetime;
-        propagate_const<haste_buff_t*> sephuzs_secret;
-        propagate_const<buff_t*> alythesss_pyrogenics;
-        propagate_const<buff_t*> wakeners_loyalty;
+        //propagate_const<buff_t*> lessons_of_spacetime;
+        //propagate_const<haste_buff_t*> sephuzs_secret;
+        //propagate_const<buff_t*> alythesss_pyrogenics;
+        //propagate_const<buff_t*> wakeners_loyalty;
       } buffs;
 
       // Gains
@@ -450,8 +445,8 @@ namespace warlock
         gain_t* soulsnatcher;
         gain_t* t19_2pc_demonology;
 
-        gain_t* recurrent_ritual;
-        gain_t* feretory_of_souls;
+        //gain_t* recurrent_ritual;
+        //gain_t* feretory_of_souls;
         gain_t* power_cord_of_lethtendris;
 
         gain_t* affliction_t20_2pc;
@@ -462,7 +457,7 @@ namespace warlock
       struct procs_t
       {
         proc_t* soul_conduit;
-        proc_t* the_master_harvester;
+        //proc_t* the_master_harvester;
         //aff
         proc_t* nightfall;
         proc_t* affliction_t21_2pc;
@@ -569,7 +564,6 @@ namespace warlock
       void init_procs_affliction();
       void create_options_affliction();
       void create_apl_affliction();
-      void legendaries_affliction();
 
       // sc_warlock_demonology
       action_t* create_action_demonology( const std::string& action_name, const std::string& options_str );
@@ -580,7 +574,6 @@ namespace warlock
       void init_procs_demonology();
       void create_options_demonology();
       void create_apl_demonology();
-      void legendaries_demonology();
 
       // sc_warlock_destruction
       action_t* create_action_destruction( const std::string& action_name, const std::string& options_str );
@@ -591,7 +584,6 @@ namespace warlock
       void init_procs_destruction();
       void create_options_destruction();
       void create_apl_destruction();
-      void legendaries_destruction();
 
       // sc_warlock_pets
       pet_t* create_main_pet(const std::string& pet_name, const std::string& options_str);
@@ -672,18 +664,18 @@ namespace warlock
           return static_cast<warlock_t*>( owner );
         }
 
-        void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
-        {
-          if ( !o()->legendary.sephuzs_secret )
-            return;
+        //void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
+        //{
+        //  if ( !o()->legendary.sephuzs_secret )
+        //    return;
 
-          // trigger by default on interrupts and on adds/lower level stuff
-          if ( o()->allow_sephuz || mechanic == MECHANIC_INTERRUPT || state->target->is_add() ||
-            ( state->target->level() < o()->sim->max_player_level + 3 ) )
-          {
-            o()->buffs.sephuzs_secret->trigger();
-          }
-        }
+        //  // trigger by default on interrupts and on adds/lower level stuff
+        //  if ( o()->allow_sephuz || mechanic == MECHANIC_INTERRUPT || state->target->is_add() ||
+        //    ( state->target->level() < o()->sim->max_player_level + 3 ) )
+        //  {
+        //    o()->buffs.sephuzs_secret->trigger();
+        //  }
+        //}
 
         struct travel_t : public action_t
         {
@@ -1082,10 +1074,10 @@ namespace warlock
         bool havocd;
         bool affected_by_destruction_t20_4pc;
         bool affected_by_flamelicked;
-        bool affected_by_odr_shawl_of_the_ymirjar;
+        //bool affected_by_odr_shawl_of_the_ymirjar;
         bool affected_by_deaths_embrace;
         bool destro_mastery;
-        bool can_feretory;
+        //bool can_feretory;
 
         warlock_spell_t( warlock_t* p, const std::string& n ) :
           warlock_spell_t( n, p, p -> find_class_spell( n ) )
@@ -1109,7 +1101,7 @@ namespace warlock
           affected_by_destruction_t20_4pc = false;
           affected_by_deaths_embrace = false;
           destro_mastery = true;
-          can_feretory = true;
+          //can_feretory = true;
 
           parse_spell_coefficient( *this );
         }
@@ -1163,7 +1155,16 @@ namespace warlock
           affected_by_flamelicked = false;
           havocd = false;
 
-          affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p()->find_spell( 212173 )->effectN( 1 ) );
+          //affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p()->find_spell( 212173 )->effectN( 1 ) );
+
+          //if ( p()->legendary.reap_and_sow )
+          //{
+          //  if ( data().affected_by( p()->find_spell( 281494 )->effectN( 1 ) ) )
+          //    base_dd_multiplier *= 1.0 + p()->find_spell( 281494 )->effectN( 1 ).percent();
+
+          //  if ( data().affected_by( p()->find_spell( 281494 )->effectN( 2 ) ) )
+          //    base_dd_multiplier *= 1.0 + p()->find_spell( 281494 )->effectN( 2 ).percent();
+          //}
 
           if (p()->specialization() == WARLOCK_DESTRUCTION)
           {
@@ -1173,6 +1174,7 @@ namespace warlock
             if (data().affected_by(p()->spec.destruction->effectN(2)))
               base_td_multiplier *= 1.0 + p()->spec.destruction->effectN(2).percent();
           }
+
 
           if (p()->specialization() == WARLOCK_AFFLICTION)
           {
@@ -1234,8 +1236,8 @@ namespace warlock
             }
           }
 
-          if ( can_feretory && p()->legendary.feretory_of_souls && rng().roll( p()->find_spell( 205702 )->proc_chance() ) && dbc::is_school( school, SCHOOL_FIRE ) )
-            p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.feretory_of_souls );
+          //if ( can_feretory && p()->legendary.feretory_of_souls && rng().roll( p()->find_spell( 205702 )->proc_chance() ) && dbc::is_school( school, SCHOOL_FIRE ) )
+          //  p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.feretory_of_souls );
         }
 
         void consume_resource() override;
@@ -1291,8 +1293,8 @@ namespace warlock
               m *= 1.0 + td->debuffs_eradication->data().effectN( 1 ).percent();
           }
 
-          if ( p()->legendary.odr_shawl_of_the_ymirjar && target == p()->havoc_target && affected_by_odr_shawl_of_the_ymirjar  )
-            m *= 1.0 + p()->legendary.odr_shawl_of_the_ymirjar->effectN( 1 ).percent();
+          //if ( p()->legendary.odr_shawl_of_the_ymirjar && target == p()->havoc_target && affected_by_odr_shawl_of_the_ymirjar  )
+          //  m *= 1.0 + p()->legendary.odr_shawl_of_the_ymirjar->effectN( 1 ).percent();
 
           return m;
         }

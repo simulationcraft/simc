@@ -16,10 +16,10 @@ namespace warlock {
         parse_options(options_str);
       }
 
-      void execute() override {
-        warlock_pet_spell_t::execute();
-        p()->trigger_sephuzs_secret(execute_state, MECHANIC_STUN);
-      }
+      //void execute() override {
+      //  warlock_pet_spell_t::execute();
+      //  p()->trigger_sephuzs_secret(execute_state, MECHANIC_STUN);
+      //}
     };
     struct felstorm_tick_t : public warlock_pet_melee_attack_t {
       felstorm_tick_t(warlock_pet_t* p, const spell_data_t& s) : warlock_pet_melee_attack_t("felstorm_tick", p, s.effectN(1).trigger()) {
@@ -1249,12 +1249,5 @@ namespace warlock {
     def->add_action("demonbolt,if=soul_shard<=3&buff.demonic_core.up");
     def->add_action("doom,cycle_targets=1,if=(talent.doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3))");
     def->add_action("call_action_list,name=build_a_shard");
-  }
-
-  using namespace unique_gear;
-  using namespace actions;
-
-  void warlock_t::legendaries_demonology() {
-
   }
 }
