@@ -642,6 +642,7 @@ public:
     azerite_power_t galvanizing_spark;
     azerite_power_t anomalous_impact;
     azerite_power_t explosive_echo;
+    azerite_power_t arcane_pressure;
 
     // Fire
     azerite_power_t blaster_master;
@@ -2166,6 +2167,19 @@ struct arcane_barrage_t : public arcane_mage_spell_t
     {
       p() -> buffs.chrono_shift -> trigger();
     }
+  }
+
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double da = arcane_mage_spell_t::bonus_da( s );
+
+    if ( p() -> azerite.arcane_pressure.enabled() && 
+          ( s -> target -> health_percentage() < p() -> azerite.arcane_pressure.spell_ref().effectN( 2 ).base_value() ) )
+    {
+      da += p() -> azerite.arcane_pressure.value();
+    }
+
+    return da;
   }
 
   virtual double action_multiplier() const override
@@ -6123,6 +6137,7 @@ void mage_t::init_spells()
   azerite.galvanizing_spark        = find_azerite_spell( "Galvanizing Spark"        );
   azerite.anomalous_impact         = find_azerite_spell( "Anomalous Impact"         );
   azerite.explosive_echo           = find_azerite_spell( "Explosive Echo"           );
+  azerite.arcane_pressure          = find_azerite_spell( "Arcane Pressure"          );
 
   azerite.blaster_master           = find_azerite_spell( "Blaster Master"           );
   azerite.duplicative_incineration = find_azerite_spell( "Duplicative Incineration" );
