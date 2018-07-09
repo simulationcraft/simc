@@ -1193,8 +1193,6 @@ struct storm_earth_and_fire_pet_t : public pet_t
     { 
       // Hard Code the divider
       base_dd_min = base_dd_max = 1;
-      double ap_mod_direct = o() -> spec.blackout_kick -> effectN( 1 ).base_value();
-      attack_power_mod.direct = ap_mod_direct / 10000;
     }
 
     double composite_persistent_multiplier( const action_state_t* action_state ) const override
@@ -1369,13 +1367,18 @@ struct storm_earth_and_fire_pet_t : public pet_t
       sef_melee_attack_t( "rushing_jade_wind", player, player -> o() -> talent.rushing_jade_wind )
     {
       tick_zero = hasted_ticks = true;
+      dual = true;
 
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
       weapon_power_mod = 0;
 
       tick_action = new sef_rushing_jade_wind_tick_t( player );
+
+//      base_costs_per_tick[RESOURCE_ENERGY] = 0;
     }
+
+    
 
     void tick( dot_t* d ) override
     {
@@ -8359,7 +8362,8 @@ void monk_t::apl_combat_windwalker(){
 
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Spear Hand Strike", "if=target.debuff.casting.react" );
-  def -> add_action( this, "Touch of Karma", "interval=90,pct_health=0.5", "Touch of Karma on cooldown, if Good Karma is enabled equal to 100% of maximum health" );
+  def -> add_action( this, "Touch of Karma", "interval=90,pct_health=0.5,if=!talent.Good_Karma.enabled,interval=90,pct_health=0.5", 
+                         "Touch of Karma on cooldown, if Good Karma is enabled equal to 100% of maximum health" );
   def -> add_action( this, "Touch of Karma", "interval=90,pct_health=1.0" );
 
   if ( sim -> allow_potions )
@@ -8379,10 +8383,9 @@ void monk_t::apl_combat_windwalker(){
   def -> add_action( "call_action_list,name=sef,if=(!talent.serenity.enabled&cooldown.fists_of_fury.remains<=12&chi>=3&cooldown.rising_sun_kick.remains<=1)|target.time_to_die<=25|cooldown.touch_of_death.remains>112", 
                         "Call the SEF action list if you're not using Serenity and:\n# - FoF cd <= 12\n# - Chi >= 3\n# - RSK cd >= 1\n# OR the target will die within 25 seconds OR ToD is on the target" );
   def -> add_action( "call_action_list,name=sef,if=(!talent.serenity.enabled&cooldown.fists_of_fury.remains<=12&chi>=3&cooldown.rising_sun_kick.remains<=1)|target.time_to_die<=25|cooldown.touch_of_death.remains>112&cooldown.storm_earth_and_fire.charges=1", 
-
-                    "Exactly the same as previous line, but with an added check whether you have 1 stack of SEF" );
+                        "Exactly the same as previous line, but with an added check whether you have 1 stack of SEF" );
   def -> add_action( "call_action_list,name=sef,if=(!talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.fists_of_fury.remains<=6&chi>=3&cooldown.rising_sun_kick.remains<=1)|target.time_to_die<=15|cooldown.touch_of_death.remains>112&cooldown.storm_earth_and_fire.charges=1",
-                         "Call the SEF action list if you're using Serenity and:\n# - Using DHC\n# - FoF cd <= 6\n# - Chi >= 3\n# - RSK cd <= 1\n# OR the target will die within 15 seconds OR ToD is on the target and you have 1 stack of SEF" );
+                        "Call the SEF action list if you're using Serenity and:\n# - Using DHC\n# - FoF cd <= 6\n# - Chi >= 3\n# - RSK cd <= 1\n# OR the target will die within 15 seconds OR ToD is on the target and you have 1 stack of SEF" );
   def -> add_action( "call_action_list,name=aoe,if=active_enemies>3", "Call the AoE action list if there are more than 3 enemies" );
   def -> add_action( "call_action_list,name=st,if=active_enemies<=3", "Call the ST action list if there are 3 or less enemies" );
 
@@ -8457,7 +8460,7 @@ void monk_t::apl_combat_windwalker(){
   serenity_opener -> add_action( "call_action_list,name=cd,if=cooldown.fists_of_fury.remains>1" );
   serenity_opener -> add_talent( this, "Serenity", "if=cooldown.fists_of_fury.remains>1" );
   serenity_opener -> add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3&buff.serenity.up" );
-  serenity_opener -> add_action( this, "Fist of the White Tiger", "if=buff.serenity.up",
+  serenity_opener -> add_talent( this, "Fist of the White Tiger", "if=buff.serenity.up",
                                  "Cast Fists_of_fury if\n# - Rising Sun Kicks remaining cooldown is longer than 1 second\n# - Interrupt Fists_of_fury with Rising Sun Kick if Serenity remains" );
   serenity_opener -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.fist_of_the_white_tiger)" );
   serenity_opener -> add_action( this, "Fists of Fury", "if=cooldown.rising_sun_kick.remains>1|buff.serenity.down,interrupt=1" );
@@ -8469,19 +8472,19 @@ void monk_t::apl_combat_windwalker(){
   serenity -> add_action( "call_action_list,name=cd" );
   serenity -> add_talent( this, "Serenity" );
   serenity -> add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3" );
-  serenity -> add_action( this, "Fist of the White Tiger" );
-  serenity -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.fist_of_the_white_tiger|prev_gcd.1.fists_of_fury)&active_enemies<2" );
+//  serenity -> add_talent( this, "Fist of the White Tiger" );
   serenity -> add_action( this, "Fists of Fury", "if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=2&set_bonus.tier20_4pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1",
                               "Legacy syntax for T19/T20 6pc" );
   serenity -> add_action( this, "Fists of Fury", "if=((!equipped.drinking_horn_cover|buff.bloodlust.up|buff.serenity.remains<1)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1",
                               "Cast Fist of Fury if:\n# - The remaining cooldown on rising_sun_kick is longer than the channel duration of Fists_of_fury" );
   serenity -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick" );
-  serenity -> add_talent( this, "if=talent.rushing_jade_wind.enabled&!prev_gcd.1.rushing_jade_wind&buff.rushing_jade_wind.down&buff.serenity.remains>=4",
-                              "Needs to be rewritten for BFA" );
+//  serenity -> add_talent( this, "Rushing Jade Wind", "if=!ticking&!prev_gcd.1.rushing_jade_wind&buff.rushing_jade_wind.down&buff.serenity.remains>=4",
+//                              "Needs to be rewritten for BFA" );
+  serenity -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.fist_of_the_white_tiger|prev_gcd.1.fists_of_fury)&active_enemies<2" );
   serenity -> add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies>=3" );
-  serenity -> add_talent( this, "Rushing Jade Wind", "if=talent.rushing_jade_wind.enabled&!prev_gcd.1.rushing_jade_wind&buff.rushing_jade_wind.down&active_enemies>1",
-                              "Needs to be rewritten for BFA" );
-  serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick" );
+//  serenity -> add_talent( this, "Rushing Jade Wind", "if=!ticking&!prev_gcd.1.rushing_jade_wind&buff.rushing_jade_wind.down&active_enemies>1",
+//                              "Needs to be rewritten for BFA" );
+//  serenity -> add_action( this, "Spinning Crane Kick", "if=!prev_gcd.1.spinning_crane_kick" );
   serenity -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick" );
 
   // Multiple Targets
@@ -8500,9 +8503,9 @@ void monk_t::apl_combat_windwalker(){
   aoe -> add_action( this, "Fists of Fury", "if=!talent.serenity.enabled&energy.time_to_max>2" );
   aoe -> add_action( this, "Fists of Fury", "if=cooldown.rising_sun_kick.remains>=3.5&chi<=5" );
   aoe -> add_talent( this, "Whirling Dragon Punch" );
-  aoe -> add_action( this, "Fist of the White Tiger", "if=!talent.serenity.enabled|cooldown.serenity.remains>=10" );
+//  aoe -> add_talent( this, "Fist of the White Tiger", "if=!talent.serenity.enabled|cooldown.serenity.remains>=10" );
   aoe -> add_action( this, "Rising Sun Kick", "target_if=cooldown.whirling_dragon_punch.remains>=gcd&!prev_gcd.1.rising_sun_kick&cooldown.fists_of_fury.remains>gcd" );
-  aoe -> add_talent( this, "Rushing Jade Wind", "if=talent.rushing_jade_wind.enabled&!prev_gcd.1.rushing_jade_wind", "Needs to be rewritten for BFA" );
+//  aoe -> add_talent( this, "Rushing Jade Wind", "if=!ticking&!prev_gcd.1.rushing_jade_wind", "Needs to be rewritten for BFA" );
   aoe -> add_talent( this, "Chi Burst", "if=chi<=3&(cooldown.rising_sun_kick.remains>=5|cooldown.whirling_dragon_punch.remains>=5)&energy.time_to_max>1" );
   aoe -> add_talent( this, "Chi Burst" );
   aoe -> add_action( this, "Spinning Crane Kick", "if=(active_enemies>=3|(buff.bok_proc.up&chi.max-chi>=0))&!prev_gcd.1.spinning_crane_kick&set_bonus.tier21_4pc" );
@@ -8520,15 +8523,17 @@ void monk_t::apl_combat_windwalker(){
   // Single Target
   st -> add_talent( this, "Invoke Xuen, the White Tiger", "", "Default action list" );
   st -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up" );
+  st -> add_talent( this, "Rushing Jade Wind", "if=!ticking&!prev_gcd.1.rushing_jade_wind", "Needs to be rewritten for BFA");
+  st -> add_talent( this, "Rushing Jade Wind", "if=ticking&!prev_gcd.1.rushing_jade_wind", "Needs to be rewritten for BFA");
   st -> add_talent( this, "Energizing Elixir", "if=!prev_gcd.1.tiger_palm" );
   st -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&chi.max-chi>=1&set_bonus.tier21_4pc&buff.bok_proc.up",
                         "T21 set bonus conditional\n# Cast Blackout Kick if:\n# - Previous GCD was not Blackout Kick\n# - Blackout Kick! is available\n# - You're not at max Chi" );
-  st -> add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy.time_to_max<=1&chi.max-chi>=2",
+  st -> add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy.time_to_max<=1&chi.max-chi>=2&!buff.serenity.up",
                         "Cast Tiger Palm if:\n# - Previous GCD was not Tiger Palm\n# - Previous GCD was not EE (NOTE: redundant because of the Energy check, needs to be rewritten for BFA)\n# - You will cap Energy before next GCD\n# - You will gain 2 or more Chi" );
   st -> add_talent( this, "Fist of the White Tiger", "if=chi.max-chi>=3", 
                         "Cast FotWT if you will gain 3 or more Chi" );
   st -> add_talent( this, "Whirling Dragon Punch" );
-  st -> add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=((chi>=3&energy>=40)|chi>=5)&(!talent.serenity.enabled|cooldown.serenity.remains>=6)",
+  st -> add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=((chi>=3&energy>=40)|chi>=5)&(talent.serenity.enabled|cooldown.serenity.remains>=6)",
                         "Cast Rising Sun Kick if:\n# - You are using SEF, and you have 3 or more Chi AND 40 or more energy OR 5 or more Chi\n# - You are using Serenity, 6 or more seconds remain on the cooldown of Serenity, and you have 3 or more Chi AND 40 or more energy OR 5 or more Chi " );
   st -> add_action( this, "Fists of Fury", "if=talent.serenity.enabled&!equipped.drinking_horn_cover&cooldown.serenity.remains>=5&energy.time_to_max>2",
                         "Legacy conditional for Drinking Horn Cover" );
@@ -8536,24 +8541,24 @@ void monk_t::apl_combat_windwalker(){
                         "Legacy conditional for Drinking Horn Cover" );
   st -> add_action( this, "Fists of Fury", "if=!talent.serenity.enabled", 
                         "Cast Fists of Fury if:\n# - You are using SEF" );
-  st -> add_action( this, "Fists of Fury", "if=cooldown.fists_of_fury.duration<=cooldown.rising_sun_kick.remains", 
-                        "Cast Fists of Fury if:\n# - Rising Sun Kick will not come off cooldown during the channel" );
-  st -> add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=(!talent.serenity.enabled|cooldown.serenity.remains>=5)",
+//  st -> add_action( this, "Fists of Fury", "if=cooldown.fists_of_fury.duration<=cooldown.rising_sun_kick.remains", 
+//                        "Cast Fists of Fury if:\n# - Rising Sun Kick will not come off cooldown during the channel" );
+  st -> add_action( this, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>=5|(!talent.serenity.enabled)",
                         "Cast RSK if:\n# - You are using SEF OR you are using Serenity and 5 or more seconds remain on the cooldown of Serenity" );
   st -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&chi.max-chi>=1",
-                    "Cast Blackout Kick if:\n# - Previous GCD was not BoK\n# - You are not at max Chi" );
+                        "Cast Blackout Kick if:\n# - Previous GCD was not BoK\n# - You are not at max Chi" );
   st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=19&energy.time_to_max>3",
                         "Legacy for The Emperors Capacitor" );
   st -> add_action( this, "Crackling Jade Lightning", "if=equipped.the_emperors_capacitor&buff.the_emperors_capacitor.stack>=14&cooldown.serenity.remains<13&talent.serenity.enabled&energy.time_to_max>3" );
-  st -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick",
-                        "Cast spinning_crane_kick if:\n# - Previous cast was not spinning_crane_kick\n# - You have 3 or more active enemies (NOTE: Does not include stacks. May be redundant since actions.st should not be called given the earlier check)" );
+//  st -> add_action( this, "Spinning Crane Kick", "if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick",
+//                        "Cast spinning_crane_kick if:\n# - Previous cast was not spinning_crane_kick\n# - You have 3 or more active enemies (NOTE: Does not include stacks. May be redundant since actions.st should not be called given the earlier check)" );
   st -> add_action( this, "Blackout Kick" );
-  st -> add_talent( this, "Chi Burst", "if=chi<=3&(cooldown.rising_sun_kick.remains>=5|cooldown.whirling_dragon_punch.remains>=5)&energy.time_to_max>1",
-                        "Will need to be rewritten for BFA\n# Current rule: Cast Chi Burst if:\n# - You have 3 or less Chi\n# - RSK is up in 5 or more seconds OR WDP is up in 5 or more seconds\n# - You will not cap energy before the next GCD" );
-  st -> add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&(chi.max-chi>=2|energy.time_to_max<3)", 
-                        "Cast Tiger Palm if:\n# - Previous ability was not Tiger Palm or Energizing Elixir\n# - You will gain at least 2 Chi, OR you will cap energy within 3 seconds (NOTE: Could cast TP even at 5 Chi just to prevent energy capping, in theory)" );
   st -> add_talent( this, "Chi Wave" );
-  st -> add_talent( this, "Chi Burst" );
+  st -> add_talent( this, "Chi Burst", "if=energy.time_to_max>1&talent.serenity.enabled",
+                        "Will need to be rewritten for BFA\n# Current rule: Cast Chi Burst if:\n# - You have 3 or less Chi\n# - RSK is up in 5 or more seconds OR WDP is up in 5 or more seconds\n# - You will not cap energy before the next GCD" );
+  st -> add_action( this, "Tiger Palm", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&(chi.max-chi>=2|energy.time_to_max<3)&!buff.serenity.up", 
+                        "Cast Tiger Palm if:\n# - Previous ability was not Tiger Palm or Energizing Elixir\n# - You will gain at least 2 Chi, OR you will cap energy within 3 seconds (NOTE: Could cast TP even at 5 Chi just to prevent energy capping, in theory)" );
+  st -> add_talent( this, "Chi Burst", "if=chi.max-chi>=3&energy.time_to_max>1&!talent.serenity.enabled");
 }
 
 // Mistweaver Combat Action Priority List ==================================
