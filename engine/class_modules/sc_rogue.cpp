@@ -2522,10 +2522,7 @@ struct blindside_t: public rogue_attack_t
   double cost() const override
   {
     double c = rogue_attack_t::cost();
-
-    if ( p() -> buffs.blindside -> check() )
-      c = 0;
-
+    c *= 1.0 + p() -> buffs.blindside -> check_value();
     return c;
   }
 
@@ -7117,8 +7114,8 @@ void rogue_t::create_buffs()
   buffs.elaborate_planning      = make_buff( this, "elaborate_planning", talent.elaborate_planning -> effectN( 1 ).trigger() )
                                   -> set_default_value( 1.0 + talent.elaborate_planning -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
                                   -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.blindside                = make_buff( this, "blindside", talent.blindside )
-                                  -> set_duration( timespan_t::from_seconds( 10.0 ) ); // I see no buff spell in spell data yet, hardcode for now.
+  buffs.blindside                = make_buff( this, "blindside", find_spell( 121153 ) )
+                                  -> set_default_value( find_spell( 121153 ) -> effectN( 2 ).percent() );
   buffs.master_assassin_aura    = make_buff(this, "master_assassin_aura", talent.master_assassin)
                                   -> set_default_value( spec.master_assassin -> effectN( 1 ).percent() );
   buffs.master_assassin         = make_buff( this, "master_assassin", talent.master_assassin )
