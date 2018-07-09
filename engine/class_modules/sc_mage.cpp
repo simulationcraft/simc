@@ -444,6 +444,8 @@ public:
     haste_buff_t* sephuzs_secret;
 
     // Azerite
+    buff_t* brain_storm;
+
     buff_t* blaster_master;
     buff_t* firemind;
     buff_t* flames_of_alacrity;
@@ -643,6 +645,7 @@ public:
     azerite_power_t anomalous_impact;
     azerite_power_t explosive_echo;
     azerite_power_t arcane_pressure;
+    azerite_power_t brain_storm;
 
     // Fire
     azerite_power_t blaster_master;
@@ -3052,6 +3055,16 @@ struct evocation_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p() -> trigger_evocation();
+  }
+
+  virtual void tick( dot_t* d ) override
+  {
+    arcane_mage_spell_t::tick( d );
+
+    if ( p() -> azerite.brain_storm.enabled() )
+    {
+      p() -> buffs.brain_storm -> trigger();
+    }
   }
 
   virtual void last_tick( dot_t* d ) override
@@ -6138,6 +6151,7 @@ void mage_t::init_spells()
   azerite.anomalous_impact         = find_azerite_spell( "Anomalous Impact"         );
   azerite.explosive_echo           = find_azerite_spell( "Explosive Echo"           );
   azerite.arcane_pressure          = find_azerite_spell( "Arcane Pressure"          );
+  azerite.brain_storm              = find_azerite_spell( "Brain Storm"              );
 
   azerite.blaster_master           = find_azerite_spell( "Blaster Master"           );
   azerite.duplicative_incineration = find_azerite_spell( "Duplicative Incineration" );
@@ -6314,6 +6328,8 @@ void mage_t::create_buffs()
   buffs.blaster_master     = make_buff<stat_buff_t>( this, "blaster_master", find_spell( 274598 ) )
                                -> add_stat( STAT_MASTERY_RATING, azerite.blaster_master.value() )
                                -> set_chance( azerite.blaster_master.enabled() ? 1.0 : 0.0 );
+  buffs.brain_storm        = make_buff<stat_buff_t>( this, "brain_storm", find_spell( 273330 ) )
+                               -> add_stat( STAT_INTELLECT, azerite.brain_storm.value() );
   buffs.firemind           = make_buff<stat_buff_t>( this, "firemind", find_spell( 279715 ) )
                                -> add_stat( STAT_INTELLECT, azerite.firemind.value() )
                                -> set_chance( azerite.firemind.enabled() ? 1.0 : 0.0 );
