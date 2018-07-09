@@ -641,6 +641,7 @@ public:
     // Arcane
     azerite_power_t galvanizing_spark;
     azerite_power_t anomalous_impact;
+    azerite_power_t explosive_echo;
 
     // Fire
     azerite_power_t blaster_master;
@@ -2295,6 +2296,11 @@ struct arcane_explosion_t : public arcane_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
+
+    if ( p -> azerite.explosive_echo.enabled() )
+    {
+       base_dd_adder += p -> azerite.explosive_echo.value( 2 );
+    }
   }
 
   virtual double cost() const override
@@ -2328,6 +2334,24 @@ struct arcane_explosion_t : public arcane_mage_spell_t
     }
     p() -> buffs.quick_thinker -> trigger();
   }
+
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double da = arcane_mage_spell_t::bonus_da( s );
+
+    std::vector<player_t*> tl = target_list();
+
+    if ( p() -> azerite.explosive_echo.enabled() && tl.size() > 2 )
+    {
+      if ( rng().roll ( p() -> azerite.explosive_echo.spell_ref().effectN( 3 ).percent() ) )
+        {
+          da += p() -> azerite.explosive_echo.value( 4 );
+        }
+    }
+
+    return da;
+  }
+
 };
 
 // Arcane Intellect Spell ===================================================
@@ -6098,6 +6122,7 @@ void mage_t::init_spells()
   // Azerite
   azerite.galvanizing_spark        = find_azerite_spell( "Galvanizing Spark"        );
   azerite.anomalous_impact         = find_azerite_spell( "Anomalous Impact"         );
+  azerite.explosive_echo           = find_azerite_spell( "Explosive Echo"           );
 
   azerite.blaster_master           = find_azerite_spell( "Blaster Master"           );
   azerite.duplicative_incineration = find_azerite_spell( "Duplicative Incineration" );
