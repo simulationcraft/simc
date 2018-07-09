@@ -7649,19 +7649,10 @@ void shaman_t::init_action_list_enhancement()
       "variable,name=furyCheck35,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>35))" );
   def->add_action(
       "variable,name=furyCheck25,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>25))" );
-  def->add_action( "variable,name=overcharge,value=(talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40)" );
   def->add_action(
-      "variable,name=OCPool100,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&(maelstrom>100|cooldown."
-      "lightning_bolt.remains>gcd)))" );
+      "variable,name=OCPool70,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&maelstrom>70))" );
   def->add_action(
-      "variable,name=OCPool80,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&(maelstrom>80|cooldown."
-      "lightning_bolt.remains>gcd)))" );
-  def->add_action(
-      "variable,name=OCPool70,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&(maelstrom>70|cooldown."
-      "lightning_bolt.remains>gcd)))" );
-  def->add_action(
-      "variable,name=OCPool60,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&(maelstrom>60|cooldown."
-      "lightning_bolt.remains>gcd)))" );
+      "variable,name=OCPool60,value=(!talent.overcharge.enabled|(talent.overcharge.enabled&maelstrom>60))" );
 
   // Turn on auto-attack first thing
   def->add_action( "auto_attack" );
