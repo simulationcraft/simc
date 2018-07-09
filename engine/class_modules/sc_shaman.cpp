@@ -3040,24 +3040,6 @@ struct stormstrike_attack_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
   }
-
-  void impact( action_state_t* state ) override
-  {
-    if ( p()->buff.lightning_shield->up() )
-    {
-      p()->buff.lightning_shield->trigger();
-
-      if ( p()->buff.lightning_shield->stack() >=
-           20 )  // if 20 or greater, trigger overcharge and remove all stacks, then trigger LS back to 1.
-      {          // is there a way to do this without expiring lightning shield entirely?
-        p()->buff.lightning_shield_overcharge->trigger();
-        p()->buff.lightning_shield->expire();
-        p()->buff.lightning_shield->trigger();
-      }
-    }
-
-    shaman_attack_t::impact( state );
-  }
 };
 
 struct windstrike_attack_t : public stormstrike_attack_t
@@ -3640,6 +3622,30 @@ struct stormstrike_base_t : public shaman_attack_t
     shaman_attack_t::reset();
     background = background_action;
     dual       = false;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    if ( p()->buff.lightning_shield->up() )
+    {
+      if ( !state->action->result_is_hit( state->result ) )
+      {
+        return;
+      }
+
+      p()->buff.lightning_shield->trigger();
+      p()->buff.lightning_shield->trigger();
+
+      if ( p()->buff.lightning_shield->stack() >=
+           20 )  // if 20 or greater, trigger overcharge and remove all stacks, then trigger LS back to 1.
+      {          // is there a way to do this without expiring lightning shield entirely?
+        p()->buff.lightning_shield_overcharge->trigger();
+        p()->buff.lightning_shield->expire();
+        p()->buff.lightning_shield->trigger();
+      }
+    }
+
+    shaman_attack_t::impact( state );
   }
 };
 
@@ -7142,11 +7148,6 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
 
 void shaman_t::trigger_lightning_shield( const action_state_t* state )
 {
-  if ( state->result_amount <= 0 )
-  {
-    return;
-  }
-
   if ( !buff.lightning_shield->up() )
   {
     return;
@@ -7162,7 +7163,12 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
     return;
   }
 
-  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
+  if ( state->result_amount <= 0 )
+  {
+    return;
+  }
+
+    shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
   if ( !attack->may_proc_lightning_shield )
   {
     return;
@@ -7689,7 +7695,8 @@ void shaman_t::init_action_list_enhancement()
                    "'bloodlust_percent', and 'bloodlust_time'. " );
   cds->add_action( "berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
   cds->add_action( "blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100" );
-  cds->add_action( "potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60" );
+  cds->add_action(
+      "potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60" );
   cds->add_action( this, "Feral Spirit" );
   cds->add_talent( this, "Ascendance", "if=(cooldown.strike.remains>0)&buff.ascendance.down" );
   cds->add_action( this, "Earth Elemental" );
@@ -7700,7 +7707,8 @@ void shaman_t::init_action_list_enhancement()
   core->add_action( this, "Stormstrike", "if=buff.stormbringer.up" );
   core->add_action( this, "Crash Lightning", "if=active_enemies>=4|(active_enemies>=2&talent.crashing_storm.enabled)" );
   core->add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&variable.furyCheck45&maelstrom>=40" );
-  core->add_action( this, "Stormstrike", "if=(!talent.overcharge.enabled&variable.furyCheck35)|"
+  core->add_action( this, "Stormstrike",
+                    "if=(!talent.overcharge.enabled&variable.furyCheck35)|"
                     "(talent.overcharge.enabled&variable.furyCheck80)" );
   core->add_talent( this, "Sundering" );
   core->add_action( this, "Flametongue", "if=talent.searing_assault.enabled" );
@@ -7709,11 +7717,14 @@ void shaman_t::init_action_list_enhancement()
 
   filler->add_action( this, "Rockbiter", "if=maelstrom<70" );
   filler->add_action( this, "Flametongue", "if=talent.searing_assault.enabled|buff.flametongue.remains<4.8" );
-  filler->add_action( this, "Crash Lightning", "if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60" );
+  filler->add_action(
+      this, "Crash Lightning",
+      "if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60" );
   filler->add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40" );
   filler->add_action( this, "Lava Lash", "if=maelstrom>=50&variable.OCPool70&variable.furyCheck80" );
   filler->add_action( this, "Rockbiter" );
-  filler->add_action( this, "Crash Lightning","if=(maelstrom>=65|talent.crashing_storm.enabled|active_enemies>=2)"
+  filler->add_action( this, "Crash Lightning",
+                      "if=(maelstrom>=65|talent.crashing_storm.enabled|active_enemies>=2)"
                       "&variable.OCPool60&variable.furyCheck45" );
   filler->add_action( this, "Flametongue" );
 }
