@@ -91,7 +91,6 @@ enum sef_ability_e {
   SEF_TIGER_PALM,
   SEF_BLACKOUT_KICK,
   SEF_RISING_SUN_KICK,
-  SEF_RISING_SUN_KICK_TRINKET,
   SEF_FISTS_OF_FURY,
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
@@ -1222,12 +1221,13 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
    };
 
-  struct sef_rising_sun_kick_t : public sef_melee_attack_t
+  struct sef_rising_sun_kick_dmg_t : public sef_melee_attack_t
   {
-
-    sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "rising_sun_kick", player, player -> o() -> spec.rising_sun_kick )
-    { }
+    sef_rising_sun_kick_dmg_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "rising_sun_kick_dmg", player, player -> o() -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
+    { 
+      background = true;
+    }
 
     virtual double composite_crit_chance() const override
     {
@@ -1245,30 +1245,30 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       if ( result_is_hit( state -> result ) )
       {
-        if ( o() -> spec.combat_conditioning && state -> target -> debuffs.mortal_wounds )
-          state -> target -> debuffs.mortal_wounds -> trigger();
+        if ( o() -> spec.combat_conditioning )
+        state -> target -> debuffs.mortal_wounds -> trigger();
 
         if ( o() -> spec.spinning_crane_kick )
           o() -> trigger_mark_of_the_crane( state );
+
       }
     }
   };
 
-  struct sef_rising_sun_kick_trinket_t : public sef_melee_attack_t
+
+  struct sef_rising_sun_kick_t : public sef_melee_attack_t
   {
+    sef_rising_sun_kick_dmg_t* trigger;
+    sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player ) :
+      sef_melee_attack_t( "rising_sun_kick", player, player -> o() -> spec.rising_sun_kick ),
+      trigger( new sef_rising_sun_kick_dmg_t( player ) )
+    { }
 
-    sef_rising_sun_kick_trinket_t( storm_earth_and_fire_pet_t* player ) :
-      sef_melee_attack_t( "rising_sun_kick_trinket", player, player -> o() -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
+    virtual void execute() override
     {
-      player -> find_action( "rising_sun_kick" ) -> add_child( this );
-    }
+      sef_melee_attack_t::execute();
 
-    void impact( action_state_t* state ) override
-    {
-      sef_melee_attack_t::impact( state );
-
-      if ( result_is_hit( state -> result ) && state -> target -> debuffs.mortal_wounds )
-        state -> target -> debuffs.mortal_wounds -> trigger();
+      trigger -> execute();
     }
   };
 
@@ -1331,6 +1331,15 @@ struct storm_earth_and_fire_pet_t : public pet_t
     }
   };
 
+  struct sef_spinning_crane_kick_tick_t : public sef_tick_action_t
+  {
+    sef_spinning_crane_kick_tick_t( storm_earth_and_fire_pet_t* p ) :
+      sef_tick_action_t( "spinning_crane_kick_tick", p, p -> o() -> spec.spinning_crane_kick -> effectN( 1 ).trigger() )
+    {
+      aoe = -1;
+    }
+  };
+
   struct sef_spinning_crane_kick_t : public sef_melee_attack_t
   {
     sef_spinning_crane_kick_t( storm_earth_and_fire_pet_t* player ) :
@@ -1341,8 +1350,16 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       weapon_power_mod = 0;
 
-      tick_action = new sef_tick_action_t( "spinning_crane_kick_tick", player, 
-          player -> o() -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
+      tick_action = new sef_spinning_crane_kick_tick_t( player );
+    }
+  };
+
+  struct sef_rushing_jade_wind_tick_t : public sef_tick_action_t
+  {
+    sef_rushing_jade_wind_tick_t( storm_earth_and_fire_pet_t* p ) :
+      sef_tick_action_t( "rushing_jade_wind_tick", p, p -> o() -> talent.rushing_jade_wind -> effectN( 1 ).trigger() )
+    {
+      aoe = -1;
     }
   };
 
@@ -1357,8 +1374,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       weapon_power_mod = 0;
 
-      tick_action = new sef_tick_action_t( "rushing_jade_wind_tick", player,
-          player -> o() -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
+      tick_action = new sef_rushing_jade_wind_tick_t( player );
     }
 
     void tick( dot_t* d ) override
@@ -1566,8 +1582,6 @@ public:
     attacks.at( SEF_TIGER_PALM )      = new sef_tiger_palm_t( this );
     attacks.at( SEF_BLACKOUT_KICK )   = new sef_blackout_kick_t( this );
     attacks.at( SEF_RISING_SUN_KICK ) = new sef_rising_sun_kick_t( this );
-    attacks.at( SEF_RISING_SUN_KICK_TRINKET ) =
-        new sef_rising_sun_kick_trinket_t( this );
     attacks.at( SEF_FISTS_OF_FURY ) = new sef_fists_of_fury_t( this );
     attacks.at( SEF_SPINNING_CRANE_KICK ) =
         new sef_spinning_crane_kick_t( this );
