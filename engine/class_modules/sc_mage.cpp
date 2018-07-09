@@ -5559,7 +5559,7 @@ struct time_anomaly_tick_event_t : public event_t
       sim().out_log.printf( "%s Time Anomaly tick event occurs.", mage -> name() );
     }
 
-    const double proc_chance = 0.06; // TODO: Improve this number as we get more data.
+    const double proc_chance = 1.0 / 15.0; // TODO: Improve this number as we get more data.
 
     if ( rng().roll( proc_chance ) )
     {
