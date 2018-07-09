@@ -3930,8 +3930,9 @@ struct sinister_strike_t : public rogue_attack_t
   double composite_energize_amount( const action_state_t* state ) const override
   {
     // Do not grant CP on extra proc event
-    if ( sinister_strike_proc_event )
-      return 0;
+    // This was changed back as of 2018-07-09, commenting it out in case the revert is reverted.
+    /*if ( sinister_strike_proc_event )
+      return 0;*/
 
     return rogue_attack_t::composite_energize_amount( state );
   }
@@ -3972,7 +3973,8 @@ struct sinister_strike_t : public rogue_attack_t
 
     p() -> buffs.t19_4pc_outlaw -> decrement();
 
-    if ( ! sinister_strike_proc_event && p() -> buffs.broadside -> up() )
+    // ! sinister_strike_proc_event &&
+    if ( p() -> buffs.broadside -> up() )
     {
       p() -> trigger_combo_point_gain( p() -> buffs.broadside -> data().effectN( 2 ).base_value(),
           p() -> gains.broadside, this );
