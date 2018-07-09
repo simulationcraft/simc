@@ -3286,6 +3286,9 @@ struct rjw_tick_action_t : public monk_melee_attack_t
 
     switch ( p() -> specialization() )
     {
+      case MONK_WINDWALKER:
+        am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
+        break;
       case MONK_BREWMASTER:
         am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
         am *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
