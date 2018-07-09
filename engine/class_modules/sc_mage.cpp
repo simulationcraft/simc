@@ -640,6 +640,7 @@ public:
   {
     // Arcane
     azerite_power_t galvanizing_spark;
+    azerite_power_t anomalous_impact;
 
     // Fire
     azerite_power_t blaster_master;
@@ -2372,6 +2373,18 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
 
     p() -> buffs.cord_of_infinity -> trigger();
   }
+
+  virtual double bonus_da( const action_state_t* s ) const override
+  {
+    double da = arcane_mage_spell_t::bonus_da( s );
+
+    if ( p() -> azerite.anomalous_impact.enabled() )
+    {
+      da += p() -> azerite.anomalous_impact.value() * p() -> buffs.arcane_charge -> check();
+    }
+
+    return da;
+  }
 };
 
 struct am_state_t : public mage_spell_state_t
@@ -2526,6 +2539,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     p() -> buffs.quick_thinker -> trigger();
   }
+
 
   virtual bool usable_moving() const override
   {
@@ -6083,7 +6097,7 @@ void mage_t::init_spells()
 
   // Azerite
   azerite.galvanizing_spark        = find_azerite_spell( "Galvanizing Spark"        );
-
+  azerite.anomalous_impact         = find_azerite_spell( "Anomalous Impact"         );
 
   azerite.blaster_master           = find_azerite_spell( "Blaster Master"           );
   azerite.duplicative_incineration = find_azerite_spell( "Duplicative Incineration" );
