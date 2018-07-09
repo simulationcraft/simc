@@ -414,452 +414,445 @@ namespace warlock {
 
         return warlock_pet_t::create_action(name, options_str);
       }
-    }
 
-    namespace shivarra {
-      struct multi_slash_damage_t : public warlock_pet_melee_attack_t
-      {
-        multi_slash_damage_t(warlock_pet_t* p, int slash_num) : warlock_pet_melee_attack_t("multi-slash-" + std::to_string(slash_num), p, p -> find_spell(272172))
+      namespace random_demons {
+        // shivarra
+        struct multi_slash_damage_t : public warlock_pet_melee_attack_t
         {
-          attack_power_mod.direct = data().effectN(slash_num).ap_coeff();
-        }
-      };
-
-      struct multi_slash_t : public warlock_pet_melee_attack_t
-      {
-        std::array<multi_slash_damage_t*, 4> slashs;
-
-        multi_slash_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("multi-slash", p, p -> find_spell(272172))
-        {
-          for (unsigned i = 0; i < slashs.size(); ++i)
+          multi_slash_damage_t(warlock_pet_t* p, int slash_num) : warlock_pet_melee_attack_t("multi-slash-" + std::to_string(slash_num), p, p -> find_spell(272172))
           {
-            // Slash number is the spelldata effects number, so increase by 1.
-            slashs[i] = new multi_slash_damage_t(p, i + 1);
-            add_child(slashs[i]);
+            attack_power_mod.direct = data().effectN(slash_num).ap_coeff();
           }
-        }
+        };
 
-        void execute() override
+        struct multi_slash_t : public warlock_pet_melee_attack_t
         {
-          cooldown->start(timespan_t::from_millis(rng().range(7000, 9000)));
+          std::array<multi_slash_damage_t*, 4> slashs;
 
-          for (auto& slash : slashs)
+          multi_slash_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("multi-slash", p, p -> find_spell(272172))
           {
-            slash->execute();
+            for (unsigned i = 0; i < slashs.size(); ++i)
+            {
+              // Slash number is the spelldata effects number, so increase by 1.
+              slashs[i] = new multi_slash_damage_t(p, i + 1);
+              add_child(slashs[i]);
+            }
           }
-        }
-      };
 
-      shivarra_t::shivarra_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-        warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "shivarra"),
-        multi_slash()
-      {
-        action_list_str = "travel/multi_slash";
-        owner_coeff.ap_from_sp = 0.065;
-      }
+          void execute() override
+          {
+            cooldown->start(timespan_t::from_millis(rng().range(7000, 9000)));
 
-      void shivarra_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-        off_hand_weapon = main_hand_weapon;
-        melee_attack = new warlock_pet_melee_t(this, 2.0);
-      }
+            for (auto& slash : slashs)
+            {
+              slash->execute();
+            }
+          }
+        };
 
-      void shivarra_t::arise()
-      {
-        warlock_pet_t::arise();
-        multi_slash->cooldown->start(timespan_t::from_millis(rng().range(3500, 5100)));
-      }
-
-      action_t* shivarra_t::create_action(const std::string& name, const std::string& options_str) {
-        if (name == "multi_slash")
+        shivarra_t::shivarra_t(sim_t* sim, warlock_t* owner, const std::string& name) :
+          warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "shivarra"),
+          multi_slash()
         {
-          assert(multi_slash == nullptr);
-          multi_slash = new multi_slash_t(this);
-          return multi_slash;
+          action_list_str = "travel/multi_slash";
+          owner_coeff.ap_from_sp = 0.065;
         }
 
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
-    namespace darkhound {
-      struct fel_bite_t : public warlock_pet_melee_attack_t {
-        fel_bite_t(warlock_pet_t* p) : warlock_pet_melee_attack_t(p, "Fel Bite") {
-        }
-
-        void execute() override {
-          warlock_pet_melee_attack_t::execute();
-          cooldown->start(timespan_t::from_millis(rng().range(4500, 6500)));
-        }
-      };
-
-      darkhound_t::darkhound_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-        warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "darkhound"),
-        fel_bite()
-      {
-        action_list_str = "travel/fel_bite";
-        owner_coeff.ap_from_sp = 0.065;
-      }
-
-      void darkhound_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-
-        melee_attack = new warlock_pet_melee_t(this, 2.0);
-      }
-
-      void darkhound_t::arise()
-      {
-        warlock_pet_t::arise();
-        fel_bite->cooldown->start(timespan_t::from_millis(rng().range(3000, 5000)));
-      }
-
-      action_t* darkhound_t::create_action(const std::string& name, const std::string& options_str) {
-        if (name == "fel_bite")
+        void shivarra_t::init_base_stats()
         {
-          assert(fel_bite == nullptr);
-          fel_bite = new fel_bite_t(this);
-          return fel_bite;
+          warlock_pet_t::init_base_stats();
+          off_hand_weapon = main_hand_weapon;
+          melee_attack = new warlock_pet_melee_t(this, 2.0);
         }
 
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
-
-    namespace bilescourge {
-      struct toxic_bile_t : public warlock_pet_spell_t
-      {
-        toxic_bile_t(warlock_pet_t* p) : warlock_pet_spell_t("toxic_bile", p, p -> find_spell(272167))
+        void shivarra_t::arise()
         {
+          warlock_pet_t::arise();
+          multi_slash->cooldown->start(timespan_t::from_millis(rng().range(3500, 5100)));
         }
-      };
 
-      bilescourge_t::bilescourge_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "bilescourge")
-      {
-        action_list_str = "toxic_bile";
-        owner_coeff.ap_from_sp = 0.065;
-      }
+        action_t* shivarra_t::create_action(const std::string& name, const std::string& options_str) {
+          if (name == "multi_slash")
+          {
+            assert(multi_slash == nullptr);
+            multi_slash = new multi_slash_t(this);
+            return multi_slash;
+          }
 
-      void bilescourge_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-      }
+          return warlock_pet_t::create_action(name, options_str);
+        }
 
-      action_t* bilescourge_t::create_action(const std::string& name, const std::string& options_str) {
-        if (name == "toxic_bile") return new toxic_bile_t(this);
+        // darkhound
+        struct fel_bite_t : public warlock_pet_melee_attack_t {
+          fel_bite_t(warlock_pet_t* p) : warlock_pet_melee_attack_t(p, "Fel Bite") {
+          }
 
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
+          void execute() override {
+            warlock_pet_melee_attack_t::execute();
+            cooldown->start(timespan_t::from_millis(rng().range(4500, 6500)));
+          }
+        };
 
-    namespace urzul {
-      struct many_faced_bite_t : public warlock_pet_melee_attack_t
-      {
-        many_faced_bite_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("many_faced_bite", p, p -> find_spell(272439))
+        darkhound_t::darkhound_t(sim_t* sim, warlock_t* owner, const std::string& name) :
+          warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "darkhound"),
+          fel_bite()
         {
-          attack_power_mod.direct = data().effectN(1).ap_coeff();
+          action_list_str = "travel/fel_bite";
+          owner_coeff.ap_from_sp = 0.065;
         }
 
-        void execute() override {
-          warlock_pet_melee_attack_t::execute();
-          cooldown->start(timespan_t::from_millis(rng().range(4500, 6000)));
-        }
-      };
-
-      urzul_t::urzul_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "urzul")
-        , many_faced_bite()
-      {
-        action_list_str = "travel";
-        action_list_str += "/many_faced_bite";
-        owner_coeff.ap_from_sp = 0.065;
-      }
-
-      void urzul_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-        melee_attack = new warlock_pet_melee_t(this, 2.0);
-      }
-
-      void urzul_t::arise()
-      {
-        warlock_pet_t::arise();
-        many_faced_bite->cooldown->start(timespan_t::from_millis(rng().range(3500, 4500)));
-      }
-
-      action_t* urzul_t::create_action(const std::string& name, const std::string& options_str) {
-        if (name == "many_faced_bite")
+        void darkhound_t::init_base_stats()
         {
-          assert(many_faced_bite == nullptr);
-          many_faced_bite = new many_faced_bite_t(this);
-          return many_faced_bite;
+          warlock_pet_t::init_base_stats();
+
+          melee_attack = new warlock_pet_melee_t(this, 2.0);
         }
 
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
-
-    namespace void_terror {
-      struct double_breath_damage_t : public warlock_pet_spell_t
-      {
-        double_breath_damage_t(warlock_pet_t* p, int breath_num) : warlock_pet_spell_t("double_breath-" + std::to_string(breath_num), p, p -> find_spell(272156))
+        void darkhound_t::arise()
         {
-          attack_power_mod.direct = data().effectN(breath_num).ap_coeff();
+          warlock_pet_t::arise();
+          fel_bite->cooldown->start(timespan_t::from_millis(rng().range(3000, 5000)));
         }
-      };
 
-      struct double_breath_t : public warlock_pet_spell_t
-      {
-        double_breath_damage_t* breath_1;
-        double_breath_damage_t* breath_2;
+        action_t* darkhound_t::create_action(const std::string& name, const std::string& options_str) {
+          if (name == "fel_bite")
+          {
+            assert(fel_bite == nullptr);
+            fel_bite = new fel_bite_t(this);
+            return fel_bite;
+          }
 
-        double_breath_t(warlock_pet_t* p) : warlock_pet_spell_t("double_breath", p, p -> find_spell(272156))
+          return warlock_pet_t::create_action(name, options_str);
+        }
+
+        // bilescourge
+        struct toxic_bile_t : public warlock_pet_spell_t
         {
-          breath_1 = new double_breath_damage_t(p, 1);
-          breath_2 = new double_breath_damage_t(p, 2);
-          add_child(breath_1);
-          add_child(breath_2);
-        }
+          toxic_bile_t(warlock_pet_t* p) : warlock_pet_spell_t("toxic_bile", p, p -> find_spell(272167))
+          {
+          }
+        };
 
-        void execute() override
+        bilescourge_t::bilescourge_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "bilescourge")
         {
-          cooldown->start(timespan_t::from_millis(rng().range(6000, 9000)));
-          breath_1->execute();
-          breath_2->execute();
+          action_list_str = "toxic_bile";
+          owner_coeff.ap_from_sp = 0.065;
         }
-      };
 
-      void_terror_t::void_terror_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "void_terror")
-        , double_breath()
-      {
-        action_list_str = "travel";
-        action_list_str += "/double_breath";
-        owner_coeff.ap_from_sp = 0.065;
-      }
-
-      void void_terror_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-        melee_attack = new warlock_pet_melee_t(this, 2.0);
-      }
-
-      void void_terror_t::arise()
-      {
-        warlock_pet_t::arise();
-        double_breath->cooldown->start(timespan_t::from_millis(rng().range(1800, 5000)));
-      }
-
-      action_t* void_terror_t::create_action(const std::string& name, const std::string& options_str) {
-        if (name == "double_breath")
+        void bilescourge_t::init_base_stats()
         {
-          assert(double_breath == nullptr);
-          double_breath = new double_breath_t(this);
-          return double_breath;
+          warlock_pet_t::init_base_stats();
         }
 
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
+        action_t* bilescourge_t::create_action(const std::string& name, const std::string& options_str) {
+          if (name == "toxic_bile") return new toxic_bile_t(this);
 
-    namespace wrathguard {
-      struct overhead_assault_t : public warlock_pet_melee_attack_t
-      {
-        overhead_assault_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("overhead_assault", p, p -> find_spell(272432))
+          return warlock_pet_t::create_action(name, options_str);
+        }
+
+        // urzul
+        struct many_faced_bite_t : public warlock_pet_melee_attack_t
         {
-          attack_power_mod.direct = data().effectN(1).ap_coeff();
-        }
+          many_faced_bite_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("many_faced_bite", p, p -> find_spell(272439))
+          {
+            attack_power_mod.direct = data().effectN(1).ap_coeff();
+          }
 
-        void execute() override {
-          warlock_pet_melee_attack_t::execute();
-          cooldown->start(timespan_t::from_millis(rng().range(4500, 6500)));
-        }
-      };
+          void execute() override {
+            warlock_pet_melee_attack_t::execute();
+            cooldown->start(timespan_t::from_millis(rng().range(4500, 6000)));
+          }
+        };
 
-      wrathguard_t::wrathguard_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "wrathguard")
-        , overhead_assault()
-      {
-        action_list_str = "travel/overhead_assault";
-        owner_coeff.ap_from_sp = 0.065;
-      }
-
-      void wrathguard_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-        off_hand_weapon = main_hand_weapon;
-        melee_attack = new warlock_pet_melee_t(this, 2.0);
-      }
-
-      void wrathguard_t::arise()
-      {
-        warlock_pet_t::arise();
-        overhead_assault->cooldown->start(timespan_t::from_millis(rng().range(3000, 5000)));
-      }
-
-      action_t* wrathguard_t::create_action(const std::string& name, const std::string& options_str) {
-        if (name == "overhead_assault")
+        urzul_t::urzul_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "urzul")
+          , many_faced_bite()
         {
-          assert(overhead_assault == nullptr);
-          overhead_assault = new overhead_assault_t(this);
-          return overhead_assault;
+          action_list_str = "travel";
+          action_list_str += "/many_faced_bite";
+          owner_coeff.ap_from_sp = 0.065;
         }
 
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
-
-    namespace vicious_hellhound {
-      struct demon_fangs_t : public warlock_pet_melee_attack_t
-      {
-        demon_fangs_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("demon_fangs", p, p -> find_spell(272013))
+        void urzul_t::init_base_stats()
         {
-          attack_power_mod.direct = data().effectN(1).ap_coeff();
+          warlock_pet_t::init_base_stats();
+          melee_attack = new warlock_pet_melee_t(this, 2.0);
         }
 
-        void execute() override {
-          warlock_pet_melee_attack_t::execute();
-          cooldown->start(timespan_t::from_millis(rng().range(4500, 6000)));
-        }
-      };
-
-      vicious_hellhound_t::vicious_hellhound_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "vicious_hellhound"), demon_fang()
-      {
-        action_list_str = "travel";
-        action_list_str += "/demon_fangs";
-        owner_coeff.ap_from_sp = 0.065;
-      }
-
-      void vicious_hellhound_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-
-        main_hand_weapon.swing_time = timespan_t::from_seconds(1.0);
-        melee_attack = new warlock_pet_melee_t(this, 1.0);
-      }
-
-      void vicious_hellhound_t::arise()
-      {
-        warlock_pet_t::arise();
-        demon_fang->cooldown->start(timespan_t::from_millis(rng().range(3200, 5100)));
-      }
-
-      action_t* vicious_hellhound_t::create_action(const std::string& name, const std::string& options_str) {
-        if (name == "demon_fangs")
+        void urzul_t::arise()
         {
-          assert(demon_fang == nullptr);
-          demon_fang = new demon_fangs_t(this);
-          return demon_fang;
+          warlock_pet_t::arise();
+          many_faced_bite->cooldown->start(timespan_t::from_millis(rng().range(3500, 4500)));
         }
 
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
+        action_t* urzul_t::create_action(const std::string& name, const std::string& options_str) {
+          if (name == "many_faced_bite")
+          {
+            assert(many_faced_bite == nullptr);
+            many_faced_bite = new many_faced_bite_t(this);
+            return many_faced_bite;
+          }
 
-    namespace illidari_satyr {
-      struct shadow_slash_t : public warlock_pet_melee_attack_t
-      {
-        shadow_slash_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("shadow_slash", p, p -> find_spell(272012))
+          return warlock_pet_t::create_action(name, options_str);
+        }
+
+        // void terror
+        struct double_breath_damage_t : public warlock_pet_spell_t
         {
-          attack_power_mod.direct = data().effectN(1).ap_coeff();
-        }
+          double_breath_damage_t(warlock_pet_t* p, int breath_num) : warlock_pet_spell_t("double_breath-" + std::to_string(breath_num), p, p -> find_spell(272156))
+          {
+            attack_power_mod.direct = data().effectN(breath_num).ap_coeff();
+          }
+        };
 
-        void execute() override {
-          warlock_pet_melee_attack_t::execute();
-          cooldown->start(timespan_t::from_millis(rng().range(4500, 6100)));
-        }
-      };
-
-      illidari_satyr_t::illidari_satyr_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "illidari_satyr")
-        , shadow_slash()
-      {
-        action_list_str = "travel/shadow_slash";
-        owner_coeff.ap_from_sp = 0.065;
-      }
-
-      void illidari_satyr_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-        off_hand_weapon = main_hand_weapon;
-        melee_attack = new warlock_pet_melee_t(this, 1.0);
-      }
-
-      void illidari_satyr_t::arise()
-      {
-        warlock_pet_t::arise();
-        shadow_slash->cooldown->start(timespan_t::from_millis(rng().range(3500, 5000)));
-      }
-
-      action_t* illidari_satyr_t::create_action(const std::string& name, const std::string& options_str) {
-        if (name == "shadow_slash")
+        struct double_breath_t : public warlock_pet_spell_t
         {
-          assert(shadow_slash == nullptr);
-          shadow_slash = new shadow_slash_t(this);
-          return shadow_slash;
-        }
+          double_breath_damage_t* breath_1;
+          double_breath_damage_t* breath_2;
 
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
+          double_breath_t(warlock_pet_t* p) : warlock_pet_spell_t("double_breath", p, p -> find_spell(272156))
+          {
+            breath_1 = new double_breath_damage_t(p, 1);
+            breath_2 = new double_breath_damage_t(p, 2);
+            add_child(breath_1);
+            add_child(breath_2);
+          }
 
-    namespace eyes_of_guldan {
-      struct eye_of_guldan_t : public warlock_pet_spell_t
-      {
-        eye_of_guldan_t(warlock_pet_t* p) : warlock_pet_spell_t("eye_of_guldan", p, p -> find_spell(272131))
+          void execute() override
+          {
+            cooldown->start(timespan_t::from_millis(rng().range(6000, 9000)));
+            breath_1->execute();
+            breath_2->execute();
+          }
+        };
+
+        void_terror_t::void_terror_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "void_terror")
+          , double_breath()
         {
-          hasted_ticks = false;
+          action_list_str = "travel";
+          action_list_str += "/double_breath";
+          owner_coeff.ap_from_sp = 0.065;
         }
-      };
 
-      eyes_of_guldan_t::eyes_of_guldan_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "eyes_of_guldan") {
-        action_list_str = "eye_of_guldan";
-        owner_coeff.ap_from_sp = 0.065;
-      }
+        void void_terror_t::init_base_stats()
+        {
+          warlock_pet_t::init_base_stats();
+          melee_attack = new warlock_pet_melee_t(this, 2.0);
+        }
 
-      void eyes_of_guldan_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-      }
+        void void_terror_t::arise()
+        {
+          warlock_pet_t::arise();
+          double_breath->cooldown->start(timespan_t::from_millis(rng().range(1800, 5000)));
+        }
 
-      void eyes_of_guldan_t::arise()
-      {
-        warlock_pet_t::arise();
-        o()->buffs.eyes_of_guldan->trigger();
-      }
+        action_t* void_terror_t::create_action(const std::string& name, const std::string& options_str) {
+          if (name == "double_breath")
+          {
+            assert(double_breath == nullptr);
+            double_breath = new double_breath_t(this);
+            return double_breath;
+          }
 
-      void eyes_of_guldan_t::demise()
-      {
-        warlock_pet_t::demise();
-        o()->buffs.eyes_of_guldan->decrement();
-      }
+          return warlock_pet_t::create_action(name, options_str);
+        }
 
-      action_t* eyes_of_guldan_t::create_action(const std::string& name, const std::string& options_str) {
-        if (name == "eye_of_guldan") return new eye_of_guldan_t(this);
+        // wrathguard
+        struct overhead_assault_t : public warlock_pet_melee_attack_t
+        {
+          overhead_assault_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("overhead_assault", p, p -> find_spell(272432))
+          {
+            attack_power_mod.direct = data().effectN(1).ap_coeff();
+          }
 
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    }
+          void execute() override {
+            warlock_pet_melee_attack_t::execute();
+            cooldown->start(timespan_t::from_millis(rng().range(4500, 6500)));
+          }
+        };
 
-    namespace prince_malchezaar {
-      prince_malchezaar_t::prince_malchezaar_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "prince_malchezaar") {
-        owner_coeff.ap_from_sp = 0.616;
-        action_list_str = "travel";
-      }
+        wrathguard_t::wrathguard_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "wrathguard")
+          , overhead_assault()
+        {
+          action_list_str = "travel/overhead_assault";
+          owner_coeff.ap_from_sp = 0.065;
+        }
 
-      void prince_malchezaar_t::init_base_stats()
-      {
-        warlock_pet_t::init_base_stats();
-        off_hand_weapon = main_hand_weapon;
-        melee_attack = new warlock_pet_melee_t(this);
-      }
+        void wrathguard_t::init_base_stats()
+        {
+          warlock_pet_t::init_base_stats();
+          off_hand_weapon = main_hand_weapon;
+          melee_attack = new warlock_pet_melee_t(this, 2.0);
+        }
 
-      void prince_malchezaar_t::arise()
-      {
-        warlock_pet_t::arise();
-        o()->buffs.prince_malchezaar->trigger();
-      }
+        void wrathguard_t::arise()
+        {
+          warlock_pet_t::arise();
+          overhead_assault->cooldown->start(timespan_t::from_millis(rng().range(3000, 5000)));
+        }
 
-      void prince_malchezaar_t::demise()
-      {
-        warlock_pet_t::demise();
-        o()->buffs.prince_malchezaar->decrement();
+        action_t* wrathguard_t::create_action(const std::string& name, const std::string& options_str) {
+          if (name == "overhead_assault")
+          {
+            assert(overhead_assault == nullptr);
+            overhead_assault = new overhead_assault_t(this);
+            return overhead_assault;
+          }
+
+          return warlock_pet_t::create_action(name, options_str);
+        }
+
+        // vicious hellhound
+        struct demon_fangs_t : public warlock_pet_melee_attack_t
+        {
+          demon_fangs_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("demon_fangs", p, p -> find_spell(272013))
+          {
+            attack_power_mod.direct = data().effectN(1).ap_coeff();
+          }
+
+          void execute() override {
+            warlock_pet_melee_attack_t::execute();
+            cooldown->start(timespan_t::from_millis(rng().range(4500, 6000)));
+          }
+        };
+
+        vicious_hellhound_t::vicious_hellhound_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "vicious_hellhound"), demon_fang()
+        {
+          action_list_str = "travel";
+          action_list_str += "/demon_fangs";
+          owner_coeff.ap_from_sp = 0.065;
+        }
+
+        void vicious_hellhound_t::init_base_stats()
+        {
+          warlock_pet_t::init_base_stats();
+
+          main_hand_weapon.swing_time = timespan_t::from_seconds(1.0);
+          melee_attack = new warlock_pet_melee_t(this, 1.0);
+        }
+
+        void vicious_hellhound_t::arise()
+        {
+          warlock_pet_t::arise();
+          demon_fang->cooldown->start(timespan_t::from_millis(rng().range(3200, 5100)));
+        }
+
+        action_t* vicious_hellhound_t::create_action(const std::string& name, const std::string& options_str) {
+          if (name == "demon_fangs")
+          {
+            assert(demon_fang == nullptr);
+            demon_fang = new demon_fangs_t(this);
+            return demon_fang;
+          }
+
+          return warlock_pet_t::create_action(name, options_str);
+        }
+
+        // illidari satyr
+        struct shadow_slash_t : public warlock_pet_melee_attack_t
+        {
+          shadow_slash_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("shadow_slash", p, p -> find_spell(272012))
+          {
+            attack_power_mod.direct = data().effectN(1).ap_coeff();
+          }
+
+          void execute() override {
+            warlock_pet_melee_attack_t::execute();
+            cooldown->start(timespan_t::from_millis(rng().range(4500, 6100)));
+          }
+        };
+
+        illidari_satyr_t::illidari_satyr_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "illidari_satyr")
+          , shadow_slash()
+        {
+          action_list_str = "travel/shadow_slash";
+          owner_coeff.ap_from_sp = 0.065;
+        }
+
+        void illidari_satyr_t::init_base_stats()
+        {
+          warlock_pet_t::init_base_stats();
+          off_hand_weapon = main_hand_weapon;
+          melee_attack = new warlock_pet_melee_t(this, 1.0);
+        }
+
+        void illidari_satyr_t::arise()
+        {
+          warlock_pet_t::arise();
+          shadow_slash->cooldown->start(timespan_t::from_millis(rng().range(3500, 5000)));
+        }
+
+        action_t* illidari_satyr_t::create_action(const std::string& name, const std::string& options_str) {
+          if (name == "shadow_slash")
+          {
+            assert(shadow_slash == nullptr);
+            shadow_slash = new shadow_slash_t(this);
+            return shadow_slash;
+          }
+
+          return warlock_pet_t::create_action(name, options_str);
+        }
+
+        // eye of guldan
+        struct eye_of_guldan_t : public warlock_pet_spell_t
+        {
+          eye_of_guldan_t(warlock_pet_t* p) : warlock_pet_spell_t("eye_of_guldan", p, p -> find_spell(272131))
+          {
+            hasted_ticks = false;
+          }
+        };
+
+        eyes_of_guldan_t::eyes_of_guldan_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "eyes_of_guldan") {
+          action_list_str = "eye_of_guldan";
+          owner_coeff.ap_from_sp = 0.065;
+        }
+
+        void eyes_of_guldan_t::init_base_stats()
+        {
+          warlock_pet_t::init_base_stats();
+        }
+
+        void eyes_of_guldan_t::arise()
+        {
+          warlock_pet_t::arise();
+          o()->buffs.eyes_of_guldan->trigger();
+        }
+
+        void eyes_of_guldan_t::demise()
+        {
+          warlock_pet_t::demise();
+          o()->buffs.eyes_of_guldan->decrement();
+        }
+
+        action_t* eyes_of_guldan_t::create_action(const std::string& name, const std::string& options_str) {
+          if (name == "eye_of_guldan") return new eye_of_guldan_t(this);
+
+          return warlock_pet_t::create_action(name, options_str);
+        }
+
+        // prince malchezaar
+        prince_malchezaar_t::prince_malchezaar_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "prince_malchezaar") {
+          owner_coeff.ap_from_sp = 0.616;
+          action_list_str = "travel";
+        }
+
+        void prince_malchezaar_t::init_base_stats()
+        {
+          warlock_pet_t::init_base_stats();
+          off_hand_weapon = main_hand_weapon;
+          melee_attack = new warlock_pet_melee_t(this);
+        }
+
+        void prince_malchezaar_t::arise()
+        {
+          warlock_pet_t::arise();
+          o()->buffs.prince_malchezaar->trigger();
+        }
+
+        void prince_malchezaar_t::demise()
+        {
+          warlock_pet_t::demise();
+          o()->buffs.prince_malchezaar->decrement();
+        }
       }
     }
 
@@ -1084,43 +1077,43 @@ namespace warlock {
       {
         for (size_t i = 0; i < warlock_pet_list.shivarra.size(); i++)
         {
-          warlock_pet_list.shivarra[i] = new pets::shivarra::shivarra_t(sim, this);
+          warlock_pet_list.shivarra[i] = new pets::demonology::random_demons::shivarra_t(sim, this);
         }
         for (size_t i = 0; i < warlock_pet_list.darkhounds.size(); i++)
         {
-          warlock_pet_list.darkhounds[i] = new pets::darkhound::darkhound_t(sim, this);
+          warlock_pet_list.darkhounds[i] = new pets::demonology::random_demons::darkhound_t(sim, this);
         }
         for (size_t i = 0; i < warlock_pet_list.bilescourges.size(); i++)
         {
-          warlock_pet_list.bilescourges[i] = new pets::bilescourge::bilescourge_t(sim, this);
+          warlock_pet_list.bilescourges[i] = new pets::demonology::random_demons::bilescourge_t(sim, this);
         }
         for (size_t i = 0; i < warlock_pet_list.urzuls.size(); i++)
         {
-          warlock_pet_list.urzuls[i] = new pets::urzul::urzul_t(sim, this);
+          warlock_pet_list.urzuls[i] = new pets::demonology::random_demons::urzul_t(sim, this);
         }
         for (size_t i = 0; i < warlock_pet_list.void_terrors.size(); i++)
         {
-          warlock_pet_list.void_terrors[i] = new pets::void_terror::void_terror_t(sim, this);
+          warlock_pet_list.void_terrors[i] = new pets::demonology::random_demons::void_terror_t(sim, this);
         }
         for (size_t i = 0; i < warlock_pet_list.wrathguards.size(); i++)
         {
-          warlock_pet_list.wrathguards[i] = new pets::wrathguard::wrathguard_t(sim, this);
+          warlock_pet_list.wrathguards[i] = new pets::demonology::random_demons::wrathguard_t(sim, this);
         }
         for (size_t i = 0; i < warlock_pet_list.vicious_hellhounds.size(); i++)
         {
-          warlock_pet_list.vicious_hellhounds[i] = new pets::vicious_hellhound::vicious_hellhound_t(sim, this);
+          warlock_pet_list.vicious_hellhounds[i] = new pets::demonology::random_demons::vicious_hellhound_t(sim, this);
         }
         for (size_t i = 0; i < warlock_pet_list.illidari_satyrs.size(); i++)
         {
-          warlock_pet_list.illidari_satyrs[i] = new pets::illidari_satyr::illidari_satyr_t(sim, this);
+          warlock_pet_list.illidari_satyrs[i] = new pets::demonology::random_demons::illidari_satyr_t(sim, this);
         }
         for (size_t i = 0; i < warlock_pet_list.eyes_of_guldan.size(); i++)
         {
-          warlock_pet_list.eyes_of_guldan[i] = new pets::eyes_of_guldan::eyes_of_guldan_t(sim, this);
+          warlock_pet_list.eyes_of_guldan[i] = new pets::demonology::random_demons::eyes_of_guldan_t(sim, this);
         }
         for (size_t i = 0; i < warlock_pet_list.prince_malchezaar.size(); i++)
         {
-          warlock_pet_list.prince_malchezaar[i] = new pets::prince_malchezaar::prince_malchezaar_t(sim, this);
+          warlock_pet_list.prince_malchezaar[i] = new pets::demonology::random_demons::prince_malchezaar_t(sim, this);
         }
       }
     }
