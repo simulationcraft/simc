@@ -5341,6 +5341,7 @@ void hunter_t::apl_bm()
   // Racials
   for ( std::string racial : { "berserking", "blood_fury", "ancestral_call", "fireblood" } )
     default_list -> add_action( racial + ",if=cooldown.bestial_wrath.remains>30" );
+  default_list -> add_action( "lights_judgment" );
 
   // In-combat potion
   default_list -> add_action( "potion,if=buff.bestial_wrath.up&buff.aspect_of_the_wild.up" );
@@ -5387,6 +5388,7 @@ void hunter_t::apl_mm()
   // Racials
   for ( std::string racial : { "berserking", "blood_fury", "ancestral_call", "fireblood" } )
     default_list -> add_action( racial + ",if=cooldown.trueshot.remains>30" );
+  default_list -> add_action( "lights_judgment" );
 
   // In-combat potion
   default_list -> add_action( "potion,if=(buff.trueshot.react&buff.bloodlust.react)|((consumable.prolonged_power&target.time_to_die<62)|target.time_to_die<31)" );
@@ -5431,6 +5433,7 @@ void hunter_t::apl_surv()
   // Racials
   for ( std::string racial : { "berserking", "blood_fury", "ancestral_call", "fireblood" } )
     default_list -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
+  default_list -> add_action( "lights_judgment" );
 
   // In-combat potion
   default_list -> add_action( "potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)" );
