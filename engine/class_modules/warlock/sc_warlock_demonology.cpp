@@ -733,13 +733,13 @@ namespace warlock {
 
         struct lower_energy
         {
-          inline bool operator() (const pets::wild_imp::wild_imp_pet_t* imp1, const pets::wild_imp::wild_imp_pet_t* imp2)
+          inline bool operator() (const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2)
           {
             return (imp1->resources.current[RESOURCE_ENERGY] > imp2->resources.current[RESOURCE_ENERGY]);
           }
         };
 
-        std::vector<pets::wild_imp::wild_imp_pet_t*> imps;
+        std::vector<pets::demonology::wild_imp_pet_t*> imps;
 
         for (auto imp : p()->warlock_pet_list.wild_imps)
         {
@@ -758,7 +758,7 @@ namespace warlock {
         while (!imps.empty())
         {
           p()->buffs.demonic_core->trigger();
-          pets::wild_imp::wild_imp_pet_t* imp = imps.front();
+          pets::demonology::wild_imp_pet_t* imp = imps.front();
           imps.erase(imps.begin());
           imp->power_siphon = true;
           imp->dismiss();

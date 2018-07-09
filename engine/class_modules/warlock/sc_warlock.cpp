@@ -750,87 +750,7 @@ pet_t* warlock_t::create_pet( const std::string& pet_name, const std::string& pe
 
 void warlock_t::create_pets()
 {
-  if (specialization() == WARLOCK_DEMONOLOGY)
-  {
-    for (size_t i = 0; i < warlock_pet_list.wild_imps.size(); i++)
-    {
-      warlock_pet_list.wild_imps[i] = new pets::wild_imp::wild_imp_pet_t(sim, this);
-    }
-    for (size_t i = 0; i < warlock_pet_list.dreadstalkers.size(); i++)
-    {
-      warlock_pet_list.dreadstalkers[i] = new pets::dreadstalker::dreadstalker_t(sim, this);
-    }
-    for (size_t i = 0; i < warlock_pet_list.demonic_tyrants.size(); i++)
-    {
-      warlock_pet_list.demonic_tyrants[i] = new pets::demonic_tyrant::demonic_tyrant_t(sim, this);
-    }
-    if (talents.summon_vilefiend->ok())
-    {
-      for (size_t i = 0; i < warlock_pet_list.vilefiends.size(); i++)
-      {
-        warlock_pet_list.vilefiends[i] = new pets::vilefiend::vilefiend_t(sim, this);
-      }
-    }
-    if (talents.inner_demons->ok() or talents.nether_portal->ok())
-    {
-      for (size_t i = 0; i < warlock_pet_list.shivarra.size(); i++)
-      {
-        warlock_pet_list.shivarra[i] = new pets::shivarra::shivarra_t(sim, this);
-      }
-      for (size_t i = 0; i < warlock_pet_list.darkhounds.size(); i++)
-      {
-        warlock_pet_list.darkhounds[i] = new pets::darkhound::darkhound_t(sim, this);
-      }
-      for (size_t i = 0; i < warlock_pet_list.bilescourges.size(); i++)
-      {
-        warlock_pet_list.bilescourges[i] = new pets::bilescourge::bilescourge_t(sim, this);
-      }
-      for (size_t i = 0; i < warlock_pet_list.urzuls.size(); i++)
-      {
-        warlock_pet_list.urzuls[i] = new pets::urzul::urzul_t(sim, this);
-      }
-      for (size_t i = 0; i < warlock_pet_list.void_terrors.size(); i++)
-      {
-        warlock_pet_list.void_terrors[i] = new pets::void_terror::void_terror_t(sim, this);
-      }
-      for (size_t i = 0; i < warlock_pet_list.wrathguards.size(); i++)
-      {
-        warlock_pet_list.wrathguards[i] = new pets::wrathguard::wrathguard_t(sim, this);
-      }
-      for (size_t i = 0; i < warlock_pet_list.vicious_hellhounds.size(); i++)
-      {
-        warlock_pet_list.vicious_hellhounds[i] = new pets::vicious_hellhound::vicious_hellhound_t(sim, this);
-      }
-      for (size_t i = 0; i < warlock_pet_list.illidari_satyrs.size(); i++)
-      {
-        warlock_pet_list.illidari_satyrs[i] = new pets::illidari_satyr::illidari_satyr_t(sim, this);
-      }
-      for (size_t i = 0; i < warlock_pet_list.eyes_of_guldan.size(); i++)
-      {
-        warlock_pet_list.eyes_of_guldan[i] = new pets::eyes_of_guldan::eyes_of_guldan_t(sim, this);
-      }
-      for (size_t i = 0; i < warlock_pet_list.prince_malchezaar.size(); i++)
-      {
-        warlock_pet_list.prince_malchezaar[i] = new pets::prince_malchezaar::prince_malchezaar_t(sim, this);
-      }
-    }
-  }
-
-  if (specialization() == WARLOCK_DESTRUCTION)
-  {
-    for (size_t i = 0; i < warlock_pet_list.infernals.size(); i++)
-    {
-      warlock_pet_list.infernals[i] = new pets::infernal::infernal_t(sim, this);
-    }
-  }
-
-  if (specialization() == WARLOCK_AFFLICTION)
-  {
-    for (size_t i = 0; i < warlock_pet_list.darkglare.size(); i++)
-    {
-      warlock_pet_list.darkglare[i] = new pets::darkglare::darkglare_t(sim, this);
-    }
-  }
+  create_all_pets();
 
   for ( auto& pet : pet_name_list )
   {
@@ -1217,55 +1137,11 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
   }
   else if (name_str == "last_cast_imps")
   {
-    struct wild_imp_last_cast_expression_t : public expr_t
-    {
-      warlock_t& player;
-
-      wild_imp_last_cast_expression_t(warlock_t& p) :
-        expr_t("last_cast_imps"), player(p) { }
-
-      virtual double evaluate() override
-      {
-        int t = 0;
-        for (auto& imp : player.warlock_pet_list.wild_imps)
-        {
-          if (!imp->is_sleeping())
-          {
-            if (imp->resources.current[RESOURCE_ENERGY] <= 20)
-              t++;
-          }
-        }
-        return t;
-      }
-    };
-
-    return new wild_imp_last_cast_expression_t(*this);
+    return create_pet_expression(name_str);
   }
   else if (name_str == "two_cast_imps")
   {
-    struct wild_imp_two_cast_expression_t : public expr_t
-    {
-      warlock_t& player;
-
-      wild_imp_two_cast_expression_t(warlock_t& p) :
-        expr_t("two_cast_imps"), player(p) { }
-
-      virtual double evaluate() override
-      {
-        int t = 0;
-        for (auto& imp : player.warlock_pet_list.wild_imps)
-        {
-          if (!imp->is_sleeping())
-          {
-            if (imp->resources.current[RESOURCE_ENERGY] <= 40)
-              t++;
-          }
-        }
-        return t;
-      }
-    };
-
-    return new wild_imp_two_cast_expression_t(*this);
+    return create_pet_expression(name_str);
   }
 
   return player_t::create_expression( name_str );
