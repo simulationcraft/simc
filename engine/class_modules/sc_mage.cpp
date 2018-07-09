@@ -444,6 +444,7 @@ public:
     haste_buff_t* sephuzs_secret;
 
     // Azerite
+    buff_t* arcane_pummeling;
     buff_t* brain_storm;
 
     buff_t* blaster_master;
@@ -641,11 +642,12 @@ public:
   struct azerite_powers_t
   {
     // Arcane
-    azerite_power_t galvanizing_spark;
     azerite_power_t anomalous_impact;
-    azerite_power_t explosive_echo;
     azerite_power_t arcane_pressure;
+    azerite_power_t arcane_pummeling;
     azerite_power_t brain_storm;
+    azerite_power_t explosive_echo;
+    azerite_power_t galvanizing_spark;
 
     // Fire
     azerite_power_t blaster_master;
@@ -2405,6 +2407,13 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
     base_multiplier *= 1.0 + p -> sets -> set( MAGE_ARCANE, T19, B2 ) -> effectN( 1 ).percent();
   }
 
+  virtual void execute() override
+  {
+    arcane_mage_spell_t::execute();
+
+    p() -> buffs.arcane_pummeling -> trigger();
+  }
+
   virtual void impact( action_state_t* s ) override
   {
     arcane_mage_spell_t::impact( s );
@@ -2416,10 +2425,8 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
   {
     double da = arcane_mage_spell_t::bonus_da( s );
 
-    if ( p() -> azerite.anomalous_impact.enabled() )
-    {
-      da += p() -> azerite.anomalous_impact.value() * p() -> buffs.arcane_charge -> check();
-    }
+    da += p() -> azerite.anomalous_impact.value() * p() -> buffs.arcane_charge -> check();
+    da += p() -> buffs.arcane_pummeling -> check_stack_value();
 
     return da;
   }
@@ -2548,6 +2555,8 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
   virtual void execute() override
   {
+    p() -> buffs.arcane_pummeling -> expire();
+
     arcane_mage_spell_t::execute();
 
     p() -> buffs.rhonins_assaulting_armwraps -> trigger();
@@ -3068,7 +3077,6 @@ struct evocation_t : public arcane_mage_spell_t
     arcane_mage_spell_t::last_tick( d );
 
     p() -> buffs.evocation -> expire();
-
   }
 
   virtual bool usable_moving() const override
@@ -6143,11 +6151,12 @@ void mage_t::init_spells()
   spec.icicles               = find_mastery_spell( MAGE_FROST );
 
   // Azerite
-  azerite.galvanizing_spark        = find_azerite_spell( "Galvanizing Spark"        );
   azerite.anomalous_impact         = find_azerite_spell( "Anomalous Impact"         );
-  azerite.explosive_echo           = find_azerite_spell( "Explosive Echo"           );
   azerite.arcane_pressure          = find_azerite_spell( "Arcane Pressure"          );
+  azerite.arcane_pummeling         = find_azerite_spell( "Arcane Pummeling"         );
   azerite.brain_storm              = find_azerite_spell( "Brain Storm"              );
+  azerite.explosive_echo           = find_azerite_spell( "Explosive Echo"           );
+  azerite.galvanizing_spark        = find_azerite_spell( "Galvanizing Spark"        );
 
   azerite.blaster_master           = find_azerite_spell( "Blaster Master"           );
   azerite.duplicative_incineration = find_azerite_spell( "Duplicative Incineration" );
@@ -6321,11 +6330,15 @@ void mage_t::create_buffs()
                            -> set_default_value( find_spell( 116014 ) -> effectN( 1 ).percent() );
 
   // Azerite
+  buffs.arcane_pummeling   = make_buff( this, "arcane_pummeling", find_spell( 270670 ) )
+                               -> set_default_value( azerite.arcane_pummeling.value() )
+                               -> set_chance( azerite.arcane_pummeling.enabled() ? 1.0 : 0.0 );
+  buffs.brain_storm        = make_buff<stat_buff_t>( this, "brain_storm", find_spell( 273330 ) )
+                               -> add_stat( STAT_INTELLECT, azerite.brain_storm.value() );
+
   buffs.blaster_master     = make_buff<stat_buff_t>( this, "blaster_master", find_spell( 274598 ) )
                                -> add_stat( STAT_MASTERY_RATING, azerite.blaster_master.value() )
                                -> set_chance( azerite.blaster_master.enabled() ? 1.0 : 0.0 );
-  buffs.brain_storm        = make_buff<stat_buff_t>( this, "brain_storm", find_spell( 273330 ) )
-                               -> add_stat( STAT_INTELLECT, azerite.brain_storm.value() );
   buffs.firemind           = make_buff<stat_buff_t>( this, "firemind", find_spell( 279715 ) )
                                -> add_stat( STAT_INTELLECT, azerite.firemind.value() )
                                -> set_chance( azerite.firemind.enabled() ? 1.0 : 0.0 );
