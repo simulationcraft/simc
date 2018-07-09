@@ -6059,23 +6059,17 @@ void rogue_t::init_action_list()
     potion_action += "|buff.adrenaline_rush.up";
   else if ( specialization() == ROGUE_SUBTLETY )
     potion_action += "|(buff.vanish.up&(buff.shadow_blades.up|cooldown.shadow_blades.remains<=30))";
-    
 
   if ( specialization() != ROGUE_SUBTLETY )
     precombat -> add_talent( this, "Marked for Death", "precombat_seconds=5,if=raid_event.adds.in>40" );
 
   if ( specialization() == ROGUE_ASSASSINATION )
   {
-    precombat -> add_action( this, "Vendetta", "precombat_seconds=1" );
-
-    def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7)%2" );
-    def -> add_action( "variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined" );
+    def -> add_action( "variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)" );
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.rogue" );
-    def -> add_action( "run_action_list,name=aoe,if=spell_targets.fan_of_knives>2" );
-    def -> add_action( "call_action_list,name=maintain" );
-    def -> add_action( "call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)" );
-    def -> add_action( "call_action_list,name=build,if=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined" );
+    def -> add_action( "call_action_list,name=dot" );
+    def -> add_action( "call_action_list,name=direct" );
     def -> add_action( "arcane_pulse");
 
     // Cooldowns
@@ -6085,15 +6079,7 @@ void rogue_t::init_action_list()
     {
       if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
       {
-        if ( items[i].name_str == "draught_of_souls" )
-        {
-          cds -> add_action( "use_item,name=" + items[i].name_str + ",if=energy.deficit>=35+variable.energy_regen_combined*2&(!equipped.mantle_of_the_master_assassin|cooldown.vanish.remains>8)" );
-        }
-        // TODO: A bit before Vanish with Mantle, whenever up w/o.
-        else if ( items[i].name_str == "umbral_moonglaives" )
-          cds -> add_action( "use_item,name=" + items[i].name_str );
-        else
-          cds -> add_action( "use_item,name=" + items[i].name_str );
+        cds -> add_action( "use_item,name=" + items[i].name_str );
       }
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -6106,60 +6092,39 @@ void rogue_t::init_action_list()
         cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
     }
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)" );
-    cds -> add_action( this, "Vendetta", "if=!talent.exsanguinate.enabled|dot.rupture.ticking" );
-    cds -> add_talent( this, "Exsanguinate", "if=!set_bonus.tier20_4pc&(prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up)" );
-    cds -> add_talent( this, "Exsanguinate", "if=set_bonus.tier20_4pc&dot.garrote.remains>20&dot.rupture.remains>4+4*cp_max_spend" );
-    cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&mantle_duration=0&debuff.vendetta.up" );
-    cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&talent.exsanguinate.enabled&combo_points>=cp_max_spend&mantle_duration=0&cooldown.exsanguinate.remains<1" );
-    cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&equipped.mantle_of_the_master_assassin&(debuff.vendetta.up|target.time_to_die<10)&mantle_duration=0" );
-    cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))" );
-    cds -> add_talent( this, "Toxic Blade", "if=combo_points.deficit>=1+(mantle_duration>=0.2)&dot.rupture.remains>8&cooldown.vendetta.remains>10" );
-    
-    // Builders
-    action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_talent( this, "Blindside" );
-    build -> add_action( this, "Fan of Knives", "if=buff.the_dreadlords_deceit.stack>=29|buff.hidden_blades.stack>=19" );
-    build -> add_action( this, "Mutilate", "if=talent.exsanguinate.enabled&(debuff.vendetta.up|combo_points<=2)", "Mutilate is worth using over FoK for Exsanguinate builds in some 2T scenarios." );
-    build -> add_action( this, "Fan of Knives", "if=spell_targets>1+equipped.insignia_of_ravenholdt" );
-    build -> add_action( this, "Fan of Knives", "if=combo_points>=3+talent.deeper_stratagem.enabled&artifact.poison_knives.rank>=5|fok_rotation" );
-    // We want to apply poison on the unit that have the most bleeds on and that meet the condition for Venomous Wound (and also for T19 dmg bonus).
-    // This would be done with target_if=max:bleeds but it seems to be bugged atm
-    build -> add_action( this, "Mutilate", "cycle_targets=1,if=dot.deadly_poison_dot.refreshable" );
-    build -> add_action( this, "Mutilate" );
+    cds -> add_action( this, "Vendetta", "if=dot.rupture.ticking" );
+    cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&talent.exsanguinate.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1", "Vanish with Nightstalker + Exsg: Maximum CP and Exsg ready for next GCD" );
+    cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&debuff.vendetta.up", "Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up" );
+    cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!stealthed.rogue&dot.garrote.refreshable&(spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives|spell_targets.fan_of_knives>=4&combo_points.deficit>=4)", "Vanish with Subterfuge: No stealth/subterfuge, Garrote Refreshable, enough space for incoming Garrote CP" );
+    cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0", "Vanish with Master Assasin: No stealth and no active MA buff" );
+    cds -> add_talent( this, "Exsanguinate", "if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up", "Exsanguinate after a full duration Rupture or a snaphot Garrote during subterfuge" );
+    cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking" );
 
     // Stealth
-    action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed" );
-    stealthed->add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&combo_points.deficit>=1&set_bonus.tier20_4pc&((dot.garrote.remains<=13&!debuff.toxic_blade.up)|pmultiplier<=1)&!exsanguinated" );
-    stealthed->add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&combo_points.deficit>=1&!set_bonus.tier20_4pc&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2" );
-    stealthed->add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&combo_points.deficit>=1&!set_bonus.tier20_4pc&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2" );
-    stealthed->add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6" );
-    stealthed->add_action( this, "Rupture", "if=talent.exsanguinate.enabled&talent.nightstalker.enabled&target.time_to_die-remains>6" );
-    stealthed->add_action( this, "Envenom", "if=combo_points>=cp_max_spend" );
-    stealthed->add_action( this, "Garrote", "if=!talent.subterfuge.enabled&target.time_to_die-remains>4" );
-    stealthed->add_action( this, "Mutilate" );
+    action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
+    stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2", "Subterfuge: Apply or Refresh buffed Garrotes" );
+    stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2", "Subterfuge: Override normal Garrotes with snapshot versions if there's time" );
+    stealthed -> add_action( this, "Rupture", "if=talent.nightstalker.enabled&target.time_to_die-remains>6", "Nighstalker: Snapshot Rupture" );
+    stealthed -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend" );
+    stealthed -> add_action( this, "Garrote", "if=!talent.subterfuge.enabled&target.time_to_die-remains>4" );
+    stealthed -> add_action( this, "Mutilate" );
 
-    // Maintain
-    action_priority_list_t* maintain = get_action_priority_list( "maintain", "Maintain" );
-    maintain -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled)))" );
-    maintain -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6" );
-    maintain -> add_action( "pool_resource,for_next=1" );
-    maintain -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
-    maintain -> add_action( this, "Garrote", "if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1&(!cooldown.vanish.up|time>12)" );
-    maintain -> add_action( this, "Rupture", "if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration=0&target.time_to_die>6" );
+    // Damage over time abilities
+    action_priority_list_t* dot = get_action_priority_list( "dot", "Damage over time abilities" );
+    dot -> add_action( this, "Rupture", "if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2)))", "Special Rupture setup for Exsg" );
+    dot -> add_action( "pool_resource,for_next=1", "Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher" );
+    dot -> add_action( this, "Garrote", "cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&(target.time_to_die-remains>4&spell_targets.fan_of_knives<=1|target.time_to_die-remains>12)" );
+    dot -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4", "Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)" );
+    dot -> add_action( this, "Rupture", "if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&target.time_to_die>4", "Rupture at 3+ if not yet ticking on the primary target" );
+    dot -> add_talent( this, "Crimson Tempest", "if=refreshable&spell_targets.fan_of_knives>=2", "Crimson Tempest only on multiple targets and when dot is refreshable (independent of CP)" );
 
-    // Finishers
-    action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
-    finish -> add_talent( this, "Crimson Tempest", "if=combo_points>=cp_max_spend" );
-    finish -> add_action( this, "Envenom", "if=combo_points>=4+(talent.deeper_stratagem.enabled&!set_bonus.tier19_4pc)&(debuff.vendetta.up|debuff.toxic_blade.up|mantle_duration>=0.2|energy.deficit<=25+variable.energy_regen_combined)" );
-    finish -> add_action( this, "Envenom", "if=talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.2" );
-
-    // AoE Rotation
-    action_priority_list_t* aoe = get_action_priority_list( "aoe", "AoE" );
-    aoe -> add_talent( this, "Crimson Tempest", "if=combo_points>=cp_max_spend" );
-    aoe -> add_action( this, "Envenom", "if=!buff.envenom.up&combo_points>=cp_max_spend" );
-    aoe -> add_action( this, "Rupture", "cycle_targets=1,if=combo_points>=cp_max_spend&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4" );
-    aoe -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend" );
-    aoe -> add_action( this, "Fan of Knives" );
+    // Direct damage abilities
+    action_priority_list_t* direct = get_action_priority_list( "direct", "Direct damage abilities" );
+    direct -> add_action( this, "Envenom", "if=combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.toxic_blade.up|energy.deficit<=25+variable.energy_regen_combined|spell_targets.fan_of_knives>=2)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)", "Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up." );
+    direct -> add_action( "variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|spell_targets.fan_of_knives>=2" );
+    direct -> add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=2)" );
+    direct -> add_talent( this, "Blindside", "if=variable.use_filler&(buff.blindside.up|!talent.venom_rush.enabled)" );
+    direct -> add_action( this, "Mutilate", "if=variable.use_filler" );
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
