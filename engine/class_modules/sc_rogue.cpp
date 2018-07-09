@@ -6072,6 +6072,7 @@ void rogue_t::init_action_list()
     def -> add_action( "run_action_list,name=stealthed,if=stealthed.rogue" );
     def -> add_action( "call_action_list,name=dot" );
     def -> add_action( "call_action_list,name=direct" );
+    def -> add_action( "arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined" );
     def -> add_action( "arcane_pulse");
 
     // Cooldowns
@@ -6086,9 +6087,7 @@ void rogue_t::init_action_list()
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
-      if ( racial_actions[i] == "arcane_torrent" )
-        cds -> add_action( racial_actions[i] + ",if=!buff.envenom.up&energy.deficit>=15+variable.energy_regen_combined*gcd.remains*1.1" );
-      else if ( racial_actions[i] == "arcane_pulse" )
+      if ( racial_actions[i] == "arcane_torrent" || racial_actions[i] == "arcane_pulse" )
         continue; // Manually added
       else
         cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
@@ -6098,7 +6097,7 @@ void rogue_t::init_action_list()
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&talent.exsanguinate.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1", "Vanish with Nightstalker + Exsg: Maximum CP and Exsg ready for next GCD" );
     cds -> add_action( this, "Vanish", "if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&debuff.vendetta.up", "Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up" );
     cds -> add_action( this, "Vanish", "if=talent.subterfuge.enabled&!stealthed.rogue&dot.garrote.refreshable&(spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives|spell_targets.fan_of_knives>=4&combo_points.deficit>=4)", "Vanish with Subterfuge: No stealth/subterfuge, Garrote Refreshable, enough space for incoming Garrote CP" );
-    cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0", "Vanish with Master Assasin: No stealth and no active MA buff" );
+    cds -> add_action( this, "Vanish", "if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable", "Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range" );
     cds -> add_talent( this, "Exsanguinate", "if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up", "Exsanguinate after a full duration Rupture or a snaphot Garrote during subterfuge" );
     cds -> add_talent( this, "Toxic Blade", "if=dot.rupture.ticking" );
 
@@ -6143,6 +6142,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=cds" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=cp_max_spend" );
     def -> add_action( "call_action_list,name=build" );
+    def -> add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen" );
     def -> add_action( "arcane_pulse" );
 
     // Cooldowns
@@ -6157,9 +6157,7 @@ void rogue_t::init_action_list()
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
-      if ( racial_actions[i] == "arcane_torrent" )
-        cds -> add_action( racial_actions[i] + ",if=energy.deficit>40" );
-      else if ( racial_actions[i] == "arcane_pulse" )
+      if ( racial_actions[i] == "arcane_torrent" || racial_actions[i] == "arcane_pulse" )
         continue; // Manually added
       else
         cds -> add_action( racial_actions[i] );
@@ -6205,7 +6203,8 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=stealth_cds,if=energy.deficit<=variable.stealth_threshold&combo_points.deficit>=4", "Consider using a Stealth CD when reaching the energy threshold and having space for at least 4 CP" );
     def -> add_action( "call_action_list,name=finish,if=combo_points>=4+talent.deeper_stratagem.enabled|target.time_to_die<=1&combo_points>=3", "Finish at 4+ without DS, 5+ with DS (outside stealth)" );
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold-40*!(talent.alacrity.enabled|talent.shadow_focus.enabled|talent.master_of_shadows.enabled)", "Use a builder when reaching the energy threshold (minus 40 if none of Alacrity, Shadow Focus, and Master of Shadows is selected)" );
-    def -> add_action( "arcane_pulse", "Lowest priority in all of the APL because it causes a GCD" );
+    def -> add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen", "Lowest priority in all of the APL because it causes a GCD" );
+    def -> add_action( "arcane_pulse" );
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -6220,7 +6219,7 @@ void rogue_t::init_action_list()
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
       if ( racial_actions[i] == "arcane_torrent" )
-        cds -> add_action( racial_actions[i] + ",if=energy.deficit>70" );
+        continue; // Manually added
       else
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
     }
@@ -6253,7 +6252,8 @@ void rogue_t::init_action_list()
     finish -> add_action( this, "Nightblade", "if=(!talent.dark_shadow.enabled|!buff.shadow_dance.up)&target.time_to_die-remains>6&remains<tick_time*2&(spell_targets.shuriken_storm<4|!buff.symbols_of_death.up)", "Keep up Nightblade if it is about to run out. Do not use NB during Dance, if talented into Dark Shadow." );
     finish -> add_action( this, "Nightblade", "cycle_targets=1,if=spell_targets.shuriken_storm>=2&!buff.shadow_dance.up&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting outside Dance on targets that will live for the duration of Nightblade with refresh during pandemic." );
     finish -> add_action( this, "Nightblade", "if=remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Nightblade early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
-    finish -> add_talent( this, "Secret Technique", "if=buff.symbols_of_death.up" );
+    finish -> add_talent( this, "Secret Technique", "if=buff.symbols_of_death.up&(!talent.dark_shadow.enabled|spell_targets.shuriken_storm<2|buff.shadow_dance.up)", "Secret Technique during Symbols. With Dark Shadow and multiple targets also only during Shadow Dance (until threshold in next line)." );
+    finish -> add_talent( this, "Secret Technique", "if=spell_targets.shuriken_storm>=2+talent.dark_shadow.enabled+talent.nightstalker.enabled", "With enough targets always use SecTec on CD." );
     finish -> add_action( this, "Eviscerate" );
 
     // Builders
