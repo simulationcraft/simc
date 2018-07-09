@@ -2878,8 +2878,8 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       am *= 1 + p() -> spec.rising_sun_kick_2 -> effectN( 1 ).percent();
 
     // Some spells does not seem to register the automated WW Mastery multiplier
-    if ( p() -> buff.combo_strikes -> up() )
-      am *= 1 + p() -> cache.mastery_value();
+//    if ( p() -> buff.combo_strikes -> up() )
+//      am *= 1 + p() -> cache.mastery_value();
 
     return am;
   }
