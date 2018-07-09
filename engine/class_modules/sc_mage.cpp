@@ -767,7 +767,7 @@ public:
   // Public mage functions:
   action_t* get_icicle();
   void      trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
-  void      trigger_evocation( timespan_t duration_override = timespan_t::min() );
+  void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
   void      trigger_arcane_charge( int stacks = 1 );
   bool      apply_crowd_control( const action_state_t* state, spell_mechanic type );
 
@@ -5594,7 +5594,7 @@ struct time_anomaly_tick_event_t : public event_t
         case TA_EVOCATION:
         {
           timespan_t duration = timespan_t::from_seconds( mage -> talents.time_anomaly -> effectN( 2 ).base_value() );
-          mage -> trigger_evocation( duration );
+          mage -> trigger_evocation( duration, false );
           break;
         }
         case TA_ARCANE_CHARGE:
@@ -7646,17 +7646,21 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
   }
 }
 
-void mage_t::trigger_evocation( timespan_t duration_override )
+void mage_t::trigger_evocation( timespan_t duration_override, bool hasted )
 {
   double mana_regen_multiplier = 1.0 + buffs.evocation -> default_value;
-  mana_regen_multiplier /= cache.spell_speed();
 
   timespan_t duration = duration_override;
   if ( duration <= timespan_t::zero() )
   {
     duration = buffs.evocation -> buff_duration;
   }
-  duration *= cache.spell_speed();
+
+  if ( hasted )
+  {
+    mana_regen_multiplier /= cache.spell_speed();
+    duration *= cache.spell_speed();
+  }
 
   buffs.evocation -> trigger( 1, mana_regen_multiplier, -1.0, duration );
 }
