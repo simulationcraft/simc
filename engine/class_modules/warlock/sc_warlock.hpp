@@ -100,13 +100,13 @@ namespace warlock
       {
         pets::warlock_pet_t* active;
         pets::warlock_pet_t* last;
-        static const int WILD_IMP_LIMIT = 40;
+        static const int WILD_IMP_LIMIT = 20;
         static const int DREADSTALKER_LIMIT = 4;
         static const int VILFIEND_LIMIT = 1;
         static const int DEMONIC_TYRANT_LIMIT = 1;
         static const int INFERNAL_LIMIT = 1;
-        static const int RANDOM_LIMIT = 10;
-        static const int RARE_RANDOM_LIMIT = 10;
+        static const int RANDOM_LIMIT = 6;
+        static const int RARE_RANDOM_LIMIT = 2;
         static const int DARKGLARE_LIMIT = 1;
 
         std::array<pets::demonology::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
@@ -121,7 +121,7 @@ namespace warlock
         std::array<pets::demonology::random_demons::wrathguard_t*, RANDOM_LIMIT> wrathguards;
         std::array<pets::demonology::random_demons::vicious_hellhound_t*, RANDOM_LIMIT> vicious_hellhounds;
         std::array<pets::demonology::random_demons::illidari_satyr_t*, RANDOM_LIMIT> illidari_satyrs;
-        std::array<pets::demonology::random_demons::eyes_of_guldan_t*, 4> eyes_of_guldan;
+        std::array<pets::demonology::random_demons::eyes_of_guldan_t*, RARE_RANDOM_LIMIT*4> eyes_of_guldan;
         std::array<pets::demonology::random_demons::prince_malchezaar_t*, RARE_RANDOM_LIMIT> prince_malchezaar;
 
         std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
