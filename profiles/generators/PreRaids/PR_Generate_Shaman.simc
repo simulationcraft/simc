@@ -3,25 +3,26 @@ level=120
 race=troll
 role=attack
 position=back
-talents=2002222
+talents=3101033
 spec=enhancement
 
-head=collar_of_honorable_exultation,id=136777,bonus_id=1492/1727
-neck=wolfstride_pendant,id=133633,bonus_id=1492/1727,enchant=mark_of_the_hidden_satyr
-shoulders=epaulets_of_deceitful_intent,id=134480,bonus_id=1492/1727
-back=cape_of_rigid_order,id=134402,bonus_id=1492/1727,enchant=binding_of_agility
-chest=thunderfused_valkyr_hauberk,id=133622,bonus_id=1492/1727
-wrists=remorseless_chain_armbands,id=137405,bonus_id=1492/1727
-hands=lavabreaker_gauntlets,id=137519,bonus_id=1492/1727
-waist=belt_of_mighty_links,id=137456,bonus_id=1492/1727
-legs=mute_erasure_legguards,id=134475,bonus_id=1492/1727
-feet=whelp_handlers_lined_boots,id=134464,bonus_id=1492/1727
-finger1=grasping_tentacle_loop,id=133634,bonus_id=1492/1727,enchant=binding_of_mastery
-finger2=archdruids_tainted_seal,id=134487,bonus_id=1492/1727,enchant=binding_of_mastery
-trinket1=devilsaur_shockbaton,id=140030,bonus_id=1492/1727
-trinket2=sixfeather_fan,id=141585,bonus_id=1492/1727
-main_hand=doomhammer,id=128819,bonus_id=741,gem_id=137316/137543/133682,relic_id=1492:3412/1492:3412/1492:3412
-off_hand=fury_of_the_stonemother,id=128873
+head=sethraliss_fanged_helm,id=159374,bonus_id=4779/1512/4786,azerite_powers=196/461
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4935/1512,azerite_level=21
+
+shoulder=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4786,azerite_powers=416/461
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786,enchant=gift_of_haste
+chest=triheart_chestguard,id=159362,bonus_id=4779/1512/4786,azerite_powers=447/459
+wrists=raouls_barrelhook_bracers,id=159356,bonus_id=4779/1512/4786
+hands=water_shapers,id=159366,bonus_id=4779/1512/4786
+waist=anchor_chain_girdle,id=159386,bonus_id=4779/1512/4786
+legs=chemical_blasters_legguards,id=158341,bonus_id=4779/1512/4786
+feet=bramble_looped_boots,id=159404,bonus_id=4779/1512/4786
+finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+trinket2=azerokks_resonating_heart,id=159612,bonus_id=4779/1512/4786
+main_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=galeforce_striking
+off_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 save=PR_Shaman_Enhancement.simc
 
