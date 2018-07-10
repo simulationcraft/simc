@@ -1876,7 +1876,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=68123)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | Misc Value: 2 | Target: Self (1)
-#2 (id=90621)    : Apply Aura (6) | Modify Attack Power% (166)
+#2 (id=90621)    : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each time you heal yourself with Death Strike, you gain ${$s1}.1% of the base amount healed as a Physical damage absorption shield.
 

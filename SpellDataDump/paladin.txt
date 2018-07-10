@@ -1279,7 +1279,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 #2 (id=92089)    : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: -0.35000 | Misc Value: 12 | Target: Self (1)
-#3 (id=155890)   : Apply Aura (6) | Modify Attack Power% (166)
+#3 (id=155890)   : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 Description      : Reduces all damage taken while inside your Consecration by ${-$s2}.1%.  Increases your chance to block melee attacks by ${$s1}.1%.
 

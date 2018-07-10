@@ -3960,7 +3960,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)
 Effects          :
-#1 (id=222957)   : Apply Aura (6) | Modify Attack Power% (166)
+#1 (id=222957)   : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc155783
 

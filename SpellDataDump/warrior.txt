@@ -596,9 +596,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
-#1 (id=2384)     : Apply Aura (6) | Modify Attack Power% (166)
+#1 (id=2384)     : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: Raid Members (56)
-#2 (id=728517)   : Apply Aura (6) | Unknown(167)
+#2 (id=728517)   : Apply Aura (6) | Modify Ranged Attack Power% (167)
                    Base Value: 10 | Scaled Value: 10 | Radius: 100 yards | Target: Raid Members (56)
 Description      : Increases the attack power of all raid and party members within $a1 yards by $s1% for $d.
 Tooltip          : Attack power increased by $w1%.
@@ -1564,7 +1564,7 @@ Effects          :
                    Base Value: 150 | Scaled Value: 150 | Target: Self (1)
 #4 (id=135084)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 12880 | Target: Self (1)
-#5 (id=217532)   : Apply Aura (6) | Modify Attack Power% (166)
+#5 (id=217532)   : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases your chance to block by ${$s2}.1% and your chance to critically block (blocking twice the amount) by ${$s1}.1%.
 
