@@ -117,6 +117,7 @@
       <FloatingPointExceptions>true</FloatingPointExceptions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;Q_OS_WIN;QT_DLL;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -162,6 +163,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <BrowseInformation>false</BrowseInformation>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG_OUTPUT;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -212,6 +214,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableParallelCodeGeneration>true</EnableParallelCodeGeneration>
       <BrowseInformation>false</BrowseInformation>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;UNICODE;WIN32;Q_OS_WIN;QT_LARGEFILE_SUPPORT;QT_DLL;QT_NO_DEBUG_OUTPUT;QT_NO_DEBUG;QT_WEBENGINE_LIB;QT_GUI_LIB;QT_CORE_LIB;QT_THREAD_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
