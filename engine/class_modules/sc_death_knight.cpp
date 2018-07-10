@@ -898,7 +898,7 @@ public:
   void      default_apl_frost();
   void      default_apl_unholy();
   void      copy_from( player_t* ) override;
-  double    bone_shield_handler( const action_state_t* ) const;
+  void      bone_shield_handler( const action_state_t* ) const;
 
   void      trigger_t20_2pc_frost( double consumed );
   void      trigger_t20_4pc_frost( double consumed );
@@ -3933,8 +3933,6 @@ struct death_and_decay_t : public death_and_decay_base_t
   void execute() override
   {
     death_and_decay_base_t::execute();
-
-    p() -> buffs.death_and_decay -> trigger();
   }
 
   bool ready() override
@@ -7583,10 +7581,6 @@ void death_knight_t::create_buffs()
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", spec.dark_transformation )
     .duration( spec.dark_transformation -> duration() )
     .cd( timespan_t::zero() ); // Handled by the action
-
-  buffs.death_and_decay     = buff_creator_t( this, "death_and_decay", find_spell( 188290 ) )
-                              .period( timespan_t::from_seconds( 1.0 ) )
-                              .duration( find_spell( 188290 ) -> duration() );
   buffs.gathering_storm     = buff_creator_t( this, "gathering_storm", find_spell( 211805 ) )
                               .trigger_spell( talent.gathering_storm )
                               .default_value( find_spell( 211805 ) -> effectN( 1 ).percent() );
@@ -7732,50 +7726,9 @@ void death_knight_t::init_procs()
 
 // death_knight_t::init_absorb_priority =====================================
 
-double death_knight_t::bone_shield_handler( const action_state_t* state ) const
-{
-  if ( ! buffs.bone_shield -> up() )
-  {
-    return 0;
-  }
-  
-  // Bone shield only lose stacks on auto-attack damage. The only distinguishing feature of auto attacks is that
-  // our enemies call them "melee_main_hand" and "melee_off_hand", so we need to check for "hand" in name_str
-  if ( util::str_in_str_ci( state -> action -> name_str, "_hand" ) && cooldown.bone_shield_icd -> up() )
-  {
-    buffs.bone_shield -> decrement();
-    
-    if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
-    {
-      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
-    }
-    cooldown.bone_shield_icd -> start();
-  }
-
-  double absorbed = 0;
-  double absorb_pct = 0; // TODO turn absorb into armor
-
-  // Legendary pants increase the absorbed amount by 2%
-  absorbed = absorb_pct * state -> result_amount;
-  
-  return absorbed;
-}
-
 void death_knight_t::init_absorb_priority()
 {
   player_t::init_absorb_priority();
-  
-  if ( specialization() == DEATH_KNIGHT_BLOOD )
-  {
-    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
-        195181, instant_absorb_t( this, spell.bone_shield, "bone_shield",
-                                  std::bind( &death_knight_t::bone_shield_handler, this, std::placeholders::_1 ) ) ) );
-
-    // TODO: What is the absorb ordering for blood dks?
-    absorb_priority.push_back( 195181 ); // Bone Shield (NYI)
-    //absorb_priority.push_back( 77535  ); // Blood Shield
-    //absorb_priority.push_back( 219809 ); // Tombstone
-  }
 }
 
 // death_knight_t::init_finished ============================================
@@ -7818,8 +7771,31 @@ void death_knight_t::assess_heal( school_e school, dmg_e t, action_state_t* s )
 
 // death_knight_t::assess_damage_imminent ===================================
 
+void death_knight_t::bone_shield_handler( const action_state_t* state ) const
+{
+  if ( ! buffs.bone_shield -> up() || ! cooldown.bone_shield_icd -> up() )
+  {
+    return;
+  }
+
+  // Bone shield only lose stacks on auto-attack damage. The only distinguishing feature of auto attacks is that
+  // our enemies call them "melee_main_hand" and "melee_off_hand", so we need to check for "hand" in name_str
+  if ( util::str_in_str_ci( state -> action -> name_str, "_hand" ) )
+  {
+    buffs.bone_shield -> decrement();
+
+    if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B2 ) )
+    {
+      cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
+    }
+    cooldown.bone_shield_icd -> start();
+  }
+}
+
 void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* s )
 {
+  bone_shield_handler( s );
+
   if ( school != SCHOOL_PHYSICAL )
   {
     if ( buffs.antimagic_shell -> up() )
