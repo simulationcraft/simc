@@ -7033,11 +7033,24 @@ struct proc_action_t : public T_ACTION
     if ( this -> radius > 0 )
       this -> aoe = -1;
 
+    bool has_dot = false;
     // Reparse effect data for any item-dependent variables.
     for ( size_t i = 1; i <= this -> data().effect_count(); i++ )
     {
       this -> parse_effect_data( this -> data().effectN( i ) );
+      if ( this -> data().effectN( i ).subtype() == A_PERIODIC_DAMAGE )
+      {
+        has_dot = true;
+      }
     }
+
+    // Auto-infer dot max stack
+    if ( has_dot && this -> data().max_stacks() > 1 )
+    {
+      this -> dot_max_stack = this -> data().max_stacks();
+    }
+
+    this -> hasted_ticks = this -> data().flags( spell_attribute::SX_DOT_HASTED );
 
     unique_gear::apply_label_modifiers( this );
   }

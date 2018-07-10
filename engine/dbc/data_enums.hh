@@ -1231,6 +1231,12 @@ enum effect_subtype_t : unsigned {
 };
 
 
+// New-style spell attributes, indicates bit position
+enum spell_attribute : unsigned
+{
+  SX_DOT_HASTED = 173u
+};
+
 // These names come from the MANGOS project.
 enum spell_attribute_e
 {

@@ -1190,6 +1190,17 @@ public:
     return ( _attributes[ index ] & mask ) != 0;
   }
 
+  bool flags( spell_attribute attr ) const
+  {
+    unsigned bit = static_cast<unsigned>( attr ) % 32u;
+    unsigned index = static_cast<unsigned>( attr ) / 32u;
+    uint32_t mask = 1u << bit;
+
+    assert( index < sizeof_array( _attributes ) );
+
+    return ( _attributes[ index ] & mask ) != 0;
+  }
+
   bool class_flag( unsigned flag ) const
   {
     unsigned index = flag / 32;
