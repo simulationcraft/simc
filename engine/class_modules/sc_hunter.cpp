@@ -5552,7 +5552,8 @@ double hunter_t::composite_attack_power_multiplier() const
 {
   double apm = player_t::composite_attack_power_multiplier();
 
-  apm *= 1.0 + sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
+  // 10-07-2018: doesn't work
+  // apm *= 1.0 + sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
 
   return apm;
 }
