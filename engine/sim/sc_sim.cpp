@@ -584,57 +584,10 @@ bool parse_fight_style( sim_t*             sim,
     sim -> raid_events_str += ",cooldown=85,distance=50,last=";
     sim -> raid_events_str += util::to_string( int( sim -> max_time.total_seconds() * 0.8 ) );
   }
-  else if ( util::str_compare_ci( value, "HeavyMovement" ) )
+  else if (util::str_compare_ci(value, "HeavyMovement"))
   {
-    sim -> fight_style = "HeavyMovement";
-    sim -> raid_events_str = "/movement,players_only=1,first=10,cooldown=10,distance=25";
-  }
-  else if ( util::str_compare_ci( value, "WoD_KillableRaidDummy" ) || util::str_compare_ci( value, "WoD_KillableMythicDummy" ) )
-  {
-    sim -> fight_style = value;
-    sim -> overrides.bloodlust = 0;
-    if ( util::str_compare_ci( value, "WoD_KillableRaidDummy" ) )
-      sim -> overrides.target_health.push_back( 20000000 );
-    else
-      sim -> overrides.target_health.push_back( 300000000 );
-    sim -> enemy_death_pct = 0;
-    sim -> allow_potions = false;
-    sim -> vary_combat_length = 0;
-    sim -> max_time = timespan_t::from_seconds( 1800 );
-    sim -> average_range = false;
-    sim -> solo_raid = true;
-  }
-  else if ( util::str_compare_ci( value, "WoD_RaidDamageDummyCluster" ) )
-  {
-    sim -> fight_style = value;
-    sim -> overrides.bloodlust = 0;
-    sim -> allow_potions = false;
-    sim -> average_range = false;
-    sim -> solo_raid = true;
-
-    // Set the main target to "RaidDamageDummy" and spawn 2 lower level mobs too
-    sim -> target = module_t::enemy() -> create_player( sim, "RaidDamageDummy" );
-
-    player_t* add_1 = module_t::enemy() -> create_player( sim, "DungeonDamageDummy1" );
-    add_1 -> true_level = 102;
-    player_t* add_2 = module_t::enemy() -> create_player( sim, "DungeonDamageDummy2" );
-    add_2 -> true_level = 102;
-  }
-  else if ( util::str_compare_ci( value, "WoD_WeakDamageDummyCluster" ) )
-  {
-    sim -> fight_style = value;
-    sim -> overrides.bloodlust = 0;
-    sim -> allow_potions = false;
-    sim -> average_range = false;
-    sim -> solo_raid = true;
-
-    for ( size_t i = 0; i < 5; i++ )
-    {
-      player_t* dummy = module_t::enemy() -> create_player( sim, "WeakDamageDummy" + util::to_string( i + 1 ) );
-      dummy -> true_level = 100;
-      if ( i == 0 )
-        sim -> target = dummy;
-    }
+	  sim->fight_style = "HeavyMovement";
+	  sim->raid_events_str = "/movement,players_only=1,first=10,cooldown=10,distance=25";
   }
   else if ( util::str_compare_ci( value, "HecticAddCleave" ) )
   {
