@@ -2258,15 +2258,19 @@ void priest_t::generate_apl_shadow()
       "target.health.pct<35" );
   
   // Racials
-  if ( race == RACE_BLOOD_ELF )
-      default_list->add_action(
-          "arcane_torrent,if=prev_gcd.1.mindbender&buff.voidform.up" );
+  // as of 7/3/2018 Arcane Torrent being on the GCD results in a DPS loss
+  // if ( race == RACE_BLOOD_ELF )
+  //     default_list->add_action(
+  //         "arcane_torrent,if=prev_gcd.1.mindbender&buff.voidform.up" );
   if ( race == RACE_DARK_IRON_DWARF )
       default_list->add_action(
           "fireblood,if=buff.voidform.up" );
   if ( race == RACE_TROLL )
       default_list->add_action(
           "berserking" );
+  if ( race == RACE_LIGHTFORGED_DRAENEI )
+      default_list->add_action(
+          "lights_judgment" );
   if ( race == RACE_MAGHAR_ORC )
       default_list->add_action(
           "ancestral_call,if=buff.voidform.up" );

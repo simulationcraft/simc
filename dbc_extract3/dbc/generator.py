@@ -1179,6 +1179,8 @@ class SpellDataGenerator(DataGenerator):
          259448, 259449, 259452, 259453,
          # 8.0 Bountiful Captain's Feast food buffs
          259454, 259455, 259456, 259457,
+         # 8.0 Incendiary Ammunition
+         265092,
         ),
 
         # Warrior:
@@ -1232,8 +1234,9 @@ class SpellDataGenerator(DataGenerator):
           ( 171457, 1 ), # Chimaera Shot - Nature
           ( 201594, 1 ), # Stampede
           ( 118459, 5 ), # Beast Cleave
+          ( 186254, 5 ), # Bestial Wrath
           ( 257622, 2 ), # Trick Shots buff
-          ( 269502, 2 ), ( 260395, 2 ), # Lethal Shots buffs
+          ( 260395, 2 ), # Lethal Shots buff
           ( 259516, 3 ), # Flanking Strike
           ( 267666, 3 ), # Chakrams
           # Wildfire Infusion (Volatile Bomb spells)
@@ -1269,6 +1272,7 @@ class SpellDataGenerator(DataGenerator):
             ( 197496, 0 ), ( 197498, 0 ), # New nightblade buffs
             ( 246558, 0 ),          # Outlaw T20 4pc Lesser Adrenaline Rush
             ( 279043, 0 ),          # Shadow Blades damaging spell
+            ( 121153, 0 ),          # Blindside proc buff
         ),
 
         # Priest:
@@ -1562,7 +1566,7 @@ class SpellDataGenerator(DataGenerator):
           ( 209245, 2 ), # Fiery Brand damage reduction
           ( 213011, 2 ), # Charred Warblades heal
           ( 212818, 2 ), # Fiery Demise debuff
-          ( 207760, 2 ), # Burning Alive spread radius 
+          ( 207760, 2 ), # Burning Alive spread radius
        ),
     ]
 

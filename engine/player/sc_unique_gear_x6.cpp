@@ -301,13 +301,14 @@ struct mark_of_the_distant_army_t : public proc_spell_t
     proc_spell_t( "mark_of_the_distant_army",
       p, p -> find_spell( 191380 ), nullptr )
   {
-    // TODO: 2018-06-27 approximated for BfA, should be quite close. Seems to not use weapon dps
+    // TODO: 2018-07-05 approximated for BfA, should be quite close. Seems to not use weapon dps
     // for attack power calculations. Weird
 
     // Hardcoded somewhere in the bowels of the server
     ap_type = AP_NO_WEAPON;
-    attack_power_mod.tick = ( 3.78 / 3.0 );
-    spell_power_mod.tick = ( 3.024 / 3.0 );
+    tick_may_crit = false;
+    attack_power_mod.tick = ( 0.6375 / 3.0 );
+    spell_power_mod.tick = ( 0.51 / 3.0 );
   }
 
   double amount_delta_modifier( const action_state_t* ) const override
@@ -2432,7 +2433,7 @@ struct fire_mines_detonator_t : public proc_spell_t
     active_mines( nullptr )
   { }
 
-  bool init_finished() override
+  void init_finished() override
   {
     for ( auto cb : player -> callbacks.all_callbacks )
     {
@@ -2444,9 +2445,11 @@ struct fire_mines_detonator_t : public proc_spell_t
     }
 
     if ( ! active_mines )
-      return false;
+    {
+      throw std::invalid_argument("No active mines found to detonate.");
+    }
 
-    return proc_spell_t::init_finished();
+   proc_spell_t::init_finished();
   }
 
   bool ready() override

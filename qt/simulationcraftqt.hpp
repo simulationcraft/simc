@@ -1220,13 +1220,14 @@ public:
   QString active_spec;
   QString m_role;
   QString api;
+  QString error;
   player_t* player;
   QString region, realm, character, spec; // New import uses these
 
   void importWidget();
 
   void start( std::shared_ptr<sim_t> s, int t, const QString& u, const QString& sources, const QString& spec, const QString& role, const QString& apikey )
-  { sim = s; tab = t; url = u; profile = ""; item_db_sources = sources; player = 0; active_spec = spec; m_role = role, api = apikey; QThread::start(); }
+  { sim = s; tab = t; url = u; profile = ""; item_db_sources = sources; player = 0; active_spec = spec; m_role = role, api = apikey; error = ""; QThread::start(); }
   void start( std::shared_ptr<sim_t> s, const QString&, const QString&, const QString&, const QString& );
   void run() override;
   SC_ImportThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), tab(0), player( 0 ) {}

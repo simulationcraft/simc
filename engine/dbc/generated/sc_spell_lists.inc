@@ -1,10 +1,10 @@
-#define CLASS_ABILITY_SIZE (48)
+#define CLASS_ABILITY_SIZE (49)
 #define CLASS_ABILITY_TREE_SIZE (6)
 
 #ifndef MAX_CLASS
 #define MAX_CLASS (13)
 #endif
-// Class based active abilities, wow build 26970
+// Class based active abilities, wow build 27026
 static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SIZE] = {
   {
     {
@@ -242,7 +242,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       187698, // Tar Trap
            0,
     },
-    // Marksmanship tree, 15 abilities
+    // Marksmanship tree, 14 abilities
     {
        19434, // Aimed Shot
       185358, // Arcane Shot
@@ -252,7 +252,6 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       109304, // Exhilaration
       187650, // Freezing Trap
       260395, // Lethal Shots
-      269502, // Lethal Shots
        34477, // Misdirection
       257620, // Multi-Shot
       257044, // Rapid Fire
@@ -285,12 +284,13 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
     {
            0,
     },
-    // Pet tree, 48 abilities
+    // Pet tree, 49 abilities
     {
       263446, // Acid Spit (Special Ability)
       160011, // Agile Reflexes (Special Ability)
        50433, // Ankle Crack (Special Ability)
       118459, // Beast Cleave
+      186254, // Bestial Wrath
        17253, // Bite (Basic Attack)
        24423, // Bloody Screech (Special Ability)
       263869, // Bristle (Special Ability)
@@ -1249,7 +1249,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
 };
 #define TREE_SPECIALIZATION_SIZE (35)
 
-// Talent tree specialization abilities, wow build 26970
+// Talent tree specialization abilities, wow build 27026
 static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -2359,7 +2359,7 @@ static unsigned __tree_specialization_data[][MAX_SPECS_PER_CLASS][TREE_SPECIALIZ
 };
 #define CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 26970
+// Class mastery abilities, wow build 27026
 static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2598,7 +2598,7 @@ static unsigned __class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][CLA
 #define MAX_RACE (31)
 #endif
 
-// Racial abilities, wow build 26970
+// Racial abilities, wow build 27026
 static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -3526,7 +3526,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
 };
 #define SET_BONUS_DATA_SIZE (688)
 
-// Set bonus data, wow build 26970
+// Set bonus data, wow build 27026
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Gladiator's Battlegear"                     ,        "pvp",      0,  1230,    0,   2,   1,   71, 165636, { 127055, 127081, 127092, 127103, 127114,  0 } },
@@ -3787,7 +3787,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Grandmaster's Finery"                       ,   "tier19oh",      3,  1274,   19,   6,  10,  268, 221535, { 139731, 139732, 139733, 139734, 139735, 139736, 139737, 139738,  0 } },
   { "Grandmaster's Finery"                       ,   "tier19oh",      3,  1274,   19,   6,  10,  270, 221534, { 139731, 139732, 139733, 139734, 139735, 139736, 139737, 139738,  0 } },
   { "Grandmaster's Finery"                       ,   "tier19oh",      3,  1274,   19,   6,  10,  269, 221535, { 139731, 139732, 139733, 139734, 139735, 139736, 139737, 139738,  0 } },
-  { "Grandmaster's Finery"                       ,   "tier19oh",      3,  1274,   19,   8,  10,   -1, 221651, { 139731, 139732, 139733, 139734, 139735, 139736, 139737, 139738,  0 } },
+  { "Grandmaster's Finery"                       ,   "tier19oh",      3,  1274,   19,   8,  10,   -1, 199380, { 139731, 139732, 139733, 139734, 139735, 139736, 139737, 139738,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Dreamgrove Raiment"                         ,   "tier19oh",      3,  1271,   19,   2,  11,   -1, 221615, { 139723, 139724, 139725, 139726, 139727, 139728, 139729, 139730,  0 } },
   { "Dreamgrove Raiment"                         ,   "tier19oh",      3,  1271,   19,   4,  11,   -1, 221617, { 139723, 139724, 139725, 139726, 139727, 139728, 139729, 139730,  0 } },
@@ -4020,24 +4020,24 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Oathclaw Wargarb"                           ,     "tier18",     11,  1250,   18,   4,  11,  105, 185397, { 124246, 124255, 124261, 124267, 124272,  0 } },
   { "Oathclaw Wargarb"                           ,     "tier18",     11,  1250,   18,   4,  11,  102, 187877, { 124246, 124255, 124261, 124267, 124272,  0 } },
   { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   2,   1,   71, 212156, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
-  { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   2,   1,   72, 212157, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
   { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   2,   1,   73, 212237, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
+  { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   2,   1,   72,  70847, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
-  { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   4,   1,   71, 212149, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
   { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   4,   1,   72, 212158, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
   { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   4,   1,   73, 212244, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
+  { "Warplate of the Obsidian Aspect"            ,     "tier19",     12,  1292,   19,   4,   1,   71,  70847, { 138351, 138354, 138357, 138360, 138363, 138374,  0 } },
   { "Battleplate of the Highlord"                ,     "tier19",     12,  1287,   19,   2,   2,   65, 211436, { 138350, 138353, 138356, 138359, 138362, 138369,  0 } },
   { "Battleplate of the Highlord"                ,     "tier19",     12,  1287,   19,   2,   2,   70, 211444, { 138350, 138353, 138356, 138359, 138362, 138369,  0 } },
   { "Battleplate of the Highlord"                ,     "tier19",     12,  1287,   19,   2,   2,   66, 211553, { 138350, 138353, 138356, 138359, 138362, 138369,  0 } },
   { "Battleplate of the Highlord"                ,     "tier19",     12,  1287,   19,   4,   2,   65, 211438, { 138350, 138353, 138356, 138359, 138362, 138369,  0 } },
   { "Battleplate of the Highlord"                ,     "tier19",     12,  1287,   19,   4,   2,   70, 211448, { 138350, 138353, 138356, 138359, 138362, 138369,  0 } },
   { "Battleplate of the Highlord"                ,     "tier19",     12,  1287,   19,   4,   2,   66, 211554, { 138350, 138353, 138356, 138359, 138362, 138369,  0 } },
-  { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   2,   3,  253, 211181, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
   { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   2,   3,  254, 211331, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
-  { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   2,   3,  255, 211340, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
-  { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   4,   3,  253, 211172, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
+  { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   2,   3,  253, 197140, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
+  { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   2,   3,  255,  89923, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
   { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   4,   3,  254, 211322, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
-  { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   4,   3,  255, 211357, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
+  { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   4,   3,  253, 197139, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
+  { "Eagletalon Battlegear"                      ,     "tier19",     12,  1284,   19,   4,   3,  255, 225092, { 138339, 138340, 138342, 138344, 138347, 138368,  0 } },
   { "Doomblade Battlegear"                       ,     "tier19",     12,  1289,   19,   2,   4,  261, 211661, { 138326, 138329, 138332, 138335, 138338, 138371,  0 } },
   { "Doomblade Battlegear"                       ,     "tier19",     12,  1289,   19,   2,   4,  260, 211667, { 138326, 138329, 138332, 138335, 138338, 138371,  0 } },
   { "Doomblade Battlegear"                       ,     "tier19",     12,  1289,   19,   2,   4,  259, 211671, { 138326, 138329, 138332, 138335, 138338, 138371,  0 } },
@@ -4060,18 +4060,18 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Regalia of Shackled Elements"               ,     "tier19",     12,  1290,   19,   2,   7,  262, 211951, { 138341, 138343, 138345, 138346, 138348, 138372,  0 } },
   { "Regalia of Shackled Elements"               ,     "tier19",     12,  1290,   19,   2,   7,  263, 211987, { 138341, 138343, 138345, 138346, 138348, 138372,  0 } },
   { "Regalia of Shackled Elements"               ,     "tier19",     12,  1290,   19,   2,   7,  264, 211992, { 138341, 138343, 138345, 138346, 138348, 138372,  0 } },
-  { "Regalia of Shackled Elements"               ,     "tier19",     12,  1290,   19,   4,   7,  262, 211963, { 138341, 138343, 138345, 138346, 138348, 138372,  0 } },
   { "Regalia of Shackled Elements"               ,     "tier19",     12,  1290,   19,   4,   7,  263, 211988, { 138341, 138343, 138345, 138346, 138348, 138372,  0 } },
   { "Regalia of Shackled Elements"               ,     "tier19",     12,  1290,   19,   4,   7,  264, 211993, { 138341, 138343, 138345, 138346, 138348, 138372,  0 } },
-  { "Regalia of Everburning Knowledge"           ,     "tier19",     12,  1285,   19,   2,   8,   62, 211379, { 138309, 138312, 138315, 138318, 138321, 138365,  0 } },
+  { "Regalia of Shackled Elements"               ,     "tier19",     12,  1290,   19,   4,   7,  262, 191493, { 138341, 138343, 138345, 138346, 138348, 138372,  0 } },
   { "Regalia of Everburning Knowledge"           ,     "tier19",     12,  1285,   19,   2,   8,   63, 211394, { 138309, 138312, 138315, 138318, 138321, 138365,  0 } },
   { "Regalia of Everburning Knowledge"           ,     "tier19",     12,  1285,   19,   2,   8,   64, 211411, { 138309, 138312, 138315, 138318, 138321, 138365,  0 } },
+  { "Regalia of Everburning Knowledge"           ,     "tier19",     12,  1285,   19,   2,   8,   62, 187287, { 138309, 138312, 138315, 138318, 138321, 138365,  0 } },
   { "Regalia of Everburning Knowledge"           ,     "tier19",     12,  1285,   19,   4,   8,   62, 211386, { 138309, 138312, 138315, 138318, 138321, 138365,  0 } },
   { "Regalia of Everburning Knowledge"           ,     "tier19",     12,  1285,   19,   4,   8,   63, 211395, { 138309, 138312, 138315, 138318, 138321, 138365,  0 } },
   { "Regalia of Everburning Knowledge"           ,     "tier19",     12,  1285,   19,   4,   8,   64, 211404, { 138309, 138312, 138315, 138318, 138321, 138365,  0 } },
   { "Legacy of Azj'Aqir"                         ,     "tier19",     12,  1291,   19,   2,   9,  265, 212002, { 138311, 138314, 138317, 138320, 138323, 138373,  0 } },
-  { "Legacy of Azj'Aqir"                         ,     "tier19",     12,  1291,   19,   2,   9,  266, 212005, { 138311, 138314, 138317, 138320, 138323, 138373,  0 } },
   { "Legacy of Azj'Aqir"                         ,     "tier19",     12,  1291,   19,   2,   9,  267, 212018, { 138311, 138314, 138317, 138320, 138323, 138373,  0 } },
+  { "Legacy of Azj'Aqir"                         ,     "tier19",     12,  1291,   19,   2,   9,  266, 138305, { 138311, 138314, 138317, 138320, 138323, 138373,  0 } },
   { "Legacy of Azj'Aqir"                         ,     "tier19",     12,  1291,   19,   4,   9,  265, 212003, { 138311, 138314, 138317, 138320, 138323, 138373,  0 } },
   { "Legacy of Azj'Aqir"                         ,     "tier19",     12,  1291,   19,   4,   9,  266, 212007, { 138311, 138314, 138317, 138320, 138323, 138373,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
@@ -4109,10 +4109,10 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Radiant Lightbringer Armor"                 ,     "tier20",     13,  1307,   20,   4,   2,   70, 242266, { 147157, 147158, 147159, 147160, 147161, 147162,  0 } },
   { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   2,   3,  253, 242239, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
   { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   2,   3,  254, 242242, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
-  { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   2,   3,  255, 242244, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   2,   3,  255, 138305, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
   { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   4,   3,  253, 242240, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
   { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   4,   3,  254, 242241, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
-  { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   4,   3,  255, 242245, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
+  { "Wildstalker Armor"                          ,     "tier20",     13,  1304,   20,   4,   3,  255,  70854, { 147139, 147140, 147141, 147142, 147143, 147144,  0 } },
   { "Fanged Slayer's Armor"                      ,     "tier20",     13,  1309,   20,   2,   4,  259, 242274, { 147169, 147170, 147171, 147172, 147173, 147174,  0 } },
   { "Fanged Slayer's Armor"                      ,     "tier20",     13,  1309,   20,   2,   4,  260, 242276, { 147169, 147170, 147171, 147172, 147173, 147174,  0 } },
   { "Fanged Slayer's Armor"                      ,     "tier20",     13,  1309,   20,   2,   4,  261, 242280, { 147169, 147170, 147171, 147172, 147173, 147174,  0 } },
@@ -4173,8 +4173,8 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   2,   1,   72, 251880, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
   { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   2,   1,   73, 251882, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
   { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   4,   1,   71, 251879, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
-  { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   4,   1,   72, 251881, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
   { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   4,   1,   73, 251883, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
+  { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   4,   1,   72, 200853, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
   { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   2,   2,   65, 251863, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
   { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   2,   2,   66, 251869, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
   { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   2,   2,   70, 251867, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
@@ -4183,11 +4183,11 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   4,   2,   66, 251870, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
   { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   4,   2,   70, 251868, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
   { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   2,   3,  253, 251755, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
-  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   2,   3,  254, 251754, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
-  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   2,   3,  255, 251751, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
+  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   2,   3,  255,  70847, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
+  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   2,   3,  254,  70855, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
   { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   4,   3,  253, 251756, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
-  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   4,   3,  254, 251753, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
-  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   4,   3,  255, 251752, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
+  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   4,   3,  255, 203638, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
+  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   4,   3,  254, 214826, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
   { "Regalia of the Dashing Scoundrel"           ,     "tier21",     14,  1322,   21,   2,   4,  259, 251776, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
   { "Regalia of the Dashing Scoundrel"           ,     "tier21",     14,  1322,   21,   2,   4,  260, 251778, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
   { "Regalia of the Dashing Scoundrel"           ,     "tier21",     14,  1322,   21,   2,   4,  261, 251785, { 152160, 152161, 152162, 152163, 152164, 152165,  0 } },
@@ -4223,8 +4223,8 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Grim Inquisitor's Regalia"                  ,     "tier21",     14,  1320,   21,   2,   9,  267, 251854, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
   { "Grim Inquisitor's Regalia"                  ,     "tier21",     14,  1320,   21,   2,   9,  265, 251847, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
   { "Grim Inquisitor's Regalia"                  ,     "tier21",     14,  1320,   21,   4,   9,  265, 251849, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
-  { "Grim Inquisitor's Regalia"                  ,     "tier21",     14,  1320,   21,   4,   9,  266, 251852, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
   { "Grim Inquisitor's Regalia"                  ,     "tier21",     14,  1320,   21,   4,   9,  267, 251855, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
+  { "Grim Inquisitor's Regalia"                  ,     "tier21",     14,  1320,   21,   4,   9,  266, 211105, { 152172, 152173, 152174, 152175, 152176, 152177,  0 } },
   { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   2,  10,  268, 251829, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
   { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   2,  10,  270, 251825, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
   { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   2,  10,  269, 251823, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
@@ -4247,7 +4247,7 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
 };
 #define RPPMMOD_SIZE (938)
 
-// 938 RPPM Modifiers, wow build level 26970
+// 938 RPPM Modifiers, wow build level 27026
 static struct rppm_modifier_t __rppmmodifier_data[] = {
   {  17495,    4,  1,  1.0000 },
   {  27656,    4,  1,  1.0000 },

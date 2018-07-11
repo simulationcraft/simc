@@ -1056,6 +1056,18 @@ double dbc_t::combat_rating_multiplier( unsigned item_level, combat_rating_multi
 #endif
 }
 
+double dbc_t::stamina_multiplier( unsigned item_level, combat_rating_multiplier_type type ) const
+{
+  assert( item_level > 0 && item_level <= MAX_ILEVEL );
+  assert( type < CR_MULTIPLIER_MAX );
+#if SC_USE_PTR
+  return ptr ? _ptr__stamina_mult_by_ilvl[ type ][ item_level - 1 ]
+             : __stamina_mult_by_ilvl[type][ item_level - 1 ];
+#else
+  return __stamina_mult_by_ilvl[type][ item_level - 1 ];
+#endif
+}
+
 double dbc_t::melee_crit_base( pet_e t, unsigned level ) const
 {
   return melee_crit_base( util::pet_class_type( t ), level );

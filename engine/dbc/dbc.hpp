@@ -411,9 +411,9 @@ namespace dbc_override
     { }
   };
 
-  bool register_effect( dbc_t&, unsigned, const std::string&, double );
-  bool register_spell( dbc_t&, unsigned, const std::string&, double );
-  bool register_power( dbc_t&, unsigned, const std::string&, double );
+  void register_effect( dbc_t&, unsigned, const std::string&, double );
+  void register_spell( dbc_t&, unsigned, const std::string&, double );
+  void register_power( dbc_t&, unsigned, const std::string&, double );
 
   const spell_data_t* find_spell( unsigned, bool ptr = false );
   const spelleffect_data_t* find_effect( unsigned, bool ptr = false );
@@ -1190,6 +1190,17 @@ public:
     return ( _attributes[ index ] & mask ) != 0;
   }
 
+  bool flags( spell_attribute attr ) const
+  {
+    unsigned bit = static_cast<unsigned>( attr ) % 32u;
+    unsigned index = static_cast<unsigned>( attr ) / 32u;
+    uint32_t mask = 1u << bit;
+
+    assert( index < sizeof_array( _attributes ) );
+
+    return ( _attributes[ index ] & mask ) != 0;
+  }
+
   bool class_flag( unsigned flag ) const
   {
     unsigned index = flag / 32;
@@ -1471,6 +1482,7 @@ public:
 
   // Game data table access
   double combat_rating_multiplier( unsigned item_level, combat_rating_multiplier_type type ) const;
+  double stamina_multiplier( unsigned item_level, combat_rating_multiplier_type type ) const;
   double melee_crit_base( pet_e t, unsigned level ) const;
   double spell_crit_base( pet_e t, unsigned level ) const;
   double dodge_base( player_e t ) const;

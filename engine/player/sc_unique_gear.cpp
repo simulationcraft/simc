@@ -2748,16 +2748,14 @@ struct felmouth_frenzy_driver_t : public spell_t
     }
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
-    bool ret = spell_t::init_finished();
+    spell_t::init_finished();
 
     // Can't be done on init() for abilities with tick_action() as the parent init() is called
     // before action_t::consolidate_snapshot_flags().
     snapshot_flags = STATE_AP | STATE_SP | STATE_TGT_MUL_TA;
     update_flags = STATE_TGT_MUL_TA;
-
-    return ret;
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -3356,7 +3354,7 @@ struct felstorm_tick_t : public melee_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     // Find first blademaster pet, it'll be the first trinket-created pet
     pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( BLADEMASTER_PET_NAME );
@@ -3365,7 +3363,7 @@ struct felstorm_tick_t : public melee_attack_t
       stats = main_pet -> find_action( "felstorm_tick" ) -> stats;
     }
 
-    return melee_attack_t::init_finished();
+    melee_attack_t::init_finished();
   }
 };
 
@@ -3387,7 +3385,7 @@ struct felstorm_t : public melee_attack_t
   timespan_t composite_dot_duration( const action_state_t* ) const override
   { return sim -> expected_iteration_time; }
 
-  bool init_finished() override
+  void init_finished() override
   {
     pet_t* main_pet = player -> cast_pet() -> owner -> find_pet( BLADEMASTER_PET_NAME );
     if ( player != main_pet )
@@ -3395,7 +3393,7 @@ struct felstorm_t : public melee_attack_t
       stats = main_pet -> find_action( "felstorm" ) -> stats;
     }
 
-    return melee_attack_t::init_finished();
+    melee_attack_t::init_finished();
   }
 };
 
@@ -3743,7 +3741,7 @@ bool buff_has_stat( const buff_t* buff, stat_e stat )
 
 } // UNNAMED NAMESPACE
 
-/*
+/**
  * Initialize a special effect, based on a spell id. Returns true if the first
  * phase initialization succeeded, false otherwise. If the spell id points to a
  * spell that our system cannot support, also sets the special effect type to
@@ -3755,10 +3753,9 @@ bool buff_has_stat( const buff_t* buff, stat_e stat )
  * proc callback, and relevant actions/buffs, or call a custom function to
  * perform the initialization.
  */
-bool unique_gear::initialize_special_effect( special_effect_t& effect,
+void unique_gear::initialize_special_effect( special_effect_t& effect,
                                              unsigned          spell_id )
 {
-  bool ret = true;
   player_t* p = effect.player;
 
   // Perform max level checking on the driver before anything
@@ -3771,7 +3768,7 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
         p -> name(), spell -> name_cstr(), p -> level(), spell -> req_max_level() );
     }
     effect.type = SPECIAL_EFFECT_NONE;
-    return ret;
+    return;
   }
 
   // Try to find the special effect from the custom effect database
@@ -3785,8 +3782,7 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
         encoded_options[ i ] = std::tolower( encoded_options[ i ] );
       // Note, if the encoding parse fails (this should never ever happen),
       // we don't parse game client data either.
-      if ( ! special_effect::parse_special_effect_encoding( effect, encoded_options ) )
-        return false;
+      special_effect::parse_special_effect_encoding( effect, encoded_options );
     }
     else if ( dbitem -> cb_obj )
     {
@@ -3815,7 +3811,7 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
   // later on
   if ( effect.custom_init_object.size() > 0 )
   {
-    return ret;
+    return;
   }
 
   // If the item is legendary, and it has an item effect, mandate that the item effect is actually
@@ -3835,7 +3831,7 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
         p -> name(), effect.item -> name(), p -> find_spell( spell_id ) -> name_cstr(), spell_id );
     }
     effect.type = SPECIAL_EFFECT_NONE;
-    return ret;
+    return;
   }
 
   // No custom effect found, so ensure that we have spell data for the driver
@@ -3845,13 +3841,19 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
       p -> sim -> out_debug.printf( "Player %s unable to initialize special effect in item %s, spell identifier %u not found.",
           p -> name(), effect.item ? effect.item -> name() : "unknown", effect.spell_id );
     effect.type = SPECIAL_EFFECT_NONE;
-    return ret;
+    return;
   }
 
   // For generic procs, make sure we have a PPM, RPPM or Proc Chance available,
   // otherwise there's no point in trying to proc anything
-  if ( effect.type == SPECIAL_EFFECT_EQUIP && ! special_effect::usable_proc( effect ) )
-    effect.type = SPECIAL_EFFECT_NONE;
+  if ( effect.type == SPECIAL_EFFECT_EQUIP )
+  {
+    if (!special_effect::usable_proc( effect ))
+    {
+      effect.type = SPECIAL_EFFECT_NONE;
+    }
+  }
+
   // For generic use stuff, we need to have a proper buff or action that we can generate
   else if ( effect.type == SPECIAL_EFFECT_USE &&
             effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE &&
@@ -3859,8 +3861,6 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
   {
     effect.type = SPECIAL_EFFECT_NONE;
   }
-
-  return ret;
 }
 
 // Second phase initialization, creates the proc callback object for generic on-equip special
@@ -3942,8 +3942,8 @@ void unique_gear::initialize_racial_effects( player_t* player )
 
       special_effect_t effect( player );
       effect.source = SPECIAL_EFFECT_SOURCE_RACE;
-      auto ret = unique_gear::initialize_special_effect( effect, spell -> id() );
-      if ( ! ret || ! effect.is_custom() )
+      unique_gear::initialize_special_effect( effect, spell -> id() );
+      if ( ! effect.is_custom() )
       {
         continue;
       }

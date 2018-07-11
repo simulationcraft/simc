@@ -102,13 +102,13 @@ struct execute_pet_action_t : public action_t
     trigger_gcd = timespan_t::zero();
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     pet = player->find_pet( pet_name );
     // No pet found, finish init early, the action will never be ready() and never executed.
     if ( !pet )
     {
-      return true;
+      return;
     }
 
     for ( auto& action : pet->action_list )
@@ -122,12 +122,12 @@ struct execute_pet_action_t : public action_t
 
     if ( !pet_action )
     {
-      sim->errorf( "Player %s refers to unknown action %s for pet %s\n", player->name(), action_str.c_str(),
-                   pet->name() );
-      return false;
+
+      throw std::invalid_argument(fmt::format("Player {} refers to unknown action {} for pet {}.", player->name(), action_str.c_str(),
+          pet->name()));
     }
 
-    return action_t::init_finished();
+    action_t::init_finished();
   }
 
   virtual void execute() override
@@ -267,7 +267,8 @@ bool parse_talent_url( sim_t* sim, const std::string& name, const std::string& u
     {
       if ( sim->talent_format == TALENT_FORMAT_UNCHANGED )
         sim->talent_format = TALENT_FORMAT_NUMBERS;
-      return p->parse_talents_numbers( url );
+      p->parse_talents_numbers( url );
+      return true;
     }
   }
 
@@ -1230,7 +1231,7 @@ void player_t::init_initial_stats()
     sim->out_debug.printf( "%s: Generic Initial Stats: %s", name(), initial.to_string().c_str() );
 }
 
-bool player_t::init_items()
+void player_t::init_items()
 {
   if ( sim->debug )
     sim->out_debug.printf( "Initializing items for player (%s)", name() );
@@ -1254,27 +1255,27 @@ bool player_t::init_items()
   for ( size_t i = 0; i < items.size(); i++ )
   {
     item_t& item = items[ i ];
-
-    // If the item has been specified in options we want to start from scratch, forgetting about
-    // lingering stuff from profile copy
-    if ( !item.options_str.empty() )
+    try
     {
-      item      = item_t( this, item.options_str );
-      item.slot = static_cast<slot_e>( i );
+
+      // If the item has been specified in options we want to start from scratch, forgetting about
+      // lingering stuff from profile copy
+      if ( !item.options_str.empty() )
+      {
+        item      = item_t( this, item.options_str );
+        item.slot = static_cast<slot_e>( i );
+      }
+
+      item.parse_options();
+
+      if ( !item.initialize_data() )
+      {
+        throw std::invalid_argument("Cannot initialize data");
+      }
     }
-
-    if ( !item.parse_options() )
+    catch (const std::exception& e)
     {
-      sim->errorf( "Unable to parse item '%s' options on player '%s'\n", item.name(), name() );
-      sim->cancel();
-      return false;
-    }
-
-    if ( !item.initialize_data() )
-    {
-      sim->errorf( "Unable to initialize item '%s' base data on player '%s'\n", item.name(), name() );
-      sim->cancel();
-      return false;
+      std::throw_with_nested(std::runtime_error(fmt::format("Item '{}' Slot '{}'", item.name(), item.slot_name() )));
     }
   }
 
@@ -1314,18 +1315,17 @@ bool player_t::init_items()
   {
     item_t& item = items[ slot ];
 
-    if ( !item.init() )
+    try
     {
-      sim->errorf( "Unable to initialize item '%s' on player '%s'\n", item.name(), name() );
-      sim->cancel();
-      return false;
+      item.init();
+      if ( !item.is_valid_type() )
+      {
+        throw std::invalid_argument("Invalid type");
+      }
     }
-
-    if ( !item.is_valid_type() )
+    catch (const std::exception& e)
     {
-      sim->errorf( "Item '%s' on player '%s' is of invalid type\n", item.name(), name() );
-      sim->cancel();
-      return false;
+      std::throw_with_nested(std::runtime_error(fmt::format("Item '{}' Slot '{}'", item.name(), item.slot_name() )));
     }
 
     matching_gear_slots[ item.slot ] = item.is_matching_type();
@@ -1352,8 +1352,6 @@ bool player_t::init_items()
   // these initialize the weapons, but don't have a return value (yet?)
   init_weapon( main_hand_weapon );
   init_weapon( off_hand_weapon );
-
-  return true;
 }
 
 /**
@@ -1406,7 +1404,7 @@ void player_t::init_position()
     base.position = util::parse_position_type( position_str );
     if ( base.position == POSITION_NONE )
     {
-      sim->errorf( "Player %s has an invalid position of %s.\n", name(), position_str.c_str() );
+      throw std::invalid_argument(fmt::format( "Invalid position '{}'.", position_str ));
     }
     else
     {
@@ -1445,10 +1443,9 @@ void player_t::init_race()
   else
   {
     race = util::parse_race_type( race_str );
-    if ( race == RACE_UNKNOWN )
+    if ( race == RACE_NONE)
     {
-      sim->errorf( "%s has unknown race string specified", name() );
-      race_str = util::race_type_string( race );
+      throw std::invalid_argument(fmt::format("Unknown race '{}'.", race_str ));
     }
   }
 }
@@ -1497,11 +1494,11 @@ void player_t::init_weapon( weapon_t& w )
     assert( w.type >= WEAPON_NONE && w.type < WEAPON_2H );
 }
 
-bool player_t::create_special_effects()
+void player_t::create_special_effects()
 {
   if ( is_pet() || is_enemy() )
   {
-    return true;
+    return;
   }
 
   if ( sim->debug )
@@ -1511,10 +1508,7 @@ bool player_t::create_special_effects()
   // as inherent item effects that use a spell
   for ( auto& item : items )
   {
-    if ( !item.init_special_effects() )
-    {
-      return false;
-    }
+    item.init_special_effects();
   }
 
   // Set bonus initialization. Note that we err on the side of caution here and
@@ -1526,10 +1520,7 @@ bool player_t::create_special_effects()
   for ( size_t i = 0; i < bonuses.size(); i++ )
   {
     special_effect_t effect( this );
-    if ( !unique_gear::initialize_special_effect( effect, bonuses[ i ]->spell_id ) )
-    {
-      return false;
-    }
+    unique_gear::initialize_special_effect( effect, bonuses[ i ]->spell_id );
 
     if ( effect.custom_init_object.size() == 0 )
     {
@@ -1546,23 +1537,18 @@ bool player_t::create_special_effects()
   // module gets the state their azerite powers (through the invocation of find_azerite_spells).
   // This means that any enabled azerite power that is not referenced in a class module will be
   // initialized here.
-  if ( ! azerite::initialize_azerite_powers( this ) )
-  {
-    return false;
-  }
+  azerite::initialize_azerite_powers( this );
 
   // Once all special effects are first-phase initialized, do a pass to first-phase initialize any
   // potential fallback special effects for the actor.
   unique_gear::initialize_special_effect_fallbacks( this );
-
-  return true;
 }
 
-bool player_t::init_special_effects()
+void player_t::init_special_effects()
 {
   if ( is_pet() || is_enemy() )
   {
-    return true;
+    return;
   }
 
   if ( sim->debug )
@@ -1573,8 +1559,6 @@ bool player_t::init_special_effects()
 
   for ( auto& elem : callbacks.all_callbacks )
     elem->initialize();
-
-  return true;
 }
 
 namespace
@@ -1677,10 +1661,8 @@ void player_t::init_professions()
       }
       catch ( const std::exception& e )
       {
-        std::stringstream s;
-        s << "Could not parse profession value for profession '" << prof_name << "' with value '" << subsplit[ 1 ]
-          << "': " << e.what();
-        throw std::invalid_argument( s.str() );
+        std::throw_with_nested(std::runtime_error(fmt::format("Could not parse profession level '{}' for profession '{}'",
+            subsplit[ 1 ], prof_name)));
       }
     }
     else
@@ -1692,8 +1674,7 @@ void player_t::init_professions()
     auto prof_type = util::parse_profession_type( prof_name );
     if ( prof_type == PROFESSION_NONE )
     {
-      sim->errorf( "Invalid profession encoding: %s\n", professions_str.c_str() );
-      return;
+      throw std::invalid_argument(fmt::format("Invalid profession '{}'.", prof_name ));
     }
 
     profession[ prof_type ] = prof_value;
@@ -1913,9 +1894,7 @@ void player_t::override_talent( std::string& override_str )
       unsigned row = util::to_unsigned( override_str.substr( 11 ) );
       if ( row == 0 || row > MAX_TALENT_ROWS )
       {
-        sim->errorf( "talent_override: Invalid talent row %u for player %s for talent override \"%s\"\n", row, name(),
-                     override_str.c_str() );
-        return;
+        throw std::invalid_argument(fmt::format("talent_override: Invalid talent row {} in '{}'.", row, override_str ));
       }
 
       talent_points.clear( row - 1 );
@@ -1931,8 +1910,7 @@ void player_t::override_talent( std::string& override_str )
 
   if ( !spell_id || dbc.spell( spell_id )->id() != spell_id )
   {
-    sim->errorf( "talent_override: Override talent %s not found for player %s.\n", override_str.c_str(), name() );
-    return;
+    throw std::invalid_argument(fmt::format("talent_override: Override talent '{}' not found.\n", override_str ));
   }
 
   for ( int j = 0; j < MAX_TALENT_ROWS; j++ )
@@ -1944,9 +1922,8 @@ void player_t::override_talent( std::string& override_str )
       {
         if ( true_level < std::min( ( j + 1 ) * 15, 100 ) )
         {
-          sim->errorf( "talent_override: Override talent %s is too high level for player %s.\n", override_str.c_str(),
-                       name() );
-          return;
+          throw std::invalid_argument(fmt::format("talent_override: Override talent '{}' is too high level.\n",
+              override_str ));
         }
 
         if ( sim->debug )
@@ -2249,7 +2226,7 @@ void player_t::init_scaling()
   }
 }
 
-bool player_t::create_actions()
+void player_t::create_actions()
 {
   if ( action_list_str.empty() )
     no_action_list_provided = true;
@@ -2340,9 +2317,8 @@ bool player_t::create_actions()
 
       if ( !a )
       {
-        sim->errorf( "Player %s unable to create action: %s\n", name(), action_str.c_str() );
-        sim->cancel();
-        return false;
+        throw std::invalid_argument(
+            fmt::format("Player {} unable to create action: {}", name(), action_str));
       }
 
       bool skip = false;
@@ -2389,15 +2365,21 @@ bool player_t::create_actions()
     collected_data.action_sequence.reserve( capacity );
     collected_data.action_sequence.clear();
   }
-
-  return true;
 }
 
-bool player_t::init_actions()
+void player_t::init_actions()
 {
   for ( size_t i = 0; i < action_list.size(); ++i )
   {
-    action_list[ i ] -> init();
+    action_t* action = action_list[ i ];
+    try
+    {
+      action -> init();
+    }
+    catch (const std::exception& e)
+    {
+      std::throw_with_nested(std::runtime_error(fmt::format("Action '{}'", action->name())));
+    }
   }
 
   bool have_off_gcd_actions = false;
@@ -2435,8 +2417,6 @@ bool player_t::init_actions()
   {
     sim->errorf( "No Default Action List available.\n" );
   }
-
-  return true;
 }
 
 void player_t::init_assessors()
@@ -2520,15 +2500,17 @@ void player_t::init_assessors()
   } );
 }
 
-bool player_t::init_finished()
+void player_t::init_finished()
 {
-  bool ret = true;
-
   for ( auto action : action_list )
   {
-    if ( !action->init_finished() )
+    try
     {
-      ret = false;
+      action->init_finished();
+    }
+    catch (const std::exception& e)
+    {
+      std::throw_with_nested(std::runtime_error(fmt::format("Action '{}'", action->name())));
     }
   }
 
@@ -2568,8 +2550,6 @@ bool player_t::init_finished()
       }
     } );
   }
-
-  return ret;
 }
 
 /**
@@ -2931,6 +2911,9 @@ double player_t::composite_melee_speed() const
   {
     h *= 1.0 / ( 1.0 + buffs.fel_winds->check_value() );
   }
+
+  if ( buffs.galeforce_striking && buffs.galeforce_striking->check() )
+    h *= 1.0 / ( 1.0 + buffs.galeforce_striking->check_value() );
 
   return h;
 }
@@ -3314,6 +3297,8 @@ double player_t::composite_damage_versatility() const
     cdv += buffs.dmf_well_fed->check_value();
   }
 
+  cdv += racials.mountaineer->effectN( 1 ).percent();
+
   return cdv;
 }
 
@@ -3332,6 +3317,8 @@ double player_t::composite_heal_versatility() const
     chv += buffs.dmf_well_fed->check_value();
   }
 
+  chv += racials.mountaineer->effectN( 1 ).percent();
+
   return chv;
 }
 
@@ -3349,6 +3336,8 @@ double player_t::composite_mitigation_versatility() const
   {
     cmv += buffs.dmf_well_fed->check_value() / 2;
   }
+
+  cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
 
   return cmv;
 }
@@ -3397,6 +3386,11 @@ double player_t::composite_player_multiplier( school_e school ) const
   if ( buffs.taste_of_mana && buffs.taste_of_mana->check() && school != SCHOOL_PHYSICAL )
   {
     m *= 1.0 + buffs.taste_of_mana->default_value;
+  }
+
+  if ( buffs.torrent_of_elements && buffs.torrent_of_elements->check() && school != SCHOOL_PHYSICAL )
+  {
+    m *= 1.0 + buffs.torrent_of_elements->default_value;
   }
 
   if ( buffs.damage_done && buffs.damage_done->check() )
@@ -3674,7 +3668,6 @@ double player_t::composite_rating( rating_e rating ) const
     case RATING_HEAL_VERSATILITY:
     case RATING_MITIGATION_VERSATILITY:
       v = current.stats.versatility_rating;
-      v += racials.mountaineer->effectN( 1 ).average( this );
       break;
     case RATING_EXPERTISE:
       v = current.stats.expertise_rating;
@@ -4497,13 +4490,10 @@ void player_t::trigger_ready()
  */
 void player_t::schedule_ready( timespan_t delta_time, bool waiting )
 {
-#ifndef NDEBUG
   if ( readying )
   {
-    sim->errorf( "\nplayer_t::schedule_ready assertion error: readying == true ( player %s )\n", name() );
-    assert( 0 );
+    std::runtime_error(fmt::format("Player '{}' scheduled ready while already ready.", name() ));
   }
-#endif
   action_t* was_executing = ( channeling ? channeling : executing );
 
   if ( queueing )
@@ -6305,8 +6295,7 @@ action_priority_list_t* player_t::get_action_priority_list( const std::string& n
   {
     if ( action_list_id_ == 64 )
     {
-      sim->errorf( "%s maximum number of action lists is 64", name_str.c_str() );
-      sim->cancel();
+      throw std::invalid_argument("Maximum number of action lists is 64");
     }
 
     a                          = new action_priority_list_t( name, this );
@@ -6563,9 +6552,9 @@ struct variable_t : public action_t
     }
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
-    auto ret = action_t::init_finished();
+    action_t::init_finished();
 
     if ( !background && operation != OPERATION_FLOOR && operation != OPERATION_CEIL && operation != OPERATION_RESET &&
          operation != OPERATION_PRINT )
@@ -6592,8 +6581,6 @@ struct variable_t : public action_t
         }
       }
     }
-
-    return ret;
   }
 
   ~variable_t()
@@ -6886,33 +6873,29 @@ struct lights_judgment_t : public racial_spell_t
     {
       background = may_crit = true;
       aoe                   = -1;
+      // these are sadly hardcoded in the tooltip
+      attack_power_mod.direct = 3.0;
+      spell_power_mod.direct = 3.0;
     }
 
-    void init() override
-    {
-      spell_t::init();
-
-      // Manually set up some flags, as the autodetection cannot determine that the missile is a
-      // damaging spell
-      snapshot_flags |= STATE_AP | STATE_SP | STATE_CRIT;
-    }
-
-    double attack_direct_power_coefficient( const action_state_t* ) const override
+    double attack_direct_power_coefficient( const action_state_t* s ) const override
     {
       auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
       auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
 
-      // Hardcoded into the tooltip
-      return ap >= sp ? 16.0 : 0.0;
+      if ( ap <= sp )
+        return 0;
+      return spell_t::attack_direct_power_coefficient( s );
     }
 
-    double spell_direct_power_coefficient( const action_state_t* ) const override
+    double spell_direct_power_coefficient( const action_state_t* s ) const override
     {
       auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
       auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
 
-      // Hardcoded into the tooltip
-      return sp > ap ? 12.0 : 0.0;
+      if ( ap > sp )
+        return 0;
+      return spell_t::spell_direct_power_coefficient( s );
     }
   };
 
@@ -7059,9 +7042,8 @@ struct restart_sequence_t : public action_t
 
       if ( !seq )
       {
-        sim->errorf( "Can't find sequence %s\n", seq_name_str.empty() ? "(default)" : seq_name_str.c_str() );
-        sim->cancel();
-        return;
+        throw std::invalid_argument(fmt::format("Can't find sequence '{}'.",
+            seq_name_str.empty() ? "(default)" : seq_name_str.c_str() ));
       }
     }
   }
@@ -7153,7 +7135,7 @@ struct snapshot_stats_t : public action_t
     }
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     player_t* p = player;
     for ( size_t i = 0; sim->report_pets_separately && i < p->pet_list.size(); ++i )
@@ -7167,7 +7149,7 @@ struct snapshot_stats_t : public action_t
       }
     }
 
-    return action_t::init_finished();
+    action_t::init_finished();
   }
 
   virtual void execute() override
@@ -8050,19 +8032,19 @@ struct pool_resource_t : public action_t
     delete amount_expr;
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
-    if ( !action_t::init_finished() )
-    {
-      return false;
-    }
+    action_t::init_finished();
 
     if ( !amount_str.empty() )
     {
-      return ( amount_expr = expr_t::parse( this, amount_str, sim->optimize_expressions ) ) != 0;
-    }
+      amount_expr = expr_t::parse( this, amount_str, sim->optimize_expressions );
+      if (amount_expr == nullptr)
+      {
+        throw std::invalid_argument(fmt::format("Could not parse amount if expression from '{}'", amount_str));
+      }
 
-    return true;
+    }
   }
 
   virtual void reset() override
@@ -8201,7 +8183,7 @@ action_t* player_t::create_action( const std::string& name, const std::string& o
   return consumable::create_action( this, name, options_str );
 }
 
-bool player_t::parse_talents_numbers( const std::string& talent_string )
+void player_t::parse_talents_numbers( const std::string& talent_string )
 {
   talent_points.clear();
 
@@ -8212,16 +8194,13 @@ bool player_t::parse_talents_numbers( const std::string& talent_string )
     char c = talent_string[ i ];
     if ( c < '0' || c > ( '0' + MAX_TALENT_COLS ) )
     {
-      sim->errorf( "Player %s has illegal character '%c' in talent encoding.\n", name(), c );
-      return false;
+      std::runtime_error(fmt::format("Illegal character '{}' in talent encoding.", c ));
     }
     if ( c > '0' )
       talent_points.select_row_col( i, c - '1' );
   }
 
   create_talents_numbers();
-
-  return true;
 }
 
 /**
@@ -9470,7 +9449,7 @@ expr_t* player_t::create_expression( const std::string& expression_str )
         buff = buff_t::find( this, splits[ 1 ], this );  // Raid debuffs
       if ( buff )
         return buff_t::create_expression( splits[ 1 ], splits[ 2 ], *buff );
-      throw std::invalid_argument(fmt::format("Cannot find any buff with name '{}'.", splits[ 1 ]));
+      throw std::invalid_argument(fmt::format("Cannot find buff '{}'.", splits[ 1 ]));
     }
     else if ( splits[ 0 ] == "cooldown" )
     {
@@ -11956,9 +11935,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
         // infinite loop, and need to cancel the sim
         if ( visited_apls_ & call->alist->internal_id_mask )
         {
-          sim->errorf( "%s action list in infinite loop", name() );
-          sim->cancel();
-          return 0;
+          throw std::runtime_error(fmt::format("'{}' action list in infinite loop", name() ));
         }
 
         // We get an action from the call, return it

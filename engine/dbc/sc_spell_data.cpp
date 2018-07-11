@@ -469,9 +469,8 @@ struct sd_expr_binary_t : public spell_list_expr_t
 
     if ( left_result != expression::TOK_SPELL_LIST )
     {
-      sim -> errorf( "Inconsistent input types (%s and %s) for binary operator '%s', left must always be a spell list.\n",
-                     left -> name(), right -> name(), name() );
-      sim -> cancel();
+      throw std::invalid_argument(fmt::format("Inconsistent input types ('{}' and '{}') for binary operator '{}', left must always be a spell list.\n",
+                     left -> name(), right -> name(), name() ));
     }
     else
     {
@@ -1063,7 +1062,7 @@ spell_data_expr_t* build_expression_tree( sim_t* sim,
   for ( auto& t : tokens )
   {
     if ( t.type == expression::TOK_NUM )
-      stack.push_back( new spell_data_expr_t( sim, t.label, atof( t.label.c_str() ) ) );
+      stack.push_back( new spell_data_expr_t( sim, t.label, std::stod( t.label ) ) );
     else if ( t.type == expression::TOK_STR )
     {
       spell_data_expr_t* e = spell_data_expr_t::create_spell_expression( sim, t.label );
@@ -1182,9 +1181,7 @@ spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr
 
   if ( ! expression::convert_to_rpn( tokens ) )
   {
-    sim -> errorf( "Unable to convert %s into RPN\n", expr_str.c_str() );
-    sim -> cancel();
-    return nullptr;
+    throw std::invalid_argument(fmt::format("Unable to convert '{}' into RPN.", expr_str ));
   }
 
   if ( sim -> debug ) expression::print_tokens( tokens, sim );
@@ -1193,9 +1190,7 @@ spell_data_expr_t* spell_data_expr_t::parse( sim_t* sim, const std::string& expr
 
   if ( ! e )
   {
-    sim -> errorf( "Unable to build expression tree from %s\n", expr_str.c_str() );
-    sim -> cancel();
-    return nullptr;
+    throw std::invalid_argument(fmt::format("Unable to build expression tree from '{}'.", expr_str ));
   }
 
   return e;

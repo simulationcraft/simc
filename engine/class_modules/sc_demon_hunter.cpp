@@ -1106,13 +1106,13 @@ public:
     return g;
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
     // For reporting purposes only, as the game displays this as SCHOOL_CHAOS
     if ( ab::stats->school == SCHOOL_CHROMATIC )
       ab::stats->school = SCHOOL_CHAOS;
 
-    return ab::init_finished();
+    ab::init_finished();
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -3006,9 +3006,9 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     return c;
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
-    bool f = demon_hunter_attack_t::init_finished();
+    demon_hunter_attack_t::init_finished();
 
     for ( size_t i = 0; i < attacks.size(); i++ )
     {
@@ -3025,8 +3025,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
         attacks.back()->trail_of_ruin_dot = trail_of_ruin_dot;
       }
     }
-
-    return f;
   }
 
   virtual void execute() override
@@ -3216,17 +3214,15 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     return c;
   }
 
-  virtual bool init_finished() override
+  void init_finished() override
   {
-    bool f = demon_hunter_attack_t::init_finished();
+    demon_hunter_attack_t::init_finished();
 
     // Use one stats object for all parts of the attack.
     for ( size_t i = 0; i < attacks.size(); i++ )
     {
       attacks[ i ]->stats = stats;
     }
-
-    return f;
   }
 
   virtual void execute() override
@@ -4262,9 +4258,9 @@ demon_hunter_t::demon_hunter_t(sim_t* sim, const std::string& name, race_e r)
   benefits(),
   proc(),
   active(),
+  legendary(),
   pets(),
-  options(),
-  legendary()
+  options()
 {
   create_cooldowns();
   create_gains();
@@ -5274,6 +5270,7 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_talent( this, "Fel Barrage", "if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>30)" );
   apl_normal->add_talent( this, "Immolation Aura" );
   apl_normal->add_talent( this, "Felblade", "if=fury<15&(cooldown.death_sweep.remains<2*gcd|cooldown.blade_dance.remains<2*gcd)" );
+  apl_normal->add_action( this, "Eye Beam", "if=active_enemies>1&(!raid_event.adds.exists|raid_event.adds.up)&!variable.waiting_for_momentum" );
   apl_normal->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_normal->add_action( this, "Blade Dance", "if=variable.blade_dance" );
   apl_normal->add_talent( this, "Felblade", "if=fury.deficit>=40" );

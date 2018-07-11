@@ -19,6 +19,13 @@ namespace consumables
   void bountiful_captains_feast( special_effect_t& );
 }
 
+namespace enchants
+{
+  void galeforce_striking( special_effect_t& );
+  void torrent_of_elements( special_effect_t& );
+  custom_cb_t weapon_navigation( unsigned );
+}
+
 namespace util
 {
 // feasts initialization helper
@@ -38,6 +45,11 @@ void init_feast( special_effect_t& effect, arv::array_view<std::pair<stat_e, int
     }
   }
   effect.stat_amount = effect.player -> find_spell( effect.trigger_spell_id ) -> effectN( 1 ).average( effect.player );
+}
+
+std::string tokenized_name( const spell_data_t* spell )
+{
+  return ::util::tokenize_fn( spell -> name_cstr() );
 }
 } // namespace util
 
@@ -63,6 +75,103 @@ void consumables::bountiful_captains_feast( special_effect_t& effect )
       { STAT_STAMINA,   259457 } } );
 }
 
+// Gale-Force Striking ======================================================
+
+void enchants::galeforce_striking( special_effect_t& effect )
+{
+  buff_t* buff = effect.player -> buffs.galeforce_striking;
+  if ( !buff )
+  {
+    auto spell = effect.trigger();
+    buff =
+      make_buff<haste_buff_t>( effect.player, util::tokenized_name( spell ), spell )
+        -> add_invalidate( CACHE_ATTACK_SPEED )
+        -> set_default_value( spell -> effectN( 1 ).percent() )
+        -> set_activated( false );
+    effect.player -> buffs.galeforce_striking = buff;
+  }
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// Torrent of Elements ======================================================
+
+void enchants::torrent_of_elements( special_effect_t& effect )
+{
+  buff_t* buff = effect.player -> buffs.torrent_of_elements;
+  if ( !buff )
+  {
+    auto spell = effect.trigger();
+    buff =
+      make_buff<buff_t>( effect.player, util::tokenized_name( spell ), spell )
+        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+        -> set_default_value( spell -> effectN( 1 ).percent() )
+        -> set_activated( false );
+    effect.player -> buffs.torrent_of_elements = buff;
+  }
+
+  effect.custom_buff = buff;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+// 'XXX' Navigation (weapon enchant) ========================================
+
+custom_cb_t enchants::weapon_navigation( unsigned buff_id )
+{
+  struct navigation_proc_callback_t : public dbc_proc_callback_t
+  {
+    buff_t* final_buff;
+
+    navigation_proc_callback_t( player_t* p, special_effect_t& e, buff_t* b )
+      : dbc_proc_callback_t( p, e ), final_buff( b )
+    { }
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      // From logs it seems like the stacking buff can't trigger while the 'final' one is up. Logs
+      // also look like the RPPM effect is allowed to proc, but the stacking buff is not triggered
+      // during the final buff.
+      if ( final_buff -> check() )
+      {
+        return;
+      }
+
+      if ( proc_buff && proc_buff -> trigger() &&
+           proc_buff -> check() == proc_buff -> max_stack() )
+      {
+        final_buff -> trigger();
+        proc_buff -> expire();
+      }
+    }
+  };
+
+  // Both the stacking and the final buffs are unique
+  return [ buff_id ] ( special_effect_t& effect ) {
+    auto spell_buff = effect.trigger();
+    const std::string spell_name = util::tokenized_name( spell_buff );
+    buff_t* buff = buff_t::find( effect.player, spell_name );
+    if ( ! buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, spell_name, spell_buff );
+    }
+
+    effect.custom_buff = buff;
+
+    auto final_spell_data = effect.player -> find_spell( buff_id );
+    const std::string final_spell_name = util::tokenized_name( final_spell_data ) + "_final";
+    buff_t* final_buff = buff_t::find( effect.player, final_spell_name );
+    if ( ! final_buff )
+    {
+      final_buff = make_buff<stat_buff_t>( effect.player, final_spell_name, final_spell_data );
+    }
+
+    new navigation_proc_callback_t( effect.player, effect, final_buff );
+  };
+}
+
 } // namespace bfa
 } // anon namespace
 
@@ -73,4 +182,17 @@ void unique_gear::register_special_effects_bfa()
   // Consumables
   register_special_effect( 259409, consumables::galley_banquet );
   register_special_effect( 259410, consumables::bountiful_captains_feast );
+
+  // Enchants
+  register_special_effect( 255151, enchants::galeforce_striking );
+  register_special_effect( 255150, enchants::torrent_of_elements );
+  register_special_effect( 268855, enchants::weapon_navigation( 268856 ) ); // Versatile Navigation
+  register_special_effect( 268888, enchants::weapon_navigation( 268893 ) ); // Quick Navigation
+  register_special_effect( 268900, enchants::weapon_navigation( 268898 ) ); // Masterful Navigation
+  register_special_effect( 268906, enchants::weapon_navigation( 268904 ) ); // Deadly Navigation
+  register_special_effect( 268912, enchants::weapon_navigation( 268910 ) ); // Stalwart Navigation
+  register_special_effect( 264876, "264878Trigger" ); // Crow's Nest Scope
+  register_special_effect( 264958, "264957Trigger" ); // Monelite Scope of Alacrity
+  register_special_effect( 265090, "265092Trigger" ); // Incendiary Ammunition
+  register_special_effect( 265094, "265096Trigger" ); // Frost-Laced Ammunition
 }

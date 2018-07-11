@@ -126,7 +126,14 @@ namespace warlock
         agony_max_stacks = ( p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN( 2 ).base_value() : 10 );
 
         warlock_spell_t::init();
+
         this->dot_max_stack = agony_max_stacks;
+
+        if ( p()->legendary.hood_of_eternal_disdain )
+        {
+          base_tick_time *= 1.0 + p()->legendary.hood_of_eternal_disdain->driver()->effectN( 2 ).percent();
+          dot_duration *= 1.0 + p()->legendary.hood_of_eternal_disdain->driver()->effectN( 1 ).percent();
+        }
       }
 
       void execute() override
@@ -218,6 +225,16 @@ namespace warlock
         }
       }
 
+      void init() override
+      {
+        warlock_spell_t::init();
+
+        if ( p()->legendary.sacrolashs_dark_strike )
+        {
+          base_multiplier *= 1.0 + p()->legendary.sacrolashs_dark_strike->driver()->effectN( 1 ).percent();
+        }
+      }
+
       double action_multiplier() const override
       {
         double m = warlock_spell_t::action_multiplier();
@@ -290,6 +307,7 @@ namespace warlock
 
         void last_tick( dot_t* d ) override
         {
+          p()->buffs.stretens_insanity->decrement( 1 );
           p()->buffs.active_uas->decrement( 1 );
 
           warlock_spell_t::last_tick( d );
@@ -388,6 +406,31 @@ namespace warlock
         if (p()->azerite.dreadful_calling.ok())
         {
           p()->cooldowns.darkglare->adjust((-1 * p()->azerite.dreadful_calling.spell_ref().effectN(1).time_value()));
+        }
+
+        bool flag = false;
+        for ( int i = 0; i < MAX_UAS; i++ )
+        {
+          if ( td( target )->dots_unstable_affliction[i]->is_ticking() )
+          {
+            flag = true;
+            break;
+          }
+        }
+
+        if ( p()->legendary.power_cord_of_lethtendris )
+        {
+          if ( !flag && rng().roll( p()->legendary.power_cord_of_lethtendris->driver()->effectN( 1 ).percent() ) )
+          {
+            p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.power_cord_of_lethtendris );
+          }
+        }
+        if ( p()->legendary.stretens_sleepless_shackles )
+        {
+          if ( !flag )
+          {
+            p()->buffs.stretens_insanity->increment( 1 );
+          }
         }
       }
     };
@@ -1036,7 +1079,7 @@ namespace warlock
 
   void warlock_t::init_procs_affliction()
   {
-    procs.the_master_harvester          = get_proc( "the_master_harvester" );
+    //procs.the_master_harvester          = get_proc( "the_master_harvester" );
     procs.affliction_t21_2pc            = get_proc( "affliction_t21_2pc" );
     procs.nightfall                     = get_proc( "nightfall" );
   }
@@ -1063,33 +1106,5 @@ namespace warlock
     def->add_action( "deathbolt" );
     def->add_talent( this, "Drain Soul", "chain=1,interrupt=1" );
     def->add_action( "shadow_bolt" );
-  }
-
-  using namespace unique_gear;
-  using namespace actions;
-  struct hood_of_eternal_disdain_t : public scoped_action_callback_t<actions_affliction::agony_t>
-  {
-    hood_of_eternal_disdain_t() : super( WARLOCK, "agony" ) { }
-
-    void manipulate( actions_affliction::agony_t* a, const special_effect_t& e ) override
-    {
-      a->base_tick_time *= 1.0 + e.driver()->effectN( 2 ).percent();
-      a->dot_duration *= 1.0 + e.driver()->effectN( 1 ).percent();
-    }
-  };
-
-  struct sacrolashs_dark_strike_t : public scoped_action_callback_t<actions_affliction::corruption_t>
-  {
-    sacrolashs_dark_strike_t() : super( WARLOCK, "corruption" ) { }
-
-    void manipulate( actions_affliction::corruption_t* a, const special_effect_t& e ) override
-    {
-      a->base_multiplier *= 1.0 + e.driver()->effectN( 1 ).percent();
-    }
-  };
-
-  void warlock_t::legendaries_affliction()
-  {
-    register_special_effect( 205797, hood_of_eternal_disdain_t() );
   }
 }

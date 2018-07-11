@@ -150,7 +150,6 @@ public:
   struct buffs_t
   {
     // core
-    buffs::ardent_defender_buff_t* ardent_defender;
     buffs::avenging_wrath_buff_t* avenging_wrath;
     buffs::crusade_buff_t* crusade;
     buffs::sephuzs_secret_buff_t* sephuz;
@@ -162,8 +161,9 @@ public:
     buff_t* grand_crusader;
     buff_t* infusion_of_light;
     buff_t* shield_of_the_righteous;
-    absorb_buff_t* bulwark_of_order;
     buff_t* last_defender;
+    buff_t* avengers_valor;
+    buff_t* ardent_defender;
 
     // talents
     absorb_buff_t* holy_shield_absorb; // Dummy buff to trigger spell damage "blocking" absorb effect
@@ -201,7 +201,6 @@ public:
   {
     // Healing/absorbs
     gain_t* holy_shield;
-    gain_t* bulwark_of_order;
 
     // Mana
     gain_t* extra_regen;

@@ -1,27 +1,12 @@
 #include "simulationcraft.hpp"
 #include "sc_paladin.hpp"
 
+// TODO : 
+// Defensive stuff : 
+// - correctly update sotr's armor bonus on each cast
+// - avenger's valor defensive benefit
+
 namespace paladin {
-
-namespace buffs {
-
-  struct ardent_defender_buff_t: public buff_t
-  {
-    bool oneup_triggered;
-
-    ardent_defender_buff_t( player_t* p ):
-      buff_t( p, "ardent_defender", p -> find_specialization_spell( "Ardent Defender" ) ),
-      oneup_triggered( false )
-    {
-
-    }
-
-    void use_oneup()
-    {
-      oneup_triggered = true;
-    }
-  };
-}
 
 // Aegis of Light (Protection) ================================================
 
@@ -72,7 +57,7 @@ struct ardent_defender_t : public paladin_spell_t
 struct avengers_shield_t : public paladin_spell_t
 {
   avengers_shield_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "avengers_shield", p, p -> find_class_spell( "Avenger's Shield" ) )
+    : paladin_spell_t( "avengers_shield", p, p -> find_specialization_spell( "Avenger's Shield" ) )
   {
     parse_options( options_str );
 
@@ -83,14 +68,11 @@ struct avengers_shield_t : public paladin_spell_t
     }
     may_crit     = true;
 
-    // TODO: add and legendary bonuses
-    base_multiplier *= 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent();
-  base_aoe_multiplier *= 1.0;
-  if ( p ->talents.first_avenger->ok() )
-    base_aoe_multiplier *= 2.0 / 3.0;
-  aoe = 3;
-  aoe = std::max( aoe, 0 );
+    aoe = data().effectN( 1 ).chain_target();
 
+    base_multiplier *= 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent();
+    // First Avenger only increases primary target damage
+    base_aoe_multiplier *= 1.0 / ( 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent() );
 
     // link needed for trigger_grand_crusader
     cooldown = p -> cooldowns.avengers_shield;
@@ -101,18 +83,26 @@ struct avengers_shield_t : public paladin_spell_t
   {
     paladin_spell_t::init();
 
-    if (p()->ferren_marcuss_strength){
-      aoe += (p()->spells.ferren_marcuss_strength->effectN(1).base_value());
-      base_multiplier *= 1.0 + p()->spells.ferren_marcuss_strength->effectN(2).percent();
+    if ( p() -> ferren_marcuss_strength )
+    {
+      aoe += as<int>( p() -> spells.ferren_marcuss_strength -> effectN( 1 ).base_value() );
+      base_multiplier *= 1.0 + p() -> spells.ferren_marcuss_strength -> effectN( 2 ).percent();
     }
+  }
 
+  void execute() override
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.avengers_valor -> trigger();
   }
 
   void impact( action_state_t* s ) override
   {
     paladin_spell_t::impact( s );
 
-    if ( p() -> gift_of_the_golden_valkyr ) {
+    if ( p() -> gift_of_the_golden_valkyr )
+    {
       timespan_t reduction = timespan_t::from_seconds( -1.0 * p() -> spells.gift_of_the_golden_valkyr -> effectN(1).base_value() );
       p() -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
     }
@@ -136,7 +126,7 @@ struct bastion_of_light_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    p()->cooldowns.shield_of_the_righteous->reset(false, true);
+    p() -> cooldowns.shield_of_the_righteous -> reset(false, true);
   }
 };
 
@@ -352,7 +342,7 @@ struct judgment_prot_t : public paladin_melee_attack_t
     may_block = may_parry = may_dodge = false;
     cooldown -> charges = 1;
 
-    cooldown -> charges *= 1.0 + p -> talents.crusaders_judgment->effectN( 1 ).base_value();
+    cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
     cooldown -> duration *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 11 ).percent();
     sotr_cdr = -1.0 * timespan_t::from_seconds( p -> spec.judgment_2 -> effectN( 1 ).base_value() );
@@ -422,9 +412,9 @@ struct light_of_the_protector_t : public paladin_heal_t
 
     // heals for a base amount, increased by your missing health up to +200% (linear increase, each missing health % increase the healing by 2%)
 
-    double missing_health_percent = p() -> resources.max[ RESOURCE_HEALTH ] -  std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) / p() -> resources.max[ RESOURCE_HEALTH ];
+    double missing_health_percent = ( p() -> resources.max[ RESOURCE_HEALTH ] -  std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) ) / p() -> resources.max[ RESOURCE_HEALTH ];
 
-    m *= missing_health_percent * data().effectN( 2 ).percent();
+    m *= 1 + missing_health_percent * data().effectN( 2 ).percent();
 
     return m;
   }
@@ -435,7 +425,7 @@ struct light_of_the_protector_t : public paladin_heal_t
 
     if ( p() -> saruans_resolve ) 
     {
-      cooldown -> charges += p() -> spells.saruans_resolve -> effectN( 1 ).base_value();
+      cooldown -> charges += as<int>( p() -> spells.saruans_resolve -> effectN( 1 ).base_value() );
     }
   }
 
@@ -480,9 +470,9 @@ struct hand_of_the_protector_t : public paladin_heal_t
 
     // heals for a base amount, increased by your missing health up to +200% (linear increase, each missing health % increase the healing by 2%)
 
-    double missing_health_percent = p() -> resources.max[ RESOURCE_HEALTH ] -  std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) / p() -> resources.max[ RESOURCE_HEALTH ];
+    double missing_health_percent = ( p() -> resources.max[ RESOURCE_HEALTH ] -  std::max( p() -> resources.current[ RESOURCE_HEALTH ], 0.0 ) ) / p() -> resources.max[ RESOURCE_HEALTH ];
 
-    m *= missing_health_percent * data().effectN( 2 ).percent();
+    m *= 1 + missing_health_percent * data().effectN( 2 ).percent();
 
     return m;
   }
@@ -494,7 +484,7 @@ struct hand_of_the_protector_t : public paladin_heal_t
 
     if ( p() -> saruans_resolve ) 
     {
-      cooldown -> charges += p() -> spells.saruans_resolve -> effectN( 1 ).base_value();
+      cooldown -> charges += as<int>( p() -> spells.saruans_resolve -> effectN( 1 ).base_value() );
     }
   }
 
@@ -601,12 +591,22 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     p -> active_sotr = this;
   }
 
+  double action_multiplier() const override
+  {
+    double m = paladin_melee_attack_t::action_multiplier();
+
+    m *= 1.0 + p() -> buffs.avengers_valor -> value();
+
+    return m;
+  }
+
   virtual void execute() override
   {
     paladin_melee_attack_t::execute();
 
     //Buff granted regardless of combat roll result
     //Duration is additive on refresh, stats not recalculated
+
     if ( p() -> buffs.shield_of_the_righteous -> check() )
     {
       p() -> buffs.shield_of_the_righteous -> extend_duration( p(), p() -> buffs.shield_of_the_righteous -> buff_duration );
@@ -625,6 +625,8 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
         p() -> cooldowns.hand_of_the_protector -> adjust( reduction );
       }
     }
+
+    p() -> buffs.avengers_valor -> expire();
   }
 };
 
@@ -707,7 +709,7 @@ void paladin_t::target_mitigation( school_e school,
 
   if ( standing_in_consecration() )
   {
-    s -> result_amount *= cache.mastery() * passives.divine_bulwark -> effectN( 2 ).mastery_value();
+    s -> result_amount *= 1.0 + ( cache.mastery() * passives.divine_bulwark -> effectN( 2 ).mastery_value() );
   }
 
   // Ardent Defender
@@ -715,9 +717,9 @@ void paladin_t::target_mitigation( school_e school,
   {
     if ( s -> result_amount > 0 && s -> result_amount >= resources.current[ RESOURCE_HEALTH ] )
     {
-      // Ardent defender is a little odd - it doesn't heal you *for* 12%, it heals you *to* 12%.
-      // It does this by either absorbing all damage and healing you for the difference between 12% and your current health (if current < 12%)
-      // or absorbing any damage that would take you below 12% (if current > 12%).
+      // Ardent defender is a little odd - it doesn't heal you *for* 20%, it heals you *to* 12%.
+      // It does this by either absorbing all damage and healing you for the difference between 20% and your current health (if current < 20%)
+      // or absorbing any damage that would take you below 20% (if current > 20%).
       // To avoid complications with absorb modeling, we're just going to kludge it by adjusting the amount gained or lost accordingly.
       // Also arbitrarily capping at 3x max health because if you're seriously simming bosses that hit for >300% player health I hate you.
       s -> result_amount = 0.0;
@@ -737,7 +739,6 @@ void paladin_t::target_mitigation( school_e school,
                        nullptr,
                        s -> action );
       }
-      buffs.ardent_defender -> use_oneup();
       buffs.ardent_defender -> expire();
     }
 
@@ -830,28 +831,26 @@ action_t* paladin_t::create_action_protection( const std::string& name, const st
 
 void paladin_t::create_buffs_protection()
 {
-  buffs.guardian_of_ancient_kings      = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
-                                          -> set_cooldown( timespan_t::zero() ); // let the ability handle the CD
-  buffs.shield_of_the_righteous        = make_buff( this, "shield_of_the_righteous", spells.shield_of_the_righteous )
-                                          -> add_invalidate( CACHE_BONUS_ARMOR );
-  buffs.ardent_defender                = new buffs::ardent_defender_buff_t( this );
-  buffs.aegis_of_light                 = make_buff( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
-  buffs.seraphim                       = make_buff<stat_buff_t>( this, "seraphim", talents.seraphim )
-    ->add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                                          ->add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                                          ->add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
-                                          ->add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) );
-  buffs.seraphim->set_cooldown( timespan_t::zero() ); // let the ability handle the cooldown
-  buffs.bulwark_of_order               = make_buff<absorb_buff_t>( this, "bulwark_of_order", find_spell( 209388 ) );
-  buffs.bulwark_of_order->set_absorb_source( get_stats( "bulwark_of_order" ) )
-    ->set_absorb_gain( get_gain( "bulwark_of_order" ) )
-    ->set_max_stack( 1 ); // not sure why data says 3 stacks
+  buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
+                                    -> set_cooldown( timespan_t::zero() ); // let the ability handle the CD
+  buffs.shield_of_the_righteous = make_buff( this, "shield_of_the_righteous", spells.shield_of_the_righteous )
+                                  -> add_invalidate( CACHE_BONUS_ARMOR );
+  buffs.aegis_of_light = make_buff( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
+  buffs.seraphim = make_buff<stat_buff_t>( this, "seraphim", talents.seraphim )
+                  -> add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                  -> add_stat( STAT_CRIT_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                  -> add_stat( STAT_MASTERY_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
+                  -> add_stat( STAT_VERSATILITY_RATING, talents.seraphim -> effectN( 1 ).average( this ) );
+  buffs.seraphim -> set_cooldown( timespan_t::zero() ); // let the ability handle the cooldown
 
   // Talents
-  buffs.holy_shield_absorb     = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
-  buffs.holy_shield_absorb->set_absorb_school( SCHOOL_MAGIC )
-      ->set_absorb_source( get_stats( "holy_shield_absorb" ) )
-      ->set_absorb_gain( get_gain( "holy_shield_absorb" ) );
+  buffs.holy_shield_absorb = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
+  buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
+                           -> set_absorb_source( get_stats( "holy_shield_absorb" ) )
+                           -> set_absorb_gain( get_gain( "holy_shield_absorb" ) );
+  buffs.avengers_valor = make_buff( this, "avengers_valor", find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() );
+  buffs.avengers_valor -> set_default_value( find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
+  buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) );
 }
 
 void paladin_t::init_spells_protection()
@@ -1018,7 +1017,6 @@ void paladin_t::generate_action_prio_list_prot()
 
   prot->add_talent(this,"Seraphim","if=talent.seraphim.enabled&action.shield_of_the_righteous.charges>=2");
   prot->add_action(this, "Avenging Wrath", "if=talent.seraphim.enabled&(buff.seraphim.up|cooldown.seraphim.remains<4)");
-  prot->add_action(this, "Ardent Defender", "if=talent.seraphim.enabled&buff.seraphim.up");
   prot->add_action(this, "Shield of the Righteous", "if=talent.seraphim.enabled&(cooldown.consecration.remains>=0.1&(action.shield_of_the_righteous.charges>2.5&cooldown.seraphim.remains>3)|(buff.seraphim.up))");
   prot->add_action(this, "Avenger's Shield", "if=talent.seraphim.enabled");
   prot->add_action(this, "Judgment", "if=talent.seraphim.enabled&(active_enemies<2|set_bonus.tier20_2pc)");

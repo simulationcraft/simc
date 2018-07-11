@@ -142,7 +142,7 @@ public:
 /// Creates an azerite state object for the actor
 std::unique_ptr<azerite_state_t> create_state( player_t* );
 /// Initialize azerite powers through the generic special effect subsystem
-bool initialize_azerite_powers( player_t* actor );
+void initialize_azerite_powers( player_t* actor );
 /// Register generic azerite powers to the special effect system
 void register_azerite_powers();
 

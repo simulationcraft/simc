@@ -10,7 +10,7 @@ namespace
 // ==========================================================================
 // Warrior
 // todo: Fury - Add Meat Cleaver to all single target Fury abilities (ref Bloodthirst), Enrage-clean up movespeed/damage taken/health increase, add Battle Shout raid buff
-//       Arms - DeepWounds-BS/Ravticks, 3 target for Cleave, Collateral Damage, and Avatar-Hardcode for Arms
+//       Arms - 3 target for Cleave, Collateral Damage, and Avatar-Hardcode for Arms
 // ==========================================================================
 
 struct warrior_t;
@@ -129,7 +129,6 @@ public:
     haste_buff_t* in_for_the_kill;
   buff_t* war_veteran; // Arms T21 2PC
   buff_t* weighted_blade; // Arms T21 4PC
-  buff_t* outrage; // Fury T21 4PC
   } buff;
 
   // Cooldowns
@@ -198,6 +197,7 @@ public:
   struct spells_t
   {
     const spell_data_t* avatar;
+    const spell_data_t* battle_shout;
     const spell_data_t* charge;
     const spell_data_t* colossus_smash_debuff;
     const spell_data_t* headlong_rush;
@@ -1822,11 +1822,10 @@ struct colossus_smash_t: public warrior_attack_t
 struct deep_wounds_ARMS_t: public warrior_attack_t
 {
   deep_wounds_ARMS_t( warrior_t* p ):
-    warrior_attack_t( "deep_wounds", p, p -> spec.deep_wounds_ARMS -> effectN( 2 ).trigger() )
+    warrior_attack_t( "deep_wounds", p, p -> find_spell ( 262115 ) )
   {
     background = tick_may_crit = true;
-    hasted_ticks = false;
-    dot_behavior = DOT_CLIP;
+    hasted_ticks = true;
   }
 
   double action_multiplier() const override
@@ -1834,6 +1833,7 @@ struct deep_wounds_ARMS_t: public warrior_attack_t
     double am = warrior_attack_t::action_multiplier();
 
     am *= 1.0 + p() -> cache.mastery_value();
+    am += 0.08; // Starts with an extra 8% on top of base mastery
 
     return am;
   }
@@ -1914,7 +1914,6 @@ struct dragon_roar_t: public warrior_attack_t
 struct execute_damage_t : public warrior_attack_t
 {
   double max_rage;
-  double rage_spent;
   execute_damage_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "execute", p, p -> spec.execute -> effectN( 1 ).trigger()),
     max_rage( 40 )
@@ -1932,6 +1931,10 @@ struct execute_damage_t : public warrior_attack_t
     {
       am *= 2.0;
     }
+    if ( p() -> buff.sudden_death -> check() )
+    {
+      am *= 2.0;
+    }
     else
     {
       double temp_max_rage = max_rage;
@@ -1939,7 +1942,7 @@ struct execute_damage_t : public warrior_attack_t
       {
         temp_max_rage *= 1.0 + p() -> buff.deadly_calm -> data().effectN( 2 ).percent();
       }
-      am *= 2.0 * ( std::min( temp_max_rage, rage_spent ) / temp_max_rage );
+      am *= 2.0 * ( std::min( temp_max_rage, last_resource_cost ) / temp_max_rage );
     }
 
     return am;
@@ -1950,15 +1953,22 @@ struct execute_arms_t: public warrior_attack_t
 {
   execute_damage_t* trigger_attack;
   double max_rage;
+  double execute_pct;
   execute_arms_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "execute", p, p -> spec.execute ),
-    max_rage( 40 )
+    max_rage( 40 ),
+    execute_pct( 20 )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
     impact_action = p -> active.deep_wounds_ARMS;
 
     trigger_attack = new execute_damage_t(p,options_str);
+
+    if ( p -> talents.massacre -> ok() )
+    {
+      execute_pct = p -> talents.massacre -> effectN( 2 )._base_value;
+    }
   }
 
   double tactician_cost() const override
@@ -1989,11 +1999,14 @@ struct execute_arms_t: public warrior_attack_t
     {
       return c *= 1.0 + p() -> buff.ayalas_stone_heart -> data().effectN( 2 ).percent();
     }
+    if ( p() -> buff.sudden_death -> check() )
+    {
+      return 0; // The cost reduction isn't in the spell data
+    }
     if ( p() -> buff.deadly_calm -> check() )
     {
       c *= 1.0 + p() -> talents.deadly_calm  -> effectN( 1 ).percent();
     }
-    trigger_attack -> rage_spent = c;
     return c;
   }
 
@@ -2001,10 +2014,12 @@ struct execute_arms_t: public warrior_attack_t
   {
     warrior_attack_t::execute();
 
+    trigger_attack -> last_resource_cost = last_resource_cost;
     trigger_attack -> execute();
     p() -> resource_gain( RESOURCE_RAGE, last_resource_cost * 0.3, p() -> gain.execute_refund ); //TODO, is it necessary to check if the target died? Probably too much trouble.
 
     p() -> buff.ayalas_stone_heart -> expire();
+    p() -> buff.sudden_death -> expire();
     p() -> buff.executioners_precision -> trigger();
   }
 
@@ -2018,8 +2033,13 @@ struct execute_arms_t: public warrior_attack_t
     {
       return warrior_attack_t::ready();
     }
+    if ( p() -> buff.sudden_death -> check() )
+    {
+      return warrior_attack_t::ready();
+    }
+
     // Call warrior_attack_t::ready() first for proper targeting support.
-    if ( warrior_attack_t::ready() && target -> health_percentage() <= 20 )
+    if ( warrior_attack_t::ready() && target -> health_percentage() <= execute_pct )
     {
       return true;
     }
@@ -2724,6 +2744,10 @@ struct rampage_attack_t: public warrior_attack_t
     rage_from_valarjar_berserking( p -> find_spell( 248179 ) -> effectN( 1 ).base_value() / 10.0 )
   {
     dual = true;
+    if ( p -> sets -> has_set_bonus( WARRIOR_FURY, T21, B4 ) )
+    {
+      base_multiplier *= ( 1.0 + p -> find_spell( 200853 ) -> effectN( 1 ).percent() );
+    }
     base_multiplier *= 1.0 + p -> talents.carnage -> effectN( 4 ).percent();
     // base_aoe_multiplier = p -> buff.whirlwind -> s_data -> effectN( 3 ).percent(); Fix Me - Copy Bloodthirst for cleave support
     if ( p -> spec.rampage -> effectN( 3 ).trigger() == rampage )
@@ -2738,18 +2762,6 @@ struct rampage_attack_t: public warrior_attack_t
       first_attack_missed = true;
     else if ( first_attack )
       first_attack_missed = false;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p() -> buff.outrage -> check() )
-    {
-      am *= 1.0 + p() -> buff.outrage -> data().effectN( 1 ).percent();
-    }
-
-    return am;
   }
 
   void impact( action_state_t* s ) override
@@ -3679,6 +3691,27 @@ struct avatar_t: public warrior_spell_t
   }
 };
 
+// Battle Shout ===================================================================
+
+struct battle_shout_t : public warrior_spell_t
+{
+  battle_shout_t( warrior_t* p, const std::string& options_str ) : warrior_spell_t( "battle_shout", p, p-> spell.battle_shout )
+  {
+    parse_options( options_str );
+    harmful = false;
+    ignore_false_positive = true;
+
+  //  background = sim -> overrides.battle_shout !=0;
+  }
+
+  //virtual void execute() override
+  //{
+    //if ( ! sim -> overrides.battle_shout )
+      //sim -> auras.battle_shout -> trigger();
+  //}
+};
+
+
 // Berserker Rage ===========================================================
 
 struct berserker_rage_t: public warrior_spell_t
@@ -3913,7 +3946,6 @@ struct recklessness_t: public warrior_spell_t
     warrior_spell_t::execute();
 
     p() -> buff.recklessness -> trigger( 1, bonus_crit );
-    p() -> buff.outrage -> trigger();
   }
 };
 
@@ -4168,6 +4200,7 @@ action_t* warrior_t::create_action( const std::string& name,
 {
   if ( name == "auto_attack"          ) return new auto_attack_t          ( this, options_str );
   if ( name == "avatar"               ) return new avatar_t               ( this, options_str );
+  if ( name == "battle_shout"         ) return new battle_shout_t         ( this, options_str );
   if ( name == "recklessness"         ) return new recklessness_t         ( this, options_str );
   if ( name == "berserker_rage"       ) return new berserker_rage_t       ( this, options_str );
   if ( name == "bladestorm"           ) return new bladestorm_t           ( this, options_str );
@@ -4386,6 +4419,7 @@ void warrior_t::init_spells()
   artifact.neltharions_thunder       = find_artifact_spell( "Neltarion's Thunder" );
 
   // Generic spells
+  spell.battle_shout            = find_class_spell( "Battle Shout" );
   spell.charge                  = find_class_spell( "Charge" );
   spell.colossus_smash_debuff   = find_spell( 208086 );
   spell.intervene               = find_class_spell( "Intervene" );
@@ -5246,10 +5280,6 @@ void warrior_t::create_buffs()
   buff.weighted_blade = buff_creator_t ( this, "weighted_blade", sets -> set( WARRIOR_ARMS, T21, B4) -> effectN( 1 ).trigger() )
     .default_value( sets -> set( WARRIOR_ARMS, T21, B4) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
     .chance( sets -> has_set_bonus( WARRIOR_ARMS, T21, B4) );
-
-  buff.outrage = buff_creator_t ( this, "outrage", sets -> set( WARRIOR_FURY, T21, B4) -> effectN( 1 ).trigger() )
-    .default_value( sets -> set( WARRIOR_FURY, T21, B4) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
-    .chance( sets -> has_set_bonus( WARRIOR_FURY, T21, B4) );
 
   buff.protection_rage = new protection_rage_t( *this, "protection_rage", find_spell( 242303 ) );
 

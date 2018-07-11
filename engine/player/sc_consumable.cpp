@@ -332,11 +332,14 @@ struct dbc_consumable_base_t : public action_t
     {
       item_data = unique_gear::find_consumable( player -> dbc, consumable_name, type );
 
-      if ( ! initialize_consumable() )
+      try
       {
-        sim -> errorf( "%s: Unable to initialize consumable %s for %s", player -> name(),
-            consumable_name.empty() ? "none" : consumable_name.c_str(), signature_str.c_str() );
-        background = true;
+        initialize_consumable();
+      }
+      catch (const std::exception& e)
+      {
+        std::throw_with_nested( std::invalid_argument(fmt::format("Unable to initialize consumable '{}' from '{}'",
+            signature_str, consumable_name)));
       }
     }
 
@@ -378,13 +381,11 @@ struct dbc_consumable_base_t : public action_t
   // Attempts to initialize the consumable. Jumps through quite a few hoops to manage to create
   // special effects only once, if the user input contains multiple consumable lines (as is possible
   // with potions for example).
-  virtual bool initialize_consumable()
+  virtual void initialize_consumable()
   {
     if ( driver() -> id() == 0 )
     {
-      sim -> errorf( "%s: Unable to find consumable %s for %s", player -> name(),
-          consumable_name.empty() ? "none" : consumable_name.c_str(), signature_str.c_str() );
-      return false;
+      throw std::invalid_argument("Unable to find consumable.");
     }
 
     auto effect = unique_gear::find_special_effect( player, driver() -> id(), SPECIAL_EFFECT_USE );
@@ -392,21 +393,12 @@ struct dbc_consumable_base_t : public action_t
     if ( ! effect )
     {
       effect = create_special_effect();
-      auto ret = unique_gear::initialize_special_effect( *effect, driver() -> id() );
-
-      // Something went wrong with the special effect init, so return false (will disable this
-      // consumable)
-      if ( ret == false )
-      {
-        delete effect;
-        return ret;
-      }
+      unique_gear::initialize_special_effect( *effect, driver() -> id() );
 
       // First special effect initialization phase could not decude a proper consumable to create
       if ( effect -> type == SPECIAL_EFFECT_NONE )
       {
-        delete effect;
-        return false;
+        throw std::invalid_argument("First special effect initialization phase could not decude a proper consumable to create.");
       }
 
       // Note, this needs to be added before initializing the (potentially) custom special effect,
@@ -422,8 +414,6 @@ struct dbc_consumable_base_t : public action_t
     // And then, grab the action and buff from the special effect, if they are enabled
     consumable_action = effect -> create_action();
     consumable_buff = effect -> create_buff();
-
-    return true;
   }
 
   bool ready() override
@@ -576,12 +566,9 @@ struct potion_t : public dbc_consumable_base_t
     return std::string();
   }
 
-  bool initialize_consumable() override
+  void initialize_consumable() override
   {
-    if ( ! dbc_consumable_base_t::initialize_consumable() )
-    {
-      return false;
-    }
+    dbc_consumable_base_t::initialize_consumable();
 
     // Setup a cooldown duration for the potion
     for ( size_t i = 0; i < sizeof_array( item_data -> cooldown_group ); i++ )
@@ -595,9 +582,8 @@ struct potion_t : public dbc_consumable_base_t
 
     if ( cooldown -> duration == timespan_t::zero() )
     {
-      sim -> errorf( "%s: No cooldown found for potion '%s'",
-          player -> name(), item_data -> name );
-      return false;
+      throw std::invalid_argument(
+                fmt::format("No cooldown found for potion '{}'.", item_data -> name));
     }
 
     // Sanity check pre-pot time at this time so that it's not longer than the duration of the buff
@@ -606,8 +592,6 @@ struct potion_t : public dbc_consumable_base_t
       pre_pot_time = std::max( timespan_t::zero(),
                                std::min( pre_pot_time, consumable_buff -> data().duration() ) );
     }
-
-    return true;
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -814,18 +798,14 @@ struct food_t : public dbc_consumable_base_t
   // action-based or non-stat-buff food, Epicurean must be applied manually. Note that even if the
   // food uses a custom initialization, if the resulting buff is a stat buff, Epicurean will be
   // automatically applied.
-  bool initialize_consumable() override
+  void initialize_consumable() override
   {
-    auto ret = dbc_consumable_base_t::initialize_consumable();
-    if ( ! ret )
-    {
-      return false;
-    }
+    dbc_consumable_base_t::initialize_consumable();
 
     // No buff, or non-Pandaren so we are finished here
     if ( ! consumable_buff || ! is_pandaren( player -> race ) )
     {
-      return ret;
+      return;
     }
 
     // Apply epicurean on the buff stats. Note, presumes that there's a single food APL line in the
@@ -834,8 +814,6 @@ struct food_t : public dbc_consumable_base_t
     {
       range::for_each( buff -> stats, []( stat_buff_t::buff_stat_t& s ) { s.amount *= 2.0; } );
     }
-
-    return ret;
   }
 
   bool ready() override

@@ -391,6 +391,7 @@ void SC_OptionsTab::createBuffsDebuffsTab()
 
   appendCheckBox( tr( "Toggle All Buffs" ),             "",                                 tr( "Toggle all buffs on/off" ),                         buffsLayout, buffsButtonGroup );
   appendCheckBox( tr( "Bloodlust" ),                    "override.bloodlust",               tr( "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp" ), buffsLayout, buffsButtonGroup );
+  appendCheckBox( tr( "Arcane Intellect" ),             "override.arcane_intellect",        tr( "Arcane Intellect" ), buffsLayout, buffsButtonGroup );
   buffsLayout -> addStretch( 1 );
 
   QGroupBox* buffsGroupBox = new QGroupBox( tr( "Buffs" ) );  // Buff Widget
@@ -401,9 +402,11 @@ void SC_OptionsTab::createBuffsDebuffsTab()
   debuffsButtonGroup = new QButtonGroup( this );
   debuffsButtonGroup -> setExclusive( false );
 
-  appendCheckBox( tr( "Toggle All Debuffs" ),           "",                                 tr( "Toggle all debuffs on/off" ), debuffsLayout, debuffsButtonGroup );
-  appendCheckBox( tr( "Bleeding" ),                     "override.bleeding",                tr( "Rip\nRupture" ),              debuffsLayout, debuffsButtonGroup );
-  appendCheckBox( tr( "Mortal Wounds" ),                "override.mortal_wounds",           tr( "Healing Debuff" ),            debuffsLayout, debuffsButtonGroup );
+  appendCheckBox( tr( "Toggle All Debuffs" ),           "",                                 tr( "Toggle all debuffs on/off" ),            debuffsLayout, debuffsButtonGroup );
+  appendCheckBox( tr( "Bleeding" ),                     "override.bleeding",                tr( "Rip\nRupture" ),                         debuffsLayout, debuffsButtonGroup );
+  appendCheckBox( tr( "Mortal Wounds" ),                "override.mortal_wounds",           tr( "Healing Debuff" ),                       debuffsLayout, debuffsButtonGroup );
+  appendCheckBox( tr( "Chaos Brand" ),                  "override.chaos_brand",             tr( "Chaos Brand\nMagic damage debuff" ),     debuffsLayout, debuffsButtonGroup );
+  appendCheckBox( tr( "Mystic Touch" ),                 "override.mystic_touch",            tr( "Mystic Touch\nPhysical damage debuff" ), debuffsLayout, debuffsButtonGroup );
   debuffsLayout -> addStretch( 1 );
 
   QGroupBox* debuffsGroupBox = new QGroupBox( tr( "Debuffs" ) ); // Debuff Widget

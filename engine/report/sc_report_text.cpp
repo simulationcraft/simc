@@ -1320,10 +1320,7 @@ void print_text( sim_t* sim, bool detail )
   }
   catch ( const std::exception& e )
   {
-    sim->errorf( "Failed to print text output! %s", e.what() );
-#ifndef NDEBUG
-    throw;
-#endif
+    sim->error( "Error generating text report: {}", e.what() );
   }
 }
 

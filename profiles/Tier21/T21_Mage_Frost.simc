@@ -12,6 +12,76 @@ flask=whispered_pact
 food=lemon_herb_filet
 augmentation=defiled
 
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/arcane_intellect
+actions.precombat+=/water_elemental
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mirror_image
+actions.precombat+=/potion
+actions.precombat+=/frostbolt
+
+# Executed every time the actor is available.
+actions=counterspell
+actions+=/ice_lance,if=prev_gcd.1.flurry&!buff.fingers_of_frost.react
+actions+=/time_warp,if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(prev_gcd.1.icy_veins|target.time_to_die<50)
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=aoe,if=active_enemies>3&talent.freezing_rain.enabled|active_enemies>4
+actions+=/call_action_list,name=single
+
+actions.aoe=frozen_orb
+actions.aoe+=/blizzard
+actions.aoe+=/comet_storm
+actions.aoe+=/ice_nova
+actions.aoe+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.frostbolt&(buff.icicles.stack<4|!talent.glacial_spike.enabled)|prev_gcd.1.glacial_spike)
+actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react
+actions.aoe+=/ray_of_frost
+actions.aoe+=/ebonbolt
+actions.aoe+=/glacial_spike
+actions.aoe+=/cone_of_cold
+actions.aoe+=/frostbolt
+actions.aoe+=/call_action_list,name=movement
+actions.aoe+=/ice_lance
+
+actions.cooldowns=icy_veins
+actions.cooldowns+=/mirror_image
+actions.cooldowns+=/rune_of_power,if=time_to_die>10+cast_time&time_to_die<25
+actions.cooldowns+=/rune_of_power,if=active_enemies=1&talent.glacial_spike.enabled&buff.icicles.stack=5&(!talent.ebonbolt.enabled&buff.brain_freeze.react|talent.ebonbolt.enabled&(full_recharge_time<=cooldown.ebonbolt.remains&buff.brain_freeze.react|cooldown.ebonbolt.remains<cast_time&!buff.brain_freeze.react))
+actions.cooldowns+=/rune_of_power,if=active_enemies=1&!talent.glacial_spike.enabled&(prev_gcd.1.frozen_orb|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)
+actions.cooldowns+=/rune_of_power,if=active_enemies>1&prev_gcd.1.frozen_orb
+actions.cooldowns+=/potion,if=prev_gcd.1.icy_veins|target.time_to_die<70
+actions.cooldowns+=/use_items
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/lights_judgment
+
+actions.movement=blink,if=movement.distance>10
+actions.movement+=/ice_floes,if=buff.ice_floes.down
+
+actions.single=ice_nova,if=cooldown.ice_nova.ready&debuff.winters_chill.up
+actions.single+=/flurry,if=!talent.glacial_spike.enabled&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&prev_gcd.1.frostbolt)
+actions.single+=/flurry,if=talent.glacial_spike.enabled&buff.brain_freeze.react&(prev_gcd.1.frostbolt&buff.icicles.stack<4|prev_gcd.1.glacial_spike|prev_gcd.1.ebonbolt)
+actions.single+=/frozen_orb
+actions.single+=/blizzard,if=active_enemies>2|active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2
+actions.single+=/ice_lance,if=buff.fingers_of_frost.react
+actions.single+=/ray_of_frost,if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0
+actions.single+=/comet_storm
+actions.single+=/ebonbolt,if=!talent.glacial_spike.enabled|buff.icicles.stack=5&!buff.brain_freeze.react
+actions.single+=/glacial_spike,if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled
+actions.single+=/blizzard,if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time
+actions.single+=/ice_nova
+actions.single+=/frostbolt
+actions.single+=/call_action_list,name=movement
+actions.single+=/ice_lance
+
 head=runebound_collar,id=152138,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=runebound_mantle,id=152141,bonus_id=3612/1502
@@ -35,7 +105,7 @@ main_hand=ebonchill,id=128862,bonus_id=731,gem_id=155850/155846/155850,relic_id=
 # gear_crit_rating=427
 # gear_haste_rating=470
 # gear_mastery_rating=219
-# gear_versatility_rating=387
+# gear_versatility_rating=391
 # gear_armor=244
 # set_bonus=tier20_2pc=1
 # set_bonus=tier21_2pc=1

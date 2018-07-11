@@ -135,16 +135,20 @@ const rapidjson::Value* choose_talent_spec( const rapidjson::Value& talents,
   return nullptr;
 }
 
-bool parse_talents( player_t*  p,
+void parse_talents( player_t*  p,
                     const rapidjson::Value& talents,
                     const std::string& specifier )
 {
   const rapidjson::Value* spec = choose_talent_spec( talents, specifier );
   if ( ! spec )
-    return false;
+  {
+    throw std::runtime_error("No talent spec selected.");
+  }
 
   if ( ! spec -> HasMember( "calcSpec" ) || ! spec -> HasMember( "calcTalent" ) )
-    return false;
+  {
+    throw std::runtime_error("No calcSpec or calcTalent.");
+  }
 
   const char* buffer = (*spec)[ "calcSpec" ].GetString();
   unsigned sid;
@@ -173,20 +177,15 @@ bool parse_talents( player_t*  p,
         talent_encoding[ i ] += 1;
         break;
       default:
-        p -> sim -> errorf( "BCP API: Invalid character '%c' in talent encoding for player %s.\n", talent_encoding[ i ], p -> name() );
-        return false;
+        throw std::runtime_error(fmt::format("Invalid character '{}' in talent encoding.",
+            talent_encoding[ i ] ));
     }
   }
 
-  if ( ! p -> parse_talents_numbers( talent_encoding ) )
-  {
-    p -> sim -> errorf( "BCP API: Can't parse talent encoding '%s' for player %s.\n", talent_encoding.c_str(), p -> name() );
-    return false;
-  }
+  p -> parse_talents_numbers( talent_encoding );
 
   p -> create_talents_armory();
 
-  return true;
 }
 
 // parse_items ==============================================================
@@ -307,7 +306,7 @@ bool parse_artifact( item_t& item, const rapidjson::Value& artifact )
   return true;
 }
 
-bool parse_items( player_t*  p,
+void parse_items( player_t*  p,
                   const rapidjson::Value& items )
 {
   static const char* const slot_map[] =
@@ -398,8 +397,6 @@ bool parse_items( player_t*  p,
         p -> name(), item_data ? item_data -> name : "unknown", item.slot_name(), item.parsed.drop_level );
     }
   }
-
-  return true;
 }
 
 // parse_player =============================================================
@@ -422,9 +419,8 @@ player_t* parse_player( sim_t*             sim,
   {
     if ( ! download( sim, profile, result, player.url, player.cleanurl, caching ) )
     {
-      sim -> errorf( "BCP API: Unable to download player from '%s', JSON download failed",
-          player.cleanurl.c_str() );
-      return nullptr;
+      throw std::runtime_error(fmt::format("Unable to download JSON from '{}'.",
+          player.cleanurl ));
     }
   }
   else
@@ -439,10 +435,8 @@ player_t* parse_player( sim_t*             sim,
 
   if ( profile.HasParseError() )
   {
-    sim -> errorf( "BCP API: Unable to download player from '%s', JSON parse error\n", player.cleanurl.c_str() );
-    if ( sim -> apikey.empty() ) { sim -> errorf( "If you built this from source, remember to add your own api key." ); }
-    else if ( sim -> apikey.size() != 32 ) { sim -> errorf( "Check api key, must be 32 characters long." ); }
-    return nullptr;
+    throw std::runtime_error("Unable to parse JSON." );
+
   }
 
   if ( sim -> debug )
@@ -456,10 +450,8 @@ player_t* parse_player( sim_t*             sim,
 
   if ( profile.HasMember( "status" ) && util::str_compare_ci( profile[ "status" ].GetString(), "nok" ) )
   {
-    sim -> errorf( "BCP API: Unable to download player from '%s', reason: %s\n",
-                   player.cleanurl.c_str(),
-                   profile[ "reason" ].GetString() );
-    return nullptr;
+    throw std::runtime_error(fmt::format("Unavailable/Not-OK status: {}",
+                   profile[ "reason" ].GetString() ));
   }
 
   if ( profile.HasMember( "name" ) )
@@ -467,26 +459,22 @@ player_t* parse_player( sim_t*             sim,
 
   if ( ! profile.HasMember( "level" ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player level from '%s'. Using fallback method to import armory.\n", player.cleanurl.c_str() );
-    return nullptr;
+    throw std::runtime_error("Unable to extract player level.");
   }
 
   if ( ! profile.HasMember( "class" ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.cleanurl.c_str() );
-    return nullptr;
+    throw std::runtime_error("Unable to extract player class.");
   }
 
   if ( ! profile.HasMember( "race" ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.cleanurl.c_str() );
-    return nullptr;
+    throw std::runtime_error("Unable to extract player race.");
   }
 
   if ( ! profile.HasMember( "talents" ) )
   {
-    sim -> errorf( "BCP API: Unable to extract player talents from '%s'.\n", player.cleanurl.c_str() );
-    return nullptr;
+    throw std::runtime_error("Unable to extract player talents.");
   }
 
   std::string class_name = util::player_type_string( util::translate_class_id( profile[ "class" ].GetUint() ) );
@@ -495,8 +483,7 @@ player_t* parse_player( sim_t*             sim,
 
   if ( ! module || ! module -> valid() )
   {
-    sim -> errorf( "\nModule for class %s is currently not available.\n", class_name.c_str() );
-    return nullptr;
+    throw std::runtime_error(fmt::format("Module for class '{}' is currently not available.", class_name ));
   }
 
   std::string name = player.name;
@@ -514,9 +501,8 @@ player_t* parse_player( sim_t*             sim,
 
   if ( ! p )
   {
-    sim -> errorf( "BCP API: Unable to build player with class '%s' and name '%s' from '%s'.\n",
-                   class_name.c_str(), name.c_str(), player.cleanurl.c_str() );
-    return nullptr;
+    throw std::runtime_error(fmt::format("Unable to build player with class '{}' and name '{}'.",
+                   class_name, name ));
   }
 
   p -> true_level = profile[ "level" ].GetUint();
@@ -539,11 +525,12 @@ player_t* parse_player( sim_t*             sim,
     parse_profession( p -> professions_str, profile[ "professions" ], 1 );
   }
 
-  if ( ! parse_talents( p, profile[ "talents" ], player.talent_spec ) )
-    return nullptr;
+  parse_talents( p, profile[ "talents" ], player.talent_spec );
 
-  if ( profile.HasMember( "items" ) && ! parse_items( p, profile[ "items" ] ) )
-    return nullptr;
+  if ( profile.HasMember( "items" ) )
+  {
+    parse_items( p, profile[ "items" ] );
+  }
 
   if ( ! p -> server_str.empty() )
     p -> armory_extensions( p -> region_str, p -> server_str, player.name, caching );
@@ -820,8 +807,14 @@ player_t* bcp_api::download_player( sim_t*             sim,
   sim -> current_name = name;
 
   player_spec_t player;
+  bool use_new_endpoints = (region != "cn"); // China does not have new api endpoints yet.
 
-  if ( sim -> apikey.size() == 32 && region != "cn" ) // China does not have new api endpoints yet.
+  if (use_new_endpoints && sim -> apikey.size() != 32)
+  {
+    throw std::runtime_error("No valid api key available. Cannot download from armory. See https://github.com/simulationcraft/simc/wiki/BattleArmoryAPI" );
+  }
+
+  if ( use_new_endpoints )
   {
     std::string battlenet = "https://" + region + ".api.battle.net/";
 

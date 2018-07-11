@@ -63,7 +63,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Lightning Crash (242284 effect#1), Wind Gust (263806 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Lightning Crash (242284 effect#1), Wind Gust (263806 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -85,7 +85,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1851,7 +1851,7 @@ Name             : Hand of Gul'dan (id=86040) [Spell Family (5)]
 Class            : Shaman, Warlock
 School           : Shadowflame
 Range            : 50000 yards
-Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
+Affecting spells : Affliction Warlock (137043 effect#1), Demonology Warlock (137044 effect#1), Destruction Warlock (137046 effect#1), Dirty Hands (211105 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1), Reap and Sow (281494 effect#1), Wakener's Loyalty (281495 effect#1), Lessons of Space-Time (281496 effect#1), 
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   x....... ........ ........ ......x. 
                  : ........ ........ ........ .x......   ........ ..x..... ........ ..x..... 
@@ -3468,7 +3468,7 @@ Resource         : 0 - 40 Maelstrom (11) (id=11199) w/ Overcharge (id=210727)
 Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Lightning Crash (242284 effect#1), Wind Gust (263806 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Lightning Crash (242284 effect#1), Wind Gust (263806 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3622,7 +3622,7 @@ Spell Level      : 1
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Lightning Crash (242284 effect#1), Wind Gust (263806 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Lightning Crash (242284 effect#1), Wind Gust (263806 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3672,7 +3672,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effect#3), Elemental Shaman (137040 effect#1), Enhancement Shaman (137041 effect#1), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Al'Akir's Acrimony (208699 effect#1), Chain Lightning (231722 effect#1), Lightning Crash (242284 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6207,7 +6207,7 @@ School           : Nature
 Spell Level      : 1
 Range            : 30 yards
 Cast Time        : 2 seconds
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Wind Gust (263806 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Shaman (137038 effect#2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effect#1), Overcharge (210727 effect#3), Item - Shaman T19 Elemental 2P Bonus (211951 effect#1), Wind Gust (263806 effect#1), 
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6399,7 +6399,7 @@ Class            : Shaman
 School           : Nature
 Range            : 50000 yards
 Duration         : 120 seconds
-Affecting spells : From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1)
+Affecting spells : Dirty Hands (211105 effect#1), From the Shadows (270569 effect#1), Demonic Meteor (278737 effect#1)
 Triggered by     : Totem Mastery (210643), Totem Mastery (262395)
 Attributes       : ........ x....... .......x ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ....x...   ........ ........ ........ ........ 
@@ -7300,6 +7300,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=706799)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -3 | Scaled Value: -3 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816)
+#2 (id=741334)   : Apply Aura (6) | Add Percent Modifier (108): Spell Global Cooldown (21)
+                   Base Value: -3 | Scaled Value: -3 | Misc Value: 21 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Lightning Bolt (187837), Lightning Bolt (188196), Chain Lightning (188443), Lightning Bolt Overload (214816)
 Description      : $@spelldesc192249
 Tooltip          : Reduces the cast time of Lightning Bolt and Chain Lightning by $s1%.

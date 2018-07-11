@@ -136,7 +136,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_unique_gear_x7.cpp">
-
+			
 		</ClCompile>
 		<ClCompile Include="..\engine\player\sc_unique_gear.cpp">
 			
@@ -214,7 +214,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			
 		</ClCompile>
 		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_destruction.cpp">
-		
+			
 		</ClCompile>
 		<ClCompile Include="..\engine\class_modules\warlock\sc_warlock_pets.cpp">
 			

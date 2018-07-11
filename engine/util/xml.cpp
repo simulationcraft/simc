@@ -152,10 +152,8 @@ std::shared_ptr<xml_node_t> xml_node_t::create_node( sim_t*                  sim
     if ( sim )
     {
       int start = std::min( 0, ( ( int ) index - 32 ) );
-      sim -> errorf( "Unexpected character '%c' at index=%d node=%s context=%s\n",
-                     c, ( int ) index, node -> name(), input.substr( start, index - start ).c_str() );
-      fmt::print("{}\n", input);
-      sim -> cancel();
+      throw std::invalid_argument(fmt::format("Unexpected character '{}' at index={} node={} context={} from input '{}'.",
+                     c, index, node -> name(), input.substr( start, index - start ), input ));
     }
     return std::shared_ptr<xml_node_t>();
   }
@@ -196,9 +194,7 @@ int xml_node_t::create_children( sim_t*                  sim,
           {
             if ( sim )
             {
-              sim -> errorf( "Unexpected EOF at index %d (%s)\n", ( int ) index, name() );
-              sim -> errorf( "%s\n", input.c_str() );
-              sim -> cancel();
+              throw std::runtime_error(fmt::format("Unexpected EOF at index {} ({}).", index, name() ));
             }
             return 0;
           }
@@ -857,7 +853,7 @@ bool sc_xml_t::get_value( int& value, const std::string& path )
   if ( key == "." )
   {
     assert( node.root -> type() == node_element );
-    value = util::to_int( node.root -> value() );
+    value = std::stoi( node.root -> value() );
     ret = true;
   }
   else if ( util::str_compare_ci( key, "cdata" ) )
@@ -866,7 +862,7 @@ bool sc_xml_t::get_value( int& value, const std::string& path )
     {
       if ( n -> type() == node_cdata )
       {
-        value = util::to_int( n -> value() );
+        value = std::stoi( n -> value() );
         ret = true;
         break;
       }
@@ -879,7 +875,7 @@ bool sc_xml_t::get_value( int& value, const std::string& path )
     {
       return ret;
     }
-    value = util::to_int( attr -> value() );
+    value = std::stoi( attr -> value() );
     ret = true;
   }
 

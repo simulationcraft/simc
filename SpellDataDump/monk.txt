@@ -1413,7 +1413,7 @@ Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#18), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#11), Extend Life (185158 effect#2), Uplifting Trance (197206 effect#1), Lifecycles (Vivify) (197916 effect#1), Vivify (231602 effect#1), Invigorating Brew (269622 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effect#1), 
+Affecting spells : Thunder Focus Tea (116680 effect#2), Enveloping Mist (124682 effect#2), Brewmaster Monk (137023 effect#18), Mistweaver Monk (137024 effect#1), Windwalker Monk (137025 effect#11), Extend Life (185158 effect#2), Uplifting Trance (197206 effect#1), Lifecycles (Vivify) (197916 effect#1), Infusion of Life (199380 effect#1), Vivify (231602 effect#1), Invigorating Brew (269622 effect#1), Uplifted Spirits (278576 effect#3), Lunar Glide (281521 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1707,7 +1707,7 @@ Effects          :
 #1 (id=133999)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Elusive Brawler (195630)
-#2 (id=217538)   : Apply Aura (6) | Modify Attack Power% (166)
+#2 (id=217538)   : Apply Aura (6) | Modify Melee Attack Power% (166)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=287196)   : Apply Aura (6) | Proc Trigger Spell (42): Elusive Brawler
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 195630 | Target: Self (1)
@@ -3321,7 +3321,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 115 | Target: Self (1)
 #14 (id=739337)   : Apply Aura (6) | Add Flat Modifier (107): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | Misc Value: 21 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Chi Burst (130654), Chi Burst (148135), Rising Sun Kick (185099), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (101546), Transcendence (101643), Rising Sun Kick (107428), Expel Harm (115072), Paralysis (115078), Touch of Death (115080), Chi Wave (115098), Detox (115450), Disable (116095), Tiger's Lust (116841), Ring of Peace (116844), Rushing Jade Wind (116847), Crackling Jade Lightning (117952), Leg Sweep (119381), Transcendence: Transfer (119996), Chi Burst (123986), Chi Burst (130654), Chi Burst (148135), Rising Sun Kick (185099), Refreshing Jade Wind (196725), Song of Chi-Ji (198898), Blackout Strike (205523), Detox (218164), Blackout Kick (228649), Chi Burst (261682), Rushing Jade Wind (261715)
 #15 (id=739777)   : Apply Aura (6) | Override Spell Power per Attack Power% (366)
                    Base Value: 96 | Scaled Value: 96 | Target: Self (1)
 
@@ -4016,7 +4016,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 9 seconds
 Cooldown         : 9 seconds
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#9), Mistweaver Monk (137024 effect#6)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#9), Mistweaver Monk (137024 effect#6), Windwalker Monk (137025 effect#14)
 Attributes       : ....x... ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
@@ -4995,7 +4995,7 @@ Description      : Stomps the ground, dealing $s1 Physical damage to all nearby 
 Name             : Surging Mist (PvP Talent) (id=227344) [Spell Family (53)] 
 Class            : Monk
 School           : Nature
-Resource         : 1% Base Mana (0) (id=11512) w/ Mistweaver Monk (id=137024)
+Resource         : 2% Base Mana (0) (id=11512) w/ Mistweaver Monk (id=137024)
 Spell Level      : 8
 Range            : 40 yards
 Cast Time        : 1.5 seconds
@@ -5013,7 +5013,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=341656)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 2.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.60000 | Target: Friend (21)
 #2 (id=731442)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
                    Base Value: 50 | Scaled Value: 50 | Target: Friend (21)
                    Affected Spells: Surging Mist (227344)

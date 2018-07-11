@@ -1023,10 +1023,10 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=6350)     : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 20 | Scaled Value: 20 | SP Coefficient: 0.25000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Stealth (1784), Vanish (11327)
 #2 (id=165808)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Stealth (1784), Vanish (11327)
 Description      : While Stealth$?c3[ or Shadow Dance][] is active, you move $s1% faster and your abilities deal $s2% more damage.
 
@@ -2268,7 +2268,7 @@ Resource         : 30 Energy (3) (id=5326)
 Spell Level      : 40
 Range            : 5 yards
 GCD              : 1 seconds
-Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Envenom (32645 effect#4), Vendetta (79140 effect#1), Blindside (121153 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2423,6 +2423,31 @@ Effects          :
                    Base Value: 400 | Scaled Value: 620 | Points Per Level: 5 | Radius: 30 yards | Target: Raid Members (56)
 Description      : Extend a cloak that wraps party and raid members within $115834A1 yards in shadows, concealing them from sight.
 Tooltip          : Concealed in shadows.
+
+Name             : Blindside (id=121153) [Spell Family (8)] 
+Class            : Rogue
+School           : Physical
+Duration         : 10 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+Effects          :
+#1 (id=149413)   : Apply Aura (6) | Unknown(262)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Blindside (111240)
+#2 (id=165707)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Blindside (111240)
+Description      : $@spelldesc111240
+Tooltip          : Blindside is free and usable on any target, regardless of their health.
 
 Name             : Disguise (id=121308) 
 Class            : Rogue
@@ -3650,7 +3675,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 222018 | Target: Enemy (6)
 #6 (id=374178)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 15 | Scaled Value: 15 | Target: Enemy (6)
-                   Affected Spells: Backstab (53), Shuriken Toss (114014), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Gloomblade (200758)
+                   Affected Spells: Backstab (53), Shuriken Toss (114014), Backstab (173458), Shadowstrike (185438), Poisoned Knife (185565), Eviscerate (196819), Shuriken Storm (197835), Gloomblade (200758), Secret Technique (280719), Secret Technique (280720)
 #7 (id=733388)   : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: -15 | Scaled Value: -15 | Target: Enemy (6)
 Description      : Finishing move that infects the target with shadowy energy, dealing Shadow damage over time and reduces the effectiveness of healing on the target by $s7%. Lasts longer per combo point.
@@ -4232,7 +4257,7 @@ Range            : 20 yards
 GCD              : 1 seconds
 Cooldown         : 30 seconds
 Affecting spells : Adrenaline Rush (13750 effect#3), Master of Subtlety (31665 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Cold Blood (182304 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Between the Eyes (235484 effect#1), Headshot (242277 effect#1), Lesser Adrenaline Rush (246558 effect#3), Master Assassin (256735 effect#1)
-Attributes       : ....x... ........ x.....x. ........   ........ .x...... ........ ...x.... 
+Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ...x.... 
                  : ........ ........ .....x.. ....x...   ........ ........ .......x x....... 
@@ -7271,7 +7296,7 @@ Resource         : 1 - 5 Combo Points (4) (id=191873)
 Range            : 5 yards
 GCD              : 1 seconds
 Cooldown         : 45 seconds
-Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Attributes       : ....x... ........ x.x..... .......x   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ...x.... ........ ........ ........   ........ ........ ........ ........ 
@@ -7306,7 +7331,7 @@ Name             : Secret Technique (id=280720) [Spell Family (8)]
 Class            : Rogue
 School           : Physical
 Range            : 50000 yards
-Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
+Affecting spells : Master of Subtlety (31665 effect#1), Mastery: Executioner (76808 effect#1), Vendetta (79140 effect#1), Subtlety Rogue (137035 effect#1), Outlaw Rogue (137036 effect#1), Assassination Rogue (137037 effect#1), Shadow Dance (185313 effect#4), Ruthless Precision (193357 effect#1), Deeper Stratagem (193531 effect#1), Elaborate Planning (193641 effect#1), Nightblade (195452 effect#6), Symbols of Death (212283 effect#1), Headshot (242277 effect#1), Master Assassin (256735 effect#1)
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

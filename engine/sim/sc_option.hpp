@@ -35,9 +35,7 @@ public:
       return parse( sim, n, value );
     }
     catch ( const std::exception& e) {
-      std::stringstream s;
-      s << "Could not parse option '" << n << "' with value '" << value << "': " << e.what();
-      throw std::invalid_argument(s.str());
+      std::throw_with_nested(std::runtime_error(fmt::format("Option '{}' with value '{}'", n, value)));
     }
   }
   std::string name() const

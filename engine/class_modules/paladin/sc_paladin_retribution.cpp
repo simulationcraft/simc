@@ -221,7 +221,7 @@ struct crusade_t : public paladin_heal_t
     if ( ! ( p -> talents.crusade_talent -> ok() ) )
       background = true;
 
-    cooldown -> charges += p -> sets -> set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value();
+    cooldown -> charges += as<int>( p -> sets -> set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value() );
   }
 
   void tick( dot_t* d ) override
@@ -553,7 +553,7 @@ struct judgment_ret_t : public paladin_melee_attack_t
     }
     if ( p() -> talents.zeal -> ok() )
     {
-      p() -> buffs.zeal -> trigger( p() -> talents.zeal -> effectN( 1 ).base_value() );
+      p() -> buffs.zeal -> trigger( as<int>( p() -> talents.zeal -> effectN( 1 ).base_value() ) );
     }
     if ( p() -> talents.divine_judgment -> ok() )
     {

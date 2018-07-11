@@ -191,8 +191,7 @@ enum race_e
   RACE_NIGHTBORNE,
   RACE_DARK_IRON_DWARF,
   RACE_MAGHAR_ORC,
-  RACE_MAX,
-  RACE_UNKNOWN
+  RACE_MAX
 };
 
 inline bool is_pandaren( race_e r )

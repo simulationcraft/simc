@@ -323,6 +323,13 @@ elif options.type == 'scale':
         'values': combat_rating_values,
         'max_rows': options.max_ilevel
     }, {
+        'file': 'StaminaMultByILvl.txt',
+        'key': 'Item Level',
+        'comment': '// Stamina multipliers for item level 1 - %d, wow build %d\n' % (
+            options.max_ilevel, options.build),
+        'values': combat_rating_values,
+        'max_rows': options.max_ilevel
+    }, {
         'file': 'ItemLevelSquish.txt',
         'key': 0,
         'comment': '// Item level translation for item level 1 - %d, wow build %d\n' % (

@@ -202,7 +202,7 @@ struct avenging_wrath_t : public paladin_spell_t
     {
       if ( p -> talents.crusade_talent -> ok() )
         background = true;
-      cooldown -> charges += p -> sets -> set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value();
+      cooldown -> charges += as<int>( p -> sets -> set( PALADIN_RETRIBUTION, T18, B2 ) -> effectN( 1 ).base_value() );
     }
 
     harmful = false;
@@ -654,7 +654,7 @@ struct crusader_strike_t : public holy_power_generator_t
     const spell_data_t* crusader_strike_2 = p -> find_specialization_spell( 231667 );
     if ( crusader_strike_2 )
     {
-      cooldown -> charges += crusader_strike_2 -> effectN( 1 ).base_value();
+      cooldown -> charges += as<int>( crusader_strike_2 -> effectN( 1 ).base_value() );
     }
   }
 
@@ -1057,7 +1057,6 @@ void paladin_t::init_gains()
 
   // Health
   gains.holy_shield                 = get_gain( "holy_shield_absorb" );
-  gains.bulwark_of_order            = get_gain( "bulwark_of_order" );
 
   // Holy Power
   gains.hp_templars_verdict_refund  = get_gain( "templars_verdict_refund" );

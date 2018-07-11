@@ -286,11 +286,11 @@ public:
     harmful = false;
   }
 
-  bool init_finished() override
+  void init_finished() override
   {
     pet = player->find_pet( pet_name );
 
-    return priest_spell_t::init_finished();
+    priest_spell_t::init_finished();
   }
 
   void execute() override
@@ -1180,7 +1180,7 @@ std::string priest_t::default_food() const
   std::string lvl100_food = "buttered_sturgeon";
 
   return ( true_level > 110 )  
-               ? "swamp_fish_n_chips"
+               ? "bountiful_captains_feast"
                : ( true_level > 100 )
                    ? "azshari_salad"
                    : ( true_level > 90 )

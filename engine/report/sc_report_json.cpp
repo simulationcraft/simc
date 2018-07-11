@@ -859,6 +859,9 @@ void to_json( JsonOutput root, const sim_t& sim )
 
   // Overrides
   auto overrides = root[ "overrides" ];
+  add_non_zero( overrides, "arcane_intellect", sim.overrides.arcane_intellect );
+  add_non_zero( overrides, "chaos_brand", sim.overrides.chaos_brand );
+  add_non_zero( overrides, "mystic_touch", sim.overrides.mystic_touch );
   add_non_zero( overrides, "mortal_wounds", sim.overrides.mortal_wounds );
   add_non_zero( overrides, "bleeding", sim.overrides.bleeding );
   add_non_zero( overrides, "bloodlust", sim.overrides.bloodlust );
@@ -1012,7 +1015,7 @@ void print_json( sim_t& sim )
     }
     catch ( const std::exception& e )
     {
-      sim.errorf( "Failed to print JSON output! %s", e.what() );
+      sim.error( "Error generating JSON report: {}", e.what() );
     }
   }
 }

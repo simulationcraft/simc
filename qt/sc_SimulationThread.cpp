@@ -2,6 +2,23 @@
 #include "simulationcraftqt.hpp"
 #include "sc_Workaround.hpp"
 
+namespace {
+
+/**
+ * Print chained exceptions, separated by ' :'.
+ */
+void print_exception( std::string& output, const std::exception& e, int level =  0)
+{
+  std::string tmp = fmt::format("{}{}", level > 0 ? ": " : "", e.what());
+  output += tmp;
+  try {
+      std::rethrow_if_nested(e);
+  } catch(const std::exception& e) {
+      print_exception(output, e, level+1);
+  } catch(...) {}
+}
+
+}
 SC_SimulateThread::SC_SimulateThread( SC_MainWindow* mw ) :
     mainWindow( mw ),
     sim( nullptr ),
@@ -17,37 +34,30 @@ SC_SimulateThread::SC_SimulateThread( SC_MainWindow* mw ) :
 void SC_SimulateThread::run()
 {
   // ********* Parsing **********
-  sim_control_t description;
-  error_str.clear();
   try
   {
-    description.options.parse_text( utf8_options.constData() );
-  }
-  catch ( const std::exception& e )
-  {
-    success = false;
-    error_category = tr("Option parsing error");
-    error_str = e.what();
-    return;
-  }
+    sim_control_t description;
+    error_str.clear();
+    try
+    {
+      description.options.parse_text( utf8_options.constData() );
+    }
+    catch ( const std::exception& e )
+    {
+      std::throw_with_nested(std::invalid_argument("Incorrect option format"));
+    }
 
-  // ******** Setup ********
-  try
-  {
-    sim -> setup( &description );
-    workaround::apply_workarounds( sim.get() );
-  }
-  catch ( const std::exception& e )
-  {
-    success = false;
-    error_category = tr("Simulation setup error");
-    error_str = e.what();
-    return;
-  }
+    // ******** Setup ********
+    try
+    {
+      sim -> setup( &description );
+      workaround::apply_workarounds( sim.get() );
+    }
+    catch ( const std::exception& e )
+    {
+      std::throw_with_nested(std::runtime_error("Setup failure"));
+    }
 
-  // ********* Simulation *********
-  try
-  {
     if ( sim -> challenge_mode ) sim -> scale_to_itemlevel = 630;
 
     if ( sim -> spell_query != 0 )
@@ -81,7 +91,9 @@ void SC_SimulateThread::run()
   {
     success = false;
     error_category = tr("Simulation runtime error");
-    error_str = e.what();
+    std::string error_str_;
+    print_exception(error_str_, e);
+    error_str = QString::fromStdString(error_str_);
   }
 }
 

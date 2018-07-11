@@ -830,7 +830,7 @@ void action_t::parse_target_str()
   {
     if ( option.target_str[ 0 ] >= '0' && option.target_str[ 0 ] <= '9' )
     {
-      option.target_number = atoi( option.target_str.c_str() );
+      option.target_number = std::stoi( option.target_str );
       player_t* p          = find_target_by_number( option.target_number );
       // Numerical targeting is intended to be dynamic, so don't give an error message if we can't find the target yet
       if ( p )
@@ -858,14 +858,13 @@ void action_t::parse_options( const std::string& options_str )
   try
   {
     opts::parse( sim, name(), options, options_str );
+    parse_target_str();
   }
   catch ( const std::exception& e )
   {
     sim->errorf( "%s %s: Unable to parse options str '%s': %s", player->name(), name(), options_str.c_str(), e.what() );
     sim->cancel();
   }
-
-  parse_target_str();
 }
 
 bool action_t::verify_actor_level() const
@@ -2171,8 +2170,8 @@ void action_t::init()
 
     if ( !sync_action )
     {
-      sim->errorf( "Unable to find sync action '%s' for primary action '%s'\n", option.sync_str.c_str(), name() );
-      sim->cancel();
+      throw std::runtime_error(fmt::format("Unable to find sync action '{}' for primary action.",
+          option.sync_str ));
     }
   }
 
@@ -2278,10 +2277,9 @@ void action_t::init()
         player->precombat_action_list.push_back( this );
       }
       else
-        sim->errorf(
-            "Player %s attempted to add harmful action %s to precombat action list. Only spells with travel time/cast "
-            "time may be cast here.",
-            player->name(), name() );
+      {
+        throw std::runtime_error("Can only add harmful action with travel or cast-time to precombat action list.");
+      }
     }
     else
       player->precombat_action_list.push_back( this );
@@ -2326,10 +2324,8 @@ void action_t::init()
   assert( ( !impact_action || impact_action->background ) && "Impact action needs to be set to background." );
 }
 
-bool action_t::init_finished()
+void action_t::init_finished()
 {
-  bool ret = true;
-
   if ( !option.target_if_str.empty() )
   {
     std::string::size_type offset = option.target_if_str.find( ':' );
@@ -2351,9 +2347,8 @@ bool action_t::init_finished()
       }
       else
       {
-        sim->errorf( "%s unknown target_if mode '%s' for choose_target. Valid values are 'min', 'max', 'first'.",
-                     player->name(), target_if_type_str.c_str() );
-        background = true;
+        throw std::invalid_argument(fmt::format("Unknown target_if mode '{}' for choose_target. Valid values are 'min', 'max', 'first'.",
+                     target_if_type_str ));
       }
     }
     else if ( !option.target_if_str.empty() )
@@ -2361,30 +2356,42 @@ bool action_t::init_finished()
       target_if_mode = TARGET_IF_FIRST;
     }
 
-    if ( !option.target_if_str.empty() &&
-         ( target_if_expr = expr_t::parse( this, option.target_if_str, sim->optimize_expressions ) ) == 0 )
-      ret = false;
+    if ( !option.target_if_str.empty() )
+    {
+       target_if_expr = expr_t::parse( this, option.target_if_str, sim->optimize_expressions );
+       if ( target_if_expr == 0 )
+       {
+         throw std::invalid_argument(fmt::format("Could not parse target if expression from '{}'", option.target_if_str));
+       }
+    }
   }
 
-  if ( !option.if_expr_str.empty() &&
-       ( if_expr = expr_t::parse( this, option.if_expr_str, sim->optimize_expressions ) ) == 0 )
+  if ( !option.if_expr_str.empty() )
   {
-    ret = false;
+    if_expr = expr_t::parse( this, option.if_expr_str, sim->optimize_expressions );
+    if ( if_expr == 0 )
+    {
+      throw std::invalid_argument(fmt::format("Could not parse if expression from '{}'", option.if_expr_str));
+    }
   }
 
-  if ( !option.interrupt_if_expr_str.empty() &&
-       ( interrupt_if_expr = expr_t::parse( this, option.interrupt_if_expr_str, sim->optimize_expressions ) ) == 0 )
+  if ( !option.interrupt_if_expr_str.empty() )
   {
-    ret = false;
+    interrupt_if_expr = expr_t::parse( this, option.interrupt_if_expr_str, sim->optimize_expressions );
+    if ( interrupt_if_expr == 0 )
+    {
+      throw std::invalid_argument(fmt::format("Could not parse interrupt if expression from '{}'", option.interrupt_if_expr_str));
+    }
   }
 
-  if ( !option.early_chain_if_expr_str.empty() &&
-       ( early_chain_if_expr = expr_t::parse( this, option.early_chain_if_expr_str, sim->optimize_expressions ) ) == 0 )
+  if ( !option.early_chain_if_expr_str.empty() )
   {
-    ret = false;
+    early_chain_if_expr = expr_t::parse( this, option.early_chain_if_expr_str, sim->optimize_expressions );
+    if ( early_chain_if_expr == 0 )
+    {
+      throw std::invalid_argument(fmt::format("Could not parse chain if expression from '{}'", option.early_chain_if_expr_str));
+    }
   }
-
-  return ret;
 }
 
 // action_t::reset ==========================================================
@@ -3130,15 +3137,14 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
   if ( splits.size() == 3 && splits[ 0 ] == "dot" )
   {
-    dot_t* dot = target->find_dot( splits[ 1 ], player );
-    if ( !dot )
+    auto action = player->find_action( splits[ 1 ] );
+    if ( !action )
     {
-      // If we cannot find a dot, create a dummy expression with it, which will just evaluate to false.
-      dot = target->get_dot( splits[ 1 ], player );
-      sim->print_debug( "{} action {} cannot find any dot with name '{}' for expression {}.", player->name(), name(),
-                        splits[ 1 ], name_str );
+      return expr_t::create_constant( splits[ 2 ], 0 );
     }
-    if ( auto expr = dot_t::create_expression( dot, this, splits[ 2 ], false ) )
+
+    auto expr = dot_t::create_expression(nullptr, action, splits[ 2 ], true );
+    if ( expr )
     {
       return expr;
     }

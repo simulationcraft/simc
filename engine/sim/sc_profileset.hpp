@@ -7,9 +7,12 @@
 
 #include <vector>
 #include <string>
+
+#ifndef SC_NO_THREADING
 #include <thread>
 #include <mutex>
 #include <condition_variable>
+#endif
 
 #include "sc_option.hpp"
 #include "util/generic.hpp"
@@ -397,6 +400,7 @@ public:
   }
 };
 
+#ifndef SC_NO_THREADING
 class worker_t
 {
   bool           m_done;
@@ -420,6 +424,7 @@ public:
 
   sim_t* sim() const;
 };
+#endif
 
 class profilesets_t
 {
@@ -448,14 +453,18 @@ class profilesets_t
   std::unique_ptr<sim_control_t>         m_original;
   int64_t                                m_insert_index;
   size_t                                 m_work_index;
+#ifndef SC_NO_THREADING
   std::mutex                             m_mutex;
   std::unique_lock<std::mutex>           m_control_lock;
   std::condition_variable                m_control;
   std::vector<std::thread>               m_thread;
+#endif
 
   // Shared iterator for threaded init workers
   opts::map_list_t::const_iterator       m_init_index;
 
+
+#ifndef SC_NO_THREADING
   // Parallel profileset worker information
   size_t                                 m_max_workers;
   std::vector<std::unique_ptr<worker_t>> m_current_work;
@@ -468,6 +477,7 @@ class profilesets_t
   // Parallel profileset stats collection
   double                                 m_start_time;
   double                                 m_total_elapsed;
+#endif
 
   bool validate( sim_t* sim );
 
@@ -489,13 +499,19 @@ class profilesets_t
 public:
   profilesets_t() : m_state( STARTED ), m_mode( SEQUENTIAL ),
     m_original( nullptr ), m_insert_index( -1 ),
-    m_work_index( 0 ), m_control_lock( m_mutex, std::defer_lock ),
-    m_max_workers( 0 ), m_work_lock( m_work_mutex, std::defer_lock ),
+    m_work_index( 0 )
+#ifndef SC_NO_THREADING
+    ,
+    m_control_lock( m_mutex, std::defer_lock ),
+    m_max_workers( 0 ), 
+    m_work_lock( m_work_mutex, std::defer_lock ),
     m_start_time( 0 ), m_total_elapsed( 0 )
+#endif
   { }
 
   ~profilesets_t()
   {
+#ifndef SC_NO_THREADING
     range::for_each( m_thread, []( std::thread& thread ) {
       if ( thread.joinable() )
       {
@@ -504,6 +520,7 @@ public:
     } );
 
     range::for_each( m_current_work, []( std::unique_ptr<worker_t>& worker ) { worker -> thread().join(); } );
+#endif
   }
 
   size_t n_profilesets() const

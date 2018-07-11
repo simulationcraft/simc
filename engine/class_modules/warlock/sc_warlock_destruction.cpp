@@ -375,114 +375,114 @@ namespace warlock {
       }
     };
 
-    struct duplicate_chaos_bolt_t : public warlock_spell_t
-    {
-      player_t* original_target;
-      flames_of_argus_t* flames_of_argus;
+    //struct duplicate_chaos_bolt_t : public warlock_spell_t
+    //{
+    //  player_t* original_target;
+    //  flames_of_argus_t* flames_of_argus;
 
-      duplicate_chaos_bolt_t(warlock_t* p) :
-        warlock_spell_t("chaos_bolt_magistrike", p, p -> find_spell(213229)),
-        original_target(nullptr),
-        flames_of_argus(nullptr)
-      {
-        background = dual = true;
-        base_multiplier *= 1.0 + (p->sets->set(WARLOCK_DESTRUCTION, T18, B2)->effectN(2).percent());
-        base_multiplier *= 1.0 + (p->sets->set(WARLOCK_DESTRUCTION, T17, B4)->effectN(1).percent());
+    //  duplicate_chaos_bolt_t(warlock_t* p) :
+    //    warlock_spell_t("chaos_bolt_magistrike", p, p -> find_spell(213229)),
+    //    original_target(nullptr),
+    //    flames_of_argus(nullptr)
+    //  {
+    //    background = dual = true;
+    //    base_multiplier *= 1.0 + (p->sets->set(WARLOCK_DESTRUCTION, T18, B2)->effectN(2).percent());
+    //    base_multiplier *= 1.0 + (p->sets->set(WARLOCK_DESTRUCTION, T17, B4)->effectN(1).percent());
 
-        if (p->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B4))
-        {
-          flames_of_argus = new flames_of_argus_t(p);
-        }
-      }
+    //    if (p->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B4))
+    //    {
+    //      flames_of_argus = new flames_of_argus_t(p);
+    //    }
+    //  }
 
-      timespan_t travel_time() const override
-      {
-        double distance;
-        distance = original_target->get_player_distance(*target);
+    //  timespan_t travel_time() const override
+    //  {
+    //    double distance;
+    //    distance = original_target->get_player_distance(*target);
 
-        if (execute_state && execute_state->target)
-          distance += execute_state->target->height;
+    //    if (execute_state && execute_state->target)
+    //      distance += execute_state->target->height;
 
-        if (distance == 0) return timespan_t::zero();
+    //    if (distance == 0) return timespan_t::zero();
 
-        double t = distance / travel_speed;
+    //    double t = distance / travel_speed;
 
-        double v = sim->travel_variance;
+    //    double v = sim->travel_variance;
 
-        if (v)
-          t = rng().gauss(t, v);
+    //    if (v)
+    //      t = rng().gauss(t, v);
 
-        return timespan_t::from_seconds(t);
-      }
+    //    return timespan_t::from_seconds(t);
+    //  }
 
-      std::vector< player_t* >& target_list() const override
-      {
-        target_cache.list.clear();
-        for (size_t j = 0; j < sim->target_non_sleeping_list.size(); ++j)
-        {
-          player_t* duplicate_target = sim->target_non_sleeping_list[j];
-          if (target == duplicate_target)
-            continue;
-          if (target->get_player_distance(*duplicate_target) <= 30)
-            target_cache.list.push_back(duplicate_target);
-        }
-        return target_cache.list;
-      }
+    //  std::vector< player_t* >& target_list() const override
+    //  {
+    //    target_cache.list.clear();
+    //    for (size_t j = 0; j < sim->target_non_sleeping_list.size(); ++j)
+    //    {
+    //      player_t* duplicate_target = sim->target_non_sleeping_list[j];
+    //      if (target == duplicate_target)
+    //        continue;
+    //      if (target->get_player_distance(*duplicate_target) <= 30)
+    //        target_cache.list.push_back(duplicate_target);
+    //    }
+    //    return target_cache.list;
+    //  }
 
-      // Force spell to always crit
-      double composite_crit_chance() const override
-      {
-        return 1.0;
-      }
+    //  // Force spell to always crit
+    //  double composite_crit_chance() const override
+    //  {
+    //    return 1.0;
+    //  }
 
-      double bonus_da(const action_state_t* s) const override
-      {
-        double da = warlock_spell_t::bonus_da(s);
-        da += p()->azerite.chaotic_inferno.value(2);
-        return da;
-      }
+    //  double bonus_da(const action_state_t* s) const override
+    //  {
+    //    double da = warlock_spell_t::bonus_da(s);
+    //    da += p()->azerite.chaotic_inferno.value(2);
+    //    return da;
+    //  }
 
-      double calculate_direct_amount(action_state_t* state) const override
-      {
-        warlock_spell_t::calculate_direct_amount(state);
+    //  double calculate_direct_amount(action_state_t* state) const override
+    //  {
+    //    warlock_spell_t::calculate_direct_amount(state);
 
-        // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
-        // player spell crit instead. The state target crit chance of the state object is correct.
-        // Targeted Crit debuffs function as a separate multiplier.
-        state->result_total *= 1.0 + player->cache.spell_crit_chance() + state->target_crit_chance;
+    //    // Can't use player-based crit chance from the state object as it's hardcoded to 1.0. Use cached
+    //    // player spell crit instead. The state target crit chance of the state object is correct.
+    //    // Targeted Crit debuffs function as a separate multiplier.
+    //    state->result_total *= 1.0 + player->cache.spell_crit_chance() + state->target_crit_chance;
 
-        return state->result_total;
-      }
+    //    return state->result_total;
+    //  }
 
-      void impact(action_state_t* s) override
-      {
-        warlock_spell_t::impact(s);
+    //  void impact(action_state_t* s) override
+    //  {
+    //    warlock_spell_t::impact(s);
 
-        if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B2))
-          td(s->target)->debuffs_chaotic_flames->trigger();
+    //    if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B2))
+    //      td(s->target)->debuffs_chaotic_flames->trigger();
 
-        if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B4))
-        {
-          residual_action::trigger(flames_of_argus, s->target, s->result_amount * p()->sets->set(WARLOCK_DESTRUCTION, T21, B4)->effectN(1).percent());
-        }
-      }
-    };
+    //    if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B4))
+    //    {
+    //      residual_action::trigger(flames_of_argus, s->target, s->result_amount * p()->sets->set(WARLOCK_DESTRUCTION, T21, B4)->effectN(1).percent());
+    //    }
+    //  }
+    //};
 
     struct chaos_bolt_t : public warlock_spell_t
     {
       double backdraft_gcd;
       double backdraft_cast_time;
       double refund;
-      duplicate_chaos_bolt_t* duplicate;
-      double duplicate_chance;
+      //duplicate_chaos_bolt_t* duplicate;
+      //double duplicate_chance;
       flames_of_argus_t* flames_of_argus;
       internal_combustion_t* internal_combustion;
 
       chaos_bolt_t(warlock_t* p, const std::string& options_str) :
         warlock_spell_t(p, "Chaos Bolt"),
         refund(0),
-        duplicate(nullptr),
-        duplicate_chance(0),
+        //duplicate(nullptr),
+        //duplicate_chance(0),
         flames_of_argus(nullptr),
         internal_combustion(new internal_combustion_t(p))
       {
@@ -493,10 +493,10 @@ namespace warlock {
         backdraft_cast_time = 1.0 + p->buffs.backdraft->data().effectN(1).percent();
         backdraft_gcd = 1.0 + p->buffs.backdraft->data().effectN(2).percent();
 
-        duplicate = new duplicate_chaos_bolt_t(p);
-        duplicate_chance = p->find_spell(213014)->proc_chance();
-        duplicate->travel_speed = travel_speed;
-        add_child(duplicate);
+        //duplicate = new duplicate_chaos_bolt_t(p);
+        //duplicate_chance = p->find_spell(213014)->proc_chance();
+        //duplicate->travel_speed = travel_speed;
+        //add_child(duplicate);
         add_child(internal_combustion);
 
         if (p->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B4))
@@ -553,20 +553,20 @@ namespace warlock {
         trigger_internal_combustion(s);
         if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B2))
           td(s->target)->debuffs_chaotic_flames->trigger();
-        if (!havocd && p()->legendary.magistrike && rng().roll(duplicate_chance))
-        {
-          duplicate->original_target = s->target;
-          duplicate->target = s->target;
-          duplicate->target_cache.is_valid = false;
-          duplicate->target_list();
-          duplicate->target_cache.is_valid = true;
-          if (duplicate->target_cache.list.size() > 0)
-          {
-            size_t target_to_strike = rng().range(size_t(), duplicate->target_cache.list.size());
-            duplicate->target = duplicate->target_cache.list[target_to_strike];
-            duplicate->execute();
-          }
-        }
+        //if (!havocd && p()->legendary.magistrike && rng().roll(duplicate_chance))
+        //{
+        //  duplicate->original_target = s->target;
+        //  duplicate->target = s->target;
+        //  duplicate->target_cache.is_valid = false;
+        //  duplicate->target_list();
+        //  duplicate->target_cache.is_valid = true;
+        //  if (duplicate->target_cache.list.size() > 0)
+        //  {
+        //    size_t target_to_strike = rng().range(size_t(), duplicate->target_cache.list.size());
+        //    duplicate->target = duplicate->target_cache.list[target_to_strike];
+        //    duplicate->execute();
+        //  }
+        //}
         if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T21, B4))
         {
           residual_action::trigger(flames_of_argus, s->target, s->result_amount * p()->sets->set(WARLOCK_DESTRUCTION, T21, B4)->effectN(1).percent());
@@ -637,7 +637,7 @@ namespace warlock {
         may_miss = false;
         dual = true;
 
-        can_feretory = false;
+        //can_feretory = false;
 
         spell_power_mod.direct = data().effectN(1).sp_coeff();
 
@@ -837,8 +837,8 @@ namespace warlock {
           .start_time(sim->current_time())
           .action(p()->active.rain_of_fire));
 
-        if (p()->legendary.alythesss_pyrogenics)
-          p()->buffs.alythesss_pyrogenics->trigger(1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() * player->cache.spell_haste());
+        //if (p()->legendary.alythesss_pyrogenics)
+        //  p()->buffs.alythesss_pyrogenics->trigger(1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() * player->cache.spell_haste());
       }
     };
 
@@ -935,7 +935,7 @@ namespace warlock {
       ->set_default_value(find_spell(279673)->effectN(1).percent())
       ->set_chance(find_spell(279672)->proc_chance());
     buffs.crashing_chaos = make_buff(this, "crashing_chaos", azerite.crashing_chaos)
-      ->set_max_stack(azerite.crashing_chaos.spell_ref().effectN(2).base_value())
+      ->set_max_stack(azerite.crashing_chaos.spell_ref().effectN(2).base_value() or 1)
       ->set_default_value(azerite.crashing_chaos.value());
     buffs.rolling_havoc = make_buff<stat_buff_t>(this, "rolling_havoc", find_spell(278931))
       ->add_stat(STAT_INTELLECT, azerite.rolling_havoc.value());
@@ -1035,12 +1035,5 @@ namespace warlock {
     aoe->add_action("conflagrate,if=(talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2)");
     aoe->add_talent(this, "Shadowburn", "if=!talent.fire_and_brimstone.enabled&(charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time)");
     aoe->add_action("incinerate");
-  }
-
-  using namespace unique_gear;
-  using namespace actions;
-
-  void warlock_t::legendaries_destruction() {
-
   }
 }
