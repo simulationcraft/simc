@@ -7930,12 +7930,6 @@ void monk_t::target_mitigation( school_e school,
   // cap HP% at 0 HP since SimC can fall below 0 HP
   double health_percent_after_the_hit = fmax( ( resources.current[RESOURCE_HEALTH] - s -> result_amount ) / max_health(), 0 );
 
-  if ( talent.healing_elixir -> ok() )
-  {
-    // TODO: 35% HP for Healing Elixirs is hard-coded until otherwise changed
-    if ( resources.pct(RESOURCE_HEALTH) > 0.35 && health_percent_after_the_hit <= 0.35 && cooldown.healing_elixir -> up() )
-      active_actions.healing_elixir -> execute();
-  }
 
   // Gift of the Ox Trigger Calculations ===========================================================
 
