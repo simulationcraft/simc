@@ -922,7 +922,7 @@ public:
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
     // Manual additions of Dark Ascension and Shadow Crash base spells
-    if ( shadow_damage_increase || s->id() == 280711u || s->id() == 205385u )
+    if ( shadow_damage_increase || s->id() == 280711u || s->id() == 205385u || s->id() == 78203u )
       ab::base_dd_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 1 ).percent();
     if ( shadow_dot_increase )
       ab::base_td_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 2 ).percent();
