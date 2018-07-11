@@ -169,6 +169,7 @@ public:
   struct active_actions_t
   {
     action_t* healing_elixir;
+    action_t* rushing_jade_wind;
     actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
 
@@ -262,6 +263,7 @@ public:
     gain_t* fortuitous_spheres;
     gain_t* gift_of_the_ox;
     gain_t* healing_elixir;
+    gain_t* rushing_jade_wind_tick;
     gain_t* serenity;
     gain_t* spirit_of_the_crane;
     gain_t* tiger_palm;
@@ -3275,9 +3277,7 @@ struct rjw_tick_action_t : public monk_melee_attack_t
 
     // Reset some variables to ensure proper execution
     dot_duration = timespan_t::zero();
-    school = SCHOOL_PHYSICAL;
     cooldown -> duration = timespan_t::zero();
-    base_costs[ RESOURCE_ENERGY ] = 0;
   }
 
   virtual double action_multiplier() const override
@@ -3298,6 +3298,11 @@ struct rjw_tick_action_t : public monk_melee_attack_t
     }
     return am;
   }
+
+  virtual void consume_resource() override
+  {
+    monk_melee_attack_t::consume_resource();
+  }
 };
 
 struct rushing_jade_wind_t : public monk_melee_attack_t
@@ -3308,24 +3313,19 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     parse_options(options_str);
     sef_ability = SEF_RUSHING_JADE_WIND;
 
-    may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-    tick_zero = hasted_ticks = true;
-
-    spell_power_mod.direct = 0.0;
-    cooldown -> duration = p -> talent.rushing_jade_wind -> cooldown();
-    cooldown -> hasted = true;
-    
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd = timespan_t::from_millis( 750 );
     gcd_haste = HASTE_ATTACK;
 
-    if ( p -> specialization() == MONK_BREWMASTER )
+    if ( !p -> active_actions.rushing_jade_wind )
     {
-      dot_duration *= 1 + p -> spec.brewmaster_monk -> effectN( 12 ).percent();
-      dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
+      p -> active_actions.rushing_jade_wind = new rjw_tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
+      p -> active_actions.rushing_jade_wind -> stats = stats;
+      if ( p -> specialization() == MONK_WINDWALKER )
+      {
+        p -> active_actions.rushing_jade_wind -> base_costs[RESOURCE_ENERGY] = p -> talent.rushing_jade_wind -> cost(POWER_ENERGY);
+      }
     }
-
-    tick_action = new rjw_tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
   }
 
   void init() override
@@ -3335,65 +3335,15 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     update_flags &= ~STATE_HASTE;
   }
 
-  // N full ticks, but never additional ones.
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    if ( p() -> specialization() == MONK_BREWMASTER )
-      return dot_duration * ( tick_time( s ) / base_tick_time );
-    else
-      return sim -> expected_iteration_time * 2;
-  }
-
-  double composite_persistent_multiplier( const action_state_t* action_state ) const override
-  {
-    double pm = monk_melee_attack_t::composite_persistent_multiplier( action_state );
-
-    switch ( p() -> specialization() )
-    {
-      case MONK_BREWMASTER:
-        pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-        pm *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
-        break;
-      default:
-        break;
-    }
-    return pm;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    return am;
-  }
-
-  void cancel() override
-  {
-    monk_melee_attack_t::cancel();
-    if ( dot_t* d = get_dot( target ) )
-      d -> cancel();
-  }
-
   void execute() override
   {
     // Trigger Combo Strikes
     // registers even on a miss
     combo_strikes_trigger( CS_RUSHING_JADE_WIND );
 
-    dot_t* d = get_dot( target );
-
-    if ( d -> is_ticking() && p() -> specialization() == MONK_WINDWALKER )
-      d -> cancel();
-    else
-    {
       monk_melee_attack_t::execute();
 
-      if (p() -> specialization() == MONK_BREWMASTER )
-        p() -> buff.rushing_jade_wind -> trigger( 1,
-            buff_t::DEFAULT_VALUE(),
-            1.0,
-            composite_dot_duration( execute_state ) );
-    }
+    p() -> buff.rushing_jade_wind -> trigger();
   }
 };
 
@@ -6203,10 +6153,10 @@ struct serenity_buff_t: public monk_buff_t < buff_t > {
     monk_buff_t( p, n, s ),
     percent_adjust( 0 )
   {
-    default_value = s -> effectN( 2 ).percent();
-    cooldown -> duration = timespan_t::zero();
+    set_default_value( s -> effectN( 2 ).percent() );
+    set_cooldown( timespan_t::zero() );
 
-    buff_duration = s -> duration();
+    set_duration( s -> duration() );
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
@@ -6280,9 +6230,9 @@ struct touch_of_karma_buff_t: public monk_buff_t < buff_t > {
     monk_buff_t( p, n, s )
   {
     default_value = 0;
-    cooldown -> duration = timespan_t::zero();
+    set_cooldown( timespan_t::zero() );
 
-    buff_duration = s -> duration();
+    set_duration( s -> duration() );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -6291,6 +6241,60 @@ struct touch_of_karma_buff_t: public monk_buff_t < buff_t > {
     current_value = 0;
 
     return buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+struct rushing_jade_wind_buff_t : public monk_buff_t < buff_t > {
+  static void rjw_callback( buff_t* b, int, const timespan_t& )
+  {
+    monk_t* p = debug_cast<monk_t*>( b -> player );
+
+    if ( p -> specialization() == MONK_WINDWALKER )
+    {
+      if ( p -> resource_available( RESOURCE_ENERGY, p -> talent.rushing_jade_wind -> cost( POWER_ENERGY ) ) )
+      {
+        p -> resource_loss( RESOURCE_ENERGY, p -> talent.rushing_jade_wind -> cost( POWER_ENERGY ), p -> gain.rushing_jade_wind_tick );
+        p -> active_actions.rushing_jade_wind -> execute();
+      }
+      else
+        b -> expire_override( 1, b -> buff_duration );
+    }
+    else
+      p -> active_actions.rushing_jade_wind -> execute();
+
+  }
+
+  rushing_jade_wind_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ):
+    monk_buff_t( p, n, s )
+  {
+    can_cancel = tick_zero = true;
+    set_cooldown( timespan_t::zero() );
+
+    set_period( s -> effectN( 1 ).period() );
+    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+
+    if ( p.specialization() == MONK_BREWMASTER )
+    {
+      timespan_t duration = s -> duration() * p.spec.brewmaster_monk -> effectN( 9 ).percent();
+      duration /= 1 + p.composite_melee_haste();
+      set_duration( duration );
+      set_tick_time_behavior(buff_tick_time_behavior::HASTED);
+    }
+    else
+      set_duration( sim -> expected_iteration_time * 2 );
+
+    set_tick_callback( rjw_callback );
+    set_tick_behavior( buff_tick_behavior::CLIP );
+  }
+
+  bool trigger(int stacks, double value, double chance, timespan_t duration) override
+  {
+    return buff_t::trigger(stacks, value, chance, duration);
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -6314,10 +6318,10 @@ struct windwalking_driver_t: public monk_buff_t < buff_t >
             1, timespan_t::from_seconds( 10 ) );
       } );
     } );
-    cooldown -> duration = timespan_t::zero();
-    buff_duration = timespan_t::zero();
-    buff_period = timespan_t::from_seconds( 1 );
-    tick_behavior = buff_tick_behavior::CLIP;
+    set_cooldown( timespan_t::zero() );
+    set_duration( timespan_t::zero() );
+    set_period( timespan_t::from_seconds( 1 ) );
+    set_tick_behavior( buff_tick_behavior::CLIP );
     movement_increase = p.buffs.windwalking_movement_aura -> data().effectN( 1 ).percent();
   }
 };
@@ -6948,10 +6952,7 @@ void monk_t::create_buffs()
 
   buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", find_spell( 120954 ) );
 
-  buff.rushing_jade_wind = make_buff( this, "rushing_jade_wind", talent.rushing_jade_wind )
-                           -> set_cooldown( timespan_t::zero() )
-                           -> set_duration( talent.rushing_jade_wind -> duration() * ( 1 + spec.brewmaster_monk -> effectN( 11 ).percent() ) )
-                           -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+  buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t( *this, "rushing_jade_wind", talent.rushing_jade_wind );
 
   buff.dampen_harm = make_buff( this, "dampen_harm", talent.dampen_harm );
 
@@ -7100,6 +7101,7 @@ void monk_t::init_gains()
   gain.fist_of_the_white_tiger  = get_gain( "fist_of_the_white_tiger" );
   gain.focus_of_xuen            = get_gain( "focus_of_xuen" );
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
+  gain.rushing_jade_wind_tick   = get_gain( "rushing_jade_wind_tick" );
   gain.serenity                 = get_gain( "serenity" );
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
@@ -7141,6 +7143,7 @@ void monk_t::reset()
   t19_melee_4_piece_container_1 = CS_NONE;
   t19_melee_4_piece_container_2 = CS_NONE;
   t19_melee_4_piece_container_3 = CS_NONE;
+  spiritual_focus_count = 0;
 }
 
 // monk_t::regen (brews/teas)================================================
