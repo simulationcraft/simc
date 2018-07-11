@@ -1278,7 +1278,7 @@ void print_text_report( std::ostream& os, sim_t* sim, bool detail )
     print_iteration_data( os, *sim );
     print_raid_scale_factors( os, sim );
     print_reference_dps( os, *sim );
-    event_manager_infos( os, sim );
+    event_manager_infos( os, *sim );
   }
 
   fmt::print( os, "\n" );
