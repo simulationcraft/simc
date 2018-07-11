@@ -584,7 +584,7 @@ bool parse_fight_style( sim_t*             sim,
     sim -> raid_events_str += ",cooldown=85,distance=50,last=";
     sim -> raid_events_str += util::to_string( int( sim -> max_time.total_seconds() * 0.8 ) );
   }
-  else if (util::str_compare_ci(value, "HeavyMovement"))
+  else if ( util::str_compare_ci( value, "HeavyMovement" ) )
   {
 	  sim->fight_style = "HeavyMovement";
 	  sim->raid_events_str = "/movement,players_only=1,first=10,cooldown=10,distance=25";
