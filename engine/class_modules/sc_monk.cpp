@@ -3298,11 +3298,6 @@ struct rjw_tick_action_t : public monk_melee_attack_t
     }
     return am;
   }
-
-  virtual void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-  }
 };
 
 struct rushing_jade_wind_t : public monk_melee_attack_t
@@ -3321,10 +3316,6 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     {
       p -> active_actions.rushing_jade_wind = new rjw_tick_action_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() );
       p -> active_actions.rushing_jade_wind -> stats = stats;
-      if ( p -> specialization() == MONK_WINDWALKER )
-      {
-        p -> active_actions.rushing_jade_wind -> base_costs[RESOURCE_ENERGY] = p -> talent.rushing_jade_wind -> cost(POWER_ENERGY);
-      }
     }
   }
 
@@ -6262,7 +6253,8 @@ struct rushing_jade_wind_buff_t : public monk_buff_t < buff_t > {
         p -> active_actions.rushing_jade_wind -> execute();
       }
       else
-        b -> expire_override( 1, b -> buff_duration );
+        // Force a delay in the buff expire to make sure the callback finishes
+        b -> expire( timespan_t::from_millis(1) );
     }
     else
       p -> active_actions.rushing_jade_wind -> execute();
@@ -6272,7 +6264,8 @@ struct rushing_jade_wind_buff_t : public monk_buff_t < buff_t > {
   rushing_jade_wind_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ):
     monk_buff_t( p, n, s )
   {
-    can_cancel = tick_zero = true;
+    set_can_cancel( true );
+    set_tick_zero( true );
     set_cooldown( timespan_t::zero() );
 
     set_period( s -> effectN( 1 ).period() );
@@ -8529,8 +8522,7 @@ void monk_t::apl_combat_windwalker(){
   // Single Target
   st -> add_talent( this, "Invoke Xuen, the White Tiger", "", "Default action list" );
   st -> add_action( this, "Storm, Earth, and Fire", "if=!buff.storm_earth_and_fire.up" );
-  st -> add_talent( this, "Rushing Jade Wind", "if=!ticking&!prev_gcd.1.rushing_jade_wind", "Needs to be rewritten for BFA");
-  st -> add_talent( this, "Rushing Jade Wind", "if=ticking&!prev_gcd.1.rushing_jade_wind", "Needs to be rewritten for BFA");
+  st -> add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down&!prev_gcd.1.rushing_jade_wind", "Needs to be rewritten for BFA");
   st -> add_talent( this, "Energizing Elixir", "if=!prev_gcd.1.tiger_palm" );
   st -> add_action( this, "Blackout Kick", "target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&chi.max-chi>=1&set_bonus.tier21_4pc&buff.bok_proc.up",
                         "T21 set bonus conditional\n# Cast Blackout Kick if:\n# - Previous GCD was not Blackout Kick\n# - Blackout Kick! is available\n# - You're not at max Chi" );
