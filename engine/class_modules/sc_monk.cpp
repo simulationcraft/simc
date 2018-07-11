@@ -1368,24 +1368,24 @@ struct storm_earth_and_fire_pet_t : public pet_t
     sef_rushing_jade_wind_t( storm_earth_and_fire_pet_t* player ) :
       sef_melee_attack_t( "rushing_jade_wind", player, player -> o() -> talent.rushing_jade_wind )
     {
-      tick_zero = hasted_ticks = true;
       dual = true;
 
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
       weapon_power_mod = 0;
 
-      tick_action = new sef_rushing_jade_wind_tick_t( player );
-
-//      base_costs_per_tick[RESOURCE_ENERGY] = 0;
+      if ( !player -> active_actions.rushing_jade_wind_sef )
+      {
+        player -> active_actions.rushing_jade_wind_sef = new sef_rushing_jade_wind_tick_t( player );
+        player -> active_actions.rushing_jade_wind_sef -> stats = stats;
+      }
     }
 
-    
-
-    void tick( dot_t* d ) override
+    void execute() override
     {
-      if ( !o() -> get_dot( "rushing_jade_wind", target ) )
-        d -> cancel();
+      sef_melee_attack_t::execute();
+
+      p() -> buff.rushing_jade_wind_sef -> trigger();
     }
   };
 
@@ -1520,11 +1520,18 @@ public:
   // SEF applies the Cyclone Strike debuff as well
 
   bool sticky_target; // When enabled, SEF pets will stick to the target they have
+
+  struct active_actions_t
+  {
+    action_t* rushing_jade_wind_sef;
+  } active_actions;
+
   struct buffs_t
   {
     buff_t* bok_proc_sef;
     buff_t* hit_combo_sef;
     buff_t* pressure_point_sef;
+    buff_t* rushing_jade_wind_sef;
   } buff;
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
@@ -1631,6 +1638,9 @@ public:
 
     if ( o() -> buff.hit_combo -> up() )
       buff.hit_combo_sef -> trigger( o() -> buff.hit_combo -> stack() );
+
+    if ( o() -> buff.rushing_jade_wind -> up() )
+      buff.rushing_jade_wind_sef -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 , o() -> buff.rushing_jade_wind -> remains() );
   }
 
   void dismiss( bool expired = false ) override
@@ -1646,6 +1656,21 @@ public:
 
     buff.bok_proc_sef = make_buff( this, "bok_proc_sef", o() -> passives.bok_proc )
                         -> set_quiet( true ); // In-game does not show this buff but I would like to use it for background stuff;
+
+    buff.rushing_jade_wind_sef = make_buff( this, "rushing_jade_wind_sef", o() -> talent.rushing_jade_wind )
+                                  -> set_can_cancel( true )
+                                  -> set_tick_zero( true )
+                                  -> set_cooldown( timespan_t::zero() )
+                                  -> set_period( o() -> talent.rushing_jade_wind -> effectN( 1 ).period() )
+                                  -> set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
+                                  -> set_duration( sim -> expected_iteration_time * 2 )
+                                  -> set_tick_behavior(buff_tick_behavior::CLIP)
+                                  -> set_tick_callback( [ this ]( buff_t* d, int, const timespan_t& ) {
+                                      if ( o() -> buff.rushing_jade_wind -> up() )
+                                        active_actions.rushing_jade_wind_sef -> execute();
+                                      else
+                                        d -> expire( timespan_t::from_millis(1) );
+                                      } );
 
     buff.hit_combo_sef = make_buff( this, "hit_combo_sef", o() -> passives.hit_combo )
                          -> set_default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
