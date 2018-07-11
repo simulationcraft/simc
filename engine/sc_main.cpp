@@ -144,38 +144,21 @@ bool need_to_save_profiles( sim_t* sim )
  */
 std::string get_cache_directory()
 {
-  std::string s = ".";
+  std::string s = "/tmp";
 
   const char* env; // store desired environemental variable in here. getenv returns a null pointer if specified
   // environemental variable cannot be found.
 #if defined(__linux__) || defined(__APPLE__)
   env = getenv( "XDG_CACHE_HOME" );
-  if ( ! env )
-  {
-    env = getenv( "HOME" );
-    if ( env ) {
-      s = std::string( env ) + "/.cache";
-    } else {
-      s = "/tmp"; // back out
-}
-  }
-  else {
-    s = std::string( env );
-}
+  if(env = getenv( "XDG_CACHE_HOME" ))
+	  s = std::string(env);
+  else if(env = getenv("HOME"))
+      s = std::string(env) + "/.cache";
 #endif
 #ifdef _WIN32
-  env = getenv( "TMP" );
-  if ( !env )
-  {
-    env = getenv( "TEMP" );
-    if ( ! env )
-    {
-      env = getenv( "HOME" );
-    }
-  }
-  s = std::string( env );
+  if((env = getenv("TMP")) || (env = getenv("TEMP")) || (env = getenv("HOME")))
+      s = std::string(env);
 #endif
-
   return s;
 }
 
