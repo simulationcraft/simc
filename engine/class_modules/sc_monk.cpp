@@ -201,11 +201,11 @@ public:
     buff_t* bladed_armor;
     buff_t* blackout_combo;
     buff_t* elusive_brawler;
-    buff_t* elusive_dance;
     buff_t* fortifying_brew;
     buff_t* gift_of_the_ox;
     buff_t* ironskin_brew;
     buff_t* keg_smash_talent;
+    buff_t* spitfire;
     buff_t* zen_meditation;
     buff_t* light_stagger;
     buff_t* moderate_stagger;
@@ -292,9 +292,9 @@ public:
 
     // Tier 45 Talents
     // Brewmaster
-    const spell_data_t* black_ox_brew;
-    const spell_data_t* gift_of_the_mists;
     const spell_data_t* light_brewing;
+    const spell_data_t* spitfire;
+    const spell_data_t* black_ox_brew;
     // Windwalker
     const spell_data_t* ascension;
     const spell_data_t* fist_of_the_white_tiger;
@@ -318,8 +318,8 @@ public:
     // Mistweaver & Windwalker
     const spell_data_t* diffuse_magic;  
     // Brewmaster
+    const spell_data_t* bob_and_weave;
     const spell_data_t* healing_elixir;
-    const spell_data_t* mystic_vitality;
     const spell_data_t* dampen_harm;
 
     // Tier 90 Talents
@@ -338,9 +338,9 @@ public:
 
     // Tier 100 Talents
     // Brewmaster
-    const spell_data_t* elusive_dance;
-    const spell_data_t* blackout_combo;
     const spell_data_t* high_tolerance;
+    const spell_data_t* guard;
+    const spell_data_t* blackout_combo;
     // Windwalker
     const spell_data_t* spirtual_focus;
     const spell_data_t* whirling_dragon_punch;
@@ -474,12 +474,13 @@ public:
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
     const spell_data_t* elusive_brawler;
-    const spell_data_t* elusive_dance;
+    const spell_data_t* fortifying_brew;
     const spell_data_t* gift_of_the_ox_heal;
     const spell_data_t* ironskin_brew;
     const spell_data_t* keg_smash_buff;
     const spell_data_t* special_delivery;
     const spell_data_t* stagger_self_damage;
+    const spell_data_t* heavy_stagger;
     const spell_data_t* stomp;
 
     // Mistweaver
@@ -2855,7 +2856,16 @@ struct tiger_palm_t: public monk_melee_attack_t
       if ( p() -> cooldown.blackout_strike -> down() )
         p() -> cooldown.blackout_strike -> adjust( timespan_t::from_seconds( -1 * p() -> spec.tiger_palm -> effectN( 3 ).base_value() ) );
 
-    // Reduces the remaining cooldown on your Brews by 1 sec
+      if ( p() -> talent.spitfire )
+      {
+        if ( rng().roll( p() -> talent.spitfire -> proc_chance() ) )
+        {
+          p() -> cooldown.breath_of_fire -> reset( true );
+          p() -> buff.spitfire -> trigger();
+        }
+      }
+
+      // Reduces the remaining cooldown on your Brews by 1 sec
       double time_reduction = p() -> spec.tiger_palm -> effectN( 3 ).base_value();
 
       // 4 pieces (Brewmaster) : Tiger Palm reduces the remaining cooldown on your brews by an additional 1 sec.
@@ -4803,7 +4813,6 @@ struct breath_of_fire_t: public monk_spell_t
       background = true;
       tick_may_crit = may_crit = true;
       hasted_ticks = false;
-
     }
 
     double action_multiplier() const override
@@ -4851,6 +4860,15 @@ struct breath_of_fire_t: public monk_spell_t
 
     monk_spell_t::update_ready( cd );
   }
+
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    if ( p() -> buff.spitfire -> up() )
+      p() -> buff.spitfire -> expire();
+  }
+
 
  virtual void impact( action_state_t* s ) override
  {
@@ -5148,50 +5166,6 @@ struct purifying_brew_t: public monk_spell_t
     monk_spell_t::execute();
 
     double stagger_pct = p() -> current_stagger_tick_dmg_percent();
-
-//    double purifying_brew_percent = p() -> spec.purifying_brew -> effectN( 1 ).percent();
-//    if ( p() -> talent.elusive_dance -> ok() )
-//      purifying_brew_percent += p() -> talent.elusive_dance -> effectN( 2 ).percent();
-//
-
-    //double stagger_dmg = p() -> partial_clear_stagger( purifying_brew_percent );
-
-    // Optional addition: Track and report amount of damage cleared
-    if ( stagger_pct > p() -> heavy_stagger_threshold )
-    {
-      if ( p() -> talent.elusive_dance -> ok() )
-      {
-        // cancel whatever level the previous Elusive Dance and start the new dance
-        if ( p() -> buff.elusive_dance -> up() )
-          p() -> buff.elusive_dance -> expire();
-        p() -> buff.elusive_dance -> trigger( 3 );
-      }
-//      p() -> sample_datas.heavy_stagger_total_damage -> add( stagger_dmg );
-    }
-    else if ( stagger_pct > p() -> moderate_stagger_threshold )
-    {
-      if ( p() -> talent.elusive_dance -> ok() )
-      {
-        // cancel whatever level the previous Elusive Dance and start the new dance
-        if ( p() -> buff.elusive_dance -> up() )
-          p() -> buff.elusive_dance -> expire();
-        p() -> buff.elusive_dance -> trigger( 2 );
-      }
-//      p() -> sample_datas.moderate_stagger_total_damage -> add( stagger_dmg );
-    }
-    else
-    {
-      if ( p() -> talent.elusive_dance -> ok() )
-      {
-        // cancel whatever level the previous Elusive Dance and start the new dance
-        if ( p() -> buff.elusive_dance -> up() )
-          p() -> buff.elusive_dance -> expire();
-        p() -> buff.elusive_dance -> trigger();
-      }
-//      p() -> sample_datas.light_stagger_total_damage -> add( stagger_dmg );
-    }
-
-//    p() -> sample_datas.purified_damage -> add( stagger_dmg );
 
     if ( p() -> talent.healing_elixir -> ok() )
     {
@@ -6640,21 +6614,21 @@ void monk_t::init_spells()
   // Talents spells =====================================
   // Tier 15 Talents
   talent.eye_of_the_tiger            = find_talent_spell( "Eye of the Tiger" ); // Brewmaster & Windwalker
-  talent.chi_burst                   = find_talent_spell( "Chi Burst" ); // Mistweaver & Windwalker
   talent.chi_wave                    = find_talent_spell( "Chi Wave" );
+  talent.chi_burst                   = find_talent_spell( "Chi Burst" );
   // Mistweaver
   talent.zen_pulse                   = find_talent_spell( "Zen Pulse" );
 
   // Tier 30 Talents
-  talent.tigers_lust                 = find_talent_spell( "Tiger's Lust" );
   talent.celerity                    = find_talent_spell( "Celerity" );
   talent.chi_torpedo                 = find_talent_spell( "Chi Torpedo" );
+  talent.tigers_lust                 = find_talent_spell( "Tiger's Lust" );
 
   // Tier 45 Talents
   // Brewmaster
-  talent.black_ox_brew               = find_talent_spell( "Black Ox Brew" );
-  talent.gift_of_the_mists           = find_talent_spell( "Gift of the Mists" );
   talent.light_brewing               = find_talent_spell( "Light Brewing" );
+  talent.spitfire                    = find_talent_spell( "Spitfire" );
+  talent.black_ox_brew               = find_talent_spell( "Black Ox Brew" );
   // Windwalker
   talent.ascension                   = find_talent_spell( "Ascension" );
   talent.fist_of_the_white_tiger     = find_talent_spell( "Fist of the White Tiger" );
@@ -6665,17 +6639,20 @@ void monk_t::init_spells()
   talent.lifecycles                  = find_talent_spell( "Lifecycles" );
 
   // Tier 60 Talents
-  talent.ring_of_peace               = find_talent_spell( "Ring of Peace" );
+  talent.tiger_tail_sweep            = find_talent_spell( "Tiger Tail Sweep" );
   talent.summon_black_ox_statue      = find_talent_spell( "Summon Black Ox Statue" ); // Brewmaster & Windwalker
   talent.song_of_chi_ji              = find_talent_spell( "Song of Chi-Ji" ); // Mistweaver
-  talent.tiger_tail_sweep            = find_talent_spell( "Tiger Tail Sweep" );
+  talent.ring_of_peace               = find_talent_spell( "Ring of Peace" );
   // Windwalker
   talent.good_karma                  = find_talent_spell( "Good Karma" );
 
   // Tier 75 Talents
+  // Windwalker
   talent.inner_strength              = find_talent_spell( "Inner Strength" );
-  talent.mystic_vitality             = find_talent_spell( "Mystic Vitality" );
+  // Mistweaver & Windwalker
   talent.diffuse_magic               = find_talent_spell( "Diffuse Magic" );
+  // Brewmaster
+  talent.bob_and_weave               = find_talent_spell( "Bob and Weave" );
   talent.healing_elixir              = find_talent_spell( "Healing Elixir" );
   talent.dampen_harm                 = find_talent_spell( "Dampen Harm" );
 
@@ -6695,9 +6672,9 @@ void monk_t::init_spells()
 
   // Tier 100 Talents
   // Brewmaster
-  talent.elusive_dance               = find_talent_spell( "Elusive Dance" );
-  talent.blackout_combo              = find_talent_spell( "Blackout Combo" );
   talent.high_tolerance              = find_talent_spell( "High Tolerance" );
+  talent.guard                       = find_talent_spell( "Guard" );
+  talent.blackout_combo              = find_talent_spell( "Blackout Combo" );
   // Windwalker
   talent.spirtual_focus              = find_talent_spell( "Spiritual Focus" );
   talent.whirling_dragon_punch       = find_talent_spell( "Whirling Dragon Punch" );
@@ -6810,13 +6787,15 @@ void monk_t::init_spells()
   passives.breath_of_fire_dot               = find_spell( 123725 );
   passives.celestial_fortune                = find_spell( 216521 );
   passives.elusive_brawler                  = find_spell( 195630 );
-  passives.elusive_dance                    = find_spell( 196739 );
+  passives.fortifying_brew                  = find_spell( 120954 );
   passives.gift_of_the_ox_heal              = find_spell( 124507 );
   passives.ironskin_brew                    = find_spell( 215479 );
   passives.keg_smash_buff                   = find_spell( 196720 );
   passives.special_delivery                 = find_spell( 196733 );
   passives.stagger_self_damage              = find_spell( 124255 );
+  passives.heavy_stagger                    = find_spell( 124273 );
   passives.stomp                            = find_spell( 227291 );
+
 
   // Mistweaver
   passives.totm_bok_proc                    = find_spell( 228649 );
@@ -6968,7 +6947,7 @@ void monk_t::create_buffs()
   buff.chi_torpedo = make_buff( this, "chi_torpedo", find_spell( 119085 ) )
                      -> set_default_value( find_spell( 119085 ) -> effectN( 1 ).percent() );
 
-  buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", find_spell( 120954 ) );
+  buff.fortifying_brew = new buffs::fortifying_brew_t( *this, "fortifying_brew", passives.fortifying_brew );
 
   buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t( *this, "rushing_jade_wind", talent.rushing_jade_wind );
 
@@ -6989,34 +6968,28 @@ void monk_t::create_buffs()
   buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler -> effectN( 3 ).trigger() )
                          -> add_invalidate( CACHE_DODGE );
 
-  buff.elusive_dance = make_buff( this, "elusive_dance", find_spell( 196739 ) )
-                       -> set_default_value( talent.elusive_dance -> effectN( 2 ).percent() / 3 ) // 6.66% per stack
-                       -> set_max_stack( 3 ) // Cap of 20%
-                       -> add_invalidate( CACHE_DODGE )
-                       -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-
   buff.ironskin_brew = make_buff( this, "ironskin_brew", passives.ironskin_brew )
-                       -> set_default_value( passives.ironskin_brew -> effectN( 1 ).percent() 
-                          + ( sets -> has_set_bonus( MONK_BREWMASTER, T19, B2 ) ? sets -> set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent() : 0 ) )
                        -> set_refresh_behavior( buff_refresh_behavior::EXTEND );
-
-  buff.keg_smash_talent = make_buff( this, "keg_smash", talent.gift_of_the_mists -> effectN( 1 ).trigger() )
-                          -> set_chance( talent.gift_of_the_mists -> proc_chance() ); 
 
   buff.gift_of_the_ox = make_buff( this, "gift_of_the_ox", find_spell( 124503 ) )
                         -> set_duration( find_spell( 124503 ) -> duration() )
                         -> set_refresh_behavior( buff_refresh_behavior::NONE )
                         -> set_max_stack( 99 );
 
+  buff.spitfire = make_buff( this, "spitfire", talent.spitfire -> effectN( 1 ).trigger() );
+
+  timespan_t stagger_duration = passives.heavy_stagger -> duration();
+  stagger_duration += timespan_t::from_seconds( legendary.jewel_of_the_lost_abbey -> effectN( 1 ).base_value() / 10 );
+  stagger_duration += timespan_t::from_seconds( talent.bob_and_weave -> effectN( 1 ).base_value() / 10 );
+
   buff.light_stagger = make_buff( this, "light_stagger", find_spell( 124275 ) );
   buff.moderate_stagger = make_buff( this, "moderate_stagger", find_spell( 124274 ) );
-  buff.heavy_stagger = make_buff( this, "heavy_stagger", find_spell( 124273 ) );
-  if ( talent.high_tolerance -> ok() )
+  buff.heavy_stagger = make_buff( this, "heavy_stagger", passives.heavy_stagger );
+  for ( auto&& b : { buff.light_stagger, buff.moderate_stagger, buff.heavy_stagger } )
   {
-    for ( auto&& b : { buff.light_stagger, buff.moderate_stagger, buff.heavy_stagger } )
-    {
-      b->add_invalidate( CACHE_HASTE );
-    }
+    b -> set_duration( stagger_duration );
+    if ( talent.high_tolerance -> ok() )
+      b -> add_invalidate( CACHE_HASTE );
   }
 
   // Mistweaver
@@ -7486,9 +7459,6 @@ double monk_t::composite_player_multiplier( school_e school ) const
   if ( talent.hit_combo -> ok() )
     m *= 1.0 + buff.hit_combo -> stack_value();
 
-  if ( buff.elusive_dance -> up() )
-    m *= 1 + buff.elusive_dance ->stack_value();
-
   return m;
 }
 
@@ -7572,9 +7542,6 @@ double monk_t::composite_dodge() const
 
   if ( buff.elusive_brawler -> up() )
     d += buff.elusive_brawler -> current_stack * cache.mastery_value();
-
-  if ( buff.elusive_dance -> up() )
-    d += buff.elusive_dance -> stack_value();
 
   return d;
 }
@@ -7979,10 +7946,6 @@ void monk_t::target_mitigation( school_e school,
     // Gift of the Mists multiplies that counter increment by (2 - (HealthBeforeDamage - DamageTakenBeforeAbsorbsOrStagger) / MaxHealth);
     double goto_proc_chance = s -> result_amount / max_health();
 
-    if ( talent.gift_of_the_mists -> ok() )
-      // Due to the fact that SimC can cause HP values to go into negative, force the cap to be 175% since the original formula can go above 175% with negative HP
-      goto_proc_chance *= 1 + ( talent.gift_of_the_mists -> effectN( 1 ).percent() * ( 1 - fmax( ( health_before_hit - s -> result_amount ) / max_health(), 0 ) ) );
-
     gift_of_the_ox_proc_chance += goto_proc_chance;
 
     if ( gift_of_the_ox_proc_chance > 1.0 )
@@ -8018,9 +7981,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
 
       else if ( school != SCHOOL_PHYSICAL )
       {
-        double stagger_magic = stagger_pct() * spec.stagger -> effectN( 1 ).percent();
-        if ( talent.mystic_vitality -> ok() )
-          stagger_magic *= 1 + talent.mystic_vitality -> effectN( 1 ).percent();
+        double stagger_magic = stagger_pct() * spec.stagger -> effectN( 5 ).percent();
 
         stagger_dmg += s -> result_amount * stagger_magic;
       }
@@ -8715,22 +8676,64 @@ double monk_t::stagger_pct()
 
   if ( specialization() == MONK_BREWMASTER ) // no stagger when not in Brewmaster Specialization
   {
-    stagger += spec.stagger -> effectN( 9 ).percent();
+    double stagger_base = agility() * spec.stagger -> effectN( 1 ).percent();
+    // TODO: The K value is different from the normal armor K value and needs to be updated. 
+    // In the meantime use the current K values in the meantime.
+    // 69.05% gives an average for prepatch and leveling. at 120, it's about 81.1%
+    double k_value = 0;
+    switch ( target -> level() )
+    {
+    case 123:
+    case 122:
+    case 121:
+    case 120:
+      k_value = 6300;
+      break;
+    case 113:
+      k_value = 2107;
+      break;
+    case 112:
+    case 111:
+    case 110:
+      k_value = 1423;
+      break;
+    default:
+      k_value = dbc.armor_mitigation_constant( target -> level() ) * 0.6905;
+      break;
+    }
 
     if ( talent.high_tolerance -> ok() )
-      stagger += talent.high_tolerance -> effectN( 1 ).percent();
+    {
+      double ht_percent = talent.high_tolerance -> effectN( 1 ).percent();
+      ht_percent *= 1 + talent.high_tolerance -> effectN( 5 ).percent();
+
+      stagger_base *= 1 + ht_percent;
+    }
 
     if ( buff.fortifying_brew -> check() )
     {
-      stagger += spec.fortifying_brew -> effectN( 1 ).percent();
+      double fb_percent = spec.fortifying_brew -> effectN( 1 ).percent();
+      fb_percent *= 1 + passives.fortifying_brew -> effectN( 6 ).percent();
+
+      stagger_base *= 1 + fb_percent;
     }
 
     if ( buff.ironskin_brew -> up() )
-      stagger += buff.ironskin_brew -> value();
+    {
+      double ib_base = stagger_base * ( 1 + passives.ironskin_brew -> effectN( 1 ).percent() );
+
+      if ( sets -> has_set_bonus( MONK_BREWMASTER, T19, B2 ) )
+        ib_base *= 1 + sets -> set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent();
+
+      stagger += ib_base / ( ib_base + k_value );
+    }
+    else
+      stagger += stagger_base / (stagger_base + k_value );
+
+
   }
 
-  // TODO: Cap stagger at 100% stagger since one can currently hit 105% stagger
-  return fmin( stagger, 1 );
+  return fmin( stagger, 0.99 );
 }
 
 // monk_t::current_stagger_tick_dmg ==================================================
