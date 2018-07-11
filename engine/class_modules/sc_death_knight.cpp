@@ -5711,6 +5711,7 @@ struct unholy_blight_dot_t : public death_knight_spell_t
   {
     background = true;
     hasted_ticks = false;
+    tick_may_crit = true;
   }
 };
 
