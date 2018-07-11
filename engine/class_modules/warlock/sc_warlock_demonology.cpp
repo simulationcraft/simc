@@ -449,15 +449,13 @@ namespace warlock {
               p()->warlock_pet_list.dreadstalkers[i]->buffs.rage_of_guldan->set_default_value(p()->buffs.rage_of_guldan->stack_value());
               p()->warlock_pet_list.dreadstalkers[i]->buffs.rage_of_guldan->trigger();
             }
-
-            /*
-            if (p()->legendary.wilfreds_sigil_of_superior_summoning_flag && !p()->talents.grimoire_of_supremacy->ok())
+        
+            if ( p()->legendary.wilfreds_sigil_of_superior_summoning )
             {
-              p()->cooldowns.doomguard->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
-              p()->cooldowns.infernal->adjust(p()->legendary.wilfreds_sigil_of_superior_summoning);
+              p()->cooldowns.demonic_tyrant->adjust( p()->find_spell( 214345 )->effectN( 1 ).time_value() );
               p()->procs.wilfreds_dog->occur();
             }
-            */
+            
             if (++j == dreadstalker_count) break;
           }
         }
@@ -465,6 +463,11 @@ namespace warlock {
         p()->buffs.demonic_calling->up(); // benefit tracking
         p()->buffs.demonic_calling->decrement();
         p()->buffs.rage_of_guldan->expire();
+
+        if ( p()->legendary.recurrent_ritual )
+        {
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.recurrent_ritual );
+        }
 
         if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T20, B4))
         {
@@ -577,6 +580,13 @@ namespace warlock {
           {
             demonic_tyrant->summon(data().duration());
           }
+        }
+
+        if ( p()->cooldowns.sindorei_spite_icd->up() )
+        {
+          p()->buffs.sindorei_spite->up();
+          p()->buffs.sindorei_spite->trigger();
+          p()->cooldowns.sindorei_spite_icd->start( timespan_t::from_seconds( 180.0 ) );
         }
 
         p()->buffs.demonic_power->trigger();
@@ -793,6 +803,30 @@ namespace warlock {
               if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T19, B2) && rng().roll(p()->sets->set(WARLOCK_DEMONOLOGY, T19, B2)->effectN(1).percent()))
                   p()->resource_gain(RESOURCE_SOUL_SHARD, 1, p()->gains.t19_2pc_demonology);
           }
+      }
+
+      virtual double action_multiplier()const override
+      {
+        double m = warlock_spell_t::action_multiplier();
+        double pet_counter = 0.0;
+
+        if ( p()->legendary.kazzaks_final_curse )
+        {
+          for ( auto& pet : p()->pet_list )
+          {
+            pets::warlock_pet_t *lock_pet = static_cast< pets::warlock_pet_t* > ( pet );
+
+            if ( lock_pet != NULL )
+            {
+              if ( !lock_pet->is_sleeping() )
+              {
+                pet_counter += p()->find_spell( 214225 )->effectN( 1 ).percent();
+              }
+            }
+          }
+          m *= 1.0 + pet_counter;
+        }
+        return m;
       }
     };
 

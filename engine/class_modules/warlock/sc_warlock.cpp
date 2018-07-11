@@ -98,8 +98,7 @@ namespace warlock
         m *= 1.0 + buffs.grimoire_of_service->data().effectN(1).percent();
       }
 
-      //m *= 1.0 + o()->buffs.sindorei_spite->check_stack_value();
-      //m *= 1.0 + o()->buffs.lessons_of_spacetime->check_stack_value();
+      m *= 1.0 + o()->buffs.sindorei_spite->check_stack_value();
 
       return m;
     }
@@ -160,6 +159,35 @@ namespace warlock
 
       if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
       {
+        if ( p()->legendary.the_master_harvester )
+        {
+          double sh_proc_chance;
+          switch ( p()->specialization() )
+          {
+          case WARLOCK_AFFLICTION:
+            sh_proc_chance = 0.09;
+            break;
+          case WARLOCK_DEMONOLOGY:
+            sh_proc_chance = 0.03;
+            break;
+          case WARLOCK_DESTRUCTION:
+            sh_proc_chance = 0.06;
+            break;
+          default:
+            sh_proc_chance = 0;
+            break;
+          }
+
+          for ( int i = 0; i < last_resource_cost; i++ )
+          {
+            if ( p()->rng().roll( sh_proc_chance ) )
+            {
+              p()->buffs.soul_harvest->trigger();
+            }
+          }
+
+        }
+
         if ( p()->talents.soul_conduit->ok() )
         {
           if ( p()->specialization() == WARLOCK_DEMONOLOGY )
@@ -438,7 +466,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     procs(),
     spells(),
     initial_soul_shards( 3 ),
-    //allow_sephuz( false ),
+    allow_sephuz( false ),
     default_pet(),
     shard_react( timespan_t::zero() )
   {
@@ -454,13 +482,22 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     legendary.stretens_sleepless_shackles = nullptr;
     legendary.the_master_harvester = nullptr;
     legendary.wakeners_loyalty = nullptr;
+    legendary.kazzaks_final_curse = nullptr;
+    legendary.sindorei_spite = nullptr;
+    legendary.recurrent_ritual = nullptr;
+    legendary.magistrike_restraints = nullptr;
+    legendary.feretory_of_souls = nullptr;
+    legendary.alythesss_pyrogenics = nullptr;
+    legendary.odr_shawl_of_the_ymirjar = nullptr;
+    legendary.wilfreds_sigil_of_superior_summoning = nullptr;
 
     cooldowns.haunt = get_cooldown( "haunt" );
     cooldowns.shadowburn = get_cooldown("shadowburn");
     cooldowns.soul_fire = get_cooldown("soul_fire");
-    //cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
+    cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
     cooldowns.call_dreadstalkers = get_cooldown("call_dreadstalkers");
     cooldowns.darkglare = get_cooldown("summon_darkglare");
+    cooldowns.demonic_tyrant = get_cooldown( "summon_demonic_tyrant" );
 
     regen_type = REGEN_DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -538,12 +575,13 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( legendary.stretens_sleepless_shackles )
     m *= 1.0 + buffs.stretens_insanity->check() * buffs.stretens_insanity->data().effectN( 1 ).percent();
 
-  //if ( specialization() == WARLOCK_DESTRUCTION && dbc::is_school( school, SCHOOL_FIRE ) ) {
-  //  m *= 1.0 + buffs.alythesss_pyrogenics->check_stack_value();
-  //}
+  if ( specialization() == WARLOCK_DESTRUCTION && dbc::is_school( school, SCHOOL_FIRE ) ) 
+    m *= 1.0 + buffs.alythesss_pyrogenics->check_stack_value();
 
-  //m *= 1.0 + buffs.sindorei_spite->check_stack_value();
-  //m *= 1.0 + buffs.lessons_of_spacetime->check_stack_value();
+  m *= 1.0 + buffs.sindorei_spite->check_stack_value();
+
+  if ( legendary.insignia_of_the_grand_army )
+    m *= 1.0 + find_spell( 152626 )->effectN( 2 ).percent();
 
   return m;
 }
@@ -564,7 +602,18 @@ double warlock_t::composite_player_pet_damage_multiplier(const action_state_t* s
   {
     m *= 1.0 + spec.affliction->effectN(3).percent();
   }
-
+  if ( legendary.reap_and_sow )
+  {
+    m *= 1.0 + find_spell( 281494 )->effectN( 3 ).percent();
+  }
+  if ( legendary.wakeners_loyalty )
+  {
+    m *= 1.0 + find_spell( 281495 )->effectN( 3 ).percent();
+  }
+  if ( legendary.lessons_of_spacetime )
+  {
+    m *= 1.0 + find_spell( 281496 )->effectN( 3 ).percent();
+  }
   return m;
 }
 
@@ -582,15 +631,15 @@ double warlock_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
-  //if ( buffs.sephuzs_secret->check() )
-  //{
-  //  h *= 1.0 / ( 1.0 + buffs.sephuzs_secret->check_value() );
-  //}
+  if ( buffs.sephuzs_secret->check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret->check_value() );
+  }
 
-  //if ( legendary.sephuzs_secret )
-  //{
-  //  h *= 1.0 / ( 1.0 + legendary.sephuzs_secret->driver()->effectN( 3 ).percent() );
-  //}
+  if ( legendary.sephuzs_secret )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret->driver()->effectN( 3 ).percent() );
+  }
 
   if ( buffs.demonic_speed->check() )
     h *= 1.0 / ( 1.0 + buffs.demonic_speed->check_value() );
@@ -614,15 +663,15 @@ double warlock_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
-  //if ( buffs.sephuzs_secret->check() )
-  //{
-  //  h *= 1.0 / ( 1.0 + buffs.sephuzs_secret->check_value() );
-  //}
+  if ( buffs.sephuzs_secret->check() )
+  {
+    h *= 1.0 / ( 1.0 + buffs.sephuzs_secret->check_value() );
+  }
 
-  //if ( legendary.sephuzs_secret )
-  //{
-  //  h *= 1.0 / ( 1.0 + legendary.sephuzs_secret->driver()->effectN( 3 ).percent() );
-  //}
+  if ( legendary.sephuzs_secret )
+  {
+    h *= 1.0 / ( 1.0 + legendary.sephuzs_secret->driver()->effectN( 3 ).percent() );
+  }
 
   if ( buffs.demonic_speed->check() )
     h *= 1.0 / ( 1.0 + buffs.demonic_speed->check_value() );
@@ -773,22 +822,22 @@ void warlock_t::create_buffs()
     ->set_default_value( find_spell( 208822 )->effectN( 1 ).percent() )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->set_tick_behavior( buff_tick_behavior::NONE );
-  //buffs.lessons_of_spacetime = make_buff( this, "lessons_of_spacetime", find_spell( 236176 ) )
-  //  ->set_default_value( find_spell( 236176 )->effectN( 1 ).percent() )
-  //  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-  //  ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-  //  ->set_tick_behavior( buff_tick_behavior::NONE );
-  //buffs.sephuzs_secret =
-  //  make_buff<haste_buff_t>( this, "sephuzs_secret", find_spell( 208052 ) );
-  //buffs.sephuzs_secret->set_default_value( find_spell( 208052 )->effectN( 2 ).percent() )
-  //  ->set_cooldown( find_spell( 226262 )->duration() );
-  //buffs.alythesss_pyrogenics = make_buff( this, "alythesss_pyrogenics", find_spell( 205675 ) )
-  //  ->set_default_value( find_spell( 205675 )->effectN( 1 ).percent() )
-  //  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-  //  ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-  //buffs.wakeners_loyalty = make_buff( this, "wakeners_loyalty", find_spell( 236200 ) )
-  //  ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-  //  ->set_default_value( find_spell( 236200 )->effectN( 1 ).percent() );
+  buffs.sephuzs_secret =
+    make_buff<haste_buff_t>( this, "sephuzs_secret", find_spell( 208052 ) );
+  buffs.sephuzs_secret->set_default_value( find_spell( 208052 )->effectN( 2 ).percent() )
+    ->set_cooldown( find_spell( 226262 )->duration() );
+  buffs.alythesss_pyrogenics = make_buff( this, "alythesss_pyrogenics", find_spell( 205675 ) )
+    ->set_default_value( find_spell( 205675 )->effectN( 1 ).percent() )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.sindorei_spite = make_buff( this, "sindorei_spite", find_spell( 208871 ) )
+    ->set_default_value( find_spell( 208871 )->effectN( 1 ).percent() )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.soul_harvest = make_buff( this, "soul_harvest" )
+    ->set_default_value( 0.2 )
+    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+    ->set_duration( timespan_t::from_seconds( 8 ) );
 }
 
 void warlock_t::init_spells()
@@ -858,8 +907,8 @@ void warlock_t::init_gains()
   
   gains.soulsnatcher                    = get_gain( "soulsnatcher" );
   gains.power_trip                      = get_gain( "power_trip" );
-  //gains.recurrent_ritual                = get_gain( "recurrent_ritual" );
-  //gains.feretory_of_souls               = get_gain( "feretory_of_souls" );
+  gains.recurrent_ritual                = get_gain( "recurrent_ritual" );
+  gains.feretory_of_souls               = get_gain( "feretory_of_souls" );
   gains.power_cord_of_lethtendris       = get_gain( "power_cord_of_lethtendris" );
 }
 
@@ -1059,7 +1108,7 @@ void warlock_t::create_options()
 
   add_option( opt_int( "soul_shards", initial_soul_shards ) );
   add_option( opt_string( "default_pet", default_pet ) );
-  //add_option( opt_bool( "allow_sephuz", allow_sephuz ) );
+  add_option( opt_bool( "allow_sephuz", allow_sephuz ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )
@@ -1070,7 +1119,7 @@ std::string warlock_t::create_profile( save_e stype )
   {
     if ( initial_soul_shards != 3 )    profile_str += "soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
     if ( !default_pet.empty() )        profile_str += "default_pet=" + default_pet + "\n";
-    //if ( allow_sephuz != 0 )           profile_str += "allow_sephuz=" + util::to_string( allow_sephuz ) + "\n";
+    if ( allow_sephuz != 0 )           profile_str += "allow_sephuz=" + util::to_string( allow_sephuz ) + "\n";
   }
 
   return profile_str;
@@ -1083,7 +1132,7 @@ void warlock_t::copy_from( player_t* source )
   warlock_t* p = debug_cast< warlock_t* >( source );
 
   initial_soul_shards = p->initial_soul_shards;
-  //allow_sephuz = p->allow_sephuz;
+  allow_sephuz = p->allow_sephuz;
   deaths_embrace_fixed_time = p->deaths_embrace_fixed_time;
   default_pet = p->default_pet;
 }
@@ -1212,6 +1261,70 @@ static void sacrolashs_dark_strike( special_effect_t& effect )
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
   do_trinket_init( s, WARLOCK_AFFLICTION, s->legendary.sacrolashs_dark_strike, effect );
 }
+static void reap_and_sow( special_effect_t& effect )
+{
+  warlock_t* s = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( s, WARLOCK_AFFLICTION, s->legendary.reap_and_sow, effect );
+  do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.reap_and_sow, effect );
+  do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.reap_and_sow, effect );
+}
+static void wakeners_loyalty( special_effect_t& effect )
+{
+  warlock_t* s = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( s, WARLOCK_AFFLICTION, s->legendary.wakeners_loyalty, effect );
+  do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.wakeners_loyalty, effect );
+  do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.wakeners_loyalty, effect );
+}
+static void lessons_of_spacetime( special_effect_t& effect )
+{
+  warlock_t* s = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( s, WARLOCK_AFFLICTION, s->legendary.lessons_of_spacetime, effect );
+  do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.lessons_of_spacetime, effect );
+  do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.lessons_of_spacetime, effect );
+}
+static void insignia_of_the_grand_army( special_effect_t& effect )
+{
+  warlock_t* s = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( s, WARLOCK_AFFLICTION, s->legendary.insignia_of_the_grand_army, effect );
+  do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.insignia_of_the_grand_army, effect );
+  do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.insignia_of_the_grand_army, effect );
+}
+static void kazzaks_final_curse( special_effect_t& effect )
+{
+  warlock_t* s = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.kazzaks_final_curse, effect );
+}
+static void recurrent_ritual( special_effect_t& effect )
+{
+  warlock_t* s = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.recurrent_ritual, effect );
+}
+static void magistrike_restraints( special_effect_t& effect )
+{
+  warlock_t* s = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.magistrike_restraints, effect );
+}
+static void feretory_of_souls( special_effect_t& effect )
+{
+  warlock_t* s = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.feretory_of_souls, effect );
+  do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.feretory_of_souls, effect );
+}
+static void alythesss_pyrogenics( special_effect_t& effect )
+{
+  warlock_t* s = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.alythesss_pyrogenics, effect );
+}
+static void odr_shawl_of_the_ymirjar( special_effect_t& effect )
+{
+  warlock_t* s = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.odr_shawl_of_the_ymirjar, effect );
+}
+static void wilfreds_sigil_of_superior_summoning( special_effect_t& effect )
+{
+  warlock_t* s = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.wilfreds_sigil_of_superior_summoning, effect );
+}
 
 struct warlock_module_t : public module_t
 {
@@ -1232,6 +1345,17 @@ struct warlock_module_t : public module_t
     unique_gear::register_special_effect( 205797, hood_of_eternal_disdain );
     unique_gear::register_special_effect( 205753, power_cord_of_lethtendris );
     unique_gear::register_special_effect( 207592, sacrolashs_dark_strike );
+    unique_gear::register_special_effect( 281494, reap_and_sow );
+    unique_gear::register_special_effect( 281495, wakeners_loyalty );
+    unique_gear::register_special_effect( 281496, lessons_of_spacetime );
+    unique_gear::register_special_effect( 280740, insignia_of_the_grand_army );
+    unique_gear::register_special_effect( 214225, kazzaks_final_curse );
+    unique_gear::register_special_effect( 205721, recurrent_ritual );
+    unique_gear::register_special_effect( 213014, magistrike_restraints );
+    unique_gear::register_special_effect( 205702, feretory_of_souls );
+    unique_gear::register_special_effect( 205678, alythesss_pyrogenics );
+    unique_gear::register_special_effect( 212172, odr_shawl_of_the_ymirjar );
+    unique_gear::register_special_effect( 214345, wilfreds_sigil_of_superior_summoning );
   }
 
   virtual void register_hotfixes() const override { }
