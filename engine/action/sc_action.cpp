@@ -721,7 +721,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 
     case E_NORMALIZED_WEAPON_DMG:
       normalize_weapon_speed = true;
-      [[gnu::fallthrough]];
+      SC_FALLTHROUGH;
     case E_WEAPON_DAMAGE:
       if ( weapon == nullptr )
       {
@@ -767,7 +767,7 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
             base_td = spelleffect_data.average( item );
           }
           radius = spelleffect_data.radius_max();
-          [[gnu::fallthrough]];
+          SC_FALLTHROUGH;
         case A_PERIODIC_ENERGIZE:
         case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
         case A_PERIODIC_HEALTH_FUNNEL:

@@ -92,6 +92,21 @@
 
 #define SC_PACKED_STRUCT      __attribute__((packed))
 
+#ifndef __has_cpp_attribute
+#  define __has_cpp_attribute(x) 0
+#endif
+
+#if __cplusplus > 201402L && __has_cpp_attribute(fallthrough)
+#  define SC_FALLTHROUGH [[fallthrough]]
+#elif __has_cpp_attribute(gnu::fallthrough)
+#  define SC_FALLTHROUGH [[gnu::fallthrough]]
+#elif __has_cpp_attribute(clang::fallthrough)
+#  define SC_FALLTHROUGH [[clang::fallthrough]]
+#elif defined( _MSC_VER ) && _MSC_VER >= 1911 && _MSVC_LANG >= 201703L
+#  define SC_FALLTHROUGH [[fallthrough]]
+#else
+#  define SC_FALLTHROUGH
+#endif
 
 // ==========================================================================
 // Floating Point
