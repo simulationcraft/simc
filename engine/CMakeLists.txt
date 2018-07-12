@@ -24,6 +24,17 @@ if(NOT SC_NO_THREADING)
     target_link_libraries(engine Threads::Threads)
 endif()
 
+# Networking libs
+if(NOT SC_NO_NETWORKING)
+    if(WIN32)
+        find_library(WININET wininet)
+		if(NOT WININET)
+            message(FATAL_ERROR "WinInet not found")
+        endif()
+        target_link_libraries(engine ${WININET})
+    endif()
+endif()
+
 # Detect SSL if networking is enabled
 if(NOT SC_NO_NETWORKING)
     if(APPLE)
