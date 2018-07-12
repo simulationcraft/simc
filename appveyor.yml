@@ -6,12 +6,10 @@
 environment:
   matrix:
   - image: Visual Studio 2015
-    build:
-      project: vs/simc_vs2015.vcxproj
+    varProject: vs/simc_vs2015.vcxproj
 
   - image: Visual Studio 2017
-    build:
-      project: vs/simc_vs2017.vcxproj
+    varProject: vs/simc_vs2017.vcxproj
     
 # fetch repository as zip archive
 shallow_clone: true
@@ -22,12 +20,10 @@ platform: x64
 # build Configuration, i.e. Debug, Release, etc.
 configuration: WebEngine
 
-build:
-  parallel: true                  # enable MSBuild parallel builds
 
 # Custom build Configuration, i.e. Debug, Release, etc.
 build_script:
-  ## pass
+  - MSBuild.exe %varProject% /t:simc /maxcpucount
 
 test_script:
   ## pass
