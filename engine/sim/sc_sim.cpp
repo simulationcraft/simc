@@ -568,6 +568,17 @@ bool parse_fight_style( sim_t*             sim,
     sim -> raid_events_str += "/damage,first=240.0,period=2.0,last=299.5,amount=44855,type=shadow";
     sim -> raid_events_str += "/damage,first=300.0,period=1.0,amount=44855,type=shadow";
   }
+  else if (util::str_compare_ci(value, "PriorityAdd") || util::str_compare_ci(value, "Priority_Add"))
+  {
+	  sim->fight_style = "PriorityAdd";
+	  sim->raid_events_str = "adds,cooldown=60,duration=20,first_pct=95,count=1";
+	  sim->raid_events_str = "movement,distance=10,players_only=1";
+  }
+  else if (util::str_compare_ci(value, "CleaveAdd") || util::str_compare_ci(value, "Cleave_Add"))
+  {
+	  sim->fight_style = "CleaveAdd";
+	  sim->raid_events_str = "adds,cooldown=25,duration=13,first_pct=95,count=1";
+  }
   else if ( util::str_compare_ci( value, "HelterSkelter" ) || util::str_compare_ci( value, "Helter_Skelter" ) )
   {
     sim -> fight_style = "HelterSkelter";
