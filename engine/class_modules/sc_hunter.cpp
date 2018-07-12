@@ -1013,7 +1013,7 @@ struct hunter_pet_t: public pet_t
   hunter_pet_t( hunter_t* owner, const std::string& pet_name, pet_e pt = PET_HUNTER, bool guardian = false, bool dynamic = false ) :
     pet_t( owner -> sim, owner, pet_name, pt, guardian, dynamic )
   {
-    owner_coeff.ap_from_ap = 0.6;
+    owner_coeff.ap_from_ap = 0.15;
 
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
@@ -1122,6 +1122,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
     hunter_pet_t( owner, pet_name, pt )
   {
     stamina_per_owner = 0.7;
+    owner_coeff.ap_from_ap = 0.6;
 
     initial.armor_multiplier *= 1.05;
   }
@@ -1408,6 +1409,7 @@ struct spitting_cobra_t: public hunter_pet_t
     hunter_pet_t( o, "spitting_cobra", PET_HUNTER,
                   false /* a "hack" to make ability_lag work */ )
   {
+    owner_coeff.ap_from_ap = 0.15;
     regen_type = REGEN_DISABLED;
   }
 
