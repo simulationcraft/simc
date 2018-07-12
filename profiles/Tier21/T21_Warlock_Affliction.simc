@@ -4,7 +4,7 @@ level=110
 race=human
 role=spell
 position=back
-talents=3302022
+talents=3103012
 
 # Default consumables
 potion=prolonged_power
@@ -12,60 +12,31 @@ flask=whispered_pact
 food=nightborne_delicacy_platter
 augmentation=defiled
 
-# Executed before combat begins. Accepts non-harmful actions only.
-actions.precombat=flask
-actions.precombat+=/food
-actions.precombat+=/augmentation
-actions.precombat+=/summon_pet
-actions.precombat+=/snapshot_stats
-actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
-actions.precombat+=/potion
-actions.precombat+=/haunt
- 
-# Executed every time the actor is available.
-actions=berserking,if=prev_gcd.1.summon_darkglare
-actions+=/agony,if=!ticking
-actions+=/dark_soul
-actions+=/use_item,slot=trinket1
-actions+=/use_item,slot=trinket2
-actions+=/summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&dot.unstable_affliction_1.ticking&dot.unstable_affliction_2.ticking&dot.unstable_affliction_3.ticking&((dot.unstable_affliction_4.ticking&dot.unstable_affliction_5.ticking)|soul_shard=0)
-actions+=/agony,if=remains<=gcd*1.5
-actions+=/agony,if=talent.deathbolt.enabled&((dot.agony.remains<=14&cooldown.deathbolt.remains<=gcd&cooldown.summon_darkglare.remains>25)|(dot.agony.remains<=14&cooldown.summon_darkglare.remains<10&cooldown.summon_darkglare.remains>gcd*4))
-actions+=/deathbolt,if=cooldown.summon_darkglare.remains>25
-actions+=/corruption,if=!ticking
-actions+=/siphon_life,if=!ticking
-actions+=/unstable_affliction,if=talent.deathbolt.enabled&(cooldown.deathbolt.remains<=gcd*2&cooldown.summon_darkglare.remains>25&cooldown.summon_darkglare.remains<170)
-actions+=/corruption,if=talent.deathbolt.enabled&((dot.corruption.remains<10&cooldown.deathbolt.remains<=gcd*4&cooldown.summon_darkglare.remains>25)|(dot.corruption.remains<8&cooldown.summon_darkglare.remains<10&cooldown.summon_darkglare.remains>gcd*4))
-actions+=/siphon_life,if=talent.deathbolt.enabled&((dot.siphon_life.remains<10&cooldown.deathbolt.remains<=gcd*4&cooldown.summon_darkglare.remains>25)|(dot.siphon_life.remains<8&cooldown.summon_darkglare.remains<10&cooldown.summon_darkglare.remains>gcd*4))
-actions+=/haunt
-actions+=/phantom_singularity,if=cooldown.summon_darkglare.remains<12|cooldown.summon_darkglare.remains>45
-actions+=/unstable_affliction,if=soul_shard=5|cooldown.summon_darkglare.remains<=gcd*4
-actions+=/agony,if=refreshable
-actions+=/siphon_life,if=refreshable
-actions+=/corruption,if=refreshable
-actions+=/unstable_affliction,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking<=cast_time)&(cooldown.summon_darkglare.remains>35)&(cooldown.deathbolt.remains>=4|!talent.deathbolt.enabled)&soul_shard>=2&!prev_gcd.1.unstable_affliction
-actions+=/drain_soul,chain=1,interrupt=1
-actions+=/shadow_bolt
-
-head=,id=132394,ilevel=265
+head=hood_of_eternal_disdain,id=132394,bonus_id=3630
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
 shoulders=grim_inquisitors_shoulderguards,id=152177,bonus_id=3612/1502
 back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
 chest=grim_inquisitors_robes,id=152176,bonus_id=3612/1502
-wrists=,id=132381,ilevel=265
+wrists=blooddrenched_bindings,id=151954,bonus_id=3612/1502
 hands=handwraps_of_inevitable_doom,id=152680,bonus_id=3612/1502
-waist=,id=140887,ilevel=240
+waist=power_cord_of_lethtendris,id=132457,bonus_id=3630
 legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
 feet=sandals_of_the_reborn_colossus,id=151940,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
-trinket2=norgannons_prowess,id=154177,ilevel=280
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=152057/152092/152057,relic_id=3612:1502/3612:1502/3612:1502
 
-#head=,id=152174,bonus_id=3612/1502
-#waist=,id=140887,ilevel=240
-
+# Gear Summary
+# gear_ilvl=241.47
+# gear_stamina=1256
+# gear_intellect=907
+# gear_crit_rating=433
+# gear_haste_rating=512
+# gear_mastery_rating=464
+# gear_versatility_rating=111
+# gear_armor=257
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
 default_pet=felhunter
