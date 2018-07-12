@@ -592,14 +592,14 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t& sim )
 
   os << "<ul class=\"params\">\n";
 
-  os.printf( "<li><b>Raid Damage:</b> %.0f</li>\n", sim.total_dmg.mean() );
-  os.printf( "<li><b>Raid DPS:</b> %.0f</li>\n", sim.raid_dps.mean() );
+  os.format( "<li><b>Raid Damage:</b> {:n}</li>\n", static_cast<int64_t>(sim.total_dmg.mean()) );
+  os.format( "<li><b>Raid DPS:</b> {:n}</li>\n", static_cast<int64_t>(sim.raid_dps.mean()) );
   if ( sim.total_heal.mean() > 0 )
   {
-    os.printf( "<li><b>Raid Heal+Absorb:</b> %.0f</li>\n",
-               sim.total_heal.mean() + sim.total_absorb.mean() );
-    os.printf( "<li><b>Raid HPS+APS:</b> %.0f</li>\n",
-               sim.raid_hps.mean() + sim.raid_aps.mean() );
+    os.format( "<li><b>Raid Heal+Absorb:</b> {:n}</li>\n",
+        static_cast<int64_t>(sim.total_heal.mean() + sim.total_absorb.mean()) );
+    os.format( "<li><b>Raid HPS+APS:</b> {:n}</li>\n",
+        static_cast<int64_t>(sim.raid_hps.mean() + sim.raid_aps.mean()) );
   }
   os << "</ul><p>&#160;</p>\n";
 
@@ -898,9 +898,6 @@ const help_box_t help_boxes[] = {
     {"TMI bin size",
      "Time bin size used to calculate TMI and MSD, in seconds."},
     {"Type", "Direct or Periodic damage."},
-    {"Max Spike Damage Frequency",
-     "This is roughly how many spikes as large as MSD Mean you take per "
-     "iteration. Calculated from TMI and MSD values."},
     {"Dynamic Buffs",
      "Temporary buffs received during combat, perhaps multiple times."},
     {"Buff Benefit",

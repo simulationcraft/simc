@@ -3409,8 +3409,6 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
        << "<th><a href=\"#help-msd\" class=\"help\">MSD Mean</a></th>\n"
        << "<th><a href=\"#help-msd\" class=\"help\">MSD Min</a></th>\n"
        << "<th><a href=\"#help-msd\" class=\"help\">MSD Max</a></th>\n"
-       << "<th><a href=\"#help-max-spike-damage-frequency\" class=\"help\">MSD "
-          "Freq.</a></th>\n"
        << "<th>&#160;</th>\n"
        << "<th><a href=\"#help-tmiwin\" class=\"help\">Window</a></th>\n"
        << "<th><a href=\"#help-tmi-bin-size\" class=\"help\">Bin "
@@ -3495,13 +3493,6 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os,
     os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.mean() );
     os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.min() );
     os.printf( "<td>%.1f%%</td>\n", cd.max_spike_amount.max() );
-
-    // print rough estimate of spike frequency
-    os.printf( "<td>%.1f</td>\n",
-               cd.theck_meloree_index.mean()
-                   ? std::exp( cd.theck_meloree_index.mean() / 1e3 /
-                               cd.max_spike_amount.mean() )
-                   : 0.0 );
 
     // spacer
     os << "<td>&#160;&#160;&#160;&#160;&#160;</td>\n";
