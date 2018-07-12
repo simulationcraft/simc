@@ -3,12 +3,14 @@
 # Syntax for this file:
 # http://www.appveyor.com/docs/appveyor-yml
 
+environment:
+  matrix:
+  - image: Visual Studio 2015
+    varProject: vs/simc_vs2015.vcxproj
 
-# Build worker image (VM template)
-image:
-- Visual Studio 2015
-#- Visual Studio 2017
-
+  - image: Visual Studio 2017
+    varProject: vs/simc_vs2017.vcxproj
+    
 # fetch repository as zip archive
 shallow_clone: true
 
@@ -20,7 +22,7 @@ configuration: WebEngine
 
 build:
   parallel: true                  # enable MSBuild parallel builds
-  project: vs/simc_vs2015.vcxproj        # path to Visual Studio solution or project
+  project: %varProject%        # path to Visual Studio solution or project
 
 # Custom build Configuration, i.e. Debug, Release, etc.
 build_script:
