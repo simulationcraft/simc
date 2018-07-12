@@ -449,13 +449,13 @@ namespace warlock {
               p()->warlock_pet_list.dreadstalkers[i]->buffs.rage_of_guldan->set_default_value(p()->buffs.rage_of_guldan->stack_value());
               p()->warlock_pet_list.dreadstalkers[i]->buffs.rage_of_guldan->trigger();
             }
-        
+
             if ( p()->legendary.wilfreds_sigil_of_superior_summoning )
             {
               p()->cooldowns.demonic_tyrant->adjust( p()->find_spell( 214345 )->effectN( 1 ).time_value() );
               p()->procs.wilfreds_dog->occur();
             }
-            
+
             if (++j == dreadstalker_count) break;
           }
         }
@@ -789,7 +789,6 @@ namespace warlock {
           energize_amount = 1;
 
           may_crit = true;
-          hasted_ticks = true;
       }
 
       timespan_t composite_dot_duration(const action_state_t* s) const override {
