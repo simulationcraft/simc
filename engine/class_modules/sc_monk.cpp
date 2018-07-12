@@ -2005,6 +2005,7 @@ struct monk_action_t: public Base
   bool brewmaster_damage_increase_dot_two;
   bool brewmaster_damage_increase_two;
   bool brewmaster_damage_increase_dot_three;
+  bool brewmaster_healing_increase;
   bool mistweaver_damage_increase;
   bool mistweaver_damage_increase_dot;
   bool windwalker_damage_increase;
@@ -2031,11 +2032,13 @@ public:
 
     hasted_gcd( ab::data().affected_by( player -> spec.mistweaver_monk -> effectN( 4 ) ) ),
     brewmaster_damage_increase( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 1 ) ) ),
+    brewmaster_damage_increase_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 7 ) ) ),
 
     brewmaster_damage_increase_dot( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 2 ) ) ),
-    brewmaster_damage_increase_dot_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 5 ) ) ),
-    brewmaster_damage_increase_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 6 ) ) ),
-    brewmaster_damage_increase_dot_three( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 5 ) ) ),
+    brewmaster_damage_increase_dot_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 6 ) ) ),
+    brewmaster_damage_increase_dot_three( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 8 ) ) ),
+
+    brewmaster_healing_increase( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 18 ) ) ),
 
     mistweaver_damage_increase( ab::data().affected_by( player -> spec.mistweaver_monk ->effectN( 1 ) ) ),
     mistweaver_damage_increase_dot( ab::data().affected_by( player -> spec.mistweaver_monk ->effectN( 2 ) ) ),
@@ -2059,17 +2062,31 @@ public:
 
       case MONK_BREWMASTER:
       {
+        if ( brewmaster_damage_increase )
+          ab::base_dd_multiplier *= 1.0 + player -> spec.brewmaster_monk -> effectN( 1 ).percent();
+        if ( brewmaster_damage_increase_two )
+          ab::base_dd_multiplier *= 1.0 + player -> spec.brewmaster_monk -> effectN( 7 ).percent();
+
+        if ( brewmaster_damage_increase_dot )
+          ab::base_dd_multiplier *= 1.0 + player -> spec.brewmaster_monk -> effectN( 2 ).percent();
+        if ( brewmaster_damage_increase_dot_three )
+          ab::base_td_multiplier *= 1.0 + player -> spec.brewmaster_monk -> effectN( 6 ).percent();
+        if ( brewmaster_damage_increase_dot_two )
+          ab::base_td_multiplier *= 1.0 + player -> spec.brewmaster_monk -> effectN( 8 ).percent();
+
+        if ( brewmaster_healing_increase )
+          ab::base_dd_multiplier *= 1.0 + player -> spec.brewmaster_monk -> effectN( 18 ).percent();
+
         // Reduce GCD from 1.5 sec to 1 sec
-        if ( ab::data().affected_by( player -> spec.stagger -> effectN( 11 ) ) )
-          ab::trigger_gcd += player -> spec.stagger -> effectN( 11 ).time_value(); // Saved as -500 milliseconds
-        // Technically minimum GCD is 750ms but nothing brings the GCD below 1 sec
+        if ( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 14 ) ) )
+          ab::trigger_gcd += player -> spec.brewmaster_monk -> effectN( 14 ).time_value(); // Saved as -500 milliseconds
+        // Technically minimum GCD is 750ms but all but the level 15 spells have a minimum GCD of 1 sec
         ab::min_gcd = timespan_t::from_seconds( 1.0 );
         // Brewmasters no longer use Chi so need to zero out chi cost
-        if ( ab::data().affected_by( player -> spec.stagger -> effectN( 14 ) ) )
-          ab::base_costs[RESOURCE_CHI] *= 1 + player -> spec.stagger -> effectN( 14 ).percent(); // -100% for Brewmasters
+        if ( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 16 ) ) )
+          ab::base_costs[RESOURCE_CHI] *= 1 + player -> specspec.brewmaster_monk -> effectN( 16 ).percent(); // -100% for Brewmasters
         // Hasted Cooldown
-        ab::cooldown -> hasted = ( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 3 ) )
-                                  || ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) ) );
+        ab::cooldown -> hasted = ( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 5 ) ) );
         break;
       }
       case MONK_MISTWEAVER:
@@ -2104,7 +2121,7 @@ public:
 
         if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 14 ) ) )
           ab::trigger_gcd += player -> spec.windwalker_monk -> effectN( 14 ).time_value(); // Saved as -500 milliseconds
-      // Technically minimum GCD is 750ms but all but the level 15 spells have a minimum GCD of 1 sec
+        // Technically minimum GCD is 750ms but all but the level 15 spells have a minimum GCD of 1 sec
         ab::min_gcd = timespan_t::from_seconds( 1.0 );
         // Hasted Cooldown
         ab::cooldown -> hasted = ab::data().affected_by( player -> passives.aura_monk -> effectN( 1 ) );
@@ -2727,17 +2744,6 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
     may_crit = tick_may_crit = true;
     target = player;
   }
-
-  double action_multiplier() const override
-  {
-    double am = monk_heal_t::action_multiplier();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
-
-    return am;
-  }
 };
 
 struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
@@ -2750,17 +2756,6 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
     may_crit = tick_may_crit = true;
     attack_power_mod.direct = 0;
     attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 7 ).percent();
-
-    return am;
   }
 };
 
@@ -2783,7 +2778,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     add_child( eye_of_the_tiger_heal );
 
     if ( p -> specialization() == MONK_BREWMASTER )
-      base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.stagger -> effectN( 15 ).percent(); // -50% for Brewmasters
+      base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.brewmaster -> effectN( 17 ).percent(); // -50% for Brewmasters
 
     if ( p -> specialization() == MONK_WINDWALKER )
       energize_amount = p -> spec.windwalker_monk -> effectN( 3 ).base_value();
@@ -2799,15 +2794,8 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     am *= 1 + p() -> spec.mistweaver_monk -> effectN( 13 ).percent();
 
-    if ( p() -> specialization() == MONK_BREWMASTER )
-    {
-      am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
-      am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
-
-      if ( p() -> buff.blackout_combo -> up() )
-        am *= 1 + p() -> buff.blackout_combo -> data().effectN( 1 ).percent();
-    }
+    if ( p() -> buff.blackout_combo -> up() )
+      am *= 1 + p() -> buff.blackout_combo -> data().effectN( 1 ).percent();
 
     return am;
   }
@@ -3153,12 +3141,6 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     switch ( p() -> specialization() )
     {
-      case MONK_BREWMASTER:
-      {
-        // Brewmasters cannot use Blackout Kick but it's in the database so being a completionist.
-        am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-        break;
-      }
       case MONK_MISTWEAVER:
       {
         am *= 1 + p() -> spec.mistweaver_monk -> effectN( 12 ).percent();
@@ -3263,8 +3245,6 @@ struct blackout_strike_t: public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
     // Mistweavers cannot learn this spell. However the effect to adjust this spell is in the database.
     // Just being a completionist about this.
     am *= 1 + p() -> spec.mistweaver_monk -> effectN( 12 ).percent();
@@ -3326,7 +3306,7 @@ struct rjw_tick_action_t : public monk_melee_attack_t
         break;
       case MONK_BREWMASTER:
         am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-        am *= 1 + p() -> spec.brewmaster_monk -> effectN( 5 ).percent();
+        am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
         break;
       default:
         break;
@@ -3896,8 +3876,6 @@ struct keg_smash_t: public monk_melee_attack_t
   virtual double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
 
     if ( p() -> legendary.stormstouts_last_gasp )
       am *= 1 + p() -> legendary.stormstouts_last_gasp -> effectN( 2 ).percent();
@@ -4759,8 +4737,6 @@ struct crackling_jade_lightning_t: public monk_spell_t
 
     am *= 1 + p() -> spec.mistweaver_monk -> effectN( 15 ).percent();
 
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
-
     return am;
   }
 
@@ -4814,15 +4790,6 @@ struct breath_of_fire_t: public monk_spell_t
       tick_may_crit = may_crit = true;
       hasted_ticks = false;
     }
-
-    double action_multiplier() const override
-    {
-      double am = monk_spell_t::action_multiplier();
-
-      am *= 1 + p() -> spec.brewmaster_monk -> effectN( 2 ).percent();
-
-      return am;
-    }
   };
 
   periodic_t* dot_action;
@@ -4836,15 +4803,6 @@ struct breath_of_fire_t: public monk_spell_t
     trigger_gcd = timespan_t::from_seconds( 1 );
 
     add_child( dot_action );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
-
-    return am;
   }
 
   virtual void update_ready( timespan_t ) override
@@ -6271,12 +6229,7 @@ struct rushing_jade_wind_buff_t : public monk_buff_t < buff_t > {
     set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
     if ( p.specialization() == MONK_BREWMASTER )
-    {
-      timespan_t duration = s -> duration() * p.spec.brewmaster_monk -> effectN( 9 ).percent();
-      duration /= 1 + p.composite_melee_haste();
-      set_duration( duration );
-      set_tick_time_behavior(buff_tick_time_behavior::HASTED);
-    }
+      set_duration( s -> duration() * ( 1 + p.spec.brewmaster_monk -> effectN( 9 ).percent() ) );
     else
       set_duration( sim -> expected_iteration_time * 2 );
 
@@ -6862,7 +6815,7 @@ void monk_t::init_base_stats()
   {
     case MONK_BREWMASTER:
     {
-      base_gcd += spec.stagger -> effectN( 11 ).time_value(); // Saved as -500 milliseconds
+      base_gcd += spec.brewmaster_monk -> effectN( 14 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
       resources.base[RESOURCE_ENERGY] = 100;
       resources.base[RESOURCE_MANA] = 0;
@@ -7470,7 +7423,7 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( attr == ATTR_STAMINA )
   {
-    cam *= 1.0 + spec.stagger -> effectN( 6 ).percent();
+    cam *= 1.0 + spec.brewmaster_monk -> effectN( 11 ).percent();
   }
 
   return cam;
@@ -7494,7 +7447,7 @@ double monk_t::composite_melee_expertise( const weapon_t* weapon ) const
 {
   double e = player_t::composite_melee_expertise( weapon );
 
-  e += spec.stagger -> effectN( 12 ).percent();
+  e += spec.brewmaster_monk -> effectN( 15 ).percent();
 
   return e;
 }
@@ -7552,7 +7505,7 @@ double monk_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += spec.stagger -> effectN( 8 ).percent();
+  c += spec.brewmaster_monk -> effectN( 13 ).percent();
 
   return c;
 }
@@ -7910,19 +7863,6 @@ void monk_t::target_mitigation( school_e school,
     }
   }
 
-  switch ( specialization() )
-  {
-    case MONK_BREWMASTER:
-    {
-      // Passive sources (Sturdy Ox)
-      if ( school != SCHOOL_PHYSICAL )
-        // TODO: Magical Damage reduction (currently set to zero, but effect is still in place)
-        s -> result_amount *= 1.0 + spec.stagger -> effectN( 5 ).percent();
-      break;
-    }
-    default: break;
-  }
-
   double health_before_hit = resources.current[RESOURCE_HEALTH];
 
   player_t::target_mitigation( school, dt, s );
@@ -7988,7 +7928,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
     {
         // Blizzard is putting a cap on how much damage can go into stagger
       double amount_remains = active_actions.stagger_self_damage -> amount_remaining();
-      double cap = max_health() * spec.stagger -> effectN( 13 ).percent();
+      double cap = max_health() * spec.stagger -> effectN( 4 ).percent();
       if ( amount_remains + stagger_dmg >= cap )
       {
         double diff = amount_remains - cap;
@@ -8677,23 +8617,23 @@ double monk_t::stagger_pct()
     double k_value = 0;
     switch ( target -> level() )
     {
-    case 123:
-    case 122:
-    case 121:
-    case 120:
-      k_value = 6300;
-      break;
-    case 113:
-      k_value = 2107;
-      break;
-    case 112:
-    case 111:
-    case 110:
-      k_value = 1423;
-      break;
-    default:
-      k_value = dbc.armor_mitigation_constant( target -> level() ) * 0.6905;
-      break;
+      case 123:
+      case 122:
+      case 121:
+      case 120:
+        k_value = 6300;
+        break;
+      case 113:
+        k_value = 2107;
+        break;
+      case 112:
+      case 111:
+      case 110:
+        k_value = 1423;
+        break;
+      default:
+        k_value = dbc.armor_mitigation_constant( target -> level() ) * 0.6905;
+        break;
     }
 
     if ( talent.high_tolerance -> ok() )
@@ -8723,8 +8663,6 @@ double monk_t::stagger_pct()
     }
     else
       stagger += stagger_base / (stagger_base + k_value );
-
-
   }
 
   return fmin( stagger, 0.99 );
