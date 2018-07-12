@@ -5685,7 +5685,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
     // Soul of the Archmage
     if ( find_item( 151642 ) )
     {
-      // TODO: Ring is giving AF, SI and the new Time Anomaly on beta, probably not intended.
       switch ( specialization() )
       {
         case MAGE_ARCANE:
