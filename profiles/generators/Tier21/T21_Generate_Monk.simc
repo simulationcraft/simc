@@ -1,8 +1,8 @@
-monk="T21_Monk_Windwalker"
+3monk="T21_Monk_Windwalker"
 level=110
 race=blood_elf
 role=attack
-talents=2020033
+talents=3020033
 spec=windwalker
 
 head=the_wind_blows,id=151811,bonus_id=3630 
@@ -27,7 +27,7 @@ monk="T21_Monk_Brewmaster"
 level=110
 race=pandaren
 role=tank
-talents=2020212
+talents=2020033
 spec=brewmaster
 
 
