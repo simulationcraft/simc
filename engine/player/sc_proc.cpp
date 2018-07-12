@@ -863,7 +863,7 @@ std::string special_effect_t::name() const
   // Guess proc name based on spells.
   std::string n;
   // Use driver name, if it's not hidden or passive, or there's no trigger spell to use
-  if ( ( ! driver() -> flags( spell_attribute::SX_HIDDEN ) && ! driver() -> flags( spell_attribute::SX_HIDDEN ) ) || 
+  if ( ( ! driver() -> flags( spell_attribute::SX_HIDDEN ) && ! driver() -> flags( spell_attribute::SX_PASSIVE ) ) || 
        ! trigger() -> ok() )
     n = driver() -> name_cstr();
   // Driver is hidden, try to use the spell that the driver procs
