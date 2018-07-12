@@ -582,7 +582,7 @@ namespace warlock {
           }
         }
 
-        if ( p()->cooldowns.sindorei_spite_icd->up() )
+        if ( p()->legendary.sindorei_spite && p()->cooldowns.sindorei_spite_icd->up() )
         {
           p()->buffs.sindorei_spite->up();
           p()->buffs.sindorei_spite->trigger();

@@ -770,7 +770,7 @@ namespace warlock {
         if (p()->azerite.crashing_chaos.ok())
           p()->buffs.crashing_chaos->trigger(p()->buffs.crashing_chaos->max_stack());
 
-        if ( p()->cooldowns.sindorei_spite_icd->up() )
+        if ( p() ->legendary.sindorei_spite && p()->cooldowns.sindorei_spite_icd->up() )
         {
           p()->buffs.sindorei_spite->up();
           p()->buffs.sindorei_spite->trigger();
