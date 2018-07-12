@@ -863,22 +863,22 @@ namespace warlock
         if (p()->talents.siphon_life->ok())
           total_damage_siphon_life = get_contribution_from_dot(td->dots_siphon_life);
 
-        double total_damage_ps = 0.0;
+        double total_damage_phantom_singularity = 0.0;
         if ( p()->talents.phantom_singularity->ok() )
-          total_damage_ps = get_contribution_from_dot( td->dots_phantom_singularity );
+          total_damage_phantom_singularity = get_contribution_from_dot( td->dots_phantom_singularity );
 
-        double total_damage_vt = 0.0;
+        double total_damage_vile_taint = 0.0;
         if ( p()->talents.vile_taint->ok() )
-          total_damage_vt = get_contribution_from_dot( td->dots_vile_taint );
+          total_damage_vile_taint = get_contribution_from_dot( td->dots_vile_taint );
 
-        double total_damage_ua = 0.0;
+        double total_damage_unstable_afflictions = 0.0;
         for (auto& current_ua : td->dots_unstable_affliction)
         {
-          total_damage_ua += get_contribution_from_dot(current_ua);
+          total_damage_unstable_afflictions += get_contribution_from_dot(current_ua);
         }
 
         const double total_dot_dmg = total_damage_agony + total_damage_corruption + total_damage_siphon_life +
-                                     total_damage_ua + total_damage_ps + total_damage_vt;
+                     total_damage_unstable_afflictions + total_damage_phantom_singularity + total_damage_vile_taint;
 
         this->base_dd_min = this->base_dd_max = (total_dot_dmg * data().effectN(2).percent());
 
