@@ -2084,7 +2084,7 @@ public:
         ab::min_gcd = timespan_t::from_seconds( 1.0 );
         // Brewmasters no longer use Chi so need to zero out chi cost
         if ( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 16 ) ) )
-          ab::base_costs[RESOURCE_CHI] *= 1 + player -> specspec.brewmaster_monk -> effectN( 16 ).percent(); // -100% for Brewmasters
+          ab::base_costs[RESOURCE_CHI] *= 1 + player -> spec.brewmaster_monk -> effectN( 16 ).percent(); // -100% for Brewmasters
         // Hasted Cooldown
         ab::cooldown -> hasted = ( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 5 ) ) );
         break;
@@ -2778,7 +2778,7 @@ struct tiger_palm_t: public monk_melee_attack_t
     add_child( eye_of_the_tiger_heal );
 
     if ( p -> specialization() == MONK_BREWMASTER )
-      base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.brewmaster -> effectN( 17 ).percent(); // -50% for Brewmasters
+      base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.brewmaster_monk -> effectN( 17 ).percent(); // -50% for Brewmasters
 
     if ( p -> specialization() == MONK_WINDWALKER )
       energize_amount = p -> spec.windwalker_monk -> effectN( 3 ).base_value();
