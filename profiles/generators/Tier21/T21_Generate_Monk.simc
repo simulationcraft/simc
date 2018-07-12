@@ -2,7 +2,7 @@
 level=110
 race=blood_elf
 role=attack
-talents=3020033
+talents=2020033
 spec=windwalker
 
 head=the_wind_blows,id=151811,bonus_id=3630 
