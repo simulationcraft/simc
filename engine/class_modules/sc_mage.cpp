@@ -7371,7 +7371,7 @@ expr_t* mage_t::create_action_expression( action_t& action, const std::string& n
     }
     else
     {
-      throw std::invalid_argument(fmt::format("Unknown firestarer operation '{}'", splits[ 1 ] ));
+      throw std::invalid_argument( fmt::format( "Unknown firestarer operation '{}'", splits[ 1 ] ) );
     }
   }
 
@@ -7466,38 +7466,6 @@ expr_t* mage_t::create_expression( const std::string& name_str )
     };
 
     return new sicicles_expr_t( *this );
-  }
-
-  if ( util::str_compare_ci( name_str, "icicles" ) )
-  {
-    struct icicles_expr_t : public mage_expr_t
-    {
-      icicles_expr_t( mage_t& m ) : mage_expr_t( "icicles", m )
-      { }
-
-      virtual double evaluate() override
-      {
-        if ( mage.icicles.empty() )
-          return 0;
-        else if ( mage.sim -> current_time() - mage.icicles[ 0 ].timestamp < mage.buffs.icicles -> buff_duration )
-          return as<double>( mage.icicles.size() );
-        else
-        {
-          size_t icicles = 0;
-          for ( int i = as<int>( mage.icicles.size() - 1 ); i >= 0; i-- )
-          {
-            if ( mage.sim -> current_time() - mage.icicles[ i ].timestamp >= mage.buffs.icicles -> buff_duration )
-              break;
-
-            icicles++;
-          }
-
-          return as<double>( icicles );
-        }
-      }
-    };
-
-    return new icicles_expr_t( *this );
   }
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
