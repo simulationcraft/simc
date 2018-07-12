@@ -268,7 +268,7 @@ namespace warlock
         const special_effect_t* soul_of_the_netherlord;
         const special_effect_t* reap_and_sow;
         const special_effect_t* sacrolashs_dark_strike;
-        const special_effect_t* sephuzs_secret;
+        const spell_data_t* sephuzs_secret;
         const special_effect_t* kazzaks_final_curse;
         const special_effect_t* recurrent_ritual;
         const special_effect_t* magistrike_restraints;

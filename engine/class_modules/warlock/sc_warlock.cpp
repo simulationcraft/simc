@@ -1326,6 +1326,17 @@ static void wilfreds_sigil_of_superior_summoning( special_effect_t& effect )
   do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.wilfreds_sigil_of_superior_summoning, effect );
 }
 
+struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<warlock_t>
+{
+  sephuzs_secret_t() : scoped_actor_callback_t( WARLOCK )
+  { }
+
+  void manipulate( warlock_t* warlock, const special_effect_t& e ) override
+  {
+    warlock->legendary.sephuzs_secret = e.driver();
+  }
+};
+
 struct warlock_module_t : public module_t
 {
   warlock_module_t() : module_t( WARLOCK ) { }
@@ -1356,6 +1367,7 @@ struct warlock_module_t : public module_t
     unique_gear::register_special_effect( 205678, alythesss_pyrogenics );
     unique_gear::register_special_effect( 212172, odr_shawl_of_the_ymirjar );
     unique_gear::register_special_effect( 214345, wilfreds_sigil_of_superior_summoning );
+    unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
   }
 
   virtual void register_hotfixes() const override { }
