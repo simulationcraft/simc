@@ -204,7 +204,6 @@ public:
     buff_t* fortifying_brew;
     buff_t* gift_of_the_ox;
     buff_t* ironskin_brew;
-    buff_t* keg_smash_talent;
     buff_t* spitfire;
     buff_t* zen_meditation;
     buff_t* light_stagger;
@@ -3305,7 +3304,6 @@ struct rjw_tick_action_t : public monk_melee_attack_t
         am *= 1 + p() -> spec.windwalker_monk -> effectN( 6 ).percent();
         break;
       case MONK_BREWMASTER:
-        am *= 1 + p() -> spec.brewmaster_monk -> effectN( 1 ).percent();
         am *= 1 + p() -> spec.brewmaster_monk -> effectN( 6 ).percent();
         break;
       default:
@@ -3864,15 +3862,6 @@ struct keg_smash_t: public monk_melee_attack_t
     trigger_gcd = timespan_t::from_seconds( 1 );
   }
 
-  virtual bool ready() override
-  {
-    // Secret Ingredients allows Tiger Palm to have a 30% chance to reset the cooldown of Keg Smash
-    if ( p() -> buff.keg_smash_talent -> check() )
-      return true;
-
-    return monk_melee_attack_t::ready();
-  }
-
   virtual double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
@@ -3907,10 +3896,6 @@ struct keg_smash_t: public monk_melee_attack_t
     if ( p() -> legendary.salsalabims_lost_tunic != nullptr )
       p() -> cooldown.breath_of_fire -> reset( true );
 
-    // If cooldown was reset by Secret Ingredients talent, to end the buff
-    if ( p() -> buff.keg_smash_talent -> check() )
-      p() -> buff.keg_smash_talent -> expire();
-    
     // Reduces the remaining cooldown on your Brews by 4 sec.
     double time_reduction = p() -> spec.keg_smash -> effectN( 4 ).base_value();
 
@@ -6932,7 +6917,8 @@ void monk_t::create_buffs()
   buff.spitfire = make_buff( this, "spitfire", talent.spitfire -> effectN( 1 ).trigger() );
 
   timespan_t stagger_duration = passives.heavy_stagger -> duration();
-  stagger_duration += timespan_t::from_seconds( legendary.jewel_of_the_lost_abbey -> effectN( 1 ).base_value() / 10 );
+  if ( legendary.jewel_of_the_lost_abbey )
+    stagger_duration += timespan_t::from_seconds( legendary.jewel_of_the_lost_abbey -> effectN( 1 ).base_value() / 10 );
   stagger_duration += timespan_t::from_seconds( talent.bob_and_weave -> effectN( 1 ).base_value() / 10 );
 
   buff.light_stagger = make_buff( this, "light_stagger", find_spell( 124275 ) );
@@ -8258,7 +8244,7 @@ void monk_t::apl_combat_brewmaster()
   def -> add_action( this, "Blackout Strike" );
 
   def -> add_action( this, "Breath of Fire", "if=buff.blackout_combo.down&(buff.bloodlust.down|(buff.bloodlust.up&&dot.breath_of_fire_dot.refreshable))");
-  def -> add_talent( this, "Rushing Jade Wind" );
+  def -> add_talent( this, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   def -> add_talent( this, "Chi Burst" );
   def -> add_talent( this, "Chi Wave" );
   def -> add_action( this, "Tiger Palm", "if=!talent.blackout_combo.enabled&cooldown.keg_smash.remains>gcd&(energy+(energy.regen*(cooldown.keg_smash.remains+gcd)))>=55" );
