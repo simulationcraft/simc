@@ -8,7 +8,7 @@ talents=2211231
 
 # Default consumables
 potion=prolonged_power
-flask=whispered_pact
+flask=endless_fathoms
 food=azshari_salad
 augmentation=defiled
 
@@ -34,7 +34,7 @@ off_hand=secrets_of_the_void,id=133958
 # gear_stamina=1248
 # gear_intellect=897
 # gear_crit_rating=526
-# gear_haste_rating=620
+# gear_haste_rating=624
 # gear_mastery_rating=222
 # gear_versatility_rating=88
 # gear_armor=253

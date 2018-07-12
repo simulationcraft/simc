@@ -21,7 +21,7 @@ T21_Generate_Death_Knight.simc
 T21_Generate_Demon_Hunter.simc
 
 # Druid
-#T21_Generate_Druid.simc
+T21_Generate_Druid.simc
 
 # Hunter
 T21_Generate_Hunter.simc
@@ -30,7 +30,7 @@ T21_Generate_Hunter.simc
 T21_Generate_Mage.simc
 
 # Monk
-#T21_Generate_Monk.simc
+T21_Generate_Monk.simc
 
 # Paladin
 T21_Generate_Paladin.simc
@@ -48,6 +48,6 @@ T21_Generate_Shaman.simc
 T21_Generate_Warlock.simc
 
 # Warrior
-T21_Generate_Warrior.simc
+#T21_Generate_Warrior.simc
 
 save_profile_with_actions=0
