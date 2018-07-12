@@ -1179,17 +1179,6 @@ public:
     return ( *_effects )[ effect_num - 1 ] -> id();
   }
 
-  bool flags( spell_attribute_e f ) const
-  {
-    unsigned bit = static_cast<unsigned>( f ) & 0x1Fu;
-    unsigned index = ( static_cast<unsigned>( f ) >> 8 ) & 0xFFu;
-    uint32_t mask = 1u << bit;
-
-    assert( index < sizeof_array( _attributes ) );
-
-    return ( _attributes[ index ] & mask ) != 0;
-  }
-
   bool flags( spell_attribute attr ) const
   {
     unsigned bit = static_cast<unsigned>( attr ) % 32u;

@@ -776,10 +776,10 @@ std::string spell_flags( const spell_data_t* spell )
   if ( spell -> class_family() != 0 )
     s << "Spell Family (" << spell -> class_family() << "), ";
 
-  if ( spell -> flags( SPELL_ATTR_PASSIVE ) )
+  if ( spell -> flags( spell_attribute::SX_PASSIVE ) )
     s << "Passive, ";
 
-  if ( spell -> flags( SPELL_ATTR_HIDDEN ) )
+  if ( spell -> flags( spell_attribute::SX_HIDDEN ) )
     s << "Hidden, ";
 
   if ( s.tellp() > 1 )
@@ -798,7 +798,7 @@ void spell_flags_xml( const spell_data_t* spell, xml_node_t* parent )
   if ( spell -> scaling_class() != 0 )
     parent -> add_parm( "scaling_spell", spell -> scaling_class() );
 
-  if ( spell -> flags( SPELL_ATTR_PASSIVE ) )
+  if ( spell -> flags( spell_attribute::SX_PASSIVE ) )
     parent -> add_parm( "passive", "true" );
 }
 

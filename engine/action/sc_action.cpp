@@ -612,11 +612,11 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   cooldown->duration = timespan_t::zero();
 
   // Default Weapon Assignment
-  if ( spell_data.flags( SPELL_ATTR_EX3_MAIN_HAND ) )
+  if ( spell_data.flags( spell_attribute::SX_REQ_MAIN_HAND ) )
   {
     weapon = &( player->main_hand_weapon );
   }
-  else if ( spell_data.flags( SPELL_ATTR_EX3_REQ_OFFHAND ) )
+  else if ( spell_data.flags( spell_attribute::SX_REQ_OFF_HAND ) )
   {
     weapon = &( player->off_hand_weapon );
   }
