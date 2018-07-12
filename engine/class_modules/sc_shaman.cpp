@@ -199,6 +199,8 @@ struct shaman_td_t : public actor_target_data_t
 
     // Enhancement
     buff_t* earthen_spike;
+    buff_t* lightning_conduit;
+    buff_t* primal_primer;
   } debuff;
 
   struct heals
@@ -291,6 +293,7 @@ public:
     spell_t* searing_assault;
     spell_t* molten_weapon;
     action_t* molten_weapon_dot;
+    spell_t* lightning_conduit;
 
     // Legendary
     action_t* ppsg;  // Pristine Proto-Scale Girdle legendary dot
@@ -387,6 +390,7 @@ public:
     stat_buff_t* natural_harmony_fire;    // crit
     stat_buff_t* natural_harmony_frost;   // mastery
     stat_buff_t* natural_harmony_nature;  // haste
+    buff_t* roiling_storm;
   } buff;
 
   // Cooldowns
@@ -547,13 +551,23 @@ public:
     azerite_power_t echo_of_the_elementals;
     azerite_power_t igneous_potential;
     azerite_power_t lava_shock;
-    azerite_power_t natural_harmony;
-    azerite_power_t rumbling_tremors;
-    azerite_power_t synapse_shock;
     azerite_power_t volcanic_lightning;
+
+    // Enhancement
+    // azerite_power_t electropotence;  // hasn't been found in game yet, so current un-implemented in simc.
+    // azerite_power_t storms_eye;      // hasn't been found in game yet, so current un-implemented in simc.
+    // azerite_power_t strikers_grace;  // hasn't been found in game yet, so current un-implemented in simc.
+    azerite_power_t lightning_conduit;
+    azerite_power_t primal_primer;
+    azerite_power_t roiling_storm;
+    azerite_power_t strength_of_earth;
 
     // shared
     azerite_power_t ancestral_resonance;
+    azerite_power_t natural_harmony;
+    azerite_power_t rumbling_tremors;
+    azerite_power_t synapse_shock;
+
   } azerite;
 
   // Misc Spells
@@ -587,6 +601,9 @@ public:
   // Elemental Spirits attacks
   shaman_attack_t* molten_weapon;
   shaman_attack_t* icy_edge;
+
+  // Azerite Effects
+  shaman_spell_t* lightning_conduit;
 
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN )
     : player_t( sim, SHAMAN, name, r ),
@@ -633,7 +650,11 @@ public:
     // Elemental Spirits attacks
     molten_weapon = nullptr;
     icy_edge      = nullptr;
-    regen_type    = REGEN_DISABLED;
+
+    // Azerite Effects
+    lightning_conduit = nullptr;
+
+    regen_type = REGEN_DISABLED;
 
     talent_points.register_validity_fn( [this]( const spell_data_t* spell ) {
       // Soul of the Farseer
@@ -672,6 +693,7 @@ public:
   void trigger_hot_hand( const action_state_t* state );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_smoldering_heart( double cost );
+  void trigger_natural_harmony( const action_state_t* );
 
   // Legendary
   void trigger_eye_of_twisting_nether( const action_state_t* state );
@@ -844,6 +866,27 @@ struct tailwind_totem_buff_enh_t : public buff_t
   }
 };
 
+struct roiling_storm_buff_t : public buff_t
+{
+  double default_value;
+  roiling_storm_buff_t( shaman_t* p )
+    : buff_t( p, "roiling_storm", p->azerite.roiling_storm ), default_value( p->azerite.roiling_storm.value() )
+  {
+    auto trigger_spell = p->find_spell( 279515 );
+
+    set_default_value( default_value );
+    set_trigger_spell( trigger_spell );
+    //set_max_stack( trigger_spell->max_stacks() );
+    set_max_stack( 15 );
+    set_duration( trigger_spell->duration() );
+    set_period( s_data->effectN( 2 ).period() );
+    set_tick_behavior( buff_tick_behavior::REFRESH );
+    set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
+
+    set_tick_callback( [p]( buff_t* b, int, const timespan_t& ) { p->buff.roiling_storm->trigger(); } );
+  }
+};
+
 struct lightning_shield_buff_t : public buff_t
 {
   lightning_shield_buff_t( shaman_t* p ) : buff_t( p, "lightning_shield", p->find_spell( 192106 ) )
@@ -972,6 +1015,14 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
                              .cd( timespan_t::zero() )  // Handled by the action
                              // -10% resistance in spell data, treat it as a multiplier instead
                              .default_value( 1.0 + p->talent.earthen_spike->effectN( 2 ).percent() );
+  debuff.lightning_conduit = buff_creator_t( *this, "lightning_conduit", p->azerite.lightning_conduit )
+                                 .trigger_spell( p->find_spell( 273006 ) )
+                                 .duration( p->find_spell( 273006 )->duration() );
+  debuff.primal_primer = buff_creator_t( *this, "primal_primer", p->azerite.primal_primer )
+                             .trigger_spell( p->find_spell( 273006 ) )
+                             .duration( p->find_spell( 273006 )->duration() )
+                             .max_stack( p->find_spell( 273006 )->max_stacks() )
+                             .default_value( p->azerite.primal_primer.value() );
 }
 
 // ==========================================================================
@@ -1417,6 +1468,7 @@ public:
     p()->trigger_lightning_shield( state );
     p()->trigger_hot_hand( state );
     p()->trigger_icy_edge( state );
+    p()->trigger_natural_harmony( state );
   }
 
   void trigger_maelstrom_weapon( const action_state_t* source_state, double amount = 0 )
@@ -1680,27 +1732,7 @@ public:
 
     p()->trigger_stormbringer( state );
 
-    // On main spells and no dot ticks
-    if ( state->action->harmful && !state->action->background && state->result_amount > 0 &&
-         p()->azerite.natural_harmony.ok() )
-    {
-      auto school = state->action->get_school();
-
-      if ( dbc::is_school( school, SCHOOL_FIRE ) )
-      {
-        p()->buff.natural_harmony_fire->trigger();
-      }
-
-      if ( dbc::is_school( school, SCHOOL_NATURE ) )
-      {
-        p()->buff.natural_harmony_nature->trigger();
-      }
-
-      if ( dbc::is_school( school, SCHOOL_FROST ) )
-      {
-        p()->buff.natural_harmony_frost->trigger();
-      }
-    }
+    p()->trigger_natural_harmony( state );
   }
 
   virtual double stormbringer_proc_chance() const
@@ -2778,6 +2810,11 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
+
+    if ( state->result_amount > 0 )
+    {
+      td( state->target )->debuff.primal_primer->trigger();
+    }
   }
 };
 
@@ -2973,6 +3010,18 @@ struct icy_edge_attack_t : public shaman_attack_t
 
     may_proc_windfury = may_proc_frostbrand = may_proc_flametongue = may_proc_hot_hand = false;
     may_proc_stormbringer = may_proc_maelstrom_weapon = may_proc_lightning_shield = false;
+  }
+};
+
+struct lightning_conduit_zap_t : public shaman_spell_t
+{
+  lightning_conduit_zap_t( shaman_t* player )
+    : shaman_spell_t( "lightning_conduit_zap", player, player->find_spell( 275394 ) )
+  {
+    // base_td    = player->azerite.lightning_conduit.value(); --maybe not needed? spell isnt white listed atm.
+    background = true;
+    may_crit   = true;
+    callbacks  = false;
   }
 };
 
@@ -3471,6 +3520,15 @@ struct lava_lash_t : public shaman_attack_t
     may_proc_stormbringer = true;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = shaman_attack_t::bonus_da( s );
+    if ( s->target )
+      b += td( target )->debuff.primal_primer->stack_value();
+
+    return b;
+  }
+
   double cost() const override
   {
     if ( p()->buff.hot_hand->check() )
@@ -3526,6 +3584,8 @@ struct lava_lash_t : public shaman_attack_t
     {
       trigger_molten_weapon_dot( state->target, state->result_amount );
     }
+
+    td( state->target )->debuff.primal_primer->expire();
   }
 
   virtual void trigger_molten_weapon_dot( player_t* t, double dmg )
@@ -3643,6 +3703,22 @@ struct stormstrike_base_t : public shaman_attack_t
         p()->buff.lightning_shield->expire();
         p()->buff.lightning_shield->trigger();
       }
+    }
+
+    if ( p()->azerite.lightning_conduit.ok() )
+    {
+      std::vector<player_t*> tl = target_list();
+      for ( size_t i = 0, actors = tl.size(); i < actors; i++ )
+      {
+        if ( p()->get_target_data( tl[ i ] )->debuff.lightning_conduit->up() )
+        {
+          p()->lightning_conduit->set_target( tl[ i ] );
+          p()->lightning_conduit->execute();
+        }
+      }
+
+      // lightning conduit applies to your primary target after it deals damage to others.
+      td( target )->debuff.lightning_conduit->trigger();
     }
 
     shaman_attack_t::impact( state );
@@ -6718,7 +6794,7 @@ void shaman_t::init_spells()
 
   talent.landslide      = find_talent_spell( "Landslide" );
   talent.forceful_winds = find_talent_spell( "Forceful Winds" );
-  talent.totem_mastery  = find_talent_spell( "Totem Mastery" );
+  // talent.totem_mastery  = find_talent_spell( "Totem Mastery" );
 
   talent.spirit_wolf   = find_talent_spell( "Spirit Wolf" );
   talent.earth_shield  = find_talent_spell( "Earth Shield" );
@@ -6745,13 +6821,19 @@ void shaman_t::init_spells()
   azerite.echo_of_the_elementals = find_azerite_spell( "Echo of the Elementals" );
   azerite.igneous_potential      = find_azerite_spell( "Igneous Potential" );
   azerite.lava_shock             = find_azerite_spell( "Lava Shock" );
-  azerite.natural_harmony        = find_azerite_spell( "Natural Harmony" );
-  azerite.rumbling_tremors       = find_azerite_spell( "Rumbling Tremors" );
-  azerite.synapse_shock          = find_azerite_spell( "Synapse Shock" );
   azerite.volcanic_lightning     = find_azerite_spell( "Volcanic Lightning" );
+
+  // Enhancement
+  azerite.lightning_conduit = find_azerite_spell( "Lightning Conduit" );
+  azerite.primal_primer     = find_azerite_spell( "Primal Primer" );
+  azerite.roiling_storm     = find_azerite_spell( "Roiling Storm" );
+  azerite.strength_of_earth = find_azerite_spell( "Strength of Earth" );
 
   // Shared
   azerite.ancestral_resonance = find_azerite_spell( "Ancestral Resonance" );
+  azerite.natural_harmony     = find_azerite_spell( "Natural Harmony" );
+  azerite.rumbling_tremors    = find_azerite_spell( "Rumbling Tremors" );
+  azerite.synapse_shock       = find_azerite_spell( "Synapse Shock" );
 
   //
   // Misc spells
@@ -6906,6 +6988,35 @@ void shaman_t::trigger_stormbringer( const action_state_t* state, double overrid
         override_proc_obj->occur();
       }
     }
+  }
+}
+
+void shaman_t::trigger_natural_harmony( const action_state_t* state )
+{
+  if ( !azerite.natural_harmony.ok() )
+    return;
+
+  if ( !state->action->harmful )
+    return;
+
+  if ( state->result_amount <= 0 )
+    return;
+
+  auto school = state->action->get_school();
+
+  if ( dbc::is_school( school, SCHOOL_FIRE ) )
+  {
+    buff.natural_harmony_fire->trigger();
+  }
+
+  if ( dbc::is_school( school, SCHOOL_NATURE ) )
+  {
+    buff.natural_harmony_nature->trigger();
+  }
+
+  if ( dbc::is_school( school, SCHOOL_FROST ) )
+  {
+    buff.natural_harmony_frost->trigger();
   }
 }
 
@@ -7168,7 +7279,7 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
     return;
   }
 
-    shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
+  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
   if ( !attack->may_proc_lightning_shield )
   {
     return;
@@ -7305,9 +7416,9 @@ void shaman_t::create_buffs()
                         ->set_duration( find_spell( 273453 )->duration() );
 
   // Azerite Traits - Enh
+  buff.roiling_storm = new roiling_storm_buff_t( this );
 
   // Azerite Traits - Shared
-
   buff.ancestral_resonance =
       make_buff<stat_buff_t>( this, "ancestral_resonance", find_spell( 277943 ) )
           ->add_stat( STAT_MASTERY_RATING, azerite.ancestral_resonance.value( 1 ) )
@@ -7708,9 +7819,9 @@ void shaman_t::init_action_list_enhancement()
 
   filler->add_action( this, "Rockbiter", "if=maelstrom<70" );
   filler->add_action( this, "Flametongue", "if=talent.searing_assault.enabled|buff.flametongue.remains<4.8" );
-  filler->add_action(
-      this, "Crash Lightning",
-      "if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&variable.OCPool60" );
+  filler->add_action( this, "Crash Lightning",
+                      "if=(talent.crashing_storm.enabled|active_enemies>=2)&debuff.earthen_spike.up&maelstrom>=40&"
+                      "variable.OCPool60" );
   filler->add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8&maelstrom>40" );
   filler->add_action( this, "Lava Lash", "if=maelstrom>=50&variable.OCPool70&variable.furyCheck80" );
   filler->add_action( this, "Rockbiter" );
@@ -7759,6 +7870,9 @@ void shaman_t::init_action_list()
     icy_edge = new icy_edge_attack_t( "icy_edge", this, &( main_hand_weapon ) );
 
     action.molten_weapon_dot = new molten_weapon_dot_t( this );
+
+    if ( azerite.lightning_conduit.ok() )
+      lightning_conduit = new lightning_conduit_zap_t( this );
   }
 
   if ( talent.hailstorm->ok() )
