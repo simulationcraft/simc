@@ -4,7 +4,7 @@ level=110
 race=blood_elf
 role=dps
 position=back
-talents=2020033
+talents=3020033
 
 # Default consumables
 potion=prolonged_power
