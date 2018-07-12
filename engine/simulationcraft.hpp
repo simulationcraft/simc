@@ -6201,6 +6201,7 @@ private:
   void refresh( timespan_t duration );
   void check_tick_zero();
   bool is_higher_priority_action_available() const;
+  void recalculate_num_ticks();
 
   friend struct dot_tick_event_t;
   friend struct dot_end_event_t;

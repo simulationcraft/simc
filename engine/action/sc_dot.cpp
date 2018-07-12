@@ -151,6 +151,8 @@ void dot_t::reduce_duration( timespan_t remove_seconds, uint32_t state_flags )
   sim.print_debug("{} attempts to reduce duration of {} by {}.", source->name(),
       name(), remove_seconds);
 
+  assert(remove_seconds > timespan_t::zero() && "Cannot reduce dot duration by a negative amount of time.");
+
   if ( state_flags == (uint32_t)-1 )
     state_flags = current_action->snapshot_flags;
 
@@ -196,6 +198,7 @@ void dot_t::reduce_duration( timespan_t remove_seconds, uint32_t state_flags )
     event_t::cancel( end_event );
     end_event = make_event<dot_end_event_t>( sim, this, remains );
   }
+  recalculate_num_ticks();
 
   current_action->stats->add_refresh( state->target );
 }
@@ -1118,6 +1121,7 @@ void dot_t::schedule_tick()
 
   // Recalculate num_ticks:
   num_ticks = current_tick + as<int>( std::ceil( remains() / base_tick_time ) );
+
   last_tick_factor =
       current_action->last_tick_factor( this, base_tick_time, remains() );
 
@@ -1211,10 +1215,7 @@ void dot_t::refresh( timespan_t duration )
 
   check_tick_zero();
 
-  // Recalculate num_ticks:
-  num_ticks =
-      current_tick +
-      as<int>( std::ceil( remains() / current_action->tick_time( state ) ) );
+  recalculate_num_ticks();
 
   if ( sim.debug )
     sim.out_debug.printf(
@@ -1237,6 +1238,12 @@ void dot_t::refresh( timespan_t duration )
   }
 }
 
+void dot_t::recalculate_num_ticks()
+{
+  num_ticks =
+      current_tick +
+      as<int>( std::ceil( remains() / current_action->tick_time( state ) ) );
+}
 void dot_t::check_tick_zero()
 {
   // If we're precasting a helpful dot and we're not in combat, fake precasting
@@ -1254,7 +1261,7 @@ void dot_t::check_tick_zero()
     timespan_t tick_time = current_action->tick_time( state );
     assert( tick_time > timespan_t::zero() &&
             "A Dot needs a positive tick time!" );
-    num_ticks = current_tick + as<int>( std::ceil( remains() / tick_time ) );
+    recalculate_num_ticks();
     tick_zero();
     if ( remains() <= timespan_t::zero() )
     {
