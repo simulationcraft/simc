@@ -124,6 +124,10 @@ public:
   bool is_enabled( unsigned id ) const;
   /// Check the enable status of an azerite power
   bool is_enabled( const std::string& name, bool tokenized = false ) const;
+  /// Rank of the azrerite power (how many items have the selected power)
+  size_t rank( unsigned id ) const;
+  /// Rank of the azrerite power (how many items have the selected power)
+  size_t rank( const std::string& name, bool tokenized = false ) const;
 
   /// Parse and sanitize azerite_override option
   bool parse_override( sim_t*, const std::string& /*name*/, const std::string& /*value*/ );

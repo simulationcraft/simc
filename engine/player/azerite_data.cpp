@@ -405,12 +405,12 @@ bool azerite_state_t::parse_override( sim_t* sim, const std::string&, const std:
   return true;
 }
 
-bool azerite_state_t::is_enabled( unsigned id ) const
+size_t azerite_state_t::rank( unsigned id ) const
 {
   // All azerite-related effects disabled
   if ( m_player -> sim -> azerite_status == AZERITE_DISABLED_ALL )
   {
-    return false;
+    return 0u;
   }
 
   auto it = m_overrides.find( id );
@@ -419,21 +419,40 @@ bool azerite_state_t::is_enabled( unsigned id ) const
   {
     if ( it -> second.size() == 1 && it -> second[ 0 ] == 0 )
     {
-      return false;
+      return 0u;
     }
 
-    return true;
+    return it -> second.size();
   }
 
   // Only look at item-based azerite, if all azerite is enabled
   if ( m_player -> sim -> azerite_status == AZERITE_ENABLED )
   {
     auto it = m_items.find( id );
-    return it != m_items.end();
+    if ( it != m_items.end() )
+    {
+      return it -> second.size();
+    }
   }
 
   // Out of options, it can't be enabled
-  return false;
+  return 0u;
+}
+
+size_t azerite_state_t::rank( const std::string& name, bool tokenized ) const
+{
+  const auto& power = m_player -> dbc.azerite_power( name, tokenized );
+  if ( power.id == 0 )
+  {
+    return 0u;
+  }
+
+  return rank( power.id );
+}
+
+bool azerite_state_t::is_enabled( unsigned id ) const
+{
+  return rank( id ) > 0;
 }
 
 bool azerite_state_t::is_enabled( const std::string& name, bool tokenized ) const
@@ -457,15 +476,22 @@ expr_t* azerite_state_t::create_expression( const std::vector<std::string>& expr
   const auto& power = m_player -> dbc.azerite_power( expr_str[ 1 ], true );
   if ( power.id == 0 )
   {
-    throw std::invalid_argument(fmt::format("Unknown azerite power '{}'.", expr_str[ 1 ]));
+    throw std::invalid_argument( fmt::format( "Unknown azerite power '{}'.", expr_str[ 1 ] ) );
   }
 
   if ( util::str_compare_ci( expr_str[ 2 ], "enabled" ) )
   {
     return expr_t::create_constant( "azerite_enabled", as<double>( is_enabled( power.id ) ) );
   }
+  else if ( util::str_compare_ci( expr_str[ 2 ], "rank" ) )
+  {
+    return expr_t::create_constant( "azerite_rank", as<double>( rank( power.id ) ) );
+  }
+  else
+  {
+    throw std::invalid_argument( fmt::format( "Unsupported azerite expression '{}'.", expr_str[ 2 ] ) );
+  }
 
-  throw std::invalid_argument(fmt::format("Unsupported azerite expression '{}'.", expr_str[ 2 ]));
   return nullptr;
 }
 
