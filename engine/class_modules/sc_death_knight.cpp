@@ -5059,6 +5059,12 @@ struct howling_blast_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    // If Pillar of Frost is up, Rime procs still increase its value
+    if ( p() -> buffs.pillar_of_frost -> up() && p() -> buffs.rime -> up() )
+    {
+      p() -> buffs.pillar_of_frost -> current_value += base_costs[ RESOURCE_RUNE ] / 100;
+    }
+
     // Note note, killing machine is a RPPM thing, but we need to trigger it unconditionally when
     // obliterate is up, so just bypas "trigger" and directly execute the buff, while making sure
     // correct bookkeeping information is kept. Ugly but will work for now.
