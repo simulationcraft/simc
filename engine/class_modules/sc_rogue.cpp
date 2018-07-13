@@ -279,6 +279,7 @@ struct rogue_t : public player_t
     buff_t* t21_4pc_subtlety;
 
     // Azerite powers
+    buff_t* blade_in_the_shadows;
     buff_t* deadshot;
     buff_t* nights_vengeance;
     buff_t* perforate;
@@ -489,7 +490,9 @@ struct rogue_t : public player_t
   // Azerite powers
   struct azerite_powers_t
   {
+    azerite_power_t blade_in_the_shadows;
     azerite_power_t deadshot;
+    azerite_power_t inevitability;
     azerite_power_t nights_vengeance;
     azerite_power_t perforate;
     azerite_power_t poisoned_wire;
@@ -680,6 +683,7 @@ struct rogue_t : public player_t
   void trigger_t21_4pc_assassination( const action_state_t* state );
   void trigger_t21_4pc_outlaw( const action_state_t* state );
   void trigger_t21_4pc_subtlety( const action_state_t* state );
+  void trigger_inevitability( const action_state_t* state );
 
   // On-death trigger for Venomous Wounds energy replenish
   void trigger_venomous_wounds_death( player_t* );
@@ -1086,7 +1090,7 @@ struct rogue_attack_t : public melee_attack_t
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( p()->buffs.symbols_of_death->check() && data().affected_by( p()->buffs.symbols_of_death->data().effectN( 1 ) ) )
+    if ( p()->buffs.symbols_of_death->value() && data().affected_by( p()->buffs.symbols_of_death->data().effectN( 1 ) ) )
     {
       m *= 1.0 + p()->buffs.symbols_of_death->data().effectN( 1 ).percent()
         + p()->spec.t20_2pc_subtlety->effectN( 1 ).percent();
@@ -1122,7 +1126,7 @@ struct rogue_attack_t : public melee_attack_t
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( p()->buffs.symbols_of_death->check() && data().affected_by( p()->buffs.symbols_of_death->data().effectN( 2 ) ) )
+    if ( p()->buffs.symbols_of_death->value() && data().affected_by( p()->buffs.symbols_of_death->data().effectN( 2 ) ) )
     {
       m *= 1.0 + p()->buffs.symbols_of_death->data().effectN( 2 ).percent()
         + p()->spec.t20_2pc_subtlety->effectN( 2 ).percent();
@@ -2176,7 +2180,7 @@ struct melee_t : public rogue_attack_t
     double m = rogue_attack_t::action_multiplier();
 
     // Subtlety
-    if ( p()->buffs.symbols_of_death->check() )
+    if ( p()->buffs.symbols_of_death->value() )
     {
       m *= 1.0 + p()->buffs.symbols_of_death->data().effectN( 2 ).percent()
         + p()->spec.t20_2pc_subtlety->effectN( 3 ).percent();
@@ -2333,6 +2337,10 @@ struct backstab_t : public rogue_attack_t
   {
     double b = rogue_attack_t::bonus_da( state );
     b += p() -> buffs.perforate -> stack_value();
+
+    if ( p() -> azerite.inevitability.ok() )
+      b += p() -> azerite.inevitability.value( 3 );
+
     return b;
   }
 
@@ -2379,6 +2387,7 @@ struct backstab_t : public rogue_attack_t
     rogue_attack_t::impact( state );
 
     p() -> trigger_weaponmaster( state );
+    p() -> trigger_inevitability( state );
   }
 };
 
@@ -2968,6 +2977,10 @@ struct gloomblade_t : public rogue_attack_t
   {
     double b = rogue_attack_t::bonus_da( state );
     b += p() -> buffs.perforate -> stack_value();
+
+    if ( p() -> azerite.inevitability.ok() )
+      b += p() -> azerite.inevitability.value( 3 );
+
     return b;
   }
 
@@ -2985,6 +2998,12 @@ struct gloomblade_t : public rogue_attack_t
 
     if ( p() -> position() == POSITION_BACK )
       p() -> buffs.perforate -> trigger();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    rogue_attack_t::impact( state );
+    p() -> trigger_inevitability( state );
   }
 };
 
@@ -3718,6 +3737,8 @@ struct shadowstrike_t : public rogue_attack_t
     }
 
     p() -> trigger_t21_4pc_subtlety( execute_state );
+
+    p() -> buffs.blade_in_the_shadows -> trigger();
   }
 
   void impact( action_state_t* state ) override
@@ -3728,6 +3749,18 @@ struct shadowstrike_t : public rogue_attack_t
       td( state -> target ) -> debuffs.find_weakness -> trigger();
 
     p() -> trigger_weaponmaster( state );
+    p() -> trigger_inevitability( state );
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = rogue_attack_t::bonus_da( s );
+    b += p() -> buffs.blade_in_the_shadows -> stack_value();
+
+    if ( p() -> azerite.inevitability.ok() )
+      b += p() -> azerite.inevitability.value( 3 );
+
+    return b;
   }
 
   double action_multiplier() const override
@@ -5784,6 +5817,14 @@ void rogue_t::trigger_t21_4pc_subtlety( const action_state_t* state )
   }
 }
 
+void rogue_t::trigger_inevitability( const action_state_t* state )
+{
+  if ( ! state -> action -> result_is_hit( state -> result ) || ! azerite.inevitability.ok() )
+    return;
+
+  buffs.symbols_of_death -> extend_duration( this, timespan_t::from_seconds( azerite.inevitability.spell_ref().effectN( 2 ).base_value() / 10.0 ) );
+}
+
 // ==========================================================================
 // Rogue Targetdata Definitions
 // ==========================================================================
@@ -6838,14 +6879,16 @@ void rogue_t::init_spells()
   talent.secret_technique   = find_talent_spell( "Secret Technique" );
   talent.shuriken_tornado   = find_talent_spell( "Shuriken Tornado" );
 
-  azerite.deadshot          = find_azerite_spell( "Deadshot" );
-  azerite.nights_vengeance  = find_azerite_spell( "Night's Vengeance" );
-  azerite.perforate         = find_azerite_spell( "Perforate" );
-  azerite.poisoned_wire     = find_azerite_spell( "Poisoned Wire" );
-  azerite.sharpened_blades  = find_azerite_spell( "Sharpened Blades" );
-  azerite.snake_eyes        = find_azerite_spell( "Snake Eyes" );
-  azerite.storm_of_steel    = find_azerite_spell( "Storm of Steel" );
-  azerite.twist_the_knife   = find_azerite_spell( "Twist the Knife" );
+  azerite.blade_in_the_shadows = find_azerite_spell( "Blade In The Shadows" );
+  azerite.deadshot             = find_azerite_spell( "Deadshot" );
+  azerite.inevitability        = find_azerite_spell( "Inevitability" );
+  azerite.nights_vengeance     = find_azerite_spell( "Night's Vengeance" );
+  azerite.perforate            = find_azerite_spell( "Perforate" );
+  azerite.poisoned_wire        = find_azerite_spell( "Poisoned Wire" );
+  azerite.sharpened_blades     = find_azerite_spell( "Sharpened Blades" );
+  azerite.snake_eyes           = find_azerite_spell( "Snake Eyes" );
+  azerite.storm_of_steel       = find_azerite_spell( "Storm of Steel" );
+  azerite.twist_the_knife      = find_azerite_spell( "Twist the Knife" );
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
@@ -7181,6 +7224,9 @@ void rogue_t::create_buffs()
   buffs.t21_4pc_subtlety                   = make_buff( this, "shadow_gestures", sets -> set( ROGUE_SUBTLETY, T21, B4 ) -> effectN( 1 ).trigger() );
 
   // Azerite
+  buffs.blade_in_the_shadows               = make_buff( this, "blade_in_the_shadows", find_spell( 279754 ) )
+                                             -> set_trigger_spell( azerite.blade_in_the_shadows.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_default_value( azerite.blade_in_the_shadows.value() );
   buffs.deadshot                           = make_buff( this, "deadshot", find_spell( 272940 ) )
                                              -> set_trigger_spell( azerite.deadshot.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.deadshot.value() );
