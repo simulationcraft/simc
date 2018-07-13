@@ -1568,9 +1568,11 @@ void buff_t::bump( int stacks, double value )
   if ( _max_stack == 0 )
     return;
 
+  bool haste_to_be_adjusted = false; // Flag to check if we need to adjust haste at the end of bump
+
   if ( value != current_value )
   {
-    adjust_haste();
+    haste_to_be_adjusted = true;
   }
   current_value = value;
 
@@ -1582,9 +1584,11 @@ void buff_t::bump( int stacks, double value )
   if ( max_stack() < 0 )
   {
     current_stack += stacks;
+    haste_to_be_adjusted = true;
   }
   else if ( current_stack < max_stack() )
   {
+    haste_to_be_adjusted = true;
     int before_stack = current_stack;
 
     current_stack += stacks;
@@ -1663,8 +1667,6 @@ void buff_t::bump( int stacks, double value )
 
     if ( current_stack > simulation_max_stack )
       simulation_max_stack = current_stack;
-
-    adjust_haste();
   }
   else
   {
@@ -1675,6 +1677,11 @@ void buff_t::bump( int stacks, double value )
   if ( old_stack != current_stack && stack_change_callback )
   {
     stack_change_callback( this, old_stack, current_stack );
+  }
+
+  if (haste_to_be_adjusted)
+  {
+    adjust_haste();
   }
 
   if ( player )
