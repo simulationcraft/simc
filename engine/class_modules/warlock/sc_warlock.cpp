@@ -823,7 +823,8 @@ void warlock_t::create_buffs()
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     ->set_tick_behavior( buff_tick_behavior::NONE );
   buffs.sephuzs_secret =
-    make_buff<haste_buff_t>( this, "sephuzs_secret", find_spell( 208052 ) );
+    make_buff( this, "sephuzs_secret", find_spell( 208052 ) )
+    ->add_invalidate(CACHE_HASTE);
   buffs.sephuzs_secret->set_default_value( find_spell( 208052 )->effectN( 2 ).percent() )
     ->set_cooldown( find_spell( 226262 )->duration() );
   buffs.alythesss_pyrogenics = make_buff( this, "alythesss_pyrogenics", find_spell( 205675 ) )

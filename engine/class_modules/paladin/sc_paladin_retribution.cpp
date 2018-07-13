@@ -5,7 +5,7 @@ namespace paladin {
 
 namespace buffs {
   crusade_buff_t::crusade_buff_t( player_t* p ) :
-      haste_buff_t( p, "crusade", p -> find_spell( 231895 ) ),
+      buff_t( p, "crusade", p -> find_spell( 231895 ) ),
       damage_modifier( 0.0 ),
       healing_modifier( 0.0 ),
       haste_bonus( 0.0 )
@@ -55,9 +55,13 @@ namespace buffs {
     }
   };
 
-  struct inquisition_buff_t : public haste_buff_t
+  struct inquisition_buff_t : public buff_t
   {
-    inquisition_buff_t( paladin_t* p ) : haste_buff_t( p, "inquisition", p -> find_talent_spell( "Inquisition" ) ) { }
+    inquisition_buff_t( paladin_t* p ) :
+      buff_t( p, "inquisition", p -> find_talent_spell( "Inquisition" ) )
+    {
+      add_invalidate(CACHE_HASTE);
+    }
   };
 }
 

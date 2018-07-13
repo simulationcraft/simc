@@ -343,7 +343,7 @@ public:
     buff_t* prowl;
     buff_t* stampeding_roar;
     buff_t* wild_charge_movement;
-    haste_buff_t* sephuzs_secret;
+    buff_t* sephuzs_secret;
 
     // Balance
     buff_t* natures_balance;
@@ -361,8 +361,8 @@ public:
     buff_t* balance_tier18_4pc; // T18 4P Balance
     buff_t* solar_solstice; //T21 4P Balance
     buff_t* starfall;
-    haste_buff_t* astral_acceleration; //T20 4P Balance
-    haste_buff_t* starlord; //talent
+    buff_t* astral_acceleration; //T20 4P Balance
+    buff_t* starlord; //talent
 
     // Feral
     buff_t* apex_predator;
@@ -6949,15 +6949,17 @@ void druid_t::create_buffs()
 
   buff.warrior_of_elune      = new warrior_of_elune_buff_t( *this );
 
-  buff.astral_acceleration   = make_buff<haste_buff_t>(this, "astral_acceleration", find_spell(242232));
-  buff.astral_acceleration->set_cooldown(timespan_t::zero())
+  buff.astral_acceleration   = make_buff(this, "astral_acceleration", find_spell(242232))
+      ->set_cooldown(timespan_t::zero())
       ->set_default_value(find_spell(242232)->effectN(1).percent())
-      ->set_refresh_behavior(buff_refresh_behavior::DISABLED);
+      ->set_refresh_behavior(buff_refresh_behavior::DISABLED)
+      ->add_invalidate(CACHE_SPELL_HASTE);
 
-  buff.starlord = make_buff<haste_buff_t>(this, "starlord", find_spell(279709));
+  buff.starlord = make_buff(this, "starlord", find_spell(279709));
   buff.starlord->set_cooldown(timespan_t::zero())
       ->set_default_value(find_spell(279709)->effectN(1).percent())
-      ->set_refresh_behavior(buff_refresh_behavior::DISABLED);
+      ->set_refresh_behavior(buff_refresh_behavior::DISABLED)
+      ->add_invalidate(CACHE_SPELL_HASTE);
 
   buff.solar_solstice = buff_creator_t(this, "solar_solstice", find_spell(252767))
       .default_value(find_spell(252767)->effectN(1).percent());
@@ -9346,22 +9348,23 @@ struct sephuzs_t : scoped_actor_callback_t<druid_t>
    };
 };
 
-struct sephuzs_secret_t : public class_buff_cb_t<druid_t, haste_buff_t>
+struct sephuzs_secret_t : public class_buff_cb_t<druid_t>
 {
    sephuzs_secret_t() : super(DRUID, "sephuzs_secret")
    { }
 
-   haste_buff_t*& buff_ptr(const special_effect_t& e) override
+   buff_t*& buff_ptr(const special_effect_t& e) override
    {
       return ((druid_t*)(e.player))->buff.sephuzs_secret;
    }
 
-   haste_buff_t* creator(const special_effect_t& e) const override
+   buff_t* creator(const special_effect_t& e) const override
    {
-      auto buff = make_buff<haste_buff_t>( e.player, buff_name, e.trigger());
+      auto buff = make_buff( e.player, buff_name, e.trigger());
       buff->set_cooldown(e.player->find_spell(226262)->duration())
          ->set_default_value(e.trigger()->effectN(2).percent())
-         ->add_invalidate(CACHE_RUN_SPEED);
+         ->add_invalidate(CACHE_RUN_SPEED)
+         ->add_invalidate(CACHE_HASTE);
       return buff;
    }
 };

@@ -574,11 +574,11 @@ namespace buffs {
     double crit_bonus;
   };
 
-  struct sephuzs_secret_buff_t : public haste_buff_t
+  struct sephuzs_secret_buff_t : public buff_t
   {
     cooldown_t* icd;
     sephuzs_secret_buff_t(paladin_t* p) :
-      haste_buff_t(p, "sephuzs_secret", p -> find_spell( 208052 ))
+      buff_t(p, "sephuzs_secret", p -> find_spell( 208052 ))
     {
       set_default_value(p -> find_spell( 208052 ) -> effectN(2).percent());
       add_invalidate( CACHE_HASTE );
@@ -595,7 +595,7 @@ namespace buffs {
     }
   };
 
-  struct crusade_buff_t : public haste_buff_t
+  struct crusade_buff_t : public buff_t
   {
     crusade_buff_t( player_t* p );
 

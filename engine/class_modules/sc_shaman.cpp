@@ -381,7 +381,7 @@ public:
     buff_t* resonance_totem;
     buff_t* storm_totem;
     buff_t* ember_totem;
-    haste_buff_t* tailwind_totem_ele;
+    buff_t* tailwind_totem_ele;
     buff_t* tailwind_totem_enh;
 
     // Azerite traits
@@ -847,9 +847,9 @@ struct ember_totem_buff_t : public buff_t
   }
 };
 
-struct tailwind_totem_buff_ele_t : public haste_buff_t
+struct tailwind_totem_buff_ele_t : public buff_t
 {
-  tailwind_totem_buff_ele_t( shaman_t* p ) : haste_buff_t( p, "tailwind_totem", p->find_spell( 210659 ) )
+  tailwind_totem_buff_ele_t( shaman_t* p ) : buff_t( p, "tailwind_totem", p->find_spell( 210659 ) )
   {
     add_invalidate( CACHE_HASTE );
     set_duration( p->talent.totem_mastery->effectN( 4 ).trigger()->duration() );
@@ -7379,8 +7379,8 @@ void shaman_t::create_buffs()
 
   buff.master_of_the_elements = make_buff( this, "master_of_the_elements", find_spell( 260734 ) )
                                     ->set_default_value( find_spell( 260734 )->effectN( 1 ).percent() );
-  buff.unlimited_power = make_buff<haste_buff_t>( this, "unlimited_power", find_spell( 272737 ) );
-  buff.unlimited_power->add_invalidate( CACHE_HASTE )
+  buff.unlimited_power = make_buff( this, "unlimited_power", find_spell( 272737 ) )
+      ->add_invalidate( CACHE_HASTE )
       ->set_default_value( find_spell( 272737 )->effectN( 1 ).percent() )
       ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
@@ -8824,8 +8824,9 @@ struct shaman_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-    p->buffs.bloodlust = make_buff<haste_buff_t>( p, "bloodlust", p->find_spell( 2825 ) );
-    p->buffs.bloodlust->set_max_stack( 1 );
+    p->buffs.bloodlust = make_buff( p, "bloodlust", p->find_spell( 2825 ) )
+        ->set_max_stack( 1 )
+        ->add_invalidate(CACHE_HASTE);
 
     p->buffs.exhaustion = buff_creator_t( p, "exhaustion", p->find_spell( 57723 ) ).max_stack( 1 ).quiet( true );
   }

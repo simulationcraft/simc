@@ -1145,8 +1145,10 @@ namespace warlock {
       ->set_default_value(find_spell(257926)->effectN(1).base_value())
       ->set_refresh_behavior(buff_refresh_behavior::DURATION);
 
-    buffs.dreaded_haste = make_buff<haste_buff_t>(this, "dreaded_haste", sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger())
-      ->set_default_value(sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger()->effectN(1).percent());
+    buffs.dreaded_haste =
+        make_buff(this, "dreaded_haste", sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger())
+        ->set_default_value(sets->set(WARLOCK_DEMONOLOGY, T20, B4)->effectN(1).trigger()->effectN(1).percent())
+        ->add_invalidate(CACHE_HASTE);
 
     // Azerite
     buffs.forbidden_knowledge = make_buff(this, "forbidden_knowledge", azerite.forbidden_knowledge.spell_ref().effectN(1).trigger())

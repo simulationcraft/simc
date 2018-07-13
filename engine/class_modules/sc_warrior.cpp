@@ -84,9 +84,9 @@ public:
     buff_t* demoralizing_shout;
     buff_t* die_by_the_sword;
     buff_t* dragon_scales;
-    haste_buff_t* enrage;
-    haste_buff_t* frothing_berserker;
-    haste_buff_t* furious_slash;
+    buff_t* enrage;
+    buff_t* frothing_berserker;
+    buff_t* furious_slash;
     buff_t* furious_charge;
     buff_t* heroic_leap_movement;
     buff_t* ignore_pain;
@@ -125,8 +125,8 @@ public:
     buff_t* fujiedas_fury;
     buff_t* destiny_driver;
     buff_t* xavarics_magnum_opus;
-    haste_buff_t* sephuzs_secret;
-    haste_buff_t* in_for_the_kill;
+    buff_t* sephuzs_secret;
+    buff_t* in_for_the_kill;
   buff_t* war_veteran; // Arms T21 2PC
   buff_t* weighted_blade; // Arms T21 4PC
   } buff;
@@ -3850,19 +3850,20 @@ struct die_by_the_sword_t: public warrior_spell_t
 
 // In for the Kill ===================================================================
 
-struct in_for_the_kill_t : public haste_buff_t
+struct in_for_the_kill_t : public buff_t
 {
   double base_value;
   double below_pct_increase_amount;
   double below_pct_increase;
 
   in_for_the_kill_t(warrior_t& p, const std::string&n, const spell_data_t*s) :
-    haste_buff_t(  &p, n, s ),
+    buff_t(  &p, n, s ),
     base_value( p.talents.in_for_the_kill -> effectN( 1 ) .percent() ),
     below_pct_increase_amount( p.talents.in_for_the_kill -> effectN( 2 ) .percent() ),
     below_pct_increase( p.talents.in_for_the_kill -> effectN( 3 ) .base_value() )
 
   {
+    add_invalidate(CACHE_ATTACK_HASTE);
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
@@ -3875,7 +3876,7 @@ struct in_for_the_kill_t : public haste_buff_t
     {
         default_value = base_value;
     }
-    return haste_buff_t::trigger( stacks, value, chance, duration );
+    return buff_t::trigger( stacks, value, chance, duration );
   }
 };
 
@@ -5074,14 +5075,14 @@ struct protection_rage_t: public warrior_buff_t < buff_t >
 
 // That legendary crap ring ===========================================================
 
-struct sephuzs_secret_buff_t: public haste_buff_t
+struct sephuzs_secret_buff_t: public buff_t
 {
   cooldown_t* icd;
   sephuzs_secret_buff_t( warrior_t* p ):
-    haste_buff_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
+    buff_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
   {
     set_default_value( p -> find_spell( 208052 ) -> effectN( 2 ).percent() );
-    add_invalidate( CACHE_HASTE );
+    add_invalidate( CACHE_ATTACK_HASTE );
     icd = p -> get_cooldown( "sephuzs_secret_cooldown" );
     icd  -> duration = p -> find_spell( 226262 ) -> duration();
   }
@@ -5151,9 +5152,9 @@ void warrior_t::create_buffs()
   buff.berserker_rage = buff_creator_t( this, "berserker_rage", spec.berserker_rage )
     .cd( timespan_t::zero() );
 
-  buff.frothing_berserker = make_buff<haste_buff_t>( this, "frothing_berserker", find_spell( 215572 ) );
-    buff.frothing_berserker -> set_default_value( find_spell ( 215572 ) -> effectN( 2 ).percent() );
-    buff.frothing_berserker -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.frothing_berserker = make_buff( this, "frothing_berserker", find_spell( 215572 ) )
+      -> set_default_value( find_spell ( 215572 ) -> effectN( 2 ).percent() )
+      -> add_invalidate( CACHE_ATTACK_HASTE );
 
   buff.bounding_stride = buff_creator_t( this, "bounding_stride", find_spell( 202164 ) )
     .chance( talents.bounding_stride -> ok() )
@@ -5182,12 +5183,13 @@ void warrior_t::create_buffs()
     .chance( artifact.dragon_scales.data().proc_chance() )
     .default_value( artifact.dragon_scales.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
-  buff.enrage = make_buff<haste_buff_t>( this, "enrage", find_spell( 184362 ) );
-    buff.enrage->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    buff.enrage->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() );
+  buff.enrage = make_buff( this, "enrage", find_spell( 184362 ) )
+      ->add_invalidate( CACHE_ATTACK_HASTE )
+      ->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() );
 
-  buff.furious_slash = make_buff<haste_buff_t>( this, "furious_slash", find_spell( 202539 ) );
-    buff.furious_slash->set_default_value( find_spell( 202539 ) -> effectN( 1 ).percent() );
+  buff.furious_slash = make_buff( this, "furious_slash", find_spell( 202539 ) )
+      ->set_default_value( find_spell( 202539 ) -> effectN( 1 ).percent() )
+      ->add_invalidate(CACHE_ATTACK_HASTE);
 
   buff.heroic_leap_movement = buff_creator_t( this, "heroic_leap_movement" );
   buff.charge_movement = buff_creator_t( this, "charge_movement" );

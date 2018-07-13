@@ -472,6 +472,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
     trigger_attempts(),
     trigger_successes(),
     simulation_max_stack( 0 ),
+    invalidate_list(),
+    haste_type( HASTE_NONE ),
     benefit_pct(),
     trigger_pct(),
     avg_start(),
@@ -564,6 +566,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params )
 
   invalidate_list       = params._invalidate_list;
   requires_invalidation = !invalidate_list.empty();
+  init_haste_type();
 
   if ( player && !player->cache.active )
     requires_invalidation = false;
@@ -608,7 +611,7 @@ void buff_t::update_trigger_calculations()
   else
   {
     default_chance = manual_chance;
-    rppm = nullptr;
+    rppm           = nullptr;
   }
 }
 
@@ -795,6 +798,7 @@ buff_t* buff_t::add_invalidate( cache_e c )
     {
       change_regen_rate = true;
     }
+    init_haste_type();
   }
   return this;
 }
@@ -1306,6 +1310,8 @@ void buff_t::decrement( int stacks, double value )
   }
   else
   {
+    adjust_haste();
+
     int old_stack = current_stack;
 
     if ( requires_invalidation )
@@ -1346,7 +1352,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
   if ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS )
   {
-    throw std::runtime_error(fmt::format("'{}' attempts to extend asynchronous buff '{}'.", p->name(), name() ));
+    throw std::runtime_error( fmt::format( "'{}' attempts to extend asynchronous buff '{}'.", p->name(), name() ) );
   }
 
   assert( expiration.size() == 1 );
@@ -1562,6 +1568,10 @@ void buff_t::bump( int stacks, double value )
   if ( _max_stack == 0 )
     return;
 
+  if ( value != current_value )
+  {
+    adjust_haste();
+  }
   current_value = value;
 
   if ( requires_invalidation )
@@ -1653,6 +1663,8 @@ void buff_t::bump( int stacks, double value )
 
     if ( current_stack > simulation_max_stack )
       simulation_max_stack = current_stack;
+
+    adjust_haste();
   }
   else
   {
@@ -1803,6 +1815,8 @@ void buff_t::expire( timespan_t delay )
 
   current_value = 0;
   aura_loss();
+
+  adjust_haste();
 
   if ( player )
     player->trigger_ready();
@@ -2064,6 +2078,56 @@ rng::rng_t& buff_t::rng()
   return sim->rng();
 }
 
+/**
+ * Adjust the players dynamic effects affected by haste changes.
+ */
+void buff_t::adjust_haste()
+{
+  if ( haste_type == HASTE_NONE )
+  {
+    return;
+  }
+
+  player->adjust_dynamic_cooldowns();
+  // player->adjust_global_cooldown( haste_type );
+  player->adjust_auto_attack( haste_type );
+  player->adjust_action_queue_time();
+}
+
+void buff_t::init_haste_type()
+{
+  // All haste > everything
+  if ( range::find( invalidate_list, CACHE_HASTE ) != invalidate_list.end() )
+  {
+    haste_type = HASTE_ANY;
+  }
+
+  // Select one of the specific types
+  if ( haste_type == HASTE_NONE )
+  {
+    if ( range::find( invalidate_list, CACHE_SPELL_HASTE ) != invalidate_list.end() )
+    {
+      haste_type = HASTE_SPELL;
+    }
+    else if ( range::find( invalidate_list, CACHE_ATTACK_HASTE ) != invalidate_list.end() )
+    {
+      haste_type = HASTE_ATTACK;
+    }
+    else if ( range::find( invalidate_list, CACHE_SPEED ) != invalidate_list.end() )
+    {
+      haste_type = SPEED_ANY;
+    }
+    else if ( range::find( invalidate_list, CACHE_SPELL_SPEED ) != invalidate_list.end() )
+    {
+      haste_type = SPEED_SPELL;
+    }
+    else if ( range::find( invalidate_list, CACHE_ATTACK_SPEED ) != invalidate_list.end() )
+    {
+      haste_type = SPEED_ATTACK;
+    }
+  }
+}
+
 // ==========================================================================
 // STAT_BUFF
 // ==========================================================================
@@ -2298,103 +2362,6 @@ cost_reduction_buff_t* cost_reduction_buff_t::set_reduction( school_e school, do
   this->amount = amount;
   this->school = school;
   return this;
-}
-
-// ==========================================================================
-// HASTE_BUFF
-// ==========================================================================
-
-haste_buff_t::haste_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* spell, const item_t* item )
-  : buff_t( q, name, spell, item ), haste_type( HASTE_NONE )
-{
-  // All haste > everything
-  if ( range::find( invalidate_list, CACHE_HASTE ) != invalidate_list.end() )
-  {
-    haste_type = HASTE_ANY;
-  }
-
-  // Select one of the specific types
-  if ( haste_type == HASTE_NONE )
-  {
-    if ( range::find( invalidate_list, CACHE_SPELL_HASTE ) != invalidate_list.end() )
-    {
-      haste_type = HASTE_SPELL;
-    }
-    else if ( range::find( invalidate_list, CACHE_ATTACK_HASTE ) != invalidate_list.end() )
-    {
-      haste_type = HASTE_ATTACK;
-    }
-    else if ( range::find( invalidate_list, CACHE_SPEED ) != invalidate_list.end() )
-    {
-      haste_type = SPEED_ANY;
-    }
-    else if ( range::find( invalidate_list, CACHE_SPELL_SPEED ) != invalidate_list.end() )
-    {
-      haste_type = SPEED_SPELL;
-    }
-    else if ( range::find( invalidate_list, CACHE_ATTACK_SPEED ) != invalidate_list.end() )
-    {
-      haste_type = SPEED_ATTACK;
-    }
-    // If no specific haste is given, invalidate all. In other cases, the buff_t constructor will
-    // handle invalidations and requires invalidation setting.
-    else
-    {
-      haste_type = HASTE_ANY;
-      add_invalidate( CACHE_HASTE );
-      requires_invalidation = true;
-    }
-  }
-}
-
-// haste_buff_t::execute ====================================================
-
-void haste_buff_t::bump( int stacks, double value )
-{
-  bool is_changed = check() < max_stack() || value != current_value;
-
-  buff_t::bump( stacks, value );
-
-  haste_adjusted( is_changed );
-}
-
-// haste_buff_t::decrement =====================================================
-
-void haste_buff_t::decrement( int stacks, double value )
-{
-  bool is_changed = check() > 1;  // Only do dynamic stuff if decrement is called on >1 stacks.
-
-  buff_t::decrement( stacks, value );
-
-  haste_adjusted( is_changed );
-}
-
-void haste_buff_t::haste_adjusted( bool is_changed )
-{
-  if ( !is_changed )
-    return;
-
-  player->adjust_dynamic_cooldowns();
-  // player->adjust_global_cooldown( haste_type );
-  player->adjust_auto_attack( haste_type );
-  player->adjust_action_queue_time();
-}
-
-// haste_buff_t::expire_override ==============================================
-
-void haste_buff_t::expire( timespan_t delay )
-{
-  bool is_changed = check() != 0;
-
-  buff_t::expire( delay );
-
-  if ( is_changed )
-  {
-    player->adjust_dynamic_cooldowns();
-    // player -> adjust_global_cooldown( haste_type );
-    player->adjust_auto_attack( haste_type );
-    player->adjust_action_queue_time();
-  }
 }
 
 // tick_buff_t::trigger =====================================================

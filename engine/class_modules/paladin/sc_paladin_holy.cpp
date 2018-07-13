@@ -22,10 +22,10 @@ struct divine_protection_t : public buff_t
 };
 
 
-struct holy_avenger_buff_t : public haste_buff_t
+struct holy_avenger_buff_t : public buff_t
 {
   holy_avenger_buff_t( player_t* p ):
-    haste_buff_t( p, "holy_avenger", p -> find_spell( 105809 ) )
+    buff_t( p, "holy_avenger", p -> find_spell( 105809 ) )
 
   {
     set_default_value(1.0 / (1.0 + p -> find_spell(105809) -> effectN(1).percent()));

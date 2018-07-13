@@ -1000,8 +1000,10 @@ namespace warlock
     buffs.active_uas = make_buff( this, "active_uas" )
       ->set_max_stack( 20 );
     //talents
-    buffs.dark_soul_misery = make_buff<haste_buff_t>(this, "dark_soul", talents.dark_soul_misery)
-      ->set_default_value(talents.dark_soul_misery->effectN(1).percent());
+    buffs.dark_soul_misery = make_buff(this, "dark_soul", talents.dark_soul_misery)
+      ->set_default_value(talents.dark_soul_misery->effectN(1).percent())
+      ->add_invalidate(CACHE_SPELL_HASTE);
+
     buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
       ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
       ->set_trigger_spell( talents.nightfall );
@@ -1015,9 +1017,11 @@ namespace warlock
       ->set_duration(find_spell(272893)->duration())
       ->set_refresh_behavior(buff_refresh_behavior::DURATION);
     //tier
-    buffs.demonic_speed = make_buff<haste_buff_t>( this, "demonic_speed", sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger() )
+    buffs.demonic_speed =
+        make_buff( this, "demonic_speed", sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger() )
       ->set_chance( sets->set( WARLOCK_AFFLICTION, T20, B4 )->proc_chance() )
-      ->set_default_value( sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+      ->set_default_value( sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
+      ->add_invalidate(CACHE_HASTE);
     buffs.inevitable_demise = make_buff(this, "inevitable_demise", azerite.inevitable_demise)
       ->set_max_stack(find_spell(273525)->max_stacks())
       ->set_default_value(azerite.inevitable_demise.value());

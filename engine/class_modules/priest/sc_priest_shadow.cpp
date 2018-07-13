@@ -1606,7 +1606,7 @@ struct overwhelming_darkness_t final : public priest_buff_t<stat_buff_t>
   }
 };
 
-struct voidform_t final : public priest_buff_t<haste_buff_t>
+struct voidform_t final : public priest_buff_t<buff_t>
 {
   voidform_t( priest_t& p ) : base_t( p, "voidform", p.find_spell( 194249 ) )
   {
@@ -1677,7 +1677,7 @@ struct voidform_t final : public priest_buff_t<haste_buff_t>
   }
 };
 
-struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
+struct lingering_insanity_t final : public priest_buff_t<buff_t>
 {
   lingering_insanity_t( priest_t& p ) : base_t( p, "lingering_insanity", p.talents.lingering_insanity )
   {
@@ -1687,6 +1687,7 @@ struct lingering_insanity_t final : public priest_buff_t<haste_buff_t>
     set_tick_behavior( buff_tick_behavior::REFRESH );
     set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
     set_max_stack( (int)(float)p.find_spell( 185916 )->effectN( 4 ).base_value() );  // or 18?
+    add_invalidate(CACHE_HASTE);
   }
 
   void expire_override( int stacks, timespan_t ) override

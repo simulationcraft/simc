@@ -396,7 +396,7 @@ namespace warlock
         propagate_const<buff_t*> soul_harvest;
         propagate_const<buff_t*> sindorei_spite;
         propagate_const<buff_t*> stretens_insanity;
-        propagate_const<haste_buff_t*> sephuzs_secret;
+        propagate_const<buff_t*> sephuzs_secret;
         propagate_const<buff_t*> alythesss_pyrogenics;
       } buffs;
 

@@ -172,14 +172,14 @@ public:
     buff_t* nemesis;
     buff_t* blind_fury;
     movement_buff_t* vengeful_retreat_move;
-    haste_buff_t* havoc_t21_4pc;
+    buff_t* havoc_t21_4pc;
 
     // Vengeance
     buff_t* demon_spikes;
     absorb_buff_t* soul_barrier;
 
     // Legendary
-    haste_buff_t* sephuzs_secret;
+    buff_t* sephuzs_secret;
     buff_t* chaos_blades;
 
     // Azerite
@@ -4029,15 +4029,16 @@ struct demon_spikes_t : public demon_hunter_buff_t<buff_t>
 
 // Legendary Ring Buff ======================================================
 
-struct sephuzs_secret_buff_t : public haste_buff_t
+struct sephuzs_secret_buff_t : public buff_t
 {
   cooldown_t* icd;
 
   sephuzs_secret_buff_t( demon_hunter_t* p ) :
-    haste_buff_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
+    buff_t( p, "sephuzs_secret", p -> find_spell( 208052 ) )
   {
     set_default_value( p->find_spell( 208052 )->effectN( 2 ).percent() );
     add_invalidate( CACHE_RUN_SPEED );
+    add_invalidate( CACHE_HASTE );
 
     icd = p->get_cooldown( "sephuzs_secret_cooldown" );
     icd->duration = p->find_spell( 226262 )->duration();
@@ -4506,8 +4507,9 @@ void demon_hunter_t::create_buffs()
 
   if ( level() <= 115 )
   {
-    buff.havoc_t21_4pc = make_buff<haste_buff_t>( this, "havoc_t21_4pc", find_spell( 252165 ) );
-    buff.havoc_t21_4pc->set_default_value( find_spell( 252165 )->effectN( 1 ).percent() );
+    buff.havoc_t21_4pc = make_buff( this, "havoc_t21_4pc", find_spell( 252165 ) )
+        ->set_default_value( find_spell( 252165 )->effectN( 1 ).percent() )
+        ->add_invalidate(CACHE_HASTE);
   }
   else
   {

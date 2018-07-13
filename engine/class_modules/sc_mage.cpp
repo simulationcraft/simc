@@ -441,7 +441,7 @@ public:
     buff_t* incanters_flow;
     buff_t* rune_of_power;
 
-    haste_buff_t* sephuzs_secret;
+    buff_t* sephuzs_secret;
 
     // Azerite
     buff_t* arcane_pummeling;
@@ -1142,13 +1142,14 @@ struct incanters_flow_t : public buff_t
   }
 };
 
-struct icy_veins_buff_t : public haste_buff_t
+struct icy_veins_buff_t : public buff_t
 {
   icy_veins_buff_t( mage_t* p ) :
-    haste_buff_t( p, "icy_veins", p -> find_spell( 12472 ) )
+    buff_t( p, "icy_veins", p -> find_spell( 12472 ) )
   {
     set_default_value( data().effectN( 1 ).percent() );
     set_cooldown( timespan_t::zero() );
+    add_invalidate(CACHE_SPELL_HASTE);
     buff_duration += p -> talents.thermal_void -> effectN( 2 ).time_value();
   }
 
@@ -6235,9 +6236,10 @@ void mage_t::create_buffs()
                              -> set_default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
   buffs.expanding_mind   = make_buff( this, "expanding_mind", find_spell( 253262 ) )
                              -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.quick_thinker    = make_buff<haste_buff_t>( this, "quick_thinker", find_spell( 253299 ) )
+  buffs.quick_thinker    = make_buff( this, "quick_thinker", find_spell( 253299 ) )
                              -> set_default_value( find_spell( 253299 ) -> effectN( 1 ).percent() )
-                             -> set_chance( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() );
+                             -> set_chance( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() )
+                             ->add_invalidate(CACHE_SPELL_HASTE);
 
 
   // Fire
@@ -6260,8 +6262,9 @@ void mage_t::create_buffs()
                                    -> set_default_value( find_spell( 269651 ) -> effectN( 1 ).percent() )
                                    -> set_chance( talents.pyroclasm -> effectN( 1 ).percent() );
 
-  buffs.streaking              = make_buff<haste_buff_t>( this, "streaking", find_spell( 211399 ) )
-                                   -> set_default_value( find_spell( 211399 ) -> effectN( 1 ).percent() );
+  buffs.streaking              = make_buff( this, "streaking", find_spell( 211399 ) )
+                                   -> set_default_value( find_spell( 211399 ) -> effectN( 1 ).percent() )
+                                   ->add_invalidate(CACHE_SPELL_HASTE);
   buffs.ignition               = make_buff( this, "ignition", find_spell( 246261 ) )
                                    -> set_trigger_spell( sets -> set( MAGE_FIRE, T20, B2 ) );
   buffs.critical_massive       = make_buff( this, "critical_massive", find_spell( 242251 ) )
@@ -8003,20 +8006,21 @@ static void sorcerous_shadowruby_pendant( special_effect_t& effect )
 }
 
 // Mage Legendary Items
-struct sephuzs_secret_t : public class_buff_cb_t<mage_t, haste_buff_t>
+struct sephuzs_secret_t : public class_buff_cb_t<mage_t, buff_t>
 {
   sephuzs_secret_t(): super( MAGE, "sephuzs_secret" )
   { }
 
-  virtual haste_buff_t*& buff_ptr( const special_effect_t& e ) override
+  virtual buff_t*& buff_ptr( const special_effect_t& e ) override
   { return debug_cast<mage_t*>( e.player ) -> buffs.sephuzs_secret; }
 
-  haste_buff_t* creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    auto buff = make_buff<haste_buff_t>( e.player, buff_name, e.trigger() );
+    auto buff = make_buff( e.player, buff_name, e.trigger() );
     buff -> set_cooldown( e.player -> find_spell( 226262 ) -> duration() )
          -> set_default_value( e.trigger() -> effectN( 2 ).percent() )
-         -> add_invalidate( CACHE_RUN_SPEED );
+         -> add_invalidate( CACHE_RUN_SPEED )
+         -> add_invalidate(CACHE_HASTE);
     return buff;
   }
 };

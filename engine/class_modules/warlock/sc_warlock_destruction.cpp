@@ -918,11 +918,12 @@ namespace warlock {
       ->set_refresh_behavior(buff_refresh_behavior::DURATION)
       ->set_duration(timespan_t::from_seconds(10));
 
-    buffs.reverse_entropy = make_buff<haste_buff_t>(this, "reverse_entropy", talents.reverse_entropy)
+    buffs.reverse_entropy = make_buff(this, "reverse_entropy", talents.reverse_entropy)
       ->set_default_value(find_spell(266030)->effectN(1).percent())
       ->set_duration(find_spell(266030)->duration())
       ->set_refresh_behavior(buff_refresh_behavior::DURATION)
-      ->set_trigger_spell(talents.reverse_entropy);
+      ->set_trigger_spell(talents.reverse_entropy)
+      ->add_invalidate(CACHE_HASTE);
 
     buffs.grimoire_of_supremacy = make_buff(this, "grimoire_of_supremacy", find_spell(266091))
       ->set_default_value(find_spell(266091)->effectN(1).percent());

@@ -478,23 +478,24 @@ struct sephuzs_secret_enabler_t : public scoped_actor_callback_t<priest_t>
   }
 };
 
-struct sephuzs_secret_t : public class_buff_cb_t<priest_t, haste_buff_t>
+struct sephuzs_secret_t : public class_buff_cb_t<priest_t>
 {
   sephuzs_secret_t() : super( PRIEST, "sephuzs_secret" )
   {
   }
 
-  haste_buff_t*& buff_ptr( const special_effect_t& e ) override
+  buff_t*& buff_ptr( const special_effect_t& e ) override
   {
     return debug_cast<priest_t*>( e.player )->buffs.sephuzs_secret.get_ref();
   }
 
-  haste_buff_t* creator( const special_effect_t& e ) const override
+  buff_t* creator( const special_effect_t& e ) const override
   {
-    auto buff = make_buff<haste_buff_t>( e.player, buff_name, e.trigger() );
+    auto buff = make_buff( e.player, buff_name, e.trigger() );
     buff->set_cooldown( e.player->find_spell( 226262 )->duration() )
         ->set_default_value( e.trigger()->effectN( 2 ).percent() )
-        ->add_invalidate( CACHE_RUN_SPEED );
+        ->add_invalidate( CACHE_RUN_SPEED )
+        ->add_invalidate(CACHE_HASTE);
     return buff;
   }
 };
@@ -1097,7 +1098,7 @@ void priest_t::create_buffs()
 
   // Shared talent buffs
 
-  buffs.power_infusion = make_buff<haste_buff_t>( this, "power_infusion", talents.power_infusion )
+  buffs.power_infusion = make_buff( this, "power_infusion", talents.power_infusion )
                              ->add_invalidate( CACHE_SPELL_HASTE )
                              ->add_invalidate( CACHE_HASTE );
   buffs.twist_of_fate = make_buff( this, "twist_of_fate", talents.twist_of_fate )

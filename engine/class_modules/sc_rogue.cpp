@@ -209,7 +209,7 @@ struct rogue_t : public player_t
     buff_t* envenom;
     buff_t* vendetta;
     // Outlaw
-    haste_buff_t* adrenaline_rush;
+    buff_t* adrenaline_rush;
     buff_t* blade_flurry;
     buff_t* blade_rush;
     buff_t* opportunity;
@@ -217,7 +217,7 @@ struct rogue_t : public player_t
     // Roll the bones buffs
     buff_t* broadside;
     buff_t* buried_treasure;
-    haste_buff_t* grand_melee;
+    buff_t* grand_melee;
     buff_t* skull_and_crossbones;
     buff_t* ruthless_precision;
     buff_t* true_bearing;
@@ -230,7 +230,7 @@ struct rogue_t : public player_t
 
     // Talents
     // Shared
-    haste_buff_t* alacrity;
+    buff_t* alacrity;
     buff_t* subterfuge;
     // Assassination
     buff_t* elaborate_planning;
@@ -255,7 +255,7 @@ struct rogue_t : public player_t
     buff_t* mantle_of_the_master_assassin;
     buff_t* the_dreadlords_deceit_driver;
     buff_t* the_dreadlords_deceit;
-    haste_buff_t* sephuzs_secret;
+    buff_t* sephuzs_secret;
     // Assassination
     buff_t* the_empty_crown;
     // Outlaw
@@ -272,7 +272,7 @@ struct rogue_t : public player_t
     buff_t* t19_4pc_outlaw;
     // T20 Raid
     buff_t* t20_2pc_outlaw;
-    haste_buff_t* t20_4pc_outlaw;
+    buff_t* t20_4pc_outlaw;
     // T21 Raid
     buff_t* t21_2pc_assassination;
     buff_t* t21_2pc_outlaw;
@@ -4669,12 +4669,12 @@ struct proxy_garrote_t : public buff_t
   }
 };
 
-struct adrenaline_rush_t : public haste_buff_t
+struct adrenaline_rush_t : public buff_t
 {
   rogue_t* r;
 
   adrenaline_rush_t( rogue_t* p ) :
-    haste_buff_t( p, "adrenaline_rush", p -> find_class_spell( "Adrenaline Rush" ) ),
+    buff_t( p, "adrenaline_rush", p -> find_class_spell( "Adrenaline Rush" ) ),
     r( p )
   { 
     set_cooldown( timespan_t::zero() );
@@ -7040,10 +7040,10 @@ void rogue_t::create_buffs()
   buffs.buried_treasure       = make_buff( this, "buried_treasure", find_spell( 199600 ) )
                                 -> set_affects_regen( true )
                                 -> set_default_value( find_spell( 199600 ) -> effectN( 1 ).base_value() / 5.0 );
-  buffs.grand_melee           = make_buff<haste_buff_t>( this, "grand_melee", find_spell( 193358 ) );
-  buffs.grand_melee -> add_invalidate( CACHE_ATTACK_SPEED )
-                    -> add_invalidate( CACHE_LEECH )
-                    -> set_default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
+  buffs.grand_melee           = make_buff( this, "grand_melee", find_spell( 193358 ) )
+      -> add_invalidate( CACHE_ATTACK_SPEED )
+      -> add_invalidate( CACHE_LEECH )
+      -> set_default_value( 1.0 / ( 1.0 + find_spell( 193358 ) -> effectN( 1 ).percent() ) );
   buffs.skull_and_crossbones  = make_buff( this, "skull_and_crossbones", find_spell( 199603 ) )
                                 -> set_default_value( find_spell( 199603 ) -> effectN( 1 ).percent() );
   buffs.ruthless_precision    = make_buff( this, "ruthless_precision", find_spell( 193357 ) )
@@ -7073,9 +7073,10 @@ void rogue_t::create_buffs()
 
   // Talents
   // Shared
-  buffs.alacrity                = make_buff<haste_buff_t>( this, "alacrity", find_spell( 193538 ) );
-  buffs.alacrity -> set_default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
-                 -> set_chance( talent.alacrity -> ok() );
+  buffs.alacrity                = make_buff( this, "alacrity", find_spell( 193538 ) )
+      -> set_default_value( find_spell( 193538 ) -> effectN( 1 ).percent() )
+      -> set_chance( talent.alacrity -> ok() )
+      -> add_invalidate( CACHE_HASTE );
   buffs.subterfuge              = new buffs::subterfuge_t( this );
   // Assassination
   buffs.elaborate_planning      = make_buff( this, "elaborate_planning", talent.elaborate_planning -> effectN( 1 ).trigger() )
@@ -7136,10 +7137,12 @@ void rogue_t::create_buffs()
   const spell_data_t* tddid                = ( specialization() == ROGUE_ASSASSINATION ) ? find_spell( 208693 ): ( specialization() == ROGUE_SUBTLETY ) ? find_spell( 228224 ): spell_data_t::not_found();
   buffs.the_dreadlords_deceit              = make_buff( this, "the_dreadlords_deceit", tddid )
                                              -> set_default_value( tddid -> effectN( 1 ).percent() );
-  buffs.sephuzs_secret                     = make_buff<haste_buff_t>( this, "sephuzs_secret", find_spell( 208052 ) );
-  buffs.sephuzs_secret -> set_cooldown( find_spell( 226262 ) -> duration() )
-                       -> set_default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
-                       -> add_invalidate( CACHE_RUN_SPEED );
+  buffs.sephuzs_secret =
+      make_buff( this, "sephuzs_secret", find_spell( 208052 ) )
+      -> set_cooldown( find_spell( 226262 ) -> duration() )
+      -> set_default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
+      -> add_invalidate( CACHE_RUN_SPEED )
+      -> add_invalidate( CACHE_HASTE );
   // Assassination
   buffs.the_empty_crown                    = make_buff( this, "the_empty_crown", find_spell(248201) )
                                              -> set_period( find_spell(248201) -> effectN( 1 ).period() )
@@ -7164,11 +7167,12 @@ void rogue_t::create_buffs()
   buffs.t20_2pc_outlaw                     = make_buff( this, "headshot", find_spell( 242277 ) )
                                              -> set_default_value( find_spell( 242277 ) -> effectN( 1 ).percent() )
                                              -> add_invalidate( CACHE_CRIT_CHANCE );
-  buffs.t20_4pc_outlaw                     = make_buff<haste_buff_t>( this, "lesser_adrenaline_rush", find_spell( 246558 ) );
-  buffs.t20_4pc_outlaw -> set_cooldown( timespan_t::zero() )
-                       -> set_default_value( find_spell( 246558 ) -> effectN( 2 ).percent() )
-                       -> set_affects_regen( true )
-                       -> add_invalidate( CACHE_ATTACK_SPEED );
+  buffs.t20_4pc_outlaw =
+     make_buff( this, "lesser_adrenaline_rush", find_spell( 246558 ) )
+     -> set_cooldown( timespan_t::zero() )
+     -> set_default_value( find_spell( 246558 ) -> effectN( 2 ).percent() )
+     -> set_affects_regen( true )
+     -> add_invalidate( CACHE_ATTACK_SPEED );
   // T21 Raid
   buffs.t21_2pc_assassination              = make_buff( this, "virulent_poisons", sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() )
                                              -> set_default_value( sets -> set( ROGUE_ASSASSINATION, T21, B2 ) -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );

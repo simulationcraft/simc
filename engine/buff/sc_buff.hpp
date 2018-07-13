@@ -20,7 +20,6 @@ struct buff_t;
 struct stat_buff_t;
 struct absorb_buff_t;
 struct cost_reduction_buff_t;
-struct haste_buff_t;
 struct actor_pair_t;
 struct sim_t;
 struct action_t;
@@ -191,6 +190,7 @@ public:
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
   int _max_stack;
   const spell_data_t* trigger_data;
+
 public:
   double default_value;
   /**
@@ -237,6 +237,7 @@ protected:
   int trigger_attempts, trigger_successes;
   int simulation_max_stack;
   std::vector<cache_e> invalidate_list;
+  haste_type_e haste_type;
 
   // report data
 public:
@@ -420,6 +421,8 @@ public:
 
 private:
   void update_trigger_calculations();
+  void adjust_haste();
+  void init_haste_type();
 
 };
 
@@ -487,19 +490,6 @@ struct cost_reduction_buff_t : public buff_t
   virtual void decrement( int stacks = 1, double value = -1.0 ) override;
   virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
   cost_reduction_buff_t* set_reduction(school_e school, double amount);
-};
-
-struct haste_buff_t : public buff_t
-{
-  haste_type_e haste_type;
-
-  haste_buff_t( actor_pair_t q, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = nullptr );
-public:
-  void decrement( int stacks = 1, double value = -1.0 ) override;
-  void bump     ( int stacks = 1, double value = -1.0 ) override;
-  void expire( timespan_t delay = timespan_t::zero() ) override;
-private:
-  void haste_adjusted( bool is_changed );
 };
 
 /**

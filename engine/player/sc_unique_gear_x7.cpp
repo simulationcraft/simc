@@ -84,7 +84,7 @@ void enchants::galeforce_striking( special_effect_t& effect )
   {
     auto spell = effect.trigger();
     buff =
-      make_buff<haste_buff_t>( effect.player, util::tokenized_name( spell ), spell )
+      make_buff( effect.player, util::tokenized_name( spell ), spell )
         -> add_invalidate( CACHE_ATTACK_SPEED )
         -> set_default_value( spell -> effectN( 1 ).percent() )
         -> set_activated( false );

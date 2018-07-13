@@ -82,7 +82,6 @@ struct dot_t;
 struct event_t;
 struct expr_t;
 struct gain_t;
-struct haste_buff_t;
 struct heal_t;
 struct item_t;
 struct instant_absorb_t;
@@ -3653,8 +3652,8 @@ struct player_t : public actor_t
     std::array<buff_t*, 4> ancestral_call;
     buff_t* fireblood;
 
-    haste_buff_t* berserking;
-    haste_buff_t* bloodlust;
+    buff_t* berserking;
+    buff_t* bloodlust;
 
     buff_t* cooldown_reduction;
     buff_t* amplification;
@@ -3662,7 +3661,7 @@ struct player_t : public actor_t
 
     // Legendary meta stuff
     buff_t* courageous_primal_diamond_lucidity;
-    haste_buff_t* tempus_repit;
+    buff_t* tempus_repit;
     buff_t* fortitude;
 
     buff_t* archmages_greater_incandescence_str;
@@ -3690,15 +3689,15 @@ struct player_t : public actor_t
     buff_t* temptation; // Ring that goes on a 5 minute cd if you use it too much.
     buff_t* norgannons_foresight; //Legendary item that allows movement for 5 seconds if you stand still for 8.
     buff_t* norgannons_foresight_ready;
-    haste_buff_t* nefarious_pact; // Whispers in the dark good buff
-    haste_buff_t* devils_due; // Whispers in the dark bad buff
+    buff_t* nefarious_pact; // Whispers in the dark good buff
+    buff_t* devils_due; // Whispers in the dark bad buff
 
     // 6.2 trinket proxy buffs
     buff_t* naarus_discipline; // Priest-Discipline Boss 13 T18 trinket
     buff_t* tyrants_immortality; // Tyrant's Decree trinket proc
     buff_t* tyrants_decree_driver; // Tyrant's Decree trinket driver
 
-    haste_buff_t* fel_winds; // T18 LFR Plate Melee Attack Speed buff
+    buff_t* fel_winds; // T18 LFR Plate Melee Attack Speed buff
     buff_t* demon_damage_buff; // 6.2.3 Heirloom trinket demon damage buff
 
     // Darkmoon Faire versatility food

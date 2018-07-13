@@ -2699,8 +2699,7 @@ void player_t::create_buffs()
   if ( !is_enemy() )
   {
     // Racials
-    buffs.berserking = make_buff<haste_buff_t>( this, "berserking", find_spell( 26297 ) );
-    buffs.berserking->add_invalidate( CACHE_HASTE );
+    buffs.berserking = make_buff( this, "berserking", find_spell( 26297 ) )->add_invalidate( CACHE_HASTE );
     buffs.stoneform  = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
     buffs.blood_fury = make_buff<stat_buff_t>( this, "blood_fury", find_racial_spell( "Blood Fury" ) )
                            ->add_invalidate( CACHE_SPELL_POWER )
@@ -2734,8 +2733,8 @@ void player_t::create_buffs()
         buff_creator_t( this, "archmages_incandescence_int", find_spell( 177159 ) ).add_invalidate( CACHE_INTELLECT );
 
     // Legendary meta haste buff
-    buffs.tempus_repit = make_buff<haste_buff_t>( this, "tempus_repit", find_spell( 137590 ) );
-    buffs.tempus_repit->add_invalidate( CACHE_SPELL_SPEED )->set_activated( false );
+    buffs.tempus_repit = make_buff( this, "tempus_repit", find_spell( 137590 ) )
+        ->add_invalidate( CACHE_SPELL_SPEED )->set_activated( false );
 
     buffs.darkflight = buff_creator_t( this, "darkflight", find_racial_spell( "darkflight" ) );
 

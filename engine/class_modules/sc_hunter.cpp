@@ -1142,7 +1142,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
         -> set_default_value( o() -> specs.beast_cleave -> effectN( 1 ).percent() );
 
     buffs.frenzy =
-      make_buff<haste_buff_t>( this, "frenzy", o() -> find_spell( 272790 ) )
+      make_buff( this, "frenzy", o() -> find_spell( 272790 ) )
         -> set_default_value ( o() -> find_spell( 272790 ) -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_ATTACK_SPEED );
     if ( o() -> azerite.feeding_frenzy.ok() )
@@ -1228,7 +1228,7 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
     hunter_main_pet_base_t::create_buffs();
 
     buffs.predator =
-      make_buff<haste_buff_t>( this, "predator", o() -> find_spell( 260249 ) )
+      make_buff( this, "predator", o() -> find_spell( 260249 ) )
         -> set_default_value( o() -> find_spell( 260249 ) -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_ATTACK_SPEED );
   }
@@ -4921,8 +4921,9 @@ void hunter_t::create_buffs()
   }
 
   buffs.dire_beast =
-    make_buff<haste_buff_t>( this, "dire_beast", talents.dire_beast -> effectN( 2 ).trigger() )
-      -> set_default_value( talents.dire_beast -> effectN( 2 ).trigger() -> effectN( 1 ).percent() );
+    make_buff( this, "dire_beast", talents.dire_beast -> effectN( 2 ).trigger() )
+      -> set_default_value( talents.dire_beast -> effectN( 2 ).trigger() -> effectN( 1 ).percent() )
+      ->add_invalidate(CACHE_HASTE);
 
   buffs.thrill_of_the_hunt =
     make_buff( this, "thrill_of_the_hunt", talents.thrill_of_the_hunt -> effectN( 1 ).trigger() )
@@ -4947,10 +4948,11 @@ void hunter_t::create_buffs()
       -> set_chance( specs.trick_shots -> ok() );
 
   buffs.trueshot =
-    make_buff<haste_buff_t>( this, "trueshot", specs.trueshot )
+    make_buff( this, "trueshot", specs.trueshot )
       -> set_default_value( specs.trueshot -> effectN( 1 ).percent() )
       -> set_cooldown( timespan_t::zero() )
-      -> set_activated( true );
+      -> set_activated( true )
+      ->add_invalidate(CACHE_HASTE);
 
   buffs.lock_and_load =
     make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
@@ -5000,7 +5002,7 @@ void hunter_t::create_buffs()
       -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   buffs.predator =
-    make_buff<haste_buff_t>( this, "predator", find_spell( 260249 ) )
+    make_buff( this, "predator", find_spell( 260249 ) )
       -> set_default_value( find_spell( 260249 ) -> effectN( 1 ).percent() )
       -> add_invalidate( CACHE_ATTACK_SPEED );
 
@@ -5035,9 +5037,10 @@ void hunter_t::create_buffs()
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.sephuzs_secret =
-    make_buff<haste_buff_t>( this, "sephuzs_secret", find_spell( 208052 ) )
+    make_buff( this, "sephuzs_secret", find_spell( 208052 ) )
       -> set_default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
-      -> set_cooldown( find_spell( 226262 ) -> duration() );
+      -> set_cooldown( find_spell( 226262 ) -> duration() )
+      ->add_invalidate(CACHE_HASTE);
 
   // Sets
 
