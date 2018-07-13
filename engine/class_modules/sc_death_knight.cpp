@@ -7,6 +7,8 @@
 // Unholy
 // - Skelebro has an aoe spell (Arrow Spray), but the AI using it is very inconsistent
 // - Army of the dead ghouls should spawn once every 0.5s for 4s rather than all at once
+// - Fix Unholy Blight reporting : currently the uptime contains both the dot uptime (24.2s every 45s)
+//   and the driver uptime (6s every 45s)
 // Blood
 //
 // Frost
@@ -5713,21 +5715,20 @@ struct tombstone_t : public death_knight_spell_t
 struct unholy_blight_dot_t : public death_knight_spell_t
 {
   unholy_blight_dot_t( death_knight_t* p ) : 
-    death_knight_spell_t( "unholy_blight", p, p -> talent.unholy_blight -> effectN( 1 ).trigger() )
+    death_knight_spell_t( "unholy_blight_dot", p, p -> talent.unholy_blight -> effectN( 1 ).trigger() )
   {
-    background = true;
-    hasted_ticks = false;
-    tick_may_crit = true;
+    tick_may_crit    = true;
+    background       = true;
+    may_miss         = false;
+    may_crit         = false;
+    hasted_ticks     = false;
   }
 };
 
 struct unholy_blight_t : public death_knight_spell_t
 {
-  unholy_blight_dot_t* ub_dot;
-
   unholy_blight_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "unholy_blight_spreader", p, p -> talent.unholy_blight ),
-    ub_dot( new unholy_blight_dot_t( p ) )
+    death_knight_spell_t( "unholy_blight", p, p -> talent.unholy_blight )
   {
     may_crit = may_miss = may_dodge = may_parry = false;
     hasted_ticks = false;
@@ -5735,14 +5736,8 @@ struct unholy_blight_t : public death_knight_spell_t
     parse_options( options_str );
 
     aoe = -1;
-  }
-
-  void tick( dot_t* dot ) override
-  {
-    death_knight_spell_t::tick( dot );
-
-    ub_dot -> set_target( dot -> target );
-    ub_dot -> schedule_execute();
+    
+    tick_action = new unholy_blight_dot_t( p );
   }
 };
 
