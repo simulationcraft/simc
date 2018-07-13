@@ -260,7 +260,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       193526, // Trueshot
            0,
     },
-    // Survival tree, 17 abilities
+    // Survival tree, 18 abilities
     {
       186289, // Aspect of the Eagle
       187708, // Carve
@@ -273,6 +273,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        19577, // Intimidation
       259489, // Kill Command
        34477, // Misdirection
+      265888, // Mongoose Bite
       187707, // Muzzle
       186270, // Raptor Strike
       259491, // Serpent Sting

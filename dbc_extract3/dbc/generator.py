@@ -1239,6 +1239,7 @@ class SpellDataGenerator(DataGenerator):
           ( 260395, 2 ), # Lethal Shots buff
           ( 259516, 3 ), # Flanking Strike
           ( 267666, 3 ), # Chakrams
+          ( 265888, 3 ), # Mongoose Bite (AotE version)
           # Wildfire Infusion (Volatile Bomb spells)
           ( 271048, 3 ), ( 271049, 3 ), ( 260231, 3 ),
           ( 273289, 0 ), # Latent Poison (Azerite)
