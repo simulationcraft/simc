@@ -5942,7 +5942,7 @@ void consumables::potion_of_the_old_war( special_effect_t& effect )
 
   if ( ! action )
   {
-    action = new legion_potion_damage_t<melee_attack_t>( effect, effect.name(), effect.driver() );
+    action = new legion_potion_damage_t<melee_attack_t>( effect, effect.name(), effect.trigger() );
   }
 
   // Explicitly disable action creation for the potion on the base special effect
