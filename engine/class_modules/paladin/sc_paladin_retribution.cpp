@@ -63,35 +63,7 @@ namespace buffs {
 
 holy_power_consumer_t::holy_power_consumer_t( const std::string& n, paladin_t* p,
                                               const spell_data_t* s ) : paladin_melee_attack_t( n, p, s )
-{
-  if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
-  {
-    base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T19, B2 ) -> effectN( 1 ).percent();
-  }
-}
-
-double holy_power_consumer_t::action_multiplier() const
-{
-  double am = paladin_melee_attack_t::action_multiplier();
-  if ( p() -> buffs.divine_purpose -> up() )
-    am *= 1.0 + p() -> buffs.divine_purpose -> data().effectN( 2 ).percent();
-  return am;
-}
-
-double holy_power_consumer_t::composite_target_multiplier( player_t* t ) const
-{
-  double m = paladin_melee_attack_t::composite_target_multiplier( t );
-
-  paladin_td_t* td = this -> td( t );
-
-  if ( td -> buffs.debuffs_judgment -> up() )
-  {
-    double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
-    m *= judgment_multiplier;
-  }
-
-  return m;
-}
+{ }
 
 void holy_power_consumer_t::execute()
 {
@@ -351,18 +323,54 @@ struct blade_of_justice_t : public holy_power_generator_t
   }
 };
 
+struct holy_power_consumer_impact_t : public paladin_melee_attack_t
+{
+  holy_power_consumer_impact_t( const std::string& n, paladin_t* p, const spell_data_t* s )
+    : paladin_melee_attack_t( n, p, s ) {
+    dual = background = true;
+    may_miss = may_dodge = may_parry = false;
+
+    if ( p -> sets -> has_set_bonus( PALADIN_RETRIBUTION, T19, B2 ) )
+    {
+      base_multiplier *= 1.0 + p -> sets -> set( PALADIN_RETRIBUTION, T19, B2 ) -> effectN( 1 ).percent();
+    }
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+    if ( p() -> buffs.whisper_of_the_nathrezim -> check() )
+      am *= 1.0 + p() -> buffs.whisper_of_the_nathrezim -> data().effectN( 1 ).percent();
+    if ( p() -> buffs.divine_purpose -> up() )
+      am *= 1.0 + p() -> buffs.divine_purpose -> data().effectN( 2 ).percent();
+    return am;
+  }
+
+  virtual double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = paladin_melee_attack_t::composite_target_multiplier( t );
+
+    paladin_td_t* td = this -> td( t );
+
+    if ( td -> buffs.debuffs_judgment -> up() )
+    {
+      double judgment_multiplier = 1.0 + td -> buffs.debuffs_judgment -> data().effectN( 1 ).percent();
+      m *= judgment_multiplier;
+    }
+
+    return m;
+  }
+};
+
 // Divine Storm =============================================================
 
 struct divine_storm_t: public holy_power_consumer_t
 {
-  struct divine_storm_damage_t : public paladin_melee_attack_t
+  struct divine_storm_damage_t : public holy_power_consumer_impact_t
   {
     divine_storm_damage_t( paladin_t* p )
-      : paladin_melee_attack_t( "divine_storm_dmg", p, p -> find_spell( 224239 ) )
-    {
-      dual = background = true;
-      may_miss = may_dodge = may_parry = false;
-    }
+      : holy_power_consumer_impact_t( "divine_storm_dmg", p, p -> find_spell( 224239 ) )
+    {}
   };
 
   divine_storm_t( paladin_t* p, const std::string& options_str )
@@ -439,13 +447,18 @@ struct divine_storm_t: public holy_power_consumer_t
 
 struct templars_verdict_t : public holy_power_consumer_t
 {
-  struct templars_verdict_damage_t : public paladin_melee_attack_t
+  struct templars_verdict_damage_t : public holy_power_consumer_impact_t
   {
     templars_verdict_damage_t( paladin_t *p )
-      : paladin_melee_attack_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) )
+      : holy_power_consumer_impact_t( "templars_verdict_dmg", p, p -> find_spell( 224266 ) )
+    {}
+
+    virtual double action_multiplier() const override
     {
-      dual = background = true;
-      may_miss = may_dodge = may_parry = false;
+      double am = holy_power_consumer_impact_t::action_multiplier();
+      if ( p() -> buffs.righteous_verdict -> check() )
+        am *= 1.0 + p() -> buffs.righteous_verdict -> data().effectN( 1 ).percent();
+      return am;
     }
   };
 
@@ -465,16 +478,6 @@ struct templars_verdict_t : public holy_power_consumer_t
   }
 
   void record_data( action_state_t* ) override {}
-
-  virtual double action_multiplier() const override
-  {
-    double am = holy_power_consumer_t::action_multiplier();
-    if ( p() -> buffs.whisper_of_the_nathrezim -> check() )
-      am *= 1.0 + p() -> buffs.whisper_of_the_nathrezim -> data().effectN( 1 ).percent();
-    if ( p() -> buffs.righteous_verdict -> check() )
-      am *= 1.0 + p() -> buffs.righteous_verdict -> data().effectN( 1 ).percent();
-    return am;
-  }
 
   virtual void impact( action_state_t* s ) override
   {

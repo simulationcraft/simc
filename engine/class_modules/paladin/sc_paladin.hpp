@@ -998,9 +998,6 @@ struct holy_power_consumer_t : public paladin_melee_attack_t
   holy_power_consumer_t( const std::string& n, paladin_t* p,
                           const spell_data_t* s = spell_data_t::nil() );
 
-  virtual double action_multiplier() const override;
-  virtual double composite_target_multiplier( player_t* t ) const override;
-
   virtual void execute() override;
   virtual void impact( action_state_t* s ) override;
   virtual double cost() const override;
