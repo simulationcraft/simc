@@ -2926,6 +2926,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     background = true;
     may_crit = true;
+    
+    if ( p -> specialization() == MONK_WINDWALKER )
+      ap_type = AP_WEAPON_BOTH;
   }
 
   double action_multiplier() const override
@@ -2957,8 +2960,7 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     attack_power_mod.direct = 0; // p -> spec.rising_sun_kick -> effectN( 1 ).trigger() -> effectN( 1 ).ap_coeff();
 
-    if ( p -> specialization() == MONK_WINDWALKER )
-      ap_type = AP_WEAPON_BOTH;
+    ap_type = AP_NO_WEAPON;
 
     trigger_attack = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
   }
