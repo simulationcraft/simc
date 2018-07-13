@@ -1017,10 +1017,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   debuff.lightning_conduit = buff_creator_t( *this, "lightning_conduit", p->azerite.lightning_conduit )
                                  .trigger_spell( p->find_spell( 273006 ) )
                                  .duration( p->find_spell( 273006 )->duration() );
-  debuff.primal_primer = buff_creator_t( *this, "primal_primer", p->azerite.primal_primer )
-                             .trigger_spell( p->find_spell( 273006 ) )
-                             .duration( p->find_spell( 273006 )->duration() )
-                             .max_stack( p->find_spell( 273006 )->max_stacks() )
+  debuff.primal_primer = buff_creator_t( *this, "primal_primer", p->find_spell( 273006 ) )
+                             .trigger_spell( p->azerite.primal_primer.spell() )
                              .default_value( p->azerite.primal_primer.value() );
 }
 
