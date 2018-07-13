@@ -1284,7 +1284,7 @@ class SpellDataGenerator(DataGenerator):
             ( 217676, 3 ),			# Mind Spike Detonation
             ( 194249, 3, False ),   # Void Form extra data
             ( 212570, 3, False ),   # Surrendered Soul (Surrender To Madness Death)
-	    ( 269555, 3 ),          # Azerite Trait Torment of Torments
+            ( 269555, 3 ),          # Azerite Trait Torment of Torments
         ),
 
         # Death Knight:
@@ -1366,9 +1366,10 @@ class SpellDataGenerator(DataGenerator):
           ( 197568, 0 ),                                # Lightning Rod damage spell
           ( 207998, 0 ), ( 207999, 0 ),                 # 7.0 legendary ring Eye of the Twisting Nether
           ( 252143, 0 ),                                # Earth Shock Overload (Elemental T21 2PC)
-		  ( 279515, 0 ),                                # Roiling Storm
-		  ( 275394, 0 ),                                # Lightning Conduit
-		  ( 273466, 0 ),                                # Strength of Earth
+          ( 279515, 0 ),                                # Roiling Storm
+          ( 275394, 0 ),                                # Lightning Conduit
+          ( 273466, 0 ),                                # Strength of Earth
+          ( 279556, 0 ),                                # Rumbling Tremors damage spell
         ),
 
         # Mage:

@@ -739,7 +739,6 @@ public:
   double composite_player_pet_damage_multiplier( const action_state_t* state ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   action_t* create_action( const std::string& name, const std::string& options ) override;
-  action_t* create_proc_action( const std::string& /* name */, const special_effect_t& ) override;
   pet_t* create_pet( const std::string& name, const std::string& type = std::string() ) override;
   void create_pets() override;
   expr_t* create_expression( const std::string& name ) override;
@@ -883,7 +882,7 @@ struct roiling_storm_buff_t : public buff_t
     set_tick_behavior( buff_tick_behavior::REFRESH );
     set_tick_time_behavior( buff_tick_time_behavior::UNHASTED );
 
-    set_tick_callback( [p]( buff_t* b, int, const timespan_t& ) { p->buff.roiling_storm->trigger(); } );
+    set_tick_callback( [p]( buff_t* /* b */, int, const timespan_t& ) { p->buff.roiling_storm->trigger(); } );
   }
 };
 
@@ -2066,11 +2065,6 @@ struct base_wolf_t : public shaman_pet_t
 
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
-
-  void create_buffs() override
-  {
-    shaman_pet_t::create_buffs();
-  }
 };
 
 template <typename T>
@@ -2129,8 +2123,7 @@ struct spirit_wolf_t : public base_wolf_t
     const spell_data_t* maelstrom;
 
     fs_melee_t( spirit_wolf_t* player ) : super( player, "melee" ), maelstrom( player->find_spell( 190185 ) )
-    {
-    }
+    { }
 
     void impact( action_state_t* state ) override
     {
@@ -2146,21 +2139,13 @@ struct spirit_wolf_t : public base_wolf_t
   };
 
   spirit_wolf_t( shaman_t* owner ) : base_wolf_t( owner, "spirit_wolf" )
-  {
-  }
-
-  void create_actions() override;
+  { }
 
   attack_t* create_auto_attack() override
   {
     return new fs_melee_t( this );
   }
 };
-
-void spirit_wolf_t::create_actions()
-{
-  shaman_pet_t::create_actions();
-}
 
 // ==========================================================================
 // DOOM WOLVES OF DOOM
@@ -2172,9 +2157,9 @@ struct elemental_wolf_base_t : public base_wolf_t
   {
     const spell_data_t* maelstrom;
 
-    dw_melee_t( elemental_wolf_base_t* player ) : super( player, "melee" ), maelstrom( player->find_spell( 190185 ) )
-    {
-    }
+    dw_melee_t( elemental_wolf_base_t* player ) :
+      super( player, "melee" ), maelstrom( player->find_spell( 190185 ) )
+    { }
 
     void impact( action_state_t* state ) override
     {
@@ -2194,11 +2179,6 @@ struct elemental_wolf_base_t : public base_wolf_t
     dynamic = true;
   }
 
-  void arise() override
-  {
-    shaman_pet_t::arise();
-  }
-
   attack_t* create_auto_attack() override
   {
     return new dw_melee_t( this );
@@ -2211,35 +2191,6 @@ struct frost_wolf_t : public elemental_wolf_base_t
   {
     wolf_type = FROST_WOLF;
   }
-
-  double composite_player_multiplier( school_e s ) const override
-  {
-    double m = elemental_wolf_base_t::composite_player_multiplier( s );
-
-    return m;
-  }
-
-  void create_buffs() override
-  {
-    elemental_wolf_base_t::create_buffs();
-  }
-
-  void create_actions() override
-  {
-    elemental_wolf_base_t::create_actions();
-  }
-
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    return elemental_wolf_base_t::create_action( name, options_str );
-  }
-
-  void create_default_apl() override
-  {
-    elemental_wolf_base_t::create_default_apl();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-  }
 };
 
 struct fire_wolf_t : public elemental_wolf_base_t
@@ -2247,35 +2198,6 @@ struct fire_wolf_t : public elemental_wolf_base_t
   fire_wolf_t( shaman_t* owner ) : elemental_wolf_base_t( owner, owner->raptor_glyph ? "fiery_raptor" : "fiery_wolf" )
   {
     wolf_type = FIRE_WOLF;
-  }
-
-  double composite_player_multiplier( school_e s ) const override
-  {
-    double m = elemental_wolf_base_t::composite_player_multiplier( s );
-
-    return m;
-  }
-
-  void create_buffs() override
-  {
-    elemental_wolf_base_t::create_buffs();
-  }
-
-  void create_actions() override
-  {
-    elemental_wolf_base_t::create_actions();
-  }
-
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    return elemental_wolf_base_t::create_action( name, options_str );
-  }
-
-  void create_default_apl() override
-  {
-    elemental_wolf_base_t::create_default_apl();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
   }
 };
 
@@ -2285,35 +2207,6 @@ struct lightning_wolf_t : public elemental_wolf_base_t
     : elemental_wolf_base_t( owner, owner->raptor_glyph ? "lightning_raptor" : "lightning_wolf" )
   {
     wolf_type = LIGHTNING_WOLF;
-  }
-
-  double composite_player_multiplier( school_e s ) const override
-  {
-    double m = elemental_wolf_base_t::composite_player_multiplier( s );
-
-    return m;
-  }
-
-  void create_buffs() override
-  {
-    elemental_wolf_base_t::create_buffs();
-  }
-
-  void create_actions() override
-  {
-    elemental_wolf_base_t::create_actions();
-  }
-
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
-  {
-    return elemental_wolf_base_t::create_action( name, options_str );
-  }
-
-  void create_default_apl() override
-  {
-    elemental_wolf_base_t::create_default_apl();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
   }
 };
 
@@ -2408,6 +2301,20 @@ struct primal_elemental_t : public shaman_pet_t
 
 struct earth_elemental_t : public primal_elemental_t
 {
+  // azerite trait aoe spell
+  struct rumbling_tremors_t : public pet_spell_t<earth_elemental_t>
+  {
+    rumbling_tremors_t( earth_elemental_t* player )
+      : super( player, "rumbling_tremors", player->find_spell( 279522 ) )
+    {
+      aoe           = -1;
+      base_dd_min   = player->o()->azerite.rumbling_tremors.value( 1 );
+      base_dd_max   = base_dd_min;
+    }
+  };
+
+  buff_t* rumbling_tremors = nullptr;
+
   earth_elemental_t( shaman_t* owner, bool guardian )
     : primal_elemental_t( owner, ( !guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian )
   {
@@ -2425,56 +2332,33 @@ struct earth_elemental_t : public primal_elemental_t
     return attack;
   }
 
-  // azerite trait aoe spell
-  struct rumbling_tremors_t : public pet_spell_t<earth_elemental_t>
+  void create_buffs() override
   {
-    rumbling_tremors_t( earth_elemental_t* player, const std::string& options )
-      : super( player, "rumbling_tremors", player->find_spell( 279523 ), options )
-    {
-      parse_options( options );
-
-      hasted_ticks = false;
-
-      aoe           = -1;
-      tick_may_crit = true;
-      base_td += player->o()->azerite.rumbling_tremors.value( 1 );
-    }
-
-    double target_armor( player_t* ) const override
-    {
-      return 0;
-    }
-
-    bool ready() override
-    {
-      if ( !p()->o()->azerite.rumbling_tremors.ok() )
-      {
-        return false;
-      }
-      return pet_spell_t<earth_elemental_t>::ready();
-    }
-  };
-
-  void create_default_apl() override
-  {
-    primal_elemental_t::create_default_apl();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
+    primal_elemental_t::create_buffs();
 
     if ( o()->azerite.rumbling_tremors.ok() )
     {
-      def->add_action( "rumbling_tremors,if=!ticking" );
-    }
+      auto damage = new rumbling_tremors_t( this );
+      auto base_driver = o()->azerite.rumbling_tremors.spell_ref().effectN( 1 ).trigger()->effectN( 1 ).trigger();
 
-    def->add_action( "auto_attack" );
+      rumbling_tremors = make_buff<buff_t>( this, "rumbling_tremors", o()->azerite.rumbling_tremors.spell() )
+        -> set_period( base_driver->effectN( 3 ).period() )
+        -> set_duration( sim -> expected_iteration_time * 2 )
+        -> set_tick_callback( [ this, damage ]( buff_t* /* b */, int /* s */, const timespan_t& /* tt */ ) {
+          damage->set_target( target );
+          damage->execute();
+        } );
+    }
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str ) override
+  void combat_begin() override
   {
-    if ( name == "rumbling_tremors" )
-      return new rumbling_tremors_t( this, options_str );
+    primal_elemental_t::combat_begin();
 
-    return primal_elemental_t::create_action( name, options_str );
+    if ( rumbling_tremors )
+    {
+      rumbling_tremors->trigger();
+    }
   }
 };
 
@@ -2794,7 +2678,7 @@ struct spark_elemental_t : public primal_elemental_t
 
 struct flametongue_weapon_spell_t : public shaman_spell_t
 {
-  flametongue_weapon_spell_t( const std::string& n, shaman_t* player, weapon_t* w )
+  flametongue_weapon_spell_t( const std::string& n, shaman_t* player, weapon_t* /* w */ )
     : shaman_spell_t( n, player, player->find_spell( 10444 ) )
   {
     may_crit = background      = true;
@@ -6475,11 +6359,6 @@ action_t* shaman_t::create_action( const std::string& name, const std::string& o
   return player_t::create_action( name, options_str );
 }
 
-action_t* shaman_t::create_proc_action( const std::string& name, const special_effect_t& effect )
-{
-  return nullptr;
-}
-
 // shaman_t::create_pet =====================================================
 
 pet_t* shaman_t::create_pet( const std::string& pet_name, const std::string& /* pet_type */ )
@@ -7082,7 +6961,7 @@ void shaman_t::trigger_eye_of_twisting_nether( const action_state_t* state )
 }
 
 void shaman_t::trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic,
-                                       double override_proc_chance )
+                                       double /* override_proc_chance */ )
 {
   switch ( mechanic )
   {
@@ -7190,7 +7069,7 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
     // so delay windfury's hits so they can all process before landing. Possibly a bug.
     buff.forceful_winds->extend_duration( this, timespan_t::from_seconds( 0.001 ) );
     auto target = state->target;
-    make_event( *sim, timespan_t::from_millis( 1 ), [a, target, this]() {
+    make_event( *sim, timespan_t::from_millis( 1 ), [ a, target ]() {
       a->set_target( target );
       a->schedule_execute();
       a->schedule_execute();
