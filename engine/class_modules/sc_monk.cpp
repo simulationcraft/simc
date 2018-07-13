@@ -2010,12 +2010,11 @@ struct monk_action_t: public Base
   bool windwalker_damage_increase;
   bool windwalker_damage_increase_two;
   bool windwalker_damage_increase_three;
-  bool windwalker_damage_increase_four;
   bool windwalker_damage_increase_dot;
   bool windwalker_damage_increase_dot_two;
   bool windwalker_damage_increase_dot_three;
   bool windwalker_damage_increase_dot_four;
-  bool windwalker_damage_increase_dot_five;
+  bool windwalker_healing_increase;
 
 private:
   std::array < resource_e, MONK_MISTWEAVER + 1 > _resource_by_stance;
@@ -2045,13 +2044,13 @@ public:
     windwalker_damage_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 1 ) ) ),
     windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 5 ) ) ),
     windwalker_damage_increase_three( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 9 ) ) ),
-    windwalker_damage_increase_four( false ),
 
-    windwalker_damage_increase_dot( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 2 ) ) ),
-    windwalker_damage_increase_dot_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 4 ) ) ),
-    windwalker_damage_increase_dot_three( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) ),
-    windwalker_damage_increase_dot_four( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 7 ) ) ),
-    windwalker_damage_increase_dot_five( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 8 ) ) )
+    windwalker_damage_increase_dot( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 4 ) ) ),
+    windwalker_damage_increase_dot_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) ),
+    windwalker_damage_increase_dot_three( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 7 ) ) ),
+    windwalker_damage_increase_dot_four( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 8 ) ) ),
+
+    windwalker_healing_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 11 ) ) )
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
@@ -2067,10 +2066,10 @@ public:
           ab::base_dd_multiplier *= 1.0 + player -> spec.brewmaster_monk -> effectN( 7 ).percent();
 
         if ( brewmaster_damage_increase_dot )
-          ab::base_dd_multiplier *= 1.0 + player -> spec.brewmaster_monk -> effectN( 2 ).percent();
-        if ( brewmaster_damage_increase_dot_three )
-          ab::base_td_multiplier *= 1.0 + player -> spec.brewmaster_monk -> effectN( 6 ).percent();
+          ab::base_td_multiplier *= 1.0 + player -> spec.brewmaster_monk -> effectN( 2 ).percent();
         if ( brewmaster_damage_increase_dot_two )
+          ab::base_td_multiplier *= 1.0 + player -> spec.brewmaster_monk -> effectN( 6 ).percent();
+        if ( brewmaster_damage_increase_dot_three )
           ab::base_td_multiplier *= 1.0 + player -> spec.brewmaster_monk -> effectN( 8 ).percent();
 
         if ( brewmaster_healing_increase )
@@ -2103,20 +2102,38 @@ public:
       case MONK_WINDWALKER:
       {
         if ( windwalker_damage_increase )
-          ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
+        {
+          // cancel out Fists of Fury damage and use the tick version as a direct damage
+          if ( !ab::data().id() == 117418 )
+            ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
+        }
         if ( windwalker_damage_increase_two )
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 5 ).percent();
         if ( windwalker_damage_increase_three )
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 9 ).percent();
 
         if ( windwalker_damage_increase_dot )
-          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 2 ).percent();
+        {
+          // treat Fists of Fury damage as a direct damage instead of a tick damage
+          if ( ab::data().id() == 117418 )
+            ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 4 ).percent();
+          else
+            ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 4 ).percent();
+        }
         if ( windwalker_damage_increase_dot_two )
+        {
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 6 ).percent();
+          // Adjust for Chi Wave Damage
+          if (ab::data().id() == 132467 )
+            ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 6 ).percent();
+        }
         if ( windwalker_damage_increase_dot_three )
-          ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 7 ).percent();
+          ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 7 ).percent();
         if ( windwalker_damage_increase_dot_four )
           ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 8 ).percent();
+
+        if ( windwalker_healing_increase )
+          ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 11 ).percent();
 
         if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 14 ) ) )
           ab::trigger_gcd += player -> spec.windwalker_monk -> effectN( 14 ).time_value(); // Saved as -500 milliseconds
@@ -2556,6 +2573,7 @@ struct monk_spell_t: public monk_action_t < spell_t >
                 const spell_data_t* s = spell_data_t::nil() ):
                 base_t( n, player, s )
   {
+    ap_type = AP_WEAPON_MH;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
@@ -2565,15 +2583,22 @@ struct monk_spell_t: public monk_action_t < spell_t >
     return m;
   }
 
+  double composite_persistent_multiplier( const action_state_t* action_state ) const override
+  {
+    double pm = base_t::composite_persistent_multiplier( action_state );
+
+    if ( ww_mastery && p() -> buff.combo_strikes -> up() )
+      pm *= 1 + p() -> cache.mastery_value();
+
+    return pm;
+  }
+
   double action_multiplier() const override
   {
     double am = base_t::action_multiplier();
 
     if ( base_t::data().affected_by( p() -> spec.storm_earth_and_fire -> effectN( 1 ) ) && p() -> buff.storm_earth_and_fire -> up() )
       am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
-
-    if ( ww_mastery && p() -> buff.combo_strikes -> up() )
-      am *= 1 + p() -> cache.mastery_value();
 
     return am;
   }
@@ -2586,6 +2611,7 @@ struct monk_heal_t: public monk_action_t < heal_t >
                base_t( n, &p, s )
   {
     harmful = false;
+    ap_type = AP_WEAPON_MH;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -2644,15 +2670,22 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     return m;
   }
 
+  double composite_persistent_multiplier( const action_state_t* action_state ) const override
+  {
+    double pm = base_t::composite_persistent_multiplier( action_state );
+
+    if ( ww_mastery && p() -> buff.combo_strikes -> up() )
+      pm *= 1 + p() -> cache.mastery_value();
+
+    return pm;
+  }
+
   double action_multiplier() const override
   {
     double am = base_t::action_multiplier();
 
     if ( base_t::data().affected_by( p() -> spec.storm_earth_and_fire -> effectN( 1 ) ) && p() -> buff.storm_earth_and_fire -> up() )
       am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
-
-    if ( ww_mastery && p() -> buff.combo_strikes -> up() )
-      am *= 1 + p() -> cache.mastery_value();
 
     return am;
   }
@@ -2771,7 +2804,6 @@ struct tiger_palm_t: public monk_melee_attack_t
   {
     parse_options( options_str );
     sef_ability = SEF_TIGER_PALM;
-    ww_mastery = true;
 
     add_child( eye_of_the_tiger_damage );
     add_child( eye_of_the_tiger_heal );
@@ -2892,8 +2924,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   rising_sun_kick_dmg_t( monk_t* p, const std::string& name ) :
     monk_melee_attack_t( name, p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
   {
-    ww_mastery = true;
-
     background = true;
     may_crit = true;
   }
@@ -2917,7 +2947,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
     monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick )
   {
     parse_options( options_str );
-    ww_mastery = true;
 
     cooldown -> duration += p -> spec.mistweaver_monk -> effectN( 10 ).time_value();
 
@@ -3089,7 +3118,6 @@ struct blackout_kick_t: public monk_melee_attack_t
   {
     parse_options( options_str );
     sef_ability = SEF_BLACKOUT_KICK;
-    ww_mastery = true;
 
     switch ( p -> specialization() )
     {
@@ -3283,8 +3311,6 @@ struct rjw_tick_action_t : public monk_melee_attack_t
   rjw_tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data ) :
     monk_melee_attack_t( name, p, data )
   {
-    ww_mastery = true;
-
     dual = background = true;
     aoe = -1;
     radius = data -> effectN( 1 ).radius();
@@ -3360,8 +3386,6 @@ struct sck_tick_action_t : public monk_melee_attack_t
   sck_tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data ) :
     monk_melee_attack_t( name, p, data )
   {
-    ww_mastery = true;
-
     dual = background = true;
     aoe = -1;
     radius = data -> effectN( 1 ).radius();
@@ -3475,8 +3499,6 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
   fists_of_fury_tick_t( monk_t* p, const std::string& name ):
     monk_melee_attack_t( name, p, p -> passives.fists_of_fury_tick )
   {
-    ww_mastery = true;
-
     background = true;
     aoe = -1;
 
@@ -3595,8 +3617,6 @@ struct whirling_dragon_punch_tick_t: public monk_melee_attack_t
   whirling_dragon_punch_tick_t(const std::string& name, monk_t* p, const spell_data_t* s) :
     monk_melee_attack_t( name, p, s )
   {
-    ww_mastery = true;
-
     background = true;
     aoe = -1;
     radius = s -> effectN( 1 ).radius();
@@ -3663,7 +3683,6 @@ struct fist_of_the_white_tiger_off_hand_t: public monk_melee_attack_t
     monk_melee_attack_t( name, p, s )
   {
     sef_ability = SEF_FIST_OF_THE_WHITE_TIGER;
-    ww_mastery = true;
 
     may_dodge = may_parry = may_block = may_miss = true;
     dual = true;
@@ -3680,7 +3699,6 @@ struct fist_of_the_white_tiger_t: public monk_melee_attack_t
     mh_attack( nullptr )
   {
     sef_ability = SEF_FIST_OF_THE_WHITE_TIGER_OH;
-    ww_mastery = true;
 
     parse_options( options_str );
     may_dodge   = may_parry = may_block = true;
@@ -3924,6 +3942,7 @@ struct touch_of_death_amplifier_t: public monk_spell_t
     background = true;
     may_crit = false;
     school = SCHOOL_PHYSICAL;
+    ap_type = AP_NO_WEAPON;
   }
 
   void init() override
@@ -3945,6 +3964,7 @@ struct touch_of_death_t: public monk_spell_t
     may_crit = hasted_ticks = false;
     parse_options( options_str );
     school = SCHOOL_PHYSICAL;
+    ap_type = AP_NO_WEAPON;
     cooldown -> duration = data().cooldown();
 
     add_child( touch_of_death_amplifier );
@@ -4061,6 +4081,7 @@ struct touch_of_karma_dot_t: public residual_action::residual_periodic_action_t 
   {
     may_miss = may_crit = false;
     dual = true;
+    ap_type = AP_NO_WEAPON;
   }
 
   // Need to disable multipliers in init() so that it doesn't double-dip on anything  
@@ -4091,6 +4112,7 @@ struct touch_of_karma_t: public monk_melee_attack_t
     parse_options( options_str );
     cooldown -> duration = data().cooldown();
     base_dd_min = base_dd_max = 0;
+    ap_type = AP_NO_WEAPON;
 
     double max_pct = data().effectN( 3 ).percent();
 
@@ -4673,7 +4695,6 @@ struct crackling_jade_lightning_t: public monk_spell_t
     monk_spell_t( "crackling_jade_lightning", &p, p.spec.crackling_jade_lightning )
   {
     sef_ability = SEF_CRACKLING_JADE_LIGHTNING;
-    ww_mastery = true;
 
     parse_options( options_str );
 
@@ -5719,9 +5740,10 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
   chi_wave_dmg_tick_t( monk_t* player, const std::string& name ):
     monk_spell_t( name, player, player -> passives.chi_wave_damage )
   {
-    ww_mastery = true;
+    background = true;
 
-    background = direct_tick = true;
+    attack_power_mod.direct = player -> passives.chi_wave_damage -> effectN( 1 ).ap_coeff();
+    attack_power_mod.tick = 0;
   }
 };
 
@@ -5800,8 +5822,6 @@ struct chi_burst_damage_t: public monk_spell_t
   chi_burst_damage_t( monk_t& player ):
     monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage)
   {
-    ww_mastery = true;
-
     background = true;
     aoe = -1;
   }
