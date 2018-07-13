@@ -5065,6 +5065,7 @@ struct howling_blast_t : public death_knight_spell_t
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> buffs.rime -> up() )
     {
       p() -> buffs.pillar_of_frost -> current_value += base_costs[ RESOURCE_RUNE ] / 100;
+      p() -> invalidate_cache( CACHE_STRENGTH );
     }
 
     // Note note, killing machine is a RPPM thing, but we need to trigger it unconditionally when
