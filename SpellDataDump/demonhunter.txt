@@ -510,6 +510,10 @@ Effects          :
                    Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Trail of Ruin (258883), Fel Barrage (258926)
 #2 (id=294810)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Target: Self (1)
+#3 (id=741691)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.50000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Chaos Strike (162794), Chaos Nova (179057), Fel Rush (192611), Eye Beam (198030), Chaos Strike (199547), Metamorphosis (200166), Annihilation (201427), Annihilation (201428), Chaos Blades (211796), Chaos Blades (211797), Fel Eruption (211881), Chaos Strike (222031), Annihilation (227518), Metamorphosis (247121), Trail of Ruin (258883), Fel Barrage (258926)
+                   Hotfixed: NEW EFFECT
 Description      : Increases your Chaos damage by ${$s1}.1% and your movement speed by ${$s2}.1%.
 
 Name             : Torment (id=185245) [Spell Family (107)] 
@@ -2826,7 +2830,7 @@ Name             : Chaos Blades (id=211796) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Range            : 30 yards
-Affecting spells : Mastery: Demonic Presence (185164 effect#1)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .xx..... ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2844,7 +2848,7 @@ Name             : Chaos Blades (id=211797) [Spell Family (107)]
 Class            : Demon Hunter
 School           : Chaos
 Range            : 30 yards
-Affecting spells : Mastery: Demonic Presence (185164 effect#1)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
 Triggered by     : Chaos Blades (247938)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ x.....x. 
@@ -3715,7 +3719,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Range            : 40 yards
 Duration         : 3 seconds
-Affecting spells : Mastery: Demonic Presence (185164 effect#1)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4070,7 +4074,7 @@ Class            : Demon Hunter
 School           : Chromatic
 Range            : 8 yards
 Duration         : 4 seconds
-Affecting spells : Mastery: Demonic Presence (185164 effect#1)
+Affecting spells : Mastery: Demonic Presence (185164 effect#1), 
 Triggered by     : Trail of Ruin (258881)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 

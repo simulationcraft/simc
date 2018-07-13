@@ -215,6 +215,7 @@ Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing 
 Tooltip          : $?s199023[Demoralized, dealing $s2% less damage.][Demoralized, dealing $s1% less damage to the shouting Warrior.]
 
 Name             : Slam (id=1464) [Spell Family (4)] 
+Hotfixed         : Attributes
 Class            : Arms Warrior
 School           : Physical
 Resource         : 20 Rage (1) (id=127)
@@ -222,7 +223,7 @@ Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
 Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Item - Warrior T18 Arms 4P Bonus (185804 effect#1), Colossus Smash (208086 effect#1), Frothing Berserker (215572 effect#1), Weighted Blade (253383 effect#1), Sweeping Strikes (260708 effect#1), Deadly Calm (262228 effect#1), Crushing Assault (278826 effect#2), Siegebreaker (280773 effect#1)
-Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ...x.... 
+Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -312,10 +313,12 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Target: Self (1)
 #5 (id=737891)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Target: Self (1)
-                   Affected Spells: War Machine (262232), Endless Rage (280283)
+                   Affected Spells: War Machine (262232), Endless Rage (280283), Meat Cleaver (280392)
+                   Hotfixed: Affects Spells
 #6 (id=737893)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Charge (100), Bloodbath (12292), Bloodthirst (23881), Raging Blow (85288), Furious Slash (100130), Dragon Roar (118000), Siegebreaker (280772)
+                   Affected Spells: Charge (100), Bloodbath (12292), Bloodthirst (23881), Raging Blow (85288), Furious Slash (100130), Dragon Roar (118000), Meat Cleaver (280392), Siegebreaker (280772)
+                   Hotfixed: Affects Spells
 #7 (id=737894)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280849)
@@ -5432,6 +5435,7 @@ Description      : $@spelldesc262231
 Tooltip          : Movement speed increased by $s2%.
 
 Name             : Deep Wounds (id=262304) [Spell Family (4), Passive] 
+Hotfixed         : Attributes
 Class            : Arms Warrior
 School           : Physical
 Spell Level      : 55
@@ -5439,12 +5443,12 @@ Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : Passive (6)
 Effects          :
 #1 (id=623404)   : Apply Aura (6) | Proc Trigger Spell (42): Deep Wounds
@@ -6818,8 +6822,10 @@ Effects          :
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
 
 Name             : Meat Cleaver (id=280392) [Spell Family (4), Passive, Hidden] 
+Hotfixed         : Affecting Spells
 Class            : Warrior
 School           : Physical
+Affecting spells : Recklessness (1719 effect#5), 
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 

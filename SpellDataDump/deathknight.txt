@@ -3707,10 +3707,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=280739)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Unknown(120)
-                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Frost Breath (54644), Monstrous Bite (54680), Dash (61684), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
+                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Frost Breath (54644), Monstrous Bite (54680), Dash (61684), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Burrow Attack (95714), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Molten Hide (160124), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
 #2 (id=725119)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Unknown(120)
-                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Frost Breath (54644), Monstrous Bite (54680), Dash (61684), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
+                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Frost Breath (54644), Monstrous Bite (54680), Dash (61684), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Burrow Attack (95714), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Molten Hide (160124), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
 #3 (id=725122)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Pathfinding (264656), Endurance Training (264662), Predator's Thirst (264663)
@@ -4040,6 +4040,7 @@ Effects          :
 Description      : Each Rune spent during Remorseless Winter increases its damage by $211805s1%, and extends its duration by ${$m1/10}.1 sec.
 
 Name             : Glacial Advance (id=194913) [Spell Family (15)] 
+Hotfixed         : Unknown(26), Unknown(27), Unknown(28)
 Class            : Death Knight
 School           : Frost
 Resource         : 30 Runic Power (6) (id=10535)
@@ -5053,6 +5054,7 @@ Effects          :
 Description      : Your auto attack damage grants you an absorb shield equal to $s1% of the damage dealt.
 
 Name             : Frostscythe (id=207230) [Spell Family (15)] 
+Hotfixed         : Unknown(28)
 Class            : Death Knight
 School           : Frost
 Resource         : 1 Rune (5) (id=11012)
@@ -5080,10 +5082,11 @@ Effects          :
 Description      : A sweeping attack that strikes all enemies in front of you for $s2 Frost damage. This attack benefits from Killing Machine. Critical strikes with Frostscythe deal $s3 times normal damage.
 
 Name             : Obliteration (id=207256) [Spell Family (15), Hidden] 
+Hotfixed         : Internal Cooldown (100 -> 500)
 Class            : Death Knight
 School           : Physical
 Duration         : Aura (infinite)
-Internal Cooldown: 0.1 seconds
+Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ x....... ........ 
                  : Yellow Melee, Hostile Spell
@@ -8084,17 +8087,18 @@ Effects          :
                    Base Value: 0 | Scaled Value: 10.263 (avg=0.033) | Trigger Spell: 280712 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
-Name             : Cold Heart (id=281208) [Spell Family (15), Passive] 
+Name             : Cold Heart (id=281208) [Spell Family (15), Passive, Hidden] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : Passive (6)
+                 : Passive (6), Hidden (7)
 Effects          :
 #1 (id=739465)   : Apply Aura (6) | Periodic Trigger Spell (23): Cold Heart every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 281209 | Target: Self (1)

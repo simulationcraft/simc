@@ -1024,6 +1024,7 @@ Effects          :
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Infernal Awakening (id=22703) [Scaling Spell (-1), Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Fire
 Spell Level      : 50
@@ -1035,14 +1036,16 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ .......x ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : Requires line of sight (186)
 Effects          :
-#1 (id=12912)    : Apply Aura (6) | Stun (12)
-                   Base Value: 3 | Scaled Value: 3 | SP Coefficient: 0.25000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Unknown(87) -> AOE enemy (instant) (16)
-#2 (id=12913)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 311 (avg=1) | SP Coefficient: 0.60000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+#1 (id=12912)    : School Damage (2): fire
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Radius: 0 - 10 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Hotfixed: Type (6 -> 2), Sub Type (12 -> 0), SP Coefficient (0.25 -> 0.6), Base Value (3 -> 0)
+#2 (id=12913)    : Apply Aura (6) | Stun (12)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | Radius: 0 - 10 yards | Mechanic: Stun | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Hotfixed: Type (2 -> 6), Sub Type (0 -> 12), Average (1 -> 0)
 Description      : An infernal falls from the sky, dealing $s2 Fire damage to all targets, stunning them for $d.
 Tooltip          : Stunned.
 

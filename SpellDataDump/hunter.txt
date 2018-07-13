@@ -1895,10 +1895,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Enables Worgens to switch between human and Worgan forms
 
-Name             : Burrow Attack (Exotic Ability) (id=95714) [Scaling Spell (4), Spell Family (9)] 
+Name             : Burrow Attack (Exotic Ability) (id=95714) [Scaling Spell (-1), Spell Family (9)] 
+Hotfixed         : Scaling Spell (3 -> -1), Affecting Spells
 Class            : Hunter
 School           : Nature
 Spell Level      : 20
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Burrow Attack (93433)
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ......x.   x....... ........ ........ ........ 
@@ -1909,7 +1911,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=101379)   : School Damage (2): nature
-                   Base Value: 0 | Scaled Value: 0 (avg=0.074) | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 23.014 (avg=0.074) | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : The Worm burrows into the earth, shaking the ground above dealing $<damage> Nature damage over $93433d.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
@@ -2995,11 +2997,13 @@ Effects          :
 Description      : The Spider wraps webs around the target, slowing movement by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Molten Hide (Special Ability) (id=160124) 
+Name             : Molten Hide (Special Ability) (id=160124) [Spell Family (9)] 
+Hotfixed         : Affecting Spells, Spell Family
 Class            : Hunter
 School           : Fire
 Spell Level      : 74
 Range            : 30 yards
+Affecting spells : Aspect of the Beast (191384 effect#1), 
 Triggered by     : Molten Hide (159786)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -3565,10 +3569,11 @@ Effects          :
 Description      : Interrupts spellcasting, preventing any spell in that school from being cast for $d.
 
 Name             : Carve (id=187708) [Spell Family (9)] 
+Hotfixed         : Spell Level (42 -> 28)
 Class            : Survival Hunter
 School           : Physical
 Resource         : 35 Focus (2) (id=10219)
-Spell Level      : 42
+Spell Level      : 28
 Range            : 8 yards
 GCD              : 1.5 seconds
 Cooldown         : 6 seconds
@@ -3658,10 +3663,10 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=280739)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Unknown(120)
-                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Frost Breath (54644), Monstrous Bite (54680), Dash (61684), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
+                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Frost Breath (54644), Monstrous Bite (54680), Dash (61684), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Burrow Attack (95714), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Molten Hide (160124), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
 #2 (id=725119)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Unknown(120)
-                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Frost Breath (54644), Monstrous Bite (54680), Dash (61684), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
+                   Affected Spells: Growl (2649), Claw (16827), Bite (17253), Bloody Screech (24423), Prowl (24450), Shell Shield (26064), Warp Time (35346), Smack (49966), Pin (50245), Dust Cloud (50285), Ankle Crack (50433), Frost Breath (54644), Monstrous Bite (54680), Dash (61684), Spirit Walk (90328), Play (90347), Spirit Mend (90361), Froststorm Breath (92380), Burrow Attack (93433), Rest (94019), Trick (94022), Burrow Attack (95714), Froststorm Breath (95725), Agile Reflexes (160011), Thick Hide (160057), Thick Hide (160058), Deadly Sting (160060), Tendon Rip (160065), Web Spray (160067), Molten Hide (160124), Lock Jaw (263423), Acid Spit (263446), Furious Bite (263840), Talon Rend (263852), Infected Bite (263853), Savage Rend (263854), Ravage (263857), Toxic Sting (263858), Obsidian Skin (263867), Bristle (263869), Dragon's Guile (263887), Catlike Reflexes (263892), Serpent's Swiftness (263904), Thick Fur (263926), Thick Fur (263934), Silverback (263938), Silverback (263939), Serenity Dust (264055), Spore Cloud (264056), Sonic Blast (264263), Nether Shock (264264), Spirit Shock (264265), Winged Agility (264360), Primal Rage (264667)
 #3 (id=725122)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Pathfinding (264656), Endurance Training (264662), Predator's Thirst (264663)
@@ -6787,11 +6792,14 @@ Allies receiving this effect will become Sated and unable to benefit from Primal
 Tooltip          : Haste increased by $s1%.
 
 Name             : Survival of the Fittest (Tenacity Ability) (id=264735) [Spell Family (9)] 
+Hotfixed         : Cooldown (0 -> 180000), Category Cooldown (0 -> 180000), Category
 Class            : Tenacity Hunter Pet
 School           : Physical
 Range            : 50000 yards
 Duration         : 6 seconds
 Cooldown         : 180 seconds
+Category         : 1830
+Category Cooldown: 180 seconds
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6865,7 +6873,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=709186)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.62868 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.70000 | Target: Enemy (6)
+                   Hotfixed: AP Coefficient (0.62868 -> 0.7)
 Description      : A vicious slash dealing $s1 Physical damage.
 
 Name             : Terms of Engagement (id=265895) [Spell Family (9), Passive] 
