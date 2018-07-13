@@ -8465,6 +8465,38 @@ expr_t* druid_t::create_expression( const std::string& name_str )
     return new moon_stage_expr_t( *this, name_str );
   }
 
+  if (util::str_compare_ci(name_str, "talent.incarnation.enabled"))
+  {
+    
+    switch (specialization())
+    {
+    case DRUID_FERAL: {
+      const spell_data_t* s = find_talent_spell("incarnation_king_of_the_jungle", specialization(), true);
+      return expr_t::create_constant(name_str, s->ok());
+    } break;
+      
+    case DRUID_BALANCE:
+    {
+      const spell_data_t* s = find_talent_spell("incarnation_chosen_of_elune", specialization(), true);
+      return expr_t::create_constant(name_str, s->ok());
+    } break;
+
+    case DRUID_RESTORATION:
+    {
+      const spell_data_t* s = find_talent_spell("incarnation_guardian_of_ursoc", specialization(), true);
+      return expr_t::create_constant(name_str, s->ok());
+    } break;
+
+    case DRUID_GUARDIAN:
+    {
+      const spell_data_t* s = find_talent_spell("incarnation_tree_of_life", specialization(), true);
+      return expr_t::create_constant(name_str, s->ok());
+    } break;
+
+    default: break;
+    }
+  }
+
   return player_t::create_expression( name_str );
 }
 
