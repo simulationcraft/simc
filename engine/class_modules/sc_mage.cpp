@@ -4887,20 +4887,20 @@ struct scorch_t : public fire_mage_spell_t
   {
     double am = fire_mage_spell_t::action_multiplier();
 
+    double extra_multiplier = 0.0;
+
     if ( koralons_burning_touch && ( target -> health_percentage() <= koralons_burning_touch_threshold ) )
     {
-      am *= 1.0 + koralons_burning_touch_multiplier;
+      extra_multiplier += koralons_burning_touch_multiplier;
     }
 
     if ( p() -> talents.searing_touch -> ok()
       && target -> health_percentage() <= p() -> talents.searing_touch -> effectN( 1 ).base_value() )
     {
-      // TODO/Check: If Koralon's Burning Touch is equipped, this talent doesn't do anything.
-      if ( ! koralons_burning_touch )
-      {
-        am *= 1.0 + p() -> talents.searing_touch -> effectN( 2 ).percent();
-      }
+      extra_multiplier += p() -> talents.searing_touch -> effectN( 2 ).percent();
     }
+
+    am *= 1.0 + extra_multiplier;
 
     return am;
   }
