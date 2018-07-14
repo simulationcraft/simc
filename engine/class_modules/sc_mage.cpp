@@ -392,7 +392,6 @@ public:
     buff_t* expanding_mind;   // T21 2pc Arcane
     buff_t* quick_thinker;    // T21 4pc Arcane
 
-    buff_t* cord_of_infinity;
     buff_t* rhonins_assaulting_armwraps;
 
 
@@ -2413,13 +2412,6 @@ struct arcane_missiles_tick_t : public arcane_mage_spell_t
     arcane_mage_spell_t::execute();
 
     p() -> buffs.arcane_pummeling -> trigger();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    arcane_mage_spell_t::impact( s );
-
-    p() -> buffs.cord_of_infinity -> trigger();
   }
 
   virtual double bonus_da( const action_state_t* s ) const override
@@ -8064,20 +8056,13 @@ struct rhonins_assaulting_armwraps_t : public class_buff_cb_t<mage_t>
   }
 };
 
-struct cord_of_infinity_t : public class_buff_cb_t<mage_t>
+struct cord_of_infinity_t : public scoped_action_callback_t<arcane_missiles_tick_t>
 {
-  // TODO: What does this do in BfA?
-  cord_of_infinity_t() : super( MAGE_ARCANE, "cord_of_infinity" )
+  cord_of_infinity_t() : super( MAGE_ARCANE, "arcane_missiles_tick" )
   { }
 
-  virtual buff_t*& buff_ptr( const special_effect_t& e ) override
-  { return debug_cast<mage_t*>( e.player ) -> buffs.cord_of_infinity; }
-
-  buff_t* creator( const special_effect_t& e ) const override
-  {
-    return make_buff( e.player, buff_name, e.trigger() )
-      -> set_default_value( e.trigger() -> effectN( 1 ).percent() / 10.0 );
-  }
+  virtual void manipulate( arcane_missiles_tick_t* action, const special_effect_t& e ) override
+  { action -> base_multiplier *= 1.0 + e.driver() -> effectN( 1 ).percent(); }
 };
 
 struct gravity_spiral_t : public scoped_actor_callback_t<mage_t>
@@ -8245,7 +8230,7 @@ public:
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 209311, cord_of_infinity_t(),                  true );
+    unique_gear::register_special_effect( 281263, cord_of_infinity_t()                        );
     unique_gear::register_special_effect( 208099, koralons_burning_touch_t()                  );
     unique_gear::register_special_effect( 214403, magtheridons_banished_bracers_t(),     true );
     unique_gear::register_special_effect( 206397, zannesu_journey_t(),                   true );
