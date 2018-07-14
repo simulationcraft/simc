@@ -1274,6 +1274,7 @@ class SpellDataGenerator(DataGenerator):
             ( 246558, 0 ),          # Outlaw T20 4pc Lesser Adrenaline Rush
             ( 279043, 0 ),          # Shadow Blades damaging spell
             ( 121153, 0 ),          # Blindside proc buff
+            ( 278981, 0 ),          # The First Dance, Azerite trait aura
         ),
 
         # Priest:
