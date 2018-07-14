@@ -967,7 +967,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
 
       // Take out the Owner's Hit Combo Multiplier, but only if the ability is going to snapshot
       // multipliers in the first place.
-      if ( o() -> talent.hit_combo -> ok() )
+/*      if ( o() -> talent.hit_combo -> ok() )
       {
         if ( rt == DMG_DIRECT && ( flags & STATE_MUL_DA ) )
         {
@@ -983,6 +983,7 @@ struct storm_earth_and_fire_pet_t : public pet_t
           state -> ta_multiplier *= 1 + p() -> buff.hit_combo_sef -> stack_value();
         }
       }
+      */
     }
   };
 
@@ -1638,8 +1639,8 @@ public:
     if ( o() -> buff.bok_proc -> up() )
       buff.bok_proc_sef -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 , o() -> buff.bok_proc -> remains() );
 
-    if ( o() -> buff.hit_combo -> up() )
-      buff.hit_combo_sef -> trigger( o() -> buff.hit_combo -> stack() );
+//    if ( o() -> buff.hit_combo -> up() )
+//      buff.hit_combo_sef -> trigger( o() -> buff.hit_combo -> stack() );
 
     if ( o() -> buff.rushing_jade_wind -> up() )
       buff.rushing_jade_wind_sef -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 , o() -> buff.rushing_jade_wind -> remains() );
@@ -1674,9 +1675,10 @@ public:
                                         d -> expire( timespan_t::from_millis(1) );
                                       } );
 
-    buff.hit_combo_sef = make_buff( this, "hit_combo_sef", o() -> passives.hit_combo )
+/*    buff.hit_combo_sef = make_buff( this, "hit_combo_sef", o() -> passives.hit_combo )
                          -> set_default_value( o() -> passives.hit_combo -> effectN( 1 ).percent() )
                          -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                         */
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -1686,8 +1688,8 @@ public:
       size_t spell = static_cast<size_t>( ability - SEF_SPELL_MIN );
       assert( spells[ spell ] );
 
-      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-        buff.hit_combo_sef -> trigger();
+//      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
+//        buff.hit_combo_sef -> trigger();
 
       spells[ spell ] -> source_action = source_action;
       spells[ spell ] -> execute();
@@ -1696,8 +1698,8 @@ public:
     {
       assert( attacks[ ability ] );
 
-      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
-        buff.hit_combo_sef -> trigger();
+//      if ( o() -> buff.combo_strikes -> up() && o() -> talent.hit_combo -> ok() )
+//        buff.hit_combo_sef -> trigger();
 
       attacks[ ability ] -> source_action = source_action;
       attacks[ ability ] -> execute();
@@ -2601,12 +2603,23 @@ struct monk_spell_t: public monk_action_t < spell_t >
   {
     double am = base_t::action_multiplier();
 
-    if ( base_t::data().affected_by( p() -> spec.storm_earth_and_fire -> effectN( 1 ) ) && p() -> buff.storm_earth_and_fire -> up() )
-      am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      if ( base_t::data().affected_by( p() -> spec.storm_earth_and_fire -> effectN( 1 ) ) )
+        am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+    }
 
-    if ( ( base_t::data().affected_by( p() -> talent.serenity -> effectN( 2 ) ) || base_t::data().affected_by( p() -> talent.serenity -> effectN( 6 ) ) ) 
-            && p() -> buff.serenity -> up() ) 
-      am *= 1 + p() -> talent.serenity -> effectN( 2 ).percent();
+    if ( p() -> buff.serenity -> up() )
+    {
+      if ( base_t::data().affected_by( p() -> talent.serenity -> effectN( 2 ) ) ) 
+        am *= 1 + p() -> talent.serenity -> effectN( 2 ).percent();
+    }
+
+    if ( p() -> buff.hit_combo -> up() )
+    {
+      if ( base_t::data().affected_by( p() -> talent.hit_combo -> effectN( 1 ) ) ) 
+        am *= 1 + p() -> buff.hit_combo -> stack_value();
+    }
 
     return am;
   }
@@ -2649,12 +2662,23 @@ struct monk_heal_t: public monk_action_t < heal_t >
         am *= 1.0 + p() -> spec.life_cocoon -> effectN( 2 ).percent();
     }
 
-    if ( base_t::data().affected_by( p() -> spec.storm_earth_and_fire -> effectN( 1 ) ) && p() -> buff.storm_earth_and_fire -> up() )
-      am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      if ( base_t::data().affected_by( p() -> spec.storm_earth_and_fire -> effectN( 1 ) ) )
+        am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+    }
 
-    if ( ( base_t::data().affected_by( p() -> talent.serenity -> effectN( 2 ) ) || base_t::data().affected_by( p() -> talent.serenity -> effectN( 6 ) ) ) 
-            && p() -> buff.serenity -> up() ) 
-      am *= 1 + p() -> talent.serenity -> effectN( 2 ).percent();
+    if ( p() -> buff.serenity -> up() )
+    {
+      if ( base_t::data().affected_by( p() -> talent.serenity -> effectN( 2 ) ) ) 
+        am *= 1 + p() -> talent.serenity -> effectN( 2 ).percent();
+    }
+
+    if ( p() -> buff.hit_combo -> up() )
+    {
+      if ( base_t::data().affected_by( p() -> talent.hit_combo -> effectN( 1 ) ) ) 
+        am *= 1 + p() -> buff.hit_combo -> stack_value();
+    }
 
     return am;
   }
@@ -2696,12 +2720,23 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   {
     double am = base_t::action_multiplier();
 
-    if ( base_t::data().affected_by( p() -> spec.storm_earth_and_fire -> effectN( 1 ) ) && p() -> buff.storm_earth_and_fire -> up() )
-      am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+    if ( p() -> buff.storm_earth_and_fire -> up() )
+    {
+      if ( base_t::data().affected_by( p() -> spec.storm_earth_and_fire -> effectN( 1 ) ) )
+        am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+    }
 
-    if ( ( base_t::data().affected_by( p() -> talent.serenity -> effectN( 2 ) ) || base_t::data().affected_by( p() -> talent.serenity -> effectN( 6 ) ) ) 
-            && p() -> buff.serenity -> up() ) 
-      am *= 1 + p() -> talent.serenity -> effectN( 2 ).percent();
+    if ( p() -> buff.serenity -> up() )
+    {
+      if ( base_t::data().affected_by( p() -> talent.serenity -> effectN( 2 ) ) ) 
+        am *= 1 + p() -> talent.serenity -> effectN( 2 ).percent();
+    }
+
+    if ( p() -> buff.hit_combo -> up() )
+    {
+      if ( base_t::data().affected_by( p() -> talent.hit_combo -> effectN( 1 ) ) ) 
+        am *= 1 + p() -> buff.hit_combo -> stack_value();
+    }
 
     return am;
   }
@@ -3787,6 +3822,10 @@ struct melee_t: public monk_melee_attack_t
 
     if ( p() -> buff.serenity -> up() ) 
       am *= 1 + p() -> talent.serenity -> effectN( 7 ).percent();
+
+    if ( p() -> buff.hit_combo -> up() ) 
+      am *= 1 + p() -> buff.hit_combo -> stack_value();
+
     return am;
   }
 
@@ -7436,9 +7475,6 @@ double monk_t::composite_spell_crit_chance_multiplier() const
 double monk_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  if ( talent.hit_combo -> ok() )
-    m *= 1.0 + buff.hit_combo -> stack_value();
 
   return m;
 }
