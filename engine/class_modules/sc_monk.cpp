@@ -2374,7 +2374,7 @@ public:
 
   virtual void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    timespan_t cd = cd_duration;
+    timespan_t cd = ab::cooldown->duration;
     // Only adjust cooldown (through serenity) if it's non zero.
     if ( cd_duration == timespan_t::min() )
     {
@@ -2382,7 +2382,7 @@ public:
     }
 
     // Update the cooldown while Serenity is active
-    if ( p() -> buff.serenity -> up() && ab::data().affected_by( p() -> talent.serenity -> effectN( 4 ) ) )
+    if ( p() -> buff.serenity -> up() && ab::data().affected_by( p() -> talent.serenity -> effectN( 2 ) ) )
         cd *= ( 1 / ( 1 + p() -> talent.serenity -> effectN( 4 ).percent() ) ); // saved as 100
     ab::update_ready( cd );
   }
@@ -4583,7 +4583,6 @@ struct xuen_spell_t: public summon_pet_t
   {
     parse_options( options_str );
 
-    trigger_gcd = timespan_t::zero();
     harmful = false;
     summoning_duration = data().duration();
     // Forcing the minimum GCD to 750 milliseconds
@@ -4603,9 +4602,11 @@ struct niuzao_spell_t: public summon_pet_t
   {
     parse_options( options_str );
 
-    trigger_gcd = timespan_t::zero();
     harmful = false;
     summoning_duration = data().duration();
+    // Forcing the minimum GCD to 750 milliseconds
+    min_gcd = timespan_t::from_millis( 750 );
+    gcd_haste = HASTE_SPELL;
   }
 };
 
