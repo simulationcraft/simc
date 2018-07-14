@@ -512,7 +512,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
           case WARLOCK_AFFLICTION:
             return spell -> id() == 215941; // Soul Conduit
           case WARLOCK_DEMONOLOGY:
-            return spell -> id() == 215941; // Soul Conduit
+            return spell -> id() == 267216; // Inner Demons
           case WARLOCK_DESTRUCTION:
             return spell -> id() == 196412; // Eradication
           default:
