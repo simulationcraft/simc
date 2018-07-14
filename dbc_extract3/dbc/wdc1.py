@@ -169,7 +169,7 @@ class WDC1SegmentParser:
 
 # Parse a block of data from a record using the python struct module
 class WDC1StructSegmentParser(WDC1SegmentParser):
-    def __init__(self, record_parser, columns, expanded_data = False):
+    def __init__(self, record_parser, columns):
         super().__init__(record_parser, columns)
 
         total_columns = 0
@@ -177,12 +177,6 @@ class WDC1StructSegmentParser(WDC1SegmentParser):
         fmt = '<'
         for column in self.columns:
             column_type = column.struct_type()
-            # Expand fields to 4 bytes for "expanded data" hotfixes, only SpellEffect thus far..
-            if expanded_data:
-                if column.is_signed():
-                    column_type = 'i'
-                elif not column.is_float():
-                    column_type = 'I'
 
             fmt += column.elements() * column_type
 
@@ -510,40 +504,6 @@ class RecordParser:
     def parser(self):
         return self._parser
 
-# A specialized parser that considers all record fields to be expanded to 4 bytes
-class ExpandedRecordParser(RecordParser):
-    def build_decoder(self):
-        columns = []
-        decoders = []
-
-        # Iterate over the columns. Regardless of what sort of colun type
-        # the original file has, expanded data is always normal struct form, 4
-        # (or 8?) bytes per field
-        for column_idx in range(0, self.parser().fields):
-            column = self.parser().column(column_idx)
-
-            # Hotfixed columns always have inlined strings
-            if column.is_string() and (self.parser().has_offset_map() or self._hotfix_parser):
-                if len(columns) > 0:
-                    decoders.append(WDC1StructSegmentParser(self, columns, expanded_data = True))
-                    columns = []
-
-                decoders.append(WDC1StringSegmentParser(self, column))
-
-            # Presume that bitpack is a continious segment that runs to the end of the record
-            else:
-                columns.append(column)
-
-        # Aand expanded parser also has the key block value at the end, if the real db2 file has it
-        if self.parser().has_key_block():
-            columns.append(WDC1ProxyColumn(self.parser(), None, 0, 0, 0))
-
-        # Build decoders when all columns are looped in
-        if len(columns) > 0:
-            decoders.append(WDC1StructSegmentParser(self, columns, expanded_data = True))
-
-        self._decoders = decoders
-
 # Iterator to spit out values from the record block
 class WDC1RecordParser(RecordParser):
     # Build a decoder for the base data record
@@ -831,44 +791,6 @@ class WDC1Column:
 
         return 'Field{:<2d}: {}'.format(self.__index, ' '.join(fields))
 
-# A faked colum representing a 32-bit value in the record. Used in association
-# with expanded parsers, where the record id and the potential key block id
-# (parent id) is included in the record data.
-class WDC1ProxyColumn(WDC1Column):
-    def bit_size(self):
-        return 32
-
-    def elements(self):
-        return 1
-
-    def size_type(self):
-        return 0
-
-    def size(self):
-        return 32
-
-    def offset(self):
-        return 0
-
-    def format(self):
-        return None
-
-    def is_float(self):
-        return False
-
-    def is_signed(self):
-        return False
-
-    def is_string(self):
-        return False
-
-    def struct_type(self):
-        return 'I'
-
-    def short_type(self):
-        return 'uint:32[p]'
-
-
 class WDC1Parser(DBCParserBase):
     __WDC1_HEADER_FIELDS = [
         HeaderFieldInfo('magic',                  '4s'),
@@ -1018,13 +940,10 @@ class WDC1Parser(DBCParserBase):
     def sparse_data_offset(self, column, id_):
         return self.sparse_blocks[column.index()].get(id_, -1)
 
-    def create_raw_parser(self, hotfix_parser = False, expanded_parser = False):
-        if expanded_parser:
-            return ExpandedRecordParser(self)
-        else:
-            return WDC1RecordParser(self, hotfix = hotfix_parser)
+    def create_raw_parser(self, hotfix_parser = False):
+        return WDC1RecordParser(self, hotfix = hotfix_parser)
 
-    def create_formatted_parser(self, hotfix_parser = False, expanded_parser = False):
+    def create_formatted_parser(self, hotfix_parser = False):
         formats = self.fmt.objs(self.class_name(), True)
 
         if len(formats) != self.fields:
@@ -1032,10 +951,7 @@ class WDC1Parser(DBCParserBase):
                 self.full_name(), len(formats), self.fields)
             return None
 
-        if expanded_parser:
-            parser = ExpandedRecordParser(self)
-        else:
-            parser = WDC1RecordParser(self, hotfix = hotfix_parser)
+        parser = WDC1RecordParser(self, hotfix = hotfix_parser)
 
         logging.debug('Unpacking plan for %s%s: %s',
                 self.full_name(),

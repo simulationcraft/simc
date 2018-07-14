@@ -70,12 +70,10 @@ class XFTHParser(DBCParserBase):
         if sig not in self.parsers:
             if self.options.raw:
                 self.parsers[sig] = wdb_parser.create_raw_parser(
-                        hotfix_parser   = True,
-                        expanded_parser = wdb_parser.class_name() in dbc.EXPANDED_HOTFIX_RECORDS)
+                        hotfix_parser   = True)
             else:
                 self.parsers[sig] = wdb_parser.create_formatted_parser(
-                        hotfix_parser   = True,
-                        expanded_parser = wdb_parser.class_name() in dbc.EXPANDED_HOTFIX_RECORDS)
+                        hotfix_parser   = True)
 
         return self.parsers[sig](dbc_id, self.data, offset, size)
 

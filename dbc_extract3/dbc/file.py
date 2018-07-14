@@ -34,23 +34,7 @@ class HotfixIterator:
         dbc_id, record_id, offset, size, key_id = self._parser.get_record_info(self._record, self._wdb_parser)
         data = self._parser.get_record(dbc_id, offset, size, self._wdb_parser)
 
-        # If the cache entry is for a WDB file that is expanded, we need to
-        # separate the record id and the key block id from the parsed data,
-        # since they are included as the first and last element of the parsed
-        # tuple, respectively
-        if self._wdb_parser.class_name() in dbc.EXPANDED_HOTFIX_RECORDS:
-            start_offset = 0
-            end_offset = len(data)
-            # If the key block is used, and the cache entry for the db file
-            # uses an  expanded parser, the key id (parent id) will be the last
-            # entry of the data. Extract it out and pass it to the decorator
-            if self._wdb_parser.has_key_block():
-                key_id = data[-1]
-                end_offset -= 1
-
-            data = data[start_offset:end_offset]
-        # Not an expanded parser, but the client data file uses a key block
-        elif self._wdb_parser.has_key_block():
+        if self._wdb_parser.has_key_block():
             # If the key block id is not duplicated in the record, it'll be at
             # the end of the hotfix entry
             if not self._key_field_name:

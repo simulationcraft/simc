@@ -111,6 +111,13 @@ class DBStructureHeader(collections.namedtuple('DBStructureHeader', _DB_STRUCT_H
 
         return va
 
+    def data(self, parser, field):
+        format_offset = self.file_offset(parser, field)
+
+        unpacker = struct.Struct('i' * self.fields)
+
+        return unpacker.unpack_from(parser.handle, format_offset)
+
     def formats(self, parser, raw = False):
         format_offset = self.file_offset(parser, 'va_field_format')
 
@@ -249,10 +256,13 @@ class PeStructParser:
             return True
 
         logging.debug(header)
-        logging.debug('Offsets  {}'.format(header.offsets(self)))
-        logging.debug('Types    {}'.format(header.formats(self, True)))
-        logging.debug('Elements {}'.format(header.elements(self)))
-        logging.debug('Flags    {}'.format(header.flags(self)))
+        logging.debug('Offsets   {}'.format(header.offsets(self)))
+        logging.debug('Types     {}'.format(header.formats(self, True)))
+        logging.debug('Types2    {}'.format(header.data(self, 'va_field_format_file')))
+        logging.debug('Elements  {}'.format(header.elements(self)))
+        logging.debug('Elements2 {}'.format(header.data(self, 'va_elements_file')))
+        logging.debug('Flags     {}'.format(header.flags(self)))
+        logging.debug('Flags2    {}'.format(header.data(self, 'va_flags_file')))
 
         formats = header.formats(self)
         elements = header.elements(self)
