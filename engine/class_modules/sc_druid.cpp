@@ -1575,7 +1575,7 @@ public:
       {
         // Trigger Streaking Stars
         action_state_t* ss_s = p()->active.streaking_stars->get_state();
-        ss_s->target = target;
+        ss_s->target = p()->target;
         p()->active.streaking_stars->snapshot_state(ss_s, DMG_DIRECT);
         p()->active.streaking_stars->schedule_execute(ss_s);  
       }
