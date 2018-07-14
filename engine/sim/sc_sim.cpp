@@ -1344,7 +1344,7 @@ sim_t::sim_t() :
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ),
   regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
-  fixed_time( false ), optimize_expressions( false ),
+  fixed_time( true ), optimize_expressions( false ),
   current_slot( -1 ),
   optimal_raid( 0 ), log( 0 ),
   debug_each( 0 ),
