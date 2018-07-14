@@ -2374,7 +2374,7 @@ public:
 
   virtual void update_ready( timespan_t cd_duration = timespan_t::min() ) override
   {
-    timespan_t cd = ab::cooldown->duration;
+    timespan_t cd = cd_duration;
     // Only adjust cooldown (through serenity) if it's non zero.
     if ( cd_duration == timespan_t::min() )
     {
