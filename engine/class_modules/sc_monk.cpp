@@ -2104,7 +2104,9 @@ public:
         if ( windwalker_damage_increase )
         {
           // cancel out Fists of Fury damage and use the tick version as a direct damage
-          if ( !ab::data().id() == 117418 )
+          if ( ab::data().id() == 117418 )
+            ab::base_dd_multiplier *= 1.0;
+          else
             ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 1 ).percent();
         }
         if ( windwalker_damage_increase_two )
@@ -2924,21 +2926,21 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   rising_sun_kick_dmg_t( monk_t* p, const std::string& name ) :
     monk_melee_attack_t( name, p, p -> spec.rising_sun_kick -> effectN( 1 ).trigger() )
   {
+    ww_mastery = true;
+
     background = true;
     may_crit = true;
-    
-    if ( p -> specialization() == MONK_WINDWALKER )
-      ap_type = AP_WEAPON_BOTH;
+
+    if ( p -> spec.rising_sun_kick_2 )
+      attack_power_mod.direct *= 1 + p -> spec.rising_sun_kick_2 -> effectN( 1 ).percent();
   }
 
-  double action_multiplier() const override
+  void init() override
   {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    if ( p() -> spec.rising_sun_kick_2 )
-      am *= 1 + p() -> spec.rising_sun_kick_2 -> effectN( 1 ).percent();
-
-    return am;
+    monk_melee_attack_t::init();
+    
+    if ( p() -> specialization() == MONK_WINDWALKER )
+      ap_type = AP_WEAPON_MH;
   }
 };
 
@@ -2958,11 +2960,18 @@ struct rising_sun_kick_t: public monk_melee_attack_t
 
     sef_ability = SEF_RISING_SUN_KICK;
 
-    attack_power_mod.direct = 0; // p -> spec.rising_sun_kick -> effectN( 1 ).trigger() -> effectN( 1 ).ap_coeff();
+    attack_power_mod.direct = 0;
 
-    ap_type = AP_NO_WEAPON;
 
     trigger_attack = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
+    trigger_attack -> stats = stats;
+  }
+
+  void init() override
+  {
+    monk_melee_attack_t::init();
+    
+    ap_type = AP_NONE;
   }
 
   virtual double composite_crit_chance() const override
@@ -3055,7 +3064,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
     cooldown -> duration = timespan_t::zero();
     background = dual = true;
     trigger_gcd = timespan_t::zero();
-      }
+  }
 
   void init_finished() override
   {
@@ -3118,6 +3127,8 @@ struct blackout_kick_t: public monk_melee_attack_t
   blackout_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "blackout_kick", p, p -> spec.blackout_kick )
   {
+    ww_mastery = true;
+
     parse_options( options_str );
     sef_ability = SEF_BLACKOUT_KICK;
 
@@ -3136,14 +3147,20 @@ struct blackout_kick_t: public monk_melee_attack_t
         if ( p -> spec.blackout_kick_3 )
           // Saved as -1
           base_costs[RESOURCE_CHI] += p -> spec.blackout_kick_3 -> effectN( 1 ).base_value(); // Reduce base from 2 chi to 1
-
-        ap_type = AP_WEAPON_BOTH;
         break;
       }
       default:
         break;
     }
     sef_ability = SEF_BLACKOUT_KICK;
+  }
+
+  void init() override
+  {
+    monk_melee_attack_t::init();
+    
+    if ( p() -> specialization() == MONK_WINDWALKER )
+      ap_type = AP_WEAPON_BOTH;
   }
 
   virtual double cost() const override
@@ -3399,6 +3416,14 @@ struct sck_tick_action_t : public monk_melee_attack_t
     base_costs[ RESOURCE_ENERGY ] = 0;
   }
 
+  void init() override
+  {
+    monk_melee_attack_t::init();
+    
+    if ( p() -> specialization() == MONK_WINDWALKER )
+      ap_type = AP_WEAPON_BOTH;
+  }
+
   int mark_of_the_crane_counter() const
   {
     std::vector<player_t*> targets = target_list();
@@ -3440,10 +3465,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
     dot_behavior = DOT_REFRESH; // Spell uses Pandemic Mechanics.
 
-    if ( p -> specialization() == MONK_WINDWALKER )
-      ap_type = AP_WEAPON_BOTH;
-
-
     tick_action = new sck_tick_action_t( "spinning_crane_kick_tick", p, p -> spec.spinning_crane_kick -> effectN( 1 ).trigger() );
   }
 
@@ -3451,22 +3472,6 @@ struct spinning_crane_kick_t: public monk_melee_attack_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return dot_duration * ( tick_time( s ) / base_tick_time );
-  }
-
-  int mark_of_the_crane_counter() const
-  {
-    std::vector<player_t*> targets = target_list();
-    int mark_of_the_crane_counter = 0;
-
-    if ( p() -> specialization() == MONK_WINDWALKER )
-    {
-      for ( player_t* target : targets )
-      {
-        if ( td( target ) -> debuff.mark_of_the_crane -> up() )
-          mark_of_the_crane_counter++;
-      }
-    }
-    return mark_of_the_crane_counter;
   }
 
   virtual void consume_resource() override
