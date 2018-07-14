@@ -11,7 +11,7 @@
 // annex _e to enumerations
 
 // Attack power computation modes for Battle for Azeroth+
-enum attack_power_e : unsigned
+enum attack_power_e
 {
   AP_NONE = -1,         /// Unset value
   AP_WEAPON_MH = 0,     /// Default mode, Attack power is a composite of power and mainhand weapon dps
