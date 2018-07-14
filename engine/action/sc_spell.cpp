@@ -71,8 +71,7 @@ result_e spell_base_t::calculate_result( action_state_t* s ) const
     }
   }
 
-  if ( sim -> debug )
-    sim -> out_debug.printf( "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
+  sim->print_debug("{} result for {} is {}.", player -> name(), name(), util::result_type_string( result ) );
 
   return result;
 }
@@ -187,8 +186,6 @@ void spell_t::init()
 // Heal
 // ==========================================================================
 
-// heal_t::heal_t ======== Heal Constructor =================================
-
 heal_t::heal_t( const std::string&  token,
                 player_t*           p,
                 const spell_data_t* s ) :
@@ -221,8 +218,6 @@ void heal_t::activate()
     target_cache.is_valid = false;
   } );
 }
-
-// heal_t::parse_effect_data ================================================
 
 void heal_t::parse_effect_data( const spelleffect_data_t& e )
 {
@@ -275,8 +270,6 @@ double heal_t::composite_pct_heal( const action_state_t* ) const
   return base_pct_heal;
 }
 
-// heal_t::calculate_direct_amount ==========================================
-
 double heal_t::calculate_direct_amount( action_state_t* state ) const
 {
   double pct_heal = composite_pct_heal( state );
@@ -303,8 +296,6 @@ double heal_t::calculate_direct_amount( action_state_t* state ) const
   return base_t::calculate_direct_amount( state );
 }
 
-// heal_t::calculate_tick_amount ============================================
-
 double heal_t::calculate_tick_amount( action_state_t* state, double dmg_multiplier ) const
 {
   if ( tick_pct_heal )
@@ -325,16 +316,13 @@ double heal_t::calculate_tick_amount( action_state_t* state, double dmg_multipli
     // Record total amount to state
     state -> result_total = amount;
 
-    // replicate debug output of calculate_tick_amount
-    if ( sim -> debug )
-    {
-      sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f pct=%.3f b_ta=%.0f bonus_ta=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f",
-        player -> name(), name(), target -> name(), amount,
-        tick_pct_heal, base_ta( state ), bonus_ta( state ),
-        spell_tick_power_coefficient( state ), state -> composite_spell_power(),
-        attack_tick_power_coefficient( state ), state -> composite_attack_power(),
+    sim->print_debug(
+        "{} amount for {} on {}: "
+        "ta={} pct={} b_ta={} bonus_ta={} s_mod={} s_power={} a_mod={} a_power={} mult={}",
+        player -> name(), name(), target -> name(),
+        amount, tick_pct_heal, base_ta( state ), bonus_ta( state ), spell_tick_power_coefficient( state ),
+        state -> composite_spell_power(), attack_tick_power_coefficient( state ), state -> composite_attack_power(),
         state -> composite_ta_multiplier() );
-    }
 
     return amount;
   }
@@ -342,33 +330,25 @@ double heal_t::calculate_tick_amount( action_state_t* state, double dmg_multipli
   return base_t::calculate_tick_amount( state, dmg_multiplier );
 }
 
-// heal_t::assess_damage ====================================================
-
-void heal_t::assess_damage( dmg_e heal_type,
-                            action_state_t* s )
+void heal_t::assess_damage( dmg_e heal_type, action_state_t* s )
 {
   s -> target -> assess_heal( get_school() , heal_type, s );
 
   if ( heal_type == HEAL_DIRECT )
   {
-    if ( sim -> log )
-    {
-      sim -> out_log.printf( "%s %s heals %s for %.0f (%.0f) (%s)",
-                     player -> name(), name(),
-                     s -> target -> name(), s -> result_total, s -> result_amount,
-                     util::result_type_string( s -> result ) );
-    }
+    sim->print_log("{} {} heals {} for {} ({}) ({})",
+        player -> name(), name(), s -> target -> name(), s -> result_total, s -> result_amount,
+        util::result_type_string( s -> result ) );
   }
   else // HEAL_OVER_TIME
   {
     if ( sim -> log )
     {
-      dot_t* dot = get_dot( s -> target );
-      sim -> out_log.printf( "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
-                     player -> name(), name(),
-                     dot -> current_tick, dot -> num_ticks,
-                     s -> target -> name(), s -> result_total, s -> result_amount,
-                     util::result_type_string( s -> result ) );
+      dot_t* dot = find_dot( s -> target );
+      assert(dot);
+      sim->print_log("{} {} ticks ({} of {}) {} for {} ({}) heal ({})",
+          player -> name(), name(), dot -> current_tick, dot -> num_ticks, s -> target -> name(), s -> result_total,
+          s -> result_amount, util::result_type_string( s -> result ) );
     }
   }
 
@@ -385,7 +365,8 @@ void heal_t::assess_damage( dmg_e heal_type,
 
   if ( player -> record_healing() )
   {
-    stats -> add_result( s -> result_amount, s -> result_total, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result, s -> block_result, s -> target );
+    stats -> add_result( s -> result_amount, s -> result_total, ( direct_tick ? HEAL_OVER_TIME : heal_type ),
+        s -> result, s -> block_result, s -> target );
 
     // Record external healing too
     if ( player != s -> target )
@@ -394,8 +375,6 @@ void heal_t::assess_damage( dmg_e heal_type,
       heal_gain -> add( RESOURCE_HEALTH, s -> result_amount, s -> result_total - s -> result_amount );
   }
 }
-
-// heal_t::find_greatest_difference_player ==================================
 
 player_t* heal_t::find_greatest_difference_player()
 {
@@ -413,8 +392,6 @@ player_t* heal_t::find_greatest_difference_player()
   }
   return max_player;
 }
-
-// heal_t::find_lowest_player ===============================================
 
 player_t* heal_t::find_lowest_player()
 {
@@ -451,13 +428,12 @@ player_t* heal_t::find_lowest_player()
 
 std::vector<player_t*> heal_t::find_lowest_players( int num_players ) const
 {
-  // vector in which to store lowest N players
   std::vector<player_t*> lowest_N_players = sim -> player_no_pet_list.data();
 
-  while ( lowest_N_players.size() > static_cast< size_t > ( num_players ) )
+  while ( lowest_N_players.size() > as<size_t>( num_players ) )
   {
     // find the remaining player with the highest health
-    double max = -1e7;
+    double max = std::numeric_limits<double>::lowest();
     size_t max_player_index = 0;
     for ( size_t i = 0; i < lowest_N_players.size(); ++i )
     {
@@ -475,8 +451,6 @@ std::vector<player_t*> heal_t::find_lowest_players( int num_players ) const
 
   return lowest_N_players;
 }
-
-// heal_t::smart_target =====================================================
 
 player_t* heal_t::smart_target() const
 {
@@ -511,8 +485,6 @@ player_t* heal_t::smart_target() const
   return target;
 }
 
-// heal_t::num_targets ======================================================
-
 int heal_t::num_targets() const
 {
   return as<int>(range::count_if(sim->actor_list,
@@ -525,24 +497,20 @@ int heal_t::num_targets() const
   }));
 }
 
-// heal_t::available_targets ================================================
-
-size_t heal_t::available_targets( std::vector< player_t* >& tl ) const
+size_t heal_t::available_targets( std::vector< player_t* >& target_list ) const
 {
-  tl.clear();
-  tl.push_back( target );
+  target_list.clear();
+  target_list.push_back( target );
 
   for ( const auto& t : sim -> player_non_sleeping_list )
   {
     if ( t != target )
       if ( ! group_only || ( t -> party == target -> party ) )
-        tl.push_back( t );
+        target_list.push_back( t );
   }
 
-  return tl.size();
+  return target_list.size();
 }
-
-// heal_t::create_expression ================================================
 
 expr_t* heal_t::create_expression( const std::string& name )
 {
@@ -558,8 +526,6 @@ expr_t* heal_t::create_expression( const std::string& name )
 // Absorb
 // ==========================================================================
 
-// absorb_t::absorb_t ======== Absorb Constructor by Spell Name =============
-
 absorb_t::absorb_t( const std::string&  token,
                     player_t*           p,
                     const spell_data_t* s ) :
@@ -567,9 +533,13 @@ absorb_t::absorb_t( const std::string&  token,
   target_specific( false )
 {
   if ( sim -> heal_target && target == sim -> target )
+  {
     target = sim -> heal_target;
+  }
   else if ( target -> is_enemy() )
+  {
     target = p;
+  }
 
   may_crit = false;
 
@@ -583,39 +553,30 @@ void absorb_t::activate()
   } );
 }
 
-// absorb_t::impact =========================================================
-
 void absorb_t::impact( action_state_t* s )
 {
   s -> result_amount = calculate_crit_damage_bonus( s );
   assess_damage( type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, s );
 }
 
-// absorb_t::assess_damage ==================================================
-
-void absorb_t::assess_damage( dmg_e  /*heal_type*/ , // commented to remove compiler warning, uncomment if needed
-                              action_state_t* s )
+void absorb_t::assess_damage( dmg_e  /*heal_type*/, action_state_t* s )
 {
-  //s -> result_amount = s -> target -> resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, this );
-
-
   if ( target_specific[ s -> target ] == nullptr )
+  {
     target_specific[ s -> target ] = create_buff( s );
+  }
 
   if ( result_is_hit( s -> result ) )
   {
     target_specific[ s -> target ] -> trigger( 1, s -> result_amount );
-    if ( sim -> log )
-      sim -> out_log.printf( "%s %s applies absorb on %s for %.0f (%.0f) (%s)",
-                     player -> name(), name(),
-                     s -> target -> name(), s -> result_amount, s -> result_total,
-                     util::result_type_string( s -> result ) );
+
+    sim->print_log("{} {} applies absorb on {} for {} ({}) ({})",
+        player -> name(), name(), s -> target -> name(), s -> result_amount, s -> result_total,
+        util::result_type_string( s -> result ) );
   }
 
   stats -> add_result( 0.0, s -> result_total, ABSORB, s -> result, s -> block_result, s -> target );
 }
-
-// absorb_t::available_targets ==============================================
 
 int absorb_t::num_targets() const
 {
@@ -627,18 +588,16 @@ int absorb_t::num_targets() const
   }));
 }
 
-// absorb_t::available_targets ==============================================
-
-size_t absorb_t::available_targets( std::vector< player_t* >& tl ) const
+size_t absorb_t::available_targets( std::vector<player_t*>& target_list ) const
 {
-  tl.clear();
-  tl.push_back( target );
+  target_list.clear();
+  target_list.push_back( target );
 
   for ( const auto& t : sim -> player_non_sleeping_list )
   {
     if ( t != target )
-      tl.push_back( t );
+      target_list.push_back( t );
   }
 
-  return tl.size();
+  return target_list.size();
 }

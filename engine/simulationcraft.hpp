@@ -4335,6 +4335,7 @@ public:
   void register_combat_begin( double amount, resource_e resource, gain_t* g = nullptr );
 };
 
+std::ostream& operator<<(std::ostream &os, const player_t& p);
 
 // Target Specific ==========================================================
 
@@ -7724,7 +7725,7 @@ inline bool cooldown_t::is_ready() const
 template <class T>
 sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)
 {
-  _raw << util::to_string( sim.current_time().total_seconds(), 3 ) << " " << rhs << "\n";
+  _raw << sim.current_time() << " " << rhs << "\n";
 
   return *this;
 }
@@ -7732,7 +7733,7 @@ sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)
 template<typename Format, typename... Args>
 sim_ostream_t& sim_ostream_t::printf(Format&& format, Args&& ... args)
 {
-  _raw << util::to_string( sim.current_time().total_seconds(), 3 ) << " ";
+  _raw << sim.current_time() << " ";
   fmt::fprintf(*_raw.get_stream(), std::forward<Format>(format), std::forward<Args>(args)... );
   _raw << "\n";
   return *this;

@@ -41,14 +41,15 @@ void event_t::reschedule( timespan_t delta_time )
   if ( _sim.debug )
   {
     if ( reschedule_time == timespan_t::zero() )
-      _sim.out_debug.printf( "Rescheduling event %s (%d) from %.2f to %.2f",
-                             name(), id, time.total_seconds(),
-                             delta_time.total_seconds() );
+    {
+      _sim.print_debug("Rescheduling event {} ({}) from {} to {}",
+          name(), id, time, delta_time );
+    }
     else
-      _sim.out_debug.printf(
-          "Adjusting reschedule of event %s (%d) from %.2f to %.2f time=%.2f",
-          name(), id, reschedule_time.total_seconds(),
-          delta_time.total_seconds(), time.total_seconds() );
+    {
+      _sim.print_debug( "Adjusting reschedule of event {} ({}) from {} to {} time={}",
+          name(), id, reschedule_time, delta_time, time );
+    }
   }
 
   reschedule_time = delta_time;
@@ -250,10 +251,8 @@ void event_manager_t::add_event( event_t* e, timespan_t delta_time )
   if ( ++events_remaining > max_events_remaining )
     max_events_remaining = events_remaining;
 
-  if ( sim->debug )
-    sim->out_debug.printf( "Add Event: %s time=%.4f rs-time=%.4f id=%d",
-                           e->name(), e->time.total_seconds(),
-                           e->reschedule_time.total_seconds(), e->id );
+  sim->print_debug( "Add Event: {} time={} reschedule={} id={}",
+      e->name(), e->time, e->reschedule_time, e->id );
 
 #if ACTOR_EVENT_BOOKKEEPING
   if ( sim->debug && e->actor )

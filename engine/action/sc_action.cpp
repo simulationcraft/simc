@@ -185,12 +185,12 @@ struct action_execute_event_t : public player_event_t
   action_t* action;
   action_state_t* execute_state;
 
-  action_execute_event_t( action_t* a, timespan_t time_to_execute, action_state_t* state = 0 )
+  action_execute_event_t( action_t* a, timespan_t time_to_execute, action_state_t* state = nullptr )
     : player_event_t( *a->player, time_to_execute ), action( a ), execute_state( state )
   {
-    sim().print_debug( "New Action Execute Event: {} {} {} (target={}, marker={})", p()->name(), a->name(),
-                       time_to_execute, ( state ) ? state->target->name() : a->target->name(),
-                       ( a->marker ) ? a->marker : '0' );
+    sim().print_debug( "New Action Execute Event: player='{}' action='{}' time_to_execute={} (target={}, marker={})",
+        p()->name(), a->name(), time_to_execute, ( state ) ? state->target->name() : a->target->name(),
+            ( a->marker ) ? a->marker : '0' );
   }
 
   virtual const char* name() const override
@@ -203,7 +203,9 @@ struct action_execute_event_t : public player_event_t
     // Ensure we properly release the carried execute_state even if this event
     // is never executed.
     if ( execute_state )
+    {
       action_state_t::release( execute_state );
+    }
   }
 
   virtual void execute() override
@@ -243,14 +245,16 @@ struct action_execute_event_t : public player_event_t
 
     if ( !p()->channeling )
     {
-      assert( !p()->readying &&
-              "Danger Will Robinson! Danger! Non-channeling action is trying to overwrite player-ready-event upon "
-              "execute." );
+      if (p()->readying)
+      {
+        throw std::runtime_error(fmt::format("Non-channeling action '{}'is trying to overwrite "
+            "player-ready-event upon execute.", action->name()));
+      }
 
       p()->schedule_ready( timespan_t::zero() );
     }
 
-    if ( p()->active_off_gcd_list == 0 )
+    if ( p()->active_off_gcd_list == nullptr )
       return;
 
     // Kick off the during-gcd checker, first run is immediately after
@@ -1042,8 +1046,6 @@ double action_t::false_negative_pct() const
   return failure_rate;
 }
 
-// action_t::travel_time ====================================================
-
 timespan_t action_t::travel_time() const
 {
   if ( travel_speed == 0 )
@@ -1068,8 +1070,6 @@ timespan_t action_t::travel_time() const
   return timespan_t::from_seconds( t );
 }
 
-// action_t::total_crit_bonus ===============================================
-
 double action_t::total_crit_bonus( action_state_t* state ) const
 {
   double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier( state );
@@ -1084,16 +1084,11 @@ double action_t::total_crit_bonus( action_state_t* state ) const
   double bonus =
       ( ( 1.0 + base_crit_bonus ) * crit_multiplier_buffed - 1.0 ) * composite_crit_damage_bonus_multiplier();
 
-  if ( sim->debug )
-  {
-    sim->out_debug.printf( "%s crit_bonus for %s: cb=%.3f b_cb=%.2f b_cm=%.2f b_cbm=%.2f", player->name(), name(),
-                           bonus, crit_bonus, crit_multiplier_buffed, composite_crit_damage_bonus_multiplier() );
-  }
+  sim->print_debug("{} crit_bonus for {}: total={} base={} mult_buffed={} damage_bonus_mult={}",
+      player->name(), name(), bonus, crit_bonus, crit_multiplier_buffed, composite_crit_damage_bonus_multiplier() );
 
   return bonus;
 }
-
-// action_t::calculate_weapon_damage ========================================
 
 double action_t::calculate_weapon_damage( double attack_power ) const
 {
@@ -1105,17 +1100,13 @@ double action_t::calculate_weapon_damage( double attack_power ) const
   double power_damage     = weapon_speed.total_seconds() * weapon_power_mod * attack_power;
   double total_dmg        = dmg + power_damage;
 
-  if ( sim->debug )
-  {
-    sim->out_debug.printf( "%s weapon damage for %s: base=%.0f-%.0f td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
-                           player->name(), name(), weapon->min_dmg, weapon->max_dmg, total_dmg, dmg, weapon->bonus_dmg,
-                           weapon_speed.total_seconds(), power_damage, attack_power );
-  }
+  sim->print_debug("{} weapon damage for {}: base=({} to {}) total={} weapon_damage={} bonus_damage={} "
+      "speed={} power_damage={} ap={}",
+      player->name(), name(), weapon->min_dmg, weapon->max_dmg, total_dmg, dmg, weapon->bonus_dmg,
+      weapon_speed, power_damage, attack_power );
 
   return total_dmg;
 }
-
-// action_t::calculate_tick_amount ==========================================
 
 double action_t::calculate_tick_amount( action_state_t* state, double dot_multiplier ) const
 {
@@ -1148,20 +1139,15 @@ double action_t::calculate_tick_amount( action_state_t* state, double dot_multip
   // subsequent impact).
   amount = calculate_crit_damage_bonus( state );
 
-  if ( sim->debug )
-  {
-    sim->out_debug.printf(
-        "%s amount for %s on %s: ta=%.0f i_ta=%.0f b_ta=%.0f bonus_ta=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f "
-        "a_power=%.0f mult=%.2f, tick_mult=%.2f",
-        player->name(), name(), state->target->name(), amount, init_tick_amount, base_ta( state ), bonus_ta( state ),
+  sim->print_debug("{} tick amount for {} on {}: amount={} initial_amount={} base={} bonus={} s_mod={} s_power={} a_mod={} "
+        "a_power={} mult={}, tick_mult={}",
+        player->name(), name(), state->target->name(),
+        amount, init_tick_amount, base_ta( state ), bonus_ta( state ),
         spell_tick_power_coefficient( state ), state->composite_spell_power(), attack_tick_power_coefficient( state ),
         state->composite_attack_power(), state->composite_ta_multiplier(), dot_multiplier );
-  }
 
   return amount;
 }
-
-// action_t::calculate_direct_amount ========================================
 
 double action_t::calculate_direct_amount( action_state_t* state ) const
 {
@@ -1264,16 +1250,13 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   if ( !sim->average_range )
     amount = floor( amount + rng().real() );
 
-  if ( sim->debug )
-  {
-    sim->out_debug.printf(
-        "%s amount for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f "
-        "mult=%.2f w_mult=%.2f w_slot=%.1f bonus_da=%.0f",
-        player->name(), name(), amount, state->result_raw, weapon_amount, base_direct_amount,
-        spell_direct_power_coefficient( state ), state->composite_spell_power(),
-        attack_direct_power_coefficient( state ), state->composite_attack_power(), state->composite_da_multiplier(),
-        weapon_multiplier, weapon_slot_modifier, bonus_da( state ) );
-  }
+  sim->print_debug(
+      "{} direct amount for {}: amount={} initial_amount={} weapon={} base={} s_mod={} s_power={} "
+      "a_mod={} a_power={} mult={} w_mult={} w_slot_mod={} bonus_da={}",
+      player->name(), name(), amount, state->result_raw, weapon_amount, base_direct_amount,
+      spell_direct_power_coefficient( state ), state->composite_spell_power(),
+      attack_direct_power_coefficient( state ), state->composite_attack_power(), state->composite_da_multiplier(),
+      weapon_multiplier, weapon_slot_modifier, bonus_da( state ) );
 
   // Record total amount to state
   if ( result_is_miss( state->result ) )
@@ -1288,8 +1271,6 @@ double action_t::calculate_direct_amount( action_state_t* state ) const
   }
 }
 
-// action_t::calculate_crit_damage_bonus ====================================
-
 double action_t::calculate_crit_damage_bonus( action_state_t* state ) const
 {
   if ( state->result == RESULT_CRIT )
@@ -1299,8 +1280,6 @@ double action_t::calculate_crit_damage_bonus( action_state_t* state ) const
 
   return state->result_total;
 }
-
-// action_t::consume_resource ===============================================
 
 void action_t::consume_resource()
 {
@@ -1313,14 +1292,11 @@ void action_t::consume_resource()
 
   player->resource_loss( cr, last_resource_cost, nullptr, this );
 
-  if ( sim->log )
-    sim->out_log.printf( "%s consumes %.1f %s for %s (%.0f)", player->name(), last_resource_cost,
-                         util::resource_type_string( cr ), name(), player->resources.current[ cr ] );
+  sim->print_log("{} consumes {} {} for {} ({})",
+      player->name(), last_resource_cost, util::resource_type_string( cr ), name(), player->resources.current[ cr ] );
 
   stats->consume_resource( current_resource(), last_resource_cost );
 }
-
-// action_t::num_targets  ==================================================
 
 int action_t::num_targets() const
 {
@@ -1335,8 +1311,6 @@ int action_t::num_targets() const
 
   return count;
 }
-
-// action_t::available_targets ==============================================
 
 size_t action_t::available_targets( std::vector<player_t*>& tl ) const
 {
@@ -1356,17 +1330,15 @@ size_t action_t::available_targets( std::vector<player_t*>& tl ) const
 
   if ( sim->debug && !sim->distance_targeting_enabled )
   {
-    sim->out_debug.printf( "%s regenerated target cache for %s (%s)", player->name(), signature_str.c_str(), name() );
+    sim->print_debug("{} regenerated target cache for {} ({})", player->name(), signature_str, name() );
     for ( size_t i = 0; i < tl.size(); i++ )
     {
-      sim->out_debug.printf( "[%u, %s (id=%u)]", static_cast<unsigned>( i ), tl[ i ]->name(), tl[ i ]->actor_index );
+      sim->print_debug( "[{:n}, {} (id={})]", i, tl[ i ]->name(), tl[ i ]->actor_index );
     }
   }
 
   return tl.size();
 }
-
-// action_t::target_list ====================================================
 
 std::vector<player_t*>& action_t::target_list() const
 {
@@ -1430,9 +1402,8 @@ block_result_e action_t::calculate_block_result( action_state_t* s ) const
     }
   }
 
-  if ( sim->debug )
-    sim->out_debug.printf( "%s result for %s is %s", player->name(), name(),
-                           util::block_result_type_string( block_result ) );
+  sim->print_debug("{} result for {} is {}",
+      player->name(), name(), util::block_result_type_string( block_result ) );
 
   // 1/27/2018 -- Logs indicate that yellow weapon damage-based attacks cannot crit + block at the same time.
   //              As white damage and yellow AP abilities may crit + block at the same time, this is likely a bug.
@@ -1442,9 +1413,8 @@ block_result_e action_t::calculate_block_result( action_state_t* s ) const
          weapon_multiplier > 0 )
     {
       s->result = RESULT_HIT;
-      if ( sim->debug )
-        sim->out_debug.printf( "%s result for %s is changed from %s to %s", player->name(), name(),
-                               util::result_type_string( RESULT_CRIT ), util::result_type_string( RESULT_HIT ) );
+      sim->print_debug("{} result for {} is changed from {} to {}",
+          player->name(), name(), util::result_type_string( RESULT_CRIT ), util::result_type_string( RESULT_HIT ) );
     }
   }
 
@@ -1480,8 +1450,8 @@ void action_t::execute()
 
   if ( sim->log && !dual )
   {
-    sim->out_log.printf( "%s performs %s (%.0f)", player->name(), name(),
-                         player->resources.current[ player->primary_resource() ] );
+    sim->print_log("{} performs {} ({})",
+        player->name(), name(), player->resources.current[ player->primary_resource() ] );
   }
 
   hit_any_target               = false;
@@ -1637,8 +1607,6 @@ void action_t::execute()
     schedule_execute();
 }
 
-// action_t::tick ===========================================================
-
 void action_t::tick( dot_t* d )
 {
   assert( !d->target->is_sleeping() );
@@ -1674,11 +1642,8 @@ void action_t::tick( dot_t* d )
 
     tick_action->schedule_execute( tick_state );
 
-    if ( sim->log )
-    {
-      sim->out_log.printf( "%s %s ticks (%d of %d) %s", player->name(), name(),
-                           d->current_tick, d->num_ticks, d->target->name() );
-    }
+    sim->print_log("{} {} ticks ({} of {}) {}",
+        player->name(), name(), d->current_tick, d->num_ticks, d->target->name() );
   }
   else
   {
@@ -1705,8 +1670,6 @@ void action_t::tick( dot_t* d )
   player->trigger_ready();
 }
 
-// action_t::last_tick ======================================================
-
 void action_t::last_tick( dot_t* d )
 {
   if ( get_school() == SCHOOL_PHYSICAL )
@@ -1728,8 +1691,6 @@ void action_t::last_tick( dot_t* d )
   }
 }
 
-// action_t::assess_damage ==================================================
-
 void action_t::assess_damage( dmg_e type, action_state_t* s )
 {
   // Execute outbound damage assessor pipeline on the state object
@@ -1746,8 +1707,6 @@ void action_t::assess_damage( dmg_e type, action_state_t* s )
   }
 }
 
-// action_t::record_data ====================================================
-
 void action_t::record_data( action_state_t* data )
 {
   if ( !stats )
@@ -1757,8 +1716,6 @@ void action_t::record_data( action_state_t* data )
                      ( may_block || player->position() != POSITION_BACK ) ? data->block_result : BLOCK_RESULT_UNKNOWN,
                      data->target );
 }
-
-// action_t::schedule_execute ===============================================
 
 // Should be called only by foreground action executions (i.e., Player-Ready event calls
 // player_t::execute_action() ). Background actions should (and are) directly call
@@ -1871,8 +1828,6 @@ void action_t::schedule_execute( action_state_t* execute_state )
   }
 }
 
-// action_t::reschedule_execute =============================================
-
 void action_t::reschedule_execute( timespan_t time )
 {
   if ( sim->log )
@@ -1895,8 +1850,6 @@ void action_t::reschedule_execute( timespan_t time )
     execute_event = start_action_execute_event( time, state );
   }
 }
-
-// action_t::update_ready ===================================================
 
 void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 {
@@ -1930,28 +1883,22 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 
     cooldown->start( this, cd_duration, delay );
 
-    if ( sim->debug )
-    {
-      sim->out_debug.printf(
-          "%s starts cooldown for %s (%s, %d/%d). Duration=%fs Delay=%fs. Will "
-          "be ready at %.4f",
+    sim->print_debug(
+          "{} starts cooldown for {} ({}, {}/{}). Duration={} Delay={}. Will "
+          "be ready at {}",
           player->name(), name(), cooldown->name(), cooldown->current_charge, cooldown->charges,
-          cd_duration.total_seconds(), delay.total_seconds(), cooldown->ready.total_seconds() );
-    }
+          cd_duration, delay, cooldown->ready );
 
     if ( internal_cooldown->duration > timespan_t::zero() )
     {
       internal_cooldown->start( this );
-      if ( sim->debug )
-      {
-        sim->out_debug.printf( "%s starts internal_cooldown for %s (%s). Will be ready at %.3f", player->name(), name(),
-                               internal_cooldown->name(), internal_cooldown->ready.total_seconds() );
-      }
+
+      sim->print_debug("{} starts internal_cooldown for {} ({}). Will be ready at {}",
+          player->name(), name(), internal_cooldown->name(), internal_cooldown->ready );
+
     }
   }
 }
-
-// action_t::usable_moving ==================================================
 
 bool action_t::usable_moving() const
 {
@@ -1969,8 +1916,6 @@ bool action_t::usable_moving() const
 
   return true;
 }
-
-// action_t::ready ==========================================================
 
 bool action_t::ready()
 {
@@ -2146,8 +2091,6 @@ bool action_t::ready()
 
   return true;
 }
-
-// action_t::init ===========================================================
 
 void action_t::init()
 {
@@ -2397,8 +2340,6 @@ void action_t::init_finished()
   }
 }
 
-// action_t::reset ==========================================================
-
 void action_t::reset()
 {
   if ( pre_execute_state )
@@ -2438,8 +2379,6 @@ void action_t::reset()
   }
 }
 
-// action_t::cancel =========================================================
-
 void action_t::cancel()
 {
   if ( sim->debug )
@@ -2477,8 +2416,6 @@ void action_t::cancel()
   if ( was_busy && player->arise_time >= timespan_t::zero() && !player->readying )
     player->schedule_ready();
 }
-
-// action_t::interrupt ======================================================
 
 void action_t::interrupt_action()
 {
@@ -2526,8 +2463,6 @@ void action_t::interrupt_action()
   player->debuffs.casting->expire();
 }
 
-// action_t::check_spec =====================================================
-
 void action_t::check_spec( specialization_e necessary_spec )
 {
   if ( player->specialization() != necessary_spec )
@@ -2550,8 +2485,6 @@ void action_t::check_spell( const spell_data_t* sp )
     background = true;  // prevent action from being executed
   }
 }
-
-// action_t::create_expression ==============================================
 
 expr_t* action_t::create_expression( const std::string& name_str )
 {
@@ -3379,8 +3312,6 @@ expr_t* action_t::create_expression( const std::string& name_str )
   return player->create_action_expression( *this, name_str );
 }
 
-// action_t::ppm_proc_chance ================================================
-
 double action_t::ppm_proc_chance( double PPM ) const
 {
   if ( weapon )
@@ -3399,8 +3330,6 @@ double action_t::ppm_proc_chance( double PPM ) const
   }
 }
 
-// action_t::tick_time ======================================================
-
 timespan_t action_t::tick_time( const action_state_t* state ) const
 {
   timespan_t t = base_tick_time;
@@ -3410,8 +3339,6 @@ timespan_t action_t::tick_time( const action_state_t* state ) const
   }
   return t;
 }
-
-// action_t::snapshot_internal ==============================================
 
 void action_t::snapshot_internal( action_state_t* state, unsigned flags, dmg_e rt )
 {
@@ -3489,8 +3416,7 @@ void action_t::do_schedule_travel( action_state_t* state, const timespan_t& time
   }
   else
   {
-    if ( sim->log )
-      sim->out_log.printf( "%s schedules travel (%.3f) for %s", player->name(), time_.total_seconds(), name() );
+    sim->print_log( "{} schedules travel ({}) for {}", player->name(), time_, name() );
 
     travel_events.push_back( make_event<travel_event_t>( *sim, this, state, time_ ) );
   }
@@ -3844,11 +3770,8 @@ void action_t::reschedule_queue_event()
     return;
   }
 
-  if ( sim->debug )
-  {
-    sim->out_debug.printf( "%s %s adjusting queue-delayed execution, old=%.3f new=%.3f", player->name(), name(),
-                           remaining.total_seconds(), new_queue_delay.total_seconds() );
-  }
+  sim->print_debug( "{} {} adjusting queue-delayed execution, old={} new={}",
+      player->name(), name(), remaining.total_seconds(), new_queue_delay.total_seconds() );
 
   if ( new_queue_delay > remaining )
   {

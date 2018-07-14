@@ -12283,3 +12283,9 @@ void player_t::register_combat_begin( double amount, resource_e resource, gain_t
     p -> resource_gain( resource, amount, g );
   });
 }
+
+std::ostream& operator<<(std::ostream &os, const player_t& p)
+{
+  fmt::print(os, "Player '{}' ({})", p.name(), util::player_type_string(p.type) );
+  return os;
+}
