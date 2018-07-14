@@ -789,11 +789,7 @@ namespace warlock {
           energize_amount = 1;
 
           may_crit = true;
-      }
-
-      timespan_t composite_dot_duration(const action_state_t* s) const override {
-          timespan_t duration = warlock_spell_t::composite_dot_duration(s);
-          return duration * p()->cache.spell_haste();
+          hasted_ticks = false;
       }
 
       void tick(dot_t* d) override {
