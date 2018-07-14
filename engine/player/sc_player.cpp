@@ -12228,6 +12228,8 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
     range::for_each( action_list, [event, context, candidate_target]( action_t* action ) {
       action->acquire_target( event, context, candidate_target );
     } );
+
+    trigger_ready();
   }
 }
 
