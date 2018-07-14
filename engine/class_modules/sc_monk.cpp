@@ -3744,9 +3744,9 @@ struct whirling_dragon_punch_t: public monk_melee_attack_t
 // The ability does NOT require an off-hand weapon to be executed. 
 // The ability uses the main-hand weapon damage for both attacks
 
-struct fist_of_the_white_tiger_off_hand_t: public monk_melee_attack_t
+struct fist_of_the_white_tiger_main_hand_t: public monk_melee_attack_t
 {
-  fist_of_the_white_tiger_off_hand_t( monk_t* p, const char* name, const spell_data_t* s ):
+  fist_of_the_white_tiger_main_hand_t( monk_t* p, const char* name, const spell_data_t* s ):
     monk_melee_attack_t( name, p, s )
   {
     sef_ability = SEF_FIST_OF_THE_WHITE_TIGER;
@@ -3760,7 +3760,7 @@ struct fist_of_the_white_tiger_off_hand_t: public monk_melee_attack_t
 
 struct fist_of_the_white_tiger_t: public monk_melee_attack_t
 {
-  fist_of_the_white_tiger_off_hand_t* mh_attack;
+  fist_of_the_white_tiger_main_hand_t* mh_attack;
   fist_of_the_white_tiger_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "fist_of_the_white_tiger_offhand", p, p -> talent.fist_of_the_white_tiger ),
     mh_attack( nullptr )
@@ -3773,7 +3773,7 @@ struct fist_of_the_white_tiger_t: public monk_melee_attack_t
     weapon      = &( player -> off_hand_weapon ); 
     trigger_gcd = data().gcd();
 
-    mh_attack = new fist_of_the_white_tiger_off_hand_t( p, "fist_of_the_white_tiger_mainhand", p -> talent.fist_of_the_white_tiger -> effectN( 2 ).trigger() );
+    mh_attack = new fist_of_the_white_tiger_main_hand_t( p, "fist_of_the_white_tiger_mainhand", p -> talent.fist_of_the_white_tiger -> effectN( 2 ).trigger() );
     add_child( mh_attack );
   }
 
