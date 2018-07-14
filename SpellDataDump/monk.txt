@@ -565,7 +565,7 @@ Description      : Increases all damage dealt by $s3%.
 Name             : Spinning Crane Kick (id=107270) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
-Affecting spells : Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effect#1), 
 Triggered by     : Spinning Crane Kick (101546)
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -896,6 +896,7 @@ Effects          :
 Description      : A wave of Chi energy flows through friends and foes, dealing $132467s1 Nature damage or $132463s1 healing. Bounces up to $s1 times to targets within $132466a2 yards.
 
 Name             : Renewing Mist (id=115151) [Spell Family (53)] 
+Hotfixed         : Charge Cooldown (8000 -> 9000)
 Class            : Mistweaver Monk
 School           : Nature
 Resource         : 2.8% Base Mana (0) (id=5696)
@@ -903,7 +904,7 @@ Spell Level      : 20
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
-Charges          : 1 (8 seconds cooldown)
+Charges          : 1 (9 seconds cooldown)
 Category         : 1517
 Affecting spells : Thunder Focus Tea (116680 effect#3), Chi-ji's Guidance (167717 effect#1), Extend Life (185158 effect#2), Item - Monk T19 Mistweaver 2P Bonus (211418 effect#1), Shelter of Rin (281301 effect#1), 
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
@@ -1061,11 +1062,12 @@ Effects          :
 Description      : Chug an Energizing Elixir, refilling all your Energy and instantly generate $s2 Chi.
 
 Name             : Guard (id=115295) [Spell Family (53)] 
+Hotfixed         : GCD (1500 -> 1000), Variables
 Class            : Monk
 School           : Physical
 Spell Level      : 26
-GCD              : 1.5 seconds
-Duration         : 5 seconds
+GCD              : 1 seconds
+Duration         : 8 seconds
 Cooldown         : 30 seconds
 Charges          : 0 (30 seconds cooldown)
 Category         : 1474
@@ -1081,15 +1083,16 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value 2: 0xfffffff5 | Target: Self (1)
 Description      : Guard against future attacks, causing the next $<absorb> damage delayed by Stagger to instead be prevented.
 Tooltip          : The next $w1 damage you Stagger will be prevented instead.
-Variables        : $absorb=${($AP*12)*(1+$@versadmg)}
+Variables        : $absorb=${($AP*10)*(1+$@versadmg)}
 
 
 Name             : Ironskin Brew (id=115308) [Spell Family (53)] 
+Hotfixed         : Charge Cooldown (14000 -> 15000)
 Class            : Brewmaster Monk
 School           : Physical
 Spell Level      : 20
 Cooldown         : 1 seconds
-Charges          : 3 (14 seconds cooldown)
+Charges          : 3 (15 seconds cooldown)
 Category         : 1562: Brewmaster Monk (137023 effect#5)
 Affecting spells : Eluding Movements (184906 effect#2), Item - Monk T19 Brewmaster 2P Bonus (211415 effect#1), 
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1423,7 +1426,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=131794)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.05000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.95000 | Target: Friend (21)
+                   Hotfixed: SP Coefficient (1.05 -> 0.95)
 #2 (id=284314)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.70000 | Radius: 0 - 60 yards | Target: Unknown(132) -> AOE friendly (31)
 Description      : Causes a surge of invigorating mists, healing the target for $s1$?s274586[ and all allies with your Renewing Mist active for $s2][].
@@ -1642,6 +1646,7 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 
 Name             : Life Cocoon (id=116849) [Spell Family (53)] 
+Hotfixed         : Variables
 Class            : Mistweaver Monk
 School           : Nature
 Resource         : 2.4% Base Mana (0) (id=6877)
@@ -1664,7 +1669,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | Misc Value: 127 | Target: Friend (21)
 Description      : Encases the target in a cocoon of Chi energy for $d, absorbing $<shield> damage and increasing all healing over time received by $m2%.
 Tooltip          : Absorbing $w1 damage, and periodic healing received increased by $w2%.
-Variables        : $shield=${((($SP*12.6)+$m1))*(1+$@versadmg)}
+Variables        : $shield=${((($SP*11)+$m1))*(1+$@versadmg)}
 
 Name             : Fists of Fury (id=117418) [Spell Family (53)] 
 Class            : Monk
@@ -1750,7 +1755,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Proc Chance      : 100%
-Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Emperor's Capacitor (235054 effect#1), The Wind Blows (281452 effect#1), 
+Affecting spells : Brewmaster Monk (137023 effect#1), Mistweaver Monk (137024 effect#15), Windwalker Monk (137025 effect#1), Storm, Earth, and Fire (137639 effect#1), Serenity (152173 effect#2), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), The Emperor's Capacitor (235054 effect#1), The Wind Blows (281452 effect#1), 
 Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ ...x.x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ...x.... 
@@ -1859,11 +1864,12 @@ Description      : Knocks down all enemies within $A1 yards, stunning them for $
 Tooltip          : Stunned.
 
 Name             : Purifying Brew (id=119582) [Spell Family (53)] 
+Hotfixed         : Charge Cooldown (14000 -> 15000)
 Class            : Brewmaster Monk
 School           : Physical
 Spell Level      : 28
 Cooldown         : 1 seconds
-Charges          : 3 (14 seconds cooldown)
+Charges          : 3 (15 seconds cooldown)
 Category         : 1562: Brewmaster Monk (137023 effect#5)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3257,17 +3263,23 @@ Effects          :
                    Base Value: 2000 | Scaled Value: 2000 | Misc Value: 11
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
 #11 (id=260832)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -20 | Scaled Value: -20
+                   Base Value: 0 | Scaled Value: 0
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
+                   Hotfixed: Base Value (-20 -> 0)
 #12 (id=260833)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
 #13 (id=260834)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0
                    Affected Spells: Tiger Palm (100780)
-#14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+#14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 60 | Scaled Value: 60
+                   Affected Spells: Spinning Crane Kick (107270)
+                   Hotfixed: Base Value (400 -> 60), Misc Value (22 -> 0), Affects Spells, Chain Targets (1 -> 0)
+#15 (id=741702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)
+                   Hotfixed: NEW EFFECT
 Description      : Mistweaver Monk core passive
 
 Name             : Windwalker Monk (id=137025) [Spell Family (53), Passive, Hidden] 
@@ -3284,10 +3296,12 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -23 | Scaled Value: -23 | Target: Self (1)
+                   Base Value: -27 | Scaled Value: -27 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Hotfixed: Base Value (-23 -> -27)
 #2 (id=191100)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -23 | Scaled Value: -23 | Target: Self (1)
+                   Base Value: -27 | Scaled Value: -27 | Target: Self (1)
+                   Hotfixed: Base Value (-23 -> -27)
 #3 (id=191101)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
@@ -4147,7 +4161,8 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=288839)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Hotfixed: Base Value (10 -> 8)
 #2 (id=344133)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Light Stagger (124275)
@@ -4158,8 +4173,9 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Heavy Stagger (124273)
 #5 (id=726763)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Stagger (115069)
+                   Hotfixed: Base Value (50 -> 40)
 Description      : Stagger is $s1% more effective at delaying damage.
 
 You gain up to $s4% Haste based on your current level of Stagger.
@@ -6897,7 +6913,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734364)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 205.26 (avg=0.66) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 68.95772 (avg=0.221729) | Target: Self (1)
+                   Hotfixed: Average (0.66 -> 0.221729)
 #2 (id=734365)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 #3 (id=734366)   : Dummy (3)
