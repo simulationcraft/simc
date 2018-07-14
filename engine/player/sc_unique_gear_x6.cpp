@@ -5518,8 +5518,8 @@ static const convergence_cd_t convergence_cds[] =
     if they have one, or this trinket may cause undesirable results.
 
   !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! NOTE !!! */
-  { DEATH_KNIGHT_FROST,   { "empower_rune_weapon", "hungering_rune_weapon" } },
-  { DEATH_KNIGHT_UNHOLY,  { "summon_gargoyle", "dark_arbiter" } },
+  { DEATH_KNIGHT_FROST,   { "empower_rune_weapon" } },
+  { DEATH_KNIGHT_UNHOLY,  { "summon_gargoyle" } },
   { DRUID_FERAL,          { "berserk", "incarnation" } },
   { HUNTER_BEAST_MASTERY, { "aspect_of_the_wild" } },
   { HUNTER_MARKSMANSHIP,  { "trueshot" } },
@@ -5608,20 +5608,7 @@ void item::convergence_of_fates( special_effect_t& effect )
       effect.rppm_modifier_ = 1.0;
     }
     break;
-  case DEATH_KNIGHT_FROST:
-    if ( player_talent( effect.player, "Hungering Rune Weapon" ) )
-    {
-      effect.ppm_ = -4.62;
-      effect.rppm_modifier_ = 1.0;
-    }
-    break;
-  case DEATH_KNIGHT_UNHOLY:
-    if ( player_talent( effect.player, "Dark Arbiter" ) )
-    {
-      effect.ppm_ = -5.5;
-      effect.rppm_modifier_ = 1.0;
-    }
-    break;
+
   case DRUID_FERAL:
     if ( player_talent( effect.player, "Incarnation: King of the Jungle" ) )
     {
