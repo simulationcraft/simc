@@ -1090,7 +1090,7 @@ struct rogue_attack_t : public melee_attack_t
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( p()->buffs.symbols_of_death->value() && data().affected_by( p()->buffs.symbols_of_death->data().effectN( 1 ) ) )
+    if ( p()->buffs.symbols_of_death->up() && data().affected_by( p()->buffs.symbols_of_death->data().effectN( 1 ) ) )
     {
       m *= 1.0 + p()->buffs.symbols_of_death->data().effectN( 1 ).percent()
         + p()->spec.t20_2pc_subtlety->effectN( 1 ).percent();
@@ -1108,7 +1108,7 @@ struct rogue_attack_t : public melee_attack_t
       m *= 1.0 + p()->cache.mastery_value();
     }
     
-    if ( p()->buffs.elaborate_planning->check() && data().affected_by( p()->buffs.elaborate_planning->data().effectN( 1 ) ) )
+    if ( p()->buffs.elaborate_planning->up() && data().affected_by( p()->buffs.elaborate_planning->data().effectN( 1 ) ) )
     {
       m *= 1.0 + p()->buffs.elaborate_planning->data().effectN( 1 ).percent();
     }
@@ -1126,7 +1126,7 @@ struct rogue_attack_t : public melee_attack_t
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( p()->buffs.symbols_of_death->value() && data().affected_by( p()->buffs.symbols_of_death->data().effectN( 2 ) ) )
+    if ( p()->buffs.symbols_of_death->up() && data().affected_by( p()->buffs.symbols_of_death->data().effectN( 2 ) ) )
     {
       m *= 1.0 + p()->buffs.symbols_of_death->data().effectN( 2 ).percent()
         + p()->spec.t20_2pc_subtlety->effectN( 2 ).percent();
@@ -1145,7 +1145,7 @@ struct rogue_attack_t : public melee_attack_t
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( p()->buffs.elaborate_planning->check() && data().affected_by( p()->buffs.elaborate_planning->data().effectN( 2 ) ) )
+    if ( p()->buffs.elaborate_planning->up() && data().affected_by( p()->buffs.elaborate_planning->data().effectN( 2 ) ) )
     {
       m *= 1.0 + p()->buffs.elaborate_planning->data().effectN( 2 ).percent();
     }
@@ -2180,7 +2180,7 @@ struct melee_t : public rogue_attack_t
     double m = rogue_attack_t::action_multiplier();
 
     // Subtlety
-    if ( p()->buffs.symbols_of_death->value() )
+    if ( p()->buffs.symbols_of_death->up() )
     {
       m *= 1.0 + p()->buffs.symbols_of_death->data().effectN( 2 ).percent()
         + p()->spec.t20_2pc_subtlety->effectN( 3 ).percent();
@@ -2193,7 +2193,7 @@ struct melee_t : public rogue_attack_t
     }
 
     // Assassination
-    if ( p()->buffs.elaborate_planning->check() )
+    if ( p()->buffs.elaborate_planning->up() )
     {
       m *= 1.0 + p()->buffs.elaborate_planning->data().effectN( 3 ).percent();
     }
