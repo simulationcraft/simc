@@ -686,6 +686,11 @@ public:
     {
       this -> base_dd_multiplier *= 1.0 + p() -> passives.protection_paladin -> effectN( 1 ).percent();
     }
+    if ( p() -> specialization() == PALADIN_PROTECTION && this -> data().affected_by( p() -> passives.protection_paladin -> effectN( 2 ) ) )
+    {
+      this -> base_td_multiplier *= 1.0 + p() -> passives.protection_paladin -> effectN( 2 ).percent();
+    }
+
 
     if ( p() -> specialization() == PALADIN_RETRIBUTION ) {
       ret_execution_sentence = ab::data().affected_by( p() -> passives.execution_sentence -> effectN( 1 ) );

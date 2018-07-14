@@ -1478,7 +1478,7 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
   // Protection gets increased stamina
   if ( attr == ATTR_STAMINA )
   {
-    m *= 1.0 + passives.protection_paladin -> effectN( 2 ).percent();
+    m *= 1.0 + passives.protection_paladin -> effectN( 3 ).percent();
   }
 
   return m;
@@ -1683,7 +1683,7 @@ double paladin_t::composite_spell_power( school_e school ) const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      sp = passives.protection_paladin -> effectN( 7 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
+      sp = passives.protection_paladin -> effectN( 8 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
       break;
     case PALADIN_RETRIBUTION:
       sp = passives.retribution_paladin -> effectN( 10 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
@@ -1757,7 +1757,7 @@ double paladin_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += passives.protection_paladin -> effectN( 8 ).percent();
+  c += passives.protection_paladin -> effectN( 9 ).percent();
 
   return c;
 }

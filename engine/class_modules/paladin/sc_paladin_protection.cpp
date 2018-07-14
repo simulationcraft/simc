@@ -343,8 +343,8 @@ struct judgment_prot_t : public paladin_melee_attack_t
     cooldown -> charges = 1;
 
     cooldown -> charges += as<int>( p -> talents.crusaders_judgment -> effectN( 1 ).base_value() );
-    cooldown -> duration *= 1.0 + p -> passives.protection_paladin -> effectN( 3 ).percent();
-    base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 11 ).percent();
+    cooldown -> duration *= 1.0 + p -> passives.protection_paladin -> effectN( 4 ).percent();
+    base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 12 ).percent();
     sotr_cdr = -1.0 * timespan_t::from_seconds( p -> spec.judgment_2 -> effectN( 1 ).base_value() );
 
   }
