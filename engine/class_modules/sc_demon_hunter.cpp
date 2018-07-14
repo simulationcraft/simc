@@ -330,7 +330,6 @@ public:
     // Havoc
     cooldown_t* blade_dance;
     cooldown_t* blur;
-    cooldown_t* death_sweep;
     cooldown_t* chaos_nova;
     cooldown_t* dark_slash;
     cooldown_t* demonic_appetite;
@@ -2946,7 +2945,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     : demon_hunter_attack_t( n, p, s, options_str ), dodge_buff( dodge_buff ), trail_of_ruin_dot ( nullptr )
   {
     may_miss = may_crit = may_parry = may_block = may_dodge = false;
-    cooldown = p->get_cooldown( "blade_dance" );  // Blade Dance/Death Sweep Shared Cooldown
+    cooldown = p->cooldown.blade_dance;  // Blade Dance/Death Sweep Shared Cooldown
     range = 5.0; // Disallow use outside of melee range.
 
     base_costs[ RESOURCE_FURY ] += p->talent.first_blood->effectN( 2 ).resource( RESOURCE_FURY );
@@ -5216,7 +5215,6 @@ void demon_hunter_t::apl_havoc()
   apl_normal->add_action( this, "Fel Rush", "if=(variable.waiting_for_momentum|talent.fel_mastery.enabled)&(charges=2|(raid_event.movement.in>10&raid_event.adds.in>10))" );
   apl_normal->add_talent( this, "Fel Barrage", "if=!variable.waiting_for_momentum&(active_enemies>desired_targets|raid_event.adds.in>30)" );
   apl_normal->add_talent( this, "Immolation Aura" );
-  apl_normal->add_talent( this, "Felblade", "if=fury<15&(cooldown.death_sweep.remains<2*gcd|cooldown.blade_dance.remains<2*gcd)" );
   apl_normal->add_action( this, "Eye Beam", "if=active_enemies>1&(!raid_event.adds.exists|raid_event.adds.up)&!variable.waiting_for_momentum" );
   apl_normal->add_action( this, spec.death_sweep, "death_sweep", "if=variable.blade_dance" );
   apl_normal->add_action( this, "Blade Dance", "if=variable.blade_dance" );
@@ -5226,7 +5224,7 @@ void demon_hunter_t::apl_havoc()
                                                                    "&!variable.pooling_for_blade_dance&!variable.waiting_for_dark_slash" );
   apl_normal->add_action( this, "Chaos Strike", "if=(talent.demon_blades.enabled|!variable.waiting_for_momentum|fury.deficit<30)"
                                                 "&!variable.pooling_for_meta&!variable.pooling_for_blade_dance&!variable.waiting_for_dark_slash" );
-  apl_normal->add_action( this, "Eye Beam", "if=talent.blind_fury.enabled" );
+  apl_normal->add_action( this, "Eye Beam", "if=talent.blind_fury.enabled&raid_event.adds.in>cooldown" );
   apl_normal->add_action( this, "Demon's Bite" );
   apl_normal->add_action( this, "Fel Rush", "if=!talent.momentum.enabled&raid_event.movement.in>charges*10&talent.demon_blades.enabled" );
   apl_normal->add_talent( this, "Felblade", "if=movement.distance>15|buff.out_of_range.up" );
@@ -5304,7 +5302,6 @@ void demon_hunter_t::create_cooldowns()
   cooldown.blur                 = get_cooldown( "blur" );
   cooldown.chaos_nova           = get_cooldown( "chaos_nova" );
   cooldown.dark_slash           = get_cooldown( "dark_slash" );
-  cooldown.death_sweep          = get_cooldown( "death_sweep" );
   cooldown.demonic_appetite     = get_cooldown( "demonic_appetite" );
   cooldown.eye_beam             = get_cooldown( "eye_beam" );
   cooldown.fel_barrage          = get_cooldown( "fel_barrage" );
