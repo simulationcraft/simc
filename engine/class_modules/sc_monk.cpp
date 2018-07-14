@@ -3790,7 +3790,7 @@ struct fist_of_the_white_tiger_t: public monk_melee_attack_t
       p() -> resource_gain( RESOURCE_CHI, p() -> talent.fist_of_the_white_tiger -> effectN( 3 ).trigger() -> effectN( 1 ).base_value(), p() -> gain.fist_of_the_white_tiger );
 
       if ( p() -> legendary.the_wind_blows )
-        p() -> buff.bok_proc -> trigger();
+        p() -> buff.bok_proc -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
 
       mh_attack -> execute();
       }
