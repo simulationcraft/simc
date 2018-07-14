@@ -287,6 +287,7 @@ struct rogue_t : public player_t
     buff_t* sharpened_blades;
     buff_t* snake_eyes;
     buff_t* storm_of_steel;
+    buff_t* the_first_dance;
   } buffs;
 
   // Cooldowns
@@ -499,6 +500,7 @@ struct rogue_t : public player_t
     azerite_power_t sharpened_blades;
     azerite_power_t snake_eyes;
     azerite_power_t storm_of_steel;
+    azerite_power_t the_first_dance;
     azerite_power_t twist_the_knife;
   } azerite;
 
@@ -2708,6 +2710,14 @@ struct eviscerate_t : public rogue_attack_t
     return b;
   }
 
+  double composite_crit_chance() const override
+  {
+    double c = rogue_attack_t::composite_crit_chance();
+    if ( p() -> buffs.the_first_dance -> up() )
+      c += p() -> buffs.the_first_dance -> check_value() / p() -> current.rating.attack_crit;
+    return c;
+  }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -2727,6 +2737,7 @@ struct eviscerate_t : public rogue_attack_t
     }
 
     p() -> buffs.nights_vengeance -> expire();
+    p() -> buffs.the_first_dance -> expire();
   }
 };
 
@@ -3651,6 +3662,9 @@ struct shadow_dance_t : public rogue_attack_t
 
     p() -> buffs.shadow_dance -> trigger();
 
+    if ( p() -> azerite.the_first_dance.ok() )
+      p() -> buffs.the_first_dance -> trigger();
+
     icd -> start();
   }
 
@@ -3739,6 +3753,7 @@ struct shadowstrike_t : public rogue_attack_t
     p() -> trigger_t21_4pc_subtlety( execute_state );
 
     p() -> buffs.blade_in_the_shadows -> trigger();
+    p() -> buffs.the_first_dance -> expire();
   }
 
   void impact( action_state_t* state ) override
@@ -3761,6 +3776,14 @@ struct shadowstrike_t : public rogue_attack_t
       b += p() -> azerite.inevitability.value( 3 );
 
     return b;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double c = rogue_attack_t::composite_crit_chance();
+    if ( p() -> buffs.the_first_dance -> up() )
+      c += p() -> buffs.the_first_dance -> check_value() / p() -> current.rating.attack_crit;
+    return c;
   }
 
   double action_multiplier() const override
@@ -3818,6 +3841,14 @@ struct shuriken_storm_t: public rogue_attack_t
   bool procs_insignia_of_ravenholdt() const override
   { return false; }
 
+  double composite_crit_chance() const override
+  {
+    double c = rogue_attack_t::composite_crit_chance();
+    if ( p() -> buffs.the_first_dance -> up() )
+      c += p() -> buffs.the_first_dance -> check_value() / p() -> current.rating.attack_crit;
+    return c;
+  }
+
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
@@ -3844,6 +3875,8 @@ struct shuriken_storm_t: public rogue_attack_t
 
     if ( p() -> buffs.the_dreadlords_deceit -> up() )
       p() -> buffs.the_dreadlords_deceit -> expire();
+
+    p() -> buffs.the_first_dance -> expire();
   }
 };
 
@@ -6887,6 +6920,7 @@ void rogue_t::init_spells()
   azerite.sharpened_blades     = find_azerite_spell( "Sharpened Blades" );
   azerite.snake_eyes           = find_azerite_spell( "Snake Eyes" );
   azerite.storm_of_steel       = find_azerite_spell( "Storm of Steel" );
+  azerite.the_first_dance      = find_azerite_spell( "The First Dance" );
   azerite.twist_the_knife      = find_azerite_spell( "Twist the Knife" );
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
@@ -7247,6 +7281,8 @@ void rogue_t::create_buffs()
   buffs.storm_of_steel                     = make_buff( this, "storm_of_steel", find_spell( 273455 ) )
                                              -> set_trigger_spell( azerite.storm_of_steel.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.storm_of_steel.value() );
+  buffs.the_first_dance                    = make_buff( this, "the_first_dance", find_spell( 278981 ) )
+                                             -> set_default_value( azerite.the_first_dance.value() );
 }
 
 // rogue_t::create_options ==================================================
