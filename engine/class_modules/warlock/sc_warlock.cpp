@@ -209,7 +209,7 @@ namespace warlock
 
               virtual void execute() override
               {
-                double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent() + pl->spec.destruction->effectN( 4 ).percent();
+                double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent();
 
                 for ( int i = 0; i < shards_used; i++ ) {
                   if ( rng().roll( soul_conduit_rng ) ) {
@@ -225,7 +225,7 @@ namespace warlock
 
           else
           {
-            double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent() + p()->spec.destruction->effectN( 4 ).percent();
+            double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent();
 
             for ( int i = 0; i < last_resource_cost; i++ )
             {
@@ -1326,7 +1326,6 @@ static void wilfreds_sigil_of_superior_summoning( special_effect_t& effect )
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
   do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.wilfreds_sigil_of_superior_summoning, effect );
 }
-
 struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<warlock_t>
 {
   sephuzs_secret_t() : scoped_actor_callback_t( WARLOCK )
@@ -1337,6 +1336,12 @@ struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<warlock_t>
     warlock->legendary.sephuzs_secret = e.driver();
   }
 };
+static void sindorei_spite( special_effect_t& effect )
+{
+  warlock_t* s = debug_cast<warlock_t*>( effect.player );
+  do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.sindorei_spite, effect );
+  do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.sindorei_spite, effect );
+}
 
 struct warlock_module_t : public module_t
 {
@@ -1369,6 +1374,7 @@ struct warlock_module_t : public module_t
     unique_gear::register_special_effect( 212172, odr_shawl_of_the_ymirjar );
     unique_gear::register_special_effect( 214345, wilfreds_sigil_of_superior_summoning );
     unique_gear::register_special_effect( 208051, sephuzs_secret_t() );
+    unique_gear::register_special_effect( 208868, sindorei_spite );
   }
 
   virtual void register_hotfixes() const override { }
