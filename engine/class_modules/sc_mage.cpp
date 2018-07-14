@@ -6730,6 +6730,7 @@ void mage_t::apl_arcane()
   {
     burn -> add_action( racial_actions[ i ] );
   }
+  burn -> add_action( this, "Presence of Mind" );
   burn -> add_talent( this, "Arcane Orb", "if=buff.arcane_charge.stack=0|(active_enemies<3|(active_enemies<2&talent.resonance.enabled))" );
   burn -> add_action( this, "Arcane Blast", "if=buff.presence_of_mind.up&set_bonus.tier20_2pc&talent.overpowered.enabled&buff.arcane_power.up" );
   burn -> add_action( this, "Arcane Barrage", "if=(active_enemies>=3|(active_enemies>=2&talent.resonance.enabled))&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
