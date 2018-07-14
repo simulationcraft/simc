@@ -126,6 +126,8 @@ public:
   {
     dot_t* breath_of_fire;
     dot_t* enveloping_mist;
+    dot_t* eye_of_the_tiger_damage;
+    dot_t* eye_of_the_tiger_heal;
     dot_t* renewing_mist;
     dot_t* rushing_jade_wind;
     dot_t* soothing_mist;
@@ -2940,7 +2942,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     monk_melee_attack_t::init();
     
     if ( p() -> specialization() == MONK_WINDWALKER )
-      ap_type = AP_WEAPON_MH;
+      ap_type = AP_WEAPON_BOTH;
   }
 };
 
@@ -6322,6 +6324,8 @@ monk( *p )
 
   dots.breath_of_fire = target -> get_dot( "breath_of_fire_dot", p );
   dots.enveloping_mist = target -> get_dot( "enveloping_mist", p );
+  dots.eye_of_the_tiger_damage = target -> get_dot( "eye_of_the_tiger_damage", p );
+  dots.eye_of_the_tiger_heal = target -> get_dot( "eye_of_the_tiger_heal", p );
   dots.renewing_mist = target -> get_dot( "renewing_mist", p );
   dots.rushing_jade_wind = target -> get_dot( "rushing_jade_wind", p );
   dots.soothing_mist = target -> get_dot( "soothing_mist", p );
