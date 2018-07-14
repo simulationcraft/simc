@@ -2604,6 +2604,10 @@ struct monk_spell_t: public monk_action_t < spell_t >
     if ( base_t::data().affected_by( p() -> spec.storm_earth_and_fire -> effectN( 1 ) ) && p() -> buff.storm_earth_and_fire -> up() )
       am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
 
+    if ( ( base_t::data().affected_by( p() -> talent.serenity -> effectN( 2 ) ) || base_t::data().affected_by( p() -> talent.serenity -> effectN( 6 ) ) ) 
+            && p() -> buff.serenity -> up() ) 
+      am *= 1 + p() -> talent.serenity -> effectN( 2 ).percent();
+
     return am;
   }
 };
@@ -2648,6 +2652,10 @@ struct monk_heal_t: public monk_action_t < heal_t >
     if ( base_t::data().affected_by( p() -> spec.storm_earth_and_fire -> effectN( 1 ) ) && p() -> buff.storm_earth_and_fire -> up() )
       am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
 
+    if ( ( base_t::data().affected_by( p() -> talent.serenity -> effectN( 2 ) ) || base_t::data().affected_by( p() -> talent.serenity -> effectN( 6 ) ) ) 
+            && p() -> buff.serenity -> up() ) 
+      am *= 1 + p() -> talent.serenity -> effectN( 2 ).percent();
+
     return am;
   }
 };
@@ -2690,6 +2698,10 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
 
     if ( base_t::data().affected_by( p() -> spec.storm_earth_and_fire -> effectN( 1 ) ) && p() -> buff.storm_earth_and_fire -> up() )
       am *= 1 + p() -> spec.storm_earth_and_fire -> effectN( 1 ).percent();
+
+    if ( ( base_t::data().affected_by( p() -> talent.serenity -> effectN( 2 ) ) || base_t::data().affected_by( p() -> talent.serenity -> effectN( 6 ) ) ) 
+            && p() -> buff.serenity -> up() ) 
+      am *= 1 + p() -> talent.serenity -> effectN( 2 ).percent();
 
     return am;
   }
@@ -3773,6 +3785,8 @@ struct melee_t: public monk_melee_attack_t
     if ( p() -> buff.storm_earth_and_fire -> up() )
       am *= 1.0 + p() -> spec.storm_earth_and_fire -> effectN( 3 ).percent();
 
+    if ( p() -> buff.serenity -> up() ) 
+      am *= 1 + p() -> talent.serenity -> effectN( 7 ).percent();
     return am;
   }
 
@@ -7423,9 +7437,6 @@ double monk_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buff.serenity -> up() )
-    m *= 1 + talent.serenity -> effectN( 2 ).percent();
-
   if ( talent.hit_combo -> ok() )
     m *= 1.0 + buff.hit_combo -> stack_value();
 
@@ -7451,9 +7462,6 @@ double monk_t::composite_attribute_multiplier( attribute_e attr ) const
 double monk_t::composite_player_heal_multiplier( const action_state_t* s ) const
 {
   double m = player_t::composite_player_heal_multiplier( s );
-
-  if ( buff.serenity -> up() )
-    m *= 1+ talent.serenity -> effectN( 3 ).percent();
 
   return m;
 }
