@@ -2854,6 +2854,8 @@ struct tiger_palm_t: public monk_melee_attack_t
     eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) )
   {
     parse_options( options_str );
+
+    ww_mastery = true;
     sef_ability = SEF_TIGER_PALM;
 
     add_child( eye_of_the_tiger_damage );
@@ -3379,6 +3381,8 @@ struct rjw_tick_action_t : public monk_melee_attack_t
   rjw_tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data ) :
     monk_melee_attack_t( name, p, data )
   {
+    ww_mastery = true;
+
     dual = background = true;
     aoe = -1;
     radius = data -> effectN( 1 ).radius();
@@ -3577,6 +3581,11 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
+    // TODO: There appears to be a hidden 18.5% damage multiplier that is not showing in any place
+    // Remove once found
+    // (July 14, 2018)
+    am *= 1.185;
+
     // Some spells does not seem to register the automated WW Mastery multiplier
     if ( p() -> buff.combo_strikes -> up() )
       am *= 1 + p() -> cache.mastery_value();
@@ -3673,6 +3682,8 @@ struct whirling_dragon_punch_tick_t: public monk_melee_attack_t
   whirling_dragon_punch_tick_t(const std::string& name, monk_t* p, const spell_data_t* s) :
     monk_melee_attack_t( name, p, s )
   {
+    ww_mastery = true;
+
     background = true;
     aoe = -1;
     radius = s -> effectN( 1 ).radius();
