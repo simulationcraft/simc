@@ -79,7 +79,6 @@ enum moon_stage_e {
 
 //Azerite Trait 
 enum streaking_stars_e {
-  CS_NONE = -1,
   // Spells
   SS_LUNAR_STRIKE,
   SS_SOLAR_WRATH,
@@ -89,7 +88,6 @@ enum streaking_stars_e {
   SS_STARFALL,
   SS_FURY_OF_ELUNE,
   SS_STELLAR_FLARE,
-  CS_SPELL_MAX,
 };
 
 struct druid_td_t : public actor_target_data_t
