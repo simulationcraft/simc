@@ -1565,7 +1565,7 @@ public:
     return p()->previous_streaking_stars == new_ability;
   }
 
-  virtual void streaking_stars_trigger(streaking_stars_e new_ability)
+  virtual void streaking_stars_trigger(streaking_stars_e new_ability, player_t* target)
   {
     if (p()->azerite.streaking_stars.ok())
     {
@@ -1573,7 +1573,7 @@ public:
       {
         // Trigger Streaking Stars
         action_state_t* ss_s = p()->active.streaking_stars->get_state();
-        ss_s->target = p()->target;
+        ss_s->target = target;
         p()->active.streaking_stars->snapshot_state(ss_s, DMG_DIRECT);
         p()->active.streaking_stars->schedule_execute(ss_s);  
       }
@@ -2277,7 +2277,7 @@ struct moonfire_t : public druid_spell_t
     damage -> target = execute_state -> target;
     damage -> schedule_execute();
 
-    streaking_stars_trigger(SS_MOONFIRE);
+    streaking_stars_trigger(SS_MOONFIRE, target);
   }
 };
 
@@ -4974,7 +4974,7 @@ struct fury_of_elune_t : public druid_spell_t
           .duration(data().duration())
           .action(p()->active.fury_of_elune));
       p() -> buff.fury_of_elune -> trigger();
-      streaking_stars_trigger(SS_FURY_OF_ELUNE);
+      streaking_stars_trigger(SS_FURY_OF_ELUNE, target);
   }
 };
 
@@ -5475,7 +5475,7 @@ struct lunar_strike_t : public druid_spell_t
       p()->buff.dawning_sun->trigger(1, p()->azerite.dawning_sun.value());
     }
 
-    streaking_stars_trigger(SS_LUNAR_STRIKE);
+    streaking_stars_trigger(SS_LUNAR_STRIKE, target);
   }
 };
 
@@ -5611,7 +5611,7 @@ struct sunfire_t : public druid_spell_t
     damage -> target = execute_state -> target;
     damage -> schedule_execute();
 
-    streaking_stars_trigger(SS_SUNFIRE);
+    streaking_stars_trigger(SS_SUNFIRE, target);
   }
 };
 
@@ -5872,7 +5872,7 @@ struct solar_wrath_t : public druid_spell_t
     {
       p()->buff.sunblaze->trigger(1, p()->azerite.sunblaze.value());
     }
-    streaking_stars_trigger(SS_SOLAR_WRATH);
+    streaking_stars_trigger(SS_SOLAR_WRATH, target);
   }
 
   virtual double bonus_da(const action_state_t* s) const override
@@ -6030,7 +6030,7 @@ struct starfall_t : public druid_spell_t
     p()->buff.oneths_intuition->trigger();
     p()->buff.starfall->trigger();
 
-    streaking_stars_trigger(SS_STARFALL);
+    streaking_stars_trigger(SS_STARFALL, target);
   }
 };
 struct starshards_t : public starfall_t
@@ -6148,7 +6148,7 @@ struct starsurge_t : public druid_spell_t
     if (p()->buff.sunblaze->up())
       p()->buff.sunblaze->expire();
 
-    streaking_stars_trigger(SS_STARSURGE);
+    streaking_stars_trigger(SS_STARSURGE, target);
   }
 
   virtual double bonus_da(const action_state_t* s) const override
@@ -6184,7 +6184,7 @@ struct stellar_flare_t : public druid_spell_t
   void execute() override 
   {
     druid_spell_t::execute();
-    streaking_stars_trigger(SS_STELLAR_FLARE);
+    streaking_stars_trigger(SS_STELLAR_FLARE, target);
   }
 };
 
