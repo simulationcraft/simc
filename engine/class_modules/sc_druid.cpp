@@ -77,6 +77,21 @@ enum moon_stage_e {
   FREE_FULL_MOON,
 };
 
+//Azerite Trait 
+enum streaking_stars_e {
+  CS_NONE = -1,
+  // Spells
+  SS_LUNAR_STRIKE,
+  SS_SOLAR_WRATH,
+  SS_MOONFIRE,
+  SS_SUNFIRE,
+  SS_STARSURGE,
+  SS_STARFALL,
+  SS_FURY_OF_ELUNE,
+  SS_STELLAR_FLARE,
+  CS_SPELL_MAX,
+};
+
 struct druid_td_t : public actor_target_data_t
 {
   struct dots_t
@@ -234,6 +249,9 @@ public:
   double starshards;
   double expected_max_health; // For Bristling Fur calculations.
 
+  //Azerite
+  streaking_stars_e previous_streaking_stars;
+
   // RPPM objects
   struct rppms_t
   {
@@ -270,6 +288,7 @@ public:
     spell_t*  starshards;
     action_t* yseras_gift;
     spell_t* lunar_shrapnel;
+    spell_t* streaking_stars;
   } active;
 
   // Pets
@@ -1543,6 +1562,27 @@ public:
     }
   }
 
+  virtual bool compare_previous_streaking_stars(streaking_stars_e new_ability)
+  {
+    return p()->previous_streaking_stars == new_ability;
+  }
+
+  virtual void streaking_stars_trigger(streaking_stars_e new_ability)
+  {
+    if (p()->azerite.streaking_stars.ok())
+    {
+      if (!compare_previous_streaking_stars(new_ability)&(p()->buff.celestial_alignment->check() || p()->buff.incarnation_moonkin->check()))
+      {
+        // Trigger Streaking Stars
+        action_state_t* ss_s = p()->active.streaking_stars->get_state();
+        ss_s->target = target;
+        p()->active.streaking_stars->snapshot_state(ss_s, DMG_DIRECT);
+        p()->active.streaking_stars->schedule_execute(ss_s);  
+      }
+      p()->previous_streaking_stars = new_ability;
+    }
+  }
+
   bool verify_actor_spec() const override
   {
     if ( p() -> find_affinity_spell( ab::name() ) -> found() )
@@ -2238,6 +2278,8 @@ struct moonfire_t : public druid_spell_t
 
     damage -> target = execute_state -> target;
     damage -> schedule_execute();
+
+    streaking_stars_trigger(SS_MOONFIRE);
   }
 };
 
@@ -4888,6 +4930,18 @@ struct celestial_alignment_t : public druid_spell_t
   }
 };
 
+// Streaking Stars =======================================================
+
+struct streaking_stars_t : public druid_spell_t
+{
+  streaking_stars_t(druid_t* p) :
+    druid_spell_t("streaking_stars", p, p->azerite.streaking_stars)
+  {
+    background = 1;
+    base_dd_min = base_dd_max = p->azerite.streaking_stars.value(1);
+  }
+};
+
 // Fury of Elune =========================================================
 
 struct fury_of_elune_t : public druid_spell_t
@@ -4922,6 +4976,7 @@ struct fury_of_elune_t : public druid_spell_t
           .duration(data().duration())
           .action(p()->active.fury_of_elune));
       p() -> buff.fury_of_elune -> trigger();
+      streaking_stars_trigger(SS_FURY_OF_ELUNE);
   }
 };
 
@@ -5404,7 +5459,6 @@ struct lunar_strike_t : public druid_spell_t
 
     druid_spell_t::execute();
 
-
     p() -> buff.lunar_empowerment -> decrement();
     p() -> buff.warrior_of_elune -> decrement();
 
@@ -5422,6 +5476,8 @@ struct lunar_strike_t : public druid_spell_t
     {
       p()->buff.dawning_sun->trigger(1, p()->azerite.dawning_sun.value());
     }
+
+    streaking_stars_trigger(SS_LUNAR_STRIKE);
   }
 };
 
@@ -5556,6 +5612,8 @@ struct sunfire_t : public druid_spell_t
 
     damage -> target = execute_state -> target;
     damage -> schedule_execute();
+
+    streaking_stars_trigger(SS_SUNFIRE);
   }
 };
 
@@ -5816,6 +5874,7 @@ struct solar_wrath_t : public druid_spell_t
     {
       p()->buff.sunblaze->trigger(1, p()->azerite.sunblaze.value());
     }
+    streaking_stars_trigger(SS_SOLAR_WRATH);
   }
 
   virtual double bonus_da(const action_state_t* s) const override
@@ -5972,6 +6031,8 @@ struct starfall_t : public druid_spell_t
       p()->buff.oneths_overconfidence->decrement();
     p()->buff.oneths_intuition->trigger();
     p()->buff.starfall->trigger();
+
+    streaking_stars_trigger(SS_STARFALL);
   }
 };
 struct starshards_t : public starfall_t
@@ -6088,6 +6149,8 @@ struct starsurge_t : public druid_spell_t
 
     if (p()->buff.sunblaze->up())
       p()->buff.sunblaze->expire();
+
+    streaking_stars_trigger(SS_STARSURGE);
   }
 
   virtual double bonus_da(const action_state_t* s) const override
@@ -6120,6 +6183,11 @@ struct stellar_flare_t : public druid_spell_t
       return am;
   }
 
+  void execute() override 
+  {
+    druid_spell_t::execute();
+    streaking_stars_trigger(SS_STELLAR_FLARE);
+  }
 };
 
 // Survival Instincts =======================================================
@@ -6795,6 +6863,10 @@ void druid_t::init_spells()
   if (azerite.lunar_sharpnel.ok())
   {
     active.lunar_shrapnel = new spells::lunar_shrapnel_t(this);
+  }
+  if (azerite.streaking_stars.ok())
+  {
+    active.streaking_stars = new spells::streaking_stars_t(this);
   }
 }
 
