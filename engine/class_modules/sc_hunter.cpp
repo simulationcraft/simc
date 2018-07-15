@@ -2006,6 +2006,9 @@ void trigger_t20_2pc_bm( hunter_t* p )
 
 void trigger_bloodseeker_update( hunter_t* p )
 {
+  if ( !p -> talents.bloodseeker -> ok() )
+    return;
+
   int bleeding_targets = 0;
   for ( const player_t* t : p -> sim -> target_non_sleeping_list )
   {
