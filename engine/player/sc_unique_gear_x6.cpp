@@ -5912,6 +5912,9 @@ struct legion_potion_damage_t : public T
     this -> attack_power_mod.direct = spell -> effectN( 1 ).ap_coeff();
     this -> spell_power_mod.direct = spell -> effectN( 1 ).sp_coeff();
   }
+
+  double target_armor( player_t* ) const override
+  { return 0.0; }
 };
 
 // Potion of the Old War ====================================================
