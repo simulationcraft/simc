@@ -4729,6 +4729,16 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     affected_by_master_of_the_elements = true;
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    auto m = shaman_spell_t::composite_target_multiplier( target );
+    if ( td( target )->debuff.exposed_elements->up() )
+    {
+      m *= 1.0 + td( target )->debuff.exposed_elements->default_value / 100.0;
+    }
+    return m;
+  }
+
   void impact( action_state_t* state ) override
   {
     elemental_overload_spell_t::impact( state );
