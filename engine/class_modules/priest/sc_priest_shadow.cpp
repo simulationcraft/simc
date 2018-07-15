@@ -90,11 +90,6 @@ public:
 
   void init() override
   {
-    if ( priest().active_items.mangazas_madness )
-    {
-      priest().cooldowns.mind_blast->charges +=
-          (int)(float)priest().active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
-    }
     priest().cooldowns.mind_blast->hasted = true;
 
     priest_spell_t::init();
