@@ -1195,10 +1195,34 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
   {
     return create_pet_expression(name_str);
   }
+  else if (name_str == "contagion")
+  {
+    return make_fn_expr(name_str, [this]()
+    { 
+      timespan_t con = timespan_t::from_millis(0.0);
+
+      auto td = find_target_data(target);
+      for (int i = 0; i < MAX_UAS; i++)
+      {
+        if (!td)
+        {
+          break;
+        }
+
+        timespan_t rem = td->dots_unstable_affliction[i]->remains();
+
+        if (rem > con)
+        {
+          con = rem;
+        }
+      }
+      return con; 
+    });
+  }
 
   return player_t::create_expression( name_str );
 }
-
+ 
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */
