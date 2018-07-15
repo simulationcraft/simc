@@ -610,7 +610,7 @@ class WDC1Column:
             # Sparse float fields definitely have float-valued defaults.
             # This likely generalizes to arbitrary field types, but for now,
             # we conservatively use this hack.
-            if self.__format.data_type == 'f':
+            if not self.__parser.options.raw and self.__format.data_type == 'f':
                 packed = Struct('<I').pack(self.__default_value)
                 self.__default_value = Struct('<f').unpack(packed)[0]
 

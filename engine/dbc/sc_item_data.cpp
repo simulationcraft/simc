@@ -943,6 +943,13 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
       v_raw = apply_stamina_multiplier( item, v_raw );
     }
 
+    // Apply some mystery stat penalty to offhand items
+    if ( item.parsed.data.inventory_type == INVTYPE_SHIELD ||
+         item.parsed.data.inventory_type == INVTYPE_HOLDABLE )
+    {
+      v_raw *= 1.0 / 1.125;
+    }
+
     // Socket penalty is supposedly gone in Warlords of Draenor, but it really does not seem so in the latest alpha.
     // NOTENOTENOTENOTE: Item socket cost penalty multiplier _seems_ to be based on _BASE_ itemlevel, not the upgraded one
     double v_socket_penalty = util::round( item.parsed.data.stat_socket_mul[ idx ] * dbc.item_socket_cost( item.base_item_level() ) );
