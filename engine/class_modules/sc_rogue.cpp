@@ -493,6 +493,7 @@ struct rogue_t : public player_t
   {
     azerite_power_t blade_in_the_shadows;
     azerite_power_t deadshot;
+    azerite_power_t fan_of_blades;
     azerite_power_t inevitability;
     azerite_power_t nights_vengeance;
     azerite_power_t perforate;
@@ -2769,10 +2770,21 @@ struct fan_of_knives_t: public rogue_attack_t
     energize_type     = ENERGIZE_ON_HIT;
     energize_resource = RESOURCE_COMBO_POINT;
     energize_amount   = data().effectN( 2 ).base_value();
+
+    if ( p -> azerite.fan_of_blades.ok() )
+      radius = p -> azerite.fan_of_blades.spell_ref().effectN( 2 ).base_value();
   }
 
   bool procs_insignia_of_ravenholdt() const override
   { return false; }
+
+  double bonus_da( const action_state_t* state ) const override
+  {
+    double b = rogue_attack_t::bonus_da( state );
+    if ( p() -> azerite.fan_of_blades.ok() && state -> n_targets >= p() -> azerite.fan_of_blades.spell_ref().effectN( 3 ).base_value() )
+      b += p() -> azerite.fan_of_blades.value();
+    return b;
+  }
 
   double action_multiplier() const override
   {
@@ -6929,6 +6941,7 @@ void rogue_t::init_spells()
 
   azerite.blade_in_the_shadows = find_azerite_spell( "Blade In The Shadows" );
   azerite.deadshot             = find_azerite_spell( "Deadshot" );
+  azerite.fan_of_blades        = find_azerite_spell( "Fan of Blades" );
   azerite.inevitability        = find_azerite_spell( "Inevitability" );
   azerite.nights_vengeance     = find_azerite_spell( "Night's Vengeance" );
   azerite.perforate            = find_azerite_spell( "Perforate" );
