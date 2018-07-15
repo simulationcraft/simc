@@ -6831,7 +6831,7 @@ void mage_t::apl_fire()
   combustion_phase -> add_action( this, "Phoenix Flames" );
   combustion_phase -> add_action( this, "Scorch", "if=buff.combustion.remains>cast_time" );
   combustion_phase -> add_action( this, "Dragon's Breath", "if=!buff.hot_streak.react&action.fire_blast.charges<1" );
-  combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454");
+  combustion_phase -> add_action( this, "Scorch", "if=target.health.pct<=30&(equipped.132454|talent.searing_touch.enabled)");
 
   rop_phase        -> add_talent( this, "Rune of Power" );
   rop_phase        -> add_action( this, "Flamestrike", "if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>4)&buff.hot_streak.react" );
@@ -6843,7 +6843,7 @@ void mage_t::apl_fire()
   rop_phase        -> add_action( this, "Phoenix Flames", "if=!prev_gcd.1.phoenix_flames&charges_fractional>2.7&firestarter.active" );
   rop_phase        -> add_action( this, "Fire Blast", "if=!prev_off_gcd.fire_blast&!firestarter.active" );
   rop_phase        -> add_action( this, "Phoenix Flames", "if=!prev_gcd.1.phoenix_flames" );
-  rop_phase        -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454" );
+  rop_phase        -> add_action( this, "Scorch", "if=target.health.pct<=30&(equipped.132454|talent.searing_touch.enabled)" );
   rop_phase        -> add_action( this, "Dragon's Breath", "if=active_enemies>2" );
   rop_phase        -> add_action( this, "Flamestrike", "if=(talent.flame_patch.enabled&active_enemies>2)|active_enemies>5" );
   rop_phase        -> add_action( this, "Fireball" );
@@ -6867,7 +6867,7 @@ void mage_t::apl_fire()
   standard    -> add_action( this, "Phoenix Flames", "if=(buff.combustion.up|buff.rune_of_power.up|buff.incanters_flow.stack>3|talent.mirror_image.enabled)&(4-charges_fractional)*13<cooldown.combustion.remains+5|target.time_to_die<10" );
   standard    -> add_action( this, "Phoenix Flames", "if=(buff.combustion.up|buff.rune_of_power.up)&(4-charges_fractional)*30<cooldown.combustion.remains+5" );
   standard    -> add_action( this, "Phoenix Flames", "if=charges_fractional>2.5&cooldown.combustion.remains>23" );
-  standard    -> add_action( this, "Scorch", "if=target.health.pct<=30&equipped.132454" );
+  standard    -> add_action( this, "Scorch", "if=target.health.pct<=30&(equipped.132454|talent.searing_touch.enabled)" );
   standard    -> add_action( this, "Fireball" );
   standard    -> add_action( this, "Scorch" );
 
