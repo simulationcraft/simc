@@ -452,7 +452,7 @@ namespace warlock {
 
             if ( p()->legendary.wilfreds_sigil_of_superior_summoning )
             {
-              p()->cooldowns.demonic_tyrant->adjust( p()->find_spell( 214345 )->effectN( 1 ).time_value() );
+              p()->cooldowns.demonic_tyrant->adjust( p()->legendary.wilfreds_sigil_of_superior_summoning->driver()->effectN( 1 ).time_value() );
               p()->procs.wilfreds_dog->occur();
             }
 
@@ -972,6 +972,7 @@ namespace warlock {
 
         auto random_pet = roll_random_pet();
         summon_random_pet(random_pet);
+        p()->procs.summon_random_demon->occur();
       }
 
     private:
@@ -1227,7 +1228,8 @@ namespace warlock {
   }
 
   void warlock_t::init_procs_demonology() {
-    procs.dreadstalker_debug = get_proc("dreadstalker_debug");
+    procs.dreadstalker_debug  = get_proc("dreadstalker_debug");
+    procs.summon_random_demon = get_proc( "summon_random_demon" );
   }
 
   void warlock_t::create_options_demonology() {

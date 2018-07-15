@@ -201,7 +201,7 @@ namespace warlock {
         }
         if ( o()->legendary.wilfreds_sigil_of_superior_summoning )
         {
-          o()->cooldowns.demonic_tyrant->adjust( o()->find_spell( 214345 )->effectN( 1 ).time_value() );
+          o()->cooldowns.demonic_tyrant->adjust( o()->legendary.wilfreds_sigil_of_superior_summoning->driver()->effectN( 1 ).time_value() );
           o()->procs.wilfreds_imp->occur();
         }
       }

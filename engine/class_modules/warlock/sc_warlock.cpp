@@ -933,6 +933,8 @@ void warlock_t::init_procs()
   procs.soul_conduit                    = get_proc( "soul_conduit" );
   procs.t19_2pc_chaos_bolts             = get_proc( "t19_2pc_chaos_bolt" );
   procs.demonology_t20_2pc              = get_proc( "demonology_t20_2pc" );
+  procs.wilfreds_dog                    = get_proc( "wilfreds_dog" );
+  procs.wilfreds_imp                    = get_proc( "wilfreds_imp" );
 }
 
 void warlock_t::init_base_stats()

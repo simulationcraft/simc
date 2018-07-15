@@ -100,13 +100,13 @@ namespace warlock
       {
         pets::warlock_pet_t* active;
         pets::warlock_pet_t* last;
-        static const int WILD_IMP_LIMIT = 20;
+        static const int WILD_IMP_LIMIT = 25;
         static const int DREADSTALKER_LIMIT = 4;
         static const int VILFIEND_LIMIT = 1;
         static const int DEMONIC_TYRANT_LIMIT = 1;
         static const int INFERNAL_LIMIT = 1;
-        static const int RANDOM_LIMIT = 6;
-        static const int RARE_RANDOM_LIMIT = 2;
+        static const int RANDOM_LIMIT = 9;
+        static const int RARE_RANDOM_LIMIT = 4;
         static const int DARKGLARE_LIMIT = 1;
 
         std::array<pets::demonology::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
@@ -459,6 +459,7 @@ namespace warlock
         proc_t* wild_imp;
         proc_t* fragment_wild_imp;
         proc_t* dreadstalker_debug;
+        proc_t* summon_random_demon;
         proc_t* portal_summon;
         proc_t* demonology_t20_2pc;
         proc_t* wilfreds_dog;
