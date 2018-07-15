@@ -975,7 +975,8 @@ public:
   struct
   {
     // Havoc
-    bool demonic_presence;
+    bool demonic_presence_da;
+    bool demonic_presence_ta;
     bool momentum_da;
     bool momentum_ta;
 
@@ -1022,7 +1023,10 @@ public:
 
       // Mastery
       if ( ab::data().affected_by( p->mastery.demonic_presence->effectN( 1 ) ) )
-        affected_by.demonic_presence = true;
+        affected_by.demonic_presence_da = true;
+
+      if ( ab::data().affected_by( p->mastery.demonic_presence->effectN( 3 ) ) )
+        affected_by.demonic_presence_ta = true;
 
       // Momemtum
       if ( p->talent.momentum->ok() )
@@ -1140,7 +1144,7 @@ public:
   {
     double m = ab::composite_da_multiplier( s );
 
-    if ( affected_by.demonic_presence )
+    if ( affected_by.demonic_presence_da )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
@@ -1161,6 +1165,11 @@ public:
   virtual double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double m = ab::composite_ta_multiplier( s );
+
+    if ( affected_by.demonic_presence_ta )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
 
     if ( affected_by.momentum_ta )
     {
