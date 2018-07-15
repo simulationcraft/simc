@@ -7549,7 +7549,9 @@ void shaman_t::init_action_list_elemental()
 
   // Aoe APL
   aoe->add_action( this, "Stormkeeper" );
-  aoe->add_talent( this, "Ascendance" );
+  aoe->add_talent( this, "Ascendance",
+                   "if=talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120&cooldown.storm_elemental."
+                   "remains>15|!talent.storm_elemental.enabled" );
   aoe->add_talent( this, "Liquid Magma Totem" );
   aoe->add_action( this, "Flame Shock", "if=spell_targets.chain_lightning<4,target_if=refreshable" );
   aoe->add_action( this, "Earthquake" );
@@ -7591,7 +7593,7 @@ void shaman_t::init_action_list_elemental()
   single_target->add_action( this, "Flame Shock", "target_if=refreshable" );
   single_target->add_talent(
       this, "Totem Mastery",
-      "if=buff.resonance_totem.remains<10|(buff.resonance_totem.remains<(buff.ascendance.duration+"
+      "if=buff.resonance_totem.remains<6|(buff.resonance_totem.remains<(buff.ascendance.duration+"
       "cooldown.ascendance.remains)&cooldown.ascendance.remains<15)" );
   single_target->add_action( this, "Frost Shock", "if=buff.icefury.up" );
   single_target->add_talent( this, "Icefury" );
