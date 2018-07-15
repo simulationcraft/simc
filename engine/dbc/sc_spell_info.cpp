@@ -853,6 +853,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       case A_PERIODIC_ENERGIZE:
       case A_PERIODIC_DUMMY:
       case A_OBS_MOD_HEALTH:
+      case A_PERIODIC_LEECH:
         if ( e -> period() != timespan_t::zero() )
           s << ": every " << e -> period().total_seconds() << " seconds";
         break;
