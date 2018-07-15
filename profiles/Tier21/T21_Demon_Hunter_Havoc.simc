@@ -4,7 +4,7 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=3310333
+talents=3210223
 
 # Default consumables
 potion=prolonged_power
@@ -12,17 +12,17 @@ flask=seventh_demon
 food=the_hungry_magister
 augmentation=defiled
 
-head=raddons_cascading_eyes,id=137061,bonus_id=3630
+head=felreaper_hood,id=152121,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
 shoulders=felreaper_spaulders,id=152123,bonus_id=3612/1502
-back=felreaper_drape,id=152119,bonus_id=3612/1502,enchant=binding_of_agility
+back=chaos_theory,id=151798,bonus_id=1811/3630,enchant=binding_of_agility
 chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
 wrists=fiendish_logisticians_wristwraps,id=151992,bonus_id=3612/1502
 hands=felreaper_gloves,id=152120,bonus_id=3612/1502
 waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
 legs=felreaper_leggings,id=152122,bonus_id=3612/1502
 feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
-finger1=anger_of_the_halfgiants,id=137038,bonus_id=3630,gems=200crit,enchant=binding_of_critical_strike
+finger1=anger_of_the_halfgiants,id=137038,bonus_id=1811/3630,gems=200crit,enchant=binding_of_critical_strike
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
@@ -31,12 +31,12 @@ off_hand=twinblades_of_the_deceiver,id=127830,gem_id=0/0/0/0,relic_id=0/0
 
 # Gear Summary
 # gear_ilvl=235.88
-# gear_agility=802
-# gear_stamina=1251
-# gear_crit_rating=869
-# gear_haste_rating=262
-# gear_mastery_rating=223
+# gear_agility=792
+# gear_stamina=1237
+# gear_crit_rating=819
+# gear_haste_rating=294
+# gear_mastery_rating=235
 # gear_versatility_rating=163
-# gear_armor=418
+# gear_armor=411
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
