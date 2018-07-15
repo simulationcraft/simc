@@ -423,7 +423,6 @@ public:
 
   // Custom Parameters
   std::string summon_pet_str;
-  bool hunter_fixed_time;
 
   // Gains
   struct gains_t
@@ -575,7 +574,6 @@ public:
     buffs(),
     cooldowns(),
     summon_pet_str( "cat" ),
-    hunter_fixed_time( true ),
     gains(),
     procs(),
     talents(),
@@ -5499,27 +5497,6 @@ void hunter_t::merge( player_t& other )
 
 void hunter_t::combat_begin()
 {
-  if ( !sim -> fixed_time )
-  {
-    if ( hunter_fixed_time )
-    {
-      for ( auto& p : sim -> player_list )
-      {
-        if ( p -> specialization() != HUNTER_MARKSMANSHIP && p -> type != PLAYER_PET )
-        {
-          hunter_fixed_time = false;
-          break;
-        }
-      }
-      if ( hunter_fixed_time )
-      {
-        sim -> fixed_time = true;
-        sim -> error( "To fix issues with the target exploding <20% range due to execute, fixed_time=1 has been enabled. This gives similar results" );
-        sim -> error( "to execute's usage in a raid sim, without taking an eternity to simulate. To disable this option, add hunter_fixed_time=0 to your sim." );
-      }
-    }
-  }
-
   if ( talents.bloodseeker -> ok() && ( talents.wildfire_infusion -> ok() || sim -> player_no_pet_list.size() > 1 ) )
   {
     make_repeating_event( *sim, timespan_t::from_seconds( 1 ),
@@ -5766,7 +5743,7 @@ void hunter_t::create_options()
   player_t::create_options();
 
   add_option( opt_string( "summon_pet", summon_pet_str ) );
-  add_option( opt_bool( "hunter_fixed_time", hunter_fixed_time ) );
+  add_option( opt_obsoleted( "hunter_fixed_time" ) );
 }
 
 // hunter_t::create_profile =================================================
@@ -5776,12 +5753,6 @@ std::string hunter_t::create_profile( save_e stype )
   std::string profile_str = player_t::create_profile( stype );
 
   profile_str += "summon_pet=" + summon_pet_str + "\n";
-
-  if ( stype & SAVE_PLAYER )
-  {
-    if ( !hunter_fixed_time )
-      profile_str += "hunter_fixed_time=" + util::to_string( hunter_fixed_time ) + "\n";
-  }
 
   return profile_str;
 }
@@ -5795,7 +5766,6 @@ void hunter_t::copy_from( player_t* source )
   hunter_t* p = debug_cast<hunter_t*>( source );
 
   summon_pet_str = p -> summon_pet_str;
-  hunter_fixed_time = p -> hunter_fixed_time;
 }
 
 // hunter_::convert_hybrid_stat ==============================================
