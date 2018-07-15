@@ -734,47 +734,6 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
         item_database::apply_item_scaling( item, entry.value_1, item.parsed.drop_level );
       }
       break;
-    // A new bonus type that sets the base item level of items, used in Legion for things like the
-    // Heroic or Mythic X tags in items. Seems like the base ilevel is not actually set through this
-    // in game, because all the items also include a normal ilevel adjustment bonus that increases
-    // the item level to the correct value.
-    //
-    // As the behavior of this bonus type is unknown at the moment, simc allows the ilevel setting
-    // to happen only if there is only this ilevel adjusting bonus type in the item as a whole. This
-    // allows sample profiles to easily set the "basic" ilevel of items through a single bonus id,
-    // instead having to add two (base ilevel that sets the heroic/mythic tag, and adjust ilevel
-    // bonus id to change the ilevel of the item to the correct value).
-    case ITEM_BONUS_SET_ILEVEL:
-    {
-      // For all bonuses on the item, find ..
-      auto it = range::find_if( item.parsed.bonus_id, [ &item ]( int bonus_id ) {
-        auto item_bonuses = item.player -> dbc.item_bonus( bonus_id );
-        // a bonus type that adjusts the ilevel of the item
-        auto it = range::find_if( item_bonuses, []( const item_bonus_entry_t* entry ) {
-          switch ( entry -> type )
-          {
-            case ITEM_BONUS_SCALING:
-            case ITEM_BONUS_SCALING_2:
-            case ITEM_BONUS_ILEVEL:
-              return true;
-            default:
-              return false;
-          }
-        } );
-        return it != item_bonuses.end();
-      } );
-
-      // No ilevel adjusting item bonus found, but "base ilevel" bonus is there, so use it to set
-      // the base ilevel.
-      if ( it == item.parsed.bonus_id.end() )
-      {
-        if ( item.sim -> debug )
-          item.player -> sim -> out_debug.printf( "Player %s item '%s' setting ilevel to %d (old=%d)",
-              item.player -> name(), item.name(), entry.value_1, item.parsed.data.level );
-        item.parsed.data.level = entry.value_1;
-      }
-      break;
-    }
     default:
       break;
   }
