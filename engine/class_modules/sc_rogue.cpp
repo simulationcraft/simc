@@ -493,6 +493,7 @@ struct rogue_t : public player_t
   {
     azerite_power_t blade_in_the_shadows;
     azerite_power_t deadshot;
+    azerite_power_t double_dose;
     azerite_power_t fan_of_blades;
     azerite_power_t inevitability;
     azerite_power_t nights_vengeance;
@@ -3256,15 +3257,14 @@ struct marked_for_death_t : public rogue_attack_t
 };
 
 
-
 // Mutilate =================================================================
 
 struct mutilate_strike_t : public rogue_attack_t
 {
-  const double& toxic_mutilator_crit_chance;
+  int& crit_count_ref;
 
-  mutilate_strike_t( rogue_t* p, const char* name, const spell_data_t* s, double& tmcc ) :
-    rogue_attack_t( name, p, s ), toxic_mutilator_crit_chance( tmcc )
+  mutilate_strike_t( rogue_t* p, const char* name, const spell_data_t* s, int& crit_counter ) :
+    rogue_attack_t( name, p, s ), crit_count_ref( crit_counter )
   {
     background  = true;
     may_miss = may_dodge = may_parry = false;
@@ -3276,18 +3276,17 @@ struct mutilate_strike_t : public rogue_attack_t
   double composite_crit_chance() const override
   {
     double c = rogue_attack_t::composite_crit_chance();
-
-    if ( p() -> buffs.envenom -> check() )
-    {
-      c += toxic_mutilator_crit_chance;
-    }
-
     if ( p() -> buffs.poisoned_wire -> up() )
-    {
       c += p() -> buffs.poisoned_wire -> check_stack_value() / p() -> current.rating.attack_crit;
-    }
-
     return c;
+  }
+
+  void execute() override
+  {
+    rogue_attack_t::execute();
+
+    if ( execute_state -> result == RESULT_CRIT )
+      crit_count_ref++;
   }
 
   void impact( action_state_t* state ) override
@@ -3305,15 +3304,28 @@ struct mutilate_strike_t : public rogue_attack_t
   }
 };
 
+struct double_dose_t : public rogue_attack_t
+{
+  double_dose_t( rogue_t* p ) :
+    rogue_attack_t( "double_dose", p, p -> find_spell(273009) )
+  {
+    background  = true;
+    may_miss = may_dodge = may_parry = false;
+    base_dd_min = p -> azerite.double_dose.value();
+    base_dd_max = p -> azerite.double_dose.value();
+  }
+};
+
 struct mutilate_t : public rogue_attack_t
 {
   rogue_attack_t* mh_strike;
   rogue_attack_t* oh_strike;
-  double toxic_mutilator_crit_chance;
+  rogue_attack_t* double_dose;
+  int strike_crits;
 
   mutilate_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "mutilate", p, p -> find_specialization_spell( "Mutilate" ), options_str ),
-    mh_strike( nullptr ), oh_strike( nullptr ), toxic_mutilator_crit_chance( 0 )
+    mh_strike( nullptr ), oh_strike( nullptr ), double_dose( nullptr), strike_crits( 0 )
   {
     may_crit = false;
 
@@ -3324,11 +3336,17 @@ struct mutilate_t : public rogue_attack_t
       background = true;
     }
 
-    mh_strike = new mutilate_strike_t( p, "mutilate_mh", data().effectN( 3 ).trigger(), toxic_mutilator_crit_chance );
+    mh_strike = new mutilate_strike_t( p, "mutilate_mh", data().effectN( 3 ).trigger(), strike_crits );
     add_child( mh_strike );
 
-    oh_strike = new mutilate_strike_t( p, "mutilate_oh", data().effectN( 4 ).trigger(), toxic_mutilator_crit_chance );
+    oh_strike = new mutilate_strike_t( p, "mutilate_oh", data().effectN( 4 ).trigger(), strike_crits );
     add_child( oh_strike );
+
+    if ( p -> azerite.double_dose.ok() )
+    {
+      double_dose = new double_dose_t( p );
+      add_child( double_dose );
+    }
   }
 
   void execute() override
@@ -3340,13 +3358,25 @@ struct mutilate_t : public rogue_attack_t
       if ( p() -> talent.blindside -> ok() && rng().roll( p() -> talent.blindside -> effectN( 5 ).percent() ) )
         p() -> buffs.blindside -> trigger();
 
+      // Reset counter before strikes
+      strike_crits = 0;
+
       mh_strike -> set_target( execute_state -> target );
       mh_strike -> execute();
 
       oh_strike -> set_target( execute_state -> target );
       oh_strike -> execute();
 
-      if ( p() -> talent.venom_rush->ok() && p() -> get_target_data( execute_state -> target ) -> poisoned() )
+      if ( double_dose && strike_crits >= 2 )
+      {
+        double_dose -> set_target( execute_state -> target );
+        double_dose -> execute();
+      }
+
+      // Reset counter again after strikes
+      strike_crits = 0;
+
+      if ( p() -> talent.venom_rush-> ok() && p() -> get_target_data( execute_state -> target ) -> poisoned() )
       {
           p() -> resource_gain( RESOURCE_ENERGY,
               p() -> talent.venom_rush -> effectN(1).base_value(),
@@ -6941,6 +6971,7 @@ void rogue_t::init_spells()
 
   azerite.blade_in_the_shadows = find_azerite_spell( "Blade In The Shadows" );
   azerite.deadshot             = find_azerite_spell( "Deadshot" );
+  azerite.double_dose          = find_azerite_spell( "Double Dose" );
   azerite.fan_of_blades        = find_azerite_spell( "Fan of Blades" );
   azerite.inevitability        = find_azerite_spell( "Inevitability" );
   azerite.nights_vengeance     = find_azerite_spell( "Night's Vengeance" );
@@ -7892,22 +7923,6 @@ private:
 
 // ROGUE MODULE INTERFACE ===================================================
 
-struct toxic_mutilator_t : public unique_gear::scoped_action_callback_t<actions::mutilate_t>
-{
-  toxic_mutilator_t() : super( ROGUE, "mutilate" ) { }
-
-  void manipulate( actions::mutilate_t* action, const special_effect_t& effect ) override
-  { action -> toxic_mutilator_crit_chance = effect.driver() -> effectN( 1 ).average( effect.item ) / 100.0; }
-};
-
-struct eviscerating_blade_t : public unique_gear::scoped_action_callback_t<>
-{
-  eviscerating_blade_t() : super( ROGUE, "dispatch" ) { }
-
-  void manipulate( action_t* action, const special_effect_t& effect ) override
-  { action -> base_multiplier *= 1.0 + effect.driver() -> effectN( 2 ).average( effect.item ) / 100.0; }
-};
-
 struct from_the_shadows_t : public unique_gear::scoped_action_callback_t<>
 {
   from_the_shadows_t() : super( ROGUE, "shadowstrike" ) { }
@@ -8058,8 +8073,6 @@ struct rogue_module_t : public module_t
 
   virtual void static_init() const override
   {
-    unique_gear::register_special_effect( 184916, toxic_mutilator_t()                   );
-    unique_gear::register_special_effect( 184917, eviscerating_blade_t()                );
     unique_gear::register_special_effect( 184918, from_the_shadows_t()                  );
     unique_gear::register_special_effect( 208895, duskwalker_footpads_t()               );
     unique_gear::register_special_effect( 212539, thraxis_tricksy_treads_t()            );
