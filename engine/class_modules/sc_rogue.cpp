@@ -3699,6 +3699,9 @@ struct shadow_dance_t : public rogue_attack_t
     {
       cooldown -> charges += p -> talent.enveloping_shadows -> effectN( 2 ).base_value();
     }
+
+    // With Dark Shadow and Shuriken Tornado, allow off-gcd use. Otherwise not, for performance.
+    use_off_gcd = p -> talent.dark_shadow -> ok() && p -> talent.shuriken_tornado -> ok();
   }
 
   void execute() override
@@ -4165,6 +4168,9 @@ struct symbols_of_death_t : public rogue_attack_t
 
     if ( p -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
       cooldown -> duration -= timespan_t::from_seconds( p -> sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 3 ).base_value() );
+
+    // With Dark Shadow and Shuriken Tornado, allow off-gcd use. Otherwise not, for performance.
+    use_off_gcd = p -> talent.dark_shadow -> ok() && p -> talent.shuriken_tornado -> ok();
   }
 
   void execute() override
