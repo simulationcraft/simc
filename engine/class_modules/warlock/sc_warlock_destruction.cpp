@@ -97,6 +97,14 @@ namespace warlock {
           p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(245731)->effectN(1).base_value()) / 10), p()->gains.shadowburn);
         }
       }
+
+      virtual void update_ready(timespan_t cd_duration) override
+      {
+        if (havocd)
+          return;
+
+        warlock_spell_t::update_ready(cd_duration);
+      }
     };
 
     struct roaring_blaze_t : public warlock_spell_t {
@@ -195,27 +203,15 @@ namespace warlock {
       timespan_t total_duration;
       timespan_t base_duration;
       roaring_blaze_t* roaring_blaze;
-      conflagrate_t* havoc_cast;
 
       conflagrate_t(warlock_t* p, const std::string& options_str) :
         warlock_spell_t("Conflagrate", p, p -> find_spell(17962)),
         total_duration(),
         base_duration(),
-        roaring_blaze(new roaring_blaze_t(p)),
-        havoc_cast()
+        roaring_blaze(new roaring_blaze_t(p))
       {
-        //special case to stop havocd conflags using charges
-        if (options_str == "havoc")
-        {
-          can_havoc = false;
-          background = true;
-          cooldown = p->get_cooldown("conflag_havoc");
-        }
-        else
-        {
-          parse_options(options_str);
-          can_havoc = true;
-        }
+        parse_options(options_str);
+        can_havoc = true;
 
         energize_type = ENERGIZE_NONE;
 
@@ -232,13 +228,6 @@ namespace warlock {
         warlock_spell_t::init();
 
         cooldown->hasted = true;
-
-        //special case to stop havocd conflags using charges
-        if (can_havoc)
-        {
-          havoc_cast = new conflagrate_t(p(), "havoc");
-          add_child(havoc_cast);
-        }
       }
 
       void impact(action_state_t* s) override
@@ -258,16 +247,6 @@ namespace warlock {
 
       void execute() override
       {
-        //special case to stop havocd conflags using charges
-        if (can_havoc && p()->havoc_target && havocd)
-        {
-          assert(havoc_cast);
-          havoc_cast->set_target(p()->havoc_target);
-          havoc_cast->havocd = true;
-          havoc_cast->execute();
-          return;
-        }
-
         warlock_spell_t::execute();
 
         auto td = find_td(this->target);
@@ -275,6 +254,14 @@ namespace warlock {
           p()->buffs.bursting_flare->trigger();
 
         sim->print_log("{}: Action {} {} charges remain", player->name(), name(), this->cooldown->current_charge);
+      }
+
+      virtual void update_ready(timespan_t cd_duration) override
+      {
+        if (havocd)
+          return;
+
+        warlock_spell_t::update_ready(cd_duration);
       }
 
       double action_multiplier()const override

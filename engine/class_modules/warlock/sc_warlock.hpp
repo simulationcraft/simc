@@ -1052,11 +1052,13 @@ namespace warlock
         warlock_spell_t( warlock_t* p, const std::string& n ) :
           warlock_spell_t( n, p, p -> find_class_spell( n ) )
         {
+          havocd = false;
         }
 
         warlock_spell_t( warlock_t* p, const std::string& n, specialization_e s ) :
           warlock_spell_t( n, p, p -> find_class_spell( n, s ) )
         {
+          havocd = false;
         }
 
         warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() ) :
@@ -1068,6 +1070,7 @@ namespace warlock
           gain = player->get_gain( name_str );
 
           can_havoc = false;
+          havocd = false;
           affected_by_destruction_t20_4pc = false;
           affected_by_deaths_embrace = false;
           destro_mastery = true;
@@ -1115,6 +1118,7 @@ namespace warlock
 
         void reset() override
         {
+          havocd = false;
           spell_t::reset();
         }
 
