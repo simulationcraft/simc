@@ -1275,6 +1275,7 @@ class SpellDataGenerator(DataGenerator):
             ( 279043, 0 ),          # Shadow Blades damaging spell
             ( 121153, 0 ),          # Blindside proc buff
             ( 278981, 0 ),          # The First Dance, Azerite trait aura
+            ( 273009, 0 ),          # Double Dose, Azerite trait dmg spell
         ),
 
         # Priest:
