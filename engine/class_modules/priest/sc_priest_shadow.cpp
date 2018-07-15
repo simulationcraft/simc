@@ -2281,10 +2281,10 @@ void priest_t::generate_apl_shadow()
   // single APL
   single->add_action( this, "Void Eruption" );
   single->add_talent( this, "Dark Ascension", 
-                      "if=talent.dark_ascension.enabled&buff.voidform.down&"
+                      "if=buff.voidform.down&"
                       "azerite.whispers_of_the_damned.rank=0" );
   single->add_talent( this, "Dark Ascension", 
-                      "if=talent.dark_ascension.enabled&buff.voidform.down&"
+                      "if=buff.voidform.down&"
                       "(cooldown.mindbender.remains>0|cooldown.shadowfiend.remains>0)&"
                       "azerite.whispers_of_the_damned.rank>0" ); 
   single->add_action( this, "Void Bolt" );
@@ -2337,10 +2337,10 @@ void priest_t::generate_apl_shadow()
   // cleave APL
   cleave->add_action( this, "Void Eruption" );
   cleave->add_talent( this, "Dark Ascension", 
-                      "if=talent.dark_ascension.enabled&buff.voidform.down&"
+                      "if=buff.voidform.down&"
                       "azerite.whispers_of_the_damned.rank=0" );
   cleave->add_talent( this, "Dark Ascension", 
-                      "if=talent.dark_ascension.enabled&buff.voidform.down&"
+                      "if=buff.voidform.down&"
                       "(cooldown.mindbender.remains>0|cooldown.shadowfiend.remains>0)&"
                       "azerite.whispers_of_the_damned.rank>0" ); 
   cleave->add_action( this, "Void Bolt" );
@@ -2386,10 +2386,10 @@ void priest_t::generate_apl_shadow()
   // aoe APL
   aoe->add_action( this, "Void Eruption" );
   aoe->add_talent( this, "Dark Ascension", 
-                      "if=talent.dark_ascension.enabled&buff.voidform.down&"
+                      "if=buff.voidform.down&"
                       "azerite.whispers_of_the_damned.rank=0" );
   aoe->add_talent( this, "Dark Ascension", 
-                      "if=talent.dark_ascension.enabled&buff.voidform.down&"
+                      "if=buff.voidform.down&"
                       "(cooldown.mindbender.remains>0|cooldown.shadowfiend.remains>0)&"
                       "azerite.whispers_of_the_damned.rank>0" ); 
   aoe->add_action( this, "Void Bolt",
