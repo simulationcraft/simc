@@ -7579,7 +7579,10 @@ void shaman_t::init_action_list_elemental()
   single_target->add_action( this, "Stormkeeper", "if=raid_event.adds.count<3|raid_event.adds.in>50",
                              "Keep SK for large or soon add waves." );
   single_target->add_talent( this, "Liquid Magma Totem", "if=raid_event.adds.count<3|raid_event.adds.in>50" );
-  single_target->add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up" );
+  single_target->add_action( this, "Earthquake", "if=buff.echoes_of_the_great_sundering.up",
+                             "Use your proc before casting Earth Shock again." );
+  single_target->add_action( this, "Lightning Bolt", "if=debuff.exposed_elements.up&maelstrom>=60&!buff.ascendance.up",
+                             "Use the debuff before casting Earth Shock again." );
   single_target->add_action( this, "Earth Shock",
                              "if=talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|maelstrom>=92)|!"
                              "talent.master_of_the_elements.enabled",
