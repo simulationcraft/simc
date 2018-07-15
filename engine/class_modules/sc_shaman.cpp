@@ -875,7 +875,7 @@ struct roiling_storm_buff_t : public buff_t
 
     set_default_value( default_value );
     set_trigger_spell( trigger_spell );
-    //set_max_stack( trigger_spell->max_stacks() );
+    // set_max_stack( trigger_spell->max_stacks() );
     set_max_stack( 15 );
     set_duration( trigger_spell->duration() );
     set_period( s_data->effectN( 2 ).period() );
@@ -1000,7 +1000,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   // Elemental
   dot.flame_shock         = target->get_dot( "flame_shock", p );
   debuff.exposed_elements = buff_creator_t( *this, "exposed_elements", p->talent.exposed_elements )
-                                .default_value( p->find_spell( 269808 )->effectN( 1 ).base_value() )
+                                .default_value( p->find_spell( 269808 )->effectN( 1 ).percent() )
                                 .duration( p->find_spell( 269808 )->duration() );
   debuff.volcanic_lightning = buff_creator_t( *this, "volcanic_lightning", p->azerite.volcanic_lightning )
                                   .trigger_spell( p->find_spell( 272981 ) )
@@ -2121,7 +2121,8 @@ struct spirit_wolf_t : public base_wolf_t
     const spell_data_t* maelstrom;
 
     fs_melee_t( spirit_wolf_t* player ) : super( player, "melee" ), maelstrom( player->find_spell( 190185 ) )
-    { }
+    {
+    }
 
     void impact( action_state_t* state ) override
     {
@@ -2137,7 +2138,8 @@ struct spirit_wolf_t : public base_wolf_t
   };
 
   spirit_wolf_t( shaman_t* owner ) : base_wolf_t( owner, "spirit_wolf" )
-  { }
+  {
+  }
 
   attack_t* create_auto_attack() override
   {
@@ -2155,9 +2157,9 @@ struct elemental_wolf_base_t : public base_wolf_t
   {
     const spell_data_t* maelstrom;
 
-    dw_melee_t( elemental_wolf_base_t* player ) :
-      super( player, "melee" ), maelstrom( player->find_spell( 190185 ) )
-    { }
+    dw_melee_t( elemental_wolf_base_t* player ) : super( player, "melee" ), maelstrom( player->find_spell( 190185 ) )
+    {
+    }
 
     void impact( action_state_t* state ) override
     {
@@ -2302,12 +2304,11 @@ struct earth_elemental_t : public primal_elemental_t
   // azerite trait aoe spell
   struct rumbling_tremors_t : public pet_spell_t<earth_elemental_t>
   {
-    rumbling_tremors_t( earth_elemental_t* player )
-      : super( player, "rumbling_tremors", player->find_spell( 279522 ) )
+    rumbling_tremors_t( earth_elemental_t* player ) : super( player, "rumbling_tremors", player->find_spell( 279522 ) )
     {
-      aoe           = -1;
-      base_dd_min   = player->o()->azerite.rumbling_tremors.value( 1 );
-      base_dd_max   = base_dd_min;
+      aoe         = -1;
+      base_dd_min = player->o()->azerite.rumbling_tremors.value( 1 );
+      base_dd_max = base_dd_min;
     }
   };
 
@@ -2336,16 +2337,17 @@ struct earth_elemental_t : public primal_elemental_t
 
     if ( o()->azerite.rumbling_tremors.ok() )
     {
-      auto damage = new rumbling_tremors_t( this );
+      auto damage      = new rumbling_tremors_t( this );
       auto base_driver = o()->azerite.rumbling_tremors.spell_ref().effectN( 1 ).trigger()->effectN( 1 ).trigger();
 
-      rumbling_tremors = make_buff<buff_t>( this, "rumbling_tremors", o()->azerite.rumbling_tremors.spell() )
-        -> set_period( base_driver->effectN( 3 ).period() )
-        -> set_duration( sim -> expected_iteration_time * 2 )
-        -> set_tick_callback( [ this, damage ]( buff_t* /* b */, int /* s */, const timespan_t& /* tt */ ) {
-          damage->set_target( target );
-          damage->execute();
-        } );
+      rumbling_tremors =
+          make_buff<buff_t>( this, "rumbling_tremors", o()->azerite.rumbling_tremors.spell() )
+              ->set_period( base_driver->effectN( 3 ).period() )
+              ->set_duration( sim->expected_iteration_time * 2 )
+              ->set_tick_callback( [this, damage]( buff_t* /* b */, int /* s */, const timespan_t& /* tt */ ) {
+                damage->set_target( target );
+                damage->execute();
+              } );
     }
   }
 
@@ -4734,7 +4736,7 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     auto m = shaman_spell_t::composite_target_multiplier( target );
     if ( td( target )->debuff.exposed_elements->up() )
     {
-      m *= 1.0 + td( target )->debuff.exposed_elements->default_value / 100.0;
+      m *= 1.0 + td( target )->debuff.exposed_elements->default_value;
     }
     return m;
   }
@@ -4813,7 +4815,7 @@ struct lightning_bolt_t : public shaman_spell_t
     auto m = shaman_spell_t::composite_target_multiplier( target );
     if ( td( target )->debuff.exposed_elements->up() )
     {
-      m *= 1.0 + td( target )->debuff.exposed_elements->default_value / 100.0;
+      m *= 1.0 + td( target )->debuff.exposed_elements->default_value;
     }
     return m;
   }
@@ -7077,7 +7079,7 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
     // so delay windfury's hits so they can all process before landing. Possibly a bug.
     buff.forceful_winds->extend_duration( this, timespan_t::from_seconds( 0.001 ) );
     auto target = state->target;
-    make_event( *sim, timespan_t::from_millis( 1 ), [ a, target ]() {
+    make_event( *sim, timespan_t::from_millis( 1 ), [a, target]() {
       a->set_target( target );
       a->schedule_execute();
       a->schedule_execute();
@@ -7267,9 +7269,9 @@ void shaman_t::create_buffs()
   buff.master_of_the_elements = make_buff( this, "master_of_the_elements", find_spell( 260734 ) )
                                     ->set_default_value( find_spell( 260734 )->effectN( 1 ).percent() );
   buff.unlimited_power = make_buff( this, "unlimited_power", find_spell( 272737 ) )
-      ->add_invalidate( CACHE_HASTE )
-      ->set_default_value( find_spell( 272737 )->effectN( 1 ).percent() )
-      ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+                             ->add_invalidate( CACHE_HASTE )
+                             ->set_default_value( find_spell( 272737 )->effectN( 1 ).percent() )
+                             ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   buff.wind_gust = make_buff( this, "wind_gust", find_spell( 263806 ) )
                        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
@@ -8711,9 +8713,8 @@ struct shaman_module_t : public module_t
 
   void init( player_t* p ) const override
   {
-    p->buffs.bloodlust = make_buff( p, "bloodlust", p->find_spell( 2825 ) )
-        ->set_max_stack( 1 )
-        ->add_invalidate(CACHE_HASTE);
+    p->buffs.bloodlust =
+        make_buff( p, "bloodlust", p->find_spell( 2825 ) )->set_max_stack( 1 )->add_invalidate( CACHE_HASTE );
 
     p->buffs.exhaustion = buff_creator_t( p, "exhaustion", p->find_spell( 57723 ) ).max_stack( 1 ).quiet( true );
   }
