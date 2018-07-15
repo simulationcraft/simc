@@ -6708,7 +6708,7 @@ void mage_t::apl_arcane()
   default_list -> add_action( this, "Counterspell", "if=target.debuff.casting.react", "Interrupt the boss when possible." );
   default_list -> add_action( this, "Time Warp", "if=time=0&buff.bloodlust.down" );
   default_list -> add_action( "call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length|(cooldown.arcane_power.remains=0&cooldown.evocation.remains<=variable.average_burn_length&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0)))", "Start a burn phase when important cooldowns are available. Start with 4 arcane charges, unless there's a good reason not to. (charged up)" );
-  default_list -> add_action( "call_action_list,name=burn,if=!burn_phase" );
+  default_list -> add_action( "call_action_list,name=conserve,if=!burn_phase" );
   default_list -> add_action( "call_action_list,name=movement" );
 
   burn -> add_action( "variable,name=total_burns,op=add,value=1,if=!burn_phase", "Increment our burn phase counter. Whenever we enter the `burn` actions without being in a burn phase, it means that we are about to start one." );
