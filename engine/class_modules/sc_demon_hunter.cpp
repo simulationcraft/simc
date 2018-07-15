@@ -362,7 +362,7 @@ public:
     // Havoc
     gain_t* blind_fury;
     gain_t* demonic_appetite;
-    gain_t* momentum;
+    gain_t* prepared;
 
     // Vengeance
     gain_t* metamorphosis;
@@ -1713,7 +1713,7 @@ struct eye_beam_t : public demon_hunter_spell_t
     eye_beam_tick_t( demon_hunter_t* p )
       : demon_hunter_spell_t( "eye_beam_tick", p, p->find_spell( 198030 ) )
     {
-      dual = background = true;
+      background = dual = true;
       aoe = -1;
       base_crit += p->spec.havoc->effectN( 3 ).percent();
       
@@ -2060,7 +2060,7 @@ struct fiery_brand_t : public demon_hunter_spell_t
 struct sigil_of_flame_damage_t : public demon_hunter_spell_t
 {
   sigil_of_flame_damage_t(demon_hunter_t* p)
-    : demon_hunter_spell_t( "sigil_of_flame_dmg", p, p->find_spell( 204598 ) )
+    : demon_hunter_spell_t( "sigil_of_flame_damage", p, p->find_spell( 204598 ) )
   {
     aoe = -1;
     background = dual = ground_aoe = true;
@@ -2614,7 +2614,7 @@ struct spirit_bomb_t : public demon_hunter_spell_t
   struct spirit_bomb_damage_t : public demon_hunter_spell_t
   {
     spirit_bomb_damage_t( demon_hunter_t* p )
-      : demon_hunter_spell_t( "spirit_bomb_dmg", p, p->find_spell( 247455 ) )
+      : demon_hunter_spell_t( "spirit_bomb_damage", p, p->find_spell( 247455 ) )
     {
       background = dual = true;
       aoe = -1;
@@ -2890,7 +2890,7 @@ struct blade_dance_base_t : public demon_hunter_attack_t
       last_attack( false ),
       revolving_blades_bonus_da( 0.0 )
     {
-      dual = background = true;
+      background = dual = true;
       aoe = -1;
     }
 
@@ -3115,7 +3115,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       thirsting_blades_bonus_da( 0.0 )
     {
       assert( eff.type() == E_TRIGGER_SPELL );
-      dual = background = true;
+      background = dual = true;
       may_refund = ( weapon == &( p->off_hand_weapon ) );
     }
     
@@ -3405,7 +3405,7 @@ struct felblade_t : public demon_hunter_attack_t
     felblade_damage_t( demon_hunter_t* p )
       : demon_hunter_attack_t( "felblade_damage", p, p->find_spell( 213243 ) )
     {
-      dual = background = true;
+      background = dual = true;
       may_miss = may_dodge = may_parry = false;
 
       // Clear energize and then manually pick which effect to parse.
@@ -3447,8 +3447,8 @@ struct fel_rush_t : public demon_hunter_attack_t
     unbound_chaos_damage_t( demon_hunter_t* p )
       : demon_hunter_attack_t( "unbound_chaos", p, p->azerite.unbound_chaos )
     {
+      background = dual = true;
       aoe = -1;
-      dual = background = true;
       school = SCHOOL_CHAOS; // spell data says SCHOOL_PHYSICAL but this effect is scripted
 
       base_dd_min = base_dd_max = p->azerite.unbound_chaos.value( 1 );
@@ -3458,22 +3458,20 @@ struct fel_rush_t : public demon_hunter_attack_t
   struct fel_rush_damage_t : public demon_hunter_attack_t
   {
     fel_rush_damage_t( demon_hunter_t* p )
-      : demon_hunter_attack_t( "fel_rush_dmg", p, p->spec.fel_rush_damage )
+      : demon_hunter_attack_t( "fel_rush_damage", p, p->spec.fel_rush_damage )
     {
+      background = dual = true;
       aoe  = -1;
-      dual = background = true;
-
       base_multiplier *= 1.0 + p->talent.fel_mastery->effectN( 1 ).percent();
     }
   };
 
-  fel_rush_damage_t* damage;
   unbound_chaos_damage_t* unbound_chaos_damage;
   bool a_cancel;
+  timespan_t gcd_lag;
 
   fel_rush_t( demon_hunter_t* p, const std::string& options_str )
     : demon_hunter_attack_t( "fel_rush", p, p->find_class_spell( "Fel Rush" ) ),
-      damage( new fel_rush_damage_t( p ) ),
       unbound_chaos_damage( nullptr ),
       a_cancel( false )
   {
@@ -3483,12 +3481,13 @@ struct fel_rush_t : public demon_hunter_attack_t
     may_miss = may_dodge = may_parry = may_block = may_crit = false;
     min_gcd = trigger_gcd;
 
-    damage->stats = stats;
+    execute_action = new fel_rush_damage_t( p );
+    execute_action->stats = stats;
 
     if ( !a_cancel )
     {
       // Fel Rush does damage in a further line than it moves you
-      base_teleport_distance  = damage->radius - 5;
+      base_teleport_distance = execute_action->radius - 5;
       movement_directionality = MOVEMENT_OMNI;
       p->buff.fel_rush_move->distance_moved = base_teleport_distance;
     }
@@ -3502,48 +3501,46 @@ struct fel_rush_t : public demon_hunter_attack_t
     // Add damage modifiers in fel_rush_damage_t, not here.
   }
 
-  timespan_t gcd() const override
-  {
-    timespan_t g = demon_hunter_attack_t::gcd();
-
-    // Fel Rush's loss of control causes a GCD lag after the loss ends.
-    // TOCHECK: Does this delay happen when jump cancelling?
-    g += rng().gauss( sim->gcd_lag, sim->gcd_lag_stddev );
-
-    return g;
-  }
-
   void execute() override
   {
-    demon_hunter_attack_t::execute();
+    // 07/14/2018 -- As of the latest build, Momentum is now triggered before the damage
+    p()->buff.momentum->trigger();
 
-    // Does not benefit from its own momentum, so snapshot damage now.
-    damage->set_target( target );
-    action_state_t* s = damage->get_state();
-    damage->snapshot_state( s, DMG_DIRECT );
-    damage->schedule_execute( s );
+    demon_hunter_attack_t::execute();
 
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
     p()->cooldown.movement_shared->start( timespan_t::from_seconds( 1.0 ) );
 
-    if (!a_cancel)
+    if ( !a_cancel )
     {
       p()->buff.fel_rush_move->trigger();
     }
 
-    p()->buff.momentum->trigger();
-
     if ( unbound_chaos_damage )
     {
       // Fake the travel time delay
-      make_event<delayed_execute_event_t>( *sim, p(), unbound_chaos_damage, target, timespan_t::from_millis(500) );
+      make_event<delayed_execute_event_t>( *sim, p(), unbound_chaos_damage, target, timespan_t::from_millis( 500 ) );
     }
+  }
+
+  void schedule_execute( action_state_t* s ) override
+  {
+    // Fel Rush's loss of control causes a GCD lag after the loss ends.
+    // Calculate this once on schedule_execute since gcd() is called multiple times
+    gcd_lag = rng().gauss( sim->gcd_lag, sim->gcd_lag_stddev );
+
+    demon_hunter_attack_t::schedule_execute( s );
+  }
+
+  timespan_t gcd() const override
+  {
+    return demon_hunter_attack_t::gcd() + gcd_lag;
   }
 
   bool ready() override
   {
     // Fel Rush and VR shared a 1 second GCD when one or the other is triggered
-    if (p()->cooldown.movement_shared->down())
+    if ( p()->cooldown.movement_shared->down() )
     {
       return false;
     }
@@ -3708,7 +3705,7 @@ struct vengeful_retreat_t : public demon_hunter_attack_t
   struct vengeful_retreat_damage_t : public demon_hunter_attack_t
   {
     vengeful_retreat_damage_t(demon_hunter_t* p)
-      : demon_hunter_attack_t("vengeful_retreat_dmg", p, p->find_spell(198813))
+      : demon_hunter_attack_t("vengeful_retreat_damage", p, p->find_spell(198813))
     {
       background = dual = true;
       aoe = -1;
@@ -4425,24 +4422,24 @@ void demon_hunter_t::create_buffs()
 
   const double prepared_value = ( find_spell( 203650 )->effectN( 1 ).resource( RESOURCE_FURY ) / 50 );
   buff.prepared =
-    buff_creator_t(this, "prepared", find_spell( 203650, DEMON_HUNTER_HAVOC ) )
+    buff_creator_t( this, "prepared", find_spell( 203650, DEMON_HUNTER_HAVOC ) )
     .default_value( prepared_value )
     .trigger_spell( talent.momentum )
     .period( timespan_t::from_millis( 100 ) )
     .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-    resource_gain( RESOURCE_FURY, b->check_value(), gain.momentum );
-  } );
+      resource_gain( RESOURCE_FURY, b->check_value(), gain.prepared );
+    } );
 
   buff.blind_fury =
-    buff_creator_t(this, "blind_fury", spec.eye_beam)
-    .cd(timespan_t::zero())
-    .default_value(talent.blind_fury->effectN(3).resource(RESOURCE_FURY) / 50)
-    .duration(spec.eye_beam->duration() * (1.0 + talent.blind_fury->effectN(1).percent()))
-    .period(timespan_t::from_millis(100))
-    .tick_zero(true)
-    .tick_callback([this](buff_t* b, int, const timespan_t&) {
-    resource_gain(RESOURCE_FURY, b->check_value(), gain.blind_fury);
-  });
+    buff_creator_t( this, "blind_fury", spec.eye_beam )
+    .cd( timespan_t::zero() )
+    .default_value( talent.blind_fury->effectN( 3 ).resource( RESOURCE_FURY ) / 50 )
+    .duration( spec.eye_beam->duration() * ( 1.0 + talent.blind_fury->effectN( 1 ).percent() ) )
+    .period( timespan_t::from_millis( 100 ) )
+    .tick_zero( true )
+    .tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
+      resource_gain( RESOURCE_FURY, b->check_value(), gain.blind_fury );
+    } );
 
   buff.vengeful_retreat_move = new movement_buff_t(this,
     buff_creator_t( this, "vengeful_retreat_movement", spell_data_t::nil() )
@@ -4452,8 +4449,8 @@ void demon_hunter_t::create_buffs()
   if ( level() <= 115 )
   {
     buff.havoc_t21_4pc = make_buff( this, "havoc_t21_4pc", find_spell( 252165 ) )
-        ->set_default_value( find_spell( 252165 )->effectN( 1 ).percent() )
-        ->add_invalidate(CACHE_HASTE);
+      ->set_default_value( find_spell( 252165 )->effectN( 1 ).percent() )
+      ->add_invalidate( CACHE_HASTE );
   }
   else
   {
@@ -5302,7 +5299,6 @@ void demon_hunter_t::create_cooldowns()
   cooldown.blur                 = get_cooldown( "blur" );
   cooldown.chaos_nova           = get_cooldown( "chaos_nova" );
   cooldown.dark_slash           = get_cooldown( "dark_slash" );
-  cooldown.demonic_appetite     = get_cooldown( "demonic_appetite" );
   cooldown.eye_beam             = get_cooldown( "eye_beam" );
   cooldown.fel_barrage          = get_cooldown( "fel_barrage" );
   cooldown.fel_rush             = get_cooldown( "fel_rush" );
@@ -5332,7 +5328,7 @@ void demon_hunter_t::create_gains()
   // Havoc
   gain.blind_fury               = get_gain("blind_fury");
   gain.demonic_appetite         = get_gain("demonic_appetite");
-  gain.momentum                 = get_gain("momentum");
+  gain.prepared                 = get_gain("prepared");
   
   // Vengeance
   gain.metamorphosis            = get_gain("metamorphosis");
@@ -6258,7 +6254,7 @@ namespace items
 
   struct loramus_thalipedes_sacrifice_t : public scoped_action_callback_t<fel_rush_t::fel_rush_damage_t>
   {
-    loramus_thalipedes_sacrifice_t() : super( DEMON_HUNTER_HAVOC, "fel_rush_dmg" )
+    loramus_thalipedes_sacrifice_t() : super( DEMON_HUNTER_HAVOC, "fel_rush_damage" )
     {}
 
     void manipulate( fel_rush_t::fel_rush_damage_t* action, const special_effect_t& e ) override
