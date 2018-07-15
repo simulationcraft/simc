@@ -110,7 +110,7 @@ struct rogue_td_t : public actor_target_data_t
     buff_t* leeching_poison;
     buffs::marked_for_death_debuff_t* marked_for_death;
     buff_t* ghostly_strike;
-    buff_t* garrote; // Hidden proxy buff for garrote to get Thuggee working easily(ish)
+    buff_t* rupture; // Hidden proxy for handling Scent of Blood azerite trait
     buff_t* toxic_blade;
     buff_t* find_weakness;
   } debuffs;
@@ -284,6 +284,7 @@ struct rogue_t : public player_t
     buff_t* nights_vengeance;
     buff_t* perforate;
     buff_t* poisoned_wire;
+    buff_t* scent_of_blood;
     buff_t* sharpened_blades;
     buff_t* snake_eyes;
     buff_t* storm_of_steel;
@@ -437,7 +438,6 @@ struct rogue_t : public player_t
 
     const spell_data_t* master_assassin;
 
-    const spell_data_t* thuggee;
     const spell_data_t* internal_bleeding;
 
     const spell_data_t* venom_rush;
@@ -497,6 +497,7 @@ struct rogue_t : public player_t
     azerite_power_t nights_vengeance;
     azerite_power_t perforate;
     azerite_power_t poisoned_wire;
+    azerite_power_t scent_of_blood;
     azerite_power_t sharpened_blades;
     azerite_power_t snake_eyes;
     azerite_power_t storm_of_steel;
@@ -2901,7 +2902,6 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    td( execute_state -> target ) -> debuffs.garrote -> trigger();
     p() -> buffs.poisoned_wire -> trigger();
   }
 
@@ -3465,6 +3465,9 @@ struct rupture_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> trigger_poison_bomb( execute_state );
+
+    // Run quiet proxy buff that handles Scent of Blood
+    td( execute_state -> target ) -> debuffs.rupture -> trigger();
   }
 
   void tick( dot_t* d ) override
@@ -4711,27 +4714,41 @@ namespace buffs {
 // Buffs
 // ==========================================================================
 
-struct proxy_garrote_t : public buff_t
+struct proxy_rupture_t : public buff_t
 {
-  proxy_garrote_t( rogue_td_t& r ) :
-    buff_t( r, "garrote", r.source -> find_specialization_spell( "Garrote" ) )
+  dot_t* rupture_dot;
+
+  proxy_rupture_t( rogue_td_t& r ) :
+    buff_t( r, "rupture", r.source -> find_specialization_spell( "Rupture" ) ),
+    rupture_dot( r.dots.rupture )
   {
     set_quiet( true );
     set_cooldown( timespan_t::zero() );
+    set_period( timespan_t::zero() );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
+  }
+
+  void execute( int stacks, double value, timespan_t duration ) override
+  {
+    // Sync with Rup duration
+    buff_t::execute( stacks, value, rupture_dot -> duration() );
+  }
+
+  void start( int stacks, double value, timespan_t duration ) override
+  {
+    buff_t::start( stacks, value, duration );
+
+    rogue_t* rogue = debug_cast<rogue_t*>( source );
+    if ( rogue -> azerite.scent_of_blood.ok() )
+      rogue -> buffs.scent_of_blood -> increment();
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
   {
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
-    if ( remaining_duration > timespan_t::zero() )
-    {
-      rogue_t* rogue = debug_cast<rogue_t*>( source );
-      if ( rogue -> talent.thuggee -> ok() )
-      {
-        rogue -> cooldowns.garrote -> reset( false );
-      }
-    }
+    rogue_t* rogue = debug_cast<rogue_t*>( source );
+    rogue -> buffs.scent_of_blood -> decrement();
   }
 };
 
@@ -5883,7 +5900,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   debuffs.wound_poison = new buffs::wound_poison_t( *this );
   debuffs.crippling_poison = new buffs::crippling_poison_t( *this );
   debuffs.leeching_poison = new buffs::leeching_poison_t( *this );
-  debuffs.garrote = new buffs::proxy_garrote_t( *this );
+  debuffs.rupture = new buffs::proxy_rupture_t( *this );
   debuffs.vendetta = make_buff( *this, "vendetta", source->spec.vendetta )
     -> set_cooldown( timespan_t::zero() )
     -> set_default_value( source->spec.vendetta->effectN( 1 ).percent() );
@@ -6872,7 +6889,6 @@ void rogue_t::init_spells()
 
   talent.master_assassin    = find_talent_spell( "Master Assassin" );
 
-  talent.thuggee            = find_talent_spell( "Thuggee" );
   talent.internal_bleeding  = find_talent_spell( "Internal Bleeding" );
 
   talent.venom_rush         = find_talent_spell( "Venom Rush" );
@@ -6917,6 +6933,7 @@ void rogue_t::init_spells()
   azerite.nights_vengeance     = find_azerite_spell( "Night's Vengeance" );
   azerite.perforate            = find_azerite_spell( "Perforate" );
   azerite.poisoned_wire        = find_azerite_spell( "Poisoned Wire" );
+  azerite.scent_of_blood       = find_azerite_spell( "Scent of Blood" );
   azerite.sharpened_blades     = find_azerite_spell( "Sharpened Blades" );
   azerite.snake_eyes           = find_azerite_spell( "Snake Eyes" );
   azerite.storm_of_steel       = find_azerite_spell( "Storm of Steel" );
@@ -7272,6 +7289,9 @@ void rogue_t::create_buffs()
   buffs.poisoned_wire                      = make_buff( this, "poisoned_wire", find_spell( 276083 ) )
                                              -> set_trigger_spell( azerite.poisoned_wire.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.poisoned_wire.value() );
+  buffs.scent_of_blood                     = make_buff<stat_buff_t>( this, "scent_of_blood", find_spell( 277731 ) )
+                                             -> add_stat( STAT_AGILITY, azerite.scent_of_blood.value() )
+                                             -> set_duration( timespan_t::zero() ); // Infinite aura
   buffs.sharpened_blades                   = make_buff( this, "sharpened_blades", find_spell( 272916 ) )
                                              -> set_trigger_spell( azerite.sharpened_blades.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.sharpened_blades.value() );
