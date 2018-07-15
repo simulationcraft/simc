@@ -3555,6 +3555,7 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
 
     tick_zero = false;
     hasted_ticks = true;
+    tick_may_crit = false;
 
     if ( p -> talents.hydras_bite -> ok() )
       aoe = 1 + static_cast<int>( p -> talents.hydras_bite -> effectN( 1 ).base_value() );
