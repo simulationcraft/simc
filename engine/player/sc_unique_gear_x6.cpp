@@ -2175,9 +2175,7 @@ struct shadow_blade_t : public proc_spell_t
 {
   shadow_blade_t( const special_effect_t& effect ) :
     proc_spell_t( "shadow_blade", effect.player, effect.player -> find_spell( 257702 ), effect.item )
-  {
-    base_dd_min = base_dd_max = effect.driver() -> effectN( 2 ).average( effect.item );
-  }
+  { }
 
   virtual double composite_target_multiplier( player_t* target ) const override
   {
