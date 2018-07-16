@@ -347,6 +347,7 @@ struct rogue_t : public player_t
     gain_t* t19_4pc_subtlety;
     gain_t* t21_4pc_subtlety;
     gain_t* ace_up_your_sleeve;
+    gain_t* shrouded_suffocation;
   } gains;
 
   // Spec passives
@@ -503,6 +504,7 @@ struct rogue_t : public player_t
     azerite_power_t poisoned_wire;
     azerite_power_t scent_of_blood;
     azerite_power_t sharpened_blades;
+    azerite_power_t shrouded_suffocation;
     azerite_power_t snake_eyes;
     azerite_power_t storm_of_steel;
     azerite_power_t the_first_dance;
@@ -2859,6 +2861,31 @@ struct feint_t : public rogue_attack_t
 
 // Garrote ==================================================================
 
+struct garrote_state_t : public rogue_attack_state_t
+{
+  bool shrouded_suffocation;
+
+  garrote_state_t( action_t* action, player_t* target ) :
+    rogue_attack_state_t( action, target ), shrouded_suffocation( false )
+  { }
+
+  void initialize() override
+  { rogue_attack_state_t::initialize(); shrouded_suffocation = false; }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    rogue_attack_state_t::debug_str( s ) << " shrouded_suffocation=" << shrouded_suffocation;
+    return s;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    rogue_attack_state_t::copy_state( o );
+    const garrote_state_t* st = debug_cast<const garrote_state_t*>( o );
+    shrouded_suffocation = st -> shrouded_suffocation;
+  }
+};
+
 struct garrote_t : public rogue_attack_t
 {
   garrote_t( rogue_t* p, const std::string& options_str ) :
@@ -2874,6 +2901,31 @@ struct garrote_t : public rogue_attack_t
 
     if ( p -> sets -> has_set_bonus( ROGUE_ASSASSINATION, T20, B4 ) )
       base_multiplier *= 1.0 + p -> sets -> set( ROGUE_ASSASSINATION, T20, B4 ) -> effectN( 1 ).percent();
+  }
+
+  action_state_t* new_state() override
+  { return new garrote_state_t( this, target ); }
+
+  void snapshot_state( action_state_t* state, dmg_e type ) override
+  {
+    rogue_attack_t::snapshot_state( state, type );
+
+    if ( p() -> azerite.shrouded_suffocation.ok() )
+    {
+      // Note: Assuming Shadowmeld works, needs checking.
+      if ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.subterfuge -> check() || p() -> player_t::buffs.shadowmeld -> check() )
+        debug_cast<garrote_state_t*>( state ) -> shrouded_suffocation = true;
+    }
+  }
+
+  double bonus_ta( const action_state_t* state ) const override
+  {
+    double b = rogue_attack_t::bonus_ta( state );
+
+    if ( debug_cast<const garrote_state_t*>( state ) -> shrouded_suffocation )
+      b += p() -> azerite.shrouded_suffocation.value();
+
+    return b;
   }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
@@ -2932,6 +2984,13 @@ struct garrote_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     p() -> buffs.poisoned_wire -> trigger();
+
+    if ( p() -> azerite.shrouded_suffocation.ok() )
+    {
+      // Note: Assuming Shadowmeld works, needs checking.
+      if ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() || p() -> buffs.subterfuge -> check() || p() -> player_t::buffs.shadowmeld -> check() )
+        p() -> trigger_combo_point_gain( p() -> azerite.shrouded_suffocation.spell_ref().effectN( 2 ).base_value(), p() -> gains.shrouded_suffocation, this );
+    }
   }
 
   void tick( dot_t* d ) override
@@ -7005,6 +7064,7 @@ void rogue_t::init_spells()
   azerite.poisoned_wire        = find_azerite_spell( "Poisoned Wire" );
   azerite.scent_of_blood       = find_azerite_spell( "Scent of Blood" );
   azerite.sharpened_blades     = find_azerite_spell( "Sharpened Blades" );
+  azerite.shrouded_suffocation = find_azerite_spell( "Shrouded Suffocation" );
   azerite.snake_eyes           = find_azerite_spell( "Snake Eyes" );
   azerite.storm_of_steel       = find_azerite_spell( "Storm of Steel" );
   azerite.the_first_dance      = find_azerite_spell( "The First Dance" );
@@ -7066,6 +7126,7 @@ void rogue_t::init_gains()
   gains.t21_4pc_subtlety         = get_gain( "Tier 21 4PC Set Bonus"    );
   gains.t21_4pc_assassination    = get_gain( "Tier 21 4PC Set Bonus"    );
   gains.ace_up_your_sleeve       = get_gain( "Ace Up Your Sleeve"       );
+  gains.shrouded_suffocation     = get_gain( "Shrouded Suffocation"     );
 }
 
 // rogue_t::init_procs ======================================================
