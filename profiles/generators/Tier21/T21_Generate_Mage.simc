@@ -57,7 +57,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=1022021
+talents=1011022
 spec=fire
 
 firestarter_time=20
@@ -69,11 +69,11 @@ back=runebound_cape,id=152136,bonus_id=3612/1502,enchant=binding_of_intellect
 chest=gambeson_of_sargeras_corruption,id=152679,bonus_id=3612/1502
 wrists=marquee_bindings_of_the_sun_king,id=132406,bonus_id=3630
 hands=handwraps_of_inevitable_doom,id=152680,bonus_id=3612/1502
-waist=cord_of_blossoming_petals,id=151952,bonus_id=3612/1502
+waist=koralons_burning_touch,id=132454,bonus_id=3630
 legs=runebound_leggings,id=152139,bonus_id=3612/1502
 feet=whisperstep_runners,id=151939,bonus_id=3612/1502
 finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
-finger2=shard_of_the_exodar,id=132410,bonus_id=3630,gem_id=151580,enchant=binding_of_critical_strike
+finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=felomelorn,id=128820,gem_id=155849/152026/155849,bonus_id=730,relic_id=3612:1512/3612:1502/3612:1512
