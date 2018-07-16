@@ -1275,7 +1275,7 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : Disable weapon procs (151)
 Effects          :
-#1 (id=47999)    : Apply Aura (6) | Periodic Health Leech (53)
+#1 (id=47999)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 (avg=0.158) | Value Multiplier: 1 | AP Coefficient: 0.06224 | Target: Unknown(25)
 #2 (id=48000)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.05176 | Target: Unknown(25)
@@ -4751,7 +4751,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Channeled (34), Periodic effect affected by haste (173)
 Effects          :
-#1 (id=306042)   : Apply Aura (6) | Periodic Health Leech (53)
+#1 (id=306042)   : Apply Aura (6) | Periodic Health Leech (53): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 0.44226 | Target: Enemy (6)
 Description      : Drains $o1 health from the target over $d.
 

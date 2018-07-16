@@ -1603,7 +1603,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x......x ........ ....x... ........ 
                  : Periodic effect affected by haste (173)
 Effects          :
-#1 (id=57197)    : Apply Aura (6) | Periodic Health Leech (53)
+#1 (id=57197)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.3 | SP Coefficient: 0.12000 | Target: Enemy (6)
 Description      : Siphons the target's life essence, dealing $o1 Shadow damage over $d and healing you for ${$e1*100}% of the damage done.
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec and siphoning life to the casting Warlock.
@@ -4106,7 +4106,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Periodic effect affected by haste (173)
 Effects          :
-#1 (id=302907)   : Apply Aura (6) | Periodic Health Leech (53)
+#1 (id=302907)   : Apply Aura (6) | Periodic Health Leech (53): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.25 | SP Coefficient: 0.18000 | Target: Enemy (6)
 Description      : Places a phantom singularity above the target, which consumes the life of all enemies within $205246A2 yards, dealing ${8*$205246s2} damage over $d, healing you for ${$205246e2*100}% of the damage done.
 Tooltip          : Dealing damage to all nearby targets every $t1 sec and healing the casting Warlock.
@@ -4791,7 +4791,7 @@ Attributes       : ........ ........ x....... ........   ..x..... ......x. .....
                  : ........ ........ ........ ........   x....... ........ ....x... ........ 
                  : Channeled (34), Periodic effect affected by haste (173)
 Effects          :
-#1 (id=353731)   : Apply Aura (6) | Periodic Health Leech (53)
+#1 (id=353731)   : Apply Aura (6) | Periodic Health Leech (53): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 5 | SP Coefficient: 0.12000 | Target: Enemy (6)
 Description      : Drains life from the target, causing $o1 Shadow damage over $d, and healing you for ${$e1*100}% of the damage done.
 Tooltip          : Suffering $s1 Shadow damage every $t1 seconds.
