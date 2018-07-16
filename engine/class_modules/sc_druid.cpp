@@ -2906,12 +2906,6 @@ struct brutal_slash_t : public cat_attack_t
   {
     double c = cat_attack_t::cost();
 
-    // TOCHECK
-    double reduction = p() -> buff.scent_of_blood -> check_value();
-    reduction *= 1.0 + p() -> buff.berserk -> check_value();
-    reduction *= 1.0 + p() -> buff.incarnation_cat -> check_value();
-    c += reduction;
-
     return c;
   }
 
