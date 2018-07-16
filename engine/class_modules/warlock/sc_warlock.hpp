@@ -94,6 +94,7 @@ namespace warlock
       player_t * havoc_target;
       bool wracking_brilliance;
       double agony_accumulator;
+      double agony_expression_thing;
 
       // Active Pet
       struct pets_t
@@ -480,8 +481,8 @@ namespace warlock
       bool allow_sephuz;
       bool deaths_embrace_fixed_time;
       std::string default_pet;
-
       timespan_t shard_react;
+
 
       warlock_t( sim_t* sim, const std::string& name, race_e r );
 

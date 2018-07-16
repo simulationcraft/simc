@@ -335,6 +335,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     havoc_target( nullptr ),
     wracking_brilliance(false),
     agony_accumulator( 0.0 ),
+    agony_expression_thing( 0.0 ),
     warlock_pet_list(),
     active(),
     talents(),
@@ -983,6 +984,7 @@ void warlock_t::reset()
   warlock_pet_list.active = nullptr;
   shard_react = timespan_t::zero();
   havoc_target = nullptr;
+  agony_expression_thing = 0.0;
   agony_accumulator = rng().range( 0.0, 0.99 );
 }
 
@@ -1049,6 +1051,11 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
   {
     return make_fn_expr( name_str, [this]()
         { return resources.current[RESOURCE_SOUL_SHARD] >= 1 && sim->current_time() >= shard_react; } );
+  }
+  else if ( name_str == "avg_expected_shard" )
+  {
+    return make_fn_expr( name_str, [this]()
+    { return agony_expression_thing; } );
   }
   else if ( name_str == "pet_count" )
   {
