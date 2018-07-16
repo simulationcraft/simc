@@ -178,11 +178,6 @@ public:
   combo_strikes_e previous_combo_strike;
   double spiritual_focus_count;
 
-  // Affect flags for various dynamic effects
-  struct {
-    bool serenity;
-  } affected_by;
-
   // Blurred time cooldown shenanigans
   std::vector<cooldown_t*> serenity_cooldowns;
 
@@ -602,7 +597,6 @@ public:
       t19_melee_4_piece_container_1( CS_NONE ),
       t19_melee_4_piece_container_2( CS_NONE ),
       t19_melee_4_piece_container_3( CS_NONE ),
-      affected_by(),
       fu_zan_the_wanderers_companion( nullptr ),
       sheilun_staff_of_the_mists( nullptr ),
       fists_of_the_heavens( nullptr ),
@@ -2027,6 +2021,11 @@ struct monk_action_t: public Base
   bool windwalker_damage_increase_dot_four;
   bool windwalker_healing_increase;
 
+  // Affect flags for various dynamic effects
+  struct {
+    bool serenity;
+  } affected_by;
+
 private:
   std::array < resource_e, MONK_MISTWEAVER + 1 > _resource_by_stance;
   typedef Base ab; // action base, eg. spell_t
@@ -2038,6 +2037,7 @@ public:
     ab( n, player, s ),
     sef_ability( SEF_NONE ),
     ww_mastery( false ),
+    affected_by(),
 
     hasted_gcd( ab::data().affected_by( player -> spec.mistweaver_monk -> effectN( 4 ) ) ),
     brewmaster_damage_increase( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 1 ) ) ),
@@ -2711,14 +2711,16 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     base_t::init();
 
    // Figure out what spells are affected by Serenity's cooldown reduction
-   p() -> affected_by.serenity = cooldown -> duration > timespan_t::zero() && base_costs[RESOURCE_CHI] > 0;
+   affected_by.serenity = cooldown -> duration > timespan_t::zero() && base_costs[RESOURCE_CHI] > 0;
   }
 
   void init_finished() override
   {
-    if ( p() -> affected_by.serenity )
+    if ( affected_by.serenity )
     {
-      p() -> serenity_cooldowns.push_back( cooldown );
+      auto cooldowns = p() -> serenity_cooldowns;
+      if ( std::find(cooldowns.begin(), cooldowns.end(), cooldown) == cooldowns.end() )
+        p() -> serenity_cooldowns.push_back( cooldown );
     }
 
     base_t::init_finished();
@@ -6918,7 +6920,7 @@ void monk_t::init_base_stats()
         base.distance = 5;
       base_gcd += spec.windwalker_monk -> effectN( 14 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
-      base.spell_power_per_agility = spec.windwalker_monk -> effectN( 15 ).percent();
+      base.spell_power_per_attack_power = spec.windwalker_monk -> effectN( 15 ).percent();
       resources.base[RESOURCE_ENERGY] = 100;
       resources.base[RESOURCE_ENERGY] += talent.ascension -> effectN( 3 ).base_value();
       resources.base[RESOURCE_MANA] = 0;
