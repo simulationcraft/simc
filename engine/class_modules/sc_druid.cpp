@@ -2905,7 +2905,7 @@ struct brutal_slash_t : public cat_attack_t
   double cost() const override
   {
     double c = cat_attack_t::cost();
-
+  
     return c;
   }
 
@@ -2995,6 +2995,13 @@ struct feral_frenzy_driver_t : public cat_attack_t
     tick_ap_ratio = p->find_spell(274838)->effectN(3).ap_coeff();
   }
 
+  virtual bool ready() override
+  {
+    if (!p()->talent.feral_frenzy->ok())
+      return false;
+
+    return cat_attack_t::ready();
+  }
 };
 
 
