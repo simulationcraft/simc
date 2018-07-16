@@ -278,6 +278,8 @@ struct rogue_t : public player_t
 
     // Azerite powers
     buff_t* blade_in_the_shadows;
+    buff_t* brigands_blitz;
+    buff_t* brigands_blitz_driver;
     buff_t* deadshot;
     buff_t* nights_vengeance;
     buff_t* paradise_lost;
@@ -494,6 +496,7 @@ struct rogue_t : public player_t
   {
     azerite_power_t ace_up_your_sleeve;
     azerite_power_t blade_in_the_shadows;
+    azerite_power_t brigands_blitz;
     azerite_power_t deadshot;
     azerite_power_t double_dose;
     azerite_power_t fan_of_blades;
@@ -2298,12 +2301,16 @@ struct adrenaline_rush_t : public rogue_attack_t
     p() -> buffs.adrenaline_rush -> trigger();
     if ( p() -> talent.loaded_dice -> ok() )
       p() -> buffs.loaded_dice -> trigger();
+    p() -> buffs.brigands_blitz_driver -> trigger();
 
     if ( precombat_seconds && ! p() -> in_combat ) {
       timespan_t precombat_lost_seconds = - timespan_t::from_seconds( precombat_seconds );
       p() -> cooldowns.adrenaline_rush -> adjust( precombat_lost_seconds, false );
       p() -> buffs.adrenaline_rush -> extend_duration( p(), precombat_lost_seconds );
       p() -> buffs.loaded_dice -> extend_duration( p(), precombat_lost_seconds );
+      p() -> buffs.brigands_blitz_driver -> extend_duration( p(), precombat_lost_seconds );
+      if ( p() -> azerite.brigands_blitz.ok() )
+        p() -> buffs.brigands_blitz -> trigger( floor( -precombat_lost_seconds / p() -> buffs.brigands_blitz_driver -> buff_period ) );
     }
   }
 };
@@ -7054,6 +7061,7 @@ void rogue_t::init_spells()
 
   azerite.ace_up_your_sleeve   = find_azerite_spell( "Ace Up Your Sleeve" );
   azerite.blade_in_the_shadows = find_azerite_spell( "Blade In The Shadows" );
+  azerite.brigands_blitz       = find_azerite_spell( "Brigand's Blitz" );
   azerite.deadshot             = find_azerite_spell( "Deadshot" );
   azerite.double_dose          = find_azerite_spell( "Double Dose" );
   azerite.fan_of_blades        = find_azerite_spell( "Fan of Blades" );
@@ -7403,6 +7411,15 @@ void rogue_t::create_buffs()
   buffs.blade_in_the_shadows               = make_buff( this, "blade_in_the_shadows", find_spell( 279754 ) )
                                              -> set_trigger_spell( azerite.blade_in_the_shadows.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.blade_in_the_shadows.value() );
+  buffs.brigands_blitz                     = make_buff<stat_buff_t>( this, "brigands_blitz", find_spell( 277724 ) )
+                                             -> add_stat( STAT_HASTE_RATING, azerite.brigands_blitz.value() )
+                                             -> set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.brigands_blitz_driver              = make_buff( this, "brigands_blitz_driver", find_spell( 277725 ) )
+                                             -> set_trigger_spell( azerite.brigands_blitz.spell_ref().effectN( 1 ).trigger() )
+                                             -> set_quiet( true )
+                                             -> set_tick_callback( [ this ]( buff_t*, int, const timespan_t& ) {
+                                                  buffs.brigands_blitz -> trigger();
+                                                });
   buffs.deadshot                           = make_buff( this, "deadshot", find_spell( 272940 ) )
                                              -> set_trigger_spell( azerite.deadshot.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.deadshot.value() );
