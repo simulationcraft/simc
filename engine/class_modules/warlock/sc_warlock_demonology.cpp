@@ -180,10 +180,149 @@ namespace warlock {
   namespace actions_demonology {
     using namespace actions;
 
-    struct shadow_bolt_t : public warlock_spell_t
+    struct demonology_spell_t : public warlock_spell_t
+    {
+    public:
+      gain_t * gain;
+      bool can_feretory;
+
+      demonology_spell_t(warlock_t* p, const std::string& n) :
+        demonology_spell_t(n, p, p -> find_class_spell(n))
+      {
+      }
+
+      demonology_spell_t(warlock_t* p, const std::string& n, specialization_e s) :
+        demonology_spell_t(n, p, p -> find_class_spell(n, s))
+      {
+      }
+
+      demonology_spell_t(const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil()) :
+        warlock_spell_t(token, p, s)
+      {
+        may_crit = true;
+        tick_may_crit = true;
+        weapon_multiplier = 0.0;
+        gain = player->get_gain(name_str);
+
+        can_feretory = true;
+
+        parse_spell_coefficient(*this);
+      }
+
+      void reset() override
+      {
+        warlock_spell_t::reset();
+      }
+
+      void init() override
+      {
+        warlock_spell_t::init();
+
+        if (data().affected_by(p()->spec.demonology->effectN(1)))
+          base_dd_multiplier *= 1.0 + p()->spec.demonology->effectN(1).percent();
+
+        if (data().affected_by(p()->spec.demonology->effectN(2)))
+          base_td_multiplier *= 1.0 + p()->spec.demonology->effectN(2).percent();
+      }
+
+      void execute() override
+      {
+        warlock_spell_t::execute();
+
+        if (can_feretory && p()->legendary.feretory_of_souls && rng().roll(p()->find_spell(205702)->proc_chance()) && dbc::is_school(school, SCHOOL_FIRE))
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.feretory_of_souls);
+      }
+
+      void consume_resource() override
+      {
+        warlock_spell_t::consume_resource();
+
+        if (resource_current == RESOURCE_SOUL_SHARD && p()->in_combat)
+        {
+          if (p()->legendary.the_master_harvester)
+          {
+            double sh_proc_chance = p()->find_spell(p()->legendary.the_master_harvester->spell_id)->effectN(2).percent();
+
+            for (int i = 0; i < last_resource_cost; i++)
+            {
+              if (p()->rng().roll(sh_proc_chance))
+              {
+                p()->buffs.soul_harvest->trigger();
+              }
+            }
+
+          }
+
+          if (p()->talents.soul_conduit->ok())
+          {
+            struct demo_sc_event :
+              public player_event_t
+            {
+              gain_t* shard_gain;
+              warlock_t* pl;
+              int shards_used;
+
+              demo_sc_event(warlock_t* p, int c) :
+                player_event_t(*p, timespan_t::from_millis(100)), shard_gain(p -> gains.soul_conduit), pl(p), shards_used(c) { }
+
+              virtual const char* name() const override
+              {
+                return "demonology_sc_event";
+              }
+
+              virtual void execute() override
+              {
+                double soul_conduit_rng = pl->talents.soul_conduit->effectN(1).percent();
+
+                for (int i = 0; i < shards_used; i++) {
+                  if (rng().roll(soul_conduit_rng)) {
+                    pl->resource_gain(RESOURCE_SOUL_SHARD, 1.0, pl->gains.soul_conduit);
+                    pl->procs.soul_conduit->occur();
+                  }
+                }
+              }
+            };
+
+            make_event<demo_sc_event>(*p()->sim, p(), as<int>(last_resource_cost));
+          }
+
+          p()->buffs.demonic_speed->trigger();
+
+          if (p()->buffs.nether_portal->up())
+          {
+            p()->active.summon_random_demon->execute();
+            p()->buffs.portal_summons->trigger();
+            p()->procs.portal_summon->occur();
+          }
+        }
+      }
+
+      void impact(action_state_t* s) override
+      {
+        warlock_spell_t::impact(s);
+      }
+
+      double composite_target_multiplier(player_t* t) const override
+      {
+        double m = warlock_spell_t::composite_target_multiplier(t);
+        return m;
+      }
+
+      double action_multiplier() const override
+      {
+        double pm = warlock_spell_t::action_multiplier();
+
+        if (this->data().affected_by(p()->mastery_spells.master_demonologist->effectN(2)))
+          pm *= 1.0 + p()->cache.mastery_value();
+
+        return pm;
+      }
+    };
+
+    struct shadow_bolt_t : public demonology_spell_t
     {
       shadow_bolt_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t(p, "Shadow Bolt", p->specialization())
+        demonology_spell_t(p, "Shadow Bolt", p->specialization())
       {
         parse_options(options_str);
         energize_type = ENERGIZE_ON_CAST;
@@ -193,13 +332,13 @@ namespace warlock {
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        demonology_spell_t::execute();
         p()->buffs.demonic_calling->trigger();
       }
 
       double action_multiplier() const override
       {
-        double m = warlock_spell_t::action_multiplier();
+        double m = demonology_spell_t::action_multiplier();
 
         if (p()->talents.sacrificed_souls->ok())
         {
@@ -222,11 +361,11 @@ namespace warlock {
       }
     };
 
-    struct hand_of_guldan_t : public warlock_spell_t {
+    struct hand_of_guldan_t : public demonology_spell_t {
         int shards_used;
 
-        struct umbral_blaze_t : public warlock_spell_t{
-          umbral_blaze_t(warlock_t* p) : warlock_spell_t("Umbral Blaze", p, p->find_spell(273526)) {
+        struct umbral_blaze_t : public demonology_spell_t{
+          umbral_blaze_t(warlock_t* p) : demonology_spell_t("Umbral Blaze", p, p->find_spell(273526)) {
             base_td = p->azerite.umbral_blaze.value();
             hasted_ticks = false;
           }
@@ -234,7 +373,7 @@ namespace warlock {
 
         umbral_blaze_t* blaze;
 
-        hand_of_guldan_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Hand of Gul'dan"), blaze(new umbral_blaze_t(p)) {
+        hand_of_guldan_t(warlock_t* p, const std::string& options_str) : demonology_spell_t(p, "Hand of Gul'dan"), blaze(new umbral_blaze_t(p)) {
             parse_options(options_str);
             aoe = -1;
             shards_used = 0;
@@ -254,19 +393,19 @@ namespace warlock {
           {
             return false;
           }
-          return warlock_spell_t::ready();
+          return demonology_spell_t::ready();
         }
 
         double bonus_da(const action_state_t* s) const override
         {
-          double da = warlock_spell_t::bonus_da(s);
+          double da = demonology_spell_t::bonus_da(s);
           da += p()->azerite.demonic_meteor.value();
           return da;
         }
 
         double action_multiplier() const override
         {
-          double m = warlock_spell_t::action_multiplier();
+          double m = demonology_spell_t::action_multiplier();
 
           m *= last_resource_cost;
 
@@ -274,7 +413,7 @@ namespace warlock {
         }
 
         void consume_resource() override {
-            warlock_spell_t::consume_resource();
+            demonology_spell_t::consume_resource();
 
             shards_used = as<int>(last_resource_cost);
 
@@ -291,7 +430,7 @@ namespace warlock {
         }
 
         void impact(action_state_t* s) override {
-            warlock_spell_t::impact(s);
+            demonology_spell_t::impact(s);
 
             if (result_is_hit(s->result))
             {
@@ -325,8 +464,8 @@ namespace warlock {
         }
     };
 
-    struct demonbolt_t : public warlock_spell_t {
-      demonbolt_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Demonbolt") {
+    struct demonbolt_t : public demonology_spell_t {
+      demonbolt_t(warlock_t* p, const std::string& options_str) : demonology_spell_t(p, "Demonbolt") {
         parse_options(options_str);
         energize_type = ENERGIZE_ON_CAST;
         energize_resource = RESOURCE_SOUL_SHARD;
@@ -335,7 +474,7 @@ namespace warlock {
 
       timespan_t execute_time() const override
       {
-        auto et = warlock_spell_t::execute_time();
+        auto et = demonology_spell_t::execute_time();
 
         if ( p()->buffs.demonic_core->check() )
         {
@@ -347,7 +486,7 @@ namespace warlock {
 
       double bonus_da(const action_state_t* s) const override
       {
-        double da = warlock_spell_t::bonus_da(s);
+        double da = demonology_spell_t::bonus_da(s);
         if (s->action->execute_time() > timespan_t::from_millis(0) && p()->buffs.forbidden_knowledge->check())
         {
           da += p()->azerite.forbidden_knowledge.value();
@@ -360,7 +499,7 @@ namespace warlock {
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        demonology_spell_t::execute();
 
         if (this->execute_time() > timespan_t::from_millis(0))
           p()->buffs.forbidden_knowledge->decrement();
@@ -374,7 +513,7 @@ namespace warlock {
 
       double action_multiplier() const override
       {
-        double m = warlock_spell_t::action_multiplier();
+        double m = demonology_spell_t::action_multiplier();
 
         if (p()->talents.sacrificed_souls->ok())
         {
@@ -397,11 +536,11 @@ namespace warlock {
       }
     };
 
-    struct call_dreadstalkers_t : public warlock_spell_t {
+    struct call_dreadstalkers_t : public demonology_spell_t {
       timespan_t dreadstalker_duration;
       int dreadstalker_count;
 
-      call_dreadstalkers_t(warlock_t* p, const std::string& options_str) : warlock_spell_t(p, "Call Dreadstalkers") {
+      call_dreadstalkers_t(warlock_t* p, const std::string& options_str) : demonology_spell_t(p, "Call Dreadstalkers") {
         parse_options(options_str);
         may_crit = false;
         dreadstalker_duration = p->find_spell(193332)->duration() + (p->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T19, B4) ? p->sets->set(WARLOCK_DEMONOLOGY, T19, B4)->effectN(1).time_value() : timespan_t::zero());
@@ -410,7 +549,7 @@ namespace warlock {
 
       double cost() const override
       {
-        double c = warlock_spell_t::cost();
+        double c = demonology_spell_t::cost();
 
         if (p()->buffs.demonic_calling->check())
         {
@@ -427,12 +566,12 @@ namespace warlock {
           return timespan_t::zero();
         }
 
-        return warlock_spell_t::execute_time();
+        return demonology_spell_t::execute_time();
       }
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        demonology_spell_t::execute();
 
         int j = 0;
 
@@ -486,14 +625,14 @@ namespace warlock {
       }
     };
 
-    struct implosion_t : public warlock_spell_t
+    struct implosion_t : public demonology_spell_t
     {
-      struct implosion_aoe_t : public warlock_spell_t
+      struct implosion_aoe_t : public demonology_spell_t
       {
         double casts_left = 5.0;
 
         implosion_aoe_t(warlock_t* p) :
-          warlock_spell_t("implosion_aoe", p, p -> find_spell(196278))
+          demonology_spell_t("implosion_aoe", p, p -> find_spell(196278))
         {
           aoe = -1;
           dual = true;
@@ -505,7 +644,7 @@ namespace warlock {
 
         double composite_target_multiplier(player_t* t) const override
         {
-          double m = warlock_spell_t::composite_target_multiplier(t);
+          double m = demonology_spell_t::composite_target_multiplier(t);
 
           if (t == this->target)
           {
@@ -518,7 +657,7 @@ namespace warlock {
 
       implosion_aoe_t* explosion;
 
-      implosion_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("implosion", p),explosion(new implosion_aoe_t(p))
+      implosion_t(warlock_t* p, const std::string& options_str) : demonology_spell_t("implosion", p),explosion(new implosion_aoe_t(p))
       {
         parse_options(options_str);
         aoe = -1;
@@ -527,7 +666,7 @@ namespace warlock {
 
       bool ready() override
       {
-        bool r = warlock_spell_t::ready();
+        bool r = demonology_spell_t::ready();
 
         if (r)
         {
@@ -542,7 +681,7 @@ namespace warlock {
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        demonology_spell_t::execute();
         int imps_consumed = 0;
         for (auto imp : p()->warlock_pet_list.wild_imps)
         {
@@ -561,10 +700,10 @@ namespace warlock {
       }
     };
 
-    struct summon_demonic_tyrant_t : public warlock_spell_t
+    struct summon_demonic_tyrant_t : public demonology_spell_t
     {
       summon_demonic_tyrant_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("summon_demonic_tyrant", p, p -> find_spell(265187))
+        demonology_spell_t("summon_demonic_tyrant", p, p -> find_spell(265187))
       {
         parse_options(options_str);
         harmful = may_crit = false;
@@ -572,7 +711,7 @@ namespace warlock {
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        demonology_spell_t::execute();
 
         for ( auto& demonic_tyrant : p()->warlock_pet_list.demonic_tyrants)
         {
@@ -650,10 +789,10 @@ namespace warlock {
     };
 
     // Talents
-    struct demonic_strength_t : public warlock_spell_t
+    struct demonic_strength_t : public demonology_spell_t
     {
       demonic_strength_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("demonic_strength", p, p->talents.demonic_strength)
+        demonology_spell_t("demonic_strength", p, p->talents.demonic_strength)
       {
         parse_options(options_str);
       }
@@ -672,7 +811,7 @@ namespace warlock {
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        demonology_spell_t::execute();
 
         if (p()->warlock_pet_list.active->pet_type == PET_FELGUARD)
         {
@@ -685,12 +824,12 @@ namespace warlock {
       }
     };
 
-    struct bilescourge_bombers_t : public warlock_spell_t
+    struct bilescourge_bombers_t : public demonology_spell_t
     {
-      struct bilescourge_bombers_tick_t : public warlock_spell_t
+      struct bilescourge_bombers_tick_t : public demonology_spell_t
       {
         bilescourge_bombers_tick_t(warlock_t* p) :
-          warlock_spell_t("bilescourge_bombers_tick", p, p -> find_spell(267213))
+          demonology_spell_t("bilescourge_bombers_tick", p, p -> find_spell(267213))
         {
           aoe = -1;
           background = dual = direct_tick = true;
@@ -700,7 +839,7 @@ namespace warlock {
       };
 
       bilescourge_bombers_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("bilescourge_bombers", p, p->talents.bilescourge_bombers)
+        demonology_spell_t("bilescourge_bombers", p, p->talents.bilescourge_bombers)
       {
         parse_options(options_str);
         dot_duration = timespan_t::zero();
@@ -717,7 +856,7 @@ namespace warlock {
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        demonology_spell_t::execute();
 
         make_event<ground_aoe_event_t>(*sim, p(), ground_aoe_params_t()
           .target(execute_state->target)
@@ -730,8 +869,8 @@ namespace warlock {
       }
     };
 
-    struct power_siphon_t : public warlock_spell_t {
-      power_siphon_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("power_siphon", p, p -> talents.power_siphon) {
+    struct power_siphon_t : public demonology_spell_t {
+      power_siphon_t(warlock_t* p, const std::string& options_str) : demonology_spell_t("power_siphon", p, p -> talents.power_siphon) {
         parse_options(options_str);
         harmful = false;
         ignore_false_positive = true;
@@ -739,7 +878,7 @@ namespace warlock {
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        demonology_spell_t::execute();
 
         struct lower_energy
         {
@@ -776,8 +915,8 @@ namespace warlock {
       }
     };
 
-    struct doom_t : public warlock_spell_t {
-      doom_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("doom", p, p -> talents.doom) {
+    struct doom_t : public demonology_spell_t {
+      doom_t(warlock_t* p, const std::string& options_str) : demonology_spell_t("doom", p, p -> talents.doom) {
           parse_options(options_str);
 
           base_tick_time = data().duration();
@@ -793,7 +932,7 @@ namespace warlock {
       }
 
       void tick(dot_t* d) override {
-          warlock_spell_t::tick(d);
+          demonology_spell_t::tick(d);
           if (d->state->result == RESULT_HIT || result_is_hit(d->state->result)) {
               if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T19, B2) && rng().roll(p()->sets->set(WARLOCK_DEMONOLOGY, T19, B2)->effectN(1).percent()))
                   p()->resource_gain(RESOURCE_SOUL_SHARD, 1, p()->gains.t19_2pc_demonology);
@@ -802,7 +941,7 @@ namespace warlock {
 
       virtual double action_multiplier()const override
       {
-        double m = warlock_spell_t::action_multiplier();
+        double m = demonology_spell_t::action_multiplier();
         double pet_counter = 0.0;
 
         if ( p()->legendary.kazzaks_final_curse )
@@ -825,10 +964,10 @@ namespace warlock {
       }
     };
 
-    struct soul_strike_t : public warlock_spell_t
+    struct soul_strike_t : public demonology_spell_t
     {
       soul_strike_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("Soul Strike", p, p->talents.soul_strike)
+        demonology_spell_t("Soul Strike", p, p->talents.soul_strike)
       {
         parse_options(options_str);
         energize_type = ENERGIZE_ON_CAST;
@@ -837,7 +976,7 @@ namespace warlock {
       }
       void execute() override
       {
-        warlock_spell_t::execute();
+        demonology_spell_t::execute();
         if (p()->warlock_pet_list.active->pet_type == PET_FELGUARD)
         {
           p()->warlock_pet_list.active->active.soul_strike->set_target(execute_state->target);
@@ -847,16 +986,16 @@ namespace warlock {
       bool ready() override
       {
         if (p()->warlock_pet_list.active->pet_type == PET_FELGUARD)
-          return warlock_spell_t::ready();
+          return demonology_spell_t::ready();
 
         return false;
       }
     };
 
-    struct summon_vilefiend_t : public warlock_spell_t
+    struct summon_vilefiend_t : public demonology_spell_t
     {
       summon_vilefiend_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("summon_vilefiend", p, p->talents.summon_vilefiend)
+        demonology_spell_t("summon_vilefiend", p, p->talents.summon_vilefiend)
       {
         parse_options(options_str);
         harmful = may_crit = false;
@@ -864,7 +1003,7 @@ namespace warlock {
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        demonology_spell_t::execute();
         p()->buffs.vilefiend->set_duration(data().duration());
         p()->buffs.vilefiend->trigger();
 
@@ -907,9 +1046,9 @@ namespace warlock {
       }
     };
 
-    struct inner_demons_t : public warlock_spell_t
+    struct inner_demons_t : public demonology_spell_t
     {
-      inner_demons_t(warlock_t* p, const std::string& options_str) : warlock_spell_t("inner_demons", p)
+      inner_demons_t(warlock_t* p, const std::string& options_str) : demonology_spell_t("inner_demons", p)
       {
         parse_options(options_str);
         trigger_gcd = timespan_t::zero();
@@ -920,15 +1059,15 @@ namespace warlock {
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        demonology_spell_t::execute();
         p()->buffs.inner_demons->trigger();
       }
     };
 
-    struct nether_portal_t : public warlock_spell_t
+    struct nether_portal_t : public demonology_spell_t
     {
       nether_portal_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("nether_portal", p, p->talents.nether_portal)
+        demonology_spell_t("nether_portal", p, p->talents.nether_portal)
       {
         parse_options(options_str);
         harmful = may_crit = may_miss = false;
@@ -937,11 +1076,11 @@ namespace warlock {
       void execute() override
       {
         p()->buffs.nether_portal->trigger();
-        warlock_spell_t::execute();
+        demonology_spell_t::execute();
       }
     };
 
-    struct summon_random_demon_t : public warlock_spell_t {
+    struct summon_random_demon_t : public demonology_spell_t {
 
       enum class random_pet_e : int
       {
@@ -959,7 +1098,7 @@ namespace warlock {
 
       timespan_t summon_duration;
       summon_random_demon_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("summon_random_demon", p),
+        demonology_spell_t("summon_random_demon", p),
         summon_duration(timespan_t::from_seconds(15))
       {
         parse_options(options_str);
@@ -968,7 +1107,7 @@ namespace warlock {
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        demonology_spell_t::execute();
 
         auto random_pet = roll_random_pet();
         summon_random_pet(random_pet);

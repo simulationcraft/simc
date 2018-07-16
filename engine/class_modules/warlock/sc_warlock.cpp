@@ -153,124 +153,6 @@ namespace warlock
 // Spells
   namespace actions
   {
-    void warlock_spell_t::consume_resource()
-    {
-      spell_t::consume_resource();
-
-      if ( resource_current == RESOURCE_SOUL_SHARD && p()->in_combat )
-      {
-        if ( p()->legendary.the_master_harvester )
-        {
-          double sh_proc_chance;
-          switch ( p()->specialization() )
-          {
-          case WARLOCK_AFFLICTION:
-            sh_proc_chance = 0.09;
-            break;
-          case WARLOCK_DEMONOLOGY:
-            sh_proc_chance = 0.03;
-            break;
-          case WARLOCK_DESTRUCTION:
-            sh_proc_chance = 0.06;
-            break;
-          default:
-            sh_proc_chance = 0;
-            break;
-          }
-
-          for ( int i = 0; i < last_resource_cost; i++ )
-          {
-            if ( p()->rng().roll( sh_proc_chance ) )
-            {
-              p()->buffs.soul_harvest->trigger();
-            }
-          }
-
-        }
-
-        if ( p()->talents.soul_conduit->ok() )
-        {
-          if ( p()->specialization() == WARLOCK_DEMONOLOGY )
-          {
-            struct demo_sc_event :
-              public player_event_t
-            {
-              gain_t* shard_gain;
-              warlock_t* pl;
-              int shards_used;
-
-              demo_sc_event( warlock_t* p, int c ) :
-                player_event_t( *p, timespan_t::from_millis( 100 ) ), shard_gain( p -> gains.soul_conduit ), pl( p ), shards_used( c ) { }
-
-              virtual const char* name() const override
-              {
-                return "demonology_sc_event";
-              }
-
-              virtual void execute() override
-              {
-                double soul_conduit_rng = pl->talents.soul_conduit->effectN( 1 ).percent();
-
-                for ( int i = 0; i < shards_used; i++ ) {
-                  if ( rng().roll( soul_conduit_rng ) ) {
-                    pl->resource_gain( RESOURCE_SOUL_SHARD, 1.0, pl->gains.soul_conduit );
-                    pl->procs.soul_conduit->occur();
-                  }
-                }
-              }
-            };
-
-            make_event<demo_sc_event>( *p()->sim, p(), as<int>(last_resource_cost) );
-          }
-
-          else
-          {
-            double soul_conduit_rng = p()->talents.soul_conduit->effectN( 1 ).percent();
-
-            for ( int i = 0; i < last_resource_cost; i++ )
-            {
-              if ( rng().roll( soul_conduit_rng ) )
-              {
-                p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.soul_conduit );
-                p()->procs.soul_conduit->occur();
-              }
-            }
-          }
-        }
-
-        //if ( p()->legendary.wakeners_loyalty_enabled && p()->specialization() == WARLOCK_DEMONOLOGY )
-        //{
-        //  for ( int i = 0; i < last_resource_cost; i++ )
-        //  {
-        //    p()->buffs.wakeners_loyalty->trigger();
-        //  }
-        //}
-
-        p()->buffs.demonic_speed->trigger();
-
-        if (p()->talents.grimoire_of_supremacy->ok())
-        {
-          for (auto& infernal : p()->warlock_pet_list.infernals)
-          {
-            if (!infernal->is_sleeping())
-            {
-              p()->buffs.grimoire_of_supremacy->trigger(as<int>(last_resource_cost));
-            }
-          }
-        }
-
-        if (p()->buffs.nether_portal->up())
-        {
-          p()->active.summon_random_demon->execute();
-          p()->buffs.portal_summons->trigger();
-          p()->procs.portal_summon->occur();
-        }
-
-        if (p()->talents.soul_fire->ok())
-          p()->cooldowns.soul_fire->adjust((-1 * (p()->talents.soul_fire->effectN(2).time_value()*last_resource_cost)));
-      }
-    }
-
     struct drain_life_t : public warlock_spell_t
     {
       double inevitable_demise;
@@ -336,7 +218,6 @@ namespace warlock
       {
         background = true;
         proc = true;
-        destro_mastery = false;
       }
     };
   } // end actions namespace

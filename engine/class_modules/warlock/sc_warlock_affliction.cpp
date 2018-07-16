@@ -7,12 +7,139 @@ namespace warlock
   {
     using namespace actions;
 
+    struct affliction_spell_t : public warlock_spell_t
+    {
+    public:
+      gain_t * gain;
+
+      bool affected_by_deaths_embrace;
+
+      affliction_spell_t(warlock_t* p, const std::string& n) :
+        affliction_spell_t(n, p, p -> find_class_spell(n))
+      {
+      }
+
+      affliction_spell_t(warlock_t* p, const std::string& n, specialization_e s) :
+        affliction_spell_t(n, p, p -> find_class_spell(n, s))
+      {
+      }
+
+      affliction_spell_t(const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil()) :
+        warlock_spell_t(token, p, s)
+      {
+        may_crit = true;
+        tick_may_crit = true;
+        weapon_multiplier = 0.0;
+        gain = player->get_gain(name_str);
+
+        parse_spell_coefficient(*this);
+      }
+
+      void init() override
+      {
+        warlock_spell_t::init();
+
+        if (data().affected_by(p()->spec.affliction->effectN(1)))
+          base_dd_multiplier *= 1.0 + p()->spec.affliction->effectN(1).percent();
+
+        if (data().affected_by(p()->spec.affliction->effectN(2)))
+          base_td_multiplier *= 1.0 + p()->spec.affliction->effectN(2).percent();
+
+        if (p()->talents.creeping_death->ok())
+        {
+          if (data().affected_by(p()->talents.creeping_death->effectN(1)))
+            base_tick_time *= 1.0 + p()->talents.creeping_death->effectN(1).percent();
+          if (data().affected_by(p()->talents.creeping_death->effectN(2)))
+            dot_duration *= 1.0 + p()->talents.creeping_death->effectN(2).percent();
+        }
+      }
+
+      void consume_resource() override
+      {
+        warlock_spell_t::consume_resource();
+
+        if (resource_current == RESOURCE_SOUL_SHARD && p()->in_combat)
+        {
+          if (p()->legendary.the_master_harvester)
+          {
+            double sh_proc_chance = p()->find_spell(p()->legendary.the_master_harvester->spell_id)->effectN(1).percent();
+
+            for (int i = 0; i < last_resource_cost; i++)
+            {
+              if (p()->rng().roll(sh_proc_chance))
+              {
+                p()->buffs.soul_harvest->trigger();
+              }
+            }
+          }
+
+          if (p()->talents.soul_conduit->ok())
+          {
+            double soul_conduit_rng = p()->talents.soul_conduit->effectN(1).percent();
+
+            for (int i = 0; i < last_resource_cost; i++)
+            {
+              if (rng().roll(soul_conduit_rng))
+              {
+                p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.soul_conduit);
+                p()->procs.soul_conduit->occur();
+              }
+            }
+          }
+
+          p()->buffs.demonic_speed->trigger();
+        }
+      }
+
+      void tick(dot_t* d) override
+      {
+        warlock_spell_t::tick(d);
+
+        if (d->state->result > 0 && result_is_hit(d->state->result))
+        {
+          if (auto td = find_td(d->target))
+          {
+            if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
+            {
+              accumulate_seed_of_corruption(td, d->state->result_amount);
+            }
+          }
+        }
+      }
+
+      void impact(action_state_t* s) override
+      {
+        warlock_spell_t::impact(s);
+
+        if (s->result_amount > 0 && result_is_hit(s->result))
+        {
+          if (auto td = find_td(s->target))
+          {
+            if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
+            {
+              accumulate_seed_of_corruption(td, s->result_amount);
+            }
+          }
+        }
+      }
+
+      static void accumulate_seed_of_corruption(warlock_td_t* td, double amount)
+      {
+        td->soc_threshold -= amount;
+
+        if (td->soc_threshold <= 0)
+        {
+          td->dots_seed_of_corruption->cancel();
+        }
+      }
+    };
+
     const std::array<int, MAX_UAS> ua_spells = { 233490, 233496, 233497, 233498, 233499 };
 
-    struct shadow_bolt_t : public warlock_spell_t
+    struct shadow_bolt_t : public affliction_spell_t
     {
       shadow_bolt_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t(p, "Shadow Bolt", p->specialization())
+        affliction_spell_t(p, "Shadow Bolt", p->specialization())
       {
         parse_options(options_str);
       }
@@ -24,7 +151,7 @@ namespace warlock
           return timespan_t::zero();
         }
 
-        return warlock_spell_t::execute_time();
+        return affliction_spell_t::execute_time();
       }
 
       bool ready() override
@@ -39,7 +166,7 @@ namespace warlock
 
       void impact(action_state_t* s) override
       {
-        warlock_spell_t::impact(s);
+        affliction_spell_t::impact(s);
         if (result_is_hit(s->result))
         {
           if (p()->talents.shadow_embrace->ok())
@@ -49,7 +176,7 @@ namespace warlock
 
       double action_multiplier()const override
       {
-        double m = warlock_spell_t::action_multiplier();
+        double m = affliction_spell_t::action_multiplier();
 
         if (p()->buffs.nightfall->check())
         {
@@ -61,13 +188,13 @@ namespace warlock
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        affliction_spell_t::execute();
         p()->buffs.nightfall->expire();
       }
     };
 
     // Dots
-    struct agony_t : public warlock_spell_t
+    struct agony_t : public affliction_spell_t
     {
       struct wracking_brilliance_t
       {
@@ -93,7 +220,7 @@ namespace warlock
       wracking_brilliance_t* wb;
 
       agony_t( warlock_t* p, const std::string& options_str ) :
-        warlock_spell_t( p, "Agony"),
+        affliction_spell_t( p, "Agony"),
         agony_action_id( 0 ),
         agony_max_stacks( 0 )
       {
@@ -105,7 +232,7 @@ namespace warlock
 
       double action_multiplier() const override
       {
-        double m = warlock_spell_t::action_multiplier();
+        double m = affliction_spell_t::action_multiplier();
 
         if ( p()->mastery_spells.potent_afflictions->ok() )
           m *= 1.0 + p()->cache.mastery_value();
@@ -118,14 +245,14 @@ namespace warlock
         if ( p()->get_active_dots( internal_id ) == 1 )
           p()->agony_accumulator = rng().range( 0.0, 0.99 );
 
-        warlock_spell_t::last_tick( d );
+        affliction_spell_t::last_tick( d );
       }
 
       void init() override
       {
         agony_max_stacks = ( p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN( 2 ).base_value() : 10 );
 
-        warlock_spell_t::init();
+        affliction_spell_t::init();
 
         this->dot_max_stack = agony_max_stacks;
 
@@ -138,7 +265,7 @@ namespace warlock
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        affliction_spell_t::execute();
 
         if (p()->azerite.sudden_onset.ok() && td(execute_state->target)->dots_agony->current_stack() < (int)p()->azerite.sudden_onset.spell_ref().effectN(2).base_value())
         {
@@ -148,7 +275,7 @@ namespace warlock
 
       double bonus_ta(const action_state_t* s) const override
       {
-        double ta = warlock_spell_t::bonus_ta(s);
+        double ta = affliction_spell_t::bonus_ta(s);
         ta += p()->azerite.sudden_onset.value();
         return ta;
       }
@@ -199,14 +326,14 @@ namespace warlock
           p()->procs.affliction_t21_2pc->occur();
         }
 
-        warlock_spell_t::tick( d );
+        affliction_spell_t::tick( d );
       }
     };
 
-    struct corruption_t : public warlock_spell_t
+    struct corruption_t : public affliction_spell_t
     {
       corruption_t( warlock_t* p, const std::string& options_str) :
-        warlock_spell_t( "Corruption", p, p -> find_spell( 172 ) )
+        affliction_spell_t( "Corruption", p, p -> find_spell( 172 ) )
       {
         parse_options(options_str);
         may_crit = false;
@@ -227,7 +354,7 @@ namespace warlock
 
       void init() override
       {
-        warlock_spell_t::init();
+        affliction_spell_t::init();
 
         if ( p()->legendary.sacrolashs_dark_strike )
         {
@@ -237,7 +364,7 @@ namespace warlock
 
       double action_multiplier() const override
       {
-        double m = warlock_spell_t::action_multiplier();
+        double m = affliction_spell_t::action_multiplier();
 
         if ( p()->mastery_spells.potent_afflictions->ok() )
           m *= 1.0 + p()->cache.mastery_value();
@@ -269,18 +396,18 @@ namespace warlock
           p()->buffs.inevitable_demise->trigger();
         }
 
-        warlock_spell_t::tick( d );
+        affliction_spell_t::tick( d );
       }
     };
 
-    struct unstable_affliction_t : public warlock_spell_t
+    struct unstable_affliction_t : public affliction_spell_t
     {
-      struct real_ua_t : public warlock_spell_t
+      struct real_ua_t : public affliction_spell_t
       {
         int self;
 
         real_ua_t( warlock_t* p, int num ) :
-          warlock_spell_t( "unstable_affliction_" + std::to_string( num + 1 ), p, p -> find_spell( ua_spells[num] ) ),
+          affliction_spell_t( "unstable_affliction_" + std::to_string( num + 1 ), p, p -> find_spell( ua_spells[num] ) ),
           self( num )
         {
           background = true;
@@ -300,7 +427,7 @@ namespace warlock
 
         void init() override
         {
-          warlock_spell_t::init();
+          affliction_spell_t::init();
 
           update_flags &= ~STATE_HASTE;
         }
@@ -310,12 +437,12 @@ namespace warlock
           p()->buffs.stretens_insanity->decrement( 1 );
           p()->buffs.active_uas->decrement( 1 );
 
-          warlock_spell_t::last_tick( d );
+          affliction_spell_t::last_tick( d );
         }
 
         double action_multiplier() const override
         {
-          double m = warlock_spell_t::action_multiplier();
+          double m = affliction_spell_t::action_multiplier();
 
           if ( p()->mastery_spells.potent_afflictions->ok() )
             m *= 1.0 + p()->cache.mastery_value();
@@ -327,7 +454,7 @@ namespace warlock
       std::array<real_ua_t*, MAX_UAS> ua_dots;
 
       unstable_affliction_t( warlock_t* p, const std::string& options_str ) :
-        warlock_spell_t( "unstable_affliction", p, p -> spec.unstable_affliction ),
+        affliction_spell_t( "unstable_affliction", p, p -> spec.unstable_affliction ),
         ua_dots()
       {
         parse_options( options_str );
@@ -342,7 +469,7 @@ namespace warlock
 
       void init() override
       {
-        warlock_spell_t::init();
+        affliction_spell_t::init();
         snapshot_flags &= ~( STATE_CRIT | STATE_TGT_CRIT );
       }
 
@@ -391,14 +518,14 @@ namespace warlock
 
       double bonus_ta(const action_state_t* s) const override
       {
-        double ta = warlock_spell_t::bonus_ta(s);
+        double ta = affliction_spell_t::bonus_ta(s);
         ta += p()->azerite.dreadful_calling.value(2);
         return ta;
       }
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        affliction_spell_t::execute();
 
         if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T21, B4 ) )
           p()->active.tormented_agony->schedule_execute();
@@ -435,10 +562,10 @@ namespace warlock
       }
     };
 
-    struct summon_darkglare_t : public warlock_spell_t
+    struct summon_darkglare_t : public affliction_spell_t
     {
       summon_darkglare_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("summon_darkglare", p, p -> spec.summon_darkglare)
+        affliction_spell_t("summon_darkglare", p, p -> spec.summon_darkglare)
       {
         parse_options(options_str);
         harmful = may_crit = may_miss = false;
@@ -446,7 +573,7 @@ namespace warlock
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        affliction_spell_t::execute();
 
         for (auto& darkglare : p()->warlock_pet_list.darkglare)
         {
@@ -493,13 +620,13 @@ namespace warlock
     };
 
     // AOE
-    struct seed_of_corruption_t : public warlock_spell_t
+    struct seed_of_corruption_t : public affliction_spell_t
     {
-      struct seed_of_corruption_aoe_t : public warlock_spell_t
+      struct seed_of_corruption_aoe_t : public affliction_spell_t
       {
         bool deathbloom; //azerite_trait
         seed_of_corruption_aoe_t( warlock_t* p ) :
-          warlock_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
+          affliction_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
         {
           aoe = -1;
           dual = true;
@@ -511,7 +638,7 @@ namespace warlock
 
         double bonus_da(const action_state_t* s) const override
         {
-          double da = warlock_spell_t::bonus_da(s);
+          double da = affliction_spell_t::bonus_da(s);
           if(deathbloom)
             da += p()->azerite.deathbloom.value();
           return da;
@@ -519,7 +646,7 @@ namespace warlock
 
         void impact( action_state_t* s ) override
         {
-          warlock_spell_t::impact( s );
+          affliction_spell_t::impact( s );
 
           if ( result_is_hit( s->result ) )
           {
@@ -540,7 +667,7 @@ namespace warlock
       seed_of_corruption_aoe_t* explosion;
 
       seed_of_corruption_t( warlock_t* p, const std::string& options_str ) :
-        warlock_spell_t( "seed_of_corruption", p, p -> find_spell( 27243 ) ),
+        affliction_spell_t( "seed_of_corruption", p, p -> find_spell( 27243 ) ),
           threshold_mod( 3.0 ),
           sow_the_seeds_targets( p->talents.sow_the_seeds->effectN( 1 ).base_value() ),
           explosion( new seed_of_corruption_aoe_t( p ) )
@@ -554,7 +681,7 @@ namespace warlock
 
       void init() override
       {
-        warlock_spell_t::init();
+        affliction_spell_t::init();
         snapshot_flags |= STATE_SP;
       }
 
@@ -568,7 +695,7 @@ namespace warlock
         if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T21, B4 ) )
           p()->active.tormented_agony->schedule_execute();
 
-        warlock_spell_t::execute();
+        affliction_spell_t::execute();
       }
 
       void impact( action_state_t* s ) override
@@ -582,12 +709,12 @@ namespace warlock
         p()->active.corruption->target = s->target;
         p()->active.corruption->schedule_execute();
 
-        warlock_spell_t::impact( s );
+        affliction_spell_t::impact( s );
       }
 
       void last_tick( dot_t* d ) override
       {
-        warlock_spell_t::last_tick( d );
+        affliction_spell_t::last_tick( d );
 
         if (!d->end_event) {
           explosion->deathbloom = true;
@@ -600,10 +727,10 @@ namespace warlock
     // Talents
 
     // lvl 15 - nightfall|drain soul|haunt
-    struct drain_soul_t : public warlock_spell_t
+    struct drain_soul_t : public affliction_spell_t
     {
       drain_soul_t( warlock_t* p, const std::string& options_str ) :
-        warlock_spell_t( "drain_soul", p, p -> talents.drain_soul )
+        affliction_spell_t( "drain_soul", p, p -> talents.drain_soul )
       {
         parse_options(options_str);
         channeled = true;
@@ -612,7 +739,7 @@ namespace warlock
 
       void tick(dot_t* d) override
       {
-        warlock_spell_t::tick(d);
+        affliction_spell_t::tick(d);
         if (result_is_hit(d->state->result))
         {
           if (p()->talents.shadow_embrace->ok())
@@ -622,7 +749,7 @@ namespace warlock
 
       virtual double composite_target_multiplier(player_t* t) const override
       {
-        double m = warlock_spell_t::composite_target_multiplier(t);
+        double m = affliction_spell_t::composite_target_multiplier(t);
 
         if (t->health_percentage() < p()->talents.drain_soul->effectN(3).base_value())
           m *= 1.0 + p()->talents.drain_soul->effectN(2).percent();
@@ -631,17 +758,17 @@ namespace warlock
       }
     };
 
-    struct haunt_t : public warlock_spell_t
+    struct haunt_t : public affliction_spell_t
     {
       haunt_t( warlock_t* p, const std::string& options_str ) :
-        warlock_spell_t( "haunt", p, p -> talents.haunt )
+        affliction_spell_t( "haunt", p, p -> talents.haunt )
       {
         parse_options( options_str );
       }
 
       void impact( action_state_t* s ) override
       {
-        warlock_spell_t::impact( s );
+        affliction_spell_t::impact( s );
 
         if ( result_is_hit( s->result ) )
         {
@@ -651,10 +778,10 @@ namespace warlock
     };
 
     // lvl 30 - writhe|ac|siphon life
-    struct siphon_life_t : public warlock_spell_t
+    struct siphon_life_t : public affliction_spell_t
     {
       siphon_life_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("siphon_life", p, p -> talents.siphon_life)
+        affliction_spell_t("siphon_life", p, p -> talents.siphon_life)
       {
         parse_options(options_str);
         may_crit = false;
@@ -663,7 +790,7 @@ namespace warlock
 
       double action_multiplier() const override
       {
-        double m = warlock_spell_t::action_multiplier();
+        double m = affliction_spell_t::action_multiplier();
 
         if (p()->mastery_spells.potent_afflictions->ok())
           m *= 1.0 + p()->cache.mastery_value();
@@ -673,7 +800,7 @@ namespace warlock
 
       double composite_target_multiplier(player_t* target) const override
       {
-        double m = warlock_spell_t::composite_target_multiplier(target);
+        double m = affliction_spell_t::composite_target_multiplier(target);
 
         if (auto td = find_td(target))
         {
@@ -687,10 +814,10 @@ namespace warlock
     // lvl 45 - demon skin|burning rush|dark pact
 
     // lvl 60 - sow the seeds|phantom singularity|vile taint
-    struct phantom_singularity_tick_t : public warlock_spell_t
+    struct phantom_singularity_tick_t : public affliction_spell_t
     {
       phantom_singularity_tick_t( warlock_t* p ) :
-        warlock_spell_t( "phantom_singularity_tick", p, p -> find_spell( 205246 ) )
+        affliction_spell_t( "phantom_singularity_tick", p, p -> find_spell( 205246 ) )
       {
         background = true;
         may_miss = false;
@@ -700,11 +827,11 @@ namespace warlock
       }
     };
 
-    struct phantom_singularity_t : public warlock_spell_t
+    struct phantom_singularity_t : public affliction_spell_t
     {
       phantom_singularity_tick_t* phantom_singularity;
 
-      phantom_singularity_t( warlock_t* p, const std::string& options_str ) : warlock_spell_t( "phantom_singularity", p, p -> talents.phantom_singularity )
+      phantom_singularity_t( warlock_t* p, const std::string& options_str ) : affliction_spell_t( "phantom_singularity", p, p -> talents.phantom_singularity )
       {
         parse_options( options_str );
         callbacks = false;
@@ -722,14 +849,14 @@ namespace warlock
       {
         phantom_singularity->execute();
 
-        warlock_spell_t::tick( d );
+        affliction_spell_t::tick( d );
       }
     };
 
-    struct vile_taint_damage_t : public warlock_spell_t
+    struct vile_taint_damage_t : public affliction_spell_t
     {
       vile_taint_damage_t(warlock_t* p)
-        : warlock_spell_t("vile_taint_damage", p, p -> talents.vile_taint)
+        : affliction_spell_t("vile_taint_damage", p, p -> talents.vile_taint)
       {
         aoe = -1;
         background = dual = ground_aoe = true;
@@ -762,12 +889,12 @@ namespace warlock
       }
     };
 
-    struct vile_taint_t : public warlock_spell_t
+    struct vile_taint_t : public affliction_spell_t
     {
       vile_taint_damage_t* damage;
 
       vile_taint_t(warlock_t* p, const std::string& options_str)
-        : warlock_spell_t("vile_taint", p, p -> talents.vile_taint)
+        : affliction_spell_t("vile_taint", p, p -> talents.vile_taint)
       {
         parse_options(options_str);
         may_miss = may_crit = false;
@@ -783,24 +910,24 @@ namespace warlock
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        affliction_spell_t::execute();
         damage->make_ground_aoe_event(p(), execute_state);
       }
 
       expr_t* create_expression(const std::string& name) override
       {
-        return warlock_spell_t::create_expression(name);
+        return affliction_spell_t::create_expression(name);
       }
     };
     // lvl 75 - darkfury|mortal coil|demonic circle
 
     // lvl 90 - nightfall|deathbolt|grimoire of sacrifice
-    struct deathbolt_t : public warlock_spell_t
+    struct deathbolt_t : public affliction_spell_t
     {
       timespan_t ac_max;
 
       deathbolt_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("deathbolt", p, p -> talents.deathbolt)
+        affliction_spell_t("deathbolt", p, p -> talents.deathbolt)
       {
         parse_options(options_str);
         ac_max = timespan_t::from_seconds(data().effectN(3).base_value());
@@ -808,7 +935,7 @@ namespace warlock
 
       void init() override
       {
-        warlock_spell_t::init();
+        affliction_spell_t::init();
 
         snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
       }
@@ -886,15 +1013,15 @@ namespace warlock
           sim->out_debug.printf("%s deathbolt damage_remaining=%.3f", name(), total_dot_dmg);
         }
 
-        warlock_spell_t::execute();
+        affliction_spell_t::execute();
       }
     };
 
     // lvl 100 - soul conduit|creeping death|dark soul misery
-    struct dark_soul_t : public warlock_spell_t
+    struct dark_soul_t : public affliction_spell_t
     {
       dark_soul_t(warlock_t* p, const std::string& options_str) :
-        warlock_spell_t("dark_soul", p, p -> talents.dark_soul_misery)
+        affliction_spell_t("dark_soul", p, p -> talents.dark_soul_misery)
       {
         parse_options(options_str);
         harmful = may_crit = may_miss = false;
@@ -902,19 +1029,19 @@ namespace warlock
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        affliction_spell_t::execute();
 
         p()->buffs.dark_soul_misery->trigger();
       }
     };
 
     // Tier
-    struct tormented_agony_t : public warlock_spell_t
+    struct tormented_agony_t : public affliction_spell_t
     {
-      struct tormented_agony_debuff_engine_t : public warlock_spell_t
+      struct tormented_agony_debuff_engine_t : public affliction_spell_t
       {
         tormented_agony_debuff_engine_t( warlock_t* p ) :
-          warlock_spell_t( "tormented agony", p, p -> find_spell( 256807 ) )
+          affliction_spell_t( "tormented agony", p, p -> find_spell( 256807 ) )
         {
           harmful = may_crit = callbacks = false;
           background = proc = true;
@@ -924,7 +1051,7 @@ namespace warlock
 
         void impact( action_state_t* s ) override
         {
-          warlock_spell_t::impact( s );
+          affliction_spell_t::impact( s );
 
           td( s->target )->debuffs_tormented_agony->trigger();
         }
@@ -934,7 +1061,7 @@ namespace warlock
       tormented_agony_debuff_engine_t* tormented_agony;
 
       tormented_agony_t( warlock_t* p ) :
-        warlock_spell_t( "tormented agony", p, p -> find_spell( 256807 ) ),
+        affliction_spell_t( "tormented agony", p, p -> find_spell( 256807 ) ),
         source_target( nullptr ),
         tormented_agony( new tormented_agony_debuff_engine_t( p ) )
       {
@@ -947,7 +1074,7 @@ namespace warlock
 
       void execute() override
       {
-        warlock_spell_t::execute();
+        affliction_spell_t::execute();
 
         for ( const auto target : sim->target_non_sleeping_list )
         {

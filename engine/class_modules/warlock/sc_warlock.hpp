@@ -1039,26 +1039,14 @@ namespace warlock
       public:
         gain_t * gain;
 
-        mutable std::vector<player_t*> havoc_targets;
-        bool can_havoc;
-        bool havocd;
-        bool affected_by_destruction_t20_4pc;
-        bool affected_by_flamelicked;
-        bool affected_by_odr_shawl_of_the_ymirjar;
-        bool affected_by_deaths_embrace;
-        bool destro_mastery;
-        bool can_feretory;
-
         warlock_spell_t( warlock_t* p, const std::string& n ) :
           warlock_spell_t( n, p, p -> find_class_spell( n ) )
         {
-          havocd = false;
         }
 
         warlock_spell_t( warlock_t* p, const std::string& n, specialization_e s ) :
           warlock_spell_t( n, p, p -> find_class_spell( n, s ) )
         {
-          havocd = false;
         }
 
         warlock_spell_t( const std::string& token, warlock_t* p, const spell_data_t* s = spell_data_t::nil() ) :
@@ -1068,13 +1056,6 @@ namespace warlock
           tick_may_crit = true;
           weapon_multiplier = 0.0;
           gain = player->get_gain( name_str );
-
-          can_havoc = false;
-          havocd = false;
-          affected_by_destruction_t20_4pc = false;
-          affected_by_deaths_embrace = false;
-          destro_mastery = true;
-          can_feretory = true;
 
           parse_spell_coefficient( *this );
         }
@@ -1108,28 +1089,14 @@ namespace warlock
           return p()->find_target_data( t );
         }
 
-        bool use_havoc() const
-        {
-          if ( !p()->havoc_target || target == p()->havoc_target || !can_havoc )
-            return false;
-
-          return true;
-        }
-
         void reset() override
         {
-          havocd = false;
           spell_t::reset();
         }
 
         void init() override
         {
           action_t::init();
-
-          affected_by_flamelicked = false;
-          havocd = false;
-
-          affected_by_odr_shawl_of_the_ymirjar = data().affected_by( p()->find_spell( 212173 )->effectN( 1 ) );
 
           if ( p()->legendary.reap_and_sow )
           {
@@ -1157,65 +1124,17 @@ namespace warlock
             if ( data().affected_by( p()->find_spell( 281496 )->effectN( 2 ) ) )
               base_td_multiplier *= 1.0 + p()->find_spell( 281496 )->effectN( 2 ).percent();
           }
-
-          if (p()->specialization() == WARLOCK_DESTRUCTION)
-          {
-            if (data().affected_by(p()->spec.destruction->effectN(1)))
-              base_dd_multiplier *= 1.0 + p()->spec.destruction->effectN(1).percent();
-
-            if (data().affected_by(p()->spec.destruction->effectN(2)))
-              base_td_multiplier *= 1.0 + p()->spec.destruction->effectN(2).percent();
-          }
-
-          if (p()->specialization() == WARLOCK_AFFLICTION)
-          {
-            if (data().affected_by(p()->spec.affliction->effectN(1)))
-              base_dd_multiplier *= 1.0 + p()->spec.affliction->effectN(1).percent();
-
-            if (data().affected_by(p()->spec.affliction->effectN(2)))
-              base_td_multiplier *= 1.0 + p()->spec.affliction->effectN(2).percent();
-          }
-
-          if (p()->specialization() == WARLOCK_DEMONOLOGY)
-          {
-            if (data().affected_by(p()->spec.demonology->effectN(1)))
-              base_dd_multiplier *= 1.0 + p()->spec.demonology->effectN(1).percent();
-
-            if (data().affected_by(p()->spec.demonology->effectN(2)))
-              base_td_multiplier *= 1.0 + p()->spec.demonology->effectN(2).percent();
-          }
-
-          if ( p()->talents.creeping_death->ok() )
-          {
-            if ( data().affected_by( p()->talents.creeping_death->effectN( 1 ) ) )
-              base_tick_time *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
-            if ( data().affected_by( p()->talents.creeping_death->effectN( 2 ) ) )
-              dot_duration *= 1.0 + p()->talents.creeping_death->effectN( 2 ).percent();
-          }
         }
 
         double cost() const override
         {
           double c = spell_t::cost();
-          if (havocd)
-          {
-            return 0.0;
-          }
           return c;
         }
 
         void execute() override
         {
           spell_t::execute();
-          if (use_havoc() && execute_state->target == this->target && !havocd)
-          {
-            this->set_target(p()->havoc_target);
-            this->havocd = true;
-            spell_t::execute();
-            if (p()->azerite.rolling_havoc.ok())
-              p()->buffs.rolling_havoc->trigger();
-            this->havocd = false;
-          }
 
           if ( hit_any_target && result_is_hit( execute_state->result ) && p()->talents.grimoire_of_sacrifice->ok() && p()->buffs.grimoire_of_sacrifice->up() )
           {
@@ -1226,103 +1145,27 @@ namespace warlock
               p()->active.grimoire_of_sacrifice_proc->execute();
             }
           }
-
-          if ( can_feretory && p()->legendary.feretory_of_souls && rng().roll( p()->find_spell( 205702 )->proc_chance() ) && dbc::is_school( school, SCHOOL_FIRE ) )
-            p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.feretory_of_souls );
         }
 
-        void consume_resource() override;
-
-        void tick( dot_t* d ) override
+        void consume_resource() override
         {
-          spell_t::tick( d );
-
-          if (d->state->result > 0 && result_is_hit( d->state->result ))
-          {
-            if (auto td = find_td( d->target ))
-            {
-              if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
-              {
-                accumulate_seed_of_corruption( td, d->state->result_amount );
-              }
-            }
-          }
+          spell_t::consume_resource();
         }
 
         void impact( action_state_t* s ) override
         {
           spell_t::impact( s );
-
-          if (s->result_amount > 0 && result_is_hit( s->result ))
-          {
-            if (auto td = find_td( s->target ))
-            {
-              if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
-              {
-                accumulate_seed_of_corruption( td, s->result_amount );
-              }
-            }
-          }
-
-          if (p()->talents.reverse_entropy->ok())
-          {
-            auto success = p()->buffs.reverse_entropy->trigger();
-            if (success)
-            {
-              p()->procs.reverse_entropy->occur();
-            }
-          }
         }
 
         double composite_target_multiplier( player_t* t ) const override
         {
           double m = spell_t::composite_target_multiplier(t);
-
-          if (auto td = find_td( t ))
-          {
-            if ( td->debuffs_eradication->check() )
-              m *= 1.0 + td->debuffs_eradication->data().effectN( 1 ).percent();
-          }
-
-          if ( p()->legendary.odr_shawl_of_the_ymirjar && target == p()->havoc_target && affected_by_odr_shawl_of_the_ymirjar  )
-            m *= 1.0 + p()->find_spell( 212173 )->effectN( 1 ).percent();
-
           return m;
         }
 
         double action_multiplier() const override
         {
           double pm = spell_t::action_multiplier();
-
-          if ( p()->mastery_spells.chaotic_energies->ok() && destro_mastery )
-          {
-            double destro_mastery_value = p()->cache.mastery_value() / 2.0;
-            double chaotic_energies_rng;
-
-            if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T20, B4 ) && affected_by_destruction_t20_4pc )
-              chaotic_energies_rng = destro_mastery_value;
-            else
-              chaotic_energies_rng = rng().range( 0, destro_mastery_value );
-
-            pm *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
-          }
-
-          if (p()->specialization() == WARLOCK_DESTRUCTION)
-          {
-            if (havocd)
-              pm *= p()->spec.havoc->effectN(1).percent();
-
-            if (p()->buffs.grimoire_of_supremacy->check() && this->data().affected_by(p()->find_spell(266091)->effectN(1)))
-            {
-              pm *= 1.0 + p()->buffs.grimoire_of_supremacy->check_stack_value();
-            }
-          }
-
-          if (p()->specialization() == WARLOCK_DEMONOLOGY)
-          {
-            if (this->data().affected_by(p()->mastery_spells.master_demonologist->effectN(2)))
-              pm *= 1.0 + p()->cache.mastery_value();
-          }
 
           return pm;
         }
@@ -1332,16 +1175,6 @@ namespace warlock
           if ( dot->is_ticking() )
           {
             dot->extend_duration( extend_duration, dot->current_action->dot_duration * 1.5 );
-          }
-        }
-
-        static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
-        {
-          td->soc_threshold -= amount;
-
-          if (td->soc_threshold <= 0)
-          {
-            td->dots_seed_of_corruption->cancel();
           }
         }
       };
