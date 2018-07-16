@@ -178,13 +178,20 @@ public:
   combo_strikes_e previous_combo_strike;
   double spiritual_focus_count;
 
+  // Affect flags for various dynamic effects
+  struct {
+    bool serenity;
+  } affected_by;
+
+  // Blurred time cooldown shenanigans
+  std::vector<cooldown_t*> serenity_cooldowns;
+
   double gift_of_the_ox_proc_chance;
   // Containers for when to start the trigger for the 19 4-piece Windwalker Combo Master buff
   combo_strikes_e t19_melee_4_piece_container_1;
   combo_strikes_e t19_melee_4_piece_container_2;
   combo_strikes_e t19_melee_4_piece_container_3;
 
-  double weapon_power_mod;
   // Legion Artifact effects
   const special_effect_t* fu_zan_the_wanderers_companion;
   const special_effect_t* sheilun_staff_of_the_mists;
@@ -595,7 +602,7 @@ public:
       t19_melee_4_piece_container_1( CS_NONE ),
       t19_melee_4_piece_container_2( CS_NONE ),
       t19_melee_4_piece_container_3( CS_NONE ),
-      weapon_power_mod(),
+      affected_by(),
       fu_zan_the_wanderers_companion( nullptr ),
       sheilun_staff_of_the_mists( nullptr ),
       fists_of_the_heavens( nullptr ),
@@ -2697,6 +2704,35 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   {
     special = true;
     may_glance = false;
+  }
+
+  void init() override
+  {
+    base_t::init();
+
+   // Figure out what spells are affected by Serenity's cooldown reduction
+   p() -> affected_by.serenity = cooldown -> duration > timespan_t::zero() && base_costs[RESOURCE_CHI] > 0;
+  }
+
+  void init_finished() override
+  {
+    if ( p() -> affected_by.serenity )
+    {
+      p() -> serenity_cooldowns.push_back( cooldown );
+    }
+
+    base_t::init_finished();
+  }
+
+  double recharge_multiplier() const override
+  {
+    double rm = base_t::recharge_multiplier();
+    if ( p() -> buff.serenity -> up() )
+    {
+      rm *= 1.0 / (1 + 2 );//p() -> talent.serenity -> effectN( 5 ).percent() );
+    }
+
+    return rm;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
@@ -6176,9 +6212,11 @@ struct hidden_masters_forbidden_touch_t : public monk_buff_t < buff_t >
 // Serenity Buff ==========================================================
 struct serenity_buff_t: public monk_buff_t < buff_t > {
   double percent_adjust;
+  monk_t& m;
   serenity_buff_t( monk_t& p, const std::string& n, const spell_data_t* s ):
     monk_buff_t( p, n, s ),
-    percent_adjust( 0 )
+    percent_adjust( 0 ),
+    m ( p )
   {
     set_default_value( s -> effectN( 2 ).percent() );
     set_cooldown( timespan_t::zero() );
@@ -6187,68 +6225,28 @@ struct serenity_buff_t: public monk_buff_t < buff_t > {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
-    percent_adjust = -1 * ( 1 / ( 1 + s -> effectN( 4 ).percent() ) ); // saved as 100%
+    percent_adjust = s -> effectN( 4 ).percent(); // saved as 100%
   }
 
-  // Used on trigger to reduce all cooldowns
-  void cooldown_reduction( cooldown_t* cd )
+  void execute( int stacks, double value, timespan_t duration ) override
   {
-    if ( cd -> down() )
-      // adjusting by -50% of remaining cooldown
-      cd -> adjust( cd -> remains() * percent_adjust, true );
+    buff_t::execute( stacks, value, duration );
+
+    range::for_each( m.serenity_cooldowns, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } );
+    player -> adjust_action_queue_time();
   }
 
-  // Used on expire_override to revert all cooldowns
-  void cooldown_extension( cooldown_t* cd )
+  void expire( timespan_t delay ) override
   {
-    if ( cd -> down() )
-      // adjusting by +100% of remaining cooldown
-      // Can probably future proof for non -50% values with this:
-      // cd -> adjust( ( cd -> remains() / -( percent_adjust ) ) / 2, true );
-      // but too much calc needed for the time being.
-      cd -> adjust( cd -> remains(), true );
-  }
+    bool expired = check() != 0;
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-  {
-    // Executing Serenity reduces any current cooldown by 50%
-    // Have to manually adjust each of the affected spells
-    cooldown_reduction( p().cooldown.blackout_kick );
+    buff_t::expire( delay );
 
-    cooldown_reduction( p().cooldown.blackout_strike );
-
-    cooldown_reduction( p().cooldown.rushing_jade_wind_ww );
-
-    cooldown_reduction( p().cooldown.refreshing_jade_wind );
-
-    cooldown_reduction( p().cooldown.rising_sun_kick );
-
-    cooldown_reduction( p().cooldown.fists_of_fury );
-
-    cooldown_reduction( p().cooldown.fist_of_the_white_tiger );
-
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    // When Serenity expires, it reverts any current cooldown by 50%
-    // Have to manually adjust each of the affected spells
-    cooldown_extension( p().cooldown.blackout_kick );
-
-    cooldown_extension( p().cooldown.blackout_strike );
-
-    cooldown_extension( p().cooldown.rushing_jade_wind_ww );
-
-    cooldown_extension( p().cooldown.refreshing_jade_wind );
-
-    cooldown_extension( p().cooldown.rising_sun_kick );
-
-    cooldown_extension( p().cooldown.fists_of_fury );
-
-    cooldown_extension( p().cooldown.fist_of_the_white_tiger );
-
-    buff_t::expire_override( expiration_stacks, remaining_duration );
+    if ( expired )
+    {
+      range::for_each( m.serenity_cooldowns, []( cooldown_t* cd ) { cd -> adjust_recharge_multiplier(); } );
+      player -> adjust_action_queue_time();
+    }
   }
 };
 
