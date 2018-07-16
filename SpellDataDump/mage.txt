@@ -924,12 +924,13 @@ Effects          :
 Description      : Summons a Water Elemental to follow and fight for you.
 
 Name             : Waterbolt (id=31707) [Scaling Spell (5), Spell Family (3)] 
+Hotfixed         : GCD (1500 -> 1000)
 Class            : Mage
 School           : Frost
 Spell Level      : 10
 Range            : 45 yards
 Cast Time        : 2.5 seconds
-GCD              : 1.5 seconds
+GCD              : 1 seconds
 Velocity         : 16 yards/sec
 Affecting spells : Frost Mage (137020 effect#4), Norgannon's Foresight (236380 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 

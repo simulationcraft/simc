@@ -5522,10 +5522,11 @@ Attributes       : ........ ........ ........ ...x....   .......x ..x..... .....
                  : Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=298525)   : School Damage (2): astral
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.18000 | Target: Enemy (6)
-                   Hotfixed: Average (0.58 -> 0)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.36000 | Target: Enemy (6)
+                   Hotfixed: Average (0.58 -> 0), SP Coefficient (0.18 -> 0.36)
 #2 (id=298537)   : Energize Power (30)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: astral_power | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: astral_power | Target: Self (1)
+                   Hotfixed: Base Value (20 -> 40)
 Description      : $@spelldesc202342
 
 Name             : New Moon (Artifact) (id=202767) [Spell Family (7)] 
