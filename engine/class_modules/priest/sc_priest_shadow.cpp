@@ -2277,11 +2277,6 @@ void priest_t::generate_apl_shadow()
       "if=spell_targets.mind_sear>(5+1*talent.misery.enabled)" );
   default_list->add_action( "run_action_list,name=cleave,if=active_enemies>1" );
   default_list->add_action( "run_action_list,name=single,if=active_enemies=1" );
-  // On-Use Items
-  for (const std::string& item_action : get_item_actions())
-  {
-    default_list->add_action(item_action);
-  }
 
   // single APL
   single->add_action( this, "Void Eruption" );

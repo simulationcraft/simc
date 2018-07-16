@@ -858,6 +858,13 @@ double priest_t::composite_melee_speed() const
   return h;
 }
 
+double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s) const
+{
+  double m = player_t::composite_player_pet_damage_multiplier(s);
+  m *= ( 1.0 + find_spell(137033)->effectN(3).percent() );
+  return m;
+}
+
 double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
