@@ -1,15 +1,17 @@
 # PreRaids doesn't match the typical pattern
 cd 'profiles/PreRaids/'
 pwd
-../../engine/simc 'PR_Generate.simc'
-cd ../..
+rm -rf ./*
+../../engine/simc '../generators/PreRaids/PR_Generate.simc'
+cd ../
 # TierXX profiles generation
-for tier in 21 22
+for tier in 21
 do
-  PROFDIR='profiles/Tier'$tier'/'
+  PROFDIR='Tier'$tier'/'
   cd $PROFDIR
   pwd
-  ../../engine/simc 'T'$tier'_Generate.simc'
-  cd ../..
+  rm -rf ./*
+  ../../engine/simc '../generators/Tier'$tier'/T'$tier'_Generate.simc'
+  cd ../
 done
 echo 'done'
