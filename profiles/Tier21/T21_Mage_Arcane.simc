@@ -12,6 +12,86 @@ flask=whispered_pact
 food=lemon_herb_filet
 augmentation=defiled
 
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/arcane_intellect
+actions.precombat+=/summon_arcane_familiar
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mirror_image
+actions.precombat+=/potion
+actions.precombat+=/arcane_blast
+
+# Executed every time the actor is available.
+# Interrupt the boss when possible.
+actions=counterspell,if=target.debuff.casting.react
+actions+=/time_warp,if=time=0&buff.bloodlust.down
+# Start a burn phase when important cooldowns are available. Start with 4 arcane charges, unless there's a good reason not to. (charged up)
+actions+=/call_action_list,name=burn,if=burn_phase|target.time_to_die<variable.average_burn_length|(cooldown.arcane_power.remains=0&cooldown.evocation.remains<=variable.average_burn_length&(buff.arcane_charge.stack=buff.arcane_charge.max_stack|(talent.charged_up.enabled&cooldown.charged_up.remains=0)))
+actions+=/call_action_list,name=conserve,if=!burn_phase
+actions+=/call_action_list,name=movement
+
+# Increment our burn phase counter. Whenever we enter the `burn` actions without being in a burn phase, it means that we are about to start one.
+actions.burn=variable,name=total_burns,op=add,value=1,if=!burn_phase
+actions.burn+=/start_burn_phase,if=!burn_phase
+# End the burn phase when we just evocated.
+actions.burn+=/stop_burn_phase,if=burn_phase&(prev_gcd.1.evocation|(equipped.gravity_spiral&cooldown.evocation.charges=0&prev_gcd.1.evocation))&target.time_to_die>variable.average_burn_length&burn_phase_duration>0
+actions.burn+=/mirror_image
+actions.burn+=/charged_up,if=buff.arcane_charge.stack<=1&(!set_bonus.tier20_2pc|cooldown.presence_of_mind.remains>5)
+actions.burn+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down
+actions.burn+=/time_warp,if=buff.bloodlust.down&((buff.arcane_power.down&cooldown.arcane_power.remains=0)|(target.time_to_die<=buff.bloodlust.duration))
+actions.burn+=/lights_judgment,if=buff.arcane_power.down
+actions.burn+=/rune_of_power,if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)
+actions.burn+=/arcane_power
+actions.burn+=/use_item,name=tarnished_sentinel_medallion
+actions.burn+=/blood_fury
+actions.burn+=/berserking
+actions.burn+=/presence_of_mind
+actions.burn+=/arcane_orb,if=buff.arcane_charge.stack=0|(active_enemies<3|(active_enemies<2&talent.resonance.enabled))
+actions.burn+=/arcane_blast,if=buff.presence_of_mind.up&set_bonus.tier20_2pc&talent.overpowered.enabled&buff.arcane_power.up
+actions.burn+=/arcane_barrage,if=(active_enemies>=3|(active_enemies>=2&talent.resonance.enabled))&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)
+actions.burn+=/arcane_explosion,if=active_enemies>=3|(active_enemies>=2&talent.resonance.enabled)
+actions.burn+=/arcane_missiles,if=(buff.clearcasting.react&mana.pct<=95),chain=1
+actions.burn+=/arcane_blast
+# Now that we're done burning, we can update the average_burn_length with the length of this burn.
+actions.burn+=/variable,name=average_burn_length,op=set,value=(variable.average_burn_length*variable.total_burns-variable.average_burn_length+(burn_phase_duration))%variable.total_burns
+actions.burn+=/evocation,interrupt_if=mana.pct>=97|(buff.clearcasting.react&mana.pct>=92)
+# For the rare occasion where we go oom before evocation is back up. (Usually because we get very bad rng so the burn is cut very short)
+actions.burn+=/arcane_barrage
+
+actions.conserve=mirror_image
+actions.conserve+=/charged_up,if=buff.arcane_charge.stack=0
+actions.conserve+=/presence_of_mind,if=set_bonus.tier20_2pc&buff.arcane_charge.stack=0
+actions.conserve+=/nether_tempest,if=(refreshable|!ticking)&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.rune_of_power.down&buff.arcane_power.down
+# Arcane Blast shifts up in priority when running rule of threes. (Or Rhonin's)
+actions.conserve+=/arcane_blast,if=(buff.rule_of_threes.up|buff.rhonins_assaulting_armwraps.react)&buff.arcane_charge.stack>=3
+actions.conserve+=/rune_of_power,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)
+actions.conserve+=/arcane_missiles,if=mana.pct<=95&buff.clearcasting.react,chain=1
+actions.conserve+=/arcane_blast,if=equipped.mystic_kilt_of_the_rune_master&buff.arcane_charge.stack=0
+# During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible and then swap to a 4x AB->Abarr conserve rotation. This is mana neutral for RoT, mana negative with arcane familiar. Only use arcane barrage with less than 4 Arcane charges if we risk going too low on mana for our next burn
+actions.conserve+=/arcane_barrage,if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack)&(mana.pct<=35|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd))
+# Supernova is barely worth casting, which is why it is so far down, only just above AB. 
+actions.conserve+=/supernova,if=mana.pct<=95
+# Keep 'burning' in aoe situations until 40%. After that only cast AE with 3 Arcane charges, since it's almost equal mana cost to a 3 stack AB anyway. At that point AoE rotation will be AB x3 -> AE -> Abarr
+actions.conserve+=/arcane_explosion,if=active_enemies>=3&(mana.pct>=40|buff.arcane_charge.stack=3)
+actions.conserve+=/arcane_torrent
+actions.conserve+=/arcane_blast
+actions.conserve+=/arcane_barrage
+
+actions.movement=shimmer,if=movement.distance>=10
+actions.movement+=/blink,if=movement.distance>=10
+actions.movement+=/presence_of_mind
+actions.movement+=/arcane_missiles
+actions.movement+=/arcane_orb
+actions.movement+=/supernova
+
 head=runebound_collar,id=152138,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=runebound_mantle,id=152141,bonus_id=3612/1502
