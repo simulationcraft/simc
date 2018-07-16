@@ -3126,6 +3126,7 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
       assert( eff.type() == E_TRIGGER_SPELL );
       background = dual = true;
       may_refund = ( weapon == &( p->off_hand_weapon ) );
+      school = SCHOOL_CHAOS; // 7/16/2018 -- Manually setting since Blizzard broke the spell school data for Annihilation_2 (201428)
     }
     
     virtual double composite_target_multiplier( player_t* target ) const override
