@@ -890,6 +890,8 @@ bool action_t::verify_actor_spec() const
   if ( data().id() && player->dbc.ability_specialization( data().id(), spec_list ) &&
        range::find( spec_list, _s ) == spec_list.end() )
   {
+    // Note that this check can produce false positives for talent abilities which have a different spec set in their
+    // talent data from that in the spell data pointed to.
     sim->errorf( "Player %s attempting to execute action %s without the required spec.\n", player->name(), name() );
 
     return false;
