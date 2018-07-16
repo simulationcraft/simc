@@ -1,10 +1,10 @@
 warrior="T21_Warrior_Arms"
-spec=arms
 level=110
 race=troll
 role=attack
 position=back
-talents=1312122
+talents=1332311
+spec=arms
 
 head=juggernaut_helm,id=152181,bonus_id=3612/1502
 neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
@@ -26,12 +26,12 @@ save=T21_Warrior_Arms.simc
 
 
 warrior="T21_Warrior_Fury"
-spec=fury
 level=110
 race=troll
 role=attack
 position=back
-talents=2030212
+talents=2333232
+spec=fury
 
 head=helmet_of_the_hidden_sanctuary,id=152013,bonus_id=3612/1502
 neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
