@@ -1,10 +1,10 @@
 shaman="PR_Shaman_Elemental"
 spec=elemental
-level=110
+level=120
 race=tauren
 role=spell
 position=ranged_back
-talents=1121211
+talents=1301021
 
 # Default consumables
 potion=prolonged_power
@@ -89,30 +89,30 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=saurscale_coif,id=154955,ilevel=185,azerite_level=185
-neck=shaleshell_pendant,id=154970,ilevel=185,azerite_level=185
-shoulders=saurscale_spaulders,id=154959,ilevel=185,azerite_level=185
-back=drape_of_the_golden_city,id=154968,ilevel=185,azerite_level=185
-chest=saurscale_chestguard,id=154958,ilevel=185,azerite_level=185
-wrists=saurscale_wristguards,id=154952,ilevel=185,azerite_level=185
-hands=saurscale_gloves,id=154953,ilevel=185,azerite_level=185
-waist=saurscale_girdle,id=154957,ilevel=185,azerite_level=185
-legs=saurscale_leggings,id=154954,ilevel=185,azerite_level=185
-feet=saurscale_boots,id=154956,ilevel=185,azerite_level=185
-finger1=beaten_copper_loop,id=154987,bonus_id=1751,ilevel=185,azerite_level=185
-finger2=sea_sapphire_band,id=154969,ilevel=185,azerite_level=185
-trinket1=bijou_of_the_golden_city,id=154983,bonus_id=607,ilevel=185,azerite_level=185
-trinket2=shimmering_rune,id=154981,bonus_id=604,ilevel=185,azerite_level=185
-main_hand=dinomancy_cudgel,id=154978,ilevel=185,azerite_level=185
-off_hand=golden_protectorate,id=154985,ilevel=185,azerite_level=185
+head=saurscale_coif,id=154955,ilevel=340,azerite_level=340
+neck=shaleshell_pendant,id=154970,ilevel=340,azerite_level=340
+shoulders=saurscale_spaulders,id=154959,ilevel=340,azerite_level=340
+back=drape_of_the_golden_city,id=154968,ilevel=340,azerite_level=340
+chest=saurscale_chestguard,id=154958,ilevel=340,azerite_level=340
+wrists=saurscale_wristguards,id=154952,ilevel=340,azerite_level=340
+hands=saurscale_gloves,id=154953,ilevel=340,azerite_level=340
+waist=saurscale_girdle,id=154957,ilevel=340,azerite_level=340
+legs=saurscale_leggings,id=154954,ilevel=340,azerite_level=340
+feet=saurscale_boots,id=154956,ilevel=340,azerite_level=340
+finger1=beaten_copper_loop,id=154987,bonus_id=1751,ilevel=340,azerite_level=340
+finger2=sea_sapphire_band,id=154969,ilevel=340,azerite_level=340
+trinket1=bijou_of_the_golden_city,id=154983,bonus_id=607,ilevel=340,azerite_level=340
+trinket2=shimmering_rune,id=154981,bonus_id=604,ilevel=340,azerite_level=340
+main_hand=dinomancy_cudgel,id=154978,ilevel=340,azerite_level=340
+off_hand=golden_protectorate,id=154985,ilevel=340,azerite_level=340
 
 # Gear Summary
-# gear_ilvl=185.00
-# gear_strength=25
-# gear_stamina=754
-# gear_intellect=687
-# gear_crit_rating=263
-# gear_haste_rating=209
-# gear_mastery_rating=250
-# gear_versatility_rating=236
-# gear_armor=742
+# gear_ilvl=340.00
+# gear_strength=107
+# gear_stamina=3372
+# gear_intellect=2907
+# gear_crit_rating=823
+# gear_haste_rating=644
+# gear_mastery_rating=779
+# gear_versatility_rating=720
+# gear_armor=3566

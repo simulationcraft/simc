@@ -12,6 +12,64 @@ flask=countless_armies
 food=azshari_salad
 augmentation=defiled
 
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/raise_dead
+actions.precombat+=/army_of_the_dead
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/mind_freeze
+# Racials, Items, and other ogcds
+actions+=/arcane_torrent,if=runic_power.deficit>20
+actions+=/blood_fury
+actions+=/berserking
+actions+=/use_items
+actions+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack=0&target.time_to_die>60)|target.time_to_die<60
+actions+=/potion,if=buff.unholy_strength.react
+# Maintain Virulent Plague
+actions+=/outbreak,target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd
+actions+=/call_action_list,name=cooldowns
+actions+=/call_action_list,name=generic
+
+# AoE rotation
+actions.aoe=death_and_decay,if=spell_targets.death_and_decay>=2
+actions.aoe+=/epidemic,if=spell_targets.epidemic>4
+actions.aoe+=/scourge_strike,if=spell_targets.scourge_strike>=2&(death_and_decay.ticking|defile.ticking)
+actions.aoe+=/clawing_shadows,if=spell_targets.clawing_shadows>=2&(death_and_decay.ticking|defile.ticking)
+actions.aoe+=/epidemic,if=spell_targets.epidemic>2
+
+# Cold Heart legendary
+actions.cold_heart=chains_of_ice,if=buff.unholy_strength.remains<gcd&buff.unholy_strength.react&buff.cold_heart_item.stack>16
+actions.cold_heart+=/chains_of_ice,if=buff.master_of_ghouls.remains<gcd&buff.master_of_ghouls.up&buff.cold_heart_item.stack>17
+actions.cold_heart+=/chains_of_ice,if=buff.cold_heart_item.stack=20&buff.unholy_strength.react
+
+# Cold heart and other on-gcd cooldowns
+actions.cooldowns=call_action_list,name=cold_heart,if=equipped.cold_heart&buff.cold_heart_item.stack>10
+actions.cooldowns+=/army_of_the_dead
+actions.cooldowns+=/soul_reaper,if=debuff.festering_wound.stack>=3&rune>=3
+actions.cooldowns+=/dark_transformation,if=rune.time_to_4>=gcd
+
+actions.generic=death_coil,if=runic_power.deficit<22
+actions.generic+=/defile
+# Switch to aoe
+actions.generic+=/call_action_list,name=aoe,if=active_enemies>=2
+# Wounds management
+actions.generic+=/festering_strike,if=debuff.festering_wound.stack<=2|rune.time_to_4<=gcd
+actions.generic+=/scourge_strike,if=(buff.unholy_strength.react|rune>=2)&debuff.festering_wound.stack>=1&debuff.festering_wound.stack>=3|(cooldown.army_of_the_dead.remains>5|rune.time_to_4<=gcd)
+actions.generic+=/clawing_shadows,if=(buff.unholy_strength.react|rune>=2)&debuff.festering_wound.stack>=1&debuff.festering_wound.stack>=3|(cooldown.army_of_the_dead.remains>5|rune.time_to_4<=gcd)
+
 head=dreadwake_helm,id=152115,bonus_id=3612/1502
 neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
 shoulders=taktheritrixs_shoulderpads,id=137075,bonus_id=3630

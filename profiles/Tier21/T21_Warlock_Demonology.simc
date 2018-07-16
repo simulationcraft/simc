@@ -12,6 +12,63 @@ flask=whispered_pact
 food=azshari_salad
 augmentation=defiled
 
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+actions.precombat+=/summon_pet
+actions.precombat+=/inner_demons,if=talent.inner_demons.enabled
+actions.precombat+=/snapshot_stats
+actions.precombat+=/demonbolt
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=demonic_strength
+actions+=/call_action_list,name=nether_portal,if=talent.nether_portal.enabled
+actions+=/summon_vilefiend,if=cooldown.summon_demonic_tyrant.remains>30|(cooldown.summon_demonic_tyrant.remains<10&cooldown.call_dreadstalkers.remains<10)
+actions+=/grimoire_felguard
+actions+=/hand_of_guldan,if=soul_shard>=5
+actions+=/hand_of_guldan,if=soul_shard>=3&cooldown.call_dreadstalkers.remains>4&(!talent.summon_vilefiend.enabled|cooldown.summon_vilefiend.remains>4)
+actions+=/call_dreadstalkers
+actions+=/bilescourge_bombers
+actions+=/summon_demonic_tyrant,if=talent.summon_vilefiend.enabled&buff.dreadstalkers.remains>action.summon_demonic_tyrant.cast_time&buff.vilefiend.remains>action.summon_demonic_tyrant.cast_time
+actions+=/summon_demonic_tyrant,if=!talent.summon_vilefiend.enabled&buff.dreadstalkers.remains>action.summon_demonic_tyrant.cast_time&soul_shard=0
+actions+=/power_siphon,if=buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buff.demonic_power.down
+actions+=/demonbolt,if=soul_shard<=3&buff.demonic_core.up
+actions+=/doom,cycle_targets=1,if=(talent.doom.enabled&target.time_to_die>duration&(!ticking|remains<duration*0.3))
+actions+=/call_action_list,name=build_a_shard
+
+actions.build_a_shard=soul_strike
+actions.build_a_shard+=/shadow_bolt
+
+actions.nether_portal=call_action_list,name=nether_portal_building,if=cooldown.nether_portal.remains<20
+actions.nether_portal+=/call_action_list,name=nether_portal_active,if=cooldown.nether_portal.remains>160
+
+actions.nether_portal_active=call_dreadstalkers
+actions.nether_portal_active+=/hand_of_guldan,if=prev_gcd.1.grimoire_felguard|prev_gcd.1.summon_vilefiend
+actions.nether_portal_active+=/grimoire_felguard
+actions.nether_portal_active+=/summon_vilefiend
+actions.nether_portal_active+=/bilescourge_bombers
+actions.nether_portal_active+=/call_action_list,name=build_a_shard,if=soul_shard=1&(cooldown.call_dreadstalkers.remains<action.shadow_bolt.cast_time|(talent.bilescourge_bombers.enabled&cooldown.bilescourge_bombers.remains<action.shadow_bolt.cast_time))
+actions.nether_portal_active+=/hand_of_guldan,if=((cooldown.call_dreadstalkers.remains>action.demonbolt.cast_time)&(cooldown.call_dreadstalkers.remains>action.shadow_bolt.cast_time))&cooldown.nether_portal.remains>(160+action.hand_of_guldan.cast_time)
+actions.nether_portal_active+=/summon_demonic_tyrant,if=buff.nether_portal.remains<10&soul_shard=0
+actions.nether_portal_active+=/summon_demonic_tyrant,if=buff.nether_portal.remains<action.summon_demonic_tyrant.cast_time+5.5
+actions.nether_portal_active+=/demonbolt,if=buff.demonic_core.up
+actions.nether_portal_active+=/call_action_list,name=build_a_shard
+
+actions.nether_portal_building=nether_portal,if=soul_shard>=5&(!talent.power_siphon.enabled|buff.demonic_core.up)
+actions.nether_portal_building+=/call_dreadstalkers
+actions.nether_portal_building+=/hand_of_guldan,if=cooldown.call_dreadstalkers.remains>18&soul_shard>=3
+actions.nether_portal_building+=/power_siphon,if=buff.wild_imps.stack>=2&buff.demonic_core.stack<=2&buff.demonic_power.down&soul_shard>=3
+actions.nether_portal_building+=/hand_of_guldan,if=soul_shard>=5
+actions.nether_portal_building+=/call_action_list,name=build_a_shard
+
 head=wakeners_loyalty,id=144385,bonus_id=3630
 neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_claw
 shoulders=recurrent_ritual,id=132393,bonus_id=3630
