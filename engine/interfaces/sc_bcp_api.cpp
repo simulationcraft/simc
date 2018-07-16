@@ -32,11 +32,8 @@ bool download( sim_t*               sim,
   int attempt = 0;
   do
   {
-#if defined ( SC_WINDOWS )
-    _sleep( attempt * 250 );
-#else
-    usleep( attempt * 250000 );
-#endif
+    sc_thread_t::sleep_seconds(attempt * 0.25);
+
     if ( http::get( result, url, cleanurl, caching ) )
     {
       d.Parse< 0 >( result.c_str() );

@@ -112,7 +112,7 @@ void ofstream::open( const char* name, openmode mode )
 #elif defined( SC_MINGW )
   if ( contains_non_ascii( name ) )
   {
-    throw std::invalid_argument("File '{}' with non-ascii characters cannot be opened when built with MinGW.", name );
+    throw std::invalid_argument(fmt::format("File '{}' with non-ascii characters cannot be opened when built with MinGW.", name));
   }
   std::ofstream::open( name, mode );
 #else
@@ -149,7 +149,7 @@ void ifstream::open( const char* name, openmode mode )
 #elif defined( SC_MINGW )
   if ( contains_non_ascii( name ) )
   {
-    throw std::invalid_argument("File '{}' with non-ascii characters cannot be opened when built with MinGW.", name );
+    throw std::invalid_argument(fmt::format("File '{}' with non-ascii characters cannot be opened when built with MinGW.", name));
   }
   std::ifstream::open( name, mode );
 #else
