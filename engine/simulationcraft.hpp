@@ -3449,7 +3449,7 @@ struct player_t : public actor_t
     std::string to_string();
     gear_stats_t stats;
 
-    double spell_power_per_intellect, spell_crit_per_intellect;
+    double spell_power_per_intellect, spell_power_per_agility, spell_crit_per_intellect;
     double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility;
     double dodge_per_agility, parry_per_strength;
     double health_per_stamina;

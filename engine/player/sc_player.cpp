@@ -863,6 +863,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
 player_t::base_initial_current_t::base_initial_current_t() :
   stats(),
   spell_power_per_intellect( 0 ),
+  spell_power_per_agility( 0 ),
   spell_crit_per_intellect( 0 ),
   attack_power_per_strength( 0 ),
   attack_power_per_agility( 0 ),
@@ -906,6 +907,7 @@ std::string player_t::base_initial_current_t::to_string()
 
   s << stats.to_string();
   s << " spell_power_per_intellect=" << spell_power_per_intellect;
+  s << " spell_power_per_agility=" << spell_power_per_agility;
   s << " spell_crit_per_intellect=" << spell_crit_per_intellect;
   s << " attack_power_per_strength=" << attack_power_per_strength;
   s << " attack_power_per_agility=" << attack_power_per_agility;
@@ -3233,6 +3235,7 @@ double player_t::composite_spell_power( school_e /* school */ ) const
   double sp = current.stats.spell_power;
 
   sp += current.spell_power_per_intellect * cache.intellect();
+  sp += std::floor( current.spell_power_per_agility * cache.agility() );
 
   return sp;
 }
@@ -3754,6 +3757,8 @@ void player_t::invalidate_cache( cache_e c )
         invalidate_cache( CACHE_ATTACK_POWER );
       if ( current.dodge_per_agility > 0 )
         invalidate_cache( CACHE_DODGE );
+      if ( current.spell_power_per_agility > 0 )
+        invalidate_cache( CACHE_SPELL_POWER );
       break;
     case CACHE_INTELLECT:
       if ( current.spell_power_per_intellect > 0 )

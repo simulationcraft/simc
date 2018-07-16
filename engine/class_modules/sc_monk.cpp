@@ -2729,7 +2729,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     double rm = base_t::recharge_multiplier();
     if ( p() -> buff.serenity -> up() )
     {
-      rm *= 1.0 / (1 + 2 );//p() -> talent.serenity -> effectN( 5 ).percent() );
+      rm *= 1.0 / (1 + p() -> talent.serenity -> effectN( 5 ).percent() );
     }
 
     return rm;
@@ -4552,6 +4552,7 @@ struct serenity_t: public monk_spell_t
   {
     parse_options( options_str );
     harmful = false;
+    trigger_gcd = timespan_t::from_seconds( 1 );
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd = timespan_t::from_millis(750);
     gcd_haste = HASTE_SPELL;
@@ -4658,7 +4659,8 @@ struct storm_earth_and_fire_t: public monk_spell_t
     monk_spell_t( "storm_earth_and_fire", p, p -> spec.storm_earth_and_fire )
   {
     parse_options( options_str );
-
+    
+    trigger_gcd = timespan_t::from_seconds( 1 );
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd = timespan_t::from_millis(750);
     gcd_haste = HASTE_ATTACK;
@@ -6916,6 +6918,7 @@ void monk_t::init_base_stats()
         base.distance = 5;
       base_gcd += spec.windwalker_monk -> effectN( 14 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
+      base.spell_power_per_agility = spec.windwalker_monk -> effectN( 15 ).percent();
       resources.base[RESOURCE_ENERGY] = 100;
       resources.base[RESOURCE_ENERGY] += talent.ascension -> effectN( 3 ).base_value();
       resources.base[RESOURCE_MANA] = 0;
