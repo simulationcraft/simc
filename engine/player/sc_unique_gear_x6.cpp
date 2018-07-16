@@ -5494,6 +5494,7 @@ void item::wriggling_sinew( special_effect_t& effect )
   effect.trigger_spell_id = 222050;
   action_t* a = effect.initialize_offensive_spell_action();
   a -> base_dd_min = a -> base_dd_max = effect.driver() -> effectN( 1 ).average( effect.item );
+  a -> snapshot_flags |= STATE_MUL_DA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA;
   // Reset triggered spell; we don't want to trigger a spell on use.
   effect.trigger_spell_id = 0;
 
