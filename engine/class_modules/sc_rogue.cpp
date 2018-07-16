@@ -280,6 +280,7 @@ struct rogue_t : public player_t
     buff_t* blade_in_the_shadows;
     buff_t* deadshot;
     buff_t* nights_vengeance;
+    buff_t* paradise_lost;
     buff_t* perforate;
     buff_t* poisoned_wire;
     buff_t* scent_of_blood;
@@ -495,6 +496,7 @@ struct rogue_t : public player_t
     azerite_power_t fan_of_blades;
     azerite_power_t inevitability;
     azerite_power_t nights_vengeance;
+    azerite_power_t paradise_lost;
     azerite_power_t perforate;
     azerite_power_t poisoned_wire;
     azerite_power_t scent_of_blood;
@@ -5202,6 +5204,8 @@ struct roll_the_bones_t : public buff_t
     {
       case 1:
         rogue -> procs.roll_the_bones_1 -> occur();
+        if ( rogue -> azerite.paradise_lost.ok() )
+          rogue -> buffs.paradise_lost -> trigger( 1, buff_t::DEFAULT_VALUE(), (-1.0), remains() );
         break;
       case 2:
         rogue -> procs.roll_the_bones_2 -> occur();
@@ -6979,6 +6983,7 @@ void rogue_t::init_spells()
   azerite.fan_of_blades        = find_azerite_spell( "Fan of Blades" );
   azerite.inevitability        = find_azerite_spell( "Inevitability" );
   azerite.nights_vengeance     = find_azerite_spell( "Night's Vengeance" );
+  azerite.paradise_lost        = find_azerite_spell( "Paradise Lost" );
   azerite.perforate            = find_azerite_spell( "Perforate" );
   azerite.poisoned_wire        = find_azerite_spell( "Poisoned Wire" );
   azerite.scent_of_blood       = find_azerite_spell( "Scent of Blood" );
@@ -7325,6 +7330,9 @@ void rogue_t::create_buffs()
   buffs.nights_vengeance                   = make_buff( this, "nights_vengeance", find_spell( 273424 ) )
                                              -> set_trigger_spell( azerite.nights_vengeance.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.nights_vengeance.value() );
+  buffs.paradise_lost                      = make_buff<stat_buff_t>( this, "paradise_lost", find_spell( 278962 ) )
+                                             -> add_stat( STAT_AGILITY, azerite.paradise_lost.value() )
+                                             -> set_refresh_behavior( buff_refresh_behavior::DURATION );
   buffs.perforate                          = make_buff( this, "perforate", find_spell( 277720 ) )
                                              -> set_trigger_spell( azerite.perforate.spell_ref().effectN( 1 ).trigger() )
                                              -> set_default_value( azerite.perforate.value() );
