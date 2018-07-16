@@ -1391,9 +1391,10 @@ Description      : Restorative waters wash over a friendly target, healing them 
 Tooltip          : Heals $w2 every $t2 seconds.
 
 Name             : Earthquake (id=61882) [Spell Family (11)] 
+Hotfixed         : Variables
 Class            : Elemental Shaman
 School           : Nature
-Resource         : 75 Maelstrom (11) (id=2792)
+Resource         : 60 Maelstrom (11) (id=2792) [Hotfixed: Cost (75 -> 60)]
 Spell Level      : 48
 Range            : 35 yards
 GCD              : 1.5 seconds
@@ -1415,7 +1416,7 @@ Effects          :
 #3 (id=263791)   : Unknown(179)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 3691 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Causes the earth within $a1 yards of the target location to tremble and break, dealing $<damage> Physical damage over $d and sometimes knocking down enemies.
-Variables        : $damage=${$SPN*0.25*6}
+Variables        : $damage=${$SPN*0.25*6*(1+$@versadmg)*($137040s1+100)/100}
 
 Name             : Glyph of Deluge (Restoration) (id=63279) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -2783,16 +2784,16 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179724)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -3 | Scaled Value: -3 | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Searing Assault (268429), Icy Edge (271920), Lightning Shield Overcharge (273323), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556)
-                   Hotfixed: Base Value (2 -> -3)
+                   Hotfixed: Base Value (2 -> -6)
 #2 (id=191042)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -3 | Scaled Value: -3 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -6 | Scaled Value: -6 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Flametongue Attack (10444), Windfury Attack (25504), Stormstrike (32175), Stormstrike Off-Hand (32176), Windfury Attack (33750), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Lava Lash (60103), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Windstrike (115357), Windstrike Off-Hand (115360), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Lightning Bolt (187837), Crash Lightning (187874), Earthen Spike (188089), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192109), Rockbiter (193786), Flametongue (193796), Crash Lightning (195592), Frostbrand (196834), Frost Shock (196840), Sundering (197214), Fury of Air (197385), Icefury (210714), Crashing Storm (210801), Hailstorm (210854), Stormlash (213307), Feral Lunge (215802), Icefury Overload (219271), Searing Assault (268429), Icy Edge (271920), Lightning Shield Overcharge (273323), Lightning Shield (273324), Strength of Earth (273466), Lightning Conduit (275394), Rumbling Tremors (279556)
-                   Hotfixed: Base Value (2 -> -3)
+                   Hotfixed: Base Value (2 -> -6)
 #3 (id=191043)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: -3 | Scaled Value: -3 | Target: Self (1)
-                   Hotfixed: Base Value (2 -> -3)
+                   Base Value: -6 | Scaled Value: -6 | Target: Self (1)
+                   Hotfixed: Base Value (2 -> -6)
 #4 (id=191044)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Healing Surge (8004), Healing Surge (188070)
@@ -3696,7 +3697,8 @@ Effects          :
 #1 (id=275203)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.30000 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 #2 (id=325428)   : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3
+                   Base Value: 4 | Scaled Value: 4
+                   Hotfixed: Base Value (3 -> 4)
 Description      : Hurls a lightning bolt at the enemy, dealing $s1 Nature damage and then jumping to additional nearby enemies. Affects $x1 total targets.
 
 |cFFFFFFFFGenerates $s2 Maelstrom per target hit.|r 
@@ -3852,12 +3854,13 @@ Effects          :
                    Base Value: 99 | Scaled Value: 99 | Misc Value: 11 | Misc Value 2: 0x1 | Trigger Spell: 193777 | Target: Self (1)
 
 Name             : Fulmination (id=190493) [Spell Family (11), Passive] 
+Hotfixed         : Attributes
 Class            : Elemental Shaman
 School           : Physical
 Spell Level      : 1
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3865,19 +3868,23 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=279203)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 6 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Hotfixed: Base Value (6 -> 8)
 #2 (id=284316)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 8 | Scaled Value: 8 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Lava Burst (51505)
+                   Hotfixed: Base Value (8 -> 10)
 #3 (id=723931)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | Target: Self (1)
+                   Hotfixed: Base Value (3 -> 4)
 #4 (id=723962)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #5 (id=723963)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 4 | Scaled Value: 4 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Lava Burst Overload (77451)
 #6 (id=723964)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | Target: Self (1)
+                   Hotfixed: Base Value (2 -> 3)
 #7 (id=723965)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 15 | Scaled Value: 15 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Icefury (210714)
@@ -6844,16 +6851,17 @@ Effects          :
 Description      : While transformed into a Ghost Wolf, you gain $260881s1% increased movement speed and $260881s2% damage reduction every $260882t1 sec, stacking up to $260881u times.
 
 Name             : Spirit Wolf (id=260881) [Spell Family (11)] 
+Hotfixed         : Attributes
 Class            : Shaman
 School           : Physical
 Spell Level      : 1
-Duration         : 10 seconds
+Duration         : Aura (infinite)
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Triggered by     : Spirit Wolf (260882)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8812,11 +8820,12 @@ Effects          :
 Description      : $@spelldesc278719
 
 Name             : Roiling Storm (id=279515) [Scaling Spell (-1), Spell Family (11)] 
+Hotfixed         : Max stacks (30 -> 15)
 Class            : Shaman
 School           : Physical
 Range            : 100 yards
 Duration         : 30 seconds
-Stacks           : 30 maximum
+Stacks           : 15 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 

@@ -6415,7 +6415,8 @@ Attributes       : ........ ........ ........ x..x....   ........ ........ .....
                  : ........ ........ ........ ........   .x.....x ........ ........ ........ 
 Effects          :
 #1 (id=718057)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 250 | Scaled Value: 250 | Misc Value: 7 | Target: Self (1)
+                   Base Value: 225 | Scaled Value: 225 | Misc Value: 7 | Target: Self (1)
+                   Hotfixed: Base Value (250 -> 225)
 Description      : $@spelldesc269650
 Tooltip          : Damage done by your next non-instant Pyroblast increased by $s1%.
 
