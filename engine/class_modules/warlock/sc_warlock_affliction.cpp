@@ -297,7 +297,7 @@ namespace warlock
         p()->agony_accumulator += accumulator_increment;
 
         if ( p()->agony_accumulator >= 1 )
-        {
+       { 
           if (p()->azerite.wracking_brilliance.ok())
             wb->run(p());
           p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );

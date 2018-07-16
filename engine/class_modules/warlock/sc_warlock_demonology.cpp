@@ -373,7 +373,8 @@ namespace warlock {
 
         umbral_blaze_t* blaze;
 
-        hand_of_guldan_t(warlock_t* p, const std::string& options_str) : demonology_spell_t(p, "Hand of Gul'dan"), blaze(new umbral_blaze_t(p)) {
+        hand_of_guldan_t(warlock_t* p, const std::string& options_str) : demonology_spell_t(p, "Hand of Gul'dan"), blaze(new umbral_blaze_t(p))
+        {
             parse_options(options_str);
             aoe = -1;
             shards_used = 0;
@@ -382,6 +383,8 @@ namespace warlock {
               add_child(blaze);
             }
             parse_effect_data(p->find_spell(86040)->effectN(1));
+            if ( p->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
+              base_multiplier *= 1.1;
         }
 
         timespan_t travel_time() const override {
