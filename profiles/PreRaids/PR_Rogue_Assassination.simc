@@ -5,7 +5,6 @@ race=orc
 role=attack
 position=back
 talents=1130111
-artifact=43:0:0:0:0
 
 # Default consumables
 potion=prolonged_power
@@ -28,35 +27,16 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/apply_poison
 actions.precombat+=/stealth
 actions.precombat+=/potion
-actions.precombat+=/marked_for_death,if=raid_event.adds.in>40
+actions.precombat+=/marked_for_death,precombat_seconds=5,if=raid_event.adds.in>40
 
 # Executed every time the actor is available.
-actions=variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*(7)%2
-actions+=/variable,name=energy_time_to_max_combined,value=energy.deficit%variable.energy_regen_combined
+actions=variable,name=energy_regen_combined,value=energy.regen+poisoned_bleeds*7%(2*spell_haste)
 actions+=/call_action_list,name=cds
 actions+=/run_action_list,name=stealthed,if=stealthed.rogue
-actions+=/run_action_list,name=aoe,if=spell_targets.fan_of_knives>2
-actions+=/call_action_list,name=maintain
-actions+=/call_action_list,name=finish,if=(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)
-actions+=/call_action_list,name=build,if=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined
+actions+=/call_action_list,name=dot
+actions+=/call_action_list,name=direct
+actions+=/arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined
 actions+=/arcane_pulse
-
-# AoE
-actions.aoe=crimson_tempest,if=combo_points>=cp_max_spend
-actions.aoe+=/envenom,if=!buff.envenom.up&combo_points>=cp_max_spend
-actions.aoe+=/rupture,cycle_targets=1,if=combo_points>=cp_max_spend&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4
-actions.aoe+=/envenom,if=combo_points>=cp_max_spend
-actions.aoe+=/fan_of_knives
-
-# Builders
-actions.build=dispatch
-actions.build+=/fan_of_knives,if=buff.the_dreadlords_deceit.stack>=29|buff.hidden_blades.stack>=19
-# Mutilate is worth using over FoK for Exsanguinate builds in some 2T scenarios.
-actions.build+=/mutilate,if=talent.exsanguinate.enabled&(debuff.vendetta.up|combo_points<=2)
-actions.build+=/fan_of_knives,if=spell_targets>1+equipped.insignia_of_ravenholdt
-actions.build+=/fan_of_knives,if=combo_points>=3+talent.deeper_stratagem.enabled&artifact.poison_knives.rank>=5|fok_rotation
-actions.build+=/mutilate,cycle_targets=1,if=dot.deadly_poison_dot.refreshable
-actions.build+=/mutilate
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=60|debuff.vendetta.up&cooldown.vanish.remains<5
@@ -64,39 +44,47 @@ actions.cds+=/use_item,name=faulty_countermeasure
 actions.cds+=/use_item,name=tirathons_betrayal
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
-actions.cds+=/arcane_torrent,if=!buff.envenom.up&energy.deficit>=15+variable.energy_regen_combined*gcd.remains*1.1
 actions.cds+=/lights_judgment,if=debuff.vendetta.up
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)
-actions.cds+=/vendetta,if=!talent.exsanguinate.enabled|dot.rupture.ticking
-actions.cds+=/exsanguinate,if=!set_bonus.tier20_4pc&(prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up)
-actions.cds+=/exsanguinate,if=set_bonus.tier20_4pc&dot.garrote.remains>20&dot.rupture.remains>4+4*cp_max_spend
-actions.cds+=/vanish,if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&mantle_duration=0&debuff.vendetta.up
-actions.cds+=/vanish,if=talent.nightstalker.enabled&talent.exsanguinate.enabled&combo_points>=cp_max_spend&mantle_duration=0&cooldown.exsanguinate.remains<1
-actions.cds+=/vanish,if=talent.subterfuge.enabled&equipped.mantle_of_the_master_assassin&(debuff.vendetta.up|target.time_to_die<10)&mantle_duration=0
-actions.cds+=/vanish,if=talent.subterfuge.enabled&!equipped.mantle_of_the_master_assassin&!stealthed.rogue&dot.garrote.refreshable&((spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives)|(spell_targets.fan_of_knives>=4&combo_points.deficit>=4))
-actions.cds+=/vanish,if=talent.shadow_focus.enabled&variable.energy_time_to_max_combined>=2&combo_points.deficit>=4
-actions.cds+=/toxic_blade,if=combo_points.deficit>=1+(mantle_duration>=0.2)&dot.rupture.remains>8&cooldown.vendetta.remains>10
+actions.cds+=/vendetta,if=dot.rupture.ticking
+# Vanish with Nightstalker + Exsg: Maximum CP and Exsg ready for next GCD
+actions.cds+=/vanish,if=talent.nightstalker.enabled&talent.exsanguinate.enabled&combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1
+# Vanish with Nightstalker + No Exsg: Maximum CP and Vendetta up
+actions.cds+=/vanish,if=talent.nightstalker.enabled&!talent.exsanguinate.enabled&combo_points>=cp_max_spend&debuff.vendetta.up
+# Vanish with Subterfuge: No stealth/subterfuge, Garrote Refreshable, enough space for incoming Garrote CP
+actions.cds+=/vanish,if=talent.subterfuge.enabled&!stealthed.rogue&dot.garrote.refreshable&(spell_targets.fan_of_knives<=3&combo_points.deficit>=1+spell_targets.fan_of_knives|spell_targets.fan_of_knives>=4&combo_points.deficit>=4)
+# Vanish with Master Assasin: No stealth and no active MA buff, Rupture not in refresh range
+actions.cds+=/vanish,if=talent.master_assassin.enabled&!stealthed.all&master_assassin_remains<=0&!dot.rupture.refreshable
+# Exsanguinate after a full duration Rupture or a snaphot Garrote during subterfuge
+actions.cds+=/exsanguinate,if=prev_gcd.1.rupture&dot.rupture.remains>4+4*cp_max_spend&!stealthed.rogue|dot.garrote.pmultiplier>1&!cooldown.vanish.up&buff.subterfuge.up
+actions.cds+=/toxic_blade,if=dot.rupture.ticking
 
-# Finishers
-actions.finish=crimson_tempest,if=combo_points>=cp_max_spend
-actions.finish+=/envenom,if=combo_points>=4+(talent.deeper_stratagem.enabled&!set_bonus.tier19_4pc)&(debuff.vendetta.up|debuff.toxic_blade.up|mantle_duration>=0.2|energy.deficit<=25+variable.energy_regen_combined)
-actions.finish+=/envenom,if=talent.elaborate_planning.enabled&combo_points>=3+!talent.exsanguinate.enabled&buff.elaborate_planning.remains<0.2
+# Direct damage abilities
+# Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.
+actions.direct=envenom,if=combo_points>=4+talent.deeper_stratagem.enabled&(debuff.vendetta.up|debuff.toxic_blade.up|energy.deficit<=25+variable.energy_regen_combined|spell_targets.fan_of_knives>=2)&(!talent.exsanguinate.enabled|cooldown.exsanguinate.remains>2)
+actions.direct+=/variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+variable.energy_regen_combined|spell_targets.fan_of_knives>=2
+actions.direct+=/fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>=19|spell_targets.fan_of_knives>=2)
+actions.direct+=/blindside,if=variable.use_filler&(buff.blindside.up|!talent.venom_rush.enabled)
+actions.direct+=/mutilate,if=variable.use_filler
 
-# Maintain
-actions.maintain=rupture,if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2+artifact.urge_to_kill.enabled)))
-actions.maintain+=/rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6
-actions.maintain+=/pool_resource,for_next=1
-actions.maintain+=/garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4
-actions.maintain+=/garrote,if=set_bonus.tier20_4pc&talent.exsanguinate.enabled&prev_gcd.1.rupture&cooldown.exsanguinate.remains<1&(!cooldown.vanish.up|time>12)
-actions.maintain+=/rupture,if=!talent.exsanguinate.enabled&combo_points>=3&!ticking&mantle_duration=0&target.time_to_die>6
+# Damage over time abilities
+# Special Rupture setup for Exsg
+actions.dot=rupture,if=talent.exsanguinate.enabled&((combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1)|(!ticking&(time>10|combo_points>=2)))
+# Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher
+actions.dot+=/pool_resource,for_next=1
+actions.dot+=/garrote,cycle_targets=1,if=(!talent.subterfuge.enabled|!(cooldown.vanish.up&cooldown.vendetta.remains<=4))&combo_points.deficit>=1&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&(target.time_to_die-remains>4&spell_targets.fan_of_knives<=1|target.time_to_die-remains>12)
+# Crimson Tempest only on multiple targets at 4+ CP when running out in 2s (up to 4 targets) or 3s (5+ targets)
+actions.dot+=/crimson_tempest,if=spell_targets>=2&remains<2+(spell_targets>=5)&combo_points>=4
+# Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)
+actions.dot+=/rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>4
 
-# Stealthed
-actions.stealthed=mutilate,if=talent.shadow_focus.enabled&dot.garrote.ticking
-actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&combo_points.deficit>=1&set_bonus.tier20_4pc&((dot.garrote.remains<=13&!debuff.toxic_blade.up)|pmultiplier<=1)&!exsanguinated
-actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&combo_points.deficit>=1&!set_bonus.tier20_4pc&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2
-actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&combo_points.deficit>=1&!set_bonus.tier20_4pc&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2
-actions.stealthed+=/rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time)&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>6
-actions.stealthed+=/rupture,if=talent.exsanguinate.enabled&talent.nightstalker.enabled&target.time_to_die-remains>6
+# Stealthed Actions
+# Subterfuge: Apply or Refresh buffed Garrotes
+actions.stealthed=garrote,cycle_targets=1,if=talent.subterfuge.enabled&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2
+# Subterfuge: Override normal Garrotes with snapshot versions if there's time
+actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2
+# Nighstalker: Snapshot Rupture
+actions.stealthed+=/rupture,if=talent.nightstalker.enabled&target.time_to_die-remains>6
 actions.stealthed+=/envenom,if=combo_points>=cp_max_spend
 actions.stealthed+=/garrote,if=!talent.subterfuge.enabled&target.time_to_die-remains>4
 actions.stealthed+=/mutilate
@@ -119,12 +107,12 @@ main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=137549/137543/136718,rel
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=94.75
-# gear_agility=210
-# gear_stamina=322
-# gear_crit_rating=238
-# gear_haste_rating=35
-# gear_mastery_rating=56
-# gear_versatility_rating=75
-# gear_armor=168
+# gear_ilvl=165.88
+# gear_agility=413
+# gear_stamina=647
+# gear_crit_rating=459
+# gear_haste_rating=66
+# gear_mastery_rating=101
+# gear_versatility_rating=130
+# gear_armor=276
 # set_bonus=tier19p_leather_2pc=1

@@ -5,7 +5,6 @@ race=orc
 role=spell
 position=back
 talents=1022021
-artifact=54:0:0:0:0
 
 # Default consumables
 potion=prolonged_power
@@ -55,28 +54,28 @@ actions.combustion_phase+=/blood_fury
 actions.combustion_phase+=/berserking
 actions.combustion_phase+=/arcane_torrent
 actions.combustion_phase+=/use_items
-actions.combustion_phase+=/flamestrike,if=(talent.flame_patch.enabled&active_enemies>2|active_enemies>4)&buff.hot_streak.react
+actions.combustion_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react
 actions.combustion_phase+=/pyroblast,if=(buff.kaelthas_ultimate_ability.react|buff.pyroclasm.react)&buff.combustion.remains>execute_time
 actions.combustion_phase+=/pyroblast,if=buff.hot_streak.react
 actions.combustion_phase+=/fire_blast,if=buff.heating_up.react
 actions.combustion_phase+=/scorch,if=buff.combustion.remains>cast_time
 actions.combustion_phase+=/dragons_breath,if=!buff.hot_streak.react&action.fire_blast.charges<1
-actions.combustion_phase+=/scorch,if=target.health.pct<=30&equipped.132454
+actions.combustion_phase+=/scorch,if=target.health.pct<=30&(equipped.132454|talent.searing_touch.enabled)
 
 actions.rop_phase=rune_of_power
-actions.rop_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.react
+actions.rop_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>4)&buff.hot_streak.react
 actions.rop_phase+=/pyroblast,if=buff.hot_streak.react
 actions.rop_phase+=/call_action_list,name=active_talents
 actions.rop_phase+=/pyroblast,if=buff.kaelthas_ultimate_ability.react&execute_time<buff.kaelthas_ultimate_ability.remains&buff.rune_of_power.remains>cast_time
 actions.rop_phase+=/pyroblast,if=buff.pyroclasm.react&execute_time<buff.pyroclasm.remains&buff.rune_of_power.remains>cast_time
 actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast&buff.heating_up.react&firestarter.active&charges_fractional>1.7
 actions.rop_phase+=/fire_blast,if=!prev_off_gcd.fire_blast&!firestarter.active
-actions.rop_phase+=/scorch,if=target.health.pct<=30&equipped.132454
+actions.rop_phase+=/scorch,if=target.health.pct<=30&(equipped.132454|talent.searing_touch.enabled)
 actions.rop_phase+=/dragons_breath,if=active_enemies>2
 actions.rop_phase+=/flamestrike,if=(talent.flame_patch.enabled&active_enemies>2)|active_enemies>5
 actions.rop_phase+=/fireball
 
-actions.standard_rotation=flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>3)&buff.hot_streak.react
+actions.standard_rotation=flamestrike,if=((talent.flame_patch.enabled&active_enemies>1)|active_enemies>4)&buff.hot_streak.react
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&buff.hot_streak.remains<action.fireball.execute_time
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&firestarter.active&!talent.rune_of_power.enabled
 actions.standard_rotation+=/pyroblast,if=buff.hot_streak.react&(!prev_gcd.1.pyroblast|action.pyroblast.in_flight)
@@ -86,8 +85,7 @@ actions.standard_rotation+=/pyroblast,if=buff.pyroclasm.react&execute_time<buff.
 actions.standard_rotation+=/call_action_list,name=active_talents
 actions.standard_rotation+=/fire_blast,if=!talent.kindling.enabled&buff.heating_up.react&(!talent.rune_of_power.enabled|charges_fractional>1.4|cooldown.combustion.remains<40)&(3-charges_fractional)*(12*spell_haste)<cooldown.combustion.remains+3|target.time_to_die<4
 actions.standard_rotation+=/fire_blast,if=talent.kindling.enabled&buff.heating_up.react&(!talent.rune_of_power.enabled|charges_fractional>1.5|cooldown.combustion.remains<40)&(3-charges_fractional)*(18*spell_haste)<cooldown.combustion.remains+3|target.time_to_die<4
-actions.standard_rotation+=/flamestrike,if=(talent.flame_patch.enabled&active_enemies>3)|active_enemies>5
-actions.standard_rotation+=/scorch,if=target.health.pct<=30&equipped.132454
+actions.standard_rotation+=/scorch,if=target.health.pct<=30&(equipped.132454|talent.searing_touch.enabled)
 actions.standard_rotation+=/fireball
 actions.standard_rotation+=/scorch
 
@@ -109,12 +107,12 @@ main_hand=felomelorn,id=128820,gem_id=137470/137420/133022,relic_id=3412/3412/34
 off_hand=heart_of_the_phoenix,id=133959
 
 # Gear Summary
-# gear_ilvl=164.75
-# gear_stamina=647
-# gear_intellect=447
-# gear_crit_rating=491
-# gear_haste_rating=110
-# gear_mastery_rating=182
-# gear_versatility_rating=43
-# gear_armor=185
+# gear_ilvl=160.75
+# gear_stamina=605
+# gear_intellect=469
+# gear_crit_rating=435
+# gear_haste_rating=105
+# gear_mastery_rating=167
+# gear_versatility_rating=38
+# gear_armor=160
 # set_bonus=tier19p_cloth_2pc=1

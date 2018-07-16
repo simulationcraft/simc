@@ -60,6 +60,8 @@ position=back
 talents=1022021
 spec=fire
 
+firestarter_time=20
+
 head=runebound_collar,id=152138,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=runebound_mantle,id=152141,bonus_id=3612/1502
@@ -76,7 +78,5 @@ trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=felomelorn,id=128820,gem_id=155849/152026/155849,bonus_id=730,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=heart_of_the_phoenix,id=133959
-
-firestarter_time=20
 
 save=T21_Mage_Fire.simc

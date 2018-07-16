@@ -13,10 +13,10 @@
 PR_Generate_Death_Knight.simc
 
 # Demon Hunter
-#PR_Generate_Demon_Hunter.simc
+PR_Generate_Demon_Hunter.simc
 
 # Druid
-#PR_Generate_Druid.simc
+PR_Generate_Druid.simc
 
 # Hunter
 PR_Generate_Hunter.simc
@@ -25,7 +25,7 @@ PR_Generate_Hunter.simc
 PR_Generate_Mage.simc
 
 # Monk
-#PR_Generate_Monk.simc
+PR_Generate_Monk.simc
 
 # Paladin
 PR_Generate_Paladin.simc
@@ -37,10 +37,10 @@ PR_Generate_Priest.simc
 PR_Generate_Rogue.simc
 
 # Shaman
-#PR_Generate_Shaman.simc
+PR_Generate_Shaman.simc
 
 # Warlock
 PR_Generate_Warlock.simc
 
 # Warrior
-#PR_Generate_Warrior.simc
+# PR_Generate_Warrior.simc

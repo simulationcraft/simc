@@ -5,7 +5,6 @@ race=human
 role=spell
 position=back
 talents=3101011
-artifact=39:0:0:0:0
 
 # Default consumables
 potion=prolonged_power
@@ -29,15 +28,18 @@ actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enable
 actions.precombat+=/potion
 
 # Executed every time the actor is available.
-actions=soul_harvest,if=buff.active_uas.stack>0
+actions=dark_soul,if=buff.active_uas.stack>0
 actions+=/haunt
 actions+=/agony,if=refreshable
 actions+=/siphon_life,if=refreshable
 actions+=/corruption,if=refreshable
 actions+=/phantom_singularity
+actions+=/vile_taint
 actions+=/unstable_affliction,if=soul_shard=5
 actions+=/unstable_affliction,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking=0)|soul_shard>2
+actions+=/summon_darkglare
 actions+=/deathbolt
+actions+=/drain_soul,chain=1,interrupt=1
 actions+=/shadow_bolt
 
 head=collar_of_enclosure,id=134424,bonus_id=1492/1727
@@ -54,15 +56,15 @@ finger1=archdruids_tainted_seal,id=134487,bonus_id=1492/1727,enchant_id=5429
 finger2=ring_of_twisted_webbing,id=134540,bonus_id=1492/1727,enchant_id=5429
 trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1492/1727
 trinket2=orb_of_voidsight,id=133596
-main_hand=ulthalesh_the_deadwind_harvester,id=128942,ilevel=180,gem_id=142063/141283/142063
+main_hand=ulthalesh_the_deadwind_harvester,id=128942,ilevel=180,azerite_level=180,gem_id=142063/141283/142063
 
 # Gear Summary
-# gear_ilvl=104.80
-# gear_stamina=382
-# gear_intellect=411
-# gear_crit_rating=37
-# gear_haste_rating=149
-# gear_mastery_rating=299
-# gear_armor=109
+# gear_ilvl=180.40
+# gear_stamina=729
+# gear_intellect=617
+# gear_crit_rating=75
+# gear_haste_rating=281
+# gear_mastery_rating=564
+# gear_armor=176
 # set_bonus=tier19p_cloth_2pc=1
 default_pet=felhunter
