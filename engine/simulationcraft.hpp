@@ -7725,7 +7725,8 @@ inline bool cooldown_t::is_ready() const
 template <class T>
 sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)
 {
-  _raw << sim.current_time() << " " << rhs << "\n";
+  fmt::fprintf(*_raw.get_stream(), "%.3f ", sim.current_time().total_seconds());
+  _raw << rhs << "\n";
 
   return *this;
 }
@@ -7733,7 +7734,7 @@ sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)
 template<typename Format, typename... Args>
 sim_ostream_t& sim_ostream_t::printf(Format&& format, Args&& ... args)
 {
-  _raw << sim.current_time() << " ";
+  fmt::fprintf(*_raw.get_stream(), "%.3f ", sim.current_time().total_seconds());
   fmt::fprintf(*_raw.get_stream(), std::forward<Format>(format), std::forward<Args>(args)... );
   _raw << "\n";
   return *this;

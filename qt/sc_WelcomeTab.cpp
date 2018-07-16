@@ -32,7 +32,7 @@ SC_WelcomeTabWidget_WebEngine::SC_WelcomeTabWidget_WebEngine( SC_MainWindow* par
   QString welcomeFile("");
   for(const auto& path : SC_PATHS::getDataPaths())
   {
-      QFile welcome_path = path + "/Welcome.html";
+      QFile welcome_path(path + "/Welcome.html");
       if (welcome_path.exists())
       {
           welcomeFile = welcome_path.fileName();
