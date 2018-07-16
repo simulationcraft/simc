@@ -29,8 +29,18 @@ SC_WelcomeTabWidget_WebEngine::SC_WelcomeTabWidget_WebEngine( SC_MainWindow* par
     welcome_uri(),
     welcome_timer( new QTimer( this ) )
 {
-  QString welcomeFile = SC_PATHS::getDataPath() + "/Welcome.html";
+  QString welcomeFile("");
+  for(const auto& path : SC_PATHS::getDataPaths())
+  {
+      QFile welcome_path = path + "/Welcome.html";
+      if (welcome_path.exists())
+      {
+          welcomeFile = welcome_path.fileName();
+          break;
+      }
+  }
   welcome_uri = "file:///" + welcomeFile;
+  qDebug() << "welcome_uri: " << welcome_uri << "\n";
 
   welcome_timer->setSingleShot( true );
   welcome_timer->setInterval( 500 );

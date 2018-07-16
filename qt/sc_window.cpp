@@ -53,28 +53,27 @@ struct HtmlOutputFunctor
 // SC_PATHS
 // ==========================================================================
 
-QString SC_PATHS::getDataPath()
+QStringList SC_PATHS::getDataPaths()
 {
 #if defined( Q_OS_WIN )
-    return QCoreApplication::applicationDirPath();
+    return QStringList(QCoreApplication::applicationDirPath());
 #elif defined( Q_OS_MAC )
-    return QCoreApplication::applicationDirPath() + "/../Resources";
+    return QStringList(QCoreApplication::applicationDirPath() + "/../Resources");
 #else
   #if !defined( SC_TO_INSTALL )
-    return QCoreApplication::applicationDirPath();
+    return QStringList(QCoreApplication::applicationDirPath());
   #else
-    QString shared_path;
+    QStringList shared_paths;
     QStringList appdatalocation =  QStandardPaths::standardLocations( QStandardPaths::DataLocation );
     for( int i = 0; i < appdatalocation.size(); ++i )
     {
       QDir dir( appdatalocation[ i ]);
         if ( dir.exists() )
         {
-          shared_path = dir.path();
-            break;
+          shared_paths.append(dir.path());
         }
     }
-    return shared_path;
+    return shared_paths;
   #endif
 #endif
 }
@@ -245,14 +244,14 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   QDir::home().mkpath( AppDataDir );
 #endif
 
-  QStringList s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
-  assert( !s.isEmpty() );
-  TmpDir = s.first();
+  TmpDir = QStandardPaths::writableLocation( QStandardPaths::CacheLocation );
+  assert( !TmpDir.isEmpty() );
+  qDebug() << "TmpDir: " << TmpDir;
 
   // Set ResultsDestDir
-  s = QStandardPaths::standardLocations( QStandardPaths::DocumentsLocation );
-  assert( !s.isEmpty() );
-  ResultsDestDir = s.first();
+  ResultsDestDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation );
+  assert( !ResultsDestDir.isEmpty() );
+  qDebug() << "ResultsDestDir: " << ResultsDestDir;
 
   logFileText = QDir::toNativeSeparators( AppDataDir + "/log.txt" );
   resultsFileText = QDir::toNativeSeparators( AppDataDir + "/results.html" );

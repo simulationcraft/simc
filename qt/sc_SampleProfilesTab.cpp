@@ -22,12 +22,16 @@ SC_SampleProfilesTab::SC_SampleProfilesTab( QWidget* parent ) :
     QWidget* bisIntroduction = new QWidget();
     bisIntroduction -> setLayout( bisIntroductionFormLayout );
 
-    QDir baseDir(SC_PATHS::getDataPath() + "/profiles");
-    qDebug() << "Sample Profiles Base Path: " << baseDir.absolutePath() << " exists: " << baseDir.exists();
-    if ( baseDir.exists() )
+    for(const auto& path : SC_PATHS::getDataPaths())
     {
-       fillTree( baseDir );
+      QDir baseDir(path + "/profiles");
+      qDebug() << "Sample Profiles Base Path: " << baseDir.absolutePath() << " exists: " << baseDir.exists();
+      if ( baseDir.exists() )
+      {
+         fillTree( baseDir );
+      }
     }
+
 
     QVBoxLayout* bisTabLayout = new QVBoxLayout();
     bisTabLayout -> addWidget( bisIntroduction, 1 );

@@ -90,7 +90,7 @@ inline QString webEngineName()
 
 struct SC_PATHS
 {
-    static QString getDataPath();
+    static QStringList getDataPaths();
 };
 
 // ============================================================================

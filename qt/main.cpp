@@ -99,12 +99,18 @@ int main( int argc, char *argv[] )
   QTranslator myappTranslator;
   if ( !lang.isEmpty() && !lang.startsWith( "en" ) )
   {
-    QString path_to_locale = SC_PATHS::getDataPath() + "/locale";
+    for(const auto& path : SC_PATHS::getDataPaths())
+    {
+      QString path_to_locale = path + "/locale";
 
-    QString qm_file = QString( "sc_" ) + lang;
-    qDebug() << "[Localization]: Trying to load local file from: " << path_to_locale << "/" << qm_file << ".qm";
-    myappTranslator.load( qm_file, path_to_locale );
-    qDebug() << "[Localization]: Loaded translator isEmpty(): " << myappTranslator.isEmpty();
+      QString qm_file = QString( "sc_" ) + lang;
+      qDebug() << "[Localization]: Trying to load local file from: " << path_to_locale << "/" << qm_file << ".qm";
+      if (myappTranslator.load( qm_file, path_to_locale ))
+      {
+        break;
+      }
+      qDebug() << "[Localization]: Loaded translator isEmpty(): " << myappTranslator.isEmpty();
+    }
   }
   else
   {
