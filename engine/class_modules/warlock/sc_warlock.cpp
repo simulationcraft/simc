@@ -1279,7 +1279,7 @@ struct warlock_module_t : public module_t
     unique_gear::register_special_effect( 281494, reap_and_sow );
     unique_gear::register_special_effect( 281495, wakeners_loyalty );
     unique_gear::register_special_effect( 281496, lessons_of_spacetime );
-    unique_gear::register_special_effect( 280740, insignia_of_the_grand_army );
+    // unique_gear::register_special_effect( 280740, insignia_of_the_grand_army );
     unique_gear::register_special_effect( 214225, kazzaks_final_curse );
     unique_gear::register_special_effect( 205721, recurrent_ritual );
     unique_gear::register_special_effect( 213014, magistrike_restraints );
