@@ -1163,7 +1163,7 @@ void enemy_t::init_race()
   if ( !sim -> target_race.empty() )
   {
     race = util::parse_race_type( sim -> target_race );
-    if (race == RACE_NONE)
+    if (race == RACE_UNKNOWN)
     {
       throw std::invalid_argument(
           fmt::format( "{} could not parse race from sim target race '{}'.", name(), sim->target_race ) );

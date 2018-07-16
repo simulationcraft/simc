@@ -91,6 +91,15 @@ inline T parse_enum( const std::string& name )
   return Min;
 }
 
+template <typename T, T Min, T Max, T not_found, const char* F( T )>
+inline T parse_enum_with_default( const std::string& name )
+{
+  for ( T i = Min; i < Max; ++i )
+    if ( util::str_compare_ci( name, F( i ) ) )
+      return i;
+  return not_found;
+}
+
 // pred_ci ==================================================================
 
 bool pred_ci ( char a, char b )
@@ -306,6 +315,7 @@ const char* util::race_type_string( race_e type )
     case RACE_DARK_IRON_DWARF:     return "dark_iron_dwarf";
     case RACE_MAGHAR_ORC:          return "maghar_orc";
     case RACE_MAX:                 return "unknown";
+    case RACE_UNKNOWN:             return "unknown";
     // no default statement so we get warnings if something is missing.
   }
   return "unknown";
@@ -336,7 +346,7 @@ race_e util::parse_race_type( const std::string &name )
   if ( name == "lightforgeddraenei" ) return RACE_LIGHTFORGED_DRAENEI;
   if ( name == "highmountaintauren" ) return RACE_HIGHMOUNTAIN_TAUREN;
 
-  return parse_enum<race_e, RACE_NONE, RACE_MAX, race_type_string>( name );
+  return parse_enum_with_default<race_e, RACE_NONE, RACE_MAX, RACE_UNKNOWN, race_type_string>( name );
 }
 
 // position_type_string =====================================================

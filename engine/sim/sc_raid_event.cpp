@@ -115,7 +115,7 @@ struct adds_event_t : public raid_event_t
     if ( !race_str.empty() )
     {
       race = util::parse_race_type( race_str );
-      if ( race == RACE_NONE )
+      if ( race == RACE_UNKNOWN )
       {
         throw std::invalid_argument( fmt::format( "{} could not parse race from '{}'.", *this, race_str ) );
       }
@@ -124,7 +124,7 @@ struct adds_event_t : public raid_event_t
     {
       race = util::parse_race_type( sim->target_race );
 
-      if ( race == RACE_NONE )
+      if ( race == RACE_UNKNOWN )
       {
         throw std::invalid_argument(
             fmt::format( "{} could not parse race from sim target race '{}'.", *this, sim->target_race ) );

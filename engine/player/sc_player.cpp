@@ -1445,7 +1445,7 @@ void player_t::init_race()
   else
   {
     race = util::parse_race_type( race_str );
-    if ( race == RACE_NONE)
+    if ( race == RACE_UNKNOWN)
     {
       throw std::invalid_argument(fmt::format("Unknown race '{}'.", race_str ));
     }
