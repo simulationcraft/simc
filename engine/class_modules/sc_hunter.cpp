@@ -5338,6 +5338,10 @@ std::string hunter_t::special_use_item_action( const std::string& item_name, con
 void hunter_t::apl_bm()
 {
   action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* precombat    = get_action_priority_list( "precombat" );
+
+  // Precombat actions
+  precombat -> add_action( this, "Aspect of the Wild" );
 
   default_list -> add_action( "auto_shot" );
   default_list -> add_action( this, "Counter Shot", "if=equipped.sephuzs_secret&target.debuff.casting.react&cooldown.buff_sephuzs_secret.up&!buff.sephuzs_secret.up" );
