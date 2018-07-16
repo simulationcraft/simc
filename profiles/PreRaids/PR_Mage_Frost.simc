@@ -5,7 +5,6 @@ race=orc
 role=spell
 position=back
 talents=3122111
-artifact=53:0:0:0:0
 
 # Default consumables
 potion=prolonged_power
@@ -32,60 +31,55 @@ actions.precombat+=/frostbolt
 
 # Executed every time the actor is available.
 actions=counterspell
-# Free Ice Lance after Flurry. This action has rather high priority to ensure that we don't cast Rune of Power, Ray of Frost, etc. after Flurry and break up the combo. If FoF was already active, we do not lose anything by delaying the Ice Lance.
-actions+=/ice_lance,if=!buff.fingers_of_frost.react&prev_gcd.1.flurry
-# Time Warp is used right at the start. If the actor has Shard of the Exodar, try to synchronize the second Time Warp with Icy Veins. If the target is about to die, use Time Warp regardless.
-actions+=/time_warp,if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(cooldown.icy_veins.remains<1|target.time_to_die<50)
+actions+=/ice_lance,if=prev_gcd.1.flurry&!buff.fingers_of_frost.react
+actions+=/time_warp,if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(prev_gcd.1.icy_veins|target.time_to_die<50)
 actions+=/call_action_list,name=cooldowns
-actions+=/call_action_list,name=aoe,if=active_enemies>=4
+actions+=/call_action_list,name=aoe,if=active_enemies>3&talent.freezing_rain.enabled|active_enemies>4
 actions+=/call_action_list,name=single
 
 actions.aoe=frozen_orb
 actions.aoe+=/blizzard
 actions.aoe+=/comet_storm
 actions.aoe+=/ice_nova
-actions.aoe+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled|buff.icicles.stack<=4))
+actions.aoe+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.frostbolt&(buff.icicles.stack<4|!talent.glacial_spike.enabled)|prev_gcd.1.glacial_spike)
 actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react
-actions.aoe+=/ebonbolt
-actions.aoe+=/glacial_spike,if=buff.brain_freeze.react
 actions.aoe+=/ray_of_frost
+actions.aoe+=/ebonbolt
+actions.aoe+=/glacial_spike
+actions.aoe+=/cone_of_cold
 actions.aoe+=/frostbolt
 actions.aoe+=/call_action_list,name=movement
-actions.aoe+=/cone_of_cold
 actions.aoe+=/ice_lance
 
-# Rune of Power is used when going into Icy Veins and while Icy Veins are up. Outside of Icy Veins, use Rune of Power when about to cap on charges or the target is about to die.
-actions.cooldowns=rune_of_power,if=cooldown.icy_veins.remains<cast_time|charges_fractional>1.9&cooldown.icy_veins.remains>10|buff.icy_veins.up|target.time_to_die+5<charges_fractional*10
-actions.cooldowns+=/potion,if=cooldown.icy_veins.remains<1|target.time_to_die<70
-actions.cooldowns+=/icy_veins
+actions.cooldowns=icy_veins
 actions.cooldowns+=/mirror_image
+actions.cooldowns+=/rune_of_power,if=time_to_die>10+cast_time&time_to_die<25
+actions.cooldowns+=/rune_of_power,if=active_enemies=1&talent.glacial_spike.enabled&buff.icicles.stack=5&(!talent.ebonbolt.enabled&buff.brain_freeze.react|talent.ebonbolt.enabled&(full_recharge_time<=cooldown.ebonbolt.remains&buff.brain_freeze.react|cooldown.ebonbolt.remains<cast_time&!buff.brain_freeze.react))
+actions.cooldowns+=/rune_of_power,if=active_enemies=1&!talent.glacial_spike.enabled&(prev_gcd.1.frozen_orb|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)
+actions.cooldowns+=/rune_of_power,if=active_enemies>1&prev_gcd.1.frozen_orb
+actions.cooldowns+=/potion,if=prev_gcd.1.icy_veins|target.time_to_die<70
 actions.cooldowns+=/use_items
 actions.cooldowns+=/blood_fury
 actions.cooldowns+=/berserking
-actions.cooldowns+=/arcane_torrent
 actions.cooldowns+=/lights_judgment
 
 actions.movement=blink,if=movement.distance>10
 actions.movement+=/ice_floes,if=buff.ice_floes.down
 
-# In some circumstances, it is possible for both Ice Lance and Ice Nova to benefit from a single Winter's Chill.
-actions.single=ice_nova,if=debuff.winters_chill.up
-actions.single+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!talent.glacial_spike.enabled|buff.icicles.stack<=4))
-# With T20 2pc, Frozen Orb should be used as soon as it comes off CD.
-actions.single+=/frozen_orb,if=set_bonus.tier20_2pc&buff.fingers_of_frost.react<2
-actions.single+=/blizzard,if=active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2
-actions.single+=/ice_lance,if=buff.fingers_of_frost.react
-actions.single+=/ebonbolt
+actions.single=ice_nova,if=cooldown.ice_nova.ready&debuff.winters_chill.up
+actions.single+=/flurry,if=!talent.glacial_spike.enabled&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&prev_gcd.1.frostbolt)
+actions.single+=/flurry,if=talent.glacial_spike.enabled&buff.brain_freeze.react&(prev_gcd.1.frostbolt&buff.icicles.stack<4|prev_gcd.1.glacial_spike|prev_gcd.1.ebonbolt)
 actions.single+=/frozen_orb
+actions.single+=/blizzard,if=active_enemies>2|active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2
+actions.single+=/ice_lance,if=buff.fingers_of_frost.react
+actions.single+=/ray_of_frost,if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0
 actions.single+=/comet_storm
+actions.single+=/ebonbolt,if=!talent.glacial_spike.enabled|buff.icicles.stack=5&!buff.brain_freeze.react
+actions.single+=/glacial_spike,if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled
+actions.single+=/blizzard,if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time
 actions.single+=/ice_nova
-# Against low number of targets, Blizzard is used as a filler. Zann'esu buffed Blizzard is used only at 5 stacks.
-actions.single+=/blizzard,if=active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time
-actions.single+=/glacial_spike,if=buff.brain_freeze.react
-actions.single+=/ray_of_frost
 actions.single+=/frostbolt
 actions.single+=/call_action_list,name=movement
-# Use Ice Lance to do at least some damage while moving.
 actions.single+=/ice_lance
 
 head=collar_of_enclosure,id=134424,bonus_id=1727
@@ -105,13 +99,13 @@ trinket2=oakhearts_gnarled_root,id=137306,bonus_id=1727
 main_hand=ebonchill,id=128862,gem_id=140831/139269/140831,relic_id=3412/3412/3412
 
 # Gear Summary
-# gear_ilvl=169.07
-# gear_stamina=645
-# gear_intellect=442
-# gear_crit_rating=267
-# gear_haste_rating=457
-# gear_mastery_rating=58
-# gear_versatility_rating=43
-# gear_leech_rating=19
-# gear_armor=185
+# gear_ilvl=161.33
+# gear_stamina=605
+# gear_intellect=468
+# gear_crit_rating=231
+# gear_haste_rating=411
+# gear_mastery_rating=63
+# gear_versatility_rating=38
+# gear_leech_rating=17
+# gear_armor=160
 # set_bonus=tier19p_cloth_2pc=1
