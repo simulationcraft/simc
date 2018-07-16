@@ -3689,6 +3689,20 @@ struct avatar_t: public warrior_spell_t
 
     p() -> buff.avatar -> trigger();
   }
+
+  bool verify_actor_spec() const override
+  {
+    if (p()->talents.avatar->ok())
+    {
+      // Do not check spec if Arms talent avatar is available, so that spec check on the spell (required: protection)
+      // does not fail.
+      return true;
+    }
+    else
+    {
+      return warrior_spell_t::verify_actor_spec();
+    }
+  }
 };
 
 // Battle Shout ===================================================================
