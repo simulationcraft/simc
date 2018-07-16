@@ -78,10 +78,6 @@ namespace warlock {
       double cost() const override
       {
         double c = warlock_spell_t::cost();
-        if (havocd)
-        {
-          return 0.0;
-        }
         return c;
       }
 
@@ -312,14 +308,6 @@ namespace warlock {
           td(s->target)->debuffs_shadowburn->trigger();
           p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(245731)->effectN(1).base_value()) / 10), p()->gains.shadowburn);
         }
-      }
-
-      virtual void update_ready(timespan_t cd_duration) override
-      {
-        if (havocd)
-          return;
-
-        destruction_spell_t::update_ready(cd_duration);
       }
     };
 
