@@ -1121,7 +1121,7 @@ void item::tarnished_sentinel_medallion( special_effect_t& effect )
   struct spectral_owl_blast_t : public proc_spell_t
   {
     spectral_owl_blast_t( const special_effect_t& effect ) :
-      proc_spell_t( "spectral_blast", effect.player, effect.player -> find_spell( 246442 ), effect.item )
+      proc_spell_t( "spectral_blast", effect.player, effect.player -> find_spell( 242571 ), effect.item )
     {
       cooldown -> duration = timespan_t::zero();
     }
