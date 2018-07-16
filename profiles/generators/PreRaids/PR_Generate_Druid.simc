@@ -7,7 +7,7 @@ spec=balance
 
 head=corpse_feast_headwrap,id=137427,bonus_id=1727
 neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_hidden_satyr
-shoulders=epaulets_of_dessicated_foliage,id=134452,bonus_id=1727
+shoulders=epaulets_of_desiccated_foliage,id=134452,bonus_id=1727
 back=goldscar_pelt,id=133639,bonus_id=1727,enchant=binding_of_intellect
 chest=wicked_broodmothers_chestguard,id=137449,bonus_id=1727
 wrists=flame_jugglers_armbands,id=137512,bonus_id=1727
