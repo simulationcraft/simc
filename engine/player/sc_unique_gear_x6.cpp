@@ -2648,7 +2648,7 @@ struct flame_gale_pulse_t : proc_spell_t
   double chest_multiplier;
   double paired_multiplier;
   flame_gale_pulse_t( special_effect_t& effect ) :
-    proc_spell_t( "flame_gale_pulse", effect.player, effect.player -> find_spell( 230213 ) ),
+    proc_spell_t( "flame_gale_pulse", effect.player, effect.player -> find_spell( 230215 ) ),
     chest_multiplier( util::composite_karazhan_empower_multiplier( effect.player ) ),
     paired_multiplier( 1.0 )
   {
@@ -2658,7 +2658,7 @@ struct flame_gale_pulse_t : proc_spell_t
     aoe = -1;
     if ( player -> karazhan_trinkets_paired )
       paired_multiplier += 0.3;
-    base_dd_min = base_dd_max = data().effectN( 2 ).average( effect.item ) * paired_multiplier * chest_multiplier;
+    base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item ) * paired_multiplier * chest_multiplier;
   }
 };
 
