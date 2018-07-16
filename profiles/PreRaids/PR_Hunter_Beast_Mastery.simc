@@ -26,6 +26,7 @@ actions.precombat+=/summon_pet
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
+actions.precombat+=/aspect_of_the_wild
 
 # Executed every time the actor is available.
 actions=auto_shot
