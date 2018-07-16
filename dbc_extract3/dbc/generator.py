@@ -1276,6 +1276,7 @@ class SpellDataGenerator(DataGenerator):
             ( 121153, 0 ),          # Blindside proc buff
             ( 278981, 0 ),          # The First Dance, Azerite trait aura
             ( 273009, 0 ),          # Double Dose, Azerite trait dmg spell
+            ( 278962, 0 ),          # Paradise Lost, Azerite trait buff
         ),
 
         # Priest:
