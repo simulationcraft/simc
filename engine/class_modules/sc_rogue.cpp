@@ -346,6 +346,7 @@ struct rogue_t : public player_t
     gain_t* shadow_blades;
     gain_t* t19_4pc_subtlety;
     gain_t* t21_4pc_subtlety;
+    gain_t* ace_up_your_sleeve;
   } gains;
 
   // Spec passives
@@ -490,6 +491,7 @@ struct rogue_t : public player_t
   // Azerite powers
   struct azerite_powers_t
   {
+    azerite_power_t ace_up_your_sleeve;
     azerite_power_t blade_in_the_shadows;
     azerite_power_t deadshot;
     azerite_power_t double_dose;
@@ -2410,6 +2412,16 @@ struct between_the_eyes_t : public rogue_attack_t
     crit_bonus_multiplier *= 1.0 + p -> find_specialization_spell( 235484 ) -> effectN( 1 ).percent();
   }
 
+  double bonus_da( const action_state_t* state ) const override
+  {
+    double b = rogue_attack_t::bonus_da( state );
+
+    if ( p() -> azerite.ace_up_your_sleeve.ok() )
+      b += cast_state( state ) -> cp * p() -> azerite.ace_up_your_sleeve.value();
+
+    return b;
+  }
+
   double composite_crit_chance() const override
   {
     double c = rogue_attack_t::composite_crit_chance();
@@ -2428,9 +2440,10 @@ struct between_the_eyes_t : public rogue_attack_t
 
     p() -> trigger_restless_blades( execute_state );
 
+    const rogue_attack_state_t* rs = rogue_attack_t::cast_state( execute_state );
+
     if ( greenskins_waterlogged_wristcuffs )
     {
-      const rogue_attack_state_t* rs = rogue_attack_t::cast_state( execute_state );
       if ( rng().roll( greenskins_waterlogged_wristcuffs -> effectN( 1 ).percent() * rs -> cp ) )
       {
         p() -> buffs.greenskins_waterlogged_wristcuffs -> trigger();
@@ -2442,6 +2455,9 @@ struct between_the_eyes_t : public rogue_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       p() -> buffs.deadshot -> trigger();
+
+      if ( p() -> azerite.ace_up_your_sleeve.ok() && rng().roll( rs -> cp * p() -> azerite.ace_up_your_sleeve.spell_ref().effectN( 2 ).percent() ) )
+        p() -> trigger_combo_point_gain( p() -> azerite.ace_up_your_sleeve.spell_ref().effectN( 3 ).base_value() , p() -> gains.ace_up_your_sleeve, this );
     }
   }
 };
@@ -6977,6 +6993,7 @@ void rogue_t::init_spells()
   talent.secret_technique   = find_talent_spell( "Secret Technique" );
   talent.shuriken_tornado   = find_talent_spell( "Shuriken Tornado" );
 
+  azerite.ace_up_your_sleeve   = find_azerite_spell( "Ace Up Your Sleeve" );
   azerite.blade_in_the_shadows = find_azerite_spell( "Blade In The Shadows" );
   azerite.deadshot             = find_azerite_spell( "Deadshot" );
   azerite.double_dose          = find_azerite_spell( "Double Dose" );
@@ -7048,6 +7065,7 @@ void rogue_t::init_gains()
   gains.t20_4pc_outlaw           = get_gain( "Lesser Adrenaline Rush"   );
   gains.t21_4pc_subtlety         = get_gain( "Tier 21 4PC Set Bonus"    );
   gains.t21_4pc_assassination    = get_gain( "Tier 21 4PC Set Bonus"    );
+  gains.ace_up_your_sleeve       = get_gain( "Ace Up Your Sleeve"       );
 }
 
 // rogue_t::init_procs ======================================================
