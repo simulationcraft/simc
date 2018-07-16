@@ -256,8 +256,6 @@ struct rogue_t : public player_t
     buff_t* the_dreadlords_deceit_driver;
     buff_t* the_dreadlords_deceit;
     buff_t* sephuzs_secret;
-    // Assassination
-    buff_t* the_empty_crown;
     // Outlaw
     buff_t* greenskins_waterlogged_wristcuffs;
     buff_t* shivarran_symmetry;
@@ -7286,12 +7284,6 @@ void rogue_t::create_buffs()
       -> set_default_value( find_spell( 208052 ) -> effectN( 2 ).percent() )
       -> add_invalidate( CACHE_RUN_SPEED )
       -> add_invalidate( CACHE_HASTE );
-  // Assassination
-  buffs.the_empty_crown                    = make_buff( this, "the_empty_crown", find_spell(248201) )
-                                             -> set_period( find_spell(248201) -> effectN( 1 ).period() )
-                                             -> set_tick_callback( [ this ]( buff_t* b, int, const timespan_t& ) {
-                                               resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.the_empty_crown );
-                                             } );
   // Outlaw
   buffs.greenskins_waterlogged_wristcuffs  = make_buff( this, "greenskins_waterlogged_wristcuffs", find_spell( 209423 ) );
   buffs.shivarran_symmetry                 = make_buff( this, "shivarran_symmetry", find_spell( 226318 ) );
@@ -7860,6 +7852,8 @@ void rogue_t::regen( timespan_t periodicity )
       resource_gain( RESOURCE_ENERGY, buffs.buried_treasure -> check_value() * periodicity.total_seconds(), gains.buried_treasure );
     if ( buffs.vendetta -> up() )
       resource_gain( RESOURCE_ENERGY, buffs.vendetta -> check_value() * periodicity.total_seconds(), gains.vendetta );
+    if ( legendary.the_empty_crown )
+      resource_gain( RESOURCE_ENERGY, legendary.the_empty_crown -> effectN( 1 ).base_value() / 5 * periodicity.total_seconds(), gains.the_empty_crown );
   }
 }
 
@@ -8091,7 +8085,7 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 209041, insignia_of_ravenholdt_t()            );
     unique_gear::register_special_effect( 235022, mantle_of_the_master_assassin_t()     );
     unique_gear::register_special_effect( 248107, the_curse_of_restlessness_t()         );
-    unique_gear::register_special_effect( 248106, the_empty_crown_t()                   );
+    unique_gear::register_special_effect( 281492, the_empty_crown_t()                   );
     unique_gear::register_special_effect( 248110, the_first_of_the_dead_t()             );
     unique_gear::register_special_effect( 208051, sephuzs_secret_t()                    );
   }
