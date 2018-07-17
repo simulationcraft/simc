@@ -787,7 +787,6 @@ namespace warlock
 
     struct phantom_singularity_t : public affliction_spell_t
     {
-      phantom_singularity_tick_t* phantom_singularity;
 
       phantom_singularity_t( warlock_t* p, const std::string& options_str ) :
         affliction_spell_t( "phantom_singularity", p, p -> talents.phantom_singularity )
@@ -795,20 +794,19 @@ namespace warlock
         parse_options( options_str );
         callbacks = false;
         hasted_ticks = true;
-        phantom_singularity = new phantom_singularity_tick_t( p );
-        add_child( phantom_singularity );
+        tick_action = new phantom_singularity_tick_t( p );
+      }
+
+      void init() override
+      {
+        affliction_spell_t::init();
+
+        update_flags &= ~STATE_HASTE;
       }
 
       timespan_t composite_dot_duration( const action_state_t* s ) const override
       {
         return s->action->tick_time( s ) * 8.0;
-      }
-
-      void tick( dot_t* d ) override
-      {
-        phantom_singularity->execute();
-
-        affliction_spell_t::tick( d );
       }
     };
 
