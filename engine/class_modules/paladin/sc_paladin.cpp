@@ -2068,6 +2068,34 @@ bool paladin_t::get_how_availability() const
 
 // player_t::create_expression ==============================================
 
+expr_t* paladin_t::create_consecration_expression( const std::string& expr_str )
+{
+  auto expr = util::string_split( expr_str, "." );
+  if ( expr.size() != 2 )
+  {
+    return nullptr;
+  }
+
+  if ( ! util::str_compare_ci( expr[ 0u ], "consecration" ) )
+  {
+    return nullptr;
+  }
+
+  if ( util::str_compare_ci( expr[ 1u ], "ticking" ) ||
+       util::str_compare_ci( expr[ 1u ], "up" ) )
+  {
+    return make_fn_expr( "consecration_ticking", [ this ]() { return active_consecration == nullptr ? 0 : 1; } );
+  }
+  else if ( util::str_compare_ci( expr[ 1u ], "remains" ) )
+  {
+    return make_fn_expr( "consecration_remains", [ this ]() {
+      return active_consecration == nullptr ? 0 : active_consecration -> remaining_time().total_seconds();
+    } );
+  }
+
+  return nullptr;
+}
+
 expr_t* paladin_t::create_expression( const std::string& name_str )
 {
   struct paladin_expr_t : public expr_t
@@ -2126,6 +2154,12 @@ expr_t* paladin_t::create_expression( const std::string& name_str )
   if ( splits[ 0 ] == "time_to_hpg" )
   {
     return new time_to_hpg_expr_t( name_str, *this );
+  }
+
+  auto cons_expr = create_consecration_expression( name_str );
+  if ( cons_expr )
+  {
+    return cons_expr;
   }
 
   return player_t::create_expression( name_str );

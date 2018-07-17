@@ -488,6 +488,8 @@ public:
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
 
+  expr_t*   create_consecration_expression( const std::string& expr_str );
+  
  ground_aoe_event_t* active_consecration;
 
   std::string default_potion() const override;
