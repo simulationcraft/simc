@@ -2926,8 +2926,6 @@ double player_t::composite_melee_attack_power() const
   ap += current.attack_power_per_strength * cache.strength();
   ap += current.attack_power_per_agility * cache.agility();
 
-  ap *= 1.0 + sim->auras.battle_shout->check_value();
-
   return ap;
 }
 
@@ -2981,7 +2979,11 @@ double player_t::composite_melee_attack_power( attack_power_e type ) const
 
 double player_t::composite_attack_power_multiplier() const
 {
-  return current.attack_power_multiplier;
+  double m = current.attack_power_multiplier;
+
+  m *= 1.0 + sim->auras.battle_shout->check_value();
+
+  return m;
 }
 
 double player_t::composite_melee_crit_chance() const
