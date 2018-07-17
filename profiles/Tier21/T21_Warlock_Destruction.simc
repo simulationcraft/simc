@@ -4,7 +4,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=1203012
+talents=2203023
 
 # Default consumables
 potion=prolonged_power
@@ -23,61 +23,70 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/summon_pet
-actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
+actions.precombat+=/soul_fire
+actions.precombat+=/incinerate,if=!talent.soul_fire.enabled
 
 # Executed every time the actor is available.
 actions=run_action_list,name=aoe,if=spell_targets.infernal_awakening>=3
-actions+=/immolate,cycle_targets=1,if=refreshable
-actions+=/havoc,cycle_targets=1,if=!(target=sim.target)
-actions+=/summon_infernal
-actions+=/dark_soul_instability
+actions+=/immolate,cycle_targets=1,if=(cooldown.havoc.remains<15|!debuff.havoc.remains)&(refreshable|talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains-action.chaos_bolt.travel_time-5<duration*0.3)
+actions+=/summon_infernal,if=target.time_to_die>=400|!cooldown.dark_soul_instability.remains|target.time_to_die<=45|!talent.dark_soul_instability.enabled
+actions+=/dark_soul_instability,if=target.time_to_die>=130|pet.infernal.active|target.time_to_die<=30
+actions+=/potion,if=pet.infernal.active|target.time_to_die<65
+actions+=/havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10
+actions+=/havoc,if=active_enemies>1
+actions+=/channel_demonfire
+actions+=/cataclysm
 actions+=/soul_fire,cycle_targets=1,if=!debuff.havoc.remains
-actions+=/channel_demonfire,cycle_targets=1,if=target=sim.target
-actions+=/cataclysm,cycle_targets=1,if=target=sim.target
-actions+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&!talent.internal_combustion.enabled&soul_shard>=4|(talent.eradication.enabled&debuff.eradication.remains<=cast_time)|buff.dark_soul_instability.remains>cast_time|pet.infernal.active&talent.grimoire_of_supremacy.enabled
-actions+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.internal_combustion.enabled&dot.immolate.remains>8|soul_shard=5
-actions+=/conflagrate,cycle_targets=1,if=target=sim.target&(talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2)
-actions+=/incinerate,cycle_targets=1,if=target=sim.target
+actions+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&execute_time+travel_time<target.time_to_die&(talent.internal_combustion.enabled|!talent.internal_combustion.enabled&soul_shard>=4|(talent.eradication.enabled&debuff.eradication.remains<=cast_time)|buff.dark_soul_instability.remains>cast_time|pet.infernal.active&talent.grimoire_of_supremacy.enabled)
+actions+=/conflagrate,cycle_targets=1,if=!debuff.havoc.remains&((talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2))
+actions+=/shadowburn,cycle_targets=1,if=!debuff.havoc.remains&((charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time))
+actions+=/incinerate,cycle_targets=1,if=!debuff.havoc.remains
 
-actions.aoe=summon_infernal
-actions.aoe+=/dark_soul_instability
+actions.aoe=summon_infernal,if=target.time_to_die>=400|!cooldown.dark_soul_instability.remains|target.time_to_die<=45|!talent.dark_soul_instability.enabled
+actions.aoe+=/dark_soul_instability,if=target.time_to_die>=130|pet.infernal.active|target.time_to_die<=30
+actions.aoe+=/potion,if=pet.infernal.active|target.time_to_die<65
 actions.aoe+=/cataclysm
 actions.aoe+=/rain_of_fire,if=soul_shard>=4.5
-actions.aoe+=/immolate,if=!remains
+actions.aoe+=/immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time
 actions.aoe+=/channel_demonfire
-actions.aoe+=/immolate,cycle_targets=1,if=refreshable&(!talent.fire_and_brimstone.enabled|talent.cataclysm.enabled&cooldown.cataclysm.remains>=12|talent.inferno.enabled)
+actions.aoe+=/immolate,cycle_targets=1,if=refreshable&((!talent.fire_and_brimstone.enabled|spell_targets.incinerate<=5)|talent.cataclysm.enabled&cooldown.cataclysm.remains>=12)
+actions.aoe+=/havoc,cycle_targets=1,if=spell_targets.infernal_awakening<4&!(target=sim.target)&target.time_to_die>10&(talent.roaring_blaze.enabled|talent.eradication.enabled|talent.grimoire_of_supremacy.enabled&cooldown.infernal.remains<165&pet.infernal.active)
+actions.aoe+=/havoc,if=spell_targets.infernal_awakening<4&(talent.roaring_blaze.enabled|talent.eradication.enabled|talent.grimoire_of_supremacy.enabled&cooldown.infernal.remains<165&pet.infernal.active)
+actions.aoe+=/chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&execute_time+travel_time<target.time_to_die&cooldown.havoc.remains>=15+execute_time&(talent.roaring_blaze.enabled|talent.eradication.enabled|talent.grimoire_of_supremacy.enabled&cooldown.infernal.remains<165&pet.infernal.active)&spell_targets.infernal_awakening<4
 actions.aoe+=/rain_of_fire
-actions.aoe+=/conflagrate,if=(talent.flashover.enabled&buff.backdraft.stack<=2)|(!talent.flashover.enabled&buff.backdraft.stack<2)
-actions.aoe+=/shadowburn,if=!talent.fire_and_brimstone.enabled&(charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time)
-actions.aoe+=/incinerate
+actions.aoe+=/soul_fire,cycle_targets=1,if=!debuff.havoc.remains&!talent.fire_and_brimstone.enabled
+actions.aoe+=/conflagrate,cycle_targets=1,if=!debuff.havoc.remains&(!talent.fire_and_brimstone.enabled|(talent.flashover.enabled&buff.backdraft.stack<=2&spell_targets.incinerate<7))
+actions.aoe+=/shadowburn,cycle_targets=1,if=!debuff.havoc.remains&!talent.fire_and_brimstone.enabled&(charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time)
+actions.aoe+=/incinerate,cycle_targets=1,if=!debuff.havoc.remains
 
 head=grim_inquisitors_death_mask,id=152174,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
-shoulders=lessons_of_spacetime,id=144369,bonus_id=3630
+shoulders=grim_inquisitors_shoulderguards,id=152177,bonus_id=3612/1502
 back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
-chest=grim_inquisitors_robes,id=152176,bonus_id=3612/1502
-wrists=blooddrenched_bindings,id=151954,bonus_id=3612/1502
-hands=grim_inquisitors_gloves,id=152173,bonus_id=3612/1502
-waist=feretory_of_souls,id=132456,bonus_id=3630
+chest=gambeson_of_sargeras_corruption,id=152679,bonus_id=3612/1502
+wrists=sindorei_spite,id=132379,ilevel=265,azerite_level=265
+hands=aranasi_shadowweavers_gloves,id=151941,bonus_id=3612/1502
+waist=feretory_of_souls,id=132456,ilevel=265,azerite_level=265
 legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
 feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
-finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_haste
-trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
-trinket2=amanthuls_vision,id=154172,bonus_id=4213
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
+trinket1=prototype_personnel_decimator,id=151962,ilevel=240,azerite_level=240
+trinket2=norgannons_prowess,id=154177,ilevel=280,azerite_level=280
 main_hand=scepter_of_sargeras,id=128941,gem_id=152031/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
 
 # Gear Summary
-# gear_ilvl=240.80
-# gear_stamina=1239
-# gear_intellect=895
-# gear_crit_rating=490
-# gear_haste_rating=520
-# gear_mastery_rating=367
-# gear_versatility_rating=132
-# gear_armor=255
+# gear_ilvl=241.47
+# gear_stamina=1244
+# gear_intellect=819
+# gear_crit_rating=268
+# gear_haste_rating=584
+# gear_mastery_rating=449
+# gear_versatility_rating=74
+# gear_armor=256
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
 default_pet=imp

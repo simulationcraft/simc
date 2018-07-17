@@ -60,24 +60,24 @@ level=110
 race=troll
 role=spell
 position=back
-talents=1203012
+talents=2203023
 spec=destruction
 default_pet=imp
 
 head=grim_inquisitors_death_mask,id=152174,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
-shoulders=lessons_of_spacetime,id=144369,bonus_id=3630
+shoulders=grim_inquisitors_shoulderguards,id=152177,bonus_id=3612/1502
 back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
-chest=grim_inquisitors_robes,id=152176,bonus_id=3612/1502
-wrists=blooddrenched_bindings,id=151954,bonus_id=3612/1502
-hands=grim_inquisitors_gloves,id=152173,bonus_id=3612/1502
-waist=feretory_of_souls,id=132456,bonus_id=3630
+chest=gambeson_of_sargeras_corruption,id=152679,bonus_id=3612/1502
+wrists=sindorei_spite,id=132379,ilevel=265,azerite_level=265
+hands=aranasi_shadowweavers_gloves,id=151941,bonus_id=3612/1502
+waist=feretory_of_souls,id=132456,ilevel=265,azerite_level=265
 legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
 feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
-finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_haste
-trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
-trinket2=amanthuls_vision,id=154172,bonus_id=4213
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
+trinket1=prototype_personnel_decimator,id=151962,ilevel=240,azerite_level=240
+trinket2=norgannons_prowess,id=154177,ilevel=280,azerite_level=280
 main_hand=scepter_of_sargeras,id=128941,gem_id=152031/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
 
 save=T21_Warlock_Destruction.simc

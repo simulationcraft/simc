@@ -720,17 +720,21 @@ void warlock_t::apl_precombat()
   precombat->add_action("summon_pet");
   if (specialization() == WARLOCK_DEMONOLOGY)
     precombat->add_action("inner_demons,if=talent.inner_demons.enabled");
+  if ( specialization() != WARLOCK_DEMONOLOGY )
+    precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
 
   precombat->add_action( "snapshot_stats" );
 
-  if (specialization() != WARLOCK_DEMONOLOGY)
-    precombat->add_action("grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled");
-  if (specialization() == WARLOCK_DEMONOLOGY)
-    precombat->add_action("demonbolt");
-
-  if ( sim -> allow_potions )
+  if ( sim->allow_potions )
   {
     precombat->add_action( "potion" );
+  }
+  if (specialization() == WARLOCK_DEMONOLOGY)
+    precombat->add_action("demonbolt");
+  if ( specialization() == WARLOCK_DESTRUCTION )
+  {
+    precombat->add_talent ( this, "Soul Fire" );
+    precombat->add_action("incinerate,if=!talent.soul_fire.enabled");
   }
 }
 
