@@ -385,7 +385,7 @@ public:
     buff_t* apex_predator;
     buff_t* berserk;
     buff_t* bloodtalons;
-    buff_t* fiery_red_maimers; // Legion Legendary
+    //buff_t* fiery_red_maimers; // Legion Legendary
     buff_t* incarnation_cat;
     buff_t* predatory_swiftness;
     buff_t* savage_roar;
@@ -682,6 +682,7 @@ public:
   {
     // General
     const spell_data_t* sephuzs_secret = spell_data_t::not_found();
+    double LegendaryDamageMod = 0.0;
 
     // Balance
     timespan_t impeccable_fel_essence;
@@ -3297,7 +3298,7 @@ struct maim_t : public cat_attack_t
   {
     int n = cat_attack_t::n_targets();
 
-    n += p() -> buff.fiery_red_maimers -> data().effectN( 1 ).base_value();
+    //n += p() -> buff.fiery_red_maimers -> data().effectN( 1 ).base_value();
 
     return n;
   }
@@ -3308,7 +3309,7 @@ struct maim_t : public cat_attack_t
 
     am *= p() -> resources.current[ RESOURCE_COMBO_POINT ];
 
-    am *= 1.0 + p() -> buff.fiery_red_maimers -> check_value();
+    //am *= 1.0 + p() -> buff.fiery_red_maimers -> check_value();
 
     return am;
   }
@@ -3330,10 +3331,10 @@ struct maim_t : public cat_attack_t
     if ( p()->buff.iron_jaws->up() )
       p()->buff.iron_jaws->expire();
 
-    if ( p()->buff.fiery_red_maimers->up() )
+    /*if ( p()->buff.fiery_red_maimers->up() )
     {
       p()->buff.fiery_red_maimers->expire();
-    }
+    }*/
   }
 };
 
@@ -7391,7 +7392,7 @@ void druid_t::apl_feral()
    finisher->add_action("rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8");
    finisher->add_action("pool_resource,for_next=1");
    finisher->add_action("savage_roar,if=buff.savage_roar.remains<12");
-   finisher->add_action("maim,if=buff.fiery_red_maimers.up");
+   //finisher->add_action("maim,if=buff.fiery_red_maimers.up");
    finisher->add_action("ferocious_bite,max_energy=1");
 
    generator->add_action("regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4");
@@ -8193,6 +8194,8 @@ double druid_t::composite_player_multiplier( school_e school ) const
     if ( buff.moonkin_form -> check() )
       m *= 1.0 + buff.moonkin_form -> data().effectN( 9 ).percent();
   }
+
+  m *= 1.0 + legendary.LegendaryDamageMod;
 
   // Tiger's Fury and Savage Roar are player multipliers. Their "snapshotting" for cat abilities is handled in cat_attack_t.
   m *= 1.0 + buff.tigers_fury -> check_value();
@@ -9527,18 +9530,15 @@ struct the_wildshapers_clutch_t : public scoped_actor_callback_t<druid_t>
   }
 };
 
-struct fiery_red_maimers_t : public class_buff_cb_t<druid_t>
+struct fiery_red_maimers_t : public scoped_actor_callback_t<druid_t>
 {
-  fiery_red_maimers_t() : super( DRUID, "fiery_red_maimers" )
+  fiery_red_maimers_t() : super( DRUID )
   {}
 
-  buff_t*& buff_ptr( const special_effect_t& e ) override
-  { return actor( e ) -> buff.fiery_red_maimers; }
-
-  buff_t* creator( const special_effect_t& e ) const override
+  void manipulate(druid_t* p, const special_effect_t& e) override
   {
-    return make_buff( e.player, buff_name, e.driver() -> effectN( 1 ).trigger() )
-      ->set_default_value( e.driver() -> effectN( 1 ).trigger() -> effectN( 2 ).percent() );
+    //only relevant for a few weeks, unlikely to change until then - hardcoding it for now.
+    p->legendary.LegendaryDamageMod = 0.03;
   }
 };
 
