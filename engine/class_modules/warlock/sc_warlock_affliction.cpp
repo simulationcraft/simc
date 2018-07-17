@@ -820,7 +820,6 @@ namespace warlock
       {
         aoe = -1;
         background = dual = ground_aoe = true;
-        hasted_ticks = false;
       }
 
       double cost() const override
@@ -842,7 +841,7 @@ namespace warlock
           .target(execute_state->target)
           .x(p->talents.vile_taint->ok() ? p->x_position : execute_state->target->x_position)
           .y(p->talents.vile_taint->ok() ? p->y_position : execute_state->target->y_position)
-          .pulse_time(p->talents.vile_taint->effectN(1).period())
+          .pulse_time(p->talents.vile_taint->effectN(1).period() * player->cache.spell_haste() )
           .duration(p->talents.vile_taint->duration())
           .start_time(sim->current_time())
           .action(this));
