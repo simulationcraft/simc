@@ -76,13 +76,13 @@ main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=155849/155853/
 off_hand=warswords_of_the_valarjar,id=134553
 
 # Gear Summary
-# gear_ilvl=283.06
+# gear_ilvl=240.88
 # gear_strength=851
-# gear_stamina=86759
+# gear_stamina=1387
 # gear_crit_rating=113
-# gear_haste_rating=694
-# gear_mastery_rating=6790
-# gear_versatility_rating=4805
+# gear_haste_rating=503
+# gear_mastery_rating=658
+# gear_versatility_rating=205
 # gear_armor=906
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

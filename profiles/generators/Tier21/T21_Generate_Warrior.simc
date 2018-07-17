@@ -43,7 +43,7 @@ hands=juggernaut_gauntlets,id=152180,bonus_id=3612/1502
 waist=grondfather_girdle,id=152022,bonus_id=3612/1502
 legs=valarjar_berserkers,id=151824,bonus_id=3630
 feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
-finger1=sullied_seal_of_the_pantheon,id=151972,ilevel=970,enchant=200haste
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3630,enchant=binding_of_haste
 finger2=loop_of_the_lifebinder,id=152688,bonus_id=3630,enchant=binding_of_mastery
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=khazgoroths_courage,id=154176,bonus_id=3997
