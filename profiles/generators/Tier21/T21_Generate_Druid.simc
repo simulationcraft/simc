@@ -19,7 +19,7 @@ feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
 finger1=sephuzs_secret,id=132452,bonus_id=3630,gem_id=151584,enchant=binding_of_mastery
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=prototype_personnel_decimator,id=151962,bonus_id=3612/1502
-trinket2=norgannons_prowess,id=154172,bonus_id=4213
+trinket2=norgannons_prowess,id=154177,bonus_id=4213
 main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=152027/155854/155846/0,relic_id=3612:1512/3612:1512/3612:1512
 
 save=T21_Druid_Balance.simc
