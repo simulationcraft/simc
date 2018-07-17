@@ -8,7 +8,7 @@ namespace warlock {
         parse_options(options_str);
         aoe = -1;
         weapon = &(p->main_hand_weapon);
-        base_dd_min = base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
+        //base_dd_min = base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
       }
     };
     struct axe_toss_t : public warlock_pet_spell_t {
@@ -26,7 +26,7 @@ namespace warlock {
         aoe = -1;
         background = true;
         weapon = &(p->main_hand_weapon);
-        base_dd_min = base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
+        //base_dd_min = base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
       }
 
       double action_multiplier() const override
