@@ -1527,15 +1527,15 @@ public:
 
   struct active_actions_t
   {
-    action_t* rushing_jade_wind_sef;
+    action_t* rushing_jade_wind_sef = nullptr;
   } active_actions;
 
   struct buffs_t
   {
-    buff_t* bok_proc_sef;
-    buff_t* hit_combo_sef;
-    buff_t* pressure_point_sef;
-    buff_t* rushing_jade_wind_sef;
+    buff_t* bok_proc_sef = nullptr;
+    buff_t* hit_combo_sef = nullptr;
+    buff_t* pressure_point_sef = nullptr;
+    buff_t* rushing_jade_wind_sef = nullptr;
   } buff;
 
   storm_earth_and_fire_pet_t( const std::string& name, sim_t* sim, monk_t* owner, bool dual_wield ):
