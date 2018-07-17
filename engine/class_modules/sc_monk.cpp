@@ -1979,7 +1979,7 @@ public:
 
   action_t* create_action( const std::string& name,
                            const std::string& options_str ) override
-  {
+   {
     if ( name == "stomp" )
       return new stomp_t( this, options_str );
 
@@ -1989,12 +1989,11 @@ public:
     return pet_t::create_action( name, options_str );
   }
 };
-} // end namespace pets
+ } // end namespace pets
 
 namespace actions {
 // ==========================================================================
-// Monk Abilities
-// ==========================================================================
+// Monk Abilities// ==========================================================================
 
 // Template for common monk action code. See priest_action_t.
 template <class Base>
@@ -2056,7 +2055,7 @@ public:
     windwalker_damage_increase_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 5 ) ) ),
     windwalker_damage_increase_three( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 9 ) ) ),
 
-    windwalker_damage_increase_dot( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 4 ) ) ),
+    windwalker_damage_increase_dot( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 2 ) ) ),
     windwalker_damage_increase_dot_two( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 6 ) ) ),
     windwalker_damage_increase_dot_three( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 7 ) ) ),
     windwalker_damage_increase_dot_four( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 8 ) ) ),
@@ -2129,9 +2128,9 @@ public:
         {
           // treat Fists of Fury damage as a direct damage instead of a tick damage
           if ( ab::data().id() == 117418 )
-            ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 4 ).percent();
+            ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 2 ).percent();
           else
-            ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 4 ).percent();
+            ab::base_td_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 2 ).percent();
         }
         if ( windwalker_damage_increase_dot_two )
         {
@@ -2916,7 +2915,7 @@ struct tiger_palm_t: public monk_melee_attack_t
       base_costs[RESOURCE_ENERGY] *= 1 + p -> spec.brewmaster_monk -> effectN( 17 ).percent(); // -50% for Brewmasters
 
     if ( p -> specialization() == MONK_WINDWALKER )
-      energize_amount = p -> spec.windwalker_monk -> effectN( 3 ).base_value();
+      energize_amount = p -> spec.windwalker_monk -> effectN( 4 ).base_value();
     else
       energize_type = ENERGIZE_NONE;
 
