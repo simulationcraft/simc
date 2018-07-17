@@ -30,7 +30,7 @@ level=110
 race=human
 role=attack
 position=back
-talents=1210031
+talents=3202013
 
 head=dreadwake_helm,id=152115,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_claw
@@ -56,7 +56,7 @@ deathknight="T21_Death_Knight_Unholy"
 level=110
 race=troll
 role=dps
-talents=3211011
+talents=3203002
 spec=unholy
 
 food=azshari_salad
