@@ -916,7 +916,7 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
     return make_fn_expr( name_str, [this]()
         { return resources.current[RESOURCE_SOUL_SHARD] >= 1 && sim->current_time() >= shard_react; } );
   }
-  else if ( name_str == "avg_expected_shard" )
+  else if ( name_str == "time_to_shard" )
   {
     return make_fn_expr( name_str, [this]()
     { return agony_expression_thing; } );

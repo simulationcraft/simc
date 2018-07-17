@@ -1,22 +1,17 @@
-warlock="T21_Warlock_Affliction"
+warlock="120_Warlock_Affliction"
 spec=affliction
-level=110
-race=human
+level=120
+race=troll
 role=spell
 position=back
-talents=3103012
+professions=alchemy=115/enchanting=1
+talents=3322223
 
 # Default consumables
 potion=prolonged_power
 flask=whispered_pact
 food=nightborne_delicacy_platter
 augmentation=defiled
-
-# This default action priority list is automatically created based on your character.
-# It is a attempt to provide you with a action list that is both simple and practicable,
-# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
-# Feel free to edit, adapt and improve it to your own needs.
-# SimulationCraft is always looking for updates and improvements to the default action lists.
 
 # Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask
@@ -26,47 +21,59 @@ actions.precombat+=/summon_pet
 actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
 actions.precombat+=/potion
-
+actions.precombat+=/haunt
+ 
 # Executed every time the actor is available.
-actions=dark_soul,if=buff.active_uas.stack>0
+
+actions=berserking,if=prev_gcd.1.summon_darkglare
+actions+=/agony,if=!ticking
+actions+=/dark_soul,if=cooldown.summon_darkglare.remains<10|cooldown.summon_darkglare.remains>45
+actions+=/summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&dot.unstable_affliction_1.ticking&dot.unstable_affliction_2.ticking&dot.unstable_affliction_3.ticking&((dot.unstable_affliction_4.ticking&dot.unstable_affliction_5.ticking)|soul_shard=0)
+actions+=/agony,if=!ticking|remains<=action.shadow_bolt.execute_time
+actions+=/deathbolt,if=cooldown.summon_darkglare.remains>25
+actions+=/unstable_affliction,if=(talent.deathbolt.enabled&(cooldown.deathbolt.remains<gcd*2&cooldown.summon_darkglare.remains>25&cooldown.summon_darkglare.remains<170)&(contagion<=5|soul_shard>=4))|time_to_die<duration
+actions+=/call_action_list,name=refresh,if=(cooldown.summon_darkglare.remains<=action.agony.gcd*8&cooldown.summon_darkglare.remains>=action.agony.gcd*4)|(cooldown.deathbolt.remains<gcd*4&cooldown.summon_darkglare.remains>25&talent.creeping_death.enabled)
+actions+=/phantom_singularity,if=(cooldown.summon_darkglare.remains<12|cooldown.summon_darkglare.remains>40)
+actions+=/siphon_life,if=!ticking|remains<=action.shadow_bolt.execute_time
+actions+=/corruption,if=!ticking|remains<=action.shadow_bolt.execute_time
 actions+=/haunt
+actions+=/unstable_affliction,if=soul_shard=5|cooldown.summon_darkglare.remains<=gcd*4
+actions+=/unstable_affliction,if=contagion<=cast_time&cooldown.summon_darkglare.remains>30
 actions+=/agony,if=refreshable
 actions+=/siphon_life,if=refreshable
 actions+=/corruption,if=refreshable
-actions+=/phantom_singularity
-actions+=/vile_taint
-actions+=/unstable_affliction,if=soul_shard=5
-actions+=/unstable_affliction,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking=0)|soul_shard>2
-actions+=/summon_darkglare
-actions+=/deathbolt
 actions+=/drain_soul,chain=1,interrupt=1
 actions+=/shadow_bolt
 
-head=hood_of_eternal_disdain,id=132394,bonus_id=3630
-neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
-shoulders=grim_inquisitors_shoulderguards,id=152177,bonus_id=3612/1502
-back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
-chest=grim_inquisitors_robes,id=152176,bonus_id=3612/1502
-wrists=blooddrenched_bindings,id=151954,bonus_id=3612/1502
-hands=handwraps_of_inevitable_doom,id=152680,bonus_id=3612/1502
-waist=power_cord_of_lethtendris,id=132457,bonus_id=3630
-legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
-feet=sandals_of_the_reborn_colossus,id=151940,bonus_id=3612/1502
-finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_mastery
-finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
-trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
-trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=152057/152092/152057,relic_id=3612:1502/3612:1502/3612:1502
+actions.refresh=siphon_life,if=(dot.siphon_life.remains%dot.siphon_life.duration)<=(dot.agony.remains%dot.agony.duration)&(dot.siphon_life.remains%dot.siphon_life.duration)<=(dot.corruption.remains%dot.corruption.duration)&dot.siphon_life.remains<dot.siphon_life.duration*0.75
+actions.refresh+=/agony,if=(dot.agony.remains%dot.agony.duration)<=(dot.corruption.remains%dot.corruption.duration)&(dot.agony.remains%dot.agony.duration)<=(dot.siphon_life.remains%dot.siphon_life.duration)&dot.agony.remains<dot.agony.duration*0.75
+actions.refresh+=/corruption,if=(dot.corruption.remains%dot.corruption.duration)<=(dot.agony.remains%dot.agony.duration)&(dot.corruption.remains%dot.corruption.duration)<=(dot.siphon_life.remains%dot.siphon_life.duration)&dot.corruption.remains<dot.corruption.duration*0.75
+
+
+head=smartly_plumed_cap,id=155886,bonus_id=4810/4819,drop_level=120
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4936/1516
+shoulders=honorbound_artificers_amice,id=163424,bonus_id=5125/1547/4786
+back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1808/1507/4786,gem_id=153709
+chest=loa_betrayers_vestments,id=159233,bonus_id=4819/1512/4786
+wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4780/4802/1522/4783,gem_id=154127
+hands=honorbound_artificers_mitts,id=163428,bonus_id=5126/1562/4786
+waist=cord_of_the_pious_warder,id=159245,bonus_id=5010/1542/4786
+legs=chumcoated_leggings,id=158302,bonus_id=5010/4802/41/1542/4786,gem_id=154129
+feet=blood_warders_moccasins,id=159270,bonus_id=5010/4802/1552/4783,gem_id=154129
+finger1=footbomb_championship_ring,id=159462,bonus_id=5008/1537/4786,enchant_id=5943
+finger2=loop_of_pulsing_veins,id=159463,bonus_id=5009/1537/4786,enchant_id=5944
+trinket1=dooms_hatred,id=161461,bonus_id=5119/1492/4786
+trinket2=conch_of_dark_whispers,id=159620,bonus_id=5006/1527/4786
+main_hand=staff_of_the_lightning_serpent,id=159636,bonus_id=5010/1552/4783,enchant_id=5963
 
 # Gear Summary
-# gear_ilvl=241.47
-# gear_stamina=1256
-# gear_intellect=907
-# gear_crit_rating=433
-# gear_haste_rating=512
-# gear_mastery_rating=464
-# gear_versatility_rating=111
-# gear_armor=257
-# set_bonus=tier21_2pc=1
-# set_bonus=tier21_4pc=1
+# gear_ilvl=362.27
+# gear_stamina=5333
+# gear_intellect=4504
+# gear_crit_rating=461
+# gear_haste_rating=1106
+# gear_mastery_rating=1160
+# gear_versatility_rating=109
+# gear_leech_rating=99
+# gear_armor=980
 default_pet=felhunter
