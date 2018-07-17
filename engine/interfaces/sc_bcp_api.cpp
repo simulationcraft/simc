@@ -200,41 +200,6 @@ bool parse_artifact( item_t& item, const rapidjson::Value& artifact )
     return true;
   }
 
-  auto spec_artifact_id = item.player -> dbc.artifact_by_spec( item.player -> specialization() );
-  if ( artifact_id != spec_artifact_id )
-  {
-    item.sim -> errorf( "Player %s has wrong artifact equipped, disabling item ...", item.player -> name() );
-    return false;
-  }
-
-  auto powers = item.player -> dbc.artifact_powers( artifact_id );
-  for ( auto power_idx = 0U, end = artifact[ "artifactTraits" ].Size(); power_idx < end; ++power_idx )
-  {
-    const auto& trait = artifact[ "artifactTraits" ][ power_idx ];
-    if ( ! trait.HasMember( "id" ) || ! trait.HasMember( "rank" ) )
-    {
-      continue;
-    }
-
-    auto trait_id = trait[ "id" ].GetUint();
-    auto rank = trait[ "rank" ].GetUint();
-
-    item.player -> artifact -> add_power( trait_id, rank );
-  }
-
-  auto initial_trait_it = range::find_if( powers, []( const artifact_power_data_t* p ) {
-    return p -> power_type == ARTIFACT_TRAIT_INITIAL;
-  } );
-
-  // Blizzard will conditionally either include (if its the only one) or not include (if you have
-  // purchased other traits) the initial trait for the artifact, for some unknown reason.  Thus, we
-  // need to forcibly enable the initial trait in cases where the player has purchased any (other)
-  // artifact traits.
-  if ( initial_trait_it != powers.end() )
-  {
-    item.player -> artifact -> add_power( ( *initial_trait_it ) -> id, 1 );
-  }
-
   // If no relics inserted, bail out early
   if ( ! artifact.HasMember( "relics" ) || artifact[ "relics" ].Size() == 0 )
   {
@@ -269,34 +234,6 @@ bool parse_artifact( item_t& item, const rapidjson::Value& artifact )
       item.player -> artifact -> move_purchased_rank( relic_idx,
                                                       relic_trait_data.first,
                                                       relic_trait_data.second );
-    }
-  }
-
-  // Finally, for some completely insane reason Blizzard decided to put in the Relic-based ilevel
-  // increases as bonus ids to the base item. Thus, we need to remove those since we actually use
-  // the relic data to figure out the ilevel increases properly. Sigh. Since we do not know which
-  // would be real ones and which not, just remove all bonus ids that "adjust ilevel" from the
-  // artifact weapon itself.
-  auto it = item.parsed.bonus_id.begin();
-  while ( it != item.parsed.bonus_id.end() )
-  {
-    if ( *it == 0 )
-    {
-      continue;
-    }
-
-    const auto bonus_data = item.player -> dbc.item_bonus( *it );
-    auto ilevel_it = range::find_if( bonus_data, []( const item_bonus_entry_t* entry ) {
-      return entry -> type == ITEM_BONUS_ILEVEL;
-    } );
-
-    if ( ilevel_it != bonus_data.end() )
-    {
-      it = item.parsed.bonus_id.erase( it );
-    }
-    else
-    {
-      ++it;
     }
   }
 
