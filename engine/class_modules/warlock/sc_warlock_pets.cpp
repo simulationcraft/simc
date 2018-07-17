@@ -1005,11 +1005,17 @@ namespace warlock {
       }
     }
 
-    void warlock_pet_t::create_buffs_pets() {
+    void warlock_pet_t::create_buffs()
+    {
+      pet_t::create_buffs();
+
+      create_buffs_demonology();
+
+      buffs.rage_of_guldan = make_buff(this, "rage_of_guldan", find_spell(257926))->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER); //change spell id to 253014 when whitelisted
+
       buffs.demonic_consumption = make_buff(this, "demonic_consumption", find_spell(267972))
         ->set_default_value(find_spell(267972)->effectN(1).percent())
         ->set_max_stack(100);
-      buffs.grimoire_of_service = make_buff(this, "grimoire_of_service", find_spell(216187));
 
       // destro
       buffs.embers = make_buff(this, "embers", find_spell(264364))
@@ -1021,19 +1027,124 @@ namespace warlock {
       });
     }
 
-    void warlock_pet_t::create_buffs_destruction() {
-      buffs.embers = make_buff(this, "embers", find_spell(264364))
-        ->set_period(timespan_t::from_seconds(0.5))
-        ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
-        ->set_tick_callback([this](buff_t*, int, const timespan_t&)
-      {
-        o()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, o()->gains.infernal);
-      });
+    void warlock_pet_t::init_spells()
+    {
+      pet_t::init_spells();
+
+      if (o()->specialization() == WARLOCK_DEMONOLOGY)
+        init_spells_demonology();
+      active.bile_spit = new demonology::bile_spit_t(this);
     }
 
-    void warlock_pet_t::init_spells_pets() {
-      active.bile_spit = new demonology::bile_spit_t(this);
-      init_spells_demonology();
+    void warlock_pet_t::init_base_stats()
+    {
+      pet_t::init_base_stats();
+
+      resources.base[RESOURCE_ENERGY] = 200;
+      resources.base_regen_per_second[RESOURCE_ENERGY] = 10;
+
+      base.spell_power_per_intellect = 1;
+
+      intellect_per_owner = 0;
+      stamina_per_owner = 0;
+
+      main_hand_weapon.type = WEAPON_BEAST;
+      main_hand_weapon.swing_time = timespan_t::from_seconds(2.0);
+    }
+
+    void warlock_pet_t::init_action_list()
+    {
+      if (special_action)
+      {
+        if (type == PLAYER_PET)
+          special_action->background = true;
+        else
+          special_action->action_list = get_action_priority_list("default");
+      }
+
+      if (special_action_two)
+      {
+        if (type == PLAYER_PET)
+          special_action_two->background = true;
+        else
+          special_action_two->action_list = get_action_priority_list("default");
+      }
+
+      pet_t::init_action_list();
+
+      if (summon_stats)
+        for (size_t i = 0; i < action_list.size(); ++i)
+          summon_stats->add_child(action_list[i]->stats);
+    }
+
+    void warlock_pet_t::schedule_ready(timespan_t delta_time, bool waiting)
+    {
+      dot_t* d;
+      if (melee_attack && !melee_attack->execute_event && !(special_action && (d = special_action->get_dot()) && d->is_ticking()))
+      {
+        melee_attack->schedule_execute();
+      }
+
+      pet_t::schedule_ready(delta_time, waiting);
+    }
+
+    double warlock_pet_t::composite_player_multiplier(school_e school) const
+    {
+      double m = pet_t::composite_player_multiplier(school);
+
+      if (o()->specialization() == WARLOCK_DEMONOLOGY)
+      {
+        m *= 1.0 + o()->cache.mastery_value();
+        if (o()->buffs.demonic_power->check())
+        {
+          m *= 1.0 + o()->buffs.demonic_power->default_value;
+        }
+      }
+
+      if (buffs.rage_of_guldan->check())
+        m *= 1.0 + (buffs.rage_of_guldan->default_value / 100);
+
+      m *= 1.0 + buffs.grimoire_of_service->check_value();
+
+      m *= 1.0 + o()->buffs.sindorei_spite->check_stack_value();
+
+      return m;
+    }
+
+    double warlock_pet_t::composite_melee_crit_chance() const
+    {
+      double mc = pet_t::composite_melee_crit_chance();
+      return mc;
+    }
+
+    double warlock_pet_t::composite_spell_crit_chance() const
+    {
+      double sc = pet_t::composite_spell_crit_chance();
+      return sc;
+    }
+
+    double warlock_pet_t::composite_melee_haste() const
+    {
+      double mh = pet_t::composite_melee_haste();
+      return mh;
+    }
+
+    double warlock_pet_t::composite_spell_haste() const
+    {
+      double sh = pet_t::composite_spell_haste();
+      return sh;
+    }
+
+    double warlock_pet_t::composite_melee_speed() const
+    {
+      double cmh = pet_t::composite_melee_speed();
+      return cmh;
+    }
+
+    double warlock_pet_t::composite_spell_speed() const
+    {
+      double css = pet_t::composite_spell_speed();
+      return css;
     }
   }
 

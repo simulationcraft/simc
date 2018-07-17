@@ -170,6 +170,9 @@ namespace warlock {
       buffs.demonic_strength = make_buff(this, "demonic_strength", find_spell(267171))
         ->set_default_value(find_spell(267171)->effectN(2).percent())
         ->set_cooldown(timespan_t::zero());
+
+      buffs.grimoire_of_service = make_buff(this, "grimoire_of_service", find_spell(216187))
+        ->set_default_value(find_spell(216187)->effectN(1).percent());
     }
 
     void warlock_pet_t::init_spells_demonology() {
