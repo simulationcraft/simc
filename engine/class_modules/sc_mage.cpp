@@ -5669,7 +5669,6 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
 
   // Options
   regen_type = REGEN_DYNAMIC;
-  regen_caches[ CACHE_MASTERY ] = true;
 
   talent_points.register_validity_fn( [ this ] ( const spell_data_t* spell )
   {
@@ -6179,6 +6178,11 @@ void mage_t::init_base_stats()
 
   // Mana Attunement
   resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + find_spell( 121039 ) -> effectN( 1 ).percent();
+
+  if ( specialization() == MAGE_ARCANE )
+  {
+    regen_caches[ CACHE_MASTERY ] = true;
+  }
 }
 
 // mage_t::create_buffs =======================================================
