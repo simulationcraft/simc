@@ -3510,6 +3510,8 @@ struct player_t : public actor_t
   action_t* strict_sequence; // Strict sequence of actions currently being executed
   event_t* readying;
   event_t* off_gcd;
+  std::vector<const cooldown_t*> off_gcd_cd;
+  timespan_t off_gcd_ready;
   bool in_combat;
   bool action_queued;
   bool first_cast;
@@ -4335,6 +4337,8 @@ public:
   void register_combat_begin( const combat_begin_fn_t& fn );
   /// Register a resource gain that triggers at the beginning of combat
   void register_combat_begin( double amount, resource_e resource, gain_t* g = nullptr );
+
+  void update_off_gcd_ready();
 };
 
 std::ostream& operator<<(std::ostream &os, const player_t& p);

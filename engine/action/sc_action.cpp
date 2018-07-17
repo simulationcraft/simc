@@ -103,7 +103,9 @@ void do_off_gcd_execute( action_t* action )
   // If we executed a queued off-gcd action, we need to re-kick the player gcd event if there's
   // still time to poll for new actions to use.
   timespan_t interval = timespan_t::from_seconds( 0.1 );
-  if ( !action->player->off_gcd && action->sim->current_time() + interval < action->player->gcd_ready )
+  if ( !action->player->off_gcd &&
+       action->sim->current_time() + interval < action->player->gcd_ready &&
+       action->player->off_gcd_ready < action->sim->current_time() )
   {
     action->player->off_gcd = make_event<player_gcd_event_t>( *action->sim, *action->player, interval );
   }
@@ -245,7 +247,9 @@ struct action_execute_event_t : public player_event_t
     // Kick off the during-gcd checker, first run is immediately after
     event_t::cancel( p()->off_gcd );
 
-    if ( !p()->channeling && p()->gcd_ready > sim().current_time() )
+    if ( !p()->channeling &&
+         p()->gcd_ready > sim().current_time() &&
+         p()->off_gcd_ready <= sim().current_time() )
     {
       p()->off_gcd = make_event<player_gcd_event_t>( sim(), *p(), timespan_t::zero() );
     }

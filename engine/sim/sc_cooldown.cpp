@@ -61,6 +61,13 @@ struct recharge_event_t : event_t
         cooldown_ -> recharge_multiplier );
     }
 
+    // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
+    // during the GCD (i.e., action_t::use_off_gcd == true)
+    if ( cooldown_ -> action && cooldown_ -> action -> use_off_gcd )
+    {
+      cooldown_ -> player -> update_off_gcd_ready();
+    }
+
     cooldown_ -> player -> trigger_ready();
   }
 
@@ -207,6 +214,13 @@ void cooldown_t::adjust_recharge_multiplier()
   {
     last_charged = ready;
   }
+
+  // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
+  // during the GCD (i.e., action_t::use_off_gcd == true)
+  if ( action && action -> use_off_gcd )
+  {
+    player -> update_off_gcd_ready();
+  }
 }
 
 void cooldown_t::adjust( timespan_t amount, bool require_reaction )
@@ -283,6 +297,13 @@ void cooldown_t::adjust( timespan_t amount, bool require_reaction )
     }
   }
 
+  // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
+  // during the GCD (i.e., action_t::use_off_gcd == true)
+  if ( action && action -> use_off_gcd )
+  {
+    player -> update_off_gcd_ready();
+  }
+
   if ( player -> queueing && player -> queueing -> cooldown == this )
   {
     player -> queueing -> reschedule_queue_event();
@@ -327,6 +348,14 @@ void cooldown_t::reset( bool require_reaction, bool all_charges )
     last_charged = sim.current_time();
   }
   event_t::cancel( ready_trigger_event );
+
+  // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
+  // during the GCD (i.e., action_t::use_off_gcd == true)
+  if ( action && action -> use_off_gcd )
+  {
+    player -> update_off_gcd_ready();
+  }
+
   if ( player )
   {
     player -> trigger_ready();
@@ -391,6 +420,13 @@ void cooldown_t::start( action_t* a, timespan_t _override, timespan_t delay )
     ready = sim.current_time() + event_duration;
     last_start = sim.current_time();
     last_charged = ready;
+  }
+
+  // Update the minimum off-gcd readiness time for off gcd actions that are flagged as usable
+  // during the GCD (i.e., action_t::use_off_gcd == true)
+  if ( action && action -> use_off_gcd )
+  {
+    player -> update_off_gcd_ready();
   }
 
   assert( player );

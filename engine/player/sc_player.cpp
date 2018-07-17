@@ -686,6 +686,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   strict_sequence( 0 ),
   readying( 0 ),
   off_gcd( 0 ),
+  off_gcd_ready( timespan_t::min() ),
   in_combat( false ),
   action_queued( false ),
   first_cast( true ),
@@ -2407,7 +2408,17 @@ void player_t::init_actions()
       // Optimization: We don't need to do off gcd stuff when there are no other off gcd actions
       // than "meta actions"
       if ( is_real_off_gcd_action( action ) )
+      {
         have_off_gcd_actions = true;
+        if ( action -> cooldown -> duration > timespan_t::zero() )
+        {
+          auto it = range::find( off_gcd_cd, action -> cooldown );
+          if ( it == off_gcd_cd.end() )
+          {
+            off_gcd_cd.push_back( action -> cooldown );
+          }
+        }
+      }
     }
   }
 
@@ -4368,6 +4379,7 @@ void player_t::reset()
 
   last_cast = timespan_t::zero();
   gcd_ready = timespan_t::zero();
+  off_gcd_ready = timespan_t::min();
 
   cache.invalidate_all();
 
@@ -7960,7 +7972,7 @@ struct swap_action_list_t : public action_t
   {
     if ( sim->log )
       sim->out_log.printf( "%s swaps to action list %s", player->name(), alist->name_str.c_str() );
-    player->activate_action_list( alist, player->readying );
+    player->activate_action_list( alist, player->readying != nullptr );
   }
 
   virtual bool ready() override
@@ -8010,7 +8022,7 @@ struct run_action_list_t : public swap_action_list_t
 
     if ( player->restore_action_list == 0 )
       player->restore_action_list = player->active_action_list;
-    player->activate_action_list( alist, player->readying );
+    player->activate_action_list( alist, player->readying != nullptr );
   }
 };
 
@@ -12151,6 +12163,33 @@ void player_t::adjust_auto_attack( haste_type_e haste_type )
     off_hand_attack->reschedule_auto_attack( current_attack_speed );
 
   current_attack_speed = cache.attack_speed();
+}
+
+// Calculate the minimum readiness time for all off gcd actions that are flagged as usable during
+// gcd (i.e., action_t::use_off_gcd == true). Note that this does not take into account
+// line_cooldown option, since that is APL-line specific.
+void player_t::update_off_gcd_ready()
+{
+  if ( off_gcd_cd.size() == 0 )
+  {
+    return;
+  }
+
+  timespan_t min_ready = timespan_t::max();
+  range::for_each( off_gcd_cd, [&min_ready]( const cooldown_t* cd ) {
+    if ( cd -> ready < min_ready )
+    {
+      min_ready = cd -> ready;
+    }
+  } );
+
+  off_gcd_ready = min_ready;
+
+  if ( sim -> debug )
+  {
+    sim -> out_debug.print( "{} next off-GCD cooldown ready at {}",
+      name(), off_gcd_ready.total_seconds() );
+  }
 }
 
 /**
