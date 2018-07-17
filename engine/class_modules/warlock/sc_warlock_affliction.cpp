@@ -54,6 +54,16 @@ namespace warlock
         }
       }
 
+      double action_multiplier() const override
+      {
+        double pm = warlock_spell_t::action_multiplier();
+
+        if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 1 ) ) )
+          pm *= 1.0 + p()->cache.mastery_value();
+
+        return pm;
+      }
+
       void consume_resource() override
       {
         warlock_spell_t::consume_resource();
@@ -230,16 +240,6 @@ namespace warlock
         wb = new wracking_brilliance_t();
       }
 
-      double action_multiplier() const override
-      {
-        double m = affliction_spell_t::action_multiplier();
-
-        if ( p()->mastery_spells.potent_afflictions->ok() )
-          m *= 1.0 + p()->cache.mastery_value();
-
-        return m;
-      }
-
       void last_tick( dot_t* d ) override
       {
         if ( p()->get_active_dots( internal_id ) == 1 )
@@ -369,16 +369,6 @@ namespace warlock
         }
       }
 
-      double action_multiplier() const override
-      {
-        double m = affliction_spell_t::action_multiplier();
-
-        if ( p()->mastery_spells.potent_afflictions->ok() )
-          m *= 1.0 + p()->cache.mastery_value();
-
-        return m;
-      }
-
       void tick( dot_t* d ) override
       {
         if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
@@ -445,16 +435,6 @@ namespace warlock
           p()->buffs.active_uas->decrement( 1 );
 
           affliction_spell_t::last_tick( d );
-        }
-
-        double action_multiplier() const override
-        {
-          double m = affliction_spell_t::action_multiplier();
-
-          if ( p()->mastery_spells.potent_afflictions->ok() )
-            m *= 1.0 + p()->cache.mastery_value();
-
-          return m;
         }
       };
 
@@ -793,16 +773,6 @@ namespace warlock
         parse_options(options_str);
         may_crit = false;
         affected_by_deaths_embrace = true;
-      }
-
-      double action_multiplier() const override
-      {
-        double m = affliction_spell_t::action_multiplier();
-
-        if (p()->mastery_spells.potent_afflictions->ok())
-          m *= 1.0 + p()->cache.mastery_value();
-
-        return m;
       }
 
       double composite_target_multiplier(player_t* target) const override
@@ -1220,7 +1190,6 @@ namespace warlock
 
   void warlock_t::init_procs_affliction()
   {
-    //procs.the_master_harvester          = get_proc( "the_master_harvester" );
     procs.affliction_t21_2pc            = get_proc( "affliction_t21_2pc" );
     procs.nightfall                     = get_proc( "nightfall" );
   }
