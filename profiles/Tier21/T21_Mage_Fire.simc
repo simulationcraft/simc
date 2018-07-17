@@ -110,16 +110,16 @@ finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=felomelorn,id=128820,bonus_id=730,gem_id=155849/152026/155849,relic_id=3612:1512/3612:1502/3612:1512
+main_hand=felomelorn,id=128820,bonus_id=730/1505/1502/1505,gem_id=155849/152026/155849,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=heart_of_the_phoenix,id=133959
 
 # Gear Summary
-# gear_ilvl=236.50
-# gear_stamina=1254
-# gear_intellect=907
-# gear_crit_rating=512
-# gear_haste_rating=363
-# gear_mastery_rating=364
+# gear_ilvl=248.50
+# gear_stamina=1335
+# gear_intellect=1147
+# gear_crit_rating=517
+# gear_haste_rating=387
+# gear_mastery_rating=373
 # gear_versatility_rating=249
 # gear_armor=257
 # set_bonus=tier21_2pc=1

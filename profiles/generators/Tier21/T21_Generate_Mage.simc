@@ -3,7 +3,7 @@ level=110
 race=dwarf
 role=spell
 position=back
-talents=2033021
+talents=2011031
 spec=frost
 
 head=runebound_collar,id=152138,bonus_id=3612/1502
@@ -20,7 +20,7 @@ finger1=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of
 finger2=shard_of_the_exodar,id=132410,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
 trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=ebonchill,id=128862,bonus_id=731,gem_id=155850/155846/155850,relic_id=3612:1512/3612:1512/3612:1512
+main_hand=ebonchill,id=128862,bonus_id=731/1505/1505/1505,gem_id=155850/155846/155850,relic_id=3612:1512/3612:1512/3612:1512
 
 save=T21_Mage_Frost.simc
 
@@ -47,7 +47,7 @@ finger1=soul_of_the_archmage,id=151642,bonus_id=3630,gem_id=151585,enchant=bindi
 finger2=shard_of_the_exodar,id=132410,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
 trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=3563/1512
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=aluneth,id=127857,gem_id=155846/155850/155846,relic_id=3612:1512/3612:1512/3612:1512
+main_hand=aluneth,id=127857,bonus_id=729/1505/1505/1505,gem_id=155846/155850/155846,relic_id=3612:1512/3612:1512/3612:1512
 
 save=T21_Mage_Arcane.simc
 
@@ -76,7 +76,7 @@ finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=felomelorn,id=128820,gem_id=155849/152026/155849,bonus_id=730,relic_id=3612:1512/3612:1502/3612:1512
+main_hand=felomelorn,id=128820,gem_id=155849/152026/155849,bonus_id=730/1505/1502/1505,relic_id=3612:1512/3612:1502/3612:1512
 off_hand=heart_of_the_phoenix,id=133959
 
 save=T21_Mage_Fire.simc
