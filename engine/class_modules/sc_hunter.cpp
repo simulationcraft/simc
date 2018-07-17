@@ -2579,12 +2579,14 @@ struct aimed_shot_t : public aimed_shot_base_t
   benefit_t* aimed_in_critical_aimed;
   aimed_shot_secondary_t* double_tap;
   bool lock_and_loaded;
+  proc_t* double_tap_aimed;
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ) :
     aimed_shot_base_t( "aimed_shot", p ),
     aimed_in_critical_aimed( p -> get_benefit( "aimed_in_critical_aimed" ) ),
     double_tap( nullptr ),
-    lock_and_loaded( false )
+    lock_and_loaded( false ),
+    double_tap_aimed( p -> get_proc( "double_tap_aimed" ) )
   {
     parse_options( options_str );
 
@@ -2626,6 +2628,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       double_tap -> set_target( target );
       double_tap -> execute();
       p() -> buffs.double_tap -> decrement();
+      double_tap_aimed -> occur();
     }
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
@@ -2895,11 +2898,13 @@ struct rapid_fire_t: public hunter_spell_t
 
   rapid_fire_damage_t* damage;
   int base_num_ticks;
+  proc_t* double_tap_rapid_fire;
 
   rapid_fire_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "rapid_fire", p, p -> find_spell( 257044 ) ),
     damage( p -> get_background_action<rapid_fire_damage_t>( "rapid_fire_damage" ) ),
-    base_num_ticks( data().effectN( 1 ).base_value() )
+    base_num_ticks( data().effectN( 1 ).base_value() ),
+    double_tap_rapid_fire( p -> get_proc( "double_tap_rapid_fire" ) )
   {
     parse_options( options_str );
 
@@ -2943,6 +2948,10 @@ struct rapid_fire_t: public hunter_spell_t
 
     p() -> buffs.trick_shots -> decrement();
     p() -> buffs.lethal_shots -> decrement();
+
+    if ( p() -> buffs.double_tap -> check() )
+      double_tap_rapid_fire -> occur();
+
     p() -> buffs.double_tap -> decrement();
 
     // XXX: this triggers *only* after a *full* uninterrupted channel
@@ -5283,9 +5292,7 @@ void hunter_t::init_action_list()
     precombat -> add_action( "augmentation" );
     precombat -> add_action( "food" );
 
-    if ( specialization() == HUNTER_MARKSMANSHIP )
-      precombat -> add_action( "summon_pet,if=active_enemies<3" );
-    else
+    if ( specialization() != HUNTER_MARKSMANSHIP )
       precombat -> add_action( "summon_pet" );
 
     precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -5411,7 +5418,6 @@ void hunter_t::apl_mm()
   default_list -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down&buff.double_tap.down&(active_enemies>2&buff.trick_shots.up|active_enemies<3&full_recharge_time<cast_time+gcd)" );
   default_list -> add_action( this, "Rapid Fire", "if=active_enemies<3|buff.trick_shots.up" );
   default_list -> add_talent( this, "Explosive Shot" );
-  default_list -> add_talent( this, "Serpent Sting", "if=refreshable" );
   default_list -> add_talent( this, "Barrage" );
   default_list -> add_talent( this, "Piercing Shot" );
   default_list -> add_talent( this, "A Murder of Crows" );
@@ -5419,6 +5425,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down&(focus>70|buff.steady_focus.down)" );
   default_list -> add_action( this, "Multi-Shot", "if=active_enemies>2&(focus>90|buff.precise_shots.up&(focus>70|buff.steady_focus.down&focus>45))" );
   default_list -> add_action( this, "Arcane Shot", "if=active_enemies<3&(focus>70|buff.steady_focus.down&(focus>60|buff.precise_shots.up))" );
+  default_list -> add_talent( this, "Serpent Sting", "if=refreshable" );
   default_list -> add_action( this, "Steady Shot" );
 }
 
