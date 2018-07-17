@@ -2926,6 +2926,8 @@ double player_t::composite_melee_attack_power() const
   ap += current.attack_power_per_strength * cache.strength();
   ap += current.attack_power_per_agility * cache.agility();
 
+  ap *= 1.0 + sim->auras.battle_shout->check_value();
+
   return ap;
 }
 

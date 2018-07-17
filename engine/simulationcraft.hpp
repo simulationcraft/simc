@@ -1060,6 +1060,7 @@ struct sim_t : private sc_thread_t
   {
     // Buff overrides
     int arcane_intellect;
+    int battle_shout;
 
     // Debuff overrides
     int chaos_brand;
@@ -1075,6 +1076,7 @@ struct sim_t : private sc_thread_t
   struct auras_t
   {
     buff_t* arcane_intellect;
+    buff_t* battle_shout;
   } auras;
 
   // Expansion specific custom parameters. Defaults in the constructor.
