@@ -18,7 +18,7 @@ legs=tyelca_ferren_marcuss_stature,id=137070,bonus_id=3630
 feet=doomwalker_warboots,id=152009,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant_id=5428
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
-trinket1=amanthuls_vision,id=154172,bonus_id=4213 
+trinket1=amanthuls_vision,id=154172,bonus_id=4213
 trinket2=diimas_glacial_aegis,id=151977,bonus_id=3612/1502
 main_hand=oathseeker,id=128867
 off_hand=,id=128866,bonus_id=736,gem_id=155851/152293/152024,relic_id=3612:1512/3612:1502/3612:1502
@@ -31,7 +31,7 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=1302002
+talents=2303003
 spec=retribution
 
 head=lights_vanguard_helm,id=152151,bonus_id=3612/1502

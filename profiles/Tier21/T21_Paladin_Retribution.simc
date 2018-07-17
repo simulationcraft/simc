@@ -4,7 +4,7 @@ level=110
 race=blood_elf
 role=attack
 position=back
-talents=1302002
+talents=2303003
 
 # Default consumables
 potion=old_war
