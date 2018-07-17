@@ -325,9 +325,6 @@ namespace warlock
 
       void tick( dot_t* d ) override
       {
-        dot_t* agony = td( d->state->target )->dots_agony;
-        timespan_t dot_tick_time = agony->current_action->tick_time( agony->current_action->get_state( agony->state ) );
-
         td(d->state->target)->dots_agony->increment(1);
 
         double tier_bonus = 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T19, B4 )->effectN( 1 ).percent();
