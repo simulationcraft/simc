@@ -5,7 +5,7 @@ role=spell
 position=back
 talents=3103012
 spec=affliction
-default_pet=felhunter
+default_pet=imp
 
 head=hood_of_eternal_disdain,id=132394,bonus_id=3630
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
@@ -31,24 +31,24 @@ level=110
 race=troll
 role=spell
 position=back
-talents=1202023
+talents=2103021
 spec=demonology
 default_pet=felguard
 
-head=wakeners_loyalty,id=144385,bonus_id=3630
-neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_claw
-shoulders=recurrent_ritual,id=132393,bonus_id=3630
+head=soulhunters_cowl,id=151944,ilevel=240,azerite_level=240
+neck=chain_of_the_unmaker,id=152283,ilevel=250,azerite_level=250,enchant=mark_of_the_claw
+shoulders=grim_inquisitors_shoulderguards,id=152177,bonus_id=3612/1502
 back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
-chest=grim_inquisitors_robes,id=152176,bonus_id=3612/1502
+chest=gambeson_of_sargeras_corruption,id=152679,bonus_id=3612/1502
 wrists=blooddrenched_bindings,id=151954,bonus_id=3612/1502
 hands=grim_inquisitors_gloves,id=152173,bonus_id=3612/1502
 waist=cord_of_surging_hysteria,id=151942,bonus_id=3612/1502
 legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
 feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
-finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
-finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
-trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
-trinket2=amanthuls_vision,id=154172,bonus_id=4213
+finger1=soul_of_the_netherlord,id=151649,ilevel=265,azerite_level=265,gems=9haste,enchant=9haste
+finger2=wilfreds_sigil_of_superior_summoning,id=132369,ilevel=265,azerite_level=265,gems=9haste,enchant=binding_of_haste
+trinket1=prototype_personnel_decimator,id=151962,ilevel=240,azerite_level=240
+trinket2=norgannons_prowess,id=154177,ilevel=280,azerite_level=280
 main_hand=spine_of_thalkiel,id=137246,gem_id=0/0/0/0,relic_id=0/0
 off_hand=skull_of_the_manari,id=128943,bonus_id=748,gem_id=152056/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
 
