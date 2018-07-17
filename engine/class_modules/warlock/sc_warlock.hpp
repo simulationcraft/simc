@@ -94,7 +94,6 @@ namespace warlock
       player_t * havoc_target;
       bool wracking_brilliance;
       double agony_accumulator;
-      double agony_expression_thing;
 
       // Active Pet
       struct pets_t

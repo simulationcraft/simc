@@ -2,8 +2,6 @@
 #include "sc_warlock.hpp"
 namespace warlock
 { 
-// Pets
-
   void parse_spell_coefficient( action_t& a )
   {
     for ( size_t i = 1; i <= a.data()._effects->size(); i++ )
@@ -199,7 +197,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     havoc_target( nullptr ),
     wracking_brilliance(false),
     agony_accumulator( 0.0 ),
-    agony_expression_thing( 0.0 ),
     warlock_pet_list(),
     active(),
     talents(),
@@ -846,7 +843,6 @@ void warlock_t::reset()
 
   warlock_pet_list.active = nullptr;
   havoc_target = nullptr;
-  agony_expression_thing = 0.0;
   agony_accumulator = rng().range( 0.0, 0.99 );
 }
 
@@ -911,7 +907,17 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
   if ( name_str == "time_to_shard" )
   {
     return make_fn_expr( name_str, [this]()
-    { return agony_expression_thing; } );
+    { 
+      double active_agonies = get_active_dots(find_action_id("agony"));
+      if (sim->log)
+        sim->out_debug.printf("active agonies: %f", active_agonies);
+      dot_t* agony = find_target_data(target)->dots_agony;
+      timespan_t dot_tick_time = agony->current_action->tick_time(agony->current_action->get_state(agony->state));
+      double average = 1 / (0.16 / std::sqrt(active_agonies) * (active_agonies == 1 ? 1.15 : 1.0) * active_agonies / dot_tick_time.total_seconds());
+      if (sim->log)
+        sim->out_debug.printf("time to shard return: %f", average);
+      return average;
+    } );
   }
   else if ( name_str == "pet_count" )
   {
