@@ -76,6 +76,12 @@ public:
       base_td_multiplier *= 1.0 + p()->spec.destruction->effectN( 2 ).percent();
   }
 
+  double cost() const override
+  {
+    double c = warlock_spell_t::cost();
+    return c;
+  }
+
   void execute() override
   {
     warlock_spell_t::execute();
@@ -1140,21 +1146,16 @@ void warlock_t::create_buffs_destruction()
   buffs.accelerant = make_buff<stat_buff_t>( this, "accelerant", azerite.accelerant )
                          ->add_stat( STAT_HASTE_RATING, azerite.accelerant.value() )
                          ->set_duration( find_spell( 272957 )->duration() );
-
   buffs.bursting_flare = make_buff<stat_buff_t>( this, "bursting_flare", find_spell( 279913 ) )
                              ->add_stat( STAT_MASTERY_RATING, azerite.bursting_flare.value() );
-
   buffs.chaotic_inferno = make_buff( this, "chaotic_inferno", find_spell( 279673 ) )
                               ->set_default_value( find_spell( 279673 )->effectN( 1 ).percent() )
                               ->set_chance( find_spell( 279672 )->proc_chance() );
-
   buffs.crashing_chaos = make_buff( this, "crashing_chaos", azerite.crashing_chaos )
                              ->set_max_stack( azerite.crashing_chaos.spell_ref().effectN( 2 ).base_value() or 1 )
                              ->set_default_value( azerite.crashing_chaos.value() );
-
   buffs.rolling_havoc = make_buff<stat_buff_t>( this, "rolling_havoc", find_spell( 278931 ) )
                             ->add_stat( STAT_INTELLECT, azerite.rolling_havoc.value() );
-
   buffs.flashpoint = make_buff<stat_buff_t>( this, "flashpoint", find_spell( 275429 ) )
                          ->add_stat( STAT_HASTE_RATING, azerite.flashpoint.value() );
 }
