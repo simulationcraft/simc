@@ -993,11 +993,13 @@ namespace warlock
       namespace destruction {
         struct infernal_t : public warlock_pet_t
         {
+          buff_t* immolation;
+
           infernal_t(sim_t* sim, warlock_t* owner, const std::string& name = "infernal");
           virtual void init_base_stats() override;
+          virtual void create_buffs() override;
           virtual void arise() override;
           virtual void demise() override;
-          virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
       }
 

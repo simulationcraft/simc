@@ -864,62 +864,40 @@ namespace warlock {
     namespace destruction {
       struct immolation_tick_t : public warlock_pet_spell_t
       {
-        immolation_tick_t(warlock_pet_t* p, const spell_data_t& s) :
-          warlock_pet_spell_t("immolation_tick", p, s.effectN(1).trigger())
+        immolation_tick_t( warlock_pet_t* p, const spell_data_t* s ) :
+          warlock_pet_spell_t( "immolation", p, s->effectN( 1 ).trigger() )
         {
           aoe = -1;
-          background = true;
-          may_crit = true;
+          background = may_crit = true;
         }
       };
 
-      struct immolation_t : public warlock_pet_spell_t
-      {
-        immolation_t(warlock_pet_t* p, const std::string& options_str) :
-          warlock_pet_spell_t("immolation", p, p -> find_spell(19483))
-        {
-          parse_options(options_str);
-
-          dynamic_tick_action = hasted_ticks = true;
-          tick_action = new immolation_tick_t(p, data());
-        }
-
-        void init() override
-        {
-          warlock_pet_spell_t::init();
-
-          // Explicitly snapshot haste, as the spell actually has no duration in spell data
-          snapshot_flags |= STATE_HASTE;
-          update_flags |= STATE_HASTE;
-        }
-
-        timespan_t composite_dot_duration(const action_state_t*) const override
-        {
-          return player->sim->expected_iteration_time * 2;
-        }
-
-        virtual void cancel() override
-        {
-          dot_t* dot = find_dot(target);
-          if (dot && dot->is_ticking())
-          {
-            dot->cancel();
-          }
-
-          action_t::cancel();
-        }
-      };
-
-      infernal_t::infernal_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-        warlock_pet_t(sim, owner, name, PET_INFERNAL, name != "infernal")
+      infernal_t::infernal_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
+        warlock_pet_t( sim, owner, name, PET_INFERNAL, name != "infernal" ),
+        immolation( nullptr )
       {
         regen_type = REGEN_DISABLED;
       }
 
-      void infernal_t::init_base_stats() {
+      void infernal_t::init_base_stats()
+      {
         warlock_pet_t::init_base_stats();
-        action_list_str = "immolation,if=!ticking";
-        melee_attack = new warlock_pet_melee_t(this);
+
+        melee_attack = new warlock_pet_melee_t( this );
+      }
+
+      void infernal_t::create_buffs()
+      {
+        warlock_pet_t::create_buffs();
+
+        auto damage = new immolation_tick_t( this, find_spell( 19483 ) );
+
+        immolation = make_buff<buff_t>( this, "immolation", find_spell( 19483 ) )
+          ->set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+          ->set_tick_callback( [damage, this]( buff_t* /* b  */, int /* stacks */, const timespan_t& /* tick_time */ ) {
+            damage->set_target( target );
+            damage->execute();
+          } );
       }
 
       void infernal_t::arise()
@@ -927,19 +905,19 @@ namespace warlock {
         warlock_pet_t::arise();
 
         buffs.embers->trigger();
+        immolation->trigger();
+
+        melee_attack->set_target( target );
+        melee_attack->schedule_execute();
       }
 
-      void infernal_t::demise() {
+      void infernal_t::demise()
+      {
         warlock_pet_t::demise();
 
         buffs.embers->expire();
+        immolation->expire();
         o()->buffs.grimoire_of_supremacy->expire();
-      }
-
-      action_t* infernal_t::create_action(const std::string& name, const std::string& options_str) {
-        if (name == "immolation") return new immolation_t(this, options_str);
-
-        return warlock_pet_t::create_action(name, options_str);
       }
     }
 
