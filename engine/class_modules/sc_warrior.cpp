@@ -3709,15 +3709,18 @@ struct battle_shout_t : public warrior_spell_t
   {
     parse_options( options_str );
     harmful = false;
-    ignore_false_positive = true;
 
-  //  background = sim -> overrides.battle_shout !=0;
+    //background = sim -> overrides.battle_shout !=0;
   }
 
   //virtual void execute() override
   //{
-    //if ( ! sim -> overrides.battle_shout )
-      //sim -> auras.battle_shout -> trigger();
+     //sim -> auras.battle_shout -> trigger();
+  //}
+
+  //bool warrior_spell_t::ready() override
+  //{  
+    //return warrior_spell_t::ready && !sim -> auras.battle_shout->check();
   //}
 };
 
@@ -4674,28 +4677,21 @@ void warrior_t::apl_fury()
     default_list -> add_action( "potion,if=buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled)" );
   }
 
-  default_list -> add_talent( this, "Dragon Roar", "if=(equipped.convergence_of_fates&cooldown.battle_cry.remains<2)|!equipped.convergence_of_fates&(!cooldown.battle_cry.remains<=10|cooldown.battle_cry.remains<2)|(talent.bloodbath.enabled&(cooldown.bloodbath.remains<1|buff.bloodbath.up))");
-  default_list -> add_action( this, "Rampage", "if=cooldown.battle_cry.remains<1&cooldown.bloodbath.remains<1&target.health.pct>20" );
-  default_list -> add_action( this, "Furious Slash", "if=talent.frenzy.enabled&(buff.frenzy.stack<3|buff.frenzy.remains<3|(cooldown.battle_cry.remains<1&buff.frenzy.remains<9))" );
-  default_list -> add_action( "use_item,name=umbral_moonglaives,if=equipped.umbral_moonglaives&(cooldown.battle_cry.remains>gcd&cooldown.battle_cry.remains<2|cooldown.battle_cry.remains=0)" );
-  default_list -> add_action( this, "Bloodthirst", "if=equipped.kazzalax_fujiedas_fury&buff.fujiedas_fury.down" );
-  default_list -> add_talent( this, "Avatar", "if=((buff.battle_cry.remains>5|cooldown.battle_cry.remains<12)&target.time_to_die>80)|((target.time_to_die<40)&(buff.battle_cry.remains>6|cooldown.battle_cry.remains<12|(target.time_to_die<20)))" );
-
-  default_list -> add_action( this, "Battle Cry", "if=gcd.remains=0&talent.reckless_abandon.enabled&!talent.bloodbath.enabled&(equipped.umbral_moonglaives&(prev_off_gcd.umbral_moonglaives|(trinket.cooldown.remains>3&trinket.cooldown.remains<90))|!equipped.umbral_moonglaives)" );
-  default_list -> add_action( this, "Battle Cry", "if=gcd.remains=0&talent.bladestorm.enabled&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)" );
-  default_list -> add_action( this, "Battle Cry", "if=gcd.remains=0&buff.dragon_roar.up&(cooldown.bloodthirst.remains=0|buff.enrage.remains>cooldown.bloodthirst.remains)" );
-  default_list -> add_action( this, "Battle Cry", "if=(gcd.remains=0|gcd.remains<=0.4&prev_gcd.1.rampage)&(cooldown.bloodbath.remains=0|buff.bloodbath.up|!talent.bloodbath.enabled|(target.time_to_die<12))&(equipped.umbral_moonglaives&(prev_off_gcd.umbral_moonglaives|(trinket.cooldown.remains>3&trinket.cooldown.remains<90))|!equipped.umbral_moonglaives)" );
+  default_list -> add_action( this, "Furious Slash", "if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))" );
+  default_list -> add_action( this, "Bloodthirst", "if=equipped.kazzalax_fujiedas_fury&buff.fujiedas_fury.down|remains<2" );
+  default_list -> add_action( this, "Rampage", "if=cooldown.reckessness.remains<3" );
+  default_list -> add_action( this, "Recklessness" );
+  default_list -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.whirlwind.up" );
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
     if ( items[i].name_str == "ring_of_collapsing_futures" )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=equipped.ring_of_collapsing_futures&buff.battle_cry.up&buff.enrage.up&!buff.temptation.up" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=equipped.ring_of_collapsing_futures&!buff.temptation.up" );
     }
-    else if ( items[i].name_str != "draught_of_souls" && items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
+    if ( items[i].slot != SLOT_WAIST )
     {
-      if ( items[i].slot != SLOT_WAIST )
-        default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=!equipped.umbral_moonglaives&buff.battle_cry.up&buff.enrage.up" );
+      default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
 
@@ -4705,80 +4701,32 @@ void warrior_t::apl_fury()
   {
     if ( racial_actions[i] == "arcane_torrent" )
     {
-      default_list -> add_action( racial_actions[i] + ",if=rage<rage.max-40" );
+      default_list -> add_action( racial_actions[i] + ",if=rage<40&!buff.recklessness.up" );
     }
-    else if ( racial_actions[i] == "berserking" )
+    else if ( racial_actions[i] == "lights_judgment" )
     {
-      default_list -> add_action( racial_actions[i] + ",if=(buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled))|(buff.battle_cry.up&target.time_to_die<40)" );
+      default_list -> add_action( racial_actions[i] + ",if=cooldown.recklessness.remains<3" );
     }
     else
     {
-      default_list -> add_action( racial_actions[i] + ",if=buff.battle_cry.up" );
+      default_list -> add_action( racial_actions[i] + ",if=buff.recklessness.up" );
     }
   }
-  default_list -> add_action( "run_action_list,name=cooldowns,if=buff.battle_cry.up&spell_targets.whirlwind=1" );
-  default_list -> add_action( "run_action_list,name=three_targets,if=target.health.pct>20&(spell_targets.whirlwind=3|spell_targets.whirlwind=4)" );
-  default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.whirlwind>4" );
-  default_list -> add_action( "run_action_list,name=execute,if=target.health.pct<20" );
-  default_list -> add_action( "run_action_list,name=single_target,if=target.health.pct>20" );
+  default_list -> add_action( "run_action_list,name=single_target" );
 
   movement -> add_action( this, "Heroic Leap" );
 
-  single_target -> add_action( this, "Bloodthirst", "if=buff.fujiedas_fury.up&buff.fujiedas_fury.remains<2" );
-  single_target -> add_action( this, "Furious Slash", "if=talent.frenzy.enabled&(buff.frenzy.down|buff.frenzy.remains<=2)" );
-  single_target -> add_action( this, "Raging Blow", "if=buff.enrage.up&talent.inner_rage.enabled" );
-  single_target -> add_action( this, "Rampage", "if=target.health.pct>21&(rage>=100|!talent.frothing_berserker.enabled)&(((cooldown.battle_cry.remains>5|cooldown.bloodbath.remains>5)&!talent.carnage.enabled)|((cooldown.battle_cry.remains>3|cooldown.bloodbath.remains>3)&talent.carnage.enabled))|buff.massacre.react" );
-  single_target -> add_action( this, "Execute", "if=buff.stone_heart.react&((talent.inner_rage.enabled&cooldown.raging_blow.remains>1)|buff.enrage.up)" );
+  single_target -> add_talent( this, "Siegebreaker", "if=buff.recklessness.up|cooldown.recklessness.remains>28" );
+  single_target -> add_action( this, "Rampage", "if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))" );
+  single_target -> add_action( this, "Execute", "if=(rage<80&!buff.recklessness.up)|(rage<60&buff.recklessness.up)" );
+  single_target -> add_action( this, "Bloodthirst", "if=buff.enrage.down" );
+  single_target -> add_action( this, "Raging Blow", "if=charges=2" );
   single_target -> add_action( this, "Bloodthirst" );
-  single_target -> add_action( this, "Furious Slash", "if=set_bonus.tier19_2pc&!talent.inner_rage.enabled" );
-  single_target -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
-  single_target -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up&spell_targets.whirlwind=2" );
-  single_target -> add_action( this, "Raging Blow" );
-  single_target -> add_action( this, "Furious Slash" );
-
-  cooldowns -> add_action( this, "Rampage", "if=buff.massacre.react&buff.enrage.remains<1" );
-  cooldowns -> add_action( this, "Bloodthirst", "if=target.health.pct<20&buff.enrage.remains<1" );
-  cooldowns -> add_action( this, "Execute" );
-  for ( size_t i = 0; i < items.size(); i++ )
-  {
-    if ( items[i].name_str == "draught_of_souls" )
-    {
-      cooldowns -> add_action( "use_item,name=" + items[i].name_str + ",if=equipped.draught_of_souls&buff.battle_cry.remains>2&buff.enrage.remains>2&((talent.dragon_roar.enabled&buff.dragon_roar.remains>=3)|!talent.dragon_roar.enabled)" );
-    }
-  }
-  cooldowns -> add_action( this, "Raging Blow", "if=talent.inner_rage.enabled&buff.enrage.up" );
-  cooldowns -> add_action( this, "Rampage", "if=(rage>=100&talent.frothing_berserker.enabled&!set_bonus.tier21_4pc)|set_bonus.tier21_4pc|!talent.frothing_berserker.enabled" );
-  cooldowns -> add_action( this, "Odyn's Fury", "if=buff.enrage.up&(cooldown.raging_blow.remains>0|!talent.inner_rage.enabled)" );
-  cooldowns -> add_action( this, "Berserker Rage", "if=talent.outburst.enabled&buff.enrage.down&buff.battle_cry.up" );
-  cooldowns -> add_action( this, "Bloodthirst", "if=(buff.enrage.remains<1&!talent.outburst.enabled)|!talent.inner_rage.enabled" );
-  cooldowns -> add_action( this, "Whirlwind", "if=buff.wrecking_ball.react&buff.enrage.up" );
-  cooldowns -> add_action( this, "Raging Blow" );
-  cooldowns -> add_action( this, "Bloodthirst" );
-  cooldowns -> add_action( this, "Furious Slash" );
-
-  execute -> add_action( this, "Bloodthirst", "if=buff.fujiedas_fury.up&buff.fujiedas_fury.remains<2" );
-  execute -> add_action( this, "Execute", "if=artifact.juggernaut.enabled&(!buff.juggernaut.up|buff.juggernaut.remains<2)|buff.stone_heart.react" );
-  execute -> add_action( this, "Furious Slash", "if=talent.frenzy.enabled&buff.frenzy.remains<=2" );
-  execute -> add_action( this, "Rampage", "if=buff.massacre.react&buff.enrage.remains<1" );
-  execute -> add_action( this, "Execute" );
-  execute -> add_action( this, "Odyn's Fury" );
-  execute -> add_action( this, "Bloodthirst" );
-  execute -> add_action( this, "Furious Slash", "if=set_bonus.tier19_2pc" );
-  execute -> add_action( this, "Raging Blow" );
-  execute -> add_action( this, "Furious Slash" );
-
-  aoe -> add_action( this, "Bloodthirst", "if=buff.enrage.down|rage<90" );
-  aoe -> add_talent( this, "Bladestorm", "if=buff.enrage.remains>2&(raid_event.adds.in>90|!raid_event.adds.exists|spell_targets.bladestorm_mh>desired_targets)" );
-  aoe -> add_action( this, "Whirlwind", "if=buff.meat_cleaver.down" );
-  aoe -> add_action( this, "Rampage", "if=buff.meat_cleaver.up&(buff.enrage.down&!talent.frothing_berserker.enabled|buff.massacre.react|rage>=100)" );
-  aoe -> add_action( this, "Bloodthirst" );
-  aoe -> add_action( this, "Whirlwind" );
-
-  three_target -> add_action( this, "Execute", "if=buff.stone_heart.react" );
-  three_target -> add_action( this, "Rampage", "if=buff.meat_cleaver.up&((buff.enrage.down&!talent.frothing_berserker.enabled)|(rage>=100&talent.frothing_berserker.enabled))|buff.massacre.react" );
-  three_target -> add_action( this, "Raging Blow", "if=talent.inner_rage.enabled" );
-  three_target -> add_action( this, "Bloodthirst" );
-  three_target -> add_action( this, "Whirlwind" );
+  single_target -> add_talent( this, "Bladestorm", "if=prev_gcd.1.rampage&(buff.siegebreaker.up|!talent.siegebreaker.enabled)" );
+  single_target -> add_talent( this, "Dragon Roar", "if=buff.enrage.up&(buff.siegebreaker.up|!talent.siegebreaker.enabled)" );
+  single_target -> add_action( this, "Raging Blow", "if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)" );
+  single_target -> add_action( this, "Furious Slash", "if=talent.furious_slash.enabled" );
+  single_target -> add_action( this, "Whirlwind" );
 }
 
 // Arms Warrior Action Priority List ========================================
@@ -5424,13 +5372,13 @@ std::string warrior_t::default_flask() const
 
 std::string warrior_t::default_food() const
 {
-  std::string fury_food = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
+  std::string fury_food = ( true_level > 100 ) ? "the_hungry_magister" :
                           ( true_level >  90 ) ? "buttered_sturgeon" :
                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80 ) ? "seafood_magnifique_feast" :
                           "disabled";
 
-  std::string arms_food = ( true_level > 100 ) ? "nightborne_delicacy_platter" :
+  std::string arms_food = ( true_level > 100 ) ? "the_hungry_magister" :
                           ( true_level >  90 ) ? "buttered_sturgeon" :
                           ( true_level >= 85 ) ? "sea_mist_rice_noodles" :
                           ( true_level >= 80 ) ? "seafood_magnifique_feast" :
