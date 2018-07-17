@@ -9,6 +9,7 @@
 // - Army of the dead ghouls should spawn once every 0.5s for 4s rather than all at once
 // - Fix Unholy Blight reporting : currently the uptime contains both the dot uptime (24.2s every 45s)
 //   and the driver uptime (6s every 45s)
+// - Wait for Blizzard to fix unholy pets damage tooltips to finally figure out their damage
 // Blood
 //
 // Frost
