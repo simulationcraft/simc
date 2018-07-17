@@ -213,8 +213,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     spells(),
     initial_soul_shards( 3 ),
     allow_sephuz( false ),
-    default_pet(),
-    shard_react( timespan_t::zero() )
+    default_pet()
   {
     legendary.hood_of_eternal_disdain = nullptr;
     legendary.insignia_of_the_grand_army = nullptr;
@@ -846,7 +845,6 @@ void warlock_t::reset()
   } );
 
   warlock_pet_list.active = nullptr;
-  shard_react = timespan_t::zero();
   havoc_target = nullptr;
   agony_expression_thing = 0.0;
   agony_accumulator = rng().range( 0.0, 0.99 );
@@ -883,7 +881,6 @@ void warlock_t::copy_from( player_t* source )
 
   initial_soul_shards = p->initial_soul_shards;
   allow_sephuz = p->allow_sephuz;
-  deaths_embrace_fixed_time = p->deaths_embrace_fixed_time;
   default_pet = p->default_pet;
 }
 
@@ -911,12 +908,7 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
 
 expr_t* warlock_t::create_expression( const std::string& name_str )
 {
-  if ( name_str == "shard_react" )
-  {
-    return make_fn_expr( name_str, [this]()
-        { return resources.current[RESOURCE_SOUL_SHARD] >= 1 && sim->current_time() >= shard_react; } );
-  }
-  else if ( name_str == "time_to_shard" )
+  if ( name_str == "time_to_shard" )
   {
     return make_fn_expr( name_str, [this]()
     { return agony_expression_thing; } );
