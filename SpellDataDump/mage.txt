@@ -817,6 +817,7 @@ Each Arcane Charge increases damage by $36032s1% and mana cost by $36032s5%, and
 |cFFFFFFFFGenerates 1 Arcane Charge.|r
 
 Name             : Ice Lance (id=30455) [Scaling Spell (5), Spell Family (3)] 
+Hotfixed         : Attributes
 Replaces         : Fire Blast (id=108853)
 Class            : Frost Mage
 School           : Frost
@@ -827,7 +828,7 @@ GCD              : 1.5 seconds
 Velocity         : 47 yards/sec
 Affecting spells : Shatter (12982 effect#1), Splitting Ice (56377 effect#1), Lonely Winter (205024 effect#1), Magtheridon's Might (214404 effect#1), Norgannon's Foresight (236380 effect#1), Arctic Blast (253257 effect#1), Chain Reaction (278310 effect#1), Whiteout (278541 effect#3)
 Triggered by     : Fingers of Frost (44544)
-Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ x.x..... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1872,8 +1873,8 @@ Attributes       : ........ ........ x......x x..x....   .....x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=85629)    : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.11500 | Radius: 10 yards | Target: AOE enemy (instant) (16)
-                   Hotfixed: SP Coefficient (0.1 -> 0.115)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.17300 | Radius: 10 yards | Target: AOE enemy (instant) (16)
+                   Hotfixed: SP Coefficient (0.1 -> 0.173)
 Description      : $@spelldesc84714
 Tooltip          : Movement slowed by $s1%.
 
@@ -3546,7 +3547,8 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
                  : Does not break stealth (37), Not a proc (105), Requires line of sight (186)
 Effects          :
 #1 (id=278848)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.14300 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
+                   Hotfixed: SP Coefficient (0.13 -> 0.143)
 Description      : $@spelldesc190356
 Variables        : $arctic1=$?s31674[${1.01}][${1}]
 $arctic2=$?s31675[${1.02}][${$<arctic1>}]
@@ -3892,6 +3894,7 @@ Effects          :
 Description      : Throws a spread of 6 cinders that travel in an arc, each dealing $198928s1 Fire damage to enemies it hits. Damage increased by $s1% if the target is affected by your Ignite.
 
 Name             : Glacial Spike (id=199786) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Resource         : 1% Base Mana (0) (id=191639)
@@ -3900,7 +3903,7 @@ Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Affecting spells : Shatter (12982 effect#1), Splitting Ice (56377 effect#1), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4476,7 +4479,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=312263)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
-                   Base Value: 10 | Scaled Value: 10 | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 8 | Target: Self (1)
+                   Hotfixed: Base Value (10 -> 8)
 #2 (id=312264)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1
 #3 (id=357969)   : Apply Aura (6) | Dummy (4)
@@ -4855,7 +4859,8 @@ Effects          :
 #1 (id=343734)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -70 | Scaled Value: -70 | Mechanic: Snare | Target: Enemy (6)
 #2 (id=343735)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.31600 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (0.34 -> 0.316)
 Description      : $@spelldesc44614
 Tooltip          : Movement slowed by $s1%.
 
@@ -4895,7 +4900,8 @@ Attributes       : ........ ........ x......x x..x....   .....x.. ........ .....
                  : Does not break stealth (37), Not a proc (105)
 Effects          :
 #1 (id=344284)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.55000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.51100 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (0.55 -> 0.511)
 Description      : $@spelldesc116
 
 Name             : Ice Lance (id=228598) [Scaling Spell (5), Spell Family (3)] 
@@ -5904,6 +5910,7 @@ Description      : Deals $s1 Holy Damage to enemies within $A1.
 Heals $s2 to allies within $A1. 
 
 Name             : Ebonbolt (id=257537) [Spell Family (3)] 
+Hotfixed         : Attributes
 Class            : Mage
 School           : Frost
 Range            : 40 yards
@@ -5912,7 +5919,7 @@ GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 45 seconds
 Affecting spells : Splitting Ice (56377 effect#1), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6440,8 +6447,9 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Blizzard (190356)
 #2 (id=719017)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 35 | Scaled Value: 35 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | Target: Self (1)
                    Affected Spells: Blizzard (190356), Blizzard (190357)
+                   Hotfixed: Base Value (35 -> 50)
 Description      : $@spelldesc270233
 Tooltip          : Blizzard is instant cast and deals $s2% increased damage.
 

@@ -2760,16 +2760,16 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179717)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -31 | Scaled Value: -31 | Target: Self (1)
+                   Base Value: -29 | Scaled Value: -29 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346), Dark Ascension (280800)
-                   Hotfixed: Base Value (-25 -> -31)
+                   Hotfixed: Base Value (-25 -> -29)
 #2 (id=191068)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -31 | Scaled Value: -31 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -29 | Scaled Value: -29 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346), Dark Ascension (280800)
-                   Hotfixed: Base Value (-25 -> -31)
+                   Hotfixed: Base Value (-25 -> -29)
 #3 (id=191069)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: -31 | Scaled Value: -31 | Target: Self (1)
-                   Hotfixed: Base Value (-25 -> -31)
+                   Base Value: -29 | Scaled Value: -29 | Target: Self (1)
+                   Hotfixed: Base Value (-25 -> -29)
 #4 (id=191070)   : Apply Aura (6) | Modify Mana Pool% (419)
                    Base Value: -80 | Scaled Value: -80 | Target: Self (1)
 #5 (id=191071)   : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
@@ -4723,7 +4723,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=343748)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.80000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.95000 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (0.8 -> 0.95)
 Description      : $@spelldesc228260
 
 Name             : Smite (Rank 2) (id=231682) [Spell Family (6), Passive] 
@@ -7077,7 +7078,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=738597)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.80000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.95000 | Target: Enemy (6)
+                   Hotfixed: SP Coefficient (0.8 -> 0.95)
 Description      : $@spelldesc280711
 
 Name             : Holy Nova (id=281265) [Spell Family (6)] 

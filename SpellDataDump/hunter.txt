@@ -519,7 +519,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 100 yards/sec
 Charges          : 2 (12 seconds cooldown)
-Category         : 1715: Marksmanship Hunter (137016 effect#11)
+Category         : 1715: Marksmanship Hunter (137016 effect#12)
 Azerite Power Id : 97
 Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effect#1), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effect#1), Marksmanship Hunter (137016 effect#1), Survival Hunter (137017 effect#1), Lone Wolf (155228 effect#1), Guide: Sharpshooting (178549 effect#2), Item - Hunter T18 Marksmanship 4P Bonus (188191 effect#1), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#1), Lock and Load (194594 effect#1), Sentinel's Sight (208913 effect#1), Trueshot (211327 effect#1), Wind Arrows (214826 effect#1), Gyroscopic Stabilization (235712 effect#1), Precision (246153 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Coordinated Assault (266779 effect#1), 
 Triggered by     : Lock and Load (194594)
@@ -2575,16 +2575,16 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=179699)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -17 | Scaled Value: -17 | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
-                   Hotfixed: Base Value (-20 -> -17)
+                   Hotfixed: Base Value (-20 -> -12)
 #2 (id=191134)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -17 | Scaled Value: -17 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -12 | Scaled Value: -12 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
-                   Hotfixed: Base Value (-20 -> -17)
+                   Hotfixed: Base Value (-20 -> -12)
 #3 (id=191135)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: -17 | Scaled Value: -17 | Target: Self (1)
-                   Hotfixed: Base Value (-20 -> -17)
+                   Base Value: -12 | Scaled Value: -12 | Target: Self (1)
+                   Hotfixed: Base Value (-20 -> -12)
 #4 (id=191136)   : Apply Aura (6) | Dummy (4)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
 #5 (id=191137)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -2604,11 +2604,14 @@ Effects          :
 #10 (id=260891)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -40 | Scaled Value: -40 | Target: Self (1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900)
-#11 (id=260892)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
+#11 (id=260892)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -15 | Scaled Value: -15 | Target: Self (1)
+                   Affected Spells: Barrage (120361)
+                   Hotfixed: Sub Type (457 -> 108), Base Value (100 -> -15), Misc Value (1715 -> 0), Affects Spells
+#12 (id=260893)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1715 | Target: Self (1)
                    Affected Spells (Category): Aimed Shot (19434)
-#12 (id=260893)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Hotfixed: Sub Type (4 -> 457), Base Value (0 -> 100), Misc Value (0 -> 1715)
 #13 (id=260894)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=260895)   : Apply Aura (6) | Dummy (4)
@@ -2619,6 +2622,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #17 (id=479793)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+#18 (id=742056)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Hotfixed: NEW EFFECT
 
 Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidden] 
 Class            : Survival Hunter
@@ -4979,7 +4985,8 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
                  : Ranged Ability (1), Not a proc (105)
 Effects          :
 #1 (id=479998)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26000 | Target: Enemy (6)
+                   Hotfixed: AP Coefficient (0.4 -> 0.26)
 Description      : Shoot a stream of arrows at your target every, dealing $s1 damage every $t sec.
 
 Name             : Hunter's Mark (id=257284) [Spell Family (9)] 
@@ -5052,7 +5059,8 @@ Effects          :
 #3 (id=738672)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 9 | Target: Self (1)
 #4 (id=738673)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | Misc Value: 9 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | Misc Value: 9 | Target: Self (1)
+                   Hotfixed: Base Value (50 -> 40)
 Description      : When Multi-Shot hits $s2 or more targets, your next Aimed Shot will ricochet and hit up to $s1 additional targets for $s4% of normal damage, or each shot of your next Rapid Fire will ricochet to $s3 additional nearby targets.
 
 Name             : Trick Shots (id=257622) [Spell Family (9)] 
@@ -5188,8 +5196,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=483863)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.85000 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (1 -> 0.85)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Target: Enemy (6)
+                   Hotfixed: AP Coefficient (1 -> 0.9)
 Description      : A brutal attack that deals $s1 Physical damage and grants you Mongoose Fury.
 
 |cFFFFFFFFMongoose Fury|r
@@ -6918,8 +6926,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=710469)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (0.493272 -> 1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Target: Enemy (6)
+                   Hotfixed: AP Coefficient (0.493272 -> 0.9)
 Description      : A brutal attack that deals $sw1 Physical damage and grants you Mongoose Fury.
 
 |cFFFFFFFFMongoose Fury|r
