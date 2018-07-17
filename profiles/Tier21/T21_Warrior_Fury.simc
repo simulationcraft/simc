@@ -1,0 +1,88 @@
+warrior="T21_Warrior_Fury"
+spec=fury
+level=110
+race=troll
+role=attack
+position=back
+talents=2132122
+
+# Default consumables
+potion=old_war
+flask=flask_of_the_countless_armies
+food=the_hungry_magister
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/charge
+# This is mostly to prevent cooldowns from being accidentally used during movement.
+actions+=/run_action_list,name=movement,if=movement.distance>5
+actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)|!raid_event.movement.exists
+actions+=/potion
+actions+=/furious_slash,if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))
+actions+=/bloodthirst,if=equipped.kazzalax_fujiedas_fury&(buff.fujiedas_fury.down|remains<2)
+actions+=/rampage,if=cooldown.recklessness.remains<3
+actions+=/recklessness
+actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.whirlwind.up
+actions+=/blood_fury,if=buff.recklessness.up
+actions+=/berserking,if=buff.recklessness.up
+actions+=/arcane_torrent,if=rage<40&!buff.recklessness.up
+actions+=/lights_judgment,if=cooldown.recklessness.remains<3
+actions+=/run_action_list,name=single_target
+
+actions.movement=heroic_leap
+
+actions.single_target=siegebreaker,if=buff.recklessness.up|cooldown.recklessness.remains>28
+actions.single_target+=/rampage,if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))
+actions.single_target+=/execute,if=buff.enrage.up
+actions.single_target+=/bloodthirst,if=buff.enrage.down
+actions.single_target+=/raging_blow,if=charges=2
+actions.single_target+=/bloodthirst
+actions.single_target+=/bladestorm,if=prev_gcd.1.rampage&(buff.siegebreaker.up|!talent.siegebreaker.enabled)
+actions.single_target+=/dragon_roar,if=buff.enrage.up&(buff.siegebreaker.up|!talent.siegebreaker.enabled)
+actions.single_target+=/raging_blow,if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)
+actions.single_target+=/furious_slash,if=talent.furious_slash.enabled
+actions.single_target+=/whirlwind
+
+head=ceannar_charger,id=137088,bonus_id=3630
+neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
+shoulders=juggernaut_pauldrons,id=152183,bonus_id=3612/1502
+back=juggernaut_cloak,id=152179,bonus_id=3612/1502,enchant=binding_of_strength
+chest=juggernaut_breastplate,id=152178,bonus_id=3612/1502
+wrists=vambraces_of_lifes_assurance,id=152023,bonus_id=3612/1502
+hands=juggernaut_gauntlets,id=152180,bonus_id=3612/1502
+waist=grondfather_girdle,id=152022,bonus_id=3612/1502
+legs=valarjar_berserkers,id=151824,bonus_id=3630
+feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
+finger1=sullied_seal_of_the_pantheon,id=151972,ilevel=970,azerite_level=970,enchant=200haste
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3630,enchant=binding_of_mastery
+trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
+trinket2=khazgoroths_courage,id=154176,bonus_id=3997
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=155849/155853/152293,relic_id=3612:1512/3612:1512/3612:1502
+off_hand=warswords_of_the_valarjar,id=134553
+
+# Gear Summary
+# gear_ilvl=283.06
+# gear_strength=851
+# gear_stamina=86759
+# gear_crit_rating=113
+# gear_haste_rating=694
+# gear_mastery_rating=6790
+# gear_versatility_rating=4805
+# gear_armor=906
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1

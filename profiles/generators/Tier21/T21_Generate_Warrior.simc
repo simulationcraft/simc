@@ -33,7 +33,7 @@ position=back
 talents=2132122
 spec=fury
 
-head=ceannar_charger,id=1137088,bonus_id=3630
+head=ceannar_charger,id=137088,bonus_id=3630
 neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=juggernaut_pauldrons,id=152183,bonus_id=3612/1502
 back=juggernaut_cloak,id=152179,bonus_id=3612/1502,enchant=binding_of_strength
