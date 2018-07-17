@@ -2872,23 +2872,11 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
     monk_spell_t( name, player, player -> talent.eye_of_the_tiger -> effectN( 1 ).trigger() )
   {
     background = true;
+    ww_mastery = true;    
     hasted_ticks = false;
     may_crit = tick_may_crit = true;
     attack_power_mod.direct = 0;
     attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    // TODO: There appears to be a hidden 25% damage multiplier that is not showing in any place
-    // Remove once found
-    // (July 16, 2018)
-    if ( p() -> specialization() == MONK_WINDWALKER )
-      am *= 1.25;
-
-    return am;
   }
 };
 
@@ -3800,23 +3788,12 @@ struct fist_of_the_white_tiger_main_hand_t: public monk_melee_attack_t
     monk_melee_attack_t( name, p, s )
   {
     sef_ability = SEF_FIST_OF_THE_WHITE_TIGER;
+    ww_mastery = true;
 
     may_dodge = may_parry = may_block = may_miss = true;
     dual = true;
     // attack_power_mod.direct = p -> talent.fist_of_the_white_tiger -> effectN( 1 ).ap_coeff();
     weapon = &( player -> main_hand_weapon ); 
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    // TODO: There appears to be a hidden 25% damage multiplier that is not showing in any place
-    // Remove once found
-    // (July 16, 2018)
-    am *= 1.25;
-
-    return am;
   }
 };
 
@@ -3828,6 +3805,7 @@ struct fist_of_the_white_tiger_t: public monk_melee_attack_t
     mh_attack( nullptr )
   {
     sef_ability = SEF_FIST_OF_THE_WHITE_TIGER_OH;
+    ww_mastery = true;
 
     parse_options( options_str );
     may_dodge   = may_parry = may_block = true;
@@ -3837,18 +3815,6 @@ struct fist_of_the_white_tiger_t: public monk_melee_attack_t
 
     mh_attack = new fist_of_the_white_tiger_main_hand_t( p, "fist_of_the_white_tiger_mainhand", p -> talent.fist_of_the_white_tiger -> effectN( 2 ).trigger() );
     add_child( mh_attack );
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    // TODO: There appears to be a hidden 25% damage multiplier that is not showing in any place
-    // Remove once found
-    // (July 16, 2018)
-    am *= 1.25;
-
-    return am;
   }
 
   void execute() override
@@ -5891,22 +5857,9 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
     monk_spell_t( name, player, player -> passives.chi_wave_damage )
   {
     background = true;
-
+    ww_mastery = true;
     attack_power_mod.direct = player -> passives.chi_wave_damage -> effectN( 1 ).ap_coeff();
     attack_power_mod.tick = 0;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    // TODO: There appears to be a hidden 25% damage multiplier that is not showing in any place
-    // Remove once found
-    // (July 16, 2018)
-    if ( p() -> specialization() == MONK_WINDWALKER )
-      am *= 1.25;
-
-    return am;
   }
 };
 
@@ -5986,20 +5939,8 @@ struct chi_burst_damage_t: public monk_spell_t
     monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage)
   {
     background = true;
+    ww_mastery = true;
     aoe = -1;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_spell_t::action_multiplier();
-
-    // TODO: There appears to be a hidden 25% damage multiplier that is not showing in any place
-    // Remove once found
-    // (July 16, 2018)
-    if ( p() -> specialization() == MONK_WINDWALKER )
-      am *= 1.25;
-
-    return am;
   }
 };
 
