@@ -7,6 +7,12 @@ namespace warlock
   {
     using namespace actions;
 
+    enum db_state
+    {
+      DB_DOT_DAMAGE = 0u,
+      DB_DOT_TICKS_LEFT
+    };
+
     struct affliction_spell_t : public warlock_spell_t
     {
     public:
@@ -129,6 +135,44 @@ namespace warlock
             }
           }
         }
+      }
+
+      virtual timespan_t get_db_dot_duration( dot_t* dot ) const
+      { return dot->remains(); }
+
+      virtual std::tuple<double, double> get_db_dot_state( dot_t* dot )
+      {
+        action_state_t* state = dot->current_action->get_state( dot->state );
+        dot->current_action->calculate_tick_amount( state, 1.0 );
+
+        timespan_t remaining = get_db_dot_duration( dot );
+
+        timespan_t dot_tick_time = dot->current_action->tick_time( state );
+        double ticks_left = ( remaining - dot->time_to_next_tick() ) / dot_tick_time;
+
+        if ( ticks_left == 0.0 )
+        {
+          ticks_left += dot->time_to_next_tick() / dot_tick_time;
+        }
+        else
+        {
+          ticks_left += 1;
+        }
+
+        if ( sim->debug )
+        {
+          sim->out_debug.printf( "%s %s dot_remains=%.3f duration=%.3f time_to_next=%.3f tick_time=%.3f "
+                                "ticks_left=%.3f amount=%.3f total=%.3f",
+            name(), dot->name(), dot->remains().total_seconds(), dot->duration().total_seconds(),
+            dot->time_to_next_tick().total_seconds(), dot_tick_time.total_seconds(),
+            ticks_left, state->result_raw, state->result_raw * ticks_left );
+        }
+
+        auto s = std::make_tuple( state->result_raw, ticks_left );
+
+        action_state_t::release( state );
+
+        return s;
       }
 
       static void accumulate_seed_of_corruption(warlock_td_t* td, double amount)
@@ -341,6 +385,18 @@ namespace warlock
             2 * sim->expected_iteration_time :
             2 * sim->max_time * ( 1.0 + sim->vary_combat_length ); // "infinite" duration
           base_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
+        }
+      }
+
+      timespan_t get_db_dot_duration( dot_t* dot ) const override
+      {
+        if ( p()->talents.deathbolt->ok() )
+        {
+          return timespan_t::from_seconds( p()->talents.deathbolt->effectN( 3 ).base_value() );
+        }
+        else
+        {
+          return affliction_spell_t::get_db_dot_duration( dot );
         }
       }
 
@@ -795,6 +851,8 @@ namespace warlock
         callbacks = false;
         hasted_ticks = true;
         tick_action = new phantom_singularity_tick_t( p );
+
+        spell_power_mod.tick = 0;
       }
 
       void init() override
@@ -805,8 +863,38 @@ namespace warlock
       }
 
       timespan_t composite_dot_duration( const action_state_t* s ) const override
+      { return s->action->tick_time( s ) * 8.0; }
+
+      // Phantom singularity damage for the Deathbolt is a composite of two things
+      // 1) The number of ticks left on this spell (phantom_singularity_t)
+      // 2) The direct damage the tick action does (phantom_singularity_tick_t)
+      std::tuple<double, double> get_db_dot_state( dot_t* dot ) override
       {
-        return s->action->tick_time( s ) * 8.0;
+        // Get base state so we get the correct number of ticks_left
+        auto base_state = affliction_spell_t::get_db_dot_state( dot );
+
+        // Then calculate damage based on the tick action
+        action_state_t* damage_action_state = tick_action->get_state();
+        damage_action_state->target = dot->target;
+        tick_action->snapshot_state( damage_action_state, DMG_DIRECT );
+        tick_action->calculate_direct_amount( damage_action_state );
+
+        // Recreate the db state object with the calculated tick action damage, and the base db
+        // state ticks left
+        auto state = std::make_tuple( damage_action_state->result_raw,
+            std::get<DB_DOT_TICKS_LEFT>( base_state ) );
+
+        if ( sim->debug )
+        {
+          sim->out_debug.printf( "%s %s amount=%.3f total=%.3f",
+            name(), dot->name(),
+            std::get<DB_DOT_DAMAGE>( state ),
+            std::get<DB_DOT_DAMAGE>( state ) * std::get<DB_DOT_TICKS_LEFT>( state ) );
+        }
+
+        action_state_t::release( damage_action_state );
+
+        return state;
       }
     };
 
@@ -842,43 +930,17 @@ namespace warlock
         snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA | STATE_MUL_PERSISTENT | STATE_VERSATILITY;
       }
 
-      double get_contribution_from_dot(dot_t* dot)
+      double get_contribution_from_dot( dot_t* dot )
       {
-        if (!(dot->is_ticking()))
+        if ( !dot->is_ticking() )
           return 0.0;
 
-        action_state_t* state = dot->current_action->get_state(dot->state);
-        dot->current_action->calculate_tick_amount(state, 1.0);
-        double tick_base_damage = state->result_raw;
-        timespan_t remaining = dot->remains();
+        auto dot_action = debug_cast<affliction_spell_t*>( dot->current_action );
 
-        if (dot->duration() > sim->expected_iteration_time)
-          remaining = ac_max;
+        auto tick_state = dot_action -> get_db_dot_state( dot );
 
-        timespan_t dot_tick_time = dot->current_action->tick_time(state);
-        double ticks_left = (remaining - dot->time_to_next_tick()) / dot_tick_time;
-
-        if (ticks_left == 0.0)
-        {
-          ticks_left += dot->time_to_next_tick() / dot->current_action->tick_time(state);
-        }
-        else
-        {
-          ticks_left += 1;
-        }
-
-        double total_damage = ticks_left * tick_base_damage;
-
-        if (sim->debug)
-        {
-          sim->out_debug.printf("%s %s dot_remains=%.3f duration=%.3f time_to_next=%.3f tick_time=%.3f ticks_left=%.3f amount=%.3f total=%.3f",
-            name(), dot->name(), dot->remains().total_seconds(), dot->duration().total_seconds(),
-            dot->time_to_next_tick().total_seconds(), dot_tick_time.total_seconds(),
-            ticks_left, tick_base_damage, total_damage);
-        }
-
-        action_state_t::release(state);
-        return total_damage;
+        return std::get<DB_DOT_TICKS_LEFT>( tick_state ) *
+               std::get<DB_DOT_DAMAGE>( tick_state );
       }
 
       void execute() override
