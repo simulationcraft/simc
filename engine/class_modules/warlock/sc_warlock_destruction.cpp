@@ -1203,8 +1203,8 @@ namespace warlock {
 
     def->add_action("run_action_list,name=aoe,if=spell_targets.infernal_awakening>=3");
     def->add_action("immolate,cycle_targets=1,if=(cooldown.havoc.remains<15|!debuff.havoc.remains)&(refreshable|talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains-action.chaos_bolt.travel_time-5<duration*0.3)");
-    def->add_action("summon_infernal,if=target.time_to_die>=400|!cooldown.dark_soul_instability.remains|target.time_to_die<=45|!talent.dark_soul_instability.enabled");
-    def->add_talent(this, "Dark Soul: Instability", "if=target.time_to_die>=130|pet.infernal.active|target.time_to_die<=30" );
+    def->add_action("summon_infernal,if=target.time_to_die>=210|!cooldown.dark_soul_instability.remains|target.time_to_die<=30+gcd|!talent.dark_soul_instability.enabled");
+    def->add_talent(this, "Dark Soul: Instability", "if=target.time_to_die>=140|pet.infernal.active|target.time_to_die<=20+gcd" );
     def->add_action( "potion,if=pet.infernal.active|target.time_to_die<65" );
     def->add_action( "use_items" );
     def->add_action( "havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10" );

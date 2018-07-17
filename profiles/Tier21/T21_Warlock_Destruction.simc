@@ -32,8 +32,8 @@ actions.precombat+=/incinerate,if=!talent.soul_fire.enabled
 # Executed every time the actor is available.
 actions=run_action_list,name=aoe,if=spell_targets.infernal_awakening>=3
 actions+=/immolate,cycle_targets=1,if=(cooldown.havoc.remains<15|!debuff.havoc.remains)&(refreshable|talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains-action.chaos_bolt.travel_time-5<duration*0.3)
-actions+=/summon_infernal,if=target.time_to_die>=400|!cooldown.dark_soul_instability.remains|target.time_to_die<=45|!talent.dark_soul_instability.enabled
-actions+=/dark_soul_instability,if=target.time_to_die>=130|pet.infernal.active|target.time_to_die<=30
+actions+=/summon_infernal,if=target.time_to_die>=210|!cooldown.dark_soul_instability.remains|target.time_to_die<=30+gcd|!talent.dark_soul_instability.enabled
+actions+=/dark_soul_instability,if=target.time_to_die>=140|pet.infernal.active|target.time_to_die<=20+gcd
 actions+=/potion,if=pet.infernal.active|target.time_to_die<65
 actions+=/use_items
 actions+=/havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10
