@@ -479,7 +479,6 @@ namespace warlock
 
       int initial_soul_shards;
       bool allow_sephuz;
-      bool deaths_embrace_fixed_time;
       std::string default_pet;
       timespan_t shard_react;
 

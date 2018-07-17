@@ -12,8 +12,6 @@ namespace warlock
     public:
       gain_t * gain;
 
-      bool affected_by_deaths_embrace;
-
       affliction_spell_t(warlock_t* p, const std::string& n) :
         affliction_spell_t(n, p, p -> find_class_spell(n))
       {
@@ -236,7 +234,6 @@ namespace warlock
       {
         parse_options( options_str );
         may_crit = false;
-        affected_by_deaths_embrace = true;
         wb = new wracking_brilliance_t();
       }
 
@@ -308,15 +305,6 @@ namespace warlock
             wb->run(p());
           p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
           p()->agony_accumulator -= 1.0;
-
-          if ( p()->resources.current[RESOURCE_SOUL_SHARD] == 1 )
-            p()->shard_react = p()->sim->current_time() + p()->total_reaction_time();
-
-          else if ( p()->resources.current[RESOURCE_SOUL_SHARD] >= 1 )
-            p()->shard_react = p()->sim->current_time();
-
-          else
-            p()->shard_react = timespan_t::max();
         }
 
         if ( rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->proc_chance() ) )
@@ -344,7 +332,6 @@ namespace warlock
       {
         parse_options(options_str);
         may_crit = false;
-        affected_by_deaths_embrace = true;
         dot_duration = data().effectN( 1 ).trigger()->duration();
         spell_power_mod.tick = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
         base_tick_time = data().effectN( 1 ).trigger()->effectN( 1 ).period();
@@ -412,7 +399,6 @@ namespace warlock
           tick_may_crit = true;
           hasted_ticks = false;
           tick_zero = true;
-          affected_by_deaths_embrace = true;
           if ( p->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B2 ) )
             base_multiplier *= 1.0 + p->sets->set( WARLOCK_AFFLICTION, T19, B2 )->effectN( 1 ).percent();
         }
@@ -619,7 +605,6 @@ namespace warlock
           dual = true;
           background = true;
           deathbloom = false;
-          affected_by_deaths_embrace = true;
           p->spells.seed_of_corruption_aoe = this;
         }
 
@@ -772,7 +757,6 @@ namespace warlock
       {
         parse_options(options_str);
         may_crit = false;
-        affected_by_deaths_embrace = true;
       }
 
       double composite_target_multiplier(player_t* target) const override
@@ -799,7 +783,6 @@ namespace warlock
         background = true;
         may_miss = false;
         dual = true;
-        affected_by_deaths_embrace = true;
         aoe = -1;
       }
     };
@@ -1192,11 +1175,6 @@ namespace warlock
   {
     procs.affliction_t21_2pc            = get_proc( "affliction_t21_2pc" );
     procs.nightfall                     = get_proc( "nightfall" );
-  }
-
-  void warlock_t::create_options_affliction()
-  {
-    add_option( opt_bool( "deaths_embrace_fixed_time", deaths_embrace_fixed_time ) );
   }
 
   void warlock_t::create_apl_affliction()
