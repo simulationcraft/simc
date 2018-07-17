@@ -3710,18 +3710,18 @@ struct battle_shout_t : public warrior_spell_t
     parse_options( options_str );
     harmful = false;
 
-    //background = sim -> overrides.battle_shout !=0;
+    background = sim -> overrides.battle_shout !=0;
   }
 
-  //virtual void execute() override
-  //{
-     //sim -> auras.battle_shout -> trigger();
-  //}
+  virtual void execute() override
+  {
+     sim -> auras.battle_shout -> trigger();
+  }
 
-  //bool warrior_spell_t::ready() override
-  //{  
-    //return warrior_spell_t::ready && !sim -> auras.battle_shout->check();
-  //}
+  bool ready() override
+  {  
+    return warrior_spell_t::ready() && !sim -> auras.battle_shout->check();
+  }
 };
 
 
@@ -4662,10 +4662,6 @@ void warrior_t::apl_fury()
   action_priority_list_t* default_list = get_action_priority_list( "default" );
   action_priority_list_t* movement = get_action_priority_list( "movement" );
   action_priority_list_t* single_target = get_action_priority_list( "single_target" );
-  action_priority_list_t* aoe = get_action_priority_list( "aoe" );
-  action_priority_list_t* cooldowns = get_action_priority_list( "cooldowns" );
-  action_priority_list_t* execute = get_action_priority_list( "execute" );
-  action_priority_list_t* three_target = get_action_priority_list( "three_targets" );
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Charge" );
@@ -4674,7 +4670,7 @@ void warrior_t::apl_fury()
 
   if ( sim -> allow_potions && true_level >= 80 )
   {
-    default_list -> add_action( "potion,if=buff.battle_cry.up&(buff.avatar.up|!talent.avatar.enabled)" );
+    default_list -> add_action( "potion" );
   }
 
   default_list -> add_action( this, "Furious Slash", "if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))" );
@@ -4694,8 +4690,6 @@ void warrior_t::apl_fury()
       default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
-
-  default_list -> add_talent( this, "Bloodbath", "if=buff.battle_cry.up|(target.time_to_die<14)|(cooldown.battle_cry.remains<2&prev_gcd.1.rampage)" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
