@@ -861,7 +861,7 @@ double priest_t::composite_melee_speed() const
 double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s) const
 {
   double m = player_t::composite_player_pet_damage_multiplier(s);
-  m *= ( 1.0 + find_spell(137033)->effectN(3).percent() );
+  m *= ( 1.0 + specs.shadow_priest->effectN(3).percent() );
   return m;
 }
 
