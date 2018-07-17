@@ -1181,6 +1181,8 @@ class SpellDataGenerator(DataGenerator):
          259454, 259455, 259456, 259457,
          # 8.0 Incendiary Ammunition
          265092,
+         # Void Slash (Void Stalker's Contract damage spell)
+         251034,
         ),
 
         # Warrior:
