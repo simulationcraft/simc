@@ -9,8 +9,8 @@ namespace
 { // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// todo: Fury - Add Meat Cleaver to all single target Fury abilities (ref Bloodthirst), Enrage-clean up movespeed/damage taken/health increase, add Battle Shout raid buff
-//       Arms - 3 target requirement for Cleave, Collateral Damage, and Avatar-Hardcode for Arms
+// todo: Fury - Enrage-clean up movespeed/damage taken/health increase
+//       Arms - 3 target requirement for Cleave, Collateral Damage
 // ==========================================================================
 
 struct warrior_t;
@@ -1618,17 +1618,31 @@ struct bloodthirst_t: public warrior_attack_t
 
 struct furious_slash_t: public warrior_attack_t
 {
+  int aoe_targets;
   furious_slash_t( warrior_t* p, const std::string& options_str ):
-    warrior_attack_t( "furious_slash", p, p -> talents.furious_slash )
+    warrior_attack_t( "furious_slash", p, p -> talents.furious_slash ),
+    aoe_targets( p -> spell.whirlwind_buff -> effectN( 2 ).percent() )
   {
     parse_options( options_str );
     weapon = &( p -> off_hand_weapon );
+    radius = 5;
+    base_aoe_multiplier = p -> spell.whirlwind_buff -> effectN( 3 ).percent();
+  }
+
+  int n_targets() const override
+  {
+    if ( p() -> buff.meat_cleaver -> check() )
+    {
+      return aoe_targets + 1;
+    }
+    return warrior_attack_t::n_targets();
   }
 
   void execute() override
   {
     warrior_attack_t::execute();
 
+    p() -> buff.meat_cleaver -> decrement();
     p() -> buff.furious_slash -> trigger();
   }
 
@@ -2490,13 +2504,16 @@ struct pummel_t: public warrior_attack_t
 
 struct raging_blow_attack_t: public warrior_attack_t
 {
+  int aoe_targets;
   raging_blow_attack_t( warrior_t* p, const char* name, const spell_data_t* s ):
-    warrior_attack_t( name, p, s )
+    warrior_attack_t( name, p, s ),
+    aoe_targets( p -> spell.whirlwind_buff -> effectN( 1 ).base_value() )
   {
     may_miss = may_dodge = may_parry = may_block = false;
     dual = true;
 
     base_multiplier *= 1.0 + p -> talents.inner_rage -> effectN( 2 ).percent();
+    base_aoe_multiplier = p -> spell.whirlwind_buff -> effectN( 3 ).percent();
   }
 
   double action_multiplier() const override
@@ -2506,6 +2523,15 @@ struct raging_blow_attack_t: public warrior_attack_t
     am *= 1.0 + p() -> buff.raging_thirst -> check_value();
 
     return am;
+  }
+
+  int n_targets() const override
+  {
+    if ( p() -> buff.meat_cleaver -> check() )
+    {
+      return aoe_targets + 1;
+    }
+    return warrior_attack_t::n_targets();
   }
 };
 
@@ -2535,6 +2561,9 @@ struct raging_blow_t: public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+
+    p() -> buff.meat_cleaver -> decrement();
+
     if ( result_is_hit( execute_state -> result ) )
     {
       mh_attack -> execute();
@@ -2733,7 +2762,7 @@ struct rampage_attack_t: public warrior_attack_t
   double rage_from_valarjar_berserking;
   rampage_attack_t( warrior_t* p, const spell_data_t* rampage, const std::string& name ):
     warrior_attack_t( name, p, rampage ),
-    aoe_targets( p -> spec.whirlwind -> effectN( 1 ).trigger() -> effectN( 1 ).base_value() ),
+    aoe_targets( p -> spell.whirlwind_buff -> effectN( 1 ).base_value() ),
     first_attack( false ),
     first_attack_missed( false ),
     valarjar_berserking( false ),
@@ -2745,7 +2774,7 @@ struct rampage_attack_t: public warrior_attack_t
       base_multiplier *= ( 1.0 + p -> find_spell( 200853 ) -> effectN( 1 ).percent() );
     }
     base_multiplier *= 1.0 + p -> talents.carnage -> effectN( 4 ).percent();
-    // base_aoe_multiplier = p -> buff.whirlwind -> s_data -> effectN( 3 ).percent(); Fix Me - Copy Bloodthirst for cleave support
+    base_aoe_multiplier = p -> spell.whirlwind_buff -> effectN( 3 ).percent();
     if ( p -> spec.rampage -> effectN( 3 ).trigger() == rampage )
       first_attack = true;
   }
@@ -4673,9 +4702,9 @@ void warrior_t::apl_fury()
     default_list -> add_action( "potion" );
   }
 
-  default_list -> add_action( this, "Furious Slash", "if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))" );
-  default_list -> add_action( this, "Bloodthirst", "if=equipped.kazzalax_fujiedas_fury&buff.fujiedas_fury.down|remains<2" );
-  default_list -> add_action( this, "Rampage", "if=cooldown.reckessness.remains<3" );
+  default_list -> add_talent( this, "Furious Slash", "if=talent.furious_slash.enabled&(buff.furious_slash.stack<3|buff.furious_slash.remains<3|(cooldown.recklessness.remains<3&buff.furious_slash.remains<9))" );
+  default_list -> add_action( this, "Bloodthirst", "if=equipped.kazzalax_fujiedas_fury&(buff.fujiedas_fury.down|remains<2)" );
+  default_list -> add_action( this, "Rampage", "if=cooldown.recklessness.remains<3" );
   default_list -> add_action( this, "Recklessness" );
   default_list -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.whirlwind.up" );
 
@@ -4685,9 +4714,10 @@ void warrior_t::apl_fury()
     {
       default_list -> add_action( "use_item,name=" + items[i].name_str + ",if=equipped.ring_of_collapsing_futures&!buff.temptation.up" );
     }
-    if ( items[i].slot != SLOT_WAIST )
+    else if ( items[i].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
-      default_list -> add_action( "use_item,name=" + items[i].name_str );
+      if ( items[i].slot != SLOT_WAIST )
+        default_list -> add_action( "use_item,name=" + items[i].name_str );
     }
   }
 
@@ -4712,14 +4742,14 @@ void warrior_t::apl_fury()
 
   single_target -> add_talent( this, "Siegebreaker", "if=buff.recklessness.up|cooldown.recklessness.remains>28" );
   single_target -> add_action( this, "Rampage", "if=buff.recklessness.up|(talent.frothing_berserker.enabled|talent.carnage.enabled&(buff.enrage.remains<gcd|rage>90)|talent.massacre.enabled&(buff.enrage.remains<gcd|rage>90))" );
-  single_target -> add_action( this, "Execute", "if=(rage<80&!buff.recklessness.up)|(rage<60&buff.recklessness.up)" );
+  single_target -> add_action( this, "Execute", "if=buff.enrage.up" );
   single_target -> add_action( this, "Bloodthirst", "if=buff.enrage.down" );
   single_target -> add_action( this, "Raging Blow", "if=charges=2" );
   single_target -> add_action( this, "Bloodthirst" );
   single_target -> add_talent( this, "Bladestorm", "if=prev_gcd.1.rampage&(buff.siegebreaker.up|!talent.siegebreaker.enabled)" );
   single_target -> add_talent( this, "Dragon Roar", "if=buff.enrage.up&(buff.siegebreaker.up|!talent.siegebreaker.enabled)" );
   single_target -> add_action( this, "Raging Blow", "if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)" );
-  single_target -> add_action( this, "Furious Slash", "if=talent.furious_slash.enabled" );
+  single_target -> add_talent( this, "Furious Slash", "if=talent.furious_slash.enabled" );
   single_target -> add_action( this, "Whirlwind" );
 }
 
