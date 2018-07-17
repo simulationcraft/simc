@@ -789,7 +789,8 @@ namespace warlock
     {
       phantom_singularity_tick_t* phantom_singularity;
 
-      phantom_singularity_t( warlock_t* p, const std::string& options_str ) : affliction_spell_t( "phantom_singularity", p, p -> talents.phantom_singularity )
+      phantom_singularity_t( warlock_t* p, const std::string& options_str ) :
+        affliction_spell_t( "phantom_singularity", p, p -> talents.phantom_singularity )
       {
         parse_options( options_str );
         callbacks = false;
@@ -811,69 +812,15 @@ namespace warlock
       }
     };
 
-    struct vile_taint_damage_t : public affliction_spell_t
-    {
-      vile_taint_damage_t(warlock_t* p)
-        : affliction_spell_t("vile_taint_damage", p, p -> talents.vile_taint)
-      {
-        aoe = -1;
-        background = dual = ground_aoe = true;
-      }
-
-      double cost() const override
-      {
-        return 0.0;
-      }
-
-      dot_t* get_dot(player_t* t)
-      {
-        if (!t) t = target;
-        if (!t) return nullptr;
-
-        return td(t)->dots_vile_taint;
-      }
-
-      void make_ground_aoe_event(warlock_t* p, action_state_t* execute_state)
-      {
-        make_event<ground_aoe_event_t>(*sim, p, ground_aoe_params_t()
-          .target(execute_state->target)
-          .x(p->talents.vile_taint->ok() ? p->x_position : execute_state->target->x_position)
-          .y(p->talents.vile_taint->ok() ? p->y_position : execute_state->target->y_position)
-          .pulse_time(p->talents.vile_taint->effectN(1).period() * player->cache.spell_haste() )
-          .duration(p->talents.vile_taint->duration())
-          .start_time(sim->current_time())
-          .action(this));
-      }
-    };
-
     struct vile_taint_t : public affliction_spell_t
     {
-      vile_taint_damage_t* damage;
-
-      vile_taint_t(warlock_t* p, const std::string& options_str)
-        : affliction_spell_t("vile_taint", p, p -> talents.vile_taint)
+      vile_taint_t( warlock_t* p, const std::string& options_str ) :
+        affliction_spell_t( "vile_taint", p, p -> talents.vile_taint )
       {
-        parse_options(options_str);
-        may_miss = may_crit = false;
-        damage = new vile_taint_damage_t(p);
-        damage->stats = stats;
-      }
+        parse_options( options_str );
 
-      // Don't record data for this action.
-      void record_data(action_state_t* s) override
-      {
-        (void)s;
-      }
-
-      void execute() override
-      {
-        affliction_spell_t::execute();
-        damage->make_ground_aoe_event(p(), execute_state);
-      }
-
-      expr_t* create_expression(const std::string& name) override
-      {
-        return affliction_spell_t::create_expression(name);
+        hasted_ticks = tick_zero = true;
+        aoe = -1;
       }
     };
     // lvl 75 - darkfury|mortal coil|demonic circle
