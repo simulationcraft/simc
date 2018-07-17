@@ -911,7 +911,9 @@ namespace warlock {
       };
 
       infernal_t::infernal_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-        warlock_pet_t(sim, owner, name, PET_INFERNAL, name != "infernal") {
+        warlock_pet_t(sim, owner, name, PET_INFERNAL, name != "infernal")
+      {
+        regen_type = REGEN_DISABLED;
       }
 
       void infernal_t::init_base_stats() {
