@@ -6723,12 +6723,7 @@ void mage_t::apl_arcane()
   burn -> add_action( "lights_judgment,if=buff.arcane_power.down" );
   burn -> add_talent( this, "Rune of Power", "if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)" );
   burn -> add_action( this, "Arcane Power" );
-  burn -> add_action( mage_t::get_special_use_items( "horn_of_valor" ) );
-  burn -> add_action( mage_t::get_special_use_items( "obelisk_of_the_void" ) );
-  burn -> add_action( mage_t::get_special_use_items( "mrrgrias_favor" ) );
-  burn -> add_action( mage_t::get_special_use_items( "tarnished_sentinel_medallion" ) );
-  burn -> add_action( mage_t::get_special_use_items( "pharameres_forbidden_grimoire" ) );
-  burn -> add_action( mage_t::get_special_use_items( "kiljaedens_burning_wish" ) );
+  burn -> add_action("use_items", "if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains");
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
     if ( racial_actions[ i ] == "lights_judgment" || racial_actions[ i ] == "arcane_torrent" )
