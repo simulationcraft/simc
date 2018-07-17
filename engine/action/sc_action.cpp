@@ -20,53 +20,28 @@ struct player_gcd_event_t : public player_event_t
   }
 
   const char* name() const override
-  {
-    return "Player-Ready-GCD";
-  }
+  { return "Player-Ready-GCD"; }
 
-  void select_action( action_priority_list_t* alist )
+  void execute_action( action_t* a )
   {
-    for ( auto i = p()->active_off_gcd_list->off_gcd_actions.begin();
-          i < p()->active_off_gcd_list->off_gcd_actions.end(); ++i )
+    // Don't attempt to execute an off gcd action that's already being queued (this should not
+    // happen anyhow)
+    if ( !p()->queueing || ( p()->queueing->internal_id != a->internal_id ) )
     {
-      action_t* a = *i;
-      if ( !a->ready() )
+      auto queue_delay = a->cooldown->queue_delay();
+      // Don't queue the action if GCD would elapse before the action is usable again
+      if ( queue_delay == timespan_t::zero() ||
+           ( a->player->readying && sim().current_time() + queue_delay < a->player->readying->occurs() ) )
       {
-        continue;
-      }
-
-      // Don't attempt to execute an off gcd action that's already being queued (this should not
-      // happen anyhow)
-      if ( !p()->queueing || ( p()->queueing->internal_id != a->internal_id ) )
-      {
-        auto queue_delay = a->cooldown->queue_delay();
-        // Don't queue the action if GCD would elapse before the action is usable again
-        if ( queue_delay == timespan_t::zero() ||
-             ( a->player->readying && sim().current_time() + queue_delay < a->player->readying->occurs() ) )
+        // If we're queueing something, it's something different from what we are about to do.
+        // Cancel existing queued (off gcd) action, and queue the new one.
+        if ( p()->queueing )
         {
-          // If we're queueing something, it's something different from what we are about to do.
-          // Cancel existing queued (off gcd) action, and queue the new one.
-          if ( p()->queueing )
-          {
-            event_t::cancel( p()->queueing->queue_event );
-            p()->queueing = nullptr;
-          }
-          a->queue_execute( true );
+          event_t::cancel( p()->queueing->queue_event );
+          p()->queueing = nullptr;
         }
-      }
-
-      // Need to restart because the active action list changed
-      if ( alist != p()->active_action_list )
-      {
-        p()->activate_action_list( p()->active_action_list, true );
-        select_action( p()->active_action_list );
-        p()->activate_action_list( alist, true );
-      }
-
-      // If we're queueing an action, no point looking for more
-      if ( p()->queueing )
-      {
-        break;
+        a->line_cooldown.start();
+        a->queue_execute( true );
       }
     }
   }
@@ -79,7 +54,17 @@ struct player_gcd_event_t : public player_event_t
     // off-gcd event occurs, if this is the case, don't do anything
     if ( !p()->executing )
     {
-      select_action( p()->active_action_list );
+      if ( p()->regen_type == REGEN_DYNAMIC )
+      {
+        p()->do_dynamic_regen();
+      }
+
+      p()->visited_apls_ = 0;
+
+      if ( action_t* a = p()->select_action( *p()->active_action_list, true ) )
+      {
+        execute_action( a );
+      }
     }
 
     // Create a new Off-GCD event only in the case we didnt find anything to queue (could use an
@@ -3587,6 +3572,8 @@ call_action_list_t::call_action_list_t( player_t* player, const std::string& opt
   parse_options( options_str );
 
   ignore_false_positive = true;  // Truly terrible things could happen if a false positive comes back on this.
+  use_off_gcd = true;
+  trigger_gcd = timespan_t::zero();
 
   if ( alist_name.empty() )
   {

@@ -2369,6 +2369,19 @@ void player_t::create_actions()
   }
 }
 
+namespace
+{
+// Only "real" off gcd actions should trigger the off gcd apl behavior since it has a performance
+// impact. Some meta-actions (call_action_list, variable, run_action_list, swap_action_list) alone
+// cannot trigger off-gcd apl behavior.
+bool is_real_off_gcd_action( const action_t* a )
+{
+  return a -> type != ACTION_CALL && a -> type != ACTION_VARIABLE &&
+         ! util::str_compare_ci( a->name_str, "run_action_list" ) &&
+         ! util::str_compare_ci( a->name_str, "swap_action_list" );
+}
+} // Anonymous namespace ends
+
 void player_t::init_actions()
 {
   for ( size_t i = 0; i < action_list.size(); ++i )
@@ -2392,8 +2405,8 @@ void player_t::init_actions()
     {
       action->action_list->off_gcd_actions.push_back( action );
       // Optimization: We don't need to do off gcd stuff when there are no other off gcd actions
-      // than these two
-      if ( action->name_str != "run_action_list" && action->name_str != "swap_action_list" )
+      // than "meta actions"
+      if ( is_real_off_gcd_action( action ) )
         have_off_gcd_actions = true;
     }
   }
@@ -11884,7 +11897,8 @@ luxurious_sample_data_t::luxurious_sample_data_t( player_t& p, std::string n ) :
 {
 }
 
-action_t* player_t::select_action( const action_priority_list_t& list )
+// Note, root call needs to set player_t::visited_apls_ to 0
+action_t* player_t::select_action( const action_priority_list_t& list, bool off_gcd )
 {
   // Mark this action list as visited with the APL internal id
   visited_apls_ |= list.internal_id_mask;
@@ -11894,7 +11908,9 @@ action_t* player_t::select_action( const action_priority_list_t& list )
   uint64_t _visited       = visited_apls_;
   size_t attempted_random = 0;
 
-  for ( size_t i = 0, num_actions = list.foreground_action_list.size(); i < num_actions; ++i )
+  const auto& action_list = off_gcd ? list.off_gcd_actions : list.foreground_action_list;
+
+  for ( size_t i = 0, num_actions = action_list.size(); i < num_actions; ++i )
   {
     visited_apls_ = _visited;
     action_t* a   = 0;
@@ -11902,7 +11918,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
     if ( list.random == 1 )
     {
       size_t random = static_cast<size_t>( rng().range( 0, static_cast<double>( num_actions ) ) );
-      a             = list.foreground_action_list[ random ];
+      a             = action_list[ random ];
     }
     else
     {
@@ -11911,7 +11927,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
       {
         size_t max_random_attempts = static_cast<size_t>( num_actions * ( skill * 0.5 ) );
         size_t random              = static_cast<size_t>( rng().range( 0, static_cast<double>( num_actions ) ) );
-        a                          = list.foreground_action_list[ random ];
+        a                          = action_list[ random ];
         attempted_random++;
         // Limit the amount of attempts to select a random action based on skill, then bail out and try again in 100 ms.
         if ( attempted_random > max_random_attempts )
@@ -11919,7 +11935,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
       }
       else
       {
-        a = list.foreground_action_list[ i ];
+        a = action_list[ i ];
       }
     }
 
@@ -11950,7 +11966,7 @@ action_t* player_t::select_action( const action_priority_list_t& list )
         }
 
         // We get an action from the call, return it
-        if ( action_t* real_a = select_action( *call->alist ) )
+        if ( action_t* real_a = select_action( *call->alist, off_gcd ) )
         {
           if ( real_a->action_list )
             real_a->action_list->used = true;

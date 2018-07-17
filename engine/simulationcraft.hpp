@@ -4141,7 +4141,7 @@ public:
   virtual void demise();
   virtual timespan_t available() const
   { return timespan_t::from_seconds( 0.1 ); }
-  virtual action_t* select_action( const action_priority_list_t& );
+  virtual action_t* select_action( const action_priority_list_t&, bool off_gcd = false );
   virtual action_t* execute_action();
 
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
