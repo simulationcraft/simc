@@ -12271,12 +12271,17 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
   }
 
   player_t* candidate_target = nullptr;
+  player_t* first_invuln_target = nullptr;
 
   // TODO: Fancier system
   for ( auto enemy : sim->target_non_sleeping_list )
   {
     if ( enemy->debuffs.invulnerable != nullptr && enemy->debuffs.invulnerable->up() )
     {
+      if ( first_invuln_target == nullptr )
+      {
+        first_invuln_target = enemy;
+      }
       continue;
     }
 
@@ -12297,6 +12302,23 @@ void player_t::acquire_target( retarget_event_e event, player_t* context )
     target = candidate_target;
     range::for_each( action_list, [event, context, candidate_target]( action_t* action ) {
       action->acquire_target( event, context, candidate_target );
+    } );
+
+    trigger_ready();
+  }
+  // If we really cannot find any sensible target, fall back to the first invulnerable target
+  else if ( first_invuln_target && first_invuln_target != target )
+  {
+    if ( sim->debug )
+    {
+      sim->out_debug.printf( "%s acquiring (new) target, current=%s candidate=%s [invulnerable fallback]",
+          name(), target ? target->name() : "NONE",
+          first_invuln_target ? first_invuln_target->name() : "NONE" );
+    }
+
+    target = first_invuln_target;
+    range::for_each( action_list, [event, context, first_invuln_target]( action_t* action ) {
+      action->acquire_target( event, context, first_invuln_target );
     } );
 
     trigger_ready();
