@@ -164,29 +164,32 @@ public:
   {
     // General
     buff_t* demon_soul;
-    buff_t* metamorphosis;
     buff_t* immolation_aura;
+    buff_t* metamorphosis;
 
     // Havoc
     buff_t* blade_dance;
+    buff_t* blind_fury;
     buff_t* blur;
     buff_t* death_sweep;
-    movement_buff_t* fel_rush_move;
     buff_t* momentum;
-    buff_t* prepared;
-    buff_t* out_of_range;
     buff_t* nemesis;
-    buff_t* blind_fury;
+    buff_t* out_of_range;
+    buff_t* prepared;
+
+    movement_buff_t* fel_rush_move;
     movement_buff_t* vengeful_retreat_move;
-    buff_t* havoc_t21_4pc;
 
     // Vengeance
     buff_t* demon_spikes;
     absorb_buff_t* soul_barrier;
 
+    // Tier
+    buff_t* havoc_t21_4pc;
+
     // Legendary
-    buff_t* sephuzs_secret;
     buff_t* chaos_blades;
+    buff_t* sephuzs_secret;
 
     // Azerite
     buff_t* furious_gaze;
@@ -263,17 +266,17 @@ public:
   {
     // General
     const spell_data_t* demon_hunter;
+    const spell_data_t* chaos_brand;
     const spell_data_t* consume_magic;
     const spell_data_t* consume_soul_greater;
     const spell_data_t* consume_soul_lesser;
     const spell_data_t* critical_strikes;
+    const spell_data_t* demonic_wards;
     const spell_data_t* disrupt;
     const spell_data_t* leather_specialization;
     const spell_data_t* metamorphosis;
     const spell_data_t* metamorphosis_buff;
     const spell_data_t* soul_fragment;
-    const spell_data_t* chaos_brand;
-    const spell_data_t* demonic_wards;
 
     // Havoc
     const spell_data_t* havoc;
@@ -1200,10 +1203,9 @@ public:
   {
     if ( ab::snapshot_flags & STATE_TGT_MUL_TA )
     {
-      demon_hunter_td_t* target_data = td( s->target );
-      if ( target_data->debuffs.nemesis )
+      if ( p()->specialization() == DEMON_HUNTER_HAVOC )
       {
-        target_data->debuffs.nemesis->up();
+        td( s->target )->debuffs.nemesis->up();
       }
     }
 
@@ -1911,9 +1913,8 @@ struct fel_eruption_t : public demon_hunter_spell_t
     : demon_hunter_spell_t( "fel_eruption", p, p->talent.fel_eruption, options_str )
   {
     may_crit         = false;
-    resource_current = p->specialization() == DEMON_HUNTER_HAVOC
-                       ? RESOURCE_FURY
-                       : RESOURCE_PAIN;
+    resource_current = p->specialization() == DEMON_HUNTER_HAVOC 
+      ? RESOURCE_FURY : RESOURCE_PAIN;
   }
 };
 
@@ -3132,11 +3133,10 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     virtual double composite_target_multiplier( player_t* target ) const override
     {
       double m = demon_hunter_attack_t::composite_target_multiplier( target );
-
-      demon_hunter_td_t* td = p()->get_target_data( target );
-      if ( td->debuffs.dark_slash && td->debuffs.dark_slash->up() )
+      
+      if ( p()->specialization() == DEMON_HUNTER_HAVOC )
       {
-        m *= 1.0 + td->debuffs.dark_slash->current_value;
+        m *= 1.0 + td( target )->debuffs.dark_slash->check_value();
       }
 
       return m;
@@ -3215,20 +3215,15 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
     }
 
     // Metamorphosis benefit and Dark Slash stats tracking
-    demon_hunter_td_t* target_data = td( target );
     if ( p()->buff.metamorphosis->up() )
     {
-      if ( target_data->debuffs.dark_slash && target_data->debuffs.dark_slash->check() )
-      {
+      if ( td( target )->debuffs.dark_slash->up() )
         p()->proc.annihilation_in_dark_slash->occur();
-      }
     }
     else
     {
-      if ( target_data->debuffs.dark_slash && target_data->debuffs.dark_slash->check() )
-      {
+      if ( td( target )->debuffs.dark_slash->up() )
         p()->proc.chaos_strike_in_dark_slash->occur();
-      }
     }
 
     // Demonic Appetite
@@ -4149,16 +4144,8 @@ demon_hunter_td_t::demon_hunter_td_t( player_t* target, demon_hunter_t& p )
 {
   if (p.specialization() == DEMON_HUNTER_HAVOC)
   {
-    if ( p.talent.trail_of_ruin->ok() )
-    {
-      dots.trail_of_ruin = target->get_dot( "trail_of_ruin", &p );
-    }
-    if ( p.talent.dark_slash->ok() )
-    {
-      const spell_data_t* dark_slash = p.find_talent_spell( "Dark Slash" );
-      debuffs.dark_slash = make_buff( *this, "dark_slash", dark_slash )
-        ->set_default_value( dark_slash->effectN( 3 ).percent() );
-    }
+    debuffs.dark_slash = make_buff( *this, "dark_slash", p.talent.dark_slash )
+      ->set_default_value( p.talent.dark_slash->effectN( 3 ).percent() );
     debuffs.nemesis = new buffs::nemesis_debuff_t(*this);
   }
   else // DEMON_HUNTER_VENGEANCE
@@ -5600,12 +5587,12 @@ double demon_hunter_t::composite_player_dd_multiplier( school_e school, const ac
 {
   double m = player_t::composite_player_dd_multiplier(school, a);
 
-  if (buff.nemesis->check() && a->target->race == buff.nemesis->current_value)
+  if ( buff.nemesis->check() && a->target->race == buff.nemesis->current_value )
   {
-    m *= 1.0 + buff.nemesis->data().effectN(1).percent();
+    m *= 1.0 + buff.nemesis->data().effectN( 1 ).percent();
   }
 
-  if (a->target->race == RACE_DEMON && buff.demon_soul->check())
+  if ( a->target->race == RACE_DEMON && buff.demon_soul->check() )
   {
     m *= 1.0 + buff.demon_soul->value();
   }
@@ -5638,11 +5625,9 @@ double demon_hunter_t::composite_player_target_multiplier( player_t* target, sch
 {
   double m = player_t::composite_player_target_multiplier( target, school );
 
-  demon_hunter_td_t* td = get_target_data( target );
-
-  if ( td->debuffs.nemesis && td->debuffs.nemesis->up() )
+  if ( specialization() == DEMON_HUNTER_HAVOC )
   {
-    m *= 1.0 + td->debuffs.nemesis->current_value;
+    m *= 1.0 + get_target_data( target )->debuffs.nemesis->check_value();
   }
 
   return m;
