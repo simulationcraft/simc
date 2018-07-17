@@ -49,22 +49,50 @@ namespace warlock {
 
     struct firebolt_t : public warlock_pet_spell_t
     {
-      firebolt_t(warlock_pet_t* p) :
-        warlock_pet_spell_t("Firebolt", p, p -> find_spell(3110)) { }
+      firebolt_t( warlock_pet_t* p ) :
+        warlock_pet_spell_t( "Firebolt", p, p->find_spell( 3110 ) )
+      { }
     };
+
     struct imp_pet_t : public warlock_pet_t
     {
-      imp_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-        warlock_pet_t(sim, owner, name, PET_IMP, name != "imp")
+      double firebolt_cost;
+
+      imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name ) :
+        warlock_pet_t( sim, owner, name, PET_IMP, name != "imp" ),
+        firebolt_cost( find_spell( 3110 )->cost( POWER_ENERGY ) )
       {
         action_list_str = "firebolt";
       }
 
-      action_t* create_action(const std::string& name, const std::string& options_str) override
+      action_t* create_action( const std::string& name, const std::string& options_str ) override
       {
-        if (name == "firebolt") return new firebolt_t(this);
-        return warlock_pet_t::create_action(name, options_str);
+        if ( name == "firebolt" ) return new firebolt_t( this );
+        return warlock_pet_t::create_action( name, options_str );
       }
+
+      timespan_t available() const override
+      {
+        double energy_left = resources.current[ RESOURCE_ENERGY ];
+        double deficit = energy_left - firebolt_cost;
+
+        if ( deficit >= 0 )
+        {
+          return warlock_pet_t::available();
+        }
+
+        double rps = resource_regen_per_second( RESOURCE_ENERGY );
+        double time_to_threshold = std::fabs( deficit ) / rps;
+
+        // Fuzz regen by making the pet wait a bit extra if it's just below the resource threshold
+        if ( time_to_threshold < 0.001 )
+        {
+          return warlock_pet_t::available();
+        }
+
+        return timespan_t::from_seconds( time_to_threshold );
+      }
+
     };
 
     struct lash_of_pain_t : public warlock_pet_spell_t
