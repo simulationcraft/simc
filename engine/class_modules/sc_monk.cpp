@@ -2878,6 +2878,19 @@ struct eye_of_the_tiger_dmg_tick_t: public monk_spell_t
     attack_power_mod.direct = 0;
     attack_power_mod.tick = data().effectN( 2 ).ap_coeff();
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    // TODO: There appears to be a hidden 25% damage multiplier that is not showing in any place
+    // Remove once found
+    // (July 16, 2018)
+    if ( p() -> specialization() == MONK_WINDWALKER )
+      am *= 1.25;
+
+    return am;
+  }
 };
 
 // Tiger Palm base ability ===================================================
@@ -3615,7 +3628,7 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     return 1.0;
   }
 
-    virtual double action_multiplier() const override
+  virtual double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
 
@@ -3794,6 +3807,18 @@ struct fist_of_the_white_tiger_main_hand_t: public monk_melee_attack_t
     // attack_power_mod.direct = p -> talent.fist_of_the_white_tiger -> effectN( 1 ).ap_coeff();
     weapon = &( player -> main_hand_weapon ); 
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    // TODO: There appears to be a hidden 25% damage multiplier that is not showing in any place
+    // Remove once found
+    // (July 16, 2018)
+    am *= 1.25;
+
+    return am;
+  }
 };
 
 struct fist_of_the_white_tiger_t: public monk_melee_attack_t
@@ -3813,6 +3838,18 @@ struct fist_of_the_white_tiger_t: public monk_melee_attack_t
 
     mh_attack = new fist_of_the_white_tiger_main_hand_t( p, "fist_of_the_white_tiger_mainhand", p -> talent.fist_of_the_white_tiger -> effectN( 2 ).trigger() );
     add_child( mh_attack );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    // TODO: There appears to be a hidden 25% damage multiplier that is not showing in any place
+    // Remove once found
+    // (July 16, 2018)
+    am *= 1.25;
+
+    return am;
   }
 
   void execute() override
@@ -5859,6 +5896,19 @@ struct chi_wave_dmg_tick_t: public monk_spell_t
     attack_power_mod.direct = player -> passives.chi_wave_damage -> effectN( 1 ).ap_coeff();
     attack_power_mod.tick = 0;
   }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    // TODO: There appears to be a hidden 25% damage multiplier that is not showing in any place
+    // Remove once found
+    // (July 16, 2018)
+    if ( p() -> specialization() == MONK_WINDWALKER )
+      am *= 1.25;
+
+    return am;
+  }
 };
 
 struct chi_wave_t: public monk_spell_t
@@ -5938,6 +5988,19 @@ struct chi_burst_damage_t: public monk_spell_t
   {
     background = true;
     aoe = -1;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    // TODO: There appears to be a hidden 25% damage multiplier that is not showing in any place
+    // Remove once found
+    // (July 16, 2018)
+    if ( p() -> specialization() == MONK_WINDWALKER )
+      am *= 1.25;
+
+    return am;
   }
 };
 
@@ -9394,21 +9457,22 @@ struct monk_module_t: public module_t
 
   virtual void register_hotfixes() const override
   {
-    /*hotfix::register_effect( "Monk", "2017-06-13", "Windwalker Monks now deal 8% more damage with Tiger Palm, Blackout Kick, and Rising Sun Kick.", 260817 )
-      .field( "base_value" )
+/*    hotfix::register_effect( "Monk", "2018-07-14", "Fists of Fury increased by 18.5%.", 303680 )
+      .field( "ap_coeff" )
       .operation( hotfix::HOTFIX_MUL)
-      .modifier( 1.08 )
-      .verification_value( 26 );
-        hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank). [SEF]", 360744 )
+      .modifier( 1.185 )
+      .verification_value( 0.94185 );
+    hotfix::register_effect( "Monk", "2017-03-29", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank). [SEF]", 739336)
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( -5000 )
       .verification_value( -3000 );
-    hotfix::register_effect( "Monk", "2017-03-30", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank). [Serentiy]", 362004 )
+    hotfix::register_effect( "Monk", "2017-03-30", "Split Personality cooldown reduction increased to 5 seconds per rank (was 3 seconds per rank). [Serentiy]", 739336)
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( -5000 )
-      .verification_value( -3000 );*/
+      .verification_value( -3000 );
+*/
   }
 
   virtual void init( player_t* p ) const override
