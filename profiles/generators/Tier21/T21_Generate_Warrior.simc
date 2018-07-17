@@ -3,7 +3,7 @@ level=110
 race=troll
 role=attack
 position=back
-talents=1332311
+talents=3132311
 spec=arms
 
 head=juggernaut_helm,id=152181,bonus_id=3612/1502
@@ -14,12 +14,12 @@ chest=juggernaut_breastplate,id=152178,bonus_id=3612/1502
 wrists=vambraces_of_lifes_assurance,id=152023,bonus_id=3612/1502
 hands=archavons_heavy_hand,id=137060,bonus_id=3630
 waist=grondfather_girdle,id=152022,bonus_id=3612/1502
-legs=cosmosculling_legplates,id=152016,bonus_id=3612/1502
+legs=weight_of_the_earth,id=137077,bonus_id=3630
 feet=eredar_warcouncil_sabatons,id=152011,bonus_id=3612/1502
 finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
-finger2=ayalas_stone_heart,id=137052,bonus_id=3630,gem_id=130222,enchant=binding_of_mastery
-trinket1=gorshalachs_legacy,id=152093,bonus_id=3612/1502
-trinket2=amanthuls_vision,id=154172,bonus_id=4213
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3630,enchant=binding_of_mastery
+trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
+trinket2=khazgoroths_courage,id=154176,bonus_id=3997
 main_hand=stromkar_the_warbreaker,id=128910,gem_id=152293/152092/152054,relic_id=3612:1502/3612:1502/3612:1502
 
 save=T21_Warrior_Arms.simc
@@ -30,10 +30,10 @@ level=110
 race=troll
 role=attack
 position=back
-talents=2333232
+talents=2132122
 spec=fury
 
-head=helmet_of_the_hidden_sanctuary,id=152013,bonus_id=3612/1502
+head=ceannar_charger,id=1137088,bonus_id=3630
 neck=riveted_choker_of_delirium,id=151966,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=juggernaut_pauldrons,id=152183,bonus_id=3612/1502
 back=juggernaut_cloak,id=152179,bonus_id=3612/1502,enchant=binding_of_strength
@@ -44,8 +44,8 @@ waist=grondfather_girdle,id=152022,bonus_id=3612/1502
 legs=valarjar_berserkers,id=151824,bonus_id=3630
 feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
 finger1=sullied_seal_of_the_pantheon,id=151972,ilevel=970,enchant=200haste
-finger2=soul_of_the_battlelord,id=151650,bonus_id=3630,gems=200haste,enchant=binding_of_haste
-trinket1=convergence_of_fates,id=140806,bonus_id=3518
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3630,enchant=binding_of_mastery
+trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=khazgoroths_courage,id=154176,bonus_id=3997
 main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=155849/155853/152293,relic_id=3612:1512/3612:1512/3612:1502
 off_hand=warswords_of_the_valarjar,id=134553
