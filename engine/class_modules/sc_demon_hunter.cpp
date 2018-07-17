@@ -372,6 +372,9 @@ public:
 
     // Legendary
     gain_t* anger_of_the_halfgiants;
+
+    // Azerite
+    gain_t* thirsting_blades;
   } gain;
 
   // Benefits
@@ -3202,9 +3205,13 @@ struct chaos_strike_base_t : public demon_hunter_attack_t
   {
     demon_hunter_attack_t::execute();
 
-    // Benefit Tracking and Consume Buff
+    // Thirsting Blades Benefit Tracking and Consume Buff
     double thirsting_blades_bonus_da = p()->buff.thirsting_blades->stack_value();
-    p()->buff.thirsting_blades->expire();
+    if ( thirsting_blades_bonus_da > 0 )
+    {
+      p()->gain.thirsting_blades->add( RESOURCE_FURY, p()->buff.thirsting_blades->check() );
+      p()->buff.thirsting_blades->expire();
+    }
 
     // Create Strike Events
     for ( auto& attack : attacks )
@@ -5329,6 +5336,9 @@ void demon_hunter_t::create_gains()
   
   // Vengeance
   gain.metamorphosis            = get_gain("metamorphosis");
+
+  // Azerite
+  gain.thirsting_blades         = get_gain( "thirsting_blades" );
 }
 
 // demon_hunter_t::create_benefits ==========================================
