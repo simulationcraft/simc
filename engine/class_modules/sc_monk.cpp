@@ -3541,7 +3541,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
   }
 };
 
-struct spinning_crane_kick_t: public monk_melee_attack_t
+
+  struct spinning_crane_kick_t: public monk_melee_attack_t
 {
   spinning_crane_kick_t( monk_t* p, const std::string& options_str ):
     monk_melee_attack_t( "spinning_crane_kick", p, p -> spec.spinning_crane_kick )
@@ -3599,6 +3600,7 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
   {
     background = true;
     aoe = -1;
+    ww_mastery = true;
 
     attack_power_mod.direct = p -> spec.fists_of_fury -> effectN( 5 ).ap_coeff();
     ap_type = AP_WEAPON_MH;
@@ -3613,22 +3615,6 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
       return p() -> spec.fists_of_fury -> effectN( 6 ).percent(); // Saved as 50
 
     return 1.0;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = monk_melee_attack_t::action_multiplier();
-
-    // TODO: There appears to be a hidden 18.5% damage multiplier that is not showing in any place
-    // Remove once found
-    // (July 14, 2018)
-    am *= 1.185;
-
-    // Some spells does not seem to register the automated WW Mastery multiplier
-    if ( p() -> buff.combo_strikes -> up() )
-      am *= 1 + p() -> cache.mastery_value();
-
-    return am;
   }
 };
 
