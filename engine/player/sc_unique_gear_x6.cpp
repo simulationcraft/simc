@@ -4875,7 +4875,7 @@ struct natures_call_proc_t
   {
     if ( action )
     {
-      action -> target = t;
+      action -> set_target( t );
       action -> schedule_execute();
     }
     else
@@ -4918,20 +4918,14 @@ struct natures_call_callback_t : public dbc_proc_callback_t
 
 void item::natures_call( special_effect_t& effect )
 {
-  double rating_amount = item_database::apply_combat_rating_multiplier( *effect.item,
-      effect.driver() -> effectN( 2 ).average( effect.item ) );
-
   std::vector<natures_call_proc_t*> procs;
 
   procs.push_back( new natures_call_proc_t(
-      make_buff<stat_buff_t>( effect.player, "cleansed_ancients_blessing", effect.player -> find_spell( 222517 ) )
-    ->add_stat( STAT_CRIT_RATING, rating_amount ) ) );
+      make_buff<stat_buff_t>( effect.player, "cleansed_ancients_blessing", effect.player -> find_spell( 222517 ), effect.item ) ) );
   procs.push_back( new natures_call_proc_t(
-      make_buff<stat_buff_t>( effect.player, "cleansed_sisters_blessing", effect.player -> find_spell( 222519 ) )
-      ->add_stat( STAT_HASTE_RATING, rating_amount ) ) );
+      make_buff<stat_buff_t>( effect.player, "cleansed_sisters_blessing", effect.player -> find_spell( 222519 ), effect.item ) ) );
   procs.push_back( new natures_call_proc_t(
-      make_buff<stat_buff_t>( effect.player, "cleansed_wisps_blessing", effect.player -> find_spell( 222518 ) )
-      ->add_stat( STAT_MASTERY_RATING, rating_amount ) ) );
+      make_buff<stat_buff_t>( effect.player, "cleansed_wisps_blessing", effect.player -> find_spell( 222518 ), effect.item ) ) );
 
   for (auto& proc : procs )
   {
