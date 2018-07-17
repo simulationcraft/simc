@@ -549,6 +549,23 @@ struct judgment_ret_t : public paladin_melee_attack_t
     spell_power_mod.direct = 0;
   }
 
+  virtual double bonus_ta(const action_state_t* s) const override
+  {
+    double ta = paladin_melee_attack_t::bonus_ta(s);
+    if ( p() -> azerite.indomitable_justice.ok() )
+    {
+      double amount = p() -> azerite.zealotry.value();
+      double our_percent = p() -> health_percentage();
+      double their_percent = s -> target -> health_percentage();
+      if ( our_percent > their_percent )
+      {
+        amount *= (our_percent - their_percent) / 100.0;
+        ta += amount;
+      }
+    }
+    return ta;
+  }
+
   virtual void execute() override
   {
     paladin_melee_attack_t::execute();
