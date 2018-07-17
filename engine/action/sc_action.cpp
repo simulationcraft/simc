@@ -61,7 +61,7 @@ struct player_gcd_event_t : public player_event_t
 
       p()->visited_apls_ = 0;
 
-      if ( action_t* a = p()->select_action( *p()->active_action_list, true ) )
+      if ( action_t* a = p()->select_action( *p()->active_off_gcd_list, true ) )
       {
         execute_action( a );
       }
@@ -76,10 +76,10 @@ struct player_gcd_event_t : public player_event_t
       p()->off_gcd = make_event<player_gcd_event_t>( sim(), *p(), timespan_t::from_seconds( 0.1 ) );
     }
 
-    if ( p()->restore_action_list != 0 )
+    if ( p()->restore_action_list != nullptr )
     {
-      p()->activate_action_list( p()->restore_action_list );
-      p()->restore_action_list = 0;
+      p()->activate_action_list( p()->restore_action_list, true );
+      p()->restore_action_list = nullptr;
     }
   }
 };
