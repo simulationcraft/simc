@@ -10,7 +10,7 @@ namespace
 // ==========================================================================
 // Warrior
 // todo: Fury - Add Meat Cleaver to all single target Fury abilities (ref Bloodthirst), Enrage-clean up movespeed/damage taken/health increase, add Battle Shout raid buff
-//       Arms - 3 target for Cleave, Collateral Damage, and Avatar-Hardcode for Arms
+//       Arms - 3 target requirement for Cleave, Collateral Damage, and Avatar-Hardcode for Arms
 // ==========================================================================
 
 struct warrior_t;
@@ -1086,13 +1086,9 @@ struct melee_t: public warrior_attack_t
   melee_t( const std::string& name, warrior_t* p ):
     warrior_attack_t( name, p, spell_data_t::nil() ),
     mh_lost_melee_contact( true ), oh_lost_melee_contact( true ),
-    // patch notes said 10% buff so that would be 4.0 -> 4.4
-    // however in game testing suggest that actual value is 4.286
-    // with 3.6 speed weapon, we generate 27 rage on hit, not 27.72
-    // and crits generate 35 not 36
 
-	// beta testing suggest fury multiplier is now 1.0
-    base_rage_generation( 1.75 ), arms_rage_multiplier( 4.286 ), fury_rage_multiplier( 1.00 ),
+	// arms and fury multipliers are both 1, adjusted by the spec scaling auras (x4 for Arms and x1 for Fury)
+    base_rage_generation( 1.75 ), arms_rage_multiplier( 4.00 ), fury_rage_multiplier( 1.00 ),
     devastator( nullptr )
   {
     school = SCHOOL_PHYSICAL;
