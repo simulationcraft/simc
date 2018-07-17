@@ -35,6 +35,7 @@ actions+=/immolate,cycle_targets=1,if=(cooldown.havoc.remains<15|!debuff.havoc.r
 actions+=/summon_infernal,if=target.time_to_die>=400|!cooldown.dark_soul_instability.remains|target.time_to_die<=45|!talent.dark_soul_instability.enabled
 actions+=/dark_soul_instability,if=target.time_to_die>=130|pet.infernal.active|target.time_to_die<=30
 actions+=/potion,if=pet.infernal.active|target.time_to_die<65
+actions+=/use_items
 actions+=/havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10
 actions+=/havoc,if=active_enemies>1
 actions+=/channel_demonfire
@@ -48,6 +49,7 @@ actions+=/incinerate,cycle_targets=1,if=!debuff.havoc.remains
 actions.aoe=summon_infernal,if=target.time_to_die>=400|!cooldown.dark_soul_instability.remains|target.time_to_die<=45|!talent.dark_soul_instability.enabled
 actions.aoe+=/dark_soul_instability,if=target.time_to_die>=130|pet.infernal.active|target.time_to_die<=30
 actions.aoe+=/potion,if=pet.infernal.active|target.time_to_die<65
+actions.aoe+=/use_items
 actions.aoe+=/cataclysm
 actions.aoe+=/rain_of_fire,if=soul_shard>=4.5
 actions.aoe+=/immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time

@@ -1206,10 +1206,7 @@ namespace warlock {
     def->add_action("summon_infernal,if=target.time_to_die>=400|!cooldown.dark_soul_instability.remains|target.time_to_die<=45|!talent.dark_soul_instability.enabled");
     def->add_talent(this, "Dark Soul: Instability", "if=target.time_to_die>=130|pet.infernal.active|target.time_to_die<=30" );
     def->add_action( "potion,if=pet.infernal.active|target.time_to_die<65" );
-    for ( const std::string& item_action : get_item_actions() )
-    {
-      def->add_action( item_action );
-    }
+    def->add_action( "use_items" );
     def->add_action( "havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10" );
     def->add_action( "havoc,if=active_enemies>1" );
     def->add_talent(this, "Channel Demonfire" );
@@ -1223,10 +1220,7 @@ namespace warlock {
     aoe->add_action("summon_infernal,if=target.time_to_die>=400|!cooldown.dark_soul_instability.remains|target.time_to_die<=45|!talent.dark_soul_instability.enabled");
     aoe->add_talent(this, "Dark Soul: Instability", "if=target.time_to_die>=130|pet.infernal.active|target.time_to_die<=30" );
     aoe->add_action( "potion,if=pet.infernal.active|target.time_to_die<65" );
-    for ( const std::string& item_action : get_item_actions() )
-    {
-      aoe->add_action( item_action );
-    }
+    aoe->add_action( "use_items" );
     aoe->add_talent(this, "Cataclysm");
     aoe->add_action("rain_of_fire,if=soul_shard>=4.5");
     aoe->add_action("immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time");
