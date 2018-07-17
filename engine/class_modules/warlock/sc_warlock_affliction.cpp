@@ -226,11 +226,12 @@ struct agony_t : public affliction_spell_t
 
   int agony_action_id;
   int agony_max_stacks;
-  double chance;
   wracking_brilliance_t* wb;
 
   agony_t( warlock_t* p, const std::string& options_str )
-    : affliction_spell_t( p, "Agony" ), agony_action_id( 0 ), agony_max_stacks( 0 )
+    : affliction_spell_t( p, "Agony" ),
+      agony_action_id( 0 ),
+      agony_max_stacks( 0 )
   {
     parse_options( options_str );
     may_crit = false;
@@ -1071,6 +1072,7 @@ void warlock_t::create_buffs_affliction()
                                  ->add_stat( STAT_HASTE_RATING, azerite.cascading_calamity.value() )
                                  ->set_duration( find_spell( 275378 )->duration() )
                                  ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
   buffs.wracking_brilliance = make_buff<stat_buff_t>( this, "wracking_brilliance", azerite.wracking_brilliance )
                                   ->add_stat( STAT_INTELLECT, azerite.wracking_brilliance.value() )
                                   ->set_duration( find_spell( 272893 )->duration() )
@@ -1082,6 +1084,7 @@ void warlock_t::create_buffs_affliction()
           ->set_default_value(
               sets->set( WARLOCK_AFFLICTION, T20, B4 )->effectN( 1 ).trigger()->effectN( 1 ).percent() )
           ->add_invalidate( CACHE_HASTE );
+
   buffs.inevitable_demise = make_buff( this, "inevitable_demise", azerite.inevitable_demise )
                                 ->set_max_stack( find_spell( 273525 )->max_stacks() )
                                 ->set_default_value( azerite.inevitable_demise.value() );

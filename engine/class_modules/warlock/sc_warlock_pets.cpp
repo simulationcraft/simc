@@ -1,6 +1,33 @@
 #include "sc_warlock.hpp"
 #include "simulationcraft.hpp"
 
+namespace {
+
+struct travel_t : public action_t
+{
+  travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player )
+  {
+    trigger_gcd = timespan_t::zero();
+  }
+  void execute() override
+  {
+    player->current.distance = 1;
+  }
+  timespan_t execute_time() const override
+  {
+    return timespan_t::from_seconds( player->current.distance / 33.0 );
+  }
+  bool ready() override
+  {
+    return ( player->current.distance > 1 );
+  }
+  bool usable_moving() const override
+  {
+    return true;
+  }
+};
+
+}
 namespace warlock
 {
 namespace pets
@@ -26,6 +53,7 @@ struct shadow_bite_t : public warlock_pet_melee_attack_t
   {
   }
 };
+
 struct felhunter_pet_t : public warlock_pet_t
 {
   felhunter_pet_t( sim_t* sim, warlock_t* owner, const std::string& name )
@@ -54,6 +82,7 @@ struct firebolt_t : public warlock_pet_spell_t
   {
   }
 };
+
 struct imp_pet_t : public warlock_pet_t
 {
   imp_pet_t( sim_t* sim, warlock_t* owner, const std::string& name )
@@ -76,6 +105,7 @@ struct lash_of_pain_t : public warlock_pet_spell_t
   {
   }
 };
+
 struct whiplash_t : public warlock_pet_spell_t
 {
   whiplash_t( warlock_pet_t* p ) : warlock_pet_spell_t( p, "Whiplash" )
@@ -83,6 +113,7 @@ struct whiplash_t : public warlock_pet_spell_t
     aoe = -1;
   }
 };
+
 struct succubus_pet_t : public warlock_pet_t
 {
   succubus_pet_t( sim_t* sim, warlock_t* owner, const std::string& name )
@@ -115,6 +146,7 @@ struct torment_t : public warlock_pet_spell_t
   {
   }
 };
+
 struct voidwalker_pet_t : warlock_pet_t
 {
   voidwalker_pet_t( sim_t* sim, warlock_t* owner, const std::string& name )
@@ -333,6 +365,7 @@ struct bile_spit_t : public warlock_pet_spell_t
     hasted_ticks  = false;
   }
 };
+
 struct headbutt_t : public warlock_pet_melee_attack_t
 {
   headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( p, "Headbutt" )
@@ -1164,41 +1197,27 @@ double warlock_pet_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double warlock_pet_t::composite_melee_crit_chance() const
+action_t* warlock_pet_t::create_action( const std::string& name, const std::string& options_str )
 {
-  double mc = pet_t::composite_melee_crit_chance();
-  return mc;
+  if ( name == "travel" )
+    return new travel_t( this );
+
+  return pet_t::create_action( name, options_str );
 }
 
-double warlock_pet_t::composite_spell_crit_chance() const
+void warlock_pet_t::trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic )
 {
-  double sc = pet_t::composite_spell_crit_chance();
-  return sc;
+  if ( !o()->legendary.sephuzs_secret )
+    return;
+
+  // trigger by default on interrupts and on adds/lower level stuff
+  if ( o()->options.allow_sephuz || mechanic == MECHANIC_INTERRUPT || state->target->is_add() ||
+       ( state->target->level() < o()->sim->max_player_level + 3 ) )
+  {
+    o()->buffs.sephuzs_secret->trigger();
+  }
 }
 
-double warlock_pet_t::composite_melee_haste() const
-{
-  double mh = pet_t::composite_melee_haste();
-  return mh;
-}
-
-double warlock_pet_t::composite_spell_haste() const
-{
-  double sh = pet_t::composite_spell_haste();
-  return sh;
-}
-
-double warlock_pet_t::composite_melee_speed() const
-{
-  double cmh = pet_t::composite_melee_speed();
-  return cmh;
-}
-
-double warlock_pet_t::composite_spell_speed() const
-{
-  double css = pet_t::composite_spell_speed();
-  return css;
-}
 }  // namespace pets
 
 pet_t* warlock_t::create_main_pet( const std::string& pet_name, const std::string& pet_type )

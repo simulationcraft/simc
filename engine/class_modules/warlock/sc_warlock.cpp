@@ -208,31 +208,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r )
     gains(),
     procs(),
     spells(),
-    initial_soul_shards( 3 ),
-    allow_sephuz( false ),
-    default_pet()
+    options()
 {
-  legendary.hood_of_eternal_disdain              = nullptr;
-  legendary.insignia_of_the_grand_army           = nullptr;
-  legendary.lessons_of_spacetime                 = nullptr;
-  legendary.power_cord_of_lethtendris            = nullptr;
-  legendary.reap_and_sow                         = nullptr;
-  legendary.sacrolashs_dark_strike               = nullptr;
-  legendary.sephuzs_secret                       = nullptr;
-  legendary.sindorei_spite                       = nullptr;
-  legendary.soul_of_the_netherlord               = nullptr;
-  legendary.stretens_sleepless_shackles          = nullptr;
-  legendary.the_master_harvester                 = nullptr;
-  legendary.wakeners_loyalty                     = nullptr;
-  legendary.kazzaks_final_curse                  = nullptr;
-  legendary.sindorei_spite                       = nullptr;
-  legendary.recurrent_ritual                     = nullptr;
-  legendary.magistrike_restraints                = nullptr;
-  legendary.feretory_of_souls                    = nullptr;
-  legendary.alythesss_pyrogenics                 = nullptr;
-  legendary.odr_shawl_of_the_ymirjar             = nullptr;
-  legendary.wilfreds_sigil_of_superior_summoning = nullptr;
-
   cooldowns.haunt              = get_cooldown( "haunt" );
   cooldowns.shadowburn         = get_cooldown( "shadowburn" );
   cooldowns.soul_fire          = get_cooldown( "soul_fire" );
@@ -441,29 +418,6 @@ double warlock_t::composite_melee_crit_chance() const
   return mc;
 }
 
-double warlock_t::composite_mastery() const
-{
-  double m = player_t::composite_mastery();
-  return m;
-}
-
-double warlock_t::composite_rating_multiplier( rating_e rating ) const
-{
-  double m = player_t::composite_rating_multiplier( rating );
-  return m;
-}
-
-double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
-{
-  return player_t::resource_gain( resource_type, amount, source, action );
-}
-
-double warlock_t::resource_regen_per_second( resource_e r ) const
-{
-  double reg = player_t::resource_regen_per_second( r );
-  return reg;
-}
-
 double warlock_t::composite_armor() const
 {
   return player_t::composite_armor() + spec.fel_armor->effectN( 2 ).base_value();
@@ -488,7 +442,7 @@ action_t* warlock_t::create_action( const std::string& action_name, const std::s
 {
   using namespace actions;
 
-  if ( ( action_name == "summon_pet" ) && default_pet.empty() )
+  if ( ( action_name == "summon_pet" ) && options.default_pet.empty() )
   {
     sim->errorf( "Player %s used a generic pet summoning action without specifying a default_pet.\n", name() );
     return nullptr;
@@ -505,7 +459,7 @@ action_t* warlock_t::create_action( const std::string& action_name, const std::s
   if ( action_name == "summon_imp" )
     return new summon_main_pet_t( "imp", this );
   if ( action_name == "summon_pet" )
-    return new summon_main_pet_t( default_pet, this );
+    return new summon_main_pet_t( options.default_pet, this );
   // Base Spells
   if ( action_name == "drain_life" )
     return new drain_life_t( this, options_str );
@@ -704,20 +658,15 @@ void warlock_t::init_base_stats()
 
   resources.base[ RESOURCE_SOUL_SHARD ] = 5;
 
-  if ( default_pet.empty() )
+  if ( options.default_pet.empty() )
   {
     if ( specialization() == WARLOCK_AFFLICTION )
-      default_pet = "felhunter";
+      options.default_pet = "felhunter";
     else if ( specialization() == WARLOCK_DEMONOLOGY )
-      default_pet = "felguard";
+      options.default_pet = "felguard";
     else if ( specialization() == WARLOCK_DESTRUCTION )
-      default_pet = "imp";
+      options.default_pet = "imp";
   }
-}
-
-void warlock_t::init_scaling()
-{
-  player_t::init_scaling();
 }
 
 void warlock_t::apl_precombat()
@@ -784,6 +733,16 @@ std::string warlock_t::default_rune() const
   return ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "focus" : "disabled";
 }
 
+warlock_td_t* warlock_t::get_target_data( player_t* target ) const
+{
+  warlock_td_t*& td = target_data[ target ];
+  if ( !td )
+  {
+    td = new warlock_td_t( target, const_cast<warlock_t&>( *this ) );
+  }
+  return td;
+}
+
 void warlock_t::apl_global_filler()
 {
 }
@@ -818,15 +777,10 @@ void warlock_t::init_resources( bool force )
 {
   player_t::init_resources( force );
 
-  resources.current[ RESOURCE_SOUL_SHARD ] = initial_soul_shards;
+  resources.current[ RESOURCE_SOUL_SHARD ] = options.initial_soul_shards;
 
   if ( warlock_pet_list.active )
     warlock_pet_list.active->init_resources( force );
-}
-
-void warlock_t::combat_begin()
-{
-  player_t::combat_begin();
 }
 
 void warlock_t::reset()
@@ -856,9 +810,9 @@ void warlock_t::create_options()
 {
   player_t::create_options();
 
-  add_option( opt_int( "soul_shards", initial_soul_shards ) );
-  add_option( opt_string( "default_pet", default_pet ) );
-  add_option( opt_bool( "allow_sephuz", allow_sephuz ) );
+  add_option( opt_int( "soul_shards", options.initial_soul_shards ) );
+  add_option( opt_string( "default_pet", options.default_pet ) );
+  add_option( opt_bool( "allow_sephuz", options.allow_sephuz ) );
 }
 
 std::string warlock_t::create_profile( save_e stype )
@@ -867,12 +821,12 @@ std::string warlock_t::create_profile( save_e stype )
 
   if ( stype & SAVE_PLAYER )
   {
-    if ( initial_soul_shards != 3 )
-      profile_str += "soul_shards=" + util::to_string( initial_soul_shards ) + "\n";
-    if ( !default_pet.empty() )
-      profile_str += "default_pet=" + default_pet + "\n";
-    if ( allow_sephuz != 0 )
-      profile_str += "allow_sephuz=" + util::to_string( allow_sephuz ) + "\n";
+    if ( options.initial_soul_shards != 3 )
+      profile_str += "soul_shards=" + util::to_string( options.initial_soul_shards ) + "\n";
+    if ( !options.default_pet.empty() )
+      profile_str += "default_pet=" + options.default_pet + "\n";
+    if ( options.allow_sephuz != 0 )
+      profile_str += "allow_sephuz=" + util::to_string( options.allow_sephuz ) + "\n";
   }
 
   return profile_str;
@@ -884,9 +838,7 @@ void warlock_t::copy_from( player_t* source )
 
   warlock_t* p = debug_cast<warlock_t*>( source );
 
-  initial_soul_shards = p->initial_soul_shards;
-  allow_sephuz        = p->allow_sephuz;
-  default_pet         = p->default_pet;
+  options = p->options;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
@@ -1027,21 +979,25 @@ static void stretens_sleepless_shackles( special_effect_t& effect )
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
   do_trinket_init( s, WARLOCK_AFFLICTION, s->legendary.stretens_sleepless_shackles, effect );
 }
+
 static void hood_of_eternal_disdain( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
   do_trinket_init( s, WARLOCK_AFFLICTION, s->legendary.hood_of_eternal_disdain, effect );
 }
+
 static void power_cord_of_lethtendris( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
   do_trinket_init( s, WARLOCK_AFFLICTION, s->legendary.power_cord_of_lethtendris, effect );
 }
+
 static void sacrolashs_dark_strike( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
   do_trinket_init( s, WARLOCK_AFFLICTION, s->legendary.sacrolashs_dark_strike, effect );
 }
+
 static void reap_and_sow( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
@@ -1049,6 +1005,7 @@ static void reap_and_sow( special_effect_t& effect )
   do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.reap_and_sow, effect );
   do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.reap_and_sow, effect );
 }
+
 static void wakeners_loyalty( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
@@ -1056,6 +1013,7 @@ static void wakeners_loyalty( special_effect_t& effect )
   do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.wakeners_loyalty, effect );
   do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.wakeners_loyalty, effect );
 }
+
 static void lessons_of_spacetime( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
@@ -1063,6 +1021,7 @@ static void lessons_of_spacetime( special_effect_t& effect )
   do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.lessons_of_spacetime, effect );
   do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.lessons_of_spacetime, effect );
 }
+
 static void insignia_of_the_grand_army( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
@@ -1070,42 +1029,50 @@ static void insignia_of_the_grand_army( special_effect_t& effect )
   do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.insignia_of_the_grand_army, effect );
   do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.insignia_of_the_grand_army, effect );
 }
+
 static void kazzaks_final_curse( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
   do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.kazzaks_final_curse, effect );
 }
+
 static void recurrent_ritual( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
   do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.recurrent_ritual, effect );
 }
+
 static void magistrike_restraints( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
   do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.magistrike_restraints, effect );
 }
+
 static void feretory_of_souls( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
   do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.feretory_of_souls, effect );
   do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.feretory_of_souls, effect );
 }
+
 static void alythesss_pyrogenics( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
   do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.alythesss_pyrogenics, effect );
 }
+
 static void odr_shawl_of_the_ymirjar( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
   do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.odr_shawl_of_the_ymirjar, effect );
 }
+
 static void wilfreds_sigil_of_superior_summoning( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
   do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.wilfreds_sigil_of_superior_summoning, effect );
 }
+
 struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<warlock_t>
 {
   sephuzs_secret_t() : scoped_actor_callback_t( WARLOCK )
@@ -1117,6 +1084,7 @@ struct sephuzs_secret_t : public unique_gear::scoped_actor_callback_t<warlock_t>
     warlock->legendary.sephuzs_secret = e.driver();
   }
 };
+
 static void sindorei_spite( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
@@ -1130,14 +1098,14 @@ struct warlock_module_t : public module_t
   {
   }
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto p              = new warlock_t( sim, name, r );
     p->report_extension = std::unique_ptr<player_report_extension_t>( new warlock_report_t( *p ) );
     return p;
   }
 
-  virtual void static_init() const override
+  void static_init() const override
   {
     //  // Legendaries
 
@@ -1160,21 +1128,24 @@ struct warlock_module_t : public module_t
     unique_gear::register_special_effect( 208868, sindorei_spite );
   }
 
-  virtual void register_hotfixes() const override
+  void register_hotfixes() const override
   {
   }
 
-  virtual bool valid() const override
+  bool valid() const override
   {
     return true;
   }
-  virtual void init( player_t* ) const override
+
+  void init( player_t* ) const override
   {
   }
-  virtual void combat_begin( sim_t* ) const override
+
+  void combat_begin( sim_t* ) const override
   {
   }
-  virtual void combat_end( sim_t* ) const override
+
+  void combat_end( sim_t* ) const override
   {
   }
 };

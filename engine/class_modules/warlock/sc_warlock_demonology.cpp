@@ -15,6 +15,7 @@ struct legion_strike_t : public warlock_pet_melee_attack_t
     base_dd_min = base_dd_max = p->composite_melee_attack_power() * data().effectN( 1 ).ap_coeff();
   }
 };
+
 struct axe_toss_t : public warlock_pet_spell_t
 {
   axe_toss_t( warlock_pet_t* p, const std::string& options_str )
@@ -22,12 +23,8 @@ struct axe_toss_t : public warlock_pet_spell_t
   {
     parse_options( options_str );
   }
-
-  // void execute() override {
-  //  warlock_pet_spell_t::execute();
-  //  p()->trigger_sephuzs_secret(execute_state, MECHANIC_STUN);
-  //}
 };
+
 struct felstorm_tick_t : public warlock_pet_melee_attack_t
 {
   felstorm_tick_t( warlock_pet_t* p, const spell_data_t& s )
@@ -51,6 +48,7 @@ struct felstorm_tick_t : public warlock_pet_melee_attack_t
     return m;
   }
 };
+
 struct felstorm_t : public warlock_pet_melee_attack_t
 {
   felstorm_t( warlock_pet_t* p, const std::string& options_str )
@@ -72,6 +70,7 @@ struct felstorm_t : public warlock_pet_melee_attack_t
     return s->action->tick_time( s ) * 5.0;
   }
 };
+
 struct demonic_strength_t : public warlock_pet_melee_attack_t
 {
   bool queued;
@@ -134,6 +133,7 @@ struct demonic_strength_t : public warlock_pet_melee_attack_t
     return warlock_pet_melee_attack_t::ready();
   }
 };
+
 struct soul_strike_t : public warlock_pet_melee_attack_t
 {
   soul_strike_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Soul Strike", p, p->find_spell( 267964 ) )
@@ -244,11 +244,6 @@ public:
     parse_spell_coefficient( *this );
   }
 
-  void reset() override
-  {
-    warlock_spell_t::reset();
-  }
-
   void init() override
   {
     warlock_spell_t::init();
@@ -337,17 +332,6 @@ public:
         p()->procs.portal_summon->occur();
       }
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    warlock_spell_t::impact( s );
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = warlock_spell_t::composite_target_multiplier( t );
-    return m;
   }
 
   double action_multiplier() const override
@@ -546,6 +530,7 @@ struct demonbolt_t : public demonology_spell_t
   double bonus_da( const action_state_t* s ) const override
   {
     double da = demonology_spell_t::bonus_da( s );
+
     if ( s->action->execute_time() > timespan_t::from_millis( 0 ) && p()->buffs.forbidden_knowledge->check() )
     {
       da += p()->azerite.forbidden_knowledge.value();
@@ -553,6 +538,7 @@ struct demonbolt_t : public demonology_spell_t
         sim->out_debug.printf( "forbidden knowledge added %f", p()->azerite.forbidden_knowledge.value() );
     }
     da += p()->buffs.shadows_bite->check_value();
+
     return da;
   }
 
@@ -1304,6 +1290,7 @@ pet_t* warlock_t::create_demo_pet( const std::string& pet_name, const std::strin
 
   return nullptr;
 }
+
 // add actions
 action_t* warlock_t::create_action_demonology( const std::string& action_name, const std::string& options_str )
 {
@@ -1397,12 +1384,15 @@ void warlock_t::create_buffs_demonology()
   buffs.forbidden_knowledge =
       make_buff( this, "forbidden_knowledge", azerite.forbidden_knowledge.spell_ref().effectN( 1 ).trigger() )
           ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
   buffs.shadows_bite = make_buff( this, "shadows_bite", azerite.shadows_bite )
                            ->set_duration( find_spell( 272945 )->duration() )
                            ->set_default_value( azerite.shadows_bite.value() );
+
   buffs.supreme_commander = make_buff<stat_buff_t>( this, "supreme_commander", azerite.supreme_commander )
                                 ->add_stat( STAT_INTELLECT, azerite.supreme_commander.value() )
                                 ->set_duration( find_spell( 279885 )->duration() );
+
   buffs.explosive_potential = make_buff<stat_buff_t>( this, "explosive_potential", find_spell( 275398 ) )
                                   ->add_stat( STAT_HASTE_RATING, azerite.explosive_potential.value() );
 
