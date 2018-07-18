@@ -1482,7 +1482,7 @@ struct insignia_of_ravenholdt_attack_t : public rogue_attack_t
     double m = p() -> spell.insignia_of_ravenholdt -> effectN( 1 ).percent();
 
     // Rogue Assassination Specific
-    if ( p() -> specialization() == ROGUE_ASSASSINATION )
+    if ( p() -> specialization() == ROGUE_ASSASSINATION && data().affected_by( p() -> spec.assassination_rogue -> effectN( 3 ) ) )
     {
       // Hidden Passive (Additive, it's +15% on the primary effect)
       m += p() -> spec.assassination_rogue -> effectN( 3 ).percent();
