@@ -21,7 +21,7 @@ finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of
 trinket1=amanthuls_vision,id=154172,bonus_id=4213
 trinket2=diimas_glacial_aegis,id=151977,bonus_id=3612/1502
 main_hand=oathseeker,id=128867
-off_hand=,id=128866,bonus_id=736,gem_id=155851/152293/152024,relic_id=3612:1512/3612:1502/3612:1502,ilevel=245
+off_hand=truthguard,id=128866,bonus_id=736/1505/1505/1505,gem_id=155851/155855/155846
 
 save=T21_Paladin_Protection.simc
 
@@ -48,6 +48,6 @@ finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant_id=542
 finger2=soul_of_the_highlord,id=151644,bonus_id=3630,gem_id=151584,enchant_id=5429
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=ashbringer,id=120978,bonus_id=737,gem_id=155851/152038/155851,relic_id=3612:1512/3612:1502/3612:1512,ilevel=248
+main_hand=ashbringer,id=120978,bonus_id=737/1505/1505/1505,gem_id=155851/155849/155851
 
 save=T21_Paladin_Retribution.simc

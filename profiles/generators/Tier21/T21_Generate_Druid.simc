@@ -20,7 +20,7 @@ finger1=sephuzs_secret,id=132452,bonus_id=3630,gem_id=151584,enchant=binding_of_
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=prototype_personnel_decimator,id=151962,bonus_id=3612/1502
 trinket2=norgannons_prowess,id=154177,bonus_id=3997
-main_hand=scythe_of_elune,id=128858,gem_id=152027/155854/155846,bonus_id=722/1510/1505/1507,relic_id=3612:1512/3612:1512/3612:1512
+main_hand=scythe_of_elune,id=128858,bonus_id=722/1505/1505/1505,gem_id=155846/155854/155846
 
 save=T21_Druid_Balance.simc
 
@@ -53,8 +53,8 @@ finger1=sephuzs_secret,id=132452,bonus_id=3630,gem_id=151583,enchant=binding_of_
 finger2=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=golganneths_vitality,id=154174,bonus_id=3997
 trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
-main_hand=fangs_of_ashamane,id=128860,bonus_id=723,gem_id=155847/152041/155854/0,relic_id=3612:1512/3612:1502/3612:1512/0,ilevel=248
-off_hand=fangs_of_ashamane,id=128859,gem_id=0/0/0/0,relic_id=0/0
+main_hand=fangs_of_ashamane,id=128860,bonus_id=723/1505/1505/1505,gem_id=155850/155847/155854
+off_hand=fangs_of_ashamane,id=128859
 
 
 save=T21_Druid_Feral.simc
@@ -73,17 +73,18 @@ save=T21_Druid_Feral.simc
 # neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 # shoulder=lady_and_the_child,id=144295,bonus_id=1811/3630
 # back=fury_of_nature,id=151802,bonus_id=3459/3630,enchant=binding_of_agility
-# hands=grips_of_hungering_shadows,id=152086,bonus_id=1502/3610
-# legs=breachblocker_legguards,id=151987,bonus_id=1502/3610
-# finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
-# finger2=seal_of_the_portalmaster,id=152063,bonus_id=1502/3610,enchant=binding_of_versatility
-# main_hand=claws_of_ursoc,id=128821,bonus_id=724,gem_id=152037/147081/152051/0,relic_id=3612:1512/3612:1512/3612:1512/0
-# off_hand=claws_of_ursoc,id=128822,gem_id=0/0/0/0,relic_id=0/0
-# feet=depraved_machinists_footpads,id=152412,bonus_id=1502/3610
 # chest=bearmantle_harness,id=152124,bonus_id=1502/3610
 # wrists=bracers_of_wanton_morality,id=152414,bonus_id=1502/3610
+# hands=grips_of_hungering_shadows,id=152086,bonus_id=1502/3610
 # waist=belt_of_fractured_sanity,id=151991,bonus_id=3612/1502
+# legs=breachblocker_legguards,id=151987,bonus_id=1502/3610
+# feet=depraved_machinists_footpads,id=152412,bonus_id=1502/3610
+# finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
+# finger2=seal_of_the_portalmaster,id=152063,bonus_id=1502/3610,enchant=binding_of_versatility
+
 # trinket1=golganneths_vitality,id=154174,bonus_id=3997
 # trinket2=bloodthirsty_instinct,id=139329,bonus_id=1582/1807
+# main_hand=claws_of_ursoc,id=128821,bonus_id=724/1505/1505/1505,gem_id=155849/155847/155854
+# off_hand=claws_of_ursoc,id=128822
 
 # save=T21_Druid_Guardian.simc

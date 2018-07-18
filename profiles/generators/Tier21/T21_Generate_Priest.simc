@@ -20,7 +20,7 @@ finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=amanthuls_vision,id=154172,bonus_id=4213
 trinket2=prototype_personnel_decimator,id=151962,bonus_id=3612/1502
-main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=155852/155847/155852,relic_id=3612:1512/3612:1512/3612:1512,ilevel=251
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740/1505/1505/1505,gem_id=155852/155847/155852
 off_hand=secrets_of_the_void,id=133958
 
 save=T21_Priest_Shadow.simc

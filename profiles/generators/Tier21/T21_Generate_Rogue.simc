@@ -20,7 +20,7 @@ finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152055/152293/152092,relic_id=3612:1502/3612:1502/3612:1502,ilevel=242
+main_hand=the_kingslayers,id=128870,bonus_id=741/1505/1505/1505,gem_id=155852/155855/155847
 off_hand=the_kingslayers,id=128869
 
 save=T21_Rogue_Assassination.simc
@@ -48,7 +48,7 @@ finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152054/155855/152092,relic_id=3612:1502/3612:1512/3612:1502
+main_hand=the_kingslayers,id=128870,bonus_id=741/1505/1505/1505,gem_id=155852/155855/155847
 off_hand=the_kingslayers,id=128869
 
 save=T21_Rogue_Assassination_Exsg.simc
@@ -77,7 +77,7 @@ finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=convergence_of_fates,id=140806,bonus_id=3518/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=155847/155855/155853,relic_id=3612:1512/3612:1512/3612:1512,ilevel=251
+main_hand=the_dreadblades,id=128872,bonus_id=742/1505/1505/1505,gem_id=155847/155855/155853
 off_hand=the_dreadblades,id=134552
 
 save=T21_Rogue_Outlaw.simc
@@ -106,7 +106,7 @@ finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151585,enchant=bin
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_versatility
 trinket1=nightblooming_frond,id=140802,bonus_id=3518/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152295/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
+main_hand=the_dreadblades,id=128872,bonus_id=742/1505/1505/1505,gem_id=155847/155855/155853
 off_hand=the_dreadblades,id=134552
 
 save=T21_Rogue_Outlaw_SnD.simc
@@ -134,35 +134,7 @@ finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151580,enchant=bin
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152057/155848,relic_id=3612:1512/3612:1502/3612:1512
+main_hand=fangs_of_the_devourer,id=128476,bonus_id=743/1505/1505/1505,gem_id=155848/155852/155848
 off_hand=fangs_of_the_devourer,id=128479
 
 save=T21_Rogue_Subtlety.simc
-
-
-rogue="T21_Rogue_Subtlety_DfA"
-level=110
-race=dwarf
-role=attack
-position=back
-talents=1310013
-spec=subtlety
-
-head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
-neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
-shoulder=mantle_of_the_master_assassin,id=144236,bonus_id=3630
-back=cloak_of_the_dashing_scoundrel,id=152161,bonus_id=3612/1502,enchant=binding_of_agility
-chest=vest_of_the_dashing_scoundrel,id=152160,bonus_id=3612/1502
-wrist=fiendish_logisticians_wristwraps,id=151992,bonus_id=3612/1502
-hands=the_first_of_the_dead,id=151818,bonus_id=3630
-waist=belt_of_fractured_sanity,id=151991,bonus_id=3612/1502
-legs=pants_of_the_dashing_scoundrel,id=152164,bonus_id=3612/1502
-feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
-finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_critical_strike
-finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
-trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152057/155848,relic_id=3612:1512/3612:1502/3612:1512,ilevel=248
-off_hand=fangs_of_the_devourer,id=128479
-
-save=T21_Rogue_Subtlety_DfA.simc
