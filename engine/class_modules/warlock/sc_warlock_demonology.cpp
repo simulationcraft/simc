@@ -1140,6 +1140,7 @@ namespace warlock {
             }
           }
         }
+        assert(pets_summoned == num_summons && "Could not summon enough random pets.");
       }
 
       /**
