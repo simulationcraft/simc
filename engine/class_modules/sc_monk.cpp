@@ -3613,8 +3613,9 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
   {
     double am = base_t::action_multiplier();
 
-    if ( ww_mastery && p() -> buff.combo_strikes -> up() )
-      am *= 1 + p() -> cache.mastery_value();
+    // The attack power multiplier appears to be set at 1.207500; when the data file shows 0.941850
+    // Temporarily set the AP to the 1.2 value to match in-game values until it gets changed
+    am *= 1.207500 / 0.941850;
 
     return am;
   }
