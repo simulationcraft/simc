@@ -506,7 +506,7 @@ namespace warlock {
           tl.erase(it);
         }
 
-        // nor the havoced target TODO: confirm this is still the case
+        // nor the havoced target
         it = range::find(tl, p()->havoc_target);
         if (it != tl.end())
         {
@@ -520,11 +520,16 @@ namespace warlock {
       {
         destruction_spell_t::execute();
 
-        // TODO: double check that fnb incinerate still gets the benefits of these
-        if (execute_state->result == RESULT_CRIT)
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits);
         if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T20, B2))
           p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.destruction_t20_2pc);
+      }
+
+      void impact(action_state_t* s) override
+      {
+        destruction_spell_t::impact(s);
+
+        if (s->result == RESULT_CRIT)
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits);
       }
 
       virtual double composite_target_crit_chance(player_t* target) const override
@@ -605,8 +610,6 @@ namespace warlock {
         if(!havocd)
           p()->buffs.backdraft->decrement();
 
-        if (execute_state->result == RESULT_CRIT)
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits);
         if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T20, B2))
           p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.destruction_t20_2pc);
 
@@ -615,6 +618,14 @@ namespace warlock {
           fnb_action->set_target(execute_state->target);
           fnb_action->execute();
         }
+      }
+
+      void impact(action_state_t* s) override
+      {
+        destruction_spell_t::impact(s);
+
+        if (s->result == RESULT_CRIT)
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits);
       }
 
       virtual double composite_target_crit_chance(player_t* target) const override
