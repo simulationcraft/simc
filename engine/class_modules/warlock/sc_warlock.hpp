@@ -42,7 +42,7 @@ namespace warlock
     struct warlock_td_t : public actor_target_data_t
     {
       propagate_const<dot_t*> dots_drain_life;
-      
+
       //Aff
       propagate_const<dot_t*> dots_agony;
       propagate_const<dot_t*> dots_corruption;
@@ -67,7 +67,7 @@ namespace warlock
       propagate_const<buff_t*> debuffs_roaring_blaze;
       propagate_const<buff_t*> debuffs_havoc;
       propagate_const<buff_t*> debuffs_chaotic_flames;
-      
+
       //Demo
       propagate_const<dot_t*> dots_doom;
       propagate_const<dot_t*> dots_umbral_blaze;
@@ -182,7 +182,7 @@ namespace warlock
         // soul conduit
         const spell_data_t* creeping_death;
         const spell_data_t* dark_soul_misery;
-        
+
         // DEMO
         const spell_data_t* dreadlash;
         const spell_data_t* demonic_strength;
@@ -191,11 +191,11 @@ namespace warlock
         const spell_data_t* demonic_calling;
         const spell_data_t* power_siphon;
         const spell_data_t* doom;
-        
+
         const spell_data_t* from_the_shadows;
         const spell_data_t* soul_strike;
         const spell_data_t* summon_vilefiend;
-        
+
         const spell_data_t* inner_demons;
         const spell_data_t* grimoire_felguard;
 
@@ -257,7 +257,6 @@ namespace warlock
 
       struct legendary_t
       {
-        const special_effect_t* insignia_of_the_grand_army;
         const special_effect_t* the_master_harvester;
         const special_effect_t* sindorei_spite;
         const special_effect_t* stretens_sleepless_shackles;
@@ -424,12 +423,12 @@ namespace warlock
         gain_t* reverse_entropy;
 
         gain_t* miss_refund;
-        
+
         gain_t* power_trip;
         gain_t* shadow_bolt;
         gain_t* doom;
         gain_t* demonic_meteor;
-        
+
         gain_t* soulsnatcher;
         gain_t* t19_2pc_demonology;
 
@@ -873,7 +872,7 @@ namespace warlock
       };
 
       namespace demonology {
-        struct wild_imp_pet_t : public warlock_pet_t 
+        struct wild_imp_pet_t : public warlock_pet_t
         {
           action_t* firebolt;
           bool isnotdoge;

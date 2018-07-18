@@ -339,7 +339,7 @@ namespace warlock
         p()->agony_accumulator += accumulator_increment;
 
         if ( p()->agony_accumulator >= 1 )
-       { 
+       {
           if (p()->azerite.wracking_brilliance.ok())
             wb->run(p());
           p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
@@ -1210,8 +1210,8 @@ namespace warlock
     aoe->add_action( "call_action_list,name=fillers" );
 
     st->add_action( "unstable_affliction,if=soul_shard=5" );
-    st->add_action( "call_action_list,name=dg_soon,if=(cooldown.summon_darkglare.remains<10.87*spell_haste*3.5|cooldown.summon_darkglare.up)&time_to_die>cooldown.summon_darkglare.remains" );
-    st->add_action( "call_action_list,name=regular,if=!((cooldown.summon_darkglare.remains<10.87*spell_haste*3.5|time_to_die>cooldown.summon_darkglare.remains)&cooldown.summon_darkglare.up)" );
+    st->add_action( "call_action_list,name=dg_soon,if=(cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|cooldown.summon_darkglare.up)&time_to_die>cooldown.summon_darkglare.remains" );
+    st->add_action( "call_action_list,name=regular,if=!((cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|time_to_die>cooldown.summon_darkglare.remains)&cooldown.summon_darkglare.up)" );
 
     dgs->add_action( "unstable_affliction,if=(cooldown.summon_darkglare.remains<=soul_shard*cast_time)" );
     dgs->add_action( "agony,line_cd=30,if=talent.deathbolt.enabled&(!talent.siphon_life.enabled)&dot.agony.ticks_remain<=10&cooldown.deathbolt.remains<=gcd" );

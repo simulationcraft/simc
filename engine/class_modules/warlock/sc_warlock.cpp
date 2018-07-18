@@ -1,7 +1,7 @@
 #include "simulationcraft.hpp"
 #include "sc_warlock.hpp"
 namespace warlock
-{ 
+{
   void parse_spell_coefficient( action_t& a )
   {
     for ( size_t i = 1; i <= a.data()._effects->size(); i++ )
@@ -106,7 +106,7 @@ namespace warlock
     warlock( p )
   {
     dots_drain_life = target->get_dot( "drain_life", &p );
-    
+
     //Aff
     dots_corruption = target->get_dot("corruption", &p);
     dots_agony = target->get_dot("agony", &p);
@@ -213,7 +213,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     default_pet()
   {
     legendary.hood_of_eternal_disdain = nullptr;
-    legendary.insignia_of_the_grand_army = nullptr;
     legendary.lessons_of_spacetime = nullptr;
     legendary.power_cord_of_lethtendris = nullptr;
     legendary.reap_and_sow = nullptr;
@@ -317,13 +316,10 @@ double warlock_t::composite_player_multiplier( school_e school ) const
   if ( legendary.stretens_sleepless_shackles )
     m *= 1.0 + buffs.stretens_insanity->check() * buffs.stretens_insanity->data().effectN( 1 ).percent();
 
-  if ( specialization() == WARLOCK_DESTRUCTION && dbc::is_school( school, SCHOOL_FIRE ) ) 
+  if ( specialization() == WARLOCK_DESTRUCTION && dbc::is_school( school, SCHOOL_FIRE ) )
     m *= 1.0 + buffs.alythesss_pyrogenics->check_stack_value();
 
   m *= 1.0 + buffs.sindorei_spite->check_stack_value();
-
-  if ( legendary.insignia_of_the_grand_army )
-    m *= 1.0 + find_spell( 152626 )->effectN( 2 ).percent();
 
   return m;
 }
@@ -647,7 +643,7 @@ void warlock_t::init_gains()
   gains.miss_refund                     = get_gain( "miss_refund" );
   gains.shadow_bolt                     = get_gain( "shadow_bolt" );
   gains.soul_conduit                    = get_gain( "soul_conduit" );
-  
+
   gains.soulsnatcher                    = get_gain( "soulsnatcher" );
   gains.power_trip                      = get_gain( "power_trip" );
   gains.recurrent_ritual                = get_gain( "recurrent_ritual" );
@@ -917,15 +913,17 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
   if ( name_str == "time_to_shard" )
   {
     return make_fn_expr( name_str, [this]()
-    { 
+    {
       double active_agonies = get_active_dots(find_action_id("agony"));
       if (sim->log)
         sim->out_debug.printf("active agonies: %f", active_agonies);
       dot_t* agony = find_target_data(target)->dots_agony;
-      timespan_t dot_tick_time = agony->current_action->tick_time(agony->current_action->get_state(agony->state));
+      action_state_t* agony_state = agony->current_action->get_state(agony->state);
+      timespan_t dot_tick_time = agony->current_action->tick_time(agony_state);
       double average = 1 / (0.16 / std::sqrt(active_agonies) * (active_agonies == 1 ? 1.15 : 1.0) * active_agonies / dot_tick_time.total_seconds());
       if (sim->log)
         sim->out_debug.printf("time to shard return: %f", average);
+      action_state_t::release(agony_state);
       return average;
     } );
   }
@@ -958,7 +956,7 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
   else if (name_str == "contagion")
   {
     return make_fn_expr(name_str, [this]()
-    { 
+    {
       timespan_t con = timespan_t::from_millis(0.0);
 
       auto td = find_target_data(target);
@@ -976,13 +974,13 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
           con = rem;
         }
       }
-      return con; 
+      return con;
     });
   }
 
   return player_t::create_expression( name_str );
 }
- 
+
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
  */
@@ -1069,13 +1067,6 @@ static void lessons_of_spacetime( special_effect_t& effect )
   do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.lessons_of_spacetime, effect );
   do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.lessons_of_spacetime, effect );
 }
-static void insignia_of_the_grand_army( special_effect_t& effect )
-{
-  warlock_t* s = debug_cast<warlock_t*>( effect.player );
-  do_trinket_init( s, WARLOCK_AFFLICTION, s->legendary.insignia_of_the_grand_army, effect );
-  do_trinket_init( s, WARLOCK_DEMONOLOGY, s->legendary.insignia_of_the_grand_army, effect );
-  do_trinket_init( s, WARLOCK_DESTRUCTION, s->legendary.insignia_of_the_grand_army, effect );
-}
 static void kazzaks_final_curse( special_effect_t& effect )
 {
   warlock_t* s = debug_cast<warlock_t*>( effect.player );
@@ -1151,7 +1142,6 @@ struct warlock_module_t : public module_t
     unique_gear::register_special_effect( 281494, reap_and_sow );
     unique_gear::register_special_effect( 281495, wakeners_loyalty );
     unique_gear::register_special_effect( 281496, lessons_of_spacetime );
-    // unique_gear::register_special_effect( 280740, insignia_of_the_grand_army );
     unique_gear::register_special_effect( 214225, kazzaks_final_curse );
     unique_gear::register_special_effect( 205721, recurrent_ritual );
     unique_gear::register_special_effect( 213014, magistrike_restraints );
