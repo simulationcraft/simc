@@ -72,15 +72,15 @@ finger1=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of
 finger2=sephuzs_secret,id=132452,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=talonclaw,id=128808,bonus_id=728,ilevel=248,gem_id=152060/155855/155847,relic_id=3612:1502/3612:1512/3612:1512
+main_hand=talonclaw,id=128808,bonus_id=728/1505/1505/1505,gem_id=155853/155855/155847
 
 # Gear Summary
-# gear_ilvl=247.87
-# gear_agility=846
-# gear_stamina=1318
-# gear_crit_rating=461
+# gear_ilvl=248.07
+# gear_agility=848
+# gear_stamina=1322
+# gear_crit_rating=462
 # gear_haste_rating=425
-# gear_mastery_rating=171
+# gear_mastery_rating=172
 # gear_versatility_rating=276
 # gear_armor=595
 # set_bonus=tier21_2pc=1

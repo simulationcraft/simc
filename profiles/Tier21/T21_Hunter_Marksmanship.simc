@@ -74,15 +74,15 @@ finger1=soul_of_the_huntmaster,id=151641,bonus_id=3630,gem_id=151584,enchant=bin
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=amanthuls_vision,id=154172,bonus_id=4213
 trinket2=shadowsinged_fang,id=151968,bonus_id=3612/1502
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,ilevel=248,gem_id=155853/155847/152291,relic_id=3612:1512/3612:1512/3612:1502
+main_hand=thasdorah_legacy_of_the_windrunners,id=128826,bonus_id=727/1505/1505/1505,gem_id=155853/155847/155854
 
 # Gear Summary
-# gear_ilvl=245.73
-# gear_agility=705
-# gear_stamina=1292
-# gear_crit_rating=458
+# gear_ilvl=245.93
+# gear_agility=707
+# gear_stamina=1296
+# gear_crit_rating=459
 # gear_haste_rating=363
-# gear_mastery_rating=510
+# gear_mastery_rating=511
 # gear_versatility_rating=190
 # gear_armor=583
 # set_bonus=tier20_2pc=1

@@ -96,7 +96,7 @@ finger1=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of
 finger2=shard_of_the_exodar,id=132410,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
 trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=ebonchill,id=128862,bonus_id=731/1505/1505/1505,gem_id=155850/155846/155850,relic_id=3612:1512/3612:1512/3612:1512
+main_hand=ebonchill,id=128862,bonus_id=731/1505/1505/1505,gem_id=155850/155846/155850
 
 # Gear Summary
 # gear_ilvl=245.27

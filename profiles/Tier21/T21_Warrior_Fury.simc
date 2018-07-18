@@ -72,16 +72,16 @@ finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=bindin
 finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=khazgoroths_courage,id=154176,bonus_id=3997
-main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,ilevel=248,gem_id=155849/155853/152293,relic_id=3612:1512/3612:1512/3612:1502
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751/1505/1505/1505,gem_id=155849/155853/155855
 off_hand=warswords_of_the_valarjar,id=134553
 
 # Gear Summary
-# gear_ilvl=247.25
-# gear_strength=961
-# gear_stamina=1471
-# gear_crit_rating=153
+# gear_ilvl=247.63
+# gear_strength=965
+# gear_stamina=1479
+# gear_crit_rating=155
 # gear_haste_rating=478
-# gear_mastery_rating=596
+# gear_mastery_rating=598
 # gear_versatility_rating=166
 # gear_armor=906
 # set_bonus=tier21_2pc=1

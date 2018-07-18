@@ -111,14 +111,14 @@ finger1=sephuzs_secret,id=132452,bonus_id=3630,gem_id=151583,enchant=binding_of_
 finger2=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=golganneths_vitality,id=154174,bonus_id=3997
 trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
-main_hand=fangs_of_ashamane,id=128860,bonus_id=723,ilevel=248,gem_id=155847/152041/155854/0,relic_id=3612:1512/3612:1502/3612:1512/0
-off_hand=fangs_of_ashamane,id=128859,gem_id=0/0/0/0,relic_id=0/0
+main_hand=fangs_of_ashamane,id=128860,bonus_id=723/1505/1505/1505,gem_id=155850/155847/155854
+off_hand=fangs_of_ashamane,id=128859
 
 # Gear Summary
-# gear_ilvl=247.88
-# gear_agility=847
-# gear_stamina=1324
-# gear_crit_rating=539
+# gear_ilvl=248.25
+# gear_agility=849
+# gear_stamina=1328
+# gear_crit_rating=541
 # gear_haste_rating=523
 # gear_mastery_rating=101
 # gear_versatility_rating=174

@@ -80,15 +80,15 @@ finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant_id=542
 finger2=soul_of_the_highlord,id=151644,bonus_id=3630,gem_id=151584,enchant_id=5429
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=ashbringer,id=120978,bonus_id=737,ilevel=248,gem_id=155851/152038/155851,relic_id=3612:1512/3612:1502/3612:1512
+main_hand=ashbringer,id=120978,bonus_id=737/1505/1505/1505,gem_id=155851/155849/155851
 
 # Gear Summary
-# gear_ilvl=248.53
-# gear_strength=729
-# gear_stamina=1325
-# gear_crit_rating=396
+# gear_ilvl=248.73
+# gear_strength=731
+# gear_stamina=1329
+# gear_crit_rating=397
 # gear_haste_rating=418
-# gear_mastery_rating=506
+# gear_mastery_rating=507
 # gear_versatility_rating=273
 # gear_armor=874
 # set_bonus=tier21_2pc=1

@@ -50,8 +50,7 @@ actions.burn+=/time_warp,if=buff.bloodlust.down&((buff.arcane_power.down&cooldow
 actions.burn+=/lights_judgment,if=buff.arcane_power.down
 actions.burn+=/rune_of_power,if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)
 actions.burn+=/arcane_power
-# if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains
-actions.burn+=/use_items
+actions.burn+=/use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains
 actions.burn+=/blood_fury
 actions.burn+=/berserking
 actions.burn+=/presence_of_mind

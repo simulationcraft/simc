@@ -69,12 +69,12 @@ finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=bindin
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=golganneths_vitality,id=154174,bonus_id=3997
 trinket2=archimondes_hatred_reborn,id=144249,bonus_id=3630
-main_hand=fu_zan_the_wanderers_companion,id=128938,bonus_id=732,ilevel=248,gem_id=152052/152058/152047,relic_id=3612:1502/3612:1502/3612:1502
+main_hand=fu_zan_the_wanderers_companion,id=128938,bonus_id=732/1505/1505/1505,gem_id=155854/155853/155855
 
 # Gear Summary
-# gear_ilvl=247.20
-# gear_agility=943
-# gear_stamina=1294
+# gear_ilvl=247.40
+# gear_agility=945
+# gear_stamina=1298
 # gear_crit_rating=396
 # gear_haste_rating=196
 # gear_mastery_rating=393

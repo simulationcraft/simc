@@ -50,8 +50,7 @@ actions.burn+=/time_warp,if=buff.bloodlust.down&((buff.arcane_power.down&cooldow
 actions.burn+=/lights_judgment,if=buff.arcane_power.down
 actions.burn+=/rune_of_power,if=!buff.arcane_power.up&(mana.pct>=50|cooldown.arcane_power.remains=0)&(buff.arcane_charge.stack=buff.arcane_charge.max_stack)
 actions.burn+=/arcane_power
-# if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains
-actions.burn+=/use_items
+actions.burn+=/use_items,if=buff.arcane_power.up|target.time_to_die<cooldown.arcane_power.remains
 actions.burn+=/blood_fury
 actions.burn+=/berserking
 actions.burn+=/presence_of_mind
@@ -107,7 +106,7 @@ finger1=soul_of_the_archmage,id=151642,bonus_id=3630,gem_id=151585,enchant=bindi
 finger2=shard_of_the_exodar,id=132410,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
 trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=3563/1512
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=aluneth,id=127857,bonus_id=729/1505/1505/1505,gem_id=155846/155850/155846,relic_id=3612:1512/3612:1512/3612:1512
+main_hand=aluneth,id=127857,bonus_id=729/1505/1505/1505,gem_id=155846/155850/155846
 
 # Gear Summary
 # gear_ilvl=244.20

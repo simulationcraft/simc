@@ -88,16 +88,16 @@ finger1=insignia_of_ravenholdt,id=137049,bonus_id=3630,gem_id=151585,enchant=bin
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_versatility
 trinket1=nightblooming_frond,id=140802,bonus_id=3518/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=152295/155855/155853,relic_id=3612:1502/3612:1512/3612:1512
+main_hand=the_dreadblades,id=128872,bonus_id=742/1505/1505/1505,gem_id=155847/155855/155853
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=233.25
-# gear_agility=853
-# gear_stamina=1235
-# gear_crit_rating=347
+# gear_ilvl=245.63
+# gear_agility=909
+# gear_stamina=1321
+# gear_crit_rating=367
 # gear_haste_rating=244
-# gear_mastery_rating=235
+# gear_mastery_rating=255
 # gear_versatility_rating=397
 # gear_armor=415
 # set_bonus=tier21_2pc=1

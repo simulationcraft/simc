@@ -94,20 +94,20 @@ actions.cd+=/lights_judgment
 # Cast ToD cycling through 2 targets if:
 # - You're using HMFT
 # - Your previous GCD was not ToD
-actions.cd+=/touch_of_death,target_if=min:debuff.touch_of_death.remains,if=equipped.hidden_masters_forbidden_touch&!prev_gcd.1.touch_of_death
+actions.cd+=/touch_of_death,target_if=min:dot.touch_of_death.remains,if=equipped.hidden_masters_forbidden_touch&!prev_gcd.1.touch_of_death
 # The second cast of touch_of_death triggered by the legendary effect of hidden_masters_forbidden_touch:
 # - You've already cast the first ToD
 # - SEF is talented and will be available before your next Global Cooldown
 # - Your previous GCD was not ToD
 # - Remaining cooldown on Fist of Fury is lower or equal to 4 seconds
 # - Remaining cooldown on Rising Sun Kick is lower than 7 seconds
-actions.cd+=/touch_of_death,target_if=min:debuff.touch_of_death.remains,if=((talent.serenity.enabled&cooldown.serenity.remains<=1)&cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death
+actions.cd+=/touch_of_death,target_if=min:dot.touch_of_death.remains,if=((talent.serenity.enabled&cooldown.serenity.remains<=1)&cooldown.fists_of_fury.remains<=4)&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death
 # The second cast of touch_of_death triggered by the legendary effect of hidden_masters_forbidden_touch:
 # - You've already cast the first ToD
 # - Remaining cooldown on Fists of Fury is lower or equal to 4 seconds AND SEF is talented and will be available before your next Global Cooldown OR you have 2 or more Chi
 # - Your previous GCD was not ToD
 # - Remaining cooldown on Rising Sun Kick is greather than 7 seconds
-actions.cd+=/touch_of_death,target_if=min:debuff.touch_of_death.remains,if=((!talent.serenity.enabled&cooldown.storm_earth_and_fire.remains<=1)|chi>=2)&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death
+actions.cd+=/touch_of_death,target_if=min:dot.touch_of_death.remains,if=((!talent.serenity.enabled&cooldown.storm_earth_and_fire.remains<=1)|chi>=2)&cooldown.fists_of_fury.remains<=4&cooldown.rising_sun_kick.remains<7&!prev_gcd.1.touch_of_death
 
 actions.sef=tiger_palm,target_if=debuff.mark_of_the_crane.down,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1
 actions.sef+=/call_action_list,name=cd

@@ -67,15 +67,15 @@ finger1=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_m
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=golganneths_vitality,id=154174,bonus_id=3997
 trinket2=convergence_of_fates,id=140806,bonus_id=3518/1502
-main_hand=titanstrike,id=128861,bonus_id=726,ilevel=245,gem_id=155853/152026/152293,relic_id=3612:1512/3612:1502/3612:1502
+main_hand=titanstrike,id=128861,bonus_id=726/1505/1505/1505,gem_id=155853/155846/155855
 
 # Gear Summary
-# gear_ilvl=246.20
-# gear_agility=940
-# gear_stamina=1336
-# gear_crit_rating=298
+# gear_ilvl=246.60
+# gear_agility=945
+# gear_stamina=1343
+# gear_crit_rating=299
 # gear_haste_rating=355
-# gear_mastery_rating=532
+# gear_mastery_rating=533
 # gear_versatility_rating=96
 # gear_armor=612
 # set_bonus=tier21_2pc=1

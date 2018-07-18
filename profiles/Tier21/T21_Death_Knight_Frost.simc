@@ -129,7 +129,7 @@ finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=amanthuls_vision,id=154172,bonus_id=4213
 trinket2=shadowsinged_fang,id=151968,bonus_id=3612/1502
-main_hand=blades_of_the_fallen_prince,id=128292,ilevel=251,gem_id=155850/155852/155850,relic_id=3612:1512/3612:1512/3612:1512,enchant=rune_of_razorice
+main_hand=blades_of_the_fallen_prince,id=128292,bonus_id=717/1505/1505/1505,gem_id=155850/155852/155850,enchant=rune_of_razorice
 off_hand=blades_of_the_fallen_prince,id=128293,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary

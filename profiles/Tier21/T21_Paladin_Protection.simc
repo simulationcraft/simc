@@ -106,15 +106,15 @@ finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of
 trinket1=amanthuls_vision,id=154172,bonus_id=4213
 trinket2=diimas_glacial_aegis,id=151977,bonus_id=3612/1502
 main_hand=oathseeker,id=128867
-off_hand=truthguard,id=128866,bonus_id=736,ilevel=245,gem_id=155851/152293/152024,relic_id=3612:1512/3612:1502/3612:1502
+off_hand=truthguard,id=128866,bonus_id=736/1505/1505/1505,gem_id=155851/155855/155846
 
 # Gear Summary
-# gear_ilvl=244.88
-# gear_strength=808
-# gear_stamina=1301
-# gear_crit_rating=500
+# gear_ilvl=245.63
+# gear_strength=813
+# gear_stamina=1310
+# gear_crit_rating=502
 # gear_haste_rating=559
-# gear_mastery_rating=194
+# gear_mastery_rating=196
 # gear_versatility_rating=260
 # gear_armor=893
 # set_bonus=tier20_2pc=1

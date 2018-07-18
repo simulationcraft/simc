@@ -103,7 +103,7 @@ finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=bindin
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=the_fist_of_raden,id=128935,bonus_id=744,ilevel=251,gem_id=155853/155850/155853,relic_id=3612:1512/3612:1512/3612:1512
+main_hand=the_fist_of_raden,id=128935,bonus_id=744/1505/1505/1505,gem_id=155853/155850/155853
 off_hand=the_highkeepers_ward,id=128936
 
 # Gear Summary

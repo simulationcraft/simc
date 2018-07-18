@@ -64,7 +64,7 @@ finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=aggramars_conviction,id=154173,bonus_id=3997
 trinket2=astral_alchemist_stone,id=151607,bonus_id=3609/601/3608
-main_hand=maw_of_the_damned,id=128402,ilevel=251,gem_id=155847/155855/155852,relic_id=3612:1512/3612:1512/3612:1512,enchant=rune_of_the_fallen_crusader
+main_hand=maw_of_the_damned,id=128402,bonus_id=716/1505/1505/1505,gem_id=155847/155852/155855,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
 # gear_ilvl=243.60

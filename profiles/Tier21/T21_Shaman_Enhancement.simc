@@ -105,7 +105,7 @@ finger1=eye_of_the_twisting_nether,id=137050,bonus_id=3630,gem_id=151583,enchant
 finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=golganneths_vitality,id=154174,bonus_id=3997
 trinket2=shadowsinged_fang,id=151968,bonus_id=3612/1502
-main_hand=doomhammer,id=128819,ilevel=251,gem_id=155849/155855/155853,relic_id=3612:1512/3612:1512/3612:1512
+main_hand=doomhammer,id=128819,bonus_id=745/1505/1505/1505,gem_id=155849/155855/155853
 off_hand=fury_of_the_stonemother,id=128873
 
 # Gear Summary
