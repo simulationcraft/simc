@@ -6324,7 +6324,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Actions" );
     stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2", "Subterfuge: Apply or Refresh buffed Garrotes" );
     stealthed -> add_action( this, "Garrote", "cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2", "Subterfuge: Override normal Garrotes with snapshot versions if there's time" );
-    stealthed -> add_action( this, "Rupture", "if=talent.nightstalker.enabled&target.time_to_die-remains>6", "Nighstalker: Snapshot Rupture" );
+    stealthed -> add_action( this, "Rupture", "if=combo_points>=4&(talent.nightstalker.enabled|!ticking)&target.time_to_die-remains>6", "Nighstalker: Snapshot Rupture, Also use Rupture over Envenom if it's not applied (Opener)" );
     stealthed -> add_action( this, "Envenom", "if=combo_points>=cp_max_spend" );
     stealthed -> add_action( this, "Garrote", "if=!talent.subterfuge.enabled&target.time_to_die-remains>4" );
     stealthed -> add_action( this, "Fan of Knives", "if=spell_targets>=3" );
