@@ -69,25 +69,25 @@ neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_train
 shoulders=grim_inquisitors_shoulderguards,id=152177,bonus_id=3612/1502
 back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
 chest=gambeson_of_sargeras_corruption,id=152679,bonus_id=3612/1502
-wrists=sindorei_spite,id=132379,ilevel=265,azerite_level=265
+wrists=sindorei_spite,id=132379,bonus_id=3630
 hands=aranasi_shadowweavers_gloves,id=151941,bonus_id=3612/1502
-waist=feretory_of_souls,id=132456,ilevel=265,azerite_level=265
+waist=feretory_of_souls,id=132456,bonus_id=3630
 legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
 feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
 finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
-trinket1=sheath_of_asara,id=151971,ilevel=240,azerite_level=240
-trinket2=norgannons_prowess,id=154177,ilevel=280,azerite_level=280
+trinket1=sheath_of_asara,id=151971,bonus_id=3612/1502
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=scepter_of_sargeras,id=128941,bonus_id=749/1505/1505/1505,gem_id=152031/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
 
 # Gear Summary
 # gear_ilvl=248.07
 # gear_stamina=1329
 # gear_intellect=1152
-# gear_crit_rating=268
-# gear_haste_rating=542
-# gear_mastery_rating=469
-# gear_versatility_rating=74
+# gear_crit_rating=339
+# gear_haste_rating=613
+# gear_mastery_rating=455
+# gear_versatility_rating=145
 # gear_armor=256
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

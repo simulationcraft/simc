@@ -12,15 +12,15 @@ neck=collar_of_nullflame,id=151973,bonus_id=3612/1502,enchant=mark_of_the_traine
 shoulders=grim_inquisitors_shoulderguards,id=152177,bonus_id=3612/1502
 back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
 chest=grim_inquisitors_robes,id=152176,bonus_id=3612/1502
-wrists=stretens_sleepless_shackles,id=132381,ilevel=265,azerite_level=265
+wrists=stretens_sleepless_shackles,id=132381,bonus_id=3630
 hands=handwraps_of_inevitable_doom,id=152680,bonus_id=3612/1502
-waist=enhanced_worldscorcher_cinch,id=151951,ilevel=240,azerite_level=240
+waist=enhanced_worldscorcher_cinch,id=151951,bonus_id=3612/1502
 legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
 feet=sandals_of_the_reborn_colossus,id=151940,bonus_id=3612/1502
 finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
-trinket1=sheath_of_asara,id=151971,ilevel=240,azerite_level=240
-trinket2=norgannons_prowess,id=154177,ilevel=280,azerite_level=280
+trinket1=sheath_of_asara,id=151971,bonus_id=3612/1502
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=ulthalesh_the_deadwind_harvester,id=128942,bonus_id=747/1505/1505/1505,gem_id=152057/152092/152057,relic_id=3612:1502/3612:1502/3612:1502
 
 save=T21_Warlock_Affliction.simc
@@ -35,8 +35,8 @@ talents=2103021
 spec=demonology
 default_pet=felguard
 
-head=soulhunters_cowl,id=151944,ilevel=240,azerite_level=240
-neck=chain_of_the_unmaker,id=152283,ilevel=250,azerite_level=250,enchant=mark_of_the_claw
+head=soulhunters_cowl,id=151944,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_claw
 shoulders=grim_inquisitors_shoulderguards,id=152177,bonus_id=3612/1502
 back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
 chest=gambeson_of_sargeras_corruption,id=152679,bonus_id=3612/1502
@@ -45,10 +45,10 @@ hands=grim_inquisitors_gloves,id=152173,bonus_id=3612/1502
 waist=cord_of_surging_hysteria,id=151942,bonus_id=3612/1502
 legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
 feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
-finger1=soul_of_the_netherlord,id=151649,ilevel=265,azerite_level=265,gems=9haste,enchant=9haste
-finger2=wilfreds_sigil_of_superior_summoning,id=132369,ilevel=265,azerite_level=265,gems=9haste,enchant=binding_of_haste
-trinket1=sheath_of_asara,id=151971,ilevel=240,azerite_level=240
-trinket2=norgannons_prowess,id=154177,ilevel=280,azerite_level=280
+finger1=soul_of_the_netherlord,id=151649,bonus_id=3630,gems=9haste,enchant=9haste
+finger2=wilfreds_sigil_of_superior_summoning,id=132369,bonus_id=3630,gems=9haste,enchant=binding_of_haste
+trinket1=sheath_of_asara,id=151971,bonus_id=3612/1502
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=spine_of_thalkiel,id=137246,gem_id=0/0/0/0,relic_id=0/0
 off_hand=skull_of_the_manari,id=128943,bonus_id=748/1505/1505/1505,gem_id=152056/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
 
@@ -69,15 +69,15 @@ neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_train
 shoulders=grim_inquisitors_shoulderguards,id=152177,bonus_id=3612/1502
 back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
 chest=gambeson_of_sargeras_corruption,id=152679,bonus_id=3612/1502
-wrists=sindorei_spite,id=132379,ilevel=265,azerite_level=265
+wrists=sindorei_spite,id=132379,bonus_id=3630
 hands=aranasi_shadowweavers_gloves,id=151941,bonus_id=3612/1502
-waist=feretory_of_souls,id=132456,ilevel=265,azerite_level=265
+waist=feretory_of_souls,id=132456,bonus_id=3630
 legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
 feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
 finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
-trinket1=sheath_of_asara,id=151971,ilevel=240,azerite_level=240
-trinket2=norgannons_prowess,id=154177,ilevel=280,azerite_level=280
+trinket1=sheath_of_asara,id=151971,bonus_id=3612/1502
+trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=scepter_of_sargeras,id=128941,bonus_id=749/1505/1505/1505,gem_id=152031/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
 
 save=T21_Warlock_Destruction.simc
