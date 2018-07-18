@@ -1206,6 +1206,9 @@ namespace warlock {
     def->add_action("summon_infernal,if=target.time_to_die>=210|!cooldown.dark_soul_instability.remains|target.time_to_die<=30+gcd|!talent.dark_soul_instability.enabled");
     def->add_talent(this, "Dark Soul: Instability", "if=target.time_to_die>=140|pet.infernal.active|target.time_to_die<=20+gcd" );
     def->add_action( "potion,if=pet.infernal.active|target.time_to_die<65" );
+    def->add_action( "berserking" );
+    def->add_action( "blood_fury" );
+    def->add_action( "fireblood" );
     def->add_action( "use_items" );
     def->add_action( "havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10" );
     def->add_action( "havoc,if=active_enemies>1" );

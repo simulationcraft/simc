@@ -32,6 +32,7 @@ actions.precombat+=/demonbolt
 actions=use_items,if=prev_gcd.1.summon_demonic_tyrant
 actions+=/berserking,if=prev_gcd.1.summon_demonic_tyrant
 actions+=/blood_fury,if=prev_gcd.1.summon_demonic_tyrant
+actions+=/fireblood,if=prev_gcd.1.summon_demonic_tyrant
 actions+=/doom,if=!ticking&time_to_die>30&spell_targets.implosion<2
 actions+=/demonic_strength
 actions+=/call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2

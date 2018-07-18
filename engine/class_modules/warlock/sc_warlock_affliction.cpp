@@ -1181,19 +1181,53 @@ namespace warlock
   void warlock_t::create_apl_affliction()
   {
     action_priority_list_t* def = get_action_priority_list( "default" );
+    action_priority_list_t* aoe = get_action_priority_list( "aoe" );
+    action_priority_list_t* st = get_action_priority_list( "single" );
+    action_priority_list_t* dgs = get_action_priority_list( "dg_soon" );
+    action_priority_list_t* reg = get_action_priority_list( "regular" );
+    action_priority_list_t* fil = get_action_priority_list( "fillers" );
 
-    def->add_action( "dark_soul,if=buff.active_uas.stack>0" );
     def->add_action( "haunt" );
-    def->add_action( "agony,if=refreshable" );
-    def->add_action( "siphon_life,if=refreshable" );
-    def->add_action( "corruption,if=refreshable" );
+    def->add_action( "summon_darkglare,if=dot.agony.ticking&dot.corruption.ticking&dot.unstable_affliction_1.ticking&dot.unstable_affliction_2.ticking&dot.unstable_affliction_3.ticking&((dot.unstable_affliction_4.ticking&dot.unstable_affliction_5.ticking)|soul_shard=0)" );
+    def->add_action( "agony,cycle_targets=1,max_cycle_targets=5,if=remains<=gcd&active_enemies<=7" );
+    def->add_action( "agony,cycle_targets=1,max_cycle_targets=5,if=refreshable&target.time_to_die>10&(!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)|active_enemies<2)&active_enemies<=7" );
+    def->add_action( "agony,cycle_targets=1,max_cycle_targets=4,if=remains<=gcd&active_enemies>7" );
+    def->add_action( "agony,cycle_targets=1,max_cycle_targets=4,if=refreshable&target.time_to_die>10&(!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)|active_enemies<2)&active_enemies>7" );
+    def->add_action( "dark_soul" );
+    def->add_action( "siphon_life,cycle_targets=1,max_cycle_targets=1,if=refreshable&target.time_to_die>10&((!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)&active_enemies>4)|active_enemies<2)" );
+    def->add_action( "siphon_life,cycle_targets=1,max_cycle_targets=2,if=refreshable&target.time_to_die>10&!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)&active_enemies=2" );
+    def->add_action( "siphon_life,cycle_targets=1,max_cycle_targets=3,if=refreshable&target.time_to_die>10&!(cooldown.summon_darkglare.remains<=soul_shard*cast_time)&active_enemies=3" );
+    def->add_action( "corruption,cycle_targets=1,if=active_enemies<3&refreshable&target.time_to_die>10" );
+    def->add_action( "seed_of_corruption,line_cd=10,if=dot.corruption.ticks_remain<=2&spell_targets.seed_of_corruption_aoe>=3" );
     def->add_action( "phantom_singularity" );
     def->add_action( "vile_taint" );
-    def->add_action( "unstable_affliction,if=soul_shard=5" );
-    def->add_action( "unstable_affliction,if=(dot.unstable_affliction_1.ticking+dot.unstable_affliction_2.ticking+dot.unstable_affliction_3.ticking+dot.unstable_affliction_4.ticking+dot.unstable_affliction_5.ticking=0)|soul_shard>2" );
-    def->add_action( "summon_darkglare" );
-    def->add_action( "deathbolt" );
-    def->add_talent( this, "Drain Soul", "chain=1,interrupt=1" );
-    def->add_action( "shadow_bolt" );
+    def->add_action( "berserking" );
+    def->add_action( "call_action_list,name=aoe,if=talent.sow_the_seeds.enabled&spell_targets.seed_of_corruption_aoe>=3" );
+    def->add_action( "call_action_list,name=single" );
+
+    aoe->add_action( "call_action_list,name=dg_soon,if=(cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|cooldown.summon_darkglare.up)&time_to_die>cooldown.summon_darkglare.remains" );
+    aoe->add_action( "seed_of_corruption" );
+    aoe->add_action( "call_action_list,name=fillers" );
+
+    st->add_action( "unstable_affliction,if=soul_shard=5" );
+    st->add_action( "call_action_list,name=dg_soon,if=(cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|cooldown.summon_darkglare.up)&time_to_die>cooldown.summon_darkglare.remains" );
+    st->add_action( "call_action_list,name=regular,if=!((cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|time_to_die>cooldown.summon_darkglare.remains)&cooldown.summon_darkglare.up)" );
+
+    dgs->add_action( "unstable_affliction,if=(cooldown.summon_darkglare.remains<=soul_shard*cast_time)" );
+    dgs->add_action( "agony,line_cd=30,if=talent.deathbolt.enabled&(!talent.siphon_life.enabled)&dot.agony.ticks_remain<=10&cooldown.deathbolt.remains<=gcd" );
+    dgs->add_action( "summon_darkglare" );
+    dgs->add_action( "call_action_list,name=fillers" );
+
+    reg->add_action( "unstable_affliction,cycle_targets=1,if=((dot.unstable_affliction_1.remains+dot.unstable_affliction_2.remains+dot.unstable_affliction_3.remains+dot.unstable_affliction_4.remains+dot.unstable_affliction_5.remains)<=cast_time|soul_shard>=2)&target.time_to_die>4+cast_time" );
+    reg->add_action( "agony,line_cd=30,if=talent.deathbolt.enabled&(!talent.siphon_life.enabled)&dot.agony.ticks_remain<=10&cooldown.deathbolt.remains<=gcd" );
+    reg->add_action( "call_action_list,name=fillers" );
+
+    fil->add_action( "fireblood" );
+    fil->add_action( "blood_fury" );
+    fil->add_action( "use_items" );
+    fil->add_action( "deathbolt" );
+    fil->add_action( "drain_soul,interrupt=1,chain=1,cycle_targets=1,if=target.time_to_die<=gcd" );
+    fil->add_action( "drain_soul,interrupt=1,chain=1" );
+    fil->add_action( "shadow_bolt" );
   }
 }

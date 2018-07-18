@@ -1391,6 +1391,7 @@ namespace warlock {
     def->add_action( "use_items,if=prev_gcd.1.summon_demonic_tyrant" );
     def->add_action( "berserking,if=prev_gcd.1.summon_demonic_tyrant" );
     def->add_action( "blood_fury,if=prev_gcd.1.summon_demonic_tyrant" );
+    def->add_action( "fireblood,if=prev_gcd.1.summon_demonic_tyrant" );
     def->add_action( "doom,if=!ticking&time_to_die>30&spell_targets.implosion<2" );
     def->add_action("demonic_strength");
     def->add_action("call_action_list,name=nether_portal,if=talent.nether_portal.enabled&spell_targets.implosion<=2");

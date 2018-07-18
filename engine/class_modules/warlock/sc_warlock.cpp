@@ -736,6 +736,12 @@ void warlock_t::apl_precombat()
     precombat->add_talent ( this, "Soul Fire" );
     precombat->add_action("incinerate,if=!talent.soul_fire.enabled");
   }
+  if ( specialization() == WARLOCK_AFFLICTION )
+  {
+    precombat->add_action( "seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>=3" );
+    precombat->add_action( "haunt" );
+    precombat->add_action( "shadow_bolt,if=!talent.haunt.enabled&spell_targets.seed_of_corruption_aoe<3" );
+  }
 }
 
 std::string warlock_t::default_potion() const
