@@ -4058,7 +4058,7 @@ struct ignore_pain_t: public warrior_spell_t
     }
     if ( p -> talents.indomitable -> ok() )
     {
-      ip_cap_ratio *= 1.0 + p -> talents.indomitable -> effectN( 2 ).percent();
+      ip_cap_ratio *= 1.0 + p -> talents.indomitable -> effectN( 1 ).percent(); //basic support to fix segfault, prot will need full future overhaul
     }
     base_dd_max = base_dd_min = 0;
   }
