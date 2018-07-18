@@ -324,6 +324,7 @@ public:
     // Generic
     spell_data_ptr_t sephuzs_secret;
     spell_data_ptr_t generic_damage;
+    unsigned generic_damage_count = 0;
   } legendary;
 
   struct azerite_t
@@ -5661,7 +5662,7 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   if ( buffs.parsels_tongue -> check() )
     m *= 1.0 + buffs.parsels_tongue -> data().effectN( 1 ).percent() * buffs.parsels_tongue -> check();
 
-  m *= 1.0 + legendary.generic_damage -> effectN( 1 ).percent();
+  m *= 1.0 + legendary.generic_damage -> effectN( 1 ).percent() * legendary.generic_damage_count;
 
   if ( school == SCHOOL_PHYSICAL )
     m *= 1.0 + sets -> set( HUNTER_SURVIVAL, T20, B4 ) -> effectN( 1 ).percent();
@@ -5705,7 +5706,7 @@ double hunter_t::composite_player_pet_damage_multiplier( const action_state_t* s
   m *= 1.0 + buffs.the_mantle_of_command -> check_value();
   m *= 1.0 + buffs.parsels_tongue -> check_stack_value();
   m *= 1.0 + legendary.bm_ring -> effectN( 3 ).percent();
-  m *= 1.0 + legendary.generic_damage -> effectN( 2 ).percent();
+  m *= 1.0 + legendary.generic_damage -> effectN( 2 ).percent() * legendary.generic_damage_count;
 
   return m;
 }
@@ -5908,7 +5909,18 @@ struct hunter_module_t: public module_t
     register_legendary_effect( 281297, SPEC_NONE,            &hunter_t::legendary_t::mm_cloak );
     register_legendary_effect( 206332, SPEC_NONE,            &hunter_t::legendary_t::wrist );
     register_legendary_effect( 208051, SPEC_NONE,            &hunter_t::legendary_t::sephuzs_secret );
-    register_legendary_effect( 280737, SPEC_NONE,            &hunter_t::legendary_t::generic_damage );
+
+    struct generic_damage_t : public unique_gear::scoped_actor_callback_t<hunter_t>
+    {
+      generic_damage_t() : super( HUNTER ) {}
+
+      void manipulate( hunter_t* p, const special_effect_t& e ) override
+      {
+        p -> legendary.generic_damage = e.driver();
+        p -> legendary.generic_damage_count++;
+      }
+    };
+    unique_gear::register_special_effect( 280737, generic_damage_t{} );
   }
 
   void init( player_t* ) const override
