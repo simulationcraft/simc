@@ -5676,7 +5676,7 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   m *= 1.0 + legendary.generic_damage -> effectN( 1 ).percent() * legendary.generic_damage_count;
 
-  if ( school == SCHOOL_PHYSICAL )
+  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
     m *= 1.0 + sets -> set( HUNTER_SURVIVAL, T20, B4 ) -> effectN( 1 ).percent();
 
   m *= 1.0 + sets -> set( HUNTER_SURVIVAL, T21, B2 ) -> effectN( 1 ).percent();
