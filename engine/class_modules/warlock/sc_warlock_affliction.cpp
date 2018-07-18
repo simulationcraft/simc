@@ -1226,8 +1226,8 @@ namespace warlock
     fil->add_action( "blood_fury" );
     fil->add_action( "use_items" );
     fil->add_action( "deathbolt" );
-    fil->add_action( "drain_soul,interrupt=1,chain=1,cycle_targets=1,if=target.time_to_die<=gcd" );
-    fil->add_action( "drain_soul,interrupt=1,chain=1" );
+    fil->add_action( "drain_soul,interrupt_global=1,chain=1,cycle_targets=1,if=target.time_to_die<=gcd" );
+    fil->add_action( "drain_soul,interrupt_global=1,chain=1" );
     fil->add_action( "shadow_bolt" );
   }
 }
