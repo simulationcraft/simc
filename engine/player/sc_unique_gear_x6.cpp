@@ -158,6 +158,7 @@ namespace item
   void archimondes_hatred_reborn( special_effect_t& );
   void kiljadens_burning_wish( special_effect_t& );
   void norgannons_foresight( special_effect_t& );
+  void insignia_of_the_grand_army( special_effect_t& );
 
 
 
@@ -6408,6 +6409,13 @@ void item::norgannons_foresight( special_effect_t& effect )
   effect.player -> buffs.norgannons_foresight_ready -> default_chance = 1;
 }
 
+// Insignia of the Grand Army (Prepatch version) ============================
+
+void item::insignia_of_the_grand_army( special_effect_t& effect )
+{
+  effect.player -> insignia_of_the_grand_army_multiplier = 1.0 + effect.driver() -> effectN( 1 ).percent();
+}
+
 
 // Eyasu's Mulligan =========================================================
 
@@ -6893,6 +6901,7 @@ void unique_gear::register_special_effects_legion()
   register_special_effect( 235169, item::archimondes_hatred_reborn );
   register_special_effect( 235991, item::kiljadens_burning_wish );
   register_special_effect( 236373, item::norgannons_foresight );
+  register_special_effect( 280740, item::insignia_of_the_grand_army );
 
   /* Consumables */
   register_special_effect( 188028, consumables::potion_of_the_old_war );

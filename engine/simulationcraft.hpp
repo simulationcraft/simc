@@ -3613,6 +3613,8 @@ struct player_t : public actor_t
   // Misc Multipliers
   // auto attack multiplier (for Jeweled Signet of Melandrus and similar effects)
   double auto_attack_multiplier;
+  // Prepatch Insignia of the Grand Army flat dmg multiplier
+  double insignia_of_the_grand_army_multiplier;
 
   // Scale Factors
   std::unique_ptr<player_scaling_t> scaling;

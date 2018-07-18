@@ -741,6 +741,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   warlords_unseeing_eye( 0.0 ),
   warlords_unseeing_eye_stats(),
   auto_attack_multiplier( 1.0 ),
+  insignia_of_the_grand_army_multiplier( 1.0 ),
   scaling( ( !is_pet() || sim->report_pets_separately ) ? new player_scaling_t() : nullptr ),
   // Movement & Position
   base_movement_speed( 7.0 ),
@@ -3430,6 +3431,9 @@ double player_t::composite_player_multiplier( school_e school ) const
 
   if ( school != SCHOOL_PHYSICAL )
     m *= 1.0 + racials.magical_affinity->effectN( 1 ).percent();
+
+  // 8.0 Legendary Insignia of the Grand Army Effect
+  m *= insignia_of_the_grand_army_multiplier;
 
   return m;
 }
