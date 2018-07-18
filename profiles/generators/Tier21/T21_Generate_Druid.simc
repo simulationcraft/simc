@@ -19,39 +19,45 @@ feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
 finger1=sephuzs_secret,id=132452,bonus_id=3630,gem_id=151584,enchant=binding_of_mastery
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=prototype_personnel_decimator,id=151962,bonus_id=3612/1502
-trinket2=norgannons_prowess,id=154177,bonus_id=4213
+trinket2=norgannons_prowess,id=154177,bonus_id=3997
 main_hand=scythe_of_elune,id=128858,gem_id=152027/155854/155846,bonus_id=722/1510/1505/1507,relic_id=3612:1512/3612:1512/3612:1512
 
 save=T21_Druid_Balance.simc
 
 
-# druid="T21_Druid_Feral"
-# spec=feral
-# level=110
-# race=night_elf
-# timeofday=day
-# role=attack
-# position=back
-# talents=2331232
+druid="T21_Druid_Feral"
+spec=feral
+level=110
+race=night_elf
+timeofday=day
+role=attack
+position=back
+talents=3311332
 
-# head=behemoth_headdress,id=151801,bonus_id=3630
-# shoulder=bearmantle_shoulders,id=152129,bonus_id=3612/1502
-# back=bearmantle_cloak,id=152125,bonus_id=3612/1502,enchant=binding_of_agility
-# hands=bearmantle_paws,id=152126,bonus_id=3612/1502
-# legs=bearmantle_legguards,id=152128,bonus_id=3612/1502
-# finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
-# finger2=soul_of_the_archdruid,id=151636,bonus_id=3630,gem_id=130247,enchant=binding_of_versatility
-# main_hand=fangs_of_ashamane,id=128860,bonus_id=723,gem_id=155847/152041/155854/0,relic_id=3612:1512/3612:1502/3612:1512/0
-# off_hand=fangs_of_ashamane,id=128859,gem_id=0/0/0/0,relic_id=0/0
-# feet=vicious_flamepaws,id=151983,bonus_id=3612/1502
-# chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
-# wrists=sinuous_kerapteron_bindings,id=152087,bonus_id=3612/1502
-# waist=belt_of_fractured_sanity,id=151991,bonus_id=3612/1502
-# neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
-# trinket1=golganneths_vitality,id=154174,bonus_id=3997
-# trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
+potion=prolonged_power
+flask=seventh_demon
+food=lavish_suramar_feast
+augmentation=defiled
 
-# save=T21_Druid_Feral.simc
+head=headdress_of_living_brambles,id=152681,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_claw
+shoulders=bearmantle_shoulders,id=152129,bonus_id=3612/1502
+back=bearmantle_cloak,id=152125,bonus_id=3612/1502,enchant=binding_of_agility
+chest=bearmantle_harness,id=152124,bonus_id=3612/1502
+wrists=bracers_of_wanton_morality,id=152414,bonus_id=3612/1502
+hands=the_wildshapers_clutch,id=137094,bonus_id=3630
+waist=deathenveloping_cincture,id=151986,bonus_id=3612/1502
+legs=bearmantle_legguards,id=152128,bonus_id=3612/1502
+feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
+finger1=sephuzs_secret,id=132452,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
+finger2=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
+trinket1=golganneths_vitality,id=154174,bonus_id=3997
+trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
+main_hand=fangs_of_ashamane,id=128860,bonus_id=723,gem_id=155847/152041/155854/0,relic_id=3612:1512/3612:1502/3612:1512/0,ilevel=248
+off_hand=fangs_of_ashamane,id=128859,gem_id=0/0/0/0,relic_id=0/0
+
+
+save=T21_Druid_Feral.simc
 
 
 # druid="T21_Druid_Guardian"
