@@ -7592,7 +7592,7 @@ void druid_t::apl_balance()
   std::vector<std::string> item_actions   = get_item_actions();
   std::string              potion_action  = "potion,name=";
   if ( true_level > 100 )
-    potion_action += "potion_of_prolonged_power";
+    potion_action += "deadly_grace";
   else if ( true_level > 90 )
     potion_action += "draenic_intellect";
   else if ( true_level > 85 )
