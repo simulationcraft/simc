@@ -2578,16 +2578,16 @@ struct aimed_shot_t : public aimed_shot_base_t
   };
 
   benefit_t* aimed_in_critical_aimed;
-  aimed_shot_secondary_t* double_tap;
-  bool lock_and_loaded;
-  proc_t* double_tap_aimed;
+  aimed_shot_secondary_t* double_tap = nullptr;
+  bool lock_and_loaded = false;
+  struct {
+    proc_t* double_tap;
+    proc_t* lethal_shots;
+  } procs;
 
   aimed_shot_t( hunter_t* p, const std::string& options_str ) :
     aimed_shot_base_t( "aimed_shot", p ),
-    aimed_in_critical_aimed( p -> get_benefit( "aimed_in_critical_aimed" ) ),
-    double_tap( nullptr ),
-    lock_and_loaded( false ),
-    double_tap_aimed( p -> get_proc( "double_tap_aimed" ) )
+    aimed_in_critical_aimed( p -> get_benefit( "aimed_in_critical_aimed" ) )
   {
     parse_options( options_str );
 
@@ -2598,6 +2598,9 @@ struct aimed_shot_t : public aimed_shot_base_t
       double_tap = p -> get_background_action<aimed_shot_secondary_t>( "aimed_shot_double_tap" );
       add_child( double_tap );
     }
+
+    procs.double_tap = p -> get_proc( "double_tap_aimed" );
+    procs.lethal_shots = p -> get_proc( "lethal_shots_aimed" );
   }
 
   double cost() const override
@@ -2629,7 +2632,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       double_tap -> set_target( target );
       double_tap -> execute();
       p() -> buffs.double_tap -> decrement();
-      double_tap_aimed -> occur();
+      procs.double_tap -> occur();
     }
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
@@ -2639,6 +2642,8 @@ struct aimed_shot_t : public aimed_shot_base_t
       p() -> buffs.lock_and_load -> decrement();
     lock_and_loaded = false;
 
+    if ( p() -> buffs.lethal_shots -> check() )
+      procs.lethal_shots -> occur();
     p() -> buffs.lethal_shots -> decrement();
 
     p() -> buffs.sentinels_sight -> up(); // benefit tracking
@@ -2899,13 +2904,15 @@ struct rapid_fire_t: public hunter_spell_t
 
   rapid_fire_damage_t* damage;
   int base_num_ticks;
-  proc_t* double_tap_rapid_fire;
+  struct {
+    proc_t* double_tap;
+    proc_t* lethal_shots;
+  } procs;
 
   rapid_fire_t( hunter_t* p, const std::string& options_str ):
     hunter_spell_t( "rapid_fire", p, p -> find_spell( 257044 ) ),
     damage( p -> get_background_action<rapid_fire_damage_t>( "rapid_fire_damage" ) ),
-    base_num_ticks( data().effectN( 1 ).base_value() ),
-    double_tap_rapid_fire( p -> get_proc( "double_tap_rapid_fire" ) )
+    base_num_ticks( data().effectN( 1 ).base_value() )
   {
     parse_options( options_str );
 
@@ -2916,6 +2923,9 @@ struct rapid_fire_t: public hunter_spell_t
 
     base_num_ticks *= 1.0 + p -> talents.streamline -> effectN( 2 ).percent();
     dot_duration += p -> talents.streamline -> effectN( 1 ).time_value();
+
+    procs.double_tap = p -> get_proc( "double_tap_rapid_fire" );
+    procs.lethal_shots = p -> get_proc( "lethal_shots_rapid_fire" );
   }
 
   void init()
@@ -2948,11 +2958,13 @@ struct rapid_fire_t: public hunter_spell_t
     hunter_spell_t::last_tick( d );
 
     p() -> buffs.trick_shots -> decrement();
+
+    if ( p() -> buffs.lethal_shots -> check() )
+      procs.lethal_shots -> occur();
     p() -> buffs.lethal_shots -> decrement();
 
     if ( p() -> buffs.double_tap -> check() )
-      double_tap_rapid_fire -> occur();
-
+      procs.double_tap -> occur();
     p() -> buffs.double_tap -> decrement();
 
     // XXX: this triggers *only* after a *full* uninterrupted channel
