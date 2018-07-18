@@ -69,6 +69,8 @@ struct avengers_shield_t : public paladin_spell_t
     may_crit     = true;
 
     aoe = data().effectN( 1 ).chain_target();
+    // Redoubt offensive benefit
+    aoe += as<int>( p -> talents.redoubt -> effectN( 2 ).base_value() );
 
     base_multiplier *= 1.0 + p -> talents.first_avenger -> effectN( 1 ).percent();
     // First Avenger only increases primary target damage
