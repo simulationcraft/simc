@@ -645,6 +645,7 @@ Effects          :
 Description      : Roll a short distance.
 
 Name             : Fists of Fury (id=113656) [Spell Family (53)] 
+Hotfixed         : Affecting Spells
 Class            : Windwalker Monk
 School           : Physical
 Resource         : 3 Chi (12) (id=6141)
@@ -653,7 +654,7 @@ Range            : 8 yards
 GCD              : 1 seconds
 Duration         : 4 seconds
 Cooldown         : 24 seconds
-Affecting spells : Monk (137022 effect#1), Serenity (152173 effect#1), Katsuo's Eclipse (208045 effect#1)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effect#1), Windwalker Monk (137025 effect#1), Serenity (152173 effect#1), Extend Life (185158 effect#2), Hit Combo (196741 effect#1), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effect#1), 
 Triggered by     : Katsuo's Eclipse (208045)
 Attributes       : ........ ........ ........ ........   ..x...x. .xx..... ........ .....x.. 
                  : ........ ........ ........ ........   ........ ..x..... ........ x....... 
@@ -673,7 +674,8 @@ Effects          :
 #4 (id=219526)   : Apply Aura (6) | Modify Parry% (47)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #5 (id=303680)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.94185
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.20750
+                   Hotfixed: AP Coefficient (0.94185 -> 1.2075)
 #6 (id=480070)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 Description      : Pummels all targets in front of you, dealing ${5*$s5} damage over $113656d to your primary target and ${5*$s5*$s6/100} damage over $113656d to other targets. Can be channeled while moving.
@@ -3175,10 +3177,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179707)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
 #2 (id=191108)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 9 | Scaled Value: 9 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
 #3 (id=191109)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 9 | Scaled Value: 9 | Target: Self (1)
 #4 (id=191110)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
@@ -3297,11 +3299,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -27 | Scaled Value: -27 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
                    Hotfixed: Base Value (-23 -> -27)
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -27 | Scaled Value: -27 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
                    Hotfixed: Sub Type (4 -> 108), Base Value (-23 -> -27), Misc Value (0 -> 22), Affects Spells
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
                    Base Value: -27 | Scaled Value: -27 | Target: Self (1)
@@ -3457,7 +3459,7 @@ Effects          :
                    Affected Spells: Blackout Kick (100784), Spinning Crane Kick (101546), Rising Sun Kick (107428), Fists of Fury (113656), Rushing Jade Wind (116847), Fists of Fury (120086), Rushing Jade Wind (148187), Item - Monk T17 Windwalker2P Bonus (165403), Rising Sun Kick (185099), Blackout Strike (205523), Blackout Kick (228649), Rushing Jade Wind (261715), Fist of the White Tiger (261947), Fist of the White Tiger (261977)
 #2 (id=303755)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
 #3 (id=303756)   : Apply Aura (6) | Modify Healing% Done (136)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 127 | Target: Self (1)
 #4 (id=303757)   : Apply Aura (6) | Modify Cooldown Recharge Rate (143)
@@ -3466,7 +3468,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 359 | Target: Self (1)
 #6 (id=479822)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
 #7 (id=739494)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 Description      : Enter an elevated state of mental and physical serenity for $?s115069[$s1 sec][$d]. While in this state, you deal $s2% increased damage and healing, and all Chi consumers are free and cool down $s4% more quickly.
@@ -4214,10 +4216,10 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288843)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
 #2 (id=479821)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
+                   Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Strike (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673)
 #3 (id=479888)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : $@spelldesc196740

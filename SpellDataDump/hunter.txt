@@ -4476,6 +4476,7 @@ Effects          :
 Description      : Tell your pet to wake up.
 
 Name             : Explosive Shot (id=212431) [Spell Family (9)] 
+Hotfixed         : Cooldown (330 -> 250), Category Cooldown (330 -> 250)
 Class            : Hunter
 School           : Fire
 Resource         : 20 Focus (2) (id=11773)
@@ -4485,7 +4486,7 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 30 seconds
 Category         : 1620
-Category Cooldown: 0.33 seconds
+Category Cooldown: 0.25 seconds
 Affecting spells : Hunter (137014 effect#3), Guide: Sharpshooting (178549 effect#2), Mastery: Sniper Training (193468 effect#1), Aspect of the Wild (193530 effect#3), Trueshot (211327 effect#1)
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ....x... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
