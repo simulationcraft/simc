@@ -4745,8 +4745,8 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Bloodthirst", "if=buff.enrage.down" );
   single_target -> add_action( this, "Raging Blow", "if=charges=2" );
   single_target -> add_action( this, "Bloodthirst" );
-  single_target -> add_talent( this, "Bladestorm", "if=prev_gcd.1.rampage&(buff.siegebreaker.up|!talent.siegebreaker.enabled)" );
-  single_target -> add_talent( this, "Dragon Roar", "if=buff.enrage.up&(buff.siegebreaker.up|!talent.siegebreaker.enabled)" );
+  single_target -> add_talent( this, "Bladestorm", "if=prev_gcd.1.rampage&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)" );
+  single_target -> add_talent( this, "Dragon Roar", "if=buff.enrage.up&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)" );
   single_target -> add_action( this, "Raging Blow", "if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)" );
   single_target -> add_talent( this, "Furious Slash", "if=talent.furious_slash.enabled" );
   single_target -> add_action( this, "Whirlwind" );
