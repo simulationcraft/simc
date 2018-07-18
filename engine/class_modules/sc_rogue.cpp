@@ -6476,7 +6476,7 @@ void rogue_t::init_action_list()
 
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
-    build -> add_action( this, "Shuriken Storm", "if=spell_targets.shuriken_storm>=2" );
+    build -> add_action( this, "Shuriken Storm", "if=spell_targets.shuriken_storm>=2|buff.the_dreadlords_deceit.stack>=29" );
     // LOSS LOL, waiting for buff
     // build -> add_action( this, "Shuriken Toss", "if=buff.sharpened_blades.stack>=39" );
     build -> add_talent( this, "Gloomblade" );
