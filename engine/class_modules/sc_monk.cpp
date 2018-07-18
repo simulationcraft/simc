@@ -3609,12 +3609,14 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
   }
 
-  double composite_aoe_multiplier( const action_state_t* state ) const override
+  double action_multiplier() const override
   {
-    if ( state -> target != target )
-      return p() -> spec.fists_of_fury -> effectN( 6 ).percent(); // Saved as 50
+    double am = base_t::action_multiplier();
 
-    return 1.0;
+    if ( ww_mastery && p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
+
+    return am;
   }
 };
 
@@ -5942,7 +5944,10 @@ struct chi_burst_t: public monk_spell_t
 
     parse_options( options_str );
     heal = new chi_burst_heal_t( *player );
+    heal -> stats = stats;
     damage = new chi_burst_damage_t( *player );
+    damage -> stats = stats;
+
     interrupt_auto_attack = false;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd = timespan_t::from_millis( 750 );
