@@ -20,7 +20,7 @@ finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152055/152293/152092,relic_id=3612:1502/3612:1502/3612:1502
+main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152055/152293/152092,relic_id=3612:1502/3612:1502/3612:1502,ilevel=242
 off_hand=the_kingslayers,id=128869
 
 save=T21_Rogue_Assassination.simc
@@ -77,7 +77,7 @@ finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=convergence_of_fates,id=140806,bonus_id=3518/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=155847/155855/155853,relic_id=3612:1512/3612:1512/3612:1512
+main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=155847/155855/155853,relic_id=3612:1512/3612:1512/3612:1512,ilevel=251
 off_hand=the_dreadblades,id=134552
 
 save=T21_Rogue_Outlaw.simc
@@ -162,7 +162,7 @@ finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=bindin
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152057/155848,relic_id=3612:1512/3612:1502/3612:1512
+main_hand=fangs_of_the_devourer,id=128476,bonus_id=743,gem_id=155848/152057/155848,relic_id=3612:1512/3612:1502/3612:1512,ilevel=248
 off_hand=fangs_of_the_devourer,id=128479
 
 save=T21_Rogue_Subtlety_DfA.simc

@@ -90,18 +90,18 @@ waist=grondfather_girdle,id=152022,bonus_id=3612/1502
 legs=weight_of_the_earth,id=137077,bonus_id=3630
 feet=eredar_warcouncil_sabatons,id=152011,bonus_id=3612/1502
 finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
-finger2=loop_of_the_lifebinder,id=152688,bonus_id=3630,enchant=binding_of_mastery
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=khazgoroths_courage,id=154176,bonus_id=3997
-main_hand=stromkar_the_warbreaker,id=128910,gem_id=152293/152092/152054,relic_id=3612:1502/3612:1502/3612:1502
+main_hand=stromkar_the_warbreaker,id=128910,ilevel=242,gem_id=152293/152092/152054,relic_id=3612:1502/3612:1502/3612:1502
 
 # Gear Summary
-# gear_ilvl=243.80
-# gear_strength=808
-# gear_stamina=1283
-# gear_crit_rating=179
-# gear_haste_rating=340
-# gear_mastery_rating=603
+# gear_ilvl=246.80
+# gear_strength=858
+# gear_stamina=1320
+# gear_crit_rating=199
+# gear_haste_rating=315
+# gear_mastery_rating=573
 # gear_versatility_rating=239
 # gear_armor=901
 # set_bonus=tier21_2pc=1

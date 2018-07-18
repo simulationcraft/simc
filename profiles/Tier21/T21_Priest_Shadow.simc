@@ -106,16 +106,16 @@ finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=amanthuls_vision,id=154172,bonus_id=4213
 trinket2=sheath_of_asara,id=151971,bonus_id=3612/1502
-main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,gem_id=155852/155847/155852,relic_id=3612:1512/3612:1512/3612:1512
+main_hand=xalatath_blade_of_the_black_empire,id=128827,bonus_id=740,ilevel=251,gem_id=155852/155847/155852,relic_id=3612:1512/3612:1512/3612:1512
 off_hand=secrets_of_the_void,id=133958
 
 # Gear Summary
-# gear_ilvl=235.25
-# gear_stamina=1246
-# gear_intellect=902
-# gear_crit_rating=619
-# gear_haste_rating=543
-# gear_mastery_rating=234
+# gear_ilvl=247.63
+# gear_stamina=1332
+# gear_intellect=1154
+# gear_crit_rating=635
+# gear_haste_rating=558
+# gear_mastery_rating=244
 # gear_versatility_rating=88
 # gear_armor=257
 # set_bonus=tier21_2pc=1

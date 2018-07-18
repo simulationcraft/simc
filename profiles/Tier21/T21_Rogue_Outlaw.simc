@@ -88,16 +88,16 @@ finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=convergence_of_fates,id=140806,bonus_id=3518/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=the_dreadblades,id=128872,bonus_id=742,gem_id=155847/155855/155853,relic_id=3612:1512/3612:1512/3612:1512
+main_hand=the_dreadblades,id=128872,bonus_id=742,ilevel=251,gem_id=155847/155855/155853,relic_id=3612:1512/3612:1512/3612:1512
 off_hand=the_dreadblades,id=134552
 
 # Gear Summary
-# gear_ilvl=233.88
-# gear_agility=880
-# gear_stamina=1242
-# gear_crit_rating=384
+# gear_ilvl=246.25
+# gear_agility=936
+# gear_stamina=1328
+# gear_crit_rating=404
 # gear_haste_rating=385
-# gear_mastery_rating=198
+# gear_mastery_rating=218
 # gear_versatility_rating=234
 # gear_armor=420
 # set_bonus=tier21_2pc=1

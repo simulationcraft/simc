@@ -17,10 +17,10 @@ waist=grondfather_girdle,id=152022,bonus_id=3612/1502
 legs=weight_of_the_earth,id=137077,bonus_id=3630
 feet=eredar_warcouncil_sabatons,id=152011,bonus_id=3612/1502
 finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
-finger2=loop_of_the_lifebinder,id=152688,bonus_id=3630,enchant=binding_of_mastery
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=khazgoroths_courage,id=154176,bonus_id=3997
-main_hand=stromkar_the_warbreaker,id=128910,gem_id=152293/152092/152054,relic_id=3612:1502/3612:1502/3612:1502
+main_hand=stromkar_the_warbreaker,id=128910,gem_id=152293/152092/152054,relic_id=3612:1502/3612:1502/3612:1502,ilevel=242
 
 save=T21_Warrior_Arms.simc
 
@@ -43,11 +43,11 @@ hands=juggernaut_gauntlets,id=152180,bonus_id=3612/1502
 waist=grondfather_girdle,id=152022,bonus_id=3612/1502
 legs=valarjar_berserkers,id=151824,bonus_id=3630
 feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
-finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3630,enchant=binding_of_haste
-finger2=loop_of_the_lifebinder,id=152688,bonus_id=3630,enchant=binding_of_mastery
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_haste
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=khazgoroths_courage,id=154176,bonus_id=3997
-main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=155849/155853/152293,relic_id=3612:1512/3612:1512/3612:1502
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=155849/155853/152293,relic_id=3612:1512/3612:1512/3612:1502,ilevel=248
 off_hand=warswords_of_the_valarjar,id=134553
 
 save=T21_Warrior_Fury.simc

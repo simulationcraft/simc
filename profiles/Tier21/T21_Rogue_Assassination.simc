@@ -101,16 +101,16 @@ finger1=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding
 finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=shadowsinged_fang,id=151968,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=the_kingslayers,id=128870,bonus_id=741,gem_id=152055/152293/152092,relic_id=3612:1502/3612:1502/3612:1502
+main_hand=the_kingslayers,id=128870,bonus_id=741,ilevel=242,gem_id=152055/152293/152092,relic_id=3612:1502/3612:1502/3612:1502
 off_hand=the_kingslayers,id=128869
 
 # Gear Summary
-# gear_ilvl=235.88
-# gear_agility=808
-# gear_stamina=1244
-# gear_crit_rating=313
+# gear_ilvl=247.13
+# gear_agility=856
+# gear_stamina=1318
+# gear_crit_rating=331
 # gear_haste_rating=58
-# gear_mastery_rating=583
+# gear_mastery_rating=601
 # gear_versatility_rating=274
 # gear_armor=422
 # set_bonus=tier21_2pc=1

@@ -102,14 +102,26 @@ neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_claw
 shoulders=bearmantle_shoulders,id=152129,bonus_id=3612/1502
 back=bearmantle_cloak,id=152125,bonus_id=3612/1502,enchant=binding_of_agility
 chest=bearmantle_harness,id=152124,bonus_id=3612/1502
-wrists=bracers_of_wanton_mortality,id=152414,bonus_id=3612/1502
+wrists=bracers_of_wanton_morality,id=152414,bonus_id=3612/1502
 hands=the_wildshapers_clutch,id=137094,bonus_id=3630
 waist=deathenveloping_cincture,id=151986,bonus_id=3612/1502
 legs=bearmantle_legguards,id=152128,bonus_id=3612/1502
 feet=depraved_machinists_footpads,id=152412,bonus_id=3612/1502
-finger1=sephuz_secret,id=132452,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
+finger1=sephuzs_secret,id=132452,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
 finger2=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
 trinket1=golganneths_vitality,id=154174,bonus_id=3997
 trinket2=seeping_scourgewing,id=151964,bonus_id=3612/1502
-main_hand=fangs_of_ashamane,id=128860,bonus_id=723,gem_id=155847/152041/155854/0,relic_id=3612:1512/3612:1502/3612:1512/0
+main_hand=fangs_of_ashamane,id=128860,bonus_id=723,ilevel=248,gem_id=155847/152041/155854/0,relic_id=3612:1512/3612:1502/3612:1512/0
 off_hand=fangs_of_ashamane,id=128859,gem_id=0/0/0/0,relic_id=0/0
+
+# Gear Summary
+# gear_ilvl=247.88
+# gear_agility=847
+# gear_stamina=1324
+# gear_crit_rating=539
+# gear_haste_rating=523
+# gear_mastery_rating=101
+# gear_versatility_rating=174
+# gear_armor=413
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1

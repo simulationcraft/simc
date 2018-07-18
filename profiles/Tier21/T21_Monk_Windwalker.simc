@@ -232,7 +232,7 @@ finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding
 trinket1=golganneths_vitality,id=154174,bonus_id=3997
 trinket2=shadowsinged_fang,id=151968,bonus_id=3612/1502
 main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=155853/152047/155853,relic_id=3612:1512/3612:1502/3612:1512
-off_hand=fists_of_the_heavens,id=133948
+off_hand=fists_of_the_heavens,id=133948,ilevel=242
 
 # Gear Summary
 # gear_ilvl=235.25

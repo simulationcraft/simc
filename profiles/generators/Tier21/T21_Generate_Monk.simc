@@ -5,7 +5,7 @@ role=attack
 talents=2020033
 spec=windwalker
 
-head=the_wind_blows,id=151811,bonus_id=3630 
+head=the_wind_blows,id=151811,bonus_id=3630
 neck=collar_of_nullflame,id=151973,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=meditation_spheres_of_chiji,id=152147,bonus_id=3612/1502
 back=cloak_of_chiji,id=152143,bonus_id=3612/1502,enchant=binding_of_agility
@@ -20,7 +20,7 @@ finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding
 trinket1=golganneths_vitality,id=154174,bonus_id=3997
 trinket2=shadowsinged_fang,id=151968,bonus_id=3612/1502
 main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=155853/152047/155853,relic_id=3612:1512/3612:1502/3612:1512
-off_hand=fists_of_the_heavens,id=133948
+off_hand=fists_of_the_heavens,id=133948,ilevel=242
 
 save=T21_Monk_Windwalker.simc
 
@@ -46,6 +46,6 @@ finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=bindin
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=golganneths_vitality,id=154174,bonus_id=3997
 trinket2=archimondes_hatred_reborn,id=144249,bonus_id=3630
-main_hand=fu_zan_the_wanderers_companion,id=128938,bonus_id=732,gem_id=152052/152058/152047,relic_id=3612:1502/3612:1502/3612:1502
+main_hand=fu_zan_the_wanderers_companion,id=128938,bonus_id=732,gem_id=152052/152058/152047,relic_id=3612:1502/3612:1502/3612:1502,ilevel=248
 
 save=T21_Monk_Brewmaster.simc

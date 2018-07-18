@@ -52,8 +52,8 @@ actions.single_target+=/execute,if=buff.enrage.up
 actions.single_target+=/bloodthirst,if=buff.enrage.down
 actions.single_target+=/raging_blow,if=charges=2
 actions.single_target+=/bloodthirst
-actions.single_target+=/bladestorm,if=prev_gcd.1.rampage&(buff.siegebreaker.up|!talent.siegebreaker.enabled)
-actions.single_target+=/dragon_roar,if=buff.enrage.up&(buff.siegebreaker.up|!talent.siegebreaker.enabled)
+actions.single_target+=/bladestorm,if=prev_gcd.1.rampage&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)
+actions.single_target+=/dragon_roar,if=buff.enrage.up&(debuff.siegebreaker.up|!talent.siegebreaker.enabled)
 actions.single_target+=/raging_blow,if=talent.carnage.enabled|(talent.massacre.enabled&rage<80)|(talent.frothing_berserker.enabled&rage<90)
 actions.single_target+=/furious_slash,if=talent.furious_slash.enabled
 actions.single_target+=/whirlwind
@@ -68,21 +68,21 @@ hands=juggernaut_gauntlets,id=152180,bonus_id=3612/1502
 waist=grondfather_girdle,id=152022,bonus_id=3612/1502
 legs=valarjar_berserkers,id=151824,bonus_id=3630
 feet=burning_coven_sabatons,id=152010,bonus_id=3612/1502
-finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3630,enchant=binding_of_haste
-finger2=loop_of_the_lifebinder,id=152688,bonus_id=3630,enchant=binding_of_mastery
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_haste
+finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=khazgoroths_courage,id=154176,bonus_id=3997
-main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,gem_id=155849/155853/152293,relic_id=3612:1512/3612:1512/3612:1502
+main_hand=warswords_of_the_valarjar,id=128908,bonus_id=751,ilevel=248,gem_id=155849/155853/152293,relic_id=3612:1512/3612:1512/3612:1502
 off_hand=warswords_of_the_valarjar,id=134553
 
 # Gear Summary
-# gear_ilvl=240.88
-# gear_strength=851
-# gear_stamina=1387
-# gear_crit_rating=113
-# gear_haste_rating=503
-# gear_mastery_rating=658
-# gear_versatility_rating=205
+# gear_ilvl=247.25
+# gear_strength=961
+# gear_stamina=1471
+# gear_crit_rating=153
+# gear_haste_rating=478
+# gear_mastery_rating=596
+# gear_versatility_rating=166
 # gear_armor=906
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
