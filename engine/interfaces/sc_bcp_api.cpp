@@ -90,29 +90,73 @@ bool download_id( sim_t* sim,
   return true;
 }
 
-// parse_profession =========================================================
+// parse_professions ========================================================
 
-void parse_profession( std::string&               professions_str,
-                       const rapidjson::Value&    profile,
-                       int                        index )
+void parse_professions( std::string&               professions_str,
+                        const rapidjson::Value&    profile )
 {
   if ( ! profile.HasMember( "primary" ) )
     return;
 
   const rapidjson::Value& professions = profile[ "primary" ];
 
-  if ( professions.Size() >= rapidjson::SizeType( index + 1 ) )
+  std::vector<profession_e> base_professions;
+
+  // First, find the two base professions
+  for ( auto idx = 0u, end = professions.Size(); idx < end && base_professions.size() < 2; ++idx )
   {
-    const rapidjson::Value& profession = professions[ index ];
-    if ( ! profession.HasMember( "id" ) || ! profession.HasMember( "rank" ) )
-      return;
+    const rapidjson::Value& profession = professions[ idx ];
+    if ( ! profession.HasMember( "id" ) )
+    {
+      continue;
+    }
 
-    if ( professions_str.length() > 0 )
-      professions_str += '/';
+    auto internal_profession = util::translate_profession_id( profession[ "id" ].GetUint() );
+    if ( internal_profession == PROFESSION_NONE )
+    {
+      continue;
+    }
 
-    professions_str += util::profession_type_string( util::translate_profession_id( profession[ "id" ].GetUint() ) );
-    professions_str += "=";
-    professions_str += util::to_string( profession[ "rank" ].GetUint() );
+    base_professions.push_back( internal_profession );
+  }
+
+  // Grab the rank from the first non-base profession entry, hoping that blizzard orders them
+  // sensibly
+  for ( auto profession_id : base_professions )
+  {
+    auto profession_token = util::profession_type_string( profession_id );
+
+    for ( auto idx = 0u, end = professions.Size(); idx < end; ++idx )
+    {
+      const rapidjson::Value& profession = professions[ idx ];
+      if ( ! profession.HasMember( "id" ) || ! profession.HasMember( "rank" ) || ! profession.HasMember( "name" ) )
+      {
+        continue;
+      }
+
+      // Skip the base profession
+      auto internal_profession = util::translate_profession_id( profession[ "id" ].GetUint() );
+      if ( internal_profession != PROFESSION_NONE )
+      {
+        continue;
+      }
+
+      std::string profession_name = profession[ "name" ].GetString();
+      util::tokenize( profession_name );
+
+      if ( ! util::str_in_str_ci( profession_name, profession_token ) )
+      {
+        continue;
+      }
+
+      if ( professions_str.length() > 0 )
+        professions_str += '/';
+
+      professions_str += util::profession_type_string( profession_id );
+      professions_str += "=";
+      professions_str += util::to_string( profession[ "rank" ].GetUint() );
+      break;
+    }
   }
 }
 
@@ -455,8 +499,7 @@ player_t* parse_player( sim_t*             sim,
 
   if ( profile.HasMember( "professions" ) )
   {
-    parse_profession( p -> professions_str, profile[ "professions" ], 0 );
-    parse_profession( p -> professions_str, profile[ "professions" ], 1 );
+    parse_professions( p -> professions_str, profile[ "professions" ] );
   }
 
   parse_talents( p, profile[ "talents" ], player.talent_spec );
