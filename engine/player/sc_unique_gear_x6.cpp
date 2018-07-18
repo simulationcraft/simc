@@ -2176,7 +2176,13 @@ struct shadow_blade_t : public proc_spell_t
 {
   shadow_blade_t( const special_effect_t& effect ) :
     proc_spell_t( "shadow_blade", effect.player, effect.player -> find_spell( 257702 ), effect.item )
-  { }
+  {
+    // TODO: 2018-07-18 8.0.1-prepatch, this trinket seems to be essentially broken and always doing
+    // 150 base damage, regardless of the item level. It also seems to scale very oddly with
+    // multipliers (for example versatility). Best-effort nerf it down to 150 base damage and hope
+    // for the best, for now.
+    base_dd_min = base_dd_max = 150.0;
+  }
 
   virtual double composite_target_multiplier( player_t* target ) const override
   {
