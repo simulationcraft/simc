@@ -96,7 +96,7 @@ hands=felreaper_gloves,id=152120,bonus_id=3612/1502
 waist=portal_keepers_cincture,id=151990,bonus_id=3612/1502
 legs=felreaper_leggings,id=152122,bonus_id=3612/1502
 feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
-finger1=anger_of_the_halfgiants,id=137038,bonus_id=1811/3630,gem_id=130219,enchant=binding_of_critical_strike
+finger1=anger_of_the_halfgiants,id=137038,bonus_id=1811/3630,gem_id=151580,enchant=binding_of_critical_strike
 finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_critical_strike
 trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
 trinket2=golganneths_vitality,id=154174,bonus_id=3997
@@ -107,7 +107,7 @@ off_hand=twinblades_of_the_deceiver,id=127830
 # gear_ilvl=248.25
 # gear_agility=848
 # gear_stamina=1323
-# gear_crit_rating=648
+# gear_crit_rating=650
 # gear_haste_rating=294
 # gear_mastery_rating=255
 # gear_versatility_rating=163
