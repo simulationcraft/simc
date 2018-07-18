@@ -105,7 +105,7 @@ finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant=binding_of_criti
 finger2=ring_of_contempt,id=134490,bonus_id=1727,enchant=binding_of_critical_strike
 trinket1=oakhearts_gnarled_root,id=137306,bonus_id=1727
 trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727
-main_hand=aluneth,id=127857,ilevel=180,azerite_level=180
+main_hand=aluneth,id=127857,ilevel=180
 
 # Gear Summary
 # gear_ilvl=163.20

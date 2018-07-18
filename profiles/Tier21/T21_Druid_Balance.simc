@@ -87,15 +87,15 @@ finger1=sephuzs_secret,id=132452,bonus_id=3630,gem_id=151584,enchant=binding_of_
 finger2=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_mastery
 trinket1=prototype_personnel_decimator,id=151962,bonus_id=3612/1502
 trinket2=norgannons_prowess,id=154177,bonus_id=4213
-main_hand=scythe_of_elune,id=128858,bonus_id=722,gem_id=152027/155854/155846/0,relic_id=3612:1512/3612:1512/3612:1512
+main_hand=scythe_of_elune,id=128858,bonus_id=722/1510/1505/1507,gem_id=152027/155854/155846,relic_id=3612:1512/3612:1512/3612:1512
 
 # Gear Summary
-# gear_ilvl=244.00
-# gear_stamina=1254
-# gear_intellect=813
-# gear_crit_rating=521
+# gear_ilvl=251.07
+# gear_stamina=1349
+# gear_intellect=1093
+# gear_crit_rating=543
 # gear_haste_rating=437
-# gear_mastery_rating=322
+# gear_mastery_rating=343
 # gear_versatility_rating=165
 # gear_armor=419
 # set_bonus=tier21_2pc=1

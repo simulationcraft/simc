@@ -52,6 +52,7 @@ actions.cooldowns+=/prowl,if=buff.incarnation.remains<0.5&buff.jungle_stalker.up
 actions.cooldowns+=/berserk,if=energy>=30&(cooldown.tigers_fury.remains>5|buff.tigers_fury.up)
 actions.cooldowns+=/tigers_fury,if=energy.deficit>=60
 actions.cooldowns+=/berserking
+actions.cooldowns+=/feral_frenzy,if=combo_points=0
 actions.cooldowns+=/incarnation,if=energy>=30&(cooldown.tigers_fury.remains>15|buff.tigers_fury.up)
 actions.cooldowns+=/potion,name=prolonged_power,if=target.time_to_die<65|(time_to_die<180&(buff.berserk.up|buff.incarnation.up))
 actions.cooldowns+=/shadowmeld,if=combo_points<5&energy>=action.rake.cost&dot.rake.pmultiplier<2.1&buff.tigers_fury.up&(buff.bloodtalons.up|!talent.bloodtalons.enabled)&(!talent.incarnation.enabled|cooldown.incarnation.remains>18)&!buff.incarnation.up
@@ -74,7 +75,6 @@ actions.st_finishers+=/pool_resource,for_next=1
 actions.st_finishers+=/rip,target_if=!ticking|(remains<=duration*0.3)&(target.health.pct>25&!talent.sabertooth.enabled)|(remains<=duration*0.8&persistent_multiplier>dot.rip.pmultiplier)&target.time_to_die>8
 actions.st_finishers+=/pool_resource,for_next=1
 actions.st_finishers+=/savage_roar,if=buff.savage_roar.remains<12
-actions.st_finishers+=/maim,if=buff.fiery_red_maimers.up
 actions.st_finishers+=/ferocious_bite,max_energy=1
 
 actions.st_generators=regrowth,if=talent.bloodtalons.enabled&buff.predatory_swiftness.up&buff.bloodtalons.down&combo_points=4&dot.rake.remains<4

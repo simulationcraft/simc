@@ -78,8 +78,8 @@ finger1=band_of_the_wyrm_matron,id=134524,enchant_id=5427
 finger2=utgarde_royal_signet,id=133637,enchant_id=5427
 trinket1=chaos_talisman,id=137459
 trinket2=horn_of_valor,id=133642
-main_hand=claws_of_ursoc,id=128821,bonus_id=724,ilevel=870,azerite_level=870,relic_id=3412/3412/3412
-off_hand=claws_of_ursoc,id=128822,ilevel=870,azerite_level=870
+main_hand=claws_of_ursoc,id=128821,bonus_id=724,ilevel=870,relic_id=3412/3412/3412
+off_hand=claws_of_ursoc,id=128822,ilevel=870
 
 # Gear Summary
 # gear_ilvl=250.50

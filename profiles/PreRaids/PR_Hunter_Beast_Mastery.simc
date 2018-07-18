@@ -53,21 +53,21 @@ actions+=/barrage
 actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
 actions+=/cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(buff.bestial_wrath.up&active_enemies>1|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains>focus.time_to_max|focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost)
 
-head=collar_of_honorable_exultation,id=136777,ilevel=180,azerite_level=180
-neck=strand_of_the_stars,id=137487,ilevel=180,azerite_level=180,enchant=mark_of_the_distant_army
-shoulders=epaulets_of_deceitful_intent,id=134480,ilevel=180,azerite_level=180
-back=cape_of_rigid_order,id=134402,ilevel=180,azerite_level=180,enchant=200agi
-chest=thunderfused_valkyr_hauberk,id=133622,ilevel=180,azerite_level=180
-wrists=remorseless_chain_armbands,id=137405,ilevel=180,azerite_level=180
-hands=lavabreaker_gauntlets,id=137519,ilevel=180,azerite_level=180
-waist=belt_of_mighty_links,id=137456,ilevel=180,azerite_level=180
-legs=mute_erasure_legguards,id=134475,ilevel=180,azerite_level=180
-feet=whelp_handlers_lined_boots,id=134464,ilevel=180,azerite_level=180
-finger1=archdruids_tainted_seal,id=134487,ilevel=180,azerite_level=180,enchant=200mastery
-finger2=ring_of_twisted_webbing,id=134540,ilevel=180,azerite_level=180,enchant=200mastery
-trinket1=naraxas_spiked_tongue,id=137349,ilevel=180,azerite_level=180
-trinket2=chrono_shard,id=137419,ilevel=180,azerite_level=180
-main_hand=titanstrike,id=128861,ilevel=180,azerite_level=180
+head=collar_of_honorable_exultation,id=136777,ilevel=180
+neck=strand_of_the_stars,id=137487,ilevel=180,enchant=mark_of_the_distant_army
+shoulders=epaulets_of_deceitful_intent,id=134480,ilevel=180
+back=cape_of_rigid_order,id=134402,ilevel=180,enchant=200agi
+chest=thunderfused_valkyr_hauberk,id=133622,ilevel=180
+wrists=remorseless_chain_armbands,id=137405,ilevel=180
+hands=lavabreaker_gauntlets,id=137519,ilevel=180
+waist=belt_of_mighty_links,id=137456,ilevel=180
+legs=mute_erasure_legguards,id=134475,ilevel=180
+feet=whelp_handlers_lined_boots,id=134464,ilevel=180
+finger1=archdruids_tainted_seal,id=134487,ilevel=180,enchant=200mastery
+finger2=ring_of_twisted_webbing,id=134540,ilevel=180,enchant=200mastery
+trinket1=naraxas_spiked_tongue,id=137349,ilevel=180
+trinket2=chrono_shard,id=137419,ilevel=180
+main_hand=titanstrike,id=128861,ilevel=180
 
 # Gear Summary
 # gear_ilvl=180.00

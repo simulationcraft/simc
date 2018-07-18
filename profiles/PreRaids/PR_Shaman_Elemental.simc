@@ -89,22 +89,22 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=saurscale_coif,id=154955,ilevel=340,azerite_level=340
-neck=shaleshell_pendant,id=154970,ilevel=340,azerite_level=340
-shoulders=saurscale_spaulders,id=154959,ilevel=340,azerite_level=340
-back=drape_of_the_golden_city,id=154968,ilevel=340,azerite_level=340
-chest=saurscale_chestguard,id=154958,ilevel=340,azerite_level=340
-wrists=saurscale_wristguards,id=154952,ilevel=340,azerite_level=340
-hands=saurscale_gloves,id=154953,ilevel=340,azerite_level=340
-waist=saurscale_girdle,id=154957,ilevel=340,azerite_level=340
-legs=saurscale_leggings,id=154954,ilevel=340,azerite_level=340
-feet=saurscale_boots,id=154956,ilevel=340,azerite_level=340
-finger1=beaten_copper_loop,id=154987,bonus_id=1751,ilevel=340,azerite_level=340
-finger2=sea_sapphire_band,id=154969,ilevel=340,azerite_level=340
-trinket1=bijou_of_the_golden_city,id=154983,bonus_id=607,ilevel=340,azerite_level=340
-trinket2=shimmering_rune,id=154981,bonus_id=604,ilevel=340,azerite_level=340
-main_hand=dinomancy_cudgel,id=154978,ilevel=340,azerite_level=340
-off_hand=golden_protectorate,id=154985,ilevel=340,azerite_level=340
+head=saurscale_coif,id=154955,ilevel=340
+neck=shaleshell_pendant,id=154970,ilevel=340
+shoulders=saurscale_spaulders,id=154959,ilevel=340
+back=drape_of_the_golden_city,id=154968,ilevel=340
+chest=saurscale_chestguard,id=154958,ilevel=340
+wrists=saurscale_wristguards,id=154952,ilevel=340
+hands=saurscale_gloves,id=154953,ilevel=340
+waist=saurscale_girdle,id=154957,ilevel=340
+legs=saurscale_leggings,id=154954,ilevel=340
+feet=saurscale_boots,id=154956,ilevel=340
+finger1=beaten_copper_loop,id=154987,bonus_id=1751,ilevel=340
+finger2=sea_sapphire_band,id=154969,ilevel=340
+trinket1=bijou_of_the_golden_city,id=154983,bonus_id=607,ilevel=340
+trinket2=shimmering_rune,id=154981,bonus_id=604,ilevel=340
+main_hand=dinomancy_cudgel,id=154978,ilevel=340
+off_hand=golden_protectorate,id=154985,ilevel=340
 
 # Gear Summary
 # gear_ilvl=340.00
