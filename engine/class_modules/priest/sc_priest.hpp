@@ -1139,6 +1139,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   double action_multiplier() const override
   {
     double m = spell_t::action_multiplier();
+    double vf_multiplier = priest().buffs.voidform->data().effectN(1).percent();
 
     if ( is_mastery_spell && priest().mastery_spells.madness->ok() )
     {
@@ -1146,7 +1147,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
     if ( priest().buffs.voidform->check() && voidform_buff_spell )
     {
-      m *= 1.0 + priest().buffs.voidform->data().effectN(1).percent();
+      if ( priest().active_items.zenkaram_iridis_anadem )
+      {
+        vf_multiplier += priest().buffs.iridis_empowerment->data().effectN(2).percent();
+      }
+      m *= 1.0 + vf_multiplier ;
     }
     if ( priest().buffs.shadowform->check() && shadowform_buff_spell )
     {
