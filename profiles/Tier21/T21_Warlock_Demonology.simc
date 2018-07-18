@@ -95,18 +95,18 @@ legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
 feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
 finger1=soul_of_the_netherlord,id=151649,ilevel=265,azerite_level=265,gems=9haste,enchant=9haste
 finger2=wilfreds_sigil_of_superior_summoning,id=132369,ilevel=265,azerite_level=265,gems=9haste,enchant=binding_of_haste
-trinket1=prototype_personnel_decimator,id=151962,ilevel=240,azerite_level=240
+trinket1=sheath_of_asara,id=151971,ilevel=240,azerite_level=240
 trinket2=norgannons_prowess,id=154177,ilevel=280,azerite_level=280
 main_hand=spine_of_thalkiel,id=137246,gem_id=0/0/0/0,relic_id=0/0
-off_hand=skull_of_the_manari,id=128943,bonus_id=748,gem_id=152056/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
+off_hand=skull_of_the_manari,id=128943,bonus_id=748/1505/1505/1505,gem_id=152056/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
 
 # Gear Summary
-# gear_ilvl=235.88
-# gear_stamina=1237
-# gear_intellect=792
-# gear_crit_rating=277
-# gear_haste_rating=601
-# gear_mastery_rating=404
+# gear_ilvl=248.25
+# gear_stamina=1323
+# gear_intellect=1125
+# gear_crit_rating=285
+# gear_haste_rating=557
+# gear_mastery_rating=420
 # gear_versatility_rating=67
 # gear_armor=249
 # set_bonus=tier21_2pc=1

@@ -3,25 +3,25 @@ level=110
 race=human
 role=spell
 position=back
-talents=3103012
+talents=3302022
 spec=affliction
 default_pet=imp
 
 head=hood_of_eternal_disdain,id=132394,bonus_id=3630
-neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+neck=collar_of_nullflame,id=151973,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
 shoulders=grim_inquisitors_shoulderguards,id=152177,bonus_id=3612/1502
 back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
 chest=grim_inquisitors_robes,id=152176,bonus_id=3612/1502
-wrists=blooddrenched_bindings,id=151954,bonus_id=3612/1502
+wrists=stretens_sleepless_shackles,id=132381,ilevel=265,azerite_level=265
 hands=handwraps_of_inevitable_doom,id=152680,bonus_id=3612/1502
-waist=power_cord_of_lethtendris,id=132457,bonus_id=3630
+waist=enhanced_worldscorcher_cinch,id=151951,ilevel=240,azerite_level=240
 legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
 feet=sandals_of_the_reborn_colossus,id=151940,bonus_id=3612/1502
-finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_mastery
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
-trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
-trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=152057/152092/152057,relic_id=3612:1502/3612:1502/3612:1502
+trinket1=sheath_of_asara,id=151971,ilevel=240,azerite_level=240
+trinket2=norgannons_prowess,id=154177,ilevel=280,azerite_level=280
+main_hand=ulthalesh_the_deadwind_harvester,id=128942,bonus_id=747/1505/1505/1505,gem_id=152057/152092/152057,relic_id=3612:1502/3612:1502/3612:1502
 
 save=T21_Warlock_Affliction.simc
 
@@ -47,10 +47,10 @@ legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
 feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
 finger1=soul_of_the_netherlord,id=151649,ilevel=265,azerite_level=265,gems=9haste,enchant=9haste
 finger2=wilfreds_sigil_of_superior_summoning,id=132369,ilevel=265,azerite_level=265,gems=9haste,enchant=binding_of_haste
-trinket1=prototype_personnel_decimator,id=151962,ilevel=240,azerite_level=240
+trinket1=sheath_of_asara,id=151971,ilevel=240,azerite_level=240
 trinket2=norgannons_prowess,id=154177,ilevel=280,azerite_level=280
 main_hand=spine_of_thalkiel,id=137246,gem_id=0/0/0/0,relic_id=0/0
-off_hand=skull_of_the_manari,id=128943,bonus_id=748,gem_id=152056/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
+off_hand=skull_of_the_manari,id=128943,bonus_id=748/1505/1505/1505,gem_id=152056/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
 
 save=T21_Warlock_Demonology.simc
 
@@ -76,8 +76,8 @@ legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
 feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
 finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_haste
 finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_haste
-trinket1=prototype_personnel_decimator,id=151962,ilevel=240,azerite_level=240
+trinket1=sheath_of_asara,id=151971,ilevel=240,azerite_level=240
 trinket2=norgannons_prowess,id=154177,ilevel=280,azerite_level=280
-main_hand=scepter_of_sargeras,id=128941,gem_id=152031/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
+main_hand=scepter_of_sargeras,id=128941,bonus_id=749/1505/1505/1505,gem_id=152031/155849/152031,relic_id=3612:1502/3612:1512/3612:1502
 
 save=T21_Warlock_Destruction.simc

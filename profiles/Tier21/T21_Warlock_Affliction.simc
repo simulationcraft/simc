@@ -4,7 +4,7 @@ level=110
 race=human
 role=spell
 position=back
-talents=3103012
+talents=3302022
 
 # Default consumables
 potion=prolonged_power
@@ -23,8 +23,8 @@ actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
 actions.precombat+=/summon_pet
-actions.precombat+=/snapshot_stats
 actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 
 # Executed every time the actor is available.
@@ -43,30 +43,30 @@ actions+=/drain_soul,chain=1,interrupt=1
 actions+=/shadow_bolt
 
 head=hood_of_eternal_disdain,id=132394,bonus_id=3630
-neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
+neck=collar_of_nullflame,id=151973,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
 shoulders=grim_inquisitors_shoulderguards,id=152177,bonus_id=3612/1502
 back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
 chest=grim_inquisitors_robes,id=152176,bonus_id=3612/1502
-wrists=blooddrenched_bindings,id=151954,bonus_id=3612/1502
+wrists=stretens_sleepless_shackles,id=132381,ilevel=265,azerite_level=265
 hands=handwraps_of_inevitable_doom,id=152680,bonus_id=3612/1502
-waist=power_cord_of_lethtendris,id=132457,bonus_id=3630
+waist=enhanced_worldscorcher_cinch,id=151951,ilevel=240,azerite_level=240
 legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
 feet=sandals_of_the_reborn_colossus,id=151940,bonus_id=3612/1502
-finger1=zealous_tormentors_ring,id=152284,bonus_id=3612/1502,enchant=binding_of_mastery
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
 finger2=loop_of_the_lifebinder,id=152688,bonus_id=3612/1502,enchant=binding_of_mastery
-trinket1=acrid_catalyst_injector,id=151955,bonus_id=3612/1502
-trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=ulthalesh_the_deadwind_harvester,id=128942,gem_id=152057/152092/152057,relic_id=3612:1502/3612:1502/3612:1502
+trinket1=sheath_of_asara,id=151971,ilevel=240,azerite_level=240
+trinket2=norgannons_prowess,id=154177,ilevel=280,azerite_level=280
+main_hand=ulthalesh_the_deadwind_harvester,id=128942,bonus_id=747/1505/1505/1505,gem_id=152057/152092/152057,relic_id=3612:1502/3612:1502/3612:1502
 
 # Gear Summary
-# gear_ilvl=241.47
-# gear_stamina=1256
-# gear_intellect=907
-# gear_crit_rating=433
-# gear_haste_rating=512
-# gear_mastery_rating=464
-# gear_versatility_rating=111
-# gear_armor=257
+# gear_ilvl=248.07
+# gear_stamina=1334
+# gear_intellect=1155
+# gear_crit_rating=149
+# gear_haste_rating=285
+# gear_mastery_rating=739
+# gear_versatility_rating=186
+# gear_armor=256
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1
-default_pet=felhunter
+default_pet=imp
