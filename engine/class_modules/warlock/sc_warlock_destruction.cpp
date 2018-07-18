@@ -473,17 +473,86 @@ namespace warlock {
       }
     };
 
+    struct incinerate_fnb_t : public destruction_spell_t
+    {
+      incinerate_fnb_t(warlock_t* p) :
+        destruction_spell_t("incinerate_fnb", p, p->find_class_spell("Incinerate"))
+      {
+        aoe = -1;
+        background = true;
+
+        if (p->talents.fire_and_brimstone->ok()) {
+          base_multiplier *= p->talents.fire_and_brimstone->effectN(1).percent();
+          energize_type = ENERGIZE_ON_CAST;
+          energize_resource = RESOURCE_SOUL_SHARD;
+          energize_amount = std::double_t(p->talents.fire_and_brimstone->effectN(2).base_value()) / 10;
+          gain = p->gains.fnb_bits;
+        }
+      }
+
+      double cost() const override
+      {
+        return 0;
+      }
+
+      size_t available_targets(std::vector<player_t*>& tl) const override
+      {
+        destruction_spell_t::available_targets(tl);
+
+        // Does not hit the main target
+        auto it = range::find(tl, target);
+        if (it != tl.end())
+        {
+          tl.erase(it);
+        }
+
+        // nor the havoced target TODO: confirm this is still the case
+        it = range::find(tl, p()->havoc_target);
+        if (it != tl.end())
+        {
+          tl.erase(it);
+        }
+
+        return tl.size();
+      }
+
+      void execute() override
+      {
+        destruction_spell_t::execute();
+
+        // TODO: double check that fnb incinerate still gets the benefits of these
+        if (execute_state->result == RESULT_CRIT)
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits);
+        if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T20, B2))
+          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.destruction_t20_2pc);
+      }
+
+      virtual double composite_target_crit_chance(player_t* target) const override
+      {
+        double m = destruction_spell_t::composite_target_crit_chance(target);
+
+        if (auto td = this->find_td( target ))
+        {
+          if (td->debuffs_chaotic_flames->check())
+            m += p()->find_spell(253092)->effectN(1).percent();
+        }
+
+        return m;
+      }
+    };
+
     struct incinerate_t : public destruction_spell_t
     {
       double backdraft_gcd;
       double backdraft_cast_time;
+      incinerate_fnb_t* fnb_action;
 
       incinerate_t(warlock_t* p, const std::string& options_str) :
-        destruction_spell_t(p, "Incinerate")
+        destruction_spell_t(p, "Incinerate"), fnb_action(new incinerate_fnb_t(p))
       {
         parse_options(options_str);
-        if (p->talents.fire_and_brimstone->ok() && !havocd)
-          aoe = -1;
+
+        add_child(fnb_action);
 
         can_havoc = true;
 
@@ -536,12 +605,16 @@ namespace warlock {
         if(!havocd)
           p()->buffs.backdraft->decrement();
 
-        if (!(execute_state->target == this->target))
-          p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.fnb_bits);
         if (execute_state->result == RESULT_CRIT)
           p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.incinerate_crits);
         if (p()->sets->has_set_bonus(WARLOCK_DESTRUCTION, T20, B2))
           p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.destruction_t20_2pc);
+
+        if (!havocd && p()->talents.fire_and_brimstone->ok())
+        {
+          fnb_action->set_target(execute_state->target);
+          fnb_action->execute();
+        }
       }
 
       virtual double composite_target_crit_chance(player_t* target) const override
@@ -1155,7 +1228,7 @@ namespace warlock {
     talents.inferno                     = find_talent_spell("Inferno");
     talents.fire_and_brimstone          = find_talent_spell("Fire and Brimstone");
     talents.cataclysm                   = find_talent_spell("Cataclysm");
-        
+
     talents.roaring_blaze               = find_talent_spell("Roaring Blaze");
     talents.grimoire_of_supremacy       = find_talent_spell("Grimoire of Supremacy");
 

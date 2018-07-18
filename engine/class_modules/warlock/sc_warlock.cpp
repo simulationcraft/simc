@@ -914,10 +914,21 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
   {
     return make_fn_expr( name_str, [this]()
     {
+      auto td = find_target_data(target);
+      if (!td)
+      {
+        if (sim->log)
+          sim->out_debug.printf("unexpectedly had no target data in time_to_shard");
+        return std::numeric_limits<double>::infinity();
+      }
       double active_agonies = get_active_dots(find_action_id("agony"));
       if (sim->log)
         sim->out_debug.printf("active agonies: %f", active_agonies);
-      dot_t* agony = find_target_data(target)->dots_agony;
+      if (active_agonies == 0)
+      {
+        return std::numeric_limits<double>::infinity();
+      }
+      dot_t* agony = td->dots_agony;
       action_state_t* agony_state = agony->current_action->get_state(agony->state);
       timespan_t dot_tick_time = agony->current_action->tick_time(agony_state);
       double average = 1 / (0.16 / std::sqrt(active_agonies) * (active_agonies == 1 ? 1.15 : 1.0) * active_agonies / dot_tick_time.total_seconds());
