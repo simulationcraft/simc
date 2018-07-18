@@ -5678,7 +5678,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
       switch ( specialization() )
       {
         case MAGE_ARCANE:
-          return spell -> id() == 210805; // Time Anomaly
+          return spell -> id() == 236628; // Amplification
         case MAGE_FIRE:
           return spell -> id() == 205029; // Flame On
         case MAGE_FROST:
