@@ -703,7 +703,7 @@ public:
     t16_2pc_sun_bolt( nullptr ),
     starshards( 0.0 ),
     predator_rppm_rate( 0.0 ),
-    initial_astral_power( 0 ),
+    initial_astral_power( 8 ),
     initial_moon_stage( NEW_MOON ),
     ahhhhh_the_great_outdoors( false ),
     t21_2pc(false),
@@ -7884,7 +7884,7 @@ void druid_t::init_resources( bool force )
   resources.current[ RESOURCE_RAGE ] = 0;
   resources.current[ RESOURCE_COMBO_POINT ] = 0;
   if (talent.natures_balance->ok()) {
-      resources.current[RESOURCE_ASTRAL_POWER] = talent.natures_balance->effectN(2).base_value();
+      resources.current[RESOURCE_ASTRAL_POWER] = 12;  //this is due to dropping to 20 Astral Power once you go into combat with a raid Boss
   } else {resources.current[RESOURCE_ASTRAL_POWER] = initial_astral_power;}
   expected_max_health = calculate_expected_max_health();
 }
