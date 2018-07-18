@@ -1153,7 +1153,7 @@ namespace warlock {
             break;
           case random_pet_e::eyes_of_guldan: {
             // eyes summon in groups of 4. Confirmed by pip 2018-06-23.
-            summon_random_pet_helper(p()->warlock_pet_list.eyes_of_guldan, p()->warlock_pet_list.eyes_of_guldan.size() / 2);
+            summon_random_pet_helper(p()->warlock_pet_list.eyes_of_guldan, 4);
             break;
           case random_pet_e::shivarra:
             summon_random_pet_helper(p()->warlock_pet_list.shivarra);
