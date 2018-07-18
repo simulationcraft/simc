@@ -2815,11 +2815,7 @@ struct fan_of_knives_t: public rogue_attack_t
   double action_multiplier() const override
   {
     double m = rogue_attack_t::action_multiplier();
-
-    m *= 1.0 + p() -> buffs.the_dreadlords_deceit -> check_stack_value();
-
-    m *= 1.0 + p() -> buffs.hidden_blades -> check_stack_value();
-
+    m *= 1.0 + p() -> buffs.the_dreadlords_deceit -> check_stack_value() + p() -> buffs.hidden_blades -> check_stack_value();
     return m;
   }
 
