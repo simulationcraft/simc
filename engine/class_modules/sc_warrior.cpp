@@ -4705,7 +4705,7 @@ void warrior_t::apl_fury()
   default_list -> add_action( this, "Bloodthirst", "if=equipped.kazzalax_fujiedas_fury&(buff.fujiedas_fury.down|remains<2)" );
   default_list -> add_action( this, "Rampage", "if=cooldown.recklessness.remains<3" );
   default_list -> add_action( this, "Recklessness" );
-  default_list -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.whirlwind.up" );
+  default_list -> add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.meat_cleaver.up" );
 
   for ( size_t i = 0; i < items.size(); i++ )
   {
