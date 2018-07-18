@@ -337,6 +337,11 @@ namespace warlock {
       {
         demonology_spell_t::execute();
         p()->buffs.demonic_calling->trigger();
+        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p()->rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T20, B2 )->proc_chance() ) )
+        {
+          p()->cooldowns.call_dreadstalkers->reset( true );
+          p()->procs.demonology_t20_2pc->occur();
+        }
       }
 
       double action_multiplier() const override
@@ -515,6 +520,12 @@ namespace warlock {
           p()->buffs.demonic_core->decrement();
         }
         p()->buffs.demonic_calling->trigger();
+
+        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p()->rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T20, B2 )->proc_chance() ) )
+        {
+          p()->cooldowns.call_dreadstalkers->reset( true );
+          p()->procs.demonology_t20_2pc->occur();
+        }
       }
 
       double action_multiplier() const override
