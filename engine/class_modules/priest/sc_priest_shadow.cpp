@@ -520,6 +520,9 @@ struct shadow_crash_t final : public priest_spell_t
     spell_power_mod.direct      = missile->effectN( 1 ).sp_coeff();
     aoe                         = -1;
     radius                      = data().effectN( 1 ).radius();
+    voidform_buff_spell         = true;
+    shadowform_buff_spell       = true;
+    twist_of_fate_buff_spell    = true;
 
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
   }
@@ -761,6 +764,9 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     trigger_gcd                  = timespan_t::zero();
     travel_speed                 = 6.0;
     const spell_data_t* dmg_data = p.find_spell( 148859 );  // Hardcoded into tooltip 2014/06/01
+    voidform_buff_spell          = true;
+    shadowform_buff_spell        = true;
+    twist_of_fate_buff_spell     = true;
 
     parse_effect_data( dmg_data->effectN( 1 ) );
     school = SCHOOL_SHADOW;
@@ -1189,6 +1195,9 @@ struct dark_void_t final : public priest_spell_t
     may_miss = false;
     aoe      = -1;
     radius   = data().effectN( 1 ).radius_max();
+    voidform_buff_spell             = true;
+    shadowform_buff_spell           = true;
+    twist_of_fate_buff_spell        = true;
   }
 
   void impact( action_state_t* s ) override
@@ -1325,11 +1334,14 @@ struct dark_ascension_t final : public priest_spell_t
     // We don't want to lose insanity when casting it!
     base_costs[ RESOURCE_INSANITY ] = 0;
 
-    may_miss               = false;
-    is_mastery_spell       = true;
-    aoe                    = -1;
-    radius                 = data().effectN( 1 ).radius_max();
-    spell_power_mod.direct = data_spell->effectN( 1 ).sp_coeff();
+    may_miss                  = false;
+    is_mastery_spell          = true;
+    aoe                       = -1;
+    radius                    = data().effectN( 1 ).radius_max();
+    spell_power_mod.direct    = data_spell->effectN( 1 ).sp_coeff();
+    voidform_buff_spell       = true;
+    shadowform_buff_spell     = true;
+    twist_of_fate_buff_spell  = true;
   }
 
   void execute() override

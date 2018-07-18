@@ -455,7 +455,6 @@ public:
   double composite_spell_haste() const override;
   double composite_spell_speed() const override;
   double composite_player_pet_damage_multiplier( const action_state_t* ) const override;
-  double composite_player_multiplier( school_e school ) const override;
   double composite_player_absorb_multiplier( const action_state_t* s ) const override;
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
@@ -922,7 +921,7 @@ public:
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
-    // Manual additions of Dark Ascension and Shadow Crash base spells
+    // Manual additions of Dark Ascension, Shadowy Apparitions and Shadow Crash base spells
     if ( shadow_damage_increase || s->id() == 280711u || s->id() == 205385u || s->id() == 78203u )
       ab::base_dd_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 1 ).percent();
     if ( shadow_dot_increase )
@@ -1096,9 +1095,17 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool is_sphere_of_insanity_spell;
   bool is_mastery_spell;
+  bool voidform_buff_spell;
+  bool shadowform_buff_spell;
+  bool twist_of_fate_buff_spell;
 
   priest_spell_t( const std::string& n, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( n, player, s ), is_sphere_of_insanity_spell( false ), is_mastery_spell( false )
+    : base_t( n, player, s ), 
+    is_sphere_of_insanity_spell( false ), 
+    is_mastery_spell( false ),
+    voidform_buff_spell( base_t::data().affected_by( priest().buffs.voidform->data().effectN(1) ) ),
+    shadowform_buff_spell( base_t::data().affected_by( priest().buffs.shadowform->data().effectN(1) ) ),
+    twist_of_fate_buff_spell( base_t::data().affected_by( priest().buffs.twist_of_fate->data().effectN(1) ) )
   {
     weapon_multiplier = 0.0;
   }
@@ -1137,7 +1144,18 @@ struct priest_spell_t : public priest_action_t<spell_t>
     {
       m *= 1.0 + priest().cache.mastery_value();
     }
-
+    if ( priest().buffs.voidform->check() && voidform_buff_spell )
+    {
+      m *= 1.0 + priest().buffs.voidform->data().effectN(1).percent();
+    }
+    if ( priest().buffs.shadowform->check() && shadowform_buff_spell )
+    {
+      m *= 1.0 + priest().buffs.shadowform->data().effectN(1).percent();
+    }
+    if ( priest().buffs.twist_of_fate->check() && twist_of_fate_buff_spell )
+    {
+      m *= 1.0 + priest().buffs.twist_of_fate->data().effectN(1).percent();
+    }
     return m;
   }
 

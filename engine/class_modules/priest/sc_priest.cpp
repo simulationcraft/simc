@@ -865,32 +865,7 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
   return m;
 }
 
-double priest_t::composite_player_multiplier( school_e school ) const
-{
-  double m = base_t::composite_player_multiplier( school );
 
-  if ( specialization() == PRIEST_SHADOW )
-  {
-    if ( buffs.shadowform->check() )
-    {
-      m *= 1.0 + buffs.shadowform->data().effectN( 1 ).percent() * buffs.shadowform->check();
-    }
-
-    if ( specs.voidform->ok() && buffs.voidform->check() )
-    {
-      double voidform_multiplier = buffs.voidform->data().effectN( 1 ).percent();
-
-      if ( active_items.zenkaram_iridis_anadem )
-      {
-        voidform_multiplier += buffs.iridis_empowerment->data().effectN( 2 ).percent();
-      }
-      m *= 1.0 + voidform_multiplier;
-    }
-  }
-  m *= 1.0 + buffs.twist_of_fate->current_value;
-
-  return m;
-}
 
 double priest_t::composite_player_heal_multiplier( const action_state_t* s ) const
 {
@@ -1108,11 +1083,10 @@ void priest_t::create_buffs()
   buffs.power_infusion = make_buff( this, "power_infusion", talents.power_infusion )
                              ->add_invalidate( CACHE_SPELL_HASTE )
                              ->add_invalidate( CACHE_HASTE );
-  buffs.twist_of_fate = make_buff( this, "twist_of_fate", talents.twist_of_fate )
-                            ->set_duration( talents.twist_of_fate->effectN( 1 ).trigger()->duration() )
-                            ->set_default_value( talents.twist_of_fate->effectN( 1 ).trigger()->effectN( 2 ).percent() )
-                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                            ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+  buffs.twist_of_fate = make_buff(this, "twist_of_fate", talents.twist_of_fate->effectN(1).trigger())
+                             ->set_trigger_spell(talents.twist_of_fate)
+                             ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+                             ->add_invalidate(CACHE_PLAYER_HEAL_MULTIPLIER);
   create_buffs_shadow();
   create_buffs_discipline();
   create_buffs_holy();
