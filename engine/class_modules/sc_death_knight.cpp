@@ -5737,6 +5737,8 @@ struct unholy_blight_t : public death_knight_spell_t
     tick_zero = true;
     parse_options( options_str );
 
+    dual = true;
+
     aoe = -1;
     
     tick_action = new unholy_blight_dot_t( p );
@@ -7687,7 +7689,7 @@ void death_knight_t::create_buffs()
     .default_value( find_spell( 246995 ) -> effectN( 1 ).percent() )
     .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
     .refresh_behavior( buff_refresh_behavior::EXTEND );
-  buffs.t20_4pc_frost = buff_creator_t( this, "icy edge" )
+  buffs.t20_4pc_frost = buff_creator_t( this, "icy_edge" )
     .default_value( sets -> set( DEATH_KNIGHT_FROST, T20, B4 ) -> effectN( 2 ).percent() )
     .chance( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T20, B4 ) );
   buffs.t20_blood = make_buff<stat_buff_t>( this, "gravewarden", spell.gravewarden )
