@@ -817,9 +817,6 @@ void warlock_t::init_resources( bool force )
   player_t::init_resources( force );
 
   resources.current[RESOURCE_SOUL_SHARD] = initial_soul_shards;
-
-  if ( warlock_pet_list.active )
-    warlock_pet_list.active->init_resources( force );
 }
 
 void warlock_t::combat_begin()
@@ -912,17 +909,19 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
 {
   if ( name_str == "time_to_shard" )
   {
-    return make_fn_expr( name_str, [this]()
+    auto agony_id = find_action_id("agony");
+
+    return make_fn_expr( name_str, [this,agony_id]()
     {
       auto td = find_target_data(target);
       if (!td)
       {
-        if (sim->log)
+        if (sim->debug)
           sim->out_debug.printf("unexpectedly had no target data in time_to_shard");
         return std::numeric_limits<double>::infinity();
       }
-      double active_agonies = get_active_dots(find_action_id("agony"));
-      if (sim->log)
+      double active_agonies = get_active_dots(agony_id);
+      if (sim->debug)
         sim->out_debug.printf("active agonies: %f", active_agonies);
       if (active_agonies == 0)
       {
@@ -932,7 +931,7 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
       action_state_t* agony_state = agony->current_action->get_state(agony->state);
       timespan_t dot_tick_time = agony->current_action->tick_time(agony_state);
       double average = 1 / (0.16 / std::sqrt(active_agonies) * (active_agonies == 1 ? 1.15 : 1.0) * active_agonies / dot_tick_time.total_seconds());
-      if (sim->log)
+      if (sim->debug)
         sim->out_debug.printf("time to shard return: %f", average);
       action_state_t::release(agony_state);
       return average;
