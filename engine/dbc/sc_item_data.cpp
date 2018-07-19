@@ -1026,11 +1026,8 @@ int item_database::random_suffix_type( item_t& item )
       case WEAPON_BOW:
       case WEAPON_CROSSBOW:
       case WEAPON_GUN:
-        return 0;
-
-        // Various ranged types use the fifth point allocation budget
       case WEAPON_THROWN:
-        return 4;
+        return 0;
 
       // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
       default:
@@ -1064,8 +1061,6 @@ int item_database::random_suffix_type( item_t& item )
     case SLOT_OFF_HAND: // Shields, off hand items
       return 3;
 
-      // Ranged non-weapons are relics, which do not have a point allocation
-    case SLOT_TABARD:
     default:
       return -1;
   }
