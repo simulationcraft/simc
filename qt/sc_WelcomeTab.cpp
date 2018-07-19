@@ -9,8 +9,17 @@
 SC_WelcomeTabWidget_WebKit::SC_WelcomeTabWidget_WebKit( SC_MainWindow* parent ) :
     SC_WebEngineView( parent )
 {
-  QString welcomeFile = SC_PATHS::getDataPath() + "/Welcome.html";
-  setUrl( "file:///" + welcomeFile );
+  for(const auto& path : SC_PATHS::getDataPaths())
+  {
+      QFile welcome_path(path + "/Welcome.html");
+      if (welcome_path.exists())
+      {
+          welcomeFile = welcome_path.fileName();
+          break;
+      }
+  }
+  welcome_uri = "file:///" + welcomeFile;
+  setUrl( welcome_uri );
 
   page() -> setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
   connect( this, SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
