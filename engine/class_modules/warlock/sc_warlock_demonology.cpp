@@ -510,7 +510,8 @@ namespace warlock {
           p()->buffs.demonic_core->up(); // benefit tracking
           p()->buffs.demonic_core->decrement();
         }
-        p()->buffs.demonic_calling->trigger();
+        if ( !p()->bugs )
+          p()->buffs.demonic_calling->trigger();
 
         if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p()->rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T20, B2 )->proc_chance() ) )
         {
@@ -1207,7 +1208,8 @@ namespace warlock {
       ->set_cooldown(timespan_t::zero());
 
     //Talents
-    buffs.demonic_calling = make_buff(this, "demonic_calling", talents.demonic_calling->effectN(1).trigger());
+    buffs.demonic_calling = make_buff( this, "demonic_calling", talents.demonic_calling->effectN( 1 ).trigger() )
+      ->set_chance( talents.demonic_calling->proc_chance() );
 
     buffs.inner_demons = make_buff(this, "inner_demons", find_spell(267216))
       ->set_period(timespan_t::from_seconds(talents.inner_demons->effectN(1).base_value()))

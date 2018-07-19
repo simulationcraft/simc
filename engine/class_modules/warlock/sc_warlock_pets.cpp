@@ -428,8 +428,15 @@ namespace warlock {
 
       demonic_tyrant_t::demonic_tyrant_t(warlock_t* owner, const std::string& name) :
         warlock_pet_t(owner->sim, owner, name, PET_DEMONIC_TYRANT, name != "demonic_tyrant") {
-        action_list_str += "/sequence,name=rotation:demonfire_blast:demonfire:demonfire:demonfire";
-        action_list_str += "/restart_sequence,name=rotation";
+        if ( o()->bugs )
+        {
+          action_list_str += "/demonfire";
+        }
+        else
+        {
+          action_list_str += "/sequence,name=rotation:demonfire_blast:demonfire:demonfire:demonfire";
+          action_list_str += "/restart_sequence,name=rotation";
+        }
       }
 
       void demonic_tyrant_t::init_base_stats() {
