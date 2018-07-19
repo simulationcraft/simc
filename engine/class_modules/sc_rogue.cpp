@@ -4837,7 +4837,7 @@ struct proxy_rupture_t : public buff_t
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
 
-  void execute( int stacks, double value, timespan_t duration ) override
+  void execute( int stacks, double value, timespan_t ) override
   {
     // Sync with Rup duration
     buff_t::execute( stacks, value, rupture_dot -> duration() );
@@ -6276,6 +6276,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=direct" );
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined" );
     def -> add_action( "arcane_pulse");
+    def -> add_action( "lights_judgment");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -6289,7 +6290,7 @@ void rogue_t::init_action_list()
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
-      if ( racial_actions[i] == "arcane_torrent" || racial_actions[i] == "arcane_pulse" )
+      if ( racial_actions[i] == "lights_judgment" || racial_actions[i] == "arcane_torrent" || racial_actions[i] == "arcane_pulse" )
         continue; // Manually added
       else
         cds -> add_action( racial_actions[i] + ",if=debuff.vendetta.up" );
@@ -6346,6 +6347,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=build" );
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen" );
     def -> add_action( "arcane_pulse" );
+    def -> add_action( "lights_judgment");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -6359,7 +6361,7 @@ void rogue_t::init_action_list()
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
-      if ( racial_actions[i] == "arcane_torrent" || racial_actions[i] == "arcane_pulse" )
+      if ( racial_actions[i] == "lights_judgment" || racial_actions[i] == "arcane_torrent" || racial_actions[i] == "arcane_pulse" )
         continue; // Manually added
       else
         cds -> add_action( racial_actions[i] );
@@ -6407,6 +6409,7 @@ void rogue_t::init_action_list()
     def -> add_action( "call_action_list,name=build,if=energy.deficit<=variable.stealth_threshold-40*!(talent.alacrity.enabled|talent.shadow_focus.enabled|talent.master_of_shadows.enabled)", "Use a builder when reaching the energy threshold (minus 40 if none of Alacrity, Shadow Focus, and Master of Shadows is selected)" );
     def -> add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen", "Lowest priority in all of the APL because it causes a GCD" );
     def -> add_action( "arcane_pulse" );
+    def -> add_action( "lights_judgment");
 
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
@@ -6420,7 +6423,7 @@ void rogue_t::init_action_list()
     }
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {
-      if ( racial_actions[i] == "arcane_torrent" )
+      if ( racial_actions[i] == "lights_judgment" || racial_actions[i] == "arcane_torrent" )
         continue; // Manually added
       else
         cds -> add_action( racial_actions[i] + ",if=stealthed.rogue" );
