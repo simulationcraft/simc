@@ -320,3 +320,23 @@ double pet_t::composite_player_critical_damage_multiplier( const action_state_t*
 
   return m;
 }
+
+timespan_t pet_t::composite_active_time() const
+{
+  // Only dynamic spawns need to consider a non-standard active time, since persistent pets can be
+  // presumed to be active for the duration of the iteration (or at least the remaining duration of
+  // the iteration, starting from their summoning time).
+  if ( ! spawner || sim -> report_pets_separately )
+  {
+    return player_t::composite_active_time();
+  }
+
+  // TODO: Binds pet base name and the spawner base name together, should this be changed?
+  auto ptr = owner -> find_spawner( name_str );
+  if ( ! ptr )
+  {
+    return player_t::composite_active_time();
+  }
+
+  return ptr -> iteration_uptime();
+}
