@@ -763,7 +763,7 @@ void paladin_t::trigger_grand_crusader()
     return;
 
   // attempts to proc the buff
-  if ( rng().roll( passives.grand_crusader -> proc_chance() ) )
+  if ( rng().roll( passives.grand_crusader -> proc_chance() + talents.first_avenger -> effectN( 2 ).percent() ) )
   {
     // reset AS cooldown
     cooldowns.avengers_shield -> reset( true );
