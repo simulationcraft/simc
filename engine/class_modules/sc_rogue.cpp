@@ -6368,7 +6368,7 @@ void rogue_t::init_action_list()
     }
     cds -> add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up&energy.time_to_max>1" );
     cds -> add_talent( this, "Marked for Death", "target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit|((raid_event.adds.in>40|buff.true_bearing.remains>15-buff.adrenaline_rush.up*5)&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)" );
-    cds -> add_action( this, "Blade Flurry", "if=spell_targets.blade_flurry>=2&!buff.blade_flurry.up" );
+    cds -> add_action( this, "Blade Flurry", "if=spell_targets>=2&!buff.blade_flurry.up&(!raid_event.adds.exists|raid_event.adds.remains>8|cooldown.blade_flurry.charges=1&raid_event.adds.in>(2-cooldown.blade_flurry.charges_fractional)*25)", "Blade Flurry on 2+ enemies. With adds: Use if they stay for 8+ seconds or if your next charge will be ready in time for the next wave." );
     cds -> add_talent( this, "Ghostly Strike", "if=variable.blade_flurry_sync&combo_points.deficit>=1+buff.broadside.up" );
     cds -> add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&(energy.time_to_max>5|energy<15)" );
     cds -> add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&energy.time_to_max>1" );
@@ -6383,7 +6383,7 @@ void rogue_t::init_action_list()
     action_priority_list_t* finish = get_action_priority_list( "finish", "Finishers" );
     finish -> add_talent( this, "Slice and Dice", "if=buff.slice_and_dice.remains<target.time_to_die&buff.slice_and_dice.remains<(1+combo_points)*1.8" );
     finish -> add_action( this, "Roll the Bones", "if=(buff.roll_the_bones.remains<=3|variable.rtb_reroll)&(target.time_to_die>20|buff.roll_the_bones.remains<target.time_to_die)" );
-    finish -> add_action( this, "Between the Eyes", "if=buff.ruthless_precision.up", "BTE worth being used with the boosted crit chance from Ruthless Precision" );
+    finish -> add_action( this, "Between the Eyes", "if=buff.ruthless_precision.up|azerite.ace_up_your_sleeve.enabled|azerite.deadshot.enabled", "BTE with the Ruthless Precision buff from RtB or with the Ace Up Your Sleeve or Deadshot traits." );
     finish -> add_action( this, "Dispatch" );
 
     // Builders
