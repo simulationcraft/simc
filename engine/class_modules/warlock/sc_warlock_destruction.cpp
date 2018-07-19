@@ -483,7 +483,7 @@ namespace warlock {
 
         if (p->talents.fire_and_brimstone->ok()) {
           base_multiplier *= p->talents.fire_and_brimstone->effectN(1).percent();
-          energize_type = ENERGIZE_ON_CAST;
+          energize_type = ENERGIZE_PER_HIT;
           energize_resource = RESOURCE_SOUL_SHARD;
           energize_amount = std::double_t(p->talents.fire_and_brimstone->effectN(2).base_value()) / 10;
           gain = p->gains.fnb_bits;
@@ -618,6 +618,7 @@ namespace warlock {
           fnb_action->set_target(execute_state->target);
           fnb_action->execute();
         }
+        havocd = false;
       }
 
       void impact(action_state_t* s) override
