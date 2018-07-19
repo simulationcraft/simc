@@ -245,7 +245,6 @@ struct rogue_t : public player_t
     buff_t* slice_and_dice;
     // Subtlety
     buff_t* master_of_shadows;
-    buff_t* secret_technique; // Only to simplify APL tracking
     buff_t* shuriken_tornado;
 
 
@@ -3664,16 +3663,11 @@ struct secret_technique_t : public rogue_attack_t
 
   secret_technique_attack_t* secret_technique_attack;
   int last_cast_cp;
-  double delay_seconds; // Temporary action parameter until we have confirmation that no delay is intended
 
   secret_technique_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "secret_technique", p, p -> talent.secret_technique ),
-    last_cast_cp( 0 ),
-    delay_seconds( 0 )
+    rogue_attack_t( "secret_technique", p, p -> talent.secret_technique, options_str ),
+    last_cast_cp( 0 )
   {
-    add_option( opt_float( "delay_seconds", delay_seconds ) );
-    parse_options( options_str );
-
     requires_weapon = WEAPON_DAGGER;
     may_miss = false;
     aoe = -1;
@@ -3690,21 +3684,10 @@ struct secret_technique_t : public rogue_attack_t
 
     last_cast_cp = cast_state( execute_state ) -> cp;
 
-    // If no delay turns out to be a confirmed and intended thing until release, this can be removed/refactored.
-    timespan_t delay = timespan_t::from_seconds( delay_seconds );
-    p() -> buffs.secret_technique -> trigger( 1, buff_t::DEFAULT_VALUE(), (-1.0), delay ); // Trigger tracking buff until clone damage
     for ( size_t i = 0; i < data().effectN( 4 ).base_value(); i++ )
     {
-      // Guessing clones spawn on target's position when cast
-      make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
-          .target( execute_state -> target )
-          .x( execute_state -> target -> x_position )
-          .y( execute_state -> target -> y_position )
-          .duration( delay )
-          .pulse_time( delay )
-          .start_time( sim -> current_time() )
-          .action( secret_technique_attack )
-          .n_pulses( 1 ));
+      secret_technique_attack -> set_target( execute_state -> target );
+      secret_technique_attack -> execute();
     }
   }
 };
@@ -7342,9 +7325,6 @@ void rogue_t::create_buffs()
                                     resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.master_of_shadows );
                                   } )
                                   -> set_refresh_behavior( buff_refresh_behavior::DURATION );
-  buffs.secret_technique        = make_buff( this, "secret_technique", talent.secret_technique )
-                                  -> set_cooldown( timespan_t::zero() )
-                                  -> set_quiet( true );
   buffs.shuriken_tornado        = new buffs::shuriken_tornado_t( this );
 
 
