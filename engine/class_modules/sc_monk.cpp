@@ -655,13 +655,13 @@ public:
         switch ( specialization() )
         {
           case MONK_BREWMASTER:
-            return spell -> id() == 237076; // Mystic Vitality
+            return spell -> id() == 196737; // High Tolerance
             break;
           case MONK_MISTWEAVER:
             return spell -> id() == 197900; // Mist Wrap
             break;
           case MONK_WINDWALKER:
-            return spell -> id() == 196743; // Chi Orbit
+            return spell -> id() == 196607; // Eye of the Tiger
             break;
           default:
             return false;
