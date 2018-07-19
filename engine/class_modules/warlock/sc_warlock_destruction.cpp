@@ -41,8 +41,6 @@ namespace warlock {
         affected_by_destruction_t20_4pc = false;
         destro_mastery = true;
         can_feretory = true;
-
-        parse_spell_coefficient(*this);
       }
 
       bool use_havoc() const

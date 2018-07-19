@@ -2,179 +2,6 @@
 #include "sc_warlock.hpp"
 
 namespace warlock {
-  namespace pets {
-    struct legion_strike_t : public warlock_pet_melee_attack_t {
-      legion_strike_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_melee_attack_t(p, "Legion Strike") {
-        parse_options(options_str);
-        aoe = -1;
-        weapon = &(p->main_hand_weapon);
-        //base_dd_min = base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
-      }
-    };
-    struct axe_toss_t : public warlock_pet_spell_t {
-      axe_toss_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_spell_t("Axe Toss", p, p -> find_spell(89766)) {
-        parse_options(options_str);
-      }
-
-      //void execute() override {
-      //  warlock_pet_spell_t::execute();
-      //  p()->trigger_sephuzs_secret(execute_state, MECHANIC_STUN);
-      //}
-    };
-    struct felstorm_tick_t : public warlock_pet_melee_attack_t {
-      felstorm_tick_t(warlock_pet_t* p, const spell_data_t& s) : warlock_pet_melee_attack_t("felstorm_tick", p, s.effectN(1).trigger()) {
-        aoe = -1;
-        background = true;
-        weapon = &(p->main_hand_weapon);
-        //base_dd_min = base_dd_max = p->composite_melee_attack_power() * data().effectN(1).ap_coeff();
-      }
-
-      double action_multiplier() const override
-      {
-        double m = warlock_pet_melee_attack_t::action_multiplier();
-
-        if (p()->buffs.demonic_strength->check())
-        {
-          m *= p()->buffs.demonic_strength->default_value;
-        }
-
-        return m;
-      }
-    };
-    struct felstorm_t : public warlock_pet_melee_attack_t {
-      felstorm_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_melee_attack_t("felstorm", p, p -> find_spell(89751)) {
-        parse_options(options_str);
-        tick_zero = true;
-        hasted_ticks = true;
-        may_miss = false;
-        may_crit = false;
-        channeled = true;
-
-        dynamic_tick_action = true;
-        tick_action = new felstorm_tick_t(p, data());
-      }
-
-      timespan_t composite_dot_duration(const action_state_t* s) const override
-      {
-        return s->action->tick_time(s) * 5.0;
-      }
-    };
-    struct demonic_strength_t : public warlock_pet_melee_attack_t {
-      bool queued;
-
-      demonic_strength_t(warlock_pet_t* p, const std::string& options_str) :
-        warlock_pet_melee_attack_t("demonic_strength_felstorm", p, p -> find_spell(89751)),
-        queued(false)
-      {
-        parse_options(options_str);
-        tick_zero = true;
-        hasted_ticks = true;
-        may_miss = false;
-        may_crit = false;
-        channeled = true;
-
-        dynamic_tick_action = true;
-        tick_action = new felstorm_tick_t(p, data());
-      }
-
-      timespan_t composite_dot_duration(const action_state_t* s) const override
-      {
-        return s->action->tick_time(s) * 5.0;
-      }
-
-      double action_multiplier() const override
-      {
-        double m = warlock_pet_melee_attack_t::action_multiplier();
-
-        if (p()->buffs.demonic_strength->check())
-        {
-          m *= p()->buffs.demonic_strength->default_value;
-        }
-
-        return m;
-      }
-
-      void cancel() override {
-        warlock_pet_melee_attack_t::cancel();
-        get_dot()->cancel();
-      }
-
-      void execute() override
-      {
-        warlock_pet_melee_attack_t::execute();
-        queued = false;
-        p()->melee_attack->cancel();
-      }
-
-      void last_tick(dot_t* d) override {
-        warlock_pet_melee_attack_t::last_tick(d);
-
-        p()->buffs.demonic_strength->expire();
-      }
-
-      bool ready() override {
-        if (!queued)
-          return false;
-        return warlock_pet_melee_attack_t::ready();
-      }
-    };
-    struct soul_strike_t : public warlock_pet_melee_attack_t {
-      soul_strike_t(warlock_pet_t* p) : warlock_pet_melee_attack_t("Soul Strike", p, p->find_spell(267964)) {
-        background = true;
-      }
-
-      bool ready() override {
-        if (p()->pet_type != PET_FELGUARD) return false;
-        return warlock_pet_melee_attack_t::ready();
-      }
-    };
-    struct felguard_pet_t : public warlock_pet_t {
-      felguard_pet_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-        warlock_pet_t(sim, owner, name, PET_FELGUARD, name != "felguard") {
-        action_list_str = "travel";
-        action_list_str += "/demonic_strength_felstorm";
-        action_list_str += "/felstorm";
-        action_list_str += "/legion_strike,if=energy>=100";
-      }
-
-      void create_actions() {
-        warlock_pet_t::create_actions();
-        active.demonic_strength_felstorm = find_action( "demonic_strength_felstorm" );
-        assert(active.demonic_strength_felstorm);
-      }
-
-      void init_base_stats() {
-        warlock_pet_t::init_base_stats();
-
-        melee_attack = new warlock_pet_melee_t(this);
-        melee_attack->base_dd_multiplier *= 1.1;
-        special_action = new axe_toss_t(this, "");
-      }
-
-      action_t* create_action(const std::string& name, const std::string& options_str) {
-        if (name == "legion_strike") return new legion_strike_t(this, options_str);
-        if (name == "demonic_strength_felstorm") return new demonic_strength_t(this, options_str);
-        if (name == "felstorm") return new felstorm_t(this, options_str);
-        if (name == "axe_toss") return new axe_toss_t(this, options_str);
-
-        return warlock_pet_t::create_action(name, options_str);
-      }
-    };
-
-    void warlock_pet_t::create_buffs_demonology() {
-      buffs.demonic_strength = make_buff(this, "demonic_strength", find_spell(267171))
-        ->set_default_value(find_spell(267171)->effectN(2).percent())
-        ->set_cooldown(timespan_t::zero());
-
-      buffs.grimoire_of_service = make_buff(this, "grimoire_of_service", find_spell(216187))
-        ->set_default_value(find_spell(216187)->effectN(1).percent());
-    }
-
-    void warlock_pet_t::init_spells_demonology() {
-      active.soul_strike = new soul_strike_t(this);
-    }
-  }
-
   namespace actions_demonology {
     using namespace actions;
 
@@ -203,8 +30,6 @@ namespace warlock {
         gain = player->get_gain(name_str);
 
         can_feretory = true;
-
-        parse_spell_coefficient(*this);
       }
 
       void reset() override
@@ -794,9 +619,8 @@ namespace warlock {
         {
           p()->warlock_pet_list.active->buffs.demonic_strength->trigger();
 
-          assert( p()->warlock_pet_list.active->active.demonic_strength_felstorm );
-          auto ds = debug_cast<pets::demonic_strength_t*>(p()->warlock_pet_list.active->active.demonic_strength_felstorm);
-          ds->queued = true;
+          auto pet = debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active );
+          pet->queue_ds_felstorm();
         }
       }
     };
@@ -948,8 +772,9 @@ namespace warlock {
         demonology_spell_t::execute();
         if (p()->warlock_pet_list.active->pet_type == PET_FELGUARD)
         {
-          p()->warlock_pet_list.active->active.soul_strike->set_target(execute_state->target);
-          p()->warlock_pet_list.active->active.soul_strike->execute();
+          auto pet = debug_cast<pets::demonology::felguard_pet_t*>( p()->warlock_pet_list.active );
+          pet->soul_strike->set_target(execute_state->target);
+          pet->soul_strike->execute();
         }
       }
       bool ready() override
@@ -979,8 +804,8 @@ namespace warlock {
         // Spawn a single vilefiend, and grab it's pointer so we can execute an instant bile split
         // TODO: The bile split execution should move to the pet itself, instead of here
         auto vilefiend = p()->warlock_pet_list.vilefiends.spawn( data().duration() ).front();
-        vilefiend->active.bile_spit->set_target( execute_state->target );
-        vilefiend->active.bile_spit->execute();
+        vilefiend->bile_spit->set_target( execute_state->target );
+        vilefiend->bile_spit->execute();
       }
     };
 
@@ -1157,15 +982,14 @@ namespace warlock {
   namespace buffs {
   } // end buffs namespace
 
-  pet_t* warlock_t::create_demo_pet(const std::string& pet_name, const std::string& pet_type)
+  pet_t* warlock_t::create_demo_pet(const std::string& pet_name, const std::string& /* pet_type */)
   {
     pet_t* p = find_pet(pet_name);
     if (p) return p;
     using namespace pets;
 
-    if (pet_name == "felguard")           return new        felguard_pet_t(sim, this, pet_name);
-
-    if (pet_name == "grimoire_felguard")  return new        felguard_pet_t(sim, this, pet_name);
+    if (pet_name == "felguard")           return new pets::demonology::felguard_pet_t(this, pet_name);
+    if (pet_name == "grimoire_felguard")  return new pets::demonology::felguard_pet_t(this, pet_name);
 
     return nullptr;
   }

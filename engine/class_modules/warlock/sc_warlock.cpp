@@ -1,17 +1,9 @@
 #include "simulationcraft.hpp"
 #include "sc_warlock.hpp"
+#include "sc_warlock_pets.hpp"
+
 namespace warlock
 {
-  void parse_spell_coefficient( action_t& a )
-  {
-    for ( size_t i = 1; i <= a.data()._effects->size(); i++ )
-    {
-      if ( a.data().effectN( i ).type() == E_SCHOOL_DAMAGE )
-        a.spell_power_mod.direct = a.data().effectN( i ).sp_coeff();
-      else if ( a.data().effectN( i ).type() == E_APPLY_AURA && a.data().effectN( i ).subtype() == A_PERIODIC_DAMAGE )
-        a.spell_power_mod.tick = a.data().effectN( i ).sp_coeff();
-    }
-  }
 // Spells
   namespace actions
   {
@@ -903,6 +895,67 @@ stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
     return STAT_NONE;
   default: return s;
   }
+}
+
+pet_t* warlock_t::create_main_pet(const std::string& pet_name, const std::string& pet_type)
+{
+  pet_t* p = find_pet(pet_name);
+  if (p) return p;
+  using namespace pets;
+
+  if (pet_name == "felhunter")          return new pets::base::felhunter_pet_t(this, pet_name);
+  if (pet_name == "imp")                return new pets::base::imp_pet_t(this, pet_name);
+  if (pet_name == "succubus")           return new pets::base::succubus_pet_t(this, pet_name);
+  if (pet_name == "voidwalker")         return new pets::base::voidwalker_pet_t(this, pet_name);
+  if (specialization() == WARLOCK_DEMONOLOGY)
+  {
+    return create_demo_pet(pet_name, pet_type);
+  }
+
+  return nullptr;
+}
+
+void warlock_t::create_all_pets()
+{
+  if (specialization() == WARLOCK_DESTRUCTION)
+  {
+    for (size_t i = 0; i < warlock_pet_list.infernals.size(); i++)
+    {
+      warlock_pet_list.infernals[i] = new pets::destruction::infernal_t(this);
+    }
+  }
+
+  if (specialization() == WARLOCK_AFFLICTION)
+  {
+    for (size_t i = 0; i < warlock_pet_list.darkglare.size(); i++)
+    {
+      warlock_pet_list.darkglare[i] = new pets::affliction::darkglare_t(this);
+    }
+  }
+}
+
+expr_t* warlock_t::create_pet_expression(const std::string& name_str)
+{
+  if (name_str == "last_cast_imps")
+  {
+    return make_fn_expr( "last_cast_imps", [ this ]() {
+      return warlock_pet_list.wild_imps.n_active_pets(
+        []( const pets::demonology::wild_imp_pet_t* pet ) {
+          return pet->resources.current[RESOURCE_ENERGY] <= 20;
+        } );
+    } );
+  }
+  else if (name_str == "two_cast_imps")
+  {
+    return make_fn_expr( "two_cast_imps", [ this ]() {
+      return warlock_pet_list.wild_imps.n_active_pets(
+        []( const pets::demonology::wild_imp_pet_t* pet ) {
+          return pet->resources.current[RESOURCE_ENERGY] <= 40;
+        } );
+    } );
+  }
+
+  return player_t::create_expression(name_str);
 }
 
 expr_t* warlock_t::create_expression( const std::string& name_str )

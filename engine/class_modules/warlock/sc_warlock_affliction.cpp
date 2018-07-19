@@ -35,8 +35,6 @@ namespace warlock
         tick_may_crit = true;
         weapon_multiplier = 0.0;
         gain = player->get_gain(name_str);
-
-        parse_spell_coefficient(*this);
       }
 
       void init() override
