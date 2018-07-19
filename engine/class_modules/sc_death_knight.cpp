@@ -5775,6 +5775,14 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
     parent( parent )
   {
     aoe = -1;
+
+    // Bug ? Seem to always deal 30% of the original damage to secondary targets
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/93
+    if ( p -> bugs )
+    {
+      base_aoe_multiplier = 0.3;
+    }
+
     background = true;
   }
 
@@ -5790,7 +5798,13 @@ struct breath_of_sindragosa_tick_t: public death_knight_spell_t
     {
       double damage = s -> result_amount;
       // Damage nerfed on secondary targets on BfA alpha
-      damage /= ( execute_state -> n_targets * 5/3 );
+      // Bug ? Seem to always deal 30% of the original damage to secondary targets, handled in constructor
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/93
+      if ( !p() -> bugs )
+      {
+        damage /= ( execute_state -> n_targets * 5/3 );
+      }
+
       s -> result_amount = s -> result_total = damage;
       death_knight_spell_t::impact( s );
     }
