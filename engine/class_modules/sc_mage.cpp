@@ -6807,7 +6807,7 @@ void mage_t::apl_fire()
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
   {
-    if ( racial_actions[ i ] == "lights_judgment" )
+    if ( racial_actions[ i ] == "lights_judgment" || racial_actions[ i ] == "arcane_torrent" )
       continue;  // Handled manually.
 
     combustion_phase -> add_action( racial_actions[i] );
