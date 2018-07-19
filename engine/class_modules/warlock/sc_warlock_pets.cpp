@@ -189,7 +189,7 @@ namespace warlock {
         }
       };
 
-      wild_imp_pet_t::wild_imp_pet_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "wild_imp", PET_WILD_IMP),
+      wild_imp_pet_t::wild_imp_pet_t(warlock_t* owner) : warlock_pet_t(owner->sim, owner, "wild_imp", PET_WILD_IMP),
         firebolt(),
         isnotdoge(),
         power_siphon(false)
@@ -241,6 +241,11 @@ namespace warlock {
         o()->buffs.wild_imps->decrement();
         if (!power_siphon)
           o()->buffs.demonic_core->trigger(1, buff_t::DEFAULT_VALUE(), o()->spec.demonic_core->effectN(1).percent());
+
+        if (expiration)
+        {
+          event_t::cancel(expiration);
+        }
       }
 
       // dreadstalker
@@ -300,7 +305,7 @@ namespace warlock {
         }
       };
 
-      dreadstalker_t::dreadstalker_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "dreadstalker", PET_DREADSTALKER)
+      dreadstalker_t::dreadstalker_t(warlock_t* owner) : warlock_pet_t(owner->sim, owner, "dreadstalker", PET_DREADSTALKER)
       {
         action_list_str = "travel/dreadbite";
         regen_type = REGEN_DISABLED;
@@ -360,7 +365,7 @@ namespace warlock {
         }
       };
 
-      vilefiend_t::vilefiend_t(sim_t* sim, warlock_t* owner) : warlock_pet_t(sim, owner, "vilefiend", PET_VILEFIEND)
+      vilefiend_t::vilefiend_t(warlock_t* owner) : warlock_pet_t(owner->sim, owner, "vilefiend", PET_VILEFIEND)
       {
         action_list_str += "travel/headbutt";
         owner_coeff.ap_from_sp = 0.23;
@@ -421,8 +426,8 @@ namespace warlock {
         }
       };
 
-      demonic_tyrant_t::demonic_tyrant_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-        warlock_pet_t(sim, owner, name, PET_DEMONIC_TYRANT, name != "demonic_tyrant") {
+      demonic_tyrant_t::demonic_tyrant_t(warlock_t* owner, const std::string& name) :
+        warlock_pet_t(owner->sim, owner, name, PET_DEMONIC_TYRANT, name != "demonic_tyrant") {
         action_list_str += "/sequence,name=rotation:demonfire_blast:demonfire:demonfire:demonfire";
         action_list_str += "/restart_sequence,name=rotation";
       }
@@ -483,8 +488,8 @@ namespace warlock {
           }
         };
 
-        shivarra_t::shivarra_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-          warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "shivarra"),
+        shivarra_t::shivarra_t(warlock_t* owner, const std::string& name) :
+          warlock_pet_t(owner->sim, owner, name, PET_WARLOCK_RANDOM, name != "shivarra"),
           multi_slash()
         {
           action_list_str = "travel/multi_slash";
@@ -526,8 +531,8 @@ namespace warlock {
           }
         };
 
-        darkhound_t::darkhound_t(sim_t* sim, warlock_t* owner, const std::string& name) :
-          warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "darkhound"),
+        darkhound_t::darkhound_t(warlock_t* owner, const std::string& name) :
+          warlock_pet_t(owner->sim, owner, name, PET_WARLOCK_RANDOM, name != "darkhound"),
           fel_bite()
         {
           action_list_str = "travel/fel_bite";
@@ -566,7 +571,7 @@ namespace warlock {
           }
         };
 
-        bilescourge_t::bilescourge_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "bilescourge")
+        bilescourge_t::bilescourge_t(warlock_t* owner, const std::string& name) : warlock_pet_t(owner->sim, owner, name, PET_WARLOCK_RANDOM, name != "bilescourge")
         {
           action_list_str = "toxic_bile";
           owner_coeff.ap_from_sp = 0.065;
@@ -597,7 +602,7 @@ namespace warlock {
           }
         };
 
-        urzul_t::urzul_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "urzul")
+        urzul_t::urzul_t(warlock_t* owner, const std::string& name) : warlock_pet_t(owner->sim, owner, name, PET_WARLOCK_RANDOM, name != "urzul")
           , many_faced_bite()
         {
           action_list_str = "travel";
@@ -658,7 +663,7 @@ namespace warlock {
           }
         };
 
-        void_terror_t::void_terror_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "void_terror")
+        void_terror_t::void_terror_t(warlock_t* owner, const std::string& name) : warlock_pet_t(owner->sim, owner, name, PET_WARLOCK_RANDOM, name != "void_terror")
           , double_breath()
         {
           action_list_str = "travel";
@@ -703,7 +708,7 @@ namespace warlock {
           }
         };
 
-        wrathguard_t::wrathguard_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "wrathguard")
+        wrathguard_t::wrathguard_t(warlock_t* owner, const std::string& name) : warlock_pet_t(owner->sim, owner, name, PET_WARLOCK_RANDOM, name != "wrathguard")
           , overhead_assault()
         {
           action_list_str = "travel/overhead_assault";
@@ -748,7 +753,7 @@ namespace warlock {
           }
         };
 
-        vicious_hellhound_t::vicious_hellhound_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "vicious_hellhound"), demon_fang()
+        vicious_hellhound_t::vicious_hellhound_t(warlock_t* owner, const std::string& name) : warlock_pet_t(owner->sim, owner, name, PET_WARLOCK_RANDOM, name != "vicious_hellhound"), demon_fang()
         {
           action_list_str = "travel";
           action_list_str += "/demon_fangs";
@@ -794,7 +799,7 @@ namespace warlock {
           }
         };
 
-        illidari_satyr_t::illidari_satyr_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "illidari_satyr")
+        illidari_satyr_t::illidari_satyr_t(warlock_t* owner, const std::string& name) : warlock_pet_t(owner->sim, owner, name, PET_WARLOCK_RANDOM, name != "illidari_satyr")
           , shadow_slash()
         {
           action_list_str = "travel/shadow_slash";
@@ -834,7 +839,7 @@ namespace warlock {
           }
         };
 
-        eyes_of_guldan_t::eyes_of_guldan_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "eyes_of_guldan") {
+        eyes_of_guldan_t::eyes_of_guldan_t(warlock_t* owner, const std::string& name) : warlock_pet_t(owner->sim, owner, name, PET_WARLOCK_RANDOM, name != "eyes_of_guldan") {
           action_list_str = "eye_of_guldan";
           owner_coeff.ap_from_sp = 0.065;
         }
@@ -863,7 +868,7 @@ namespace warlock {
         }
 
         // prince malchezaar
-        prince_malchezaar_t::prince_malchezaar_t(sim_t* sim, warlock_t* owner, const std::string& name) : warlock_pet_t(sim, owner, name, PET_WARLOCK_RANDOM, name != "prince_malchezaar") {
+        prince_malchezaar_t::prince_malchezaar_t(warlock_t* owner, const std::string& name) : warlock_pet_t(owner->sim, owner, name, PET_WARLOCK_RANDOM, name != "prince_malchezaar") {
           owner_coeff.ap_from_sp = 0.616;
           action_list_str = "travel";
         }
@@ -1110,7 +1115,7 @@ namespace warlock {
       }
 
       if (buffs.rage_of_guldan->check())
-        m *= 1.0 + (buffs.rage_of_guldan->default_value / 100);
+        m *= 1.0 + (buffs.rage_of_guldan->check_stack_value() / 100);
 
       m *= 1.0 + buffs.grimoire_of_service->check_value();
 
@@ -1176,72 +1181,6 @@ namespace warlock {
 
   void warlock_t::create_all_pets()
   {
-    if (specialization() == WARLOCK_DEMONOLOGY)
-    {
-      for (size_t i = 0; i < warlock_pet_list.wild_imps.size(); i++)
-      {
-        warlock_pet_list.wild_imps[i] = new pets::demonology::wild_imp_pet_t(sim, this);
-      }
-      for (size_t i = 0; i < warlock_pet_list.dreadstalkers.size(); i++)
-      {
-        warlock_pet_list.dreadstalkers[i] = new pets::demonology::dreadstalker_t(sim, this);
-      }
-      for (size_t i = 0; i < warlock_pet_list.demonic_tyrants.size(); i++)
-      {
-        warlock_pet_list.demonic_tyrants[i] = new pets::demonology::demonic_tyrant_t(sim, this);
-      }
-      if (talents.summon_vilefiend->ok())
-      {
-        for (size_t i = 0; i < warlock_pet_list.vilefiends.size(); i++)
-        {
-          warlock_pet_list.vilefiends[i] = new pets::demonology::vilefiend_t(sim, this);
-        }
-      }
-      if (talents.inner_demons->ok() or talents.nether_portal->ok())
-      {
-        for (size_t i = 0; i < warlock_pet_list.shivarra.size(); i++)
-        {
-          warlock_pet_list.shivarra[i] = new pets::demonology::random_demons::shivarra_t(sim, this);
-        }
-        for (size_t i = 0; i < warlock_pet_list.darkhounds.size(); i++)
-        {
-          warlock_pet_list.darkhounds[i] = new pets::demonology::random_demons::darkhound_t(sim, this);
-        }
-        for (size_t i = 0; i < warlock_pet_list.bilescourges.size(); i++)
-        {
-          warlock_pet_list.bilescourges[i] = new pets::demonology::random_demons::bilescourge_t(sim, this);
-        }
-        for (size_t i = 0; i < warlock_pet_list.urzuls.size(); i++)
-        {
-          warlock_pet_list.urzuls[i] = new pets::demonology::random_demons::urzul_t(sim, this);
-        }
-        for (size_t i = 0; i < warlock_pet_list.void_terrors.size(); i++)
-        {
-          warlock_pet_list.void_terrors[i] = new pets::demonology::random_demons::void_terror_t(sim, this);
-        }
-        for (size_t i = 0; i < warlock_pet_list.wrathguards.size(); i++)
-        {
-          warlock_pet_list.wrathguards[i] = new pets::demonology::random_demons::wrathguard_t(sim, this);
-        }
-        for (size_t i = 0; i < warlock_pet_list.vicious_hellhounds.size(); i++)
-        {
-          warlock_pet_list.vicious_hellhounds[i] = new pets::demonology::random_demons::vicious_hellhound_t(sim, this);
-        }
-        for (size_t i = 0; i < warlock_pet_list.illidari_satyrs.size(); i++)
-        {
-          warlock_pet_list.illidari_satyrs[i] = new pets::demonology::random_demons::illidari_satyr_t(sim, this);
-        }
-        for (size_t i = 0; i < warlock_pet_list.eyes_of_guldan.size(); i++)
-        {
-          warlock_pet_list.eyes_of_guldan[i] = new pets::demonology::random_demons::eyes_of_guldan_t(sim, this);
-        }
-        for (size_t i = 0; i < warlock_pet_list.prince_malchezaar.size(); i++)
-        {
-          warlock_pet_list.prince_malchezaar[i] = new pets::demonology::random_demons::prince_malchezaar_t(sim, this);
-        }
-      }
-    }
-
     if (specialization() == WARLOCK_DESTRUCTION)
     {
       for (size_t i = 0; i < warlock_pet_list.infernals.size(); i++)
@@ -1263,55 +1202,21 @@ namespace warlock {
   {
     if (name_str == "last_cast_imps")
     {
-      struct wild_imp_last_cast_expression_t : public expr_t
-      {
-        warlock_t& player;
-
-        wild_imp_last_cast_expression_t(warlock_t& p) :
-          expr_t("last_cast_imps"), player(p) { }
-
-        virtual double evaluate() override
-        {
-          int t = 0;
-          for (auto& imp : player.warlock_pet_list.wild_imps)
-          {
-            if (!imp->is_sleeping())
-            {
-              if (imp->resources.current[RESOURCE_ENERGY] <= 20)
-                t++;
-            }
-          }
-          return t;
-        }
-      };
-
-      return new wild_imp_last_cast_expression_t(*this);
+      return make_fn_expr( "last_cast_imps", [ this ]() {
+        return warlock_pet_list.wild_imps.n_active_pets(
+          []( const pets::demonology::wild_imp_pet_t* pet ) {
+            return pet->resources.current[RESOURCE_ENERGY] <= 20;
+          } );
+      } );
     }
     else if (name_str == "two_cast_imps")
     {
-      struct wild_imp_two_cast_expression_t : public expr_t
-      {
-        warlock_t& player;
-
-        wild_imp_two_cast_expression_t(warlock_t& p) :
-          expr_t("two_cast_imps"), player(p) { }
-
-        virtual double evaluate() override
-        {
-          int t = 0;
-          for (auto& imp : player.warlock_pet_list.wild_imps)
-          {
-            if (!imp->is_sleeping())
-            {
-              if (imp->resources.current[RESOURCE_ENERGY] <= 40)
-                t++;
-            }
-          }
-          return t;
-        }
-      };
-
-      return new wild_imp_two_cast_expression_t(*this);
+      return make_fn_expr( "two_cast_imps", [ this ]() {
+        return warlock_pet_list.wild_imps.n_active_pets(
+          []( const pets::demonology::wild_imp_pet_t* pet ) {
+            return pet->resources.current[RESOURCE_ENERGY] <= 40;
+          } );
+      } );
     }
 
     return player_t::create_expression(name_str);

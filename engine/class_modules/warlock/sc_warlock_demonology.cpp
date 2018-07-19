@@ -370,8 +370,6 @@ namespace warlock {
     };
 
     struct hand_of_guldan_t : public demonology_spell_t {
-        int shards_used;
-
         struct umbral_blaze_t : public demonology_spell_t{
           umbral_blaze_t(warlock_t* p) : demonology_spell_t("Umbral Blaze", p, p->find_spell(273526)) {
             base_td = p->azerite.umbral_blaze.value();
@@ -379,13 +377,16 @@ namespace warlock {
           }
         };
 
+        int shards_used;
         umbral_blaze_t* blaze;
+        const spell_data_t* summon_spell;
 
-        hand_of_guldan_t(warlock_t* p, const std::string& options_str) : demonology_spell_t(p, "Hand of Gul'dan"), blaze(new umbral_blaze_t(p))
+        hand_of_guldan_t(warlock_t* p, const std::string& options_str) :
+          demonology_spell_t(p, "Hand of Gul'dan"), shards_used(0), blaze(new umbral_blaze_t(p)),
+          summon_spell(p->find_spell(104317))
         {
             parse_options(options_str);
             aoe = -1;
-            shards_used = 0;
             if (p->azerite.umbral_blaze.ok())
             {
               add_child(blaze);
@@ -443,33 +444,23 @@ namespace warlock {
         void impact(action_state_t* s) override {
             demonology_spell_t::impact(s);
 
-            if (result_is_hit(s->result))
+            // Only trigger wild imps once for the original target impact.
+            // Still keep it in impact instead of execute because of travel delay.
+            if (result_is_hit(s->result) && s->target == target)
             {
-              // Only trigger wild imps once for the original target impact.
-              // Still keep it in impact instead of execute because of travel delay.
-              if (s->target == target)
+              if (p()->azerite.umbral_blaze.ok())
               {
-                if (p()->azerite.umbral_blaze.ok())
-                {
-                  blaze->set_target(target);
-                  blaze->execute();
-                }
-                int j = 0;
+                blaze->set_target(target);
+                blaze->execute();
+              }
 
-                for (auto imp : p()->warlock_pet_list.wild_imps)
-                {
-                  if (imp->is_sleeping())
-                  {
-                    imp->summon(p()->find_spell(104317)->duration());
-                    if (++j == shards_used) break;
-                  }
-                }
+              p() -> warlock_pet_list.wild_imps.spawn( shards_used );
 
-                if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2)) {
-                    for (int i = 0; i < shards_used; i++) {
-                        p()->buffs.rage_of_guldan->trigger();
-                    }
-                }
+              for (int i = 0;
+                   p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2) && i < shards_used;
+                   i++)
+              {
+                p()->buffs.rage_of_guldan->trigger();
               }
             }
         }
@@ -554,13 +545,11 @@ namespace warlock {
     };
 
     struct call_dreadstalkers_t : public demonology_spell_t {
-      timespan_t dreadstalker_duration;
       int dreadstalker_count;
 
       call_dreadstalkers_t(warlock_t* p, const std::string& options_str) : demonology_spell_t(p, "Call Dreadstalkers") {
         parse_options(options_str);
         may_crit = false;
-        dreadstalker_duration = p->find_spell(193332)->duration() + (p->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T19, B4) ? p->sets->set(WARLOCK_DEMONOLOGY, T19, B4)->effectN(1).time_value() : timespan_t::zero());
         dreadstalker_count = data().effectN(1).base_value();
       }
 
@@ -590,20 +579,14 @@ namespace warlock {
       {
         demonology_spell_t::execute();
 
-        int j = 0;
-
-        for (size_t i = 0; i < p()->warlock_pet_list.dreadstalkers.size(); i++)
+        auto spawned = p()->warlock_pet_list.dreadstalkers.spawn( as<unsigned>( dreadstalker_count ) );
+        for ( auto dreadstalker : spawned )
         {
-          if (p() -> warlock_pet_list.dreadstalkers[i]->is_sleeping())
-          {
-            p()->warlock_pet_list.dreadstalkers[i]->summon(dreadstalker_duration);
-            p()->procs.dreadstalker_debug->occur();
-
-            if (p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2))
+            if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B2 ) )
             {
-              p()->warlock_pet_list.dreadstalkers[i]->buffs.rage_of_guldan->set_duration(dreadstalker_duration);
-              p()->warlock_pet_list.dreadstalkers[i]->buffs.rage_of_guldan->set_default_value(p()->buffs.rage_of_guldan->stack_value());
-              p()->warlock_pet_list.dreadstalkers[i]->buffs.rage_of_guldan->trigger();
+              dreadstalker->buffs.rage_of_guldan->trigger( 1,
+                p()->buffs.rage_of_guldan->stack_value(), 1.0,
+                p()->warlock_pet_list.dreadstalkers.duration() );
             }
 
             if ( p()->legendary.wilfreds_sigil_of_superior_summoning )
@@ -612,8 +595,6 @@ namespace warlock {
               p()->procs.wilfreds_dog->occur();
             }
 
-            if (++j == dreadstalker_count) break;
-          }
         }
 
         p()->buffs.demonic_calling->up(); // benefit tracking
@@ -687,29 +668,21 @@ namespace warlock {
 
         if (r)
         {
-          for (auto imp : p()->warlock_pet_list.wild_imps)
-          {
-            if (!imp->is_sleeping())
-              return true;
-          }
+          return p() -> warlock_pet_list.wild_imps.n_active_pets() > 0;
         }
         return false;
       }
 
       void execute() override
       {
-        demonology_spell_t::execute();
-        int imps_consumed = 0;
-        for (auto imp : p()->warlock_pet_list.wild_imps)
+        warlock_spell_t::execute();
+        auto imps_consumed = p() -> warlock_pet_list.wild_imps.n_active_pets();
+        for ( auto imp : p() -> warlock_pet_list.wild_imps )
         {
-          if (!imp->is_sleeping())
-          {
-            explosion->casts_left = (imp->resources.current[RESOURCE_ENERGY] / 20);
-            explosion->set_target(this->target);
-            explosion->execute();
-            imp->dismiss();
-            imps_consumed++;
-          }
+          explosion->casts_left = (imp->resources.current[RESOURCE_ENERGY] / 20);
+          explosion->set_target(this->target);
+          explosion->execute();
+          imp -> dismiss();
         }
 
         if (p()->azerite.explosive_potential.ok() && imps_consumed >= 3)
@@ -730,13 +703,7 @@ namespace warlock {
       {
         demonology_spell_t::execute();
 
-        for ( auto& demonic_tyrant : p()->warlock_pet_list.demonic_tyrants)
-        {
-          if (demonic_tyrant->is_sleeping())
-          {
-            demonic_tyrant->summon(data().duration());
-          }
-        }
+        p()->warlock_pet_list.demonic_tyrants.spawn( data().duration() );
 
         if ( p()->legendary.sindorei_spite && p()->cooldowns.sindorei_spite_icd->up() )
         {
@@ -749,20 +716,17 @@ namespace warlock {
 
         if (p()->talents.demonic_consumption->ok())
         {
-          for (auto imp : p()->warlock_pet_list.wild_imps)
+          for ( auto imp : p() -> warlock_pet_list.wild_imps )
           {
-            if (!imp->is_sleeping())
+            double available = imp->resources.current[RESOURCE_ENERGY];
+            imp->dismiss();
+            for (auto dt : p()->warlock_pet_list.demonic_tyrants)
             {
-              double available = imp->resources.current[RESOURCE_ENERGY];
-              imp->dismiss(true);
-              for (auto dt : p()->warlock_pet_list.demonic_tyrants)
+              if (!dt->is_sleeping())
               {
-                if (!dt->is_sleeping())
+                for (int i = 0; i < (available/20*3); i++) // TODO: check if hardcoded value can be replaced.
                 {
-                  for (int i = 0; i < (available/20*3); i++) // TODO: check if hardcoded value can be replaced.
-                  {
-                    dt->buffs.demonic_consumption->trigger();
-                  }
+                  dt->buffs.demonic_consumption->trigger();
                 }
               }
             }
@@ -905,15 +869,7 @@ namespace warlock {
           }
         };
 
-        std::vector<pets::demonology::wild_imp_pet_t*> imps;
-
-        for (auto imp : p()->warlock_pet_list.wild_imps)
-        {
-          if (!imp->is_sleeping())
-          {
-            imps.push_back(imp);
-          }
-        }
+        auto imps = p() -> warlock_pet_list.wild_imps.active_pets();
 
         std::sort(imps.begin(), imps.end(), lower_energy());
 
@@ -1024,16 +980,11 @@ namespace warlock {
         p()->buffs.vilefiend->set_duration(data().duration());
         p()->buffs.vilefiend->trigger();
 
-        for (auto& vilefiend : p()->warlock_pet_list.vilefiends)
-        {
-          if (vilefiend->is_sleeping())
-          {
-            vilefiend->summon(data().duration());
-            vilefiend->active.bile_spit->set_target(execute_state->target);
-            vilefiend->active.bile_spit->execute();
-            break;
-          }
-        }
+        // Spawn a single vilefiend, and grab it's pointer so we can execute an instant bile split
+        // TODO: The bile split execution should move to the pet itself, instead of here
+        auto vilefiend = p()->warlock_pet_list.vilefiends.spawn( data().duration() ).front();
+        vilefiend->active.bile_spit->set_target( execute_state->target );
+        vilefiend->active.bile_spit->execute();
       }
     };
 
@@ -1136,22 +1087,9 @@ namespace warlock {
        * Helper function to actually summon 'num_summons' random pets from a given pet list.
        */
       template<typename pet_list_type>
-      void summon_random_pet_helper(const pet_list_type& pet_list, int num_summons = 1)
+      void summon_random_pet_helper(pet_list_type& pet_list, int num_summons = 1)
       {
-        int pets_summoned = 0;
-        for (auto demon : pet_list)
-        {
-          if (demon->is_sleeping())
-          {
-            demon->summon(summon_duration);
-            ++pets_summoned;
-            if (pets_summoned >= num_summons)
-            {
-              break;
-            }
-          }
-        }
-        assert(pets_summoned == num_summons && "Could not summon enough random pets.");
+        pet_list.spawn( summon_duration, as<unsigned>( num_summons ) );
       }
 
       /**
@@ -1276,14 +1214,7 @@ namespace warlock {
       ->set_tick_time_behavior(buff_tick_time_behavior::UNHASTED)
       ->set_tick_callback([this](buff_t*, int, const timespan_t&)
       {
-        for (auto imp : warlock_pet_list.wild_imps)
-        {
-          if (imp->is_sleeping())
-          {
-            imp->summon(find_spell(279910)->duration());
-            break;
-          }
-        }
+        warlock_pet_list.wild_imps.spawn();
         if (rng().roll(talents.inner_demons->effectN(1).percent())) {
           active.summon_random_demon->execute();
         }
@@ -1374,6 +1305,14 @@ namespace warlock {
     azerite.explosive_potential             = find_azerite_spell("Explosive Potential");
 
     active.summon_random_demon              = new actions_demonology::summon_random_demon_t(this, "");
+
+    // Initialize some default values for pet spawners
+    auto imp_summon_spell = find_spell( 104317 );
+    warlock_pet_list.wild_imps.set_default_duration( imp_summon_spell->duration() );
+
+    auto dreadstalker_spell = find_spell( 193332 );
+    warlock_pet_list.dreadstalkers.set_default_duration( dreadstalker_spell->duration() +
+        sets->set( WARLOCK_DEMONOLOGY, T19, B4 )->effectN( 1 ).time_value() );
   }
 
   void warlock_t::init_gains_demonology() {

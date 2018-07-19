@@ -1,6 +1,8 @@
 #pragma once
 #include "simulationcraft.hpp"
 
+#include "player/pet_spawner.hpp"
+
 namespace warlock
 {
     struct warlock_t;
@@ -100,33 +102,31 @@ namespace warlock
       {
         pets::warlock_pet_t* active;
         pets::warlock_pet_t* last;
-        static const int WILD_IMP_LIMIT = 25;
-        static const int DREADSTALKER_LIMIT = 4;
-        static const int VILFIEND_LIMIT = 1;
-        static const int DEMONIC_TYRANT_LIMIT = 1;
         static const int INFERNAL_LIMIT = 1;
-        static const int RANDOM_LIMIT = 9;
-        static const int RARE_RANDOM_LIMIT = 4;
         static const int DARKGLARE_LIMIT = 1;
-
-        std::array<pets::demonology::wild_imp_pet_t*, WILD_IMP_LIMIT> wild_imps;
-        std::array<pets::demonology::dreadstalker_t*, DREADSTALKER_LIMIT> dreadstalkers;
-        std::array<pets::demonology::vilefiend_t*, VILFIEND_LIMIT> vilefiends;
-        std::array<pets::demonology::demonic_tyrant_t*, DEMONIC_TYRANT_LIMIT> demonic_tyrants;
-        std::array<pets::demonology::random_demons::shivarra_t*, RANDOM_LIMIT> shivarra;
-        std::array<pets::demonology::random_demons::darkhound_t*, RANDOM_LIMIT> darkhounds;
-        std::array<pets::demonology::random_demons::bilescourge_t*, RANDOM_LIMIT> bilescourges;
-        std::array<pets::demonology::random_demons::urzul_t*, RANDOM_LIMIT> urzuls;
-        std::array<pets::demonology::random_demons::void_terror_t*, RANDOM_LIMIT> void_terrors;
-        std::array<pets::demonology::random_demons::wrathguard_t*, RANDOM_LIMIT> wrathguards;
-        std::array<pets::demonology::random_demons::vicious_hellhound_t*, RANDOM_LIMIT> vicious_hellhounds;
-        std::array<pets::demonology::random_demons::illidari_satyr_t*, RANDOM_LIMIT> illidari_satyrs;
-        std::array<pets::demonology::random_demons::eyes_of_guldan_t*, RARE_RANDOM_LIMIT*4> eyes_of_guldan;
-        std::array<pets::demonology::random_demons::prince_malchezaar_t*, RARE_RANDOM_LIMIT> prince_malchezaar;
 
         std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
 
         std::array<pets::affliction::darkglare_t*, DARKGLARE_LIMIT> darkglare;
+
+        spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers;
+        spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends;
+        spawner::pet_spawner_t<pets::demonology::demonic_tyrant_t, warlock_t> demonic_tyrants;
+
+        spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
+
+        spawner::pet_spawner_t<pets::demonology::random_demons::shivarra_t, warlock_t> shivarra;
+        spawner::pet_spawner_t<pets::demonology::random_demons::darkhound_t, warlock_t> darkhounds;
+        spawner::pet_spawner_t<pets::demonology::random_demons::bilescourge_t, warlock_t> bilescourges;
+        spawner::pet_spawner_t<pets::demonology::random_demons::urzul_t, warlock_t> urzuls;
+        spawner::pet_spawner_t<pets::demonology::random_demons::void_terror_t, warlock_t> void_terrors;
+        spawner::pet_spawner_t<pets::demonology::random_demons::wrathguard_t, warlock_t> wrathguards;
+        spawner::pet_spawner_t<pets::demonology::random_demons::vicious_hellhound_t, warlock_t> vicious_hellhounds;
+        spawner::pet_spawner_t<pets::demonology::random_demons::illidari_satyr_t, warlock_t> illidari_satyrs;
+        spawner::pet_spawner_t<pets::demonology::random_demons::eyes_of_guldan_t, warlock_t> eyes_of_guldan;
+        spawner::pet_spawner_t<pets::demonology::random_demons::prince_malchezaar_t, warlock_t> prince_malchezaar;
+
+        pets_t( warlock_t* w );
       } warlock_pet_list;
 
       std::vector<std::string> pet_name_list;
@@ -877,7 +877,7 @@ namespace warlock
           action_t* firebolt;
           bool isnotdoge;
           bool power_siphon;
-          wild_imp_pet_t(sim_t* sim, warlock_t* owner);
+          wild_imp_pet_t(warlock_t* owner);
           virtual void init_base_stats() override;
           virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
           virtual void arise() override;
@@ -886,7 +886,7 @@ namespace warlock
 
         struct dreadstalker_t : public warlock_pet_t
         {
-          dreadstalker_t(sim_t* sim, warlock_t* owner);
+          dreadstalker_t(warlock_t* owner);
           virtual void init_base_stats() override;
           virtual void arise() override;
           virtual void demise() override;
@@ -895,14 +895,14 @@ namespace warlock
 
         struct vilefiend_t : public warlock_pet_t
         {
-          vilefiend_t(sim_t* sim, warlock_t* owner);
+          vilefiend_t(warlock_t* owner);
           virtual void init_base_stats() override;
           virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
         };
 
         struct demonic_tyrant_t : public warlock_pet_t
         {
-          demonic_tyrant_t(sim_t* sim, warlock_t* owner, const std::string& name = "demonic_tyrant");
+          demonic_tyrant_t(warlock_t* owner, const std::string& name = "demonic_tyrant");
           virtual void init_base_stats() override;
           virtual void demise() override;
           virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
@@ -912,7 +912,7 @@ namespace warlock
           struct shivarra_t : public warlock_pet_t
           {
             action_t* multi_slash;
-            shivarra_t(sim_t* sim, warlock_t* owner, const std::string& name = "shivarra");
+            shivarra_t(warlock_t* owner, const std::string& name = "shivarra");
             virtual void init_base_stats() override;
             virtual void arise() override;
             virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
@@ -920,21 +920,21 @@ namespace warlock
           struct darkhound_t : public warlock_pet_t
           {
             action_t* fel_bite;
-            darkhound_t(sim_t* sim, warlock_t* owner, const std::string& name = "darkhound");
+            darkhound_t(warlock_t* owner, const std::string& name = "darkhound");
             virtual void init_base_stats() override;
             virtual void arise() override;
             virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
           };
           struct bilescourge_t : public warlock_pet_t
           {
-            bilescourge_t(sim_t* sim, warlock_t* owner, const std::string& name = "bilescourge");
+            bilescourge_t(warlock_t* owner, const std::string& name = "bilescourge");
             virtual void init_base_stats() override;
             virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
           };
           struct urzul_t : public warlock_pet_t
           {
             action_t* many_faced_bite;
-            urzul_t(sim_t* sim, warlock_t* owner, const std::string& name = "urzul");
+            urzul_t(warlock_t* owner, const std::string& name = "urzul");
             virtual void init_base_stats() override;
             virtual void arise() override;
             virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
@@ -942,7 +942,7 @@ namespace warlock
           struct void_terror_t : public warlock_pet_t
           {
             action_t* double_breath;
-            void_terror_t(sim_t* sim, warlock_t* owner, const std::string& name = "void_terror");
+            void_terror_t(warlock_t* owner, const std::string& name = "void_terror");
             virtual void init_base_stats() override;
             virtual void arise() override;
             virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
@@ -950,7 +950,7 @@ namespace warlock
           struct wrathguard_t : public warlock_pet_t
           {
             action_t* overhead_assault;
-            wrathguard_t(sim_t* sim, warlock_t* owner, const std::string& name = "wrathguard");
+            wrathguard_t(warlock_t* owner, const std::string& name = "wrathguard");
             virtual void init_base_stats() override;
             virtual void arise() override;
             virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
@@ -958,7 +958,7 @@ namespace warlock
           struct vicious_hellhound_t : public warlock_pet_t
           {
             action_t* demon_fang;
-            vicious_hellhound_t(sim_t* sim, warlock_t* owner, const std::string& name = "vicious_hellhound");
+            vicious_hellhound_t(warlock_t* owner, const std::string& name = "vicious_hellhound");
             virtual void init_base_stats() override;
             virtual void arise() override;
             virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
@@ -966,14 +966,14 @@ namespace warlock
           struct illidari_satyr_t : public warlock_pet_t
           {
             action_t* shadow_slash;
-            illidari_satyr_t(sim_t* sim, warlock_t* owner, const std::string& name = "illidari_satyr");
+            illidari_satyr_t(warlock_t* owner, const std::string& name = "illidari_satyr");
             virtual void init_base_stats() override;
             virtual void arise() override;
             virtual action_t* create_action(const std::string& name, const std::string& options_str) override;
           };
           struct eyes_of_guldan_t : public warlock_pet_t
           {
-            eyes_of_guldan_t(sim_t* sim, warlock_t* owner, const std::string& name = "eyes_of_guldan");
+            eyes_of_guldan_t(warlock_t* owner, const std::string& name = "eyes_of_guldan");
             virtual void init_base_stats() override;
             virtual void arise() override;
             virtual void demise() override;
@@ -981,7 +981,7 @@ namespace warlock
           };
           struct prince_malchezaar_t : public warlock_pet_t
           {
-            prince_malchezaar_t(sim_t* sim, warlock_t* owner, const std::string& name = "prince_malchezaar");
+            prince_malchezaar_t(warlock_t* owner, const std::string& name = "prince_malchezaar");
             virtual void arise() override;
             virtual void demise() override;
             virtual void init_base_stats() override;

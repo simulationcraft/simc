@@ -197,7 +197,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     havoc_target( nullptr ),
     wracking_brilliance(false),
     agony_accumulator( 0.0 ),
-    warlock_pet_list(),
+    warlock_pet_list( this ),
     active(),
     talents(),
     legendary(),
@@ -1170,6 +1170,25 @@ struct warlock_module_t : public module_t
   virtual void combat_begin( sim_t* ) const override { }
   virtual void combat_end( sim_t* ) const override { }
 };
+
+warlock::warlock_t::pets_t::pets_t( warlock_t* w ) :
+  active( nullptr ),
+  last( nullptr ),
+  dreadstalkers( "dreadstalker", w ),
+  vilefiends( "vilefiend", w ),
+  demonic_tyrants( "demonic_tyrant", w ),
+  wild_imps( "wild_imp", w ),
+  shivarra( "shivarra", w ),
+  darkhounds( "darkhound", w ),
+  bilescourges( "bilescourge", w ),
+  urzuls( "urzul", w ),
+  void_terrors( "void_terror", w ),
+  wrathguards( "wrathguard", w ),
+  vicious_hellhounds( "vicious_hellhound", w ),
+  illidari_satyrs( "illidari_satyr", w ),
+  eyes_of_guldan( "eye_of_guldan", w ),
+  prince_malchezaar( "prince_malchezaar", w )
+{ }
 }
 
 const module_t* module_t::warlock()
