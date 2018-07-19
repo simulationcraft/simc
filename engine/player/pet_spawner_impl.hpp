@@ -523,7 +523,7 @@ void pet_spawner_t<T, O>::merge( base_actor_spawner_t* other )
   }
 
   auto n_shared = std::min( n_pets(), o -> n_pets() );
-  ssize_t n_extra = o -> n_pets() - n_pets();
+  int n_extra = as<int>( o -> n_pets() - n_pets() );
 
   // Merge shared pets .. note that the pet indeices may not be the same, but the dynamic pets
   // don't really care about that. We can presume that between the threads, the "natural order" of
@@ -536,7 +536,7 @@ void pet_spawner_t<T, O>::merge( base_actor_spawner_t* other )
 
   // Other sim (i.e., other thread) has more pets spawned than main thread, main thread needs to
   // create placeholders and merge the others in
-  for ( ssize_t new_idx = 0; new_idx < n_extra; ++new_idx )
+  for ( int new_idx = 0; new_idx < n_extra; ++new_idx )
   {
     T* pet = create_pet( PHASE_MERGE );
     if ( pet == nullptr )
