@@ -298,10 +298,12 @@ struct felguard_pet_t : public warlock_pet_t
 {
   action_t* soul_strike;
   action_t* ds_felstorm;
+  cooldown_t* felstorm;
 
   felguard_pet_t(warlock_t* owner, const std::string& name);
   void init_base_stats() override;
   action_t* create_action(const std::string& name, const std::string& options_str) override;
+  timespan_t available() const override;
 
   void queue_ds_felstorm();
 };

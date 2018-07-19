@@ -477,6 +477,28 @@ felguard_pet_t::felguard_pet_t(warlock_t* owner, const std::string& name) :
   action_list_str += "/legion_strike,if=energy>=100";
 }
 
+timespan_t felguard_pet_t::available() const
+{
+  double energy_left = resources.current[ RESOURCE_ENERGY ];
+  double deficit = energy_left - 60 /* TODO: Don't hardcode */;
+
+  if ( deficit >= 0 )
+  {
+    return warlock_pet_t::available();
+  }
+
+  double rps = resource_regen_per_second( RESOURCE_ENERGY );
+  double time_to_threshold = std::fabs( deficit ) / rps;
+
+  // Fuzz regen by making the pet wait a bit extra if it's just below the resource threshold
+  if ( time_to_threshold < 0.001 )
+  {
+    return warlock_pet_t::available();
+  }
+
+  return timespan_t::from_seconds( time_to_threshold );
+}
+
 void felguard_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
@@ -538,7 +560,9 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 
 wild_imp_pet_t::wild_imp_pet_t(warlock_t* owner) : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP ),
   firebolt(), power_siphon(false)
-{ }
+{
+  regen_type = REGEN_DISABLED;
+}
 
 void wild_imp_pet_t::init_base_stats()
 {
@@ -708,6 +732,7 @@ struct headbutt_t : public warlock_pet_melee_attack_t {
 vilefiend_t::vilefiend_t(warlock_t* owner) : warlock_pet_t(owner, "vilefiend", PET_VILEFIEND),
   bile_spit( nullptr )
 {
+  regen_type = REGEN_DISABLED;
   action_list_str += "travel/headbutt";
   owner_coeff.ap_from_sp = 0.23;
 }
@@ -769,6 +794,7 @@ struct demonfire_t : public warlock_pet_spell_t
 
 demonic_tyrant_t::demonic_tyrant_t(warlock_t* owner, const std::string& name) :
   warlock_pet_t(owner, name, PET_DEMONIC_TYRANT, name != "demonic_tyrant") {
+  regen_type = REGEN_DISABLED;
   if ( o()->bugs )
   {
     action_list_str += "/demonfire";
@@ -841,6 +867,7 @@ shivarra_t::shivarra_t(warlock_t* owner, const std::string& name) :
   warlock_pet_t(owner, name, PET_WARLOCK_RANDOM, name != "shivarra"),
   multi_slash()
 {
+  regen_type = REGEN_DISABLED;
   action_list_str = "travel/multi_slash";
   owner_coeff.ap_from_sp = 0.065;
 }
@@ -884,6 +911,7 @@ darkhound_t::darkhound_t(warlock_t* owner, const std::string& name) :
   warlock_pet_t(owner, name, PET_WARLOCK_RANDOM, name != "darkhound"),
   fel_bite()
 {
+  regen_type = REGEN_DISABLED;
   action_list_str = "travel/fel_bite";
   owner_coeff.ap_from_sp = 0.065;
 }
@@ -923,6 +951,7 @@ struct toxic_bile_t : public warlock_pet_spell_t
 bilescourge_t::bilescourge_t(warlock_t* owner, const std::string& name) :
   warlock_pet_t(owner, name, PET_WARLOCK_RANDOM, name != "bilescourge")
 {
+  regen_type = REGEN_DISABLED;
   action_list_str = "toxic_bile";
   owner_coeff.ap_from_sp = 0.065;
 }
@@ -955,6 +984,7 @@ struct many_faced_bite_t : public warlock_pet_melee_attack_t
 urzul_t::urzul_t(warlock_t* owner, const std::string& name) :
   warlock_pet_t(owner, name, PET_WARLOCK_RANDOM, name != "urzul"), many_faced_bite()
 {
+  regen_type = REGEN_DISABLED;
   action_list_str = "travel";
   action_list_str += "/many_faced_bite";
   owner_coeff.ap_from_sp = 0.065;
@@ -1017,6 +1047,7 @@ void_terror_t::void_terror_t(warlock_t* owner, const std::string& name) :
   warlock_pet_t(owner, name, PET_WARLOCK_RANDOM, name != "void_terror")
   , double_breath()
 {
+  regen_type = REGEN_DISABLED;
   action_list_str = "travel";
   action_list_str += "/double_breath";
   owner_coeff.ap_from_sp = 0.065;
@@ -1063,6 +1094,7 @@ wrathguard_t::wrathguard_t(warlock_t* owner, const std::string& name) :
   warlock_pet_t(owner, name, PET_WARLOCK_RANDOM, name != "wrathguard")
   , overhead_assault()
 {
+  regen_type = REGEN_DISABLED;
   action_list_str = "travel/overhead_assault";
   owner_coeff.ap_from_sp = 0.065;
 }
@@ -1108,6 +1140,7 @@ struct demon_fangs_t : public warlock_pet_melee_attack_t
 vicious_hellhound_t::vicious_hellhound_t(warlock_t* owner, const std::string& name) :
   warlock_pet_t(owner, name, PET_WARLOCK_RANDOM, name != "vicious_hellhound"), demon_fang()
 {
+  regen_type = REGEN_DISABLED;
   action_list_str = "travel";
   action_list_str += "/demon_fangs";
   owner_coeff.ap_from_sp = 0.065;
@@ -1156,6 +1189,7 @@ illidari_satyr_t::illidari_satyr_t(warlock_t* owner, const std::string& name) :
   warlock_pet_t(owner, name, PET_WARLOCK_RANDOM, name != "illidari_satyr")
   , shadow_slash()
 {
+  regen_type = REGEN_DISABLED;
   action_list_str = "travel/shadow_slash";
   owner_coeff.ap_from_sp = 0.065;
 }
@@ -1195,6 +1229,7 @@ struct eye_of_guldan_t : public warlock_pet_spell_t
 
 eyes_of_guldan_t::eyes_of_guldan_t(warlock_t* owner, const std::string& name) :
   warlock_pet_t(owner, name, PET_WARLOCK_RANDOM, name != "eyes_of_guldan") {
+  regen_type = REGEN_DISABLED;
   action_list_str = "eye_of_guldan";
   owner_coeff.ap_from_sp = 0.065;
 }
@@ -1225,6 +1260,7 @@ action_t* eyes_of_guldan_t::create_action(const std::string& name, const std::st
 // prince malchezaar
 prince_malchezaar_t::prince_malchezaar_t(warlock_t* owner, const std::string& name) :
   warlock_pet_t(owner, name, PET_WARLOCK_RANDOM, name != "prince_malchezaar") {
+  regen_type = REGEN_DISABLED;
   owner_coeff.ap_from_sp = 0.616;
   action_list_str = "travel";
 }
