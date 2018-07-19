@@ -520,6 +520,9 @@ struct shadow_crash_t final : public priest_spell_t
     radius                      = data().effectN( 1 ).radius();
 
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
+
+    affected_by.voidform_da = affected_by.voidform_ta = affected_by.shadowform_da = affected_by.shadowform_ta =
+        affected_by.twist_of_fate_da = affected_by.twist_of_fate_ta = true; // TODO: fix by splitting actions
   }
 
   void execute() override
@@ -725,6 +728,9 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
     parse_effect_data( dmg_data->effectN( 1 ) );
     school = SCHOOL_SHADOW;
+
+    affected_by.voidform_da = affected_by.voidform_ta = affected_by.shadowform_da = affected_by.shadowform_ta =
+        affected_by.twist_of_fate_da = affected_by.twist_of_fate_ta = true; // TODO: fix by splitting actions
   }
 
   void impact( action_state_t* s ) override
