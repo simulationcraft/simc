@@ -752,26 +752,6 @@ action_t* vilefiend_t::create_action(const std::string& name, const std::string&
 }
 
 // demonic tyrant
-struct demonfire_blast_t : public warlock_pet_spell_t
-{
-  demonfire_blast_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_spell_t("demonfire_blast", p, p -> find_spell(265279))
-  {
-    parse_options(options_str);
-  }
-
-  double action_multiplier() const override
-  {
-    double m = warlock_pet_spell_t::action_multiplier();
-
-    if (p()->buffs.demonic_consumption->check())
-    {
-      m *= 1.0 + p()->buffs.demonic_consumption->check_stack_value();
-    }
-
-    return m;
-  }
-};
-
 struct demonfire_t : public warlock_pet_spell_t
 {
   demonfire_t(warlock_pet_t* p, const std::string& options_str) : warlock_pet_spell_t("demonfire", p, p -> find_spell(270481))
@@ -795,15 +775,7 @@ struct demonfire_t : public warlock_pet_spell_t
 demonic_tyrant_t::demonic_tyrant_t(warlock_t* owner, const std::string& name) :
   warlock_pet_t(owner, name, PET_DEMONIC_TYRANT, name != "demonic_tyrant") {
   regen_type = REGEN_DISABLED;
-  if ( o()->bugs )
-  {
-    action_list_str += "/demonfire";
-  }
-  else
-  {
-    action_list_str += "/sequence,name=rotation:demonfire_blast:demonfire:demonfire:demonfire";
-    action_list_str += "/restart_sequence,name=rotation";
-  }
+  action_list_str += "/demonfire";
 }
 
 void demonic_tyrant_t::init_base_stats() {
@@ -822,7 +794,6 @@ void demonic_tyrant_t::demise() {
 
 action_t* demonic_tyrant_t::create_action(const std::string& name, const std::string& options_str) {
   if (name == "demonfire") return new demonfire_t(this, options_str);
-  if (name == "demonfire_blast") return new demonfire_blast_t(this, options_str);
 
   return warlock_pet_t::create_action(name, options_str);
 }
