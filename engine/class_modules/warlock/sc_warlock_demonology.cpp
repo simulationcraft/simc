@@ -147,13 +147,8 @@ namespace warlock {
         warlock_pet_t::init_base_stats();
 
         melee_attack = new warlock_pet_melee_t(this);
+        melee_attack->base_dd_multiplier *= 1.1;
         special_action = new axe_toss_t(this, "");
-      }
-
-      double composite_player_multiplier(school_e school) const {
-        double m = warlock_pet_t::composite_player_multiplier(school);
-        m *= 1.1;
-        return m;
       }
 
       action_t* create_action(const std::string& name, const std::string& options_str) {
