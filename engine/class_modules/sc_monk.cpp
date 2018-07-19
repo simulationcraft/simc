@@ -1954,7 +1954,7 @@ public:
     main_hand_weapon.max_dmg = dbc.spell_scaling( o() -> type, level() );
     main_hand_weapon.damage = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    owner_coeff.ap_from_ap = 4.95;
+    owner_coeff.ap_from_ap = 1;
   }
 
   monk_t* o()
