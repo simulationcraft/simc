@@ -618,6 +618,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   type( t ),
   parent( nullptr ),
   index( -1 ),
+  creation_iteration( sim -> current_iteration ),
   actor_spawn_index( -1 ),
   race( r ),
   role( ROLE_NONE ),
@@ -3855,7 +3856,7 @@ void player_t::sequence_add_wait( const timespan_t& amount, const timespan_t& ts
 {
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( sim->iterations <= 1 && sim->current_iteration == 0 ) ||
-       ( sim->iterations > 1 && sim->current_iteration == 1 ) )
+       ( sim->iterations > 1 && nth_iteration() == 1 ) )
   {
     if ( collected_data.action_sequence.size() <= sim->expected_max_time() * 2.0 + 3.0 )
     {
@@ -3882,7 +3883,7 @@ void player_t::sequence_add( const action_t* a, const player_t* target, const ti
 {
   // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
   if ( ( a->sim->iterations <= 1 && a->sim->current_iteration == 0 ) ||
-       ( a->sim->iterations > 1 && a->sim->current_iteration == 1 ) )
+       ( a->sim->iterations > 1 && nth_iteration() == 1 ) )
   {
     if ( collected_data.action_sequence.size() <= sim->expected_max_time() * 2.0 + 3.0 )
     {
@@ -4023,7 +4024,7 @@ void player_t::datacollection_begin()
     return;
 
   if ( sim->debug )
-    sim->out_debug.printf( "Data collection begins for player %s", name() );
+    sim->out_debug.print( "Data collection begins for player {} (id={})", name(), index );
 
   iteration_fight_length                = timespan_t::zero();
   iteration_waiting_time                = timespan_t::zero();
@@ -4071,10 +4072,6 @@ void player_t::datacollection_end()
   if ( !requires_data_collection() )
     return;
 
-  if ( sim->debug )
-    sim->out_debug.printf( "Data collection ends for player %s at time %.4f fight_length=%.4f", name(),
-                           sim->current_time().total_seconds(), iteration_fight_length.total_seconds() );
-
   for ( size_t i = 0; i < pet_list.size(); ++i )
     pet_list[ i ]->datacollection_end();
 
@@ -4085,6 +4082,14 @@ void player_t::datacollection_end()
     iteration_fight_length += sim->current_time() - arise_time;
     arise_time = sim->current_time();
   }
+
+  range::for_each( spawners, []( spawner::base_actor_spawner_t* spawner ) {
+    spawner->datacollection_end();
+  } );
+
+  if ( sim->debug )
+    sim->out_debug.printf( "Data collection ends for player %s (id=%d) at time %.4f fight_length=%.4f", name(), index,
+                           sim->current_time().total_seconds(), iteration_fight_length.total_seconds() );
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
     stats_list[ i ]->datacollection_end();
@@ -4462,6 +4467,8 @@ void player_t::reset()
   range::for_each( rppm_list, []( real_ppm_t* rppm ) { rppm->reset(); } );
 
   range::for_each( shuffled_rng_list, []( shuffled_rng_t* shuffled_rng ) { shuffled_rng->reset(); } );
+
+  range::for_each( spawners, []( spawner::base_actor_spawner_t* obj ) { obj->reset(); } );
 
   potion_used = 0;
 
@@ -7201,7 +7208,7 @@ struct snapshot_stats_t : public action_t
 
     completed = true;
 
-    if ( sim->current_iteration > 0 )
+    if ( p -> nth_iteration() > 0 )
       return;
 
     if ( sim->log )
@@ -7316,7 +7323,7 @@ struct snapshot_stats_t : public action_t
 
   virtual bool ready() override
   {
-    if ( completed || sim->current_iteration > 0 )
+    if ( completed || player -> nth_iteration() > 0 )
       return false;
     return action_t::ready();
   }
@@ -9589,43 +9596,63 @@ expr_t* player_t::create_expression( const std::string& expression_str )
   if ( splits.size() >= 2 && splits[ 0 ] == "pet" )
   {
     pet_t* pet = find_pet( splits[ 1 ] );
-    if ( !pet )
+    spawner::base_actor_spawner_t* spawner = nullptr;
+
+    if ( ! pet )
     {
-      throw std::invalid_argument(fmt::format("Cannot find pet '{}'.", splits[ 1 ]));
+      spawner = find_spawner( splits[ 1 ] );
     }
 
-    if ( splits.size() == 2 )
+    if ( ! pet && ! spawner )
     {
-      return expr_t::create_constant( "pet_index_expr", static_cast<double>( pet->actor_index ) );
+      throw std::invalid_argument(fmt::format("Cannot find pet or pet spawner '{}'.", splits[ 1 ]));
     }
-    // pet.foo.blah
+
+    if ( pet )
+    {
+      if ( splits.size() == 2 )
+      {
+        return expr_t::create_constant( "pet_index_expr", static_cast<double>( pet->actor_index ) );
+      }
+      // pet.foo.blah
+      else
+      {
+        if ( splits[ 2 ] == "active" )
+        {
+          return make_fn_expr(expression_str, [pet] {return !pet->is_sleeping();});
+        }
+        else if ( splits[ 2 ] == "remains" )
+        {
+          return make_fn_expr(expression_str, [pet] {
+            if ( pet->expiration && pet->expiration->remains() > timespan_t::zero() )
+            {
+              return pet->expiration->remains().total_seconds();
+            }
+            else
+            {
+              return 0.0;
+            };});
+        }
+
+        // build player/pet expression from the tail of the expression string.
+        std::string tail = expression_str.substr( splits[ 1 ].length() + 5 );
+        if ( expr_t* e = pet->create_expression( tail ) )
+        {
+          return e;
+        }
+
+        throw std::invalid_argument(fmt::format("Unsupported pet expression '{}'.", tail));
+      }
+    }
+    // No pet found, but a pet spawner was found. Make a pet-spawner based expression out of the
+    // rest of the info
     else
     {
-      if ( splits[ 2 ] == "active" )
+      auto rest = arv::make_view( splits );
+      if ( auto expr = spawner -> create_expression( rest.slice( 2, rest.size() - 2 ) ) )
       {
-        return make_fn_expr(expression_str, [pet] {return !pet->is_sleeping();});
+        return expr;
       }
-      else if ( splits[ 2 ] == "remains" )
-      {
-        return make_fn_expr(expression_str, [pet] {
-          if ( pet->expiration && pet->expiration->remains() > timespan_t::zero() )
-          {
-            return pet->expiration->remains().total_seconds();
-          }
-          else
-          {
-            return 0.0;
-          };});
-      }
-
-      // build player/pet expression from the tail of the expression string.
-      std::string tail = expression_str.substr( splits[ 1 ].length() + 5 );
-      if ( expr_t* e = pet->create_expression( tail ) )
-      {
-        return e;
-      }
-
-      throw std::invalid_argument(fmt::format("Unsupported pet expression '{}'.", tail));
     }
   }
 
@@ -11708,6 +11735,10 @@ double player_collected_data_t::calculate_tmi( const health_changes_timeline_t& 
 void player_collected_data_t::collect_data( const player_t& p )
 {
   double f_length   = p.iteration_fight_length.total_seconds();
+  // Use a composite uptime for the amount per second calculations to accurately take into account
+  // dynamic pets (for example wild imps) spawned through the pet spawner system. Only used for
+  // output metrics.
+  double uptime     = p.composite_active_time().total_seconds();
   double sim_length = p.sim->current_time().total_seconds();
   double w_time     = p.iteration_waiting_time.total_seconds();
   double p_time     = p.iteration_pooling_time.total_seconds();
@@ -11746,17 +11777,17 @@ void player_collected_data_t::collect_data( const player_t& p )
   }
 
   compound_dmg.add( total_iteration_dmg );
-  prioritydps.add( f_length ? total_priority_iteration_dmg / f_length : 0 );
-  dps.add( f_length ? total_iteration_dmg / f_length : 0 );
+  prioritydps.add( uptime ? total_priority_iteration_dmg / uptime : 0 );
+  dps.add( uptime ? total_iteration_dmg / uptime : 0 );
   dpse.add( sim_length ? total_iteration_dmg / sim_length : 0 );
-  double dps_metric = f_length ? ( total_iteration_dmg / f_length ) : 0;
+  double dps_metric = uptime ? ( total_iteration_dmg / uptime ) : 0;
 
   compound_heal.add( total_iteration_heal );
-  hps.add( f_length ? total_iteration_heal / f_length : 0 );
+  hps.add( uptime ? total_iteration_heal / uptime : 0 );
   hpse.add( sim_length ? total_iteration_heal / sim_length : 0 );
   compound_absorb.add( total_iteration_absorb );
-  aps.add( f_length ? total_iteration_absorb / f_length : 0.0 );
-  double heal_metric = f_length ? ( ( total_iteration_heal + total_iteration_absorb ) / f_length ) : 0;
+  aps.add( uptime ? total_iteration_absorb / uptime : 0.0 );
+  double heal_metric = uptime ? ( ( total_iteration_heal + total_iteration_absorb ) / uptime ) : 0;
 
   heal_taken.add( p.iteration_heal_taken );
   htps.add( f_length ? p.iteration_heal_taken / f_length : 0 );
@@ -12350,7 +12381,7 @@ void player_t::deactivate()
 {
   // Record total number of iterations ran for this actor. Relevant in target_error cases for data
   // analysis at the end of simulation
-  collected_data.total_iterations = sim->current_iteration;
+  collected_data.total_iterations = nth_iteration();
 }
 
 void player_t::register_combat_begin( buff_t* b )
@@ -12379,4 +12410,18 @@ std::ostream& operator<<(std::ostream &os, const player_t& p)
 {
   fmt::print(os, "Player '{}' ({})", p.name(), util::player_type_string(p.type) );
   return os;
+}
+
+spawner::base_actor_spawner_t* player_t::find_spawner( const std::string& id ) const
+{
+  auto it = range::find_if( spawners, [ &id ]( spawner::base_actor_spawner_t* o ) {
+    return util::str_compare_ci( id, o -> name() );
+  } );
+
+  if ( it != spawners.end() )
+  {
+    return *it;
+  }
+
+  return nullptr;
 }

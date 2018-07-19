@@ -259,7 +259,9 @@ void stats_t::datacollection_end()
   else if ( type == STATS_ABSORB )
     player -> iteration_absorb += iaa;
 
-  portion_aps.add( player -> iteration_fight_length != timespan_t::zero() ? iaa / player -> iteration_fight_length.total_seconds() : 0 );
+  auto uptime = player -> composite_active_time();
+
+  portion_aps.add( uptime != timespan_t::zero() ? iaa / uptime.total_seconds() : 0 );
   portion_apse.add( sim.current_time() != timespan_t::zero() ? iaa / sim.current_time().total_seconds() : 0 );
 
   num_executes.add( iteration_num_executes );

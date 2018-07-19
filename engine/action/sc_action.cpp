@@ -495,12 +495,11 @@ action_t::action_t( action_e ty, const std::string& token, player_t* p, const sp
   assert( option.cycle_targets == 0 );
   assert( !name_str.empty() && "Abilities must have valid name_str entries!!" );
 
-  if ( sim->initialized )
+  if ( sim->initialized && player->nth_iteration() > 0 )
   {
     sim->errorf( "Player %s action %s created after simulator initialization.", player->name(), name() );
   }
-
-  if ( sim->current_iteration > 0 )
+  if ( player->nth_iteration() > 0 )
   {
     sim->errorf( "Player %s creating action %s ouside of the first iteration", player->name(), name() );
     assert( false );
@@ -2346,7 +2345,7 @@ void action_t::reset()
   travel_events.clear();
   target = default_target;
 
-  if ( sim->current_iteration == 1 )
+  if( player->nth_iteration() == 1 )
   {
     if ( if_expr )
     {

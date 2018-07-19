@@ -19,6 +19,7 @@
  HEADERS += engine/report/sc_report.hpp
  HEADERS += engine/player/artifact_data.hpp
  HEADERS += engine/player/azerite_data.hpp
+ HEADERS += engine/player/pet_spawner.hpp
  HEADERS += engine/dbc/sc_spell_info.hpp
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp
@@ -46,6 +47,7 @@
  SOURCES += engine/util/fmt/format.cpp
  SOURCES += engine/util/fmt/posix.cpp
  SOURCES += engine/sim/x6_pantheon.cpp
+ SOURCES += engine/sim/spawner.cpp
  SOURCES += engine/sim/sc_sim.cpp
  SOURCES += engine/sim/sc_scaling.cpp
  SOURCES += engine/sim/sc_reforge_plot.cpp

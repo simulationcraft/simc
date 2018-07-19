@@ -2243,6 +2243,9 @@ void sim_t::init_actor( player_t* p )
     // First, create all the action objects and set up action lists properly
     p -> create_actions();
 
+    // Create persistent actors from dynamic spawners
+    spawner::create_persistent_actors( *p );
+
     // Create all actor pets before special effects get initialized. This ensures that we can use
     // stuff like the presence of an action (created with create_actions()) to determine if a pet
     // needs to be created or not. Similarly, talent, artifact, spec, and item based qualifiers would
@@ -2720,10 +2723,22 @@ void sim_t::merge( sim_t& other_sim )
 
   for ( auto & player : actor_list )
   {
+    // If the player is spawned by a separate wrapper class, it will handle the merging process
+    if ( player -> spawner != nullptr )
+    {
+      continue;
+    }
+
     player_t* other_p = other_sim.find_player( player -> index );
     assert( other_p );
     player -> merge( *other_p );
   }
+
+  // After normal player merging, merge all dynamically spawned players. This is done after the
+  // normal player merging because the dynamic spawner merging process may need to create new actors
+  // into the parent (e.g., thread 0) sim to accommodate child sims managing to create more actors
+  // than the parent
+  spawner::merge( *this, other_sim );
 
   range::append( iteration_data, other_sim.iteration_data );
   merge_time += util::duration_fp_seconds( start );

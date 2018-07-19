@@ -107,6 +107,9 @@ class xml_writer_t;
 struct real_ppm_t;
 struct shuffled_rng_t;
 struct ground_aoe_event_t;
+namespace spawner {
+class base_actor_spawner_t;
+}
 namespace highchart {
   struct chart_t;
 }
@@ -3151,6 +3154,7 @@ private:
 struct actor_t : private noncopyable
 {
   sim_t* sim; // owner
+  spawner::base_actor_spawner_t* spawner; // Creation/spawning of the actor delegated here
   std::string name_str;
   int event_counter; // safety counter. Shall never be less than zero
 
@@ -3160,7 +3164,7 @@ struct actor_t : private noncopyable
 #endif // ACTOR_EVENT_BOOKKEEPING
 
   actor_t( sim_t* s, const std::string& name ) :
-    sim( s ), name_str( name ),
+    sim( s ), spawner( nullptr ), name_str( name ),
     event_counter( 0 ),
     event_stopwatch( STOPWATCH_THREAD )
   {
@@ -3373,6 +3377,7 @@ struct player_t : public actor_t
   player_e type;
   player_t* parent; // corresponding player in main thread
   int index;
+  int creation_iteration; // The iteration when this actor was created, -1 for "init"
   size_t actor_index;
   int actor_spawn_index; // a unique identifier for each arise() of the actor
   // (static) attributes - things which should not change during combat
@@ -4133,6 +4138,10 @@ public:
   virtual double composite_avoidance_rating() const
   { return composite_rating( RATING_AVOIDANCE ); }
 
+  /// Total activity time for this actor during the iteration
+  virtual timespan_t composite_active_time() const
+  { return iteration_fight_length; }
+
   virtual void interrupt();
   virtual void halt();
   virtual void moving();
@@ -4341,6 +4350,17 @@ public:
   void register_combat_begin( double amount, resource_e resource, gain_t* g = nullptr );
 
   void update_off_gcd_ready();
+
+  // Stuff, testing
+  std::vector<spawner::base_actor_spawner_t*> spawners;
+
+  spawner::base_actor_spawner_t* find_spawner( const std::string& id ) const;
+  int nth_iteration() const
+  {
+    return creation_iteration == -1
+           ? sim -> current_iteration
+           : sim -> current_iteration - creation_iteration;
+  }
 };
 
 std::ostream& operator<<(std::ostream &os, const player_t& p);
@@ -4528,6 +4548,8 @@ public:
   virtual void init_resources( bool force ) override;
   virtual bool requires_data_collection() const override
   { return active_during_iteration || ( dynamic && sim -> report_pets_separately == 1 ); }
+
+  timespan_t composite_active_time() const override;
 };
 
 
@@ -8360,5 +8382,72 @@ public:
 };
 
 }
+
+namespace spawner
+{
+void merge( sim_t& parent_sim, sim_t& other_sim );
+void create_persistent_actors( player_t& player );
+
+// Minimal base class to store in owner actors automatically, all functionality should be
+// implemented in a templated class (pet_spawner_t for example). Methods that need to be invoked
+// from the core simulator should be declared here as pure virtual (must be implemented in the
+// derived class).
+class base_actor_spawner_t
+{
+protected:
+  std::string m_name;
+  player_t*   m_owner;
+
+public:
+  base_actor_spawner_t( const std::string& id, player_t* o ) :
+    m_name( id ), m_owner( o )
+  {
+    register_object();
+  }
+
+  virtual ~base_actor_spawner_t()
+  { }
+
+  const std::string& name() const
+  { return m_name; }
+
+  virtual void create_persistent_actors() = 0;
+
+  // Data merging
+  virtual void merge( base_actor_spawner_t* other ) = 0;
+
+  // Expressions
+  virtual expr_t* create_expression( const arv::array_view<std::string>& expr ) = 0;
+
+  // Uptime
+  virtual timespan_t iteration_uptime() const = 0;
+
+  // State reset
+  virtual void reset() = 0;
+
+  // Data collection
+  virtual void datacollection_end() = 0;
+
+private:
+  // Register this pet spawner object to owner
+  void register_object()
+  {
+    auto it = range::find_if( m_owner -> spawners,
+        [ this ]( const base_actor_spawner_t* obj ) {
+          return util::str_compare_ci( obj -> name(), name() );
+        } );
+
+    if ( it == m_owner -> spawners.end() )
+    {
+      m_owner -> spawners.push_back( this );
+    }
+    else
+    {
+      m_owner -> sim -> errorf( "%s attempting to create duplicate pet spawner object %s",
+        m_owner -> name(), name().c_str() );
+    }
+  }
+};
+} // Namespace spawner ends
 
 #endif // SIMULATIONCRAFT_H
