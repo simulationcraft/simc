@@ -5,7 +5,7 @@ race=night_elf
 timeofday=day
 role=attack
 position=back
-talents=3311332
+talents=3311232
 
 # Default consumables
 potion=prolonged_power
