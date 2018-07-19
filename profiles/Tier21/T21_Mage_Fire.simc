@@ -52,7 +52,6 @@ actions.combustion_phase+=/combustion
 actions.combustion_phase+=/potion
 actions.combustion_phase+=/blood_fury
 actions.combustion_phase+=/berserking
-actions.combustion_phase+=/arcane_torrent
 actions.combustion_phase+=/use_items
 actions.combustion_phase+=/flamestrike,if=((talent.flame_patch.enabled&active_enemies>2)|active_enemies>6)&buff.hot_streak.react
 actions.combustion_phase+=/pyroblast,if=(buff.kaelthas_ultimate_ability.react|buff.pyroclasm.react)&buff.combustion.remains>execute_time
@@ -116,8 +115,8 @@ off_hand=heart_of_the_phoenix,id=133959
 # Gear Summary
 # gear_ilvl=248.88
 # gear_stamina=1340
-# gear_intellect=1159
-# gear_crit_rating=518
+# gear_intellect=1160
+# gear_crit_rating=517
 # gear_haste_rating=388
 # gear_mastery_rating=374
 # gear_versatility_rating=249

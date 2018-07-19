@@ -37,12 +37,12 @@ actions+=/call_action_list,name=dot
 actions+=/call_action_list,name=direct
 actions+=/arcane_torrent,if=energy.deficit>=15+variable.energy_regen_combined
 actions+=/arcane_pulse
+actions+=/lights_judgment
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=60|debuff.vendetta.up&cooldown.vanish.remains<5
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
-actions.cds+=/lights_judgment,if=debuff.vendetta.up
 actions.cds+=/marked_for_death,target_if=min:target.time_to_die,if=target.time_to_die<combo_points.deficit*1.5|(raid_event.adds.in>40&combo_points.deficit>=cp_max_spend)
 actions.cds+=/vendetta,if=dot.rupture.ticking
 # Vanish with Nightstalker + Exsg: Maximum CP and Exsg ready for next GCD
