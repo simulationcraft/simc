@@ -72,7 +72,6 @@ public:
       harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) )
   {
     parse_options( options_str );
-    is_sphere_of_insanity_spell = true;
     is_mastery_spell            = true;
 
     insanity_gain = data().effectN( 2 ).resource( RESOURCE_INSANITY );
@@ -320,7 +319,6 @@ struct mind_flay_t final : public priest_spell_t
     channeled                   = true;
     hasted_ticks                = false;
     use_off_gcd                 = true;
-    is_sphere_of_insanity_spell = true;
     is_mastery_spell            = true;
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data
 
@@ -520,9 +518,6 @@ struct shadow_crash_t final : public priest_spell_t
     spell_power_mod.direct      = missile->effectN( 1 ).sp_coeff();
     aoe                         = -1;
     radius                      = data().effectN( 1 ).radius();
-    voidform_buff_spell         = true;
-    shadowform_buff_spell       = true;
-    twist_of_fate_buff_spell    = true;
 
     energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
   }
@@ -556,43 +551,6 @@ struct shadowform_t final : public priest_spell_t
 
     priest().buffs.shadowform_state->trigger();
     priest().buffs.shadowform->trigger();
-  }
-};
-
-struct sphere_of_insanity_spell_t final : public priest_spell_t
-{
-  sphere_of_insanity_spell_t( priest_t& p ) : priest_spell_t( "sphere_of_insanity", p, p.find_spell( 194182 ) )
-  {
-    may_crit    = false;
-    background  = true;
-    proc        = false;
-    callbacks   = true;
-    may_miss    = false;
-    aoe         = -1;
-    range       = 0.0;
-    radius      = 100.0;
-    trigger_gcd = timespan_t::zero();
-    school      = SCHOOL_SHADOW;
-  }
-
-  std::vector<player_t*>& target_list() const
-  {
-    // Check if target cache is still valid. If not, recalculate it
-    if ( !target_cache.is_valid )
-    {
-      std::vector<player_t*> targets;
-      range::for_each( sim->target_non_sleeping_list, [&targets, this]( player_t* t ) {
-        const priest_td_t* td = find_td( t );
-        if ( td && td->dots.shadow_word_pain->is_ticking() )
-        {
-          targets.push_back( t );
-        }
-      } );
-      target_cache.list.swap( targets );
-      target_cache.is_valid = true;
-    }
-
-    return target_cache.list;
   }
 };
 
@@ -764,9 +722,6 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     trigger_gcd                  = timespan_t::zero();
     travel_speed                 = 6.0;
     const spell_data_t* dmg_data = p.find_spell( 148859 );  // Hardcoded into tooltip 2014/06/01
-    voidform_buff_spell          = true;
-    shadowform_buff_spell        = true;
-    twist_of_fate_buff_spell     = true;
 
     parse_effect_data( dmg_data->effectN( 1 ) );
     school = SCHOOL_SHADOW;
@@ -1097,7 +1052,6 @@ struct void_bolt_t final : public priest_spell_t
   {
     parse_options( options_str );
     use_off_gcd                 = true;
-    is_sphere_of_insanity_spell = true;
     is_mastery_spell            = true;
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data.
     cooldown->hasted            = true;
@@ -1195,9 +1149,6 @@ struct dark_void_t final : public priest_spell_t
     may_miss = false;
     aoe      = -1;
     radius   = data().effectN( 1 ).radius_max();
-    voidform_buff_spell             = true;
-    shadowform_buff_spell           = true;
-    twist_of_fate_buff_spell        = true;
   }
 
   void impact( action_state_t* s ) override
@@ -1321,15 +1272,47 @@ struct void_eruption_t final : public priest_spell_t
   }
 };
 
+struct dark_ascension_damage_t final : public priest_spell_t
+{
+  dark_ascension_damage_t( priest_t& p )
+    : priest_spell_t( "dark_ascension_damage", p, p.find_spell( 280800 ) )
+  {
+    background = true;
+
+    // We don't want to lose insanity when casting it!
+    base_costs[ RESOURCE_INSANITY ] = 0;
+
+    may_miss                  = false; // TODO: check
+    is_mastery_spell          = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+    priest_spell_t::impact( s );
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    if ( priest().active_items.heart_of_the_void )
+    {
+      d *= 1.0 + ( priest().active_items.heart_of_the_void->driver()->effectN( 1 ).percent() );
+    }
+
+    return d;
+  }
+};
+
 struct dark_ascension_t final : public priest_spell_t
 {
-  const spell_data_t* data_spell;
-
   dark_ascension_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "dark_ascension", p, p.find_talent_spell( "Dark Ascension" ) ),
-      data_spell( p.find_spell( 280800 ) )
+    : priest_spell_t( "dark_ascension", p, p.find_talent_spell( "Dark Ascension" ) )
   {
     parse_options( options_str );
+
+    impact_action = new dark_ascension_damage_t(p);
 
     // We don't want to lose insanity when casting it!
     base_costs[ RESOURCE_INSANITY ] = 0;
@@ -1338,10 +1321,6 @@ struct dark_ascension_t final : public priest_spell_t
     is_mastery_spell          = true;
     aoe                       = -1;
     radius                    = data().effectN( 1 ).radius_max();
-    spell_power_mod.direct    = data_spell->effectN( 1 ).sp_coeff();
-    voidform_buff_spell       = true;
-    shadowform_buff_spell     = true;
-    twist_of_fate_buff_spell  = true;
   }
 
   void execute() override
@@ -1364,24 +1343,6 @@ struct dark_ascension_t final : public priest_spell_t
         priest().buffs.overwhelming_darkness->bump( mss_vf_stacks - 1 );
       }
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-    priest_spell_t::impact( s );
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( state );
-
-    if ( priest().active_items.heart_of_the_void )
-    {
-      d *= 1.0 + ( priest().active_items.heart_of_the_void->driver()->effectN( 1 ).percent() );
-    }
-
-    return d;
   }
 };
 
@@ -1667,8 +1628,6 @@ struct voidform_t final : public priest_buff_t<buff_t>
     {
       priest().buffs.shadowform->trigger();
     }
-
-    priest().buffs.sphere_of_insanity->expire();
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T21, B4 ) )
     {
@@ -2059,9 +2018,6 @@ void priest_t::create_buffs_shadow()
                                                                                               // the_twins_painful_touch
                                                                                               // if item is available.
   buffs.zeks_exterminatus = make_buff( this, "zeks_exterminatus", find_spell( 236545 ) )->set_rppm( RPPM_HASTE );
-
-  // Artifact
-  buffs.sphere_of_insanity = make_buff( this, "sphere_of_insanity", find_spell( 194182 ) );
 
   // Azerite Powers
   buffs.chorus_of_insanity = make_buff<stat_buff_t>( this, "chorus_of_insanity", find_spell( 279572 ) )

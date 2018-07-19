@@ -22,7 +22,6 @@ namespace spells
 {
 struct mind_sear_tick_t;
 struct shadowy_apparition_spell_t;
-struct sphere_of_insanity_spell_t;
 struct blessed_dawnlight_medallion_t;
 struct angelic_feather_t;
 struct divine_star_t;
@@ -110,7 +109,6 @@ public:
     propagate_const<buff_t*> shadowform;
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
     propagate_const<buff_t*> shadowy_insight;
-    propagate_const<buff_t*> sphere_of_insanity;
     propagate_const<buff_t*> surrender_to_madness;
     propagate_const<buff_t*> surrendered_to_madness;
     propagate_const<buff_t*> vampiric_embrace;
@@ -367,7 +365,6 @@ public:
   {
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
-    propagate_const<action_t*> sphere_of_insanity;
     propagate_const<action_t*> mental_fortitude;
     propagate_const<action_t*> void_tendril;
   } active_spells;
@@ -912,12 +909,28 @@ struct priest_action_t : public Base
   bool shadow_damage_increase;
   bool shadow_dot_increase;
 
+  struct {
+    bool voidform_da;
+    bool voidform_ta;
+    bool shadowform_da;
+    bool shadowform_ta;
+    bool twist_of_fate_da;
+    bool twist_of_fate_ta;
+    bool mastery_madness_da;
+    bool mastery_madness_ta;
+  } affected_by;
+
+  bool is_mastery_spell;
+
 public:
   priest_action_t( const std::string& n, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, &p, s ),
       shadow_damage_increase( ab::data().affected_by( p.specs.shadow_priest->effectN( 1 ) ) ),
-      shadow_dot_increase( ab::data().affected_by( p.specs.shadow_priest->effectN( 2 ) ) )
+      shadow_dot_increase( ab::data().affected_by( p.specs.shadow_priest->effectN( 2 ) ) ),
+      affected_by(),
+      is_mastery_spell( false )
   {
+    init_affected_by();
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
@@ -926,6 +939,35 @@ public:
       ab::base_dd_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 1 ).percent();
     if ( shadow_dot_increase )
       ab::base_td_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 2 ).percent();
+  }
+
+  /**
+   * Initialize all affected_by members and print out debug info
+   */
+  void init_affected_by()
+  {
+    struct affect_init_t{
+      const spelleffect_data_t& effect;
+      bool& affects;
+    } affects[] = {
+        {priest().buffs.voidform->data().effectN(1),      affected_by.voidform_da},
+        {priest().buffs.voidform->data().effectN(2),      affected_by.voidform_ta},
+        {priest().buffs.shadowform->data().effectN(1),    affected_by.shadowform_da},
+        {priest().buffs.shadowform->data().effectN(5),    affected_by.shadowform_ta},
+        {priest().buffs.twist_of_fate->data().effectN(1), affected_by.twist_of_fate_da},
+        {priest().buffs.twist_of_fate->data().effectN(2), affected_by.twist_of_fate_ta},
+        {priest().mastery_spells.madness->effectN(1),     affected_by.mastery_madness_da},
+        {priest().mastery_spells.madness->effectN(2),     affected_by.mastery_madness_ta},
+    };
+
+    for (const auto& a : affects)
+    {
+      a.affects = base_t::data().affected_by( a.effect );
+      if (a.affects)
+      {
+        ab::sim->print_debug("Action {} ({}) affected by {} (idx={}).", ab::name(), ab::data().id(), a.effect.spell()->name_cstr(), a.effect.spell_effect_num()+1);
+      }
+    }
   }
 
   priest_td_t& get_td( player_t* t )
@@ -1019,6 +1061,61 @@ public:
       priest().buffs.borrowed_time->expire();
   }
 
+  double action_da_multiplier() const override
+  {
+    double m = ab::action_da_multiplier();
+
+    if ( affected_by.mastery_madness_da )
+    {
+      m *= 1.0 + priest().cache.mastery_value();
+    }
+    if ( affected_by.voidform_da && priest().buffs.voidform->check()  )
+    {
+      double vf_multiplier = priest().buffs.voidform->data().effectN(1).percent();
+      if ( priest().active_items.zenkaram_iridis_anadem )
+      {
+        vf_multiplier += priest().buffs.iridis_empowerment->data().effectN(2).percent();
+      }
+      m *= 1.0 + vf_multiplier ;
+    }
+    if ( affected_by.shadowform_da && priest().buffs.shadowform->check()  )
+    {
+      m *= 1.0 + priest().buffs.shadowform->data().effectN(1).percent();
+    }
+    if ( affected_by.twist_of_fate_da && priest().buffs.twist_of_fate->check()  )
+    {
+      m *= 1.0 + priest().buffs.twist_of_fate->data().effectN(1).percent();
+    }
+    return m;
+  }
+
+  double action_ta_multiplier() const override
+  {
+    double m = ab::action_ta_multiplier();
+
+    if ( affected_by.mastery_madness_ta )
+    {
+      m *= 1.0 + priest().cache.mastery_value();
+    }
+    if ( affected_by.voidform_ta && priest().buffs.voidform->check() )
+    {
+      double vf_multiplier = priest().buffs.voidform->data().effectN(2).percent();
+      if ( priest().active_items.zenkaram_iridis_anadem )
+      {
+        vf_multiplier += priest().buffs.iridis_empowerment->data().effectN(2).percent();
+      }
+      m *= 1.0 + vf_multiplier ;
+    }
+    if ( affected_by.shadowform_ta && priest().buffs.shadowform->check() )
+    {
+      m *= 1.0 + priest().buffs.shadowform->data().effectN(5).percent();
+    }
+    if ( affected_by.twist_of_fate_ta && priest().buffs.twist_of_fate->check() )
+    {
+      m *= 1.0 + priest().buffs.twist_of_fate->data().effectN(2).percent();
+    }
+    return m;
+  }
 protected:
   priest_t& priest()
   {
@@ -1093,19 +1190,10 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
 struct priest_spell_t : public priest_action_t<spell_t>
 {
-  bool is_sphere_of_insanity_spell;
-  bool is_mastery_spell;
-  bool voidform_buff_spell;
-  bool shadowform_buff_spell;
-  bool twist_of_fate_buff_spell;
+
 
   priest_spell_t( const std::string& n, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( n, player, s ), 
-    is_sphere_of_insanity_spell( false ), 
-    is_mastery_spell( false ),
-    voidform_buff_spell( base_t::data().affected_by( priest().buffs.voidform->data().effectN(1) ) ),
-    shadowform_buff_spell( base_t::data().affected_by( priest().buffs.shadowform->data().effectN(1) ) ),
-    twist_of_fate_buff_spell( base_t::data().affected_by( priest().buffs.twist_of_fate->data().effectN(1) ) )
+    : base_t( n, player, s )
   {
     weapon_multiplier = 0.0;
   }
@@ -1136,45 +1224,10 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
   }
 
-  double action_multiplier() const override
-  {
-    double m = spell_t::action_multiplier();
-    double vf_multiplier = priest().buffs.voidform->data().effectN(1).percent();
-
-    if ( is_mastery_spell && priest().mastery_spells.madness->ok() )
-    {
-      m *= 1.0 + priest().cache.mastery_value();
-    }
-    if ( priest().buffs.voidform->check() && voidform_buff_spell )
-    {
-      if ( priest().active_items.zenkaram_iridis_anadem )
-      {
-        vf_multiplier += priest().buffs.iridis_empowerment->data().effectN(2).percent();
-      }
-      m *= 1.0 + vf_multiplier ;
-    }
-    if ( priest().buffs.shadowform->check() && shadowform_buff_spell )
-    {
-      m *= 1.0 + priest().buffs.shadowform->data().effectN(1).percent();
-    }
-    if ( priest().buffs.twist_of_fate->check() && twist_of_fate_buff_spell )
-    {
-      m *= 1.0 + priest().buffs.twist_of_fate->data().effectN(1).percent();
-    }
-    return m;
-  }
-
   void assess_damage( dmg_e type, action_state_t* s ) override
   {
     base_t::assess_damage( type, s );
 
-    if ( is_sphere_of_insanity_spell && priest().buffs.sphere_of_insanity->up() && s->result_amount > 0 )
-    {
-      double damage = s->result_amount * priest().buffs.sphere_of_insanity->data().effectN( 3 ).percent();
-      priest().active_spells.sphere_of_insanity->base_dd_min = damage;
-      priest().active_spells.sphere_of_insanity->base_dd_max = damage;
-      priest().active_spells.sphere_of_insanity->schedule_execute();
-    }
     if ( aoe == 0 && result_is_hit( s->result ) && priest().buffs.vampiric_embrace->up() )
       trigger_vampiric_embrace( s );
   }
