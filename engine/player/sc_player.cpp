@@ -11487,7 +11487,7 @@ player_collected_data_t::player_collected_data_t( const player_t* player ) :
 
 void player_collected_data_t::reserve_memory( const player_t& p )
 {
-  int size = p.sim->iterations;
+  unsigned size = std::min( as<unsigned>( p.sim->iterations ), 2048u );
   fight_length.reserve( size );
   // DMG
   dmg.reserve( size );
