@@ -81,8 +81,8 @@ actions.dot+=/rupture,cycle_targets=1,if=combo_points>=4&refreshable&(pmultiplie
 actions.stealthed=garrote,cycle_targets=1,if=talent.subterfuge.enabled&refreshable&(!exsanguinated|remains<=tick_time*2)&target.time_to_die-remains>2
 # Subterfuge: Override normal Garrotes with snapshot versions if there's time
 actions.stealthed+=/garrote,cycle_targets=1,if=talent.subterfuge.enabled&remains<=10&pmultiplier<=1&!exsanguinated&target.time_to_die-remains>2
-# Nighstalker: Snapshot Rupture
-actions.stealthed+=/rupture,if=talent.nightstalker.enabled&target.time_to_die-remains>6
+# Nighstalker: Snapshot Rupture, Also use Rupture over Envenom if it's not applied (Opener)
+actions.stealthed+=/rupture,if=combo_points>=4&(talent.nightstalker.enabled|!ticking)&target.time_to_die-remains>6
 actions.stealthed+=/envenom,if=combo_points>=cp_max_spend
 actions.stealthed+=/garrote,if=!talent.subterfuge.enabled&target.time_to_die-remains>4
 actions.stealthed+=/fan_of_knives,if=spell_targets>=3

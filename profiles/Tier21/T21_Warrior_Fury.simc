@@ -37,7 +37,7 @@ actions+=/furious_slash,if=talent.furious_slash.enabled&(buff.furious_slash.stac
 actions+=/bloodthirst,if=equipped.kazzalax_fujiedas_fury&(buff.fujiedas_fury.down|remains<2)
 actions+=/rampage,if=cooldown.recklessness.remains<3
 actions+=/recklessness
-actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.whirlwind.up
+actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up
 actions+=/blood_fury,if=buff.recklessness.up
 actions+=/berserking,if=buff.recklessness.up
 actions+=/arcane_torrent,if=rage<40&!buff.recklessness.up
