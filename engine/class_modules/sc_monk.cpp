@@ -3608,17 +3608,6 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
   }
-
-  double action_multiplier() const override
-  {
-    double am = base_t::action_multiplier();
-
-    // The attack power multiplier appears to be set at 1.207500; when the data file shows 0.941850
-    // Temporarily set the AP to the 1.2 value to match in-game values until it gets changed
-    am *= 1.207500 / 0.941850;
-
-    return am;
-  }
 };
 
 struct fists_of_fury_t: public monk_melee_attack_t
