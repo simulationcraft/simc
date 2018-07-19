@@ -890,34 +890,31 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
   // spot on.
   if ( item.parsed.data.stat_alloc[ idx ] > 0 /* && orig_budget > 0 */ && item_budget > 0 )
   {
-    double v_raw = util::round( item.parsed.data.stat_alloc[ idx ] * item_budget / 10000.0 );
+    // Socket penalty is supposedly gone in Warlords of Draenor, but it really does not seem so in
+    // the latest alpha.  NOTENOTENOTENOTE: Item socket cost penalty multiplier _seems_ to be based
+    // on _BASE_ itemlevel, not the upgraded one
+    double v_socket_penalty = item.parsed.data.stat_socket_mul[ idx ] *
+                              dbc.item_socket_cost( item.base_item_level() );
+
+    int v_raw = item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty + 0.5;
     auto stat_type = static_cast<item_mod_type>( item.parsed.data.stat_type_e[ idx ] );
+
     if ( util::is_combat_rating( stat_type ) )
     {
-      v_raw = apply_combat_rating_multiplier( item, v_raw );
+      v_raw = apply_combat_rating_multiplier( item, as<double>( v_raw ) );
     }
-
-    if ( stat_type == ITEM_MOD_STAMINA )
+    else if ( stat_type == ITEM_MOD_STAMINA )
     {
-      v_raw = apply_stamina_multiplier( item, v_raw );
+      v_raw = apply_stamina_multiplier( item, as<double>( v_raw ) );
     }
 
-    // Apply some mystery stat penalty to offhand items
-    if ( item.parsed.data.inventory_type == INVTYPE_SHIELD ||
-         item.parsed.data.inventory_type == INVTYPE_HOLDABLE )
-    {
-      v_raw *= 1.0 / 1.125;
-    }
-
-    // Socket penalty is supposedly gone in Warlords of Draenor, but it really does not seem so in the latest alpha.
-    // NOTENOTENOTENOTE: Item socket cost penalty multiplier _seems_ to be based on _BASE_ itemlevel, not the upgraded one
-    double v_socket_penalty = util::round( item.parsed.data.stat_socket_mul[ idx ] * dbc.item_socket_cost( item.base_item_level() ) );
-    return static_cast<int>( v_raw - v_socket_penalty );
+    return v_raw;
   }
   // TODO(?): Should we warn the user that we are using an approximation of
   // the upgraded stats, and that certain stats may be off by one?
   else
-    return static_cast<int>( floor( item.parsed.stat_val[ idx ] * approx_scale_coefficient( item.parsed.data.level, new_ilevel ) ) );
+    return static_cast<int>( floor( item.parsed.stat_val[ idx ] *
+                                    approx_scale_coefficient( item.parsed.data.level, new_ilevel ) ) );
 }
 
 // item_database_t::initialize_item_sources =================================
@@ -971,10 +968,8 @@ int item_database::random_suffix_type( const item_data_t* item )
         case ITEM_SUBCLASS_WEAPON_GUN:
         case ITEM_SUBCLASS_WEAPON_BOW:
         case ITEM_SUBCLASS_WEAPON_CROSSBOW:
-          return 0;
-
         case ITEM_SUBCLASS_WEAPON_THROWN:
-          return 4;
+          return 0;
         default:
           return 3;
       }
@@ -995,13 +990,15 @@ int item_database::random_suffix_type( const item_data_t* item )
           return 1;
 
         case INVTYPE_NECK:
-        case INVTYPE_WEAPONOFFHAND:
-        case INVTYPE_HOLDABLE:
         case INVTYPE_FINGER:
         case INVTYPE_CLOAK:
         case INVTYPE_WRISTS:
-        case INVTYPE_SHIELD:
           return 2;
+
+        case INVTYPE_WEAPONOFFHAND:
+        case INVTYPE_HOLDABLE:
+        case INVTYPE_SHIELD:
+          return 3;
 
         default:
           return -1;
@@ -1061,9 +1058,11 @@ int item_database::random_suffix_type( item_t& item )
     case SLOT_WRISTS:
     case SLOT_FINGER_1:
     case SLOT_FINGER_2:
-    case SLOT_OFF_HAND: // Shields, off hand items
     case SLOT_BACK:
       return 2;
+
+    case SLOT_OFF_HAND: // Shields, off hand items
+      return 3;
 
       // Ranged non-weapons are relics, which do not have a point allocation
     case SLOT_TABARD:
