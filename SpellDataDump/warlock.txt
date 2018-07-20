@@ -4141,9 +4141,11 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=302908)   : Summon (28)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 103673 | Misc Value 2: 0xeb6 | Target: Unknown(32)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 103673 | Misc Value 2: 0xeb6 | Radius: 3 yards | Target: Unknown(49)
+                   Hotfixed: Chain Targets (32 -> 49)
 #2 (id=734059)   : Server Side Script (77)
-                   Base Value: 8 | Scaled Value: 8 | Radius: 0 - 60 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 8 | Scaled Value: 8 | Radius: 3 - 60 yards | Target: Unknown(49) -> AOE enemy (instant) (16)
+                   Hotfixed: Chain Targets (18 -> 49)
 #3 (id=734060)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
 #4 (id=734780)   : Apply Aura (6) | Dummy (4)
@@ -4189,11 +4191,11 @@ Effects          :
 Description      : Bite the target, dealing Shadow damage.
 
 Name             : Eye Beam (id=205231) [Spell Family (5)] 
+Hotfixed         : Velocity (60 -> 0)
 Class            : Warlock
 School           : Shadow
 Range            : 40 yards
 Cast Time        : 2 seconds
-Velocity         : 60 yards/sec
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ..x..... ........   ........ .......x ........ ........ 

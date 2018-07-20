@@ -5792,6 +5792,7 @@ Effects          :
 Description      : When you deal direct damage with Thrash, you gain a charge of Earthwarden, reducing the damage of the next auto attack you take by $s1%. Earthwarden may have up to $203975u charges.
 
 Name             : Earthwarden (id=203975) [Spell Family (7)] 
+Hotfixed         : Tooltip
 Class            : Druid
 School           : Physical
 Duration         : Aura (infinite)
@@ -5808,7 +5809,7 @@ Effects          :
 #1 (id=300992)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0xffffffec | Target: Self (1)
 Description      : $@spelldesc203974
-Tooltip          : Damage of the next autoattack you take will be reduced by ${$203974s1/$m1}%.
+Tooltip          : Damage of the next autoattack you take will be reduced by $203974s1~%.
 
 Name             : Rend and Tear (id=204053) [Spell Family (7), Passive] 
 Class            : Druid
