@@ -7171,7 +7171,7 @@ std::string druid_t::default_flask() const
 }
 std::string druid_t::default_potion() const
 {
-   std::string balance_pot =  (true_level > 100) ? "potion_of_prolonged_power" :
+   std::string balance_pot =  (true_level > 100) ? "deadly_grace" :
                               (true_level >= 90) ? "draenic_intellect" :
                               (true_level >= 85) ? "jade_serpent" :
                               (true_level >= 80) ? "volcanic" :
