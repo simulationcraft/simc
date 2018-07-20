@@ -1,5 +1,7 @@
 @echo off
 setlocal enableextensions
+chcp 65001
+
 set ARGS=%*
 
 :: Ensure msbuild.exe is in path
@@ -11,7 +13,7 @@ if ERRORLEVEL 1 exit /b 1
 :: Setup platform and default Visual Studio version
 set PLATFORM=%2
 if "%PLATFORM%" == "x64" set SUFFIX=64
-if "%VSVERSION%" == "" set VSVERSION=2013
+if "%VSVERSION%" == "" set VSVERSION=2017
 
 :: Determine current Simulationcraft version
 if not defined SIMCVERSION for /F "tokens=3 delims= " %%i in ('findstr /C:"#define SC_MAJOR_VERSION" %SIMCDIR%\engine\simulationcraft.hpp') do set SC_MAJOR_VERSION=%%~i
@@ -61,23 +63,22 @@ if ERRORLEVEL 1 goto :enderror
 
 :: Setup the target if given, otherwise default is to build all targets in the solution
 if "%3" neq "" set TARGET=/t:%3
-if not defined SOLUTION set SOLUTION=simc_vs%VSVERSION%.sln
+if "%3" == "" set TARGET=/t:Clean,Build
 
-msbuild.exe "%SIMCDIR%\%SOLUTION%" /p:configuration=%1 /p:platform=%2 /nr:true /m /p:QTDIR=%PLATFORMQTDIR% %TARGET%
+:: Generate solution before building
+%PLATFORMQTDIR%\bin\qmake.exe -r -tp vc -spec win32-msvc "%SIMCDIR%\simulationcraft.pro"
+
+msbuild.exe "%SIMCDIR%\simulationcraft.sln" /p:configuration=%1 /p:platform=%2 /nr:true /m /p:QTDIR=%PLATFORMQTDIR% %TARGET%
 if ERRORLEVEL 1 exit /b 1
 :: Start release copying process
 md %INSTALLDIR%
 call :copy_base
 
 :: Copy release-specific files
-if "%3" == "" call :copy_simc
-if "%3" == "" call :copy_simcgui
-if "%3" == "SimcGUI" call :copy_simcgui
-if "%3" == "simc" call :copy_simc
-
+call :copy_simc
+call :copy_simcgui
 :: Build the Inno Setup installer
-if "%3" == "" call :build_installer
-if "%3" == "SimcGUI" call :build_installer
+call :build_installer
 
 :: Aand compress the install directory
 call :compress
@@ -85,11 +86,11 @@ exit /b 0
 
 :copy_base
 robocopy %SIMCDIR%\Profiles\ %INSTALLDIR%\profiles\ *.* /S /NJH /NJS
-robocopy %SIMCDIR% %INSTALLDIR%\ README.md COPYING /NJH /NJS
+robocopy %SIMCDIR% %INSTALLDIR%\ README.md COPYING LICENSE.BOOST LICENSE.BSD LICENSE.BSD2 LICENSE.LGPL LICENSE.MIT /NJH /NJS
 exit /b 0
 
 :copy_simc
-robocopy %SIMCDIR% %INSTALLDIR%\ simc%SUFFIX%.exe /NJH /NJS
+robocopy %SIMCDIR% %INSTALLDIR%\ simc.exe /NJH /NJS
 exit /b 0
 
 :copy_simcgui
@@ -99,12 +100,17 @@ if "%PLATFORM%" == "win32" (
 	set REDISTPLATFORM=%PLATFORM%
 )
 
-robocopy %REDIST%\%REDISTPLATFORM%\Microsoft.VC120.CRT %INSTALLDIR%\ msvcp120.dll msvcr120.dll vccorlib120.dll /NJH /NJS
+if "%2" == "Release" (
+  set WINDEPLOYQTARGS="--release"
+) else (
+  set WINDDEPLOYQTARGS="--debug"
+)
+
 robocopy %SIMCDIR%\ %INSTALLDIR%\ Error.html Welcome.html Welcome.png  /NJH /NJS
 robocopy %SIMCDIR%\locale\ %INSTALLDIR%\locale sc_de.qm sc_zh.qm sc_it.qm  /NJH /NJS
 robocopy %SIMCDIR%\winreleasescripts\ %INSTALLDIR%\ qt.conf  /NJH /NJS
-robocopy %SIMCDIR%\ %INSTALLDIR%\ Simulationcraft%SUFFIX%.exe  /NJH /NJS
-%PLATFORMQTDIR%\bin\windeployqt.exe --no-translations %INSTALLDIR%\Simulationcraft%SUFFIX%.exe
+robocopy %SIMCDIR%\ %INSTALLDIR%\ Simulationcraft.exe  /NJH /NJS
+%PLATFORMQTDIR%\bin\windeployqt.exe --force --no-translations --compiler-runtime %WINDEPLOYQTARGS% %INSTALLDIR%\Simulationcraft.exe
 exit /b 0
 
 :build_installer
@@ -115,7 +121,7 @@ if "%PLATFORM%" == "win32" (
 	set SIMCSUFFIX=%PLATFORM%
 	set SIMCAPPNAME=Simulationcraft
 ) else (
-	set SIMCSUFFIX=Win64
+	set SIMCSUFFIX=win64
 	set SIMCAPPNAME=Simulationcraft (x64)
 )
 set SIMCAPPFULLVERSION=%SC_MAJOR_VERSION:~0,1%.%SC_MAJOR_VERSION:~1,1%.%SC_MAJOR_VERSION:~2,2%.%SC_MINOR_VERSION%
@@ -126,7 +132,7 @@ if "%GITREV%" neq "" set SIMCSUFFIX=%SIMCSUFFIX%%GITREV%
 				/DSimcReleaseSuffix="%SIMCSUFFIX%" ^
 				/DSimcReleaseDir="%INSTALLDIR%" ^
 				/DSimcAppVersion="%SIMCVERSION%" ^
-				/DSimcAppExeName="Simulationcraft%SUFFIX%.exe" ^
+				/DSimcAppExeName="Simulationcraft.exe" ^
 				/DSimcIconFile="%SIMCDIR%\qt\icon\Simcraft2.ico" ^
 				/DSimcOutputDir="%INSTALL%" %SIMCDIR%\WinReleaseScripts\SetupSimc.iss
 if ERRORLEVEL 1 exit /b 1
@@ -155,20 +161,18 @@ echo SIMCVERSION: Simulationcraft release version (default from %SIMCDIR%\engine
 echo SIMCDIR    : Simulationcraft source directory root
 echo QTDIR      : Root directory of the Qt (5) release
 echo REDIST     : Directory containing Windows Runtime Environment redistributables
-echo SZIP       : Directory containing 7-Zip compressor (optional, if omitted no copressed file)
+echo SZIP       : Directory containing 7-Zip compressor (optional, if omitted no compressed file)
 echo ISCC       : Diretory containing Inno Setup (optional, if omitted no setup will be built)
 echo INSTALL    : Directory to make an installation package in
-echo VSVERSION  : Visual studio version (default 2013)
+echo VSVERSION  : Visual studio version (default 2017)
 echo RELEASE    : Set to build a "release version" (no git commit hash suffix)
 echo            : If set, set SC_DEFAULT_APIKEY to the Battle.net key for the release
 goto :end
 
 :end
 endlocal
-pause
 exit /b 0
 
 :enderror
 endlocal
-pause
 exit /b 1
