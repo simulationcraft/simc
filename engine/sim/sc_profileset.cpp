@@ -135,7 +135,6 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
 
   // Save global statistics back to parent sim
   parent -> elapsed_cpu  += profile_sim -> elapsed_cpu;
-  if ( parent -> profileset_work_threads == 0 ) parent -> elapsed_time += profile_sim -> elapsed_time; // elapsed_time is meaningless for parallel sims
   parent -> init_time    += profile_sim -> init_time;
   parent -> merge_time   += profile_sim -> merge_time;
   parent -> analyze_time += profile_sim -> analyze_time;
@@ -736,6 +735,9 @@ bool profilesets_t::iterate( sim_t* parent )
 
   // Output profileset progressbar whenever we finish anything
   output_progressbar( parent );
+
+  // Update parent elapsed_time
+  parent -> elapsed_time += util::wall_time() - m_start_time;
 
   parent -> control = original_opts;
 
