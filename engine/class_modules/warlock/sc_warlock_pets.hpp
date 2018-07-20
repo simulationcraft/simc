@@ -298,7 +298,14 @@ struct felguard_pet_t : public warlock_pet_t
 {
   action_t* soul_strike;
   action_t* ds_felstorm;
-  cooldown_t* felstorm;
+  cooldown_t* felstorm_cd;
+
+  const spell_data_t* felstorm_spell;
+
+  // Energy thresholds to wake felguard up for something to do, minimum is the felstorm energy cost,
+  // and maximum is a predetermined empirical value from in game
+  double min_energy_threshold;
+  double max_energy_threshold;
 
   felguard_pet_t(warlock_t* owner, const std::string& name);
   void init_base_stats() override;
