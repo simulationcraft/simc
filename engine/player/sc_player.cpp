@@ -2696,29 +2696,6 @@ void player_t::create_buffs()
     }
   };
 
-  struct movement_buff_t : public buff_t
-  {
-    movement_buff_t( player_t* p ) : buff_t( buff_creator_t( p, "movement" ).max_stack( 1 ) )
-    {
-    }
-
-    bool trigger( int stacks, double value, double chance, timespan_t duration ) override
-    {
-      if ( player->buffs.norgannons_foresight_ready )
-      {
-        player->buffs.norgannons_foresight_ready->expire( timespan_t::from_seconds( 5 ) );
-        player->buffs.norgannons_foresight->expire();
-      }
-      return buff_t::trigger( stacks, value, chance, duration );
-    }
-
-    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-    {
-      buff_t::expire_override( expiration_stacks, remaining_duration );
-      player->finish_moving();
-    }
-  };
-
   // Infinite-Stacking Buffs and De-Buffs for everyone
   buffs.stunned   = buff_creator_t( this, "stunned" ).max_stack( 1 );
   debuffs.casting = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );

@@ -217,7 +217,7 @@ void pet_t::create_buffs()
     sim -> print_debug( "Creating Auras, Buffs, and Debuffs for pet '{}'.", name() );
 
     buffs.stunned = buff_creator_t( this, "stunned" ).max_stack( 1 );
-    buffs.movement = buff_creator_t( this, "movement" );
+    buffs.movement = new movement_buff_t( this );
 
     debuffs.casting = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );
   }

@@ -506,3 +506,12 @@ inline Buff* make_buff( Args&&... args )
                  "Buff must be derived from buff_t" );
   return new Buff( args... );
 }
+
+struct movement_buff_t : public buff_t
+{
+  movement_buff_t( player_t* p ) : buff_t( buff_creator_t( p, "movement" ).max_stack( 1 ) )
+  { }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override;
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+};

@@ -2567,3 +2567,19 @@ buff_creator_t::operator buff_t*() const
 {
   return new buff_t( *this );
 }
+
+bool movement_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
+{
+  if ( player->buffs.norgannons_foresight_ready )
+  {
+    player->buffs.norgannons_foresight_ready->expire( timespan_t::from_seconds( 5 ) );
+    player->buffs.norgannons_foresight->expire();
+  }
+  return buff_t::trigger( stacks, value, chance, duration );
+}
+
+void movement_buff_t::expire_override( int expiration_stacks, timespan_t remaining_duration )
+{
+  buff_t::expire_override( expiration_stacks, remaining_duration );
+  source->finish_moving();
+}
