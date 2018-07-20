@@ -9,6 +9,7 @@
 SC_WelcomeTabWidget_WebKit::SC_WelcomeTabWidget_WebKit( SC_MainWindow* parent ) :
     SC_WebEngineView( parent )
 {
+  QString welcomeFile = "";
   for(const auto& path : SC_PATHS::getDataPaths())
   {
       QFile welcome_path(path + "/Welcome.html");
@@ -18,7 +19,7 @@ SC_WelcomeTabWidget_WebKit::SC_WelcomeTabWidget_WebKit( SC_MainWindow* parent ) 
           break;
       }
   }
-  welcome_uri = "file:///" + welcomeFile;
+  QString welcome_uri = "file:///" + welcomeFile;
   setUrl( welcome_uri );
 
   page() -> setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
