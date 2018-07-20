@@ -133,6 +133,13 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
     } );
   }
 
+  // Save global statistics back to parent sim
+  parent -> elapsed_cpu  += profile_sim -> elapsed_cpu;
+  parent -> elapsed_time += profile_sim -> elapsed_time;
+  parent -> init_time    += profile_sim -> init_time;
+  parent -> merge_time   += profile_sim -> merge_time;
+  parent -> analyze_time += profile_sim -> analyze_time;
+
   set.cleanup_options();
 }
 
