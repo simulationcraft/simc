@@ -5558,12 +5558,7 @@ void hunter_t::datacollection_end()
 
 double hunter_t::composite_attack_power_multiplier() const
 {
-  double apm = player_t::composite_attack_power_multiplier();
-
-  // 10-07-2018: doesn't work
-  // apm *= 1.0 + sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
-
-  return apm;
+  return player_t::composite_attack_power_multiplier();
 }
 
 // hunter_t::composite_melee_crit_chance ===========================================
@@ -5677,7 +5672,10 @@ double hunter_t::composite_player_multiplier( school_e school ) const
   m *= 1.0 + legendary.generic_damage -> effectN( 1 ).percent() * legendary.generic_damage_count;
 
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  {
     m *= 1.0 + sets -> set( HUNTER_SURVIVAL, T20, B4 ) -> effectN( 1 ).percent();
+    m *= 1.0 + sets -> set( HUNTER_MARKSMANSHIP, T21, B2 ) -> effectN( 1 ).percent();
+  }
 
   m *= 1.0 + sets -> set( HUNTER_SURVIVAL, T21, B2 ) -> effectN( 1 ).percent();
 
