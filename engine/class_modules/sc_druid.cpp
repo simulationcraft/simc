@@ -5432,7 +5432,7 @@ struct lunar_strike_t : public druid_spell_t
     timespan_t g = druid_spell_t::gcd();
 
     if (p() -> buff.lunar_empowerment -> check())
-        g *= 1 - p()->find_spell(164547)->effectN(3).percent();
+        g *= 1 + p()->find_spell(164547)->effectN(3).percent();
 
     g = std::max( min_gcd, g );
 
@@ -5829,7 +5829,7 @@ struct solar_wrath_t : public druid_spell_t
     timespan_t g = druid_spell_t::gcd();
 
     if ( p() -> buff.solar_empowerment -> check() )
-      g *= 1 - p()->find_spell(164545)->effectN(3).percent();
+      g *= 1 + p()->find_spell(164545)->effectN(3).percent();
 
     g = std::max( min_gcd, g );
 
