@@ -5444,7 +5444,7 @@ struct lunar_strike_t : public druid_spell_t
     timespan_t et = druid_spell_t::execute_time();
 
     if (p() -> buff.lunar_empowerment -> check() )
-      et *= 1 - p()->find_spell(164547)->effectN(2).percent();
+      et *= 1 + p()->find_spell(164547)->effectN(2).percent();
 
     if ( p() -> buff.warrior_of_elune -> check() )
       et *= 1 + p() -> talent.warrior_of_elune -> effectN( 1 ).percent();
@@ -5841,7 +5841,7 @@ struct solar_wrath_t : public druid_spell_t
     timespan_t et = druid_spell_t::execute_time();
 
     if (p() -> buff.solar_empowerment -> check() )
-      et *= 1 - p()->find_spell(164545)->effectN(2).percent();
+      et *= 1 + p()->find_spell(164545)->effectN(2).percent();
 
     return et;
   }
