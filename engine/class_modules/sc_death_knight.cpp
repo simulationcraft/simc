@@ -5737,10 +5737,8 @@ struct unholy_blight_t : public death_knight_spell_t
     tick_zero = true;
     parse_options( options_str );
 
-    dual = true;
-
     aoe = -1;
-    
+
     tick_action = new unholy_blight_dot_t( p );
   }
 };
