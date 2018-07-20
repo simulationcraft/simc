@@ -474,9 +474,11 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : Requires main-hand weapon (106)
 Effects          :
 #1 (id=1900)     : Trigger Spell (64): Execute
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280849 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 50 | Trigger Spell: 280849 | Target: Enemy (6)
+                   Hotfixed: Misc Value (0 -> 50)
 #2 (id=229536)   : Trigger Spell (64): Execute Off-Hand
-                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 163558 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 163558 | Target: Enemy (6)
+                   Hotfixed: Misc Value (0 -> 100)
 #3 (id=738697)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self (1)
 Description      : Attempt to finish off a wounded foe, causing ${$280849sw1+$163558sw1} Physical damage. Only usable on enemies that have less than 20% health.
@@ -3085,13 +3087,17 @@ Effects          :
 #1 (id=267214)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4 | Target: Enemy (6)
 #2 (id=267215)   : Trigger Spell (64): Rampage
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 50 | Trigger Spell: 184707 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 184707 | Target: Enemy (6)
+                   Hotfixed: Misc Value (50 -> 10)
 #3 (id=267216)   : Trigger Spell (64): Rampage
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 325 | Trigger Spell: 184709 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 150 | Trigger Spell: 184709 | Target: Enemy (6)
+                   Hotfixed: Misc Value (325 -> 150)
 #4 (id=268060)   : Trigger Spell (64): Rampage
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 600 | Trigger Spell: 201364 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 450 | Trigger Spell: 201364 | Target: Enemy (6)
+                   Hotfixed: Misc Value (600 -> 450)
 #5 (id=268061)   : Trigger Spell (64): Rampage
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 625 | Trigger Spell: 201363 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 201363 | Target: Enemy (6)
+                   Hotfixed: Misc Value (625 -> 500)
 Description      : Enrages you and unleashes a series of $s1 brutal strikes for a total of $<damage> Physical damage.
 Variables        : $damage=${$184707s1+$184709s1+$201364s1+$201363s1}
 

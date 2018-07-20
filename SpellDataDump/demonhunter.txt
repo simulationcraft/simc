@@ -1198,8 +1198,9 @@ Effects          :
 Description      : Slice your target for ${$227518s1+$201428s1} Chaos damage. Annihilation has a $197125h% chance to refund $193840s1 Fury.
 
 Name             : Annihilation (id=201428) [Spell Family (107)] 
+Hotfixed         : School (125 -> 127)
 Class            : Demon Hunter
-School           : None
+School           : Chaos
 Range            : 15 yards
 Affecting spells : Demon Soul (163073 effect#1), Mastery: Demonic Presence (185164 effect#1), Momentum (208628 effect#1), Havoc Demon Hunter (212612 effect#1), Chaos Blades (247938 effect#2), Dark Slash (258860 effect#3), Thirsting Blades (278736 effect#1)
 Triggered by     : Annihilation (201427)
@@ -1212,7 +1213,7 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Not a proc (105), Requires off-hand weapon (120)
 Effects          :
-#1 (id=296759)   : School Damage (2): none
+#1 (id=296759)   : School Damage (2): chaos
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.75114 | Chain Multiplier: 0.5 | Chain Targets: 1 | Target: Enemy (6)
 Description      : $@spelldesc201427
 

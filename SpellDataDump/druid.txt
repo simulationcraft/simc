@@ -5016,11 +5016,13 @@ Attributes       : ....x.xx ........ ........ ........   ........ ..x..... .....
                  : Passive (6), Hidden (7)
 Effects          :
 #1 (id=290499)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -90 | Scaled Value: -90 | Target: Self (1)
+                   Base Value: -73 | Scaled Value: -73 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
+                   Hotfixed: Base Value (-90 -> -73)
 #2 (id=290500)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -90 | Scaled Value: -90 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -73 | Scaled Value: -73 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
+                   Hotfixed: Base Value (-90 -> -73)
 
 Name             : Flourish (id=197721) [Spell Family (7)] 
 Class            : Druid
