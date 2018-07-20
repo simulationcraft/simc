@@ -197,9 +197,28 @@ namespace warlock {
           }
         };
 
+        struct imp_delay_event_t : public player_event_t
+        {
+          imp_delay_event_t( warlock_t* p, int delay ) :
+            player_event_t( *p, timespan_t::from_millis( delay ) ) {}
+
+          virtual const char* name() const override
+          {
+            return  "imp_delay";
+          }
+
+          virtual void execute() override
+          {
+            warlock_t* p = static_cast< warlock_t* >( player() );
+
+            p->warlock_pet_list.wild_imps.spawn();
+          }
+        };
+
         int shards_used;
         umbral_blaze_t* blaze;
         const spell_data_t* summon_spell;
+        imp_delay_event_t* imp_delay_event;
 
         hand_of_guldan_t(warlock_t* p, const std::string& options_str) :
           demonology_spell_t(p, "Hand of Gul'dan"), shards_used(0), blaze(new umbral_blaze_t(p)),
@@ -264,6 +283,13 @@ namespace warlock {
         void impact(action_state_t* s) override {
             demonology_spell_t::impact(s);
 
+            if ( shards_used >= 1 )
+              imp_delay_event = make_event<imp_delay_event_t>( *sim, p(), 400 );
+            if ( shards_used >= 2 )
+              imp_delay_event = make_event<imp_delay_event_t>( *sim, p(), 800 );
+            if ( shards_used >= 3 )
+              imp_delay_event = make_event<imp_delay_event_t>( *sim, p(), 1200 );
+
             // Only trigger wild imps once for the original target impact.
             // Still keep it in impact instead of execute because of travel delay.
             if (result_is_hit(s->result) && s->target == target)
@@ -273,9 +299,6 @@ namespace warlock {
                 blaze->set_target(target);
                 blaze->execute();
               }
-
-              p() -> warlock_pet_list.wild_imps.spawn( shards_used );
-
               for (int i = 0;
                    p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2) && i < shards_used;
                    i++)
