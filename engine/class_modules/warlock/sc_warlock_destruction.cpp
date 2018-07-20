@@ -440,7 +440,7 @@ namespace warlock {
 
         if (result_is_hit(s->result))
         {
-          if (p()->talents.roaring_blaze->ok() && !havocd)
+          if ( p()->talents.roaring_blaze->ok() )
             roaring_blaze->execute();
 
           p()->resource_gain(RESOURCE_SOUL_SHARD, (std::double_t(p()->find_spell(245330)->effectN(1).base_value()) / 10), p()->gains.conflagrate);
