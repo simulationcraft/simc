@@ -322,9 +322,13 @@ struct wild_imp_pet_t : public warlock_pet_t
 
   wild_imp_pet_t(warlock_t* owner);
   void init_base_stats() override;
-  action_t* create_action(const std::string& name, const std::string& options_str) override;
+  void create_actions() override;
+  void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false ) override;
   void arise() override;
   void demise() override;
+  void finish_moving() override;
+private:
+  void reschedule_firebolt();
 };
 
 struct dreadstalker_t : public warlock_pet_t

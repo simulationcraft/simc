@@ -573,55 +573,116 @@ struct fel_firebolt_t : public warlock_pet_spell_t
 {
   fel_firebolt_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "fel_firebolt", p, p -> find_spell( 104318 ) )
-  { }
-
-  bool ready() override
   {
-    if (!p()->resource_available(p()->primary_resource(), 20) & !p()->o()->buffs.demonic_power->check())
-      p()->demise();
+    repeating = true;
+  }
 
-    return spell_t::ready();
+  void schedule_execute( action_state_t* execute_state ) override
+  {
+    // We may not be able to execute anything, so reset executing here before we are going to
+    // schedule anything else.
+    player->executing = nullptr;
+
+    if ( player->buffs.movement->check() )
+    {
+      return;
+    }
+
+    if ( player->buffs.stunned->check() )
+    {
+      return;
+    }
+
+    warlock_pet_spell_t::schedule_execute( execute_state );
+  }
+
+  void consume_resource() override
+  {
+    warlock_pet_spell_t::consume_resource();
+
+    // Imp dies if it reaches zero energy
+    if ( player->resources.current[ RESOURCE_ENERGY ] == 0 )
+    {
+      make_event( sim, timespan_t::zero(), [this]() { player->cast_pet()->dismiss(); } );
+    }
   }
 
   double cost() const override
   {
     double c = warlock_pet_spell_t::cost();
 
-    if (p()->o()->buffs.demonic_power->check())
+    if ( p()->o()->buffs.demonic_power->check() )
     {
-      c *= 1.0 + p()->o()->buffs.demonic_power->data().effectN(4).percent();
+      c *= 1.0 + p()->o()->buffs.demonic_power->data().effectN( 4 ).percent();
     }
 
     return c;
   }
 };
 
-wild_imp_pet_t::wild_imp_pet_t(warlock_t* owner) : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP ),
-  firebolt(), power_siphon(false)
+wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
+  : warlock_pet_t( owner, "wild_imp", PET_WILD_IMP ), firebolt( nullptr ), power_siphon( false )
 {
   regen_type = REGEN_DISABLED;
+}
+
+void wild_imp_pet_t::create_actions()
+{
+  warlock_pet_t::create_actions();
+
+  firebolt = new fel_firebolt_t( this );
 }
 
 void wild_imp_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
-  action_list_str = "fel_firebolt";
-
   resources.base[RESOURCE_ENERGY] = 100;
   resources.base_regen_per_second[RESOURCE_ENERGY] = 0;
 }
 
-action_t* wild_imp_pet_t::create_action(const std::string& name, const std::string& options_str)
+void wild_imp_pet_t::reschedule_firebolt()
 {
-  if (name == "fel_firebolt")
+  if ( executing )
   {
-    assert(firebolt == nullptr);
-    firebolt = new fel_firebolt_t(this);
-    return firebolt;
+    return;
   }
 
-  return warlock_pet_t::create_action(name, options_str);
+  if ( player_t::buffs.movement->check() )
+  {
+    return;
+  }
+
+  if ( player_t::buffs.stunned->check() )
+  {
+    return;
+  }
+
+  timespan_t gcd_adjust = gcd_ready - sim->current_time();
+  if ( gcd_adjust > timespan_t::zero() )
+  {
+    make_event( sim, gcd_adjust, [this]() {
+      firebolt->set_target( o()->target );
+      firebolt->schedule_execute();
+    } );
+  }
+  else
+  {
+    firebolt->set_target( o()->target );
+    firebolt->schedule_execute();
+  }
+}
+
+void wild_imp_pet_t::schedule_ready( timespan_t /* delta_time */, bool /* waiting */ )
+{
+  reschedule_firebolt();
+}
+
+void wild_imp_pet_t::finish_moving()
+{
+  warlock_pet_t::finish_moving();
+
+  reschedule_firebolt();
 }
 
 void wild_imp_pet_t::arise()
@@ -634,6 +695,10 @@ void wild_imp_pet_t::arise()
     o()->cooldowns.demonic_tyrant->adjust( o()->legendary.wilfreds_sigil_of_superior_summoning->driver()->effectN( 1 ).time_value() );
     o()->procs.wilfreds_imp->occur();
   }
+
+  // Start casting fel firebolts
+  firebolt->set_target( o()->target );
+  firebolt->schedule_execute();
 }
 
 void wild_imp_pet_t::demise()
