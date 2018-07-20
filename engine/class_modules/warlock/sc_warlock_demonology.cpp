@@ -156,7 +156,10 @@ namespace warlock {
       void execute() override
       {
         demonology_spell_t::execute();
-        p()->buffs.demonic_calling->trigger();
+
+        if ( p()->talents.demonic_calling->ok() )
+          p()->buffs.demonic_calling->trigger();
+
         if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p()->rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T20, B2 )->proc_chance() ) )
         {
           p()->cooldowns.call_dreadstalkers->reset( true );
@@ -353,7 +356,8 @@ namespace warlock {
           p()->buffs.demonic_core->up(); // benefit tracking
           p()->buffs.demonic_core->decrement();
         }
-        if ( !p()->bugs )
+
+        if ( p()->talents.demonic_calling->ok() )
           p()->buffs.demonic_calling->trigger();
 
         if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T20, B2 ) && p()->rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T20, B2 )->proc_chance() ) )
