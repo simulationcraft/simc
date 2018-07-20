@@ -3527,7 +3527,7 @@ static unsigned __race_ability_data[MAX_RACE][MAX_CLASS][RACE_ABILITY_SIZE] = {
     },
   },
 };
-#define SET_BONUS_DATA_SIZE (688)
+#define SET_BONUS_DATA_SIZE (690)
 
 // Set bonus data, wow build 27101
 static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
@@ -4175,19 +4175,21 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   2,   1,   71, 251878, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
   { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   2,   1,   72, 251880, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
   { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   2,   1,   73, 251882, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
+  { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   2,   1,   73, 188635, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
   { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   4,   1,   71, 251879, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
   { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   4,   1,   73, 251883, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
   { "Juggernaut Battlegear"                      ,     "tier21",     14,  1319,   21,   4,   1,   72, 200853, { 152178, 152179, 152180, 152181, 152182, 152183,  0 } },
   { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   2,   2,   65, 251863, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
   { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   2,   2,   66, 251869, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
-  { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   2,   2,   70, 251867, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
   // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
+  { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   2,   2,   70, 251867, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
   { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   4,   2,   65, 251865, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
   { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   4,   2,   66, 251870, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
   { "Light's Vanguard Battleplate"               ,     "tier21",     14,  1324,   21,   4,   2,   70, 251868, { 152148, 152149, 152150, 152151, 152152, 152153,  0 } },
   { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   2,   3,  253, 251755, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
   { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   2,   3,  255,  70847, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
   { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   2,   3,  254,  70855, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
+  { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   2,   3,  254,  70854, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
   { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   4,   3,  253, 251756, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
   { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   4,   3,  255, 203638, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
   { "Serpentstalker Guise"                       ,     "tier21",     14,  1327,   21,   4,   3,  254, 214826, { 152130, 152131, 152132, 152133, 152134, 152135,  0 } },
@@ -4205,9 +4207,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Gilded Seraph's Raiment"                    ,     "tier21",     14,  1323,   21,   4,   5,  258, 251846, { 152154, 152155, 152156, 152157, 152158, 152159,  0 } },
   { "Dreadwake Armor"                            ,     "tier21",     14,  1330,   21,   2,   6,  250, 251876, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
   { "Dreadwake Armor"                            ,     "tier21",     14,  1330,   21,   2,   6,  251, 251873, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Dreadwake Armor"                            ,     "tier21",     14,  1330,   21,   2,   6,  252, 251871, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
   { "Dreadwake Armor"                            ,     "tier21",     14,  1330,   21,   4,   6,  250, 251877, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
-  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Dreadwake Armor"                            ,     "tier21",     14,  1330,   21,   4,   6,  251, 251875, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
   { "Dreadwake Armor"                            ,     "tier21",     14,  1330,   21,   4,   6,  252, 251872, { 152112, 152113, 152114, 152115, 152116, 152117,  0 } },
   { "Garb of Venerated Spirits"                  ,     "tier21",     14,  1321,   21,   2,   7,  262, 251757, { 152166, 152167, 152168, 152169, 152170, 152171,  0 } },
@@ -4231,9 +4233,9 @@ static item_set_bonus_t __set_bonus_data[SET_BONUS_DATA_SIZE] = {
   { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   2,  10,  268, 251829, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
   { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   2,  10,  270, 251825, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
   { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   2,  10,  269, 251823, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
+  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   4,  10,  268, 251830, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
   { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   4,  10,  270, 251826, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
-  // Set bonus name                              ,      OptName, EnumID, SetID, Tier, Bns, Cls, Spec,  Spell, Items
   { "Chi'Ji's Battlegear"                        ,     "tier21",     14,  1325,   21,   4,  10,  269, 251821, { 152142, 152143, 152144, 152145, 152146, 152147,  0 } },
   { "Bearmantle Battlegear"                      ,     "tier21",     14,  1328,   21,   2,  11,  102, 251803, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
   { "Bearmantle Battlegear"                      ,     "tier21",     14,  1328,   21,   2,  11,  103, 251789, { 152124, 152125, 152126, 152127, 152128, 152129,  0 } },
