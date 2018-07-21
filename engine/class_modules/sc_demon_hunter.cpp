@@ -3686,16 +3686,6 @@ struct soul_cleave_t : public demon_hunter_attack_t
     // Soul fragments consumed are capped for Soul Cleave
     p()->consume_soul_fragments( soul_fragment::ALL, true, (unsigned)data().effectN( 3 ).base_value() );
   }
-
-  bool ready() override
-  {
-    if ( p()->talent.spirit_bomb->ok() )
-    {
-      return false;
-    }
-
-    return demon_hunter_attack_t::ready();
-  }
 };
 
 // Throw Glaive =============================================================
@@ -5298,6 +5288,7 @@ void demon_hunter_t::apl_vengeance()
   apl_normal->add_talent( this, "Spirit Bomb", "if=soul_fragments>=4" );
   apl_normal->add_action( this, "Immolation Aura", "if=pain<=90" );
   apl_normal->add_talent( this, "Felblade", "if=pain<=70" );
+  apl_normal->add_action( this, "Soul Cleave", "if=talent.spirit_bomb.enabled&talent.fracture.enabled&soul_fragments=0&cooldown.fracture.charges_fractional<1.75" );
   apl_normal->add_talent( this, "Fracture", "if=soul_fragments<=3" );
   apl_normal->add_talent( this, "Fel Devastation" );
   apl_normal->add_action( this, "Soul Cleave", "if=!talent.spirit_bomb.enabled" );
