@@ -51,7 +51,9 @@ actions.aoe=stormkeeper
 actions.aoe+=/ascendance,if=talent.storm_elemental.enabled&cooldown.storm_elemental.remains<120&cooldown.storm_elemental.remains>15|!talent.storm_elemental.enabled
 actions.aoe+=/liquid_magma_totem
 actions.aoe+=/flame_shock,if=spell_targets.chain_lightning<4,target_if=refreshable
-actions.aoe+=/earthquake
+# You're looking at an abomination. Yes with shoulders you can cast only Earth Shock during Aoe and wait for shoulder procs. This playstyle works for <= 6 targets. But be aware that you'll be gambling once more...
+actions.aoe+=/earth_shock,if=equipped.echoes_of_the_great_sundering
+actions.aoe+=/earthquake,if=equipped.echoes_of_the_great_sundering&buff.echoes_of_the_great_sundering.up|!equipped.echoes_of_the_great_sundering
 # Only cast Lava Burst on three targets if it is an instant.
 actions.aoe+=/lava_burst,if=(buff.lava_surge.up|buff.ascendance.up)&spell_targets.chain_lightning<4
 actions.aoe+=/elemental_blast,if=spell_targets.chain_lightning<4

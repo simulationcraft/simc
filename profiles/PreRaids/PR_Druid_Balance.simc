@@ -36,6 +36,7 @@ actions+=/arcane_torrent,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/lights_judgment,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/use_items
 actions+=/warrior_of_elune
+actions+=/call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1
 actions+=/incarnation,if=astral_power>=40
 actions+=/celestial_alignment,if=astral_power>=40
 actions+=/call_action_list,name=aoe,if=spell_targets.starfall>=3
@@ -56,6 +57,23 @@ actions.aoe+=/full_moon,if=astral_power.deficit>42
 actions.aoe+=/solar_wrath,if=(buff.solar_empowerment.up&!buff.warrior_of_elune.up|buff.solar_empowerment.stack>=3)&buff.lunar_empowerment.stack<3
 actions.aoe+=/lunar_strike
 actions.aoe+=/moonfire
+
+actions.ed=incarnation,if=astral_power>=30
+actions.ed+=/celestial_alignment,if=astral_power>=30
+actions.ed+=/fury_of_elune,if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
+actions.ed+=/force_of_nature,if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
+actions.ed+=/starsurge,if=(gcd.max*astral_power%30)>target.time_to_die
+actions.ed+=/moonfire,target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up
+actions.ed+=/sunfire,target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up
+actions.ed+=/stellar_flare,target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up
+actions.ed+=/starfall,if=buff.oneths_overconfidence.up&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)
+actions.ed+=/new_moon,if=buff.the_emerald_dreamcatcher.remains>execute_time|!buff.the_emerald_dreamcatcher.up
+actions.ed+=/half_moon,if=astral_power.deficit>=20&(buff.the_emerald_dreamcatcher.remains>execute_time|!buff.the_emerald_dreamcatcher.up)
+actions.ed+=/full_moon,if=astral_power.deficit>=40&(buff.the_emerald_dreamcatcher.remains>execute_time|!buff.the_emerald_dreamcatcher.up)
+actions.ed+=/lunar_strike,,if=buff.lunar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time
+actions.ed+=/solar_wrath,if=buff.solar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time
+actions.ed+=/starsurge,if=(buff.the_emerald_dreamcatcher.up&buff.the_emerald_dreamcatcher.remains<gcd.max)|astral_power>=50
+actions.ed+=/solar_wrath
 
 actions.st=fury_of_elune,if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)
 actions.st+=/force_of_nature,if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)

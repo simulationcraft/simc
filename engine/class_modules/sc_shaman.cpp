@@ -2413,7 +2413,7 @@ struct fire_elemental_t : public primal_elemental_t
 
     if ( o()->talent.primal_elementalist->ok() )
     {
-      def->add_action( "meteor,if=active_enemies>2" );
+      def->add_action( "meteor" );
       def->add_action( "immolate,target_if=!ticking" );
     }
     else
@@ -7554,7 +7554,13 @@ void shaman_t::init_action_list_elemental()
                    "remains>15|!talent.storm_elemental.enabled" );
   aoe->add_talent( this, "Liquid Magma Totem" );
   aoe->add_action( this, "Flame Shock", "if=spell_targets.chain_lightning<4,target_if=refreshable" );
-  aoe->add_action( this, "Earthquake" );
+  aoe->add_action(
+      this, "Earth Shock", "if=equipped.echoes_of_the_great_sundering",
+      "You're looking at an abomination. Yes with shoulders you can cast only Earth Shock during Aoe and wait for "
+      "shoulder procs. This playstyle works for <= 6 targets. But be aware that you'll be gambling once more..." );
+  aoe->add_action( this, "Earthquake",
+                   "if=equipped.echoes_of_the_great_sundering&buff.echoes_of_the_great_sundering.up|!equipped.echoes_"
+                   "of_the_great_sundering" );
   aoe->add_action( this, "Lava Burst", "if=(buff.lava_surge.up|buff.ascendance.up)&spell_targets.chain_lightning<4",
                    "Only cast Lava Burst on three targets if it is an instant." );
   aoe->add_talent( this, "Elemental Blast", "if=spell_targets.chain_lightning<4" );
