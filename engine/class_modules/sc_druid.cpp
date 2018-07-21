@@ -5868,6 +5868,9 @@ struct solar_wrath_t : public druid_spell_t
         }
     }
 
+    if (p()->buff.dawning_sun->up())
+      p()->buff.dawning_sun->expire();
+
     p() -> buff.power_of_elune -> trigger();
 
     if (p()->azerite.sunblaze.ok())
