@@ -538,10 +538,7 @@ namespace warlock {
             {
               if (!dt->is_sleeping())
               {
-                for (int i = 0; i < (available/20*3); i++) // TODO: check if hardcoded value can be replaced.
-                {
-                  dt->buffs.demonic_consumption->trigger();
-                }
+                dt->buffs.demonic_consumption->trigger(available / 20 * 5); // TODO: check if hardcoded value can be replaced.
               }
             }
           }
