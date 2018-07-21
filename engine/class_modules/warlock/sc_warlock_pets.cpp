@@ -820,6 +820,11 @@ void dreadstalker_t::demise() {
     o()->buffs.shadows_bite->trigger();
 }
 
+timespan_t dreadstalker_t::available() const
+{
+  return expiration -> remains() + timespan_t::from_millis( 1 );
+}
+
 action_t* dreadstalker_t::create_action(const std::string& name, const std::string& options_str)
 {
   if (name == "dreadbite") return new dreadbite_t(this);

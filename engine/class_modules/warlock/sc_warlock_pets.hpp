@@ -337,6 +337,7 @@ struct dreadstalker_t : public warlock_pet_t
   void init_base_stats() override;
   void arise() override;
   void demise() override;
+  timespan_t available() const override;
   action_t* create_action(const std::string& name, const std::string& options_str) override;
 };
 
