@@ -814,6 +814,7 @@ namespace warlock {
       void impact(action_state_t* s) override
       {
         destruction_spell_t::impact(s);
+
         trigger_internal_combustion( s );
         if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T21, B2 ) )
           td( s->target )->debuffs_chaotic_flames->trigger();
