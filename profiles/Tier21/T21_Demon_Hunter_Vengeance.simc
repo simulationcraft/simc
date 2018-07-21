@@ -1,11 +1,10 @@
-demonhunter="PR_Demon_Hunter_Vengeance"
+demonhunter="T21_Demon_Hunter_Vengeance"
 spec=vengeance
-level=120
-race=night_elf
-timeofday=night
+level=110
+race=blood_elf
 role=tank
-position=front
-talents=3323313
+position=back
+talents=1213121
 
 # Default consumables
 potion=unbending_potion
@@ -31,7 +30,7 @@ actions.precombat+=/potion
 actions=auto_attack
 actions+=/consume_magic
 # ,if=!raid_event.adds.exists|active_enemies>1
-actions+=/use_item,slot=trinket2
+actions+=/use_item,slot=trinket1
 actions+=/call_action_list,name=brand,if=talent.charred_flesh.enabled
 actions+=/call_action_list,name=defensives
 actions+=/call_action_list,name=normal
@@ -63,29 +62,31 @@ actions.normal+=/sigil_of_flame
 actions.normal+=/shear
 actions.normal+=/throw_glaive
 
-head=hood_of_the_blind_executioner,id=137511
-neck=pendant_of_the_moon_temple,id=139605,enchant_id=5439
-shoulders=charskin_mantle,id=137510
-back=cloak_of_manaspun_silk,id=134410,enchant_id=5435
-chest=vest_of_rupturing_diamonds,id=137336
-wrists=shorn_batbrood_cuffs,id=136979
-hands=frostcarver_grips,id=134445
-waist=sinister_ashfall_cord,id=134455
-legs=snaggles_favorite_pants,id=140594
-feet=footpads_of_the_swift_balestra,id=137497
-finger1=band_of_the_wyrm_matron,id=134524,enchant_id=5427
-finger2=utgarde_royal_signet,id=133637,enchant_id=5427
-trinket1=chaos_talisman,id=137459
-trinket2=horn_of_valor,id=133642
-main_hand=aldrachi_warblades,id=128832,bonus_id=721,ilevel=870,relic_id=3412/3412/3412
-off_hand=aldrachi_warblades,id=128831,ilevel=870
+head=felreaper_hood,id=152121,bonus_id=3612/1502
+neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_claw
+shoulders=felreaper_spaulders,id=152123,bonus_id=3612/1502
+back=felreaper_drape,id=152119,bonus_id=3612/1502,enchant=binding_of_agility
+chest=vest_of_waning_life,id=151982,bonus_id=3612/1502
+wrists=fiendish_logisticians_wristwraps,id=151992,bonus_id=3612/1502
+hands=felreaper_gloves,id=152120,bonus_id=3612/1502
+waist=cinidaria_the_symbiote,id=133976,bonus_id=1811/3630
+legs=felreaper_leggings,id=152122,bonus_id=3612/1502
+feet=lifebearing_footpads,id=151981,bonus_id=3612/1502
+finger1=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_versatility
+finger2=band_of_the_sargerite_smith,id=152064,bonus_id=3612/1502,enchant=binding_of_versatility
+trinket1=archimondes_hatred_reborn,id=144249,bonus_id=1811/3630
+trinket2=aggramars_conviction,id=154173,bonus_id=3997
+main_hand=aldrachi_warblades,id=128832,bonus_id=719/1505/1505/1505,gem_id=155855/155846/155848
+off_hand=aldrachi_warblades,id=128831
 
 # Gear Summary
-# gear_ilvl=250.50
-# gear_agility=30444
-# gear_stamina=60413
-# gear_crit_rating=1125
-# gear_haste_rating=38
-# gear_mastery_rating=752
-# gear_versatility_rating=211
-# gear_armor=261
+# gear_ilvl=248.88
+# gear_agility=954
+# gear_stamina=1318
+# gear_crit_rating=508
+# gear_haste_rating=197
+# gear_mastery_rating=384
+# gear_versatility_rating=228
+# gear_armor=414
+# set_bonus=tier21_2pc=1
+# set_bonus=tier21_4pc=1
