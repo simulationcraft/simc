@@ -1283,17 +1283,16 @@ namespace warlock {
 
   void warlock_t::create_apl_destruction() {
     action_priority_list_t* def = get_action_priority_list("default");
-    action_priority_list_t* aoe = get_action_priority_list("aoe");
+    action_priority_list_t* cds = get_action_priority_list( "cds" );
+    action_priority_list_t* fnb = get_action_priority_list( "fnb" );
+    action_priority_list_t* cata = get_action_priority_list( "cata" );
+    action_priority_list_t* inf = get_action_priority_list( "inf" );
 
-    def->add_action("run_action_list,name=aoe,if=spell_targets.infernal_awakening>=3");
-    def->add_action("immolate,cycle_targets=1,if=(cooldown.havoc.remains<15|!debuff.havoc.remains)&(refreshable|talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains-action.chaos_bolt.travel_time-5<duration*0.3)");
-    def->add_action("summon_infernal,if=target.time_to_die>=210|!cooldown.dark_soul_instability.remains|target.time_to_die<=30+gcd|!talent.dark_soul_instability.enabled");
-    def->add_talent(this, "Dark Soul: Instability", "if=target.time_to_die>=140|pet.infernal.active|target.time_to_die<=20+gcd" );
-    def->add_action( "potion,if=pet.infernal.active|target.time_to_die<65" );
-    def->add_action( "berserking" );
-    def->add_action( "blood_fury" );
-    def->add_action( "fireblood" );
-    def->add_action( "use_items" );
+    def->add_action( "run_action_list,name=cata,if=spell_targets.infernal_awakening>=3&talent.cataclysm.enabled" );
+    def->add_action( "run_action_list,name=fnb,if=spell_targets.infernal_awakening>=3&talent.fire_and_brimstone.enabled" );
+    def->add_action( "run_action_list,name=inf,if=spell_targets.infernal_awakening>=3&talent.inferno.enabled" );
+    def->add_action("immolate,cycle_targets=1,if=!debuff.havoc.remains&(refreshable|talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains-action.chaos_bolt.travel_time-5<duration*0.3)");
+    def->add_action( "call_action_list,name=cds" );
     def->add_action( "havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10" );
     def->add_action( "havoc,if=active_enemies>1" );
     def->add_talent(this, "Channel Demonfire" );
@@ -1304,22 +1303,63 @@ namespace warlock {
     def->add_talent(this, "Shadowburn", "cycle_targets=1,if=!debuff.havoc.remains&((charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time))");
     def->add_action("incinerate,cycle_targets=1,if=!debuff.havoc.remains");
 
-    aoe->add_action("summon_infernal,if=target.time_to_die>=400|!cooldown.dark_soul_instability.remains|target.time_to_die<=45|!talent.dark_soul_instability.enabled");
-    aoe->add_talent(this, "Dark Soul: Instability", "if=target.time_to_die>=130|pet.infernal.active|target.time_to_die<=30" );
-    aoe->add_action( "potion,if=pet.infernal.active|target.time_to_die<65" );
-    aoe->add_action( "use_items" );
-    aoe->add_talent(this, "Cataclysm");
-    aoe->add_action("rain_of_fire,if=soul_shard>=4.5");
-    aoe->add_action("immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time");
-    aoe->add_talent(this, "Channel Demonfire");
-    aoe->add_action("immolate,cycle_targets=1,if=refreshable&((!talent.fire_and_brimstone.enabled|spell_targets.incinerate<=5)|talent.cataclysm.enabled&cooldown.cataclysm.remains>=12)");
-    aoe->add_action( "havoc,cycle_targets=1,if=spell_targets.infernal_awakening<4&!(target=sim.target)&target.time_to_die>10&(talent.roaring_blaze.enabled|talent.eradication.enabled|talent.grimoire_of_supremacy.enabled&cooldown.infernal.remains<165&pet.infernal.active)" );
-    aoe->add_action( "havoc,if=spell_targets.infernal_awakening<4&(talent.roaring_blaze.enabled|talent.eradication.enabled|talent.grimoire_of_supremacy.enabled&cooldown.infernal.remains<165&pet.infernal.active)" );
-    aoe->add_action( "chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&execute_time+travel_time<target.time_to_die&cooldown.havoc.remains>=15+execute_time&(talent.roaring_blaze.enabled|talent.eradication.enabled|talent.grimoire_of_supremacy.enabled&cooldown.infernal.remains<165&pet.infernal.active)&spell_targets.infernal_awakening<4" );
-    aoe->add_action("rain_of_fire");
-    aoe->add_talent( this, "Soul Fire", "cycle_targets=1,if=!debuff.havoc.remains&!talent.fire_and_brimstone.enabled" );
-    aoe->add_action("conflagrate,cycle_targets=1,if=!debuff.havoc.remains&(!talent.fire_and_brimstone.enabled|(talent.flashover.enabled&buff.backdraft.stack<=2&spell_targets.incinerate<7))");
-    aoe->add_talent( this, "Shadowburn", "cycle_targets=1,if=!debuff.havoc.remains&!talent.fire_and_brimstone.enabled&(charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time)");
-    aoe->add_action("incinerate,cycle_targets=1,if=!debuff.havoc.remains");
+    cds->add_action( "summon_infernal,if=target.time_to_die>=210|!cooldown.dark_soul_instability.remains|target.time_to_die<=30+gcd|!talent.dark_soul_instability.enabled" );
+    cds->add_talent( this, "Dark Soul: Instability", "if=target.time_to_die>=140|pet.infernal.active|target.time_to_die<=20+gcd" );
+    cds->add_action( "potion,if=pet.infernal.active|target.time_to_die<65" );
+    cds->add_action( "berserking" );
+    cds->add_action( "blood_fury" );
+    cds->add_action( "fireblood" );
+    cds->add_action( "use_items" );
+
+    fnb->add_action( "call_action_list,name=cds" );
+    fnb->add_action( "rain_of_fire,if=soul_shard>=4.5" );
+    fnb->add_action( "immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time" );
+    fnb->add_action( "channel_demonfire" );
+    fnb->add_action( "havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10" );
+    fnb->add_action( "havoc,if=spell_targets.rain_of_fire<=4&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10" );
+    fnb->add_action( "chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&active_enemies<=4&((108*spell_targets.rain_of_fire%3)<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))" );
+    fnb->add_action( "immolate,cycle_targets=1,if=!debuff.havoc.remains&refreshable&spell_targets.incinerate<=8" );
+    fnb->add_action( "rain_of_fire" );
+    fnb->add_action( "soul_fire,cycle_targets=1,if=!debuff.havoc.remains&spell_targets.incinerate=3" );
+    fnb->add_action( "conflagrate,cycle_targets=1,if=!debuff.havoc.remains&(talent.flashover.enabled&buff.backdraft.stack<=2|spell_targets.incinerate<=7|talent.roaring_blaze.enabled&spell_targets.incinerate<=9)" );
+    fnb->add_action( "incinerate,cycle_targets=1,if=!debuff.havoc.remains" );
+
+    cata->add_action( "call_action_list,name=cds" );
+    cata->add_action( "rain_of_fire,if=soul_shard>=4.5" );
+    cata->add_action( "cataclysm" );
+    cata->add_action( "immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time" );
+    cata->add_action( "channel_demonfire" );
+    cata->add_action( "havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=8&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10" );
+    cata->add_action( "havoc,if=spell_targets.rain_of_fire<=8&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10" );
+    cata->add_action( "chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&active_enemies<=8&((108*spell_targets.rain_of_fire%3)<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))" );
+    cata->add_action( "havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4" );
+    cata->add_action( "havoc,if=spell_targets.rain_of_fire<=4" );
+    cata->add_action( "chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&buff.active_havoc.remains>execute_time&spell_targets.rain_of_fire<=4" );
+    cata->add_action( "immolate,cycle_targets=1,if=!debuff.havoc.remains&refreshable&remains<=cooldown.cataclysm.remains" );
+    cata->add_action( "rain_of_fire" );
+    cata->add_action( "soul_fire,cycle_targets=1,if=!debuff.havoc.remains" );
+    cata->add_action( "conflagrate,cycle_targets=1,if=!debuff.havoc.remains" );
+    cata->add_action( "shadowburn,cycle_targets=1,if=!debuff.havoc.remains&((charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time))" );
+    cata->add_action( "incinerate,cycle_targets=1,if=!debuff.havoc.remains" );
+
+    inf->add_action( "call_action_list,name=cds" );
+    inf->add_action( "rain_of_fire,if=soul_shard>=4.5" );
+    inf->add_action( "cataclysm" );
+    inf->add_action( "immolate,if=talent.channel_demonfire.enabled&!remains&cooldown.channel_demonfire.remains<=action.chaos_bolt.execute_time" );
+    inf->add_action( "channel_demonfire" );
+    inf->add_action( "havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=4+talent.internal_combustion.enabled&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10" );
+    inf->add_action( "havoc,if=spell_targets.rain_of_fire<=4+talent.internal_combustion.enabled&talent.grimoire_of_supremacy.enabled&pet.infernal.active&pet.infernal.remains<=10" );
+    inf->add_action( "chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&talent.grimoire_of_supremacy.enabled&pet.infernal.remains>execute_time&spell_targets.rain_of_fire<=4+talent.internal_combustion.enabled&((108*spell_targets.rain_of_fire%(3-0.16*spell_targets.rain_of_fire))<(240*(1+0.08*buff.grimoire_of_supremacy.stack)%2*(1+buff.active_havoc.remains>execute_time)))" );
+    inf->add_action( "havoc,cycle_targets=1,if=!(target=sim.target)&target.time_to_die>10&spell_targets.rain_of_fire<=3&(talent.eradication.enabled|talent.internal_combustion.enabled)" );
+    inf->add_action( "havoc,if=spell_targets.rain_of_fire<=3&(talent.eradication.enabled|talent.internal_combustion.enabled)" );
+    inf->add_action( "chaos_bolt,cycle_targets=1,if=!debuff.havoc.remains&buff.active_havoc.remains>execute_time&spell_targets.rain_of_fire<=3&(talent.eradication.enabled|talent.internal_combustion.enabled)" );
+    inf->add_action( "immolate,cycle_targets=1,if=!debuff.havoc.remains&refreshable" );
+    inf->add_action( "rain_of_fire" );
+    inf->add_action( "soul_fire,cycle_targets=1,if=!debuff.havoc.remains" );
+    inf->add_action( "conflagrate,cycle_targets=1,if=!debuff.havoc.remains" );
+    inf->add_action( "shadowburn,cycle_targets=1,if=!debuff.havoc.remains&((charges=2|!buff.backdraft.remains|buff.backdraft.remains>buff.backdraft.stack*action.incinerate.execute_time))" );
+    inf->add_action( "incinerate,cycle_targets=1,if=!debuff.havoc.remains" );
+
+
   }
 }
