@@ -7616,9 +7616,9 @@ void druid_t::apl_balance()
 
   default_list->add_action("use_items");
   default_list -> add_talent( this, "Warrior of Elune");
+  default_list -> add_action("call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1");
   default_list -> add_action( "incarnation,if=astral_power>=40" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
-  default_list -> add_action("call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1");
   default_list -> add_action("call_action_list,name=aoe,if=spell_targets.starfall>=3");
   default_list -> add_action("call_action_list,name=st");
 
@@ -7658,7 +7658,7 @@ void druid_t::apl_balance()
   ED->add_action(this, "Celestial Alignment", "if=astral_power>=30");
   ED->add_talent(this, "Fury of Elune", "if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)");
   ED->add_talent(this, "Force of Nature", "if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)");
-  ED->add_action(this, "Starsurge", "if=(gcd.max*astral_power%26)>target.time_to_die");
+  ED->add_action(this, "Starsurge", "if=(gcd.max*astral_power%30)>target.time_to_die");
   ED->add_action(this, "Moonfire", "target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up");
   ED->add_action(this, "Sunfire", "target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up");
   ED->add_talent(this, "Stellar Flare", "target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up");
