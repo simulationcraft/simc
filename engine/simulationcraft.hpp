@@ -5410,8 +5410,6 @@ public:
 
   virtual bool execute_targeting( action_t* action ) const;
 
-  virtual bool impact_targeting( action_state_t* s ) const;
-
   virtual std::vector<player_t*> targets_in_range_list( std::vector< player_t* >& tl ) const;
 
   virtual std::vector<player_t*> check_distance_targeting( std::vector< player_t* >& tl ) const;

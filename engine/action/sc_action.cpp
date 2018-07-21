@@ -3435,9 +3435,6 @@ void action_t::schedule_travel( action_state_t* s )
 
 void action_t::impact( action_state_t* s )
 {
-  if ( !impact_targeting( s ) )
-    return;
-
   // Note, Critical damage bonus for direct amounts is computed on impact, instead of cast finish.
   s->result_amount = calculate_crit_damage_bonus( s );
 
