@@ -21,6 +21,9 @@ warlock_pet_t::warlock_pet_t(warlock_t* owner, const std::string& pet_name, pet_
   owner_coeff.ap_from_sp = 0.5;
   owner_coeff.sp_from_sp = 1.0;
   owner_coeff.health = 0.5;
+
+  callbacks_on_arise.push_back( [ owner ]() { owner->active_pets++; } );
+  callbacks_on_demise.push_back( [ owner ]( const player_t* ) { owner->active_pets--; } );
 }
 
 warlock_t* warlock_pet_t::o()

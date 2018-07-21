@@ -189,6 +189,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     havoc_target( nullptr ),
     wracking_brilliance(false),
     agony_accumulator( 0.0 ),
+    active_pets( 0 ),
     warlock_pet_list( this ),
     active(),
     talents(),
@@ -992,21 +993,7 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
   }
   else if ( name_str == "pet_count" )
   {
-    return make_fn_expr(name_str,
-        [this]()
-        {
-          double t = 0;
-          for ( const auto& pet : pet_list )
-          {
-            if ( auto lock_pet = dynamic_cast<pets::warlock_pet_t*>( pet ) )
-            {
-              if ( !lock_pet->is_sleeping() )
-              {
-                t++;
-              }
-            }
-          }
-          return t;});
+    return make_ref_expr( name_str, active_pets );
   }
   else if (name_str == "last_cast_imps")
   {

@@ -138,21 +138,9 @@ namespace warlock {
       {
         double m = demonology_spell_t::action_multiplier();
 
-        if (p()->talents.sacrificed_souls->ok())
+        if ( p()->talents.sacrificed_souls->ok() )
         {
-          double pets = 0;
-          for (auto& pet : p()->pet_list)
-          {
-            auto lock_pet = dynamic_cast<pets::warlock_pet_t*>(pet);
-
-            if (lock_pet == nullptr)
-              continue;
-            if (lock_pet->is_sleeping())
-              continue;
-
-            pets++;
-          }
-          m *= 1.0 + ( p()->talents.sacrificed_souls->effectN(1).percent() * pets );
+          m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
         }
 
         return m;
@@ -337,21 +325,9 @@ namespace warlock {
       {
         double m = demonology_spell_t::action_multiplier();
 
-        if (p()->talents.sacrificed_souls->ok())
+        if ( p()->talents.sacrificed_souls->ok() )
         {
-          int active_pets = 0;
-          for (auto& pet : p()->pet_list)
-          {
-            auto lock_pet = dynamic_cast<pets::warlock_pet_t*>(pet);
-
-            if (lock_pet == nullptr)
-              continue;
-            if (lock_pet->is_sleeping())
-              continue;
-
-            active_pets++;
-          }
-          m *= 1.0 + (p()->talents.sacrificed_souls->effectN(1).percent() * active_pets);
+          m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
         }
 
         return m;

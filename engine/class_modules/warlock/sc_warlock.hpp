@@ -66,6 +66,8 @@ namespace warlock
       bool wracking_brilliance;
       double agony_accumulator;
 
+      unsigned active_pets;
+
       // Active Pet
       struct pets_t
       {
