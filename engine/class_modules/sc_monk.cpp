@@ -1966,6 +1966,10 @@ public:
   {
     double m = pet_t::composite_player_multiplier( school );
 
+    monk_t* o = static_cast<monk_t*>(owner);
+
+    m *= 1 + o -> spec.brewmaster_monk -> effectN( 3 ).percent();
+
     return m;
   }
 
