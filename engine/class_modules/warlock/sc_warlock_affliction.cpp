@@ -85,20 +85,6 @@ namespace warlock
             }
           }
 
-          if (p()->talents.soul_conduit->ok())
-          {
-            double soul_conduit_rng = p()->talents.soul_conduit->effectN(1).percent();
-
-            for (int i = 0; i < last_resource_cost; i++)
-            {
-              if (rng().roll(soul_conduit_rng))
-              {
-                p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.soul_conduit);
-                p()->procs.soul_conduit->occur();
-              }
-            }
-          }
-
           p()->buffs.demonic_speed->trigger();
         }
       }

@@ -76,39 +76,6 @@ namespace warlock {
 
           }
 
-          if (p()->talents.soul_conduit->ok())
-          {
-            struct demo_sc_event :
-              public player_event_t
-            {
-              gain_t* shard_gain;
-              warlock_t* pl;
-              int shards_used;
-
-              demo_sc_event(warlock_t* p, int c) :
-                player_event_t(*p, timespan_t::from_millis(100)), shard_gain(p -> gains.soul_conduit), pl(p), shards_used(c) { }
-
-              virtual const char* name() const override
-              {
-                return "demonology_sc_event";
-              }
-
-              virtual void execute() override
-              {
-                double soul_conduit_rng = pl->talents.soul_conduit->effectN(1).percent();
-
-                for (int i = 0; i < shards_used; i++) {
-                  if (rng().roll(soul_conduit_rng)) {
-                    pl->resource_gain(RESOURCE_SOUL_SHARD, 1.0, pl->gains.soul_conduit);
-                    pl->procs.soul_conduit->occur();
-                  }
-                }
-              }
-            };
-
-            make_event<demo_sc_event>(*p()->sim, p(), as<int>(last_resource_cost));
-          }
-
           p()->buffs.demonic_speed->trigger();
 
           if (p()->buffs.nether_portal->up())
