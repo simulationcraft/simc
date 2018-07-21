@@ -7606,6 +7606,7 @@ void druid_t::apl_balance()
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
   action_priority_list_t* ST                  = get_action_priority_list( "st" );
   action_priority_list_t* AoE                 = get_action_priority_list( "aoe" );
+  action_priority_list_t* ED                  = get_action_priority_list( "ed");
 
   if ( sim -> allow_potions && true_level >= 80 )
     default_list -> add_action( potion_action + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
@@ -7617,6 +7618,7 @@ void druid_t::apl_balance()
   default_list -> add_talent( this, "Warrior of Elune");
   default_list -> add_action( "incarnation,if=astral_power>=40" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
+  default_list -> add_action("call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1");
   default_list -> add_action("call_action_list,name=aoe,if=spell_targets.starfall>=3");
   default_list -> add_action("call_action_list,name=st");
 
@@ -7651,6 +7653,23 @@ void druid_t::apl_balance()
   AoE -> add_action( this, "Solar Wrath", "if=(buff.solar_empowerment.up&!buff.warrior_of_elune.up|buff.solar_empowerment.stack>=3)&buff.lunar_empowerment.stack<3");
   AoE -> add_action( this, "Lunar Strike");
   AoE -> add_action( this, "Moonfire");
+
+  ED->add_action("incarnation,if=astral_power>=30");
+  ED->add_action(this, "Celestial Alignment", "if=astral_power>=30");
+  ED->add_talent(this, "Fury of Elune", "if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)");
+  ED->add_talent(this, "Force of Nature", "if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)");
+  ED->add_action(this, "Starsurge", "if=(gcd.max*astral_power%26)>target.time_to_die");
+  ED->add_action(this, "Moonfire", "target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up");
+  ED->add_action(this, "Sunfire", "target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up");
+  ED->add_talent(this, "Stellar Flare", "target_if=refreshable,if=buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up");
+  ED->add_action(this, "Starfall", "if=buff.oneths_overconfidence.up&(buff.the_emerald_dreamcatcher.remains>gcd.max|!buff.the_emerald_dreamcatcher.up)");
+  ED->add_action(this, "New Moon", "if=buff.the_emerald_dreamcatcher.remains>execute_time|!buff.the_emerald_dreamcatcher.up");
+  ED->add_action(this, "Half Moon", "if=astral_power.deficit>=20&(buff.the_emerald_dreamcatcher.remains>execute_time|!buff.the_emerald_dreamcatcher.up)");
+  ED->add_action(this, "Full Moon", "if=astral_power.deficit>=40&(buff.the_emerald_dreamcatcher.remains>execute_time|!buff.the_emerald_dreamcatcher.up)");
+  ED->add_action(this, "Lunar Strike", ",if=buff.lunar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time");
+  ED->add_action(this, "Solar Wrath", "if=buff.solar_empowerment.up&buff.the_emerald_dreamcatcher.remains>execute_time");
+  ED->add_action(this, "Starsurge", "if=(buff.the_emerald_dreamcatcher.up&buff.the_emerald_dreamcatcher.remains<gcd.max)|astral_power>=50");
+  ED->add_action(this, "Solar Wrath");
 
 }
 
