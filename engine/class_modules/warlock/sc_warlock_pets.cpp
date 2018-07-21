@@ -571,6 +571,8 @@ void felguard_pet_t::queue_ds_felstorm()
 
 struct fel_firebolt_t : public warlock_pet_spell_t
 {
+  bool demonic_power_on_cast_start;
+
   fel_firebolt_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "fel_firebolt", p, p -> find_spell( 104318 ) )
   {
@@ -594,6 +596,14 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     }
 
     warlock_pet_spell_t::schedule_execute( execute_state );
+
+    if (p()->o()->buffs.demonic_power->check() && p()->resources.current[RESOURCE_ENERGY] < 100)
+    {
+      demonic_power_on_cast_start = true;
+    }
+    else {
+      demonic_power_on_cast_start = false;
+    }
   }
 
   void consume_resource() override
@@ -611,7 +621,7 @@ struct fel_firebolt_t : public warlock_pet_spell_t
   {
     double c = warlock_pet_spell_t::cost();
 
-    if ( p()->o()->buffs.demonic_power->check() )
+    if ( demonic_power_on_cast_start )
     {
       c *= 1.0 + p()->o()->buffs.demonic_power->data().effectN( 4 ).percent();
     }
