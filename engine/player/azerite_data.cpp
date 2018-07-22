@@ -51,7 +51,7 @@ double azerite_power_t::value( size_t index ) const
   for ( size_t budget_index = 0, end = budgets.size(); budget_index < end; ++budget_index )
   {
     auto budget = budgets[ budget_index ];
-    auto value = floor( m_spell -> effectN( index ).m_average() * budget + 0.5 );
+    auto value = floor( m_spell -> effectN( index ).m_coefficient() * budget + 0.5 );
 
     unsigned actual_level = m_ilevels[ budget_index ];
     if ( m_spell->max_scaling_level() > 0 && m_spell->max_scaling_level() < actual_level )

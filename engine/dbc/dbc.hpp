@@ -599,7 +599,7 @@ public:
   unsigned         _type;            // 5 Effect type
   unsigned         _subtype;         // 6 Effect sub-type
   // SpellScaling.dbc
-  double           _m_avg;           // 7 Effect average spell scaling multiplier
+  double           _m_coeff;           // 7 Effect average spell scaling multiplier
   double           _m_delta;         // 8 Effect delta spell scaling multiplier
   double           _m_unk;           // 9 Unused effect scaling multiplier
   //
@@ -704,8 +704,8 @@ public:
   double chain_multiplier() const
   { return _m_chain; }
 
-  double m_average() const
-  { return _m_avg; }
+  double m_coefficient() const
+  { return _m_coeff; }
 
   double m_delta() const
   { return _m_delta; }

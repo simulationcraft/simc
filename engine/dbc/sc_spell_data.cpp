@@ -45,7 +45,7 @@ const sdata_field_t _effect_data_fields[] =
   { SD_TYPE_UNSIGNED, "index",          O_SED( _index )           },
   { SD_TYPE_INT,      "type",           O_SED( _type )            },
   { SD_TYPE_INT,      "sub_type" ,      O_SED( _subtype )         },
-  { SD_TYPE_DOUBLE,   "m_average",      O_SED( _m_avg )           },
+  { SD_TYPE_DOUBLE,   "m_coefficient",  O_SED( _m_coeff )         },
   { SD_TYPE_DOUBLE,   "m_delta",        O_SED( _m_delta )         },
   { SD_TYPE_DOUBLE,   "m_bonus" ,       O_SED( _m_unk )           },
   { SD_TYPE_DOUBLE,   "coefficient",    O_SED( _sp_coeff )        },

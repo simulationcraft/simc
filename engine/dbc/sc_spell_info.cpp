@@ -30,7 +30,7 @@ std::vector<std::string> _hotfix_effect_map = {
   "Index",
   "Type",
   "Sub Type",
-  "Average",
+  "Coefficient",
   "Delta",
   "Bonus",
   "SP Coefficient",
@@ -930,15 +930,15 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
       item_budget = ilevel_data.item_effect;
     }
 
-    s << item_budget * e -> m_average() * coefficient;
+    s << item_budget * e -> m_coefficient() * coefficient;
 
   }
 
-  if ( e -> m_average() != 0 || e -> m_delta() != 0 )
+  if ( e -> m_coefficient() != 0 || e -> m_delta() != 0 )
   {
-    s << " (avg=" << e -> m_average();
+    s << " (coefficient=" << e -> m_coefficient();
     if ( e -> m_delta() != 0 )
-      s << ", dl=" << e -> m_delta();
+      s << ", delta coefficient=" << e -> m_delta();
     s << ")";
   }
 
@@ -1803,12 +1803,12 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
     const random_prop_data_t& ilevel_data = dbc.random_property( level );
     double item_budget = ilevel_data.p_epic[ 0 ];
 
-    node -> add_parm( "scaled_value", item_budget * e -> m_average() );
+    node -> add_parm( "scaled_value", item_budget * e -> m_coefficient() );
   }
 
-  if ( e -> m_average() != 0 )
+  if ( e -> m_coefficient() != 0 )
   {
-    node -> add_parm( "multiplier_average", e -> m_average() );
+    node -> add_parm( "multiplier_coefficient", e -> m_coefficient() );
   }
 
   if ( e -> m_delta() != 0 )
