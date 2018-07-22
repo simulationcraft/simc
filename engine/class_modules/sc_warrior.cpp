@@ -315,7 +315,6 @@ public:
     const spell_data_t* into_the_fray;
     const spell_data_t* titanic_might;
     const spell_data_t* vengeance;
-    const spell_data_t* warlords_challenge;
 
     const spell_data_t* anger_management;
     const spell_data_t* carnage;
@@ -3730,7 +3729,6 @@ struct berserker_rage_t : public warrior_spell_t
     callbacks   = false;
     use_off_gcd = true;
     range       = -1;
-    cooldown->duration += p->talents.warlords_challenge->effectN( 3 ).time_value();
   }
 
   void execute() override
@@ -4193,13 +4191,6 @@ struct taunt_t : public warrior_spell_t
 
     warrior_spell_t::impact( s );
   }
-
-  bool ready() override
-  {
-    if ( p()->buff.berserker_rage->check() && p()->talents.warlords_challenge->ok() )
-      return true;
-    return warrior_spell_t::ready();
-  }
 };
 
 }  // UNNAMED NAMESPACE
@@ -4452,7 +4443,6 @@ void warrior_t::init_spells()
   talents.vengeance           = find_talent_spell( "Vengeance" );
   talents.war_machine         = find_talent_spell( "War Machine" );
   talents.warbreaker          = find_talent_spell( "Warbreaker" );
-  talents.warlords_challenge  = find_talent_spell( "Warlord's Challenge" );
   talents.warpaint            = find_talent_spell( "Warpaint" );
 
   // Artifact
