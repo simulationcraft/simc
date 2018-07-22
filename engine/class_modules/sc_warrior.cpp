@@ -181,6 +181,7 @@ public:
     gain_t* thunder_clap;
     gain_t* protection_t20_2p;
     gain_t* endless_rage;
+    gain_t* collateral_damage;
 
     // Legendarys
     gain_t* ceannar_rage;
@@ -298,6 +299,7 @@ public:
     const spell_data_t* furious_charge;
     const spell_data_t* second_wind;  // NYI
     const spell_data_t* warpaint;
+    const spell_data_t* collateral_damage;
 
     const spell_data_t* best_served_cold;
     const spell_data_t* bladestorm;
@@ -473,7 +475,7 @@ public:
   double composite_attribute( attribute_e attr ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
   double composite_player_multiplier( school_e school ) const override;
-  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
+  // double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_melee_haste() const override;
   double composite_armor_multiplier() const override;
@@ -483,16 +485,16 @@ public:
   double composite_parry() const override;
   double composite_melee_expertise( const weapon_t* ) const override;
   double composite_attack_power_multiplier() const override;
-  double composite_melee_attack_power() const override;
+  // double composite_melee_attack_power() const override;
   double composite_mastery() const override;
   double composite_crit_block() const override;
   double composite_crit_avoidance() const override;
-  double composite_melee_speed() const override;
+  // double composite_melee_speed() const override;
   double composite_melee_crit_chance() const override;
-  double composite_spell_crit_chance() const override;
+  // double composite_spell_crit_chance() const override;
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
-  double composite_leech() const override;
-  double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
+  // double composite_leech() const override;
+  // double resource_gain( resource_e, double, gain_t* = nullptr, action_t* = nullptr ) override;
   void teleport( double yards, timespan_t duration ) override;
   void trigger_movement( double distance, movement_direction_e direction ) override;
   void interrupt() override;
@@ -692,14 +694,12 @@ public:
 
   int n_targets() const override
   {
-    int targets = ab::n_targets();
-
     if ( sweeping_strikes && p()->buff.sweeping_strikes->check() )
     {
-      return targets = 1 + p()->spec.sweeping_strikes->effectN( 1 ).base_value();
+      return ( 1 + p()->spec.sweeping_strikes->effectN( 1 ).base_value() );
     }
 
-    return targets;
+    return ab::n_targets();
   }
 
   double composite_energize_amount( const action_state_t* state ) const override
@@ -818,6 +818,13 @@ public:
   {
     ab::impact( s );
 
+    if ( p()->talents.collateral_damage->ok() && sweeping_strikes && p()->buff.sweeping_strikes->up() &&
+         s->chain_target == 1 )
+    {
+      p()->resource_gain( RESOURCE_RAGE,
+                          ( ab::last_resource_cost * p()->talents.collateral_damage->effectN( 1 ).percent() ),
+                          p()->gain.collateral_damage );
+    }
     if ( ab::sim->log )
     {
       ab::sim->out_debug.printf(
@@ -4413,6 +4420,7 @@ void warrior_t::init_spells()
   talents.bounding_stride     = find_talent_spell( "Bounding Stride" );
   talents.carnage             = find_talent_spell( "Carnage" );
   talents.cleave              = find_talent_spell( "Cleave" );
+  talents.collateral_damage   = find_talent_spell( "Collateral Damage" );
   talents.crackling_thunder   = find_talent_spell( "Crackling Thunder" );
   talents.deadly_calm         = find_talent_spell( "Deadly Calm" );
   talents.defensive_stance    = find_talent_spell( "Defensive Stance" );
@@ -5354,6 +5362,7 @@ void warrior_t::init_gains()
   gain.thunder_clap                     = get_gain( "thunder_clap" );
   gain.protection_t20_2p                = get_gain( "t20_2p" );
   gain.whirlwind                        = get_gain( "whirlwind" );
+  gain.collateral_damage                = get_gain( "collateral_damage" );
 
   gain.ceannar_rage           = get_gain( "ceannar_rage" );
   gain.endless_rage           = get_gain( "endless_rage" );
