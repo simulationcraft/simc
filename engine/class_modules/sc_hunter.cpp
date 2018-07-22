@@ -713,7 +713,6 @@ struct hunter_action_t: public Base
 private:
   typedef Base ab;
 public:
-  typedef hunter_action_t base_t;
 
   bool track_cd_waste;
   cdwaste::action_data_t* cd_waste;
@@ -958,7 +957,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
   hunter_ranged_attack_t( const std::string& n, hunter_t* player,
                           const spell_data_t* s = spell_data_t::nil() ):
-                          base_t( n, player, s ),
+                          hunter_action_t( n, player, s ),
                           may_proc_mm_feet( false )
   {}
 
@@ -967,7 +966,7 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
   void execute() override
   {
-    base_t::execute();
+    hunter_action_t::execute();
     try_steady_focus();
     try_t20_2p_mm();
 
@@ -980,7 +979,7 @@ struct hunter_melee_attack_t: public hunter_action_t < melee_attack_t >
 {
   hunter_melee_attack_t( const std::string& n, hunter_t* p,
                           const spell_data_t* s = spell_data_t::nil() ):
-                          base_t( n, p, s )
+                          hunter_action_t( n, p, s )
   {}
 };
 
@@ -989,12 +988,12 @@ struct hunter_spell_t: public hunter_action_t < spell_t >
 public:
   hunter_spell_t( const std::string& n, hunter_t* player,
                   const spell_data_t* s = spell_data_t::nil() ):
-                  base_t( n, player, s )
+                  hunter_action_t( n, player, s )
   {}
 
   void execute() override
   {
-    base_t::execute();
+    hunter_action_t::execute();
     try_steady_focus();
     try_t20_2p_mm();
   }
@@ -1444,7 +1443,6 @@ struct hunter_main_pet_action_t: public hunter_pet_action_t < hunter_main_pet_t,
 private:
   typedef hunter_pet_action_t<hunter_main_pet_t, Base> ab;
 public:
-  typedef hunter_main_pet_action_t base_t;
 
   struct {
     // bm
@@ -1898,7 +1896,7 @@ action_t* hunter_main_pet_t::create_action( const std::string& name,
   if ( name == "bite" ) return new                 basic_attack_t( this, "Bite", options_str );
   if ( name == "smack" ) return new                basic_attack_t( this, "Smack", options_str );
   if ( name == "froststorm_breath" ) return new    froststorm_breath_t( this, options_str );
-  return base_t::create_action( name, options_str );
+  return hunter_main_pet_base_t::create_action( name, options_str );
 }
 
 // hunter_t::init_spells ====================================================
@@ -2065,7 +2063,7 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
   bool first_shot = true;
 
   auto_shot_t( hunter_t* p ):
-    base_t( "auto_shot", p, p -> find_spell( 75 ) )
+    hunter_action_t( "auto_shot", p, p -> find_spell( 75 ) )
   {
     background = true;
     repeating = true;
@@ -2085,7 +2083,7 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
 
   void reset() override
   {
-    base_t::reset();
+    hunter_action_t::reset();
     first_shot = true;
   }
 
@@ -2093,7 +2091,7 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
   {
     if ( first_shot )
       return timespan_t::from_millis( 100 );
-    return base_t::execute_time();
+    return hunter_action_t::execute_time();
   }
 
   void execute() override
@@ -2101,12 +2099,12 @@ struct auto_shot_t: public hunter_action_t < ranged_attack_t >
     if ( first_shot )
       first_shot = false;
 
-    base_t::execute();
+    hunter_action_t::execute();
   }
 
   void impact( action_state_t* s ) override
   {
-    base_t::impact( s );
+    hunter_action_t::impact( s );
 
     if ( p() -> buffs.lock_and_load -> trigger() )
       p() -> cooldowns.aimed_shot -> reset( true );
