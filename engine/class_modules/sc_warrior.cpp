@@ -719,54 +719,6 @@ public:
   {
     double am = ab::action_multiplier();
 
-    if ( p() -> specialization() == WARRIOR_FURY )
-    {
-      if ( p() -> buff.frothing_berserker -> check() )
-      {
-        am *= 1.0 + p() -> buff.frothing_berserker -> data().effectN( 1 ).percent();
-      }
-
-      if ( p() -> buff.enrage -> check() )
-      {
-        am *= 1.0 + p() -> cache.mastery_value();
-      }
-
-      if ( p()->buff.tornados_eye->check() )
-      {
-        am *= 1.0 + ( p() -> buff.tornados_eye -> current_stack * p() -> buff.tornados_eye -> data().effectN( 2 ).percent() );
-      }
-
-      am *= 1.0 + p() -> buff.fujiedas_fury -> check_stack_value();
-    }
-
-    if ( p()->specialization() == WARRIOR_ARMS )
-    {
-      if ( p() -> buff.avatar -> check() )
-      {
-        am *= 1.0 + p() -> buff.avatar -> data().effectN( 1 ).percent();
-      }
-
-      if ( p()->buff.tornados_eye->check() )
-      {
-        am *= 1.0 + ( p() -> buff.tornados_eye -> current_stack * p() -> buff.tornados_eye -> data().effectN( 2 ).percent() );
-      }
-    }
-
-    if ( p()->specialization() == WARRIOR_PROTECTION )
-    {
-      if ( p() -> talents.booming_voice -> ok() && p() -> buff.demoralizing_shout -> check() )
-      {
-        am *= 1.0 + p() -> talents.booming_voice -> effectN( 2 ).percent();
-      }
-
-      if ( p() -> buff.avatar -> check() )
-      {
-        am *= 1.0 + p() -> buff.avatar -> data().effectN( 1 ).percent();
-      }
-
-      am *= 1.0 + p() -> buff.renewed_fury -> check_value();
-      am *= 1.0 + p() -> artifact.protection_of_the_valarjar.percent();
-    }
 
     return am;
   }
@@ -1477,11 +1429,8 @@ struct bladestorm_t: public warrior_attack_t
     p() -> buff.bladestorm -> trigger();
   }
 
-
- 
   void tick( dot_t* d ) override
   {
-  
    if(d->ticks_left())
    { 
      p()->buff.tornados_eye->trigger();
@@ -1491,7 +1440,6 @@ struct bladestorm_t: public warrior_attack_t
      // only duration is refreshed on last tick
      p()->buff.tornados_eye->trigger(0);
    }
-
 
     warrior_attack_t::tick( d );
     bladestorm_mh -> execute();
@@ -4986,19 +4934,6 @@ struct last_stand_t: public warrior_buff_t < buff_t >
   }
 };
 
-// Enrage ============================================================================
-
-struct enrage_t: public warrior_buff_t < buff_t >
-{
-  int health_gain;
-  enrage_t( warrior_t& p, const std::string&n, const spell_data_t*s ):
-    base_t( p, buff_creator_t( &p, n, s )
-            .can_cancel( false )
-            .add_invalidate( CACHE_HASTE )
-            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  {
-  }
-};
 
 // Demoralizing Shout ================================================================
 
@@ -5109,7 +5044,8 @@ void warrior_t::create_buffs()
 
   buff.frothing_berserker = make_buff( this, "frothing_berserker", find_spell( 215572 ) )
       -> set_default_value( find_spell ( 215572 ) -> effectN( 2 ).percent() )
-      -> add_invalidate( CACHE_ATTACK_HASTE );
+      -> add_invalidate( CACHE_ATTACK_HASTE )
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER);
 
   buff.bounding_stride = buff_creator_t( this, "bounding_stride", find_spell( 202164 ) )
     .chance( talents.bounding_stride -> ok() )
@@ -5139,7 +5075,9 @@ void warrior_t::create_buffs()
     .default_value( artifact.dragon_scales.data().effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.enrage = make_buff( this, "enrage", find_spell( 184362 ) )
-      ->add_invalidate( CACHE_ATTACK_HASTE )
+      -> add_invalidate( CACHE_ATTACK_HASTE )
+      -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+      -> add_invalidate( CACHE_RUN_SPEED )
       ->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() );
 
   buff.furious_slash = make_buff( this, "furious_slash", find_spell( 202539 ) )
@@ -5587,18 +5525,59 @@ void warrior_t::trigger_movement( double distance, movement_direction_e directio
 double warrior_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
+
+      if ( buff.avatar->check() )
+  {
+    m *= 1.0 + buff.avatar->data().effectN( 1 ).percent();
+  }
+
+   if ( buff.tornados_eye->check() )
+  {
+    m *= 1.0 + ( buff.tornados_eye->current_stack * buff.tornados_eye->data().effectN( 2 ).percent() );
+  }
+    if ( specialization() == WARRIOR_FURY )
+  {
+    if ( buff.frothing_berserker->check() )
+    {
+      m *= 1.0 + buff.frothing_berserker->data().effectN( 1 ).percent();
+    }
+
+    if ( buff.enrage->check() )
+    {
+      m *= 1.0 + cache.mastery_value();
+    }
+
+    if ( buff.tornados_eye->check() )
+    {
+      m *= 1.0 + ( buff.tornados_eye->current_stack * buff.tornados_eye->data().effectN( 2 ).percent() );
+    }
+
+    m *= 1.0 + buff.fujiedas_fury->check_stack_value();
+  }
+
+  if ( specialization() == WARRIOR_PROTECTION )
+  {
+    if ( talents.booming_voice->ok() && buff.demoralizing_shout->check() )
+    {
+      m *= 1.0 + talents.booming_voice->effectN( 2 ).percent();
+    }
+
+    m *= 1.0 + buff.renewed_fury->check_value();
+    m *= 1.0 + artifact.protection_of_the_valarjar.percent();
+  }
+
   return m;
 }
 
 // warrior_t::composite_player_target_multiplier ==============================
-
+/* commented off for possible later use
 double warrior_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double m = player_t::composite_player_target_multiplier( target, school );
 
-  warrior_td_t* td = get_target_data( target );
   return m;
 }
+*/
 
   // warrior_t::composite_attribute =============================================
 
