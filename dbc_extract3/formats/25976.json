@@ -454,7 +454,7 @@
     { "data_type": "I", "field": "unk_2", "block": true },
     { "data_type": "f", "field": "ap_coefficient", "block": true },
     { "data_type": "f", "field": "pvp_coefficient", "block": true },
-    { "data_type": "f", "field": "average" },
+    { "data_type": "f", "field": "coefficient" },
     { "data_type": "f", "field": "delta" },
     { "data_type": "f", "field": "bonus" },
     { "data_type": "f", "field": "unk_24" },

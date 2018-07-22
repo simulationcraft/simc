@@ -462,7 +462,7 @@
     { "data_type": "I", "field": "trigger_spell" },
     { "data_type": "f", "field": "ap_coefficient" },
     { "data_type": "f", "field": "pvp_coefficient" },
-    { "data_type": "f", "field": "average" },
+    { "data_type": "f", "field": "coefficient" },
     { "data_type": "f", "field": "delta" },
     { "data_type": "f", "field": "bonus" },
     { "data_type": "f", "field": "unk_24" },

@@ -2717,7 +2717,7 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             #if index % 20 == 0:
-            #    self._out.write('//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Average,         Delta,       Unknown,   Coefficient, APCoefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die,Mech,ChTrg,0, 0 },\n')
+            #    self._out.write('//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Coefficient,         Delta,       Unknown,   Coefficient, APCoefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die,Mech,ChTrg,0, 0 },\n')
 
             hotfix_flags = 0
             hotfix_data = []
@@ -2740,11 +2740,11 @@ class SpellDataGenerator(DataGenerator):
 
             # 7, 8, 9
             if self._options.build < 25600:
-                fields += effect.get_link('scaling').field('average', 'delta', 'bonus')
-                f, hfd = effect.get_link('scaling').get_hotfix_info(('average', 6), ('delta', 7), ('bonus', 8))
+                fields += effect.get_link('scaling').field('coefficient', 'delta', 'bonus')
+                f, hfd = effect.get_link('scaling').get_hotfix_info(('coefficient', 6), ('delta', 7), ('bonus', 8))
             else:
-                fields += effect.field('average', 'delta', 'bonus')
-                f, hfd = effect.get_hotfix_info(('average', 6), ('delta', 7), ('bonus', 8))
+                fields += effect.field('coefficient', 'delta', 'bonus')
+                f, hfd = effect.get_hotfix_info(('coefficient', 6), ('delta', 7), ('bonus', 8))
             hotfix_flags |= f
             hotfix_data += hfd
             # 10, 11, 12

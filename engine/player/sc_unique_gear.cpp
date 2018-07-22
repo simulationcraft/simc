@@ -2409,7 +2409,7 @@ void item::readiness( special_effect_t& effect )
 
   const spell_data_t* cdr_spell = p -> find_spell( effect.spell_id );
   const random_prop_data_t& budget = p -> dbc.random_property( effect.item -> item_level() );
-  double cdr = 1.0 / ( 1.0 + budget.p_epic[ 0 ] * cdr_spell -> effectN( 1 ).m_average() / 100.0 );
+  double cdr = 1.0 / ( 1.0 + budget.p_epic[ 0 ] * cdr_spell -> effectN( 1 ).m_coefficient() / 100.0 );
 
   if ( p -> level() > 90 )
   { // We have no clue how the trinket actually scales down with level. This will linearly decrease CDR until it hits .90 at level 100.
@@ -2476,7 +2476,7 @@ void item::amplification( special_effect_t& effect )
   }
 
   const random_prop_data_t& budget = p -> dbc.random_property( effect.item -> item_level() );
-  *amp_value = budget.p_epic[ 0 ] * amplify_spell -> effectN( 2 ).m_average() / 100.0;
+  *amp_value = budget.p_epic[ 0 ] * amplify_spell -> effectN( 2 ).m_coefficient() / 100.0;
   if ( p -> level() > 90 )
   { // We have no clue how the trinket actually scales down with level. This will linearly decrease amplification until it hits 0 at level 100.
     double level_nerf = ( static_cast<double>( p -> level() ) - 90 ) / 10.0;
@@ -2611,7 +2611,7 @@ void item::cleave( special_effect_t& effect )
 
   // Needs a damaging result
   effect.proc_flags2_ = PF2_ALL_HIT;
-  effect.proc_chance_ = budget.p_epic[ 0 ] * cleave_driver_spell -> effectN( 1 ).m_average() / 10000.0;
+  effect.proc_chance_ = budget.p_epic[ 0 ] * cleave_driver_spell -> effectN( 1 ).m_coefficient() / 10000.0;
 
   if ( p -> level() > 90 )
   { // We have no clue how the trinket actually scales down with level. This will linearly decrease amplification until it hits 0 at level 100.

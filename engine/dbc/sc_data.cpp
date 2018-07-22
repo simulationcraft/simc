@@ -124,8 +124,8 @@ spelleffect_data_nil_t spelleffect_data_nil_t::singleton;
 
 bool spelleffect_data_t::override_field( const std::string& field, double value )
 {
-  if ( util::str_compare_ci( field, "average" ) )
-    _m_avg = value;
+  if ( util::str_compare_ci( field, "coefficient" ) )
+    _m_coeff = value;
   else if ( util::str_compare_ci( field, "delta" ) )
     _m_delta = value;
   else if ( util::str_compare_ci( field, "bonus" ) )
@@ -161,8 +161,8 @@ bool spelleffect_data_t::override_field( const std::string& field, double value 
 
 double spelleffect_data_t::get_field( const std::string& field ) const
 {
-  if ( util::str_compare_ci( field, "average" ) )
-    return _m_avg;
+  if ( util::str_compare_ci( field, "coefficient" ) )
+    return _m_coeff;
   else if ( util::str_compare_ci( field, "delta" ) )
     return _m_delta;
   else if ( util::str_compare_ci( field, "bonus" ) )

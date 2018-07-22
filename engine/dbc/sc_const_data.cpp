@@ -1683,8 +1683,8 @@ spellpower_data_t* spellpower_data_t::list( bool ptr )
 
 double spelleffect_data_t::scaled_average( double budget, unsigned level ) const
 {
-  if ( _m_avg != 0 && _spell -> scaling_class() != 0 )
-    return _m_avg * budget;
+  if ( _m_coeff != 0 && _spell -> scaling_class() != 0 )
+    return _m_coeff * budget;
   else if ( _real_ppl != 0 )
   {
     if ( _spell -> max_level() > 0 )
@@ -1702,7 +1702,7 @@ double spelleffect_data_t::average( const player_t* p, unsigned level ) const
 
   double m_scale = 0;
 
-  if ( _m_avg != 0 && _spell -> scaling_class() != 0 )
+  if ( _m_coeff != 0 && _spell -> scaling_class() != 0 )
   {
     unsigned scaling_level = level ? level : p -> level();
     if ( _spell -> max_scaling_level() > 0 )
@@ -1729,7 +1729,7 @@ double spelleffect_data_t::average( const item_t* item ) const
     budget = props.item_effect;
   }
 
-  return _m_avg * budget;
+  return _m_coeff * budget;
 }
 
 double dbc_t::item_socket_cost( unsigned ilevel ) const
@@ -1769,7 +1769,7 @@ double dbc_t::npc_armor_mitigation_constant( unsigned level ) const
 double spelleffect_data_t::scaled_delta( double budget ) const
 {
   if ( _m_delta != 0 && budget > 0 )
-    return _m_avg * _m_delta * budget;
+    return _m_coeff * _m_delta * budget;
   else
     return 0;
 }
@@ -1823,7 +1823,7 @@ double spelleffect_data_t::scaled_min( double avg, double delta ) const
 {
   double result = 0;
 
-  if ( _m_avg != 0 || _m_delta != 0 )
+  if ( _m_coeff != 0 || _m_delta != 0 )
     result = avg - ( delta / 2 );
   else
   {
@@ -1846,7 +1846,7 @@ double spelleffect_data_t::scaled_max( double avg, double delta ) const
 {
   double result = 0;
 
-  if ( _m_avg != 0 || _m_delta != 0 )
+  if ( _m_coeff != 0 || _m_delta != 0 )
     result = avg + ( delta / 2 );
   else
   {
@@ -2136,14 +2136,14 @@ double dbc_t::effect_average( const spelleffect_data_t* e, unsigned level ) cons
 {
   assert( e && ( level > 0 ) && ( level <= MAX_SCALING_LEVEL ) );
 
-  if ( e -> m_average() != 0 && e -> spell() -> scaling_class() != 0 )
+  if ( e -> m_coefficient() != 0 && e -> spell() -> scaling_class() != 0 )
   {
     unsigned scaling_level = level;
     if ( e -> spell() -> max_scaling_level() > 0 )
       scaling_level = std::min( scaling_level, e -> spell() -> max_scaling_level() );
     double m_scale = spell_scaling( e -> spell() -> scaling_class(), scaling_level );
 
-    return e -> m_average() * m_scale;
+    return e -> m_coefficient() * m_scale;
   }
   else if ( e -> real_ppl() != 0 )
   {
@@ -2220,7 +2220,7 @@ double dbc_t::effect_min( const spelleffect_data_t* e, unsigned level ) const
   unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
   avg = effect_average( e, level );
 
-  if ( c_id != 0 && ( e -> m_average() != 0 || e -> m_delta() != 0 ) )
+  if ( c_id != 0 && ( e -> m_coefficient() != 0 || e -> m_delta() != 0 ) )
   {
     double delta = effect_delta( e, level );
     result = avg - ( avg * delta / 2 );
@@ -2256,7 +2256,7 @@ double dbc_t::effect_max( const spelleffect_data_t* e, unsigned level ) const
   unsigned c_id = util::class_id( e -> _spell -> scaling_class() );
   avg = effect_average( e, level );
 
-  if ( c_id != 0 && ( e -> m_average() != 0 || e -> m_delta() != 0 ) )
+  if ( c_id != 0 && ( e -> m_coefficient() != 0 || e -> m_delta() != 0 ) )
   {
     double delta = effect_delta( e, level );
 
