@@ -381,7 +381,7 @@ namespace warlock {
         p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate);
 
         auto td = find_td(this->target);
-        if (d->state->result_amount > 0.0 && p()->azerite.flashpoint.ok() && target->health_percentage() > 0.80)
+        if (d->state->result_amount > 0.0 && p()->azerite.flashpoint.ok() && target->health_percentage() > 80 )
           p()->buffs.flashpoint->trigger();
       }
     };
