@@ -7626,11 +7626,11 @@ void druid_t::apl_balance()
 
   default_list->add_action("use_items");
   default_list -> add_talent( this, "Warrior of Elune");
-  default_list -> add_action("call_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1");
+  default_list -> add_action("run_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1");
   default_list -> add_action( "incarnation,if=astral_power>=40" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
-  default_list -> add_action("call_action_list,name=aoe,if=spell_targets.starfall>=3");
-  default_list -> add_action("call_action_list,name=st");
+  default_list -> add_action("run_action_list,name=aoe,if=spell_targets.starfall>=3");
+  default_list -> add_action("run_action_list,name=st");
 
   ST -> add_talent( this, "Fury of Elune","if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)");
   ST -> add_talent( this, "Force of Nature","if=(buff.celestial_alignment.up|buff.incarnation.up)|(cooldown.celestial_alignment.remains>30|cooldown.incarnation.remains>30)");
