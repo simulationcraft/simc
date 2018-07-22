@@ -2592,7 +2592,6 @@ struct sweeping_strikes_t : public warrior_spell_t
   {
     parse_options( options_str );
     callbacks   = false;
-    use_off_gcd = false;
   }
 
   void execute() override
@@ -3669,7 +3668,6 @@ struct avatar_t : public warrior_spell_t
   {
     parse_options( options_str );
     callbacks   = false;
-    use_off_gcd = false;
   }
 
   void execute() override
@@ -3935,7 +3933,6 @@ struct recklessness_t : public warrior_spell_t
     parse_options( options_str );
     bonus_crit  = data().effectN( 1 ).percent();
     callbacks   = false;
-    use_off_gcd = false;
 
     if ( p->talents.reckless_abandon->ok() )
     {
@@ -4004,7 +4001,6 @@ struct ignore_pain_t : public warrior_spell_t
     : warrior_spell_t( "ignore_pain", p, p->spec.ignore_pain ), ip_cap_ratio( 0 )
   {
     parse_options( options_str );
-    use_off_gcd  = true;
     may_crit     = false;
     range        = -1;
     target       = player;
