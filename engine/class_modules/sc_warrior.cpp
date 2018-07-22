@@ -53,6 +53,7 @@ public:
   std::vector<attack_t*> rampage_attacks;
   std::vector<cooldown_t*> odyns_champion_cds;
   bool non_dps_mechanics, warrior_fixed_time;
+  int into_the_fray_friends;
   double expected_max_health;
 
   auto_dispose<std::vector<data_t*> > cd_waste_exec, cd_waste_cumulative;
@@ -436,6 +437,7 @@ public:
     non_dps_mechanics =
         false;  // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
     warrior_fixed_time  = true;
+    into_the_fray_friends = 0;
     expected_max_health = 0;
 
     regen_type = REGEN_DISABLED;
@@ -5576,7 +5578,7 @@ void warrior_t::combat_begin()
     }
   }
   player_t::combat_begin();
-  buff.into_the_fray->trigger( 1 );
+  buff.into_the_fray->trigger( into_the_fray_friends + 1 );
 }
 
 // Into the fray
@@ -5593,7 +5595,7 @@ struct into_the_fray_callback_t
   void operator()( player_t* )
   {
     size_t i            = w->sim->target_non_sleeping_list.size();
-    size_t buff_stacks_ = 0;
+    size_t buff_stacks_ = w -> into_the_fray_friends;
     while ( i > 0 && buff_stacks_ < w->buff.into_the_fray->data().max_stacks() )
     {
       i--;
@@ -6209,6 +6211,7 @@ void warrior_t::create_options()
 
   add_option( opt_bool( "non_dps_mechanics", non_dps_mechanics ) );
   add_option( opt_bool( "warrior_fixed_time", warrior_fixed_time ) );
+  add_option( opt_int( "into_the_fray_friends", into_the_fray_friends ));
 }
 
 // warrior_t::create_profile ================================================
@@ -6233,6 +6236,7 @@ void warrior_t::copy_from( player_t* source )
 
   non_dps_mechanics  = p->non_dps_mechanics;
   warrior_fixed_time = p->warrior_fixed_time;
+  into_the_fray_friends = p->into_the_fray_friends;
 }
 
 /* Report Extension Class
