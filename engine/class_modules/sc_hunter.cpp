@@ -1300,6 +1300,16 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
   resource_e primary_resource() const override
   { return RESOURCE_FOCUS; }
 
+  timespan_t available() const
+  {
+    const double focus = resources.current[ RESOURCE_FOCUS ];
+    if ( focus > 25 )
+      return timespan_t::from_seconds( 0.1 );
+
+    timespan_t time_to_25 = timespan_t::from_seconds( ( 25 - focus ) / resource_regen_per_second( RESOURCE_FOCUS ) );
+    return std::max( time_to_25, timespan_t::from_seconds( 0.1 ) );
+  }
+
   action_t* create_action( const std::string& name, const std::string& options_str ) override;
 
   void init_spells() override;
