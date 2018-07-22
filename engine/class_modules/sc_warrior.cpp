@@ -258,6 +258,7 @@ public:
     const spell_data_t* rampage;
     const spell_data_t* revenge;
     const spell_data_t* riposte;
+    const spell_data_t* seasoned_soldier;
     const spell_data_t* shield_block;
     const spell_data_t* shield_block_2;
     const spell_data_t* shield_slam;
@@ -1038,7 +1039,7 @@ struct devastate_t : public warrior_attack_t
 struct melee_t : public warrior_attack_t
 {
   bool mh_lost_melee_contact, oh_lost_melee_contact;
-  double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier;
+  double base_rage_generation, arms_rage_multiplier, fury_rage_multiplier, seasoned_soldier_crit_mult;
   devastate_t* devastator;
   melee_t( const std::string& name, warrior_t* p )
     : warrior_attack_t( name, p, spell_data_t::nil() ),
@@ -1049,6 +1050,7 @@ struct melee_t : public warrior_attack_t
       base_rage_generation( 1.75 ),
       arms_rage_multiplier( 4.00 ),
       fury_rage_multiplier( 1.00 ),
+      seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
       devastator( nullptr )
   {
     school     = SCHOOL_PHYSICAL;
@@ -1158,7 +1160,7 @@ struct melee_t : public warrior_attack_t
       rage_gain *= arms_rage_multiplier;
       if ( s->result == RESULT_CRIT )
       {
-        rage_gain *= 1.3;
+        rage_gain *= 1.0 + seasoned_soldier_crit_mult;
       }
       rage_gain *= 1.0 + p()->talents.war_machine->effectN( 2 ).percent();
     }
@@ -3240,7 +3242,7 @@ struct shockwave_t : public warrior_attack_t
   int rumbling_earth_reduction;
   int rumbling_earth_targets_required;
   shockwave_t( warrior_t* p, const std::string& options_str )
-    : warrior_attack_t( "shockwave", p, p-> spec.shockwave ),
+    : warrior_attack_t( "shockwave", p, p->spec.shockwave ),
       rumbling_earth_reduction( p->talents.rumbling_earth->effectN( 2 ).base_value() ),
       rumbling_earth_targets_required( p->talents.rumbling_earth->effectN( 1 ).base_value() )
   {
@@ -4379,6 +4381,7 @@ void warrior_t::init_spells()
   spec.revenge             = find_specialization_spell( "Revenge" );
   spec.revenge_trigger     = find_specialization_spell( "Revenge Trigger" );
   spec.riposte             = find_specialization_spell( "Riposte" );
+  spec.seasoned_soldier    = find_specialization_spell( "Seasoned Soldier" );
   spec.shield_block        = find_specialization_spell( "Shield Block" );
   spec.shield_block_2      = find_specialization_spell( 231847 );
   spec.shield_slam         = find_specialization_spell( "Shield Slam" );
