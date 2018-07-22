@@ -918,7 +918,6 @@ struct priest_action_t : public Base
     bool mastery_madness_ta;
   } affected_by;
 
-  bool is_mastery_spell;
 
 public:
   priest_action_t( const std::string& n, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
@@ -926,7 +925,6 @@ public:
       shadow_damage_increase( ab::data().affected_by( p.specs.shadow_priest->effectN( 1 ) ) ),
       shadow_dot_increase( ab::data().affected_by( p.specs.shadow_priest->effectN( 2 ) ) ),
       affected_by(),
-      is_mastery_spell( false )
   {
     init_affected_by();
     ab::may_crit          = true;
