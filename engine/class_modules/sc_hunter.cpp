@@ -1389,13 +1389,6 @@ struct spitting_cobra_t: public hunter_pet_t
       hunter_pet_action_t( "cobra_spit", p, p -> o() -> find_spell( 206685 ) )
     {
       parse_options( options_str );
-
-      /* nuoHep 2017-02-15 data from a couple krosus logs from wcl
-       *      N           Min           Max        Median           Avg        Stddev
-       *   2146           0.0         805.0         421.0     341.03262     168.89531
-       */
-      ability_lag = timespan_t::from_millis(340);
-      ability_lag_stddev = timespan_t::from_millis(170);
     }
 
     // the cobra double dips off versatility & haste
@@ -1413,11 +1406,12 @@ struct spitting_cobra_t: public hunter_pet_t
   };
 
   spitting_cobra_t( hunter_t* o ):
-    hunter_pet_t( o, "spitting_cobra", PET_HUNTER,
-                  false /* a "hack" to make ability_lag work */ )
+    hunter_pet_t( o, "spitting_cobra", PET_HUNTER, true )
   {
     owner_coeff.ap_from_ap = 0.15;
     regen_type = REGEN_DISABLED;
+
+    action_list_str = "cobra_spit";
   }
 
   action_t* create_action( const std::string& name,
@@ -1429,17 +1423,21 @@ struct spitting_cobra_t: public hunter_pet_t
     return hunter_pet_t::create_action( name, options_str );
   }
 
-  void init_action_list() override
-  {
-    action_list_str = "cobra_spit";
-
-    hunter_pet_t::init_action_list();
-  }
-
   // for some reason it gets the player's multipliers
   double composite_player_multiplier( school_e school ) const override
   {
     return owner -> composite_player_multiplier( school );
+  }
+
+  void schedule_ready( timespan_t delta_time, bool waiting ) override
+  {
+    /* nuoHep 2017-02-15 data from a couple krosus logs from wcl
+     *      N           Min           Max        Median           Avg        Stddev
+     *   2146           0.0         805.0         421.0     341.03262     168.89531
+     */
+    if ( last_foreground_action )
+      delta_time += timespan_t::from_millis( rng().gauss( 340, 170 ) );
+    hunter_pet_t::schedule_ready( delta_time, waiting );
   }
 };
 
