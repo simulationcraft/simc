@@ -552,21 +552,57 @@ public:
 
   struct azerite_powers_t
   {
+    // General
+    // When you Leg Sweep, your targets suffer 50% reduced movement speed, and you gain 0 Speed for 6 sec.
+    azerite_power_t sweep_the_leg;
+
     // Multiple
+    // While Fortifying Brew is active, heal for 92 every second.
     azerite_power_t strength_of_spirit;
+    // Attacking a target with Rising Sun Kick causes your damaging melee abilities to deal 49 additional Physical damage to that target for 15 sec.
+    azerite_power_t sunrise_technique;
 
     // Brewmaster
+    //Breath of Fire deals 60 additional damage over its duration, and has a chance to summon a Healing Sphere each time it deals damage.
     azerite_power_t boiling_brew;
+    // Blackout Strike deals an additional 169 damage. Blackout Strike critical hits grant an additional 1 stack of Elusive Brawler.
+    azerite_power_t elusive_footwork;
+    // Drinking Purifying Brew while at Heavy Stagger causes your next 3 melee abilities to heal you for 360.
     azerite_power_t fit_to_burst;
+    // Expel Harm restores 60 health over 6 sec for each Healing Sphere consumed.
+    azerite_power_t niuzaos_blessing;
+    // When you Blackout Strike, your Stagger is reduced by 62.
     azerite_power_t staggering_strikes;
+    // Gain up to 153 Mastery based on your current level of Stagger.
+    azerite_power_t training_of_niuzao;
 
     // Mistweaver
+    // When Life Cocoon expires, it releases a burst of mist that restores 2476 health split among the target and nearby allies.
+    azerite_power_t burst_of_life;
+    // Activating Thunder Focus Tea causes you to exhale the breath of Yu'lon, healing up to 6 allies within 15 yards for ((40% of Spell power) * 3) over 2 sec.
+    azerite_power_t celestial_breath;
+    // Your Essence Font's initial heal is increased by 26 and has a chance to reduce the cooldown of Thunder Focus Tea by 1 sec.
+    azerite_power_t font_of_life;
+    // Vivify does an additional 173 healing when empowered by Thunder Focus Tea.
     azerite_power_t invigorating_brew;
+    // When your Renewing Mists heals an ally, you have a chance to gain 128 Haste for 10 seconds.
+    azerite_power_t misty_peaks;
+    // Your Enveloping Mists heal the target for 62 each time they take damage.
     azerite_power_t overflowing_mists;
+    // Your Vivify heals for an additional 85. Vivify critical heals reduce the cooldown of your Revival by 1.0 sec.
+    azerite_power_t uplifting_spirits;
 
     // Windwalker
+    // Fists of Fury grants you 0 Critical Strike for 6 sec when it hits at least 4 enemies.
     azerite_power_t iron_fists;
-    azerite_power_t sunrise_technique;
+    // When you Combo Strike, the cooldown of Touch of Death is reduced by 0.0 sec. Touch of Death deals an additional 1540 damage.
+    azerite_power_t meridian_strikes;
+    // When Fists of Fury deals damage, it has a 5% chance to refund 1 Chi, and it deals 12 additional damage.
+    azerite_power_t open_palm_strikes;
+    // Tiger Palm's chance to make your next Blackout Kick free is increased to 10% and Tiger Palm deals an additional 15 damage.
+    azerite_power_t pressure_point;
+    // Blackout Kick increases the damage of your next Rising Sun Kick by 74, stacking up to 2 times.
+    azerite_power_t swift_roundhouse;
   } azerite;
 
   struct pets_t
@@ -6781,21 +6817,38 @@ void monk_t::init_spells()
   spec.windwalking                   = find_specialization_spell( "Windwalking" );
 
   // Azerite Powers ===================================
+
+  
+  // General
+  azerite.sweep_the_leg              = find_azerite_spell( "Sweep the Leg" );
+
   // Multiple
   azerite.strength_of_spirit         = find_azerite_spell( "Strength of Spirit" );
+  azerite.sunrise_technique          = find_azerite_spell( "Sunrise Technique" );
 
   // Brewmaster
   azerite.boiling_brew               = find_azerite_spell( "Boiling Brew" );
+  azerite.elusive_footwork           = find_azerite_spell( "Elusive Footwork" );
   azerite.fit_to_burst               = find_azerite_spell( "Fit to Burst" );
+  azerite.niuzaos_blessing           = find_azerite_spell( "Niuzao's Blessing" );
   azerite.staggering_strikes         = find_azerite_spell( "Staggering Strikes" );
+  azerite.training_of_niuzao         = find_azerite_spell( "Training of Niuzao" );
 
   // Mistweaver
+  azerite.burst_of_life              = find_azerite_spell( "Burst of Life" );
+  azerite.celestial_breath           = find_azerite_spell( "Celestial Breath" );
+  azerite.font_of_life               = find_azerite_spell( "Font of Life" );
   azerite.invigorating_brew          = find_azerite_spell( "Invigorating Brew" );
+  azerite.misty_peaks                = find_azerite_spell( "Misty Peaks" );
   azerite.overflowing_mists          = find_azerite_spell( "Overflowing Mists" );
+  azerite.uplifting_spirits          = find_azerite_spell( "Uplifted Spirits" );
 
   // Windwalker
   azerite.iron_fists                 = find_azerite_spell( "Iron Fists" );
-  azerite.sunrise_technique          = find_azerite_spell( "Sunrise Technique" );
+  azerite.meridian_strikes           = find_azerite_spell( "Meridian Strikes" );
+  azerite.open_palm_strikes          = find_azerite_spell( "Open Palm Strikes" );
+  azerite.pressure_point             = find_azerite_spell( "Pressure Point" );
+  azerite.swift_roundhouse           = find_azerite_spell( "Swift Roundhouse" );
 
   // Passives =========================================
   // General
