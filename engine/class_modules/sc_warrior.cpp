@@ -9,7 +9,6 @@ namespace
 {  // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// todo: make affected_by spam look nicer.
 // ==========================================================================
 
 struct warrior_t;
@@ -195,19 +194,13 @@ public:
   // Spells
   struct spells_t
   {
-    const spell_data_t* avatar;
     const spell_data_t* battle_shout;
     const spell_data_t* charge;
-    const spell_data_t* colossus_smash_debuff;
     const spell_data_t* headlong_rush;
     const spell_data_t* heroic_leap;
-    const spell_data_t* indomitable;
     const spell_data_t* intervene;
     const spell_data_t* siegebreaker_debuff;
     const spell_data_t* whirlwind_buff;
-    const spell_data_t* arms_warrior;
-    const spell_data_t* fury_warrior;
-    const spell_data_t* prot_warrior;
   } spell;
 
   // Mastery
@@ -276,6 +269,9 @@ public:
     const spell_data_t* revenge_trigger;
     const spell_data_t* berserker_rage;
     const spell_data_t* victory_rush;
+    const spell_data_t* arms_warrior;
+    const spell_data_t* fury_warrior;
+    const spell_data_t* prot_warrior;
   } spec;
 
   // Talents
@@ -576,10 +572,26 @@ namespace
 template <class Base>
 struct warrior_action_t : public Base
 {
-  bool headlongrush, headlongrushgcd, sweeping_strikes, deadly_calm, arms_damage_increase, fury_damage_increase,
-      fury_dot_damage_increase, arms_dot_damage_increase, prot_warrior_damage_increase, prot_dot_damage_increase,
-      affected_by_unshackled_direct, affected_by_unshackled_dot, affected_by_avatar, affected_by_frothing_direct,
-      affected_by_frothing_dot, affected_by_demo_shout;
+  struct affected_by_t
+  {
+    // mastery/buff damage increase.
+    bool fury_mastery_direct, fury_mastery_dot;
+    // talents
+    bool avatar, frothing_direct, frothing_dot, demo_shout, sweeping_strikes, deadly_calm;
+
+    affected_by_t()
+      : fury_mastery_direct( false ),
+        fury_mastery_dot( false ),
+        avatar( false ),
+        frothing_direct( false ),
+        frothing_dot( false ),
+        demo_shout( false ),
+        sweeping_strikes( false ),
+        deadly_calm( false )
+    {
+    }
+  } affected_by;
+
   double tactician_per_rage;
 
 private:
@@ -591,31 +603,6 @@ public:
   simple_sample_data_t* cd_wasted_iter;
   warrior_action_t( const std::string& n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
-      headlongrush( ab::data().affected_by( player->spell.headlong_rush->effectN( 1 ) ) ),
-      headlongrushgcd( ab::data().affected_by( player->spell.headlong_rush->effectN( 2 ) ) ),
-      sweeping_strikes( ab::data().affected_by( player->spec.sweeping_strikes->effectN( 1 ) ) ),
-      // deadly_calm( ab::data().affected_by( player -> talents.deadly_calm -> effectN( 4 ) ) ), whitelist unnessessary
-      // for now
-      arms_damage_increase( player->specialization() == WARRIOR_ARMS &&
-                            ab::data().affected_by( player->spell.arms_warrior->effectN( 2 ) ) ),
-      fury_damage_increase( player->specialization() == WARRIOR_FURY &&
-                            ab::data().affected_by( player->spell.fury_warrior->effectN( 1 ) ) ),
-      fury_dot_damage_increase( player->specialization() == WARRIOR_FURY &&
-                                ab::data().affected_by( player->spell.fury_warrior->effectN( 2 ) ) ),
-      arms_dot_damage_increase( player->specialization() == WARRIOR_ARMS &&
-                                ab::data().affected_by( player->spell.arms_warrior->effectN( 3 ) ) ),
-      prot_warrior_damage_increase( player->specialization() == WARRIOR_PROTECTION &&
-                                    ab::data().affected_by( player->spell.prot_warrior->effectN( 7 ) ) ),
-      prot_dot_damage_increase( player->specialization() == WARRIOR_PROTECTION &&
-                                ab::data().affected_by( player->spell.prot_warrior->effectN( 8 ) ) ),
-      affected_by_unshackled_direct( ab::data().affected_by( player->mastery.unshackled_fury->effectN( 1 ) ) ),
-      affected_by_unshackled_dot( ab::data().affected_by( player->mastery.unshackled_fury->effectN( 2 ) ) ),
-      affected_by_frothing_direct(
-          ab::data().affected_by( player->talents.frothing_berserker->effectN( 1 ).trigger()->effectN( 1 ) ) ),
-      affected_by_frothing_dot(
-          ab::data().affected_by( player->talents.frothing_berserker->effectN( 1 ).trigger()->effectN( 3 ) ) ),
-      affected_by_avatar( ab::data().affected_by( player->talents.avatar->effectN( 1 ) ) ),
-      affected_by_demo_shout( ab::data().affected_by( player->spec.demoralizing_shout->effectN( 1 ) ) ),
       tactician_per_rage( 0 ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
       cd_wasted_exec( nullptr ),
@@ -624,35 +611,13 @@ public:
   {
     ab::may_crit = true;
     tactician_per_rage += ( player->spec.tactician->effectN( 1 ).percent() / 100 );
-
-    if ( arms_damage_increase )
-    {
-      ab::attack_power_mod.direct *= 1.0 + player->spell.arms_warrior->effectN( 2 ).percent();
-    }
-    if ( fury_damage_increase )
-    {
-      ab::attack_power_mod.direct *= 1.0 + player->spell.fury_warrior->effectN( 1 ).percent();
-    }
-    if ( fury_dot_damage_increase )
-    {
-      ab::attack_power_mod.tick *= 1.0 + player->spell.fury_warrior->effectN( 2 ).percent();
-    }
-    if ( arms_dot_damage_increase )
-    {
-      ab::attack_power_mod.tick *= 1.0 + player->spell.arms_warrior->effectN( 3 ).percent();
-    }
-    if ( prot_warrior_damage_increase )
-    {
-      ab::attack_power_mod.direct *= 1.0 + player->spell.prot_warrior->effectN( 7 ).percent();
-    }
-    if ( prot_dot_damage_increase )
-    {
-      ab::attack_power_mod.tick *= 1.0 + player->spell.prot_warrior->effectN( 8 ).percent();
-    }
   }
 
-  void init() override
+  virtual void init() override
   {
+    if ( initialized )
+      return;
+
     ab::init();
 
     if ( track_cd_waste )
@@ -663,14 +628,39 @@ public:
       cd_wasted_iter = get_data_entry<simple_sample_data_t, simple_data_t>( ab::name_str, p()->cd_waste_iter );
     }
 
-    if ( headlongrush )
-    {
-      ab::cooldown->hasted = headlongrush;
-    }
-    if ( headlongrushgcd )
-    {
+    if ( ab::data().affected_by( p()->spec.fury_warrior->effectN( 1 ) ) )
+      ab::attack_power_mod.direct *= 1.0 + p()->spec.fury_warrior->effectN( 1 ).percent();
+    if ( ab::data().affected_by( p()->spec.fury_warrior->effectN( 2 ) ) )
+      ab::attack_power_mod.tick *= 1.0 + p()->spec.fury_warrior->effectN( 2 ).percent();
+
+    if ( ab::data().affected_by( p()->spec.arms_warrior->effectN( 2 ) ) )
+      ab::attack_power_mod.direct *= 1.0 + p()->spec.arms_warrior->effectN( 2 ).percent();
+    if ( ab::data().affected_by( p()->spec.arms_warrior->effectN( 3 ) ) )
+      ab::attack_power_mod.tick *= 1.0 + p()->spec.arms_warrior->effectN( 3 ).percent();
+
+    if ( ab::data().affected_by( p()->spec.prot_warrior->effectN( 7 ) ) )
+      ab::attack_power_mod.direct *= 1.0 + p()->spec.prot_warrior->effectN( 7 ).percent();
+    if ( ab::data().affected_by( p()->spec.prot_warrior->effectN( 8 ) ) )
+      ab::attack_power_mod.tick *= 1.0 + p()->spec.prot_warrior->effectN( 8 ).percent();
+
+    ab::cooldown->hasted = ab::data().affected_by( p()->spell.headlong_rush->effectN( 1 ) );
+    if ( ab::cooldown->hasted == false ) //Shield block is on a different effect for some reason.
+      ab::cooldown -> hasted = ab::data().affected_by( p() -> spell.headlong_rush ->effectN( 3 ) );
+    if ( ab::data().affected_by( p()->spell.headlong_rush->effectN( 2 ) ) )
       ab::gcd_haste = HASTE_ATTACK;
-    }
+
+    affected_by.sweeping_strikes    = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
+    affected_by.deadly_calm         = ab::data().affected_by( p()->talents.deadly_calm->effectN( 4 ) );
+    affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
+    affected_by.fury_mastery_dot    = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
+    affected_by.avatar              = ab::data().affected_by( p()->talents.avatar->effectN( 1 ) );
+    affected_by.demo_shout          = ab::data().affected_by( p()->spec.demoralizing_shout->effectN( 1 ) );
+    affected_by.sweeping_strikes    = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
+
+    affected_by.frothing_direct =
+        ab::data().affected_by( p()->talents.frothing_berserker->effectN( 1 ).trigger()->effectN( 1 ) );
+    affected_by.frothing_dot =
+        ab::data().affected_by( p()->talents.frothing_berserker->effectN( 1 ).trigger()->effectN( 3 ) );
   }
 
   virtual ~warrior_action_t()
@@ -705,7 +695,7 @@ public:
 
   int n_targets() const override
   {
-    if ( sweeping_strikes && p()->buff.sweeping_strikes->check() )
+    if ( affected_by.sweeping_strikes && p()->buff.sweeping_strikes->check() )
     {
       return static_cast<int>( 1 + p()->spec.sweeping_strikes->effectN( 1 ).base_value() );
     }
@@ -732,18 +722,11 @@ public:
   {
     double c = ab::cost();
 
-    if ( p()->buff.deadly_calm->check() && deadly_calm )
+    if ( p()->buff.deadly_calm->check() && affected_by.deadly_calm )
     {
       c *= 1.0 + p()->talents.deadly_calm->effectN( 1 ).percent();
     }
     return c;
-  }
-
-  double action_multiplier() const override
-  {
-    double am = ab::action_multiplier();
-
-    return am;
   }
 
   virtual double composite_target_multiplier( player_t* target ) const override
@@ -769,27 +752,27 @@ public:
   {
     double dm = ab::composite_da_multiplier( s );
 
-    if ( affected_by_unshackled_direct && p()->buff.enrage->up() )
+    if ( affected_by.fury_mastery_direct && p()->buff.enrage->up() )
     {
       dm *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( affected_by_avatar && p()->buff.avatar->up() )
+    if ( affected_by.avatar && p()->buff.avatar->up() )
     {
       dm *= 1.0 + p()->buff.avatar->data().effectN( 1 ).percent();
     }
 
-    if ( affected_by_frothing_direct && p()->buff.frothing_berserker->up() )
+    if ( affected_by.frothing_direct && p()->buff.frothing_berserker->up() )
     {
       dm *= 1.0 + p()->buff.frothing_berserker->data().effectN( 1 ).percent();
     }
 
-    if ( p()->talents.booming_voice->ok() && p()->buff.demoralizing_shout->check() && affected_by_demo_shout )
+    if ( affected_by.demo_shout && p()->talents.booming_voice->ok() && p()->buff.demoralizing_shout->check() )
     {
       dm *= 1.0 + p()->talents.booming_voice->effectN( 2 ).percent();
     }
 
-    if ( sweeping_strikes && s->chain_target > 0 )
+    if ( affected_by.sweeping_strikes && s->chain_target > 0 )
     {
       dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
     }
@@ -801,12 +784,12 @@ public:
   {
     double tm = ab::composite_ta_multiplier( s );
 
-    if ( affected_by_unshackled_dot && p()->buff.enrage->up() )
+    if ( affected_by.fury_mastery_dot && p()->buff.enrage->up() )
     {
       tm *= 1.0 + p()->cache.mastery_value();
     }
 
-    if ( affected_by_frothing_dot && p()->buff.frothing_berserker->up() )
+    if ( affected_by.frothing_dot && p()->buff.frothing_berserker->up() )
     {
       tm *= 1.0 + p()->buff.frothing_berserker->data().effectN( 3 ).percent();
     }
@@ -866,7 +849,7 @@ public:
   {
     ab::impact( s );
 
-    if ( p()->talents.collateral_damage->ok() && sweeping_strikes && p()->buff.sweeping_strikes->up() &&
+    if ( p()->talents.collateral_damage->ok() && affected_by.sweeping_strikes && p()->buff.sweeping_strikes->up() &&
          s->chain_target == 1 )
     {
       p()->resource_gain( RESOURCE_RAGE,
@@ -1099,7 +1082,6 @@ struct melee_t : public warrior_attack_t
     : warrior_attack_t( name, p, spell_data_t::nil() ),
       mh_lost_melee_contact( true ),
       oh_lost_melee_contact( true ),
-
       // arms and fury multipliers are both 1, adjusted by the spec scaling auras (x4 for Arms and x1 for Fury)
       base_rage_generation( 1.75 ),
       arms_rage_multiplier( 4.00 ),
@@ -1107,12 +1089,8 @@ struct melee_t : public warrior_attack_t
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
       devastator( nullptr )
   {
-    affected_by_unshackled_direct = true;  // Effect #3 of Unshackled Fury
-    affected_by_avatar            = true;  // Effect #2 of avatar
-    affected_by_frothing_direct   = true;  // Effect #4 of avatar
-    affected_by_demo_shout        = true;  // Effect #4 of demo shout after being modified by booming voice.
-    school                        = SCHOOL_PHYSICAL;
-    special                       = false;
+    school     = SCHOOL_PHYSICAL;
+    special    = false;
     background = repeating = may_glance = true;
     trigger_gcd                         = timespan_t::zero();
     weapon_multiplier                   = 1.0;
@@ -1127,8 +1105,17 @@ struct melee_t : public warrior_attack_t
     }
     if ( p->specialization() == WARRIOR_FURY )
     {
-      base_multiplier *= 1.0 + p->spell.fury_warrior->effectN( 4 ).percent();
+      base_multiplier *= 1.0 + p->spec.fury_warrior->effectN( 4 ).percent();
     }
+  }
+
+  void init() override
+  {
+    warrior_attack_t::init();
+    affected_by.fury_mastery_direct = p()->mastery.unshackled_fury->ok();
+    affected_by.avatar              = p()->talents.avatar->ok();
+    affected_by.frothing_direct     = p()->talents.frothing_berserker->ok();
+    affected_by.demo_shout          = p()->spec.demoralizing_shout->ok();
   }
 
   void reset() override
@@ -1430,7 +1417,7 @@ struct bladestorm_tick_t : public warrior_attack_t
     aoe  = -1;
     if ( p->specialization() == WARRIOR_ARMS )
     {
-      base_multiplier *= 1.0 + p->spell.arms_warrior->effectN( 4 ).percent();
+      base_multiplier *= 1.0 + p->spec.arms_warrior->effectN( 4 ).percent();
       impact_action = p->active.deep_wounds_ARMS;
     }
   }
@@ -1855,7 +1842,7 @@ struct colossus_smash_t : public warrior_attack_t
 
 struct deep_wounds_ARMS_t : public warrior_attack_t
 {
-  deep_wounds_ARMS_t( warrior_t* p ) : warrior_attack_t( "deep_wounds", p, p->find_spell( 262115 ) )
+  deep_wounds_ARMS_t( warrior_t* p ) : warrior_attack_t( "deep_wounds", p, p->spec.deep_wounds_ARMS->effectN(1).trigger() )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
@@ -1973,7 +1960,7 @@ struct execute_damage_t : public warrior_attack_t
       double temp_max_rage = max_rage;
       if ( p()->buff.deadly_calm->check() )
       {
-        temp_max_rage *= 1.0 + p()->buff.deadly_calm->data().effectN( 2 ).percent();
+        temp_max_rage *= 1.0 + p()->buff.deadly_calm->data().effectN( 2 ).percent(); //TODO: Check and see if this actually works.
       }
       am *= 2.0 * ( std::min( temp_max_rage, last_resource_cost ) / temp_max_rage );
     }
@@ -2952,7 +2939,7 @@ struct ravager_tick_t : public warrior_attack_t
     impact_action = p->active.deep_wounds_ARMS;
     dual = ground_aoe = true;
     if ( p->specialization() == WARRIOR_PROTECTION )
-      attack_power_mod.direct *= 1.0 + p->spell.prot_warrior->effectN( 3 ).percent();  // 89% damage decrease for prot.
+      attack_power_mod.direct *= 1.0 + p->spec.prot_warrior->effectN( 3 ).percent();  // 89% damage decrease for prot.
     rage_from_ravager = p->find_spell( 248439 )->effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
@@ -4456,6 +4443,9 @@ void warrior_t::init_spells()
   {
     spec.whirlwind = find_specialization_spell( "Whirlwind" );
   }
+  spec.arms_warrior = find_specialization_spell( "Fury Warrior" );
+  spec.fury_warrior = find_specialization_spell( "Arms Warrior" );
+  spec.prot_warrior = find_specialization_spell( "Protection Warrior" );
 
   // Talents
   talents.anger_management    = find_talent_spell( "Anger Management" );
@@ -4531,16 +4521,11 @@ void warrior_t::init_spells()
   // Generic spells
   spell.battle_shout          = find_class_spell( "Battle Shout" );
   spell.charge                = find_class_spell( "Charge" );
-  spell.colossus_smash_debuff = find_spell( 208086 );
-  spell.intervene             = find_class_spell( "Intervene" );
+  spell.intervene             = find_spell( 147833 );
   spell.headlong_rush         = find_spell( 137047 );  // Also may be used for other crap in the future.
   spell.heroic_leap           = find_class_spell( "Heroic Leap" );
   spell.siegebreaker_debuff   = find_spell( 280773 );
   spell.whirlwind_buff        = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
-
-  spell.arms_warrior = find_spell( 137049 );
-  spell.fury_warrior = find_spell( 137050 );
-  spell.prot_warrior = find_spell( 137048 );
 
   // Active spells
   active.deep_wounds_ARMS = nullptr;
@@ -5186,8 +5171,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_rend        = target->get_dot( "rend", &p );
 
   debuffs_colossus_smash = buff_creator_t( static_cast<actor_pair_t>( *this ), "colossus_smash" )
-                               .default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
-                               .duration( p.spell.colossus_smash_debuff->duration() )
+                               .default_value( p.spec.colossus_smash->effectN( 1).percent() )
+                               .duration( p.spec.colossus_smash->duration() )
                                .cd( timespan_t::zero() );
 
   debuffs_siegebreaker = buff_creator_t( static_cast<actor_pair_t>( *this ), "siegebreaker" )
