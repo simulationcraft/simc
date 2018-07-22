@@ -284,7 +284,6 @@ public:
     const spell_data_t* defensive_stance;
 
     const spell_data_t* double_time;
-    const spell_data_t* inspiring_presence;
     const spell_data_t* shockwave;
     const spell_data_t* storm_bolt;
 
