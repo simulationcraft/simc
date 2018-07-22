@@ -5726,7 +5726,7 @@ void rogue_t::trigger_restless_blades( const action_state_t* state )
   // Curse of Restlessness Legendary
   if ( legendary.the_curse_of_restlessness )
   {
-    timespan_t cloak_adjust = legendary.the_curse_of_restlessness->effectN( 1 ).time_value();
+    timespan_t cloak_adjust = legendary.the_curse_of_restlessness->effectN( 1 ).time_value() * 10;
     cloak_adjust *= -( actions::rogue_attack_t::cast_state( state )->cp );
     cooldowns.adrenaline_rush->adjust( cloak_adjust, false );
   }
