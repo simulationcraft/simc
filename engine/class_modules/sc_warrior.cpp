@@ -9,16 +9,14 @@ namespace
 {  // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// todo: Fury - Enrage-clean up movespeed/damage taken/health increase
-//       Arms - 3 target requirement for Cleave, Collateral Damage
+// todo:  Arms - 3 target requirement for Cleave, Collateral Damage
 // ==========================================================================
 
 struct warrior_t;
 
 struct warrior_td_t : public actor_target_data_t
 {
-  dot_t* dots_deep_wounds_ARMS;
-  dot_t* dots_deep_wounds_PROT;
+  dot_t* dots_deep_wounds;
   dot_t* dots_ravager;
   dot_t* dots_rend;
   buff_t* debuffs_colossus_smash;
@@ -5154,8 +5152,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
 {
   using namespace buffs;
 
-  dots_deep_wounds_ARMS = target->get_dot( "deep_wounds", &p );
-  dots_deep_wounds_PROT = target->get_dot( "deep_wounds", &p );
+  dots_deep_wounds = target->get_dot( "deep_wounds", &p );
   dots_ravager          = target->get_dot( "ravager", &p );
   dots_rend             = target->get_dot( "rend", &p );
 
@@ -5883,12 +5880,13 @@ double warrior_t::composite_block_reduction() const
 }
 
 // warrior_t::composite_melee_attack_power ==================================
-
+/*
 double warrior_t::composite_melee_attack_power() const
 {
   double ap = player_t::composite_melee_attack_power();
   return ap;
 }
+*/
 
 // warrior_t::composite_parry_rating() ========================================
 
@@ -5896,7 +5894,6 @@ double warrior_t::composite_parry_rating() const
 {
   double p = player_t::composite_parry_rating();
 
-  // add Riposte
   if ( spec.riposte->ok() )
   {
     p += composite_melee_crit_rating();
@@ -5964,13 +5961,14 @@ double warrior_t::composite_crit_avoidance() const
 }
 
 // warrior_t::composite_melee_speed ========================================
-
+/*
 double warrior_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
 
   return s;
 }
+*/
 
 // warrior_t::composite_melee_crit_chance =========================================
 
@@ -5998,28 +5996,30 @@ double warrior_t::composite_player_critical_damage_multiplier( const action_stat
 }
 
 // warrior_t::composite_spell_crit_chance =========================================
-
+/*
 double warrior_t::composite_spell_crit_chance() const
 {
   return composite_melee_crit_chance();
 }
+*/
 
 // warrior_t::composite_leech ==============================================
-
+/*
 double warrior_t::composite_leech() const
 {
   return player_t::composite_leech();
 }
+*/
 
 // warrior_t::resource_gain =================================================
-
+/*
 double warrior_t::resource_gain( resource_e r, double a, gain_t* gain, action_t* action )
 {
   double aa = player_t::resource_gain( r, a, gain, action );
 
   return aa;
 }
-
+*/
 // warrior_t::temporary_movement_modifier ==================================
 
 double warrior_t::temporary_movement_modifier() const
