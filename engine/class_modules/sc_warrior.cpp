@@ -9,7 +9,7 @@ namespace
 {  // UNNAMED NAMESPACE
 // ==========================================================================
 // Warrior
-// 
+// todo: make affected_by spam look nicer.
 // ==========================================================================
 
 struct warrior_t;
@@ -239,7 +239,6 @@ public:
     const spell_data_t* colossus_smash;
     const spell_data_t* deep_wounds_ARMS;
     const spell_data_t* deep_wounds_PROT;
-    const spell_data_t* defensive_stance;
     const spell_data_t* demoralizing_shout;
     const spell_data_t* devastate;
     const spell_data_t* die_by_the_sword;
@@ -578,7 +577,9 @@ template <class Base>
 struct warrior_action_t : public Base
 {
   bool headlongrush, headlongrushgcd, sweeping_strikes, deadly_calm, arms_damage_increase, fury_damage_increase,
-      fury_dot_damage_increase, arms_dot_damage_increase, prot_warrior_damage_increase, prot_dot_damage_increase;
+      fury_dot_damage_increase, arms_dot_damage_increase, prot_warrior_damage_increase, prot_dot_damage_increase,
+      affected_by_unshackled_direct, affected_by_unshackled_dot, affected_by_avatar, affected_by_frothing_direct,
+      affected_by_frothing_dot, affected_by_demo_shout;
   double tactician_per_rage;
 
 private:
@@ -607,6 +608,14 @@ public:
                                     ab::data().affected_by( player->spell.prot_warrior->effectN( 7 ) ) ),
       prot_dot_damage_increase( player->specialization() == WARRIOR_PROTECTION &&
                                 ab::data().affected_by( player->spell.prot_warrior->effectN( 8 ) ) ),
+      affected_by_unshackled_direct( ab::data().affected_by( player->mastery.unshackled_fury->effectN( 1 ) ) ),
+      affected_by_unshackled_dot( ab::data().affected_by( player->mastery.unshackled_fury->effectN( 2 ) ) ),
+      affected_by_frothing_direct(
+          ab::data().affected_by( player->talents.frothing_berserker->effectN( 1 ).trigger()->effectN( 1 ) ) ),
+      affected_by_frothing_dot(
+          ab::data().affected_by( player->talents.frothing_berserker->effectN( 1 ).trigger()->effectN( 3 ) ) ),
+      affected_by_avatar( ab::data().affected_by( player->talents.avatar->effectN( 1 ) ) ),
+      affected_by_demo_shout( ab::data().affected_by( player->spec.demoralizing_shout->effectN( 1 ) ) ),
       tactician_per_rage( 0 ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
       cd_wasted_exec( nullptr ),
@@ -698,7 +707,7 @@ public:
   {
     if ( sweeping_strikes && p()->buff.sweeping_strikes->check() )
     {
-      return ( 1 + p()->spec.sweeping_strikes->effectN( 1 ).base_value() );
+      return static_cast<int>( 1 + p()->spec.sweeping_strikes->effectN( 1 ).base_value() );
     }
 
     return ab::n_targets();
@@ -760,12 +769,49 @@ public:
   {
     double dm = ab::composite_da_multiplier( s );
 
+    if ( affected_by_unshackled_direct && p()->buff.enrage->up() )
+    {
+      dm *= 1.0 + p()->cache.mastery_value();
+    }
+
+    if ( affected_by_avatar && p()->buff.avatar->up() )
+    {
+      dm *= 1.0 + p()->buff.avatar->data().effectN( 1 ).percent();
+    }
+
+    if ( affected_by_frothing_direct && p()->buff.frothing_berserker->up() )
+    {
+      dm *= 1.0 + p()->buff.frothing_berserker->data().effectN( 1 ).percent();
+    }
+
+    if ( p()->talents.booming_voice->ok() && p()->buff.demoralizing_shout->check() && affected_by_demo_shout )
+    {
+      dm *= 1.0 + p()->talents.booming_voice->effectN( 2 ).percent();
+    }
+
     if ( sweeping_strikes && s->chain_target > 0 )
     {
       dm *= p()->spec.sweeping_strikes->effectN( 2 ).percent();
     }
 
     return dm;
+  }
+
+  virtual double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double tm = ab::composite_ta_multiplier( s );
+
+    if ( affected_by_unshackled_dot && p()->buff.enrage->up() )
+    {
+      tm *= 1.0 + p()->cache.mastery_value();
+    }
+
+    if ( affected_by_frothing_dot && p()->buff.frothing_berserker->up() )
+    {
+      tm *= 1.0 + p()->buff.frothing_berserker->data().effectN( 3 ).percent();
+    }
+
+    return tm;
   }
 
   void execute() override
@@ -1061,8 +1107,12 @@ struct melee_t : public warrior_attack_t
       seasoned_soldier_crit_mult( p->spec.seasoned_soldier->effectN( 1 ).percent() ),
       devastator( nullptr )
   {
-    school     = SCHOOL_PHYSICAL;
-    special    = false;
+    affected_by_unshackled_direct = true;  // Effect #3 of Unshackled Fury
+    affected_by_avatar            = true;  // Effect #2 of avatar
+    affected_by_frothing_direct   = true;  // Effect #4 of avatar
+    affected_by_demo_shout        = true;  // Effect #4 of demo shout after being modified by booming voice.
+    school                        = SCHOOL_PHYSICAL;
+    special                       = false;
     background = repeating = may_glance = true;
     trigger_gcd                         = timespan_t::zero();
     weapon_multiplier                   = 1.0;
@@ -3700,20 +3750,6 @@ struct avatar_t : public warrior_spell_t
 
     p()->buff.avatar->trigger();
   }
-
-  bool verify_actor_spec() const override
-  {
-    if ( p()->talents.avatar->ok() )
-    {
-      // Do not check spec if Arms talent avatar is available, so that spec check on the spell (required: protection)
-      // does not fail.
-      return true;
-    }
-    else
-    {
-      return warrior_spell_t::verify_actor_spec();
-    }
-  }
 };
 
 // Battle Shout ===================================================================
@@ -4368,7 +4404,6 @@ void warrior_t::init_spells()
   spec.colossus_smash       = find_specialization_spell( "Colossus Smash" );
   spec.deep_wounds_ARMS     = find_specialization_spell( "Mastery: Deep Wounds", WARRIOR_ARMS );
   spec.deep_wounds_PROT     = find_specialization_spell( "Deep Wounds", WARRIOR_PROTECTION );
-  spec.defensive_stance     = find_specialization_spell( "Defensive Stance" );
   spec.demoralizing_shout   = find_specialization_spell( "Demoralizing Shout" );
   spec.devastate            = find_specialization_spell( "Devastate" );
   spec.die_by_the_sword     = find_specialization_spell( "Die By the Sword" );
@@ -5179,16 +5214,13 @@ void warrior_t::create_buffs()
   buff.revenge =
       buff_creator_t( this, "revenge", find_spell( 5302 ) ).default_value( find_spell( 5302 )->effectN( 1 ).percent() );
 
-  buff.avatar = buff_creator_t( this, "avatar", talents.avatar )
-                    .cd( timespan_t::zero() )
-                    .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.avatar = buff_creator_t( this, "avatar", talents.avatar ).cd( timespan_t::zero() );
 
   buff.berserker_rage = buff_creator_t( this, "berserker_rage", spec.berserker_rage ).cd( timespan_t::zero() );
 
   buff.frothing_berserker = make_buff( this, "frothing_berserker", find_spell( 215572 ) )
                                 ->set_default_value( find_spell( 215572 )->effectN( 2 ).percent() )
-                                ->add_invalidate( CACHE_ATTACK_HASTE )
-                                ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                ->add_invalidate( CACHE_ATTACK_HASTE );
 
   buff.bounding_stride = buff_creator_t( this, "bounding_stride", find_spell( 202164 ) )
                              .chance( talents.bounding_stride->ok() )
@@ -5206,8 +5238,7 @@ void warrior_t::create_buffs()
   buff.demoralizing_shout =
       buff_creator_t( this, "demoralizing_shout", spec.demoralizing_shout )
           .cd( timespan_t::zero() )
-          .duration( spec.demoralizing_shout->duration() * ( 1.0 + artifact.rumbling_voice.percent() ) )
-          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+          .duration( spec.demoralizing_shout->duration() * ( 1.0 + artifact.rumbling_voice.percent() ) );
 
   buff.die_by_the_sword = buff_creator_t( this, "die_by_the_sword", spec.die_by_the_sword )
                               .default_value( spec.die_by_the_sword->effectN( 2 ).percent() )
@@ -5222,7 +5253,6 @@ void warrior_t::create_buffs()
 
   buff.enrage = make_buff( this, "enrage", find_spell( 184362 ) )
                     ->add_invalidate( CACHE_ATTACK_HASTE )
-                    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                     ->add_invalidate( CACHE_RUN_SPEED )
                     ->set_default_value( find_spell( 184362 )->effectN( 1 ).percent() );
 
@@ -5689,43 +5719,18 @@ double warrior_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buff.avatar->check() )
-  {
-    m *= 1.0 + buff.avatar->data().effectN( 1 ).percent();
-  }
-
   if ( buff.tornados_eye->check() )
   {
     m *= 1.0 + ( buff.tornados_eye->current_stack * buff.tornados_eye->data().effectN( 2 ).percent() );
   }
-  if ( specialization() == WARRIOR_FURY )
+
+  if ( buff.defensive_stance->check() )
   {
-    if ( buff.frothing_berserker->check() )
-    {
-      m *= 1.0 + buff.frothing_berserker->data().effectN( 1 ).percent();
-    }
-
-    if ( buff.enrage->check() )
-    {
-      m *= 1.0 + cache.mastery_value();
-    }
-
-    if ( buff.tornados_eye->check() )
-    {
-      m *= 1.0 + ( buff.tornados_eye->current_stack * buff.tornados_eye->data().effectN( 2 ).percent() );
-    }
-
-    m *= 1.0 + buff.fujiedas_fury->check_stack_value();
+    m *= 1.0 + talents.defensive_stance->effectN( 2 ).percent();
   }
 
-  if ( specialization() == WARRIOR_PROTECTION )
-  {
-    if ( talents.booming_voice->ok() && buff.demoralizing_shout->check() )
-    {
-      m *= 1.0 + talents.booming_voice->effectN( 2 ).percent();
-    }
-    m *= 1.0 + artifact.protection_of_the_valarjar.percent();
-  }
+  m *= 1.0 + buff.fujiedas_fury->check_stack_value();
+  m *= 1.0 + artifact.protection_of_the_valarjar.percent();
 
   return m;
 }
@@ -6155,10 +6160,6 @@ void warrior_t::target_mitigation( school_e school, dmg_e dtype, action_state_t*
     if ( buff.defensive_stance->up() )
     {
       s->result_amount *= 1.0 + buff.defensive_stance->data().effectN( 1 ).percent();
-    }
-    else
-    {
-      s->result_amount *= 1.0 + spec.defensive_stance->effectN( 1 ).percent();
     }
 
     s->result_amount *= 1.0 + buff.neltharions_thunder->stack_value();
