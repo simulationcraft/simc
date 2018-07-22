@@ -1918,6 +1918,7 @@ public:
 
     m *= 1.0 + p()->buff.celestial_alignment->check_value ();
     m *= 1.0 + p()->buff.incarnation_moonkin->check_value ();
+    m *= 1.0 + p()->buff.moonkin_form->data().effectN(9).percent();
 
     return m;
   }
@@ -8212,9 +8213,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
   if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
   {
     m *= 1.0 + buff.balance_tier18_4pc -> check_value();
-
-    if ( buff.moonkin_form -> check() )
-      m *= 1.0 + buff.moonkin_form -> data().effectN( 9 ).percent();
   }
 
   m *= 1.0 + legendary.LegendaryDamageMod;
@@ -9560,7 +9558,7 @@ struct fiery_red_maimers_t : public scoped_actor_callback_t<druid_t>
   void manipulate(druid_t* p, const special_effect_t& e) override
   {
     //only relevant for a few weeks, unlikely to change until then - hardcoding it for now.
-    p->legendary.LegendaryDamageMod = 0.03;
+    //p->legendary.LegendaryDamageMod = 0.03;
   }
 };
 
