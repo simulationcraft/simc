@@ -356,7 +356,7 @@
     { "data_type": "i", "field": "index" }
   ],
   "RandPropPoints": [
-    { "data_type": "i", "field": "item_effect", "formats": { "cpp": "%5u" } },
+    { "data_type": "i", "field": "damage_replace_stat", "formats": { "cpp": "%5u" } },
     { "data_type": "I", "field": "epic_points", "elements": 5, "formats": { "cpp": "%5u" } },
     { "data_type": "I", "field": "rare_points", "elements": 5, "formats": { "cpp": "%5u" } },
     { "data_type": "I", "field": "uncm_points", "elements": 5, "formats": { "cpp": "%5u" } }

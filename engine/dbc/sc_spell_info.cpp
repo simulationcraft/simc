@@ -927,7 +927,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     }
     else if ( spell -> scaling_class() == PLAYER_SPECIAL_SCALE8 )
     {
-      item_budget = ilevel_data.item_effect;
+      item_budget = ilevel_data.damage_replace_stat;
     }
 
     s << item_budget * e -> m_coefficient() * coefficient;
