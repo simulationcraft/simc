@@ -100,7 +100,6 @@ public:
     buff_t* ravager_protection;
     buff_t* recklessness;
     buff_t* revenge;
-    buff_t* renewed_fury;
     buff_t* shield_block;
     buff_t* shield_wall;
     buff_t* spell_reflection;
@@ -293,7 +292,6 @@ public:
     const spell_data_t* avatar;
     const spell_data_t* fervor_of_battle;
     const spell_data_t* rend;
-    const spell_data_t* renewed_fury;
     const spell_data_t* sudden_death;
 
     const spell_data_t* bounding_stride;
@@ -4045,7 +4043,6 @@ struct ignore_pain_t : public warrior_spell_t
     warrior_spell_t::execute();
     p()->buff.vengeance_ignore_pain->expire();
     p()->buff.vengeance_revenge->trigger();
-    p()->buff.renewed_fury->trigger();
     p()->buff.dragon_scales->expire();
   }
 
@@ -4455,7 +4452,6 @@ void warrior_t::init_spells()
   talents.ravager             = find_talent_spell( "Ravager" );
   talents.reckless_abandon    = find_talent_spell( "Reckless Abandon" );
   talents.rend                = find_talent_spell( "Rend" );
-  talents.renewed_fury        = find_talent_spell( "Renewed Fury" );
   talents.second_wind         = find_talent_spell( "Second Wind" );
   talents.shockwave           = find_talent_spell( "Shockwave" );
   talents.siegebreaker        = find_talent_spell( "Siegebreaker" );
@@ -4990,10 +4986,7 @@ void warrior_t::apl_prot()
   prot->add_action( this, "Demoralizing Shout" );
   prot->add_action( this, "Ravager", "if=talent.ravager.enabled" );
   prot->add_action( this, "Shield Block", "if=cooldown.shield_slam.remains=0" );
-  prot->add_action( this, "Ignore Pain",
-                    "if=(!talent.vengeance.enabled&buff.renewed_fury.remains<1.5)|(!talent.vengeance.enabled&rage."
-                    "deficit>=40)|(buff.vengeance_ignore_pain.up)|(talent.vengeance.enabled&!buff.vengeance_ignore_"
-                    "pain.up&!buff.vengeance_revenge.up&rage<30&!buff.revenge.react)" );
+  prot->add_action( this, "Ignore Pain" );
   prot->add_action( this, "Shield Slam" );
   prot->add_action( this, "Revenge",
                     "if=(!talent.vengeance.enabled)|(talent.vengeance.enabled&buff.revenge.react&!buff.vengeance_"
@@ -5177,10 +5170,6 @@ void warrior_t::create_buffs()
   player_t::create_buffs();
 
   using namespace buffs;
-
-  buff.renewed_fury = buff_creator_t( this, "renewed_fury", talents.renewed_fury->effectN( 1 ).trigger() )
-                          .default_value( talents.renewed_fury->effectN( 1 ).trigger()->effectN( 1 ).percent() )
-                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buff.furious_charge = buff_creator_t( this, "furious_charge", find_spell( 202225 ) )
                             .chance( talents.furious_charge->ok() )
@@ -5733,8 +5722,6 @@ double warrior_t::composite_player_multiplier( school_e school ) const
     {
       m *= 1.0 + talents.booming_voice->effectN( 2 ).percent();
     }
-
-    m *= 1.0 + buff.renewed_fury->check_value();
     m *= 1.0 + artifact.protection_of_the_valarjar.percent();
   }
 
