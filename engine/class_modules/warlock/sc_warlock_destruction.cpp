@@ -1159,49 +1159,48 @@ namespace warlock {
   }
   void warlock_t::create_buffs_destruction() {
     //destruction buffs
-    buffs.backdraft = make_buff(this, "backdraft", find_spell(117828))
-      ->set_refresh_behavior(buff_refresh_behavior::DURATION)
-      ->set_max_stack( find_spell(117828)->max_stacks() + ( talents.flashover ? talents.flashover->effectN(2).base_value() : 0 ) );
+    buffs.backdraft = make_buff( this, "backdraft", find_spell( 117828 ) )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+      ->set_max_stack( find_spell( 117828 )->max_stacks() + ( talents.flashover ? talents.flashover->effectN( 2 ).base_value() : 0 ) );
 
-    buffs.embrace_chaos = make_buff(this, "embrace_chaos", sets->set(WARLOCK_DESTRUCTION, T19, B2)->effectN(1).trigger())
-      ->set_chance(sets->set(WARLOCK_DESTRUCTION, T19, B2)->proc_chance());
+    buffs.embrace_chaos = make_buff( this, "embrace_chaos", sets->set( WARLOCK_DESTRUCTION, T19, B2 )->effectN( 1 ).trigger() )
+      ->set_chance( sets->set( WARLOCK_DESTRUCTION, T19, B2 )->proc_chance() );
 
-    buffs.active_havoc = make_buff(this, "active_havoc")
-      ->set_tick_behavior(buff_tick_behavior::NONE)
-      ->set_refresh_behavior(buff_refresh_behavior::DURATION)
-      ->set_duration(timespan_t::from_seconds(10));
+    buffs.active_havoc = make_buff( this, "active_havoc" )
+      ->set_tick_behavior( buff_tick_behavior::NONE )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+      ->set_duration( timespan_t::from_seconds( 10 ) );
 
-    buffs.reverse_entropy = make_buff(this, "reverse_entropy", talents.reverse_entropy)
-      ->set_default_value(find_spell(266030)->effectN(1).percent())
-      ->set_duration(find_spell(266030)->duration())
-      ->set_refresh_behavior(buff_refresh_behavior::DURATION)
-      ->set_trigger_spell(talents.reverse_entropy)
-      ->add_invalidate(CACHE_HASTE);
+    buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy )
+      ->set_default_value( find_spell( 266030 )->effectN( 1 ).percent() )
+      ->set_duration( find_spell( 266030 )->duration() )
+      ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+      ->set_trigger_spell( talents.reverse_entropy )
+      ->add_invalidate( CACHE_HASTE );
 
-    buffs.grimoire_of_supremacy = make_buff(this, "grimoire_of_supremacy", find_spell(266091))
-      ->set_default_value(find_spell(266091)->effectN(1).percent());
+    buffs.grimoire_of_supremacy = make_buff( this, "grimoire_of_supremacy", find_spell( 266091 ) )
+      ->set_default_value( find_spell( 266091 )->effectN( 1 ).percent() );
 
-    buffs.dark_soul_instability = make_buff(this, "dark_soul_instability", talents.dark_soul_instability)
-      ->add_invalidate(CACHE_SPELL_CRIT_CHANCE)
-      ->add_invalidate(CACHE_CRIT_CHANCE)
-      ->set_default_value(talents.dark_soul_instability->effectN(1).percent());
+    buffs.dark_soul_instability = make_buff( this, "dark_soul_instability", talents.dark_soul_instability )
+      ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
+      ->add_invalidate( CACHE_CRIT_CHANCE )
+      ->set_default_value( talents.dark_soul_instability->effectN( 1 ).percent() );
 
     // Azerite
-    buffs.accelerant = make_buff<stat_buff_t>(this, "accelerant", azerite.accelerant)
-      ->add_stat(STAT_HASTE_RATING, azerite.accelerant.value())
-      ->set_duration(find_spell(272957)->duration());
-    buffs.bursting_flare = make_buff<stat_buff_t>(this, "bursting_flare", find_spell(279913))
-      ->add_stat(STAT_MASTERY_RATING, azerite.bursting_flare.value());
-    buffs.chaotic_inferno = make_buff(this, "chaotic_inferno", find_spell(279673))
-      ->set_default_value(find_spell(279673)->effectN(1).percent())
-      ->set_chance(find_spell(279672)->proc_chance());
-    buffs.crashing_chaos = make_buff(this, "crashing_chaos", azerite.crashing_chaos)
-      ->set_max_stack(azerite.crashing_chaos.spell_ref().effectN(2).base_value() or 1)
-      ->set_default_value(azerite.crashing_chaos.value());
-    buffs.rolling_havoc = make_buff<stat_buff_t>(this, "rolling_havoc", find_spell(278931))
-      ->add_stat(STAT_INTELLECT, azerite.rolling_havoc.value());
-    buffs.flashpoint = make_buff<stat_buff_t>(this, "flashpoint", find_spell(275429))
-      ->add_stat(STAT_HASTE_RATING, azerite.flashpoint.value());
+    buffs.accelerant = make_buff<stat_buff_t>( this, "accelerant", azerite.accelerant )
+      ->add_stat( STAT_HASTE_RATING, azerite.accelerant.value() )
+      ->set_duration( find_spell( 272957 )->duration() );
+    buffs.bursting_flare = make_buff<stat_buff_t>( this, "bursting_flare", find_spell( 279913 ) )
+      ->add_stat( STAT_MASTERY_RATING, azerite.bursting_flare.value() );
+    buffs.chaotic_inferno = make_buff( this, "chaotic_inferno", find_spell( 279673 ) )
+      ->set_default_value( find_spell( 279673 )->effectN( 1 ).percent() )
+      ->set_chance( find_spell( 279672 )->proc_chance() );
+    buffs.crashing_chaos = make_buff( this, "crashing_chaos", find_spell( 277706 ) )
+      ->set_default_value( azerite.crashing_chaos.value() );
+    buffs.rolling_havoc = make_buff<stat_buff_t>( this, "rolling_havoc", find_spell( 278931 ) )
+      ->add_stat( STAT_INTELLECT, azerite.rolling_havoc.value() );
+    buffs.flashpoint = make_buff<stat_buff_t>( this, "flashpoint", find_spell( 275429 ) )
+      ->add_stat( STAT_HASTE_RATING, azerite.flashpoint.value() );
   }
 
   void warlock_t::init_spells_destruction() {
