@@ -263,6 +263,7 @@ public:
     const spell_data_t* shield_slam;
     const spell_data_t* shield_wall;
     const spell_data_t* slam;
+    const spell_data_t* shockwave;
     const spell_data_t* sweeping_strikes;
     const spell_data_t* tactician;
     const spell_data_t* thunder_clap;
@@ -284,7 +285,6 @@ public:
     const spell_data_t* defensive_stance;
 
     const spell_data_t* double_time;
-    const spell_data_t* shockwave;
     const spell_data_t* storm_bolt;
 
     const spell_data_t* avatar;
@@ -314,6 +314,7 @@ public:
     const spell_data_t* into_the_fray;
     const spell_data_t* titanic_might;
     const spell_data_t* vengeance;
+    const spell_data_t* rumbling_earth;
 
     const spell_data_t* anger_management;
     const spell_data_t* carnage;
@@ -2590,7 +2591,7 @@ struct sweeping_strikes_t : public warrior_spell_t
     : warrior_spell_t( "sweeping_strikes", p, p->spec.sweeping_strikes )
   {
     parse_options( options_str );
-    callbacks   = false;
+    callbacks = false;
   }
 
   void execute() override
@@ -3236,7 +3237,12 @@ struct slaughter_dot_t : public residual_action::residual_periodic_action_t<warr
 
 struct shockwave_t : public warrior_attack_t
 {
-  shockwave_t( warrior_t* p, const std::string& options_str ) : warrior_attack_t( "shockwave", p, p->talents.shockwave )
+  int rumbling_earth_reduction;
+  int rumbling_earth_targets_required;
+  shockwave_t( warrior_t* p, const std::string& options_str )
+    : warrior_attack_t( "shockwave", p, p-> spec.shockwave ),
+      rumbling_earth_reduction( p->talents.rumbling_earth->effectN( 2 ).base_value() ),
+      rumbling_earth_targets_required( p->talents.rumbling_earth->effectN( 1 ).base_value() )
   {
     parse_options( options_str );
     may_dodge = may_parry = may_block = false;
@@ -3247,10 +3253,10 @@ struct shockwave_t : public warrior_attack_t
   {
     cd_duration = cooldown->duration;
 
-    if ( execute_state->n_targets >= 3 )
+    if ( p()->talents.rumbling_earth->ok() && execute_state->n_targets >= rumbling_earth_targets_required )
     {
-      if ( cd_duration > timespan_t::from_seconds( 20 ) )
-        cd_duration += timespan_t::from_seconds( -20 );
+      if ( cd_duration > timespan_t::from_seconds( rumbling_earth_reduction ) )
+        cd_duration += timespan_t::from_seconds( -1 * rumbling_earth_reduction );
       else
         cd_duration = timespan_t::zero();
     }
@@ -3666,7 +3672,7 @@ struct avatar_t : public warrior_spell_t
   avatar_t( warrior_t* p, const std::string& options_str ) : warrior_spell_t( "avatar", p, p->talents.avatar )
   {
     parse_options( options_str );
-    callbacks   = false;
+    callbacks = false;
   }
 
   void execute() override
@@ -3930,8 +3936,8 @@ struct recklessness_t : public warrior_spell_t
     : warrior_spell_t( "recklessness", p, p->spec.recklessness ), bonus_crit( 0.0 )
   {
     parse_options( options_str );
-    bonus_crit  = data().effectN( 1 ).percent();
-    callbacks   = false;
+    bonus_crit = data().effectN( 1 ).percent();
+    callbacks  = false;
 
     if ( p->talents.reckless_abandon->ok() )
     {
@@ -4377,6 +4383,7 @@ void warrior_t::init_spells()
   spec.shield_block_2      = find_specialization_spell( 231847 );
   spec.shield_slam         = find_specialization_spell( "Shield Slam" );
   spec.shield_wall         = find_specialization_spell( "Shield Wall" );
+  spec.shockwave           = find_specialization_spell( "Shockwave" );
   spec.slam                = find_specialization_spell( "Slam" );
   spec.spell_reflection    = find_specialization_spell( "Spell Reflection" );
   spec.sweeping_strikes    = find_specialization_spell( "Sweeping Strikes" );
@@ -4428,8 +4435,8 @@ void warrior_t::init_spells()
   talents.ravager             = find_talent_spell( "Ravager" );
   talents.reckless_abandon    = find_talent_spell( "Reckless Abandon" );
   talents.rend                = find_talent_spell( "Rend" );
+  talents.rumbling_earth      = find_talent_spell( "Rumbling Earth" );
   talents.second_wind         = find_talent_spell( "Second Wind" );
-  talents.shockwave           = find_talent_spell( "Shockwave" );
   talents.siegebreaker        = find_talent_spell( "Siegebreaker" );
   talents.skullsplitter       = find_talent_spell( "Skullsplitter" );
   talents.storm_bolt          = find_talent_spell( "Storm Bolt" );
@@ -5120,8 +5127,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   using namespace buffs;
 
   dots_deep_wounds = target->get_dot( "deep_wounds", &p );
-  dots_ravager          = target->get_dot( "ravager", &p );
-  dots_rend             = target->get_dot( "rend", &p );
+  dots_ravager     = target->get_dot( "ravager", &p );
+  dots_rend        = target->get_dot( "rend", &p );
 
   debuffs_colossus_smash = buff_creator_t( static_cast<actor_pair_t>( *this ), "colossus_smash" )
                                .default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
