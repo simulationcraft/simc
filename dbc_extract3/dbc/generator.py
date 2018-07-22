@@ -3977,7 +3977,7 @@ class RandomPropertyPointsGenerator(DataGenerator):
         for id in ids + [ 0 ]:
             rpp = self._randproppoints_db[id]
 
-            fields = rpp.field('id', 'item_effect')
+            fields = rpp.field('id', 'damage_replace_stat')
             fields += [ '{ %s }' % ', '.join(rpp.field('epic_points_1', 'epic_points_2', 'epic_points_3', 'epic_points_4', 'epic_points_5')) ]
             fields += [ '{ %s }' % ', '.join(rpp.field('rare_points_1', 'rare_points_2', 'rare_points_3', 'rare_points_4', 'rare_points_5')) ]
             fields += [ '{ %s }' % ', '.join(rpp.field('uncm_points_1', 'uncm_points_2', 'uncm_points_3', 'uncm_points_4', 'uncm_points_5')) ]
