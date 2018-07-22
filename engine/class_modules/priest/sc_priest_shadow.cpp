@@ -72,7 +72,6 @@ public:
       harvested_thoughts_value( priest().azerite.thought_harvester.value( 1 ) )
   {
     parse_options( options_str );
-    is_mastery_spell            = true;
 
     insanity_gain = data().effectN( 2 ).resource( RESOURCE_INSANITY );
     insanity_gain *= ( 1.0 + priest().talents.fortress_of_the_mind->effectN( 2 ).percent() );
@@ -223,7 +222,6 @@ struct mind_sear_tick_t final : public priest_spell_t
     callbacks        = false;
     direct_tick      = true;
     use_off_gcd      = true;
-    is_mastery_spell = true;
     energize_type    = ENERGIZE_NONE;  // disable resource generation from spell data
   }
 
@@ -265,7 +263,6 @@ struct mind_sear_t final : public priest_spell_t
     may_crit            = false;
     hasted_ticks        = false;
     dynamic_tick_action = true;
-    is_mastery_spell    = true;
     tick_zero           = false;
 
     tick_action = new mind_sear_tick_t( p, p.find_class_spell( "Mind Sear" ) );
@@ -288,7 +285,6 @@ struct mind_flay_t final : public priest_spell_t
     channeled                   = true;
     hasted_ticks                = false;
     use_off_gcd                 = true;
-    is_mastery_spell            = true;
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data
 
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
@@ -767,7 +763,6 @@ struct shadow_word_pain_t final : public priest_spell_t
     casted           = _casted;
     may_crit         = true;
     tick_zero        = false;
-    is_mastery_spell = true;
     if ( !casted )
     {
       base_dd_max = 0.0;
@@ -898,7 +893,6 @@ struct vampiric_touch_t final : public priest_spell_t
     parse_options( options_str );
 
     may_crit         = false;
-    is_mastery_spell = true;
 
     if ( priest().talents.misery->ok() )
     {
@@ -1025,7 +1019,6 @@ struct void_bolt_t final : public priest_spell_t
   {
     parse_options( options_str );
     use_off_gcd                 = true;
-    is_mastery_spell            = true;
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data.
     cooldown->hasted            = true;
 
@@ -1168,7 +1161,6 @@ struct void_eruption_t final : public priest_spell_t
     base_costs[ RESOURCE_INSANITY ] = 0;
 
     may_miss          = false;
-    is_mastery_spell  = true;
     aoe               = -1;
     range             = data_spell->max_range();
     radius            = data_spell->effectN( 1 ).radius();
@@ -1256,7 +1248,6 @@ struct dark_ascension_damage_t final : public priest_spell_t
     base_costs[ RESOURCE_INSANITY ] = 0;
 
     may_miss                  = false; // TODO: check
-    is_mastery_spell          = true;
   }
 
   void impact( action_state_t* s ) override
@@ -1291,7 +1282,6 @@ struct dark_ascension_t final : public priest_spell_t
     base_costs[ RESOURCE_INSANITY ] = 0;
 
     may_miss                  = false;
-    is_mastery_spell          = true;
     aoe                       = -1;
     radius                    = data().effectN( 1 ).radius_max();
   }

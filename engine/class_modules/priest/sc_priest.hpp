@@ -924,7 +924,7 @@ public:
     : ab( n, &p, s ),
       shadow_damage_increase( ab::data().affected_by( p.specs.shadow_priest->effectN( 1 ) ) ),
       shadow_dot_increase( ab::data().affected_by( p.specs.shadow_priest->effectN( 2 ) ) ),
-      affected_by(),
+      affected_by()
   {
     init_affected_by();
     ab::may_crit          = true;

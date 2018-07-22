@@ -118,7 +118,6 @@ struct shadow_word_pain_disc_t final : public priest_spell_t
     casted           = _casted;
     may_crit         = true;
     tick_zero        = false;
-    is_mastery_spell = true;
     if ( !casted )
     {
       base_dd_max = 0.0;
