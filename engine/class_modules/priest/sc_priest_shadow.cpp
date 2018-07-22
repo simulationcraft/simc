@@ -466,6 +466,16 @@ struct shadow_word_death_t final : public priest_spell_t
   }
 };
 
+struct shadow_crash_damage_t final : public priest_spell_t
+{
+  shadow_crash_damage_t( priest_t& p )
+    : priest_spell_t( "shadow_crash_damage", p, p.talents.shadow_crash->effectN(1).trigger() )
+  {
+    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
+    background = true;
+  }
+};
+
 struct shadow_crash_t final : public priest_spell_t
 {
   double insanity_gain;
@@ -476,16 +486,13 @@ struct shadow_crash_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    const spell_data_t* missile = priest().find_spell( 205386 );
-    school                      = missile->get_school_type();
-    spell_power_mod.direct      = missile->effectN( 1 ).sp_coeff();
     aoe                         = -1;
     radius                      = data().effectN( 1 ).radius();
 
-    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
+    impact_action = new shadow_crash_damage_t(p);
+    add_child(impact_action);
 
-    affected_by.voidform_da = affected_by.voidform_ta = affected_by.shadowform_da = affected_by.shadowform_ta =
-        affected_by.twist_of_fate_da = affected_by.twist_of_fate_ta = true; // TODO: fix by splitting actions
+    energize_type = ENERGIZE_NONE;  // disable resource generation from spell data
   }
 
   void execute() override
@@ -497,7 +504,7 @@ struct shadow_crash_t final : public priest_spell_t
 
   timespan_t travel_time() const override
   {
-    // Hardcoded based on in-game testing -- Anshlun 2018-06-25
+    // Hardcoded based on in-game testing, independent of distance -- Anshlun 2018-06-25
     return timespan_t::from_seconds( 1.5 );
   }
 };
@@ -670,13 +677,13 @@ struct vampiric_embrace_t final : public priest_spell_t
   }
 };
 
-struct shadowy_apparition_spell_t final : public priest_spell_t
+struct shadowy_apparition_damage_t final : public priest_spell_t
 {
   double insanity_gain;
   double spiteful_apparitions_bonus;
 
-  shadowy_apparition_spell_t( priest_t& p )
-    : priest_spell_t( "shadowy_apparitions", p, p.find_spell( 78203 ) ),
+  shadowy_apparition_damage_t( priest_t& p )
+    : priest_spell_t( "shadowy_apparition", p, p.find_spell( 148859 ) ),
       insanity_gain( priest().talents.auspicious_spirits->effectN( 2 ).percent() ),
       spiteful_apparitions_bonus( priest().azerite.spiteful_apparitions.value( 1 ) )
   {
@@ -685,15 +692,6 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     callbacks                    = true;
     may_miss                     = false;
     may_crit                     = false;
-    trigger_gcd                  = timespan_t::zero();
-    travel_speed                 = 6.0;
-    const spell_data_t* dmg_data = p.find_spell( 148859 );  // Hardcoded into tooltip 2014/06/01
-
-    parse_effect_data( dmg_data->effectN( 1 ) );
-    school = SCHOOL_SHADOW;
-
-    affected_by.voidform_da = affected_by.voidform_ta = affected_by.shadowform_da = affected_by.shadowform_ta =
-        affected_by.twist_of_fate_da = affected_by.twist_of_fate_ta = true; // TODO: fix by splitting actions
   }
 
   void impact( action_state_t* s ) override
@@ -717,7 +715,7 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
       if ( vampiric_touch_dot != nullptr && vampiric_touch_dot->is_ticking() )
       {
         d += spiteful_apparitions_bonus;
-      }      
+      }
     }
 
     return d;
@@ -730,6 +728,24 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
     d *= 1.0 + priest().talents.auspicious_spirits->effectN( 1 ).percent();
 
     return d;
+  }
+};
+
+struct shadowy_apparition_spell_t final : public priest_spell_t
+{
+  shadowy_apparition_spell_t( priest_t& p )
+    : priest_spell_t( "shadowy_apparitions", p, p.find_spell( 78203 ) )
+  {
+    background                   = true;
+    proc                         = false;
+    may_miss                     = false;
+    may_crit                     = false;
+    trigger_gcd                  = timespan_t::zero();
+    travel_speed                 = 6.0;
+
+    impact_action = new shadowy_apparition_damage_t(p);
+
+    add_child(impact_action);
   }
 
   /** Trigger a shadowy apparition */
@@ -1277,6 +1293,7 @@ struct dark_ascension_t final : public priest_spell_t
     parse_options( options_str );
 
     impact_action = new dark_ascension_damage_t(p);
+    add_child(impact_action);
 
     // We don't want to lose insanity when casting it!
     base_costs[ RESOURCE_INSANITY ] = 0;

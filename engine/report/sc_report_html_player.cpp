@@ -319,7 +319,7 @@ void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask,
 
 void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
                              const stats_t& s, int j, int n_columns,
-                             const player_t* actor = nullptr )
+                             const player_t* actor = nullptr, int indentation = 0)
 {
   const player_t& p = *s.player->get_owner_or_self();
 
@@ -333,7 +333,12 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask,
   // Ability name
   os << "<td class=\"left small\" rowspan=\"" << result_rows << "\">";
   if ( s.parent && s.parent->player == actor )
-    os << "&#160;&#160;&#160;\n";
+  {
+    for( int i = 0; i< indentation; ++i)
+    {
+      os << "&#160;&#160;&#160;\n";
+    }
+  }
 
   os << output_action_name( s, actor );
   os << "</td>\n";
@@ -3662,19 +3667,19 @@ bool is_output_stat( unsigned mask, bool child, const stats_t& s )
 
 void output_player_action( report::sc_html_stream& os, unsigned& row,
                            unsigned cols, unsigned mask, const stats_t& s,
-                           const player_t* actor )
+                           const player_t* actor, int level = 0 )
 {
-  if ( !is_output_stat( mask, false, s ) )
+  if (level > 2 )
     return;
 
-  print_html_action_info( os, mask, s, row++, cols );
+  if ( !is_output_stat( mask, level != 0, s ) )
+    return;
+
+  print_html_action_info( os, mask, s, row++, cols, actor, level );
 
   for ( auto child_stats : s.children )
   {
-    if ( !is_output_stat( mask, true, *child_stats ) )
-      continue;
-
-    print_html_action_info( os, mask, *child_stats, row++, cols, actor );
+    output_player_action( os, row, cols, mask, *child_stats, actor, level + 1 );
   }
 }
 
