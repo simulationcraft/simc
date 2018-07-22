@@ -380,6 +380,7 @@ public:
     buff_t* mongoose_fury;
     buff_t* predator;
     buff_t* terms_of_engagement;
+    buff_t* aspect_of_the_eagle;
 
     // sets
     buff_t* t20_4p_precision;
@@ -549,6 +550,7 @@ public:
     spell_data_ptr_t raptor_strike;
     spell_data_ptr_t wildfire_bomb;
     spell_data_ptr_t carve;
+    spell_data_ptr_t aspect_of_the_eagle;
   } specs;
 
   struct mastery_spells_t
@@ -3218,15 +3220,13 @@ struct internal_bleeding_t
 // Raptor Strike (Base) ================================================================
 // Shared part between Raptor Strike & Mongoose Bite
 
-struct raptor_strike_base_t: hunter_melee_attack_t
+struct melee_focus_spender_t: hunter_melee_attack_t
 {
   struct latent_poison_t: hunter_spell_t
   {
     latent_poison_t( const std::string& n, hunter_t* p ):
       hunter_spell_t( n, p, p -> find_spell( 273289 ) )
-    {
-      dual = true;
-    }
+    {}
 
     void trigger( player_t* target )
     {
@@ -3246,7 +3246,7 @@ struct raptor_strike_base_t: hunter_melee_attack_t
   latent_poison_t* latent_poison = nullptr;
   timespan_t wilderness_survival_reduction;
 
-  raptor_strike_base_t( const std::string& n, hunter_t* p, const spell_data_t* s ):
+  melee_focus_spender_t( const std::string& n, hunter_t* p, const spell_data_t* s ):
     hunter_melee_attack_t( n, p, s ),
     internal_bleeding( p ),
     wilderness_survival_reduction( p -> azerite.wilderness_survival.spell() -> effectN( 1 ).time_value() )
@@ -3255,14 +3255,6 @@ struct raptor_strike_base_t: hunter_melee_attack_t
 
     if ( p -> azerite.latent_poison.ok() )
       latent_poison = p -> get_background_action<latent_poison_t>( "latent_poison" );
-  }
-
-  void init() override
-  {
-    hunter_melee_attack_t::init();
-
-    if ( !background && latent_poison )
-      add_child( latent_poison );
   }
 
   double cost() const override
@@ -3309,28 +3301,34 @@ struct raptor_strike_base_t: hunter_melee_attack_t
 
     return b;
   }
+
+  bool ready() override
+  {
+    const bool has_eagle = p() -> buffs.aspect_of_the_eagle -> check();
+    return ( range > 10 ? has_eagle : !has_eagle ) && hunter_melee_attack_t::ready();
+  }
 };
 
 // Mongoose Bite =======================================================================
 
-struct mongoose_bite_t: raptor_strike_base_t
+struct mongoose_bite_base_t: melee_focus_spender_t
 {
   struct {
     std::array<proc_t*, 7> at_fury;
   } stats_;
 
-  mongoose_bite_t( hunter_t* p, const std::string& options_str ):
-    raptor_strike_base_t( "mongoose_bite", p, p -> talents.mongoose_bite )
+  mongoose_bite_base_t( const std::string& n, hunter_t* p, spell_data_ptr_t s ):
+    melee_focus_spender_t( n, p, s )
   {
-    parse_options( options_str );
-
     for ( size_t i = 0; i < stats_.at_fury.size(); i++ )
       stats_.at_fury[ i ] = p -> get_proc( "bite_at_" + std::to_string( i ) + "_fury" );
+
+    background = ! p -> talents.mongoose_bite -> ok();
   }
 
   void execute() override
   {
-    raptor_strike_base_t::execute();
+    melee_focus_spender_t::execute();
 
     stats_.at_fury[ p() -> buffs.mongoose_fury -> check() ] -> occur();
 
@@ -3339,11 +3337,29 @@ struct mongoose_bite_t: raptor_strike_base_t
 
   double action_multiplier() const override
   {
-    double am = raptor_strike_base_t::action_multiplier();
+    double am = melee_focus_spender_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.mongoose_fury -> stack_value();
 
     return am;
+  }
+};
+
+struct mongoose_bite_t : mongoose_bite_base_t
+{
+  mongoose_bite_t( hunter_t* p, const std::string& options_str ):
+    mongoose_bite_base_t( "mongoose_bite", p, p -> talents.mongoose_bite )
+  {
+    parse_options( options_str );
+  }
+};
+
+struct mongoose_bite_eagle_t : mongoose_bite_base_t
+{
+  mongoose_bite_eagle_t( hunter_t* p, const std::string& options_str ):
+    mongoose_bite_base_t( "mongoose_bite_eagle", p, p -> find_spell( 265888 ) )
+  {
+    parse_options( options_str );
   }
 };
 
@@ -3477,7 +3493,35 @@ struct butchery_t: public carve_base_t
   }
 };
 
-// Raptor Strike Attack ==============================================================
+// Raptor Strike =====================================================================
+
+struct raptor_strike_base_t: public melee_focus_spender_t
+{
+  raptor_strike_base_t( const std::string& n, hunter_t* p, spell_data_ptr_t s ):
+    melee_focus_spender_t( n, p, s )
+  {
+    base_multiplier *= 1.0 + p -> find_spell( 262839 ) -> effectN( 1 ).percent(); // Raptor Strike (Rank 2)
+    base_multiplier *= 1.0 + p -> sets -> set( HUNTER_SURVIVAL, T21, B4 ) -> effectN( 1 ).percent();
+
+    background = p -> talents.mongoose_bite -> ok();
+  }
+
+  void execute() override
+  {
+    melee_focus_spender_t::execute();
+
+    p() -> buffs.tip_of_the_spear -> expire();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = melee_focus_spender_t::action_multiplier();
+
+    am *= 1.0 + p() -> buffs.tip_of_the_spear -> stack_value();
+
+    return am;
+  }
+};
 
 struct raptor_strike_t: public raptor_strike_base_t
 {
@@ -3485,29 +3529,15 @@ struct raptor_strike_t: public raptor_strike_base_t
     raptor_strike_base_t( "raptor_strike", p, p -> specs.raptor_strike )
   {
     parse_options( options_str );
-
-    base_multiplier *= 1.0 + p -> find_spell( 262839 ) -> effectN( 1 ).percent(); // Raptor Strike (Rank 2)
-
-    base_multiplier *= 1.0 + p -> sets -> set( HUNTER_SURVIVAL, T21, B4 ) -> effectN( 1 ).percent();
-
-    if ( p -> talents.mongoose_bite -> ok() )
-      background = true;
   }
+};
 
-  void execute() override
+struct raptor_strike_eagle_t: public raptor_strike_base_t
+{
+  raptor_strike_eagle_t( hunter_t* p, const std::string& options_str ):
+    raptor_strike_base_t( "raptor_strike_eagle", p, p -> find_spell( 265189 ) )
   {
-    raptor_strike_base_t::execute();
-
-    p() -> buffs.tip_of_the_spear -> expire();
-  }
-
-  double action_multiplier() const override
-  {
-    double am = raptor_strike_base_t::action_multiplier();
-
-    am *= 1.0 + p() -> buffs.tip_of_the_spear -> stack_value();
-
-    return am;
+    parse_options( options_str );
   }
 };
 
@@ -3599,6 +3629,14 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
       aoe = 1 + static_cast<int>( p -> talents.hydras_bite -> effectN( 1 ).base_value() );
 
     base_td_multiplier *= 1.0 + p -> talents.hydras_bite -> effectN( 2 ).percent();
+  }
+
+  void init() override
+  {
+    hunter_ranged_attack_t::init();
+
+    if ( action_t* lp = p() -> find_action( "latent_poison" ) )
+      add_child( lp );
   }
 
   void execute() override
@@ -4515,6 +4553,28 @@ struct wildfire_bomb_t: public hunter_spell_t
   }
 };
 
+// Aspect of the Eagle ======================================================
+
+struct aspect_of_the_eagle_t: public hunter_spell_t
+{
+  aspect_of_the_eagle_t( hunter_t* p, const std::string& options_str ):
+    hunter_spell_t( "aspect_of_the_eagle", p, p -> specs.aspect_of_the_eagle )
+  {
+    parse_options( options_str );
+
+    harmful = may_hit = false;
+
+    cooldown -> duration *= 1.0 + p -> talents.born_to_be_wild -> effectN( 1 ).percent();
+  }
+
+  void execute() override
+  {
+    hunter_spell_t::execute();
+
+    p() -> buffs.aspect_of_the_eagle -> trigger();
+  }
+};
+
 // Muzzle =============================================================
 
 struct muzzle_t: public interrupt_base_t
@@ -4686,11 +4746,13 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "harpoon"               ) return new                harpoon_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
+  if ( name == "mongoose_bite_eagle"   ) return new    mongoose_bite_eagle_t( this, options_str );
   if ( name == "multishot"             ) return new             multi_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "muzzle"                ) return new                 muzzle_t( this, options_str );
   if ( name == "piercing_shot"         ) return new          piercing_shot_t( this, options_str );
   if ( name == "raptor_strike"         ) return new          raptor_strike_t( this, options_str );
+  if ( name == "raptor_strike_eagle"   ) return new    raptor_strike_eagle_t( this, options_str );
   if ( name == "spitting_cobra"        ) return new         spitting_cobra_t( this, options_str );
   if ( name == "stampede"              ) return new               stampede_t( this, options_str );
   if ( name == "steel_trap"            ) return new             steel_trap_t( this, options_str );
@@ -4705,6 +4767,7 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "coordinated_assault"   ) return new    coordinated_assault_t( this, options_str );
   if ( name == "chakrams"              ) return new               chakrams_t( this, options_str );
   if ( name == "carve"                 ) return new                  carve_t( this, options_str );
+  if ( name == "aspect_of_the_eagle"   ) return new    aspect_of_the_eagle_t( this, options_str );
 
   if ( name == "serpent_sting" )
   {
@@ -4871,6 +4934,7 @@ void hunter_t::init_spells()
   specs.raptor_strike        = find_specialization_spell( "Raptor Strike" );
   specs.wildfire_bomb        = find_specialization_spell( "Wildfire Bomb" );
   specs.carve                = find_specialization_spell( "Carve" );
+  specs.aspect_of_the_eagle  = find_specialization_spell( "Aspect of the Eagle" );
 
   // Azerite
 
@@ -5057,6 +5121,10 @@ void hunter_t::create_buffs()
       -> set_default_value( find_spell( 265898 ) -> effectN( 1 ).base_value() / 5.0 )
       -> set_affects_regen( true );
 
+  buffs.aspect_of_the_eagle =
+    make_buff( this, "aspect_of_the_eagle", specs.aspect_of_the_eagle )
+      -> set_cooldown( timespan_t::zero() );
+
   // Legendaries
 
   buffs.sentinels_sight =
@@ -5166,7 +5234,10 @@ void hunter_t::init_special_effects()
   // Cooldown adjustments
 
   if ( legendary.wrist -> ok() )
+  {
     cooldowns.aspect_of_the_wild -> duration *= 1.0 + legendary.wrist -> effectN( 1 ).percent();
+    get_cooldown( "aspect_of_the_eagle" ) -> duration *= 1.0 + legendary.wrist -> effectN( 1 ).percent();
+  }
 
   buffs.sentinels_sight -> set_trigger_spell( legendary.mm_waist );
   buffs.butchers_bone_apron -> set_trigger_spell( legendary.sv_chest );
