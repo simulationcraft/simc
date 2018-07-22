@@ -601,13 +601,15 @@ public:
   bool track_cd_waste;
   simple_sample_data_with_min_max_t *cd_wasted_exec, *cd_wasted_cumulative;
   simple_sample_data_t* cd_wasted_iter;
+  bool initialized;
   warrior_action_t( const std::string& n, warrior_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       tactician_per_rage( 0 ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
       cd_wasted_exec( nullptr ),
       cd_wasted_cumulative( nullptr ),
-      cd_wasted_iter( nullptr )
+      cd_wasted_iter( nullptr ),
+      initialized( false )
   {
     ab::may_crit = true;
     tactician_per_rage += ( player->spec.tactician->effectN( 1 ).percent() / 100 );
@@ -661,6 +663,8 @@ public:
         ab::data().affected_by( p()->talents.frothing_berserker->effectN( 1 ).trigger()->effectN( 1 ) );
     affected_by.frothing_dot =
         ab::data().affected_by( p()->talents.frothing_berserker->effectN( 1 ).trigger()->effectN( 3 ) );
+
+    initialized = true;
   }
 
   virtual ~warrior_action_t()
