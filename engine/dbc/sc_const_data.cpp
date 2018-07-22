@@ -2143,12 +2143,7 @@ double dbc_t::effect_delta( const spelleffect_data_t* e, unsigned level ) const
 
   if ( e -> m_delta() != 0 && e -> spell() -> scaling_class() != 0 )
   {
-    unsigned scaling_level = level;
-    if ( e -> spell() -> max_scaling_level() > 0 )
-      scaling_level = std::min( scaling_level, e -> spell() -> max_scaling_level() );
-    double m_scale = spell_scaling( e -> spell() -> scaling_class(), scaling_level );
-
-    return e -> m_average() * e -> m_delta() * m_scale;
+    return  e -> m_delta();
   }
 
   return 0;
@@ -2202,7 +2197,7 @@ double dbc_t::effect_min( const spelleffect_data_t* e, unsigned level ) const
   if ( c_id != 0 && ( e -> m_average() != 0 || e -> m_delta() != 0 ) )
   {
     double delta = effect_delta( e, level );
-    result = avg - ( delta / 2 );
+    result = avg - ( avg * delta / 2 );
   }
   else
   {
@@ -2218,7 +2213,7 @@ double dbc_t::effect_min( const spelleffect_data_t* e, unsigned level ) const
     }
   }
 
-  return result;
+  return floor(result);
 }
 
 double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
@@ -2239,7 +2234,7 @@ double dbc_t::effect_max( const spelleffect_data_t* e, unsigned level ) const
   {
     double delta = effect_delta( e, level );
 
-    result = avg + ( delta / 2 );
+    result = avg + ( avg * delta / 2 );
   }
   else
   {
@@ -2255,7 +2250,7 @@ double dbc_t::effect_max( const spelleffect_data_t* e, unsigned level ) const
     }
   }
 
-  return result;
+  return ceil(result);
 }
 
 unsigned dbc_t::talent_ability_id( player_e c, specialization_e spec, const char* spell_name, bool name_tokenized ) const
