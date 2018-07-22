@@ -281,7 +281,6 @@ public:
     const spell_data_t* endless_rage;
     const spell_data_t* fresh_meat;
     const spell_data_t* war_machine;
-    const spell_data_t* warbringer;
     const spell_data_t* defensive_stance;
 
     const spell_data_t* double_time;
@@ -1634,11 +1633,6 @@ struct charge_t : public warrior_attack_t
     energize_type           = ENERGIZE_ON_CAST;
     attack_power_mod.direct = charge_damage->effectN( 2 ).ap_coeff();
 
-    if ( p->talents.warbringer->ok() )
-    {
-      aoe = -1;
-      parse_effect_data( p->find_spell( 7922 )->effectN( 1 ) );
-    }
     if ( p->talents.double_time->ok() )
     {
       cooldown->charges += p->talents.double_time->effectN( 1 ).base_value();
@@ -1712,11 +1706,7 @@ struct intercept_t : public warrior_attack_t
     movement_directionality = MOVEMENT_OMNI;
     energize_type           = ENERGIZE_ON_CAST;
     energize_resource       = RESOURCE_RAGE;
-    if ( p->talents.warbringer->ok() )
-    {
-      aoe = -1;
-      parse_effect_data( p->find_spell( 7922 )->effectN( 1 ) );
-    }
+
     if ( p->talents.double_time->ok() )
     {
       cooldown->charges += p->talents.double_time->effectN( 1 ).base_value();
@@ -4462,7 +4452,6 @@ void warrior_t::init_spells()
   talents.vengeance           = find_talent_spell( "Vengeance" );
   talents.war_machine         = find_talent_spell( "War Machine" );
   talents.warbreaker          = find_talent_spell( "Warbreaker" );
-  talents.warbringer          = find_talent_spell( "Warbringer" );
   talents.warlords_challenge  = find_talent_spell( "Warlord's Challenge" );
   talents.warpaint            = find_talent_spell( "Warpaint" );
 
