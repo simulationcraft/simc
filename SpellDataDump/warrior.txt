@@ -63,7 +63,7 @@ Attributes       : ....x.x. ........ ..x..... ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=69)       : Block (23)
-                   Base Value: 3.5 | Scaled Value: 3 - 4 (avg=0, dl=0.25) | Value Multiplier: 1 | SP Coefficient: 1.00000 | Misc Value: 90
+                   Base Value: 3.5 | Scaled Value: 3.5 (avg=0, dl=0.25) | Value Multiplier: 1 | SP Coefficient: 1.00000 | Misc Value: 90
 Description      : Gives a chance to block enemy melee and ranged attacks.
 
 Name             : Taunt (id=355) [Spell Family (4)] 
@@ -371,7 +371,7 @@ Attributes       : ....x.x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=939)      : Parry (22)
-                   Base Value: 3.5 | Scaled Value: 3 - 4 (avg=0, dl=0.25) | Value Multiplier: 1 | SP Coefficient: 0.25000 | Misc Value: 90
+                   Base Value: 3.5 | Scaled Value: 3.5 (avg=0, dl=0.25) | Value Multiplier: 1 | SP Coefficient: 0.25000 | Misc Value: 90
 Description      : Gives a chance to parry enemy melee attacks.
 
 Name             : Intimidating Shout (id=5246) [Spell Family (4)] 
@@ -862,9 +862,9 @@ Attributes       : ....x... ........ ........ ........   .....x.. ..x..... .....
                  : Does not break stealth (37)
 Effects          :
 #1 (id=11564)    : Apply Aura (6) | Modify Attack Power (99)
-                   Base Value: 0 | Scaled Value: 400 - 401 (avg=1.286279) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 400.0328 (avg=1.286279) | Points Per Level: 4 | Target: Self (1)
 #2 (id=11565)    : Apply Aura (6) | Modify Ranged Attack Power (124)
-                   Base Value: 0 | Scaled Value: 400 - 401 (avg=1.286279) | Points Per Level: 4 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 400.0328 (avg=1.286279) | Points Per Level: 4 | Target: Self (1)
 Description      : Increases your attack power by $s1 for $d.
 Tooltip          : Attack power increased by $w1.
 
@@ -2048,7 +2048,7 @@ Attributes       : ....x... ........ ..x..x.. ........   ........ ........ .....
                  : Cannot dodge/parry/block (21), Cannot crit (93), Requires main-hand weapon (106), Disable player multipliers (221)
 Effects          :
 #1 (id=126202)   : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
-                   Base Value: 0 | Scaled Value: 29 - 30 (avg=0.094) | Mechanic: Bleed | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 29.234 (avg=0.094) | Mechanic: Bleed | Target: Enemy (6)
 Description      : $@spelldesc12292
 Tooltip          : Bleeding for $w1 every $t1 sec.
 
@@ -4121,7 +4121,7 @@ Effects          :
 #1 (id=303703)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 14 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=303704)   : Weapon Damage% (31)
-                   Base Value: 91 | Scaled Value: 0 - 1 | Radius: 0 - 14 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 91 | Scaled Value: 0.91 | Radius: 0 - 14 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #3 (id=303709)   : Apply Aura (6) | Periodic Damage (3): fire every 1 seconds
                    Base Value: 1 | Scaled Value: 1 | AP Coefficient: 0.21000 | Radius: 0 - 14 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc205545
@@ -4144,7 +4144,7 @@ Effects          :
 #1 (id=303705)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 14 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=303706)   : Weapon Damage% (31)
-                   Base Value: 91 | Scaled Value: 0 - 1 | Radius: 0 - 14 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 91 | Scaled Value: 0.91 | Radius: 0 - 14 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc205545
 
 Name             : Massacre (id=206315) [Spell Family (4), Passive, Hidden] 
@@ -4302,7 +4302,7 @@ Attributes       : ........ ........ ........ ........   ........ .x...... .....
                  : Requires line of sight (186)
 Effects          :
 #1 (id=310169)   : Weapon Damage% (31)
-                   Base Value: 119 | Scaled Value: 1 - 2 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 119 | Scaled Value: 1.19 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=310396)   : Normalized Weapon Damage (121)
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 Description      : Stomp the ground, causing a ring of corrupted spikes to erupt upwards, dealing $sw1 Shadow damage and applying the Colossus Smash effect to all nearby enemies.
@@ -5218,9 +5218,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Disable player multipliers (221)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 33251 - 33252 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 33251.41 (avg=0.4) | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 33251 - 33252 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 33251.41 (avg=0.4) | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -5311,7 +5311,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=487505)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 77 - 78 (avg=0.25) | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Misc Value: 917504 | Target: Self (1)
 Tooltip          : Increases haste by $s1.
 
 Name             : Mastery: Deep Wounds (id=262111) [Spell Family (4), Passive] 
@@ -5500,7 +5500,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707038)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 846 - 847 (avg=10.88393) | Trigger Spell: 270568 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 846.2255 (avg=10.88393) | Trigger Spell: 270568 | Target: Self (1)
 Description      : Every $270568t1 sec, gain an absorb shield for $s1 for $269279d.
 
 Name             : Azerite Empowered (id=263978) [Passive] 
@@ -5554,7 +5554,7 @@ Effects          :
 #1 (id=707069)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 622 (avg=2) | Misc Value: 1792 | Trigger Spell: 271681 | Target: Self (1)
 #2 (id=713642)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 62 - 63 (avg=0.2)
+                   Base Value: 0 | Scaled Value: 62.2 (avg=0.2)
 Description      : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 Tooltip          : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 
@@ -5572,9 +5572,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=707293)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 112 - 113 (avg=0.361446) | Misc Value: 33554432 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 112.4097 (avg=0.361446) | Misc Value: 33554432 | Target: Self (1)
 #2 (id=709390)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 56 - 57 (avg=0.181818) | Misc Value: 65536 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 56.5454 (avg=0.181818) | Misc Value: 65536 | Target: Self (1)
 Description      : Increases your Mastery by $s1 and your Leech by $s2.
 Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 
@@ -5631,7 +5631,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=713208)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1400 - 1401 (avg=4.504504) | Trigger Spell: 270668 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1400.901 (avg=4.504504) | Trigger Spell: 270668 | Target: Self (1)
 #2 (id=720336)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 Description      : Your damaging abilities have a chance to deal $s1 Physical damage to the target. Gutripper occurs much more often against targets below $s2% health. 
@@ -5650,9 +5650,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714501)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 112 - 113 (avg=0.361446) | Misc Value: 917504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 112.4097 (avg=0.361446) | Misc Value: 917504 | Target: Self (1)
 #2 (id=714502)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 56 - 57 (avg=0.181818) | Misc Value: 1048576 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 56.5454 (avg=0.181818) | Misc Value: 1048576 | Target: Self (1)
 Description      : Increases your Haste by $s1 and your Avoidance by $s2.
 Tooltip          : Increases your Haste by $s1 and your Avoidance by $s2.
 
@@ -5692,7 +5692,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=714531)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 138 - 139 (avg=0.446429) | Trigger Spell: 270673 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 138.8394 (avg=0.446429) | Trigger Spell: 270673 | Target: Self (1)
 Description      : Taking damage has a chance to grant you Azerite Veins, healing you for $s1 every $270674t1 sec. Lasts $270674d or until you are fully healed.
 
 Name             : Collateral Damage (id=268243) [Spell Family (4), Passive, Hidden] 
@@ -5729,7 +5729,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=715936)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1400 - 1401 (avg=4.504505) | Trigger Spell: 270658 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1400.901 (avg=4.504505) | Trigger Spell: 270658 | Target: Self (1)
 Description      : When stunned, immobilized, or knocked back, you heal for $s1.
 Tooltip          : When stunned, immobilized, or knocked back, you heal for $s1.
 
@@ -5752,7 +5752,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=715939)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 559 - 560 (avg=1.80018) | Trigger Spell: 270654 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 559.856 (avg=1.80018) | Trigger Spell: 270654 | Target: Self (1)
 Description      : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 
@@ -5770,9 +5770,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716157)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 13 - 14 (avg=0.044346) | Misc Value: 8 | Trigger Spell: 270653 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 13.79161 (avg=0.044346) | Misc Value: 8 | Trigger Spell: 270653 | Target: Self (1)
 #2 (id=716158)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 4 - 5 (avg=0.013304) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.137544 (avg=0.013304) | Target: Self (1)
 Description      : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 Tooltip          : Increases your movement speed by $s1% of your highest secondary rating, up to $s2%.
 
@@ -5790,7 +5790,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716159)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 3362 - 3363 (avg=10.81081) | Trigger Spell: 270655 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3362.162 (avg=10.81081) | Trigger Spell: 270655 | Target: Self (1)
 #2 (id=720319)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : When you are surrounded by $s2 or more enemies, gain a shield that absorbs $s1 damage. Cannot occur more than once every $270656d.
@@ -5833,9 +5833,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716165)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 2521 - 2522 (avg=8.108109) | Trigger Spell: 270652 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 2521.622 (avg=8.108109) | Trigger Spell: 270652 | Target: Self (1)
 #2 (id=720314)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 196 - 197 (avg=0.630631) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 196.1262 (avg=0.630631) | Target: Self (1)
 Description      : When an enemy you harmed dies, you heal for $s1 and gain $s2 Speed for $269239d.
 Tooltip          : When an enemy you harmed dies, heal for $s1 and gain $s2 Speed for $269239d.
 
@@ -5854,7 +5854,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=716167)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 281 - 282 (avg=0.903614) | Trigger Spell: 270660 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 281.024 (avg=0.903614) | Trigger Spell: 270660 | Target: Self (1)
 #2 (id=716168)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
@@ -5875,9 +5875,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=721833)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 336 - 337 (avg=1.081081) | Trigger Spell: 271537 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 336.2162 (avg=1.081081) | Trigger Spell: 271537 | Target: Self (1)
 #2 (id=721834)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 290 - 291 (avg=0.934579) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 290.6541 (avg=0.934579) | Target: Self (1)
 #3 (id=721835)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When dealt damage greater than $s3% of your maximum health, gain $s2 Armor and cause melee attackers to suffer $s1 Physical damage. Lasts $271538d.
@@ -5914,7 +5914,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=721853)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 4395 - 4396 (avg=14.13347) | Trigger Spell: 271547 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4395.509 (avg=14.13347) | Trigger Spell: 271547 | Target: Self (1)
 Description      : Taking damage has a chance to increase your maximum health by $s1 for each enemy within $271548A1 yds, up to $271550u enemies. Lasts $271550d.
 
 Name             : Shimmering Haven (id=271557) [Scaling Spell (-1), Passive] 
@@ -5931,9 +5931,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=721867)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 7692 - 7693 (avg=24.73445) | Trigger Spell: 271558 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7692.414 (avg=24.73445) | Trigger Spell: 271558 | Target: Self (1)
 #2 (id=721868)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 447 - 448 (avg=1.44) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 447.84 (avg=1.44) | Target: Self (1)
 Description      : Taking damage has a chance to create an upwelling of Azerite beneath your feet, increasing your Health by $s1 and your Armor by $s2 while you stand within it. Lasts $271560d.
 
 Name             : Deafening Crash (id=272824) [Scaling Spell (-1), Spell Family (4), Passive] 
@@ -5952,7 +5952,7 @@ Effects          :
 #1 (id=723960)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 279006 | Target: Self (1)
 #2 (id=723961)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 199 - 200 (avg=0.642934) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 199.9525 (avg=0.642934) | Target: Self (1)
                    Affected Spells: Thunder Clap (6343)
 Description      : Thunder Clap deals an additional $s2 damage and extends the duration of your Demoralizing Shout on affected enemies by ${$s1/1000} sec.
 
@@ -5971,7 +5971,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723998)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 77 - 78 (avg=0.25) | Trigger Spell: 272837 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Trigger Spell: 272837 | Target: Self (1)
 Description      : Rampaging an enemy whose health percentage is lower than yours increases your Strength and Stamina by $s1 for $272838d.
 
 Name             : Executioner's Precision (id=272866) [Scaling Spell (-1), Spell Family (4), Passive] 
@@ -5989,7 +5989,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724045)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 426 - 427 (avg=1.37) | Trigger Spell: 272867 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 426.07 (avg=1.37) | Trigger Spell: 272867 | Target: Self (1)
 Description      : Execute increases the damage of your next Mortal Strike against the target by $s1, stacking up to $272870u times.
 
 Name             : Ruinous Bolt (Drustvar) (id=273150) [Scaling Spell (-1), Passive] 
@@ -6006,7 +6006,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724558)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 799 - 800 (avg=2.572347) | Trigger Spell: 273825 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 799.9999 (avg=2.572347) | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
 Name             : Gathering Storm (id=273409) [Scaling Spell (-1), Spell Family (4), Passive] 
@@ -6023,9 +6023,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725007)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 99 - 100 (avg=0.32) | Trigger Spell: 273412 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 99.52 (avg=0.32) | Trigger Spell: 273412 | Target: Self (1)
 #2 (id=725008)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 62 - 63 (avg=0.2) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 62.2 (avg=0.2) | Target: Self (1)
 Description      : While $?s152277[Ravager is active][Bladestorming], every $273414t1 sec you gain $s2 Speed and $?s152277[Ravager's][Bladestorm's] damage increases by $s1. Lasts $273415d.
 
 Name             : Bloodcraze (id=273420) [Scaling Spell (-7), Spell Family (4), Passive] 
@@ -6067,7 +6067,7 @@ Effects          :
 #3 (id=725609)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | Trigger Spell: 273684 | Target: Self (1)
 #4 (id=725610)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 224 - 225 (avg=0.720721) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 224.1442 (avg=0.720721) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you Meticulous Scheming for $273685d, which transforms into Seize the Moment! after you cast $s3 different spells, granting you $s4 Haste for $273714d.
 
 Name             : Rezan's Fury (Zuldazar) (id=273790) [Scaling Spell (-1), Passive] 
@@ -6084,9 +6084,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725706)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 632 - 633 (avg=2.032459) | Trigger Spell: 273153 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 632.0947 (avg=2.032459) | Trigger Spell: 273153 | Target: Self (1)
 #2 (id=725707)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 126 - 127 (avg=0.406504) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
 Name             : Blightborne Infusion (Drustvar) (id=273823) [Scaling Spell (-7), Passive] 
@@ -6120,7 +6120,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725766)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 155 - 156 (avg=0.5) | Trigger Spell: 273830 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 155.5 (avg=0.5) | Trigger Spell: 273830 | Target: Self (1)
 #2 (id=725767)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 311 (avg=1) | Target: Self (1)
 Description      : Your spells and abilities have a chance to create a Surging Droplet nearby. Collecting it increases your primary stat by $s1 for $273842d.
@@ -6142,7 +6142,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725772)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1088 - 1089 (avg=3.5) | Trigger Spell: 273835 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 273835 | Target: Self (1)
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : Bloodbath (id=274818) [Spell Family (4)] 
@@ -6279,7 +6279,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728612)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 9 - 10 (avg=0.0305) | Trigger Spell: 275531 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 9.4855 (avg=0.0305) | Trigger Spell: 275531 | Target: Self (1)
 #2 (id=728613)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10
 Description      : When $?s262161[Warbreaker][Colossus Smash] expires, your Strength is increased by $s1 for every $s2 Rage you spent during $?s262161[Warbreaker][Colossus Smash]. Lasts $275540d.
@@ -6299,7 +6299,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728800)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 25 - 26 (avg=0.080796) | Trigger Spell: 275670 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 25.12756 (avg=0.080796) | Trigger Spell: 275670 | Target: Self (1)
 Description      : Raging Blow causes every strike of your next Rampage to deal an additional $s1 damage. Stacks up to $275672u times.
 
 Name             : Reinforced Plating (id=275860) [Scaling Spell (-1), Spell Family (4), Passive] 
@@ -6317,7 +6317,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729190)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 31 - 32 (avg=0.101626) | Trigger Spell: 275864 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 31.60569 (avg=0.101626) | Trigger Spell: 275864 | Target: Self (1)
 Description      : Blocking an attack increases your Strength by $s1 for $275867d, stacking up to $275867u times.
 
 Name             : Brace for Impact (id=277636) [Scaling Spell (-1), Passive] 
@@ -6334,9 +6334,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732928)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 124 - 125 (avg=0.4) | Trigger Spell: 278122 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 124.4 (avg=0.4) | Trigger Spell: 278122 | Target: Self (1)
 #2 (id=735136)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 102 - 103 (avg=0.33)
+                   Base Value: 0 | Scaled Value: 102.63 (avg=0.33)
 Description      : Using Shield Slam increases your Block by $s1 and the damage of your Shield Slam by $s2 for $278124d. Multiple applications of this effect may overlap.
 
 Name             : Infinite Fury (id=277638) [Scaling Spell (-7), Passive] 
@@ -6371,7 +6371,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732931)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 174 - 175 (avg=2.25) | Trigger Spell: 278495 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 174.9375 (avg=2.25) | Trigger Spell: 278495 | Target: Self (1)
 #2 (id=732932)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10
 Description      : Overpower causes a seismic wave that deals $s1 Physical damage to enemies in a $s2 yd line.
@@ -6390,7 +6390,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734678)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1000 - 1001 (avg=3.215669) | Trigger Spell: 278824 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1000.073 (avg=3.215669) | Trigger Spell: 278824 | Target: Self (1)
 #2 (id=734679)   : Apply Aura (6) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200
 Description      : Your melee abilities have a chance to increase the damage of your next Slam by $s1 and reduce its Rage cost by ${$s2/10}.
@@ -6412,7 +6412,7 @@ Effects          :
 #1 (id=734680)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 279202 | Target: Self (1)
 #2 (id=734681)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 250 - 251 (avg=0.804) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 250.044 (avg=0.804) | Target: Self (1)
                    Affected Spells: Colossus Smash (167105), Colossus Smash (208086), Warbreaker (262161)
 Description      : $?s262161[Warbreaker][Colossus Smash] deals an additional $s2 damage and generates ${$s1/10} Rage.
 
@@ -6433,7 +6433,7 @@ Effects          :
 #1 (id=734698)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | Trigger Spell: 278840 | Target: Self (1)
 #2 (id=734699)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 62 - 63 (avg=0.2) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 62.2 (avg=0.2) | Target: Self (1)
                    Affected Spells: Rampage (184367), Rampage (184707), Rampage (184709), Rampage (201363), Rampage (201364)
 Description      : Rampage deals an additional ${$184367s1*$s2} damage and generates ${$s1/10} Rage per strike.
 
@@ -6453,7 +6453,7 @@ Effects          :
 #1 (id=734700)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 279632 | Target: Self (1)
 #2 (id=734701)   : Apply Aura (6) | Unknown(141)
-                   Base Value: 0 | Scaled Value: 18 - 19 (avg=0.06) | Misc Value: 1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 18.66 (avg=0.06) | Misc Value: 1 | Target: Self (1)
 Description      : Auto attacks deal $s2 additional damage and reduce the cooldown of Recklessness by ${$s1/1000}.1 sec.
 
 Name             : Callous Reprisal (id=278760) [Scaling Spell (-1), Spell Family (4), Passive] 
@@ -6473,7 +6473,7 @@ Effects          :
 #1 (id=734706)   : Apply Aura (6) | Dummy (4)
                    Base Value: -50 | Scaled Value: -50 | Trigger Spell: 278991 | Target: Self (1)
 #2 (id=734707)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 140 - 141 (avg=0.450161) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 140.0001 (avg=0.450161) | Target: Self (1)
                    Affected Spells: Revenge (6572)
 Description      : Revenge deals $s2 additional damage and reduces the damage enemies deal to you by ${-$s1/100}.1% for $278999d, stacking up to $278999u times.
 
@@ -6491,9 +6491,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734717)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 299 - 300 (avg=0.96401) | Trigger Spell: 279141 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 299.8071 (avg=0.96401) | Trigger Spell: 279141 | Target: Self (1)
 #2 (id=734718)   : Apply Aura (6) | Unknown(274)
-                   Base Value: 0 | Scaled Value: 250 - 251 (avg=0.804878) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 250.3171 (avg=0.804878) | Target: Self (1)
 Description      : Increases Block by $s2, and blocking an attack deals $s1 Physical damage to the attacker. Critical blocks deal double damage.
 
 Name             : Bloodsport (id=279172) [Scaling Spell (-1), Spell Family (4), Passive] 
@@ -6513,9 +6513,9 @@ Effects          :
 #1 (id=735376)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 279193 | Target: Self (1)
 #2 (id=735377)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 126 - 127 (avg=0.407533) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 126.7428 (avg=0.407533) | Target: Self (1)
 #3 (id=735378)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
-                   Base Value: 0 | Scaled Value: 350 - 351 (avg=1.125402) | Misc Value: 3 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 350 (avg=1.125402) | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Ignore Pain (190456)
 Description      : Ignore Pain prevents $s3 additional damage, and grants you $s2 Leech for $279194d.
 
@@ -6568,7 +6568,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736562)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 31 - 32 (avg=0.099778) | Trigger Spell: 279927 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 31.03096 (avg=0.099778) | Trigger Spell: 279927 | Target: Self (1)
 Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 6 sec.
 
 Name             : Bolster (id=280001) [Spell Family (4), Passive, Hidden] 
@@ -6626,7 +6626,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737445)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 6550 - 6551 (avg=21.0643) | Trigger Spell: 280211 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 6550.998 (avg=21.0643) | Trigger Spell: 280211 | Target: Self (1)
 #2 (id=737446)   : Dummy (3)
                    Base Value: 12 | Scaled Value: 12
 Description      : When you use $?s202168[Impending Victory][Victory Rush], gain $s1 Physical absorb for $280212d.
@@ -6649,7 +6649,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs
-                   Base Value: 0 | Scaled Value: 904 - 905 (avg=2.90719) | Trigger Spell: 280662 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 904.1361 (avg=2.90719) | Trigger Spell: 280662 | Target: Self (1)
 #2 (id=737506)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #3 (id=737507)   : Dummy (3)
@@ -6707,7 +6707,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Proc Trigger Spell (42): Cauterized
-                   Base Value: 0 | Scaled Value: 7266 - 7267 (avg=93.45795) | Trigger Spell: 280583 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7266.355 (avg=93.45795) | Trigger Spell: 280583 | Target: Self (1)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -6827,7 +6827,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737714)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 31 - 32 (avg=0.1) | Trigger Spell: 280285 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 31.1 (avg=0.1) | Trigger Spell: 280285 | Target: Self (1)
 #2 (id=737715)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
@@ -6847,7 +6847,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737878)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 233 - 234 (avg=3) | Trigger Spell: 280383 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 233.25 (avg=3) | Trigger Spell: 280383 | Target: Self (1)
 #2 (id=738006)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
@@ -6888,7 +6888,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737915)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 827 - 828 (avg=2.661521) | Trigger Spell: 280403 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 827.733 (avg=2.661521) | Trigger Spell: 280403 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to release a tidal surge, dealing $s1 Frost damage to your target and slowing their movement speed by $280404s2% for $280404d.
 
 Name             : Blood Rite (Nazmir) (id=280407) [Scaling Spell (-7), Passive] 
@@ -6924,9 +6924,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=737926)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 227 - 228 (avg=0.730928) | Trigger Spell: 280411 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 227.3186 (avg=0.730928) | Trigger Spell: 280411 | Target: Self (1)
 #2 (id=737927)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 52 - 53 (avg=0.170316) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 52.96828 (avg=0.170316) | Target: Self (1)
 #3 (id=737931)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : You occasionally loose a tremendous roar, increasing your Mastery by $s1 and granting $s2 Mastery to up to $280413i nearby allies. Lasts $280412d.
@@ -6966,7 +6966,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738151)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 4 - 5 (avg=0.0133) | Trigger Spell: 280708 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 4.1363 (avg=0.0133) | Trigger Spell: 280708 | Target: Self (1)
 Description      : Your armor gathers and analyzes combat data every $280708t1 sec, increasing your primary stat by $s1, stacking up to $280709u times. The data decays while out of combat.
 
 Enables $@spellname280573 within Uldir.
@@ -7027,7 +7027,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738191)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 186 - 187 (avg=0.6) | Trigger Spell: 280785 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 186.6 (avg=0.6) | Trigger Spell: 280785 | Target: Self (1)
 #2 (id=738573)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2488 (avg=8) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
@@ -7048,7 +7048,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738192)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1088 - 1089 (avg=3.5) | Trigger Spell: 280848 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 280848 | Target: Self (1)
 #2 (id=738695)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
@@ -7088,7 +7088,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738194)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 206 - 207 (avg=0.665399) | Trigger Spell: 280816 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 206.9391 (avg=0.665399) | Trigger Spell: 280816 | Target: Self (1)
 #2 (id=738645)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=738646)   : Dummy (3)
@@ -7110,7 +7110,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738213)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 344 - 345 (avg=1.108647) | Trigger Spell: 280806 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 344.7892 (avg=1.108647) | Trigger Spell: 280806 | Target: Self (1)
 #2 (id=738618)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280810 | Target: Self (1)
 Description      : Your abilities have a chance to increase your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 for $280809d. If an ally dies nearby, you gain this effect.
@@ -7150,7 +7150,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738284)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 186 - 187 (avg=0.6) | Trigger Spell: 280860 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 186.6 (avg=0.6) | Trigger Spell: 280860 | Target: Self (1)
 #2 (id=738721)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 2488 (avg=8) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
@@ -7171,7 +7171,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738285)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1088 - 1089 (avg=3.5) | Trigger Spell: 280865 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1088.5 (avg=3.5) | Trigger Spell: 280865 | Target: Self (1)
 #2 (id=738730)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
@@ -7211,7 +7211,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738287)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 206 - 207 (avg=0.665399) | Trigger Spell: 280854 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 206.9391 (avg=0.665399) | Trigger Spell: 280854 | Target: Self (1)
 #2 (id=738705)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=738706)   : Dummy (3)
@@ -7233,7 +7233,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738288)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 344 - 345 (avg=1.108999) | Trigger Spell: 280872 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 344.8987 (avg=1.108999) | Trigger Spell: 280872 | Target: Self (1)
 #2 (id=738747)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280874 | Target: Self (1)
 Description      : Your abilities have a chance to increase your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 for $280876d. If an ally dies nearby, you gain this effect.
@@ -7252,7 +7252,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=738417)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 10 - 11 (avg=0.033) | Trigger Spell: 280712 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 10.263 (avg=0.033) | Trigger Spell: 280712 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 Name             : Whirlwind (id=280714) [Spell Family (4)] 
@@ -7412,7 +7412,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=740102)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 172 - 173 (avg=0.554324) | Trigger Spell: 281515 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 172.3948 (avg=0.554324) | Trigger Spell: 281515 | Target: Self (1)
 Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
 
 Name             : Tradewinds (Tiragarde Sound) (id=281841) [Scaling Spell (-7), Passive] 

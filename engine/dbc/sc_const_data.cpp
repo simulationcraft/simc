@@ -2213,7 +2213,7 @@ double dbc_t::effect_min( const spelleffect_data_t* e, unsigned level ) const
     }
   }
 
-  return floor(result);
+  return result;
 }
 
 double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
@@ -2250,7 +2250,7 @@ double dbc_t::effect_max( const spelleffect_data_t* e, unsigned level ) const
     }
   }
 
-  return ceil(result);
+  return result;
 }
 
 unsigned dbc_t::talent_ability_id( player_e c, specialization_e spec, const char* spell_name, bool name_tokenized ) const
