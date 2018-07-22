@@ -313,7 +313,6 @@ public:
     const spell_data_t* furious_slash;
     const spell_data_t* inner_rage;
     const spell_data_t* into_the_fray;
-    const spell_data_t* titanic_might;
     const spell_data_t* vengeance;
     const spell_data_t* rumbling_earth;
 
@@ -4444,7 +4443,6 @@ void warrior_t::init_spells()
   talents.skullsplitter       = find_talent_spell( "Skullsplitter" );
   talents.storm_bolt          = find_talent_spell( "Storm Bolt" );
   talents.sudden_death        = find_talent_spell( "Sudden Death" );
-  talents.titanic_might       = find_talent_spell( "Titanic Might" );
   talents.vengeance           = find_talent_spell( "Vengeance" );
   talents.war_machine         = find_talent_spell( "War Machine" );
   talents.warbreaker          = find_talent_spell( "Warbreaker" );
