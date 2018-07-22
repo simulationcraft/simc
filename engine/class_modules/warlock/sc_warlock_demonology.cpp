@@ -237,32 +237,34 @@ namespace warlock {
                 p()->procs.three_shard_hog->occur();
         }
 
-        void impact(action_state_t* s) override {
-            demonology_spell_t::impact(s);
+        void impact( action_state_t* s ) override
+        {
+          demonology_spell_t::impact( s );
 
+          // Only trigger wild imps once for the original target impact.
+          // Still keep it in impact instead of execute because of travel delay.
+          if ( result_is_hit( s->result ) && s->target == target )
+          {
             if ( shards_used >= 1 )
               make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 400.0, 50.0 ) );
             if ( shards_used >= 2 )
-              make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 800.0, 50.0) );
+              make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 800.0, 50.0 ) );
             if ( shards_used >= 3 )
-              make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 1200.0, 50.0) );
+              make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 1200.0, 50.0 ) );
 
-            // Only trigger wild imps once for the original target impact.
-            // Still keep it in impact instead of execute because of travel delay.
-            if (result_is_hit(s->result) && s->target == target)
+            if ( p()->azerite.umbral_blaze.ok() )
             {
-              if (p()->azerite.umbral_blaze.ok())
-              {
-                blaze->set_target(target);
-                blaze->execute();
-              }
-              for (int i = 0;
-                   p()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B2) && i < shards_used;
-                   i++)
-              {
-                p()->buffs.rage_of_guldan->trigger();
-              }
+              blaze->set_target( target );
+              blaze->execute();
             }
+            for ( int i = 0;
+              p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B2 ) && i < shards_used;
+              i++ )
+            {
+              p()->buffs.rage_of_guldan->trigger();
+            }
+
+          }
         }
     };
 
@@ -448,7 +450,6 @@ namespace warlock {
       implosion_t(warlock_t* p, const std::string& options_str) : demonology_spell_t("implosion", p),explosion(new implosion_aoe_t(p))
       {
         parse_options(options_str);
-        aoe = -1;
         add_child(explosion);
       }
 
@@ -466,13 +467,18 @@ namespace warlock {
       void execute() override
       {
         warlock_spell_t::execute();
+
         auto imps_consumed = p() -> warlock_pet_list.wild_imps.n_active_pets();
+
         for ( auto imp : p() -> warlock_pet_list.wild_imps )
         {
-          explosion->casts_left = (imp->resources.current[RESOURCE_ENERGY] / 20);
-          explosion->set_target(this->target);
-          explosion->execute();
-          imp -> dismiss();
+          if ( !imp->is_sleeping() )
+          {
+            explosion->casts_left = ( imp->resources.current[RESOURCE_ENERGY] / 20 );
+            explosion->set_target( this->target );
+            explosion->execute();
+            imp->dismiss();
+          }
         }
 
         if (p()->azerite.explosive_potential.ok() && imps_consumed >= 3)
