@@ -1630,6 +1630,12 @@ struct kill_command_sv_t: public kill_command_base_t
 
     trigger_bloodseeker_update( o() );
   }
+
+  // does not pandemic
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    return dot -> time_to_next_tick() + triggered_duration;
+  }
 };
 
 // Beast Cleave ==============================================================
@@ -2438,6 +2444,12 @@ struct barbed_shot_t: public hunter_ranged_attack_t
 
       pet -> buffs.frenzy -> trigger();
     }
+  }
+
+  // does not pandemic
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    return dot -> time_to_next_tick() + triggered_duration;
   }
 };
 
@@ -4336,6 +4348,12 @@ struct wildfire_bomb_t: public hunter_spell_t
       {
         dual = true;
         hasted_ticks = false;
+      }
+
+      // does not pandemic
+      timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+      {
+        return dot -> time_to_next_tick() + triggered_duration;
       }
     };
     dot_action_t* dot_action;
