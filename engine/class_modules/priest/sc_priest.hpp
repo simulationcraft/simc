@@ -351,7 +351,6 @@ public:
     propagate_const<proc_t*> surge_of_light_overflow;
     propagate_const<proc_t*> void_eruption_has_dots;
     propagate_const<proc_t*> void_eruption_no_dots;
-    propagate_const<proc_t*> void_tendril;
   } procs;
 
   struct realppm_t
@@ -366,7 +365,6 @@ public:
     propagate_const<actions::spells::mind_sear_tick_t*> mind_sear_tick;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<action_t*> mental_fortitude;
-    propagate_const<action_t*> void_tendril;
   } active_spells;
 
   struct

@@ -272,37 +272,6 @@ struct mind_sear_t final : public priest_spell_t
   }
 };
 
-struct new_void_tendril_mind_flay_t final : public priest_spell_t
-{
-  new_void_tendril_mind_flay_t( priest_t& p ) : priest_spell_t( "mind_flay_void_tendril", p, p.find_spell( 193473 ) )
-
-  {
-    aoe                    = 1;
-    radius                 = 100;
-    dot_duration           = timespan_t::zero();
-    base_tick_time         = timespan_t::zero();
-    background             = true;
-    ground_aoe             = true;
-    school                 = SCHOOL_SHADOW;
-    may_miss               = false;
-    may_crit               = true;
-    spell_power_mod.direct = spell_power_mod.tick;
-    spell_power_mod.tick   = 0.0;
-    snapshot_flags &= ~( STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA );
-    update_flags &= ~( STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA );
-    //  dot_duration = timespan_t::from_seconds(10.0);
-  }
-
-  timespan_t tick_time( const action_state_t* ) const override
-  {
-    return timespan_t::from_seconds( data().effectN( 1 ).base_value() );
-  }
-
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    return priest().composite_player_pet_damage_multiplier( state );
-  }
-};
 
 struct mind_flay_t final : public priest_spell_t
 {
@@ -322,8 +291,6 @@ struct mind_flay_t final : public priest_spell_t
     is_mastery_spell            = true;
     energize_type               = ENERGIZE_NONE;  // disable resource generation from spell data
 
-    priest().active_spells.void_tendril = new new_void_tendril_mind_flay_t( p );
-    add_child( priest().active_spells.void_tendril );
     spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T21, B2 ) )
@@ -1965,20 +1932,6 @@ void priest_t::insanity_state_t::adjust_end_event()
   }
 }
 
-void priest_t::trigger_call_to_the_void( const dot_t* d )
-{
-  // Broken without Artifact
-  return;
-  if ( rppm.call_to_the_void->trigger() )
-  {
-    procs.void_tendril->occur();
-    make_event<ground_aoe_event_t>( *sim, this,
-                                    ground_aoe_params_t()
-                                        .target( d->target )
-                                        .duration( find_spell( 193473 )->duration() )
-                                        .action( active_spells.void_tendril ) );
-  }
-}
 
 void priest_t::create_buffs_shadow()
 {

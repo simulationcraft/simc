@@ -685,7 +685,6 @@ void priest_t::create_procs()
   procs.serendipity              = get_proc( "Serendipity (Non-Tier 17 4pc)" );
   procs.serendipity_overflow     = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
 
-  procs.void_tendril = get_proc( "Void Tendril spawned from Call to the Void" );
 
   procs.legendary_anunds_last_breath = get_proc(
       "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% per)" );
