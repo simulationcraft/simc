@@ -1916,9 +1916,18 @@ public:
   {
     double m = spell_t::action_multiplier ();
 
-    m *= 1.0 + p()->buff.celestial_alignment->check_value ();
-    m *= 1.0 + p()->buff.incarnation_moonkin->check_value ();
-    m *= 1.0 + p()->buff.moonkin_form->data().effectN(9).percent();
+    if (data().affected_by(p()->spec.celestial_alignment->effectN(1)))
+    {
+      m *= 1.0 + p()->buff.celestial_alignment->check_value();
+    }
+    if (data().affected_by(p()->talent.incarnation_moonkin->effectN(1)))
+    {
+      m *= 1.0 + p()->buff.incarnation_moonkin->check_value();
+    }
+    if (data().affected_by(p()->spec.moonkin_form->effectN(9)))
+    {
+      m *= 1.0 + p()->buff.moonkin_form->data().effectN(9).percent();
+    }
 
     return m;
   }
@@ -8323,7 +8332,7 @@ double druid_t::composite_spell_haste() const
   sh *= 1.0 / ( 1.0 + buff.astral_acceleration -> check_stack_value() );
 
   sh *= 1.0 / (1.0 + buff.starlord->check_stack_value());
-  //this doesnt seem to work
+
   if (buff.celestial_alignment->check())
       sh /= (1.0 + spec.celestial_alignment->effectN(3).percent());
 
