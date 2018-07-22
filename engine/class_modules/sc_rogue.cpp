@@ -5722,6 +5722,14 @@ void rogue_t::trigger_restless_blades( const action_state_t* state )
   cooldowns.ghostly_strike -> adjust( v, false );
   cooldowns.killing_spree -> adjust( v, false );
   cooldowns.marked_for_death -> adjust( v, false );
+
+  // Curse of Restlessness Legendary
+  if ( legendary.the_curse_of_restlessness )
+  {
+    timespan_t cloak_adjust = legendary.the_curse_of_restlessness->effectN( 1 ).time_value();
+    cloak_adjust *= -( actions::rogue_attack_t::cast_state( state )->cp );
+    cooldowns.adrenaline_rush->adjust( cloak_adjust, false );
+  }
 }
 
 void do_exsanguinate( dot_t* dot, double coeff )
@@ -8168,7 +8176,7 @@ struct rogue_module_t : public module_t
     unique_gear::register_special_effect( 208692, the_dreadlords_deceit_t()             );
     unique_gear::register_special_effect( 209041, insignia_of_ravenholdt_t()            );
     unique_gear::register_special_effect( 235022, mantle_of_the_master_assassin_t()     );
-    unique_gear::register_special_effect( 248107, the_curse_of_restlessness_t()         );
+    unique_gear::register_special_effect( 281493, the_curse_of_restlessness_t()         );
     unique_gear::register_special_effect( 281492, the_empty_crown_t()                   );
     unique_gear::register_special_effect( 248110, the_first_of_the_dead_t()             );
     unique_gear::register_special_effect( 208051, sephuzs_secret_t()                    );
