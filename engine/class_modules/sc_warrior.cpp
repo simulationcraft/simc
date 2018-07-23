@@ -646,8 +646,8 @@ public:
       ab::attack_power_mod.tick *= 1.0 + p()->spec.prot_warrior->effectN( 8 ).percent();
 
     ab::cooldown->hasted = ab::data().affected_by( p()->spell.headlong_rush->effectN( 1 ) );
-    if ( ab::cooldown->hasted == false ) //Shield block is on a different effect for some reason.
-      ab::cooldown -> hasted = ab::data().affected_by( p() -> spell.headlong_rush ->effectN( 3 ) );
+    if ( ab::cooldown->hasted == false )  // Shield block is on a different effect for some reason.
+      ab::cooldown->hasted = ab::data().affected_by( p()->spell.headlong_rush->effectN( 3 ) );
     if ( ab::data().affected_by( p()->spell.headlong_rush->effectN( 2 ) ) )
       ab::gcd_haste = HASTE_ATTACK;
 
@@ -1846,7 +1846,8 @@ struct colossus_smash_t : public warrior_attack_t
 
 struct deep_wounds_ARMS_t : public warrior_attack_t
 {
-  deep_wounds_ARMS_t( warrior_t* p ) : warrior_attack_t( "deep_wounds", p, p->spec.deep_wounds_ARMS->effectN(1).trigger() )
+  deep_wounds_ARMS_t( warrior_t* p )
+    : warrior_attack_t( "deep_wounds", p, p->spec.deep_wounds_ARMS->effectN( 1 ).trigger() )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
@@ -1951,24 +1952,10 @@ struct execute_damage_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->buff.ayalas_stone_heart->check() )
-    {
+    if ( last_resource_cost == 0 )  // If it was free, it's a full damage execute.
       am *= 2.0;
-    }
-    if ( p()->buff.sudden_death->check() )
-    {
-      am *= 2.0;
-    }
     else
-    {
-      double temp_max_rage = max_rage;
-      if ( p()->buff.deadly_calm->check() )
-      {
-        temp_max_rage *= 1.0 + p()->buff.deadly_calm->data().effectN( 2 ).percent(); //TODO: Check and see if this actually works.
-      }
-      am *= 2.0 * ( std::min( temp_max_rage, last_resource_cost ) / temp_max_rage );
-    }
-
+      am *= 2.0 * ( std::min( max_rage, last_resource_cost ) / max_rage );
     return am;
   }
 };
@@ -1997,7 +1984,7 @@ struct execute_arms_t : public warrior_attack_t
   {
     double c = max_rage;
 
-    if ( !p()->buff.ayalas_stone_heart->check() )
+    if ( !p()->buff.ayalas_stone_heart->check() && !p()->buff.deadly_calm->check() && !p()->buff.sudden_death->check() )
     {
       c = std::min( max_rage, p()->resources.current[ RESOURCE_RAGE ] );
       c = ( c / max_rage ) * 40;
@@ -2077,7 +2064,8 @@ struct execute_main_hand_t : public warrior_attack_t
 {
   execute_main_hand_t( warrior_t* p, const char* name, const spell_data_t* s ) : warrior_attack_t( name, p, s )
   {
-    dual = true;
+    dual   = true;
+    weapon = &( p->main_hand_weapon );
     base_multiplier *= 1.0 + p->spec.execute_2->effectN( 1 ).percent();
   }
 };
@@ -2102,9 +2090,6 @@ struct fury_execute_parent_t : public warrior_attack_t
     : warrior_attack_t( "execute", p, p->spec.execute ), execute_pct( 20 )
   {
     parse_options( options_str );
-    weapon = &( p->main_hand_weapon );
-    base_multiplier *= 1.0 + p->spec.execute_2->effectN( 1 ).percent();
-
     mh_attack = new execute_main_hand_t( p, "execute_mainhand", p->spec.execute->effectN( 1 ).trigger() );
     oh_attack = new execute_off_hand_t( p, "execute_offhand", p->spec.execute->effectN( 2 ).trigger() );
     add_child( mh_attack );
@@ -2123,8 +2108,8 @@ struct fury_execute_parent_t : public warrior_attack_t
     mh_attack->execute();
 
     if ( p()->specialization() == WARRIOR_FURY && result_is_hit( execute_state->result ) &&
-         p()->off_hand_weapon.type !=
-             WEAPON_NONE )  // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
+         p()->off_hand_weapon.type != WEAPON_NONE )
+      // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
       oh_attack->execute();
 
     p()->buff.sudden_death->expire();
@@ -4523,13 +4508,13 @@ void warrior_t::init_spells()
   artifact.neltharions_thunder          = find_artifact_spell( "Neltarion's Thunder" );
 
   // Generic spells
-  spell.battle_shout          = find_class_spell( "Battle Shout" );
-  spell.charge                = find_class_spell( "Charge" );
-  spell.intervene             = find_spell( 147833 );
-  spell.headlong_rush         = find_spell( 137047 );  // Also may be used for other crap in the future.
-  spell.heroic_leap           = find_class_spell( "Heroic Leap" );
-  spell.siegebreaker_debuff   = find_spell( 280773 );
-  spell.whirlwind_buff        = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
+  spell.battle_shout        = find_class_spell( "Battle Shout" );
+  spell.charge              = find_class_spell( "Charge" );
+  spell.intervene           = find_spell( 147833 );
+  spell.headlong_rush       = find_spell( 137047 );  // Also may be used for other crap in the future.
+  spell.heroic_leap         = find_class_spell( "Heroic Leap" );
+  spell.siegebreaker_debuff = find_spell( 280773 );
+  spell.whirlwind_buff      = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
 
   // Active spells
   active.deep_wounds_ARMS = nullptr;
@@ -5175,7 +5160,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_rend        = target->get_dot( "rend", &p );
 
   debuffs_colossus_smash = buff_creator_t( static_cast<actor_pair_t>( *this ), "colossus_smash" )
-                               .default_value( p.spec.colossus_smash->effectN( 1).percent() )
+                               .default_value( p.spec.colossus_smash->effectN( 1 ).percent() )
                                .duration( p.spec.colossus_smash->duration() )
                                .cd( timespan_t::zero() );
 
