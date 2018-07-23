@@ -247,6 +247,7 @@ public:
 
     // Azerite Trait
     stat_buff_t* iron_fists;
+    buff_t* swift_roundhouse;
   } buff;
 
 public:
@@ -270,6 +271,9 @@ public:
     gain_t* serenity;
     gain_t* spirit_of_the_crane;
     gain_t* tiger_palm;
+
+    // Azerite Traits
+    gain_t* open_palm_strikes;
   } gain;
 
   struct procs_t
@@ -511,6 +515,8 @@ public:
     // Legendaries
     const spell_data_t* the_emperors_capacitor;
     const spell_data_t* the_wind_blows;
+
+    // Azerite Traits
   } passives;
 
   struct legendary_t
@@ -3112,6 +3118,19 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       attack_power_mod.direct *= 1 + p -> spec.rising_sun_kick_2 -> effectN( 1 ).percent();
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = monk_melee_attack_t::bonus_da( s );
+
+    if ( p() -> buff.swift_roundhouse -> up() )
+    {
+        b += p() -> azerite.swift_roundhouse.value() * p() -> buff.swift_roundhouse -> stack();
+        p() -> buff.swift_roundhouse -> expire();
+    }
+
+    return b;
+  }
+
   void init() override
   {
     monk_melee_attack_t::init();
@@ -3285,6 +3304,9 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
 
     if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 1 ).percent() ) )
         p() -> cooldown.rising_sun_kick -> reset( true );
+
+    if ( p() -> azerite.swift_roundhouse.ok() )
+      p() -> buff.swift_roundhouse -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3425,6 +3447,9 @@ struct blackout_kick_t: public monk_melee_attack_t
       }
       default: break;
     }
+
+    if ( p() -> azerite.swift_roundhouse.ok() )
+      p() -> buff.swift_roundhouse -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3700,6 +3725,24 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     base_costs[ RESOURCE_CHI ] = 0;
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = monk_melee_attack_t::bonus_da( s );
+
+    if ( p() -> azerite.open_palm_strikes.ok() )
+        b += p() -> azerite.open_palm_strikes.value( 4 );
+
+    return b;
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    if ( p() -> azerite.open_palm_strikes.ok() && rng().roll( p() -> azerite.open_palm_strikes.spell_ref().effectN( 2 ).percent() ) )
+      p() -> gain.open_palm_strikes -> add( RESOURCE_CHI, p() -> azerite.open_palm_strikes.spell_ref().effectN( 3 ).base_value() );
   }
 };
 
@@ -6956,6 +6999,8 @@ void monk_t::init_spells()
   passives.the_emperors_capacitor           = find_spell( 235054 );
   passives.the_wind_blows                   = find_spell( 281452 );
 
+  // Azerite Traits
+
   // Mastery spells =========================================
   mastery.combo_strikes              = find_mastery_spell( MONK_WINDWALKER );
   mastery.elusive_brawler            = find_mastery_spell( MONK_BREWMASTER );
@@ -7212,6 +7257,8 @@ void monk_t::create_buffs()
   buff.iron_fists = make_buff<stat_buff_t>( this, "iron_fists", find_spell( 272806 ) );
   buff.iron_fists -> set_trigger_spell( azerite.iron_fists.spell_ref().effectN( 1 ).trigger() );
   buff.iron_fists -> set_default_value( azerite.iron_fists.value() );
+
+  buff.swift_roundhouse = make_buff( this, "swift_roundhouse", find_spell( 278710 ) );
 }
 
 // monk_t::init_gains =======================================================
@@ -7235,6 +7282,9 @@ void monk_t::init_gains()
   gain.serenity                 = get_gain( "serenity" );
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
+
+  // Azerite Traits
+  gain.open_palm_strikes        = get_gain( "open_palm_strikes" );
 }
 
 // monk_t::init_procs =======================================================
