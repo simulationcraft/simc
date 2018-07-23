@@ -2196,28 +2196,6 @@ public:
         if ( windwalker_healing_increase )
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 11 ).percent();
 
-        // The Wind blows increases damage by 3%
-        if ( player -> legendary.the_wind_blows )
-        {
-          if ( ab::data().affected_by( player -> passives.the_wind_blows -> effectN( 1 ) ) )
-          {
-            // cancel out Fists of Fury damage and use the tick version as a direct damage
-            if ( ab::data().id() == 117418 )
-              ab::base_dd_multiplier *= 1.0;
-            else
-              ab::base_dd_multiplier *= 1.0 + player -> passives.the_wind_blows -> effectN( 1 ).percent();
-          }
-          if ( ab::data().affected_by( player -> passives.the_wind_blows -> effectN( 2 ) ) )
-          {
-            // treat Fists of Fury damage as a direct damage instead of a tick damage
-            if (ab::data().id() == 117418)
-              ab::base_dd_multiplier *= 1.0 + player-> passives.the_wind_blows -> effectN( 2 ).percent();
-            else
-              ab::base_td_multiplier *= 1.0 + player-> passives.the_wind_blows -> effectN( 2 ).percent();
-          }
-        }
-
-
         if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 14 ) ) )
           ab::trigger_gcd += player -> spec.windwalker_monk -> effectN( 14 ).time_value(); // Saved as -500 milliseconds
         // Technically minimum GCD is 750ms but all but the level 15 spells have a minimum GCD of 1 sec
@@ -2698,6 +2676,13 @@ struct monk_spell_t: public monk_action_t < spell_t >
         am *= 1 + p() -> buff.hit_combo -> stack_value();
     }
 
+    // The Wind blows increases damage by 3%
+    if ( p() -> legendary.the_wind_blows )
+    {
+      if ( base_t::data().affected_by( p() -> passives.the_wind_blows -> effectN( 1 ) ) )
+        am *= 1.0 + p() -> passives.the_wind_blows -> effectN( 1 ).percent();
+    }
+
     return am;
   }
 };
@@ -2755,6 +2740,13 @@ struct monk_heal_t: public monk_action_t < heal_t >
     {
       if ( base_t::data().affected_by( p() -> talent.hit_combo -> effectN( 1 ) ) ) 
         am *= 1 + p() -> buff.hit_combo -> stack_value();
+    }
+
+    // The Wind blows increases damage by 3%
+    if ( p() -> legendary.the_wind_blows )
+    {
+      if ( base_t::data().affected_by( p() -> passives.the_wind_blows -> effectN( 1 ) ) )
+        am *= 1.0 + p() -> passives.the_wind_blows -> effectN( 1 ).percent();
     }
 
     return am;
@@ -2844,6 +2836,13 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     {
       if ( base_t::data().affected_by( p() -> talent.hit_combo -> effectN( 1 ) ) ) 
         am *= 1 + p() -> buff.hit_combo -> stack_value();
+    }
+
+    // The Wind blows increases damage by 3%
+    if ( p() -> legendary.the_wind_blows )
+    {
+      if ( base_t::data().affected_by( p() -> passives.the_wind_blows -> effectN( 1 ) ) )
+        am *= 1.0 + p() -> passives.the_wind_blows -> effectN( 1 ).percent();
     }
 
     return am;
