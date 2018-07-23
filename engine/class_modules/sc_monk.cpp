@@ -2849,7 +2849,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
 
     if ( p() -> azerite.elusive_footwork.ok() )
     {
-      if ( base_t::data().affected_by( p() -> azerite.elusive_footwork.spell() -> effectN( 3 ) ) )
+      if ( base_t::data().affected_by( p() -> azerite.elusive_footwork.spell_ref().effectN( 3 ) ) )
         b += p() -> azerite.elusive_footwork.value( 3 );
     }
 
@@ -2998,6 +2998,16 @@ struct tiger_palm_t: public monk_melee_attack_t
       am *= 1 + p() -> buff.blackout_combo -> data().effectN( 1 ).percent();
 
     return am;
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = monk_melee_attack_t::bonus_da( s );
+
+    if ( p() -> azerite.pressure_point.ok() )
+        b += p() -> azerite.pressure_point.value();
+
+    return b;
   }
 
   virtual void execute() override
@@ -3487,7 +3497,7 @@ struct blackout_strike_t: public monk_melee_attack_t
         p() -> buff.elusive_brawler -> trigger();
         
         if ( p() -> azerite.elusive_footwork.ok() && s -> result == RESULT_CRIT )
-          p() -> buff.elusive_brawler -> trigger( p() -> azerite.elusive_footwork.spell() -> effectN( 2 ).base_value() );
+          p() -> buff.elusive_brawler -> trigger( p() -> azerite.elusive_footwork.spell_ref().effectN( 2 ).base_value() );
       }
     }
   }
@@ -3759,7 +3769,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     // Get the number of targets from the non sleeping target list
     auto targets = sim -> target_non_sleeping_list.size();
 
-    if ( p() -> azerite.iron_fists.ok() && targets >= p() -> azerite.iron_fists.spell_ref().effectN( 2 ).base_value() )
+    if ( p() -> azerite.iron_fists.ok() && num_targets_hit >= p() -> azerite.iron_fists.spell_ref().effectN( 2 ).base_value() )
       p() -> buff.iron_fists -> trigger();
   }
 
@@ -7156,10 +7166,8 @@ void monk_t::create_buffs()
                           -> set_default_value( find_spell( 197916 ) -> effectN( 1 ).percent() );
 
   // Windwalker
-  double bok_proc_chance = spec.combo_breaker -> effectN( 1 ).percent();
-  if ( azerite.pressure_point.ok() )
   buff.bok_proc = make_buff( this, "bok_proc", passives.bok_proc )
-                  -> set_chance( spec.combo_breaker -> effectN( 1 ).percent() );
+                  -> set_chance( azerite.pressure_point.ok() ? azerite.pressure_point.spell_ref().effectN( 2 ).percent() : spec.combo_breaker -> effectN( 1 ).percent() );
 
   buff.combo_master = make_buff( this, "combo_master", find_spell( 211432 ) )
                       -> set_default_value( find_spell( 211432 ) -> effectN( 1 ).base_value() )
