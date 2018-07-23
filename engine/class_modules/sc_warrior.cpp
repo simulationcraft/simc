@@ -50,7 +50,6 @@ struct warrior_t : public player_t
 public:
   event_t *heroic_charge, *rampage_driver;
   std::vector<attack_t*> rampage_attacks;
-  std::vector<cooldown_t*> odyns_champion_cds;
   bool non_dps_mechanics, warrior_fixed_time;
   int into_the_fray_friends;
   double expected_max_health;
@@ -176,7 +175,6 @@ public:
     gain_t* revenge;
     gain_t* shield_slam;
     gain_t* whirlwind;
-    gain_t* will_of_the_first_king;
     gain_t* booming_voice;
     gain_t* thunder_clap;
     gain_t* protection_t20_2p;
@@ -225,7 +223,6 @@ public:
   struct spec_t
   {
     const spell_data_t* spell_reflection;
-    const spell_data_t* bastion_of_defense;
     const spell_data_t* recklessness;
     const spell_data_t* bladestorm;
     const spell_data_t* bloodthirst;
@@ -246,7 +243,6 @@ public:
     const spell_data_t* mortal_strike;
     const spell_data_t* overpower;
     const spell_data_t* piercing_howl;
-    const spell_data_t* protection;  // Weird spec passive that increases damage of bladestorm/execute.
     const spell_data_t* raging_blow;
     const spell_data_t* rallying_cry;
     const spell_data_t* rampage;
@@ -262,8 +258,6 @@ public:
     const spell_data_t* sweeping_strikes;
     const spell_data_t* tactician;
     const spell_data_t* thunder_clap;
-    const spell_data_t* titans_grip;
-    const spell_data_t* unwavering_sentinel;
     const spell_data_t* whirlwind;
     const spell_data_t* whirlwind_2;
     const spell_data_t* revenge_trigger;
@@ -640,14 +634,14 @@ public:
     if ( ab::data().affected_by( p()->spec.arms_warrior->effectN( 3 ) ) )
       ab::attack_power_mod.tick *= 1.0 + p()->spec.arms_warrior->effectN( 3 ).percent();
 
-    if ( ab::data().affected_by( p()->spec.prot_warrior->effectN( 7 ) ) )
-      ab::attack_power_mod.direct *= 1.0 + p()->spec.prot_warrior->effectN( 7 ).percent();
-    if ( ab::data().affected_by( p()->spec.prot_warrior->effectN( 8 ) ) )
-      ab::attack_power_mod.tick *= 1.0 + p()->spec.prot_warrior->effectN( 8 ).percent();
+    if ( ab::data().affected_by( p()->spec.prot_warrior->effectN( 1 ) ) )
+      ab::attack_power_mod.direct *= 1.0 + p()->spec.prot_warrior->effectN( 1 ).percent();
+    if ( ab::data().affected_by( p()->spec.prot_warrior->effectN( 2 ) ) )
+      ab::attack_power_mod.tick *= 1.0 + p()->spec.prot_warrior->effectN( 2 ).percent();
 
     ab::cooldown->hasted = ab::data().affected_by( p()->spell.headlong_rush->effectN( 1 ) );
-    if ( ab::cooldown->hasted == false ) //Shield block is on a different effect for some reason.
-      ab::cooldown -> hasted = ab::data().affected_by( p() -> spell.headlong_rush ->effectN( 3 ) );
+    if ( ab::cooldown->hasted == false )  // Shield block is on a different effect for some reason.
+      ab::cooldown->hasted = ab::data().affected_by( p()->spell.headlong_rush->effectN( 3 ) );
     if ( ab::data().affected_by( p()->spell.headlong_rush->effectN( 2 ) ) )
       ab::gcd_haste = HASTE_ATTACK;
 
@@ -1425,17 +1419,6 @@ struct bladestorm_tick_t : public warrior_attack_t
       impact_action = p->active.deep_wounds_ARMS;
     }
   }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p()->has_shield_equipped() )
-    {
-      am *= 1.0 + p()->spec.protection->effectN( 1 ).percent();
-    }
-    return am;
-  }
 };
 
 struct bladestorm_t : public warrior_attack_t
@@ -1846,7 +1829,8 @@ struct colossus_smash_t : public warrior_attack_t
 
 struct deep_wounds_ARMS_t : public warrior_attack_t
 {
-  deep_wounds_ARMS_t( warrior_t* p ) : warrior_attack_t( "deep_wounds", p, p->spec.deep_wounds_ARMS->effectN(1).trigger() )
+  deep_wounds_ARMS_t( warrior_t* p )
+    : warrior_attack_t( "deep_wounds", p, p->spec.deep_wounds_ARMS->effectN( 1 ).trigger() )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
@@ -1951,24 +1935,10 @@ struct execute_damage_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    if ( p()->buff.ayalas_stone_heart->check() )
-    {
+    if ( last_resource_cost == 0 )  // If it was free, it's a full damage execute.
       am *= 2.0;
-    }
-    if ( p()->buff.sudden_death->check() )
-    {
-      am *= 2.0;
-    }
     else
-    {
-      double temp_max_rage = max_rage;
-      if ( p()->buff.deadly_calm->check() )
-      {
-        temp_max_rage *= 1.0 + p()->buff.deadly_calm->data().effectN( 2 ).percent(); //TODO: Check and see if this actually works.
-      }
-      am *= 2.0 * ( std::min( temp_max_rage, last_resource_cost ) / temp_max_rage );
-    }
-
+      am *= 2.0 * ( std::min( max_rage, last_resource_cost ) / max_rage );
     return am;
   }
 };
@@ -1997,7 +1967,7 @@ struct execute_arms_t : public warrior_attack_t
   {
     double c = max_rage;
 
-    if ( !p()->buff.ayalas_stone_heart->check() )
+    if ( !p()->buff.ayalas_stone_heart->check() && !p()->buff.deadly_calm->check() && !p()->buff.sudden_death->check() )
     {
       c = std::min( max_rage, p()->resources.current[ RESOURCE_RAGE ] );
       c = ( c / max_rage ) * 40;
@@ -2077,7 +2047,8 @@ struct execute_main_hand_t : public warrior_attack_t
 {
   execute_main_hand_t( warrior_t* p, const char* name, const spell_data_t* s ) : warrior_attack_t( name, p, s )
   {
-    dual = true;
+    dual   = true;
+    weapon = &( p->main_hand_weapon );
     base_multiplier *= 1.0 + p->spec.execute_2->effectN( 1 ).percent();
   }
 };
@@ -2102,9 +2073,6 @@ struct fury_execute_parent_t : public warrior_attack_t
     : warrior_attack_t( "execute", p, p->spec.execute ), execute_pct( 20 )
   {
     parse_options( options_str );
-    weapon = &( p->main_hand_weapon );
-    base_multiplier *= 1.0 + p->spec.execute_2->effectN( 1 ).percent();
-
     mh_attack = new execute_main_hand_t( p, "execute_mainhand", p->spec.execute->effectN( 1 ).trigger() );
     oh_attack = new execute_off_hand_t( p, "execute_offhand", p->spec.execute->effectN( 2 ).trigger() );
     add_child( mh_attack );
@@ -2123,8 +2091,8 @@ struct fury_execute_parent_t : public warrior_attack_t
     mh_attack->execute();
 
     if ( p()->specialization() == WARRIOR_FURY && result_is_hit( execute_state->result ) &&
-         p()->off_hand_weapon.type !=
-             WEAPON_NONE )  // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
+         p()->off_hand_weapon.type != WEAPON_NONE )
+      // If MH fails to land, or if there is no OH weapon for Fury, oh attack does not execute.
       oh_attack->execute();
 
     p()->buff.sudden_death->expire();
@@ -2899,17 +2867,6 @@ struct rampage_parent_t : public warrior_attack_t
     base_costs[ RESOURCE_RAGE ] += p->talents.frothing_berserker->effectN( 2 ).resource( RESOURCE_RAGE );
   }
 
-  // timespan_t gcd() const override
-  //{
-  // timespan_t t = warrior_attack_t::gcd();
-
-  // if ( t >= timespan_t::from_millis( 1500 ) )
-  //{
-  // return timespan_t::from_millis( 1500 );
-  //}
-  // return t;
-  //}
-
   void execute() override
   {
     warrior_attack_t::execute();
@@ -2942,8 +2899,7 @@ struct ravager_tick_t : public warrior_attack_t
     aoe           = -1;
     impact_action = p->active.deep_wounds_ARMS;
     dual = ground_aoe = true;
-    if ( p->specialization() == WARRIOR_PROTECTION )
-      attack_power_mod.direct *= 1.0 + p->spec.prot_warrior->effectN( 3 ).percent();  // 89% damage decrease for prot.
+    attack_power_mod.direct *= 1.0 + p->spec.prot_warrior->effectN( 8 ).percent();  // 89% damage decrease for prot.
     rage_from_ravager = p->find_spell( 248439 )->effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
@@ -4388,7 +4344,6 @@ void warrior_t::init_spells()
   mastery.unshackled_fury  = find_mastery_spell( WARRIOR_FURY );
 
   // Spec Passives
-  spec.bastion_of_defense   = find_specialization_spell( "Bastion of Defense" );
   spec.berserker_rage       = find_specialization_spell( "Berserker Rage" );
   spec.bladestorm           = find_specialization_spell( "Bladestorm" );
   spec.bloodthirst          = find_specialization_spell( "Bloodthirst" );
@@ -4409,35 +4364,32 @@ void warrior_t::init_spells()
   {
     spec.execute_2 = find_specialization_spell( 231830 );
   }
-  spec.hamstring           = find_specialization_spell( "Hamstring" );
-  spec.ignore_pain         = find_specialization_spell( "Ignore Pain" );
-  spec.intercept           = find_specialization_spell( "Intercept" );
-  spec.last_stand          = find_specialization_spell( "Last Stand" );
-  spec.mortal_strike       = find_specialization_spell( "Mortal Strike" );
-  spec.overpower           = find_specialization_spell( "Overpower" );
-  spec.piercing_howl       = find_specialization_spell( "Piercing Howl" );
-  spec.protection          = find_specialization_spell( "Protection" );
-  spec.raging_blow         = find_specialization_spell( "Raging Blow" );
-  spec.rampage             = find_specialization_spell( "Rampage" );
-  spec.rallying_cry        = find_specialization_spell( "Rallying Cry" );
-  spec.recklessness        = find_specialization_spell( "Recklessness" );
-  spec.revenge             = find_specialization_spell( "Revenge" );
-  spec.revenge_trigger     = find_specialization_spell( "Revenge Trigger" );
-  spec.riposte             = find_specialization_spell( "Riposte" );
-  spec.seasoned_soldier    = find_specialization_spell( "Seasoned Soldier" );
-  spec.shield_block        = find_specialization_spell( "Shield Block" );
-  spec.shield_block_2      = find_specialization_spell( 231847 );
-  spec.shield_slam         = find_specialization_spell( "Shield Slam" );
-  spec.shield_wall         = find_specialization_spell( "Shield Wall" );
-  spec.shockwave           = find_specialization_spell( "Shockwave" );
-  spec.slam                = find_specialization_spell( "Slam" );
-  spec.spell_reflection    = find_specialization_spell( "Spell Reflection" );
-  spec.sweeping_strikes    = find_specialization_spell( "Sweeping Strikes" );
-  spec.tactician           = find_specialization_spell( "Tactician" );
-  spec.thunder_clap        = find_specialization_spell( "Thunder Clap" );
-  spec.titans_grip         = find_specialization_spell( "Titan's Grip" );
-  spec.unwavering_sentinel = find_specialization_spell( "Unwavering Sentinel" );
-  spec.victory_rush        = find_specialization_spell( "Victory Rush" );
+  spec.hamstring        = find_specialization_spell( "Hamstring" );
+  spec.ignore_pain      = find_specialization_spell( "Ignore Pain" );
+  spec.intercept        = find_specialization_spell( "Intercept" );
+  spec.last_stand       = find_specialization_spell( "Last Stand" );
+  spec.mortal_strike    = find_specialization_spell( "Mortal Strike" );
+  spec.overpower        = find_specialization_spell( "Overpower" );
+  spec.piercing_howl    = find_specialization_spell( "Piercing Howl" );
+  spec.raging_blow      = find_specialization_spell( "Raging Blow" );
+  spec.rampage          = find_specialization_spell( "Rampage" );
+  spec.rallying_cry     = find_specialization_spell( "Rallying Cry" );
+  spec.recklessness     = find_specialization_spell( "Recklessness" );
+  spec.revenge          = find_specialization_spell( "Revenge" );
+  spec.revenge_trigger  = find_specialization_spell( "Revenge Trigger" );
+  spec.riposte          = find_specialization_spell( "Riposte" );
+  spec.seasoned_soldier = find_specialization_spell( "Seasoned Soldier" );
+  spec.shield_block     = find_specialization_spell( "Shield Block" );
+  spec.shield_block_2   = find_specialization_spell( 231847 );
+  spec.shield_slam      = find_specialization_spell( "Shield Slam" );
+  spec.shield_wall      = find_specialization_spell( "Shield Wall" );
+  spec.shockwave        = find_specialization_spell( "Shockwave" );
+  spec.slam             = find_specialization_spell( "Slam" );
+  spec.spell_reflection = find_specialization_spell( "Spell Reflection" );
+  spec.sweeping_strikes = find_specialization_spell( "Sweeping Strikes" );
+  spec.tactician        = find_specialization_spell( "Tactician" );
+  spec.thunder_clap     = find_specialization_spell( "Thunder Clap" );
+  spec.victory_rush     = find_specialization_spell( "Victory Rush" );
   if ( specialization() == WARRIOR_FURY )
   {
     spec.whirlwind   = find_specialization_spell( 190411 );
@@ -4523,13 +4475,13 @@ void warrior_t::init_spells()
   artifact.neltharions_thunder          = find_artifact_spell( "Neltarion's Thunder" );
 
   // Generic spells
-  spell.battle_shout          = find_class_spell( "Battle Shout" );
-  spell.charge                = find_class_spell( "Charge" );
-  spell.intervene             = find_spell( 147833 );
-  spell.headlong_rush         = find_spell( 137047 );  // Also may be used for other crap in the future.
-  spell.heroic_leap           = find_class_spell( "Heroic Leap" );
-  spell.siegebreaker_debuff   = find_spell( 280773 );
-  spell.whirlwind_buff        = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
+  spell.battle_shout        = find_class_spell( "Battle Shout" );
+  spell.charge              = find_class_spell( "Charge" );
+  spell.intervene           = find_spell( 147833 );
+  spell.headlong_rush       = find_spell( 137047 );  // Also may be used for other crap in the future.
+  spell.heroic_leap         = find_class_spell( "Heroic Leap" );
+  spell.siegebreaker_debuff = find_spell( 280773 );
+  spell.whirlwind_buff      = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
 
   // Active spells
   active.deep_wounds_ARMS = nullptr;
@@ -4617,8 +4569,6 @@ void warrior_t::init_base_stats()
   // Base miss, dodge, parry, and block are set in player_t::init_base_stats().
   // Just need to add class- or spec-based modifiers here.
 
-  base.dodge += spec.bastion_of_defense->effectN( 2 ).percent();
-
   base_gcd = timespan_t::from_seconds( 1.5 );
 
   resources.base_multiplier[ RESOURCE_HEALTH ] *= 1 + talents.indomitable->effectN( 1 ).percent();
@@ -4670,7 +4620,6 @@ void warrior_t::init_base_stats()
       expected_max_health = data.p_epic[ 0 ] * 8.484262;
       expected_max_health += base.stats.attribute[ ATTR_STAMINA ];
       expected_max_health *= 1.0 + matching_gear_multiplier( ATTR_STAMINA );
-      expected_max_health *= 1.0 + spec.unwavering_sentinel->effectN( 1 ).percent();
       expected_max_health *= 1.0 + artifact.toughness.percent();
       expected_max_health *= 60;
     }
@@ -5175,7 +5124,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_rend        = target->get_dot( "rend", &p );
 
   debuffs_colossus_smash = buff_creator_t( static_cast<actor_pair_t>( *this ), "colossus_smash" )
-                               .default_value( p.spec.colossus_smash->effectN( 1).percent() )
+                               .default_value( p.spec.colossus_smash->effectN( 1 ).percent() )
                                .duration( p.spec.colossus_smash->duration() )
                                .cd( timespan_t::zero() );
 
@@ -5387,7 +5336,6 @@ void warrior_t::init_gains()
   gain.melee_off_hand                   = get_gain( "melee_off_hand" );
   gain.revenge                          = get_gain( "revenge" );
   gain.shield_slam                      = get_gain( "shield_slam" );
-  gain.will_of_the_first_king           = get_gain( "will_of_the_first_king" );
   gain.booming_voice                    = get_gain( "booming_voice" );
   gain.thunder_clap                     = get_gain( "thunder_clap" );
   gain.protection_t20_2p                = get_gain( "t20_2p" );
@@ -5743,7 +5691,6 @@ double warrior_t::composite_attribute( attribute_e attr ) const
   switch ( attr )
   {
     case ATTR_STAMINA:
-      a += spec.unwavering_sentinel->effectN( 1 ).percent() * player_t::composite_attribute( ATTR_STAMINA );
       a += artifact.toughness.percent() * player_t::composite_attribute( ATTR_STAMINA );
       a += artifact.protection_of_the_valarjar.data().effectN( 3 ).percent() *
            player_t::composite_attribute( ATTR_STAMINA );
@@ -5796,7 +5743,7 @@ double warrior_t::composite_melee_expertise( const weapon_t* ) const
 {
   double e = player_t::composite_melee_expertise();
 
-  e += spec.unwavering_sentinel->effectN( 5 ).percent();
+  e += spec.prot_warrior->effectN( 11 ).percent();
 
   return e;
 }
@@ -5841,7 +5788,7 @@ double warrior_t::composite_block() const
   double b                   = player_t::composite_block_dr( block_subject_to_dr );
 
   // add in spec-specific block bonuses not subject to DR
-  b += spec.bastion_of_defense->effectN( 1 ).percent();
+  b += spec.prot_warrior->effectN( 13 ).percent();
 
   // shield block adds 100% block chance
   if ( buff.shield_block->check() )
@@ -5939,7 +5886,7 @@ double warrior_t::composite_crit_block() const
 double warrior_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
-  c += spec.unwavering_sentinel->effectN( 4 ).percent();
+  c += spec.prot_warrior->effectN( 10 ).percent();
   return c;
 }
 
