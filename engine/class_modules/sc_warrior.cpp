@@ -1110,7 +1110,6 @@ struct melee_t : public warrior_attack_t
     affected_by.avatar              = p()->talents.avatar->ok();
     affected_by.frothing_direct     = p()->talents.frothing_berserker->ok();
     affected_by.demo_shout          = p()->spec.demoralizing_shout->ok();
-    p() -> auto_attack_multiplier *= 1.0 + p() -> spec.fury_warrior->effectN( 4 ).percent();
   }
 
   void reset() override
@@ -4485,6 +4484,8 @@ void warrior_t::init_spells()
   active.deep_wounds_PROT = nullptr;
   active.charge           = nullptr;
   active.slaughter        = nullptr;
+
+  auto_attack_multiplier *= 1.0 + spec.fury_warrior->effectN( 4 ).percent();
 
   if ( spec.deep_wounds_ARMS->ok() )
     active.deep_wounds_ARMS = new deep_wounds_ARMS_t( this );
