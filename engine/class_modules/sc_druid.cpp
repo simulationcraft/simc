@@ -3122,7 +3122,7 @@ struct ferocious_bite_t : public cat_attack_t
     excess_energy = std::min( max_excess_energy,
       ( p() -> resources.current[ RESOURCE_ENERGY ] - cat_attack_t::cost() ) );
 
-    int combo_points = p()->resources.current[RESOURCE_COMBO_POINT];
+    double combo_points = p() -> resources.current[RESOURCE_COMBO_POINT];
 
     cat_attack_t::execute();
 
@@ -4042,7 +4042,7 @@ struct mangle_t : public bear_attack_t
   int n_targets() const override
   {
     if ( p() -> buff.incarnation_bear -> up() )
-      return p() -> buff.incarnation_bear -> data().effectN( 4 ).base_value();
+      return (int) p() -> buff.incarnation_bear -> data().effectN( 4 ).base_value();
 
     return bear_attack_t::n_targets();
   }
@@ -4106,7 +4106,7 @@ struct pulverize_t : public bear_attack_t
     if ( result_is_hit( s -> result ) )
     {
       // consumes x stacks of Thrash on the target
-      td( s -> target ) -> dots.thrash_bear -> decrement( data().effectN( 3 ).base_value() );
+      td( s -> target ) -> dots.thrash_bear -> decrement( (int) data().effectN( 3 ).base_value() );
 
       // and reduce damage taken by x% for y sec.
       p() -> buff.pulverize -> trigger();
@@ -4284,7 +4284,7 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
     tick_zero = true;
 
     if ( p -> specialization() == DRUID_GUARDIAN )
-      cooldown -> charges += p -> spec.frenzied_regeneration_2 -> effectN( 1 ).base_value();
+      cooldown -> charges += (int) p -> spec.frenzied_regeneration_2 -> effectN( 1 ).base_value();
   }
 
   void init() override
@@ -4702,7 +4702,7 @@ struct tranquility_t : public druid_heal_t
   tranquility_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "tranquility", p, p -> find_specialization_spell( "Tranquility" ), options_str )
   {
-    aoe               = data().effectN( 3 ).base_value(); // Heals 5 targets
+    aoe               = (int) data().effectN( 3 ).base_value(); // Heals 5 targets
     base_execute_time = data().duration();
     channeled         = true;
 
@@ -6971,7 +6971,7 @@ void druid_t::create_buffs()
                                .chance( specialization() == DRUID_RESTORATION ? find_spell( 113043 ) -> proc_chance()
                                         : find_spell( 16864 ) -> proc_chance() )
                                .cd( timespan_t::zero() )
-                               .max_stack( 1 + talent.moment_of_clarity->effectN(1).base_value() )
+                               .max_stack( (unsigned) ( 1 + talent.moment_of_clarity->effectN(1).base_value() ) )
                                .default_value( specialization() != DRUID_RESTORATION
                                                ? talent.moment_of_clarity -> effectN( 4 ).percent()
                                                : 0.0 );
@@ -7055,14 +7055,14 @@ void druid_t::create_buffs()
 
   buff.lunar_empowerment     = buff_creator_t( this, "lunar_empowerment", find_spell( 164547 ) )
                                .default_value( find_spell( 164547 ) -> effectN( 1 ).percent())
-                               .max_stack( find_spell( 164547 ) -> max_stacks() + spec.starsurge_2 -> effectN( 1 ).base_value() );
+                               .max_stack( find_spell( 164547 ) -> max_stacks() + (unsigned) spec.starsurge_2 -> effectN( 1 ).base_value() );
 
   buff.moonkin_form          = new buffs::moonkin_form_t( *this );
 
   buff.moonkin_form_affinity = new buffs::moonkin_form_affinity_t(*this);
 
   buff.solar_empowerment     = buff_creator_t( this, "solar_empowerment", find_spell( 164545 ) )
-                               .max_stack( find_spell( 164545 ) -> max_stacks() + spec.starsurge_2 -> effectN( 1 ).base_value() );
+                               .max_stack( find_spell( 164545 ) -> max_stacks() + (unsigned) spec.starsurge_2 -> effectN( 1 ).base_value() );
 
   buff.warrior_of_elune      = new warrior_of_elune_buff_t( *this );
 
@@ -7129,8 +7129,8 @@ void druid_t::create_buffs()
                                .duration( spec.ironfur -> duration() )
                                .default_value( spec.ironfur -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_ARMOR )
-                               .max_stack( specialization() == DRUID_GUARDIAN ? spec.ironfur_2 -> effectN( 1 ).base_value() :
-                                           1 )
+                               .max_stack( (unsigned) ( specialization() == DRUID_GUARDIAN ? spec.ironfur_2 -> effectN( 1 ).base_value() :
+                                           1 ) )
                                .stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                .cd( timespan_t::zero() );
 
@@ -9494,7 +9494,7 @@ struct dual_determination_t : public scoped_action_callback_t<survival_instincts
 
   void manipulate( survival_instincts_t* a, const special_effect_t& e ) override
   {
-    a -> cooldown -> charges += e.driver() -> effectN( 1 ).base_value();
+    a -> cooldown -> charges += (int) e.driver() -> effectN( 1 ).base_value();
     a -> base_recharge_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
   }
 };
@@ -9710,7 +9710,7 @@ struct lady_and_the_child_t : public scoped_action_callback_t<T>
 
   void manipulate( T* a, const special_effect_t& e ) override
   {
-    a -> aoe = 1 + e.driver() -> effectN( 1 ).base_value();
+    a -> aoe = 1 + (int) e.driver() -> effectN( 1 ).base_value();
     a -> base_dd_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
     a -> base_td_multiplier *= 1.0 + e.driver() -> effectN( 3 ).percent();
   }
@@ -9737,7 +9737,7 @@ struct elizes_everlasting_encasement_t : public scoped_action_callback_t<thrash_
 
   void manipulate( thrash_bear_t* a, const special_effect_t& e ) override
   {
-    a -> dot_max_stack += e.driver() -> effectN( 1 ).base_value();
+    a -> dot_max_stack += (int) e.driver() -> effectN( 1 ).base_value();
   }
 };
 
