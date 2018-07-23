@@ -14,10 +14,6 @@ namespace { // UNNAMED NAMESPACE
 // Forward declarations
 struct mage_t;
 
-namespace buffs {
-  struct touch_of_the_magi_t;
-}
-
 namespace pets {
   namespace water_elemental {
     struct water_elemental_pet_t;
