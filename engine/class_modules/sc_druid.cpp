@@ -559,6 +559,7 @@ public:
     const spell_data_t* shred_2;
     const spell_data_t* shred_3;
     const spell_data_t* swipe_2;
+    const spell_data_t* savage_roar; // Hidden buff
 
     // Balance
     const spell_data_t* balance;
@@ -2066,7 +2067,7 @@ struct moonfire_t : public druid_spell_t
 
       if (p->talent.twin_moons->ok())
       {
-          aoe = 1 + p->talent.twin_moons->effectN(1).base_value();
+          aoe = 1 + (int) p->talent.twin_moons->effectN(1).base_value();
           base_dd_multiplier *= 1.0 + p->talent.twin_moons->effectN(2).percent();
           base_td_multiplier *= 1.0 + p->talent.twin_moons->effectN(3).percent();
       }
@@ -2453,14 +2454,21 @@ public:
   bool    consumes_combo_points;
   bool    consumes_clearcasting;
   bool    trigger_tier17_2pc;
-  struct {
-    bool direct, tick;
-  } razor_claws;
   bool    snapshots_tf;
-  bool    snapshots_sr;
 
   // whether the attack gets a damage bonus from Moment of Clarity
   bool    moment_of_clarity;
+
+  // Whether the attack benefits from mastery
+  struct {
+    bool direct, tick;
+  } razor_claws;
+
+  // Whether the attack benefits from TF/SR
+  struct {
+    bool direct, tick;
+  } savage_roar;
+  bool    tigers_fury;
 
   cat_attack_t( const std::string& token, druid_t* p,
                 const spell_data_t* s      = spell_data_t::nil(),
@@ -2472,9 +2480,10 @@ public:
           p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 1 ) ) ),
       trigger_tier17_2pc( false ),
       snapshots_tf( true ),
-      snapshots_sr( false ),
       moment_of_clarity( data().affected_by(
-          p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 3 ) ) )
+          p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 3 ) ) ),
+      tigers_fury( data().affected_by(
+          p -> buff.tigers_fury -> data().effectN( 1 ) )
   {
     parse_options( options );
 
@@ -2486,6 +2495,19 @@ public:
 
     razor_claws.direct = data().affected_by( p -> mastery.razor_claws -> effectN( 1 ) );
     razor_claws.tick = data().affected_by( p -> mastery.razor_claws -> effectN( 2 ) );
+
+    savage_roar.direct = data().affected_by( p -> spec.savage_roar -> effectN( 1 ) );
+    savage_roar.tick = data().affected_by( p -> spec.savage_roar -> effectN( 2 ) );
+
+    /* Sanity check Tiger's Fury to assure that benefit is the same for both direct
+       and periodic damage. Because we're using composite_persistent_damage_multiplier
+       we have to use a single value for the multiplier instead of being completely
+       faithful to the spell data. */
+    if ( benefits_from_tigers_fury != data().affected_by( p -> buff.tigers_fury -> data().effectN( 3 ) ) )
+      p -> sim -> errorf( "%s (id=%i) spell data has inconsistent Tiger's Fury benefit.", name_str, id );
+
+    if ( p -> buff.tigers_fury -> data().effectN( 1 ).percent() != p -> buff.tigers_fury -> data().effectN( 3 ).percent() )
+      p -> sim -> errorf( "%s (id=%i) spell data has inconsistent Tiger's Fury modifiers.", name_str, id );
 
     // Apply Feral Druid Aura damage modifiers
     if ( p -> specialization() == DRUID_FERAL )
@@ -2632,18 +2654,19 @@ public:
     return tc;
   }
 
-  double action_multiplier() const override
+  double action_multiplier( const action_state_t* s ) const override
   {
-    double am = base_t::action_multiplier();
+    double am = base_t::action_multiplier( s );
 
-    // Cancel out the multipliers from druid_t::composite_player_multiplier.
-    if ( snapshots_tf )
-      am /= 1.0 + p() -> buff.tigers_fury -> check_value();
+    if ( tigers_fury && ! snapshots_tf )
+    {
+      if ( special )
+        dm *= 1.0 + p() -> buff.tigers_fury -> check_value();
+      else
+        dm *= 1.0 + p() -> buff.tigers_fury -> data().effectN( 4 ).percent();
+    }
 
-    if ( snapshots_sr )
-      am /= 1.0 + p() -> buff.savage_roar -> check_value();
-
-    return am;
+    return am
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -2656,11 +2679,11 @@ public:
     if ( snapshots_tf )
       pm *= 1.0 + p() -> buff.tigers_fury -> check_value();
 
-    if ( snapshots_sr )
-      pm *= 1.0 + p() -> buff.savage_roar -> check_value();
-
     if ( moment_of_clarity )
       pm *= 1.0 + p() -> buff.clearcasting -> check_value();
+
+    if ( tigers_fury && snapshots_tf )
+      pm *= 1.0 + p() -> buff.tigers_fury -> check_value();
 
     return pm;
   }
@@ -2673,6 +2696,14 @@ public:
     if ( razor_claws.direct )
       dm *= 1.0 + p() -> cache.mastery_value();
 
+    if ( savage_roar.direct && p() -> buff.savage_roar -> check() )
+    {
+      if ( special )
+        dm *= 1.0 + p() -> spec.savage_roar -> effectN( 1 ).percent();
+      else
+        dm *= 1.0 + p() -> spec.savage_roar -> effectN( 3 ).percent();
+    }
+
     return dm;
   }
 
@@ -2682,6 +2713,9 @@ public:
 
     if ( razor_claws.tick ) // Don't need to check school, it modifies all periodic damage.
       tm *= 1.0 + p() -> cache.mastery_value();
+
+    if ( savage_roar.tick && p() -> buff.savage_roar -> check() )
+      tm *= 1.0 + p() -> spec.savage_roar -> effectN( 2 ).percent();
 
     return tm;
   }
@@ -2813,6 +2847,11 @@ struct cat_melee_t : public cat_attack_t
     trigger_gcd       = timespan_t::zero();
     special           = false;
     weapon_multiplier = 1.0;
+
+    // Manually enable benefit from TF & SR on autos because it isn't handled
+    // by the affected_by() magic in cat_attack_t.
+    savage_roar.direct = true;
+    tigers_fury = true;
   }
 
   virtual timespan_t execute_time() const override
@@ -3198,9 +3237,6 @@ struct lunar_inspiration_t : public cat_attack_t
     cat_attack_t( "lunar_inspiration", player, player -> find_spell( 155625 ), options_str )
   {
     may_dodge = may_parry = may_block = may_glance = false;
-    //snapshots_sr = false; // June 6 2016
-
-    snapshots_sr = false;
 
     snapshots_tf = true;
     hasted_ticks = true;
@@ -3361,8 +3397,6 @@ struct rake_t : public cat_attack_t
       may_miss = may_parry = may_dodge = may_crit = false;
       hasted_ticks = true;
 
-      snapshots_sr = false;
-
       base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
       dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
 
@@ -3409,8 +3443,6 @@ struct rake_t : public cat_attack_t
     cat_attack_t( "rake", p, p -> find_affinity_spell( "Rake" ) )
   {
     parse_options( options_str );
-
-    snapshots_sr = false;
 
     bleed = p -> find_action( "rake_bleed" );
 
@@ -3470,7 +3502,6 @@ struct rip_t : public cat_attack_t
     may_crit     = false;
 
     hasted_ticks = true;
-    snapshots_sr = false;
 
     trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
 
@@ -3826,8 +3857,6 @@ struct thrash_cat_t : public cat_attack_t
     spell_power_mod.direct = 0;
     //amount_delta = 0.25;
     hasted_ticks = true;
-
-    snapshots_sr = false;
 
     trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
 
@@ -6669,6 +6698,7 @@ void druid_t::init_spells()
   spec.shred_2                    = find_spell( 231063 );
   spec.shred_3                    = find_spell( 231057 );
   spec.swipe_2                    = find_spell( 231283 );
+  spec.savage_roar                = find_spell( 62071 );
 
 
   // Guardian
@@ -7056,7 +7086,7 @@ void druid_t::create_buffs()
   // Feral
 
   buff.apex_predator        = buff_creator_t(this, "apex_predator", find_spell(252752))
-                               .chance(  sets -> has_set_bonus( DRUID_FERAL, T21, B4) ? find_spell( 251790 ) -> proc_chance() : 0 /*: 0 )*/ );
+                               .chance(  sets -> has_set_bonus( DRUID_FERAL, T21, B4 ) ? find_spell( 251790 ) -> proc_chance() : 0 /*: 0 )*/ );
 
   buff.berserk               = new berserk_buff_t( *this );
 
@@ -7064,15 +7094,13 @@ void druid_t::create_buffs()
                                .chance( spec.predatory_swiftness -> ok() );
 
   buff.savage_roar           = buff_creator_t( this, "savage_roar", talent.savage_roar )
-                               .default_value( talent.savage_roar -> effectN( 2 ).percent() )
+                               .default_value( spec.savage_roar -> effectN( 1 ).percent() )
                                .refresh_behavior( buff_refresh_behavior::DURATION ) // Pandemic refresh is done by the action
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                .tick_behavior( buff_tick_behavior::NONE );
 
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
-                               .cd( timespan_t::zero() )
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                               .cd( timespan_t::zero() );
 
   // Guardian
   buff.barkskin              = buff_creator_t( this, "barkskin", find_specialization_spell( "Barkskin" ) )
@@ -8147,7 +8175,6 @@ void druid_t::invalidate_cache( cache_e c )
 
 double druid_t::composite_melee_attack_power() const
 {
-
   // In 8.0 Killer Instinct is gone, replaced with modifiers in balance/resto auras.
   if ( specialization() == DRUID_BALANCE )
   {
@@ -8225,10 +8252,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
   }
 
   m *= 1.0 + legendary.LegendaryDamageMod;
-
-  // Tiger's Fury and Savage Roar are player multipliers. Their "snapshotting" for cat abilities is handled in cat_attack_t.
-  m *= 1.0 + buff.tigers_fury -> check_value();
-  m *= 1.0 + buff.savage_roar -> check_value();
 
   // Fury of Nature increases Arcane and Nature damage
   if ( buff.bear_form -> check() && ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) ) )
