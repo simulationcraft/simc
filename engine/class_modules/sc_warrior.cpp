@@ -1101,10 +1101,6 @@ struct melee_t : public warrior_attack_t
       devastator = new devastate_t( p, "" );
       add_child( devastator );
     }
-    if ( p->specialization() == WARRIOR_FURY )
-    {
-      base_multiplier *= 1.0 + p->spec.fury_warrior->effectN( 4 ).percent();
-    }
   }
 
   void init() override
@@ -1114,6 +1110,7 @@ struct melee_t : public warrior_attack_t
     affected_by.avatar              = p()->talents.avatar->ok();
     affected_by.frothing_direct     = p()->talents.frothing_berserker->ok();
     affected_by.demo_shout          = p()->spec.demoralizing_shout->ok();
+    p() -> auto_attack_multiplier *= 1.0 + p() -> spec.fury_warrior->effectN( 4 ).percent();
   }
 
   void reset() override
@@ -4399,8 +4396,8 @@ void warrior_t::init_spells()
   {
     spec.whirlwind = find_specialization_spell( "Whirlwind" );
   }
-  spec.arms_warrior = find_specialization_spell( "Fury Warrior" );
-  spec.fury_warrior = find_specialization_spell( "Arms Warrior" );
+  spec.fury_warrior = find_specialization_spell( "Fury Warrior" );
+  spec.arms_warrior = find_specialization_spell( "Arms Warrior" );
   spec.prot_warrior = find_specialization_spell( "Protection Warrior" );
 
   // Talents
