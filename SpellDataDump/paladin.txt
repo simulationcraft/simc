@@ -718,8 +718,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.52416 | Chain Multiplier: 1 | Chain Targets: 3 | Target: Enemy (6)
 #2 (id=135932)   : Interrupt Cast (68)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | Chain Multiplier: 1 | Mechanic: Interrupt | Target: Enemy (6)
+                   Hotfixed: Mechanic (-1 -> -10)
 #3 (id=135933)   : Apply Aura (6) | Silence (27)
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26781 | Chain Multiplier: 1 | Mechanic: Silence | Target: Enemy (6)
+                   Hotfixed: Mechanic (-1 -> -10)
 #4 (id=737804)   : Trigger Spell (64): Avenger's Valor
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 197561 | Target: Self (1)
 Description      : Hurls your shield at an enemy target, dealing $s1 Holy damage$?a231665[, interrupting and silencing the non-Player target for $d][], and then jumping to ${$x1-1} additional nearby enemies.

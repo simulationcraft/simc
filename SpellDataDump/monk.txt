@@ -7010,6 +7010,53 @@ Description      : When you Combo Strike, the cooldown of Touch of Death is redu
 
 Touch of Death deals an additional $s1 damage.
 
+Name             : Swift Roundhouse (id=278707) [Scaling Spell (-1), Spell Family (53), Hidden] 
+Class            : Monk
+School           : Physical
+Duration         : Aura (infinite)
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Triggered by     : Swift Roundhouse (277669)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
+                 : Hidden (7), Scales with item level (354)
+Effects          :
+#1 (id=734576)   : Apply Aura (6) | Proc Trigger Spell (42): Swift Roundhouse
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 278710 | Target: Self (1)
+Description      : $@spelldesc277669
+
+Name             : Swift Roundhouse (id=278710) [Scaling Spell (-1), Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Duration         : 12 seconds
+Stacks           : 2 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Triggered by     : Swift Roundhouse (278707)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : Scales with item level (354)
+Effects          :
+#1 (id=734581)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | Target: Self (1)
+                   Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
+#2 (id=734582)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | Trigger Spell: 277669
+Description      : $@spelldesc277669
+Tooltip          : Your next Rising Sun Kick will deal an additional $w1 damage.
+
 Name             : Font of Life (id=279875) [Scaling Spell (-1), Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical

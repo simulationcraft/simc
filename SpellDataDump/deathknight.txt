@@ -770,6 +770,7 @@ $@spelldesc55095
 Variables        : $CAP=${($AP+$OAP)*2/3}
 
 Name             : Summon Gargoyle (id=49206) [Spell Family (15)] 
+Hotfixed         : Cooldown (0 -> 180000), Category Cooldown (0 -> 180000), Category (0 -> 1834)
 Class            : Death Knight
 School           : Shadow
 Spell Level      : 75
@@ -777,6 +778,8 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 35 seconds
 Cooldown         : 180 seconds
+Category         : 1834
+Category Cooldown: 180 seconds
 Affecting spells : Val'kyr (278107 effect#1)
 Attributes       : ........ ........ ........ ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2637,7 +2640,8 @@ Attributes       : ........ ........ ........ ..x..x..   ........ ........ .....
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
 Effects          :
 #1 (id=132120)   : Apply Aura (6) | Absorb Healing (301)
-                   Base Value: 1 | Scaled Value: 1 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | Misc Value: 127 | Misc Value 2: 0x14 | Target: Self (1)
+                   Hotfixed: Base Value (1 -> 0), Misc Value 2 (0 -> 20)
 #2 (id=159719)   : Apply Aura (6) | Unknown(260)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 936 | Target: Self (1)
 Description      : $@spelldesc114556
@@ -7234,6 +7238,7 @@ Effects          :
 Description      : Death and Decay damage has a $s1% chance to apply a Festering Wound to the enemy.
 
 Name             : Val'kyr (Unholy) (id=278107) [Spell Family (15), Passive, Hidden] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Range            : 50000 yards
@@ -7241,7 +7246,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : Passive (6), Hidden (7)

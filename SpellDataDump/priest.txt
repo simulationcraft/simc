@@ -1128,6 +1128,7 @@ Description      : For the next $d, Power Word: Shield absorbs an additional $s1
 Tooltip          : Power Word: Shield absorbs an additional $s1%.
 
 Name             : Penance (id=47540) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Discipline Priest
 School           : Holy
 Resource         : 2% Base Mana (0) (id=2193)
@@ -1138,7 +1139,7 @@ Cooldown         : 9 seconds
 Category         : 1230
 Category Cooldown: 9 seconds
 Affecting spells : Surrender to Madness (193223 effect#2), Penitent (246519 effect#1), Kam Xi'raff (281457 effect#1)
-Attributes       : ........ x....... x....... .....x..   ..x....x ..x...x. ........ ....xx.. 
+Attributes       : ........ ........ x....... .....x..   ..x....x ..x...x. ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ...x....   ........ .x...x.. ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -1216,6 +1217,7 @@ Effects          :
 Description      : $@spelldesc47540
 
 Name             : Penance (id=47750) [Spell Family (6)] 
+Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Level      : 60
@@ -1224,7 +1226,7 @@ Velocity         : 40 yards/sec
 Affecting spells : Twist of Fate (123254 effect#1), Holy Priest (137031 effect#1), Discipline Priest (137032 effect#1), Reparation (186478 effect#1), Surrender to Madness (193223 effect#2), Atonement (194384 effect#2), Power Word: Shield (211558 effect#1), Radiant Focus (252848 effect#1), Twist of Fate (265258 effect#1), Dejahna's Inspiration (281456 effect#1), Kam Xi'raff (281457 effect#1)
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ......x. ........   ........ .x...... ........ ........ 
-                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : x....... .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

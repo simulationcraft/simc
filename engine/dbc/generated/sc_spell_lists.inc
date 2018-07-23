@@ -1016,7 +1016,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116670, // Vivify
            0,
     },
-    // Windwalker tree, 21 abilities
+    // Windwalker tree, 22 abilities
     {
       116768, // Blackout Kick!
       211432, // Combo Master
@@ -1035,6 +1035,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       116705, // Spear Hand Strike
       101546, // Spinning Crane Kick
       137639, // Storm, Earth, and Fire
+      278710, // Swift Roundhouse
       242387, // Thunderfist
       115080, // Touch of Death
       122470, // Touch of Karma
@@ -1083,7 +1084,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       114282, // Treant Form (Shapeshift)
            0,
     },
-    // Balance tree, 22 abilities
+    // Balance tree, 23 abilities
     {
        22812, // Barkskin
       194223, // Celestial Alignment
@@ -1095,6 +1096,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       202768, // Half Moon (Artifact)
       274282, // Half Moon
        29166, // Innervate
+      279641, // Lunar Shrapnel
       194153, // Lunar Strike (Lunar)
        24858, // Moonkin Form
       209406, // Oneth's Intuition
