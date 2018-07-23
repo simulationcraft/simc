@@ -50,7 +50,6 @@ struct warrior_t : public player_t
 public:
   event_t *heroic_charge, *rampage_driver;
   std::vector<attack_t*> rampage_attacks;
-  std::vector<cooldown_t*> odyns_champion_cds;
   bool non_dps_mechanics, warrior_fixed_time;
   int into_the_fray_friends;
   double expected_max_health;
@@ -176,7 +175,6 @@ public:
     gain_t* revenge;
     gain_t* shield_slam;
     gain_t* whirlwind;
-    gain_t* will_of_the_first_king;
     gain_t* booming_voice;
     gain_t* thunder_clap;
     gain_t* protection_t20_2p;
@@ -245,7 +243,6 @@ public:
     const spell_data_t* mortal_strike;
     const spell_data_t* overpower;
     const spell_data_t* piercing_howl;
-    const spell_data_t* protection;  // Weird spec passive that increases damage of bladestorm/execute.
     const spell_data_t* raging_blow;
     const spell_data_t* rallying_cry;
     const spell_data_t* rampage;
@@ -261,7 +258,6 @@ public:
     const spell_data_t* sweeping_strikes;
     const spell_data_t* tactician;
     const spell_data_t* thunder_clap;
-    const spell_data_t* titans_grip;
     const spell_data_t* whirlwind;
     const spell_data_t* whirlwind_2;
     const spell_data_t* revenge_trigger;
@@ -1422,17 +1418,6 @@ struct bladestorm_tick_t : public warrior_attack_t
       base_multiplier *= 1.0 + p->spec.arms_warrior->effectN( 4 ).percent();
       impact_action = p->active.deep_wounds_ARMS;
     }
-  }
-
-  double action_multiplier() const override
-  {
-    double am = warrior_attack_t::action_multiplier();
-
-    if ( p()->has_shield_equipped() )
-    {
-      am *= 1.0 + p()->spec.protection->effectN( 1 ).percent();
-    }
-    return am;
   }
 };
 
@@ -4379,34 +4364,32 @@ void warrior_t::init_spells()
   {
     spec.execute_2 = find_specialization_spell( 231830 );
   }
-  spec.hamstring           = find_specialization_spell( "Hamstring" );
-  spec.ignore_pain         = find_specialization_spell( "Ignore Pain" );
-  spec.intercept           = find_specialization_spell( "Intercept" );
-  spec.last_stand          = find_specialization_spell( "Last Stand" );
-  spec.mortal_strike       = find_specialization_spell( "Mortal Strike" );
-  spec.overpower           = find_specialization_spell( "Overpower" );
-  spec.piercing_howl       = find_specialization_spell( "Piercing Howl" );
-  spec.protection          = find_specialization_spell( "Protection" );
-  spec.raging_blow         = find_specialization_spell( "Raging Blow" );
-  spec.rampage             = find_specialization_spell( "Rampage" );
-  spec.rallying_cry        = find_specialization_spell( "Rallying Cry" );
-  spec.recklessness        = find_specialization_spell( "Recklessness" );
-  spec.revenge             = find_specialization_spell( "Revenge" );
-  spec.revenge_trigger     = find_specialization_spell( "Revenge Trigger" );
-  spec.riposte             = find_specialization_spell( "Riposte" );
-  spec.seasoned_soldier    = find_specialization_spell( "Seasoned Soldier" );
-  spec.shield_block        = find_specialization_spell( "Shield Block" );
-  spec.shield_block_2      = find_specialization_spell( 231847 );
-  spec.shield_slam         = find_specialization_spell( "Shield Slam" );
-  spec.shield_wall         = find_specialization_spell( "Shield Wall" );
-  spec.shockwave           = find_specialization_spell( "Shockwave" );
-  spec.slam                = find_specialization_spell( "Slam" );
-  spec.spell_reflection    = find_specialization_spell( "Spell Reflection" );
-  spec.sweeping_strikes    = find_specialization_spell( "Sweeping Strikes" );
-  spec.tactician           = find_specialization_spell( "Tactician" );
-  spec.thunder_clap        = find_specialization_spell( "Thunder Clap" );
-  spec.titans_grip         = find_specialization_spell( "Titan's Grip" );
-  spec.victory_rush        = find_specialization_spell( "Victory Rush" );
+  spec.hamstring        = find_specialization_spell( "Hamstring" );
+  spec.ignore_pain      = find_specialization_spell( "Ignore Pain" );
+  spec.intercept        = find_specialization_spell( "Intercept" );
+  spec.last_stand       = find_specialization_spell( "Last Stand" );
+  spec.mortal_strike    = find_specialization_spell( "Mortal Strike" );
+  spec.overpower        = find_specialization_spell( "Overpower" );
+  spec.piercing_howl    = find_specialization_spell( "Piercing Howl" );
+  spec.raging_blow      = find_specialization_spell( "Raging Blow" );
+  spec.rampage          = find_specialization_spell( "Rampage" );
+  spec.rallying_cry     = find_specialization_spell( "Rallying Cry" );
+  spec.recklessness     = find_specialization_spell( "Recklessness" );
+  spec.revenge          = find_specialization_spell( "Revenge" );
+  spec.revenge_trigger  = find_specialization_spell( "Revenge Trigger" );
+  spec.riposte          = find_specialization_spell( "Riposte" );
+  spec.seasoned_soldier = find_specialization_spell( "Seasoned Soldier" );
+  spec.shield_block     = find_specialization_spell( "Shield Block" );
+  spec.shield_block_2   = find_specialization_spell( 231847 );
+  spec.shield_slam      = find_specialization_spell( "Shield Slam" );
+  spec.shield_wall      = find_specialization_spell( "Shield Wall" );
+  spec.shockwave        = find_specialization_spell( "Shockwave" );
+  spec.slam             = find_specialization_spell( "Slam" );
+  spec.spell_reflection = find_specialization_spell( "Spell Reflection" );
+  spec.sweeping_strikes = find_specialization_spell( "Sweeping Strikes" );
+  spec.tactician        = find_specialization_spell( "Tactician" );
+  spec.thunder_clap     = find_specialization_spell( "Thunder Clap" );
+  spec.victory_rush     = find_specialization_spell( "Victory Rush" );
   if ( specialization() == WARRIOR_FURY )
   {
     spec.whirlwind   = find_specialization_spell( 190411 );
@@ -5353,7 +5336,6 @@ void warrior_t::init_gains()
   gain.melee_off_hand                   = get_gain( "melee_off_hand" );
   gain.revenge                          = get_gain( "revenge" );
   gain.shield_slam                      = get_gain( "shield_slam" );
-  gain.will_of_the_first_king           = get_gain( "will_of_the_first_king" );
   gain.booming_voice                    = get_gain( "booming_voice" );
   gain.thunder_clap                     = get_gain( "thunder_clap" );
   gain.protection_t20_2p                = get_gain( "t20_2p" );
