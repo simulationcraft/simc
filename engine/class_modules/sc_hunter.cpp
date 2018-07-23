@@ -2387,6 +2387,8 @@ struct barbed_shot_t: public hunter_ranged_attack_t
   {
     parse_options(options_str);
 
+    tick_may_crit = false;
+
     base_ta_adder += p -> azerite.feeding_frenzy.value( 2 );
   }
 
@@ -3083,6 +3085,8 @@ struct serpent_sting_mm_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "serpent_sting", p, p -> talents.serpent_sting )
   {
     parse_options( options_str );
+
+    hasted_ticks = true;
   }
 };
 
@@ -3610,6 +3614,8 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
   void init() override
   {
     hunter_ranged_attack_t::init();
+
+    update_flags &= ~STATE_HASTE;
 
     if ( action_t* lp = p() -> find_action( "latent_poison" ) )
       add_child( lp );
