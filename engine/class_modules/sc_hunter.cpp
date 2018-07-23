@@ -1103,6 +1103,7 @@ struct hunter_main_pet_base_t : public hunter_pet_t
 {
   struct actives_t
   {
+    action_t* basic_attack = nullptr;
     action_t* kill_command = nullptr;
     attack_t* beast_cleave = nullptr;
     action_t* stomp = nullptr;
@@ -1246,7 +1247,6 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
       action_list_str += "/auto_attack";
       action_list_str += "/snapshot_stats";
       action_list_str += "/claw";
-      action_list_str += "/wait_until_ready";
       use_default_action_list = true;
     }
 
@@ -1304,12 +1304,17 @@ struct hunter_main_pet_t : public hunter_main_pet_base_t
 
   timespan_t available() const
   {
-    const double focus = resources.current[ RESOURCE_FOCUS ];
-    if ( focus > 25 )
-      return timespan_t::from_seconds( 0.1 );
+    // XXX: this will have to be changed if we ever add other foreground attacks to pets besides Basic Attacks
+    if ( ! active.basic_attack )
+      return hunter_main_pet_base_t::available();
 
-    timespan_t time_to_25 = timespan_t::from_seconds( ( 25 - focus ) / resource_regen_per_second( RESOURCE_FOCUS ) );
-    return std::max( time_to_25, timespan_t::from_seconds( 0.1 ) );
+    const auto time_to_fc = timespan_t::from_seconds( ( active.basic_attack -> base_cost() - resources.current[ RESOURCE_FOCUS ] ) /
+                                                        resource_regen_per_second( RESOURCE_FOCUS ) );
+    const auto time_to_cd = active.basic_attack -> cooldown -> remains();
+    const auto remains = std::max( time_to_cd, time_to_fc );
+    // 23/07/2018 - hunter pets seem to have a "generic" lag of about .6s on basic attack usage
+    const auto lag = o() -> bugs ? timespan_t::from_millis( rng().gauss( 600, 100 ) ) : timespan_t::zero();
+    return std::max( remains + lag, timespan_t::from_millis( 100 ) );
   }
 
   action_t* create_action( const std::string& name, const std::string& options_str ) override;
@@ -1767,6 +1772,8 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     wild_hunt.cost_pct = 1.0 + wild_hunt_spell -> effectN( 2 ).percent();
     wild_hunt.multiplier = 1.0 + wild_hunt_spell -> effectN( 1 ).percent();
     wild_hunt.benefit = p -> get_benefit( "wild_hunt" );
+
+    p -> active.basic_attack = this;
   }
 
   // Override behavior so that Basic Attacks use hunter's attack power rather than the pet's
