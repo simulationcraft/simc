@@ -553,6 +553,7 @@ public:
     const spell_data_t* sharpened_claws;
     const spell_data_t* swipe_cat;
     const spell_data_t* rake_2;
+    const spell_data_t* tigers_fury;
     const spell_data_t* tigers_fury_2;
     const spell_data_t* ferocious_bite_2;
     const spell_data_t* shred;
@@ -2482,8 +2483,7 @@ public:
       snapshots_tf( true ),
       moment_of_clarity( data().affected_by(
           p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 3 ) ) ),
-      tigers_fury( data().affected_by(
-          p -> buff.tigers_fury -> data().effectN( 1 ) ) )
+      tigers_fury( data().affected_by( p -> spec.tigers_fury -> effectN( 1 ) ) )
   {
     parse_options( options );
 
@@ -2503,10 +2503,10 @@ public:
        and periodic damage. Because we're using composite_persistent_damage_multiplier
        we have to use a single value for the multiplier instead of being completely
        faithful to the spell data. */
-    if ( tigers_fury != data().affected_by( p -> buff.tigers_fury -> data().effectN( 3 ) ) )
+    if ( tigers_fury != data().affected_by( p -> spec.tigers_fury -> effectN( 3 ) ) )
       p -> sim -> errorf( "%s (id=%i) spell data has inconsistent Tiger's Fury benefit.", name_str, id );
 
-    if ( p -> buff.tigers_fury -> data().effectN( 1 ).percent() != p -> buff.tigers_fury -> data().effectN( 3 ).percent() )
+    if ( p -> spec.tigers_fury -> effectN( 1 ).percent() != p -> spec.tigers_fury -> effectN( 3 ).percent() )
       p -> sim -> errorf( "%s (id=%i) spell data has inconsistent Tiger's Fury modifiers.", name_str, id );
 
     // Apply Feral Druid Aura damage modifiers
@@ -3818,7 +3818,7 @@ struct tigers_fury_t : public cat_attack_t
   timespan_t duration;
 
   tigers_fury_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( "tigers_fury", p, p -> find_specialization_spell( "Tiger's Fury" ), options_str ),
+    cat_attack_t( "tigers_fury", p, p -> spec.tigers_fury, options_str ),
     duration( p -> buff.tigers_fury -> buff_duration )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
@@ -6692,6 +6692,7 @@ void druid_t::init_spells()
   spec.sharpened_claws            = find_specialization_spell( "Sharpened Claws" );
   spec.swipe_cat                  = find_spell( 106785 );
   spec.rake_2                     = find_spell( 231052 );
+  spec.tigers_fury                = find_specialization_spell( "Tiger's Fury" );
   spec.tigers_fury_2              = find_spell( 231055 );
   spec.ferocious_bite_2           = find_spell( 231056 );
   spec.shred                      = find_spell( 5221 );
@@ -7098,8 +7099,8 @@ void druid_t::create_buffs()
                                .refresh_behavior( buff_refresh_behavior::DURATION ) // Pandemic refresh is done by the action
                                .tick_behavior( buff_tick_behavior::NONE );
 
-  buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
-                               .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
+  buff.tigers_fury           = buff_creator_t( this, "tigers_fury", spec.tigers_fury )
+                               .default_value( spec.tigers_fury -> effectN( 1 ).percent() )
                                .cd( timespan_t::zero() );
 
   // Guardian
