@@ -2472,7 +2472,7 @@ public:
           p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 1 ) ) ),
       trigger_tier17_2pc( false ),
       snapshots_tf( true ),
-      snapshots_sr( true ),
+      snapshots_sr( false ),
       moment_of_clarity( data().affected_by(
           p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 3 ) ) )
   {
