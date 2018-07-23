@@ -1553,9 +1553,9 @@ class SpellDataGenerator(DataGenerator):
           ( 69369,  2 ),       # Predatory Swiftness buff
           ( 227034, 3 ),       # Nature's Guardian heal
           ( 252750, 2 ),       # Feral tier21_2pc
-	  ( 274282, 1 ),       # Half Moon
-	  ( 274283, 1 ),       # Full Moon
-	  ( 279641, 1 ),       # Lunar Shrapnel Azerite Trait
+          ( 274282, 1 ),       # Half Moon
+          ( 274283, 1 ),       # Full Moon
+          ( 279641, 1 ),       # Lunar Shrapnel Azerite Trait
         ),
         # Demon Hunter:
         (
