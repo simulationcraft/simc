@@ -3596,6 +3596,7 @@ struct arms_whirlwind_parent_t : public warrior_attack_t
   timespan_t spin_time;
   arms_whirlwind_parent_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "whirlwind", p, p->spec.whirlwind ),
+      fervor_slam( nullptr ),
       first_mh_attack( nullptr ),
       mh_attack( nullptr ),
       spin_time( timespan_t::from_millis( p->spec.whirlwind->effectN( 2 ).misc_value1() ) )
