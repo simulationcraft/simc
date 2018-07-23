@@ -1544,13 +1544,17 @@ struct arcane_mage_spell_t : public mage_spell_t
 
   double arcane_charge_damage_bonus( bool arcane_barrage = false ) const
   {
-    double per_ac_bonus = p() -> spec.arcane_charge -> effectN( 1 ).percent()
-                        + p() -> cache.mastery() * p() -> spec.savant -> effectN( 2 ).mastery_value();
+    double per_ac_bonus = 0.0;
 
-    // TODO: We can use spelldata for this rather than hardcoding a 50% penalty.
     if ( arcane_barrage )
     {
-      per_ac_bonus *= 0.5;
+      per_ac_bonus = p() -> spec.arcane_charge -> effectN( 2 ).percent()
+                   + p() -> cache.mastery() * p() -> spec.savant -> effectN( 3 ).mastery_value();
+    }
+    else
+    {
+      per_ac_bonus = p() -> spec.arcane_charge -> effectN( 1 ).percent()
+                   + p() -> cache.mastery() * p() -> spec.savant -> effectN( 2 ).mastery_value();
     }
 
     return 1.0 + p() -> buffs.arcane_charge -> check() * per_ac_bonus;
