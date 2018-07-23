@@ -568,8 +568,8 @@ public:
   struct talents_list_t
   {
     // Tier 15
-    const spell_data_t* rule_of_threes;
     const spell_data_t* amplification;
+    const spell_data_t* rule_of_threes;
     const spell_data_t* arcane_familiar;
     const spell_data_t* firestarter;
     const spell_data_t* pyromaniac;
@@ -6051,8 +6051,8 @@ void mage_t::init_spells()
 
   // Talents
   // Tier 15
-  talents.rule_of_threes     = find_talent_spell( "Rule of Threes"     );
   talents.amplification      = find_talent_spell( "Amplification"      );
+  talents.rule_of_threes     = find_talent_spell( "Rule of Threes"     );
   talents.arcane_familiar    = find_talent_spell( "Arcane Familiar"    );
   talents.firestarter        = find_talent_spell( "Firestarter"        );
   talents.pyromaniac         = find_talent_spell( "Pyromaniac"         );
