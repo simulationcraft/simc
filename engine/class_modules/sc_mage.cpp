@@ -2623,6 +2623,7 @@ struct arcane_orb_t : public arcane_mage_spell_t
     {
       background = true;
       base_costs[ RESOURCE_MANA ] = 0;
+      cooldown -> duration = timespan_t::zero();
     }
 
     add_child( orb_bolt );
@@ -2903,6 +2904,7 @@ struct comet_storm_t : public frost_mage_spell_t
     {
       background = true;
       base_costs[ RESOURCE_MANA ] = 0;
+      cooldown -> duration = timespan_t::zero();
     }
   }
 
@@ -4397,6 +4399,7 @@ struct meteor_t : public fire_mage_spell_t
     {
       background = true;
       base_costs[ RESOURCE_MANA ] = 0;
+      cooldown -> duration = timespan_t::zero();
     }
   }
 
