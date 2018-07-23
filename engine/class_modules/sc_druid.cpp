@@ -5866,6 +5866,11 @@ struct solar_wrath_t : public druid_spell_t
     {
       p ()->trigger_solar_empowerment (s);
     }
+
+    if (p()->azerite.sunblaze.ok())
+    {
+      p()->buff.sunblaze->trigger(1, p()->azerite.sunblaze.value());
+    }
   }
 
   timespan_t gcd() const override
@@ -5917,10 +5922,6 @@ struct solar_wrath_t : public druid_spell_t
 
     p() -> buff.power_of_elune -> trigger();
 
-    if (p()->azerite.sunblaze.ok())
-    {
-      p()->buff.sunblaze->trigger(1, p()->azerite.sunblaze.value());
-    }
     streaking_stars_trigger(SS_SOLAR_WRATH, target);
   }
 
@@ -5969,7 +5970,7 @@ struct stampeding_roar_t : public druid_spell_t
 struct lunar_shrapnel_t : public druid_spell_t
 {
   lunar_shrapnel_t(druid_t* p) :
-    druid_spell_t("lunar_shrapnel", p, p->azerite.lunar_sharpnel)
+    druid_spell_t("lunar_shrapnel", p, p->find_spell(279641))
   {
     background = true;
     aoe = -1;
