@@ -1827,7 +1827,7 @@ struct colossus_smash_t : public warrior_attack_t
 struct deep_wounds_ARMS_t : public warrior_attack_t
 {
   deep_wounds_ARMS_t( warrior_t* p )
-    : warrior_attack_t( "deep_wounds", p, p->spec.deep_wounds_ARMS->effectN( 1 ).trigger() )
+    : warrior_attack_t( "deep_wounds", p, p->find_spell(262115) )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
