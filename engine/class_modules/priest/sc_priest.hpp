@@ -904,8 +904,6 @@ namespace actions
 template <typename Base>
 struct priest_action_t : public Base
 {
-  bool shadow_damage_increase;
-  bool shadow_dot_increase;
 
   struct {
     bool voidform_da;
@@ -916,25 +914,29 @@ struct priest_action_t : public Base
     bool twist_of_fate_ta;
     bool mastery_madness_da;
     bool mastery_madness_ta;
+    bool shadow_priest_da;
+    bool shadow_priest_ta;
   } affected_by;
 
 
 public:
   priest_action_t( const std::string& n, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, &p, s ),
-      shadow_damage_increase( ab::data().affected_by( p.specs.shadow_priest->effectN( 1 ) ) ),
-      shadow_dot_increase( ab::data().affected_by( p.specs.shadow_priest->effectN( 2 ) ) ),
       affected_by()
   {
     init_affected_by();
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
-    // Manual additions of Dark Ascension, Shadowy Apparitions and Shadow Crash base spells
-    if ( shadow_damage_increase || s->id() == 280711u || s->id() == 205385u || s->id() == 78203u )
+
+    if ( affected_by.shadow_priest_da )
+    {
       ab::base_dd_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 1 ).percent();
-    if ( shadow_dot_increase )
+    }
+    if ( affected_by.shadow_priest_ta )
+    {
       ab::base_td_multiplier *= 1.0 + p.specs.shadow_priest->effectN( 2 ).percent();
+    }
   }
 
   /**
@@ -954,6 +956,8 @@ public:
         {priest().buffs.twist_of_fate->data().effectN(2), affected_by.twist_of_fate_ta},
         {priest().mastery_spells.madness->effectN(1),     affected_by.mastery_madness_da},
         {priest().mastery_spells.madness->effectN(2),     affected_by.mastery_madness_ta},
+        {priest().specs.shadow_priest->effectN( 1 ),      affected_by.shadow_priest_da},
+        {priest().specs.shadow_priest->effectN( 2 ),      affected_by.shadow_priest_ta},
     };
 
     for (const auto& a : affects)
