@@ -1492,7 +1492,6 @@ public:
 };
 
 using hunter_main_pet_attack_t = hunter_main_pet_action_t< melee_attack_t >;
-using hunter_main_pet_spell_t = hunter_main_pet_action_t< spell_t >;
 
 // ==========================================================================
 // Hunter Pet Attacks
@@ -1856,36 +1855,6 @@ struct stomp_t : public hunter_pet_action_t<hunter_pet_t, attack_t>
   }
 };
 
-// ==========================================================================
-// Hunter Pet Spells
-// ==========================================================================
-
-// ==========================================================================
-// Unique Pet Specials
-// ==========================================================================
-
-// chimaera Froststorm Breath ================================================
-
-struct froststorm_breath_t: public hunter_main_pet_spell_t
-{
-  struct froststorm_breath_tick_t: public hunter_main_pet_spell_t
-  {
-    froststorm_breath_tick_t( hunter_main_pet_t* player ):
-      hunter_main_pet_spell_t( "froststorm_breath_tick", player, player -> find_spell( 95725 ) )
-    {
-      attack_power_mod.direct = 0.144; // hardcoded into tooltip, 2012/08 checked 2015/02/21
-    }
-  };
-
-  froststorm_breath_t( hunter_main_pet_t* player, const std::string& options_str ):
-    hunter_main_pet_spell_t( "froststorm_breath", player, player -> find_pet_spell( "Froststorm Breath" ) )
-  {
-    parse_options( options_str );
-    channeled = true;
-    tick_action = new froststorm_breath_tick_t( player );
-  }
-};
-
 } // end namespace pets::actions
 
 hunter_main_pet_td_t::hunter_main_pet_td_t( player_t* target, hunter_main_pet_t* p ):
@@ -1905,7 +1874,6 @@ action_t* hunter_main_pet_t::create_action( const std::string& name,
   if ( name == "claw" ) return new                 basic_attack_t( this, "Claw", options_str );
   if ( name == "bite" ) return new                 basic_attack_t( this, "Bite", options_str );
   if ( name == "smack" ) return new                basic_attack_t( this, "Smack", options_str );
-  if ( name == "froststorm_breath" ) return new    froststorm_breath_t( this, options_str );
   return hunter_main_pet_base_t::create_action( name, options_str );
 }
 
