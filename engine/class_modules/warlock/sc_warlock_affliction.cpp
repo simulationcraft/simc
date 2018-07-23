@@ -327,7 +327,7 @@ namespace warlock
           if (p()->azerite.wracking_brilliance.ok())
             wb->run(p());
           p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
-          p()->agony_accumulator -= 1.0;
+          p()->agony_accumulator = 0.0;
         }
 
         if ( rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->proc_chance() ) )
