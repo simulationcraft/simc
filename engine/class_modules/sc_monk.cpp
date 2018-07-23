@@ -2846,7 +2846,7 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   {
     double b = base_t::bonus_da( s );
 
-    if ( p() -> azerite.elusive_footwork.enabled() )
+    if ( p() -> azerite.elusive_footwork.ok() )
     {
       if ( base_t::data().affected_by( p() -> azerite.elusive_footwork.spell() -> effectN( 3 ) ) )
         b += p() -> azerite.elusive_footwork.value( 3 );
@@ -3485,7 +3485,7 @@ struct blackout_strike_t: public monk_melee_attack_t
       {
         p() -> buff.elusive_brawler -> trigger();
         
-        if ( p() -> azerite.elusive_footwork.enabled() && s -> result == RESULT_CRIT )
+        if ( p() -> azerite.elusive_footwork.ok() && s -> result == RESULT_CRIT )
           p() -> buff.elusive_brawler -> trigger( p() -> azerite.elusive_footwork.spell() -> effectN( 2 ).base_value() );
       }
     }
@@ -3758,7 +3758,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     // Get the number of targets from the non sleeping target list
     auto targets = sim -> target_non_sleeping_list.size();
 
-    if ( p() -> azerite.iron_fists.enabled() && targets >= p() -> azerite.iron_fists.spell_ref().effectN( 2 ).base_value() )
+    if ( p() -> azerite.iron_fists.ok() && targets >= p() -> azerite.iron_fists.spell_ref().effectN( 2 ).base_value() )
       p() -> buff.iron_fists -> trigger();
   }
 
@@ -4064,16 +4064,6 @@ struct keg_smash_t: public monk_melee_attack_t
       am *= 1 + p() -> legendary.stormstouts_last_gasp -> effectN( 2 ).percent();
 
     return am;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = monk_melee_attack_t::bonus_da( s );
-
-    if ( td( s -> target ) -> dots.breath_of_fire -> is_ticking() )
-      b += p() -> azerite.boiling_brew.value();
-
-    return b;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4980,7 +4970,7 @@ struct breath_of_fire_t: public monk_spell_t
   {
     double b = base_t::bonus_da( s );
 
-    if ( p() -> azerite.boiling_brew.enabled() )
+    if ( p() -> azerite.boiling_brew.ok() )
       b += p() -> azerite.boiling_brew.value( 2 );
 
     return b;
@@ -7164,6 +7154,8 @@ void monk_t::create_buffs()
                           -> set_default_value( find_spell( 197916 ) -> effectN( 1 ).percent() );
 
   // Windwalker
+  double bok_proc_chance = spec.combo_breaker -> effectN( 1 ).percent();
+  if ( azerite.pressure_point.ok() )
   buff.bok_proc = make_buff( this, "bok_proc", passives.bok_proc )
                   -> set_chance( spec.combo_breaker -> effectN( 1 ).percent() );
 
