@@ -595,7 +595,7 @@ public:
     // Windwalker
     // Fists of Fury grants you 0 Critical Strike for 6 sec when it hits at least 4 enemies.
     azerite_power_t iron_fists;
-    // When you Combo Strike, the cooldown of Touch of Death is reduced by 0.0 sec. Touch of Death deals an additional 1540 damage.
+    // When you Combo Strike, the cooldown of Touch of Death is reduced by 0.1 sec. Touch of Death deals an additional 1540 damage.
     azerite_power_t meridian_strikes;
     // When Fists of Fury deals damage, it has a 5% chance to refund 1 Chi, and it deals 12 additional damage.
     azerite_power_t open_palm_strikes;
@@ -2818,6 +2818,19 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     return am;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = base_t::bonus_da( s );
+
+    if ( p() -> azerite.elusive_footwork.enabled() )
+    {
+      if ( base_t::data().affected_by( p() -> azerite.elusive_footwork.spell() -> effectN( 3 ) ) )
+        b += p() -> azerite.elusive_footwork.value( 3 );
+    }
+
+    return b;
+  }
+
   // Physical tick_action abilities need amount_type() override, so the
   // tick_action are properly physically mitigated.
   dmg_e amount_type( const action_state_t* state, bool periodic ) const override
@@ -3445,7 +3458,12 @@ struct blackout_strike_t: public monk_melee_attack_t
     {
       // if player level >= 78
       if ( p() -> mastery.elusive_brawler )
+      {
         p() -> buff.elusive_brawler -> trigger();
+        
+        if ( p() -> azerite.elusive_footwork.enabled() && s -> result == RESULT_CRIT )
+          p() -> buff.elusive_brawler -> trigger( p() -> azerite.elusive_footwork.spell() -> effectN( 2 ).base_value() );
+      }
     }
   }
 };
@@ -4930,7 +4948,17 @@ struct breath_of_fire_t: public monk_spell_t
       tick_may_crit = may_crit = true;
       hasted_ticks = false;
     }
-  };
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = base_t::bonus_da( s );
+
+    if ( p() -> azerite.boiling_brew.enabled() )
+      b += p() -> azerite.boiling_brew.value( 2 );
+
+    return b;
+  }
+};
 
   periodic_t* dot_action;
 
