@@ -1555,6 +1555,7 @@ class SpellDataGenerator(DataGenerator):
           ( 252750, 2 ),       # Feral tier21_2pc
 	  ( 274282, 1 ),       # Half Moon
 	  ( 274283, 1 ),       # Full Moon
+	  ( 279641, 1 ),       # Lunar Shrapnel Azerite Trait
         ),
         # Demon Hunter:
         (
