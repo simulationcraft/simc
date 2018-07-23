@@ -2483,7 +2483,7 @@ public:
       moment_of_clarity( data().affected_by(
           p->spec.omen_of_clarity->effectN( 1 ).trigger()->effectN( 3 ) ) ),
       tigers_fury( data().affected_by(
-          p -> buff.tigers_fury -> data().effectN( 1 ) )
+          p -> buff.tigers_fury -> data().effectN( 1 ) ) )
   {
     parse_options( options );
 
@@ -2503,7 +2503,7 @@ public:
        and periodic damage. Because we're using composite_persistent_damage_multiplier
        we have to use a single value for the multiplier instead of being completely
        faithful to the spell data. */
-    if ( benefits_from_tigers_fury != data().affected_by( p -> buff.tigers_fury -> data().effectN( 3 ) ) )
+    if ( tigers_fury != data().affected_by( p -> buff.tigers_fury -> data().effectN( 3 ) ) )
       p -> sim -> errorf( "%s (id=%i) spell data has inconsistent Tiger's Fury benefit.", name_str, id );
 
     if ( p -> buff.tigers_fury -> data().effectN( 1 ).percent() != p -> buff.tigers_fury -> data().effectN( 3 ).percent() )
@@ -2654,19 +2654,19 @@ public:
     return tc;
   }
 
-  double action_multiplier( const action_state_t* s ) const override
+  double action_multiplier() const override
   {
-    double am = base_t::action_multiplier( s );
+    double am = base_t::action_multiplier();
 
     if ( tigers_fury && ! snapshots_tf )
     {
       if ( special )
-        dm *= 1.0 + p() -> buff.tigers_fury -> check_value();
+        am *= 1.0 + p() -> buff.tigers_fury -> check_value();
       else
-        dm *= 1.0 + p() -> buff.tigers_fury -> data().effectN( 4 ).percent();
+        am *= 1.0 + p() -> buff.tigers_fury -> data().effectN( 4 ).percent();
     }
 
-    return am
+    return am;
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
