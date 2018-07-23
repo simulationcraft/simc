@@ -910,6 +910,7 @@ struct strength_of_earth_buff_t : public buff_t
   {
     set_default_value( default_value );
     set_duration( s_data->duration() );
+    set_max_stack( 1 );
   }
 };
 
@@ -7017,7 +7018,7 @@ void shaman_t::trigger_strength_of_earth( const action_state_t* state )
                                                  // if it equals the rockbiter action type, but after some fiddling
                                                  // i couldn't get it to work, so i'll revist that at some point.
 
-  if ( buff.strength_of_earth->up() )
+  if ( !buff.strength_of_earth->up() )
     return;
 
   shaman_attack_t* attack = nullptr;
@@ -7038,7 +7039,7 @@ void shaman_t::trigger_strength_of_earth( const action_state_t* state )
     {
       strength_of_earth->set_target( state->target );
       strength_of_earth->schedule_execute();
-      buff.strength_of_earth->expire();
+      buff.strength_of_earth->decrement();
     }
   }
   else if ( spell )
@@ -7047,7 +7048,7 @@ void shaman_t::trigger_strength_of_earth( const action_state_t* state )
     {
       strength_of_earth->set_target( state->target );
       strength_of_earth->schedule_execute();
-      buff.strength_of_earth->expire();
+      buff.strength_of_earth->decrement();
     }
   }
 }
