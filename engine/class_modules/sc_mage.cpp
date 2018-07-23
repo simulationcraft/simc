@@ -2919,7 +2919,7 @@ struct comet_storm_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    timespan_t ground_aoe_duration = timespan_t::from_seconds( 1.2 );
+    timespan_t ground_aoe_duration = timespan_t::from_seconds( 1.4 );
     p() -> ground_aoe_expiration[ name_str ]
       = sim -> current_time() + ground_aoe_duration;
 
@@ -2927,7 +2927,7 @@ struct comet_storm_t : public frost_mage_spell_t
       .pulse_time( timespan_t::from_seconds( 0.2 ) )
       .target( s -> target )
       .duration( ground_aoe_duration )
-      .action( projectile ), true );
+      .action( projectile ) );
   }
 };
 
