@@ -4979,7 +4979,7 @@ struct celestial_alignment_t : public druid_spell_t
 struct streaking_stars_t : public druid_spell_t
 {
   streaking_stars_t(druid_t* p) :
-    druid_spell_t("streaking_stars", p, p->azerite.streaking_stars)
+    druid_spell_t("streaking_stars", p, p->find_spell(272873))
   {
     background = 1;
     base_dd_min = base_dd_max = p->azerite.streaking_stars.value(1);
