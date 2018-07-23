@@ -8,7 +8,6 @@ spec=enhancement
 
 head=sethraliss_fanged_helm,id=159374,bonus_id=4779/1512/4786,azerite_powers=196/461
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4935/1512,azerite_level=21
-
 shoulder=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4786,azerite_powers=416/461
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786,enchant=gift_of_haste
 chest=triheart_chestguard,id=159362,bonus_id=4779/1512/4786,azerite_powers=447/459
