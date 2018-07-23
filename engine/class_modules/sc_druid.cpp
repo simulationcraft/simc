@@ -3514,7 +3514,7 @@ struct rip_t : public cat_attack_t
   };
 
   double combo_point_on_tick_proc_rate;
-  bloody_gash_t* bloody_gash;
+  action_t* bloody_gash;
 
   rip_t( druid_t* p, const std::string& options_str )
     : cat_attack_t( "rip", p, p->find_affinity_spell( "Rip" ), options_str )
@@ -3550,8 +3550,13 @@ struct rip_t : public cat_attack_t
 
     if ( p -> sets -> has_set_bonus( DRUID_FERAL, T21, B2 ) )
     {
-      bloody_gash = new bloody_gash_t( p );
-      add_child( bloody_gash );
+      bloody_gash = p -> find_action( "bloody_gash" );
+
+      if ( ! bloody_gash )
+      {
+        bloody_gash = new bloody_gash_t( p );
+        add_child( bloody_gash );
+      }
     }
   }
 
