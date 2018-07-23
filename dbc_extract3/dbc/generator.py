@@ -1510,6 +1510,7 @@ class SpellDataGenerator(DataGenerator):
           ( 261682, 3 ), # Chi Burst Chi generation cap
           # Legendary
           ( 213114, 3 ), # Hidden Master's Forbidden Touch buff
+          ( 281452, 3 ), # The Wind Blows
           # Azerite Traits
           ( 278710, 3 ), # Swift Roundhouse
         ),

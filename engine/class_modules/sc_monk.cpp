@@ -2049,8 +2049,10 @@ struct monk_action_t: public Base
   bool brewmaster_damage_increase_two;
   bool brewmaster_damage_increase_dot_three;
   bool brewmaster_healing_increase;
+
   bool mistweaver_damage_increase;
   bool mistweaver_damage_increase_dot;
+
   bool windwalker_damage_increase;
   bool windwalker_damage_increase_two;
   bool windwalker_damage_increase_three;
@@ -2186,6 +2188,28 @@ public:
 
         if ( windwalker_healing_increase )
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 11 ).percent();
+
+        // The Wind blows increases damage by 3%
+/*        if ( player -> legendary.the_wind_blows )
+        {
+          if ( ab::data().affected_by( player -> legendary.the_wind_blows -> effectN( 1 ) ) )
+          {
+            // cancel out Fists of Fury damage and use the tick version as a direct damage
+            if ( ab::data().id() == 117418 )
+              ab::base_dd_multiplier *= 1.0;
+            else
+              ab::base_dd_multiplier *= 1.0 + player -> legendary.the_wind_blows -> effectN( 1 ).percent();
+          }
+          if ( ab::data().affected_by( player -> legendary.the_wind_blows -> effectN( 2 ) ) )
+          {
+            // treat Fists of Fury damage as a direct damage instead of a tick damage
+            if (ab::data().id() == 117418)
+              ab::base_dd_multiplier *= 1.0 + player-> legendary.the_wind_blows -> effectN( 2 ).percent();
+            else
+              ab::base_td_multiplier *= 1.0 + player-> legendary.the_wind_blows -> effectN( 2 ).percent();
+          }
+        }
+*/
 
         if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 14 ) ) )
           ab::trigger_gcd += player -> spec.windwalker_monk -> effectN( 14 ).time_value(); // Saved as -500 milliseconds
@@ -3912,6 +3936,9 @@ struct melee_t: public monk_melee_attack_t
 
     if ( p() -> buff.hit_combo -> up() ) 
       am *= 1 + p() -> buff.hit_combo -> stack_value();
+
+//    if ( p() -> legendary.the_wind_blows )
+//      am *= 1 + p() -> legendary.the_wind_blows -> effectN( 3 ).percent();
 
     return am;
   }
