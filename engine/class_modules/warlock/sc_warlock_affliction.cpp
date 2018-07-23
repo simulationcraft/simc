@@ -311,22 +311,30 @@ namespace warlock
       {
         td(d->state->target)->dots_agony->increment(1);
 
-        double tier_bonus = 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T19, B4 )->effectN( 1 ).percent();
+        double increment_max = 0.368;
+        
         double active_agonies = p()->get_active_dots( internal_id );
-        double accumulator_increment = rng().range( 0.0, p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.368 * tier_bonus : 0.32 ) / std::sqrt( active_agonies );
-
-        if (active_agonies == 1)
-          accumulator_increment *= 1.15;
+        increment_max *= std::pow(active_agonies, -2.0 / 3.0);
+        
+        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) )
+        {
+          increment_max *= 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T19, B4 )->effectN( 1 ).percent();
+        }
 
         if ( p()->talents.creeping_death->ok() )
-          accumulator_increment *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
+        {
+          increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
+        }
 
-        p()->agony_accumulator += accumulator_increment;
+        p()->agony_accumulator += rng().range( 0.0, increment_max );
 
         if ( p()->agony_accumulator >= 1 )
-       {
-          if (p()->azerite.wracking_brilliance.ok())
-            wb->run(p());
+        {
+          if ( p()->azerite.wracking_brilliance.ok() )
+          {
+            wb->run( p() );
+          }
+
           p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.agony );
           p()->agony_accumulator -= 1.0;
         }
