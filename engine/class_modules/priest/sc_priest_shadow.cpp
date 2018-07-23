@@ -1149,16 +1149,50 @@ struct dark_void_t final : public priest_spell_t
   }
 };
 
-struct void_eruption_t final : public priest_spell_t
+struct void_eruption_damage_t final : public priest_spell_t
 {
   propagate_const<action_t*> void_bolt;
-  const spell_data_t* data_spell;
+
+  void_eruption_damage_t( priest_t& p )
+    : priest_spell_t( "void_eruption_damage", p, p.find_spell( 228360 ) ),
+      void_bolt( nullptr )
+  {
+    may_miss          = false;
+    background = true;
+  }
+
+  void init() override
+  {
+    priest_spell_t::init();
+    void_bolt = player->find_action( "void_bolt" );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+    priest_spell_t::impact( s );
+  }
+
+  // TODO: Healing part of HotV
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double d = priest_spell_t::composite_da_multiplier( state );
+
+    if ( priest().active_items.heart_of_the_void )
+    {
+      d *= 1.0 + ( priest().active_items.heart_of_the_void->driver()->effectN( 1 ).percent() );
+    }
+
+    return d;
+  }
+};
+
+struct void_eruption_t final : public priest_spell_t
+{
   double insanity_required;
 
   void_eruption_t( priest_t& p, const std::string& options_str )
-    : priest_spell_t( "void_eruption", p, p.find_spell( 228360 ) ),
-      void_bolt( nullptr ),
-      data_spell( p.find_spell( 228260 ) )
+    : priest_spell_t( "void_eruption", p, p.find_spell( 228260 ) )
   {
     parse_options( options_str );
 
@@ -1168,8 +1202,11 @@ struct void_eruption_t final : public priest_spell_t
     }
     else
     {
-      insanity_required = data_spell->cost( POWER_INSANITY ) / 100.0;
+      insanity_required = data().cost( POWER_INSANITY ) / 100.0;
     }
+
+    impact_action = new void_eruption_damage_t(p);
+    add_child(impact_action);
 
     sim->print_debug( "Void Eruption requires {} insanity", insanity_required );
 
@@ -1178,22 +1215,7 @@ struct void_eruption_t final : public priest_spell_t
 
     may_miss          = false;
     aoe               = -1;
-    range             = data_spell->max_range();
-    radius            = data_spell->effectN( 1 ).radius();
     cooldown          = priest().cooldowns.void_bolt;
-    base_execute_time = data_spell->cast_time( priest().true_level ) *
-                        ( 1.0 + priest().talents.legacy_of_the_void->effectN( 3 ).percent() );
-  }
-
-  double spell_direct_power_coefficient( const action_state_t* ) const override
-  {
-    return priest().find_spell( 228360 )->effectN( 1 ).sp_coeff();
-  }
-
-  void init() override
-  {
-    priest_spell_t::init();
-    void_bolt = player->find_action( "void_bolt" );
   }
 
   void execute() override
@@ -1219,25 +1241,6 @@ struct void_eruption_t final : public priest_spell_t
         priest().buffs.overwhelming_darkness->bump( mss_vf_stacks - 1 );
       }
     }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-    priest_spell_t::impact( s );
-  }
-
-  // TODO: Healing part of HotV
-  double composite_da_multiplier( const action_state_t* state ) const override
-  {
-    double d = priest_spell_t::composite_da_multiplier( state );
-
-    if ( priest().active_items.heart_of_the_void )
-    {
-      d *= 1.0 + ( priest().active_items.heart_of_the_void->driver()->effectN( 1 ).percent() );
-    }
-
-    return d;
   }
 
   bool ready() override
