@@ -96,7 +96,6 @@ struct druid_td_t : public actor_target_data_t
   {
     dot_t* fury_of_elune;
     dot_t* gushing_wound;
-    //dot_t* bloody_gash;
     dot_t* lifebloom;
     dot_t* moonfire;
     dot_t* rake;
@@ -273,7 +272,6 @@ public:
   {
     stalwart_guardian_t*            stalwart_guardian;
     action_t* gushing_wound;
-    action_t* bloody_gash;
     heals::cenarion_ward_hot_t*     cenarion_ward_hot;
     action_t* brambles;
     action_t* brambles_pulse;
@@ -1515,16 +1513,6 @@ public:
       p() -> spec.gushing_wound -> effectN( 1 ).percent() * dmg );
   }
 
-  void trigger_bloody_gash(player_t* t, double dmg)
-  {
-     if ( p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B2 ) && p() -> rng().roll( p() -> find_spell(251789) -> proc_chance() ) )
-     {
-        p()->active.bloody_gash->target = t;
-        p()->active.bloody_gash->base_dd_min = p()->active.bloody_gash->base_dd_max = dmg;
-        p()->active.bloody_gash->execute();
-     }
-  }
-
   bool trigger_gore()
   {
     if ( ab::rng().roll( gore_chance ) )
@@ -2676,9 +2664,6 @@ public:
     if ( consumes_bloodtalons )
       pm *= 1.0 + p() -> buff.bloodtalons -> check_value();
 
-    if ( snapshots_tf )
-      pm *= 1.0 + p() -> buff.tigers_fury -> check_value();
-
     if ( moment_of_clarity )
       pm *= 1.0 + p() -> buff.clearcasting -> check_value();
 
@@ -3493,7 +3478,43 @@ struct rake_t : public cat_attack_t
 
 struct rip_t : public cat_attack_t
 {
+  // Bloody Gash ============================================================
+
+  struct bloody_gash_t : public cat_attack_t
+  {
+    bloody_gash_t( druid_t* p ) :
+      cat_attack_t( "bloody_gash", p, p -> spec.bloody_gash )
+    {
+      background = dual = proc = true;
+      may_miss = may_dodge = may_parry = may_crit = false;
+      may_block = true;
+    }
+
+    virtual void init() override
+    {
+      cat_attack_t::init();
+
+      snapshot_flags &= STATE_NO_MULTIPLIER;
+      snapshot_flags |= STATE_TGT_MUL_DA;
+    }
+
+    void execute() override
+    {
+      cat_attack_t::execute();
+
+      p() -> buff.apex_predator -> trigger();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      cat_attack_t::impact(s);
+
+      trigger_wildshapers_clutch( s );
+    }
+  };
+
   double combo_point_on_tick_proc_rate;
+  bloody_gash_t* bloody_gash;
 
   rip_t( druid_t* p, const std::string& options_str )
     : cat_attack_t( "rip", p, p->find_affinity_spell( "Rip" ), options_str )
@@ -3505,7 +3526,7 @@ struct rip_t : public cat_attack_t
 
     trigger_tier17_2pc = p -> sets -> has_set_bonus( DRUID_FERAL, T17, B2 );
 
-    if (p->sets->has_set_bonus(DRUID_FERAL, T20, B4))
+    if ( p-> sets -> has_set_bonus( DRUID_FERAL, T20, B4) )
     {
        base_multiplier *= (1.0 + p-> find_spell(242235) -> effectN(1).percent());
        dot_duration += timespan_t::from_millis( p->find_spell(242235) -> effectN(2).base_value() );
@@ -3514,7 +3535,7 @@ struct rip_t : public cat_attack_t
     base_tick_time *= 1.0 + p -> talent.jagged_wounds -> effectN( 1 ).percent();
     dot_duration   *= 1.0 + p -> talent.jagged_wounds -> effectN( 2 ).percent();
 
-    if ( p->sets -> has_set_bonus(DRUID_FERAL, T20, B2))
+    if ( p -> sets -> has_set_bonus( DRUID_FERAL, T20, B2) )
     {
        energize_amount = p->find_spell(245591)->effectN(1).base_value();
        energize_resource = RESOURCE_ENERGY;
@@ -3522,9 +3543,15 @@ struct rip_t : public cat_attack_t
     }
 
     combo_point_on_tick_proc_rate = 0.0;
-    if ( p->azerite.gushing_lacerations.ok() )
+    if ( p -> azerite.gushing_lacerations.ok() )
     {
       combo_point_on_tick_proc_rate = p->find_spell( 279468 )->proc_chance();
+    }
+
+    if ( p -> sets -> has_set_bonus( DRUID_FERAL, T21, B2 ) )
+    {
+      bloody_gash = new bloody_gash_t( p );
+      add_child( bloody_gash );
     }
   }
 
@@ -3570,9 +3597,9 @@ struct rip_t : public cat_attack_t
   {
      base_t::tick( d );
 
-     trigger_wildshapers_clutch(d->state);
+     trigger_wildshapers_clutch( d -> state );
+     trigger_bloody_gash( d );
 
-     trigger_bloody_gash(d->target, d->state->result_total);
      p() -> buff.apex_predator -> trigger();
 
     if ( p()->rng().roll( combo_point_on_tick_proc_rate ) )
@@ -3582,45 +3609,18 @@ struct rip_t : public cat_attack_t
     }
   }
 
-  void last_tick( dot_t* d ) override
+  void trigger_bloody_gash( dot_t* d )
   {
-    cat_attack_t::last_tick( d );
+    if ( ! p() -> sets -> has_set_bonus( DRUID_FERAL, T21, B2 ) )
+      return;
+
+    if ( p() -> rng().roll( p() -> find_spell( 251789 ) -> proc_chance() ) )
+    {
+      bloody_gash -> target = d -> target;
+      bloody_gash -> base_dd_min = bloody_gash -> base_dd_max = d -> state -> result_total;
+      bloody_gash -> execute();
+    }
   }
-};
-
-// Bloody Gash ==============================================================
-struct bloody_gash_t : public cat_attack_t
-{
-   bloody_gash_t(druid_t* p) :
-      cat_attack_t("bloody_gash", p, p -> find_spell(252750) )
-   {
-      background = dual = proc = true;
-      may_miss = may_dodge = may_parry = may_crit = false;
-      may_block = true;
-   }
-
-   virtual void init() override
-   {
-     cat_attack_t::init();
-
-     snapshot_flags &= STATE_NO_MULTIPLIER;
-     snapshot_flags |= STATE_TGT_MUL_DA;
-   }
-
-   void execute() override
-   {
-      cat_attack_t::execute();
-
-      p() -> buff.apex_predator -> trigger();
-   }
-
-   void impact(action_state_t* s) override
-   {
-     cat_attack_t::impact(s);
-
-     trigger_wildshapers_clutch(s);
-   }
-
 };
 
 // Savage Roar ==============================================================
@@ -6883,8 +6883,6 @@ void druid_t::init_spells()
     active.yseras_gift        = new heals::yseras_gift_t( this );
   if ( sets -> has_set_bonus( DRUID_FERAL, T17, B4 ) )
     active.gushing_wound      = new cat_attacks::gushing_wound_t( this );
-  if ( sets -> has_set_bonus( DRUID_FERAL, T21, B2 ) )
-     active.bloody_gash       = new cat_attacks::bloody_gash_t( this );
   if ( talent.brambles -> ok() )
   {
     active.brambles           = new spells::brambles_t( this );
