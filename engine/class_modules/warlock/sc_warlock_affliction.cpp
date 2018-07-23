@@ -316,9 +316,10 @@ namespace warlock
         double accumulator_increment = rng().range( 0.0, p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T19, B4 ) ? 0.368 * tier_bonus : 0.32 ) / std::sqrt( active_agonies );
 
         if (active_agonies == 1)
-        {
           accumulator_increment *= 1.15;
-        }
+
+        if ( p()->talents.creeping_death->ok() )
+          accumulator_increment *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
 
         p()->agony_accumulator += accumulator_increment;
 

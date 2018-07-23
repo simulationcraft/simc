@@ -4,7 +4,7 @@ level=110
 race=troll
 role=spell
 position=back
-talents=2023031
+talents=3032021
 
 # Default consumables
 potion=deadly_grace
@@ -95,28 +95,28 @@ actions.movement+=/supernova
 head=runebound_collar,id=152138,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
 shoulders=runebound_mantle,id=152141,bonus_id=3612/1502
-back=drape_of_the_arcane_tempest,id=147145,bonus_id=3563/1512,enchant=binding_of_intellect
+back=runebound_cape,id=152136,bonus_id=3612/1502,enchant=binding_of_intellect
 chest=runebound_tunic,id=152140,bonus_id=3612/1502
 wrists=blooddrenched_bindings,id=151954,bonus_id=3612/1502
-hands=gloves_of_the_arcane_tempest,id=147146,bonus_id=3563/1512
+hands=runebound_gloves,id=152137,bonus_id=3612/1502
 waist=cord_of_blossoming_petals,id=151952,bonus_id=3612/1502
-legs=runebound_leggings,id=152139,bonus_id=3612/1502
+legs=mystic_kilt_of_the_rune_master,id=132451,bonus_id=3459/3630
 feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
-finger1=soul_of_the_archmage,id=151642,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
+finger1=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_versatility
 finger2=shard_of_the_exodar,id=132410,bonus_id=3630,gem_id=151585,enchant=binding_of_versatility
-trinket1=tarnished_sentinel_medallion,id=147017,bonus_id=3563/1512
+trinket1=prototype_personnel_decimator,id=151962,bonus_id=3612/40/1502/3528
 trinket2=amanthuls_vision,id=154172,bonus_id=4213
 main_hand=aluneth,id=127857,bonus_id=729/1505/1505/1505,gem_id=155846/155850/155846
 
 # Gear Summary
-# gear_ilvl=244.20
-# gear_stamina=1288
-# gear_intellect=1018
-# gear_crit_rating=507
-# gear_haste_rating=482
-# gear_mastery_rating=342
-# gear_versatility_rating=298
-# gear_armor=241
-# set_bonus=tier20_2pc=1
+# gear_ilvl=247.40
+# gear_stamina=1324
+# gear_intellect=1056
+# gear_crit_rating=463
+# gear_haste_rating=579
+# gear_mastery_rating=271
+# gear_versatility_rating=309
+# gear_avoidance_rating=27
+# gear_armor=253
 # set_bonus=tier21_2pc=1
 # set_bonus=tier21_4pc=1

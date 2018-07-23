@@ -247,6 +247,7 @@ public:
 
     // Azerite Trait
     stat_buff_t* iron_fists;
+    buff_t* swift_roundhouse;
   } buff;
 
 public:
@@ -270,6 +271,9 @@ public:
     gain_t* serenity;
     gain_t* spirit_of_the_crane;
     gain_t* tiger_palm;
+
+    // Azerite Traits
+    gain_t* open_palm_strikes;
   } gain;
 
   struct procs_t
@@ -510,6 +514,9 @@ public:
 
     // Legendaries
     const spell_data_t* the_emperors_capacitor;
+    const spell_data_t* the_wind_blows;
+
+    // Azerite Traits
   } passives;
 
   struct legendary_t
@@ -595,7 +602,7 @@ public:
     // Windwalker
     // Fists of Fury grants you 0 Critical Strike for 6 sec when it hits at least 4 enemies.
     azerite_power_t iron_fists;
-    // When you Combo Strike, the cooldown of Touch of Death is reduced by 0.0 sec. Touch of Death deals an additional 1540 damage.
+    // When you Combo Strike, the cooldown of Touch of Death is reduced by 0.1 sec. Touch of Death deals an additional 1540 damage.
     azerite_power_t meridian_strikes;
     // When Fists of Fury deals damage, it has a 5% chance to refund 1 Chi, and it deals 12 additional damage.
     azerite_power_t open_palm_strikes;
@@ -2049,8 +2056,10 @@ struct monk_action_t: public Base
   bool brewmaster_damage_increase_two;
   bool brewmaster_damage_increase_dot_three;
   bool brewmaster_healing_increase;
+
   bool mistweaver_damage_increase;
   bool mistweaver_damage_increase_dot;
+
   bool windwalker_damage_increase;
   bool windwalker_damage_increase_two;
   bool windwalker_damage_increase_three;
@@ -2186,6 +2195,28 @@ public:
 
         if ( windwalker_healing_increase )
           ab::base_dd_multiplier *= 1.0 + player -> spec.windwalker_monk -> effectN( 11 ).percent();
+
+        // The Wind blows increases damage by 3%
+        if ( player -> legendary.the_wind_blows )
+        {
+          if ( ab::data().affected_by( player -> passives.the_wind_blows -> effectN( 1 ) ) )
+          {
+            // cancel out Fists of Fury damage and use the tick version as a direct damage
+            if ( ab::data().id() == 117418 )
+              ab::base_dd_multiplier *= 1.0;
+            else
+              ab::base_dd_multiplier *= 1.0 + player -> passives.the_wind_blows -> effectN( 1 ).percent();
+          }
+          if ( ab::data().affected_by( player -> passives.the_wind_blows -> effectN( 2 ) ) )
+          {
+            // treat Fists of Fury damage as a direct damage instead of a tick damage
+            if (ab::data().id() == 117418)
+              ab::base_dd_multiplier *= 1.0 + player-> passives.the_wind_blows -> effectN( 2 ).percent();
+            else
+              ab::base_td_multiplier *= 1.0 + player-> passives.the_wind_blows -> effectN( 2 ).percent();
+          }
+        }
+
 
         if ( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 14 ) ) )
           ab::trigger_gcd += player -> spec.windwalker_monk -> effectN( 14 ).time_value(); // Saved as -500 milliseconds
@@ -2818,6 +2849,19 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     return am;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = base_t::bonus_da( s );
+
+    if ( p() -> azerite.elusive_footwork.ok() )
+    {
+      if ( base_t::data().affected_by( p() -> azerite.elusive_footwork.spell_ref().effectN( 3 ) ) )
+        b += p() -> azerite.elusive_footwork.value( 3 );
+    }
+
+    return b;
+  }
+
   // Physical tick_action abilities need amount_type() override, so the
   // tick_action are properly physically mitigated.
   dmg_e amount_type( const action_state_t* state, bool periodic ) const override
@@ -2962,6 +3006,16 @@ struct tiger_palm_t: public monk_melee_attack_t
     return am;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = monk_melee_attack_t::bonus_da( s );
+
+    if ( p() -> azerite.pressure_point.ok() )
+        b += p() -> azerite.pressure_point.value();
+
+    return b;
+  }
+
   virtual void execute() override
   {
     // Trigger Combo Strikes
@@ -3062,6 +3116,19 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     if ( p -> spec.rising_sun_kick_2 )
       attack_power_mod.direct *= 1 + p -> spec.rising_sun_kick_2 -> effectN( 1 ).percent();
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = monk_melee_attack_t::bonus_da( s );
+
+    if ( p() -> buff.swift_roundhouse -> up() )
+    {
+        b += p() -> azerite.swift_roundhouse.value() * p() -> buff.swift_roundhouse -> stack();
+        p() -> buff.swift_roundhouse -> expire();
+    }
+
+    return b;
   }
 
   void init() override
@@ -3237,6 +3304,9 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
 
     if ( rng().roll( p() -> spec.teachings_of_the_monastery -> effectN( 1 ).percent() ) )
         p() -> cooldown.rising_sun_kick -> reset( true );
+
+    if ( p() -> azerite.swift_roundhouse.ok() )
+      p() -> buff.swift_roundhouse -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3377,6 +3447,9 @@ struct blackout_kick_t: public monk_melee_attack_t
       }
       default: break;
     }
+
+    if ( p() -> azerite.swift_roundhouse.ok() )
+      p() -> buff.swift_roundhouse -> trigger();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -3445,7 +3518,12 @@ struct blackout_strike_t: public monk_melee_attack_t
     {
       // if player level >= 78
       if ( p() -> mastery.elusive_brawler )
+      {
         p() -> buff.elusive_brawler -> trigger();
+        
+        if ( p() -> azerite.elusive_footwork.ok() && s -> result == RESULT_CRIT )
+          p() -> buff.elusive_brawler -> trigger( p() -> azerite.elusive_footwork.spell_ref().effectN( 2 ).base_value() );
+      }
     }
   }
 };
@@ -3648,6 +3726,24 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     dot_duration = timespan_t::zero();
     trigger_gcd = timespan_t::zero();
   }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = monk_melee_attack_t::bonus_da( s );
+
+    if ( p() -> azerite.open_palm_strikes.ok() )
+        b += p() -> azerite.open_palm_strikes.value( 4 );
+
+    return b;
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    if ( p() -> azerite.open_palm_strikes.ok() && rng().roll( p() -> azerite.open_palm_strikes.spell_ref().effectN( 2 ).percent() ) )
+      p() -> gain.open_palm_strikes -> add( RESOURCE_CHI, p() -> azerite.open_palm_strikes.spell_ref().effectN( 3 ).base_value() );
+  }
 };
 
 struct fists_of_fury_t: public monk_melee_attack_t
@@ -3716,7 +3812,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     // Get the number of targets from the non sleeping target list
     auto targets = sim -> target_non_sleeping_list.size();
 
-    if ( p() -> azerite.iron_fists.enabled() && targets >= p() -> azerite.iron_fists.spell_ref().effectN( 2 ).base_value() )
+    if ( p() -> azerite.iron_fists.ok() && num_targets_hit >= p() -> azerite.iron_fists.spell_ref().effectN( 2 ).base_value() )
       p() -> buff.iron_fists -> trigger();
   }
 
@@ -3895,6 +3991,9 @@ struct melee_t: public monk_melee_attack_t
     if ( p() -> buff.hit_combo -> up() ) 
       am *= 1 + p() -> buff.hit_combo -> stack_value();
 
+    if ( p() -> legendary.the_wind_blows )
+      am *= 1 + p() -> passives.the_wind_blows -> effectN( 3 ).percent();
+
     return am;
   }
 
@@ -4019,16 +4118,6 @@ struct keg_smash_t: public monk_melee_attack_t
       am *= 1 + p() -> legendary.stormstouts_last_gasp -> effectN( 2 ).percent();
 
     return am;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = monk_melee_attack_t::bonus_da( s );
-
-    if ( td( s -> target ) -> dots.breath_of_fire -> is_ticking() )
-      b += p() -> azerite.boiling_brew.value();
-
-    return b;
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4930,7 +5019,17 @@ struct breath_of_fire_t: public monk_spell_t
       tick_may_crit = may_crit = true;
       hasted_ticks = false;
     }
-  };
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = base_t::bonus_da( s );
+
+    if ( p() -> azerite.boiling_brew.ok() )
+      b += p() -> azerite.boiling_brew.value( 2 );
+
+    return b;
+  }
+};
 
   periodic_t* dot_action;
 
@@ -6898,6 +6997,9 @@ void monk_t::init_spells()
 
   // Legendaries
   passives.the_emperors_capacitor           = find_spell( 235054 );
+  passives.the_wind_blows                   = find_spell( 281452 );
+
+  // Azerite Traits
 
   // Mastery spells =========================================
   mastery.combo_strikes              = find_mastery_spell( MONK_WINDWALKER );
@@ -7110,7 +7212,7 @@ void monk_t::create_buffs()
 
   // Windwalker
   buff.bok_proc = make_buff( this, "bok_proc", passives.bok_proc )
-                  -> set_chance( spec.combo_breaker -> effectN( 1 ).percent() );
+                  -> set_chance( azerite.pressure_point.ok() ? azerite.pressure_point.spell_ref().effectN( 2 ).percent() : spec.combo_breaker -> effectN( 1 ).percent() );
 
   buff.combo_master = make_buff( this, "combo_master", find_spell( 211432 ) )
                       -> set_default_value( find_spell( 211432 ) -> effectN( 1 ).base_value() )
@@ -7155,6 +7257,8 @@ void monk_t::create_buffs()
   buff.iron_fists = make_buff<stat_buff_t>( this, "iron_fists", find_spell( 272806 ) );
   buff.iron_fists -> set_trigger_spell( azerite.iron_fists.spell_ref().effectN( 1 ).trigger() );
   buff.iron_fists -> set_default_value( azerite.iron_fists.value() );
+
+  buff.swift_roundhouse = make_buff( this, "swift_roundhouse", find_spell( 278710 ) );
 }
 
 // monk_t::init_gains =======================================================
@@ -7178,6 +7282,9 @@ void monk_t::init_gains()
   gain.serenity                 = get_gain( "serenity" );
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
+
+  // Azerite Traits
+  gain.open_palm_strikes        = get_gain( "open_palm_strikes" );
 }
 
 // monk_t::init_procs =======================================================
