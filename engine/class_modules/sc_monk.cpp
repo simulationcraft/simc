@@ -2300,8 +2300,12 @@ public:
       if ( !compare_previous_combo_strikes( new_ability ) )
       {
         p() -> buff.combo_strikes -> trigger();
+
         if ( p() -> talent.hit_combo -> ok() )
           p() -> buff.hit_combo -> trigger();
+
+        if ( p() -> azerite.meridian_strikes.ok() )
+          p() -> cooldown.touch_of_death -> adjust( timespan_t::from_seconds( -1 * ( p() -> azerite.meridian_strikes.spell_ref().effectN( 2 ).base_value() / 100 ) ), true ); // Saved as 10
       }
       else
       {
@@ -4225,6 +4229,16 @@ struct touch_of_death_t: public monk_spell_t
     s -> result_total = amount;
 
     return amount;
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = base_t::bonus_da( s );
+
+    if ( p() -> azerite.meridian_strikes.ok() )
+      b += p() -> azerite.meridian_strikes.value();
+
+    return b;
   }
 
   void last_tick( dot_t* dot ) override
