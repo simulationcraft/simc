@@ -1396,8 +1396,6 @@ public:
     form_mask( ab::data().stance_mask() ), may_autounshift( true ), autoshift( 0 ),
     rend_and_tear( ab::data().affected_by( player -> spec.thrash_bear_dot -> effectN( 2 ) ) ),
     hasted_gcd( ab::data().affected_by( player -> spec.druid -> effectN( 4 ) ) ),
-    balance_damage( ab::data().affected_by( player -> spec.balance -> effectN( 1 ) ) ),
-    balance_damage_periodic( ab::data().affected_by( player -> spec.balance -> effectN( 2 ) ) ),
     resto_damage( ab::data().affected_by( player -> spec.restoration -> effectN(8) ) ),
     resto_damage_periodic( ab::data().affected_by( player -> spec.restoration -> effectN(9) ) ),
     gore_chance( player -> spec.gore -> proc_chance() ), triggers_galactic_guardian( true )
@@ -1408,10 +1406,19 @@ public:
 
     gore_chance += p() -> sets -> set( DRUID_GUARDIAN, T19, B2 ) -> effectN( 1 ).percent();
 
-    if ( balance_damage )
-      ab::spell_power_mod.direct *= 1.0 + player -> spec.balance -> effectN( 1 ).percent();
-    if ( balance_damage_periodic )
-      ab::spell_power_mod.tick *= 1.0 + player -> spec.balance -> effectN( 2 ).percent();
+    if (player->specialization() == DRUID_BALANCE)
+    {
+      //dots
+      if (s->affected_by(player->spec.balance->effectN(2)))
+      {
+        base_td_multiplier *= 1.0 + player->spec.balance->effectN(2).percent();
+      }
+      //dd
+      if (s->affected_by(player->spec.balance->effectN(1)))
+      {
+        base_dd_multiplier *= 1.0 + player->spec.balance->effectN(1).percent();
+      }
+    }
 
     if (resto_damage)
       ab::base_dd_multiplier *= 1.0 + player->spec.restoration->effectN(8).percent();
@@ -5896,15 +5903,15 @@ struct solar_wrath_t : public druid_spell_t
   void impact (action_state_t* s) override
   {
     druid_spell_t::impact (s);
-    solar_wrath_state_t* st = debug_cast<solar_wrath_state_t*>(s);
-    if (st->empowered)
-    {
-      p ()->trigger_solar_empowerment (s);
-    }
 
     if (p()->azerite.sunblaze.ok())
     {
       p()->buff.sunblaze->trigger(1, p()->azerite.sunblaze.value());
+    }
+    solar_wrath_state_t* st = debug_cast<solar_wrath_state_t*>(s);
+    if (st->empowered)
+    {
+      p ()->trigger_solar_empowerment (s);
     }
   }
 
@@ -6198,6 +6205,8 @@ struct starsurge_t : public druid_spell_t
 
   void execute() override
   {
+
+
     druid_spell_t::execute();
 
     if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T20, B4 ))
@@ -6240,7 +6249,8 @@ struct starsurge_t : public druid_spell_t
   {
     double da = druid_spell_t::bonus_da(s);
 
-    da += p()->azerite.sunblaze.value(1);
+    if(p()->buff.sunblaze->up())
+      da += p()->azerite.sunblaze.value(1);
 
     return da;
   }
