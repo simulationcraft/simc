@@ -35,23 +35,9 @@ If you believe that the reported analysis is incorrect please open an [issue](..
 
 Also make sure to check our [common issues wiki](../../wiki/CommonIssues).
 
-## How Can I Make Changes to the Models?
-
-So you found an error and want to make a quick correction? Perhaps there is an option or feature you wish to add? Time to get your hands dirty!
-
-Each release includes all the source code used to build that release. The platform specific downloads will include both the source and the necessary build scripts. Alternatively, you can live on the bleeding edge of development and extract the very latest updates from the source code repository.
-
-Platform specific building instructions can be found on the [How-To-Build wiki](../../wiki/HowToBuild).
 
 ## How Can I Contribute?
-
-The SimulationCraft team is comprised of volunteer developers from all over the world. We are always looking for new contributors. While C++ expertise is certainly helpful, we have several key members with limited coding experience. Maintaining optimal talent, gear, and default action priority lists is a huge task and requires virtually zero C++ knowledge.
-
-We are a very laid back group of developers. While certain project members have areas of expertise, there is little in the way of strict responsibility and ownership. Developers are expected to exercise their initiative and help out wherever needed. GitHub provides considerable utilities for oversight. The mantra is: Just check it in. Don't ask for permission. If the code needs to be changed for functional (or artistic!) reasons, someone will revert/modify as needed.
-
-If you are interested in joining the team, contact us on Discord or send an email to natehieter@gmail.com with your contact info. We look forward to working with you!
-
-Checkout the [Developers Corner wiki page](../../wiki/Participate) as well.
+See [Contributing](CONTRIBUTING.md).
 
 ## Community
 
