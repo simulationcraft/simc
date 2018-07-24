@@ -2908,6 +2908,34 @@ bool util::contains_non_ascii( const std::string& s )
   return false;
 }
 
+/**
+ * Print chained exceptions, separated by ' :'.
+ */
+void util::print_chained_exception( const std::exception& e, std::ostream& out, int level)
+
+{
+  fmt::print(out, "{}{}", level > 0 ? ": " : "", e.what());
+  try {
+      std::rethrow_if_nested(e);
+  } catch(const std::exception& e) {
+    print_chained_exception(e, out, level+1);
+  } catch(...) {}
+}
+void util::print_chained_exception( std::exception_ptr eptr, std::ostream& out, int level)
+
+{
+  try
+  {
+    if (eptr) {
+      std::rethrow_exception(eptr);
+    }
+  }
+  catch(const std::exception& e)
+  {
+    print_chained_exception(e, out, level);
+  }
+}
+
 namespace util {
 /* Determine number of digits for a given Number
  *

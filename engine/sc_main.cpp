@@ -222,19 +222,6 @@ struct special_effect_initializer_t
   { unique_gear::unregister_special_effects(); }
 };
 
-/**
- * Print chained exceptions, separated by ' :'.
- */
-void print_exception(const std::exception& e, int level =  0)
-{
-  fmt::print(stderr, "{}{}", level > 0 ? ": " : "", e.what());
-  try {
-      std::rethrow_if_nested(e);
-  } catch(const std::exception& e) {
-      print_exception(e, level+1);
-  } catch(...) {}
-}
-
 } // anonymous namespace ====================================================
 
 // sim_t::main ==============================================================
@@ -359,9 +346,10 @@ int sim_t::main( const std::vector<std::string>& args )
 
     return canceled;
   }
-  catch (const std::exception& e) {
+  catch (const std::nested_exception& e) {
+    // Only catch exception we have already re-thrown in init functions.
     std::cerr << "Error: ";
-    print_exception(e);
+    util::print_chained_exception(e.nested_ptr());
     std::cerr << std::endl;
     return 1;
   }
