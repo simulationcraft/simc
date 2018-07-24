@@ -5561,10 +5561,10 @@ void hunter_t::apl_surv()
   default_list -> add_talent( this, "Chakrams" );
   default_list -> add_action( this, "Serpent Sting", "target_if=min:remains,if=refreshable&buff.mongoose_fury.down|buff.vipers_venom.up" );
   default_list -> add_action( this, "Aspect of the Eagle", "if=target.distance>=6" );
-  default_list -> add_action( "mongoose_bite_eagle,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60,if=buff.aspect_of_the_eagle.up" );
+  default_list -> add_action( "mongoose_bite_eagle,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60" );
   default_list -> add_talent( this, "Mongoose Bite", "target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60" );
   default_list -> add_talent( this, "Butchery" );
-  default_list -> add_action( "raptor_strike_eagle,target_if=min:dot.internal_bleeding.stack&buff.aspect_of_the_eagle.up" );
+  default_list -> add_action( "raptor_strike_eagle,target_if=min:dot.internal_bleeding.stack" );
   default_list -> add_action( this, "Raptor Strike", "target_if=min:dot.internal_bleeding.stack" );
 }
 
