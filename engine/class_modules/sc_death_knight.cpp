@@ -7408,7 +7408,7 @@ void death_knight_t::default_apl_frost()
 
 
   // "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available"
-  bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up", "Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available" );
+  bos_pooling -> add_action( this, "Howling Blast", "if=buff.rime.up", "Breath of Sindragosa pooling rotation : starts 20s before Pillar of Frost + BoS are available" );
   bos_pooling -> add_action( this, "Obliterate", "if=rune.time_to_4<gcd&runic_power.deficit>=25" );
   bos_pooling -> add_talent( this, "Glacial Advance", "if=runic_power.deficit<20&cooldown.pillar_of_frost.remains>rune.time_to_4" );
   bos_pooling -> add_action( this, "Frost Strike", "if=runic_power.deficit<20&cooldown.pillar_of_frost.remains>rune.time_to_4" );
@@ -7438,10 +7438,11 @@ void death_knight_t::default_apl_frost()
   obliteration -> add_action( this, "Howling Blast", "if=buff.rime.up&spell_targets.howling_blast>=2" );
   obliteration -> add_action( this, "Frost Strike", "if=!buff.rime.up|runic_power.deficit<10|rune.time_to_2>gcd" );
   obliteration -> add_action( this, "Howling Blast", "if=buff.rime.up" );
+  obliteration -> add_action( this, "Frostcythe", "if=spell_targets.frostscythe>=2" );
   obliteration -> add_action( this, "Obliterate" );
 
   // Standard rotation
-  standard -> add_action( this, "Remorseless Winter" );
+  standard -> add_action( this, "Remorseless Winter", "", "Standard single-target rotation" );
   standard -> add_action( this, "Frost Strike", "if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled" );
   standard -> add_action( this, "Howling Blast", "if=buff.rime.up" );
   standard -> add_action( this, "Obliterate", "if=!buff.frozen_pulse.up&talent.frozen_pulse.enabled" );
