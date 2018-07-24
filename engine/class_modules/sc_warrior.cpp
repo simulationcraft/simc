@@ -392,6 +392,36 @@ public:
     artifact_power_t neltharions_thunder;
   } artifact;
 
+  // Azerite traits
+  struct
+  {
+    // All
+    azerite_power_t breach;
+    azerite_power_t moment_of_glory;
+    azerite_power_t bury_the_hatchet;
+    // Prot
+    azerite_power_t reinforced_plating;
+    azerite_power_t iron_fortress;
+    azerite_power_t deafening_crash;
+    azerite_power_t callous_reprisal;
+    azerite_power_t brace_for_impact;
+    azerite_power_t bloodsport;
+    // Arms
+    azerite_power_t test_of_might;
+    azerite_power_t seismic_wave;
+    azerite_power_t lord_of_war;
+    azerite_power_t gathering_storm;
+    azerite_power_t executioners_precision;
+    azerite_power_t crushing_assault;
+    // fury
+    azerite_power_t trample_the_weak;
+    azerite_power_t simmering_rage;
+    azerite_power_t reckless_flurry;
+    azerite_power_t pulverizing_blows;
+    azerite_power_t infinite_fury;
+    azerite_power_t bloodcraze;
+  } azerite;
+
   // Default consumables
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -413,7 +443,8 @@ public:
       spec(),
       talents(),
       legendary(),
-      artifact()
+      artifact(),
+      azerite()
   {
     non_dps_mechanics =
         false;  // When set to false, disables stuff that isn't important, such as second wind, bloodthirst heal, etc.
@@ -1023,7 +1054,7 @@ struct devastate_t : public warrior_attack_t
   double shield_slam_reset;
   devastate_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "devastate", p, p->spec.devastate ),
-      shield_slam_reset( p -> spec.shield_slam_2 -> effectN( 1 ).percent() )
+      shield_slam_reset( p->spec.shield_slam_2->effectN( 1 ).percent() )
   {
     weapon        = &( p->main_hand_weapon );
     impact_action = p->active.deep_wounds_PROT;
@@ -1817,8 +1848,7 @@ struct colossus_smash_t : public warrior_attack_t
 
 struct deep_wounds_ARMS_t : public warrior_attack_t
 {
-  deep_wounds_ARMS_t( warrior_t* p )
-    : warrior_attack_t( "deep_wounds", p, p-> find_spell( 262115 ) )
+  deep_wounds_ARMS_t( warrior_t* p ) : warrior_attack_t( "deep_wounds", p, p->find_spell( 262115 ) )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
@@ -1994,9 +2024,8 @@ struct execute_arms_t : public warrior_attack_t
 
     trigger_attack->last_resource_cost = last_resource_cost;
     trigger_attack->execute();
-    p()->resource_gain(
-        RESOURCE_RAGE, last_resource_cost * 0.3,
-        p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
+    p()->resource_gain( RESOURCE_RAGE, last_resource_cost * 0.3,
+                        p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
 
     p()->buff.ayalas_stone_heart->expire();
     p()->buff.sudden_death->expire();
@@ -2977,7 +3006,7 @@ struct revenge_t : public warrior_attack_t
   double shield_slam_reset;
   revenge_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "revenge", p, p->spec.revenge ),
-      shield_slam_reset(p->spec.shield_slam_2->effectN( 1 ).percent() )
+      shield_slam_reset( p->spec.shield_slam_2->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     aoe           = -1;
@@ -3685,7 +3714,7 @@ struct avatar_t : public warrior_spell_t
 
     p()->buff.avatar->trigger();
   }
-  
+
   bool verify_actor_spec() const override
   {
     if ( p()->talents.avatar->ok() )
@@ -4384,7 +4413,7 @@ void warrior_t::init_spells()
   spec.shield_block     = find_specialization_spell( "Shield Block" );
   spec.shield_block_2   = find_specialization_spell( 231847 );
   spec.shield_slam      = find_specialization_spell( "Shield Slam" );
-  spec.shield_slam_2      = find_specialization_spell( 231834 );
+  spec.shield_slam_2    = find_specialization_spell( 231834 );
   spec.shield_wall      = find_specialization_spell( "Shield Wall" );
   spec.shockwave        = find_specialization_spell( "Shockwave" );
   spec.slam             = find_specialization_spell( "Slam" );
@@ -4473,6 +4502,32 @@ void warrior_t::init_spells()
   artifact.bastion_of_the_aspects       = find_artifact_spell( "Bastion of the Aspects" );
   artifact.gleaming_scales              = find_artifact_spell( "Gleaming Scales" );
   artifact.neltharions_thunder          = find_artifact_spell( "Neltarion's Thunder" );
+
+  // All
+  azerite.breach           = find_azerite_spell( "Breach" );
+  azerite.moment_of_glory  = find_azerite_spell( "Moment of Glory" );
+  azerite.bury_the_hatchet = find_azerite_spell( "Bury the Hatchet" );
+  // Prot
+  azerite.reinforced_plating = find_azerite_spell( "Reinforced Plating" );
+  azerite.iron_fortress      = find_azerite_spell( "Iron Fortress" );
+  azerite.deafening_crash    = find_azerite_spell( "Deafening Crash" );
+  azerite.callous_reprisal   = find_azerite_spell( "Callous Reprisal" );
+  azerite.brace_for_impact   = find_azerite_spell( "Brace for Impact" );
+  azerite.bloodsport         = find_azerite_spell( "Bloodsport" );
+  // Arms
+  azerite.test_of_might          = find_azerite_spell( "Test of Might" );
+  azerite.seismic_wave           = find_azerite_spell( "Seismic Wave" );
+  azerite.lord_of_war            = find_azerite_spell( "Lord of War" );
+  azerite.gathering_storm        = find_azerite_spell( "Gathering Storm" );
+  azerite.executioners_precision = find_azerite_spell( "Executioner's Precision" );
+  azerite.crushing_assault       = find_azerite_spell( "Crushing Assault" );
+  // Fury
+  azerite.trample_the_weak  = find_azerite_spell( "Trample the Weak" );
+  azerite.simmering_rage    = find_azerite_spell( "Simmering Rage" );
+  azerite.reckless_flurry   = find_azerite_spell( "Reckless Flurry" );
+  azerite.pulverizing_blows = find_azerite_spell( "Pulverizing Blows" );
+  azerite.infinite_fury     = find_azerite_spell( "Infinite fury" );
+  azerite.bloodcraze        = find_azerite_spell( "Bloodcraze" );
 
   // Generic spells
   spell.battle_shout        = find_class_spell( "Battle Shout" );
