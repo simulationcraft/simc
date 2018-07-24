@@ -318,7 +318,6 @@ public:
     // Guardian
     azerite_power_t craggy_bark;
     azerite_power_t gory_regeneration;
-    azerite_power_t grove_tending;
     azerite_power_t guardians_wrath;
     azerite_power_t heartblood;
     azerite_power_t layered_mane;
@@ -408,6 +407,7 @@ public:
     buff_t* survival_instincts;
     buff_t* guardian_tier17_4pc;
     buff_t* guardian_tier19_4pc;
+    buff_t* guardians_wrath;
 
     // Restoration
     buff_t* incarnation_tree;
@@ -4094,6 +4094,29 @@ struct maul_t : public bear_attack_t
 
     bear_attack_t::update_ready( cd );
   }
+
+  virtual void impact( action_state_t* s ) override
+  {
+    bear_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      p() -> buff.guardians_wrath -> up(); // benefit tracking
+      p() -> buff.guardians_wrath -> trigger();
+    }
+  }
+
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double da = bear_attack_t::bonus_da( s );
+
+    if ( p() -> azerite.guardians_wrath.ok() )
+    {
+      da += p() -> azerite.guardians_wrath.value( 2 );
+    }
+
+    return da;
+  }
 };
 
 // Pulverize ================================================================
@@ -5353,6 +5376,15 @@ struct ironfur_t : public druid_spell_t
     return bd;
   }
 
+  double cost() const override
+  {
+    double c = druid_spell_t::cost();
+
+    c += p() -> buff.guardians_wrath -> check_stack_value();
+
+    return c;
+  }
+
   virtual void execute() override
   {
     druid_spell_t::execute();
@@ -5364,6 +5396,9 @@ struct ironfur_t : public druid_spell_t
 
     if ( p() -> buff.guardian_tier19_4pc -> up() )
       p() -> buff.guardian_tier19_4pc -> expire();
+
+    if ( p() -> buff.guardians_wrath -> up() )
+      p() -> buff.guardians_wrath -> expire();
   }
 };
 
@@ -6838,7 +6873,6 @@ void druid_t::init_spells()
   // Guardian
   azerite.craggy_bark = find_azerite_spell("Craggy Bark");
   azerite.gory_regeneration = find_azerite_spell("Gory Regeneration");
-  azerite.grove_tending = find_azerite_spell("Grove Tending");
   azerite.guardians_wrath = find_azerite_spell("Guardian's Wrath");
   azerite.heartblood = find_azerite_spell("Heartblood");
   azerite.layered_mane = find_azerite_spell("Layered Mane");
@@ -7128,6 +7162,9 @@ void druid_t::create_buffs()
                                .quiet( true )
                                .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { buff.earthwarden -> trigger(); } )
                                .tick_zero( true );
+
+  buff.guardians_wrath       = buff_creator_t( this, "guardians_wrath", find_spell(279541) )
+                               .default_value( find_spell(279541) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
 
   buff.ironfur               = buff_creator_t( this, "ironfur", spec.ironfur )
                                .duration( spec.ironfur -> duration() )
