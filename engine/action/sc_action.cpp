@@ -234,8 +234,8 @@ struct action_execute_event_t : public player_event_t
     {
       if (p()->readying)
       {
-        throw std::runtime_error(fmt::format("Non-channeling action '{}'is trying to overwrite "
-            "player-ready-event upon execute.", action->name()));
+        throw std::runtime_error(fmt::format("Non-channeling action '{}' for actor {} is trying to overwrite "
+            "player-ready-event upon execute.", action->name(), p()->name()));
       }
 
       p()->schedule_ready( timespan_t::zero() );
