@@ -1411,12 +1411,12 @@ public:
       //dots
       if (s->affected_by(player->spec.balance->effectN(2)))
       {
-        base_td_multiplier *= 1.0 + player->spec.balance->effectN(2).percent();
+        ab::base_td_multiplier *= 1.0 + player->spec.balance->effectN(2).percent();
       }
       //dd
       if (s->affected_by(player->spec.balance->effectN(1)))
       {
-        base_dd_multiplier *= 1.0 + player->spec.balance->effectN(1).percent();
+        ab::base_dd_multiplier *= 1.0 + player->spec.balance->effectN(1).percent();
       }
     }
 
