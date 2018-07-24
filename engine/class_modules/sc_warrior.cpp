@@ -194,6 +194,7 @@ public:
   {
     const spell_data_t* battle_shout;
     const spell_data_t* charge;
+    const spell_data_t* colossus_smash_debuff;
     const spell_data_t* headlong_rush;
     const spell_data_t* heroic_leap;
     const spell_data_t* intervene;
@@ -4530,13 +4531,14 @@ void warrior_t::init_spells()
   azerite.bloodcraze        = find_azerite_spell( "Bloodcraze" );
 
   // Generic spells
-  spell.battle_shout        = find_class_spell( "Battle Shout" );
-  spell.charge              = find_class_spell( "Charge" );
-  spell.intervene           = find_spell( 147833 );
-  spell.headlong_rush       = find_spell( 137047 );  // Also may be used for other crap in the future.
-  spell.heroic_leap         = find_class_spell( "Heroic Leap" );
-  spell.siegebreaker_debuff = find_spell( 280773 );
-  spell.whirlwind_buff      = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
+  spell.battle_shout           = find_class_spell( "Battle Shout" );
+  spell.charge                 = find_class_spell( "Charge" );
+  spell.colossus_smash_debuff  = find_spell( 208086 );
+  spell.intervene              = find_spell( 147833 );
+  spell.headlong_rush          = find_spell( 137047 );  // Also may be used for other crap in the future.
+  spell.heroic_leap            = find_class_spell( "Heroic Leap" );
+  spell.siegebreaker_debuff    = find_spell( 280773 );
+  spell.whirlwind_buff         = find_spell( 85739, WARRIOR_FURY );  // Used to be called Meat Cleaver
 
   // Active spells
   active.deep_wounds_ARMS = nullptr;
@@ -5181,8 +5183,8 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t& p ) : actor_target_data
   dots_rend        = target->get_dot( "rend", &p );
 
   debuffs_colossus_smash = buff_creator_t( static_cast<actor_pair_t>( *this ), "colossus_smash" )
-                               .default_value( p.spec.colossus_smash->effectN( 1 ).percent() )
-                               .duration( p.spec.colossus_smash->duration() )
+                               .default_value( p.spell.colossus_smash_debuff->effectN( 2 ).percent() )
+                               .duration( p.spell.colossus_smash_debuff->duration() )
                                .cd( timespan_t::zero() );
 
   debuffs_siegebreaker = buff_creator_t( static_cast<actor_pair_t>( *this ), "siegebreaker" )
