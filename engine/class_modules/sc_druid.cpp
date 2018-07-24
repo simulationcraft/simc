@@ -318,9 +318,7 @@ public:
     // Guardian
     azerite_power_t craggy_bark;
     azerite_power_t gory_regeneration;
-    azerite_power_t guardians_wrath;
     azerite_power_t heartblood;
-    azerite_power_t layered_mane;
     azerite_power_t masterful_instincts;
     azerite_power_t twisted_claws;
 
@@ -340,6 +338,8 @@ public:
     azerite_power_t shredding_fury; //-||-
     azerite_power_t wild_fleshrending; //-||-
     // Guardian
+    azerite_power_t guardians_wrath;
+    azerite_power_t layered_mane;
 
   } azerite;
 
@@ -781,6 +781,7 @@ public:
   virtual double    composite_armor_multiplier() const override;
   virtual double    composite_melee_attack_power() const override;
   virtual double    composite_attack_power_multiplier() const override;
+  virtual double    composite_attribute( attribute_e attr ) const override;
   virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_block() const override { return 0; }
   virtual double    composite_crit_avoidance() const override;
@@ -5366,11 +5367,15 @@ struct innervate_t : public druid_spell_t
 
 struct ironfur_t : public druid_spell_t
 {
+  bool has_layered_mane;
+
   ironfur_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "ironfur", p, p -> spec.ironfur, options_str )
   {
     use_off_gcd = true;
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
+
+    has_layered_mane = p -> azerite.layered_mane.ok() ? true : false;
   }
 
   timespan_t composite_buff_duration()
@@ -5406,6 +5411,11 @@ struct ironfur_t : public druid_spell_t
 
     if ( p() -> buff.guardians_wrath -> up() )
       p() -> buff.guardians_wrath -> expire();
+
+    // TODO: check if the second application inherits GoE or not
+    if ( has_layered_mane && rng().roll( p() -> azerite.layered_mane.spell() -> effectN( 2 ).percent() ) ) {
+      p() -> buff.ironfur -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, composite_buff_duration() );
+    }
   }
 };
 
@@ -7177,6 +7187,7 @@ void druid_t::create_buffs()
                                .duration( spec.ironfur -> duration() )
                                .default_value( spec.ironfur -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_ARMOR )
+                               .add_invalidate( CACHE_AGILITY )
                                .max_stack( (unsigned) ( specialization() == DRUID_GUARDIAN ? spec.ironfur_2 -> effectN( 1 ).base_value() :
                                            1 ) )
                                .stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
@@ -8465,6 +8476,26 @@ double druid_t::composite_spell_power_multiplier() const
   }
 
   return player_t::composite_spell_power_multiplier();
+}
+
+
+// druid_t::composite_attribute =============================================
+
+double druid_t::composite_attribute( attribute_e attr ) const
+{
+  double a = player_t::composite_attribute( attr );
+
+  switch ( attr )
+  {
+    case ATTR_AGILITY:
+      if ( buff.ironfur -> up() )
+      a += azerite.layered_mane.value( 1 ) * buff.ironfur -> stack();
+      break;
+    default:
+      break;
+  }
+
+  return a;
 }
 
 // druid_t::composite_attribute_multiplier ==================================
