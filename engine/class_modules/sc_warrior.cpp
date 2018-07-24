@@ -670,7 +670,7 @@ public:
       ab::gcd_haste = HASTE_ATTACK;
 
     affected_by.sweeping_strikes    = ab::data().affected_by( p()->spec.sweeping_strikes->effectN( 1 ) );
-    affected_by.deadly_calm         = ab::data().affected_by( p()->talents.deadly_calm->effectN( 4 ) );
+    affected_by.deadly_calm         = ab::data().affected_by( p()->talents.deadly_calm->effectN( 1 ) );
     affected_by.fury_mastery_direct = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 1 ) );
     affected_by.fury_mastery_dot    = ab::data().affected_by( p()->mastery.unshackled_fury->effectN( 2 ) );
     affected_by.avatar              = ab::data().affected_by( p()->talents.avatar->effectN( 1 ) );
