@@ -7308,7 +7308,7 @@ void death_knight_t::init_spells()
 
   // Blood
   azerite.deep_cuts                 = find_azerite_spell( "Deep Cuts"                 );
-  erite.marrowblood                 = find_azerite_spell( "Marrowblood"               );
+  azerite.marrowblood                 = find_azerite_spell( "Marrowblood"               );
   azerite.embrace_of_the_darkfallen = find_azerite_spell( "Embrace of the Darkfallen" );
   azerite.bones_of_the_damned       = find_azerite_spell( "Bones of the Damned"       );
   azerite.eternal_rune_weapon       = find_azerite_spell( "Eternal Rune Weapon"       );
