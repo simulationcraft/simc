@@ -3196,6 +3196,7 @@ struct melee_t : public death_knight_melee_attack_t
       if ( ! p() -> pets.bloodworms[ i ] || p() -> pets.bloodworms[ i ] -> is_sleeping() )
       {
         p() -> pets.bloodworms[ i ] -> summon( timespan_t::from_seconds( p() -> talent.bloodworms -> effectN( 3 ).base_value() ) ); 
+        return;
       }
     }
   }
@@ -6927,7 +6928,7 @@ void death_knight_t::create_pets()
 
     if ( talent.bloodworms -> ok() )
     {
-      for ( auto i = 0; i < 6; i++ )
+      for ( size_t i = 0; i < pets.bloodworms.size(); i++ )
       {
         pets.bloodworms[ i ] = new pets::bloodworm_pet_t( this );
       }
