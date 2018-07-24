@@ -252,6 +252,7 @@ public:
     const spell_data_t* shield_block;
     const spell_data_t* shield_block_2;
     const spell_data_t* shield_slam;
+    const spell_data_t* shield_slam_2;
     const spell_data_t* shield_wall;
     const spell_data_t* slam;
     const spell_data_t* shockwave;
@@ -331,9 +332,7 @@ public:
     const spell_data_t* archavons_heavy_hand;
     const spell_data_t* bindings_of_kakushan;
     const spell_data_t* kargaths_sacrificed_hands;
-    const spell_data_t* thundergods_vigor;
     const spell_data_t* kazzalax_fujiedas_fury;
-    const spell_data_t* the_walls_fell;
     const spell_data_t* destiny_driver;
     const spell_data_t* prydaz_xavarics_magnum_opus;
     const spell_data_t* najentuss_vertebrae;
@@ -351,9 +350,7 @@ public:
         archavons_heavy_hand( spell_data_t::not_found() ),
         bindings_of_kakushan( spell_data_t::not_found() ),
         kargaths_sacrificed_hands( spell_data_t::not_found() ),
-        thundergods_vigor( spell_data_t::not_found() ),
         kazzalax_fujiedas_fury( spell_data_t::not_found() ),
-        the_walls_fell( spell_data_t::not_found() ),
         destiny_driver( spell_data_t::not_found() ),
         prydaz_xavarics_magnum_opus( spell_data_t::not_found() ),
         najentuss_vertebrae( spell_data_t::not_found() ),
@@ -393,11 +390,6 @@ public:
     artifact_power_t bastion_of_the_aspects;
     artifact_power_t gleaming_scales;
     artifact_power_t neltharions_thunder;
-
-    // NYI
-    artifact_power_t touch_of_zakajz;
-    artifact_power_t defensive_measures;
-    artifact_power_t tactical_advance;
   } artifact;
 
   // Default consumables
@@ -527,7 +519,7 @@ public:
 
   target_specific_t<warrior_td_t> target_data;
 
-  virtual warrior_td_t* get_target_data( player_t* target ) const override
+  warrior_td_t* get_target_data( player_t* target ) const override
   {
     warrior_td_t*& td = target_data[ target ];
 
@@ -609,7 +601,7 @@ public:
     tactician_per_rage += ( player->spec.tactician->effectN( 1 ).percent() / 100 );
   }
 
-  virtual void init() override
+  virtual void init()
   {
     if ( initialized )
       return;
@@ -986,7 +978,7 @@ struct warrior_attack_t : public warrior_action_t<melee_attack_t>
     special = true;
   }
 
-  virtual void execute() override
+  virtual void execute()
   {
     base_t::execute();
 
@@ -1031,7 +1023,7 @@ struct devastate_t : public warrior_attack_t
   double shield_slam_reset;
   devastate_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "devastate", p, p->spec.devastate ),
-      shield_slam_reset( p->spec.devastate->effectN( 3 ).percent() )
+      shield_slam_reset( p -> spec.shield_slam_2 -> effectN( 1 ).percent() )
   {
     weapon        = &( p->main_hand_weapon );
     impact_action = p->active.deep_wounds_PROT;
@@ -1190,7 +1182,7 @@ struct melee_t : public warrior_attack_t
     }
   }
 
-  void trigger_rage_gain( action_state_t* s )
+  void trigger_rage_gain( const action_state_t* s )
   {
     double rage_gain = weapon->swing_time.total_seconds() * base_rage_generation;
 
@@ -1826,7 +1818,7 @@ struct colossus_smash_t : public warrior_attack_t
 struct deep_wounds_ARMS_t : public warrior_attack_t
 {
   deep_wounds_ARMS_t( warrior_t* p )
-    : warrior_attack_t( "deep_wounds", p, p-> spec.deep_wounds_ARMS )
+    : warrior_attack_t( "deep_wounds", p, p-> mastery.deep_wounds_ARMS )
   {
     background = tick_may_crit = true;
     hasted_ticks               = true;
@@ -2004,7 +1996,7 @@ struct execute_arms_t : public warrior_attack_t
     trigger_attack->execute();
     p()->resource_gain(
         RESOURCE_RAGE, last_resource_cost * 0.3,
-        p()->gain.execute_refund );  // TODO, is it necessary to check if the target died? Probably too much trouble.
+        p()->gain.execute_refund );  // Not worth the trouble to check if the target died.
 
     p()->buff.ayalas_stone_heart->expire();
     p()->buff.sudden_death->expire();
@@ -2766,8 +2758,7 @@ struct rampage_attack_t : public warrior_attack_t
   {
     if ( !first_attack_missed )
     {  // If the first attack misses, all of the rest do as well. However, if any other attack misses, the attacks after
-       // continue. The animations and timing of everything else -- such as odyns champion proccing after the last
-       // attack -- still occur, so we can't just cancel rampage.
+       // continue. The animations and timing of everything else still occur, so we can't just cancel rampage.
       warrior_attack_t::impact( s );
       if ( p()->legendary.valarjar_berserkers != spell_data_t::not_found() && s->result == RESULT_CRIT &&
            target == s->target )
@@ -2899,7 +2890,7 @@ struct ravager_tick_t : public warrior_attack_t
     rage_from_ravager = p->find_spell( 248439 )->effectN( 1 ).resource( RESOURCE_RAGE );
   }
 
-  void execute()
+  void execute() override
   {
     warrior_attack_t::execute();
     if ( execute_state->n_targets > 0 )
@@ -2986,7 +2977,7 @@ struct revenge_t : public warrior_attack_t
   double shield_slam_reset;
   revenge_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "revenge", p, p->spec.revenge ),
-      shield_slam_reset( p->spec.devastate->effectN( 3 ).percent() )  // 100% guess that it's the same rate as devastate
+      shield_slam_reset(p->spec.shield_slam_2->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     aoe           = -1;
@@ -3306,7 +3297,7 @@ struct thunder_clap_t : public warrior_attack_t
   thunder_clap_t( warrior_t* p, const std::string& options_str )
     : warrior_attack_t( "thunder_clap", p, p->spec.thunder_clap ),
       rage_gain( data().effectN( 4 ).resource( RESOURCE_RAGE ) ),
-      shield_slam_reset( p->spec.devastate->effectN( 3 ).percent() )
+      shield_slam_reset( p->spec.shield_slam_2->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     aoe       = -1;
@@ -3709,7 +3700,7 @@ struct battle_shout_t : public warrior_spell_t
     background = sim->overrides.battle_shout != 0;
   }
 
-  virtual void execute() override
+  void execute() override
   {
     sim->auras.battle_shout->trigger();
   }
@@ -4379,6 +4370,7 @@ void warrior_t::init_spells()
   spec.shield_block     = find_specialization_spell( "Shield Block" );
   spec.shield_block_2   = find_specialization_spell( 231847 );
   spec.shield_slam      = find_specialization_spell( "Shield Slam" );
+  spec.shield_slam_2      = find_specialization_spell( 231834 );
   spec.shield_wall      = find_specialization_spell( "Shield Wall" );
   spec.shockwave        = find_specialization_spell( "Shockwave" );
   spec.slam             = find_specialization_spell( "Slam" );
@@ -4446,7 +4438,6 @@ void warrior_t::init_spells()
   talents.warpaint            = find_talent_spell( "Warpaint" );
 
   // Artifact
-  artifact.defensive_measures           = find_artifact_spell( "Defensive Measures" );
   artifact.dragon_scales                = find_artifact_spell( "Dragon Scales" );
   artifact.dragon_skin                  = find_artifact_spell( "Dragon Skin" );
   artifact.intolerance                  = find_artifact_spell( "Intolerance" );
@@ -4459,9 +4450,7 @@ void warrior_t::init_spells()
   artifact.scales_of_earth              = find_artifact_spell( "Scales of Earth" );
   artifact.shatter_the_bones            = find_artifact_spell( "Shatter the Bones" );
   artifact.strength_of_the_earth_aspect = find_artifact_spell( "Strength of the Earth Aspect" );
-  artifact.tactical_advance             = find_artifact_spell( "Tactical Advance" );
   artifact.thunder_crash                = find_artifact_spell( "Thunder Crash" );
-  artifact.touch_of_zakajz              = find_artifact_spell( "Touch of Zakajz" );
   artifact.toughness                    = find_artifact_spell( "Toughness" );
   artifact.vrykul_shield_training       = find_artifact_spell( "Vrykul Shield Training" );
   artifact.wall_of_steel                = find_artifact_spell( "Wall of Steel" );
@@ -6506,18 +6495,6 @@ struct archavons_heavy_hand_t : public unique_gear::scoped_actor_callback_t<warr
   }
 };
 
-struct thundergods_vigor_t : public unique_gear::scoped_actor_callback_t<warrior_t>
-{
-  thundergods_vigor_t() : super( WARRIOR )
-  {
-  }
-
-  void manipulate( warrior_t* warrior, const special_effect_t& e ) override
-  {
-    warrior->legendary.thundergods_vigor = e.driver();
-  }
-};
-
 struct ceannar_charger_t : public unique_gear::scoped_actor_callback_t<warrior_t>
 {
   ceannar_charger_t() : super( WARRIOR )
@@ -6527,18 +6504,6 @@ struct ceannar_charger_t : public unique_gear::scoped_actor_callback_t<warrior_t
   void manipulate( warrior_t* warrior, const special_effect_t& e ) override
   {
     warrior->legendary.ceannar_charger = e.driver();
-  }
-};
-
-struct the_walls_fell_t : public unique_gear::scoped_actor_callback_t<warrior_t>
-{
-  the_walls_fell_t() : super( WARRIOR )
-  {
-  }
-
-  void manipulate( warrior_t* warrior, const special_effect_t& e ) override
-  {
-    warrior->legendary.the_walls_fell = e.driver();
   }
 };
 
@@ -6559,13 +6524,11 @@ void init()
   unique_gear::register_special_effect( 205144, archavons_heavy_hand_t() );
   unique_gear::register_special_effect( 207841, bindings_of_kakushan_t(), true );
   unique_gear::register_special_effect( 207845, kargaths_sacrificed_hands_t(), true );
-  unique_gear::register_special_effect( 215176, thundergods_vigor_t() );  // NYI
   unique_gear::register_special_effect( 207779, ceannar_charger_t() );
   unique_gear::register_special_effect( 207775, kazzalax_fujiedas_fury_t(), true );
-  unique_gear::register_special_effect( 215057, the_walls_fell_t() );  // NYI
   unique_gear::register_special_effect( 215090, destiny_driver_t(), true );
   unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t(), true );  // Not finished
-  unique_gear::register_special_effect( 208908, mannoroths_bloodletting_manacles_t() );   // NYI
+  unique_gear::register_special_effect( 208908, mannoroths_bloodletting_manacles_t() );
   unique_gear::register_special_effect( 215096, najentuss_vertebrae_t() );
   unique_gear::register_special_effect( 207767, ayalas_stone_heart_t(), true );
   unique_gear::register_special_effect( 208177, weight_of_the_earth_t() );
@@ -6584,34 +6547,34 @@ struct warrior_module_t : public module_t
   {
   }
 
-  virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
+  player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const override
   {
     auto p              = new warrior_t( sim, name, r );
     p->report_extension = std::unique_ptr<player_report_extension_t>( new warrior_report_t( *p ) );
     return p;
   }
 
-  virtual bool valid() const override
+  bool valid() const override
   {
     return true;
   }
 
-  virtual void static_init() const override
+  void static_init() const override
   {
     items::init();
   }
 
-  virtual void register_hotfixes() const override
+  void register_hotfixes() const override
   {
   }
 
-  virtual void init( player_t* ) const override
+  void init( player_t* ) const override
   {
   }
-  virtual void combat_begin( sim_t* ) const override
+  void combat_begin( sim_t* ) const override
   {
   }
-  virtual void combat_end( sim_t* ) const override
+  void combat_end( sim_t* ) const override
   {
   }
 };
