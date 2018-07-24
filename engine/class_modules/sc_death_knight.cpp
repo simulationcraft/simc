@@ -2300,6 +2300,19 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
   };
 
+  struct rune_strike_t : public drw_attack_t
+  {
+    rune_strike_t( dancing_rune_weapon_pet_t* p ) : 
+      drw_attack_t( p, "rune_strike", p -> o() -> talent.rune_strike )
+    {
+      weapon = &( p -> main_hand_weapon );
+      base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
+
+      cooldown -> duration = timespan_t::zero();
+      cooldown -> charges = 0;
+    }
+  };
+
   struct abilities_t
   {
     drw_spell_t*  blood_plague;
@@ -2309,6 +2322,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     drw_attack_t* death_strike;
     drw_attack_t* heart_strike;
     drw_attack_t* marrowrend;
+    drw_attack_t* rune_strike;
   } ability;
 
   dancing_rune_weapon_pet_t( death_knight_t* owner ) :
@@ -2337,6 +2351,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     ability.death_strike  = new death_strike_t ( this );
     ability.heart_strike  = new heart_strike_t ( this );
     ability.marrowrend    = new marrowrend_t   ( this );
+    ability.rune_strike   = new rune_strike_t  ( this );
     
     type = PLAYER_GUARDIAN; _spec = SPEC_NONE;
   }
@@ -5510,6 +5525,14 @@ struct rune_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
 
     p() -> replenish_rune( as<unsigned int>( data().effectN( 2 ).base_value() ), p() -> gains.rune_strike );
+
+    // Bug ? Intended ? DRW copies Rune Strike now
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/323
+    if ( p() -> buffs.dancing_rune_weapon -> check() && p() -> bugs )
+    {
+      p() -> pets.dancing_rune_weapon_pet -> ability.rune_strike -> set_target( execute_state -> target );
+      p() -> pets.dancing_rune_weapon_pet -> ability.rune_strike -> execute();
+    }
   }
 };
 
