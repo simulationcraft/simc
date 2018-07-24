@@ -6626,8 +6626,7 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
         if ( tdata -> lethal_poisoned() ) {
           poisoned_bleeds += tdata -> dots.garrote -> is_ticking() +
                              tdata -> dots.internal_bleeding -> is_ticking() +
-                             tdata -> dots.rupture -> is_ticking() +
-                             tdata -> dots.crimson_tempest -> is_ticking();
+                             tdata -> dots.rupture -> is_ticking();
         }
       }
       return poisoned_bleeds;
