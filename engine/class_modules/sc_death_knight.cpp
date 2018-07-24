@@ -379,6 +379,9 @@ struct death_knight_td_t : public actor_target_data_t {
     buff_t* festering_wound;
     buff_t* mark_of_blood;
     buff_t* perseverance_of_the_ebon_martyr;
+
+    // Azerite Traits
+    buff_t* deep_cuts;
   } debuff;
 
   death_knight_td_t( player_t* target, death_knight_t* death_knight );
@@ -396,6 +399,7 @@ public:
   // Counters
   int t20_2pc_frost;
   int t20_4pc_frost; // Collect RP usage
+  double eternal_rune_weapon_counter;
 
   stats_t*  antimagic_shell;
 
@@ -444,6 +448,12 @@ public:
     buff_t* cold_heart_talent;
     buff_t* inexorable_assault;
     buff_t* toravons;
+
+    // Azerite Traits
+
+    buff_t* embrace_of_the_darkfallen;
+    buff_t* bones_of_the_damned;
+    buff_t* eternal_rune_weapon;
   } buffs;
 
   struct runeforge_t {
@@ -758,6 +768,23 @@ public:
 
   } legendary;
 
+  // Azerite Traits
+
+  struct azerite_powers_t
+  {
+    // Shared
+    azerite_power_t runic_barrier; // TODO : interaction with talents / cloak for overall duration also shield amount
+
+    // Blood
+    azerite_power_t deep_cuts; // TODO : does it work with DRW ? both in application and damage amp
+    azerite_power_t marrowblood;
+    azerite_power_t embrace_of_the_darkfallen;
+    azerite_power_t bones_of_the_damned; // TODO : make sure the effectN( 2 ) is used for the % chance to proc.
+    azerite_power_t eternal_rune_weapon;
+
+
+  }azerite;
+
   // Runes
   runes_t _runes;
 
@@ -770,6 +797,7 @@ public:
     deprecated_dnd_expression( false ),
     t20_2pc_frost( 0 ),
     t20_4pc_frost( 0 ),
+    eternal_rune_weapon_counter( 0 ),
     antimagic_shell( nullptr ),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
@@ -947,32 +975,35 @@ inline void rune_event_t::execute_event()
   m_rune -> fill_rune();
 }
 
-inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* death_knight ) :
-  actor_target_data_t( target, death_knight )
+inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p ) :
+  actor_target_data_t( target, p )
 {
-  dot.blood_plague         = target -> get_dot( "blood_plague",         death_knight );
-  dot.breath_of_sindragosa = target -> get_dot( "breath_of_sindragosa", death_knight );
-  dot.frost_fever          = target -> get_dot( "frost_fever",          death_knight );
-  dot.outbreak             = target -> get_dot( "outbreak",             death_knight );
-  dot.virulent_plague      = target -> get_dot( "virulent_plague",      death_knight );
-  dot.soul_reaper          = target -> get_dot( "soul_reaper",          death_knight );
-  dot.unholy_blight        = target -> get_dot( "unholy_blight",        death_knight );
+  dot.blood_plague         = target -> get_dot( "blood_plague",         p );
+  dot.breath_of_sindragosa = target -> get_dot( "breath_of_sindragosa", p );
+  dot.frost_fever          = target -> get_dot( "frost_fever",          p );
+  dot.outbreak             = target -> get_dot( "outbreak",             p );
+  dot.virulent_plague      = target -> get_dot( "virulent_plague",      p );
+  dot.soul_reaper          = target -> get_dot( "soul_reaper",          p );
+  dot.unholy_blight        = target -> get_dot( "unholy_blight",        p );
 
-  debuff.razorice          = make_buff( *this, "razorice", death_knight -> find_spell( 51714 ) )
+  debuff.razorice          = make_buff( *this, "razorice", p -> find_spell( 51714 ) )
                            -> set_period( timespan_t::zero() );
-  debuff.festering_wound   = buff_creator_t( *this, "festering_wound", death_knight -> find_spell( 194310 ) )
-                           .trigger_spell( death_knight -> spec.festering_wound )
+  debuff.festering_wound   = buff_creator_t( *this, "festering_wound", p -> find_spell( 194310 ) )
+                           .trigger_spell( p -> spec.festering_wound )
                            .cd( timespan_t::zero() ); // Handled by trigger_festering_wound
-  debuff.mark_of_blood     = buff_creator_t( *this, "mark_of_blood", death_knight -> talent.mark_of_blood )
+  debuff.mark_of_blood     = buff_creator_t( *this, "mark_of_blood", p -> talent.mark_of_blood )
                            .cd( timespan_t::zero() ); // Handled by the action
-  debuff.perseverance_of_the_ebon_martyr = buff_creator_t( *this, "perseverance_of_the_ebon_martyr", death_knight -> find_spell( 216059 ) )
-    .chance( death_knight -> legendary.perseverance_of_the_ebon_martyr -> ok() )
-    .default_value( death_knight -> find_spell( 216059 ) -> effectN( 1 ).percent() )
+  debuff.perseverance_of_the_ebon_martyr = buff_creator_t( *this, "perseverance_of_the_ebon_martyr", p -> find_spell( 216059 ) )
+    .chance( p -> legendary.perseverance_of_the_ebon_martyr -> ok() )
+    .default_value( p -> find_spell( 216059 ) -> effectN( 1 ).percent() )
     .duration( timespan_t::from_seconds( 5 ) ); //In game testing shows it's around 5 seconds.
 
-  if ( death_knight -> specialization() == DEATH_KNIGHT_UNHOLY && death_knight -> talent.soul_reaper -> ok() )
+  debuff.deep_cuts         = buff_creator_t( *this, "deep_cuts", p -> find_spell( 272685 ) )
+                           .trigger_spell( p -> azerite.deep_cuts );
+
+  if ( p -> specialization() == DEATH_KNIGHT_UNHOLY && p -> talent.soul_reaper -> ok() )
   {
-    target -> callbacks_on_demise.push_back( std::bind( &death_knight_t::trigger_soul_reaper_death, death_knight, std::placeholders::_1 ) );
+    target -> callbacks_on_demise.push_back( std::bind( &death_knight_t::trigger_soul_reaper_death, p, std::placeholders::_1 ) );
   }
 }
 
@@ -2556,6 +2587,23 @@ struct death_knight_action_t : public Base
       p() -> invalidate_cache( CACHE_STRENGTH );
     }
 
+    if ( this -> base_costs[ RESOURCE_RUNE] > 0 && this -> last_resource_cost > 0 && p() -> buffs.dancing_rune_weapon -> up()
+         && p() -> azerite.eternal_rune_weapon.enabled() && p() -> eternal_rune_weapon_counter < p() -> azerite.eternal_rune_weapon.value( 3 ) )
+    {
+      double duration_increase = p() -> azerite.eternal_rune_weapon.value( 2 ) / 10 ;
+      
+      p() -> buffs.eternal_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( duration_increase ) );
+      p() -> buffs.dancing_rune_weapon -> extend_duration( p(), timespan_t::from_seconds( duration_increase ) );
+
+      if ( p() -> pets.dancing_rune_weapon_pet && ! p() -> pets.dancing_rune_weapon_pet -> is_sleeping() )
+      {
+        timespan_t previous_expiration = p() -> pets.dancing_rune_weapon_pet -> expiration -> time;
+        p() -> pets.dancing_rune_weapon_pet -> expiration -> reschedule_time = previous_expiration + timespan_t::from_seconds( duration_increase );
+      }
+
+      p() -> eternal_rune_weapon_counter += duration_increase;
+    }
+
     if ( this -> base_costs[ RESOURCE_RUNIC_POWER ] > 0 && this -> last_resource_cost > 0 )
     {
       if ( p() -> talent.summon_gargoyle -> ok() && p() -> pets.gargoyle )
@@ -3400,6 +3448,19 @@ struct blood_plague_t : public disease_t
 
     return m;
   }
+
+  virtual double bonus_ta( const action_state_t* s ) const override
+  {
+    double ta = disease_t::bonus_da( s );
+
+    if ( p() -> azerite.deep_cuts.enabled()
+         &&  td( target ) -> debuff.deep_cuts -> up() )
+    {
+      ta += p() -> azerite.deep_cuts.value();
+    }
+
+    return ta;
+  }
 };
 
 // Frost Fever ==============================================================
@@ -3692,6 +3753,8 @@ struct dancing_rune_weapon_buff_t : public buff_t
 
     death_knight_t* p = debug_cast< death_knight_t* >( player );
 
+    p -> eternal_rune_weapon_counter = 0;
+
     // Triggers Rune Master buff if T21 4P is equipped
     if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T21, B4 ) )
     {
@@ -3716,6 +3779,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.dancing_rune_weapon -> trigger();
+    p() -> buffs.eternal_rune_weapon -> trigger();
     p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) );
   }
 };
@@ -4304,6 +4368,18 @@ struct death_strike_heal_t : public death_knight_heal_t
     return m;
   }
 
+  double bonus_da( const action_state_t* state ) const override
+  {
+    double da = death_knight_heal_t::bonus_da( state );
+
+    if ( p() -> azerite.marrowblood.enabled() && p() -> buffs.bone_shield -> up() )
+    {
+      da += p() -> azerite.marrowblood.value() * p() -> buffs.bone_shield -> stack();
+    }
+
+    return da;
+  }
+
   void impact( action_state_t* state ) override
   {
     death_knight_heal_t::impact( state );
@@ -4887,6 +4963,11 @@ struct heart_strike_t : public death_knight_melee_attack_t
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> set_target( execute_state -> target );
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute();
     }
+
+    if ( p() -> azerite.deep_cuts.enabled() )
+    {
+       td( execute_state -> target ) -> debuff.deep_cuts -> trigger();
+    }
   }
 };
 
@@ -5180,6 +5261,12 @@ struct marrowrend_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::impact( s );
 
     int stack_gain = as<int>( data().effectN( 3 ).base_value() );
+
+    if ( p() -> azerite.bones_of_the_damned.enabled() && rng().roll( p() -> azerite.bones_of_the_damned.value( 2 ) ) )
+    {
+      stack_gain += 1; // Not in spell data
+      p() -> buffs.bones_of_the_damned -> trigger();
+    }
 
     p() -> buffs.bone_shield -> trigger( stack_gain );
   }
@@ -5920,6 +6007,12 @@ struct antimagic_shell_buff_t : public buff_t
   {
     death_knight_t* p = debug_cast< death_knight_t* >( player );
     p -> antimagic_shell_absorbed = 0.0;
+    
+    if ( p -> azerite.runic_barrier.enabled() )
+    {
+      duration = timespan_t::from_seconds( p -> azerite.runic_barrier.value( 2 ) );
+    }
+
     duration *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
     buff_t::execute( stacks, value, duration );
   }
@@ -5993,7 +6086,8 @@ struct antimagic_shell_t : public death_knight_spell_t
     if ( damage > 0 )
     {
       double absorbed = std::min( damage * data().effectN( 1 ).percent(),
-                                  p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() );
+                                  p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() +
+                                  p() -> azerite.runic_barrier.value( 3 ) );
 
       double generated = absorbed / p() -> resources.max[ RESOURCE_HEALTH ];
       
@@ -6239,6 +6333,18 @@ struct vampiric_blood_buff_t : public health_pct_increase_buff_t<buff_t, buff_cr
   vampiric_blood_buff_t( death_knight_t* p ) :
     super( buff_creator_t( p, "vampiric_blood", p -> spec.vampiric_blood ).cd( timespan_t::zero() ) )
   { }
+
+  void expire_override( int s, timespan_t t ) override
+  {
+    super::expire_override( s, t );
+
+    death_knight_t* p = debug_cast<death_knight_t*>( player );
+
+    if ( p -> azerite.embrace_of_the_darkfallen.enabled() )
+    {
+      p -> buffs.embrace_of_the_darkfallen -> trigger();
+    }
+  }
 };
 
 // Remorseless Winter
@@ -7195,6 +7301,17 @@ void death_knight_t::init_spells()
 
   // Active Spells
   fallen_crusader += find_spell( 53365 ) -> effectN( 1 ).percent();
+
+  // Azerite Traits
+  // Shared
+  azerite.runic_barrier             = find_azerite_spell( "Runic Barrier"             );
+
+  // Blood
+  azerite.deep_cuts                 = find_azerite_spell( "Deep Cuts"                 );
+  erite.marrowblood                 = find_azerite_spell( "Marrowblood"               );
+  azerite.embrace_of_the_darkfallen = find_azerite_spell( "Embrace of the Darkfallen" );
+  azerite.bones_of_the_damned       = find_azerite_spell( "Bones of the Damned"       );
+  azerite.eternal_rune_weapon       = find_azerite_spell( "Eternal Rune Weapon"       );
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
@@ -7744,6 +7861,17 @@ void death_knight_t::create_buffs()
   buffs.cold_heart_talent = buff_creator_t( this, "cold_heart_talent", talent.cold_heart -> effectN( 1 ).trigger() )
     .trigger_spell( talent.cold_heart );
 
+  // Azerite Traits
+  buffs.embrace_of_the_darkfallen = make_buff<stat_buff_t>( this, "embrace_of_the_darkfallen", find_spell( 275926 ) )
+    -> add_stat( STAT_LEECH_RATING, azerite.embrace_of_the_darkfallen.value( 2 ) )
+    -> set_trigger_spell( azerite.embrace_of_the_darkfallen );
+  buffs.bones_of_the_damned       = make_buff<stat_buff_t>( this, "bones_of_the_damned", find_spell( 279503 ) )
+    -> add_stat( STAT_ARMOR, azerite.bones_of_the_damned.value() )
+    -> set_trigger_spell( azerite.bones_of_the_damned );
+  buffs.eternal_rune_weapon        = make_buff<stat_buff_t>( this, "eternal_rune_weapon", find_spell( 278543 ) )
+    -> add_stat( STAT_STRENGTH, azerite.eternal_rune_weapon.value() )
+    -> set_trigger_spell( azerite.eternal_rune_weapon );
+
 }
 
 // death_knight_t::init_gains ===============================================
@@ -7832,6 +7960,7 @@ void death_knight_t::reset()
   dnds.clear();
   t20_2pc_frost = 0;
   t20_4pc_frost = 0;
+  eternal_rune_weapon_counter = 0;
 }
 
 // death_knight_t::assess_heal ==============================================
