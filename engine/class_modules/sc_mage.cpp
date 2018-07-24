@@ -377,6 +377,7 @@ public:
     buff_t* arcane_charge;
     buff_t* arcane_power;
     buff_t* clearcasting;
+    buff_t* clearcasting_channel; // Hidden buff which governs tick and channel time
     buff_t* evocation;
     buff_t* presence_of_mind;
 
@@ -1142,7 +1143,7 @@ struct icy_veins_buff_t : public buff_t
   {
     set_default_value( data().effectN( 1 ).percent() );
     set_cooldown( timespan_t::zero() );
-    add_invalidate(CACHE_SPELL_HASTE);
+    add_invalidate( CACHE_SPELL_HASTE );
     buff_duration += p -> talents.thermal_void -> effectN( 2 ).time_value();
   }
 
@@ -2468,9 +2469,21 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     tick_zero = channeled = true;
     tick_action = new arcane_missiles_tick_t( p );
 
-    auto cc_data = p -> find_spell( 277726 );
-    cc_duration_reduction  = cc_data -> effectN( 1 ).percent();
-    cc_tick_time_reduction = cc_data -> effectN( 2 ).percent() + p -> talents.amplification -> effectN( 1 ).percent();
+    auto cc_data = p -> buffs.clearcasting_channel -> data();
+    cc_duration_reduction  = cc_data.effectN( 1 ).percent();
+    cc_tick_time_reduction = cc_data.effectN( 2 ).percent() + p -> talents.amplification -> effectN( 1 ).percent();
+  }
+
+  void handle_clearcasting( bool is_active )
+  {
+    if ( is_active )
+    {
+      p() -> buffs.clearcasting_channel -> trigger();
+    }
+    else
+    {
+      p() -> buffs.clearcasting_channel -> expire();
+    }
   }
 
   // Flag Arcane Missiles as direct damage for triggering effects
@@ -2488,7 +2501,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     arcane_mage_spell_t::snapshot_state( state, rt );
 
-    if ( p() -> buffs.clearcasting -> check() )
+    if ( p() -> buffs.clearcasting_channel -> check() )
     {
       debug_cast<am_state_t*>( state ) -> tick_time_multiplier = 1.0 + cc_tick_time_reduction;
     }
@@ -2501,7 +2514,7 @@ struct arcane_missiles_t : public arcane_mage_spell_t
 
     timespan_t full_duration = dot_duration * s -> haste;
 
-    if ( p() -> buffs.clearcasting -> check() )
+    if ( p() -> buffs.clearcasting_channel -> check() )
     {
       full_duration *= 1.0 + cc_duration_reduction;
     }
@@ -2548,6 +2561,15 @@ struct arcane_missiles_t : public arcane_mage_spell_t
   {
     p() -> buffs.arcane_pummeling -> expire();
 
+    // In game, the channel refresh happens before the hidden Clearcasting buff is updated.
+    bool cc_active = p() -> buffs.clearcasting -> check() != 0;
+    bool cc_delay = p() -> bugs && get_dot( target ) -> is_ticking();
+
+    if ( ! cc_delay )
+    {
+      handle_clearcasting( cc_active );
+    }
+
     arcane_mage_spell_t::execute();
 
     p() -> buffs.rhonins_assaulting_armwraps -> trigger();
@@ -2576,6 +2598,11 @@ struct arcane_missiles_t : public arcane_mage_spell_t
     }
 
     p() -> buffs.quick_thinker -> trigger();
+
+    if ( cc_delay )
+    {
+      handle_clearcasting( cc_active );
+    }
   }
 
   virtual bool usable_moving() const override
@@ -2584,6 +2611,13 @@ struct arcane_missiles_t : public arcane_mage_spell_t
       return true;
 
     return arcane_mage_spell_t::usable_moving();
+  }
+
+  virtual void last_tick( dot_t* d ) override
+  {
+    arcane_mage_spell_t::last_tick( d );
+
+    p() -> buffs.clearcasting_channel -> expire();
   }
 };
 
@@ -6195,48 +6229,50 @@ void mage_t::create_buffs()
   player_t::create_buffs();
 
   // Arcane
-  buffs.arcane_charge    = make_buff( this, "arcane_charge", spec.arcane_charge );
-  buffs.arcane_power     = make_buff( this, "arcane_power", find_spell( 12042 ) )
-                             -> set_cooldown( timespan_t::zero() )
-                             -> set_default_value( find_spell( 12042 ) -> effectN( 1 ).percent()
-                                                 + talents.overpowered -> effectN( 1 ).percent() );
-  buffs.clearcasting     = make_buff( this, "clearcasting", find_spell( 263725 ) )
-                             -> set_default_value( find_spell( 263725 ) -> effectN( 1 ).percent() );
-  buffs.evocation        = make_buff( this, "evocation", find_spell( 12051 ) )
-                             -> set_default_value( find_spell( 12051 ) -> effectN( 1 ).percent() )
-                             -> set_cooldown( timespan_t::zero() )
-                             -> set_affects_regen( true );
-  buffs.presence_of_mind = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
-                             -> set_cooldown( timespan_t::zero() )
-                             -> set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
-                                { if ( cur == 0 ) cooldowns.presence_of_mind -> start(); } );
+  buffs.arcane_charge        = make_buff( this, "arcane_charge", spec.arcane_charge );
+  buffs.arcane_power         = make_buff( this, "arcane_power", find_spell( 12042 ) )
+                                 -> set_cooldown( timespan_t::zero() )
+                                 -> set_default_value( find_spell( 12042 ) -> effectN( 1 ).percent()
+                                                     + talents.overpowered -> effectN( 1 ).percent() );
+  buffs.clearcasting         = make_buff( this, "clearcasting", find_spell( 263725 ) )
+                                 -> set_default_value( find_spell( 263725 ) -> effectN( 1 ).percent() );
+  buffs.clearcasting_channel = make_buff( this, "clearcasting_channel", find_spell( 277726 ) )
+                                 -> set_quiet( true );
+  buffs.evocation            = make_buff( this, "evocation", find_spell( 12051 ) )
+                                 -> set_default_value( find_spell( 12051 ) -> effectN( 1 ).percent() )
+                                 -> set_cooldown( timespan_t::zero() )
+                                 -> set_affects_regen( true );
+  buffs.presence_of_mind     = make_buff( this, "presence_of_mind", find_spell( 205025 ) )
+                                 -> set_cooldown( timespan_t::zero() )
+                                 -> set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                    { if ( cur == 0 ) cooldowns.presence_of_mind -> start(); } );
 
-  buffs.arcane_familiar  = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
-                             -> set_default_value( find_spell( 210126 ) -> effectN( 1 ).percent() )
-                             -> set_period( timespan_t::from_seconds( 3.0 ) )
-                             -> set_tick_time_behavior( buff_tick_time_behavior::HASTED )
-                             -> set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
-                                {
-                                  assert( action.arcane_assault );
-                                  action.arcane_assault -> set_target( target );
-                                  action.arcane_assault -> execute();
-                                } )
-                             -> set_stack_change_callback( [ this ] ( buff_t*, int, int )
-                                { recalculate_resource_max( RESOURCE_MANA ); } );
-  buffs.chrono_shift     = make_buff( this, "chrono_shift", find_spell( 236298 ) )
-                             -> set_default_value( find_spell( 236298 ) -> effectN( 1 ).percent() )
-                             -> add_invalidate( CACHE_RUN_SPEED );
-  buffs.rule_of_threes   = make_buff( this, "rule_of_threes", find_spell( 264774 ) )
-                             -> set_default_value( find_spell( 264774 ) -> effectN( 1 ).percent() );
+  buffs.arcane_familiar      = make_buff( this, "arcane_familiar", find_spell( 210126 ) )
+                                 -> set_default_value( find_spell( 210126 ) -> effectN( 1 ).percent() )
+                                 -> set_period( timespan_t::from_seconds( 3.0 ) )
+                                 -> set_tick_time_behavior( buff_tick_time_behavior::HASTED )
+                                 -> set_tick_callback( [ this ] ( buff_t*, int, const timespan_t& )
+                                    {
+                                      assert( action.arcane_assault );
+                                      action.arcane_assault -> set_target( target );
+                                      action.arcane_assault -> execute();
+                                    } )
+                                 -> set_stack_change_callback( [ this ] ( buff_t*, int, int )
+                                    { recalculate_resource_max( RESOURCE_MANA ); } );
+  buffs.chrono_shift         = make_buff( this, "chrono_shift", find_spell( 236298 ) )
+                                 -> set_default_value( find_spell( 236298 ) -> effectN( 1 ).percent() )
+                                 -> add_invalidate( CACHE_RUN_SPEED );
+  buffs.rule_of_threes       = make_buff( this, "rule_of_threes", find_spell( 264774 ) )
+                                 -> set_default_value( find_spell( 264774 ) -> effectN( 1 ).percent() );
 
-  buffs.crackling_energy = make_buff( this, "crackling_energy", find_spell( 246224 ) )
-                             -> set_default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
-  buffs.expanding_mind   = make_buff( this, "expanding_mind", find_spell( 253262 ) )
-                             -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.quick_thinker    = make_buff( this, "quick_thinker", find_spell( 253299 ) )
-                             -> set_default_value( find_spell( 253299 ) -> effectN( 1 ).percent() )
-                             -> set_chance( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() )
-                             ->add_invalidate(CACHE_SPELL_HASTE);
+  buffs.crackling_energy     = make_buff( this, "crackling_energy", find_spell( 246224 ) )
+                                 -> set_default_value( find_spell( 246224 ) -> effectN( 1 ).percent() );
+  buffs.expanding_mind       = make_buff( this, "expanding_mind", find_spell( 253262 ) )
+                                 -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.quick_thinker        = make_buff( this, "quick_thinker", find_spell( 253299 ) )
+                                 -> set_default_value( find_spell( 253299 ) -> effectN( 1 ).percent() )
+                                 -> set_chance( sets -> set( MAGE_ARCANE, T21, B4 ) -> proc_chance() )
+                                 -> add_invalidate( CACHE_SPELL_HASTE );
 
 
   // Fire
@@ -6261,7 +6297,7 @@ void mage_t::create_buffs()
 
   buffs.streaking              = make_buff( this, "streaking", find_spell( 211399 ) )
                                    -> set_default_value( find_spell( 211399 ) -> effectN( 1 ).percent() )
-                                   ->add_invalidate(CACHE_SPELL_HASTE);
+                                   -> add_invalidate( CACHE_SPELL_HASTE );
   buffs.ignition               = make_buff( this, "ignition", find_spell( 246261 ) )
                                    -> set_trigger_spell( sets -> set( MAGE_FIRE, T20, B2 ) );
   buffs.critical_massive       = make_buff( this, "critical_massive", find_spell( 242251 ) )
@@ -8005,7 +8041,7 @@ struct sephuzs_secret_t : public class_buff_cb_t<mage_t, buff_t>
     buff -> set_cooldown( e.player -> find_spell( 226262 ) -> duration() )
          -> set_default_value( e.trigger() -> effectN( 2 ).percent() )
          -> add_invalidate( CACHE_RUN_SPEED )
-         -> add_invalidate(CACHE_HASTE);
+         -> add_invalidate( CACHE_HASTE );
     return buff;
   }
 };
