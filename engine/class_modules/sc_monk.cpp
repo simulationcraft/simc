@@ -141,6 +141,7 @@ public:
     buff_t* flying_serpent_kick;
     buff_t* keg_smash;
     buff_t* storm_earth_and_fire;
+    buff_t* sunrise_technique;
     buff_t* touch_of_karma;
     buff_t* touch_of_death_amplifier;
   } debuff;
@@ -247,6 +248,7 @@ public:
 
     // Azerite Trait
     stat_buff_t* iron_fists;
+    buff_t* sunrise_technique;
     buff_t* swift_roundhouse;
   } buff;
 
@@ -3245,6 +3247,12 @@ struct rising_sun_kick_t: public monk_melee_attack_t
           // saved as 3000
           // p() -> sets -> set( MONK_WINDWALKER, T20, B2 ) -> effectN( 1 ).time_value();
           p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> find_spell( 242260 ) -> effectN( 1 ).time_value() );
+      }
+
+      if ( p() -> azerite.sunrise_technique.ok() )
+      {
+        p() -> buff.sunrise_technique -> trigger();
+        td( s -> target ) -> debuff.sunrise_technique -> trigger();
       }
     }
   }
@@ -6514,6 +6522,7 @@ monk( *p )
                             // set the percent of the max hp as the default value.
                             -> set_default_value( p -> spec.touch_of_karma -> effectN( 3 ).percent() + 
                                                 ( p -> talent.good_karma -> ok() ? p -> talent.good_karma-> effectN( 1 ).percent() : 0 ) );
+    debuff.sunrise_technique = make_buff( *this, "sunrise_technique_debuff", p -> find_spell( 273299 ) );
   }
 
   if ( p -> specialization() == MONK_BREWMASTER )
@@ -7270,6 +7279,8 @@ void monk_t::create_buffs()
   buff.iron_fists = make_buff<stat_buff_t>( this, "iron_fists", find_spell( 272806 ) );
   buff.iron_fists -> set_trigger_spell( azerite.iron_fists.spell_ref().effectN( 1 ).trigger() );
   buff.iron_fists -> set_default_value( azerite.iron_fists.value() );
+
+  buff.sunrise_technique = make_buff( this, "sunrise_technique", find_spell( 273298 ) );
 
   buff.swift_roundhouse = make_buff( this, "swift_roundhouse", find_spell( 278710 ) );
 }
