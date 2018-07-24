@@ -5959,9 +5959,6 @@ struct solar_wrath_t : public druid_spell_t
         }
     }
 
-    if (p()->buff.dawning_sun->up())
-      p()->buff.dawning_sun->expire();
-
     p() -> buff.power_of_elune -> trigger();
 
     streaking_stars_trigger(SS_SOLAR_WRATH, target);
