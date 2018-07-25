@@ -2390,10 +2390,12 @@ public:
     }
   }
 
-  void trigger_sunrise_technique ( player_t* t  )
+  void trigger_sunrise_technique ( player_t* t, double dmg  )
   {
     p() -> active_actions.sunrise_technique -> target = t;
-    double dmg = p()->azerite.sunrise_technique.value();
+    p() -> active_actions.sunrise_technique -> base_dd_min = dmg;
+    p() -> active_actions.sunrise_technique -> base_dd_max = dmg;
+    p() -> active_actions.sunrise_technique -> execute();
   }
 
   // Reduces Brewmaster Brew cooldowns by the time given
@@ -2549,7 +2551,7 @@ public:
       if ( p() -> azerite.sunrise_technique.ok() )
       {
         if ( affected_by.sunrise_technique && p() -> buff.sunrise_technique -> up() && td( s -> target ) -> debuff.sunrise_technique -> up() && s -> result > 0 )
-          trigger_sunrise_technique( s -> target );
+          trigger_sunrise_technique( s -> target, p() -> azerite.sunrise_technique.value() );
       }
     }
 
