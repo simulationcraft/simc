@@ -1,0 +1,165 @@
+# PROFILE FOR TESTING ONLY!
+# This file provides all available trinkets for HUNTERs.
+# Use this file to verify whether all trinkets are functioning as expected after changes.
+# No appropriate drop itemlevel required.
+
+
+copy="Aran's Relaxing Ruby"
+trinket1=,id=142157,ilevel=255
+
+copy="Caged Horror"
+trinket1=,id=136716,ilevel=255
+
+copy="Corrupted Starlight"
+trinket1=,id=137301,ilevel=255
+
+copy="Deteriorated Construct Core"
+trinket1=,id=142165,ilevel=255
+
+copy="Elementium Bomb Squirrel Generator"
+trinket1=,id=137446,ilevel=255
+
+copy="Eye of Skovald"
+trinket1=,id=133641,ilevel=255
+
+copy="Figurehead of the Naglfar"
+trinket1=,id=137329,ilevel=255
+
+copy="Moonlit Prism"
+trinket1=,id=137541,ilevel=255
+
+copy="Mrrgria's Favor"
+trinket1=,id=142160,ilevel=255
+
+copy="Naraxas' Spiked Tongue"
+trinket1=,id=137349,ilevel=255
+
+copy="Oakheart's Gnarled Root"
+trinket1=,id=137306,ilevel=255
+
+copy="Obelisk of the Void"
+trinket1=,id=137433,ilevel=255
+
+copy="Stormsinger Fulmination Charge"
+trinket1=,id=137367,ilevel=255
+
+copy="Splinters of Agronax"
+trinket1=,id=144477,ilevel=255
+
+copy="Tempered Egg of Serpentrix"
+trinket1=,id=137373,ilevel=255
+
+copy="Tirathon's Betrayal"
+trinket1=,id=137537,ilevel=255
+
+copy="Void Stalker's Contract"
+trinket1=,id=151307,ilevel=255
+
+copy="Chrono Shard"
+trinket1=,id=137419,ilevel=255
+
+copy="Horn of Valor"
+trinket1=,id=133642,ilevel=255
+
+copy="Toe Knee's Promise"
+trinket1=,id=142164,ilevel=255
+
+copy="Twisting Wind"
+trinket1=,id=139323,ilevel=255
+
+copy="Unstable Horrorslime"
+trinket1=,id=138224,ilevel=255
+
+copy="Bloodthirsty Instinct"
+trinket1=,id=139329,ilevel=255
+
+copy="Fury of the Burning Sky"
+trinket1=,id=140801,ilevel=255
+
+copy="Icon of Rot"
+trinket1=,id=140798,ilevel=255
+
+copy="Arcanogolem Digit"
+trinket1=,id=140794,ilevel=255
+
+copy="Convergence of Fates"
+trinket1=,id=140806,ilevel=255
+
+copy="Entwined Elemental Foci"
+trinket1=,id=140796,ilevel=255
+
+copy="Nightblooming Frond"
+trinket1=,id=140802,ilevel=255
+
+copy="Spectral Thurible"
+trinket1=,id=147018,ilevel=255
+
+copy="Tarnished Sentinel Medallion"
+trinket1=,id=147017,ilevel=255
+
+copy="Terror From Below"
+trinket1=,id=147016,ilevel=255
+
+copy="Tome of Unraveling Sanity"
+trinket1=,id=147019,ilevel=255
+
+copy="Cradle of Anguish"
+trinket1=,id=147010,ilevel=255
+
+copy="Engine of Eradication"
+trinket1=,id=147015,ilevel=255
+
+copy="Prototype Personnel Decimator"
+trinket1=,id=151962,ilevel=255
+
+copy="Forgefiend's Fabricator"
+trinket1=,id=151963,ilevel=255
+
+copy="Shadow-Singed Fang"
+trinket1=,id=151968,ilevel=255
+
+copy="Golganneth's Vitality"
+trinket1=,id=154174,ilevel=280
+
+copy="Terminus Signaling Beacon"
+trinket1=,id=151969,ilevel=255
+
+copy="PVP Insignia of Conquest"
+trinket1=,id=142662,ilevel=255
+
+copy="PVP Badge of Conquest"
+trinket1=,id=142773,ilevel=255
+
+copy="The Devilsaur's Bite"
+trinket1=,id=140026,ilevel=255
+
+copy="Ley Spark"
+trinket1=,id=140027,ilevel=255
+
+copy="Six-Feather Fan"
+trinket1=,id=141585,ilevel=255
+
+copy="Stat Stick (Crit)"
+trinket1=,id=142506,bonus_id=603,ilevel=255
+
+copy="Stat Stick (Haste)"
+trinket1=,id=142506,bonus_id=604,ilevel=255
+
+copy="Stat Stick (Mastery)"
+trinket1=,id=142506,bonus_id=605,ilevel=255
+
+copy="Stat Stick (Versatility)"
+trinket1=,id=142506,bonus_id=607,ilevel=255
+
+copy="Thrice-Accursed Compass"
+trinket1=,id=141537,ilevel=255
+
+copy="Unstable Arcanocrystal"
+trinket1=,id=141482,ilevel=255
+
+copy="Kil'jaeden's Burning Wish"
+trinket1=,id=144259,ilevel=265
+
+copy="Aman'Thul's Vision"
+trinket1=,id=154172,ilevel=280
+
