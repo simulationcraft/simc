@@ -3,8 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "sc_priest.hpp"
+#include "simulationcraft.hpp"
 
 namespace priestspace
 {
@@ -220,8 +220,8 @@ struct power_infusion_t final : public priest_spell_t
 
     priest().buffs.power_infusion->trigger();
 
-    sim->print_debug("{} used Power Infusion with {} Insanity drain stacks.",
-        priest().name(), priest().buffs.insanity_drain_stacks->value());
+    sim->print_debug( "{} used Power Infusion with {} Insanity drain stacks.", priest().name(),
+                      priest().buffs.insanity_drain_stacks->value() );
   }
 };
 
@@ -420,8 +420,7 @@ void mangazas_madness( special_effect_t& effect )
 
   if ( priest->active_items.mangazas_madness )
   {
-    priest->cooldowns.mind_blast->charges +=
-        priest->active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
+    priest->cooldowns.mind_blast->charges += priest->active_items.mangazas_madness->driver()->effectN( 1 ).base_value();
   }
 }
 
@@ -438,9 +437,13 @@ void the_twins_painful_touch( special_effect_t& effect )
   assert( priest );
   do_trinket_init( priest, PRIEST_SHADOW, priest->active_items.the_twins_painful_touch, effect );
 
-  // Activate buff proc chance
-  priest->buffs.the_twins_painful_touch->set_chance(-1.0); // Reset chance to default value, so we get values from spell_data.
-  priest->buffs.the_twins_painful_touch->set_trigger_spell(priest->active_items.the_twins_painful_touch->driver());
+  if ( priest->buffs.the_twins_painful_touch )
+  {
+    // Activate buff proc chance
+    priest->buffs.the_twins_painful_touch->set_chance(
+        -1.0 );  // Reset chance to default value, so we get values from spell_data.
+    priest->buffs.the_twins_painful_touch->set_trigger_spell( priest->active_items.the_twins_painful_touch->driver() );
+  }
 }
 
 void zenkaram_iridis_anadem( special_effect_t& effect )
@@ -495,7 +498,7 @@ struct sephuzs_secret_t : public class_buff_cb_t<priest_t>
     buff->set_cooldown( e.player->find_spell( 226262 )->duration() )
         ->set_default_value( e.trigger()->effectN( 2 ).percent() )
         ->add_invalidate( CACHE_RUN_SPEED )
-        ->add_invalidate(CACHE_HASTE);
+        ->add_invalidate( CACHE_HASTE );
     return buff;
   }
 };
@@ -539,7 +542,6 @@ void base_fiend_pet_t::init_action_list()
 
 action_t* base_fiend_pet_t::create_action( const std::string& name, const std::string& options_str )
 {
-
   return priest_pet_t::create_action( name, options_str );
 }
 }  // namespace fiend
@@ -569,13 +571,12 @@ void priest_td_t::target_demise()
 {
   if ( priest().azerite.death_throes.enabled() && dots.shadow_word_pain->is_ticking() )
   {
-    priest().generate_insanity( priest().azerite.death_throes.value( 2 ),
-                                priest().gains.insanity_death_throes,
+    priest().generate_insanity( priest().azerite.death_throes.value( 2 ), priest().gains.insanity_death_throes,
                                 nullptr );
   }
 
-  priest().sim->print_debug( "Player '{}' demised. Priest '{}' resets targetdata for him.",
-      target->name(), priest().name() );
+  priest().sim->print_debug( "Player '{}' demised. Priest '{}' resets targetdata for him.", target->name(),
+                             priest().name() );
 
   reset();
 }
@@ -685,16 +686,15 @@ void priest_t::create_procs()
   procs.serendipity              = get_proc( "Serendipity (Non-Tier 17 4pc)" );
   procs.serendipity_overflow     = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
 
+  procs.legendary_anunds_last_breath =
+      get_proc( "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% per)" );
+  procs.legendary_anunds_last_breath_overflow =
+      get_proc( "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% per) lost to overflow" );
 
-  procs.legendary_anunds_last_breath = get_proc(
-      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% per)" );
-  procs.legendary_anunds_last_breath_overflow = get_proc(
-      "Legendary - Anund's Seared Shackles - Void Bolt damage increases (3% per) lost to overflow" );
-
-  procs.legendary_zeks_exterminatus = get_proc(
-      "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (25% per)" );
-  procs.legendary_zeks_exterminatus_overflow = get_proc(
-      "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (100% per) lost to overflow" );
+  procs.legendary_zeks_exterminatus =
+      get_proc( "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (25% per)" );
+  procs.legendary_zeks_exterminatus_overflow =
+      get_proc( "Legendary - Zek's Exterminatus - Shadow Word Death damage increases (100% per) lost to overflow" );
 }
 
 /** Construct priest benefits */
@@ -857,14 +857,12 @@ double priest_t::composite_melee_speed() const
   return h;
 }
 
-double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s) const
+double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s ) const
 {
-  double m = player_t::composite_player_pet_damage_multiplier(s);
-  m *= ( 1.0 + specs.shadow_priest->effectN(3).percent() );
+  double m = player_t::composite_player_pet_damage_multiplier( s );
+  m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
   return m;
 }
-
-
 
 double priest_t::composite_player_heal_multiplier( const action_state_t* s ) const
 {
@@ -1032,7 +1030,7 @@ void priest_t::init_base_stats()
     resources.base[ RESOURCE_INSANITY ] = 100.0;
   }
 
-  resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + talents.enlightenment -> effectN( 1 ).percent();
+  resources.base_regen_per_second[ RESOURCE_MANA ] *= 1.0 + talents.enlightenment->effectN( 1 ).percent();
 }
 
 void priest_t::init_resources( bool force )
@@ -1082,10 +1080,10 @@ void priest_t::create_buffs()
   buffs.power_infusion = make_buff( this, "power_infusion", talents.power_infusion )
                              ->add_invalidate( CACHE_SPELL_HASTE )
                              ->add_invalidate( CACHE_HASTE );
-  buffs.twist_of_fate = make_buff(this, "twist_of_fate", talents.twist_of_fate->effectN(1).trigger())
-                             ->set_trigger_spell(talents.twist_of_fate)
-                             ->add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-                             ->add_invalidate(CACHE_PLAYER_HEAL_MULTIPLIER);
+  buffs.twist_of_fate = make_buff( this, "twist_of_fate", talents.twist_of_fate->effectN( 1 ).trigger() )
+                            ->set_trigger_spell( talents.twist_of_fate )
+                            ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                            ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   create_buffs_shadow();
   create_buffs_discipline();
   create_buffs_holy();
@@ -1147,9 +1145,9 @@ std::string priest_t::default_potion() const
 
 std::string priest_t::default_flask() const
 {
-  return ( true_level >= 110 )  
-               ? "endless_fathoms"
-               : ( true_level >= 100 )
+  return ( true_level >= 110 )
+             ? "endless_fathoms"
+             : ( true_level >= 100 )
                    ? "whispered_pact"
                    : ( true_level >= 90 )
                          ? "greater_draenic_intellect_flask"
@@ -1160,14 +1158,14 @@ std::string priest_t::default_food() const
 {
   std::string lvl100_food = "buttered_sturgeon";
 
-  return ( true_level > 110 )  
-               ? "bountiful_captains_feast"
-               : ( true_level > 100 )
+  return ( true_level > 110 )
+             ? "bountiful_captains_feast"
+             : ( true_level > 100 )
                    ? "azshari_salad"
                    : ( true_level > 90 )
                          ? lvl100_food
                          : ( true_level >= 90 ) ? "mogu_fish_stew"
-                                          : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+                                                : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 }
 
 std::string priest_t::default_rune() const
@@ -1266,7 +1264,7 @@ void priest_t::init_action_list()
     if ( !quiet )
     {
       sim->error( "Player {}'s role ({}) or spec({}) is currently not supported.", name(),
-                   util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
+                  util::role_type_string( primary_role() ), util::specialization_string( specialization() ) );
     }
     quiet = true;
     return;
@@ -1399,12 +1397,12 @@ std::string priest_t::create_profile( save_e type )
   {
     if ( !options.autoUnshift )
     {
-      profile_str += fmt::format("autounshift={}\n", options.autoUnshift);
+      profile_str += fmt::format( "autounshift={}\n", options.autoUnshift );
     }
 
     if ( !options.priest_fixed_time )
     {
-      profile_str += fmt::format("priest_fixed_time={}\n", options.priest_fixed_time);
+      profile_str += fmt::format( "priest_fixed_time={}\n", options.priest_fixed_time );
     }
   }
 
