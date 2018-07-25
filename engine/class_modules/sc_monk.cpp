@@ -2392,6 +2392,12 @@ public:
 
   void trigger_sunrise_technique ( player_t* t, double dmg  )
   {
+    // This ability should be getting affected by Windwalker Aura Effect 1 but isn't
+    // Damage calc is showing there is an 80% damage reduction that is missing from the spell data
+    // Some reason multipliers are not getting affected within the spell, so need to make adjustments
+    // before applying the min and max damage.
+    dmg *= 0.8;
+
     p() -> active_actions.sunrise_technique -> target = t;
     p() -> active_actions.sunrise_technique -> base_dd_min = dmg;
     p() -> active_actions.sunrise_technique -> base_dd_max = dmg;
@@ -2834,15 +2840,15 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
   {
     double pm = base_t::composite_persistent_multiplier( action_state );
 
-    if ( ww_mastery && p() -> buff.combo_strikes -> up() )
-      pm *= 1 + p() -> cache.mastery_value();
-
     return pm;
   }
 
   double action_multiplier() const override
   {
     double am = base_t::action_multiplier();
+
+    if ( ww_mastery && p() -> buff.combo_strikes -> up() )
+      am *= 1 + p() -> cache.mastery_value();
 
     if ( p() -> buff.storm_earth_and_fire -> up() )
     {
@@ -2870,19 +2876,6 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     }
 
     return am;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = base_t::bonus_da( s );
-
-    if ( p() -> azerite.elusive_footwork.ok() )
-    {
-      if ( base_t::data().affected_by( p() -> azerite.elusive_footwork.spell_ref().effectN( 3 ) ) )
-        b += p() -> azerite.elusive_footwork.value( 3 );
-    }
-
-    return b;
   }
 
   // Physical tick_action abilities need amount_type() override, so the
@@ -2966,6 +2959,8 @@ struct sunrise_technique_t : public monk_melee_attack_t
   {
     background = true;
     may_crit = true;
+    trigger_gcd = timespan_t::zero();
+    min_gcd = timespan_t::zero();
   }
 };
 
@@ -3546,6 +3541,16 @@ struct blackout_strike_t: public monk_melee_attack_t
     return am;
   }
 
+  double bonus_da( const action_state_t* s ) const override
+  {
+    double b = base_t::bonus_da( s );
+
+    if ( p() -> azerite.elusive_footwork.ok() )
+        b += p() -> azerite.elusive_footwork.value( 3 );
+
+    return b;
+  }
+
   void execute() override
   {
     monk_melee_attack_t::execute();
@@ -4020,7 +4025,6 @@ struct melee_t: public monk_melee_attack_t
     special = false;
     school = SCHOOL_PHYSICAL;
     weapon_multiplier = 1.0;
-    affected_by.sunrise_technique = true;
 
     if ( player -> main_hand_weapon.group() == WEAPON_1H )
     {
