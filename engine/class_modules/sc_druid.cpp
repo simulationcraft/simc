@@ -8488,7 +8488,7 @@ double druid_t::composite_attribute( attribute_e attr ) const
   switch ( attr )
   {
     case ATTR_AGILITY:
-      if ( buff.ironfur -> up() )
+      if ( buff.ironfur -> up() && azerite.layered_mane.ok() )
       a += azerite.layered_mane.value( 1 ) * buff.ironfur -> stack();
       break;
     default:
