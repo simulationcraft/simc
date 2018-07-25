@@ -1496,7 +1496,8 @@ void item_t::decode_stats()
 
 void item_t::decode_random_suffix()
 {
-  if ( parsed.suffix_id == 0 )
+  // Ignore all old style random suffixes (negative suffix id)
+  if ( parsed.suffix_id <= 0 )
     return;
 
   // We need the ilevel/quality data, otherwise we cannot figure out
