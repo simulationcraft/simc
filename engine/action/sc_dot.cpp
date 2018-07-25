@@ -68,7 +68,7 @@ dot_t::dot_t( const std::string& n, player_t* t, player_t* s )
     ticking( false ),
     current_duration( timespan_t::zero() ),
     last_start( timespan_t::min() ),
-    prev_tick_time( timespan_t::min() ),
+    prev_tick_time( timespan_t::zero() ),
     extended_time( timespan_t::zero() ),
     reduced_time( timespan_t::zero() ),
     stack( 0 ),
@@ -240,6 +240,7 @@ void dot_t::reset()
   ticking          = false;
   miss_time        = timespan_t::min();
   last_start       = timespan_t::min();
+  prev_tick_time   = timespan_t::zero();
   current_duration = timespan_t::min();
   last_tick_factor = -1.0;
   if ( state )
