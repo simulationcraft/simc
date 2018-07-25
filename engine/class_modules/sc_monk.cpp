@@ -173,6 +173,7 @@ public:
   {
     action_t* healing_elixir;
     action_t* rushing_jade_wind;
+    action_t* sunrise_technique;
     actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
 
@@ -2074,6 +2075,7 @@ struct monk_action_t: public Base
   // Affect flags for various dynamic effects
   struct {
     bool serenity;
+    bool sunrise_technique;
   } affected_by;
 
 private:
@@ -2388,6 +2390,12 @@ public:
     }
   }
 
+  void trigger_sunrise_technique ( player_t* t  )
+  {
+    p() -> active_actions.sunrise_technique -> target = t;
+    double dmg = p()->azerite.sunrise_technique.value();
+  }
+
   // Reduces Brewmaster Brew cooldowns by the time given
   void brew_cooldown_reduction( double time_reduction )
   {
@@ -2535,7 +2543,15 @@ public:
   virtual void impact( action_state_t* s ) override
   {
     if ( s -> action -> school == SCHOOL_PHYSICAL )
+    {
       trigger_mystic_touch( s );
+
+      if ( p() -> azerite.sunrise_technique.ok() )
+      {
+        if ( affected_by.sunrise_technique && p() -> buff.sunrise_technique -> up() && td( s -> target ) -> debuff.sunrise_technique -> up() && s -> result > 0 )
+          trigger_sunrise_technique( s -> target );
+      }
+    }
 
     if ( td( s -> target ) -> dots.touch_of_death -> is_ticking() && s -> action -> name_str != "touch_of_death_amplifier" )
     {
@@ -2939,6 +2955,19 @@ struct windwalking_aura_t: public monk_spell_t
 };
 
 // ==========================================================================
+// Sunrise Technique
+// ==========================================================================
+struct sunrise_technique_t : public monk_melee_attack_t
+{
+  sunrise_technique_t( monk_t* p ) :
+    monk_melee_attack_t( "sunrise_technique", p, p -> find_spell( 275673 ) )
+  {
+    background = true;
+    may_crit = true;
+  }
+};
+
+// ==========================================================================
 // Tiger Palm
 // ==========================================================================
 
@@ -2984,6 +3013,7 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     ww_mastery = true;
     sef_ability = SEF_TIGER_PALM;
+    affected_by.sunrise_technique = true;
 
     add_child( eye_of_the_tiger_damage );
     add_child( eye_of_the_tiger_heal );
@@ -3118,6 +3148,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     background = true;
     may_crit = true;
+    affected_by.sunrise_technique = true;
 
     if ( p -> spec.rising_sun_kick_2 )
       attack_power_mod.direct *= 1 + p -> spec.rising_sun_kick_2 -> effectN( 1 ).percent();
@@ -3143,68 +3174,10 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     if ( p() -> specialization() == MONK_WINDWALKER )
       ap_type = AP_WEAPON_BOTH;
   }
-};
-
-struct rising_sun_kick_t: public monk_melee_attack_t
-{
-  rising_sun_kick_dmg_t* trigger_attack;
-
-  rising_sun_kick_t( monk_t* p, const std::string& options_str ):
-    monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick )
-  {
-    parse_options( options_str );
-
-    cooldown -> duration += p -> spec.mistweaver_monk -> effectN( 10 ).time_value();
-
-    if ( p -> sets -> has_set_bonus( MONK_WINDWALKER, T19, B2) )
-      cooldown -> duration += p -> sets -> set( MONK_WINDWALKER, T19, B2 ) -> effectN( 1 ).time_value();
-
-    sef_ability = SEF_RISING_SUN_KICK;
-
-    attack_power_mod.direct = 0;
-
-
-    trigger_attack = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
-    trigger_attack -> stats = stats;
-  }
-
-  void init() override
-  {
-    monk_melee_attack_t::init();
-    
-    ap_type = AP_NONE;
-  }
-
-  virtual double composite_crit_chance() const override
-  {
-    double c = monk_melee_attack_t::composite_crit_chance();
-
-    if ( p() -> buff.pressure_point -> up() )
-      c += p() -> buff.pressure_point -> value();
-
-    return c;
-  }
-
-  virtual void consume_resource() override
-  {
-    monk_melee_attack_t::consume_resource();
-
-    if ( p() -> buff.serenity -> up() )
-      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
-  }
 
   virtual void execute() override
   {
-    // Trigger Combo Strikes
-    // registers even on a miss
-    combo_strikes_trigger( CS_RISING_SUN_KICK );
-
     monk_melee_attack_t::execute();
-
-    if ( result_is_miss( execute_state -> result ) )
-      return;
-
-    trigger_attack -> execute();
 
     switch ( p() -> specialization() )
     {
@@ -3245,7 +3218,6 @@ struct rising_sun_kick_t: public monk_melee_attack_t
         if ( p() -> sets -> has_set_bonus( MONK_WINDWALKER, T20, B2 ) && ( s -> result == RESULT_CRIT ) )
           // -1 to reduce the spell cooldown instead of increasing
           // saved as 3000
-          // p() -> sets -> set( MONK_WINDWALKER, T20, B2 ) -> effectN( 1 ).time_value();
           p() -> cooldown.fists_of_fury -> adjust( -1 * p() -> find_spell( 242260 ) -> effectN( 1 ).time_value() );
       }
 
@@ -3255,6 +3227,65 @@ struct rising_sun_kick_t: public monk_melee_attack_t
         td( s -> target ) -> debuff.sunrise_technique -> trigger();
       }
     }
+  }
+};
+
+struct rising_sun_kick_t: public monk_melee_attack_t
+{
+  rising_sun_kick_dmg_t* trigger_attack;
+
+  rising_sun_kick_t( monk_t* p, const std::string& options_str ):
+    monk_melee_attack_t( "rising_sun_kick", p, p -> spec.rising_sun_kick )
+  {
+    parse_options( options_str );
+
+    cooldown -> duration += p -> spec.mistweaver_monk -> effectN( 10 ).time_value();
+
+    if ( p -> sets -> has_set_bonus( MONK_WINDWALKER, T19, B2) )
+      cooldown -> duration += p -> sets -> set( MONK_WINDWALKER, T19, B2 ) -> effectN( 1 ).time_value();
+
+    sef_ability = SEF_RISING_SUN_KICK;
+
+    attack_power_mod.direct = 0;
+
+    trigger_attack = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
+    trigger_attack -> stats = stats;
+  }
+
+  void init() override
+  {
+    monk_melee_attack_t::init();
+    
+    ap_type = AP_NONE;
+  }
+
+  virtual double composite_crit_chance() const override
+  {
+    double c = monk_melee_attack_t::composite_crit_chance();
+
+    if ( p() -> buff.pressure_point -> up() )
+      c += p() -> buff.pressure_point -> value();
+
+    return c;
+  }
+
+  virtual void consume_resource() override
+  {
+    monk_melee_attack_t::consume_resource();
+
+    if ( p() -> buff.serenity -> up() )
+      p() -> gain.serenity -> add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
+  }
+
+  virtual void execute() override
+  {
+    // Trigger Combo Strikes
+    // registers even on a miss
+    combo_strikes_trigger( CS_RISING_SUN_KICK );
+
+    monk_melee_attack_t::execute();
+
+    trigger_attack -> execute();
   }
 };
 
@@ -3270,6 +3301,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
   {
     cooldown -> duration = timespan_t::zero();
     background = dual = true;
+    affected_by.sunrise_technique = true;
     trigger_gcd = timespan_t::zero();
   }
 
@@ -3341,6 +3373,7 @@ struct blackout_kick_t: public monk_melee_attack_t
 
     parse_options( options_str );
     sef_ability = SEF_BLACKOUT_KICK;
+    affected_by.sunrise_technique = true;
 
     switch ( p -> specialization() )
     {
@@ -3549,6 +3582,7 @@ struct rjw_tick_action_t : public monk_melee_attack_t
     monk_melee_attack_t( name, p, data )
   {
     ww_mastery = true;
+    affected_by.sunrise_technique = true;
 
     dual = background = true;
     aoe = -1;
@@ -3625,6 +3659,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
   sck_tick_action_t( const std::string& name, monk_t* p, const spell_data_t* data ) :
     monk_melee_attack_t( name, p, data )
   {
+    affected_by.sunrise_technique = true;
     dual = background = true;
     aoe = -1;
     radius = data -> effectN( 1 ).radius();
@@ -3730,6 +3765,7 @@ struct fists_of_fury_tick_t: public monk_melee_attack_t
     background = true;
     aoe = -1;
     ww_mastery = true;
+    affected_by.sunrise_technique = true;
 
     attack_power_mod.direct = p -> spec.fists_of_fury -> effectN( 5 ).ap_coeff();
     ap_type = AP_WEAPON_MH;
@@ -3846,6 +3882,7 @@ struct whirling_dragon_punch_tick_t: public monk_melee_attack_t
     monk_melee_attack_t( name, p, s )
   {
     ww_mastery = true;
+    affected_by.sunrise_technique = true;
 
     background = true;
     aoe = -1;
@@ -3914,6 +3951,7 @@ struct fist_of_the_white_tiger_main_hand_t: public monk_melee_attack_t
   {
     sef_ability = SEF_FIST_OF_THE_WHITE_TIGER;
     ww_mastery = true;
+    affected_by.sunrise_technique = true;
 
     may_dodge = may_parry = may_block = may_miss = true;
     dual = true;
@@ -3931,6 +3969,7 @@ struct fist_of_the_white_tiger_t: public monk_melee_attack_t
   {
     sef_ability = SEF_FIST_OF_THE_WHITE_TIGER_OH;
     ww_mastery = true;
+    affected_by.sunrise_technique = true;
 
     parse_options( options_str );
     may_dodge   = may_parry = may_block = true;
@@ -3979,6 +4018,7 @@ struct melee_t: public monk_melee_attack_t
     special = false;
     school = SCHOOL_PHYSICAL;
     weapon_multiplier = 1.0;
+    affected_by.sunrise_technique = true;
 
     if ( player -> main_hand_weapon.group() == WEAPON_1H )
     {
@@ -4174,6 +4214,7 @@ struct touch_of_death_amplifier_t: public monk_spell_t
     may_crit = false;
     school = SCHOOL_PHYSICAL;
     ap_type = AP_NO_WEAPON;
+    affected_by.sunrise_technique = true;
   }
 
   void init() override
@@ -4515,6 +4556,7 @@ struct flying_serpent_kick_t: public monk_melee_attack_t
     first_charge( true ), movement_speed_increase( p -> spec.flying_serpent_kick -> effectN( 1 ).percent() )
   {
     parse_options( options_str );
+    affected_by.sunrise_technique = true;
     ignore_false_positive = true;
     movement_directionality = MOVEMENT_OMNI;
     attack_power_mod.direct = p -> passives.flying_serpent_kick_damage -> effectN( 1 ).ap_coeff();
@@ -7045,6 +7087,8 @@ void monk_t::init_spells()
 
   if ( specialization() == MONK_WINDWALKER )
     windwalking_aura = new actions::windwalking_aura_t( this );
+
+  active_actions.sunrise_technique = new actions::sunrise_technique_t( this );
 }
 
 // monk_t::init_base ========================================================
