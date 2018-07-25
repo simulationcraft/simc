@@ -769,6 +769,7 @@ player_t::player_t( sim_t* s, player_e t, const std::string& n, race_e r ) :
   dynamic_regen_pets( false ),
   visited_apls_( 0 ),
   action_list_id_( 0 ),
+  has_active_resource_callbacks( false ),
   resource_threshold_trigger()
 {
   actor_index = sim->actor_list.size();
