@@ -379,9 +379,19 @@ sim_t* worker_t::sim() const
 
 void worker_t::execute()
 {
-  m_sim = new sim_t( m_parent, 0, m_profileset -> options() );
+  try
+  {
+    m_sim = new sim_t( m_parent, 0, m_profileset -> options() );
 
-  simulate_profileset( m_parent, *m_profileset, m_sim );
+    simulate_profileset( m_parent, *m_profileset, m_sim );
+  }
+  catch (const std::exception& e )
+  {
+    std::cerr << "\n\nError in profileset worker: ";
+    util::print_chained_exception(e);
+    std::cerr << "\n\n" << std::flush;
+    // TODO: find out how to cancel profilesets without deadlock.
+  }
 
   m_done = true;
 
