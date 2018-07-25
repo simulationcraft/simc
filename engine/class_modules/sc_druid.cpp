@@ -3710,8 +3710,9 @@ struct shred_t : public cat_attack_t
   shred_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ), options_str )
   {
-    // Base spell generates 0 CP, Feral passive increases it to 1 CP.
-    energize_amount += p -> spec.feral -> effectN( 3 ).base_value();
+    // Base spell generates 0 CP, Feral passive or Feral Affinity increase it to 1 CP.
+    energize_amount += p -> spec.feral -> effectN( 3 ).base_value()
+      + p -> talent.feral_affinity -> effectN( 8 ).base_value();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4487,7 +4488,7 @@ struct regrowth_t: public druid_heal_t
       + p -> spec.balance -> effectN( 7 ).percent()
       + p -> spec.guardian -> effectN( 5 ).percent();
 
-    base_cost[ RESOURCE_MANA ] *= 1.0 + p -> spec.feral -> effectN( 7 ).percent()
+    base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.feral -> effectN( 7 ).percent()
       + p -> spec.balance -> effectN( 8 ).percent()
       + p -> spec.guardian -> effectN( 6 ).percent();
 
