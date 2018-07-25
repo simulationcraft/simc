@@ -3881,7 +3881,7 @@ struct fists_of_fury_t: public monk_melee_attack_t
     // Get the number of targets from the non sleeping target list
     auto targets = sim -> target_non_sleeping_list.size();
 
-    if ( p() -> azerite.iron_fists.ok() && num_targets_hit >= p() -> azerite.iron_fists.spell_ref().effectN( 2 ).base_value() )
+    if ( p() -> azerite.iron_fists.ok() && targets >= p() -> azerite.iron_fists.spell_ref().effectN( 2 ).base_value() )
       p() -> buff.iron_fists -> trigger();
   }
 
@@ -7335,9 +7335,8 @@ void monk_t::create_buffs()
                                 -> set_default_value( passives.the_emperors_capacitor -> effectN( 1 ).percent() );
 
   // Azerite Traits
-  buff.iron_fists = make_buff<stat_buff_t>( this, "iron_fists", find_spell( 272806 ) );
-  buff.iron_fists -> set_trigger_spell( azerite.iron_fists.spell_ref().effectN( 1 ).trigger() );
-  buff.iron_fists -> set_default_value( azerite.iron_fists.value() );
+  buff.iron_fists = make_buff<stat_buff_t>( this, "iron_fists", find_spell( 272806 ) )
+                    -> add_stat( STAT_CRIT_RATING, azerite.iron_fists.value() );
 
   buff.sunrise_technique = make_buff( this, "sunrise_technique", find_spell( 273298 ) );
 
