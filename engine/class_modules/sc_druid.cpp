@@ -7827,7 +7827,7 @@ void druid_t::init_scaling()
       cat_weapon.damage  += coeff;
       cat_weapon.min_dmg += coeff;
       cat_weapon.max_dmg += coeff;
-      cat_weapon.dps += coeff;
+      cat_weapon.dps     += sim -> scaling -> scale_value;
     }
 
     if ( bear_weapon.damage > 0 )
@@ -7836,7 +7836,7 @@ void druid_t::init_scaling()
       bear_weapon.damage  += coeff;
       bear_weapon.min_dmg += coeff;
       bear_weapon.max_dmg += coeff;
-      bear_weapon.dps += coeff;
+      bear_weapon.dps     += sim -> scaling -> scale_value;
     }
   }
 }
