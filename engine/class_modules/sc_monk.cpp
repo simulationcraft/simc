@@ -2308,7 +2308,7 @@ public:
         if ( p() -> talent.hit_combo -> ok() )
           p() -> buff.hit_combo -> trigger();
 
-        if ( p() -> azerite.meridian_strikes.ok() )
+        if ( p() -> azerite.meridian_strikes.ok() && p() -> cooldown.touch_of_death -> remains() > timespan_t::zero() )
           p() -> cooldown.touch_of_death -> adjust( timespan_t::from_seconds( -1 * ( p() -> azerite.meridian_strikes.spell_ref().effectN( 2 ).base_value() / 100 ) ), true ); // Saved as 10
       }
       else
@@ -4295,20 +4295,13 @@ struct touch_of_death_t: public monk_spell_t
     if ( p() -> buff.combo_strikes -> up() )
       amount *= 1 + p() -> cache.mastery_value();
 
+    if ( p() -> azerite.meridian_strikes.ok() )
+      amount += p() -> azerite.meridian_strikes.value();
+
     s -> result_raw = amount;
     s -> result_total = amount;
 
     return amount;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = base_t::bonus_da( s );
-
-    if ( p() -> azerite.meridian_strikes.ok() )
-      b += p() -> azerite.meridian_strikes.value();
-
-    return b;
   }
 
   void last_tick( dot_t* dot ) override
@@ -4316,8 +4309,9 @@ struct touch_of_death_t: public monk_spell_t
     if ( td( p() -> target ) -> debuff.touch_of_death_amplifier -> up() )
     {
       double touch_of_death_multiplier = p() -> spec.touch_of_death_amplifier -> effectN( 1 ).percent();
-      touch_of_death_amplifier -> base_dd_min = td( p() -> target ) -> debuff.touch_of_death_amplifier -> current_value * touch_of_death_multiplier;
-      touch_of_death_amplifier -> base_dd_max = td( p() -> target ) -> debuff.touch_of_death_amplifier -> current_value * touch_of_death_multiplier;
+      double tod_dmg = td( p() -> target ) -> debuff.touch_of_death_amplifier -> current_value;
+      touch_of_death_amplifier -> base_dd_min = tod_dmg * touch_of_death_multiplier;
+      touch_of_death_amplifier -> base_dd_max = tod_dmg * touch_of_death_multiplier;
 
       if ( sim -> debug )
       {
