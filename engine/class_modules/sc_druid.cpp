@@ -5287,15 +5287,11 @@ struct innervate_t : public druid_spell_t
 
 struct ironfur_t : public druid_spell_t
 {
-  bool has_layered_mane;
-
   ironfur_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "ironfur", p, p -> spec.ironfur, options_str )
   {
     use_off_gcd = true;
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
-
-    has_layered_mane = p -> azerite.layered_mane.ok() ? true : false;
   }
 
   timespan_t composite_buff_duration()
@@ -5332,7 +5328,7 @@ struct ironfur_t : public druid_spell_t
     if ( p() -> buff.guardians_wrath -> up() )
       p() -> buff.guardians_wrath -> expire();
 
-    if ( has_layered_mane && rng().roll( p() -> azerite.layered_mane.spell() -> effectN( 2 ).percent() ) ) {
+    if ( p() -> azerite.layered_mane.ok() && rng().roll( p() -> azerite.layered_mane.spell() -> effectN( 2 ).percent() ) ) {
       p() -> buff.ironfur -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, composite_buff_duration() );
     }
   }
