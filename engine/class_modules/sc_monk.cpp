@@ -3152,7 +3152,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     if ( p() -> buff.swift_roundhouse -> up() )
     {
-        b += p() -> azerite.swift_roundhouse.value() * p() -> buff.swift_roundhouse -> stack();
+        b += p() -> buff.swift_roundhouse -> stack_value();
         p() -> buff.swift_roundhouse -> expire();
     }
 
@@ -7340,7 +7340,8 @@ void monk_t::create_buffs()
 
   buff.sunrise_technique = make_buff( this, "sunrise_technique", find_spell( 273298 ) );
 
-  buff.swift_roundhouse = make_buff( this, "swift_roundhouse", find_spell( 278710 ) );
+  buff.swift_roundhouse = make_buff( this, "swift_roundhouse", find_spell( 278710 ) )
+                          -> set_default_value( azerite.swift_roundhouse.value() );
 }
 
 // monk_t::init_gains =======================================================
