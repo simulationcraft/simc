@@ -6902,10 +6902,8 @@ void druid_t::init_base_stats()
 
   player_t::init_base_stats();
 
-  // All specs get benefit from both agi and intellect.
-  // Nurturing Instinct overrides this behavior in composite_spell_power.
-  base.attack_power_per_agility  = 1.0;
-  base.spell_power_per_intellect = 1.0;
+  base.attack_power_per_agility  = specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ? 1.0 : 0.0;
+  base.spell_power_per_intellect = specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION ? 1.0 : 0.0;
 
   // Resources
   resources.base[ RESOURCE_RAGE         ] = 100;
@@ -8377,20 +8375,32 @@ double druid_t::composite_melee_haste() const
 
 double druid_t::composite_spell_power( school_e school ) const
 {
+  double sp = 0.0;
+
   // In 8.0 Nurturing Instinct is gone, replaced with modifiers in feral/guardian auras.
-  if ( specialization() == DRUID_GUARDIAN )
+  double ap_coeff = 0.0;
+
+  if ( specialization() == DRUID_GUARDIAN ) { ap_coeff = spec.guardian -> effectN( 11 ).percent(); }
+  if ( specialization() == DRUID_FERAL    ) { ap_coeff = spec.feral    -> effectN( 11 ).percent(); }
+
+  if ( ap_coeff > 0 )
   {
-    return spec.guardian -> effectN( 11 ).percent() * cache.attack_power() *
-      composite_attack_power_multiplier();
+    double weapon_sp = 0.0;
+
+    if ( buff.cat_form -> check() ) {
+      weapon_sp = cat_weapon.dps * WEAPON_POWER_COEFFICIENT;
+    } else if ( buff.bear_form -> check() ) {
+      weapon_sp = bear_weapon.dps * WEAPON_POWER_COEFFICIENT;
+    } else {
+      weapon_sp = main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
+    }
+
+    sp += composite_attack_power_multiplier() * ( cache.attack_power() + weapon_sp ) * ap_coeff;
   }
 
-  if ( specialization() == DRUID_FERAL )
-  {
-    return spec.feral -> effectN( 11 ).percent() * cache.attack_power() *
-      composite_attack_power_multiplier();
-  }
+  sp += player_t::composite_spell_power( school );
 
-  return player_t::composite_spell_power( school );
+  return sp;
 }
 
 // druid_t::composite_spell_power_multiplier ================================
@@ -8929,13 +8939,24 @@ druid_td_t* druid_t::get_target_data( player_t* target ) const
 
 void druid_t::init_beast_weapon( weapon_t& w, double swing_time )
 {
+  // use main hand weapon as base
   w = main_hand_weapon;
-  double mod = swing_time /  w.swing_time.total_seconds();
+
+  if ( w.type == WEAPON_NONE ) {
+    // if main hand weapon is empty, use unarmed damage
+    // unarmed base beast weapon damage range is 1-1
+    // Jul 25 2018
+    w.min_dmg = w.max_dmg = w.damage  = 1;
+  } else {
+    // Otherwise normalize the main hand weapon's damage to the beast weapon's speed.
+    double normalizing_factor = swing_time /  w.swing_time.total_seconds();
+    w.min_dmg *= normalizing_factor;
+    w.max_dmg *= normalizing_factor;
+    w.damage *= normalizing_factor;
+  }
+
   w.type = WEAPON_BEAST;
   w.school = SCHOOL_PHYSICAL;
-  w.min_dmg *= mod;
-  w.max_dmg *= mod;
-  w.damage *= mod;
   w.swing_time = timespan_t::from_seconds( swing_time );
 }
 
