@@ -52,6 +52,7 @@ struct warlock_pet_t : public pet_t
   void create_buffs() override;
   void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false ) override;
   double composite_player_multiplier( school_e school ) const override;
+  double resource_regen_per_second( resource_e ) const override;
 
   void create_buffs_pets();
   void create_buffs_demonology();

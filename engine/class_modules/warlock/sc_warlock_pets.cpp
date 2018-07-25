@@ -133,6 +133,19 @@ void warlock_pet_t::schedule_ready(timespan_t delta_time, bool waiting)
   pet_t::schedule_ready(delta_time, waiting);
 }
 
+double warlock_pet_t::resource_regen_per_second( resource_e r ) const
+{
+  double reg = base_t::resource_regen_per_second( r );
+
+  if ( r == RESOURCE_ENERGY )
+  {
+    if ( o()->bugs )
+      reg /= cache.spell_haste();
+  }
+
+  return reg;
+}
+
 double warlock_pet_t::composite_player_multiplier(school_e school) const
 {
   double m = pet_t::composite_player_multiplier(school);
