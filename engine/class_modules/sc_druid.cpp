@@ -316,10 +316,9 @@ public:
     azerite_power_t streaking_stars;
 
     // Guardian
-    azerite_power_t craggy_bark;
-    azerite_power_t gory_regeneration;
-    azerite_power_t heartblood;
-    azerite_power_t masterful_instincts;
+    azerite_power_t craggy_bark; // Low Priority
+    azerite_power_t gory_regeneration; // Low Priority
+    azerite_power_t heartblood; // Low Priority
     azerite_power_t twisted_claws;
 
     // Implemented
@@ -339,7 +338,8 @@ public:
     azerite_power_t wild_fleshrending; //-||-
     // Guardian
     azerite_power_t guardians_wrath;
-    azerite_power_t layered_mane;
+    azerite_power_t layered_mane; // TODO: check if second Ironfur benefits from Guardian of Elune
+    azerite_power_t masterful_instincts;
 
   } azerite;
 
@@ -408,6 +408,7 @@ public:
     buff_t* guardian_tier17_4pc;
     buff_t* guardian_tier19_4pc;
     buff_t* guardians_wrath;
+    buff_t* masterful_instincts;
 
     // Restoration
     buff_t* incarnation_tree;
@@ -1365,6 +1366,24 @@ struct warrior_of_elune_buff_t : public druid_buff_t<buff_t>
   {
     druid_buff_t<buff_t>::expire_override(expiration_stacks, remaining_duration);
     p().cooldown.warrior_of_elune -> start();
+  }
+};
+
+// Survival Instincts =======================================================
+
+struct survival_instincts_buff_t : public druid_buff_t<buff_t>
+{
+survival_instincts_buff_t( druid_t& p ) :
+  base_t( p, "survival_instincts", p.find_specialization_spell( "Survival Instincts" ) )
+  {
+    set_cooldown( timespan_t::zero() );
+    set_default_value( data().effectN( 1 ).percent() );
+  }
+
+  virtual void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    druid_buff_t<buff_t>::expire_override( expiration_stacks, remaining_duration );
+    p().buff.masterful_instincts -> trigger();
   }
 };
 
@@ -5412,7 +5431,6 @@ struct ironfur_t : public druid_spell_t
     if ( p() -> buff.guardians_wrath -> up() )
       p() -> buff.guardians_wrath -> expire();
 
-    // TODO: check if the second application inherits GoE or not
     if ( has_layered_mane && rng().roll( p() -> azerite.layered_mane.spell() -> effectN( 2 ).percent() ) ) {
       p() -> buff.ironfur -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, composite_buff_duration() );
     }
@@ -7180,8 +7198,8 @@ void druid_t::create_buffs()
                                .tick_callback( [ this ] ( buff_t*, int, const timespan_t& ) { buff.earthwarden -> trigger(); } )
                                .tick_zero( true );
 
-  buff.guardians_wrath       = buff_creator_t( this, "guardians_wrath", find_spell(279541) )
-                               .default_value( find_spell(279541) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
+  buff.guardians_wrath       = buff_creator_t( this, "guardians_wrath", find_spell( 279541 ) )
+                               .default_value( find_spell( 279541 ) -> effectN( 1 ).resource( RESOURCE_RAGE ) );
 
   buff.ironfur               = buff_creator_t( this, "ironfur", spec.ironfur )
                                .duration( spec.ironfur -> duration() )
@@ -7193,13 +7211,15 @@ void druid_t::create_buffs()
                                .stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                .cd( timespan_t::zero() );
 
+  buff.masterful_instincts   = make_buff<stat_buff_t>( this, "masterful_instincts", find_spell( 273349 ) )
+                               -> add_stat( STAT_MASTERY_RATING, azerite.masterful_instincts.value( 1 ) )
+                               -> add_stat( STAT_ARMOR, azerite.masterful_instincts.value( 2 ) );
+
   buff.pulverize             = buff_creator_t( this, "pulverize", find_spell( 158792 ) )
                                .default_value( find_spell( 158792 ) -> effectN( 1 ).percent() )
                                .refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
-  buff.survival_instincts    = buff_creator_t( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
-                               .cd( timespan_t::zero() )
-                               .default_value( -find_specialization_spell( "Survival Instincts" ) -> effectN( 1 ).percent() );
+  buff.survival_instincts    = new survival_instincts_buff_t( *this );
 
   // Restoration
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
