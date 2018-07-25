@@ -313,7 +313,6 @@ public:
     azerite_power_t craggy_bark; // Low Priority
     azerite_power_t gory_regeneration; // Low Priority
     azerite_power_t heartblood; // Low Priority
-    azerite_power_t twisted_claws;
 
     // Implemented
     // Balance
@@ -335,6 +334,7 @@ public:
     azerite_power_t guardians_wrath;
     azerite_power_t layered_mane; // TODO: check if second Ironfur benefits from Guardian of Elune
     azerite_power_t masterful_instincts;
+    azerite_power_t twisted_claws;
 
   } azerite;
 
@@ -404,6 +404,7 @@ public:
     buff_t* guardian_tier19_4pc;
     buff_t* guardians_wrath;
     buff_t* masterful_instincts;
+    buff_t* twisted_claws;
 
     // Restoration
     buff_t* incarnation_tree;
@@ -3906,6 +3907,9 @@ struct thrash_cat_t : public cat_attack_t
   void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
+
+    if ( p() -> azerite.twisted_claws.ok() )
+      p() -> buff.twisted_claws -> trigger();
   }
 
   void execute() override
@@ -4238,6 +4242,14 @@ struct thrash_bear_t : public bear_attack_t
     bear_attack_t::tick( d );
 
     p() -> resource_gain( RESOURCE_RAGE, blood_frenzy_amount, p() -> gain.blood_frenzy );
+  }
+
+  virtual void impact( action_state_t* state ) override
+  {
+    bear_attack_t::impact( state );
+
+    if ( p() -> azerite.twisted_claws.ok() )
+      p() -> buff.twisted_claws -> trigger();
   }
 };
 
@@ -7125,6 +7137,10 @@ void druid_t::create_buffs()
                                .refresh_behavior( buff_refresh_behavior::PANDEMIC );
 
   buff.survival_instincts    = new survival_instincts_buff_t( *this );
+
+  buff.twisted_claws         = make_buff<stat_buff_t>( this, "twisted_claws", find_spell( 275909 ) )
+                               -> add_stat( STAT_AGILITY, azerite.twisted_claws.value( 1 ) )
+                               -> set_chance( find_spell( 275908 ) -> proc_chance() );
 
   // Restoration
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
