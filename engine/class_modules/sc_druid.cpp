@@ -20,9 +20,6 @@ namespace { // UNNAMED NAMESPACE
 
   Balance ===================================================================
   Still need AP Coeff for Treants
-  Azerite traits:
-  Streaking Stars
-  Double Check Azerite implementation
 
   Guardian ==================================================================
   Azerite traits
@@ -85,8 +82,6 @@ enum streaking_stars_e {
   SS_MOONFIRE,
   SS_SUNFIRE,
   SS_STARSURGE,
-  SS_STARFALL,
-  SS_FURY_OF_ELUNE,
   SS_STELLAR_FLARE,
 };
 
@@ -313,7 +308,6 @@ public:
      // Balance
     azerite_power_t lively_spirit; //how to even implement
     azerite_power_t long_night; //seems to be removed
-    azerite_power_t streaking_stars;
 
     // Guardian
     azerite_power_t craggy_bark; // Low Priority
@@ -328,6 +322,7 @@ public:
     azerite_power_t power_of_the_moon;
     azerite_power_t sunblaze;
     azerite_power_t high_noon;
+    azerite_power_t streaking_stars;
     // Feral
     azerite_power_t blood_mist; //check spelldata
     azerite_power_t gushing_lacerations; //check spelldata
@@ -1583,7 +1578,7 @@ public:
     return p()->previous_streaking_stars == new_ability;
   }
 
-  virtual void streaking_stars_trigger(streaking_stars_e new_ability, player_t* target)
+  virtual void streaking_stars_trigger(streaking_stars_e new_ability, action_state_t* s)
   {
     if (p()->azerite.streaking_stars.ok())
     {
@@ -1591,9 +1586,9 @@ public:
       {
         // Trigger Streaking Stars
         action_state_t* ss_s = p()->active.streaking_stars->get_state();
-        ss_s->target = target;
+        ss_s->target = s->target;
         p()->active.streaking_stars->snapshot_state(ss_s, DMG_DIRECT);
-        p()->active.streaking_stars->schedule_execute(ss_s);  
+        p()->active.streaking_stars->schedule_execute(ss_s);
       }
       p()->previous_streaking_stars = new_ability;
     }
@@ -2158,6 +2153,8 @@ struct moonfire_t : public druid_spell_t
     {
       druid_spell_t::impact( s );
 
+      streaking_stars_trigger(SS_MOONFIRE, s);
+
       // The buff needs to be handled with the damage handler since 7.1 since it impacts Moonfire DD
       // IN-GAME BUG (Jan 20 2018): Lady and the Child Galactic Guardian procs benefit from both the DD modifier and the rage gain.
       if ( ( benefits_from_galactic_guardian || ( p() -> bugs && s -> chain_target > 0 ) )
@@ -2305,7 +2302,6 @@ struct moonfire_t : public druid_spell_t
     damage -> target = execute_state -> target;
     damage -> schedule_execute();
 
-    streaking_stars_trigger(SS_MOONFIRE, target);
   }
 };
 
@@ -4976,7 +4972,6 @@ struct fury_of_elune_t : public druid_spell_t
           .duration(data().duration())
           .action(p()->active.fury_of_elune));
       p() -> buff.fury_of_elune -> trigger();
-      streaking_stars_trigger(SS_FURY_OF_ELUNE, target);
   }
 };
 
@@ -5497,7 +5492,13 @@ struct lunar_strike_t : public druid_spell_t
       p()->buff.dawning_sun->trigger(1, p()->azerite.dawning_sun.value());
     }
 
-    streaking_stars_trigger(SS_LUNAR_STRIKE, target);
+  }
+
+
+  void impact(action_state_t* s) override
+  {
+    druid_spell_t::impact(s);
+    streaking_stars_trigger(SS_LUNAR_STRIKE, s);
   }
 };
 
@@ -5632,9 +5633,14 @@ struct sunfire_t : public druid_spell_t
 
     damage -> target = execute_state -> target;
     damage -> schedule_execute();
-
-    streaking_stars_trigger(SS_SUNFIRE, target);
   }
+
+  void impact(action_state_t* s) override
+  {
+    druid_spell_t::impact(s);
+    streaking_stars_trigger(SS_SUNFIRE, s);
+  }
+
 };
 
 // Moonkin Form Spell =======================================================
@@ -5847,6 +5853,7 @@ struct solar_wrath_t : public druid_spell_t
     {
       p ()->trigger_solar_empowerment (s);
     }
+    streaking_stars_trigger(SS_SOLAR_WRATH, s);
   }
 
   timespan_t gcd() const override
@@ -5894,8 +5901,6 @@ struct solar_wrath_t : public druid_spell_t
     }
 
     p() -> buff.power_of_elune -> trigger();
-
-    streaking_stars_trigger(SS_SOLAR_WRATH, target);
   }
 
   virtual double bonus_da(const action_state_t* s) const override
@@ -6052,8 +6057,6 @@ struct starfall_t : public druid_spell_t
       p()->buff.oneths_overconfidence->decrement();
     p()->buff.oneths_intuition->trigger();
     p()->buff.starfall->trigger();
-
-    streaking_stars_trigger(SS_STARFALL, target);
   }
 };
 struct starshards_t : public starfall_t
@@ -6136,8 +6139,6 @@ struct starsurge_t : public druid_spell_t
 
   void execute() override
   {
-
-
     druid_spell_t::execute();
 
     if ( p() -> sets -> has_set_bonus( DRUID_BALANCE, T20, B4 ))
@@ -6172,8 +6173,6 @@ struct starsurge_t : public druid_spell_t
 
     if (p()->buff.sunblaze->up())
       p()->buff.sunblaze->expire();
-
-    streaking_stars_trigger(SS_STARSURGE, target);
   }
 
   virtual double bonus_da(const action_state_t* s) const override
@@ -6186,6 +6185,12 @@ struct starsurge_t : public druid_spell_t
     return da;
   }
 
+
+  void impact(action_state_t* s) override
+  {
+    druid_spell_t::impact(s);
+    streaking_stars_trigger(SS_STARSURGE, s);
+  }
 };
 
 // Stellar Flare ============================================================
@@ -6207,11 +6212,12 @@ struct stellar_flare_t : public druid_spell_t
       return am;
   }
 
-  void execute() override 
+  void impact(action_state_t* s) override
   {
-    druid_spell_t::execute();
-    streaking_stars_trigger(SS_STELLAR_FLARE, target);
+    druid_spell_t::impact(s);
+    streaking_stars_trigger(SS_STELLAR_FLARE, s);
   }
+
 };
 
 // Survival Instincts =======================================================
