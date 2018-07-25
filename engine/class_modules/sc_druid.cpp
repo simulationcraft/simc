@@ -6178,9 +6178,6 @@ struct starsurge_t : public druid_spell_t
       p() -> buff.oneths_intuition -> decrement();
 
     p() -> buff.oneths_overconfidence -> trigger();
-
-    if (p()->buff.sunblaze->up())
-      p()->buff.sunblaze->expire();
   }
 
   virtual double bonus_da(const action_state_t* s) const override
@@ -6198,6 +6195,8 @@ struct starsurge_t : public druid_spell_t
   {
     druid_spell_t::impact(s);
     streaking_stars_trigger(SS_STARSURGE, s);
+    if (p()->buff.sunblaze->up())
+      p()->buff.sunblaze->expire();
   }
 };
 
