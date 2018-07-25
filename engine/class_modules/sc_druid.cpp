@@ -3710,8 +3710,8 @@ struct shred_t : public cat_attack_t
   shred_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "shred", p, p -> find_class_spell( "Shred" ), options_str )
   {
-    // This was removed from spelldata for some reason, but it still awards 1CP in game.
-    energize_amount = 1;
+    // Base spell generates 0 CP, Feral passive increases it to 1 CP.
+    energize_amount += p -> spec.feral -> effectN( 3 ).base_value();
   }
 
   virtual void impact( action_state_t* s ) override
@@ -4374,106 +4374,6 @@ struct frenzied_regeneration_t : public heals::druid_heal_t
   }
 };
 
-// Healing Touch ============================================================
-
-struct healing_touch_t : public druid_heal_t
-{
-  healing_touch_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( "healing_touch", p, p -> find_class_spell( "Healing Touch" ), options_str )
-  {
-    form_mask = NO_FORM | MOONKIN_FORM; // DBC has no mask
-
-    init_living_seed();
-    ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
-    base_multiplier *= 1.0 + p -> spec.feral -> effectN( 2 ).percent()
-      + p -> spec.balance -> effectN( 2 ).percent()
-      + p -> spec.guardian -> effectN( 4 ).percent();
-
-    // redirect to self if not specified
-    /* if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
-      target = p; */
-
-    target = sim -> target;
-    base_multiplier = 0;
-
-    //base_multiplier *= 1.0 + p -> artifact.attuned_to_nature.percent();
-  }
-
-  virtual double cost() const override
-  {
-    if ( p() -> buff.predatory_swiftness -> check() )
-      return 0;
-
-    return druid_heal_t::cost();
-  }
-
-  virtual void consume_resource() override
-  {
-    // Prevent from consuming Omen of Clarity unnecessarily
-    if ( p() -> buff.predatory_swiftness -> check() )
-      return;
-
-    druid_heal_t::consume_resource();
-  }
-
-  virtual timespan_t execute_time() const override
-  {
-    if ( p() -> buff.predatory_swiftness -> check() )
-      return timespan_t::zero();
-
-    timespan_t et = druid_heal_t::execute_time();
-
-    et *= 1.0 + p() -> buff.power_of_elune -> current_stack
-      * p() -> buff.power_of_elune -> data().effectN( 2 ).percent();
-
-    return et;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = druid_heal_t::action_multiplier();
-
-    am *= 1.0 + p() -> buff.power_of_elune -> current_stack
-      * p() -> buff.power_of_elune -> data().effectN( 1 ).percent();
-
-    return am;
-  }
-
-  virtual void impact( action_state_t* state ) override
-  {
-    druid_heal_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      trigger_lifebloom_refresh( state );
-
-      if ( state -> result == RESULT_CRIT )
-        trigger_living_seed( state );
-    }
-  }
-
-  virtual bool check_form_restriction() override
-  {
-    if ( p() -> buff.predatory_swiftness -> check() )
-      return true;
-
-    return druid_heal_t::check_form_restriction();
-  }
-
-  virtual void execute() override
-  {
-    druid_heal_t::execute();
-
-    if ( p() -> talent.bloodtalons -> ok() )
-      p() -> buff.bloodtalons -> trigger( 2 );
-
-    p() -> buff.predatory_swiftness -> expire();
-
-    if ( p() -> buff.power_of_elune -> up() )
-      p() -> buff.power_of_elune -> expire();
-  }
-};
-
 // Lifebloom ================================================================
 
 struct lifebloom_bloom_t : public druid_heal_t
@@ -4575,21 +4475,26 @@ struct regrowth_t: public druid_heal_t
   {
     form_mask = NO_FORM | MOONKIN_FORM;
     may_autounshift = true;
-    ignore_false_positive = true;
-
-
     ignore_false_positive = true; // Prevents cat/bear from failing a skill check and going into caster form.
-    base_multiplier *= 1.0 + p -> spec.feral -> effectN( 2 ).percent()
-      + p -> spec.balance -> effectN( 2 ).percent()
+
+    // Spec passive modifiers. Note: Resto also has a modifier, but as a part
+    // of a "spec-wide" modifier so better to account for that somewhere else.
+    base_dd_multiplier *= 1.0 + p -> spec.feral -> effectN( 5 ).percent()
+      + p -> spec.balance -> effectN( 6 ).percent()
       + p -> spec.guardian -> effectN( 4 ).percent();
 
-    // redirect to self if not specified
-    /* if ( target -> is_enemy() || ( target -> type == HEALING_ENEMY && p -> specialization() == DRUID_GUARDIAN ) )
-    target = p; */
+    base_td_multiplier *= 1.0 + p -> spec.feral -> effectN( 6 ).percent()
+      + p -> spec.balance -> effectN( 7 ).percent()
+      + p -> spec.guardian -> effectN( 5 ).percent();
 
+    base_cost[ RESOURCE_MANA ] *= 1.0 + p -> spec.feral -> effectN( 7 ).percent()
+      + p -> spec.balance -> effectN( 8 ).percent()
+      + p -> spec.guardian -> effectN( 6 ).percent();
+
+    // Hack for feral to be able to use target-related expressions on this action
+    // Disables healing entirely
     target = sim -> target;
     base_multiplier = 0;
-
   }
 
   double cost() const override
@@ -6643,7 +6548,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "fury_of_elune"          ) return new          fury_of_elune_t( this, options_str );
   if ( name == "growl"                  ) return new                  growl_t( this, options_str );
   if ( name == "half_moon"              ) return new              half_moon_t( this, options_str );
-  if ( name == "healing_touch"          ) return new          healing_touch_t( this, options_str );
   if ( name == "innervate"              ) return new              innervate_t( this, options_str );
   if ( name == "ironfur"                ) return new                ironfur_t( this, options_str );
   if ( name == "lifebloom"              ) return new              lifebloom_t( this, options_str );
@@ -8351,7 +8255,7 @@ double druid_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_SPELL_HASTE:
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
-      rm *= 1.0 + spec.feral -> effectN( 7 ).percent();
+      rm *= 1.0 + spec.feral -> effectN( 8 ).percent();
       break;
     default:
       break;
