@@ -132,6 +132,9 @@ ExperimentalAutoDetectBinPacking: false
 # A vector of macros that should be interpreted as foreach loops instead of as function calls.
 ForEachMacros:   [ foreach, Q_FOREACH, BOOST_FOREACH ]
 
+# Dependent on the value, multiple #include blocks can be sorted as one and divided based on category.
+IncludeBlocks: IBS_Preserve
+
 # Regular expressions denoting the different #include categories used for ordering #includes.
 IncludeCategories:
   - Regex:           '^<.*\.h>'
