@@ -2390,20 +2390,6 @@ public:
     }
   }
 
-  void trigger_sunrise_technique ( player_t* t, double dmg  )
-  {
-    // This ability should be getting affected by Windwalker Aura Effect 1 but isn't
-    // Damage calc is showing there is an 80% damage reduction that is missing from the spell data
-    // Some reason multipliers are not getting affected within the spell, so need to make adjustments
-    // before applying the min and max damage.
-    dmg *= 0.8;
-
-    p() -> active_actions.sunrise_technique -> target = t;
-    p() -> active_actions.sunrise_technique -> base_dd_min = dmg;
-    p() -> active_actions.sunrise_technique -> base_dd_max = dmg;
-    p() -> active_actions.sunrise_technique -> execute();
-  }
-
   // Reduces Brewmaster Brew cooldowns by the time given
   void brew_cooldown_reduction( double time_reduction )
   {
@@ -2557,7 +2543,10 @@ public:
       if ( p() -> azerite.sunrise_technique.ok() )
       {
         if ( affected_by.sunrise_technique && p() -> buff.sunrise_technique -> up() && td( s -> target ) -> debuff.sunrise_technique -> up() && s -> result > 0 )
-          trigger_sunrise_technique( s -> target, p() -> azerite.sunrise_technique.value() );
+        {
+          p() -> active_actions.sunrise_technique -> target = s -> target;
+          p() -> active_actions.sunrise_technique -> execute();
+        }
       }
     }
 
@@ -2961,6 +2950,12 @@ struct sunrise_technique_t : public monk_melee_attack_t
     may_crit = true;
     trigger_gcd = timespan_t::zero();
     min_gcd = timespan_t::zero();
+
+    if ( p -> azerite.sunrise_technique.ok() )
+    {
+      base_dd_min = p -> azerite.sunrise_technique.value();
+      base_dd_max = p -> azerite.sunrise_technique.value();
+    }
   }
 };
 
