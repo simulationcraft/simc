@@ -829,9 +829,10 @@ struct food_t : public dbc_consumable_base_t
 };
 
 const std::map<std::string, unsigned> food_t::__map = {
-  { "felmouth_frenzy", 188534 },
-  { "lemon_herb_filet", 185736 },
-  { "sugarcrusted_fish_feast", 185736 },
+  { "seafood_magnifique_feast",  87545 },
+  { "felmouth_frenzy",          188534 },
+  { "lemon_herb_filet",         185736 },
+  { "sugarcrusted_fish_feast",  185736 },
 };
 
 } // END UNNAMED NAMESPACE

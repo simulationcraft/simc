@@ -2,6 +2,8 @@ import sys, os, re, types, html.parser, urllib, datetime, signal, json, pathlib,
 
 import dbc.db, dbc.data, dbc.parser, dbc.file
 
+from dbc import constants
+
 # Special hotfix flags for spells to mark that the spell has hotfixed effects or powers
 SPELL_EFFECT_HOTFIX_PRESENT = 0x8000000000000000
 SPELL_POWER_HOTFIX_PRESENT  = 0x4000000000000000
@@ -813,7 +815,12 @@ class ItemDataGenerator(DataGenerator):
                 elif classdata.subclass == 6:
                    filter_ilevel = False
                 else:
-                    continue
+                    # Finally, check consumable whitelist
+                    map_ = constants.CONSUMABLE_ITEM_WHITELIST.get(classdata.subclass, {})
+                    if item_effect.id_parent in map_:
+                        filter_ilevel = False
+                    else:
+                        continue
             # Hunter scopes and whatnot
             elif classdata.classs == 7:
                 if classdata.has_value('subclass', 3):
@@ -2237,6 +2244,12 @@ class SpellDataGenerator(DataGenerator):
                     # Permanent enchants
                     elif classdata.has_value('subclass', 6):
                         self.process_spell(spell_id, ids, 0, 0)
+
+                    # Finally, check consumable whitelist
+                    map_ = constants.CONSUMABLE_ITEM_WHITELIST.get(classdata.subclass, {})
+                    if item_effect.id_parent in map_:
+                        self.process_spell(spell_id, ids, 0, 0)
+
             # Hunter scopes and whatnot
             elif class_ == 7:
                 if classdata.has_value('subclass', 3):
