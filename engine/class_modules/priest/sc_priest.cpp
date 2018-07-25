@@ -897,12 +897,10 @@ double priest_t::composite_player_target_multiplier( player_t* t, school_e schoo
 {
   double m = player_t::composite_player_target_multiplier( t, school );
 
-  if ( const auto td = find_target_data( t ) )
+  auto target_data = get_target_data( t );
+  if ( target_data->buffs.schism->check() )
   {
-    if ( td->buffs.schism->check() )
-    {
-      m *= 1.0 + td->buffs.schism->data().effectN( 2 ).percent();
-    }
+    m *= 1.0 + target_data->buffs.schism->data().effectN( 2 ).percent();
   }
 
   return m;
@@ -1248,15 +1246,6 @@ priest_td_t* priest_t::get_target_data( player_t* target ) const
   return td;
 }
 
-/**
- * Find target_data for given target.
- * Returns target_data if found, nullptr otherwise
- */
-priest_td_t* priest_t::find_target_data( player_t* target ) const
-{
-  return _target_data[ target ];
-}
-
 void priest_t::init_action_list()
 {
   if ( specialization() == PRIEST_HOLY )
@@ -1328,7 +1317,7 @@ void priest_t::reset()
   // Reset Target Data
   for ( player_t* target : sim->target_list )
   {
-    if ( auto td = find_target_data( target ) )
+    if ( auto td = _target_data[ target ] )
     {
       td->reset();
     }

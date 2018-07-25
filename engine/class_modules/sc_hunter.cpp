@@ -764,7 +764,8 @@ public:
   hunter_t* p()             { return static_cast<hunter_t*>( ab::player ); }
   const hunter_t* p() const { return static_cast<hunter_t*>( ab::player ); }
 
-  hunter_td_t* td( player_t* t )             { return p() -> get_target_data( t ); }
+  hunter_td_t* td( player_t* t ) { return p() -> get_target_data( t ); }
+  const hunter_td_t* td( player_t* t ) const { return p() -> get_target_data( t ); }
   const hunter_td_t* find_td( const player_t* t ) const { return p() -> find_target_data( t ); }
 
   void init() override
@@ -3188,11 +3189,14 @@ struct internal_bleeding_t
   void trigger( const action_state_t* s )
   {
     auto p = static_cast<const hunter_t*>( s -> action -> player );
-    auto td = p -> find_target_data( s -> target );
-    if ( action && td && td -> dots.shrapnel_bomb -> is_ticking() )
+    if ( action )
     {
-      action -> set_target( s -> target );
-      action -> execute();
+      auto td = action->td( s -> target );
+      if (td -> dots.shrapnel_bomb -> is_ticking())
+      {
+        action -> set_target( s -> target );
+        action -> execute();
+      }
     }
   }
 };
@@ -3682,8 +3686,8 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
       // simply move targets without ss to the front of the list
       auto start = tl.begin();
       std::partition( *start == target ? std::next( start ) : start, tl.end(),
-        [ this ]( const player_t* t ) {
-          return !( find_td( t ) && find_td( t ) -> dots.serpent_sting -> is_ticking() );
+        [ this ]( player_t* t ) {
+          return !( this -> td( t ) -> dots.serpent_sting -> is_ticking() );
         } );
     }
 

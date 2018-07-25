@@ -167,16 +167,6 @@ public:
   {
     return p()->o()->get_target_data( t );
   }
-
-  warlock_td_t* find_td( player_t* t )
-  {
-    return p()->o()->find_target_data( t );
-  }
-
-  const warlock_td_t* find_td( player_t* t ) const
-  {
-    return p()->o()->find_target_data( t );
-  }
 };
 
 struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>

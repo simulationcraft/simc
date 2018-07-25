@@ -418,8 +418,6 @@ public:
 
   priest_t( sim_t* sim, const std::string& name, race_e r );
 
-  priest_td_t* find_target_data( player_t* target ) const;
-
   // player_t overrides
   void init_base_stats() override;
   void init_resources( bool force ) override;
@@ -973,16 +971,6 @@ public:
   priest_td_t& get_td( player_t* t )
   {
     return *( priest().get_target_data( t ) );
-  }
-
-  priest_td_t* find_td( player_t* t )
-  {
-    return priest().find_target_data( t );
-  }
-
-  const priest_td_t* find_td( player_t* t ) const
-  {
-    return priest().find_target_data( t );
   }
 
   bool trigger_shadowy_insight()

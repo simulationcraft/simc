@@ -160,11 +160,9 @@ namespace warlock {
       {
         double m = warlock_spell_t::composite_target_multiplier(t);
 
-        if (auto td = find_td(t))
-        {
-          if (td->debuffs_eradication->check())
-            m *= 1.0 + td->debuffs_eradication->data().effectN(1).percent();
-        }
+        auto td = this->td(t);
+        if (td->debuffs_eradication->check())
+          m *= 1.0 + td->debuffs_eradication->data().effectN(1).percent();
 
         if (p()->legendary.odr_shawl_of_the_ymirjar && target == p()->havoc_target && affected_by_odr_shawl_of_the_ymirjar)
           m *= 1.0 + p()->find_spell(212173)->effectN(1).percent();
@@ -380,7 +378,6 @@ namespace warlock {
 
         p()->resource_gain(RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate);
 
-        auto td = find_td(this->target);
         if (d->state->result_amount > 0.0 && p()->azerite.flashpoint.ok() && target->health_percentage() > 80 )
           p()->buffs.flashpoint->trigger();
       }
@@ -437,7 +434,7 @@ namespace warlock {
       {
         destruction_spell_t::execute();
 
-        auto td = find_td(this->target);
+        auto td = this->td(target);
         if (p()->azerite.bursting_flare.ok() && td->dots_immolate->is_ticking())
           p()->buffs.bursting_flare->trigger();
 
@@ -520,11 +517,9 @@ namespace warlock {
       {
         double m = destruction_spell_t::composite_target_crit_chance(target);
 
-        if (auto td = this->find_td( target ))
-        {
-          if (td->debuffs_chaotic_flames->check())
-            m += p()->find_spell(253092)->effectN(1).percent();
-        }
+        auto td = this->td(target);
+        if (td->debuffs_chaotic_flames->check())
+          m += p()->find_spell(253092)->effectN(1).percent();
 
         return m;
       }
@@ -617,11 +612,9 @@ namespace warlock {
       {
         double m = destruction_spell_t::composite_target_crit_chance(target);
 
-        if (auto td = this->find_td( target ))
-        {
-          if (td->debuffs_chaotic_flames->check())
-            m += p()->find_spell(253092)->effectN(1).percent();
-        }
+        auto td = this->td(target);
+        if (td->debuffs_chaotic_flames->check())
+          m += p()->find_spell(253092)->effectN(1).percent();
 
         return m;
       }
@@ -834,8 +827,8 @@ namespace warlock {
         if (!result_is_hit(s->result))
           return;
 
-        auto td = this->find_td(s->target);
-        if (!td || !td->dots_immolate->is_ticking())
+        auto td = this->td(s->target);
+        if (!td->dots_immolate->is_ticking())
           return;
 
         internal_combustion->execute();
@@ -935,8 +928,8 @@ namespace warlock {
           i--;
           player_t* current_target = target_cache.list[i];
 
-          auto td = find_td(current_target);
-          if (!td || !td->dots_immolate->is_ticking())
+          auto td = this->td(current_target);
+          if (!td->dots_immolate->is_ticking())
             target_cache.list.erase(target_cache.list.begin() + i);
         }
         return target_cache.list;

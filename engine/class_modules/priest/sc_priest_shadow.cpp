@@ -311,14 +311,9 @@ struct mind_flay_t final : public priest_spell_t
   /// Legendary the_twins_painful_touch
   void spread_twins_painsful_dots( action_state_t* s )
   {
-    auto td = find_td( s->target );
-    if ( !td )
-    {
-      // If we do not have targetdata, the target does not have any dots. Bail out.
-      return;
-    }
+    priest_td_t& td = get_td( s->target );
 
-    std::array<const dot_t*, 2> dots = {{td->dots.shadow_word_pain, td->dots.vampiric_touch}};
+    std::array<const dot_t*, 2> dots = {{td.dots.shadow_word_pain, td.dots.vampiric_touch}};
 
     // First check if there is even a dot active, otherwise we can bail out as well.
     if ( range::find_if( dots, []( const dot_t* d ) { return d->remains() > timespan_t::zero(); } ) == dots.end() )
@@ -1010,17 +1005,16 @@ struct void_bolt_t final : public priest_spell_t
     {
       priest_spell_t::impact( s );
 
-      if ( priest_td_t* td = find_td( s->target ) )
-      {
-        if ( td->dots.shadow_word_pain->is_ticking() )
-        {
-          td->dots.shadow_word_pain->extend_duration( dot_extension, true );
-        }
+      priest_td_t& td = get_td( s->target );
 
-        if ( td->dots.vampiric_touch->is_ticking() )
-        {
-          td->dots.vampiric_touch->extend_duration( dot_extension, true );
-        }
+      if ( td.dots.shadow_word_pain->is_ticking() )
+      {
+        td.dots.shadow_word_pain->extend_duration( dot_extension, true );
+      }
+
+      if ( td.dots.vampiric_touch->is_ticking() )
+      {
+        td.dots.vampiric_touch->extend_duration( dot_extension, true );
       }
     }
   };

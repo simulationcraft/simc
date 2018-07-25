@@ -95,12 +95,10 @@ namespace warlock
 
         if (d->state->result > 0 && result_is_hit(d->state->result))
         {
-          if (auto td = find_td(d->target))
+          auto target_data = td(d->target);
+          if (target_data->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
           {
-            if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
-            {
-              accumulate_seed_of_corruption(td, d->state->result_amount);
-            }
+            accumulate_seed_of_corruption(target_data, d->state->result_amount);
           }
         }
       }
@@ -111,12 +109,10 @@ namespace warlock
 
         if (s->result_amount > 0 && result_is_hit(s->result))
         {
-          if (auto td = find_td(s->target))
+          auto td = this->td(s->target);
+          if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
           {
-            if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
-            {
-              accumulate_seed_of_corruption(td, s->result_amount);
-            }
+            accumulate_seed_of_corruption(td, s->result_amount);
           }
         }
       }
@@ -341,13 +337,11 @@ namespace warlock
 
         if ( rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->proc_chance() ) )
         {
-          if (warlock_td_t* target_data = find_td( d->state->target ))
+          warlock_td_t* target_data = td( d->state->target );
+          for ( auto& current_ua : target_data->dots_unstable_affliction )
           {
-            for ( auto& current_ua : target_data->dots_unstable_affliction )
-            {
-              if ( current_ua->is_ticking() )
-                current_ua->extend_duration( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->effectN( 1 ).time_value(), true );
-            }
+            if ( current_ua->is_ticking() )
+              current_ua->extend_duration( p()->sets->set( WARLOCK_AFFLICTION, T21, B2 )->effectN( 1 ).time_value(), true );
           }
 
           p()->procs.affliction_t21_2pc->occur();
@@ -497,17 +491,17 @@ namespace warlock
           real_ua_t* real_ua = nullptr;
           timespan_t min_duration = timespan_t::from_seconds( 100 );
 
-          auto td = find_td( s->target );
+          warlock_td_t* target_data = td( s->target );
           for ( int i = 0; i < MAX_UAS; i++ )
           {
-            if ( ! td || !td->dots_unstable_affliction[i]->is_ticking() )
+            if ( ! target_data || !target_data->dots_unstable_affliction[i]->is_ticking() )
             {
               real_ua = ua_dots[i];
               p()->buffs.active_uas->increment( 1 );
               break;
             }
 
-            timespan_t rem = td->dots_unstable_affliction[i]->remains();
+            timespan_t rem = target_data->dots_unstable_affliction[i]->remains();
 
             if ( rem < min_duration )
             {
@@ -520,7 +514,7 @@ namespace warlock
           {
             for (int i = 0; i < MAX_UAS; i++)
             {
-              if (td && td->dots_unstable_affliction[i]->is_ticking())
+              if (target_data && target_data->dots_unstable_affliction[i]->is_ticking())
               {
                 p()->buffs.cascading_calamity->trigger();
                 break;
@@ -602,7 +596,7 @@ namespace warlock
 
         for (const auto target : sim->target_non_sleeping_list)
         {
-          auto td = find_td(target);
+          auto td = this->td(target);
           if (!td)
           {
             continue;
@@ -666,13 +660,11 @@ namespace warlock
 
           if ( result_is_hit( s->result ) )
           {
-            if (warlock_td_t* tdata = find_td( s->target ))
+            warlock_td_t* tdata = this->td( s->target );
+            if ( tdata->dots_seed_of_corruption->is_ticking() && tdata->soc_threshold > 0 )
             {
-              if ( tdata->dots_seed_of_corruption->is_ticking() && tdata->soc_threshold > 0 )
-              {
-                tdata->soc_threshold = 0;
-                tdata->dots_seed_of_corruption->cancel();
-              }
+              tdata->soc_threshold = 0;
+              tdata->dots_seed_of_corruption->cancel();
             }
           }
         }
@@ -807,11 +799,10 @@ namespace warlock
       {
         double m = affliction_spell_t::composite_target_multiplier(target);
 
-        if (auto td = find_td(target))
-        {
-          if (td->debuffs_tormented_agony->check())
-            m *= 1.0 + td->debuffs_tormented_agony->data().effectN(1).percent();
-        }
+        auto td = this->td(target);
+
+        if (td->debuffs_tormented_agony->check())
+          m *= 1.0 + td->debuffs_tormented_agony->data().effectN(1).percent();
 
         return m;
       }
@@ -1032,13 +1023,11 @@ namespace warlock
 
         for ( const auto target : sim->target_non_sleeping_list )
         {
-          if ( auto td = find_td(target) )
+          auto td = this->td(target);
+          if ( td->dots_agony->is_ticking() )
           {
-            if ( td->dots_agony->is_ticking() )
-            {
-              tormented_agony->set_target( target );
-              tormented_agony->execute();
-            }
+            tormented_agony->set_target( target );
+            tormented_agony->execute();
           }
         }
       }

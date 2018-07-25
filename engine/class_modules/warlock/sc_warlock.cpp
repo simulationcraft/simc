@@ -967,13 +967,7 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
 
     return make_fn_expr( name_str, [this,agony_id]()
     {
-      auto td = find_target_data(target);
-      if (!td)
-      {
-        if (sim->debug)
-          sim->out_debug.printf("unexpectedly had no target data in time_to_shard");
-        return std::numeric_limits<double>::infinity();
-      }
+      auto td = get_target_data(target);
       double active_agonies = get_active_dots(agony_id);
       if (sim->debug)
         sim->out_debug.printf("active agonies: %f", active_agonies);
@@ -1009,14 +1003,9 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
     {
       timespan_t con = timespan_t::from_millis(0.0);
 
-      auto td = find_target_data(target);
+      auto td = get_target_data(target);
       for (int i = 0; i < MAX_UAS; i++)
       {
-        if (!td)
-        {
-          break;
-        }
-
         timespan_t rem = td->dots_unstable_affliction[i]->remains();
 
         if (rem > con)

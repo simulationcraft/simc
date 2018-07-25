@@ -1438,7 +1438,7 @@ struct dark_glare_t : public warlock_pet_spell_t
 
     for (const auto target : sim->target_non_sleeping_list)
     {
-      auto td = find_td(target);
+      auto td = this->td(target);
       if (!td)
         continue;
 
