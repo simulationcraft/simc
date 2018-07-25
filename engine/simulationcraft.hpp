@@ -6155,6 +6155,7 @@ private:
   bool ticking;
   timespan_t current_duration;
   timespan_t last_start;
+  timespan_t prev_tick_time; // Used for rescheduling when refreshing right before last partial tick
   timespan_t extended_time; // Added time per extend_duration for the current dot application
   timespan_t reduced_time; // Removed time per reduce_duration for the current dot application
   int stack;

@@ -68,6 +68,7 @@ dot_t::dot_t( const std::string& n, player_t* t, player_t* s )
     ticking( false ),
     current_duration( timespan_t::zero() ),
     last_start( timespan_t::min() ),
+    prev_tick_time( timespan_t::min() ),
     extended_time( timespan_t::zero() ),
     reduced_time( timespan_t::zero() ),
     stack( 0 ),
@@ -1077,6 +1078,7 @@ void dot_t::tick()
         current_duration.total_seconds(), time_to_tick.total_seconds() );
 
   current_action->tick( this );
+  prev_tick_time = sim.current_time();
 }
 
 /* Called when the dot expires, after the last tick() call.
@@ -1235,6 +1237,22 @@ void dot_t::refresh( timespan_t duration )
   {
     assert( !current_action->channeled );
     tick_event = make_event<dot_tick_event_t>( sim, this, remaining_duration );
+  }
+
+  // When refreshing DoTs before the partial last tick on expiry,
+  // reschedule the next tick to occur at its original interval again.
+  timespan_t time_to_tick = current_action -> tick_time( state );
+  timespan_t next_tick_at = prev_tick_time + time_to_tick;
+  timespan_t next_tick_in = next_tick_at - sim.current_time();
+  if ( !current_action -> channeled && remaining_duration < next_tick_in )
+  {
+    event_t::cancel( tick_event );
+    tick_event = make_event<dot_tick_event_t>( sim, this, next_tick_in );
+    if ( sim.debug )
+      sim.out_debug.printf(
+        "%s reschedules next tick (was a partial) for dot %s (%d) on %s to happen in %.3f at %.3f.",
+        source->name(), name(), stack, target->name(),
+        next_tick_in.total_seconds(), next_tick_at.total_seconds() );
   }
 }
 
