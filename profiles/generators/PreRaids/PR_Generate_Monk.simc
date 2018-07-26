@@ -8,7 +8,7 @@ talents=3010032
 spec=windwalker
 
 head=irontide_captains_hat,id=155888,bonus_id=4819/1512,azerite_powers=184/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=1602/4932
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4935/1524,azerite_level=27
 shoulders=gorak_tuls_mantle,id=159339,bonus_id=4819/1512,azerite_powers=184/38/0/13
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4819/1512
 chest=goresplattered_vest,id=159330,bonus_id=4819/1512,azerite_powers=184/38/0/13
