@@ -1979,18 +1979,6 @@ public:
     }
   }
 
-  virtual void trigger_shooting_stars( action_state_t* s )
-  {
-    if ( ! p() -> talent.shooting_stars -> ok() )
-      return;
-
-    if ( rng().roll( p() -> talent.shooting_stars -> effectN( 1 ).percent() ) )
-    {
-      p() -> active.shooting_stars -> target = s -> target;
-      p() -> active.shooting_stars -> execute();
-    }
-  }
-
   virtual void trigger_impeccable_fel_essence()
   {
     if ( p() -> legendary.impeccable_fel_essence == timespan_t::zero() )
@@ -2142,8 +2130,16 @@ struct moonfire_t : public druid_spell_t
     void tick( dot_t* d ) override
     {
       druid_spell_t::tick( d );
+      double dr_mult = std::sqrt(p()->get_active_dots(internal_id)) / p()->get_active_dots(internal_id);
 
-      trigger_shooting_stars( d -> state );
+      if (p()->talent.shooting_stars->ok())
+      {
+        if (rng().roll(p()->talent.shooting_stars->effectN(1).percent()*dr_mult))
+        {
+          p()->active.shooting_stars->target = d->target;
+          p()->active.shooting_stars->execute();
+        }
+      }
 
       trigger_balance_tier18_2pc();
 
@@ -5545,10 +5541,13 @@ struct new_moon_t : public druid_spell_t
 
 struct sunfire_t : public druid_spell_t
 {
+
   struct sunfire_damage_t : public druid_spell_t
   {
+    int sunfire_action_id;
     sunfire_damage_t( druid_t* p ) :
-      druid_spell_t( "sunfire_dmg", p, p -> find_spell( 164815 ) )
+      druid_spell_t( "sunfire_dmg", p, p -> find_spell( 164815 ) ),
+      sunfire_action_id(0)
     {
       if ( p -> talent.shooting_stars -> ok() && ! p -> active.shooting_stars )
       {
@@ -5591,8 +5590,16 @@ struct sunfire_t : public druid_spell_t
     void tick( dot_t* d ) override
     {
       druid_spell_t::tick( d );
+      double dr_mult = std::sqrt(p()->get_active_dots(internal_id)) / p()->get_active_dots(internal_id);
 
-      trigger_shooting_stars( d -> state );
+      if (p()->talent.shooting_stars->ok())
+      {
+        if (rng().roll(p()->talent.shooting_stars->effectN(1).percent()*dr_mult))
+        {
+          p()->active.shooting_stars->target = d->target;
+          p()->active.shooting_stars->execute();
+        }
+      }
 
       trigger_balance_tier18_2pc();
     }
