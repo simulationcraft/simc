@@ -245,6 +245,7 @@ struct rogue_t : public player_t
     buff_t* slice_and_dice;
     // Subtlety
     buff_t* master_of_shadows;
+    buff_t* secret_technique; // Only to simplify APL tracking
     buff_t* shuriken_tornado;
 
 
@@ -3634,8 +3635,8 @@ struct secret_technique_t : public rogue_attack_t
   {
     secret_technique_t* parent_action;
 
-    secret_technique_attack_t( rogue_t* p, secret_technique_t* s ) :
-      rogue_attack_t( "secret_technique_attack", p, p -> find_spell( 280720 ) ),
+    secret_technique_attack_t( const std::string& n, rogue_t* p, secret_technique_t* s ) :
+      rogue_attack_t( n, p, p -> find_spell( 280720 ) ),
       parent_action( s )
     {
       weapon = &(p -> main_hand_weapon);
@@ -3661,7 +3662,8 @@ struct secret_technique_t : public rogue_attack_t
     }
   };
 
-  secret_technique_attack_t* secret_technique_attack;
+  secret_technique_attack_t* player_attack;
+  secret_technique_attack_t* clone_attack;
   int last_cast_cp;
 
   secret_technique_t( rogue_t* p, const std::string& options_str ) :
@@ -3672,10 +3674,12 @@ struct secret_technique_t : public rogue_attack_t
     may_miss = false;
     aoe = -1;
 
-    secret_technique_attack = new secret_technique_attack_t( p, this );
-    add_child( secret_technique_attack );
+    player_attack = new secret_technique_attack_t( "secret_technique_player", p, this );
+    add_child( player_attack );
+    clone_attack = new secret_technique_attack_t( "secret_technique_clones", p, this );
+    add_child( clone_attack );
 
-    radius = secret_technique_attack -> radius;
+    radius = player_attack -> radius;
   }
 
   void execute() override
@@ -3684,10 +3688,26 @@ struct secret_technique_t : public rogue_attack_t
 
     last_cast_cp = cast_state( execute_state ) -> cp;
 
-    for ( size_t i = 0; i < data().effectN( 4 ).base_value(); i++ )
+    // Hit of the main char happens right on cast.
+    player_attack -> set_target( execute_state -> target );
+    player_attack -> execute();
+
+    // The clones seem to hit 1s later (no time reference in spell data though)
+    timespan_t delay = timespan_t::from_seconds( 1.0 );
+    // Trigger tracking buff until clone damage
+    p() -> buffs.secret_technique -> trigger( 1, buff_t::DEFAULT_VALUE(), (-1.0), delay );
+    // Assuming effect #2 is the number of aditional clones
+    for ( size_t i = 0; i < data().effectN( 2 ).base_value(); i++ )
     {
-      secret_technique_attack -> set_target( execute_state -> target );
-      secret_technique_attack -> execute();
+      make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
+          .target( execute_state -> target )
+          .x( execute_state -> target -> x_position )
+          .y( execute_state -> target -> y_position )
+          .duration( delay )
+          .pulse_time( delay )
+          .start_time( sim -> current_time() )
+          .action( clone_attack )
+          .n_pulses( 1 ));
     }
   }
 };
@@ -7335,6 +7355,9 @@ void rogue_t::create_buffs()
                                     resource_gain( RESOURCE_ENERGY, b -> data().effectN( 1 ).base_value(), gains.master_of_shadows );
                                   } )
                                   -> set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buffs.secret_technique        = make_buff( this, "secret_technique", talent.secret_technique )
+                                  -> set_cooldown( timespan_t::zero() )
+                                  -> set_quiet( true );
   buffs.shuriken_tornado        = new buffs::shuriken_tornado_t( this );
 
 
