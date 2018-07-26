@@ -788,7 +788,7 @@ dreadstalker_t::dreadstalker_t(warlock_t* owner) :
 {
   action_list_str = "travel/dreadbite";
   regen_type = REGEN_DISABLED;
-  owner_coeff.ap_from_sp = 0.33;
+  owner_coeff.ap_from_sp = 0.4;
 }
 
 void dreadstalker_t::init_base_stats()
