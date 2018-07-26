@@ -6826,7 +6826,6 @@ void druid_t::init_spells()
   azerite.craggy_bark = find_azerite_spell("Craggy Bark");
   azerite.gory_regeneration = find_azerite_spell("Gory Regeneration");
   azerite.guardians_wrath = find_azerite_spell("Guardian's Wrath");
-  azerite.heartblood = find_azerite_spell("Heartblood");
   azerite.layered_mane = find_azerite_spell("Layered Mane");
   azerite.masterful_instincts = find_azerite_spell("Masterful Instincts");
   azerite.twisted_claws = find_azerite_spell("Twisted Claws");
