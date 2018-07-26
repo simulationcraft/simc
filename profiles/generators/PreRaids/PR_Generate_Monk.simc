@@ -7,21 +7,21 @@ position=back
 talents=3010032
 spec=windwalker
 
-head=veil_of_unseen_strikes,id=134447,bonus_id=1727
-neck=strand_of_the_stars,id=137487,bonus_id=1727,enchant=mark_of_the_trained_soldier
-shoulders=spaulders_of_aberrant_inhibition,id=134453,bonus_id=1727
-back=cape_of_valarjar_courage,id=133765,bonus_id=1727,enchant=binding_of_agility
-chest=tunic_of_the_pitiless_monstrosity,id=134438,bonus_id=1727
-wrists=cryptwalker_bracers,id=137425,bonus_id=1727
-hands=guileful_intruder_handguards,id=137480,bonus_id=1727
-waist=sash_of_the_twilight_princess,id=134457,bonus_id=1727
-legs=wardens_martial_greaves,id=137515,bonus_id=1727
-feet=tunnel_trudger_footguards,id=137397,bonus_id=1727
-finger1=braided_silver_ring,id=134539,bonus_id=1727,enchant=binding_of_mastery
-finger2=ring_of_minute_mirrors,id=137533,bonus_id=1727,enchant=binding_of_mastery
-trinket1=chaos_talisman,id=137459,bonus_id=1727
-trinket2=hunger_of_the_pack,id=136975,bonus_id=1727
-main_hand=fists_of_the_heavens,id=128940,bonus_id=734,gem_id=137313/137543/137313,relic_id=1727/1727/1727
-off_hand=fists_of_the_heavens,id=133948
+head=irontide_captains_hat,id=155888,bonus_id=4819/1512,azerite_powers=184/30/0/13
+neck=heart_of_azeroth,id=158075,bonus_id=1602/4932
+shoulders=gorak_tuls_mantle,id=159339,bonus_id=4819/1512,azerite_powers=184/38/0/13
+back=drape_of_the_loyal_vassal,id=158375,bonus_id=4819/1512
+chest=goresplattered_vest,id=159330,bonus_id=4819/1512,azerite_powers=184/38/0/13
+wrists=sea_dogs_cuffs,id=158305,bonus_id=4819/1512
+hands=grips_of_electrified_defense,id=159337,bonus_id=4819/1512
+waist=cincture_of_the_azerite_arsenal,id=159333,bonus_id=4819/1512
+legs=blight_toadskin_leggings,id=159345,bonus_id=4819/1512
+feet=mercenary_miners_boots,id=159336,bonus_id=4819/1512
+finger1=overseers_lost_seal,id=159460,bonus_id=4819/1512
+finger2=jade_ophidian_band,id=162544,bonus_id=4819/1512
+trinket1=deadeye_spyglass,id=159623,bonus_id=4819/1512
+trinket2=lustrous_golden_plumage,id=159617,bonus_id=4819/1512
+main_hand=swarms_edge,id=158714,bonus_id=4819/1512
+off_hand=swarms_edge,id=158714,bonus_id=4819/1512
 
 save=PR_Monk_Windwalker.simc
