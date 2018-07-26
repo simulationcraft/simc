@@ -115,51 +115,23 @@ actions.sef+=/storm_earth_and_fire,if=!buff.storm_earth_and_fire.up
 actions.sef+=/call_action_list,name=aoe,if=active_enemies>3
 actions.sef+=/call_action_list,name=st,if=active_enemies<=3
 
-# Cast Tiger Palm in the sef_opener
-# - if the previous ability was not tiger_palm
-# - if the previous ability was not energizing_elixir and you are not at maximum energy
-# - if you have 0 chi
-# - Fists_of_fury is off Cooldown
-actions.sef_opener=tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&cooldown.fists_of_fury.remains<=0
-# Call actions.cd if:
-# - Fist of Fury will be available on your next Global cooldown
-actions.sef_opener+=/call_action_list,name=cd,if=cooldown.fists_of_fury.remains>1
-actions.sef_opener+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3
-# This line is outdated and probably incorrect in priority
-actions.sef_opener+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(!prev_gcd.1.blackout_kick)
-# Cast Fist of Fury if:
-# - The remaining cooldown on rising_sun_kick is longer than the channel duration of Fists_of_fury
-actions.sef_opener+=/fists_of_fury,if=cooldown.fists_of_fury.duration>cooldown.rising_sun_kick.remains
-actions.sef_opener+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&chi=1
-
-actions.serenity=tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&!buff.serenity.up
+actions.serenity=fist_of_the_white_tiger,if=buff.bloodlust.up&!buff.serenity.up
+actions.serenity+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&!buff.serenity.up
 actions.serenity+=/call_action_list,name=cd
+# Needs to be rewritten for BFA
+actions.serenity+=/rushing_jade_wind,if=talent.rushing_jade_wind.enabled&!prev_gcd.1.rushing_jade_wind&buff.rushing_jade_wind.down
 actions.serenity+=/serenity
-actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3
-# Legacy syntax for T19/T20 6pc
-actions.serenity+=/fists_of_fury,if=((equipped.drinking_horn_cover&buff.pressure_point.remains<=2&set_bonus.tier20_4pc)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1
+actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
+actions.serenity+=/fists_of_fury,if=prev_gcd.1.rising_sun_kick&prev_gcd.2.serenity
+actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
+actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick&cooldown.rising_sun_kick.remains>=2&cooldown.fists_of_fury.remains>=2
 # Cast Fist of Fury if:
 # - The remaining cooldown on rising_sun_kick is longer than the channel duration of Fists_of_fury
 actions.serenity+=/fists_of_fury,if=((!equipped.drinking_horn_cover|buff.bloodlust.up|buff.serenity.remains<1)&(cooldown.rising_sun_kick.remains>1|active_enemies>1)),interrupt=1
 actions.serenity+=/spinning_crane_kick,if=active_enemies>=3&!prev_gcd.1.spinning_crane_kick
-actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.fist_of_the_white_tiger|prev_gcd.1.fists_of_fury)&active_enemies<2
 actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies>=3
+actions.serenity+=/spinning_crane_kick,if=!prev_gcd.1.spinning_crane_kick
 actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.blackout_kick
-
-# Actions.Serenity_Opener is Not Yet Implemented (NYI)
-actions.serenity_opener=tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&energy=energy.max&chi<1&!buff.serenity.up&cooldown.fists_of_fury.remains<=0
-actions.serenity_opener+=/arcane_torrent,if=chi.max-chi>=1&energy.time_to_max>=0.5
-actions.serenity_opener+=/call_action_list,name=cd,if=cooldown.fists_of_fury.remains>1
-actions.serenity_opener+=/serenity,if=cooldown.fists_of_fury.remains>1
-actions.serenity_opener+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<3&buff.serenity.up
-# Cast Fists_of_fury if
-# - Rising Sun Kicks remaining cooldown is longer than 1 second
-# - Interrupt Fists_of_fury with Rising Sun Kick if Serenity remains
-actions.serenity_opener+=/fist_of_the_white_tiger,if=buff.serenity.up
-actions.serenity_opener+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(!prev_gcd.1.blackout_kick)&(prev_gcd.1.fist_of_the_white_tiger)
-actions.serenity_opener+=/fists_of_fury,if=cooldown.rising_sun_kick.remains>1|buff.serenity.down,interrupt=1
-actions.serenity_opener+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.serenity.down&chi<=2&cooldown.serenity.remains<=0&prev_gcd.1.tiger_palm
-actions.serenity_opener+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&chi=1
 
 # Default action list
 actions.st=invoke_xuen_the_white_tiger

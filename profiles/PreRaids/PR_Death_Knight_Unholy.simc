@@ -43,19 +43,26 @@ actions+=/potion,if=cooldown.army_of_the_dead.ready|pet.gargoyle.active|buff.unh
 # Maintain Virulent Plague
 actions+=/outbreak,target_if=(dot.virulent_plague.tick_time_remains+tick_time<=dot.virulent_plague.remains)&dot.virulent_plague.remains<=gcd
 actions+=/call_action_list,name=cooldowns
-actions+=/call_action_list,name=aoe,if=active_enemies>=2
+actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/call_action_list,name=generic
 
 # AoE rotation
 actions.aoe=death_and_decay,if=cooldown.apocalypse.remains
 actions.aoe+=/defile
 actions.aoe+=/epidemic,if=death_and_decay.ticking&rune<2&!variable.pooling_for_gargoyle
-actions.aoe+=/death_coil,if=death_and_decay.ticking&rune<2&!talent.epidemic.enabled&!variable.pooling_for_gargoyle
+actions.aoe+=/death_coil,if=death_and_decay.ticking&rune<2&!variable.pooling_for_gargoyle
 actions.aoe+=/scourge_strike,if=death_and_decay.ticking&cooldown.apocalypse.remains
 actions.aoe+=/clawing_shadows,if=death_and_decay.ticking&cooldown.apocalypse.remains
 actions.aoe+=/epidemic,if=!variable.pooling_for_gargoyle
 actions.aoe+=/festering_strike,if=talent.bursting_sores.enabled&spell_targets.bursting_sores>=2&debuff.festering_wound.stack<=1
 actions.aoe+=/death_coil,if=buff.sudden_doom.react&rune.deficit>=4
+actions.aoe+=/death_coil,if=buff.sudden_doom.react&!variable.pooling_for_gargoyle|pet.gargoyle.active
+actions.aoe+=/death_coil,if=runic_power.deficit<14&(cooldown.apocalypse.remains>5|debuff.festering_wound.stack>4)&!variable.pooling_for_gargoyle
+actions.aoe+=/scourge_strike,if=((debuff.festering_wound.up&cooldown.apocalypse.remains>5)|debuff.festering_wound.stack>4)&cooldown.army_of_the_dead.remains>5
+actions.aoe+=/clawing_shadows,if=((debuff.festering_wound.up&cooldown.apocalypse.remains>5)|debuff.festering_wound.stack>4)&cooldown.army_of_the_dead.remains>5
+actions.aoe+=/death_coil,if=runic_power.deficit<20&!variable.pooling_for_gargoyle
+actions.aoe+=/festering_strike,if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&cooldown.army_of_the_dead.remains>5
+actions.aoe+=/death_coil,if=!variable.pooling_for_gargoyle
 
 # Cold Heart legendary
 actions.cold_heart=chains_of_ice,if=buff.unholy_strength.remains<gcd&buff.unholy_strength.react&buff.cold_heart_item.stack>16

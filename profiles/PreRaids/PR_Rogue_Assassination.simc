@@ -41,7 +41,6 @@ actions+=/lights_judgment
 
 # Cooldowns
 actions.cds=potion,if=buff.bloodlust.react|target.time_to_die<=60|debuff.vendetta.up&cooldown.vanish.remains<5
-actions.cds+=/use_item,name=faulty_countermeasure
 actions.cds+=/use_item,name=tirathons_betrayal
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up

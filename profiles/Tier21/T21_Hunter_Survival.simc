@@ -54,8 +54,11 @@ actions+=/harpoon,if=talent.terms_of_engagement.enabled
 actions+=/flanking_strike
 actions+=/chakrams
 actions+=/serpent_sting,target_if=min:remains,if=refreshable&buff.mongoose_fury.down|buff.vipers_venom.up
+actions+=/aspect_of_the_eagle,if=target.distance>=6
+actions+=/mongoose_bite_eagle,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60
 actions+=/mongoose_bite,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60
 actions+=/butchery
+actions+=/raptor_strike_eagle,target_if=min:dot.internal_bleeding.stack
 actions+=/raptor_strike,target_if=min:dot.internal_bleeding.stack
 
 head=helm_of_the_awakened_soul,id=152423,bonus_id=3612/1502

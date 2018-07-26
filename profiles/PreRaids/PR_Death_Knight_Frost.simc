@@ -56,7 +56,7 @@ actions.aoe+=/frost_strike
 actions.aoe+=/horn_of_winter
 actions.aoe+=/arcane_torrent
 
-# Breath of Sindragosa pooling rotation : starts 15s before the cd becomes available
+# Breath of Sindragosa pooling rotation : starts 20s before Pillar of Frost + BoS are available
 actions.bos_pooling=howling_blast,if=buff.rime.up
 actions.bos_pooling+=/obliterate,if=rune.time_to_4<gcd&runic_power.deficit>=25
 actions.bos_pooling+=/glacial_advance,if=runic_power.deficit<20&cooldown.pillar_of_frost.remains>rune.time_to_4
@@ -104,6 +104,7 @@ actions.obliteration+=/frost_strike,if=!buff.rime.up|runic_power.deficit<10|rune
 actions.obliteration+=/howling_blast,if=buff.rime.up
 actions.obliteration+=/obliterate
 
+# Standard single-target rotation
 actions.standard=remorseless_winter
 actions.standard+=/frost_strike,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm.enabled
 actions.standard+=/howling_blast,if=buff.rime.up
