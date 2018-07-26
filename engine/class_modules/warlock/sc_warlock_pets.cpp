@@ -755,8 +755,6 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   {
     double m = warlock_pet_melee_attack_t::action_multiplier();
 
-    m *= 1.2; //until I can figure out wtf is going on with this spell
-
     if (p()->o()->sets->has_set_bonus(WARLOCK_DEMONOLOGY, T21, B4) && p()->bites_executed == 1)
       m *= 1.0 + t21_4pc_increase;
 
@@ -796,7 +794,7 @@ void dreadstalker_t::init_base_stats()
   warlock_pet_t::init_base_stats();
   resources.base[RESOURCE_ENERGY] = 0;
   resources.base_regen_per_second[RESOURCE_ENERGY] = 0;
-  melee_attack = new warlock_pet_melee_t(this);
+  melee_attack = new warlock_pet_melee_t( this, 0.8 );
 }
 
 void dreadstalker_t::arise()
