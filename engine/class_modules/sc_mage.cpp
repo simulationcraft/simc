@@ -5599,7 +5599,7 @@ struct time_anomaly_tick_event_t : public event_t
 
       std::vector<ta_proc_type_e> possible_procs;
 
-      if ( true ) // TODO: Adjust the condition or remove when we have more info.
+      if ( mage -> buffs.arcane_power -> check() == 0 ) // TODO: Adjust the condition or remove when we have more info.
         possible_procs.push_back( TA_ARCANE_POWER );
 
       if ( mage -> buffs.evocation -> check() == 0 )
@@ -5608,32 +5608,35 @@ struct time_anomaly_tick_event_t : public event_t
       if ( mage -> buffs.arcane_charge -> check() < 3 )
         possible_procs.push_back( TA_ARCANE_CHARGE );
 
-      auto random_index = static_cast<unsigned>( rng().range( 0, as<double>( possible_procs.size() ) ) );
-      auto proc = possible_procs[ random_index ];
-
-      switch ( proc )
+      if ( ! possible_procs.empty() )
       {
-        case TA_ARCANE_POWER:
+        auto random_index = static_cast<unsigned>( rng().range( 0, as<double>( possible_procs.size() ) ) );
+        auto proc = possible_procs[ random_index ];
+
+        switch ( proc )
         {
-          timespan_t duration = timespan_t::from_seconds( mage -> talents.time_anomaly -> effectN( 1 ).base_value() );
-          mage -> buffs.arcane_power -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
-          break;
+          case TA_ARCANE_POWER:
+          {
+            timespan_t duration = timespan_t::from_seconds( mage -> talents.time_anomaly -> effectN( 1 ).base_value() );
+            mage -> buffs.arcane_power -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+            break;
+          }
+          case TA_EVOCATION:
+          {
+            timespan_t duration = timespan_t::from_seconds( mage -> talents.time_anomaly -> effectN( 2 ).base_value() );
+            mage -> trigger_evocation( duration, false );
+            break;
+          }
+          case TA_ARCANE_CHARGE:
+          {
+            unsigned charges = as<unsigned>( mage -> talents.time_anomaly -> effectN( 3 ).base_value() );
+            mage -> trigger_arcane_charge( charges );
+            break;
+          }
+          default:
+            assert( 0 );
+            break;
         }
-        case TA_EVOCATION:
-        {
-          timespan_t duration = timespan_t::from_seconds( mage -> talents.time_anomaly -> effectN( 2 ).base_value() );
-          mage -> trigger_evocation( duration, false );
-          break;
-        }
-        case TA_ARCANE_CHARGE:
-        {
-          unsigned charges = as<unsigned>( mage -> talents.time_anomaly -> effectN( 3 ).base_value() );
-          mage -> trigger_arcane_charge( charges );
-          break;
-        }
-        default:
-          assert( 0 );
-          break;
       }
     }
 
