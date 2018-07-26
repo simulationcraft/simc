@@ -312,7 +312,6 @@ public:
     // Guardian
     azerite_power_t craggy_bark; // Low Priority
     azerite_power_t gory_regeneration; // Low Priority
-    azerite_power_t heartblood; // Low Priority
 
     // Implemented
     // Balance
