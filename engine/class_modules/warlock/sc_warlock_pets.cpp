@@ -298,16 +298,16 @@ action_t* succubus_pet_t::create_action(const std::string& name, const std::stri
   return warlock_pet_t::create_action(name, options_str);
 }
 
-struct torment_t : public warlock_pet_spell_t
+struct consuming_shadows_t : public warlock_pet_spell_t
 {
-  torment_t(warlock_pet_t* p) : warlock_pet_spell_t(p, "Torment")
+  consuming_shadows_t(warlock_pet_t* p) : warlock_pet_spell_t(p, "Consuming Shadows")
   { }
 };
 
 voidwalker_pet_t::voidwalker_pet_t( warlock_t* owner, const std::string& name ) :
   warlock_pet_t( owner, name, PET_VOIDWALKER, name != "voidwalker" )
 {
-  action_list_str = "torment";
+  action_list_str = "consuming_shadows";
 }
 
 void voidwalker_pet_t::init_base_stats()
@@ -318,7 +318,7 @@ void voidwalker_pet_t::init_base_stats()
 
 action_t* voidwalker_pet_t::create_action(const std::string& name, const std::string& options_str)
 {
-  if (name == "torment") return new torment_t(this);
+  if (name == "consuming_shadows") return new consuming_shadows_t(this);
   return warlock_pet_t::create_action(name, options_str);
 }
 
