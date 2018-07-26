@@ -252,7 +252,7 @@ namespace warlock {
             if ( shards_used >= 3 )
               make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 1200.0, 50.0 ) );
 
-            if ( p()->azerite.umbral_blaze.ok() )
+            if ( p()->azerite.umbral_blaze.ok() && rng().roll( p()->find_spell(273524)->proc_chance() ) )
             {
               blaze->set_target( target );
               blaze->execute();
