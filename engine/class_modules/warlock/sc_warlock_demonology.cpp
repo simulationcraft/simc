@@ -147,125 +147,130 @@ namespace warlock {
       }
     };
 
-    struct hand_of_guldan_t : public demonology_spell_t {
-        struct umbral_blaze_t : public demonology_spell_t{
-          umbral_blaze_t(warlock_t* p) : demonology_spell_t("Umbral Blaze", p, p->find_spell(273526)) {
-            base_td = p->azerite.umbral_blaze.value();
-            hasted_ticks = false;
-          }
-        };
-
-        struct imp_delay_event_t : public player_event_t
+    struct hand_of_guldan_t : public demonology_spell_t
+    {
+      struct umbral_blaze_t : public demonology_spell_t
+      {
+        umbral_blaze_t( warlock_t* p ) :
+          demonology_spell_t( "Umbral Blaze", p, p->find_spell( 273526 ) )
         {
-          imp_delay_event_t( warlock_t* p, double delay ) :
-            player_event_t( *p, timespan_t::from_millis( delay ) ) {}
+          base_td = p->azerite.umbral_blaze.value();
+          hasted_ticks = false;
+          dot_behavior = DOT_CLIP;
+        }
+      };
 
-          virtual const char* name() const override
+      struct imp_delay_event_t : public player_event_t
+      {
+        imp_delay_event_t( warlock_t* p, double delay ) :
+          player_event_t( *p, timespan_t::from_millis( delay ) ) {}
+
+        virtual const char* name() const override
+        {
+          return  "imp_delay";
+        }
+
+        virtual void execute() override
+        {
+          warlock_t* p = static_cast< warlock_t* >( player() );
+
+          p->warlock_pet_list.wild_imps.spawn();
+        }
+      };
+
+      int shards_used;
+      umbral_blaze_t* blaze;
+      const spell_data_t* summon_spell;
+
+      hand_of_guldan_t( warlock_t* p, const std::string& options_str ) :
+        demonology_spell_t( p, "Hand of Gul'dan" ), shards_used( 0 ), blaze( new umbral_blaze_t( p ) ),
+        summon_spell( p->find_spell( 104317 ) )
+      {
+        parse_options( options_str );
+        aoe = -1;
+        if ( p->azerite.umbral_blaze.ok() )
+        {
+          add_child( blaze );
+        }
+        parse_effect_data( p->find_spell( 86040 )->effectN( 1 ) );
+        if ( p->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
+          base_multiplier *= 1.1;
+      }
+
+      timespan_t travel_time() const override {
+        return timespan_t::from_millis( 700 );
+      }
+
+      bool ready() override {
+        if ( p()->resources.current[RESOURCE_SOUL_SHARD] == 0.0 )
+        {
+          return false;
+        }
+        return demonology_spell_t::ready();
+      }
+
+      double bonus_da( const action_state_t* s ) const override
+      {
+        double da = demonology_spell_t::bonus_da( s );
+        da += p()->azerite.demonic_meteor.value();
+        return da;
+      }
+
+      double action_multiplier() const override
+      {
+        double m = demonology_spell_t::action_multiplier();
+
+        m *= cost();
+
+        return m;
+      }
+
+      void consume_resource() override {
+        demonology_spell_t::consume_resource();
+
+        shards_used = as<int>( last_resource_cost );
+
+        if ( rng().roll( p()->azerite.demonic_meteor.spell_ref().effectN( 2 ).percent()*shards_used ) ) {
+          p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.demonic_meteor );
+        }
+
+        if ( last_resource_cost == 1.0 )
+          p()->procs.one_shard_hog->occur();
+        if ( last_resource_cost == 2.0 )
+          p()->procs.two_shard_hog->occur();
+        if ( last_resource_cost == 3.0 )
+          p()->procs.three_shard_hog->occur();
+      }
+
+      void impact( action_state_t* s ) override
+      {
+        demonology_spell_t::impact( s );
+
+        // Only trigger wild imps once for the original target impact.
+        // Still keep it in impact instead of execute because of travel delay.
+        if ( result_is_hit( s->result ) && s->target == target )
+        {
+          if ( shards_used >= 1 )
+            make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 400.0, 50.0 ) );
+          if ( shards_used >= 2 )
+            make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 800.0, 50.0 ) );
+          if ( shards_used >= 3 )
+            make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 1200.0, 50.0 ) );
+
+          if ( p()->azerite.umbral_blaze.ok() && rng().roll( p()->find_spell( 273524 )->proc_chance() ) )
           {
-            return  "imp_delay";
+            blaze->set_target( target );
+            blaze->execute();
           }
-
-          virtual void execute() override
+          for ( int i = 0;
+            p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B2 ) && i < shards_used;
+            i++ )
           {
-            warlock_t* p = static_cast< warlock_t* >( player() );
-
-            p->warlock_pet_list.wild_imps.spawn();
+            p()->buffs.rage_of_guldan->trigger();
           }
-        };
 
-        int shards_used;
-        umbral_blaze_t* blaze;
-        const spell_data_t* summon_spell;
-
-        hand_of_guldan_t(warlock_t* p, const std::string& options_str) :
-          demonology_spell_t(p, "Hand of Gul'dan"), shards_used(0), blaze(new umbral_blaze_t(p)),
-          summon_spell(p->find_spell(104317))
-        {
-            parse_options(options_str);
-            aoe = -1;
-            if (p->azerite.umbral_blaze.ok())
-            {
-              add_child(blaze);
-            }
-            parse_effect_data(p->find_spell(86040)->effectN(1));
-            if ( p->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B4 ) )
-              base_multiplier *= 1.1;
         }
-
-        timespan_t travel_time() const override {
-            return timespan_t::from_millis(700);
-        }
-
-        bool ready() override {
-          if (p()->resources.current[RESOURCE_SOUL_SHARD] == 0.0)
-          {
-            return false;
-          }
-          return demonology_spell_t::ready();
-        }
-
-        double bonus_da(const action_state_t* s) const override
-        {
-          double da = demonology_spell_t::bonus_da(s);
-          da += p()->azerite.demonic_meteor.value();
-          return da;
-        }
-
-        double action_multiplier() const override
-        {
-          double m = demonology_spell_t::action_multiplier();
-
-          m *= cost();
-
-          return m;
-        }
-
-        void consume_resource() override {
-            demonology_spell_t::consume_resource();
-
-            shards_used = as<int>(last_resource_cost);
-
-            if (rng().roll(p()->azerite.demonic_meteor.spell_ref().effectN(2).percent()*shards_used)) {
-              p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.demonic_meteor);
-            }
-
-            if (last_resource_cost == 1.0)
-                p()->procs.one_shard_hog->occur();
-            if (last_resource_cost == 2.0)
-                p()->procs.two_shard_hog->occur();
-            if (last_resource_cost == 3.0)
-                p()->procs.three_shard_hog->occur();
-        }
-
-        void impact( action_state_t* s ) override
-        {
-          demonology_spell_t::impact( s );
-
-          // Only trigger wild imps once for the original target impact.
-          // Still keep it in impact instead of execute because of travel delay.
-          if ( result_is_hit( s->result ) && s->target == target )
-          {
-            if ( shards_used >= 1 )
-              make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 400.0, 50.0 ) );
-            if ( shards_used >= 2 )
-              make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 800.0, 50.0 ) );
-            if ( shards_used >= 3 )
-              make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 1200.0, 50.0 ) );
-
-            if ( p()->azerite.umbral_blaze.ok() && rng().roll( p()->find_spell(273524)->proc_chance() ) )
-            {
-              blaze->set_target( target );
-              blaze->execute();
-            }
-            for ( int i = 0;
-              p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T21, B2 ) && i < shards_used;
-              i++ )
-            {
-              p()->buffs.rage_of_guldan->trigger();
-            }
-
-          }
-        }
+      }
     };
 
     struct demonbolt_t : public demonology_spell_t {
