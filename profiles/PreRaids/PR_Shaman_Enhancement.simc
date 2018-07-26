@@ -94,7 +94,7 @@ actions.opener=rockbiter,if=maelstrom<15&time<gcd
 head=sethraliss_fanged_helm,id=159374,bonus_id=4779/1512/4786,azerite_powers=196/461
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4935/1512,azerite_level=21
 shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4786,azerite_powers=416/461
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786,enchant=gift_of_haste
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=triheart_chestguard,id=159362,bonus_id=4779/1512/4786,azerite_powers=447/459
 wrists=raouls_barrelhook_bracers,id=159356,bonus_id=4779/1512/4786
 hands=water_shapers,id=159366,bonus_id=4779/1512/4786
