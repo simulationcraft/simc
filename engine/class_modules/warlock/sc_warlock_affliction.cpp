@@ -683,6 +683,8 @@ namespace warlock
         base_tick_time = dot_duration;
         hasted_ticks = false;
         add_child( explosion );
+        if ( p->talents.sow_the_seeds->ok() )
+          aoe = 2;
       }
 
       void init() override
@@ -693,11 +695,6 @@ namespace warlock
 
       void execute() override
       {
-        if ( p()->talents.sow_the_seeds->ok() )
-        {
-          aoe = 2;
-        }
-
         if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T21, B4 ) )
           p()->active.tormented_agony->schedule_execute();
 
