@@ -6,9 +6,10 @@ import collections
 # repeated in the actual record data. For those files, the key block id is
 # actually not concatenated to the hotfix entry.
 KEY_FIELD_HOTFIX_RECORD = {
-    'ItemBonus'           : 'id_node',
-    'SkillLineAbility'    : 'id_skill',
-    'SpecializationSpells': 'spec_id'
+    'ItemBonus'             : 'id_node',
+    'SkillLineAbility'      : 'id_skill',
+    'SpecializationSpells'  : 'spec_id',
+    'ItemModifiedAppearance': 'id_item'
 }
 
 def use_hotfix_key_field(wdb_name):
