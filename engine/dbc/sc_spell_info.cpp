@@ -1139,7 +1139,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   std::string name_str = spell -> name_cstr();
   if ( spell -> rank_str() )
-    name_str += " (" + std::string( spell -> rank_str() ) + ")";
+    name_str += " (rank=" + std::string( spell -> rank_str() ) + ")";
   s <<   "Name             : " << name_str << " (id=" << spell -> id() << ") " << spell_flags( spell ) << std::endl;
 
   if ( spell -> _hotfix != 0 )
