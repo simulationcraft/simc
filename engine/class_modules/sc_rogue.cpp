@@ -3767,12 +3767,17 @@ struct shadow_blades_t : public rogue_attack_t
 
 struct shadow_dance_t : public rogue_attack_t
 {
+  bool off_gcd_option;
   cooldown_t* icd;
 
   shadow_dance_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "shadow_dance", p, p -> spec.shadow_dance, options_str ),
+    rogue_attack_t( "shadow_dance", p, p -> spec.shadow_dance ),
+    off_gcd_option( false ),
     icd( p -> get_cooldown( "shadow_dance_icd" ) )
   {
+    add_option( opt_bool( "off_gcd", off_gcd_option ) );
+    parse_options( options_str );
+
     harmful = may_miss = may_crit = false;
     dot_duration = timespan_t::zero(); // No need to have a tick here
     icd -> duration = data().cooldown();
@@ -3781,8 +3786,7 @@ struct shadow_dance_t : public rogue_attack_t
       cooldown -> charges += p -> talent.enveloping_shadows -> effectN( 2 ).base_value();
     }
 
-    // With Dark Shadow and Shuriken Tornado, allow off-gcd use. Otherwise not, for performance.
-    use_off_gcd = p -> talent.dark_shadow -> ok() && p -> talent.shuriken_tornado -> ok();
+    use_off_gcd = off_gcd_option;
   }
 
   void execute() override
@@ -4239,9 +4243,15 @@ struct sprint_t : public rogue_attack_t
 
 struct symbols_of_death_t : public rogue_attack_t
 {
+  bool off_gcd_option;
+
   symbols_of_death_t( rogue_t* p, const std::string& options_str ) :
-    rogue_attack_t( "symbols_of_death", p, p -> spec.symbols_of_death, options_str )
+    rogue_attack_t( "symbols_of_death", p, p -> spec.symbols_of_death ),
+    off_gcd_option( false )
   {
+    add_option( opt_bool( "off_gcd", off_gcd_option ) );
+    parse_options( options_str );
+
     harmful = callbacks = false;
     requires_stealth = false;
 
@@ -4250,8 +4260,7 @@ struct symbols_of_death_t : public rogue_attack_t
     if ( p -> sets -> has_set_bonus( ROGUE_SUBTLETY, T20, B4 ) )
       cooldown -> duration -= timespan_t::from_seconds( p -> sets -> set( ROGUE_SUBTLETY, T20, B4 ) -> effectN( 3 ).base_value() );
 
-    // With Dark Shadow and Shuriken Tornado, allow off-gcd use. Otherwise not, for performance.
-    use_off_gcd = p -> talent.dark_shadow -> ok() && p -> talent.shuriken_tornado -> ok();
+    use_off_gcd = off_gcd_option;
   }
 
   void execute() override
