@@ -44,7 +44,7 @@ Description      : Heals your pet for $<total>% of its total health over $d.
 Tooltip          : Heals $w1% of the pets health every $t1 sec.
 Variables        : $total=${$m1*5}
 
-Name             : Dual Wield (Passive) (id=674) [Passive] 
+Name             : Dual Wield (rank=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
 Attributes       : ....x.x. ........ ........ ........   ........ ........ ........ ........ 
@@ -415,7 +415,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 120 | Points Per Level: 1 | Target: Unknown(77)
 Description      : Begins taming a beast to be your companion. If you lose the beast's attention for any reason, the taming process will fail.
 
-Name             : Ice Trap (Frost Trap) (id=13809) [Spell Family (9)] 
+Name             : Ice Trap (rank=Frost Trap) (id=13809) [Spell Family (9)] 
 Class            : Hunter
 School           : Frost
 Spell Level      : 46
@@ -454,7 +454,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 621 | Target: Unknown(87)
 Description      : Place a frost trap that creates an ice slick around itself for $13810d when the first enemy approaches it. All enemies within $13810s1 yards will be slowed by $135299s1% while in the area of effect. Trap will exist for $13809d.
 
-Name             : Claw (Basic Attack) (id=16827) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Claw (rank=Basic Attack) (id=16827) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Resource         : 25 Focus (2) (id=676)
@@ -481,7 +481,7 @@ $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
-Name             : Bite (Basic Attack) (id=17253) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Bite (rank=Basic Attack) (id=17253) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter, Death Knight
 School           : Physical
 Resource         : 25 Focus (2) (id=706)
@@ -721,7 +721,7 @@ Effects          :
 Description      : Shows the location of all nearby undead on the minimap.
 Tooltip          : Tracking Undead.
 
-Name             : Blood Fury (Racial) (id=20572) [Scaling Spell (-1)] 
+Name             : Blood Fury (rank=Racial) (id=20572) [Scaling Spell (-1)] 
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc (0x2)
 School           : Physical
@@ -744,7 +744,7 @@ Effects          :
 Description      : Increases your attack power by $s1 for $d.
 Tooltip          : Attack power increased by $w1.
 
-Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
+Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
@@ -781,7 +781,7 @@ Effects          :
 Description      : Command your pet to intimidate the target, stunning it for $24394d.
 Tooltip          : Stunned.
 
-Name             : Bloody Screech (Special Ability) (id=24423) [Scaling Spell (4), Spell Family (9)] 
+Name             : Bloody Screech (rank=Special Ability) (id=24423) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -805,7 +805,7 @@ Description      : The Carrion Bird screeches, causing Mortal Wounds on the targ
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Prowl (Bonus Ability) (id=24450) [Spell Family (9)] 
+Name             : Prowl (rank=Bonus Ability) (id=24450) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -855,7 +855,7 @@ Effects          :
 #1 (id=17468)    : Apply Aura (6) | Attribute (29)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 
-Name             : Gift of the Naaru (Racial) (id=28880) [Spell Family (4)] 
+Name             : Gift of the Naaru (rank=Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei (0x400)
 School           : Holy
@@ -929,7 +929,7 @@ Effects          :
 Description      : Misdirects all threat you cause to the targeted party or raid member for the next $d.
 Tooltip          : Threat redirected from Hunter.
 
-Name             : Warp Time (Special Ability) (id=35346) [Spell Family (9)] 
+Name             : Warp Time (rank=Special Ability) (id=35346) [Spell Family (9)] 
 Class            : Hunter
 School           : Arcane
 Spell Level      : 20
@@ -967,7 +967,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Self (1)
 Description      : Increases Agility by $s1.
 
-Name             : Smack (Basic Attack) (id=49966) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Smack (rank=Basic Attack) (id=49966) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Resource         : 25 Focus (2) (id=2269)
@@ -994,7 +994,7 @@ $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
-Name             : Pin (Special Ability) (id=50245) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Pin (rank=Special Ability) (id=50245) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -1020,7 +1020,7 @@ Effects          :
 Description      : The Crab claws at the target's feet with its pincers, slowing movement by $s1% for $d.
 Tooltip          : Pinned in place.
 
-Name             : Dust Cloud (Special Ability) (id=50285) [Spell Family (9)] 
+Name             : Dust Cloud (rank=Special Ability) (id=50285) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 20
@@ -1041,7 +1041,7 @@ Effects          :
 Description      : The Tallstrider kicks up a cloud of dust towards the target, slowing movement by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
-Name             : Ankle Crack (Special Ability) (id=50433) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Ankle Crack (rank=Special Ability) (id=50433) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -1142,7 +1142,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | Misc Value: 1 | Target: Self (1)
 Description      : You master the art of beast training, teaching you the ability to tame Exotic pets.
 
-Name             : Master's Call (Cunning Ability) (id=53271) [Spell Family (9)] 
+Name             : Master's Call (rank=Cunning Ability) (id=53271) [Spell Family (9)] 
 Class            : Cunning Hunter Pet
 School           : Physical
 Spell Level      : 74
@@ -1185,7 +1185,7 @@ Effects          :
 Description      : Remove all root and movement impairing effects on the target, and cause them to be immune to all such effects for $d.
 Tooltip          : Immune to root and movement impairing effects.
 
-Name             : Frost Breath (Special Ability) (id=54644) [Spell Family (9)] 
+Name             : Frost Breath (rank=Special Ability) (id=54644) [Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
 Spell Level      : 20
@@ -1211,7 +1211,7 @@ Effects          :
 Description      : The Chimera blasts the target with frost breath, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Monstrous Bite (Special Ability) (id=54680) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Monstrous Bite (rank=Special Ability) (id=54680) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -1372,7 +1372,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 440
 Description      : $@spelldesc57870
 
-Name             : Gift of the Naaru (Racial) (id=59543) [Spell Family (9)] 
+Name             : Gift of the Naaru (rank=Racial) (id=59543) [Spell Family (9)] 
 Class            : Hunter
 Race             : Draenei (0x400)
 School           : Holy
@@ -1435,7 +1435,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100
 Description      : When your pet is at or above 50 Focus, your pet's Basic Attacks will deal $s1% more damage, but cost $s2% additional focus.
 
-Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
+Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1453,7 +1453,7 @@ Effects          :
 Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
-Name             : Aberration (Racial Passive) (id=68976) [Passive] 
+Name             : Aberration (rank=Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1472,7 +1472,7 @@ Effects          :
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
-Name             : Darkflight (Racial) (id=68992) 
+Name             : Darkflight (rank=Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1519,7 +1519,7 @@ Effects          :
                    Hotfixed: SP Coefficient (2.25 -> 1.9)
 Description      : Increases the damage done by your pets by ${$s1}.1%.
 
-Name             : Arcane Torrent (Racial) (id=80483) 
+Name             : Arcane Torrent (rank=Racial) (id=80483) 
 Class            : Hunter
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -1634,7 +1634,7 @@ Effects          :
                    Hotfixed: Average (0.9 -> 0)
 Description      : $@spelldesc34026
 
-Name             : Mail Specialization (Passive) (id=86538) [Passive, Hidden] 
+Name             : Mail Specialization (rank=Passive) (id=86538) [Passive, Hidden] 
 Class            : Hunter
 School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -1650,7 +1650,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | SP Coefficient: 0.25000 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : Increases your Agility by $s1% while wearing only Mail armor.
 
-Name             : Spirit Walk (Bonus Ability) (id=90328) [Spell Family (9)] 
+Name             : Spirit Walk (rank=Bonus Ability) (id=90328) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -1683,7 +1683,7 @@ Description      : Puts your pet in stealth mode, but slows its movement speed b
 Tooltip          : Stealthed.
 Movement speed slowed by $s2%.
 
-Name             : Play (Bonus Ability) (id=90347) [Spell Family (9)] 
+Name             : Play (rank=Bonus Ability) (id=90347) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 20
@@ -1704,7 +1704,7 @@ Effects          :
 Description      : Puts your Fox into a playful state.
 Tooltip          : "When you're the best of friends..."
 
-Name             : Spirit Mend (Exotic Ability) (id=90361) [Scaling Spell (4), Spell Family (9)] 
+Name             : Spirit Mend (rank=Exotic Ability) (id=90361) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Resource         : 5 Focus (2) (id=4344)
@@ -1750,7 +1750,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 92320 | Target: Self (1)
 Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
-Name             : Froststorm Breath (Exotic Ability) (id=92380) [Scaling Spell (4), Spell Family (9)] 
+Name             : Froststorm Breath (rank=Exotic Ability) (id=92380) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
 Resource         : 10 Focus (2) and 5 Focus (2) per tick (id=4257)
@@ -1788,7 +1788,7 @@ Effects          :
 #1 (id=97724)    : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 1 | Target: Self (1)
 
-Name             : Control Pet (Passive) (id=93321) [Passive] 
+Name             : Control Pet (rank=Passive) (id=93321) [Passive] 
 Class            : Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -1805,7 +1805,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Allows you to give commands to control your pet.
 
-Name             : Control Pet (Passive) (id=93322) [Hidden] 
+Name             : Control Pet (rank=Passive) (id=93322) [Hidden] 
 Class            : Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -1822,7 +1822,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Allows you to give commands to control your pet.
 
-Name             : Burrow Attack (Exotic Ability) (id=93433) [Scaling Spell (4), Spell Family (9)] 
+Name             : Burrow Attack (rank=Exotic Ability) (id=93433) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Resource         : 10 Focus (2) and 5 Focus (2) per tick (id=4304)
@@ -1846,7 +1846,7 @@ Tooltip          : Burrowed into the ground, dealing damage to enemies above.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
 
-Name             : Rest (Bonus Ability) (id=94019) [Spell Family (9)] 
+Name             : Rest (rank=Bonus Ability) (id=94019) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 20
@@ -1869,7 +1869,7 @@ Effects          :
 Description      : You command your pet Bear to take a rest.
 Tooltip          : Zzzzzz...
 
-Name             : Trick (Bonus Ability) (id=94022) [Spell Family (9)] 
+Name             : Trick (rank=Bonus Ability) (id=94022) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 20
@@ -1888,7 +1888,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Radius: 10 yards | Target: Self (1)
 Description      : You command your Bird of Prey to do a trick. Larger birds may not be interested.
 
-Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
+Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1905,7 +1905,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Enables Worgens to switch between human and Worgan forms
 
-Name             : Burrow Attack (Exotic Ability) (id=95714) [Scaling Spell (4), Spell Family (9)] 
+Name             : Burrow Attack (rank=Exotic Ability) (id=95714) [Scaling Spell (4), Spell Family (9)] 
 Hotfixed         : Affecting Spells
 Class            : Hunter
 School           : Nature
@@ -1927,7 +1927,7 @@ Description      : The Worm burrows into the earth, shaking the ground above dea
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
 
-Name             : Froststorm Breath (Exotic Ability) (id=95725) [Scaling Spell (4), Spell Family (9)] 
+Name             : Froststorm Breath (rank=Exotic Ability) (id=95725) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Froststorm
 Spell Level      : 20
@@ -2781,7 +2781,7 @@ Effects          :
                    Affected School(s): All
 Description      : Increases all damage done by your pet by $s2%.
 
-Name             : Critical Strikes (Passive) (id=157443) [Passive] 
+Name             : Critical Strikes (rank=Passive) (id=157443) [Passive] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -2798,7 +2798,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
 Description      : Increases your chance to critically strike by $s1%.
 
-Name             : Molten Hide (Special Ability) (id=159786) 
+Name             : Molten Hide (rank=Special Ability) (id=159786) 
 Class            : Hunter
 School           : Fire
 Spell Level      : 74
@@ -2821,7 +2821,7 @@ Effects          :
 Description      : $@spelldesc159788
 Tooltip          : Causes $160124s1 Fire damage to attackers.
 
-Name             : Molten Hide (Exotic Ability) (id=159788) [Passive] 
+Name             : Molten Hide (rank=Exotic Ability) (id=159788) [Passive] 
 Class            : Hunter
 School           : Fire
 Spell Level      : 74
@@ -2845,7 +2845,7 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | Target: Self (1)
 Description      : When the core hound takes melee attacks, it infuses its hide with molten lava, causing $160124s1 Fire damage to all further melee attackers for $159786d. Molten Hide can only activate every $s2 sec.
 
-Name             : Feast (Exotic Ability) (id=159953) 
+Name             : Feast (rank=Exotic Ability) (id=159953) 
 Class            : Hunter
 School           : Physical
 Range            : 5 yards
@@ -2885,7 +2885,7 @@ Effects          :
 Description      : $@spelldesc159953
 Tooltip          : Regenerate $s1% of total health and focus every $t1 seconds.
 
-Name             : Agile Reflexes (Special Ability) (id=160011) [Spell Family (9)] 
+Name             : Agile Reflexes (rank=Special Ability) (id=160011) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 8
@@ -2905,7 +2905,7 @@ Effects          :
 Description      : The Fox heightens its senses, increasing dodge chance by $s1% for $d.
 Tooltip          : Dodge chance increased by $s1%.
 
-Name             : Thick Hide (Special Ability) (id=160057) [Spell Family (9), Passive] 
+Name             : Thick Hide (rank=Special Ability) (id=160057) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -2934,7 +2934,7 @@ Description      : When falling below $s2% health, the Clefthoof's skin will thi
 
 This effect can only occur once every $s3 sec.
 
-Name             : Thick Hide (Special Ability) (id=160058) [Spell Family (9)] 
+Name             : Thick Hide (rank=Special Ability) (id=160058) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -2954,7 +2954,7 @@ Effects          :
 Description      : The Clefthoof's skin thickens, causing it to take $s1% less damage for $d.
 Tooltip          : Damage taken reduced by $s1%.
 
-Name             : Deadly Sting (Special Ability) (id=160060) [Scaling Spell (4), Spell Family (9)] 
+Name             : Deadly Sting (rank=Special Ability) (id=160060) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -2978,7 +2978,7 @@ Description      : The Scorpion lashes out with its tail, stinging the target an
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Tendon Rip (Special Ability) (id=160065) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Tendon Rip (rank=Special Ability) (id=160065) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -3000,7 +3000,7 @@ Effects          :
 Description      : The Silithid slashes at the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Web Spray (Special Ability) (id=160067) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Web Spray (rank=Special Ability) (id=160067) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -3022,7 +3022,7 @@ Effects          :
 Description      : The Spider wraps webs around the target, slowing movement by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Molten Hide (Special Ability) (id=160124) [Spell Family (9)] 
+Name             : Molten Hide (rank=Special Ability) (id=160124) [Spell Family (9)] 
 Hotfixed         : Affecting Spells, Spell Family
 Class            : Hunter
 School           : Fire
@@ -3547,7 +3547,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 187699 | Radius: 3 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Hurls a tar trap to the target location that creates a $187699s1 yd radius pool of tar around itself for $13810d when the first enemy approaches. All enemies have $135299s1% reduced movement speed while in the area of effect. Trap will exist for $13809d.
 
-Name             : Tar Trap (Frost) (id=187699) [Spell Family (9)] 
+Name             : Tar Trap (rank=Frost) (id=187699) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 46
@@ -3731,7 +3731,7 @@ Description      : A quick shot causing ${$s2*$<mult>} Physical damage.
 Reduces the cooldown of Kill Command by $s3 sec.
 Variables        : $mult=${($min($pl-1,19)*12+112)/340}
 
-Name             : Mastery: Sniper Training (Mastery) (id=193468) [Spell Family (9), Passive] 
+Name             : Mastery: Sniper Training (rank=Mastery) (id=193468) [Spell Family (9), Passive] 
 Class            : Marksmanship Hunter
 School           : Physical
 Spell Level      : 78
@@ -4219,7 +4219,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26250 | Radius: 0 - 8 yards | Target: At Caster (22) -> Unknown(24)
 Description      : $@spelldesc203415
 
-Name             : Fury of the Eagle (Artifact) (id=203415) [Spell Family (9)] 
+Name             : Fury of the Eagle (rank=Artifact) (id=203415) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Range            : 8 yards
@@ -4239,7 +4239,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 203413 | Target: Self (1)
 Description      : Furiously strikes all enemies in front of you, dealing ${$203413s1*9} Physical damage over $d. Damage increased by Mongoose Fury.
 
-Name             : Windburst (Artifact) (id=204147) [Spell Family (9)] 
+Name             : Windburst (rank=Artifact) (id=204147) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Resource         : 20 Focus (2) (id=11233)
@@ -4354,7 +4354,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.31200 | Target: Enemy (6)
 Description      : Deals poison damage to the target.
 
-Name             : Titan's Thunder (Artifact) (id=207068) [Spell Family (9)] 
+Name             : Titan's Thunder (rank=Artifact) (id=207068) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Range            : 100 yards
@@ -4630,7 +4630,7 @@ Effects          :
 Description      : $@spelldesc186387
 Tooltip          : Disoriented.
 
-Name             : Expansive Mind (Racial Passive) (id=227057) [Passive] 
+Name             : Expansive Mind (rank=Racial Passive) (id=227057) [Passive] 
 Class            : Hunter
 Race             : Gnome (0x40)
 School           : Physical
@@ -4665,7 +4665,7 @@ Effects          :
 Description      : $@spelldesc199921
 Tooltip          : Movement speed increased by $w1%.
 
-Name             : Exhilaration (Rank 2) (id=231546) [Spell Family (9), Passive] 
+Name             : Exhilaration (rank=Rank 2) (id=231546) [Spell Family (9), Passive] 
 Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Nature
 Spell Level      : 48
@@ -4682,7 +4682,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self (1)
 Description      : Exhilaration also heals your pet for $128594s1% of maximum health.
 
-Name             : Bestial Wrath (Rank 2) (id=231548) [Spell Family (9), Passive] 
+Name             : Bestial Wrath (rank=Rank 2) (id=231548) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Nature
 Spell Level      : 54
@@ -4699,7 +4699,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 37 | Target: Self (1)
 Description      : Bestial Wrath's remaining cooldown is reduced by $19574s3 sec each time you use Barbed Shot.
 
-Name             : Disengage (Rank 2) (id=231549) [Spell Family (9), Passive] 
+Name             : Disengage (rank=Rank 2) (id=231549) [Spell Family (9), Passive] 
 Class            : Beast Mastery Marksmanship Survival Hunter
 School           : Nature
 Spell Level      : 85
@@ -4716,7 +4716,7 @@ Effects          :
                    Base Value: -10000 | Scaled Value: -10000 | Misc Value: 1449 | Target: Self (1)
 Description      : Disengage's cooldown is reduced by ${$m1/-1000} sec.
 
-Name             : Harpoon (Rank 2) (id=231550) [Spell Family (9), Passive] 
+Name             : Harpoon (rank=Rank 2) (id=231550) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 School           : Nature
 Spell Level      : 65
@@ -4824,7 +4824,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
-Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
+Name             : Light's Judgment (rank=Racial) (id=255647) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -4846,7 +4846,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
+Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -4863,7 +4863,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
-Name             : Light's Reckoning (Racial Passive) (id=255652) [Passive] 
+Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -4880,7 +4880,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256896 | Target: Self (1)
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
-Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
+Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -4897,7 +4897,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self (1)
 Description      : Experience gains from killing Demons increased by $s1%.
 
-Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
+Name             : Light's Judgment (rank=Racial) (id=256893) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -4919,7 +4919,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
+Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5825,7 +5825,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 77.75 (avg=0.25) | Misc Value: 917504 | Target: Self (1)
 Tooltip          : Increases haste by $s1.
 
-Name             : Cobra Shot (Rank 2) (id=262837) [Spell Family (9), Passive] 
+Name             : Cobra Shot (rank=Rank 2) (id=262837) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Nature
 Spell Level      : 3
@@ -5843,7 +5843,7 @@ Effects          :
                    Affected Spells: Cobra Shot (193455)
 Description      : Cobra Shot's cost is reduced by $s1.
 
-Name             : Cobra Shot (Rank 3) (id=262838) [Spell Family (9), Passive] 
+Name             : Cobra Shot (rank=Rank 3) (id=262838) [Spell Family (9), Passive] 
 Class            : Beast Mastery Hunter
 School           : Nature
 Spell Level      : 52
@@ -5861,7 +5861,7 @@ Effects          :
                    Affected Spells: Cobra Shot (193455)
 Description      : Cobra Shot deals $s1% increased damage.
 
-Name             : Raptor Strike (Rank 2) (id=262839) [Spell Family (9), Passive] 
+Name             : Raptor Strike (rank=Rank 2) (id=262839) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 School           : Nature
 Spell Level      : 52
@@ -5936,7 +5936,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Active Pet (5)
 Description      : $@spelldesc263135
 
-Name             : Kill Command (Rank 2) (id=263186) [Spell Family (9), Passive] 
+Name             : Kill Command (rank=Rank 2) (id=263186) [Spell Family (9), Passive] 
 Class            : Survival Hunter
 School           : Nature
 Spell Level      : 50
@@ -5955,7 +5955,7 @@ Description      : Kill Command has a $259489s2% chance to immediately reset its
 
 Coordinated Assault increases this chance by another $266779s4%.
 
-Name             : Lock Jaw (Special Ability) (id=263423) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Lock Jaw (rank=Special Ability) (id=263423) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -5977,7 +5977,7 @@ Effects          :
 Description      : The Dog bites the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Acid Spit (Special Ability) (id=263446) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Acid Spit (rank=Special Ability) (id=263446) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -6099,7 +6099,7 @@ Effects          :
 Description      : Adds an additional $s1% speed to the initial 3 seconds of Aspect of the Cheetah.
 Tooltip          : Adds an additional $s1% speed to the initial 3 seconds of Aspect of the Cheetah.
 
-Name             : Furious Bite (Special Ability) (id=263840) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Furious Bite (rank=Special Ability) (id=263840) [Scaling Spell (-1), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -6121,7 +6121,7 @@ Effects          :
 Description      : The Wolf bites the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Talon Rend (Special Ability) (id=263852) [Scaling Spell (4), Spell Family (9)] 
+Name             : Talon Rend (rank=Special Ability) (id=263852) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -6143,7 +6143,7 @@ Effects          :
 Description      : The Bird of Prey claws at the target's feet, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
-Name             : Infected Bite (Special Ability) (id=263853) [Scaling Spell (4), Spell Family (9)] 
+Name             : Infected Bite (rank=Special Ability) (id=263853) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -6167,7 +6167,7 @@ Description      : The Hyena sinks its fangs into the target, infecting the targ
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Savage Rend (Special Ability) (id=263854) [Scaling Spell (4), Spell Family (9)] 
+Name             : Savage Rend (rank=Special Ability) (id=263854) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -6191,7 +6191,7 @@ Description      : The Raptor slashes deep into the target, causing Mortal Wound
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Ravage (Special Ability) (id=263857) [Scaling Spell (4), Spell Family (9)] 
+Name             : Ravage (rank=Special Ability) (id=263857) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -6215,7 +6215,7 @@ Description      : The Ravager tears into the enemy,  causing the Mortal Wounds 
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Toxic Sting (Special Ability) (id=263858) [Scaling Spell (4), Spell Family (9)] 
+Name             : Toxic Sting (rank=Special Ability) (id=263858) [Scaling Spell (4), Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -6239,7 +6239,7 @@ Description      : The Wasp dives in and stings the target, causing the Mortal W
 |Tinterface\icons\ability_criticalstrike.blp:24|t |cFFFFFFFFMortal Wounds|r
 Grievously wounds the target, reducing the effectiveness of any healing received for $115804d.
 
-Name             : Obsidian Skin (Special Ability) (id=263867) [Spell Family (9)] 
+Name             : Obsidian Skin (rank=Special Ability) (id=263867) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -6259,7 +6259,7 @@ Effects          :
 Description      : The Core Hound suddenly cools and hardens the magma on its skin, reducing damage taken by $s1% for $d.
 Tooltip          : Damage reduced by $s1%.
 
-Name             : Bristle (Special Ability) (id=263869) [Spell Family (9)] 
+Name             : Bristle (rank=Special Ability) (id=263869) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -6279,7 +6279,7 @@ Effects          :
 Description      : The Boar bristles its hide, reducing damage taken by $s1% for $d.
 Tooltip          : Damage reduced by $s1%.
 
-Name             : Dragon's Guile (Special Ability) (id=263887) [Spell Family (9)] 
+Name             : Dragon's Guile (rank=Special Ability) (id=263887) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 8
@@ -6299,7 +6299,7 @@ Effects          :
 Description      : The Dragonhawk takes on a defensive posture, increasing dodge chance by $s1% for $d.
 Tooltip          : Dodge chance increased by $s1%.
 
-Name             : Catlike Reflexes (Special Ability) (id=263892) [Spell Family (9)] 
+Name             : Catlike Reflexes (rank=Special Ability) (id=263892) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 8
@@ -6319,7 +6319,7 @@ Effects          :
 Description      : The Cat heightens its senses, increasing dodge chance by $s1% for $d.
 Tooltip          : Dodge chance increased by $s1%.
 
-Name             : Serpent's Swiftness (Special Ability) (id=263904) [Spell Family (9)] 
+Name             : Serpent's Swiftness (rank=Special Ability) (id=263904) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 8
@@ -6339,7 +6339,7 @@ Effects          :
 Description      : The Serpent takes on a defensive posture, increasing dodge chance by $s1% for $d.
 Tooltip          : Dodge chance increased by $s1%.
 
-Name             : Thick Fur (Special Ability) (id=263926) [Spell Family (9)] 
+Name             : Thick Fur (rank=Special Ability) (id=263926) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -6359,7 +6359,7 @@ Effects          :
 Description      : The Bear's fur dampens attacks, taking $s1% less damage for $d.
 Tooltip          : Damage taken reduced by $s1%.
 
-Name             : Thick Fur (Special Ability) (id=263934) [Spell Family (9), Passive] 
+Name             : Thick Fur (rank=Special Ability) (id=263934) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -6388,7 +6388,7 @@ Description      : When falling below $s2% health, the Bear's fur will thicken, 
 
 This effect can only occur once every $s3 sec.
 
-Name             : Silverback (Special Ability) (id=263938) [Spell Family (9)] 
+Name             : Silverback (rank=Special Ability) (id=263938) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -6408,7 +6408,7 @@ Effects          :
 Description      : The Gorilla shrugs off attacks, taking $s1% less damage for $d.
 Tooltip          : Damage taken reduced by $s1%.
 
-Name             : Silverback (Special Ability) (id=263939) [Spell Family (9), Passive] 
+Name             : Silverback (rank=Special Ability) (id=263939) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 20
@@ -6510,7 +6510,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 Tooltip          : Your damaging abilities have a chance to deal $s1 Nature damage to your target, and $s2 Nature damage to enemies within 3 yards of that target.
 
-Name             : Serenity Dust (Special Ability) (id=264055) [Spell Family (9)] 
+Name             : Serenity Dust (rank=Special Ability) (id=264055) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 35
@@ -6532,7 +6532,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Enemy (6)
 Description      : The Moth vibrates its wings, scattering tranquil dust over the enemy target, removing $s1 Enrage and $s2 Magic effect.
 
-Name             : Spore Cloud (Special Ability) (id=264056) [Spell Family (9)] 
+Name             : Spore Cloud (rank=Special Ability) (id=264056) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 35
@@ -6632,7 +6632,7 @@ Effects          :
 Description      : Increases the damage of Hatchet Toss  by $s1 and causes it to return to you, dealing $s2 damage to enemies it strikes.
 Tooltip          : Increases the damage of Hatchet Toss  by $s1 and causes it to return to you, dealing $s2 damage to enemies it strikes.
 
-Name             : Sonic Blast (Special Ability) (id=264263) [Spell Family (9)] 
+Name             : Sonic Blast (rank=Special Ability) (id=264263) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 35
@@ -6654,7 +6654,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Enemy (6)
 Description      : The Bat emits a sonic pulse towards the enemy target, removing $s1 Enrage and $s2 Magic effect.
 
-Name             : Nether Shock (Special Ability) (id=264264) [Spell Family (9)] 
+Name             : Nether Shock (rank=Special Ability) (id=264264) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 35
@@ -6676,7 +6676,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1 | Target: Enemy (6)
 Description      : The Nether Ray focuses a blast of nether energy at the enemy target, removing $s1 Enrage and $s2 Magic effect.
 
-Name             : Spirit Shock (Special Ability) (id=264265) [Spell Family (9)] 
+Name             : Spirit Shock (rank=Special Ability) (id=264265) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 35
@@ -6718,7 +6718,7 @@ Effects          :
                    Affected Spells: Wildfire Bomb (265157), Pheromone Bomb (270329), Shrapnel Bomb (270338), Volatile Bomb (271048)
 Description      : Wildfire Bomb now has ${$s1+1} charges, and the initial explosion deals $s2% increased damage.
 
-Name             : Winged Agility (Special Ability) (id=264360) [Spell Family (9)] 
+Name             : Winged Agility (rank=Special Ability) (id=264360) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 8
@@ -6738,7 +6738,7 @@ Effects          :
 Description      : The Wind Serpent takes on a defensive posture, increasing dodge chance by $s1% for $d.
 Tooltip          : Dodge chance increased by $s1%.
 
-Name             : Pathfinding (Cunning Passive) (id=264656) [Spell Family (9), Passive] 
+Name             : Pathfinding (rank=Cunning Passive) (id=264656) [Spell Family (9), Passive] 
 Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Range            : 50000 yards
@@ -6759,7 +6759,7 @@ Effects          :
 Description      : You and your pet gain $s1% increased movement speed.
 Tooltip          : Movement speed increased by $s1%.
 
-Name             : Endurance Training (Tenacity Passive) (id=264662) [Spell Family (9), Passive] 
+Name             : Endurance Training (rank=Tenacity Passive) (id=264662) [Spell Family (9), Passive] 
 Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Range            : 50000 yards
@@ -6780,7 +6780,7 @@ Effects          :
 Description      : You and your pet gain $s1% increased maximum health.
 Tooltip          : Maximum health increased by $s1%.
 
-Name             : Predator's Thirst (Ferocity Passive) (id=264663) [Spell Family (9), Passive] 
+Name             : Predator's Thirst (rank=Ferocity Passive) (id=264663) [Spell Family (9), Passive] 
 Class            : Ferocity Tenacity Cunning Hunter Pet
 School           : Physical
 Range            : 50000 yards
@@ -6801,7 +6801,7 @@ Effects          :
 Description      : You and your pet gain $s1% Leech.
 Tooltip          : Leech increased by $s1%.
 
-Name             : Primal Rage (Ferocity Ability) (id=264667) [Spell Family (9)] 
+Name             : Primal Rage (rank=Ferocity Ability) (id=264667) [Spell Family (9)] 
 Class            : Ferocity Hunter Pet
 School           : Fire
 Spell Level      : 65
@@ -6825,7 +6825,7 @@ Description      : Increases haste by $s1% for all party and raid members for $d
 Allies receiving this effect will become Sated and unable to benefit from Primal Rage or similar effects again for $57724d.
 Tooltip          : Haste increased by $s1%.
 
-Name             : Survival of the Fittest (Tenacity Ability) (id=264735) [Spell Family (9)] 
+Name             : Survival of the Fittest (rank=Tenacity Ability) (id=264735) [Spell Family (9)] 
 Hotfixed         : Cooldown (0 -> 180000), Category Cooldown (0 -> 180000), Category
 Class            : Tenacity Hunter Pet
 School           : Physical
@@ -8064,7 +8064,7 @@ Effects          :
 Description      : $@spelldesc217200
 Tooltip          : Attack speed increased by $s1%.
 
-Name             : Ruinous Bolt (Drustvar) (id=273150) [Scaling Spell (-1), Passive] 
+Name             : Ruinous Bolt (rank=Drustvar) (id=273150) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 156
@@ -8209,7 +8209,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
 Description      : $@spelldesc273283
 
-Name             : Meticulous Scheming (Tiragarde Sound) (id=273682) [Scaling Spell (-1), Passive] 
+Name             : Meticulous Scheming (rank=Tiragarde Sound) (id=273682) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 192
@@ -8233,7 +8233,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 224.1442 (avg=0.720721) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you Meticulous Scheming for $273685d, which transforms into Seize the Moment! after you cast $s3 different spells, granting you $s4 Haste for $273714d.
 
-Name             : Rezan's Fury (Zuldazar) (id=273790) [Scaling Spell (-1), Passive] 
+Name             : Rezan's Fury (rank=Zuldazar) (id=273790) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 157
@@ -8252,7 +8252,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
-Name             : Blightborne Infusion (Drustvar) (id=273823) [Scaling Spell (-7), Passive] 
+Name             : Blightborne Infusion (rank=Drustvar) (id=273823) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 193
@@ -8269,7 +8269,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=1.2) | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul increases your Critical Strike by $s1.
 
-Name             : Secrets of the Deep (Stormsong Valley) (id=273829) [Scaling Spell (-1), Passive] 
+Name             : Secrets of the Deep (rank=Stormsong Valley) (id=273829) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 195
@@ -8290,7 +8290,7 @@ Description      : Your spells and abilities have a chance to create a Surging D
 
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
-Name             : Filthy Transfusion (Nazmir) (id=273834) [Scaling Spell (-1), Passive] 
+Name             : Filthy Transfusion (rank=Nazmir) (id=273834) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 194
@@ -8695,7 +8695,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25
 Description      : Using Feign Death allows you to absorb $s1 damage over $280170d, and Feign Death's cooldown is reduced to $s2 seconds.
 
-Name             : Blood of the Rhino (Exotic Ability) (id=280069) [Passive] 
+Name             : Blood of the Rhino (rank=Exotic Ability) (id=280069) [Passive] 
 Class            : Hunter
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -8713,7 +8713,7 @@ Effects          :
                    Base Value: -10 | Scaled Value: -10 | Misc Value: 0x1 | Target: Self (1)
 Description      : The Clefthoof has $s2% additional armor and increases the effectiveness of healing received by $s1%.
 
-Name             : Dune Strider (Exotic Ability) (id=280151) [Spell Family (9), Passive] 
+Name             : Dune Strider (rank=Exotic Ability) (id=280151) [Spell Family (9), Passive] 
 Class            : Hunter
 School           : Physical
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
@@ -8729,7 +8729,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25000 | Misc Value: 8 | Target: Self (1)
 Description      : Increases the Silithid's movement speed by $s1%.
 
-Name             : Barrage Of Many Bombs (Goblin Engineering) (id=280163) [Scaling Spell (-1), Passive] 
+Name             : Barrage Of Many Bombs (rank=Goblin Engineering) (id=280163) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -8758,7 +8758,7 @@ Description      : Your spells and abilities have a chance to fire a bomb at you
 
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
-Name             : Ricocheting Inflatable Pyrosaw (Goblin Engineering) (id=280168) [Passive] 
+Name             : Ricocheting Inflatable Pyrosaw (rank=Goblin Engineering) (id=280168) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -8787,7 +8787,7 @@ Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, 
 
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
-Name             : Auto-Self-Cauterizer (Goblin Engineering) (id=280172) [Scaling Spell (-8), Passive] 
+Name             : Auto-Self-Cauterizer (rank=Goblin Engineering) (id=280172) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -8816,7 +8816,7 @@ Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 *Efficacy may vary.
 
-Name             : Synaptic Spark Capacitor (Gnomish Engineering) (id=280174) [Spell Family (7), Passive] 
+Name             : Synaptic Spark Capacitor (rank=Gnomish Engineering) (id=280174) [Spell Family (7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -8841,7 +8841,7 @@ Description      : Your spells and abilities have a chance to cause the target t
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
-Name             : Relational Normalization Gizmo (Gnomish Engineering) (id=280178) [Scaling Spell (-1), Passive] 
+Name             : Relational Normalization Gizmo (rank=Gnomish Engineering) (id=280178) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Internal Cooldown: 10 seconds
@@ -8867,7 +8867,7 @@ Description      : Your spells and abilities have a chance to grow or shrink the
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
-Name             : Personal Absorb-o-Tron (Gnomish Engineering) (id=280181) [Passive] 
+Name             : Personal Absorb-o-Tron (rank=Gnomish Engineering) (id=280181) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Internal Cooldown: 60 seconds
@@ -8893,7 +8893,7 @@ Description      : Taking damage has a chance to call your Personal Absorb-o-Tro
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
-Name             : Dagger in the Back (Tiragarde Sound) (id=280284) [Scaling Spell (-1), Passive] 
+Name             : Dagger in the Back (rank=Tiragarde Sound) (id=280284) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 479
@@ -8913,7 +8913,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
 
-Name             : Thunderous Blast (Vol'dun) (id=280380) [Scaling Spell (-8), Passive] 
+Name             : Thunderous Blast (rank=Vol'dun) (id=280380) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 482
@@ -8933,7 +8933,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
 
-Name             : Tidal Surge (Stormsong Valley) (id=280402) [Scaling Spell (-1), Passive] 
+Name             : Tidal Surge (rank=Stormsong Valley) (id=280402) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Frost
 Azerite Power Id : 478
@@ -8950,7 +8950,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 827.733 (avg=2.661521) | Trigger Spell: 280403 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to release a tidal surge, dealing $s1 Frost damage to your target and slowing their movement speed by $280404s2% for $280404d.
 
-Name             : Blood Rite (Nazmir) (id=280407) [Scaling Spell (-7), Passive] 
+Name             : Blood Rite (rank=Nazmir) (id=280407) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 480
@@ -8968,7 +8968,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=1.129518) | Trigger Spell: 280408 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $280409d. Killing an enemy refreshes the duration of this effect.
 
-Name             : Incite the Pack (Zuldazar) (id=280410) [Scaling Spell (-1), Passive] 
+Name             : Incite the Pack (rank=Zuldazar) (id=280410) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 481
@@ -8990,7 +8990,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : You occasionally loose a tremendous roar, increasing your Mastery by $s1 and granting $s2 Mastery to up to $280413i nearby allies. Lasts $280412d.
 
-Name             : Swirling Sands (Vol'dun) (id=280429) [Scaling Spell (-7), Passive] 
+Name             : Swirling Sands (rank=Vol'dun) (id=280429) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 196
@@ -9011,7 +9011,7 @@ Effects          :
                    Base Value: 6000 | Scaled Value: 6000
 Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
 
-Name             : Archive of the Titans (Uldir) (id=280555) [Scaling Spell (-1), Passive] 
+Name             : Archive of the Titans (rank=Uldir) (id=280555) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 483
@@ -9030,7 +9030,7 @@ Description      : Your armor gathers and analyzes combat data every $280708t1 s
 
 Enables $@spellname280573 within Uldir.
 
-Name             : Laser Matrix (Uldir) (id=280559) [Scaling Spell (-8), Passive] 
+Name             : Laser Matrix (rank=Uldir) (id=280559) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 485
@@ -9051,7 +9051,7 @@ Description      : Your spells and abilities have a chance to release a barrage 
 
 Enables $@spellname280573 within Uldir.
 
-Name             : Glory in Battle (Horde) (id=280577) [Scaling Spell (-7), Passive] 
+Name             : Glory in Battle (rank=Horde) (id=280577) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 486
@@ -9071,7 +9071,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
-Name             : Retaliatory Fury (Horde) (id=280579) [Scaling Spell (-1), Passive] 
+Name             : Retaliatory Fury (rank=Horde) (id=280579) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 487
@@ -9092,7 +9092,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
-Name             : Combined Might (Horde) (id=280580) [Scaling Spell (-1), Passive] 
+Name             : Combined Might (rank=Horde) (id=280580) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 490
@@ -9112,7 +9112,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
 
-Name             : Collective Will (Horde) (id=280581) [Scaling Spell (-1), Passive] 
+Name             : Collective Will (rank=Horde) (id=280581) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 491
@@ -9132,7 +9132,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1866 (avg=6) | Target: Self (1)
 Description      : Your abilities have a chance to drop a Horde Banner for $280830d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
-Name             : Battlefield Focus (Horde) (id=280582) [Scaling Spell (-8), Passive] 
+Name             : Battlefield Focus (rank=Horde) (id=280582) [Scaling Spell (-8), Passive] 
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
@@ -9155,7 +9155,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Your abilities have a chance to apply $s2 stacks of Battlefield Focus to an enemy, increasing damage taken from members of the Horde by $s1. Applying Battlefield Focus to a member of the Alliance grants an additional $s3 stacks. 
 
-Name             : Sylvanas' Resolve (Horde) (id=280598) [Scaling Spell (-1), Passive] 
+Name             : Sylvanas' Resolve (rank=Horde) (id=280598) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 489
@@ -9175,7 +9175,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280810 | Target: Self (1)
 Description      : Your abilities have a chance to increase your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 for $280809d. If an ally dies nearby, you gain this effect.
 
-Name             : Liberator's Might (Alliance) (id=280623) [Scaling Spell (-7), Passive] 
+Name             : Liberator's Might (rank=Alliance) (id=280623) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 492
@@ -9195,7 +9195,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
-Name             : Last Gift (Alliance) (id=280624) [Scaling Spell (-1), Passive] 
+Name             : Last Gift (rank=Alliance) (id=280624) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 493
@@ -9216,7 +9216,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
-Name             : Stronger Together (Alliance) (id=280625) [Scaling Spell (-1), Passive] 
+Name             : Stronger Together (rank=Alliance) (id=280625) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 496
@@ -9236,7 +9236,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
 
-Name             : Stand As One (Alliance) (id=280626) [Scaling Spell (-1), Passive] 
+Name             : Stand As One (rank=Alliance) (id=280626) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 497
@@ -9256,7 +9256,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1866 (avg=6) | Target: Self (1)
 Description      : Your abilities have a chance to drop an Alliance Banner for $280858d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
-Name             : Battlefield Precision (Alliance) (id=280627) [Scaling Spell (-8), Passive] 
+Name             : Battlefield Precision (rank=Alliance) (id=280627) [Scaling Spell (-8), Passive] 
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
@@ -9279,7 +9279,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Your abilities have a chance to apply $s2 stacks of Battlefield Focus to an enemy, increasing damage taken from members of the Alliance by $s1. Applying Battlefield Focus to a member of the Horde grants an additional $s3 stacks. 
 
-Name             : Anduin's Dedication (Alliance) (id=280628) [Scaling Spell (-1), Passive] 
+Name             : Anduin's Dedication (rank=Alliance) (id=280628) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 495
@@ -9354,7 +9354,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 172.3948 (avg=0.554324) | Trigger Spell: 281515 | Target: Self (1)
 Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
 
-Name             : Tradewinds (Tiragarde Sound) (id=281841) [Scaling Spell (-7), Passive] 
+Name             : Tradewinds (rank=Tiragarde Sound) (id=281841) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 505

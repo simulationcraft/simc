@@ -49,7 +49,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Trigger Spell: 228597 | Target: Enemy (6)
 Description      : Launches a bolt of frost at the enemy, causing $228597s1 Frost damage and slowing movement speed by $205708s1% for $205708d.
 
-Name             : Polymorph (Sheep) (id=118) [Spell Family (3)] 
+Name             : Polymorph (rank=Sheep) (id=118) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=26)
@@ -633,7 +633,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : Multiplies the critical strike chance of your spells against frozen targets by 1.5, and adds an additional $?a231582[${$s2+$231582s1$}%][$s2%] critical strike chance.
 
-Name             : Expansive Mind (Racial Passive) (id=20591) [Passive] 
+Name             : Expansive Mind (rank=Racial Passive) (id=20591) [Passive] 
 Class            : Paladin, Priest, Shaman, Mage, Warlock, Monk
 Race             : Gnome (0x40)
 School           : Physical
@@ -650,7 +650,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | Misc Value 2: 0x8 | Target: Self (1)
 Description      : Maximum mana increased by $s1%.
 
-Name             : Command (Racial Passive) (id=21563) [Spell Family (9), Passive] 
+Name             : Command (rank=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Orc (0x2)
 School           : Physical
@@ -684,7 +684,7 @@ Effects          :
 #1 (id=17468)    : Apply Aura (6) | Attribute (29)
                    Base Value: 20 | Scaled Value: 20 | Target: Self (1)
 
-Name             : Polymorph (Turtle) (id=28271) [Spell Family (3)] 
+Name             : Polymorph (rank=Turtle) (id=28271) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=1101)
@@ -714,7 +714,7 @@ Description      : Transforms the enemy into a turtle, wandering around incapaci
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
-Name             : Polymorph (Pig) (id=28272) [Spell Family (3)] 
+Name             : Polymorph (rank=Pig) (id=28272) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=1102)
@@ -744,7 +744,7 @@ Description      : Transforms the enemy into a pig, wandering around incapacitat
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
-Name             : Arcane Torrent (Racial) (id=28730) 
+Name             : Arcane Torrent (rank=Racial) (id=28730) 
 Class            : Mage, Warlock
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -764,7 +764,7 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore $s2% of your Mana.
 
-Name             : Gift of the Naaru (Racial) (id=28880) [Spell Family (4)] 
+Name             : Gift of the Naaru (rank=Racial) (id=28880) [Spell Family (4)] 
 Class            : Warrior, Paladin, Hunter, Priest, Death Knight, Shaman, Mage, Monk
 Race             : Draenei (0x400)
 School           : Holy
@@ -1000,7 +1000,7 @@ Effects          :
 Description      : Blasts enemies in a $a1 yard radius with frost, freezing them in place for up to $d. Damage caused may interrupt the effect.
 Tooltip          : Frozen in place.
 
-Name             : Blood Fury (Racial) (id=33702) [Scaling Spell (-1)] 
+Name             : Blood Fury (rank=Racial) (id=33702) [Scaling Spell (-1)] 
 Class            : Mage, Warlock
 Race             : Orc (0x2)
 School           : Physical
@@ -1457,7 +1457,7 @@ Effects          :
 Description      : Cannot benefit from Bloodlust or other similar effects.
 Tooltip          : Cannot benefit from Bloodlust or other similar effects.
 
-Name             : Gift of the Naaru (Racial) (id=59548) [Spell Family (3)] 
+Name             : Gift of the Naaru (rank=Racial) (id=59548) [Spell Family (3)] 
 Class            : Mage
 Race             : Draenei (0x400)
 School           : Holy
@@ -1507,7 +1507,7 @@ Effects          :
 Description      : Inflicts Frost damage to an enemy and reduces its movement speed for $d.
 Tooltip          : Reduced movement speed.
 
-Name             : Polymorph (Serpent) (id=61025) [Spell Family (3)] 
+Name             : Polymorph (rank=Serpent) (id=61025) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=2763)
@@ -1537,7 +1537,7 @@ Description      : Transforms the enemy into a harmless serpent, wandering aroun
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
-Name             : Polymorph (Black Cat) (id=61305) [Spell Family (3)] 
+Name             : Polymorph (rank=Black Cat) (id=61305) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=2768)
@@ -1567,7 +1567,7 @@ Description      : Transforms the enemy into a harmless black cat, wandering aro
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
-Name             : Polymorph (Rabbit) (id=61721) [Spell Family (3)] 
+Name             : Polymorph (rank=Rabbit) (id=61721) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=2787)
@@ -1597,7 +1597,7 @@ Description      : Transforms the enemy into a harmless rabbit, wandering around
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
-Name             : Polymorph (Turkey) (id=61780) [Spell Family (3)] 
+Name             : Polymorph (rank=Turkey) (id=61780) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=2790)
@@ -1627,7 +1627,7 @@ Description      : Transforms the enemy into a turkey, wandering around incapaci
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
-Name             : Avoidance (Passive) (id=65220) [Passive] 
+Name             : Avoidance (rank=Passive) (id=65220) [Passive] 
 Class            : Shaman, Mage, Monk
 School           : Physical
 Spell Level      : 1
@@ -1651,7 +1651,7 @@ Effects          :
 Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
 Reduces the range at which enemies detect your pet.
 
-Name             : Viciousness (Racial Passive) (id=68975) [Passive] 
+Name             : Viciousness (rank=Racial Passive) (id=68975) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1669,7 +1669,7 @@ Effects          :
 Description      : Increases critical strike chance by $s1%.
 Tooltip          : Critical strike chance increased by $s1%.
 
-Name             : Aberration (Racial Passive) (id=68976) [Passive] 
+Name             : Aberration (rank=Racial Passive) (id=68976) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1688,7 +1688,7 @@ Effects          :
 Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
-Name             : Darkflight (Racial) (id=68992) 
+Name             : Darkflight (rank=Racial) (id=68992) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2010,7 +2010,7 @@ Description      : Blasts the target with energy, dealing $30451s1 Arcane damage
 
 Arcane Blast's damage is increased by $36032s1% per Arcane Charge, and its mana cost is increased by $36032s2% per Arcane Charge.
 
-Name             : Wizardry (Passive) (id=89744) [Passive, Hidden] 
+Name             : Wizardry (rank=Passive) (id=89744) [Passive, Hidden] 
 Class            : Mage
 School           : Physical
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -2047,7 +2047,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Trigger Spell: 92320 | Target: Self (1)
 Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
-Name             : Altered Form (Racial Passive) (id=94293) [Passive, Hidden] 
+Name             : Altered Form (rank=Racial Passive) (id=94293) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2439,7 +2439,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | Target: Self (1)
 Description      : Teleports you to Dalaran.
 
-Name             : Mana Attunement (Passive) (id=121039) [Spell Family (3), Passive, Hidden] 
+Name             : Mana Attunement (rank=Passive) (id=121039) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
 Spell Level      : 1
@@ -2457,7 +2457,7 @@ Effects          :
 Description      : Your mana regeneration is increased by $s1%.
 Tooltip          : Increases your mana regeneration by $s1%.
 
-Name             : Polymorph (Porcupine) (id=126819) [Spell Family (3)] 
+Name             : Polymorph (rank=Porcupine) (id=126819) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=7563)
@@ -2752,7 +2752,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=1.5) | SP Coefficient: 1.50000 | Target: Enemy (6)
 Description      : Consuming Brain Freeze has a $145257s2% chance to drop an icy boulder on your target.
 
-Name             : Glyph of Evaporation (Frost) (id=146662) [Spell Family (3), Passive, Hidden] 
+Name             : Glyph of Evaporation (rank=Frost) (id=146662) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ...x.... ........ 
@@ -2768,7 +2768,7 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | Misc Value: 11 | Radius: 100 yards | Target: Self (1)
 Description      : Reduces the size of your Water Elemental by $s1%.
 
-Name             : Glyph of the Unbound Elemental (Frost) (id=146976) [Spell Family (3), Passive, Hidden] 
+Name             : Glyph of the Unbound Elemental (rank=Frost) (id=146976) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Physical
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -3243,7 +3243,7 @@ Effects          :
 Description      : Causes a whirl of icy wind around the enemy, dealing ${$s1*$s3/100} Frost damage to the target and $s1 Frost damage to all other enemies within $a2 yards, and freezing them in place for $d.
 Tooltip          : Frozen.
 
-Name             : Polymorph (Polar Bear Cub) (id=161353) [Spell Family (3)] 
+Name             : Polymorph (rank=Polar Bear Cub) (id=161353) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=9429)
@@ -3273,7 +3273,7 @@ Description      : Transforms the enemy into a polar bear cub, wandering around 
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
-Name             : Polymorph (Monkey) (id=161354) [Spell Family (3)] 
+Name             : Polymorph (rank=Monkey) (id=161354) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=9430)
@@ -3303,7 +3303,7 @@ Description      : Transforms the enemy into a monkey, wandering around incapaci
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
-Name             : Polymorph (Penguin) (id=161355) [Spell Family (3)] 
+Name             : Polymorph (rank=Penguin) (id=161355) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=9431)
@@ -3333,7 +3333,7 @@ Description      : Transforms the enemy into a penguin, wandering around incapac
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
-Name             : Polymorph (Peacock) (id=161372) [Spell Family (3)] 
+Name             : Polymorph (rank=Peacock) (id=161372) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=9433)
@@ -3760,7 +3760,7 @@ Effects          :
 Description      : $@spelldesc194431
 Tooltip          : Movement speed slowed by $s2%.
 
-Name             : Phoenix's Flames (Artifact) (id=194466) [Spell Family (3)] 
+Name             : Phoenix's Flames (rank=Artifact) (id=194466) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
 Spell Level      : 12
@@ -4446,7 +4446,7 @@ Effects          :
                    Hotfixed: Base Value (20 -> 15)
 Description      : Arcane Blast has a $h% chance to apply Touch of the Magi, accumulating $s1% of the damage you deal to the target for $210824d, and then exploding for that amount of Arcane damage to the target and all nearby enemies.
 
-Name             : Mark of Aluneth (Artifact) (id=210726) 
+Name             : Mark of Aluneth (rank=Artifact) (id=210726) 
 Class            : Mage
 School           : Physical
 Range            : 40 yards
@@ -4469,7 +4469,7 @@ Effects          :
 Description      : Creates a runic prison at the target's location, slowing enemy movement speed by ${$211056s1/-1}%, inflicting ${$211088s1*6} Arcane damage over $d, and then detonating for Arcane damage equal to $s1% of your maximum mana.
 
 
-Name             : Time Anomaly (PvP Talent) (id=210805) [Spell Family (3), Passive, Hidden] 
+Name             : Time Anomaly (rank=PvP Talent) (id=210805) [Spell Family (3), Passive, Hidden] 
 Class            : Mage
 School           : Arcane
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -4650,7 +4650,7 @@ Effects          :
 Description      : $@spelldesc195676
 Tooltip          : Able to Displace back to where last Blinked from.
 
-Name             : Ebonbolt (Artifact) (id=214634) [Spell Family (3)] 
+Name             : Ebonbolt (rank=Artifact) (id=214634) [Spell Family (3)] 
 Class            : Mage
 School           : Shadowfrost
 Range            : 40 yards
@@ -4758,7 +4758,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 13606.25 (avg=175) | Target: Enemy (6)
 Description      : Deal $s1 Arcane damage.
 
-Name             : Phoenix's Flames (Artifact) (id=224637) [Spell Family (3)] 
+Name             : Phoenix's Flames (rank=Artifact) (id=224637) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
 Spell Level      : 12
@@ -4778,7 +4778,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.32450 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc194466
 
-Name             : Mark of Aluneth (Artifact) (id=224968) [Spell Family (3)] 
+Name             : Mark of Aluneth (rank=Artifact) (id=224968) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Range            : 40 yards
@@ -4929,7 +4929,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100
 Description      : $@spelldesc30455
 
-Name             : Ebonbolt (Artifact) (id=228599) [Spell Family (3)] 
+Name             : Ebonbolt (rank=Artifact) (id=228599) [Spell Family (3)] 
 Class            : Mage
 School           : Shadowfrost
 Range            : 100 yards
@@ -4991,7 +4991,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc153595
 
-Name             : Arcane Barrage (Rank 2) (id=231564) [Spell Family (3), Passive] 
+Name             : Arcane Barrage (rank=Rank 2) (id=231564) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Nature
 Spell Level      : 34
@@ -5009,7 +5009,7 @@ Effects          :
                    Affected Spells: Arcane Charge (36032)
 Description      : Arcane Barrage hits $s1 additional $Ltarget:targets; within $44425s3 yds per Arcane Charge for $44425s2% damage.
 
-Name             : Evocation (Rank 2) (id=231565) [Spell Family (3), Passive] 
+Name             : Evocation (rank=Rank 2) (id=231565) [Spell Family (3), Passive] 
 Class            : Arcane Mage
 School           : Arcane
 Spell Level      : 56
@@ -5026,7 +5026,7 @@ Effects          :
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 1671 | Target: Self (1)
 Description      : Evocation's cooldown is reduced by $s1%.
 
-Name             : Fire Blast (Rank 3) (id=231567) [Spell Family (3), Passive] 
+Name             : Fire Blast (rank=Rank 3) (id=231567) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Nature
 Spell Level      : 48
@@ -5046,7 +5046,7 @@ Effects          :
                    Affected Spells: Fire Blast (108853)
 Description      : Fire Blast now has ${$s1+1} charges.
 
-Name             : Fire Blast (Rank 2) (id=231568) [Spell Family (3), Passive] 
+Name             : Fire Blast (rank=Rank 2) (id=231568) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Nature
 Spell Level      : 18
@@ -5064,7 +5064,7 @@ Effects          :
                    Affected Spells: Fire Blast (108853)
 Description      : Fire Blast always deals a critical strike.
 
-Name             : Shatter (Rank 2) (id=231582) [Spell Family (3), Passive] 
+Name             : Shatter (rank=Rank 2) (id=231582) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Frost
 Spell Level      : 36
@@ -5081,7 +5081,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 Description      : Shatter increases your chance to deal a ritical strike by an additional $s1%.
 
-Name             : Brain Freeze (Rank 2) (id=231584) [Spell Family (3), Passive] 
+Name             : Brain Freeze (rank=Rank 2) (id=231584) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Frost
 Spell Level      : 48
@@ -5100,7 +5100,7 @@ Description      : Brain Freeze causes your next Flurry to  apply Winter's Chill
 
 Winter's Chill causes the target to take damage from your spells as if it were frozen.
 
-Name             : Freeze (Pet) (id=231596) [Spell Family (3), Passive] 
+Name             : Freeze (rank=Pet) (id=231596) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Frost
 Spell Level      : 32
@@ -5120,7 +5120,7 @@ Description      : Your Water Elemental can now cast Freeze:
 $@spellicon33395 $@spellname33395
 $@spelldesc33395
 
-Name             : Critical Mass (Rank 2) (id=231630) [Spell Family (3), Passive] 
+Name             : Critical Mass (rank=Rank 2) (id=231630) [Spell Family (3), Passive] 
 Class            : Fire Mage
 School           : Fire
 Spell Level      : 65
@@ -5483,7 +5483,7 @@ Effects          :
                    Affected Spells: Clearcasting (277726)
 Description      : When Clearcast, Arcane Missiles fires $s2 additional $lmissile:missiles;.
 
-Name             : Blizzard (Rank 2) (id=236662) [Spell Family (3), Passive] 
+Name             : Blizzard (rank=Rank 2) (id=236662) [Spell Family (3), Passive] 
 Class            : Frost Mage
 School           : Frost
 Spell Level      : 63
@@ -5793,7 +5793,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
-Name             : Light's Judgment (Racial) (id=255647) [Scaling Spell (-6)] 
+Name             : Light's Judgment (rank=Racial) (id=255647) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5815,7 +5815,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards after 3 sec.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Holy Resistance (Racial Passive) (id=255651) [Passive] 
+Name             : Holy Resistance (rank=Racial Passive) (id=255651) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5832,7 +5832,7 @@ Effects          :
                    Base Value: -1 | Scaled Value: -1 | Misc Value: 0x2 | Target: Self (1)
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
-Name             : Light's Reckoning (Racial Passive) (id=255652) [Passive] 
+Name             : Light's Reckoning (rank=Racial Passive) (id=255652) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -5849,7 +5849,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 256896 | Target: Self (1)
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
-Name             : Demonbane (Racial Passive) (id=255653) [Passive] 
+Name             : Demonbane (rank=Racial Passive) (id=255653) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
@@ -5866,7 +5866,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 4 | Target: Self (1)
 Description      : Experience gains from killing Demons increased by $s1%.
 
-Name             : Light's Judgment (Racial) (id=256893) [Scaling Spell (-6)] 
+Name             : Light's Judgment (rank=Racial) (id=256893) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5888,7 +5888,7 @@ Effects          :
 Description      : Call down a strike of Holy energy, dealing $<damage> Holy damage to enemies within $A1 yards.
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
-Name             : Light's Reckoning (Racial Passive) (id=256896) [Scaling Spell (-6)] 
+Name             : Light's Reckoning (rank=Racial Passive) (id=256896) [Scaling Spell (-6)] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
@@ -5976,7 +5976,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Unknown(87)
 Description      : Hurls a Phoenix that deals $s1 Fire damage to the target and splashes $257542s2 Fire damage to other nearby enemies. Always deals a critical strike.
 
-Name             : Phoenix Flames (Artifact) (id=257542) [Spell Family (3)] 
+Name             : Phoenix Flames (rank=Artifact) (id=257542) [Spell Family (3)] 
 Class            : Mage
 School           : Fire
 Range            : 100 yards
@@ -6528,7 +6528,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 52.87 (avg=0.17) | Trigger Spell: 272969 | Target: Self (1)
 Description      : Ice Lance deals an additional $s1 damage to enemies recently damaged by your Frozen Orb.
 
-Name             : Ruinous Bolt (Drustvar) (id=273150) [Scaling Spell (-1), Passive] 
+Name             : Ruinous Bolt (rank=Drustvar) (id=273150) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 156
@@ -6600,7 +6600,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30
 Description      : Consuming Brain Freeze has a $s2% chance to make your next non-instant Flurry cast within $273347d deal an additional $s1 damage per hit.
 
-Name             : Meticulous Scheming (Tiragarde Sound) (id=273682) [Scaling Spell (-1), Passive] 
+Name             : Meticulous Scheming (rank=Tiragarde Sound) (id=273682) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 192
@@ -6624,7 +6624,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 224.1442 (avg=0.720721) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you Meticulous Scheming for $273685d, which transforms into Seize the Moment! after you cast $s3 different spells, granting you $s4 Haste for $273714d.
 
-Name             : Rezan's Fury (Zuldazar) (id=273790) [Scaling Spell (-1), Passive] 
+Name             : Rezan's Fury (rank=Zuldazar) (id=273790) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 157
@@ -6643,7 +6643,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
-Name             : Blightborne Infusion (Drustvar) (id=273823) [Scaling Spell (-7), Passive] 
+Name             : Blightborne Infusion (rank=Drustvar) (id=273823) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 193
@@ -6660,7 +6660,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=1.2) | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul increases your Critical Strike by $s1.
 
-Name             : Secrets of the Deep (Stormsong Valley) (id=273829) [Scaling Spell (-1), Passive] 
+Name             : Secrets of the Deep (rank=Stormsong Valley) (id=273829) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 195
@@ -6681,7 +6681,7 @@ Description      : Your spells and abilities have a chance to create a Surging D
 
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
-Name             : Filthy Transfusion (Nazmir) (id=273834) [Scaling Spell (-1), Passive] 
+Name             : Filthy Transfusion (rank=Nazmir) (id=273834) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 194
@@ -6817,7 +6817,7 @@ Effects          :
 Description      : $@spelldesc236628
 Tooltip          : Arcane Missiles fires $236628s1 additional $lmissile:missiles;.
 
-Name             : Polymorph (Direhorn) (id=277787) [Spell Family (3)] 
+Name             : Polymorph (rank=Direhorn) (id=277787) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=191845)
@@ -6847,7 +6847,7 @@ Description      : Transforms the enemy into a baby direhorn, wandering around i
 Only works on Beasts, Humanoids and Critters.$?s56382[ When critters are affected, can affect multiple targets, and has a duration of 1 day.][]
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
-Name             : Polymorph (Bumblebee) (id=277792) [Spell Family (3)] 
+Name             : Polymorph (rank=Bumblebee) (id=277792) [Spell Family (3)] 
 Class            : Mage
 School           : Arcane
 Resource         : 4% Base Mana (0) (id=191847)
@@ -7166,7 +7166,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 688.8893 (avg=2.215078) | Trigger Spell: 280173 | Target: Self (1)
 Description      : When you $?s212653[Shimmer][Blink], heal for $s1 every $280177t1 sec for $280177d.
 
-Name             : Barrage Of Many Bombs (Goblin Engineering) (id=280163) [Scaling Spell (-1), Passive] 
+Name             : Barrage Of Many Bombs (rank=Goblin Engineering) (id=280163) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -7195,7 +7195,7 @@ Description      : Your spells and abilities have a chance to fire a bomb at you
 
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
-Name             : Ricocheting Inflatable Pyrosaw (Goblin Engineering) (id=280168) [Passive] 
+Name             : Ricocheting Inflatable Pyrosaw (rank=Goblin Engineering) (id=280168) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -7224,7 +7224,7 @@ Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, 
 
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
-Name             : Auto-Self-Cauterizer (Goblin Engineering) (id=280172) [Scaling Spell (-8), Passive] 
+Name             : Auto-Self-Cauterizer (rank=Goblin Engineering) (id=280172) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -7253,7 +7253,7 @@ Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 *Efficacy may vary.
 
-Name             : Synaptic Spark Capacitor (Gnomish Engineering) (id=280174) [Spell Family (7), Passive] 
+Name             : Synaptic Spark Capacitor (rank=Gnomish Engineering) (id=280174) [Spell Family (7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -7278,7 +7278,7 @@ Description      : Your spells and abilities have a chance to cause the target t
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
-Name             : Relational Normalization Gizmo (Gnomish Engineering) (id=280178) [Scaling Spell (-1), Passive] 
+Name             : Relational Normalization Gizmo (rank=Gnomish Engineering) (id=280178) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Internal Cooldown: 10 seconds
@@ -7304,7 +7304,7 @@ Description      : Your spells and abilities have a chance to grow or shrink the
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
-Name             : Personal Absorb-o-Tron (Gnomish Engineering) (id=280181) [Passive] 
+Name             : Personal Absorb-o-Tron (rank=Gnomish Engineering) (id=280181) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Internal Cooldown: 60 seconds
@@ -7330,7 +7330,7 @@ Description      : Taking damage has a chance to call your Personal Absorb-o-Tro
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
-Name             : Dagger in the Back (Tiragarde Sound) (id=280284) [Scaling Spell (-1), Passive] 
+Name             : Dagger in the Back (rank=Tiragarde Sound) (id=280284) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 479
@@ -7350,7 +7350,7 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
 
-Name             : Thunderous Blast (Vol'dun) (id=280380) [Scaling Spell (-8), Passive] 
+Name             : Thunderous Blast (rank=Vol'dun) (id=280380) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 482
@@ -7370,7 +7370,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
 
-Name             : Tidal Surge (Stormsong Valley) (id=280402) [Scaling Spell (-1), Passive] 
+Name             : Tidal Surge (rank=Stormsong Valley) (id=280402) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Frost
 Azerite Power Id : 478
@@ -7387,7 +7387,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 827.733 (avg=2.661521) | Trigger Spell: 280403 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to release a tidal surge, dealing $s1 Frost damage to your target and slowing their movement speed by $280404s2% for $280404d.
 
-Name             : Blood Rite (Nazmir) (id=280407) [Scaling Spell (-7), Passive] 
+Name             : Blood Rite (rank=Nazmir) (id=280407) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 480
@@ -7405,7 +7405,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=1.129518) | Trigger Spell: 280408 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $280409d. Killing an enemy refreshes the duration of this effect.
 
-Name             : Incite the Pack (Zuldazar) (id=280410) [Scaling Spell (-1), Passive] 
+Name             : Incite the Pack (rank=Zuldazar) (id=280410) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 481
@@ -7427,7 +7427,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : You occasionally loose a tremendous roar, increasing your Mastery by $s1 and granting $s2 Mastery to up to $280413i nearby allies. Lasts $280412d.
 
-Name             : Swirling Sands (Vol'dun) (id=280429) [Scaling Spell (-7), Passive] 
+Name             : Swirling Sands (rank=Vol'dun) (id=280429) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 196
@@ -7448,7 +7448,7 @@ Effects          :
                    Base Value: 6000 | Scaled Value: 6000
 Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
 
-Name             : Archive of the Titans (Uldir) (id=280555) [Scaling Spell (-1), Passive] 
+Name             : Archive of the Titans (rank=Uldir) (id=280555) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 483
@@ -7467,7 +7467,7 @@ Description      : Your armor gathers and analyzes combat data every $280708t1 s
 
 Enables $@spellname280573 within Uldir.
 
-Name             : Laser Matrix (Uldir) (id=280559) [Scaling Spell (-8), Passive] 
+Name             : Laser Matrix (rank=Uldir) (id=280559) [Scaling Spell (-8), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 485
@@ -7488,7 +7488,7 @@ Description      : Your spells and abilities have a chance to release a barrage 
 
 Enables $@spellname280573 within Uldir.
 
-Name             : Glory in Battle (Horde) (id=280577) [Scaling Spell (-7), Passive] 
+Name             : Glory in Battle (rank=Horde) (id=280577) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 486
@@ -7508,7 +7508,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
-Name             : Retaliatory Fury (Horde) (id=280579) [Scaling Spell (-1), Passive] 
+Name             : Retaliatory Fury (rank=Horde) (id=280579) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 487
@@ -7529,7 +7529,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
-Name             : Combined Might (Horde) (id=280580) [Scaling Spell (-1), Passive] 
+Name             : Combined Might (rank=Horde) (id=280580) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 490
@@ -7549,7 +7549,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
 
-Name             : Collective Will (Horde) (id=280581) [Scaling Spell (-1), Passive] 
+Name             : Collective Will (rank=Horde) (id=280581) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 491
@@ -7569,7 +7569,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1866 (avg=6) | Target: Self (1)
 Description      : Your abilities have a chance to drop a Horde Banner for $280830d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
-Name             : Battlefield Focus (Horde) (id=280582) [Scaling Spell (-8), Passive] 
+Name             : Battlefield Focus (rank=Horde) (id=280582) [Scaling Spell (-8), Passive] 
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
@@ -7592,7 +7592,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Your abilities have a chance to apply $s2 stacks of Battlefield Focus to an enemy, increasing damage taken from members of the Horde by $s1. Applying Battlefield Focus to a member of the Alliance grants an additional $s3 stacks. 
 
-Name             : Sylvanas' Resolve (Horde) (id=280598) [Scaling Spell (-1), Passive] 
+Name             : Sylvanas' Resolve (rank=Horde) (id=280598) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 489
@@ -7612,7 +7612,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280810 | Target: Self (1)
 Description      : Your abilities have a chance to increase your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 for $280809d. If an ally dies nearby, you gain this effect.
 
-Name             : Liberator's Might (Alliance) (id=280623) [Scaling Spell (-7), Passive] 
+Name             : Liberator's Might (rank=Alliance) (id=280623) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 492
@@ -7632,7 +7632,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
-Name             : Last Gift (Alliance) (id=280624) [Scaling Spell (-1), Passive] 
+Name             : Last Gift (rank=Alliance) (id=280624) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 493
@@ -7653,7 +7653,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
-Name             : Stronger Together (Alliance) (id=280625) [Scaling Spell (-1), Passive] 
+Name             : Stronger Together (rank=Alliance) (id=280625) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 496
@@ -7673,7 +7673,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
 
-Name             : Stand As One (Alliance) (id=280626) [Scaling Spell (-1), Passive] 
+Name             : Stand As One (rank=Alliance) (id=280626) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 497
@@ -7693,7 +7693,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1866 (avg=6) | Target: Self (1)
 Description      : Your abilities have a chance to drop an Alliance Banner for $280858d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
-Name             : Battlefield Precision (Alliance) (id=280627) [Scaling Spell (-8), Passive] 
+Name             : Battlefield Precision (rank=Alliance) (id=280627) [Scaling Spell (-8), Passive] 
 Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
@@ -7716,7 +7716,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Your abilities have a chance to apply $s2 stacks of Battlefield Focus to an enemy, increasing damage taken from members of the Alliance by $s1. Applying Battlefield Focus to a member of the Horde grants an additional $s3 stacks. 
 
-Name             : Anduin's Dedication (Alliance) (id=280628) [Scaling Spell (-1), Passive] 
+Name             : Anduin's Dedication (rank=Alliance) (id=280628) [Scaling Spell (-1), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 495
@@ -7790,7 +7790,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 172.3948 (avg=0.554324) | Trigger Spell: 281515 | Target: Self (1)
 Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
 
-Name             : Tradewinds (Tiragarde Sound) (id=281841) [Scaling Spell (-7), Passive] 
+Name             : Tradewinds (rank=Tiragarde Sound) (id=281841) [Scaling Spell (-7), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 505
