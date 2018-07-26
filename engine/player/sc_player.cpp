@@ -3983,10 +3983,24 @@ void player_t::combat_end()
   // target_error option, some data to estimate the target error can be missed (in the main thread).
   // In turn, lazily finding the parent actor here ensures that the performance hit on the init
   // process is minimal (no need for locks).
-  if ( parent == nullptr && !is_pet() && !is_enemy() && sim->parent != nullptr && sim->parent->initialized == true &&
-       sim->thread_index > 0 )
+  if ( parent == nullptr && !is_pet() && !is_enemy() && sim->parent != nullptr &&
+      sim->parent->initialized == true && sim->thread_index > 0 )
   {
-    parent = sim->parent->find_player( name() );
+    // NOTE NOTE NOTE: This search can no longer be run based on find_player() because it uses
+    // actor_list. Ever since pet_spawner support, the actor_list of the parent sim can (and will)
+    // change during run-time. This can cause iterator breakage (vector capacity increase), causing
+    // a crash.
+    //
+    // Since the parent actor is only necessary for real player characters, we can instead look at
+    // player_no_pet_list, which is guaranteed to be static after initialization (for now ...).
+    auto it = range::find_if( sim->parent->player_no_pet_list, [ this ]( const player_t* p ) {
+      return name_str == p->name_str;
+    } );
+
+    if ( it != sim->parent->player_no_pet_list.end() )
+    {
+      parent = *it;
+    }
   }
 }
 
