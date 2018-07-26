@@ -8039,6 +8039,7 @@ public:
   virtual void html_customsection( report::sc_html_stream& ) override
   {
     // Custom Class Section can be added here
+    ( void )p;
   }
 private:
   rogue_t& p;
