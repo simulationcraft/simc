@@ -822,7 +822,9 @@ void dreadstalker_t::demise() {
 
 timespan_t dreadstalker_t::available() const
 {
-  return expiration -> remains() + timespan_t::from_millis( 1 );
+  // Dreadstalker does not need to wake up to check for something to do after it has travelled and
+  // done it's dreadbite
+  return sim -> expected_iteration_time * 2;
 }
 
 action_t* dreadstalker_t::create_action(const std::string& name, const std::string& options_str)
