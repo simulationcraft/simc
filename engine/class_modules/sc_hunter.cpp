@@ -4627,6 +4627,12 @@ void hunter_td_t::target_demise()
     p -> current_hunters_mark_target = nullptr;
   }
 
+  if ( p -> talents.terms_of_engagement -> ok() && damaged )
+  {
+    p -> sim -> print_debug( "{} harpoon cooldown reset on damaged target death.", p -> name() );
+    p -> cooldowns.harpoon -> reset( true );
+  }
+
   damaged = false;
   helbrined = false;
 }
@@ -5306,7 +5312,7 @@ void hunter_t::init_assessors()
 {
   player_t::init_assessors();
 
-  if ( specialization() == HUNTER_MARKSMANSHIP )
+  if ( specialization() == HUNTER_MARKSMANSHIP || talents.terms_of_engagement -> ok() )
   {
     assessor_out_damage.add( assessor::TARGET_DAMAGE - 1, [this]( dmg_e, action_state_t* s ) {
       if ( s -> result_amount > 0 )
