@@ -1375,4 +1375,5 @@ void dot_t::exsanguinate( double coefficient )
   time_to_tick     = new_time_to_tick;
   tick_event       = make_event<dot_tick_event_t>( *sim, this, new_tick_remains );
   end_event        = make_event<dot_end_event_t>( *sim, this, new_dot_remains );
+  recalculate_num_ticks();
 }
