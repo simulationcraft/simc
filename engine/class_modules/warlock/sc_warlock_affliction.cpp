@@ -188,12 +188,10 @@ namespace warlock
 
       bool ready() override
       {
-        if (p()->talents.drain_soul->ok())
-        {
+        if ( p()->talents.drain_soul->ok() )
           return false;
-        }
 
-        return spell_t::ready();
+        return affliction_spell_t::ready();
       }
 
       void impact(action_state_t* s) override
