@@ -511,12 +511,6 @@ unsigned item_t::item_level() const
   {
     ilvl = parsed.item_level;
   }
-  // If azerite level is defined as an option for an item, use the azerite level to item level
-  // conversion
-  else if ( parsed.azerite_level > 0 )
-  {
-    ilvl = player -> dbc.azerite_item_level( parsed.azerite_level );
-  }
   // Otherwise, normal ilevel processing (base ilevel + upgrade ilevel + artifact ilevel increase)
   else
   {
