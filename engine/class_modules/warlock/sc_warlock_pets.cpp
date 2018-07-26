@@ -794,7 +794,7 @@ void dreadstalker_t::init_base_stats()
   warlock_pet_t::init_base_stats();
   resources.base[RESOURCE_ENERGY] = 0;
   resources.base_regen_per_second[RESOURCE_ENERGY] = 0;
-  melee_attack = new warlock_pet_melee_t( this, 0.8 );
+  melee_attack = new warlock_pet_melee_t( this, 0.83 );
 }
 
 void dreadstalker_t::arise()
