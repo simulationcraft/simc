@@ -840,7 +840,7 @@ struct bile_spit_t : public warlock_pet_spell_t
   bile_spit_t( warlock_pet_t* p ) :
     warlock_pet_spell_t( "bile_spit", p, p -> find_spell( 267997 ) )
   {
-    tick_may_crit = true;
+    tick_may_crit = false;
     hasted_ticks = false;
   }
 };
