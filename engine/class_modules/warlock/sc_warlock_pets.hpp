@@ -65,6 +65,13 @@ struct warlock_pet_t : public pet_t
   warlock_t* o();
   const warlock_t* o() const;
 
+  virtual void arise() override
+  {
+    if( melee_attack )
+      melee_attack->reset();
+    pet_t::arise();
+  }
+
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic );
 
   struct travel_t : public action_t
@@ -172,6 +179,8 @@ public:
 
 struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
 {
+  bool first;
+
   struct off_hand_swing : public warlock_pet_action_t<melee_attack_t>
   {
     off_hand_swing( warlock_pet_t* p, double wm, const char* name = "melee_oh" ) :
@@ -207,8 +216,29 @@ struct warlock_pet_melee_t : public warlock_pet_action_t<melee_attack_t>
     return m;
   }
 
+  void reset() override
+  {
+    warlock_pet_action_t::reset();
+
+    first = true;
+  }
+
+  virtual timespan_t execute_time() const override
+  {
+    timespan_t t = warlock_pet_action_t::execute_time();
+    if (first)
+    {
+      return timespan_t::zero();
+    }
+    return t;
+  }
+
   void execute() override
   {
+    if (first)
+    {
+      first = false;
+    }
     if ( !player->executing && !player->channeling )
     {
       melee_attack_t::execute();
