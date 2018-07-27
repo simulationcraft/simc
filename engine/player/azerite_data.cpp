@@ -538,6 +538,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 267665, special_effects::lifespeed             );
   unique_gear::register_special_effect( 267879, special_effects::on_my_way             );
   unique_gear::register_special_effect( 280710, special_effects::champion_of_azeroth   );
+  unique_gear::register_special_effect( 279899, special_effects::unstable_flames       );
 }
 } // Namespace azerite ends
 
@@ -679,6 +680,29 @@ void champion_of_azeroth( special_effect_t& effect )
     -> add_stat( STAT_VERSATILITY_RATING, amount )
     -> add_stat( STAT_MASTERY_RATING, amount )
     -> add_stat( STAT_HASTE_RATING, amount );
+
+  // Replace the driver spell, the azerite power does not hold the RPPM value
+  effect.spell_id = driver -> id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void unstable_flames( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( ! power.enabled() )
+    return;
+
+  const double amount = power.value();
+  const spell_data_t* driver = effect.player -> find_spell( 279900 );
+  const spell_data_t* spell = effect.player -> find_spell( 279902 );
+
+  effect.custom_buff = buff_t::find( effect.player, "unstable_flames" );
+  if ( !effect.custom_buff )
+  {
+    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "unstable_flames", spell )
+      -> add_stat( STAT_CRIT_RATING, amount );
+  }
 
   // Replace the driver spell, the azerite power does not hold the RPPM value
   effect.spell_id = driver -> id();
