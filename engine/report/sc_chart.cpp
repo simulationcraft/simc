@@ -76,6 +76,16 @@ struct filter_waiting_stats
   }
 };
 
+bool compare_stats_by_mean( const stats_t* l, const stats_t* r )
+{
+  if ( l->actual_amount.mean() == r->actual_amount.mean() )
+  {
+    return l->name_str < r->name_str;
+  }
+
+  return l->actual_amount.mean() > r->actual_amount.mean();
+}
+
 void add_color_data( sc_js_t& data,
                      const std::vector<const player_t*>& player_list )
 {
@@ -378,10 +388,13 @@ struct player_list_comparator_t
         return true;
     }
 
+    double rv, lv;
     switch ( value_ )
     {
       case VALUE_MEAN:
-        return d_p1->mean() > d_p2->mean();
+        lv = d_p1->mean();
+        rv = d_p2->mean();
+        break;
       // This is going to be slow.
       case VALUE_BURST_MAX:
       {
@@ -392,20 +405,26 @@ struct player_list_comparator_t
 
         if ( metric_ == METRIC_DPS )
         {
-          return compute_player_burst_max( p1->collected_data.timeline_dmg ) >
-                 compute_player_burst_max( p2->collected_data.timeline_dmg );
+          lv = compute_player_burst_max( p1->collected_data.timeline_dmg );
+          rv = compute_player_burst_max( p2->collected_data.timeline_dmg );
         }
         else
         {
-          return compute_player_burst_max(
-                     p1->collected_data.timeline_dmg_taken ) >
-                 compute_player_burst_max(
-                     p2->collected_data.timeline_dmg_taken );
+          lv = compute_player_burst_max( p1->collected_data.timeline_dmg_taken );
+          rv = compute_player_burst_max( p2->collected_data.timeline_dmg_taken );
         }
+        break;
       }
       default:
         return true;
     }
+
+    if ( lv == rv )
+    {
+      return p1->actor_index < p2->actor_index;
+    }
+
+    return lv > rv;
   }
 };
 
@@ -445,6 +464,11 @@ bool chart::generate_raid_downtime( highchart::bar_chart_t& bc,
   }
 
   range::sort( players, []( const player_t* l, const player_t* r ) {
+    if ( l->collected_data.waiting_time.mean() == r->collected_data.waiting_time.mean() )
+    {
+      return l->actor_index < r->actor_index;
+    }
+
     return l->collected_data.waiting_time.mean() >
            r->collected_data.waiting_time.mean();
   } );
@@ -737,6 +761,11 @@ bool chart::generate_gains( highchart::pie_chart_t& pc, const player_t& p,
       [type]( const gain_t* gain ) { return gain->actual[ type ] > 0; } );
 
   range::sort( gains_list, []( const gain_t* l, const gain_t* r ) {
+    if ( l->actual == r->actual )
+    {
+      return l->name_str < r->name_str;
+    }
+
     return l->actual > r->actual;
   } );
 
@@ -794,6 +823,10 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
 
   range::sort( filtered_waiting_stats,
                []( const stats_t* l, const stats_t* r ) {
+                 if ( l->total_time == r->total_time )
+                 {
+                   return l->name_str < r->name_str;
+                 }
                  return l->total_time > r->total_time;
                } );
 
@@ -909,9 +942,7 @@ bool chart::generate_damage_stats_sources( highchart::pie_chart_t& chart,
                     stats_filter );
   }
 
-  range::sort( stats_list, []( const stats_t* l, const stats_t* r ) {
-    return l->actual_amount.mean() > r->actual_amount.mean();
-  } );
+  range::sort( stats_list, compare_stats_by_mean );
 
   if ( stats_list.empty() )
     return false;
@@ -952,9 +983,7 @@ bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart,
   if ( stats_list.empty() )
     return false;
 
-  range::sort( stats_list, []( const stats_t* l, const stats_t* r ) {
-    return l->actual_amount.mean() > r->actual_amount.mean();
-  } );
+  range::sort( stats_list, compare_stats_by_mean );
 
   generate_stats_sources( chart, p, p.name_str + " Healing Sources",
                           stats_list );
@@ -1008,8 +1037,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
     std::string series_id_str = util::to_string( series_idx++ );
 
     // Sort list of actors in the chart based on the value metric (and metric)
-    std::sort( player_list.begin(), player_list.end(),
-               player_list_comparator_t( chart_metric, vm ) );
+    range::sort( player_list, player_list_comparator_t( chart_metric, vm ) );
     double lowest_value = get_data_value( player_list.back() -> collected_data, chart_metric, vm );
 
     bool candlebars = false;
@@ -1278,6 +1306,10 @@ bool chart::generate_raid_dpet( highchart::bar_chart_t& bc, const sim_t& s )
                            filter_stats_dpet( *player ) );
   }
   range::sort( stats_list, []( const stats_t* l, const stats_t* r ) {
+    if ( l->apet == r->apet )
+    {
+      return l->name_str < r->name_str;
+    }
     return l->apet > r->apet;
   } );
 
@@ -1369,6 +1401,10 @@ bool chart::generate_action_dpet( highchart::bar_chart_t& bc,
   range::remove_copy_if( p.stats_list, back_inserter( stats_list ),
                          filter_stats_dpet( p ) );
   range::sort( stats_list, []( const stats_t* l, const stats_t* r ) {
+    if ( l->apet == r->apet )
+    {
+      return l->name_str < r->name_str;
+    }
     return l->apet > r->apet;
   } );
 

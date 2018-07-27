@@ -1213,7 +1213,13 @@ struct compare_dps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return l -> collected_data.dps.mean() > r -> collected_data.dps.mean();
+    double lv = l->collected_data.dps.mean(), rv = r->collected_data.dps.mean();
+    if ( lv == rv )
+    {
+      return l->actor_index < r->actor_index;
+    }
+
+    return lv > rv;
   }
 };
 
@@ -1223,7 +1229,13 @@ struct compare_priority_dps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return l -> collected_data.prioritydps.mean() > r -> collected_data.prioritydps.mean();
+    double lv = l->collected_data.prioritydps.mean(), rv = r->collected_data.prioritydps.mean();
+    if ( lv == rv )
+    {
+      return l->actor_index < r->actor_index;
+    }
+
+    return lv > rv;
   }
 };
 
@@ -1233,8 +1245,20 @@ struct compare_apm
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return ( l -> collected_data.fight_length.mean() ? 60.0 * l -> collected_data.executed_foreground_actions.mean() / l -> collected_data.fight_length.mean() : 0 ) >
-      ( r -> collected_data.fight_length.mean() ? 60.0 * r -> collected_data.executed_foreground_actions.mean() / r -> collected_data.fight_length.mean() : 0 );
+    double lv = l->collected_data.fight_length.mean()
+      ? 60.0 * l->collected_data.executed_foreground_actions.mean() / l->collected_data.fight_length.mean()
+      : 0.0;
+
+    double rv = r->collected_data.fight_length.mean()
+      ? 60.0 * r->collected_data.executed_foreground_actions.mean() / r->collected_data.fight_length.mean()
+      : 0.0;
+
+    if ( lv == rv )
+    {
+      return l->actor_index < r->actor_index;
+    }
+
+    return lv > rv;
   }
 };
 
@@ -1244,7 +1268,13 @@ struct compare_hps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return l -> collected_data.hps.mean() > r -> collected_data.hps.mean();
+    double lv = l->collected_data.hps.mean(), rv = r->collected_data.hps.mean();
+    if ( lv == rv )
+    {
+      return l->actor_index < r->actor_index;
+    }
+
+    return lv > rv;
   }
 };
 
@@ -1254,7 +1284,14 @@ struct compare_hps_plus_aps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return ( l -> collected_data.hps.mean() + l -> collected_data.aps.mean() ) > ( r -> collected_data.hps.mean() + r -> collected_data.aps.mean() );
+    double lv = l->collected_data.hps.mean() + l->collected_data.aps.mean(),
+           rv = r->collected_data.hps.mean() + r->collected_data.aps.mean();
+    if ( lv == rv )
+    {
+      return l->actor_index < r->actor_index;
+    }
+
+    return lv > rv;
   }
 };
 
@@ -1264,7 +1301,13 @@ struct compare_dtps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return l -> collected_data.dtps.mean() < r -> collected_data.dtps.mean();
+    double lv = l->collected_data.dtps.mean(), rv = r->collected_data.dtps.mean();
+    if ( lv == rv )
+    {
+      return l->actor_index < r->actor_index;
+    }
+
+    return lv > rv;
   }
 };
 
@@ -1274,7 +1317,14 @@ struct compare_tmi
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return l -> collected_data.theck_meloree_index.mean() < r -> collected_data.theck_meloree_index.mean();
+    double lv = l->collected_data.theck_meloree_index.mean(),
+           rv = r->collected_data.theck_meloree_index.mean();
+    if ( lv == rv )
+    {
+      return l->actor_index < r->actor_index;
+    }
+
+    return lv > rv;
   }
 };
 
@@ -2562,7 +2612,7 @@ void sim_t::analyze_iteration_data()
     return;
   }
 
-  std::sort( iteration_data.begin(), iteration_data.end(), iteration_data_cmp_r );
+  range::sort( iteration_data, iteration_data_cmp_r );
 
   size_t min_entries = ( min_report_iteration_data == -1 ) ? 5 : static_cast<size_t>( min_report_iteration_data );
   double n_pct = report_iteration_data / ( report_iteration_data > 1 ? 100.0 : 1.0 );

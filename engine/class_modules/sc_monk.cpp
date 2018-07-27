@@ -7487,8 +7487,14 @@ std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
       return false;
     }
 
-    // Both have cyclone strike, order by remaining duration
-    return lcs -> remains() < rcs -> remains();
+    // Both have cyclone strike, order by remaining duration, use actor index as a tiebreaker
+    timespan_t lv = lcs -> remains(), rv = rcs -> remains();
+    if ( lv == rv )
+    {
+      return l->actor_index < r->actor_index;
+    }
+
+    return lv < rv;
   } );
 
   if ( sim -> debug )

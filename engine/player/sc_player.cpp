@@ -2557,7 +2557,7 @@ void player_t::init_finished()
     }
   }
 
-  std::sort( resource_thresholds.begin(), resource_thresholds.end() );
+  range::sort( resource_thresholds );
 
   range::for_each( cooldown_list, [this]( cooldown_t* c ) {
     if ( c->hasted )
@@ -5626,7 +5626,13 @@ void account_blessing_of_sacrifice( player_t& p, action_state_t* s )
 
 bool absorb_sort( absorb_buff_t* a, absorb_buff_t* b )
 {
-  return a->current_value < b->current_value;
+  double lv = a->current_value, rv = a->current_value;
+  if ( lv == rv )
+  {
+    return a->name_str < b->name_str;
+  }
+
+  return lv < rv;
 }
 
 void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
@@ -5717,7 +5723,7 @@ void account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
     // Second, we handle any low priority absorbs. These absorbs obey the rule of "smallest first".
 
     // Sort the absorbs by size, then we can loop through them in order.
-    std::sort( p.absorb_buff_list.begin(), p.absorb_buff_list.end(), absorb_sort );
+    range::sort( p.absorb_buff_list, absorb_sort );
     size_t offset = 0;
 
     while ( offset < p.absorb_buff_list.size() && s->result_amount > 0 && !p.absorb_buff_list.empty() )

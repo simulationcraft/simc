@@ -4867,8 +4867,8 @@ void apply_spell_labels( const spell_data_t* spell, action_t* a )
 
 void unique_gear::sort_special_effects()
 {
-  std::sort( __special_effect_db.begin(), __special_effect_db.end(), cmp_special_effect );
-  std::sort( __fallback_effect_db.begin(), __fallback_effect_db.end(), cmp_special_effect );
+  range::sort( __special_effect_db, cmp_special_effect );
+  range::sort( __fallback_effect_db, cmp_special_effect );
 }
 
 // Apply all label-based modifiers to an action, if the associated spell data for the application ha

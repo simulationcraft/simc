@@ -1167,7 +1167,14 @@ inline void runes_t::regenerate_immediate( const timespan_t& seconds )
 
   // Sort regenerating runes by ascending remaining time
   range::sort( regenerating_runes, []( const rune_t* l, const rune_t* r ) {
-    return l -> event -> remains() < r -> event -> remains();
+    timespan_t lv = l -> event -> remains(), rv = r -> event -> remains();
+    // Use pointers as tiebreaker
+    if ( lv == rv )
+    {
+      return l < r;
+    }
+
+    return lv < rv;
   } );
 
   timespan_t seconds_left = seconds;
@@ -1258,7 +1265,14 @@ timespan_t runes_t::time_to_regen( unsigned n_runes ) const
 
   // Sort by ascending remaining time
   range::sort( regenerating_runes, []( const rune_t* l, const rune_t* r ) {
-    return l -> event -> remains() < r -> event -> remains();
+    timespan_t lv = l -> event -> remains(), rv = r -> event -> remains();
+    // Use pointers as tiebreaker
+    if ( lv == rv )
+    {
+      return l < r;
+    }
+
+    return lv < rv;
   } );
 
   // Number of unsatisfied runes

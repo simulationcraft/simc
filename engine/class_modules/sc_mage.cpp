@@ -5435,7 +5435,17 @@ struct ignite_spread_event_t : public event_t
 
   static bool ignite_compare ( dot_t* a, dot_t* b )
   {
-    return ignite_bank( a ) > ignite_bank( b );
+    double lv = ignite_bank( a ), rv = ignite_bank( b );
+    if ( lv == rv )
+    {
+      timespan_t lr = a->remains(), rr = b->remains();
+      if ( lr == rr )
+      {
+        return a < b;
+      }
+      return lr > rr;
+    }
+    return lv > rv;
   }
 
   ignite_spread_event_t( mage_t& m, timespan_t delta_time ) :
@@ -5480,7 +5490,7 @@ struct ignite_spread_event_t : public event_t
     }
 
     // Sort active ignites by descending bank size
-    std::sort( active_ignites.begin(), active_ignites.end(), ignite_compare );
+    range::sort( active_ignites, ignite_compare );
 
     // Loop over active ignites:
     // - Pop smallest ignite for spreading

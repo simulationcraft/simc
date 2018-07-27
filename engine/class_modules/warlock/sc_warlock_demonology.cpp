@@ -658,17 +658,26 @@ namespace warlock {
       {
         demonology_spell_t::execute();
 
-        struct lower_energy
-        {
-          inline bool operator() (const pets::demonology::wild_imp_pet_t* imp1, const pets::demonology::wild_imp_pet_t* imp2)
-          {
-            return (imp1->resources.current[RESOURCE_ENERGY] > imp2->resources.current[RESOURCE_ENERGY]);
-          }
-        };
-
         auto imps = p() -> warlock_pet_list.wild_imps.active_pets();
 
-        std::sort(imps.begin(), imps.end(), lower_energy());
+        range::sort( imps, []( const pets::demonology::wild_imp_pet_t* imp1,
+                               const pets::demonology::wild_imp_pet_t* imp2 ) {
+            double lv = imp1->resources.current[ RESOURCE_ENERGY ],
+                   rv = imp2->resources.current[ RESOURCE_ENERGY ];
+
+            if ( lv == rv )
+            {
+              timespan_t lr = imp1->expiration->remains(), rr = imp2->expiration->remains();
+              if ( lr == rr )
+              {
+                return imp1->actor_spawn_index < imp2->actor_spawn_index;
+              }
+
+              return lr < rr;
+            }
+
+            return lv < rv;
+        } );
 
         unsigned max_imps = p()->talents.power_siphon->effectN(1).base_value();
         if(imps.size() > max_imps)

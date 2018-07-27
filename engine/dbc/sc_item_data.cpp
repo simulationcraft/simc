@@ -1576,7 +1576,7 @@ std::string dbc::bonus_ids_str( dbc_t& dbc)
     e++;
   }
 
-  std::sort( bonus_ids.begin(), bonus_ids.end() );
+  range::sort( bonus_ids );
 
   for ( size_t i = 0; i < bonus_ids.size(); ++i )
   {

@@ -350,7 +350,7 @@ spell_hotfix_entry_t& hotfix::register_spell( const std::string& group,
   auto  entry = new spell_hotfix_entry_t( group, tag, spell_id, note, flags );
   hotfixes_.push_back( entry );
 
-  std::sort( hotfixes_.begin(), hotfixes_.end(), hotfix_sorter_t() );
+  range::sort( hotfixes_, hotfix_sorter_t() );
 
   return *entry;
 }
@@ -371,7 +371,7 @@ effect_hotfix_entry_t& hotfix::register_effect( const std::string& group,
   auto  entry = new effect_hotfix_entry_t( group, tag, effect_id, note, flags );
   hotfixes_.push_back( entry );
 
-  std::sort( hotfixes_.begin(), hotfixes_.end(), hotfix_sorter_t() );
+  range::sort( hotfixes_, hotfix_sorter_t() );
 
   return *entry;
 }
@@ -392,7 +392,7 @@ power_hotfix_entry_t& hotfix::register_power( const std::string& group,
   auto  entry = new power_hotfix_entry_t( group, tag, power_id, note, flags );
   hotfixes_.push_back( entry );
 
-  std::sort( hotfixes_.begin(), hotfixes_.end(), hotfix_sorter_t() );
+  range::sort( hotfixes_, hotfix_sorter_t() );
 
   return *entry;
 }

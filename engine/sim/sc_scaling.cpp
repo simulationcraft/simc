@@ -81,12 +81,25 @@ struct compare_scale_factors
 
   bool operator()( const stat_e& l, const stat_e& r ) const
   {
+    double rv, lv;
+
     if ( normalized )
-      return player -> scaling -> scaling_normalized[ scale_metric ].get_stat( l ) >
-             player -> scaling -> scaling_normalized[ scale_metric ].get_stat( r );
+    {
+      lv = player -> scaling -> scaling_normalized[ scale_metric ].get_stat( l );
+      rv = player -> scaling -> scaling_normalized[ scale_metric ].get_stat( r );
+    }
     else
-      return player -> scaling -> scaling[ scale_metric ].get_stat( l ) >
-             player -> scaling -> scaling[ scale_metric ].get_stat( r );
+    {
+      lv = player -> scaling -> scaling[ scale_metric ].get_stat( l );
+      rv = player -> scaling -> scaling[ scale_metric ].get_stat( r );
+    }
+
+    if ( lv == rv )
+    {
+      return l < r;
+    }
+
+    return lv > rv;
   }
 };
 

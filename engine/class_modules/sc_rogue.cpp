@@ -6852,7 +6852,7 @@ expr_t* rogue_t::create_expression( const std::string& name_str )
           if ( off_hand_attack )
             attacks.push_back( oh_next_swing + i * oh_swing_time );
         }
-        std::sort( attacks.begin(), attacks.end() );
+        range::sort( attacks );
         return_value = attacks.at( remaining_aa - 1 );
       }
       else if ( main_hand_attack == nullptr )

@@ -940,7 +940,13 @@ void profilesets_t::generate_sorted_profilesets( std::vector<const profile_set_t
 
   // Sort to descending with mean value
   range::sort( out, []( const profile_set_t* l, const profile_set_t* r ) {
-    return l -> result().median() > r -> result().median();
+    double lv = l -> result().median(), rv = r -> result().median();
+    if ( lv == rv )
+    {
+      return l->name() < r->name();
+    }
+
+    return lv > rv;
   } );
 }
 
