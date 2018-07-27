@@ -1799,14 +1799,6 @@ struct base_ghoul_pet_t : public death_knight_pet_t
   {
     double reg = pet_t::resource_regen_per_second( r );
 
-    if ( r == RESOURCE_ENERGY )
-    {
-      // Army of the dead and pet ghoul energy regen double dips with haste
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/108
-      if ( o() -> bugs )
-        reg *= ( 1.0 / cache.attack_haste() );
-    }
-
     return reg;
   }
 };
@@ -1854,14 +1846,14 @@ struct dt_pet_t : public base_ghoul_pet_t
 {
   struct cooldowns_t
   {
-    cooldown_t* gnaw_smash; // shared cd between gnaw/smash and their DT'd counterparts
+    cooldown_t* gnaw; // shared cd between gnaw/smash and their DT'd counterparts
   } cooldown;
 
   dt_pet_t( death_knight_t* owner, const std::string& name ) :
     base_ghoul_pet_t( owner, name, false )
   {
-    cooldown.gnaw_smash = get_cooldown( "gnaw_smash" );
-    cooldown.gnaw_smash -> duration = find_spell( 91800 ) -> cooldown();
+    cooldown.gnaw = get_cooldown( "gnaw" );
+    cooldown.gnaw -> duration = find_spell( 91800 ) -> cooldown();
   }
 
   attack_t* create_auto_attack() override
@@ -1891,18 +1883,6 @@ struct ghoul_pet_t : public dt_pet_t
     claw_t( ghoul_pet_t* player, const std::string& options_str ) :
       super( player, "claw", player -> find_spell( 91776 ), options_str, false )
     { triggers_infected_claws = true; }
-
-    double action_multiplier() const override
-    {
-      double m = super::action_multiplier();
-
-      if ( p() -> o() -> mastery.dreadblade -> ok() )
-      {
-        m *= 1.0 + p() -> o() -> cache.mastery_value();
-      }
-
-      return m;
-    }
   };
 
   struct sweeping_claws_t : public dt_melee_ability_t<ghoul_pet_t>
@@ -1920,7 +1900,7 @@ struct ghoul_pet_t : public dt_pet_t
     gnaw_t( ghoul_pet_t* player, const std::string& options_str ) :
       super( player, "gnaw", player -> find_spell( 91800 ), options_str, false )
     {
-      cooldown = player -> get_cooldown( "gnaw_smash" );
+      cooldown = player -> get_cooldown( "gnaw" );
     }
   };
 
@@ -1929,7 +1909,7 @@ struct ghoul_pet_t : public dt_pet_t
     monstrous_blow_t( ghoul_pet_t* player, const std::string& options_str ):
       super( player, "monstrous_blow", player -> find_spell( 91797 ), options_str )
     {
-      cooldown = player -> get_cooldown( "gnaw_smash" );
+      cooldown = player -> get_cooldown( "gnaw" );
     }
   };
 
@@ -1940,7 +1920,7 @@ struct ghoul_pet_t : public dt_pet_t
   {
     dt_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = .8;
+    owner_coeff.ap_from_ap = .6;
   }
 
   void init_action_list() override
@@ -1974,7 +1954,7 @@ struct army_pet_t : public base_ghoul_pet_t
   struct army_claw_t : public pet_melee_attack_t<army_pet_t>
   {
     army_claw_t( army_pet_t* player, const std::string& options_str ) :
-      super( player, "claw", player -> find_spell( 91776 ), options_str )
+      super( player, "claw", player -> find_spell( 199373 ), options_str )
     { }
   };
 
@@ -1986,10 +1966,7 @@ struct army_pet_t : public base_ghoul_pet_t
   {
     base_ghoul_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = 0.30;
-    // 2017-01-10: Army of the Dead and apoc ghouls damage has been increased.
-    // FIXME: Exact number TBDiscovered, 33% sounds fine
-    owner_coeff.ap_from_ap *= 1.33;
+    owner_coeff.ap_from_ap = 0.4;
   }
 
   void init_action_list() override
@@ -2076,7 +2053,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   {
     death_knight_pet_t::init_base_stats();
 
-    owner_coeff.ap_from_ap = 1;
+    owner_coeff.ap_from_ap = 1.0;
   }
 
   double composite_player_multiplier( school_e s ) const override
@@ -2149,15 +2126,10 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     {
       weapon = &( player -> main_hand_weapon );
 
-      // 2016-08-06 Hotfixed to do aoe splash damage, splash multiplier currently not in spell data
+      // Risen Skulker deals twice the damage to its main target, and normal damage to the other targets
+      base_multiplier *= 2.0;
       aoe = -1;
       base_aoe_multiplier = 0.5;
-
-      // Approximate the Skulker bro's lag as 400ms mean with 50ms standard deviation. This roughly
-      // matches in game behavior around 2016-07-22.
-      // 2016-08-06 AI Lag is now gone
-      //ability_lag = timespan_t::from_millis( 400 );
-      //ability_lag_stddev = timespan_t::from_millis( 50 );
     }
   };
 
@@ -2175,7 +2147,7 @@ struct risen_skulker_pet_t : public death_knight_pet_t
     // As per Blizzard
     // 2016-08-06 Changes to pet, AP ineritance to 200% (guesstimate, based on Skulker Shot data)
     // 2017-01-10 All Will Serve damage increased by 15%.
-    owner_coeff.ap_from_ap = 2.0 * 1.15;
+    owner_coeff.ap_from_ap = 1.0;
   }
 
   void init_action_list() override
@@ -2457,7 +2429,7 @@ struct bloodworm_pet_t : public death_knight_pet_t
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.4 );
 
-    owner_coeff.ap_from_ap = 0.3; // TODO : once properly implemented and armor is fixed, figure out the actual value. Close enough for now
+    owner_coeff.ap_from_ap = 0.25;
     regen_type = REGEN_DISABLED;
   }
 
