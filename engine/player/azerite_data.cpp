@@ -535,8 +535,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 263962, special_effects::resounding_protection );
   unique_gear::register_special_effect( 263984, special_effects::elemental_whirl       );
   unique_gear::register_special_effect( 264108, special_effects::blood_siphon          );
-  unique_gear::register_special_effect( 264108, special_effects::lifespeed             );
-  unique_gear::register_special_effect( 264108, special_effects::on_my_way             );
+  unique_gear::register_special_effect( 267665, special_effects::lifespeed             );
+  unique_gear::register_special_effect( 267879, special_effects::on_my_way             );
   unique_gear::register_special_effect( 280710, special_effects::champion_of_azeroth   );
 }
 } // Namespace azerite ends
