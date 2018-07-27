@@ -395,6 +395,7 @@ const std::map<unsigned, std::string> _attribute_strings = {
   { 173, "Periodic effect affected by haste" },
   { 186, "Requires line of sight"            },
   { 221, "Disable player multipliers"        },
+  { 265, "Periodic effect can crit"          },
   { 354, "Scales with item level"            }
 };
 
