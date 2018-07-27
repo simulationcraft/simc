@@ -3634,6 +3634,7 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
 
     hunter_ranged_attack_t::execute();
 
+    p() -> buffs.vipers_venom -> up(); // benefit tracking
     p() -> buffs.vipers_venom -> decrement();
   }
 
@@ -3649,7 +3650,7 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::action_da_multiplier();
 
-    m *= 1.0 + p() -> buffs.vipers_venom -> value();
+    m *= 1.0 + p() -> buffs.vipers_venom -> check_value();
 
     return m;
   }
