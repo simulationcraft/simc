@@ -373,7 +373,7 @@ public:
     buff_t* solar_solstice; //T21 4P Balance
     buff_t* starfall;
     buff_t* astral_acceleration; //T20 4P Balance
-    buff_t* starlord; //talent
+    buff_t* starlord; //talent 
 
     // Feral
     buff_t* apex_predator;
@@ -1484,6 +1484,16 @@ public:
     double a = ab::target_armor( t );
 
     return a;
+  }
+
+  double cost() const override
+  {
+    double c = ab::cost();
+
+    if ( p() -> buff.innervate->up() )
+      c *= 0;
+
+    return c;
   }
 
   virtual double composite_target_multiplier( player_t* t ) const override
@@ -5462,10 +5472,10 @@ struct lunar_strike_t : public druid_spell_t
 {
   lunar_strike_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "lunar_strike", player,
-      player -> find_affinity_spell( "Lunar Strike" ), options_str )
+      player -> talent.balance_affinity -> ok() ? player->find_spell(197628) : player -> find_affinity_spell("Lunar Strike"), options_str )
   {
     aoe = -1;
-    base_aoe_multiplier = data().effectN( 3 ).percent();
+    base_aoe_multiplier = player->talent.balance_affinity->ok() ? data().effectN(2).percent() : data().effectN(3).percent();
 
     base_execute_time *= 1.0 + player -> sets -> set( DRUID_BALANCE, T17, B2 ) -> effectN( 1 ).percent();
   }
@@ -6141,7 +6151,7 @@ struct starsurge_t : public druid_spell_t
 {
 
   starsurge_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( "starsurge", p, p -> find_affinity_spell( "Starsurge" ), options_str )
+    druid_spell_t( "starsurge", p, p->specialization() == DRUID_BALANCE ? p -> find_affinity_spell( "Starsurge" ) : p->find_spell(197626) , options_str )
   {
   }
 
