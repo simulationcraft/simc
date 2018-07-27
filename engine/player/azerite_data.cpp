@@ -374,8 +374,18 @@ bool azerite_state_t::parse_override( sim_t* sim, const std::string&, const std:
       return false;
     }
 
-    const auto& power = m_player -> dbc.azerite_power( power_str, true );
-    if ( power.id == 0 )
+    const auto* power = &( m_player->dbc.azerite_power( power_str, true ) );
+    // Additionally try with an azerite power id if the name-based lookup fails
+    if ( power->id == 0 )
+    {
+      unsigned power_id = util::to_unsigned( opt_split[ 0 ] );
+      if ( power_id > 0 )
+      {
+        power = &( m_player->dbc.azerite_power( power_id ) );
+      }
+    }
+
+    if ( power->id == 0 )
     {
       sim -> errorf( "%s unknown azerite power \"%s\" for override",
           sim -> active_player -> name(), power_str );
@@ -386,19 +396,19 @@ bool azerite_state_t::parse_override( sim_t* sim, const std::string&, const std:
     // string
     if ( ilevel == 0 )
     {
-      m_overrides[ power.id ] = { 0 };
+      m_overrides[ power->id ] = { 0 };
     }
     else
     {
       // Make sure there's no existing zero ilevel value for the overrides
-      if ( m_overrides[ power.id ].size() == 1 && m_overrides[ power.id ][ 0 ] == 0 )
+      if ( m_overrides[ power->id ].size() == 1 && m_overrides[ power->id ][ 0 ] == 0 )
       {
         continue;
       }
 
-      m_overrides[ power.id ].push_back( ilevel );
+      m_overrides[ power->id ].push_back( ilevel );
       // Note, overridden powers should also have init state tracked
-      m_state[ power.id ] = false;
+      m_state[ power->id ] = false;
     }
   }
 
