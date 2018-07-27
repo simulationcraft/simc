@@ -783,6 +783,15 @@ void item_t::parse_options()
       {
         parsed.azerite_ids.push_back( power_id );
       }
+      // Try to convert the name to a power (id)
+      else
+      {
+        const auto& power = player->dbc.azerite_power( power_str, true );
+        if ( power.id > 0 )
+        {
+          parsed.azerite_ids.push_back( power.id );
+        }
+      }
     }
   }
 
