@@ -535,6 +535,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 263962, special_effects::resounding_protection );
   unique_gear::register_special_effect( 263984, special_effects::elemental_whirl       );
   unique_gear::register_special_effect( 264108, special_effects::blood_siphon          );
+  unique_gear::register_special_effect( 264108, special_effects::lifespeed             );
+  unique_gear::register_special_effect( 264108, special_effects::on_my_way             );
   unique_gear::register_special_effect( 280710, special_effects::champion_of_azeroth   );
 }
 } // Namespace azerite ends
@@ -636,6 +638,30 @@ void blood_siphon( special_effect_t& effect )
 
   effect.player -> passive.mastery_rating += power.value( 1 );
   effect.player -> passive.leech_rating += power.value( 2 );
+}
+
+void lifespeed(special_effect_t& effect)
+{
+  azerite_power_t power = effect.player->find_azerite_spell(effect.driver()->name_cstr());
+  if (!power.enabled())
+  {
+    return;
+  }
+
+  effect.player->passive.haste_rating += power.value(1);
+  effect.player->passive.avoidance_rating += power.value(2);
+}
+
+void on_my_way(special_effect_t& effect)
+{
+  azerite_power_t power = effect.player->find_azerite_spell(effect.driver()->name_cstr());
+  if (!power.enabled())
+  {
+    return;
+  }
+
+  effect.player->passive.versatility_rating += power.value(1);
+  effect.player->passive.speed_rating += power.value(2);
 }
 
 void champion_of_azeroth( special_effect_t& effect )
