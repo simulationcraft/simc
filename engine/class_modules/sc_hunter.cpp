@@ -1620,6 +1620,8 @@ struct kill_command_sv_t: public kill_command_base_t
     attack_power_mod.direct = o() -> specs.kill_command -> effectN( 1 ).percent();
     attack_power_mod.tick = o() -> talents.bloodseeker -> effectN( 1 ).percent();
 
+    hasted_ticks = true;
+
     if ( ! o() -> talents.bloodseeker -> ok() )
       dot_duration = timespan_t::zero();
 
@@ -3607,7 +3609,6 @@ struct serpent_sting_sv_t: public hunter_ranged_attack_t
 
     tick_zero = false;
     hasted_ticks = true;
-    tick_may_crit = false;
 
     if ( p -> talents.hydras_bite -> ok() )
       aoe = 1 + static_cast<int>( p -> talents.hydras_bite -> effectN( 1 ).base_value() );
