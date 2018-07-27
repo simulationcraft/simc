@@ -2063,6 +2063,7 @@ struct moonfire_t : public druid_spell_t
       dual = background = true;
       dot_duration       += p -> spec.balance -> effectN( 4 ).time_value();
       base_dd_multiplier *= 1.0 + p -> spec.guardian -> effectN( 8 ).percent();
+      aoe = 1;
 
       if (p->talent.twin_moons->ok())
       {
@@ -9759,7 +9760,7 @@ struct lady_and_the_child_t : public scoped_action_callback_t<T>
 
   void manipulate( T* a, const special_effect_t& e ) override
   {
-    a -> aoe = 1 + (int) e.driver() -> effectN( 1 ).base_value();
+    a -> aoe += (int) e.driver() -> effectN( 1 ).base_value();
     a -> base_dd_multiplier *= 1.0 + e.driver() -> effectN( 2 ).percent();
     a -> base_td_multiplier *= 1.0 + e.driver() -> effectN( 3 ).percent();
   }
