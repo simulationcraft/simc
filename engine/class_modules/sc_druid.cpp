@@ -7935,6 +7935,7 @@ void druid_t::init_procs()
   proc.clearcasting             = get_proc( "clearcasting"           );
   proc.clearcasting_wasted      = get_proc( "clearcasting_wasted"    );
   proc.gore                     = get_proc( "gore"                   );
+  proc.gushing_lacerations      = get_proc( "gushing_lacerations"    );
   proc.the_wildshapers_clutch   = get_proc( "the_wildshapers_clutch" );
   proc.predator                 = get_proc( "predator"               );
   proc.predator_wasted          = get_proc( "predator_wasted"        );
