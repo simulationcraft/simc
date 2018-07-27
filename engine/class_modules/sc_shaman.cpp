@@ -2391,9 +2391,9 @@ struct earth_elemental_t : public primal_elemental_t
     }
   }
 
-  void combat_begin() override
+  void arise() override
   {
-    primal_elemental_t::combat_begin();
+    primal_elemental_t::arise();
 
     if ( rumbling_tremors )
     {
