@@ -2649,7 +2649,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     return new new_tick_time_expr_t( *this );
   }
 
-  if ( expr_t* q = dot_t::create_expression( nullptr, this, name_str, true ) )
+  if ( expr_t* q = dot_t::create_expression( nullptr, this, this, name_str, true ) )
     return q;
 
   if ( name_str == "miss_react" )
@@ -3069,7 +3069,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       return expr_t::create_constant( splits[ 2 ], 0 );
     }
 
-    auto expr = dot_t::create_expression(nullptr, action, splits[ 2 ], true );
+    auto expr = dot_t::create_expression(nullptr, action, this, splits[ 2 ], true );
     if ( expr )
     {
       return expr;
@@ -3083,7 +3083,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
   if ( splits.size() == 3 && splits[ 0 ] == "enemy_dot" )
   {
     // simple by-pass to test
-    auto dt_ = dot_t::create_expression( player->get_dot( splits[ 1 ], target ), this, splits[ 2 ], false );
+    auto dt_ = dot_t::create_expression( player->get_dot( splits[ 1 ], target ), this, this, splits[ 2 ], false );
     if ( dt_ )
       return dt_;
 
@@ -3092,7 +3092,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
     for ( size_t i = 0, size = sim->target_list.size(); i < size; i++ )
     {
       dot_t* d = player->get_dot( splits[ 1 ], sim->target_list[ i ] );
-      dot_expressions.push_back( dot_t::create_expression( d, this, splits[ 2 ], false ) );
+      dot_expressions.push_back( dot_t::create_expression( d, this, this, splits[ 2 ], false ) );
     }
     struct enemy_dots_expr_t : public expr_t
     {

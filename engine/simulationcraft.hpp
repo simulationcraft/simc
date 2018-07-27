@@ -6201,7 +6201,8 @@ public:
   // action's supporting methods (action_t::tick_time, action_t::composite_dot_ruration), otherwise
   // bad things will happen.
   void   exsanguinate( double coefficient );
-  static expr_t* create_expression( dot_t* dot, action_t* action, const std::string& name_str, bool dynamic );
+  static expr_t* create_expression( dot_t* dot, action_t* action, action_t* source_action,
+      const std::string& name_str, bool dynamic );
 
   timespan_t remains() const;
   timespan_t time_to_next_tick() const;

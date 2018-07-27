@@ -6478,13 +6478,13 @@ struct disease_expr_t : public expr_t
 
   double default_value;
 
-  disease_expr_t( const action_t* a, const std::string& expression, type_e t ) :
+  disease_expr_t( const action_t* a, action_t* sa, const std::string& expression, type_e t ) :
     expr_t( "disease_expr" ), type( t ), bp_expr( nullptr ), ff_expr( nullptr ), np_expr( nullptr ),
     default_value( 0 )
   {
     death_knight_t* p = debug_cast< death_knight_t* >( a -> player );
-    bp_expr = dot_t::create_expression( nullptr, p -> active_spells.blood_plague, expression, true );
-    ff_expr = dot_t::create_expression( nullptr, p -> active_spells.frost_fever, expression, true );
+    bp_expr = dot_t::create_expression( nullptr, p -> active_spells.blood_plague, sa, expression, true );
+    ff_expr = dot_t::create_expression( nullptr, p -> active_spells.frost_fever, sa, expression, true );
 
     if ( type == TYPE_MIN )
       default_value = std::numeric_limits<double>::max();
