@@ -861,7 +861,7 @@ std::string special_effect_t::name() const
     return name_str;
 
   // Guess proc name based on spells.
-  std::string n;
+  std::string n, base_name;
   // Use driver name, if it's not hidden or passive, or there's no trigger spell to use
   if ( ( ! driver() -> flags( spell_attribute::SX_HIDDEN ) && ! driver() -> flags( spell_attribute::SX_PASSIVE ) ) || 
        ! trigger() -> ok() )
@@ -871,6 +871,8 @@ std::string special_effect_t::name() const
     n = trigger() -> name_cstr();
 
   util::tokenize( n );
+
+  base_name = n;
 
   // As a last resort, try to make the special effect name out of spell_id
   if ( n.empty() && spell_id > 0 )
@@ -885,6 +887,28 @@ std::string special_effect_t::name() const
   // TODO: We need a "shared" mechanism here
   if ( item && item -> slot == SLOT_OFF_HAND )
     n += "_oh";
+
+  if ( action_type() != SPECIAL_EFFECT_ACTION_CUSTOM &&
+       action_type() != SPECIAL_EFFECT_ACTION_NONE &&
+       action_type() != SPECIAL_EFFECT_ACTION_DISABLED )
+  {
+    action_t* a = player -> find_action( base_name );
+    // If for some reason the trigger spell would be named identical to another spell that the actor
+    // already has, rename this new one with the slot of the item, if there is an item
+    if ( a && a->id != trigger()->id() )
+    {
+      n += " (";
+      if ( item )
+      {
+        n += item->slot_name();
+      }
+      else
+      {
+        n += util::special_effect_source_string( source );
+      }
+      n += ")";
+    }
+  }
 
   return n;
 }
