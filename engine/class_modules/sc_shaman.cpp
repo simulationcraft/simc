@@ -941,10 +941,6 @@ struct forceful_winds_buff_t : public buff_t
 {
   forceful_winds_buff_t( shaman_t* p ) : buff_t( p, "forceful_winds", p->find_spell( 262652 ) )
   {
-    set_refresh_behavior( buff_refresh_behavior::DISABLED );
-    set_duration( s_data->duration() );
-    set_max_stack( s_data->max_stacks() );
-    set_default_value( s_data->effectN( 1 ).percent() );
   }
 };
 
@@ -2789,7 +2785,6 @@ struct windfury_attack_t : public shaman_attack_t
     school     = SCHOOL_PHYSICAL;
     background = true;
     callbacks  = false;
-    base_multiplier *= 1.0;
 
     // Windfury can not proc itself
     may_proc_windfury         = false;
@@ -2825,10 +2820,7 @@ struct windfury_attack_t : public shaman_attack_t
   double action_multiplier() const override
   {
     double m = shaman_attack_t::action_multiplier();
-    if ( p()->buff.forceful_winds->up() )
-    {
-      m *= 1.0 + ( p()->buff.forceful_winds->stack_value() );
-    }
+    m *= 1.0 + p()->buff.forceful_winds->stack_value();
     return m;
   }
 
@@ -7219,15 +7211,9 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
       buff.forceful_winds->trigger();
     }
 
-    // Right now Forceful winds stacks the buff on all targets hit before dealing damage
-    // so delay windfury's hits so they can all process before landing. Possibly a bug.
-    buff.forceful_winds->extend_duration( this, timespan_t::from_seconds( 0.001 ) );
-    auto target = state->target;
-    make_event( *sim, timespan_t::from_millis( 1 ), [a, target]() {
-      a->set_target( target );
-      a->schedule_execute();
-      a->schedule_execute();
-    } );
+    a->set_target( state->target );
+    a->schedule_execute();
+    a->schedule_execute();
 
     attack->proc_wf->occur();
   }
@@ -7470,7 +7456,10 @@ void shaman_t::create_buffs()
   buff.lightning_shield            = new lightning_shield_buff_t( this );
   buff.lightning_shield_overcharge = new lightning_shield_overcharge_buff_t( this );
   buff.flametongue                 = new flametongue_buff_t( this );
-  buff.forceful_winds              = new forceful_winds_buff_t( this );
+  buff.forceful_winds              = make_buff<buff_t>( this, "forceful_winds", find_spell( 262652 ) )
+    ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+    ->set_default_value( find_spell( 262652 )->effectN( 1 ).percent() );
+
   buff.landslide                   = new landslide_buff_t( this );
   buff.icy_edge                    = new icy_edge_buff_t( this );
   buff.molten_weapon               = new molten_weapon_buff_t( this );
