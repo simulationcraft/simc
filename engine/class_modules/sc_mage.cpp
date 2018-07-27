@@ -511,6 +511,11 @@ public:
     proc_t* fingers_of_frost_wasted;
   } procs;
 
+  struct shuffled_rngs_t
+  {
+    shuffled_rng_t* time_anomaly;
+  } shuffled_rng;
+
   // Sample data
   struct sample_data_t
   {
@@ -683,6 +688,7 @@ public:
   virtual void        init_procs() override;
   virtual void        init_benefits() override;
   virtual void        init_uptimes() override;
+  virtual void        init_rng() override;
   virtual void        invalidate_cache( cache_e c ) override;
   virtual void        init_resources( bool force ) override;
   virtual void        recalculate_resource_max( resource_e rt ) override;
@@ -5597,9 +5603,7 @@ struct time_anomaly_tick_event_t : public event_t
       sim().out_log.printf( "%s Time Anomaly tick event occurs.", mage -> name() );
     }
 
-    const double proc_chance = 1.0 / 15.0; // TODO: Improve this number as we get more data.
-
-    if ( rng().roll( proc_chance ) )
+    if ( mage -> shuffled_rng.time_anomaly -> trigger() )
     {
       // Proc was successful, figure out which effect to apply.
       if ( mage -> sim -> log )
@@ -5702,6 +5706,7 @@ mage_t::mage_t( sim_t* sim, const std::string& name, race_e r ) :
   gains( gains_t() ),
   pets( pets_t() ),
   procs( procs_t() ),
+  shuffled_rng( shuffled_rngs_t() ),
   sample_data( sample_data_t() ),
   spec( specializations_t() ),
   state( state_t() ),
@@ -6551,6 +6556,15 @@ void mage_t::init_uptimes()
       break;
   }
 
+}
+
+void mage_t::init_rng()
+{
+  player_t::init_rng();
+
+  // TODO: There's no data about this in game. Keep an eye out in case Blizzard
+  // changes this behind the scenes.
+  shuffled_rng.time_anomaly = get_shuffled_rng( "time_anomaly", 1, 16 );
 }
 
 // mage_t::init_assessors =====================================================
