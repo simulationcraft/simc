@@ -2067,7 +2067,7 @@ struct moonfire_t : public druid_spell_t
 
       if (p->talent.twin_moons->ok())
       {
-          aoe = 1 + (int) p->talent.twin_moons->effectN(1).base_value();
+          aoe += (int) p->talent.twin_moons->effectN(1).base_value();
           base_dd_multiplier *= 1.0 + p->talent.twin_moons->effectN(2).percent();
           base_td_multiplier *= 1.0 + p->talent.twin_moons->effectN(3).percent();
       }
