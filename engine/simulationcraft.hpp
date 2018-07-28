@@ -6194,13 +6194,13 @@ public:
   // happen.
   void   adjust( double coefficient );
   // Alternative to adjust() based on the rogue ability Exsanguinate and how it works with hasted bleeds.
-  // Exsanguinate now rounds the number of ticks to the nearest integer and reschedules the remaining ticks
+  // It rounds the number of ticks to the nearest integer and reschedules the remaining ticks
   // as full ticks from the end. If one tick would theoretically occur before Exsanguinate, it will
   // happen immediately instead.
   // Note that this should be accompanied with the correct (time related) scaling information in the
   // action's supporting methods (action_t::tick_time, action_t::composite_dot_ruration), otherwise
   // bad things will happen.
-  void   exsanguinate( double coefficient );
+  void   adjust_full_ticks( double coefficient );
   static expr_t* create_expression( dot_t* dot, action_t* action, action_t* source_action,
       const std::string& name_str, bool dynamic );
 

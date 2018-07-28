@@ -5768,9 +5768,10 @@ void do_exsanguinate( dot_t* dot, double coeff )
     return;
   }
 
-  // Original and logical implementation. Since the advent of hasted bleed exsanguinate works differently though.
+  // Original and "logical" implementation.
   // dot -> adjust( coeff );
-  dot -> exsanguinate( coeff );
+  // Since the advent of hasted bleed exsanguinate works differently though.
+  dot -> adjust_full_ticks( coeff );
 
   actions::rogue_attack_t::cast_state( dot -> state ) -> exsanguinated = true;
 }

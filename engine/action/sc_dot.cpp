@@ -1344,7 +1344,7 @@ void dot_t::adjust( double coefficient )
   end_event = make_event<dot_end_event_t>(*sim, this, new_dot_remains );
 }
 
-void dot_t::exsanguinate( double coefficient )
+void dot_t::adjust_full_ticks( double coefficient )
 {
   if ( !is_ticking() )
   {
