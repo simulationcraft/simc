@@ -159,6 +159,7 @@ void lifespeed(special_effect_t& effect);
 void on_my_way(special_effect_t& effect);
 void champion_of_azeroth( special_effect_t& effect );
 void unstable_flames( special_effect_t& );
+void thunderous_blast( special_effect_t& );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends

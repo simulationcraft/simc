@@ -539,6 +539,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 267879, special_effects::on_my_way             );
   unique_gear::register_special_effect( 280710, special_effects::champion_of_azeroth   );
   unique_gear::register_special_effect( 279899, special_effects::unstable_flames       );
+  unique_gear::register_special_effect( 280380, special_effects::thunderous_blast      );
 }
 } // Namespace azerite ends
 
@@ -706,6 +707,88 @@ void unstable_flames( special_effect_t& effect )
 
   // Replace the driver spell, the azerite power does not hold the RPPM value
   effect.spell_id = driver -> id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void thunderous_blast( special_effect_t& effect )
+{
+  struct thunderous_blast_t : public unique_gear::proc_spell_t
+  {
+    buff_t* building_pressure = nullptr;
+    buff_t* rolling_thunder = nullptr;
+
+    thunderous_blast_t( special_effect_t& e, const azerite_power_t& power ):
+      proc_spell_t( "thunderous_blast", e.player, e.player -> find_spell( 280384 ) )
+    {
+      base_dd_min = base_dd_max = power.value( 1 );
+
+      building_pressure = buff_t::find( e.player, "building_pressure" );
+      if ( !building_pressure )
+      {
+        building_pressure =
+          make_buff( e.player, "building_pressure", data().effectN( 3 ).trigger() )
+            -> set_default_value( data().effectN( 3 ).trigger() -> effectN( 1 ).percent() );
+      }
+
+      rolling_thunder = buff_t::find( e.player, "rolling_thunder" );
+      if ( !rolling_thunder )
+      {
+        rolling_thunder =
+          make_buff( e.player, "rolling_thunder", e.player -> find_spell( 280400 ) )
+            -> set_default_value( e.player -> find_spell( 280400 ) -> effectN( 1 ).percent() );
+      }
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( building_pressure -> check() == building_pressure -> max_stack() )
+      {
+        building_pressure -> expire();
+        rolling_thunder -> trigger();
+      }
+      else
+      {
+        rolling_thunder -> expire();
+        building_pressure -> trigger();
+      }
+    }
+
+    double action_multiplier() const override
+    {
+      double am = proc_spell_t::action_multiplier();
+
+      am *= 1.0 + building_pressure -> check_stack_value();
+      am *= 1.0 + rolling_thunder -> check_value();
+
+      return am;
+    }
+
+    double composite_crit_chance() const override
+    {
+      double cc = proc_spell_t::composite_crit_chance();
+
+      if ( rolling_thunder -> check() )
+        cc += 1.0;
+
+      return cc;
+    }
+  };
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( ! power.enabled() )
+    return;
+
+  effect.execute_action = effect.player -> find_action( "thunderous_blast" );
+  if ( !effect.execute_action )
+    effect.execute_action = effect.player -> create_proc_action( "thunderous_blast", effect );
+  if ( !effect.execute_action )
+    effect.execute_action = new thunderous_blast_t( effect, power );
+
+  // Replace the driver spell, the azerite power does not hold the RPPM value
+  effect.spell_id = effect.player -> find_spell( 280383 ) -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
