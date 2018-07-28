@@ -543,6 +543,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 273834, special_effects::filthy_transfusion    );
   unique_gear::register_special_effect( 280407, special_effects::blood_rite            );
   unique_gear::register_special_effect( 280402, special_effects::tidal_surge           );
+  unique_gear::register_special_effect( 263987, special_effects::heed_my_call          );
   unique_gear::register_special_effect( 280579, special_effects::retaliatory_fury      ); // Retaliatory Fury
   unique_gear::register_special_effect( 280624, special_effects::retaliatory_fury      ); // Last Gift
   unique_gear::register_special_effect( 280577, special_effects::glory_in_battle       ); // Glory In Battle
@@ -974,6 +975,37 @@ void tidal_surge( special_effect_t& effect )
 
   effect.execute_action = unique_gear::create_proc_action<tidal_surge_t>( "tidal_surge", effect, power );
   effect.spell_id = effect.player -> find_spell( 280403 ) -> id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void heed_my_call( special_effect_t& effect )
+{
+  struct heed_my_call_aoe_t : public unique_gear::proc_spell_t
+  {
+    heed_my_call_aoe_t( const special_effect_t& e, const azerite_power_t& power ):
+      proc_spell_t( "heed_my_call_aoe", e.player, e.player -> find_spell( 271686 ) )
+    {
+      base_dd_min = base_dd_max = power.value( 2 );
+    }
+  };
+  struct heed_my_call_t : public unique_gear::proc_spell_t
+  {
+    heed_my_call_t( const special_effect_t& e, const azerite_power_t& power ):
+      proc_spell_t( "heed_my_call", e.player, e.player -> find_spell( 271685 ) )
+    {
+      base_dd_min = base_dd_max = power.value( 1 );
+      execute_action = new heed_my_call_aoe_t( e, power );
+      add_child( execute_action );
+    }
+  };
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  effect.execute_action = unique_gear::create_proc_action<heed_my_call_t>( "heed_my_call", effect, power );
+  effect.spell_id = effect.player -> find_spell( 271681 ) -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }

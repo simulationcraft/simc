@@ -166,6 +166,8 @@ void blood_rite( special_effect_t& );
 void glory_in_battle( special_effect_t& );
 void sylvanas_resolve( special_effect_t& );
 void tidal_surge( special_effect_t& );
+void heed_my_call( special_effect_t& );
+void azerite_globules( special_effect_t& );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
