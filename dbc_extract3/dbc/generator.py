@@ -1192,6 +1192,8 @@ class SpellDataGenerator(DataGenerator):
          251034,
          # 8.0.1 Azerite power Thunderous Blast buff
          280400,
+         # 8.0.1 Azerite power Retaliatory Fury buff
+         280787,
         ),
 
         # Warrior:
