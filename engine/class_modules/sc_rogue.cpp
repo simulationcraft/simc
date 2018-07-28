@@ -2622,7 +2622,7 @@ struct dispatch_t: public rogue_attack_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = rogue_attack_t::bonus_da( s );
-    b += p() -> buffs.storm_of_steel -> stack_value();
+    b += p() -> buffs.storm_of_steel -> stack_value() * cast_state( s ) -> cp;
     return b;
   }
 
@@ -2734,7 +2734,7 @@ struct eviscerate_t : public rogue_attack_t
   double bonus_da( const action_state_t* s ) const override
   {
     double b = rogue_attack_t::bonus_da( s );
-    b += p() -> buffs.nights_vengeance -> stack_value();
+    b += p() -> buffs.nights_vengeance -> stack_value() * cast_state( s ) -> cp;
     return b;
   }
 
