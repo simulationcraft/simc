@@ -1194,6 +1194,16 @@ class SpellDataGenerator(DataGenerator):
          280400,
          # 8.0.1 Azerite power Retaliatory Fury & Last Gift buffs
          280787, 280861,
+         # 8.0.1 Azerite power Azerite Globules
+         279958,
+         # 8.0.1 Azerite power Heed My Call
+         271685, 271686,
+         # 8.0.1 Azerite power Gutripper
+         269031,
+         # 8.0.1 Azerite power Overwhelming Power
+         271711,
+         # 8.0.1 Azerite power Earthlink
+         279928,
         ),
 
         # Warrior:
