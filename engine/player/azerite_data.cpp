@@ -542,6 +542,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280380, special_effects::thunderous_blast      );
   unique_gear::register_special_effect( 273834, special_effects::filthy_transfusion    );
   unique_gear::register_special_effect( 280579, special_effects::retaliatory_fury      );
+  unique_gear::register_special_effect( 280407, special_effects::blood_rite            );
 }
 } // Namespace azerite ends
 
@@ -871,6 +872,31 @@ void retaliatory_fury( special_effect_t& effect )
   effect.spell_id = driver -> id();
 
   new retaliatory_fury_proc_cb_t( effect, { mastery, absorb } );
+}
+
+void blood_rite( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  const spell_data_t* driver = effect.player -> find_spell( 280408 );
+  const spell_data_t* spell = effect.player -> find_spell( 280409 );
+
+  effect.custom_buff = buff_t::find( effect.player, "blood_rite" );
+  if ( !effect.custom_buff )
+  {
+    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "blood_rite", spell )
+      -> add_stat( STAT_HASTE_RATING, power.value( 1 ) );
+  }
+
+  // Replace the driver spell, the azerite power does not hold the RPPM value
+  effect.spell_id = driver -> id();
+
+  // TODO: add "Killing an enemy will refresh this effect." part
+  // ideally something generic so we can model all "on kill" effects
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 } // Namespace special effects ends
