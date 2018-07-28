@@ -540,6 +540,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280710, special_effects::champion_of_azeroth   );
   unique_gear::register_special_effect( 279899, special_effects::unstable_flames       );
   unique_gear::register_special_effect( 280380, special_effects::thunderous_blast      );
+  unique_gear::register_special_effect( 273834, special_effects::filthy_transfusion    );
 }
 } // Namespace azerite ends
 
@@ -789,6 +790,34 @@ void thunderous_blast( special_effect_t& effect )
 
   // Replace the driver spell, the azerite power does not hold the RPPM value
   effect.spell_id = effect.player -> find_spell( 280383 ) -> id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void filthy_transfusion( special_effect_t& effect )
+{
+  struct filthy_transfusion_t : public unique_gear::proc_spell_t
+  {
+    filthy_transfusion_t( special_effect_t& e, const azerite_power_t& power ):
+      proc_spell_t( "filthy_transfusion", e.player, e.player -> find_spell( 273836 ) )
+    {
+      base_td = power.value( 1 );
+      tick_may_crit = false;
+    }
+  };
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( ! power.enabled() )
+    return;
+
+  effect.execute_action = effect.player -> find_action( "filthy_transfusion" );
+  if ( !effect.execute_action )
+    effect.execute_action = effect.player -> create_proc_action( "filthy_transfusion", effect );
+  if ( !effect.execute_action )
+    effect.execute_action = new filthy_transfusion_t( effect, power );
+
+  // Replace the driver spell, the azerite power does not hold the RPPM value
+  effect.spell_id = effect.player -> find_spell( 273835 ) -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
