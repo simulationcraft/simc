@@ -1190,6 +1190,8 @@ class SpellDataGenerator(DataGenerator):
          265092,
          # Void Slash (Void Stalker's Contract damage spell)
          251034,
+         # 8.0.1 Azerite power Thunderous Blast buff
+         280400,
         ),
 
         # Warrior:
