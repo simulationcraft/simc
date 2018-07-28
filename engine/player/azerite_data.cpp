@@ -542,12 +542,12 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280380, special_effects::thunderous_blast      );
   unique_gear::register_special_effect( 273834, special_effects::filthy_transfusion    );
   unique_gear::register_special_effect( 280407, special_effects::blood_rite            );
-  unique_gear::register_special_effect( 280579, special_effects::retaliatory_fury      );
-  unique_gear::register_special_effect( 280624, special_effects::retaliatory_fury      );
-  unique_gear::register_special_effect( 280577, special_effects::glory_in_battle       );
-  unique_gear::register_special_effect( 280623, special_effects::glory_in_battle       );
-  unique_gear::register_special_effect( 280598, special_effects::sylvanas_resolve      );
-  unique_gear::register_special_effect( 280628, special_effects::sylvanas_resolve      );
+  unique_gear::register_special_effect( 280579, special_effects::retaliatory_fury      ); // Retaliatory Fury
+  unique_gear::register_special_effect( 280624, special_effects::retaliatory_fury      ); // Last Gift
+  unique_gear::register_special_effect( 280577, special_effects::glory_in_battle       ); // Glory In Battle
+  unique_gear::register_special_effect( 280623, special_effects::glory_in_battle       ); // Liberator's Might
+  unique_gear::register_special_effect( 280598, special_effects::sylvanas_resolve      ); // Sylvanas' Resolve
+  unique_gear::register_special_effect( 280628, special_effects::sylvanas_resolve      ); // Anduin's Determination
 }
 } // Namespace azerite ends
 
