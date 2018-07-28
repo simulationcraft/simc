@@ -546,6 +546,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280624, special_effects::retaliatory_fury      );
   unique_gear::register_special_effect( 280577, special_effects::glory_in_battle       );
   unique_gear::register_special_effect( 280623, special_effects::glory_in_battle       );
+  unique_gear::register_special_effect( 280598, special_effects::sylvanas_resolve      );
+  unique_gear::register_special_effect( 280628, special_effects::sylvanas_resolve      );
 }
 } // Namespace azerite ends
 
@@ -923,6 +925,28 @@ void glory_in_battle( special_effect_t& effect )
     effect.custom_buff = make_buff<stat_buff_t>( effect.player, tokenized_name( spell ), spell )
       -> add_stat( STAT_CRIT_RATING, power.value( 1 ) )
       -> add_stat( STAT_HASTE_RATING, power.value( 2 ) );
+  }
+
+  // Replace the driver spell, the azerite power does not hold the RPPM value
+  effect.spell_id = driver -> id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void sylvanas_resolve( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  const spell_data_t* driver = power.spell_ref().effectN( 1 ).trigger();
+  const spell_data_t* spell = driver -> effectN( 1 ).trigger();
+
+  effect.custom_buff = buff_t::find( effect.player, tokenized_name( spell ) );
+  if ( !effect.custom_buff )
+  {
+    effect.custom_buff = make_buff<stat_buff_t>( effect.player, tokenized_name( spell ), spell )
+      -> add_stat( effect.player -> primary_stat(), power.value( 1 ) );
   }
 
   // Replace the driver spell, the azerite power does not hold the RPPM value
