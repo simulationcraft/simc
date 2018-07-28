@@ -72,13 +72,17 @@ def compute_field_offset(field):
         if _DB_STRUCT_HEADER_FIELDS[idx] == field:
             return offset
 
-        if chr(_DB_STRUCT.format[idx]) in ['I', 'i']:
+        nibble = _DB_STRUCT.format[idx]
+        if isinstance(nibble, int):
+            nibble = chr(nibble)
+
+        if nibble in ['I', 'i']:
             offset += 4
-        elif chr(_DB_STRUCT.format[idx]) in ['Q', 'q']:
+        elif nibble in ['Q', 'q']:
             offset += 8
-        elif chr(_DB_STRUCT.format[idx]) in ['H', 'h']:
+        elif nibble in ['H', 'h']:
             offset += 2
-        elif chr(_DB_STRUCT.format[idx]) in ['B', 'b']:
+        elif nibble in ['B', 'b']:
             offset += 1
         else:
             print('Unknown field format {}'.format(_DB_STRUCT.format[idx]))
