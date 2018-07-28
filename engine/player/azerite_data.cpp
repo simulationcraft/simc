@@ -541,8 +541,9 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 279899, special_effects::unstable_flames       );
   unique_gear::register_special_effect( 280380, special_effects::thunderous_blast      );
   unique_gear::register_special_effect( 273834, special_effects::filthy_transfusion    );
-  unique_gear::register_special_effect( 280579, special_effects::retaliatory_fury      );
   unique_gear::register_special_effect( 280407, special_effects::blood_rite            );
+  unique_gear::register_special_effect( 280579, special_effects::retaliatory_fury      );
+  unique_gear::register_special_effect( 280624, special_effects::retaliatory_fury      );
   unique_gear::register_special_effect( 280577, special_effects::glory_in_battle       );
   unique_gear::register_special_effect( 280623, special_effects::glory_in_battle       );
 }
@@ -857,22 +858,22 @@ void retaliatory_fury( special_effect_t& effect )
   if ( !power.enabled() )
     return;
 
-  const spell_data_t* driver = effect.player -> find_spell( 280785 );
-  const spell_data_t* mastery_spell = effect.player -> find_spell( 280787 );
-  const spell_data_t* absorb_spell = effect.player -> find_spell( 280788 );
+  const spell_data_t* driver = power.spell_ref().effectN( 1 ).trigger();
+  const spell_data_t* mastery_spell = effect.player -> find_spell( power.spell_ref().id() == 280624 ? 280861 : 280787 );
+  const spell_data_t* absorb_spell = driver -> effectN( 1 ).trigger();
 
-  buff_t* mastery = buff_t::find( effect.player, "retaliatory_fury" );
+  buff_t* mastery = buff_t::find( effect.player, tokenized_name( mastery_spell ) );
   if ( !mastery )
   {
-    mastery = make_buff<stat_buff_t>( effect.player, "retaliatory_fury", mastery_spell )
+    mastery = make_buff<stat_buff_t>( effect.player, tokenized_name( mastery_spell ), mastery_spell )
       -> add_stat( STAT_MASTERY_RATING, power.value( 1 ) );
   }
 
-  buff_t* absorb = buff_t::find( effect.player, "retaliatory_fury_absorb" );
+  buff_t* absorb = buff_t::find( effect.player, tokenized_name( absorb_spell ) + "_absorb" );
   if ( !absorb )
   {
-    absorb = make_buff<absorb_buff_t>( effect.player, "retaliatory_fury_absorb", absorb_spell )
-      -> set_absorb_source( effect.player -> get_stats( "retaliatory_fury" ) )
+    absorb = make_buff<absorb_buff_t>( effect.player, tokenized_name( absorb_spell ) + "_absorb", absorb_spell )
+      -> set_absorb_source( effect.player -> get_stats( tokenized_name( absorb_spell ) ) )
       -> set_default_value( power.value( 2 ) );
   }
 
