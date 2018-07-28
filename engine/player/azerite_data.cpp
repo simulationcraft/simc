@@ -541,6 +541,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 279899, special_effects::unstable_flames       );
   unique_gear::register_special_effect( 280380, special_effects::thunderous_blast      );
   unique_gear::register_special_effect( 273834, special_effects::filthy_transfusion    );
+  unique_gear::register_special_effect( 280579, special_effects::retaliatory_fury      );
 }
 } // Namespace azerite ends
 
@@ -824,6 +825,52 @@ void filthy_transfusion( special_effect_t& effect )
   effect.spell_id = effect.player -> find_spell( 273835 ) -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void retaliatory_fury( special_effect_t& effect )
+{
+  class retaliatory_fury_proc_cb_t : public dbc_proc_callback_t
+  {
+    std::array<buff_t*, 2> buffs;
+  public:
+    retaliatory_fury_proc_cb_t( const special_effect_t& effect, std::array<buff_t*, 2> b ) :
+      dbc_proc_callback_t( effect.player, effect ), buffs( b )
+    {}
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      for ( auto b : buffs )
+        b -> trigger();
+    }
+  };
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  const spell_data_t* driver = effect.player -> find_spell( 280785 );
+  const spell_data_t* mastery_spell = effect.player -> find_spell( 280787 );
+  const spell_data_t* absorb_spell = effect.player -> find_spell( 280788 );
+
+  buff_t* mastery = buff_t::find( effect.player, "retaliatory_fury" );
+  if ( !mastery )
+  {
+    mastery = make_buff<stat_buff_t>( effect.player, "retaliatory_fury", mastery_spell )
+      -> add_stat( STAT_MASTERY_RATING, power.value( 1 ) );
+  }
+
+  buff_t* absorb = buff_t::find( effect.player, "retaliatory_fury_absorb" );
+  if ( !absorb )
+  {
+    absorb = make_buff<absorb_buff_t>( effect.player, "retaliatory_fury_absorb", absorb_spell )
+      -> set_absorb_source( effect.player -> get_stats( "retaliatory_fury" ) )
+      -> set_default_value( power.value( 2 ) );
+  }
+
+  // Replace the driver spell, the azerite power does not hold the RPPM value
+  effect.spell_id = driver -> id();
+
+  new retaliatory_fury_proc_cb_t( effect, { mastery, absorb } );
 }
 
 } // Namespace special effects ends
