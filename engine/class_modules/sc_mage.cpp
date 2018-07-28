@@ -6937,45 +6937,75 @@ void mage_t::apl_frost()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  action_priority_list_t* default_list = get_action_priority_list( "default"           );
-  action_priority_list_t* single       = get_action_priority_list( "single"            );
-  action_priority_list_t* aoe          = get_action_priority_list( "aoe"               );
-  action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns"         );
-  action_priority_list_t* movement     = get_action_priority_list( "movement"          );
+  action_priority_list_t* default_list = get_action_priority_list( "default"   );
+  action_priority_list_t* single       = get_action_priority_list( "single"    );
+  action_priority_list_t* aoe          = get_action_priority_list( "aoe"       );
+  action_priority_list_t* cooldowns    = get_action_priority_list( "cooldowns" );
+  action_priority_list_t* movement     = get_action_priority_list( "movement"  );
 
   default_list -> add_action( this, "Counterspell" );
-  default_list -> add_action( this, "Ice Lance", "if=prev_gcd.1.flurry&!buff.fingers_of_frost.react" );
+  default_list -> add_action( this, "Ice Lance", "if=prev_gcd.1.flurry&!buff.fingers_of_frost.react",
+    "If the mage has FoF after casting instant Flurry, we can delay the Ice Lance and use other high priority action, if available." );
   default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(prev_gcd.1.icy_veins|target.time_to_die<50)" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>3&talent.freezing_rain.enabled|active_enemies>4" );
+  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>3&talent.freezing_rain.enabled|active_enemies>4",
+    "The target threshold isn't exact. Between 3-5 targets, the differences between the ST and AoE action lists are rather small. "
+    "However, Freezing Rain prefers using AoE action list sooner as it benefits greatly from the high priority Blizzard action." );
   default_list -> add_action( "call_action_list,name=single" );
 
-  single -> add_talent( this, "Ice Nova", "if=cooldown.ice_nova.ready&debuff.winters_chill.up" );
-  single -> add_action( this, "Flurry", "if=!talent.glacial_spike.enabled&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&prev_gcd.1.frostbolt)" );
-  single -> add_action( this, "Flurry", "if=talent.glacial_spike.enabled&buff.brain_freeze.react&(prev_gcd.1.frostbolt&buff.icicles.stack<4|prev_gcd.1.glacial_spike|prev_gcd.1.ebonbolt)" );
+  single -> add_talent( this, "Ice Nova", "if=cooldown.ice_nova.ready&debuff.winters_chill.up",
+    "In some situations, you can shatter Ice Nova even after already casting Flurry and Ice Lance. "
+    "Otherwise this action is used when the mage has FoF after casting Flurry, see above." );
+  single -> add_action( this, "Flurry", "if=!talent.glacial_spike.enabled&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&prev_gcd.1.frostbolt)",
+    "Without GS, the mage just tries to shatter as many Frostbolts and Ebonbolts as possible. Forcing shatter on Frostbolt is still a small gain, "
+    "so is not caring about FoF. Ice Lance is too weak to warrant delaying Brain Freeze Flurry." );
+  single -> add_action( this, "Flurry", "if=talent.glacial_spike.enabled&buff.brain_freeze.react&(prev_gcd.1.frostbolt&buff.icicles.stack<4|prev_gcd.1.glacial_spike|prev_gcd.1.ebonbolt)",
+    "With GS, the mage only shatters Frostbolt that would put them at 1-3 Icicle stacks, Ebonbolt if it would waste Brain Freeze charge (i.e. when the mage "
+    "starts casting Ebonbolt with Brain Freeze active) and of course Glacial Spike. Difference between shattering Frostbolt with 1-3 Icicles and 1-4 Icicles is "
+    "small, but 1-3 tends to be better in more situations (the higher GS damage is, the more it leans towards 1-3)." );
   single -> add_action( this, "Frozen Orb" );
-  single -> add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2" );
-  single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
-  single -> add_talent( this, "Ray of Frost", "if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0" );
+  single -> add_action( this, "Blizzard", "if=active_enemies>2|active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2",
+    "With Freezing Rain and at least 2 targets, Blizzard needs to be used with higher priority to make sure you can fit both instant Blizzards "
+    "into a single Freezing Rain. Starting with three targets, Blizzard leaves the low priority filler role and is used on cooldown (and just making "
+    "sure not to waste Brain Freeze charges) with or without Freezing Rain." );
+  single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react",
+    "Trying to pool charges of FoF for anything isn't worth it. Use them as they come." );
+  single -> add_talent( this, "Ray of Frost", "if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0",
+    "Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. "
+    "This is only a small gain, as Ray of Frost isn't too impactful." );
   single -> add_talent( this, "Comet Storm" );
-  single -> add_talent( this, "Ebonbolt", "if=!talent.glacial_spike.enabled|buff.icicles.stack=5&!buff.brain_freeze.react" );
-  single -> add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled" );
-  single -> add_action( this, "Blizzard", "if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time" );
+  single -> add_talent( this, "Ebonbolt", "if=!talent.glacial_spike.enabled|buff.icicles.stack=5&!buff.brain_freeze.react",
+    "Without GS, Ebonbolt is used on cooldown. With GS, Ebonbolt is only used to fill in the blank spots when fishing for a Brain Freeze proc, i.e. "
+    "the mage reaches 5 Icicles but still doesn't have a Brain Freeze proc." );
+  single -> add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled",
+    "Glacial Spike is used when there's a Brain Freeze proc active (i.e. only when it can be shattered). This is a small to medium gain "
+    "in most situations. Low mastery leans towards using it when available. When using Splitting Ice and having another target nearby, "
+    "it's slightly better to use GS when available, as the second target doesn't benefit from shattering the main target." );
+  single -> add_action( this, "Blizzard", "if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time",
+    "Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even "
+    "against a single target, especially with low mastery.");
   single -> add_talent( this, "Ice Nova" );
   single -> add_action( this, "Frostbolt" );
   single -> add_action( "call_action_list,name=movement" );
   single -> add_action( this, "Ice Lance" );
 
-  aoe -> add_action( this, "Frozen Orb" );
+  aoe -> add_action( this, "Frozen Orb", "",
+    "With Freezing Rain, it's better to prioritize using Frozen Orb when both FO and Blizzard are off cooldown. "
+    "Without Freezing Rain, the converse is true although the difference is miniscule until very high target counts." );
   aoe -> add_action( this, "Blizzard" );
   aoe -> add_talent( this, "Comet Storm" );
   aoe -> add_talent( this, "Ice Nova" );
-  aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.frostbolt&(buff.icicles.stack<4|!talent.glacial_spike.enabled)|prev_gcd.1.glacial_spike)" );
+  aoe -> add_action( this, "Flurry", "if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.frostbolt&(buff.icicles.stack<4|!talent.glacial_spike.enabled)|prev_gcd.1.glacial_spike)",
+    "Simplified Flurry conditions from the ST action list. Since the mage is generating far less Brain Freeze charges, the exact "
+    "condition here isn't all that important." );
   aoe -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react" );
-  aoe -> add_talent( this, "Ray of Frost" );
+  aoe -> add_talent( this, "Ray of Frost", "",
+    "The mage will generally be generating a lot of FoF charges when using the AoE action list. Trying to delay Ray of Frost "
+    "until there are no FoF charges and no active Frozen Orbs would lead to it not being used at all." );
   aoe -> add_talent( this, "Ebonbolt" );
   aoe -> add_talent( this, "Glacial Spike" );
-  aoe -> add_action( this, "Cone of Cold" );
+  aoe -> add_action( this, "Cone of Cold", "",
+    "Using Cone of Cold is mostly DPS neutral with the AoE target thresholds. It only becomes decent gain with roughly 7 or more targets." );
   aoe -> add_action( this, "Frostbolt" );
   aoe -> add_action( "call_action_list,name=movement" );
   aoe -> add_action( this, "Ice Lance" );
@@ -6987,13 +7017,18 @@ void mage_t::apl_frost()
     "if=active_enemies=1&talent.glacial_spike.enabled&buff.icicles.stack=5&("
     "!talent.ebonbolt.enabled&buff.brain_freeze.react"
     "|talent.ebonbolt.enabled&(full_recharge_time<=cooldown.ebonbolt.remains&buff.brain_freeze.react"
-    "|cooldown.ebonbolt.remains<cast_time&!buff.brain_freeze.react))" );
+    "|cooldown.ebonbolt.remains<cast_time&!buff.brain_freeze.react))",
+    "With Glacial Spike, Rune of Power should be used right before the Glacial Spike combo (i.e. with 5 Icicles and a Brain Freeze). "
+    "When Ebonbolt is off cooldown, Rune of Power can also be used just with 5 Icicles." );
   cooldowns -> add_talent( this, "Rune of Power",
     "if=active_enemies=1&!talent.glacial_spike.enabled&("
     "prev_gcd.1.frozen_orb|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time"
     "|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time"
-    "|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)" );
-  cooldowns -> add_talent( this, "Rune of Power", "if=active_enemies>1&prev_gcd.1.frozen_orb" );
+    "|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)",
+    "Without Glacial Spike, Rune of Power should be used before any bigger cooldown (Frozen Orb, Ebonbolt, Comet Storm, Ray of Frost) or "
+    "when Rune of Power is about to reach 2 charges." );
+  cooldowns -> add_talent( this, "Rune of Power", "if=active_enemies>1&prev_gcd.1.frozen_orb",
+    "With 2 or more targets, use Rune of Power exclusively with Frozen Orb. This is the case even with Glacial Spike." );
   cooldowns -> add_action( "potion,if=prev_gcd.1.icy_veins|target.time_to_die<70" );
   cooldowns -> add_action( "use_items" );
   for ( size_t i = 0; i < racial_actions.size(); i++ )
