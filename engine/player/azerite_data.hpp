@@ -163,6 +163,7 @@ void thunderous_blast( special_effect_t& );
 void filthy_transfusion( special_effect_t& );
 void retaliatory_fury( special_effect_t& );
 void blood_rite( special_effect_t& );
+void glory_in_battle( special_effect_t& );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
