@@ -1341,6 +1341,10 @@ class SpellDataGenerator(DataGenerator):
           ( 253590, 0 ),    # T21 4P frost damage component
           ( 274373, 0 ),    # Festermight azerite trait
           ( 199373, 5 ),    # Army ghoul claw spell
+          ( 275918, 0 ),    # Echoing Howl azerite trait
+          ( 279606, 0 ),    # Last Surprise azerite trait
+          ( 273096, 0 ),    # Horrid Experimentation azerite trait
+
         ),
 
         # Shaman:
