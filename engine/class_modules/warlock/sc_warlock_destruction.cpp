@@ -1110,6 +1110,7 @@ namespace warlock {
         immolate->background = true;
         immolate->dual = true;
         immolate->base_costs[RESOURCE_MANA] = 0;
+        immolate->base_dd_multiplier *= 0.0;
       }
 
       virtual void impact(action_state_t* s) override
