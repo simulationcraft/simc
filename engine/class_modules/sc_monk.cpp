@@ -4287,6 +4287,10 @@ struct touch_of_death_t: public monk_spell_t
 
     amount *= p() -> spec.touch_of_death -> effectN( 2 ).percent(); // 50% HP
 
+    // Bonus damage happens before any multipliers
+    if ( p() -> azerite.meridian_strikes.ok() )
+      amount += p() -> azerite.meridian_strikes.value();
+
     amount *= 1 + p() -> cache.damage_versatility();
  
     if ( p() -> legendary.hidden_masters_forbidden_touch )
@@ -4294,9 +4298,6 @@ struct touch_of_death_t: public monk_spell_t
 
     if ( p() -> buff.combo_strikes -> up() )
       amount *= 1 + p() -> cache.mastery_value();
-
-    if ( p() -> azerite.meridian_strikes.ok() )
-      amount += p() -> azerite.meridian_strikes.value();
 
     s -> result_raw = amount;
     s -> result_total = amount;
