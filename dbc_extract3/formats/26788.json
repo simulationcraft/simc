@@ -374,6 +374,9 @@
     { "data_type": "I", "field": "replace_spell_id" },
     { "data_type": "B", "field": "unk_2" }
   ],
+  "SpecSetMember": [
+    { "data_type": "i", "field": "id_spec" }
+  ],
   "Spell": [
     { "data_type": "S", "field": "rank" },
     { "data_type": "S", "field": "desc" },

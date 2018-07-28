@@ -489,6 +489,7 @@ DBFilesClient\SoundProviderPreferences.db2
 DBFilesClient\SourceInfo.db2
 DBFilesClient\SpamMessages.db2
 DBFilesClient\SpecializationSpells.db2
+DBFilesClient\SpecSetMember.db2
 DBFilesClient\Spell.db2
 DBFilesClient\SpellActionBarPref.db2
 DBFilesClient\SpellActivationOverlay.db2
