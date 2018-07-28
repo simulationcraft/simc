@@ -677,11 +677,15 @@ void champion_of_azeroth( special_effect_t& effect )
   const spell_data_t* driver = effect.player -> find_spell( 280712 );
   const spell_data_t* spell = effect.player -> find_spell( 280713 );
 
-  effect.custom_buff = make_buff<stat_buff_t>( effect.player, "champion_of_azeroth", spell )
-    -> add_stat( STAT_CRIT_RATING, amount )
-    -> add_stat( STAT_VERSATILITY_RATING, amount )
-    -> add_stat( STAT_MASTERY_RATING, amount )
-    -> add_stat( STAT_HASTE_RATING, amount );
+  effect.custom_buff = buff_t::find( effect.player, "champion_of_azeroth" );
+  if ( !effect.custom_buff )
+  {
+    effect.custom_buff = make_buff<stat_buff_t>( effect.player, "champion_of_azeroth", spell )
+      -> add_stat( STAT_CRIT_RATING, amount )
+      -> add_stat( STAT_VERSATILITY_RATING, amount )
+      -> add_stat( STAT_MASTERY_RATING, amount )
+      -> add_stat( STAT_HASTE_RATING, amount );
+  }
 
   // Replace the driver spell, the azerite power does not hold the RPPM value
   effect.spell_id = driver -> id();
