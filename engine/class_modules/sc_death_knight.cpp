@@ -463,6 +463,7 @@ public:
     buff_t* icy_citadel_builder;
     buff_t* icy_citadel;
     buff_t* festering_doom;
+    buff_t* festermight;
   } buffs;
 
   struct runeforge_t {
@@ -812,6 +813,9 @@ public:
     azerite_power_t last_surprise; 
     azerite_power_t festering_doom;
     azerite_power_t horrid_experimentation;
+    azerite_power_t festermight;
+    azerite_power_t harrowing_decay; // TODO : How does it refresh on multiple DC casts in a row ?
+    azerite_power_t cankerous_wounds; // Is it a separate roll or does it affect the 50/50 roll between 2-3 wounds ?
 
   }azerite;
 
@@ -3157,6 +3161,7 @@ struct glacial_contagion_t : public death_knight_spell_t
     death_knight_spell_t( "glacial_contagion", p, p -> find_spell( 274074 ) )
   {
     background = true;
+    base_dd_min = base_dd_max = p -> azerite.glacial_contagion.value( 1 );
   }
 
   void execute() override
@@ -3859,26 +3864,26 @@ struct dark_command_t: public death_knight_spell_t
 
 // Dark Transformation ======================================================
 
+struct horrid_experimentation_t : public death_knight_spell_t
+{
+  horrid_experimentation_t( death_knight_t* p ) :
+    death_knight_spell_t( "horrid_experimentation", p, p -> find_spell( 273096 ) )
+  {
+    aoe = -1;
+    background = true;
+    base_dd_min = base_dd_max = p -> azerite.horrid_experimentation.value();
+  }
+};
+
 struct dark_transformation_buff_t : public buff_t
 {
-  struct horrid_exp_t : public death_knight_spell_t
-  {
-    horrid_exp_t( death_knight_t* p ) :
-      death_knight_spell_t( "horrid_experimentation", p, p -> find_spell( 273095 ) )
-    {
-      aoe = -1;
-      background = true;
-      base_dd_min = base_dd_max = p -> azerite.horrid_experimentation.value();
-    }
-  };
-
-  horrid_exp_t* horrid_experimentation;
+  horrid_experimentation_t* horrid_experimentation;
 
   dark_transformation_buff_t( death_knight_t* p ):
     buff_t( buff_creator_t( p, "dark_transformation", p -> spec.dark_transformation )
       .duration( p -> spec.dark_transformation -> duration() )
       .cd( timespan_t::zero() ) ),
-    horrid_experimentation( new horrid_exp_t( p ) )
+    horrid_experimentation( new horrid_experimentation_t( p ) )
   { }
 
   void expire_override( int s, timespan_t t ) override
@@ -4004,13 +4009,33 @@ struct defile_damage_t : public death_and_decay_damage_base_t
   { }
 };
 
+struct bone_spike_graveyard_heal_t : public death_knight_heal_t
+{
+  bone_spike_graveyard_heal_t( death_knight_t* p ) :
+    death_knight_heal_t( "bone_spike_graveyard", p, p -> find_spell( 273088 ) )
+  {
+    background = true;
+    base_dd_min = base_dd_max = p -> azerite.bone_spike_graveyard.value( 2 );
+    target = p;
+  }
+};
+
 struct bone_spike_graveyard_t : public death_knight_spell_t
 {
+  bone_spike_graveyard_heal_t* bsg_heal;
   bone_spike_graveyard_t( death_knight_t* p ) :
-    death_knight_spell_t( "bone_spike_graveyard", p, p -> azerite.bone_spike_graveyard.spell() )
+    death_knight_spell_t( "bone_spike_graveyard", p, p -> find_spell( 273088 ) ),
+    bsg_heal( new bone_spike_graveyard_heal_t( p ) )
   {
     aoe = -1;
     background = true;
+    base_dd_min = base_dd_max = p -> azerite.bone_spike_graveyard.value( 1 );
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    bsg_heal -> execute();
   }
 };
 
@@ -4189,6 +4214,16 @@ struct coils_of_devastation_t
     background = true;
     may_miss = may_crit = false;
   } 
+};
+
+struct harrowing_decay_t : public death_knight_spell_t
+{
+  harrowing_decay_t( death_knight_t* p ) :
+    death_knight_spell_t( "harrowing_decay", p, p -> find_spell( 275931 ) )
+  {
+    background = true;
+    base_dd_min = base_dd_max = p -> azerite.harrowing_decay.value();
+  }
 };
 
 // Unholy T21 4P
@@ -4798,6 +4833,11 @@ struct festering_strike_t : public death_knight_melee_attack_t
       p() -> buffs.festering_doom -> decrement();
     }
 
+    if ( p() -> azerite.cankerous_wounds.enabled() )
+    {
+      da += p() -> azerite.cankerous_wounds.value( 1 );
+    }
+
     return da;
   }
 
@@ -4811,6 +4851,13 @@ struct festering_strike_t : public death_knight_melee_attack_t
     {
       size_t n = rng().range( size_t(), fw_proc_stacks.size() );
       unsigned n_stacks = fw_proc_stacks[ n ];
+
+      // Assuming cankerous wounds is a separate roll
+      if ( p() -> azerite.cankerous_wounds.enabled() && rng().roll( p() -> azerite.cankerous_wounds.value( 2 ) ) )
+      {
+        // Not in cankerous spelldata smh
+        n_stacks = 3;
+      }
 
       p() -> trigger_festering_wound( s, n_stacks );
 
@@ -5237,10 +5284,10 @@ struct howling_blast_aoe_t : public death_knight_spell_t
 struct echoing_howl_t : public death_knight_spell_t
 {
   echoing_howl_t( death_knight_t* p ) :
-    death_knight_spell_t( "echoing howl", p, p -> azerite.echoing_howl.spell() )
+    death_knight_spell_t( "echoing howl", p, p -> find_spell( 275918 ) )
   {
     aoe = -1;
-    school = SCHOOL_FROST;
+    base_dd_min = base_dd_max = p -> azerite.echoing_howl.value();
   }
 };
 
@@ -5384,11 +5431,11 @@ struct howling_blast_t : public death_knight_spell_t
 struct last_surprise_t : public death_knight_spell_t
 {
   last_surprise_t( death_knight_t* p ) :
-    death_knight_spell_t( "last_surprise", p, p -> azerite.last_surprise.spell() )
+    death_knight_spell_t( "last_surprise", p, p -> find_spell( 279606 ) )
   {
     aoe = -1;
     background = true;
-    callbacks = false;
+    base_dd_min = base_dd_max = p -> azerite.last_surprise.value( 1 );
   }
 };
 
@@ -6972,6 +7019,11 @@ void death_knight_t::burst_festering_wound( const action_state_t* state, unsigne
       }
 
       td -> debuff.festering_wound -> decrement( n_executes );
+
+      if ( dk -> azerite.festermight.enabled() )
+      {
+        dk -> buffs.festermight -> trigger( n_executes );
+      }
     }
   };
 
@@ -7599,6 +7651,9 @@ void death_knight_t::init_spells()
   azerite.last_surprise             = find_azerite_spell( "Last Surprise"             );
   azerite.festering_doom            = find_azerite_spell( "Festering Doom"            );
   azerite.horrid_experimentation    = find_azerite_spell( "Horrid Experimentation"    );
+  azerite.festermight               = find_azerite_spell( "Festermight"               );
+  azerite.harrowing_decay           = find_azerite_spell( "Harrowing Decay"           );
+  azerite.cankerous_wounds          = find_azerite_spell( "Cankerous Wounds"          );
 }
 
 // death_knight_t::default_apl_dps_precombat ================================
@@ -8160,6 +8215,10 @@ void death_knight_t::create_buffs()
     -> set_trigger_spell( azerite.icy_citadel );
   buffs.festering_doom             = buff_creator_t( this, "festering_doom", find_spell( 272441 ) )
     .trigger_spell( azerite.festering_doom );
+  buffs.festermight                = make_buff<stat_buff_t>( this, "festermight", find_spell( 274373 ) )
+    -> add_stat( STAT_STRENGTH, azerite.festermight.value() )
+    -> set_refresh_behavior( buff_refresh_behavior::DISABLED )
+    -> set_trigger_spell( azerite.festermight );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -8283,6 +8342,11 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
       cooldown.dancing_rune_weapon -> adjust( timespan_t::from_millis( sets -> set( DEATH_KNIGHT_BLOOD, T21, B2) -> effectN( 1 ).base_value() ), false );
     }
     cooldown.bone_shield_icd -> start();
+
+    if ( ! buffs.bone_shield -> up() && buffs.bones_of_the_damned -> up() )
+    {
+      buffs.bones_of_the_damned -> expire();
+    }
   }
 }
 
