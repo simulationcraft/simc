@@ -357,8 +357,10 @@ struct dbc_consumable_base_t : public action_t
 
     for ( const auto& spell_id : item_data -> id_spell )
     {
-      auto ptr = player -> find_spell( spell_id );
-      if ( ptr -> id() == as<unsigned>( spell_id ) )
+      // Note, bypasses level check from the spell itself, since it seems some consumable spells are
+      // flagged higher level than the actual food they are in.
+      auto ptr = dbc::find_spell( player, spell_id );
+      if ( ptr && ptr -> id() == as<unsigned>( spell_id ) )
       {
         return ptr;
       }
