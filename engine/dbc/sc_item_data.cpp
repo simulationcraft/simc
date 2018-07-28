@@ -18,6 +18,13 @@ namespace {
     { return obj -> item_class == ITEM_CLASS_CONSUMABLE && obj -> item_subclass == CLASS; }
   };
 
+  struct gem_filter_t
+  {
+    // No "other" gems, nor relicn
+    bool operator()( const item_data_t* obj ) const
+    { return obj->item_class == ITEM_CLASS_GEM && obj->item_subclass != 9 && obj->item_subclass != 11; }
+  };
+
   item_data_t nil_item_data;
   random_suffix_data_t nil_rsd;
   item_enchantment_data_t nil_ied;
@@ -32,6 +39,8 @@ namespace {
   potion_data_t potion_data_index;
   flask_data_t flask_data_index;
   food_data_t food_data_index;
+
+  filtered_dbc_index_t<item_data_t, gem_filter_t, id_member_policy> gem_index;
 }
 
 const item_name_description_t* dbc::item_name_descriptions( bool ptr )
@@ -444,12 +453,14 @@ void dbc::init_item_data()
   potion_data_index.init( __items_noptr(), false );
   flask_data_index.init( __items_noptr(), false );
   food_data_index.init( __items_noptr(), false );
+  gem_index.init( __items_noptr(), false );
 #if SC_USE_PTR
   item_data_index.init( __items_ptr(), true );
   item_enchantment_data_index.init( __ptr_spell_item_ench_data, true );
   potion_data_index.init( __items_ptr(), true );
   flask_data_index.init( __items_ptr(), true );
   food_data_index.init( __items_ptr(), true );
+  gem_index.init( __items_ptr(), true );
 #endif
 }
 
@@ -1370,6 +1381,24 @@ std::vector<item_database::token_t> item_database::parse_tokens( const std::stri
   }
 
   return tokens;
+}
+
+const item_data_t* dbc::find_gem( const std::string& gem, bool ptr, bool tokenized )
+{
+  const item_data_t* i = gem_index.get( ptr, [&gem, tokenized]( const item_data_t* obj ) {
+      if ( tokenized )
+      {
+        std::string n = obj->name;
+        util::tokenize( n );
+        return n == gem;
+      }
+      else
+      {
+        return gem == obj->name;
+      }
+  } );
+
+  return i ? i : &( nil_item_data );
 }
 
 const item_data_t* dbc::find_consumable( item_subclass_consumable type, bool ptr, const std::function<bool(const item_data_t*)>& f )

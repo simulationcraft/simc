@@ -1624,7 +1624,27 @@ void item_t::decode_gems()
     if ( sim -> challenge_mode )
       return;
 
-    if ( option_gems_str.empty() || option_gems_str == "none" )
+    // First, attempt to parse gems by trying to find them through item data (split the strings by /
+    // and search for each)
+    auto split = util::string_split( option_gems_str, "/" );
+    unsigned gem_index = 0;
+    for ( const auto& gem_str : split )
+    {
+      auto item = dbc::find_gem( gem_str, player->dbc.ptr );
+      if ( item->id > 0 )
+      {
+        parsed.gem_id[ gem_index++ ] = item->id;
+      }
+
+      if ( gem_index == parsed.gem_id.size() - 1 )
+      {
+        break;
+      }
+    }
+
+    // Note, use the parsing results above only if all of the / delimited names can be parsed into a
+    // gem id (gem item id).
+    if ( gem_index == split.size() || option_gems_str.empty() || option_gems_str == "none" )
     {
       // Gems
       for ( size_t i = 0, end = parsed.gem_id.size(); i < end; i++ )
@@ -1666,7 +1686,8 @@ void item_t::decode_gems()
   }
   catch (const std::exception& e)
   {
-    std::throw_with_nested(std::invalid_argument("Error decoding gems"));
+    std::throw_with_nested( std::invalid_argument(
+          fmt::format( "Error decoding gems from '{}'", option_gems_str ) ) ) ;
   }
 }
 
