@@ -3608,6 +3608,11 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
         m *= 1.0 + passive_values.amplification_2;
       break;
     case ATTR_STAMINA:
+      if ( sim->auras.power_word_fortitude->check() )
+      {
+        m *= 1.0 + sim->auras.power_word_fortitude->value();
+      }
+      break;
     default:
       break;
   }

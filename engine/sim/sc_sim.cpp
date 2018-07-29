@@ -1779,6 +1779,7 @@ void sim_t::combat_begin()
 
   if ( overrides.arcane_intellect ) auras.arcane_intellect -> override_buff();
   if ( overrides.battle_shout ) auras.battle_shout->override_buff();
+  if ( overrides.power_word_fortitude ) auras.power_word_fortitude -> override_buff();
 
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
   {
@@ -2432,6 +2433,10 @@ void sim_t::init()
                         .default_value( dbc::find_spell( this, 6673 )->effectN( 1 ).percent() )
                         .add_invalidate( CACHE_ATTACK_POWER );
 
+  auras.power_word_fortitude = buff_creator_t( this, "power_word_fortitude", dbc::find_spell( this, 21562 ) )
+                           .default_value( dbc::find_spell( this, 21562 ) -> effectN( 1 ).percent() )
+                           .add_invalidate( CACHE_STAMINA );
+
   // Find Already defined target, otherwise create a new one.
   if ( debug )
     out_debug << "Creating Enemies.";
@@ -2990,6 +2995,7 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 
   overrides.arcane_intellect        = optimal_raid;
   overrides.battle_shout            = optimal_raid;
+  overrides.power_word_fortitude    = optimal_raid;
 
   overrides.chaos_brand             = optimal_raid;
   overrides.mystic_touch            = optimal_raid;
@@ -3218,6 +3224,7 @@ void sim_t::create_options()
   add_option( opt_func( "optimal_raid", parse_optimal_raid ) );
   add_option( opt_int( "override.arcane_intellect", overrides.arcane_intellect ) );
   add_option( opt_int( "override.battle_shout", overrides.battle_shout ) );
+  add_option( opt_int( "override.power_word_fortitude", overrides.power_word_fortitude ) );
   add_option( opt_int( "override.chaos_brand", overrides.chaos_brand ) );
   add_option( opt_int( "override.mystic_touch", overrides.mystic_touch ) );
   add_option( opt_int( "override.mortal_wounds", overrides.mortal_wounds ) );

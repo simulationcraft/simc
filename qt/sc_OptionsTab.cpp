@@ -392,7 +392,8 @@ void SC_OptionsTab::createBuffsDebuffsTab()
   appendCheckBox( tr( "Toggle All Buffs" ),             "",                                 tr( "Toggle all buffs on/off" ),                          buffsLayout, buffsButtonGroup );
   appendCheckBox( tr( "Bloodlust" ),                    "override.bloodlust",               tr( "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp" ),  buffsLayout, buffsButtonGroup );
   appendCheckBox( tr( "Arcane Intellect" ),             "override.arcane_intellect",        tr( "Arcane Intellect" ),                                 buffsLayout, buffsButtonGroup );
-  appendCheckBox( tr( "Battle Shout" ),                 "override.battle_shout",            tr( "Battle Shout" ),                                     buffsLayout, buffsButtonGroup );
+  appendCheckBox( tr( "Power Word: Fortitude" ),        "override.power_word_fortitude",    tr( "Power Word: Fortitude" ),                                 buffsLayout, buffsButtonGroup );
+  appendCheckBox( tr( "Battle Shout" ),                 "override.battle_shout",            tr( "Battle Shout" ),                                        buffsLayout, buffsButtonGroup );
   buffsLayout -> addStretch( 1 );
 
   QGroupBox* buffsGroupBox = new QGroupBox( tr( "Buffs" ) );  // Buff Widget

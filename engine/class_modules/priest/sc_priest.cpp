@@ -225,6 +225,28 @@ struct power_infusion_t final : public priest_spell_t
   }
 };
 
+struct power_word_fortitude_t final : public priest_spell_t
+{
+  power_word_fortitude_t( priest_t& p, const std::string& options_str )
+    : priest_spell_t( "power_word_fortitude", p, p.find_class_spell("Power Word: Fortitude") )
+  {
+    parse_options( options_str );
+    harmful = false;
+    ignore_false_positive = true;
+
+    background = sim -> overrides.arcane_intellect != 0;
+  }
+
+  virtual void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( ! sim -> overrides.power_word_fortitude )
+      sim -> auras.power_word_fortitude -> trigger();
+  }
+};
+
+
 // ==========================================================================
 // Blessed Dawnlight Medallion
 // ==========================================================================
@@ -966,6 +988,10 @@ action_t* priest_t::create_action( const std::string& name, const std::string& o
   if ( name == "power_infusion" )
   {
     return new power_infusion_t( *this, options_str );
+  }
+  if ( name == "power_word_fortitude" )
+  {
+    return new power_word_fortitude_t( *this, options_str );
   }
   if ( ( name == "shadowfiend" ) || ( name == "mindbender" ) )
   {

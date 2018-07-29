@@ -861,6 +861,7 @@ void to_json( JsonOutput root, const sim_t& sim )
   auto overrides = root[ "overrides" ];
   add_non_zero( overrides, "arcane_intellect", sim.overrides.arcane_intellect );
   add_non_zero( overrides, "battle_shout", sim.overrides.battle_shout );
+  add_non_zero( overrides, "power_word_fortitude", sim.overrides.power_word_fortitude );
   add_non_zero( overrides, "chaos_brand", sim.overrides.chaos_brand );
   add_non_zero( overrides, "mystic_touch", sim.overrides.mystic_touch );
   add_non_zero( overrides, "mortal_wounds", sim.overrides.mortal_wounds );
