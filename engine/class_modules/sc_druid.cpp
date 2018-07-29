@@ -5804,6 +5804,7 @@ struct solar_empowerment_t : public druid_spell_t
     background = true;
     may_crit = false;
     aoe = -1;
+    radius = 8;
   }
 
   void init () override
@@ -5979,7 +5980,7 @@ struct starfall_t : public druid_spell_t
       druid_spell_t(n, p, s)
     {
       aoe = -1;
-      background = dual = direct_tick = true; // Legion TOCHECK
+      background = dual = direct_tick = true;
       callbacks = false;
       radius = p->find_spell(191034)->effectN(1).radius();
       radius *= 1.0 + p->talent.stellar_drift->effectN(1).percent();
@@ -6021,7 +6022,6 @@ struct starfall_t : public druid_spell_t
     druid_spell_t("starfall", p, p -> find_specialization_spell("Starfall"), options_str)
   {
     may_miss = may_crit = false;
-    base_tick_time = data().duration() / 8.0; // ticks 9 times (missing from spell data)
 
     if (!p->active.starfall)
     {
