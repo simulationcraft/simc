@@ -727,7 +727,7 @@ public:
 
   // player_t overrides
   virtual action_t* create_action( const std::string& name, const std::string& options ) override;
-  virtual double    composite_armor_multiplier() const override;
+  virtual double    composite_base_armor_multiplier() const override;
   virtual double    composite_melee_crit_chance() const override;
   virtual double    composite_melee_crit_chance_multiplier() const override;
   virtual double    composite_spell_crit_chance() const override;
@@ -7863,9 +7863,9 @@ double monk_t::composite_rating_multiplier( rating_e rating ) const
 
 // monk_t::composite_armor_multiplier ===================================
 
-double monk_t::composite_armor_multiplier() const
+double monk_t::composite_base_armor_multiplier() const
 {
-  double a = player_t::composite_armor_multiplier();
+  double a = player_t::composite_base_armor_multiplier();
 
   a *= 1 + spec.brewmasters_balance -> effectN( 1 ).percent();
 
