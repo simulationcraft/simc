@@ -7637,15 +7637,6 @@ void druid_t::apl_balance()
 {
   std::vector<std::string> racial_actions = get_racial_actions();
   std::vector<std::string> item_actions   = get_item_actions();
-  std::string              potion_action  = "potion,name=";
-  if ( true_level > 100 )
-    potion_action += "deadly_grace";
-  else if ( true_level > 90 )
-    potion_action += "draenic_intellect";
-  else if ( true_level > 85 )
-    potion_action += "jade_serpent";
-  else
-    potion_action += "volcanic";
 
   action_priority_list_t* default_list        = get_action_priority_list( "default" );
   action_priority_list_t* ST                  = get_action_priority_list( "st" );
@@ -7653,7 +7644,7 @@ void druid_t::apl_balance()
   action_priority_list_t* ED                  = get_action_priority_list( "ed");
 
   if ( sim -> allow_potions && true_level >= 80 )
-    default_list -> add_action( potion_action + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
+    default_list -> add_action( "potion,if=buff.celestial_alignment.up|buff.incarnation.up" );
 
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[i] + ",if=buff.celestial_alignment.up|buff.incarnation.up" );
