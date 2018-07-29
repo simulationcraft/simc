@@ -6,11 +6,11 @@ position=back
 talents=3101033
 spec=enhancement
 
-head=sethraliss_fanged_helm,id=159374,bonus_id=4779/1512/4786,azerite_powers=196/461
+head=sethraliss_fanged_helm,id=159374,bonus_id=4779/1512/4775/4786,azerite_powers=196/461/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4786,azerite_powers=416/461
+shoulder=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4775/4786,azerite_powers=416/461/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=triheart_chestguard,id=159362,bonus_id=4779/1512/4786,azerite_powers=447/459
+chest=triheart_chestguard,id=159362,bonus_id=4779/1512/4775/4786,azerite_powers=447/459/0/13
 wrists=raouls_barrelhook_bracers,id=159356,bonus_id=4779/1512/4786
 hands=water_shapers,id=159366,bonus_id=4779/1512/4786
 waist=anchor_chain_girdle,id=159386,bonus_id=4779/1512/4786
