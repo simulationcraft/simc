@@ -554,6 +554,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 279926, special_effects::earthlink             );
   unique_gear::register_special_effect( 273823, special_effects::wandering_soul        ); // Blightborne Infusion
   unique_gear::register_special_effect( 273150, special_effects::wandering_soul        ); // Ruinous Bolt
+  unique_gear::register_special_effect( 280429, special_effects::swirling_sands        );
   unique_gear::register_special_effect( 280579, special_effects::retaliatory_fury      ); // Retaliatory Fury
   unique_gear::register_special_effect( 280624, special_effects::retaliatory_fury      ); // Last Gift
   unique_gear::register_special_effect( 280577, special_effects::glory_in_battle       ); // Glory In Battle
@@ -1205,6 +1206,101 @@ void wandering_soul( special_effect_t& effect )
       buff -> set_period( timespan_t::zero() ); // disable ticking
     }
   }
+
+  effect.custom_buff = buff;
+  effect.spell_id = driver -> id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void swirling_sands( special_effect_t& effect )
+{
+  struct swirling_sands_buff_t : public stat_buff_t
+  {
+    dbc_proc_callback_t* extender;
+    timespan_t max_extension;
+    timespan_t current_extension = timespan_t::zero();
+
+    swirling_sands_buff_t( player_t* p, const azerite_power_t& power, dbc_proc_callback_t* e ):
+      stat_buff_t( p, "swirling_sands", p -> find_spell( 280433 ) ),
+      extender( e ), max_extension( power.spell_ref().effectN( 3 ).time_value() )
+    {
+      add_stat( STAT_CRIT_RATING, power.value( 1 ) );
+    }
+
+    void extend_duration( player_t* p, timespan_t extra_seconds ) override
+    {
+      if ( !check() || cooldown -> down() )
+        return;
+
+      extra_seconds = std::min( extra_seconds, max_extension - current_extension );
+      if ( extra_seconds == timespan_t::zero() )
+        return;
+
+      stat_buff_t::extend_duration( p, extra_seconds );
+      current_extension += extra_seconds;
+      cooldown -> start();
+    }
+
+    void start( int stacks, double value, timespan_t duration ) override
+    {
+      stat_buff_t::start( stacks, value, duration );
+      extender -> activate();
+      current_extension = timespan_t::zero();
+    }
+
+    void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+    {
+      stat_buff_t::expire_override( expiration_stacks, remaining_duration );
+      extender -> deactivate();
+    }
+
+    void reset() override
+    {
+      stat_buff_t::reset();
+      extender -> deactivate();
+    }
+  };
+
+  struct swirling_sands_extender_t : public dbc_proc_callback_t
+  {
+    timespan_t extension;
+
+    swirling_sands_extender_t( const special_effect_t& effect, const azerite_power_t& power ) :
+      dbc_proc_callback_t( effect.player, effect ),
+      extension( power.spell_ref().effectN( 2 ).time_value() )
+    {}
+
+    void execute( action_t* a, action_state_t* ) override
+    {
+      proc_buff -> extend_duration( a -> player, extension );
+    }
+  };
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  const spell_data_t* driver = effect.player -> find_spell( 280432 );
+
+  auto secondary = new special_effect_t( effect.player );
+  secondary -> name_str = "swirling_sands_extender";
+  secondary -> type = effect.type;
+  secondary -> source = effect.source;
+  secondary -> proc_flags_ = driver -> proc_flags();
+  secondary -> proc_flags2_ = PF2_CRIT;
+  secondary -> proc_chance_ = 1.0;
+  secondary -> cooldown_ = timespan_t::zero();
+  effect.player -> special_effects.push_back( secondary );
+
+  auto extender = new swirling_sands_extender_t( *secondary, power );
+
+  buff_t* buff = buff_t::find( effect.player, "swirling_sands" );
+  if ( !buff )
+    buff = make_buff<swirling_sands_buff_t>( effect.player, power, extender );
+
+  secondary -> custom_buff = buff;
+  extender -> deactivate();
 
   effect.custom_buff = buff;
   effect.spell_id = driver -> id();

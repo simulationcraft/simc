@@ -173,6 +173,7 @@ void azerite_globules( special_effect_t& );
 void overwhelming_power( special_effect_t& );
 void earthlink( special_effect_t& );
 void wandering_soul( special_effect_t& );
+void swirling_sands( special_effect_t& );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
