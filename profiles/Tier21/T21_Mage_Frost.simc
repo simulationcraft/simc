@@ -31,21 +31,27 @@ actions.precombat+=/frostbolt
 
 # Executed every time the actor is available.
 actions=counterspell
+# If the mage has FoF after casting instant Flurry, we can delay the Ice Lance and use other high priority action, if available.
 actions+=/ice_lance,if=prev_gcd.1.flurry&!buff.fingers_of_frost.react
 actions+=/time_warp,if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(prev_gcd.1.icy_veins|target.time_to_die<50)
 actions+=/call_action_list,name=cooldowns
+# The target threshold isn't exact. Between 3-5 targets, the differences between the ST and AoE action lists are rather small. However, Freezing Rain prefers using AoE action list sooner as it benefits greatly from the high priority Blizzard action.
 actions+=/call_action_list,name=aoe,if=active_enemies>3&talent.freezing_rain.enabled|active_enemies>4
 actions+=/call_action_list,name=single
 
+# With Freezing Rain, it's better to prioritize using Frozen Orb when both FO and Blizzard are off cooldown. Without Freezing Rain, the converse is true although the difference is miniscule until very high target counts.
 actions.aoe=frozen_orb
 actions.aoe+=/blizzard
 actions.aoe+=/comet_storm
 actions.aoe+=/ice_nova
+# Simplified Flurry conditions from the ST action list. Since the mage is generating far less Brain Freeze charges, the exact condition here isn't all that important.
 actions.aoe+=/flurry,if=prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.frostbolt&(buff.icicles.stack<4|!talent.glacial_spike.enabled)|prev_gcd.1.glacial_spike)
 actions.aoe+=/ice_lance,if=buff.fingers_of_frost.react
+# The mage will generally be generating a lot of FoF charges when using the AoE action list. Trying to delay Ray of Frost until there are no FoF charges and no active Frozen Orbs would lead to it not being used at all.
 actions.aoe+=/ray_of_frost
 actions.aoe+=/ebonbolt
 actions.aoe+=/glacial_spike
+# Using Cone of Cold is mostly DPS neutral with the AoE target thresholds. It only becomes decent gain with roughly 7 or more targets.
 actions.aoe+=/cone_of_cold
 actions.aoe+=/frostbolt
 actions.aoe+=/call_action_list,name=movement
@@ -54,8 +60,11 @@ actions.aoe+=/ice_lance
 actions.cooldowns=icy_veins
 actions.cooldowns+=/mirror_image
 actions.cooldowns+=/rune_of_power,if=time_to_die>10+cast_time&time_to_die<25
+# With Glacial Spike, Rune of Power should be used right before the Glacial Spike combo (i.e. with 5 Icicles and a Brain Freeze). When Ebonbolt is off cooldown, Rune of Power can also be used just with 5 Icicles.
 actions.cooldowns+=/rune_of_power,if=active_enemies=1&talent.glacial_spike.enabled&buff.icicles.stack=5&(!talent.ebonbolt.enabled&buff.brain_freeze.react|talent.ebonbolt.enabled&(full_recharge_time<=cooldown.ebonbolt.remains&buff.brain_freeze.react|cooldown.ebonbolt.remains<cast_time&!buff.brain_freeze.react))
+# Without Glacial Spike, Rune of Power should be used before any bigger cooldown (Frozen Orb, Ebonbolt, Comet Storm, Ray of Frost) or when Rune of Power is about to reach 2 charges.
 actions.cooldowns+=/rune_of_power,if=active_enemies=1&!talent.glacial_spike.enabled&(prev_gcd.1.frozen_orb|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time|talent.comet_storm.enabled&cooldown.comet_storm.remains<cast_time|talent.ray_of_frost.enabled&cooldown.ray_of_frost.remains<cast_time|charges_fractional>1.9)
+# With 2 or more targets, use Rune of Power exclusively with Frozen Orb. This is the case even with Glacial Spike.
 actions.cooldowns+=/rune_of_power,if=active_enemies>1&prev_gcd.1.frozen_orb
 actions.cooldowns+=/potion,if=prev_gcd.1.icy_veins|target.time_to_die<70
 actions.cooldowns+=/use_items
@@ -66,16 +75,25 @@ actions.cooldowns+=/lights_judgment
 actions.movement=blink,if=movement.distance>10
 actions.movement+=/ice_floes,if=buff.ice_floes.down
 
+# In some situations, you can shatter Ice Nova even after already casting Flurry and Ice Lance. Otherwise this action is used when the mage has FoF after casting Flurry, see above.
 actions.single=ice_nova,if=cooldown.ice_nova.ready&debuff.winters_chill.up
+# Without GS, the mage just tries to shatter as many Frostbolts and Ebonbolts as possible. Forcing shatter on Frostbolt is still a small gain, so is not caring about FoF. Ice Lance is too weak to warrant delaying Brain Freeze Flurry.
 actions.single+=/flurry,if=!talent.glacial_spike.enabled&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&prev_gcd.1.frostbolt)
+# With GS, the mage only shatters Frostbolt that would put them at 1-3 Icicle stacks, Ebonbolt if it would waste Brain Freeze charge (i.e. when the mage starts casting Ebonbolt with Brain Freeze active) and of course Glacial Spike. Difference between shattering Frostbolt with 1-3 Icicles and 1-4 Icicles is small, but 1-3 tends to be better in more situations (the higher GS damage is, the more it leans towards 1-3).
 actions.single+=/flurry,if=talent.glacial_spike.enabled&buff.brain_freeze.react&(prev_gcd.1.frostbolt&buff.icicles.stack<4|prev_gcd.1.glacial_spike|prev_gcd.1.ebonbolt)
 actions.single+=/frozen_orb
+# With Freezing Rain and at least 2 targets, Blizzard needs to be used with higher priority to make sure you can fit both instant Blizzards into a single Freezing Rain. Starting with three targets, Blizzard leaves the low priority filler role and is used on cooldown (and just making sure not to waste Brain Freeze charges) with or without Freezing Rain.
 actions.single+=/blizzard,if=active_enemies>2|active_enemies>1&cast_time=0&buff.fingers_of_frost.react<2
+# Trying to pool charges of FoF for anything isn't worth it. Use them as they come.
 actions.single+=/ice_lance,if=buff.fingers_of_frost.react
+# Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. This is only a small gain, as Ray of Frost isn't too impactful.
 actions.single+=/ray_of_frost,if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0
 actions.single+=/comet_storm
+# Without GS, Ebonbolt is used on cooldown. With GS, Ebonbolt is only used to fill in the blank spots when fishing for a Brain Freeze proc, i.e. the mage reaches 5 Icicles but still doesn't have a Brain Freeze proc.
 actions.single+=/ebonbolt,if=!talent.glacial_spike.enabled|buff.icicles.stack=5&!buff.brain_freeze.react
+# Glacial Spike is used when there's a Brain Freeze proc active (i.e. only when it can be shattered). This is a small to medium gain in most situations. Low mastery leans towards using it when available. When using Splitting Ice and having another target nearby, it's slightly better to use GS when available, as the second target doesn't benefit from shattering the main target.
 actions.single+=/glacial_spike,if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled
+# Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even against a single target, especially with low mastery.
 actions.single+=/blizzard,if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time
 actions.single+=/ice_nova
 actions.single+=/frostbolt
