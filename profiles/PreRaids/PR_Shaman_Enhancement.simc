@@ -7,10 +7,10 @@ position=back
 talents=3101033
 
 # Default consumables
-potion=prolonged_power
-flask=seventh_demon
-food=lemon_herb_filet
-augmentation=defiled
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -64,7 +64,7 @@ actions.cds+=/berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<10
 actions.cds+=/blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
 actions.cds+=/potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60
 actions.cds+=/feral_spirit
-actions.cds+=/ascendance,if=(cooldown.strike.remains>0)&buff.ascendance.down
+actions.cds+=/ascendance,if=cooldown.strike.remains>0
 actions.cds+=/earth_elemental
 
 actions.core=earthen_spike,if=variable.furyCheck25
@@ -91,7 +91,7 @@ actions.filler+=/flametongue
 actions.opener=rockbiter,if=maelstrom<15&time<gcd
 
 head=sethraliss_fanged_helm,id=159374,bonus_id=4779/1512/4786,azerite_powers=196/461
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4935/1512,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
 shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4786,azerite_powers=416/461
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=triheart_chestguard,id=159362,bonus_id=4779/1512/4786,azerite_powers=447/459
@@ -108,11 +108,11 @@ main_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=galefo
 off_hand=soulcharmers_bludgeon,id=159661,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=338.75
-# gear_agility=2596
-# gear_stamina=4309
-# gear_crit_rating=455
-# gear_haste_rating=1335
-# gear_mastery_rating=402
+# gear_ilvl=340.44
+# gear_agility=2625
+# gear_stamina=4362
+# gear_crit_rating=483
+# gear_haste_rating=1363
+# gear_mastery_rating=430
 # gear_versatility_rating=345
 # gear_armor=2031

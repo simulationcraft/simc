@@ -7566,10 +7566,11 @@ std::string shaman_t::default_potion() const
                 : ( true_level >= 85 ) ? "jade_serpent" : ( true_level >= 80 ) ? "volcanic" : "disabled";
 
   std::string enhance_pot =
-      ( true_level > 100 )
-          ? "prolonged_power"
-          : ( true_level >= 90 ) ? "draenic_agility"
-                                 : ( true_level >= 85 ) ? "virmens_bite" : ( true_level >= 80 ) ? "tolvir" : "disabled";
+      ( true_level > 110 ) ? "battle_potion_of_agility"
+                : ( true_level > 100 ) ? "prolonged_power"
+                          : ( true_level >= 90 ) ? "draenic_agility"
+                                    : ( true_level >= 85 ) ? "virmens_bite" 
+                                              : ( true_level >= 80 ) ? "tolvir" : "disabled";
 
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_pot : elemental_pot;
 }
@@ -7586,10 +7587,11 @@ std::string shaman_t::default_flask() const
                 : ( true_level >= 85 ) ? "warm_sun" : ( true_level >= 80 ) ? "draconic_mind" : "disabled";
 
   std::string enhance_flask =
-      ( true_level > 100 ) ? "seventh_demon"
-                           : ( true_level >= 90 ) ? "greater_draenic_agility_flask"
-                                                  : ( true_level >= 85 ) ? "spring_blossoms"
-                                                                         : ( true_level >= 80 ) ? "winds" : "disabled";
+      ( true_level > 110 ) ? "currents"
+                : ( true_level > 100 ) ? "seventh_demon"
+                          : ( true_level >= 90 ) ? "greater_draenic_agility_flask"
+                                    : ( true_level >= 85 ) ? "spring_blossoms"
+                                              : ( true_level >= 80 ) ? "winds" : "disabled";
 
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_flask : elemental_flask;
 }
@@ -7599,18 +7601,17 @@ std::string shaman_t::default_flask() const
 std::string shaman_t::default_food() const
 {
   std::string elemental_food =
-      ( true_level > 100 )
-          ? "lemon_herb_filet"
+      ( true_level > 100 ) ? "lemon_herb_filet"
           : ( true_level > 90 ) ? "pickled_eel"
                                 : ( true_level >= 90 ) ? "mogu_fish_stew"
                                                        : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
   std::string enhance_food =
-      ( true_level > 100 )
-          ? "lemon_herb_filet"
-          : ( true_level > 90 ) ? "buttered_sturgeon"
-                                : ( true_level >= 90 ) ? "sea_mist_rice_noodles"
-                                                       : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+      ( true_level > 110 ) ? "bountiful_captains_feast"
+            : ( true_level > 100 ) ? "lemon_herb_filet"
+                      : ( true_level > 90 ) ? "buttered_sturgeon"
+                                  : ( true_level >= 90 ) ? "sea_mist_rice_noodles"
+                                            : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_food : elemental_food;
 }
@@ -7621,7 +7622,10 @@ std::string shaman_t::default_rune() const
 {
   std::string elemental_rune = ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "focus" : "disabled";
 
-  std::string enhance_rune = ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "hyper" : "disabled";
+  std::string enhance_rune = 
+      (true_level >= 120) ? "battle_scarred" 
+                : ( true_level >= 110 ) ? "defiled" 
+                          : ( true_level >= 100 ) ? "hyper" : "disabled";
 
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_rune : elemental_rune;
 }
@@ -7831,7 +7835,7 @@ void shaman_t::init_action_list_enhancement()
   cds->add_action(
       "potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60" );
   cds->add_action( this, "Feral Spirit" );
-  cds->add_talent( this, "Ascendance", "if=(cooldown.strike.remains>0)&buff.ascendance.down" );
+  cds->add_talent( this, "Ascendance", "if=cooldown.strike.remains>0" );
   cds->add_action( this, "Earth Elemental" );
 
   core->add_talent( this, "Earthen Spike", "if=variable.furyCheck25" );
