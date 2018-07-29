@@ -762,7 +762,7 @@ void thunderous_blast( special_effect_t& effect )
     buff_t* building_pressure = nullptr;
     buff_t* rolling_thunder = nullptr;
 
-    thunderous_blast_t( special_effect_t& e, const azerite_power_t& power ):
+    thunderous_blast_t( const special_effect_t& e, const azerite_power_t& power ):
       proc_spell_t( "thunderous_blast", e.player, e.player -> find_spell( 280384 ) )
     {
       base_dd_min = base_dd_max = power.value( 1 );
@@ -825,13 +825,7 @@ void thunderous_blast( special_effect_t& effect )
   if ( ! power.enabled() )
     return;
 
-  effect.execute_action = effect.player -> find_action( "thunderous_blast" );
-  if ( !effect.execute_action )
-    effect.execute_action = effect.player -> create_proc_action( "thunderous_blast", effect );
-  if ( !effect.execute_action )
-    effect.execute_action = new thunderous_blast_t( effect, power );
-
-  // Replace the driver spell, the azerite power does not hold the RPPM value
+  effect.execute_action = unique_gear::create_proc_action<thunderous_blast_t>( "thunderous_blast", effect, power );
   effect.spell_id = effect.player -> find_spell( 280383 ) -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
@@ -841,7 +835,7 @@ void filthy_transfusion( special_effect_t& effect )
 {
   struct filthy_transfusion_t : public unique_gear::proc_spell_t
   {
-    filthy_transfusion_t( special_effect_t& e, const azerite_power_t& power ):
+    filthy_transfusion_t( const special_effect_t& e, const azerite_power_t& power ):
       proc_spell_t( "filthy_transfusion", e.player, e.player -> find_spell( 273836 ) )
     {
       base_td = power.value( 1 );
@@ -853,13 +847,7 @@ void filthy_transfusion( special_effect_t& effect )
   if ( ! power.enabled() )
     return;
 
-  effect.execute_action = effect.player -> find_action( "filthy_transfusion" );
-  if ( !effect.execute_action )
-    effect.execute_action = effect.player -> create_proc_action( "filthy_transfusion", effect );
-  if ( !effect.execute_action )
-    effect.execute_action = new filthy_transfusion_t( effect, power );
-
-  // Replace the driver spell, the azerite power does not hold the RPPM value
+  effect.execute_action = unique_gear::create_proc_action<filthy_transfusion_t>( "filthy_transfusion", effect, power );
   effect.spell_id = effect.player -> find_spell( 273835 ) -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
