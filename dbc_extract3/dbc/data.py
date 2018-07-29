@@ -255,7 +255,7 @@ class DBCRecord(RawDBCRecord):
 
         return f
 
-    def field_names(self, delim = ", "):
+    def field_names(self, delim = ", ", raw = False):
         fields = []
         if self._id_block and self.__output_field('id'):
             fields.append('id')
@@ -267,7 +267,10 @@ class DBCRecord(RawDBCRecord):
         if self._key_block and self.__output_field('id_parent'):
             fields.append('id_parent')
 
-        return delim.join(fields)
+        if raw:
+            return fields
+        else:
+            return delim.join(fields)
 
     def __output_field(self, field):
         if len(self._dbcp.options.fields) == 0:
@@ -307,6 +310,33 @@ class DBCRecord(RawDBCRecord):
             s.append('id_parent=%u' % self._key)
 
         return ' '.join(s)
+
+    def obj(self):
+        d = {}
+        if self._id_block and self.__output_field('id'):
+            d['id'] = self._id
+
+        for i in range(0, len(self._fi)):
+            field = self._fi[i]
+            type_ = self._fo[i]
+            if not field:
+                continue
+
+            if not self.__output_field(field):
+                continue
+
+            if type_ == 'S':
+                if self._d[i] > 0:
+                    d[field] = self._dbcp.get_string(self._d[i], self._record_id, i)
+                else:
+                    d[field] = ""
+            else:
+                d[field] = self._d[i]
+
+        if self._key_block and self.__output_field('id_parent'):
+            d['id_parent'] = self._key
+
+        return d
 
     def csv(self, delim = ',', header = False):
         s = ''
@@ -455,7 +485,7 @@ class Meta(type):
         return super(Meta, mcl).__new__(mcl, name, bases, namespace)
 
 def requires_data_model(options):
-    return options.type in ['csv', 'view', 'output', 'generator', 'class_flags']
+    return options.type in ['csv', 'view', 'output', 'generator', 'class_flags', 'json']
 
 def initialize_data_model(options):
     if not requires_data_model(options):

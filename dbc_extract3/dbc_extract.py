@@ -25,7 +25,7 @@ parser = argparse.ArgumentParser(usage= "%(prog)s [-otlbp] [ARGS]")
 parser.add_argument("-t", "--type", dest = "type", 
                   help    = "Processing type [output]", metavar = "TYPE", 
                   default = "output", action = "store",
-                  choices = [ 'output', 'scale', 'view', 'csv', 'header',
+                  choices = [ 'output', 'scale', 'view', 'csv', 'header', 'json',
                               'class_flags', 'generator', 'validate', 'generate_format' ])
 parser.add_argument("-o",            dest = "output")
 parser.add_argument("-a",            dest = "append")
@@ -200,6 +200,65 @@ elif options.type == 'view':
             print('{}{}'.format(record, hotfix and ' [hotfix]' or ''))
         else:
             print('No record for DBC ID {} found'.format(id))
+elif options.type == 'json':
+    path = os.path.abspath(os.path.join(options.path, options.args[0]))
+    id = None
+    if len(options.args) > 1:
+        id = int(options.args[1])
+
+    dbc_file = DBCFile(options, path)
+    if not dbc_file.open():
+        sys.exit(1)
+
+    cache = HotfixFile(options)
+    if not cache.open():
+        sys.exit(1)
+    else:
+        entries = {}
+        for entry in cache.entries(dbc_file.parser):
+            entries[entry.id] = entry
+
+    str_ = '[\n'
+    logging.debug(dbc_file)
+    if id == None:
+        replaced_ids = []
+        for record in dbc_file:
+            if not options.raw and record.id in entries:
+                data_ = entries[record.id].obj()
+                data_['hotfixed'] = True
+                replaced_ids.append(record.id)
+            else:
+                str_ += '\t{},\n'.format(json.dumps(record.obj()))
+
+        for id, entry in entries.items():
+            if id in replaced_ids:
+                continue
+
+            data_ = entry.obj()
+            data_['hotfixed'] = True
+
+            str_ += '\t{},\n'.format(json.dumps(data_))
+
+    else:
+        if id in entries:
+            record = entries[id]
+        else:
+            record = dbc_file.find(id)
+
+        if record:
+            data_ = record.obj()
+            if id in entries:
+                data_['hotfixed'] = True
+
+            str_ += '\t{},\n'.format(json.dumps(data_))
+        else:
+            print('No record for DBC ID {} found'.format(id))
+
+    str_ = str_[:-2] + '\n'
+    str_ += ']\n'
+
+    print(str_)
+
 elif options.type == 'csv':
     path = os.path.abspath(os.path.join(options.path, options.args[0]))
     id = None
