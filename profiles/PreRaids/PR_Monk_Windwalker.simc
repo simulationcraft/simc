@@ -7,10 +7,10 @@ position=back
 talents=3010032
 
 # Default consumables
-potion=prolonged_power
+potion=battle_potion_of_agility
 flask=currents
 food=bountiful_captains_feast
-augmentation=defiled
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -191,7 +191,7 @@ actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_
 actions.st+=/chi_burst,if=chi.max-chi>=3&energy.time_to_max>1&!talent.serenity.enabled
 
 head=irontide_captains_hat,id=155888,bonus_id=4819/1512,azerite_powers=184/30/0/13
-neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4935/1524,azerite_level=
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
 shoulders=gorak_tuls_mantle,id=159339,bonus_id=4819/1512,azerite_powers=184/38/0/13
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4819/1512
 chest=goresplattered_vest,id=159330,bonus_id=4819/1512,azerite_powers=184/38/0/13
@@ -208,11 +208,11 @@ main_hand=swarms_edge,id=158714,bonus_id=4819/1512
 off_hand=swarms_edge,id=158714,bonus_id=4819/1512
 
 # Gear Summary
-# gear_ilvl=339.50
-# gear_agility=2813
-# gear_stamina=4330
-# gear_crit_rating=423
-# gear_haste_rating=395
-# gear_mastery_rating=660
+# gear_ilvl=340.44
+# gear_agility=2830
+# gear_stamina=4362
+# gear_crit_rating=439
+# gear_haste_rating=411
+# gear_mastery_rating=676
 # gear_versatility_rating=873
 # gear_armor=1409
