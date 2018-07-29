@@ -546,6 +546,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 263987, special_effects::heed_my_call          );
   unique_gear::register_special_effect( 266936, special_effects::azerite_globules      );
   unique_gear::register_special_effect( 266180, special_effects::overwhelming_power    );
+  unique_gear::register_special_effect( 279926, special_effects::earthlink             );
   unique_gear::register_special_effect( 280579, special_effects::retaliatory_fury      ); // Retaliatory Fury
   unique_gear::register_special_effect( 280624, special_effects::retaliatory_fury      ); // Last Gift
   unique_gear::register_special_effect( 280577, special_effects::glory_in_battle       ); // Glory In Battle
@@ -1105,6 +1106,51 @@ void overwhelming_power( special_effect_t& effect )
     make_repeating_event( *buff -> sim, driver -> effectN( 2 ).period(), [ buff ]() {
       buff -> decrement();
     } );
+  } );
+}
+
+void earthlink( special_effect_t& effect )
+{
+  struct earthlink_t : public stat_buff_t
+  {
+    earthlink_t( player_t* p ) :
+      stat_buff_t( p, "earthlink", p -> find_spell( 279928 ) )
+    {}
+
+    void bump( int stacks, double value ) override
+    {
+      if ( check() == max_stack() )
+        reverse = true;
+      else
+        stat_buff_t::bump( stacks, value );
+    }
+
+    void decrement( int stacks, double value ) override
+    {
+      if ( check() == 1 )
+        reverse = false;
+      else
+        stat_buff_t::decrement( stacks, value );
+    }
+  };
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  const spell_data_t* driver = effect.player -> find_spell( 279927 );
+
+  buff_t* buff = buff_t::find( effect.player, "earthlink" );
+  if ( !buff )
+  {
+    buff = make_buff<earthlink_t>( effect.player )
+      -> add_stat( effect.player -> primary_stat(), power.value( 1 ) )
+      -> set_duration( effect.player -> sim -> max_time * 3 )
+      -> set_period( driver -> effectN( 1 ).period() );
+  }
+
+  effect.player -> register_combat_begin( [ buff ]( player_t* ) {
+    buff -> trigger();
   } );
 }
 
