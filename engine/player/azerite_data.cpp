@@ -544,6 +544,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280407, special_effects::blood_rite            );
   unique_gear::register_special_effect( 280402, special_effects::tidal_surge           );
   unique_gear::register_special_effect( 263987, special_effects::heed_my_call          );
+  unique_gear::register_special_effect( 266936, special_effects::azerite_globules      );
   unique_gear::register_special_effect( 280579, special_effects::retaliatory_fury      ); // Retaliatory Fury
   unique_gear::register_special_effect( 280624, special_effects::retaliatory_fury      ); // Last Gift
   unique_gear::register_special_effect( 280577, special_effects::glory_in_battle       ); // Glory In Battle
@@ -551,6 +552,27 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280598, special_effects::sylvanas_resolve      ); // Sylvanas' Resolve
   unique_gear::register_special_effect( 280628, special_effects::sylvanas_resolve      ); // Anduin's Determination
 }
+
+void register_azerite_target_data_initializers( sim_t* sim )
+{
+  // Azerite Globules
+  sim -> register_target_data_initializer( [] ( actor_target_data_t* td ) {
+    auto&& azerite = td -> source -> azerite;
+    if ( azerite && azerite -> is_enabled( "Azerite Globules" ) )
+    {
+      assert( !td -> debuff.azerite_globules );
+
+      td -> debuff.azerite_globules = make_buff( *td, "azerite_globules", td -> source -> find_spell( 279956 ) );
+      td -> debuff.azerite_globules -> reset();
+    }
+    else
+    {
+      td -> debuff.azerite_globules = make_buff( *td, "azerite_globules" );
+      td -> debuff.azerite_globules -> set_quiet( true );
+    }
+  } );
+}
+
 } // Namespace azerite ends
 
 namespace azerite
@@ -1008,6 +1030,51 @@ void heed_my_call( special_effect_t& effect )
   effect.spell_id = effect.player -> find_spell( 271681 ) -> id();
 
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void azerite_globules( special_effect_t& effect )
+{
+  struct azerite_globules_t : public unique_gear::proc_spell_t
+  {
+    azerite_globules_t( const special_effect_t& e, const azerite_power_t& power ):
+      proc_spell_t( "azerite_globules", e.player, e.player -> find_spell( 279958 ) )
+    {
+      base_dd_min = base_dd_max = power.value( 1 );
+    }
+  };
+
+  class azerite_globules_proc_cb_t : public dbc_proc_callback_t
+  {
+  public:
+    azerite_globules_proc_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.player, effect )
+    {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      auto td = a -> player -> get_target_data( s -> target );
+      assert( td );
+      auto debuff = td -> debuff.azerite_globules;
+      assert( debuff );
+
+      debuff -> trigger();
+      if ( debuff -> stack() == debuff -> max_stack() )
+      {
+        debuff -> expire();
+        proc_action -> set_target( s -> target );
+        proc_action -> execute();
+      }
+    }
+  };
+
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  effect.execute_action = unique_gear::create_proc_action<azerite_globules_t>( "azerite_globules", effect, power );
+  effect.spell_id = effect.player -> find_spell( 279955 ) -> id();
+
+  new azerite_globules_proc_cb_t( effect );
 }
 
 } // Namespace special effects ends

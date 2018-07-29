@@ -149,6 +149,8 @@ std::unique_ptr<azerite_state_t> create_state( player_t* );
 void initialize_azerite_powers( player_t* actor );
 /// Register generic azerite powers to the special effect system
 void register_azerite_powers();
+/// Register generic azerite powers target data initializers
+void register_azerite_target_data_initializers( sim_t* );
 
 namespace special_effects
 {
@@ -168,6 +170,7 @@ void sylvanas_resolve( special_effect_t& );
 void tidal_surge( special_effect_t& );
 void heed_my_call( special_effect_t& );
 void azerite_globules( special_effect_t& );
+void overwhelming_power( special_effect_t& );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
