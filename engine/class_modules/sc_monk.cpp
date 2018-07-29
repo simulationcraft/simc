@@ -168,7 +168,7 @@ public:
     luxurious_sample_data_t* moderate_stagger_total_damage;
     luxurious_sample_data_t* heavy_stagger_total_damage;
     double buffed_stagger_base;
-    double buffed_stagger_pct;
+    double buffed_stagger_pct_player_level, buffed_stagger_pct_target_level;
   } sample_datas;
 
   struct active_actions_t
@@ -806,8 +806,8 @@ public:
   double current_stagger_tick_dmg_percent();
   double current_stagger_amount_remains();
   double current_stagger_dot_remains();
-  double stagger_base_value( player_t* target );
-  double stagger_pct( player_t* target );
+  double stagger_base_value();
+  double stagger_pct( int target_level );
   void trigger_celestial_fortune( action_state_t* );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_mark_of_the_crane( action_state_t* );
@@ -2789,8 +2789,9 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
 
     monk_t* monk = debug_cast<monk_t*>( player );
 
-    monk->sample_datas.buffed_stagger_base = monk->stagger_base_value( target );
-    monk->sample_datas.buffed_stagger_pct = monk->stagger_pct( target );
+    monk->sample_datas.buffed_stagger_base = monk->stagger_base_value();
+    monk->sample_datas.buffed_stagger_pct_player_level = monk->stagger_pct( player->level() );
+    monk->sample_datas.buffed_stagger_pct_target_level = monk->stagger_pct( target->level() );
   }
 };
 
@@ -8256,11 +8257,11 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
     if ( s -> result_amount > 0 )
     {
       if ( school == SCHOOL_PHYSICAL )
-        stagger_dmg += s -> result_amount * stagger_pct( s -> target );
+        stagger_dmg += s -> result_amount * stagger_pct( s -> target -> level() );
 
       else if ( school != SCHOOL_PHYSICAL )
       {
-        double stagger_magic = stagger_pct( s -> target ) * spec.stagger -> effectN( 5 ).percent();
+        double stagger_magic = stagger_pct( s -> target -> level() ) * spec.stagger -> effectN( 5 ).percent();
 
         stagger_dmg += s -> result_amount * stagger_magic;
       }
@@ -8963,7 +8964,7 @@ void monk_t::init_action_list()
   base_t::init_action_list();
 }
 
-double monk_t::stagger_base_value( player_t* target )
+double monk_t::stagger_base_value()
 {
   double stagger_base = 0.0;
 
@@ -8997,15 +8998,15 @@ double monk_t::stagger_base_value( player_t* target )
  * See https://us.battle.net/forums/en/wow/topic/20765536748#post-10
  * or http://blog.askmrrobot.com/diminishing-returns-other-bfa-tank-formulas/
  */
-double monk_t::stagger_pct( player_t* target )
+double monk_t::stagger_pct( int target_level )
 {
-  double stagger_base = stagger_base_value( target );
+  double stagger_base = stagger_base_value();
 
   // TODO: The K value is different from the normal armor K value and needs to be updated.
   // In the meantime use the current K values in the meantime.
   // 69.05% gives an average for prepatch and leveling. at 120, it's about 81.1%
   double k_value = 0;
-  switch ( target -> level() )
+  switch ( target_level )
   {
     case 123:
     case 122:
@@ -9245,10 +9246,13 @@ public:
       os << "\t\t\t\t\t\t<p style=\"color: red;\">This section is a work in progress</p>\n";
 
       fmt::print(os, "\t\t\t\t\t\t<p>Stagger base Unbuffed: {} Raid Buffed: {}</p>\n",
-          p.stagger_base_value(p.target), p.sample_datas.buffed_stagger_base);
+          p.stagger_base_value(), p.sample_datas.buffed_stagger_base);
 
-      fmt::print(os, "\t\t\t\t\t\t<p>Stagger pct Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
-          100.0 * p.stagger_pct(p.target), 100.0 * p.sample_datas.buffed_stagger_pct);
+      fmt::print(os, "\t\t\t\t\t\t<p>Stagger pct (player level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
+          100.0 * p.stagger_pct(p.level()), 100.0 * p.sample_datas.buffed_stagger_pct_player_level);
+
+      fmt::print(os, "\t\t\t\t\t\t<p>Stagger pct (target level) Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
+          100.0 * p.stagger_pct(p.target->level()), 100.0 * p.sample_datas.buffed_stagger_pct_target_level);
 
       os << "\t\t\t\t\t\t<p>Percent amount of stagger that was purified: "
        << ( ( purified_dmg / stagger_total_dmg ) * 100 ) << "%</p>\n"
