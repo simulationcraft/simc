@@ -7843,7 +7843,7 @@ void shaman_t::init_action_list_enhancement()
                     "if=(!talent.overcharge.enabled&variable.furyCheck35)|"
                     "(talent.overcharge.enabled&variable.furyCheck80)" );
   core->add_talent( this, "Sundering" );
-  core->add_action( this, "Crash Lightning", "if=talent.forceful_winds.enabled&active_enemies>1")
+  core->add_action( this, "Crash Lightning", "if=talent.forceful_winds.enabled&active_enemies>1" );
   core->add_action( this, "Flametongue", "if=talent.searing_assault.enabled" );
   core->add_action( this, "Lava Lash", "if=buff.hot_hand.react" );
   core->add_action( this, "Crash Lightning", "if=active_enemies>1" );
