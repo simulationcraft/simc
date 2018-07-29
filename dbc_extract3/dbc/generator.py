@@ -695,13 +695,6 @@ class ItemDataGenerator(DataGenerator):
         "NYI",
     ]
 
-    _item_whitelist = [
-        133578,     # Hearty Feast (7.0)
-        133579,     # Lavish Suramar Feast (7.0)
-        156525,     # Galley Banquet (8.0)
-        156526,     # Bountiful Captain's Feast (8.0)
-    ]
-
     _type_flags = {
         "Raid Finder"   : 0x01,
         "Heroic"        : 0x02,
@@ -760,7 +753,7 @@ class ItemDataGenerator(DataGenerator):
             #    continue
 
             # Various things in armors/weapons
-            if item_id in self._item_whitelist:
+            if item_id in constants.ITEM_WHITELIST:
                 filter_ilevel = False
             elif classdata.classs in [ 2, 4 ]:
                 # All shirts
