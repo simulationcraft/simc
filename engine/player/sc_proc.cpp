@@ -207,8 +207,11 @@ const spell_data_t* special_effect_t::trigger() const
   if ( ! player )
     return spell_data_t::nil();
 
+  // Note, bypasses level checks and such
   if ( trigger_spell_id > 0 )
-    return player -> find_spell( trigger_spell_id );
+  {
+    return dbc::find_spell( player, trigger_spell_id );
+  }
 
   for ( size_t i = 1, end = driver() -> effect_count(); i <= end; i++ )
   {
