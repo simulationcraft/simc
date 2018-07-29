@@ -7129,10 +7129,12 @@ void monk_t::init_base_stats()
     {
       base_gcd += spec.brewmaster_monk -> effectN( 14 ).time_value(); // Saved as -500 milliseconds
       base.attack_power_per_agility = 1.0;
+      base.spell_power_per_attack_power = spec.brewmaster_monk -> effectN( 19 ).percent();
       resources.base[RESOURCE_ENERGY] = 100;
       resources.base[RESOURCE_MANA] = 0;
       resources.base[RESOURCE_CHI] = 0;
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
+      resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
       break;
     }
     case MONK_MISTWEAVER:
@@ -7157,6 +7159,7 @@ void monk_t::init_base_stats()
       resources.base[RESOURCE_CHI] += spec.windwalker_monk -> effectN( 12 ).base_value();
       resources.base[RESOURCE_CHI] += talent.ascension -> effectN( 1 ).base_value();
       resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10.0;
+      resources.base_regen_per_second[ RESOURCE_MANA ] = 0;
       break;
     }
     default: break;
