@@ -805,7 +805,7 @@ public:
   double current_stagger_tick_dmg_percent();
   double current_stagger_amount_remains();
   double current_stagger_dot_remains();
-  double stagger_pct();
+  double stagger_pct( player_t* target );
   void trigger_celestial_fortune( action_state_t* );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
   void trigger_mark_of_the_crane( action_state_t* );
@@ -2787,7 +2787,7 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
 
     monk_t* monk = debug_cast<monk_t*>( player );
 
-    monk->sample_datas.buffed_stagger_pct = monk->stagger_pct();
+    monk->sample_datas.buffed_stagger_pct = monk->stagger_pct( target );
   }
 };
 
@@ -8253,11 +8253,11 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
     if ( s -> result_amount > 0 )
     {
       if ( school == SCHOOL_PHYSICAL )
-        stagger_dmg += s -> result_amount * stagger_pct();
+        stagger_dmg += s -> result_amount * stagger_pct( s -> target );
 
       else if ( school != SCHOOL_PHYSICAL )
       {
-        double stagger_magic = stagger_pct() * spec.stagger -> effectN( 5 ).percent();
+        double stagger_magic = stagger_pct( s -> target ) * spec.stagger -> effectN( 5 ).percent();
 
         stagger_dmg += s -> result_amount * stagger_magic;
       }
@@ -8962,7 +8962,7 @@ void monk_t::init_action_list()
 
 // monk_t::stagger_pct ===================================================
 
-double monk_t::stagger_pct()
+double monk_t::stagger_pct( player_t* target )
 {
   double stagger = 0.0;
 
@@ -9241,7 +9241,7 @@ public:
       os << "\t\t\t\t\t\t<p style=\"color: red;\">This section is a work in progress</p>\n";
 
       fmt::print(os, "\t\t\t\t\t\t<p>Stagger pct Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
-          100.0 * p.stagger_pct(), 100.0 * p.sample_datas.buffed_stagger_pct);
+          100.0 * p.stagger_pct(p.target), 100.0 * p.sample_datas.buffed_stagger_pct);
 
       os << "\t\t\t\t\t\t<p>Percent amount of stagger that was purified: "
        << ( ( purified_dmg / stagger_total_dmg ) * 100 ) << "%</p>\n"
