@@ -300,7 +300,7 @@ struct mark_of_the_distant_army_t : public proc_spell_t
 {
   mark_of_the_distant_army_t( player_t* p ) :
     proc_spell_t( "mark_of_the_distant_army",
-      p, p -> find_spell( 191380 ), nullptr )
+      p, dbc::find_spell( p, 191380 ), nullptr )
   {
     // TODO: 2018-07-05 approximated for BfA, should be quite close. Seems to not use weapon dps
     // for attack power calculations. Weird
@@ -373,8 +373,7 @@ void enchants::mark_of_the_hidden_satyr( special_effect_t& effect )
   struct mark_of_the_hidden_satyr_t : public proc_spell_t
   {
     mark_of_the_hidden_satyr_t( const special_effect_t& e ) :
-      proc_spell_t( "mark_of_the_hidden_satyr", e.player,
-        e.player -> find_spell( 191259 ), nullptr )
+      proc_spell_t( "mark_of_the_hidden_satyr", e.player, dbc::find_spell( e.player, 191259 ), nullptr )
     {
       // TODO: 2018-06-27 approximated for BfA, should be quite close. Seems to not use weapon dps
       // for attack power calculations. Weird
