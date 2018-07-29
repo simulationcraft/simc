@@ -767,7 +767,7 @@ public:
 
   target_specific_t<shaman_td_t> target_data;
 
-  virtual shaman_td_t* get_target_data( player_t* target ) const override
+  shaman_td_t* get_target_data( player_t* target ) const override
   {
     shaman_td_t*& td = target_data[ target ];
     if ( !td )
@@ -776,6 +776,12 @@ public:
     }
     return td;
   }
+
+  // Helper to trigger a secondary ability through action scheduling (i.e., schedule_execute()),
+  // without breaking targeting information. Note, causes overhead as an extra action_state_t object
+  // is needed to carry the information.
+  void trigger_secondary_ability( const action_state_t* source_state, action_t* secondary_action,
+      bool inherit_state = false );
 
   template <typename T_CONTAINER, typename T_DATA>
   T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
@@ -1434,7 +1440,7 @@ public:
 
     may_proc_lightning_shield = ab::weapon != nullptr;
 
-	may_proc_strength_of_earth = true;
+    may_proc_strength_of_earth = true;
   }
 
   void init_finished() override
@@ -3841,6 +3847,7 @@ struct rockbiter_t : public shaman_spell_t
   {
     shaman_spell_t::init();
     may_proc_stormbringer = true;
+    may_proc_strength_of_earth = false;
   }
 
   void execute() override
@@ -6356,6 +6363,24 @@ struct flametongue_buff_t : public buff_t
 // Shaman Character Definition
 // ==========================================================================
 
+// shaman_t::trigger_secondary_ability ======================================
+
+void shaman_t::trigger_secondary_ability( const action_state_t* source_state,
+                                          action_t*             secondary_action,
+                                          bool                  inherit_state )
+{
+  auto secondary_state = secondary_action->get_state( inherit_state ? source_state : nullptr );
+  // Snapshot the state if no inheritance is defined
+  if ( ! inherit_state )
+  {
+    secondary_state->target = source_state->target;
+    secondary_action->snapshot_state( secondary_state,
+                                      secondary_action->amount_type( secondary_state ) );
+  }
+
+  secondary_action->schedule_execute( secondary_state );
+}
+
 // shaman_t::create_action  =================================================
 
 action_t* shaman_t::create_action( const std::string& name, const std::string& options_str )
@@ -7005,10 +7030,6 @@ void shaman_t::trigger_strength_of_earth( const action_state_t* state )
     return;
   if ( state->action->background )
     return;
-  if ( state->action->name_str == "rockbiter" )  // rockbiter cant proc it.
-    return;                                      // also i should probably be a good boy and cast the action to check
-                                                 // if it equals the rockbiter action type, but after some fiddling
-                                                 // i couldn't get it to work, so i'll revist that at some point.
 
   if ( !buff.strength_of_earth->up() )
     return;
@@ -7025,23 +7046,17 @@ void shaman_t::trigger_strength_of_earth( const action_state_t* state )
     spell = debug_cast<shaman_spell_t*>( state->action );
   }
 
-  if ( attack )
+  if ( attack && attack->may_proc_strength_of_earth )
   {
-    if ( attack->may_proc_strength_of_earth )
-    {
-      strength_of_earth->set_target( state->target );
-      strength_of_earth->schedule_execute();
-      buff.strength_of_earth->decrement();
-    }
+    strength_of_earth->set_target( state->target );
+    strength_of_earth->execute();
+    buff.strength_of_earth->decrement();
   }
-  else if ( spell )
+  else if ( spell && spell->may_proc_strength_of_earth )
   {
-    if ( spell->may_proc_strength_of_earth )
-    {
-      strength_of_earth->set_target( state->target );
-      strength_of_earth->schedule_execute();
-      buff.strength_of_earth->decrement();
-    }
+    strength_of_earth->set_target( state->target );
+    strength_of_earth->execute();
+    buff.strength_of_earth->decrement();
   }
 }
 
@@ -7080,7 +7095,8 @@ void shaman_t::trigger_earthen_rage( const action_state_t* state )
   if ( state->action == debug_cast<earthen_rage_driver_t*>( action.earthen_rage )->nuke )
     return;
 
-  action.earthen_rage->schedule_execute();
+  action.earthen_rage->set_target( state->target );
+  action.earthen_rage->execute();
 }
 
 void shaman_t::trigger_eye_of_twisting_nether( const action_state_t* state )
@@ -7211,9 +7227,12 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
       buff.forceful_winds->trigger();
     }
 
-    a->set_target( state->target );
-    a->schedule_execute();
-    a->schedule_execute();
+    // Note, windfury needs to do a discrete execute event because in AoE situations, Forceful Winds
+    // must be let to stack (fully) before any Windfury Attacks are executed. In this case, the
+    // schedule must be done through a pre-snapshotted state object to preserve targeting
+    // information.
+    trigger_secondary_ability( state, a );
+    trigger_secondary_ability( state, a );
 
     attack->proc_wf->occur();
   }
@@ -7223,11 +7242,13 @@ void shaman_t::trigger_searing_assault( const action_state_t* state )
 {
   assert( debug_cast<shaman_spell_t*>( state->action ) != nullptr && "Searing Assault called on invalid action type" );
 
-  if ( talent.searing_assault->ok() )
+  if ( ! talent.searing_assault->ok() )
   {
-    action.searing_assault->set_target( state->target );
-    action.searing_assault->schedule_execute();
+    return;
   }
+
+  action.searing_assault->set_target( state->target );
+  action.searing_assault->execute();
 }
 
 void shaman_t::trigger_icy_edge( const action_state_t* state )
@@ -7272,7 +7293,7 @@ void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
   }
 
   flametongue->set_target( state->target );
-  flametongue->schedule_execute();
+  flametongue->execute();
   attack->proc_ft->occur();
 }
 
