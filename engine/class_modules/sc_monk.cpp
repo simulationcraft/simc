@@ -167,6 +167,7 @@ public:
     luxurious_sample_data_t* light_stagger_total_damage;
     luxurious_sample_data_t* moderate_stagger_total_damage;
     luxurious_sample_data_t* heavy_stagger_total_damage;
+    double buffed_stagger_base;
     double buffed_stagger_pct;
   } sample_datas;
 
@@ -805,6 +806,7 @@ public:
   double current_stagger_tick_dmg_percent();
   double current_stagger_amount_remains();
   double current_stagger_dot_remains();
+  double stagger_base_value( player_t* target );
   double stagger_pct( player_t* target );
   void trigger_celestial_fortune( action_state_t* );
   void trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance = -1.0 );
@@ -2787,6 +2789,7 @@ struct monk_snapshot_stats_t : public snapshot_stats_t
 
     monk_t* monk = debug_cast<monk_t*>( player );
 
+    monk->sample_datas.buffed_stagger_base = monk->stagger_base_value( target );
     monk->sample_datas.buffed_stagger_pct = monk->stagger_pct( target );
   }
 };
@@ -8960,70 +8963,71 @@ void monk_t::init_action_list()
   base_t::init_action_list();
 }
 
-// monk_t::stagger_pct ===================================================
-
-double monk_t::stagger_pct( player_t* target )
+double monk_t::stagger_base_value( player_t* target )
 {
-  double stagger = 0.0;
+  double stagger_base = 0.0;
 
   if ( specialization() == MONK_BREWMASTER ) // no stagger when not in Brewmaster Specialization
   {
-    double stagger_base = agility() * spec.stagger -> effectN( 1 ).percent();
-    // TODO: The K value is different from the normal armor K value and needs to be updated. 
-    // In the meantime use the current K values in the meantime.
-    // 69.05% gives an average for prepatch and leveling. at 120, it's about 81.1%
-    double k_value = 0;
-    switch ( target -> level() )
-    {
-      case 123:
-      case 122:
-      case 121:
-      case 120:
-        k_value = 6300;
-        break;
-      case 113:
-        k_value = 2107;
-        break;
-      case 112:
-      case 111:
-      case 110:
-        k_value = 1423;
-        break;
-      default:
-        k_value = dbc.armor_mitigation_constant( target -> level() ) * 0.6905;
-        break;
-    }
+    stagger_base = agility() * spec.stagger -> effectN( 1 ).percent();
+
 
     if ( talent.high_tolerance -> ok() )
     {
-      double ht_percent = talent.high_tolerance -> effectN( 1 ).percent();
-      ht_percent *= 1 + talent.high_tolerance -> effectN( 5 ).percent();
-
-      stagger_base *= 1 + ht_percent;
+      stagger_base *= 1.0 + talent.high_tolerance -> effectN( 5 ).percent();
     }
 
     if ( buff.fortifying_brew -> up() )
     {
-      double fb_percent = spec.fortifying_brew -> effectN( 1 ).percent();
-      fb_percent *= 1 + passives.fortifying_brew -> effectN( 6 ).percent();
-
-      stagger_base *= 1 + fb_percent;
+      stagger_base *= 1.0 + passives.fortifying_brew -> effectN( 6 ).percent();;
     }
 
     if ( buff.ironskin_brew -> check() )
     {
-      double ib_base = stagger_base * ( 1 + passives.ironskin_brew -> effectN( 1 ).percent() );
-
-      if ( sets -> has_set_bonus( MONK_BREWMASTER, T19, B2 ) )
-        ib_base *= 1 + sets -> set( MONK_BREWMASTER, T19, B2 ) -> effectN( 1 ).percent();
-
-      stagger += ib_base / ( ib_base + k_value );
+      stagger_base *= 1.0 + passives.ironskin_brew -> effectN( 1 ).percent();
     }
-    else
-      stagger += stagger_base / (stagger_base + k_value );
   }
 
-  return fmin( stagger, 0.99 );
+  return stagger_base;
+}
+
+/**
+ * BFA stagger formula
+ *
+ * See https://us.battle.net/forums/en/wow/topic/20765536748#post-10
+ * or http://blog.askmrrobot.com/diminishing-returns-other-bfa-tank-formulas/
+ */
+double monk_t::stagger_pct( player_t* target )
+{
+  double stagger_base = stagger_base_value( target );
+
+  // TODO: The K value is different from the normal armor K value and needs to be updated.
+  // In the meantime use the current K values in the meantime.
+  // 69.05% gives an average for prepatch and leveling. at 120, it's about 81.1%
+  double k_value = 0;
+  switch ( target -> level() )
+  {
+    case 123:
+    case 122:
+    case 121:
+    case 120:
+      k_value = 6300;
+      break;
+    case 113:
+      k_value = 2107;
+      break;
+    case 112:
+    case 111:
+    case 110:
+      k_value = 1423;
+      break;
+    default:
+      k_value = dbc.armor_mitigation_constant( target -> level() ) * 0.6905;
+      break;
+  }
+
+  double stagger = stagger_base / (stagger_base + k_value );
+  return std::min( stagger, 0.99 );
 }
 
 // monk_t::current_stagger_tick_dmg ==================================================
@@ -9239,6 +9243,9 @@ public:
         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
       os << "\t\t\t\t\t\t<p style=\"color: red;\">This section is a work in progress</p>\n";
+
+      fmt::print(os, "\t\t\t\t\t\t<p>Stagger base Unbuffed: {} Raid Buffed: {}</p>\n",
+          p.stagger_base_value(p.target), p.sample_datas.buffed_stagger_base);
 
       fmt::print(os, "\t\t\t\t\t\t<p>Stagger pct Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
           100.0 * p.stagger_pct(p.target), 100.0 * p.sample_datas.buffed_stagger_pct);
