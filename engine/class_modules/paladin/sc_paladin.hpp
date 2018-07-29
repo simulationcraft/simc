@@ -456,7 +456,7 @@ public:
   virtual double    composite_parry_rating() const override;
   virtual double    composite_parry() const override;
   virtual double    composite_block() const override;
-  virtual double    composite_block_reduction() const override;
+  virtual double    composite_block_reduction( action_state_t* s ) const override;
   virtual double    temporary_movement_modifier() const override;
 
   // combat outcome functions

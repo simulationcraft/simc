@@ -1120,6 +1120,9 @@ void player_t::init_base_stats()
   // Only Warriors and Paladins (and enemies) can block, defaults is 0
   if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TMI_BOSS || type == TANK_DUMMY )
   {
+    // Set block reduction to 0 for warrior/paladin because it's computed from the player's shield's armor rating
+    base.block_reduction = 0;
+
     // Base block chance is 10% for paladin, 18% for warriors
     switch ( type )
     {
@@ -1131,10 +1134,9 @@ void player_t::init_base_stats()
       break;
     default:
       base.block = 0.03;
+      base.block_reduction = 0.30;
       break;
     }
-
-    base.block_reduction = 0.30;
   }
 
   // Only certain classes can parry, and get 3% base parry, defaults is 0
@@ -3173,13 +3175,22 @@ double player_t::composite_parry() const
   return total_parry;
 }
 
-double player_t::composite_block_reduction() const
+double player_t::composite_block_reduction( action_state_t* s ) const
 {
   double b = current.block_reduction;
 
-  if ( meta_gem == META_ETERNAL_SHADOWSPIRIT || meta_gem == META_ETERNAL_PRIMAL )
+  // Players have base block reduction = 0, enemies have a fixed 0.30 damage reduction on block
+  if ( b == 0 )
   {
-    b += 0.01;
+    // The block reduction rating is equal to 2.5 times the equipped shield's armor rating
+    double block_reduction_rating = items[ SLOT_OFF_HAND ].stats.armor * 2.5;
+
+    b += block_reduction_rating / ( block_reduction_rating + s -> action -> player -> current.armor_coeff );
+
+    if ( meta_gem == META_ETERNAL_SHADOWSPIRIT || meta_gem == META_ETERNAL_PRIMAL )
+    {
+      b += 0.01;
+    }
   }
 
   return b;
@@ -5987,12 +5998,15 @@ void player_t::target_mitigation( school_e school, dmg_e dmg_type, action_state_
     if ( sim->debug && s->action && !s->target->is_enemy() && !s->target->is_add() )
       sim->out_debug.printf( "Damage to %s before armor mitigation is %f", s->target->name(), s->result_amount );
 
+    // Maximum amount of damage reduced by armor
+    double armor_cap = 0.85;
+
     // Armor
     if ( s->action )
     {
       double armor  = s->target_armor;
       double resist = armor / ( armor + s->action->player->current.armor_coeff );
-      resist        = clamp( resist, 0.0, 0.85 );
+      resist        = clamp( resist, 0.0, armor_cap );
       s->result_amount *= 1.0 - resist;
     }
 
@@ -6001,17 +6015,18 @@ void player_t::target_mitigation( school_e school, dmg_e dmg_type, action_state_
 
     double pre_block_amount = s->result_amount;
 
-    if ( s->block_result == BLOCK_RESULT_BLOCKED )
+    // In BfA, Block and Crit Block work in the same manner as armor and are affected by the same cap
+    if ( s -> block_result == BLOCK_RESULT_BLOCKED || s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
     {
-      s->result_amount *= std::max( 0.0, 1 - composite_block_reduction() );
-      if ( s->result_amount <= 0 )
-        return;
-    }
+      double block_reduction = composite_block_reduction( s );
 
-    if ( s->block_result == BLOCK_RESULT_CRIT_BLOCKED )
-    {
-      s->result_amount *= std::max( 0.0, 1 - 2 * composite_block_reduction() );
-      if ( s->result_amount <= 0 )
+      if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
+        block_reduction *= 2.0;
+      
+      block_reduction = clamp( block_reduction, 0.0, armor_cap );
+      s -> result_amount *= 1.0 - block_reduction;
+
+      if ( s -> result_amount <= 0 )
         return;
     }
 

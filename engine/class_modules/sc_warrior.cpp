@@ -495,7 +495,7 @@ public:
   double composite_melee_haste() const override;
   double composite_armor_multiplier() const override;
   double composite_block() const override;
-  double composite_block_reduction() const override;
+  double composite_block_reduction( action_state_t* s ) const override;
   double composite_parry_rating() const override;
   double composite_parry() const override;
   double composite_melee_expertise( const weapon_t* ) const override;
@@ -5859,11 +5859,9 @@ double warrior_t::composite_block() const
 
 // warrior_t::composite_block_reduction ======================================
 
-double warrior_t::composite_block_reduction() const
+double warrior_t::composite_block_reduction( action_state_t* s ) const
 {
-  double br = player_t::composite_block_reduction();
-
-  br += artifact.bastion_of_the_aspects.percent();
+  double br = player_t::composite_block_reduction( s );
 
   return br;
 }

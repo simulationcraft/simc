@@ -1744,9 +1744,9 @@ double paladin_t::composite_block() const
 
 // paladin_t::composite_block_reduction =======================================
 
-double paladin_t::composite_block_reduction() const
+double paladin_t::composite_block_reduction( action_state_t* s ) const
 {
-  double br = player_t::composite_block_reduction();
+  double br = player_t::composite_block_reduction( s );
 
   return br;
 }
@@ -1926,7 +1926,7 @@ void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* 
       // Roll for "block"
       if ( rng().roll( block ) )
       {
-        double block_amount = s -> result_amount * composite_block_reduction();
+        double block_amount = s -> result_amount * composite_block_reduction( s );
 
         if ( sim->debug )
           sim -> out_debug.printf( "%s Holy Shield absorbs %f", name(), block_amount );
