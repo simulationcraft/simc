@@ -1099,28 +1099,25 @@ void player_t::init_base_stats()
   }
 
   // only certain classes get Agi->Dodge conversions, dodge_per_agility defaults to 0.00
-  // Racial agility modifiers and Heroic Presence do affect base dodge, but are affected
-  // by diminishing returns, and handled in composite_dodge()  (tested 7/24/2014)
   if ( type == MONK || type == DRUID || type == ROGUE || type == HUNTER || type == SHAMAN || type == DEMON_HUNTER )
     base.dodge_per_agility =
         dbc.avoid_per_str_agi_by_level( level() ) / 100.0;  // exact values given by Blizzard, only have L90-L100 data
 
   // only certain classes get Str->Parry conversions, dodge_per_agility defaults to 0.00
-  // Racial strength modifiers and Heroic Presence do affect base parry, but are affected
-  // by diminishing returns, and handled in composite_parry()  (tested 7/24/2014)
   if ( type == PALADIN || type == WARRIOR || type == DEATH_KNIGHT )
     base.parry_per_strength =
         dbc.avoid_per_str_agi_by_level( level() ) / 100.0;  // exact values given by Blizzard, only have L90-L100 data
 
-  // All classes get 3% dodge and miss; add racials and racial agi mod in here too
-  base.dodge =
-      0.03 + racials.quickness->effectN( 1 ).percent() + dbc.race_base( race ).agility * base.dodge_per_agility;
+  // All classes get 3% dodge and miss
+  // Dodge from base agillity isn't affected by diminishing returns and is added here
+  base.dodge = 0.03 + racials.quickness->effectN( 1 ).percent() +
+    ( dbc.race_base( race ).agility + dbc.attribute_base( type, level() ).agility ) * base.dodge_per_agility;
   base.miss = 0.03;
 
-  // Only Warriors and Paladins (and enemies) can block, defaults is 0
+  // Only Warriors and Paladins (and enemies) can block, defaults to 0
   if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TMI_BOSS || type == TANK_DUMMY )
   {
-    // Set block reduction to 0 for warrior/paladin because it's computed from the player's shield's armor rating
+    // Set block reduction to 0 for warrior/paladin because it's computed in composite_block_reduction()
     base.block_reduction = 0;
 
     // Base block chance is 10% for paladin, 18% for warriors
@@ -1139,16 +1136,13 @@ void player_t::init_base_stats()
     }
   }
 
-  // Only certain classes can parry, and get 3% base parry, defaults is 0
-  // racial strength mod and "phantom" strength bonus added here,
-  // see http://www.sacredduty.net/2014/08/06/tc401-avoidance-diminishing-returns-in-wod/
+  // Only certain classes can parry, and get 3% base parry, default is 0
+  // Parry from base strength isn't affected by diminishing returns and is added here
   if ( type == WARRIOR || type == PALADIN || type == ROGUE || type == DEATH_KNIGHT || type == MONK ||
        type == DEMON_HUNTER || specialization() == SHAMAN_ENHANCEMENT || type == ENEMY || type == TMI_BOSS ||
        type == TANK_DUMMY )
   {
-    base.parry = 0.03;
-    double phantom_strength = 0.0739; // TODO: check if this is still the case in legion/bfa
-    base.parry += ( dbc.race_base( race ).strength +phantom_strength ) * base.parry_per_strength;
+    base.parry = 0.03 + ( dbc.race_base( race ).strength + dbc.attribute_base( type, level() ).strength ) * base.parry_per_strength;
   }
 
   // Extract avoidance DR values from table in sc_extra_data.inc
@@ -3133,17 +3127,12 @@ double player_t::composite_block_dr( double extra_block ) const
 
 double player_t::composite_dodge() const
 {
-  // Start with sources not subject to DR - base dodge (stored in current.dodge). Base stats no longer give dodge/parry.
+  // Start with sources not subject to DR - base dodge + dodge from base agility (stored in current.dodge)
   double total_dodge = current.dodge;
 
-  // bonus_dodge is from rating and bonus Agility
+  // bonus_dodge is from crit (through dodge rating) and bonus Agility
   double bonus_dodge = composite_dodge_rating() / current.rating.dodge;
-  bonus_dodge += cache.agility() * current.dodge_per_agility;
-
-  // but not class base agility or racial modifiers (irrelevant for enemies)
-  if ( !is_enemy() )
-    bonus_dodge -=
-        ( dbc.attribute_base( type, level() ).agility + dbc.race_base( race ).agility ) * current.dodge_per_agility;
+  bonus_dodge += ( cache.agility() - dbc.race_base( race ).agility - dbc.attribute_base( type, level() ).agility ) * current.dodge_per_agility;
 
   // if we have any bonus_dodge, apply diminishing returns and add it to total_dodge.
   if ( bonus_dodge != 0 )
@@ -3155,22 +3144,17 @@ double player_t::composite_dodge() const
 
 double player_t::composite_parry() const
 {
-  // Start with sources not subject to DR - base parry (stored in current.parry). Base stats no longer give dodge/parry.
+  // Start with sources not subject to DR - base parry + parry from base strength (stored in current.parry). 
   double total_parry = current.parry;
 
   // bonus_parry is from rating and bonus Strength
   double bonus_parry = composite_parry_rating() / current.rating.parry;
-  bonus_parry += cache.strength() * current.parry_per_strength;
-
-  // but not class base strength or racial modifiers (irrelevant for enemies)
-  if ( !is_enemy() )
-    bonus_parry -=
-        ( dbc.attribute_base( type, level() ).strength + dbc.race_base( race ).strength ) * current.parry_per_strength;
+  bonus_parry += ( cache.strength() - dbc.race_base( race ).strength - dbc.attribute_base( type, level() ).strength ) * current.parry_per_strength;
 
   // if we have any bonus_parry, apply diminishing returns and add it to total_parry.
   if ( bonus_parry != 0 )
     total_parry +=
-        bonus_parry / ( def_dr.parry_factor * bonus_parry * 100 * def_dr.vertical_stretch + def_dr.horizontal_shift );
+    bonus_parry / ( def_dr.parry_factor * bonus_parry * 100 * def_dr.vertical_stretch + def_dr.horizontal_shift );
 
   return total_parry;
 }
