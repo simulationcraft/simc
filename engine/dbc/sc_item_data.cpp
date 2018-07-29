@@ -25,6 +25,17 @@ namespace {
     { return obj->item_class == ITEM_CLASS_GEM && obj->item_subclass != 9 && obj->item_subclass != 11; }
   };
 
+  // Potions need their own filter unfortunately, because some potions are of sub class 8 (other)
+  struct potion_filter_t
+  {
+    bool operator()( const item_data_t* obj ) const
+    {
+      return obj->item_class == ITEM_CLASS_CONSUMABLE &&
+             ( obj->item_subclass == ITEM_SUBCLASS_POTION ||
+               obj->item_subclass == ITEM_SUBCLASS_CONSUMABLE_OTHER );
+    }
+  };
+
   item_data_t nil_item_data;
   random_suffix_data_t nil_rsd;
   item_enchantment_data_t nil_ied;
@@ -32,7 +43,7 @@ namespace {
   dbc_index_t<item_enchantment_data_t, id_member_policy> item_enchantment_data_index;
   dbc_index_t<item_data_t, id_member_policy> item_data_index;
 
-  typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<item_data_t, ITEM_SUBCLASS_POTION>, id_member_policy> potion_data_t;
+  typedef filtered_dbc_index_t<item_data_t, potion_filter_t, id_member_policy> potion_data_t;
   typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<item_data_t, ITEM_SUBCLASS_FLASK>, id_member_policy> flask_data_t;
   typedef filtered_dbc_index_t<item_data_t, consumable_filter_t<item_data_t, ITEM_SUBCLASS_FOOD>, id_member_policy> food_data_t;
 
