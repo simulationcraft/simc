@@ -356,10 +356,7 @@ protected:
   }
   QListView* initListView()
   {
-    if ( listView != 0 )
-    {
-      delete listView;
-    }
+    delete listView;
     listView = new QListView( this );
 
     listView -> setEditTriggers( QAbstractItemView::NoEditTriggers );

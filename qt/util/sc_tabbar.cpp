@@ -50,11 +50,9 @@ void SC_TabBar::enableDraggedTextHover( bool enable )
 
 void SC_TabBar::initContextMenu()
 {
-  if ( contextMenu != nullptr )
-  {
-    delete contextMenu;
-    contextMenu = nullptr;
-  }
+  delete contextMenu;
+  contextMenu = nullptr;
+
   if ( enableContextMenu )
   {
     renameTabAction =    new QAction( tr( "Rename Tab" ),   this );
