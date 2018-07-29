@@ -8454,4 +8454,24 @@ private:
 };
 } // Namespace spawner ends
 
+/**
+ * Snapshot players stats during pre-combat to get raid-buffed stats values.
+ *
+ * This allows us to report "raid-buffed" player stats by collecting the values through this action,
+ * which is executed by the player action system.
+ */
+struct snapshot_stats_t : public action_t
+{
+  bool completed;
+  spell_t* proxy_spell;
+  attack_t* proxy_attack;
+  role_e role;
+
+  snapshot_stats_t( player_t* player, const std::string& options_str );
+
+  void init_finished() override;
+  void execute() override;
+  void reset() override;
+  bool ready() override;
+};
 #endif // SIMULATIONCRAFT_H

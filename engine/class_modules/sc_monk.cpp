@@ -167,6 +167,7 @@ public:
     luxurious_sample_data_t* light_stagger_total_damage;
     luxurious_sample_data_t* moderate_stagger_total_damage;
     luxurious_sample_data_t* heavy_stagger_total_damage;
+    double buffed_stagger_pct;
   } sample_datas;
 
   struct active_actions_t
@@ -2769,6 +2770,24 @@ struct monk_heal_t: public monk_action_t < heal_t >
     }
 
     return am;
+  }
+};
+
+struct monk_snapshot_stats_t : public snapshot_stats_t
+{
+  monk_snapshot_stats_t(monk_t* player, const std::string& options ) :
+    snapshot_stats_t( player, options )
+  {
+
+  }
+
+  void execute() override
+  {
+    snapshot_stats_t::execute();
+
+    monk_t* monk = debug_cast<monk_t*>( player );
+
+    monk->sample_datas.buffed_stagger_pct = monk->stagger_pct();
   }
 };
 
@@ -6612,6 +6631,7 @@ action_t* monk_t::create_action( const std::string& name,
 {
   using namespace actions;
   // General
+  if ( name == "snapshot_stats" ) return new            monk_snapshot_stats_t( this, options_str );
   if ( name == "auto_attack" ) return new               auto_attack_t( this, options_str );
   if ( name == "crackling_jade_lightning" ) return new  crackling_jade_lightning_t( *this, options_str );
   if ( name == "tiger_palm" ) return new                tiger_palm_t( this, options_str );
@@ -9219,6 +9239,9 @@ public:
         << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
       os << "\t\t\t\t\t\t<p style=\"color: red;\">This section is a work in progress</p>\n";
+
+      fmt::print(os, "\t\t\t\t\t\t<p>Stagger pct Unbuffed: {:.2f}% Raid Buffed: {:.2f}%</p>\n",
+          100.0 * p.stagger_pct(), 100.0 * p.sample_datas.buffed_stagger_pct);
 
       os << "\t\t\t\t\t\t<p>Percent amount of stagger that was purified: "
        << ( ( purified_dmg / stagger_total_dmg ) * 100 ) << "%</p>\n"
