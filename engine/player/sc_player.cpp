@@ -1166,16 +1166,6 @@ void player_t::init_base_stats()
     resources.base_multiplier[ r ] *= 1.0 + racials.expansive_mind->effectN( 1 ).percent();
   }
 
-  if ( true_level >= 50 && matching_gear )
-  {
-    for ( attribute_e a = ATTR_STRENGTH; a <= ATTR_SPIRIT; a++ )
-    {
-      base.stats.attribute[ a ] *= 1.0 + matching_gear_multiplier( a );
-      // NOTE: post-matching-multiplier base stats are NOT actually floored.
-      // They are only floor()-ed for the character sheet and in certain calculations.
-    }
-  }
-
   if ( world_lag_stddev < timespan_t::zero() )
     world_lag_stddev = world_lag * 0.1;
   if ( brain_lag_stddev < timespan_t::zero() )
@@ -3574,16 +3564,7 @@ double player_t::composite_movement_speed() const
 
 double player_t::composite_attribute( attribute_e attr ) const
 {
-  double a = current.stats.attribute[ attr ];
-  double mult = 1.0;
-  if ( ( true_level >= 50 ) && matching_gear )
-  {
-    mult *= 1.0 + matching_gear_multiplier( attr );
-  }
-
-  a = util::floor( ( a - base.stats.attribute[ attr ] ) * mult ) + base.stats.attribute[ attr ];
-
-  return a;
+  return current.stats.attribute[ attr ];
 }
 
 double player_t::composite_attribute_multiplier( attribute_e attr ) const
@@ -3592,6 +3573,11 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
 
   if ( is_pet() || is_enemy() )
     return m;
+
+  if ( ( true_level >= 50 ) && matching_gear )
+  {
+    m *= 1.0 + matching_gear_multiplier( attr );
+  }
 
   switch ( attr )
   {
