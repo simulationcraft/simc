@@ -234,7 +234,7 @@ struct power_word_fortitude_t final : public priest_spell_t
     harmful = false;
     ignore_false_positive = true;
 
-    background = sim -> overrides.arcane_intellect != 0;
+    background = sim -> overrides.power_word_fortitude != 0;
   }
 
   virtual void execute() override
