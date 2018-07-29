@@ -3132,7 +3132,11 @@ double player_t::composite_dodge() const
 
   // bonus_dodge is from crit (through dodge rating) and bonus Agility
   double bonus_dodge = composite_dodge_rating() / current.rating.dodge;
-  bonus_dodge += ( cache.agility() - dbc.race_base( race ).agility - dbc.attribute_base( type, level() ).agility ) * current.dodge_per_agility;
+  if ( !is_enemy() )
+  {
+    bonus_dodge += ( cache.agility() - dbc.race_base( race ).agility -
+        dbc.attribute_base( type, level() ).agility ) * current.dodge_per_agility;
+  }
 
   // if we have any bonus_dodge, apply diminishing returns and add it to total_dodge.
   if ( bonus_dodge != 0 )
@@ -3149,7 +3153,11 @@ double player_t::composite_parry() const
 
   // bonus_parry is from rating and bonus Strength
   double bonus_parry = composite_parry_rating() / current.rating.parry;
-  bonus_parry += ( cache.strength() - dbc.race_base( race ).strength - dbc.attribute_base( type, level() ).strength ) * current.parry_per_strength;
+  if ( !is_enemy() )
+  {
+    bonus_parry += ( cache.strength() - dbc.race_base( race ).strength -
+        dbc.attribute_base( type, level() ).strength ) * current.parry_per_strength;
+  }
 
   // if we have any bonus_parry, apply diminishing returns and add it to total_parry.
   if ( bonus_parry != 0 )
