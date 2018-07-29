@@ -3489,6 +3489,7 @@ struct player_t : public actor_t
   struct diminishing_returns_constants_t
   {
     double horizontal_shift = 0.0;
+    double block_vertical_stretch = 0.0;
     double vertical_stretch = 0.0;
     double dodge_factor = 1.0;
     double parry_factor = 1.0;

@@ -1120,7 +1120,20 @@ void player_t::init_base_stats()
   // Only Warriors and Paladins (and enemies) can block, defaults is 0
   if ( type == WARRIOR || type == PALADIN || type == ENEMY || type == TMI_BOSS || type == TANK_DUMMY )
   {
-    base.block           = 0.03;
+    // Base block chance is 10% for paladin, 18% for warriors
+    switch ( type )
+    {
+    case WARRIOR:
+      base.block = 0.18;
+      break;
+    case PALADIN:
+      base.block = 0.10;
+      break;
+    default:
+      base.block = 0.03;
+      break;
+    }
+
     base.block_reduction = 0.30;
   }
 
@@ -1137,12 +1150,13 @@ void player_t::init_base_stats()
   }
 
   // Extract avoidance DR values from table in sc_extra_data.inc
-  def_dr.horizontal_shift = dbc.horizontal_shift( type );
-  def_dr.vertical_stretch = dbc.vertical_stretch( type );
-  def_dr.dodge_factor     = dbc.dodge_factor( type );
-  def_dr.parry_factor     = dbc.parry_factor( type );
-  def_dr.miss_factor      = dbc.miss_factor( type );
-  def_dr.block_factor     = dbc.block_factor( type );
+  def_dr.horizontal_shift       = dbc.horizontal_shift( type );
+  def_dr.block_vertical_stretch = dbc.block_vertical_stretch( type );
+  def_dr.vertical_stretch       = dbc.vertical_stretch( type );
+  def_dr.dodge_factor           = dbc.dodge_factor( type );
+  def_dr.parry_factor           = dbc.parry_factor( type );
+  def_dr.miss_factor            = dbc.miss_factor( type );
+  def_dr.block_factor           = dbc.block_factor( type );
 
   if ( ( meta_gem == META_EMBER_PRIMAL ) || ( meta_gem == META_EMBER_SHADOWSPIRIT ) ||
        ( meta_gem == META_EMBER_SKYFIRE ) || ( meta_gem == META_EMBER_SKYFLARE ) )
@@ -3110,7 +3124,7 @@ double player_t::composite_block_dr( double extra_block ) const
   // if we have any bonus_block, apply diminishing returns and add it to total_block
   if ( bonus_block > 0 )
     total_block +=
-        bonus_block / ( def_dr.block_factor * bonus_block * 100 * def_dr.vertical_stretch + def_dr.horizontal_shift );
+        bonus_block / ( def_dr.block_factor * bonus_block * 100 * def_dr.block_vertical_stretch + def_dr.horizontal_shift );
 
   return total_block;
 }

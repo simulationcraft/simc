@@ -1159,6 +1159,19 @@ double dbc_t::block_factor( player_e t ) const
 #endif
 }
 
+double dbc_t::block_vertical_stretch( player_e t ) const
+{
+  uint32_t class_id = util::class_id( t );
+
+  assert( class_id < dbc_t::class_max_size() );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_BlockVerticalStretch[ class_id ]
+    : __gt_BlockVerticalStretch[ class_id ];
+#else
+  return __gt_BlockVerticalStretch[ class_id ];
+#endif
+}
+
 double dbc_t::vertical_stretch( player_e t ) const
 {
   uint32_t class_id = util::class_id( t );

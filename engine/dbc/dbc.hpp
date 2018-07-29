@@ -1487,6 +1487,7 @@ public:
   double dodge_factor( player_e t ) const;
   double miss_factor( player_e t ) const;
   double block_factor( player_e t ) const;
+  double block_vertical_stretch( player_e t ) const;
   double vertical_stretch( player_e t ) const;
   double horizontal_shift( player_e t ) const;
 

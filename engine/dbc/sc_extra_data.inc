@@ -1661,10 +1661,13 @@ static stat_data_t __gt_race_stats[] =
 };
 
 // Avoidance diminishing returns information
-// from http://us.battle.net/wow/en/forum/topic/13087818929?page=12#238
+// from http://us.battle.net/wow/en/forum/topic/13087818929?page=12#238 (404 nowadays)
 // re-arranged to fit Blizzard standard dbc ordering
 // Legion values updated
-// http://us.battle.net/wow/en/forum/topic/20743504316?page=18#351
+// http://us.battle.net/wow/en/forum/topic/20743504316?page=18#351 (404 nowadays)
+// BfA : no blue post about those values yet (as of 2018-07-29), using AskMrRobot's blog post instead
+// http://blog.askmrrobot.com/diminishing-returns-other-bfa-tank-formulas/
+
 static double __gt_DodgeFactor[] = 
 { 0.0, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 };
 
@@ -1677,8 +1680,11 @@ static double __gt_MissFactor[] =
 static double __gt_BlockFactor[] = 
 { 0.0, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000 };
 
+static double __gt_BlockVerticalStretch[] = 
+{ 0.0, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067, 0.0067 };
+
 static double __gt_VerticalStretch[] = 
-{ 0.0, 0.018, 0.018, 0.018, 0.018, 0.018, 0.018, 0.018, 0.018, 0.018, 0.018, 0.018, 0.0315 };
+{ 0.0, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.01, 0.02 };
 
 static double __gt_HorizontalShift[] = 
 { 0.0, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.94, 1/0.97, 1/0.94 };
@@ -1703,7 +1709,7 @@ static double _gt_resolve_dps_by_level[120] = // TO-DO: Dummy values for 101->12
   3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3, 3615.3, // 111-120
 };
 
-static double _gt_avoid_per_str_agi_by_level[120] = // TO-DO: Dummy values for 111->120
+static double _gt_avoid_per_str_agi_by_level[120] = // TO-DO: Pre-BfA values for 1 -> 109, Dummy values for 111 -> 119
 {
   0, 0, 0, 0, 0,                 // 1-5
   0, 0, 0, 0, 0,                 // 6-10
@@ -1726,7 +1732,7 @@ static double _gt_avoid_per_str_agi_by_level[120] = // TO-DO: Dummy values for 1
   1/67.95441596, 1/80.17094017, 1/93.91452992, 1/109.9487179, 1/129.037037,   // 91-95
   1/151.94302,   1/158.051282,  1/164.1595441, 1/170.2678063, 1/176.3760684,  // 96-100
   1/192.7071858, 1/207.9495621,  1/224.2806796, 1/248.2329852, 1/296.1375963, // 101-105
-  1/352.7521368, 1/400.656748,  1/497.5547115, 1/617.3162394, 1/786.0711197, // 106-110
-  1/786.0711197, 1/786.0711197, 1/786.0711197, 1/786.0711197, 1/786.0711197, // 111-115 
-  1/786.0711197, 1/786.0711197, 1/786.0711197, 1/786.0711197, 1/786.0711197, // 116-120
+  1/352.7521368, 1/400.656748,  1/497.5547115, 1/617.3162394, 111.83, // 106-110
+  111.83, 111.83, 111.83, 111.83, 111.83, // 111-115 
+  111.83, 111.83, 111.83, 111.83, 452.27, // 116-120
 }; 
