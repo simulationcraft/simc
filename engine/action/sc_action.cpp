@@ -861,7 +861,7 @@ void action_t::parse_options( const std::string& options_str )
 
 bool action_t::verify_actor_level() const
 {
-  if ( data().id() && !data().is_level( player->true_level ) && data().level() <= MAX_LEVEL )
+  if ( ! background && data().id() && !data().is_level( player->true_level ) && data().level() <= MAX_LEVEL )
   {
     sim->errorf( "Player %s attempting to execute action %s without the required level (%d < %d).\n", player->name(),
                  name(), player->true_level, data().level() );
