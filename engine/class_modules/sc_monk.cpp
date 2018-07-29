@@ -3027,7 +3027,7 @@ struct tiger_palm_t: public monk_melee_attack_t
 
     am *= 1 + p() -> spec.mistweaver_monk -> effectN( 13 ).percent();
 
-    if ( p() -> buff.blackout_combo -> up() )
+    if ( p() -> buff.blackout_combo -> check() )
       am *= 1 + p() -> buff.blackout_combo -> data().effectN( 1 ).percent();
 
     return am;
@@ -5128,7 +5128,7 @@ struct breath_of_fire_t: public monk_spell_t
     timespan_t cd = cooldown -> duration;
 
     // Update the cooldown if Blackout Combo is up
-    if ( p() -> buff.blackout_combo -> check() )
+    if ( p() -> buff.blackout_combo -> up() )
     {
       cd += p() -> buff.blackout_combo -> data().effectN( 2 ).time_value(); // saved as -6 seconds
       p() -> buff.blackout_combo -> expire();
@@ -5213,6 +5213,7 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
   void impact( action_state_t* s ) override
   {
     base_t::impact( s );
+    p()->buff.ironskin_brew -> up(); // benefit tracking
     p()->stagger_damage_changed();
   }
 
@@ -5373,7 +5374,7 @@ struct ironskin_brew_t : public monk_spell_t
   {
     monk_spell_t::execute();
     
-    if ( p() -> buff.ironskin_brew -> up() )
+    if ( p() -> buff.ironskin_brew -> check() )
     {
       timespan_t base_time = p() -> buff.ironskin_brew -> buff_duration;
       timespan_t max_time = p() -> passives.ironskin_brew -> effectN( 2 ).base_value() * base_time;
@@ -5961,7 +5962,7 @@ struct gift_of_the_ox_t: public monk_heal_t
     if ( p() -> specialization() != MONK_BREWMASTER )
       return false;
 
-    return p() -> buff.gift_of_the_ox -> up();
+    return p() -> buff.gift_of_the_ox -> check();
   }
 
   virtual void execute() override
@@ -8989,7 +8990,7 @@ double monk_t::stagger_pct()
       stagger_base *= 1 + fb_percent;
     }
 
-    if ( buff.ironskin_brew -> up() )
+    if ( buff.ironskin_brew -> check() )
     {
       double ib_base = stagger_base * ( 1 + passives.ironskin_brew -> effectN( 1 ).percent() );
 
@@ -9019,7 +9020,7 @@ double monk_t::current_stagger_tick_dmg()
 void monk_t::stagger_damage_changed()
 {
   buff_t* previous_buff = nullptr;
-  for ( auto& b : { buff.light_stagger, buff.moderate_stagger, buff.heavy_stagger } )
+  for ( auto&& b : { buff.light_stagger, buff.moderate_stagger, buff.heavy_stagger } )
   {
     if ( b -> check() )
     {
