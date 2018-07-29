@@ -545,6 +545,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280402, special_effects::tidal_surge           );
   unique_gear::register_special_effect( 263987, special_effects::heed_my_call          );
   unique_gear::register_special_effect( 266936, special_effects::azerite_globules      );
+  unique_gear::register_special_effect( 266180, special_effects::overwhelming_power    );
   unique_gear::register_special_effect( 280579, special_effects::retaliatory_fury      ); // Retaliatory Fury
   unique_gear::register_special_effect( 280624, special_effects::retaliatory_fury      ); // Last Gift
   unique_gear::register_special_effect( 280577, special_effects::glory_in_battle       ); // Glory In Battle
@@ -1075,6 +1076,36 @@ void azerite_globules( special_effect_t& effect )
   effect.spell_id = effect.player -> find_spell( 279955 ) -> id();
 
   new azerite_globules_proc_cb_t( effect );
+}
+
+void overwhelming_power( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player -> find_azerite_spell( effect.driver() -> name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  const spell_data_t* driver = effect.player -> find_spell( 271705 );
+  const spell_data_t* spell = effect.player -> find_spell( 271711 );
+
+  buff_t* buff = buff_t::find( effect.player, "overwhelming_power" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "overwhelming_power", spell )
+      -> add_stat( STAT_HASTE_RATING, power.value( 1 ) )
+      -> set_reverse( true );
+  }
+
+  effect.custom_buff = buff;
+  effect.spell_id = driver -> id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  // TODO: add on damage taken mechanic
+  effect.player -> register_combat_begin( [ buff, driver ]( player_t* ) {
+    make_repeating_event( *buff -> sim, driver -> effectN( 2 ).period(), [ buff ]() {
+      buff -> decrement();
+    } );
+  } );
 }
 
 } // Namespace special effects ends
