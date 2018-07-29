@@ -1506,6 +1506,8 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
       os.printf(
           "<tr%s>\n"
           "<th class=\"left\">Tank-Dodge</th>\n"
+          "<td class=\"right\"></td>\n"
+          "<td class=\"right\"></td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.2f%%</td>\n"
           "<td class=\"right\">%.0f</td>\n"
