@@ -8981,7 +8981,7 @@ double monk_t::stagger_pct()
       stagger_base *= 1 + ht_percent;
     }
 
-    if ( buff.fortifying_brew -> check() )
+    if ( buff.fortifying_brew -> up() )
     {
       double fb_percent = spec.fortifying_brew -> effectN( 1 ).percent();
       fb_percent *= 1 + passives.fortifying_brew -> effectN( 6 ).percent();
