@@ -3527,7 +3527,7 @@ struct roll_the_bones_t : public rogue_attack_t
 
     p() -> buffs.roll_the_bones -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, d );
 
-    p() -> buffs.snake_eyes -> trigger( 1, cp * p() -> azerite.snake_eyes.value() );
+    p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> data().initial_stacks(), cp * p() -> azerite.snake_eyes.value() );
   }
 
   bool ready() override
@@ -4148,7 +4148,7 @@ struct sinister_strike_t : public rogue_attack_t
   {
     double b = rogue_attack_t::bonus_da( s );
 
-    b += p() -> buffs.snake_eyes -> stack_value();
+    b += p() -> buffs.snake_eyes -> value();
 
     return b;
   }
@@ -4162,7 +4162,7 @@ struct sinister_strike_t : public rogue_attack_t
       return;
     }
 
-    p() -> buffs.snake_eyes -> expire();
+    p() -> buffs.snake_eyes -> decrement();
 
     if ( ! sinister_strike_proc_event &&
          ( p() -> buffs.opportunity -> trigger( 1, buff_t::DEFAULT_VALUE(), sinister_strike_proc_chance() ) ) )
@@ -4212,7 +4212,7 @@ struct slice_and_dice_t : public rogue_attack_t
     double snd_mod = 1.0; // Multiplier for the SnD effects. Was changed in Legion for Loaded Dice artifact trait.
     p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
 
-    p() -> buffs.snake_eyes -> trigger( 1, cp * p() -> azerite.snake_eyes.value() );
+    p() -> buffs.snake_eyes -> trigger( p() -> buffs.snake_eyes -> data().initial_stacks(), cp * p() -> azerite.snake_eyes.value() );
   }
 };
 
