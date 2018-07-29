@@ -214,11 +214,8 @@ void reforge_plot_t::analyze_stats()
       }
     }
 
-    if ( current_reforge_sim )
-    {
-      delete current_reforge_sim;
-      current_reforge_sim = nullptr;
-    }
+    delete current_reforge_sim;
+    current_reforge_sim = nullptr;
   }
 }
 
