@@ -1746,8 +1746,9 @@ public:
     if ( ! ( ab::p() -> specialization() == DRUID_FERAL && ab::p() -> spec.omen_of_clarity -> ok() ) )
       return;
 
-    // 5.25 PPM via http://us.battle.net/wow/en/forum/topic/20747154889#1
-    double chance = ab::weapon -> proc_chance_on_swing( 5.25 );
+    // 7.00 PPM via community testing (~368k auto attacks)
+    // https://docs.google.com/spreadsheets/d/1vMvlq1k3aAuwC1iHyDjqAneojPZusdwkZGmatuWWZWs/edit#gid=1097586165
+    double chance = ab::weapon -> proc_chance_on_swing( 7.00 );
 
     if ( ab::p() -> sets -> has_set_bonus( DRUID_FERAL, T18, B2 ) )
       chance *= 1.0 + ab::p() -> sets -> set( DRUID_FERAL, T18, B2 ) -> effectN( 1 ).percent();
@@ -1756,6 +1757,8 @@ public:
       chance *= 1.0 + ab::p() -> talent.moment_of_clarity -> effectN( 2 ).percent();
 
     int active = ab::p() -> buff.clearcasting -> check();
+
+    // Internal cooldown is handled by buff.
 
     if ( ab::p() -> buff.clearcasting -> trigger(
            1,
@@ -6963,9 +6966,8 @@ void druid_t::create_buffs()
   buff.cat_form              = new buffs::cat_form_t( *this );
 
   buff.clearcasting          = buff_creator_t( this, "clearcasting", spec.omen_of_clarity -> effectN( 1 ).trigger() )
-                               .chance( specialization() == DRUID_RESTORATION ? find_spell( 113043 ) -> proc_chance()
-                                        : find_spell( 16864 ) -> proc_chance() )
-                               .cd( timespan_t::zero() )
+                               .cd( spec.omen_of_clarity -> internal_cooldown() )
+                               .chance( spec.omen_of_clarity -> proc_chance() )
                                .max_stack( (unsigned) ( 1 + talent.moment_of_clarity->effectN(1).base_value() ) )
                                .default_value( specialization() != DRUID_RESTORATION
                                                ? talent.moment_of_clarity -> effectN( 4 ).percent()
