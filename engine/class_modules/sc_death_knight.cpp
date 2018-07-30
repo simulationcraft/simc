@@ -3060,6 +3060,14 @@ struct festering_wound_t : public death_knight_spell_t
     background = true;
 
     base_multiplier *= 1.0 + p -> talent.bursting_sores -> effectN( 1 ).percent();
+
+    // Bug went unfixed for a while, may be intended ?
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/306
+    if ( p -> bugs )
+    {
+      base_dd_min += data().effectN( 1 ).min( p );
+      base_dd_max += data().effectN( 1 ).max( p );
+    }
   }
 
   void execute() override
