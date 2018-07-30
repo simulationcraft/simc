@@ -1699,10 +1699,10 @@ double paladin_t::composite_spell_power( school_e school ) const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      sp = passives.protection_paladin -> effectN( 8 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
+      sp = passives.protection_paladin -> effectN( 8 ).percent() * composite_melee_attack_power( AP_WEAPON_MH ) * composite_attack_power_multiplier();
       break;
     case PALADIN_RETRIBUTION:
-      sp = passives.retribution_paladin -> effectN( 10 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
+      sp = passives.retribution_paladin -> effectN( 10 ).percent() * composite_melee_attack_power( AP_WEAPON_MH ) * composite_attack_power_multiplier();
       break;
     default:
       break;
@@ -1719,6 +1719,11 @@ double paladin_t::composite_melee_attack_power() const
   double ap = player_t::composite_melee_attack_power();
 
   return ap;
+}
+
+double paladin_t::composite_melee_attack_power( attack_power_e type ) const
+{
+  return player_t::composite_melee_attack_power( type );
 }
 
 // paladin_t::composite_attack_power_multiplier =============================

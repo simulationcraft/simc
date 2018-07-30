@@ -454,6 +454,7 @@ public:
   virtual double    composite_armor_multiplier() const override;
   virtual double    composite_bonus_armor() const override;
   virtual double    composite_melee_attack_power() const override;
+  virtual double    composite_melee_attack_power( attack_power_e type ) const override;
   virtual double    composite_melee_crit_chance() const override;
   virtual double    composite_melee_expertise( const weapon_t* weapon ) const override;
   virtual double    composite_melee_haste() const override;

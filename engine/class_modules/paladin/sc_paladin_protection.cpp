@@ -377,14 +377,6 @@ struct judgment_prot_t : public paladin_melee_attack_t
     cooldown -> duration *= 1.0 + p -> passives.protection_paladin -> effectN( 4 ).percent();
     base_multiplier *= 1.0 + p -> passives.protection_paladin -> effectN( 12 ).percent();
     sotr_cdr = -1.0 * timespan_t::from_seconds( p -> spec.judgment_2 -> effectN( 1 ).base_value() );
-
-    // TODO: more hax; really this is spellpower but the ap -> sp conversion seems to also take into account weapondps
-    attack_power_mod.direct = spell_power_mod.direct;
-    spell_power_mod.direct = 0;
-
-    // Looks like the above method doesn't take into account the AP -> SP coef conversion rate, so we're applying it here
-
-    base_multiplier *= p -> passives.protection_paladin -> effectN( 8 ).percent();
   }
 
   virtual void execute() override
