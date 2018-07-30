@@ -106,6 +106,11 @@ std::vector<double> azerite_power_t::budget() const
       budget = item_database::apply_combat_rating_multiplier( m_player,
           CR_MULTIPLIER_ARMOR, min_ilevel, budget );
     }
+    else if ( m_spell->scaling_class() == PLAYER_SPECIAL_SCALE8 )
+    {
+      const auto& props = m_player->dbc.random_property( min_ilevel );
+      budget = props.item_effect;
+    }
     b.push_back( budget );
   } );
 
