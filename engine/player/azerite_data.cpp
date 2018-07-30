@@ -552,6 +552,8 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 266936, special_effects::azerite_globules      );
   unique_gear::register_special_effect( 266180, special_effects::overwhelming_power    );
   unique_gear::register_special_effect( 279926, special_effects::earthlink             );
+  unique_gear::register_special_effect( 273823, special_effects::wandering_soul        ); // Blightborne Infusion
+  unique_gear::register_special_effect( 273150, special_effects::wandering_soul        ); // Ruinous Bolt
   unique_gear::register_special_effect( 280579, special_effects::retaliatory_fury      ); // Retaliatory Fury
   unique_gear::register_special_effect( 280624, special_effects::retaliatory_fury      ); // Last Gift
   unique_gear::register_special_effect( 280577, special_effects::glory_in_battle       ); // Glory In Battle
@@ -1145,6 +1147,69 @@ void earthlink( special_effect_t& effect )
   effect.player -> register_combat_begin( [ buff ]( player_t* ) {
     buff -> trigger();
   } );
+}
+
+void wandering_soul( special_effect_t& effect )
+{
+  struct ruinous_bolt_t : unique_gear::proc_spell_t
+  {
+    ruinous_bolt_t( const special_effect_t& e, const azerite_power_t& power ):
+      proc_spell_t( "ruinous_bolt", e.player, e.player -> find_spell( 280206 ) )
+    {
+      base_dd_min = base_dd_max = power.value( 1 );
+    }
+  };
+
+  const spell_data_t* driver = effect.player -> find_spell( 273825 );
+
+  // Check if we already registered the proc callback
+  const bool exists = effect.player -> callbacks.has_callback( [ driver ]( const action_callback_t* cb ) {
+    auto dbc_cb = dynamic_cast<const dbc_proc_callback_t*>( cb );
+    return dbc_cb && dbc_cb -> effect.driver() == driver;
+  } );
+  if ( exists )
+    return;
+
+  azerite_power_t blightborne_infusion = effect.player -> find_azerite_spell( "Blightborne Infusion" );
+  azerite_power_t ruinous_bolt = effect.player -> find_azerite_spell( "Ruinous Bolt" );
+  if ( !( blightborne_infusion.enabled() || ruinous_bolt.enabled() ) )
+    return;
+
+  const spell_data_t* spell = effect.player -> find_spell( 280204 );
+  const std::string spell_name = tokenized_name( spell );
+
+  buff_t* buff = buff_t::find( effect.player, spell_name );
+  if ( !buff )
+  {
+    if ( blightborne_infusion.enabled() )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, spell_name, spell )
+        -> add_stat( STAT_CRIT_RATING, blightborne_infusion.value( 1 ) );
+    }
+    else
+    {
+      buff = make_buff<buff_t>( effect.player, spell_name, spell );
+    }
+
+    if ( ruinous_bolt.enabled() )
+    {
+      auto action = unique_gear::create_proc_action<ruinous_bolt_t>( "ruinous_bolt", effect, ruinous_bolt );
+      buff -> set_tick_callback( [ action ]( buff_t* b, int, const timespan_t& ) {
+        // TODO: review targeting behaviour
+        action -> set_target( b -> source -> target );
+        action -> execute();
+      } );
+    }
+    else
+    {
+      buff -> set_period( timespan_t::zero() ); // disable ticking
+    }
+  }
+
+  effect.custom_buff = buff;
+  effect.spell_id = driver -> id();
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 } // Namespace special effects ends
