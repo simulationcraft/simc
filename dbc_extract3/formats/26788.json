@@ -46,6 +46,10 @@
   "AzeriteItem": [
     { "data_type": "i", "field": "id_item", "formats": { "cpp": "%6u" } }
   ],
+  "AzeriteItemMilestonePower": [
+    { "data_type": "b", "field": "req_level" },
+    { "data_type": "H", "field": "id_power" }
+  ],
   "AzeritePower": [
     { "data_type": "i", "field": "id_spell", "formats": { "cpp": "%6u" } },
     { "data_type": "i", "field": "unk_2" },
