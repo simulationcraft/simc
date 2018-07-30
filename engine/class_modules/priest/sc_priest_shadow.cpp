@@ -2212,12 +2212,7 @@ void priest_t::generate_apl_shadow()
   // single APL
   single->add_action( this, "Void Eruption" );
   single->add_talent( this, "Dark Ascension", 
-                      "if=buff.voidform.down&"
-                      "azerite.whispers_of_the_damned.rank=0" );
-  single->add_talent( this, "Dark Ascension", 
-                      "if=buff.voidform.down&"
-                      "(cooldown.mindbender.remains>0|cooldown.shadowfiend.remains>0)&"
-                      "azerite.whispers_of_the_damned.rank>0" ); 
+                      "if=buff.voidform.down" );
   single->add_action( this, "Void Bolt" );
   single->add_talent( this, "Shadow Word: Death",
                       "if=target.time_to_die<3|"
@@ -2227,17 +2222,9 @@ void priest_t::generate_apl_shadow()
                       "target.time_to_die>200|target.time_to_die<75" );
   single->add_talent( this, "Dark Void" );
   single->add_action( this, "Shadowfiend",
-                      "if=!talent.mindbender.enabled&buff.voidform.up&talent.dark_ascension.enabled&"
-                      "azerite.whispers_of_the_damned.rank>0" );
-  single->add_action( this, "Shadowfiend",
-                      "if=!talent.mindbender.enabled&"
-                      "(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)" );  
+                      "if=!talent.mindbender.enabled" );  
   single->add_talent( this, "Mindbender",
-                      "if=talent.mindbender.enabled&buff.voidform.up&"
-                      "talent.dark_ascension.enabled&azerite.whispers_of_the_damned.rank>0" );
-  single->add_talent( this, "Mindbender",
-                      "if=talent.mindbender.enabled&"
-                      "(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)" );  
+                      "if=talent.mindbender.enabled" );  
   single->add_action( this, "Vampiric Touch",
                       "if=((dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking)|"
                       "(talent.shadow_word_void.enabled&cooldown.shadow_word_void.charges=2))&" 
@@ -2274,35 +2261,16 @@ void priest_t::generate_apl_shadow()
   // cleave APL
   cleave->add_action( this, "Void Eruption" );
   cleave->add_talent( this, "Dark Ascension", 
-                      "if=buff.voidform.down&"
-                      "azerite.whispers_of_the_damned.rank=0" );
-  cleave->add_talent( this, "Dark Ascension", 
-                      "if=buff.voidform.down&"
-                      "(cooldown.mindbender.remains>0|cooldown.shadowfiend.remains>0)&"
-                      "azerite.whispers_of_the_damned.rank>0" ); 
+                      "if=buff.voidform.down" ); 
   cleave->add_action( this, "Void Bolt" );
   cleave->add_talent( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
   cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
   cleave->add_talent( this, "Dark Void" );
   cleave->add_action( this, "Shadowfiend",
-                      "if=!talent.mindbender.enabled&buff.voidform.up&talent.dark_ascension.enabled&"
-                      "azerite.whispers_of_the_damned.rank>0" );
-  cleave->add_action( this, "Shadowfiend",
-                      "if=!talent.mindbender.enabled&"
-                      "(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)" );  
+                      "if=!talent.mindbender.enabled" );  
   cleave->add_talent( this, "Mindbender",
-                      "if=talent.mindbender.enabled&buff.voidform.up&"
-                      "talent.dark_ascension.enabled&azerite.whispers_of_the_damned.rank>0" );
-  cleave->add_talent( this, "Mindbender",
-                      "if=talent.mindbender.enabled&"
-                      "(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)" );  
-  cleave->add_action( this, "Vampiric Touch", 
-                      "if=buff.voidform.down&talent.misery.enabled&azerite.thought_harvester.rank>0&"
-                      "cooldown.mind_blast.up&buff.harvested_thoughts.down" );
-  cleave->add_action( this, "Mind Blast", 
-                      "if=prev_gcd.1.vampiric_touch|buff.harvested_thoughts.up" );
-  cleave->add_action( this, "Mind Blast", 
-                      "if=buff.voidform.down&talent.misery.enabled&azerite.thought_harvester.rank=0" );
+                      "if=talent.mindbender.enabled" );  
+  cleave->add_action( this, "Mind Blast" );
   cleave->add_talent( this, "Shadow Crash",
                       "if=(raid_event.adds.in>5&raid_event.adds.duration<2)|"
                       "raid_event.adds.duration>2" );
@@ -2315,9 +2283,6 @@ void priest_t::generate_apl_shadow()
                       "target_if=dot.shadow_word_pain.refreshable,"
                       "if=(talent.misery.enabled&target.time_to_die>4)" );
   cleave->add_talent( this, "Void Torrent" );
-  cleave->add_action( this, "Mind Blast",
-                      "if=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&"
-                      "azerite.whispers_of_the_damned.rank>0&talent.dark_ascension.enabled" );
   cleave->add_action( this, "Mind Sear",
                       "target_if=spell_targets.mind_sear>2"
                       ",chain=1,interrupt=1" );
@@ -2329,29 +2294,16 @@ void priest_t::generate_apl_shadow()
   // aoe APL
   aoe->add_action( this, "Void Eruption" );
   aoe->add_talent( this, "Dark Ascension", 
-                      "if=buff.voidform.down&"
-                      "azerite.whispers_of_the_damned.rank=0" );
-  aoe->add_talent( this, "Dark Ascension", 
-                      "if=buff.voidform.down&"
-                      "(cooldown.mindbender.remains>0|cooldown.shadowfiend.remains>0)&"
-                      "azerite.whispers_of_the_damned.rank>0" ); 
+                      "if=buff.voidform.down" );
   aoe->add_action( this, "Void Bolt",
                    "if=talent.dark_void.enabled&"
                    "dot.shadow_word_pain.remains>travel_time" );
   aoe->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
   aoe->add_talent( this, "Dark Void" );
   aoe->add_action( this, "Shadowfiend",
-                      "if=!talent.mindbender.enabled&buff.voidform.up&talent.dark_ascension.enabled&"
-                      "azerite.whispers_of_the_damned.rank>0" );
-  aoe->add_action( this, "Shadowfiend",
-                      "if=!talent.mindbender.enabled&"
-                      "(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)" );  
+                      "if=!talent.mindbender.enabled" );  
   aoe->add_talent( this, "Mindbender",
-                      "if=talent.mindbender.enabled&buff.voidform.up&"
-                      "talent.dark_ascension.enabled&azerite.whispers_of_the_damned.rank>0" );
-  aoe->add_talent( this, "Mindbender",
-                      "if=talent.mindbender.enabled&"
-                      "(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)" );
+                      "if=talent.mindbender.enabled" );
   aoe->add_talent( this, "Shadow Crash", "if=raid_event.adds.in>5&raid_event.adds.duration<20" );
   aoe->add_action( this, "Mind Sear", 
                    "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&"
