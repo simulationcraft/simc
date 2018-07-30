@@ -1238,6 +1238,26 @@ void enemy_t::init_defense()
     // a wild equation appears. It's super effective.
     switch ( level() )
     {
+      case 1: a = 36; break;
+      case 2: a = 46; break;
+      case 3: a = 51; break;
+      case 4: a = 54; break;
+      case 5: a = 57; break;
+      case 6: a = 64; break;
+      case 7: a = 71; break;
+      case 8: a = 84; break;
+      case 9: a = 90; break;
+      case 10: a = 93; break;
+      case 11: a = 97; break;
+      case 12: a = 104; break;
+      case 13: a = 117; break;
+      case 14: a = 129; break;
+      case 15: a = 131; break;
+      case 16: a = 138; break;
+      case 17: a = 141; break;
+      case 18: a = 144; break;
+      case 19: a = 145; break;
+      case 20: a = 146; break;
       case 90: a = 794; break; // checked
       case 91: a = 504; break;
       case 92: a = 571; break;

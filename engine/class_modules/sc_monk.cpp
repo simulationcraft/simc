@@ -9008,19 +9008,27 @@ double monk_t::stagger_pct( int target_level )
   double k_value = 0;
   switch ( target_level )
   {
-    case 123:
-    case 122:
-    case 121:
-    case 120:
-      k_value = 6300;
+    case 15: k_value = 197; break;
+    case 16: k_value = 203; break;
+    case 17: k_value = 209; break;
+    case 18: k_value = 215; break;
+    case 19: k_value = 220; break;
+    case 20: k_value = 227; break;
+    case 21: k_value = 235; break;
+    case 22: k_value = 246; break;
+    case 110:
+    case 111:
+    case 112:
+      k_value = 1423;
       break;
     case 113:
       k_value = 2107;
       break;
-    case 112:
-    case 111:
-    case 110:
-      k_value = 1423;
+    case 120:
+    case 121:
+    case 122:
+    case 123:
+      k_value = 6300;
       break;
     default:
       k_value = dbc.armor_mitigation_constant( target -> level() ) * 0.6905;
