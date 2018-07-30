@@ -2243,7 +2243,7 @@ void priest_t::generate_apl_shadow()
                       "(talent.shadow_word_void.enabled&cooldown.shadow_word_void.charges=2))&" 
                       "azerite.thought_harvester.rank>1&cooldown.mind_blast.up&buff.harvested_thoughts.down" );
   single->add_action( this, "Mind Blast",
-                      "((dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking)|"
+                      "if=((dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking)|"
                       "(talent.shadow_word_void.enabled&cooldown.shadow_word_void.charges=2))&"
                       "azerite.thought_harvester.rank<2" );
   single->add_action( this, "Mind Blast",
