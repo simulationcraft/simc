@@ -1160,16 +1160,18 @@ std::string priest_t::default_potion() const
 {
   std::string lvl110_potion = "prolonged_power";
 
-  return ( true_level >= 100 )
-             ? lvl110_potion
-             : ( true_level >= 90 )
-                   ? "draenic_intellect"
-                   : ( true_level >= 85 ) ? "jade_serpent" : ( true_level >= 80 ) ? "volcanic" : "disabled";
+  return ( true_level > 110 )
+             ? "battle_potion_of_intellect"
+             : ( true_level >= 100 )
+                   ? lvl110_potion
+                   : ( true_level >= 90 )
+                         ? "draenic_intellect"
+                         : ( true_level >= 85 ) ? "jade_serpent" : ( true_level >= 80 ) ? "volcanic" : "disabled";
 }
 
 std::string priest_t::default_flask() const
 {
-  return ( true_level >= 110 )
+  return ( true_level > 110 )
              ? "endless_fathoms"
              : ( true_level >= 100 )
                    ? "whispered_pact"
@@ -1194,7 +1196,7 @@ std::string priest_t::default_food() const
 
 std::string priest_t::default_rune() const
 {
-  return ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "focus" : "disabled";
+  return ( true_level >= 120 ) ? "battle_scarred" : ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "focus" : "disabled";
 }
 
 void priest_t::trigger_sephuzs_secret( const action_state_t* state, spell_mechanic mechanic, double proc_chance )
