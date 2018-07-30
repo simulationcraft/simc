@@ -5334,7 +5334,8 @@ void hunter_t::init_assessors()
 
 std::string hunter_t::default_potion() const
 {
-  return ( true_level >= 100 ) ? "prolonged_power" :
+  return ( true_level >  110 ) ? "battle_potion_of_agility" :
+         ( true_level >= 100 ) ? "prolonged_power" :
          ( true_level >= 90  ) ? "draenic_agility" :
          ( true_level >= 85  ) ? "virmens_bite":
          "disabled";
@@ -5344,7 +5345,8 @@ std::string hunter_t::default_potion() const
 
 std::string hunter_t::default_flask() const
 {
-  return ( true_level >  100 ) ? "seventh_demon" :
+  return ( true_level >  110 ) ? "currents" :
+         ( true_level >  100 ) ? "seventh_demon" :
          ( true_level >= 90  ) ? "greater_draenic_agility_flask" :
          ( true_level >= 85  ) ? "spring_blossoms" :
          ( true_level >= 80  ) ? "winds" :
@@ -5355,26 +5357,19 @@ std::string hunter_t::default_flask() const
 
 std::string hunter_t::default_food() const
 {
-	std::string lvl100_food =
-		(specialization() == HUNTER_SURVIVAL) ? "pickled_eel" : "salty_squid_roll";
-
-	std::string lvl110_food =
-		(specialization() == HUNTER_MARKSMANSHIP ||
-		(specialization() == HUNTER_BEAST_MASTERY && !talents.stomp->ok())) ? "nightborne_delicacy_platter" :
-			(specialization() == HUNTER_BEAST_MASTERY) ? "the_hungry_magister" : "azshari_salad";
-
-	return (true_level >  100) ? lvl110_food :
-		(true_level >  90) ? lvl100_food :
-		(true_level == 90) ? "sea_mist_rice_noodles" :
-		(true_level >= 80) ? "seafood_magnifique_feast" :
-		"disabled";
+  return ( true_level >  110 ) ? "bountiful_captains_feast" :
+         ( true_level >  100 ) ? "lavish_suramar_feast" :
+         ( true_level >= 90  ) ? "sea_mist_rice_noodles" :
+         ( true_level >= 80  ) ? "seafood_magnifique_feast" :
+         "disabled";
 }
 
 // hunter_t::default_rune ===================================================
 
 std::string hunter_t::default_rune() const
 {
-  return ( true_level >= 110 ) ? "defiled" :
+  return ( true_level >= 120 ) ? "battle_scarred" :
+         ( true_level >= 110 ) ? "defiled" :
          ( true_level >= 100 ) ? "hyper" :
          "disabled";
 }
