@@ -4861,7 +4861,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
       unsigned n_stacks = fw_proc_stacks[ n ];
 
       // Assuming cankerous wounds is a separate roll
-      if ( p() -> azerite.cankerous_wounds.enabled() && rng().roll( p() -> azerite.cankerous_wounds.value( 2 ) ) )
+      if ( p() -> azerite.cankerous_wounds.enabled() && rng().roll( p() -> azerite.cankerous_wounds.value( 2 ) / 100 ) )
       {
         // Not in cankerous spelldata smh
         n_stacks = 3;
@@ -5508,7 +5508,7 @@ struct marrowrend_t : public death_knight_melee_attack_t
     int stack_gain = as<int>( data().effectN( 3 ).base_value() );
 
     // Assuming that it's the right data for proc chance
-    if ( p() -> azerite.bones_of_the_damned.enabled() && rng().roll( p() -> azerite.bones_of_the_damned.value( 2 ) ) )
+    if ( p() -> azerite.bones_of_the_damned.enabled() && rng().roll( p() -> azerite.bones_of_the_damned.value( 2 ) / 100 ) )
     {
       stack_gain += 1; // Not in spell data
       p() -> buffs.bones_of_the_damned -> trigger();
