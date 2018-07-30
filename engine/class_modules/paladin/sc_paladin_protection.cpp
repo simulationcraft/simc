@@ -69,6 +69,11 @@ struct avengers_shield_t : public paladin_spell_t
     may_crit     = true;
 
     aoe = data().effectN( 1 ).chain_target();
+    if ( p -> azerite.soaring_shield.enabled() )
+    {
+      aoe = p -> azerite.soaring_shield.value( 2 );
+    }
+
     // Redoubt offensive benefit
     aoe += as<int>( p -> talents.redoubt -> effectN( 2 ).base_value() );
 
@@ -107,6 +112,11 @@ struct avengers_shield_t : public paladin_spell_t
     {
       timespan_t reduction = timespan_t::from_seconds( -1.0 * p() -> spells.gift_of_the_golden_valkyr -> effectN(1).base_value() );
       p() -> cooldowns.guardian_of_ancient_kings -> adjust( reduction );
+    }
+
+    if ( p() -> azerite.soaring_shield.enabled() )
+    {
+      p() -> buffs.soaring_shield -> trigger();
     }
   }
 };
@@ -236,6 +246,26 @@ struct blessing_of_spellwarding_t : public paladin_spell_t
 
 // Guardian of Ancient Kings ============================================
 
+struct guardian_of_ancient_kings_buff_t : public buff_t
+{
+  guardian_of_ancient_kings_buff_t( paladin_t* p ) :
+    buff_t( buff_creator_t( p, "guardian_of_ancient_kings", p -> find_specialization_spell( "Guardian of Ancient Kings" ) ) 
+      .cd( timespan_t::zero() ) )
+  { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    paladin_t* p = debug_cast< paladin_t* >( player );
+
+    if ( p -> azerite.dauntless_divinity.enabled() )
+    {
+      p -> buffs.dauntless_divinity -> trigger();
+    }
+  }
+};
+
 struct guardian_of_ancient_kings_t : public paladin_spell_t
 {
   guardian_of_ancient_kings_t( paladin_t* p, const std::string& options_str )
@@ -245,7 +275,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
 
-  cooldown = p->cooldowns.guardian_of_ancient_kings;
+    cooldown = p -> cooldowns.guardian_of_ancient_kings;
   }
 
   virtual void execute() override
@@ -253,7 +283,6 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     p() -> buffs.guardian_of_ancient_kings -> trigger();
-
   }
 };
 
@@ -573,6 +602,26 @@ struct seraphim_t : public paladin_spell_t
 
 // Shield of the Righteous ==================================================
 
+struct shield_of_the_righteous_buff_t : public buff_t
+{
+  shield_of_the_righteous_buff_t( paladin_t* p ) :
+    buff_t( buff_creator_t( p, "shield_of_the_rightous", p -> spells.shield_of_the_righteous )
+      .add_invalidate( CACHE_BONUS_ARMOR ) )
+  { }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    paladin_t* p = debug_cast< paladin_t* >( player );
+
+    if ( p -> azerite.inner_light.enabled() )
+    {
+      p -> buffs.inner_light -> trigger();
+    }
+  }
+};
+
 struct shield_of_the_righteous_t : public paladin_melee_attack_t
 {
   shield_of_the_righteous_t( paladin_t* p, const std::string& options_str ) :
@@ -762,8 +811,14 @@ void paladin_t::trigger_grand_crusader()
   if ( ! passives.grand_crusader -> ok() )
     return;
 
+  double gc_proc_chance = passives.grand_crusader -> proc_chance();
+  if ( azerite.inspiring_vanguard.enabled() )
+  {
+    gc_proc_chance = azerite.inspiring_vanguard.value( 2 ) / 100;
+  }
+
   // attempts to proc the buff
-  if ( rng().roll( passives.grand_crusader -> proc_chance() + talents.first_avenger -> effectN( 2 ).percent() ) )
+  if ( rng().roll( gc_proc_chance + talents.first_avenger -> effectN( 2 ).percent() ) )
   {
     // reset AS cooldown
     cooldowns.avengers_shield -> reset( true );
@@ -771,6 +826,11 @@ void paladin_t::trigger_grand_crusader()
     if ( talents.crusaders_judgment -> ok() && cooldowns.judgment -> current_charge < cooldowns.judgment -> charges )
     {
       cooldowns.judgment -> adjust( -( cooldowns.judgment -> duration) ); //decrease remaining time by the duration of one charge, i.e., add one charge
+    }
+
+    if ( azerite.inspiring_vanguard.enabled() )
+    {
+      buffs.inspiring_vanguard -> trigger();
     }
 
     procs.grand_crusader -> occur();
@@ -789,6 +849,20 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
 
   active_holy_shield_proc -> target = s -> action -> player;
   active_holy_shield_proc -> schedule_execute();
+}
+
+void paladin_t::trigger_inner_light( action_state_t* s )
+{
+  // escape if we don't have Holy Shield
+  if ( ! azerite.inner_light.enabled() )
+    return;
+
+  // sanity check - no friendly-fire
+  if ( ! s -> action -> player -> is_enemy() )
+    return;
+
+  active_inner_light_damage -> target = s -> action -> player;
+  active_inner_light_damage -> schedule_execute();
 }
 
 bool paladin_t::standing_in_consecration() const
@@ -840,10 +914,8 @@ action_t* paladin_t::create_action_protection( const std::string& name, const st
 
 void paladin_t::create_buffs_protection()
 {
-  buffs.guardian_of_ancient_kings = make_buff( this, "guardian_of_ancient_kings", find_specialization_spell( "Guardian of Ancient Kings" ) )
-                                    -> set_cooldown( timespan_t::zero() ); // let the ability handle the CD
-  buffs.shield_of_the_righteous = make_buff( this, "shield_of_the_righteous", spells.shield_of_the_righteous )
-                                  -> add_invalidate( CACHE_BONUS_ARMOR );
+  buffs.guardian_of_ancient_kings = new guardian_of_ancient_kings_buff_t( this );
+  buffs.shield_of_the_righteous = new shield_of_the_righteous_buff_t( this );
   buffs.aegis_of_light = make_buff( this, "aegis_of_light", find_talent_spell( "Aegis of Light" ) );
   buffs.seraphim = make_buff<stat_buff_t>( this, "seraphim", talents.seraphim )
                   -> add_stat( STAT_HASTE_RATING, talents.seraphim -> effectN( 1 ).average( this ) )
@@ -860,6 +932,20 @@ void paladin_t::create_buffs_protection()
   buffs.avengers_valor = make_buff( this, "avengers_valor", find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() );
   buffs.avengers_valor -> set_default_value( find_specialization_spell( "Avenger's Shield" ) -> effectN( 4 ).trigger() -> effectN( 1 ).percent() );
   buffs.ardent_defender = make_buff( this, "ardent_defender", find_specialization_spell( "Ardent Defender" ) );
+
+  // Azerite traits
+  buffs.inspiring_vanguard = make_buff<stat_buff_t>( this, "inspiring_vanguard", find_spell( 279397 ) )
+    -> add_stat( STAT_STRENGTH, azerite.inspiring_vanguard.value( 1 ) )
+    -> set_trigger_spell( azerite.inspiring_vanguard );
+  buffs.dauntless_divinity = make_buff<stat_buff_t>( this, "dauntless_divinity", find_spell( 273555 ) )
+    -> add_stat( STAT_BLOCK_RATING, azerite.dauntless_divinity.value() )
+    -> set_trigger_spell( azerite.dauntless_divinity );
+  buffs.inner_light = make_buff<stat_buff_t>( this, "inner_light", find_spell( 275481 ) )
+    -> add_stat( STAT_BLOCK_RATING, azerite.inner_light.value( 1 ) )
+    -> set_trigger_spell( azerite.inner_light );
+  buffs.soaring_shield = make_buff<stat_buff_t>( this, "soaring_shield", find_spell( 278954 ) )
+    -> add_stat( STAT_MASTERY_RATING, azerite.soaring_shield.value( 1 ) )
+    -> set_trigger_spell( azerite.soaring_shield );
 }
 
 void paladin_t::init_spells_protection()
@@ -905,6 +991,12 @@ void paladin_t::init_spells_protection()
   {
     spec.judgment_2 = find_specialization_spell( 231657 );
   }
+
+  // Azerite traits
+  azerite.inspiring_vanguard = find_azerite_spell( "Inspiring Vanguard" );
+  azerite.dauntless_divinity = find_azerite_spell( "Dauntless Divinity" );
+  azerite.inner_light        = find_azerite_spell( "Inner Light"        );
+  azerite.soaring_shield     = find_azerite_spell( "Soaring Shield"     );
 }
 
 void paladin_t::generate_action_prio_list_prot()

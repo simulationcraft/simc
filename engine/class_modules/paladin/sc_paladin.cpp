@@ -52,6 +52,7 @@ paladin_t::paladin_t( sim_t* sim, const std::string& name, race_e r ) :
   active_protector_of_the_innocent    = nullptr;
   active_zeal                         = nullptr;
   active_consecration                 = nullptr;
+  active_inner_light_damage           = nullptr;
 
   cooldowns.avengers_shield           = get_cooldown( "avengers_shield" );
   cooldowns.judgment                  = get_cooldown("judgment");
@@ -787,6 +788,17 @@ struct holy_shield_proc_t : public paladin_spell_t
   }
 };
 
+// Inner light damage proc ==================================================
+
+struct inner_light_damage : public paladin_spell_t
+{
+  inner_light_damage( paladin_t* p ) :
+    paladin_spell_t( "inner_light", p, p -> find_spell( 275483 ) )
+  {
+    background = true;
+  }
+};
+
 // Rebuke ===================================================================
 
 struct rebuke_t : public paladin_melee_attack_t
@@ -1360,6 +1372,10 @@ void paladin_t::init_spells()
 
   if ( talents.judgment_of_light -> ok() )
     active_judgment_of_light_proc = new judgment_of_light_proc_t( this );
+
+  if ( azerite.inner_light.enabled() )
+    active_inner_light_damage = new inner_light_damage( this );
+
 }
 
 // paladin_t::primary_role ==================================================
@@ -1896,6 +1912,14 @@ void paladin_t::assess_damage( school_e school,
   if ( s -> block_result == BLOCK_RESULT_BLOCKED )
   {
     trigger_holy_shield( s );
+  }
+
+  // Shamelessly copy the way blessed hammer checks for auto attack damage, assuming Inner Light only triggers on that
+  // TODO : check if IL procs on every damage taken or just melee attacks
+  if ( buffs.inner_light -> up() && util::str_in_str_ci( s -> action -> name_str, "_hand" ) )
+  {
+    active_inner_light_damage -> target = s -> action -> player;
+    active_inner_light_damage -> schedule_execute();
   }
 
   // Also trigger Grand Crusader on an avoidance event (TODO: test if it triggers on misses)

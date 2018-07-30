@@ -126,6 +126,7 @@ public:
   action_t* active_sotr;
   heal_t*   active_protector_of_the_innocent;
   action_t* active_zeal;
+  action_t* active_inner_light_damage;
 
   const special_effect_t* whisper_of_the_nathrezim;
   const special_effect_t* liadrins_fury_unleashed;
@@ -190,10 +191,16 @@ public:
     buff_t* ret_t21_4p;
 
     // azerite
+    // Ret
     buff_t* avengers_might;
     buff_t* divine_right;
     buff_t* relentless_inquisitor;
     buff_t* zealotry;
+    // Prot
+    buff_t* inspiring_vanguard;
+    buff_t* dauntless_divinity;
+    buff_t* inner_light;
+    buff_t* soaring_shield;
   } buffs;
 
   // Gains
@@ -396,6 +403,11 @@ public:
     // shared
     // holy
     // protection
+    azerite_power_t inspiring_vanguard; // TODO : check how it interacts with First Avenger
+    azerite_power_t dauntless_divinity;
+    azerite_power_t inner_light;
+    azerite_power_t soaring_shield;
+
     // retribution
     azerite_power_t avengers_might;
     azerite_power_t deferred_sentence; // NYI - spell data makes no sense
@@ -484,6 +496,7 @@ public:
   bool    get_how_availability() const;
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
+  void    trigger_inner_light( action_state_t* s );
   void    trigger_forbearance( player_t* target );
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
