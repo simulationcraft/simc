@@ -1,15 +1,15 @@
 # PreRaids
 # Battle for Azeroth Pre-Raids
-# * Ilvl Cap: TBD
-# * Standard Mythic 5 Man Loot Only
-# Mythic 0 loot is 340 item level
-# Heart of Azeroth Level needed to unlock the 4th ring is Level 27
-# * No Legendaries
+# * Ilvl Cap: 340
+# * Heart of Azeroth Level needed to unlock the 4th ring is Level 27, we also add the one neck ilvl rep token (+15ilvl)
+# *   neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
+# * No items from World Bosses / World Quests / BoEs
 # * No Random Gems (ie. Bonus RNG Gem Slots)
 # * No Tertiary Stats
 # * No Ranked Gear (ie. Warforged/Titanforged)
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, either the item no longer exists in-game)
-# * It is recommended to use enchant name (ex : ",enchant=binding_of_mastery") rather than id/hardcoded stats.
+# * Must use enchant name (ex: ",enchant=binding_of_mastery") instead of id/hardcoded stats.
+# * Must use gem ids (ex: ",gem_id=151585") instead of hardcoded stats.
 
 # Death Knight
 PR_Generate_Death_Knight.simc
