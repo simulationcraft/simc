@@ -1935,7 +1935,7 @@ void paladin_t::assess_damage( school_e school,
 
 void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* s )
 {
-  // Holy Shield happens here, after all absorbs are accounted for (see player_t::assess_damage())
+  // Holy Shield's magic block happens here, after all absorbs are accounted for (see player_t::assess_damage())
   if ( talents.holy_shield -> ok() && s -> result_amount > 0.0 && school != SCHOOL_PHYSICAL )
   {
     // Block code mimics attack_t::block_chance()
@@ -1950,7 +1950,8 @@ void paladin_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* 
       // Roll for "block"
       if ( rng().roll( block ) )
       {
-        double block_amount = s -> result_amount * composite_block_reduction( s );
+        // Holy Shield's magic block is a fixed 40% and doesn't follow BfA's block formula
+        double block_amount = s -> result_amount * 0.4;
 
         if ( sim->debug )
           sim -> out_debug.printf( "%s Holy Shield absorbs %f", name(), block_amount );
