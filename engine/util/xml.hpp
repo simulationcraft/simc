@@ -91,11 +91,8 @@ struct sc_xml_t
   virtual ~sc_xml_t()
   {
     assert( ! buf || ( root && buf ) );
-    if ( buf && ! root -> parent() )
-    {
-      delete[] buf;
-      delete root;
-    }
+    delete[] buf;
+    delete root;
   }
 
 private:
