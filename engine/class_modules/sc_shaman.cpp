@@ -7870,7 +7870,7 @@ void shaman_t::init_action_list_enhancement()
   core->add_action( this, "Crash Lightning", "if=active_enemies>1&variable.furyCheck25" );
 
   filler->add_action( this, "Rockbiter", "if=maelstrom<70" );
-  filler->add_action( this, "Crash Lightning", "if=talent.crashing_storm.enabled&variable.OCPool60&variable.furyCheck25" );
+  filler->add_action( this, "Crash Lightning", "if=talent.crashing_storm.enabled&variable.OCPool60" );
   filler->add_action( this, "Lava Lash", "if=variable.OCPool80&variable.furyCheck45" );
   filler->add_action( this, "Rockbiter" );
   filler->add_action( this, "Flametongue" );
