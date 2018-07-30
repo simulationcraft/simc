@@ -1241,6 +1241,7 @@ class SpellDataGenerator(DataGenerator):
             ( 242981, 0 ),          # Blessing of the Ashbringer
             ( 211561, 0 ),          # Justice Gaze
             ( 246973, 0 ),          # Sacred Judgment (Ret T20 4p)
+            ( 275483, 0 ),          # Inner Light azerite trait damge
         ),
 
         # Hunter:
