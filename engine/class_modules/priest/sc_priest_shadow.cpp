@@ -2237,12 +2237,18 @@ void priest_t::generate_apl_shadow()
                       "talent.dark_ascension.enabled&azerite.whispers_of_the_damned.rank>0" );
   single->add_talent( this, "Mindbender",
                       "if=talent.mindbender.enabled&"
-                      "(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)" );
+                      "(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)" );  
+  single->add_action( this, "Vampiric Touch",
+                      "if=((dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking)|"
+                      "(talent.shadow_word_void.enabled&cooldown.shadow_word_void.charges=2))&" 
+                      "azerite.thought_harvester.rank>1&cooldown.mind_blast.up&buff.harvested_thoughts.down" );
   single->add_action( this, "Mind Blast",
-                      "if=(dot.shadow_word_pain.ticking&"
-                      "dot.vampiric_touch.ticking)|"
-                      "(talent.shadow_word_void.enabled&"
-                      "cooldown.shadow_word_void.charges=2)" );
+                      "((dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking)|"
+                      "(talent.shadow_word_void.enabled&cooldown.shadow_word_void.charges=2))&"
+                      "azerite.thought_harvester.rank<2" );
+  single->add_action( this, "Mind Blast",
+                      "if=(prev_gcd.1.vampiric_touch|buff.harvested_thoughts.up)&"
+                      "azerite.thought_harvester.rank>1" );
   single->add_talent( this, "Shadow Word: Death",
                       "if=!buff.voidform.up|"
                       "(cooldown.shadow_word_death.charges=2&"
@@ -2289,8 +2295,14 @@ void priest_t::generate_apl_shadow()
                       "talent.dark_ascension.enabled&azerite.whispers_of_the_damned.rank>0" );
   cleave->add_talent( this, "Mindbender",
                       "if=talent.mindbender.enabled&"
-                      "(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)" );
-  cleave->add_action( this, "Mind Blast", "if=buff.voidform.down&talent.misery.enabled" );
+                      "(!talent.dark_ascension.enabled|azerite.whispers_of_the_damned.rank=0)" );  
+  cleave->add_action( this, "Vampiric Touch", 
+                      "if=buff.voidform.down&talent.misery.enabled&azerite.thought_harvester.rank>0&"
+                      "cooldown.mind_blast.up&buff.harvested_thoughts.down" );
+  cleave->add_action( this, "Mind Blast", 
+                      "if=prev_gcd.1.vampiric_touch|buff.harvested_thoughts.up" );
+  cleave->add_action( this, "Mind Blast", 
+                      "if=buff.voidform.down&talent.misery.enabled&azerite.thought_harvester.rank=0" );
   cleave->add_talent( this, "Shadow Crash",
                       "if=(raid_event.adds.in>5&raid_event.adds.duration<2)|"
                       "raid_event.adds.duration>2" );
