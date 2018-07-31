@@ -1069,24 +1069,21 @@ void laser_matrix( special_effect_t& effect )
   if ( !power.enabled() )
     return;
 
-
   const spell_data_t* driver = power.spell_ref().effectN( 1 ).trigger();
-  const spell_data_t* spell  = driver->effectN( 1 ).trigger();
 
   struct laser_matrix_t : public unique_gear::proc_spell_t
   {
     laser_matrix_t( const special_effect_t& e, const azerite_power_t& power )
-      : proc_spell_t( "laser_matrix", e.player, e.player->find_spell( 280706 ) )
+      : proc_spell_t( "laser_matrix", e.player, e.player->find_spell( 280705 ) )
     {
       base_dd_min = base_dd_max = power.value( 1 );
       aoe = -1;
       split_aoe_damage = 1;
-      background = true;
-      radius = e.player->find_spell( 280706 )->effectN( 1 ).radius();
+      radius = e.player->find_spell( 280703 )->effectN( 1 ).radius();
     }
     // TODO: travel_time?
   };
-  
+
   effect.execute_action = unique_gear::create_proc_action<laser_matrix_t>( "laser_matrix", effect, power );
   effect.spell_id       = driver->id();
 
