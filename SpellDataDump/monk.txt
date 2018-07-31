@@ -6357,7 +6357,8 @@ Effects          :
 Description      : While no enemies are within $s2 yds, you heal for $s1 every $270661t1 sec.
 Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $270661t1 sec.
 
-Name             : Invigorating Brew (id=269621) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Invigorating Brew (id=269621) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Azerite Power Id : 76
@@ -6372,7 +6373,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=718012)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 700.4504 (avg=2.252252) | Trigger Spell: 270639 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 953.9877 (avg=12.26994) | Trigger Spell: 270639 | Target: Self (1)
+                   Hotfixed: Average (2.25225 -> 12.2699)
 Description      : Vivify does an additional $s1 healing when empowered by Thunder Focus Tea.
 
 Name             : Touch of Death Amplifier (id=271232) [Spell Family (53), Passive, Hidden] 
@@ -6569,7 +6571,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 199.04 (avg=0.64) | Trigger Spell: 273292 | Target: Self (1)
 Description      : Attacking a target with Rising Sun Kick causes your damaging melee abilities to deal $s1 additional Physical damage to that target for $273298d.
 
-Name             : Overflowing Mists (id=273328) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Overflowing Mists (id=273328) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Azerite Power Id : 185
@@ -6584,8 +6587,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724861)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 186.6 (avg=0.6) | Trigger Spell: 273334 | Target: Self (1)
-                   Hotfixed: Average (0.8 -> 0.6)
+                   Base Value: 0 | Scaled Value: 381.5951 (avg=4.907976) | Trigger Spell: 273334 | Target: Self (1)
+                   Hotfixed: Average (0.8 -> 4.90798)
 Description      : Your Enveloping Mists heal the target for $s1 each time they take damage.
 
 Name             : Staggering Strikes (id=273464) [Scaling Spell (-1), Spell Family (53), Passive] 
@@ -6841,7 +6844,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1453.413 (avg=4.673353) | Target: Self (1)
 Description      : Drinking Purifying Brew while at Heavy Stagger causes your next $275893u melee abilities to heal you for $s1.
 
-Name             : Misty Peaks (id=275975) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Misty Peaks (id=275975) [Scaling Spell (-7), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -7)
 Class            : Monk
 School           : Physical
 Azerite Power Id : 248
@@ -6856,7 +6860,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=729339)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 516.26 (avg=1.66) | Trigger Spell: 280386 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 (avg=1.894276) | Trigger Spell: 280386 | Target: Self (1)
+                   Hotfixed: Average (1.66 -> 1.89428)
 Description      : When your Renewing Mists heals an ally, you have a chance to gain $s1 Haste for $276025d.
 
 Name             : Niuzao's Blessing (id=277665) [Scaling Spell (-1), Spell Family (53), Passive] 
@@ -6877,7 +6882,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 79.71428 (avg=0.256316) | Target: Self (1)
 Description      : Expel Harm restores ${$s1*($278535d/$278535t1)} health over $278535d for each Healing Sphere consumed.
 
-Name             : Burst of Life (id=277667) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Burst of Life (id=277667) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Azerite Power Id : 385
@@ -6891,7 +6897,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732969)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 10000.44 (avg=32.15574) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 10016.87 (avg=128.8344) | Target: Self (1)
+                   Hotfixed: Average (32.1557 -> 128.834)
 Description      : When Life Cocoon expires, it releases a burst of mist that restores $s1 health split among the target and nearby allies.
 
 Name             : Swift Roundhouse (id=277669) [Scaling Spell (-1), Spell Family (53), Passive] 
@@ -6956,7 +6963,8 @@ Effects          :
                    Affected Spells: Blackout Kick (100784), Blackout Strike (205523), Blackout Kick (228649)
 Description      : Blackout Strike deals an additional $s3 damage. Blackout Strike critical hits grant an additional $m2 $Lstack:stacks; of Elusive Brawler.
 
-Name             : Uplifted Spirits (id=278576) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Uplifted Spirits (id=278576) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Azerite Power Id : 387
@@ -6974,8 +6982,9 @@ Effects          :
 #2 (id=734379)   : Dummy (3)
                    Base Value: 1000 | Scaled Value: 1000
 #3 (id=736011)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 342.1 (avg=1.1) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 343.4356 (avg=4.417178) | Target: Self (1)
                    Affected Spells: Vivify (116670)
+                   Hotfixed: Average (1.1 -> 4.41718)
 Description      : Your Vivify heals for an additional $s3. Vivify critical heals reduce the cooldown of your Revival by ${$s2/1000}.1 sec.
 
 Name             : Pressure Point (id=278577) [Scaling Spell (-1), Spell Family (53), Passive] 
@@ -7066,7 +7075,8 @@ Effects          :
 Description      : $@spelldesc277669
 Tooltip          : Your next Rising Sun Kick will deal an additional $w1 damage.
 
-Name             : Font of Life (id=279875) [Scaling Spell (-1), Spell Family (53), Passive] 
+Name             : Font of Life (id=279875) [Scaling Spell (-8), Spell Family (53), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Monk
 School           : Physical
 Azerite Power Id : 386
@@ -7082,8 +7092,9 @@ Effects          :
 #1 (id=736486)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 #2 (id=736487)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 105.74 (avg=0.34) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 166.9478 (avg=2.147239) | Target: Self (1)
                    Affected Spells: Essence Font (191840)
+                   Hotfixed: Average (0.34 -> 2.14724)
 Description      : Your Essence Font's initial heal is increased by $s2 and has a chance to reduce the cooldown of Thunder Focus Tea by $s1 sec.
 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 

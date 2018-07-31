@@ -1364,6 +1364,7 @@ Effects          :
 #1 (id=53887)    : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 50 | Scaled Value: 50 | SP Coefficient: 0.25000 | Misc Value: 15 | Target: Self (1)
                    Affected Spells: Lightning Bolt (403), Chain Lightning (421), Earth Shock (8042), Fire Nova (8349), Flametongue Attack (10444), Lightning Bolt Overload (45284), Chain Lightning Overload (45297), Thunderstorm (51490), Lava Burst (51505), Earthquake (61882), Lava Burst Overload (77451), Earthquake (77478), Lava Beam (114074), Lava Beam Overload (114738), Elemental Blast (117014), Elemental Blast Overload (120588), Earthen Rage (170379), Item - Shaman T18 Enhancement 4P Bonus (185872), Lightning Bolt (187837), Lightning Bolt (188196), Flame Shock (188389), Chain Lightning (188443), Flame Shock (188838), Lightning Shield (192106), Lightning Shield (192109), Liquid Magma (192231), Flametongue (194084), Frostbrand (196834), Frost Shock (196840), Lightning Rod (197568), Icefury (210714), Lightning Bolt Overload (214816), Icefury Overload (219271), Lightning Shield Overcharge (273323), Lightning Shield (273324)
+                   Hotfixed: Affects Spells
 Description      : Your damaging critical strikes deal ${$m1+200}% damage instead of the usual 200%.
 
 Name             : Riptide (id=61295) [Spell Family (11)] 
@@ -8020,7 +8021,8 @@ Effects          :
 Description      : $@spelldesc260895
 Tooltip          : Haste increased by $s1%.
 
-Name             : Soothing Waters (id=272989) [Scaling Spell (-1), Passive] 
+Name             : Soothing Waters (id=272989) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 138
@@ -8034,7 +8036,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724256)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 93.3 (avg=0.3) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 763.1901 (avg=9.81595) | Target: Self (1)
+                   Hotfixed: Average (0.3 -> 9.81595)
 Description      : Your Chain Heal heals its primary target for an additional $s1 healing.
 
 Name             : Primal Primer (id=272992) [Scaling Spell (-1), Spell Family (11), Passive] 
@@ -8235,7 +8238,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 273461
 Description      : $@spelldesc273461
 
-Name             : Ebb and Flow (id=273597) [Scaling Spell (-1), Passive] 
+Name             : Ebb and Flow (id=273597) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 191
@@ -8249,7 +8253,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=725375)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 219.5293 (avg=0.705882) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 220.3712 (avg=2.834356) | Target: Self (1)
+                   Hotfixed: Average (0.705882 -> 2.83436)
 #2 (id=725376)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8
 Description      : Healing Tide Totem restores up to $s1 additional health each pulse, based on how close your allies are to the totem. Maximum benefit for allies within $s2 yds of the totem.
@@ -8558,7 +8563,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 275388
 Description      : $@spelldesc275388
 
-Name             : Swelling Stream (id=275488) [Scaling Spell (-1), Passive] 
+Name             : Swelling Stream (id=275488) [Scaling Spell (-8), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 224
@@ -8572,7 +8578,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728551)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 329.2943 (avg=1.058824) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1010.75 (avg=13) | Target: Self (1)
+                   Hotfixed: Average (1.05882 -> 13)
 Description      : Every $275495t1 sec your Healing Stream Totem releases a lesser chain heal, restoring $s1 health to up to $275499x1 injured allies. Healing is reduced by ${(1-$275499f1)*100)}% after each jump.
 
 Name             : Overflowing Shores (id=277658) [Scaling Spell (-8), Spell Family (11), Passive] 
@@ -8590,7 +8597,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732958)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 469.2768 (avg=6.035714) | Trigger Spell: 278077 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 620.092 (avg=7.97546) | Trigger Spell: 278077 | Target: Self (1)
+                   Hotfixed: Average (6.03571 -> 7.97546)
 #2 (id=732959)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 6 | Target: Self (1)
                    Affected Spells: Healing Rain (73920), Healing Rain (73921)
@@ -8761,14 +8769,16 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734587)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 3110 (avg=40) | Trigger Spell: 279181 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 3887.5 (avg=50) | Trigger Spell: 279181 | Target: Self (1)
+                   Hotfixed: Average (40 -> 50)
 #2 (id=734588)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50
 #3 (id=734589)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0
 Description      : If the target of your Riptide is below $s2% of their maximum health, Riptide causes them to absorb up to $s1 damage for $279187d.
 
-Name             : Spouting Spirits (id=278715) [Scaling Spell (-1), Spell Family (11), Passive] 
+Name             : Spouting Spirits (id=278715) [Scaling Spell (-8), Spell Family (11), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Shaman
 School           : Physical
 Azerite Power Id : 423
@@ -8782,7 +8792,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734592)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 2488 (avg=8) | Trigger Spell: 279504 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1907.976 (avg=24.53988) | Trigger Spell: 279504 | Target: Self (1)
+                   Hotfixed: Average (8 -> 24.5399)
 #2 (id=734593)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1
 Description      : Spirit Link Totem restores $s1 health to all nearby allies $m2 $Lsecond:seconds; after it is dropped.

@@ -5930,7 +5930,8 @@ Effects          :
                    Affected Spells: Atonement (194384)
 Description      : Your healing and absorption is increased by ${$s1}.1% on targets with Atonement.
 
-Name             : Moment of Repose (id=272775) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Moment of Repose (id=272775) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Physical
 Azerite Power Id : 113
@@ -5945,10 +5946,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723883)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1264.228 (avg=4.065041) | Trigger Spell: 272776 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7631.902 (avg=98.15951) | Trigger Spell: 272776 | Target: Self (1)
+                   Hotfixed: Average (4.06504 -> 98.1595)
 Description      : Pain Suppression applies Atonement to the target and instantly heals them for $s1.
 
-Name             : Permeating Glow (id=272780) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Permeating Glow (id=272780) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 114
@@ -5962,7 +5965,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723891)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 252.8455 (avg=0.813008) | Trigger Spell: 272782 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 572.3926 (avg=7.361963) | Trigger Spell: 272782 | Target: Self (1)
+                   Hotfixed: Average (0.813008 -> 7.36196)
 Description      : Flash Heal increases the healing of your Flash Heals on that ally by $s1 for $272783d.
 
 Name             : Searing Dialogue (id=272788) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -5999,7 +6003,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 799.9999 (avg=2.572347) | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
-Name             : Weal and Woe (id=273307) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Weal and Woe (id=273307) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 164
@@ -6013,12 +6018,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724827)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 505.691 (avg=1.626016) | Trigger Spell: 273308 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 381.5951 (avg=4.907975) | Trigger Spell: 273308 | Target: Self (1)
+                   Hotfixed: Average (1.62602 -> 4.90798)
 #2 (id=724828)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 884.9592 (avg=2.845528) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1430.982 (avg=18.40491) | Target: Self (1)
+                   Hotfixed: Average (2.84553 -> 18.4049)
 Description      : Healing an ally with Penance increases the damage of your next Smite by $s1. Damaging an enemy with Penance increases the absorption of your next Power Word: Shield by $s2.
 
-Name             : Blessed Sanctuary (id=273313) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Blessed Sanctuary (id=273313) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 165
@@ -6032,7 +6040,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724838)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 442.4796 (avg=1.422764) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 715.4908 (avg=9.202454) | Target: Self (1)
+                   Hotfixed: Average (1.42276 -> 9.20245)
 Description      : Echo of Light from Holy Word: Sanctify heals for an additional ${$s1*2}.
 
 Name             : Thought Harvester (id=273319) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6170,7 +6179,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1999.73 (avg=6.43) | Trigger Spell: 274368 | Target: Self (1)
 Description      : When you cast Fade, absorb $s1 Magic damage for $274369d.
 
-Name             : Depth of the Shadows (id=275541) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Depth of the Shadows (id=275541) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 227
@@ -6185,10 +6195,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728629)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 34.21 (avg=0.11) | Trigger Spell: 275542 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 42.92943 (avg=0.552147) | Trigger Spell: 275542 | Target: Self (1)
+                   Hotfixed: Average (0.11 -> 0.552147)
 Description      : Each time $?s204197[Purge the Wicked][Shadow Word: Pain] deals damage, the healing of your next Shadow Mend is increased by $s1, up to a maximum of ${$s1*30}.
 
-Name             : Prayerful Litany (id=275602) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Prayerful Litany (id=275602) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Physical
 Azerite Power Id : 228
@@ -6202,7 +6214,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728716)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 108.85 (avg=0.35) | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 1097.086 (avg=14.11043) | Target: Self (1)
+                   Hotfixed: Average (0.35 -> 14.1104)
 Description      : Prayer of Healing restores an additional $s1 health to the most injured ally it affects.
 
 Name             : Whispers of the Damned (id=275722) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6223,7 +6236,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 233.25 (avg=0.75) | Trigger Spell: 275725 | Target: Self (1)
 Description      : Void Bolt increases the damage of $?s205351[Shadow Word: Void][Mind Blast] by $s1 for $275726d, stacking up to 6 times.
 
-Name             : Gift of Forgiveness (id=277680) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Gift of Forgiveness (id=277680) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Physical
 Azerite Power Id : 397
@@ -6237,12 +6251,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732992)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 350.0632 (avg=1.125605) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 286.1963 (avg=3.680981) | Target: Self (1)
+                   Hotfixed: Average (1.1256 -> 3.68098)
 #2 (id=734277)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Smite deals an additional $s1 damage if you have at least $s2 Atonements active.
 
-Name             : Everlasting Light (id=277681) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Everlasting Light (id=277681) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 400
@@ -6256,7 +6272,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732993)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 799.5116 (avg=2.570777) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 953.9877 (avg=12.26994) | Target: Self (1)
+                   Hotfixed: Average (2.57078 -> 12.2699)
 Description      : Heal restores up to $s1 additional health, based on your missing mana.
 
 Name             : Spiteful Apparitions (id=277682) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6276,7 +6293,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 100.3354 (avg=0.322622) | Target: Self (1)
 Description      : Shadowy Apparitions deal an additional $s1 damage to enemies suffering from your Vampiric Touch.
 
-Name             : Contemptuous Homily (id=278629) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Contemptuous Homily (id=278629) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 398
@@ -6292,11 +6310,13 @@ Effects          :
 #1 (id=734461)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 278902 | Target: Self (1)
 #2 (id=734462)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 126.8804 (avg=1.631902) | Target: Self (1)
                    Affected Spells: Penance (47666)
+                   Hotfixed: Average (0.406504 -> 1.6319)
 Description      : Penance deals an additional $s2 damage and extends your $?s204197[Purge the Wicked][Shadow Word: Pain] by ${$s1/1000} sec per bolt.
 
-Name             : Enduring Luminescence (id=278643) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Enduring Luminescence (id=278643) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 399
@@ -6312,8 +6332,9 @@ Effects          :
 #1 (id=734477)   : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | Trigger Spell: 279245 | Target: Self (1)
 #2 (id=734478)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 250.2682 (avg=0.804721) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 548.543 (avg=7.055215) | Target: Self (1)
                    Affected Spells: Power Word: Radiance (194509)
+                   Hotfixed: Average (0.804721 -> 7.05521)
 Description      : Power Word: Radiance restores $s2 additional health, and applies Atonement for $s1% of its normal duration.
 
 Name             : Word of Mending (id=278645) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6353,7 +6374,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 500.2298 (avg=1.608456) | Target: Self (1)
                    Affected Spells: Holy Fire (14914), Purge the Wicked (204197), Purge the Wicked (204213)
 #2 (id=734494)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 446.1065 (avg=1.434426) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 133.8961 (avg=0.430534) | Target: Self (1)
+                   Hotfixed: Average (1.43443 -> 0.430534)
 Description      : Holy Fire deals an additional $s1 damage instantly, and restores $s2 mana each time it deals damage.
 
 Name             : Death Throes (id=278659) [Scaling Spell (-1), Spell Family (6), Passive] 

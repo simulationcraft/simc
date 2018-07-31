@@ -1197,8 +1197,10 @@ class SpellDataGenerator(DataGenerator):
          271711,
          # 8.0.1 Azerite power Earthlink
          279928,
-         # 8.0.1 Frenetic Corpuscle trinket 
+         # 8.0.1 Frenetic Corpuscle trinket
          278144,
+         # 8.0.1 Azerite power Laser Matrix
+         280705, 280707,
         ),
 
         # Warrior:
