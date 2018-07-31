@@ -1045,25 +1045,22 @@ void archive_of_the_titans( special_effect_t& effect )
     return;
 
   const spell_data_t* driver = power.spell_ref().effectN( 1 ).trigger();
-  const spell_data_t* spell  = driver->effectN( 1 ).trigger();
+  const spell_data_t* spell  = effect.player -> find_spell( 280709 );
 
-  effect.custom_buff = buff_t::find( effect.player, tokenized_name( spell ) );
-  if ( !effect.custom_buff )
+  buff_t* buff = buff_t::find( effect.player, tokenized_name( spell ) );
+  if ( !buff )
   {
-    effect.custom_buff = make_buff<stat_buff_t>( effect.player, tokenized_name( spell ), spell )
-                             ->add_stat( effect.player->primary_stat(), power.value( 1 ) )
-                             ->set_period( driver->effectN( 1 ).period() )
-                             ->set_duration( effect.player->sim->max_time * 3 );
+    buff = make_buff<stat_buff_t>( effect.player, tokenized_name( spell ), spell )
+      ->add_stat( effect.player->primary_stat(), power.value( 1 ) );
   }
 
-  effect.player->register_combat_begin( [ effect ]( player_t* ) {
-    effect.custom_buff -> trigger();
-    // TODO Proc Reorigination Array 
+  effect.player->register_combat_begin( [ buff, driver ]( player_t* ) {
+    buff -> trigger();
+    make_repeating_event( *buff -> sim, driver -> effectN( 1 ).period(), [ buff ]() {
+      buff -> trigger();
+    } );
+    // TODO Proc Reorigination Array
   } );
-
-  effect.spell_id = driver->id();
-
-  new dbc_proc_callback_t( effect.player, effect );
 }
 
 void laser_matrix( special_effect_t& effect )
