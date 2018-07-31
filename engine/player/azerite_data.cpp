@@ -566,6 +566,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280626, special_effects::stand_as_one          );  // Stand as One
   unique_gear::register_special_effect( 280581, special_effects::stand_as_one          );  // CollectiveWill
   unique_gear::register_special_effect( 280555, special_effects::archive_of_the_titans );
+  unique_gear::register_special_effect( 280380, special_effects::laser_matrix          );
 }
 
 
@@ -1058,6 +1059,36 @@ void archive_of_the_titans( special_effect_t& effect )
   } );
 
   effect.spell_id = driver->id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+void laser_matrix( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+
+  const spell_data_t* driver = power.spell_ref().effectN( 1 ).trigger();
+  const spell_data_t* spell  = driver->effectN( 1 ).trigger();
+
+  struct laser_matrix_t : public unique_gear::proc_spell_t
+  {
+    laser_matrix_t( const special_effect_t& e, const azerite_power_t& power )
+      : proc_spell_t( "laser_matrix", e.player, e.player->find_spell( 280706 ) )
+    {
+      base_dd_min = base_dd_max = power.value( 1 );
+      aoe = -1;
+      split_aoe_damage = 1;
+      background = true;
+      radius = e.player->find_spell( 280706 )->effectN( 1 ).radius();
+    }
+    // TODO: travel_time?
+  };
+  
+  effect.execute_action = unique_gear::create_proc_action<laser_matrix_t>( "laser_matrix", effect, power );
+  effect.spell_id       = driver->id();
 
   new dbc_proc_callback_t( effect.player, effect );
 }
