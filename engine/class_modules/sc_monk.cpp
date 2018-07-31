@@ -177,6 +177,7 @@ public:
     action_t* rushing_jade_wind;
     action_t* sunrise_technique;
     actions::spells::stagger_self_damage_t* stagger_self_damage;
+    action_t* fit_to_burst;
   } active_actions;
 
   combo_strikes_e previous_combo_strike;
@@ -253,6 +254,7 @@ public:
     stat_buff_t* iron_fists;
     buff_t* sunrise_technique;
     buff_t* swift_roundhouse;
+    buff_t* fit_to_burst;
   } buff;
 
 public:
@@ -2915,6 +2917,17 @@ struct monk_melee_attack_t: public monk_action_t < melee_attack_t >
     {
       s -> target -> debuffs.mystic_touch -> trigger();
     }
+
+    if ( result_is_hit( s-> result ) )
+    {
+      if (p() -> buff.fit_to_burst -> up() )
+      {
+        p() -> active_actions.fit_to_burst -> schedule_execute();
+
+
+          p() -> buff.fit_to_burst -> decrement();
+      }
+    }
   }
 };
 
@@ -5487,6 +5500,11 @@ struct purifying_brew_t: public monk_spell_t
 
     if ( p() -> sets -> has_set_bonus( MONK_BREWMASTER, T20, B2 ) )
       p() -> buff.gift_of_the_ox -> trigger();
+
+    if ( p() -> azerite.fit_to_burst.ok() && p() -> buff.heavy_stagger -> check() )
+    {
+      p() -> buff.fit_to_burst -> trigger( p() -> buff.fit_to_burst -> max_stack() );
+    }
   }
 };
 
@@ -6315,6 +6333,20 @@ struct celestial_fortune_t : public monk_heal_t
     monk_heal_t::execute();
   }
 };
+
+
+struct fit_to_burst_t : public monk_heal_t
+{
+  fit_to_burst_t( monk_t& p )
+    : monk_heal_t( "fit_to_burst", p, p.find_spell(275893) )
+  {
+    background = true;
+    proc = true;
+    target = player;
+    base_dd_min = base_dd_max = p.azerite.fit_to_burst.value();
+  }
+
+};
 } // end namespace heals
 
 namespace absorbs {
@@ -7106,6 +7138,7 @@ void monk_t::init_spells()
   passives.the_wind_blows                   = find_spell( 281452 );
 
   // Azerite Traits
+  active_actions.fit_to_burst = new actions::heals::fit_to_burst_t( *this );
 
   // Mastery spells =========================================
   mastery.combo_strikes              = find_mastery_spell( MONK_WINDWALKER );
@@ -7372,6 +7405,10 @@ void monk_t::create_buffs()
 
   buff.swift_roundhouse = make_buff( this, "swift_roundhouse", find_spell( 278710 ) )
                           -> set_default_value( azerite.swift_roundhouse.value() );
+
+  buff.fit_to_burst = make_buff( this, "fit_to_burst", find_spell( 275893) )
+      -> set_trigger_spell(azerite.fit_to_burst.spell())
+      ->set_reverse( true );
 }
 
 // monk_t::init_gains =======================================================
