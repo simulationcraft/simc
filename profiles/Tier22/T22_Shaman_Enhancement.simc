@@ -1,0 +1,114 @@
+shaman="T22_Shaman_Enhancement"
+spec=enhancement
+level=120
+race=troll
+role=attack
+position=back
+talents=3101033
+
+# Default consumables
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+actions.precombat+=/lightning_shield
+
+# Executed every time the actor is available.
+actions=wind_shear
+actions+=/variable,name=furyCheck45,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>45))
+actions+=/variable,name=furyCheck35,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>35))
+actions+=/variable,name=furyCheck25,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>25))
+actions+=/variable,name=OCPool80,value=(!talent.overcharge.enabled|active_enemies>1|(talent.overcharge.enabled&active_enemies=1&(cooldown.lightning_bolt.remains>=2*gcd|maelstrom>80)))
+actions+=/variable,name=OCPool70,value=(!talent.overcharge.enabled|active_enemies>1|(talent.overcharge.enabled&active_enemies=1&(cooldown.lightning_bolt.remains>=2*gcd|maelstrom>70)))
+actions+=/variable,name=OCPool60,value=(!talent.overcharge.enabled|active_enemies>1|(talent.overcharge.enabled&active_enemies=1&(cooldown.lightning_bolt.remains>=2*gcd|maelstrom>60)))
+actions+=/auto_attack
+actions+=/use_items
+actions+=/call_action_list,name=opener
+actions+=/call_action_list,name=asc,if=buff.ascendance.up
+actions+=/call_action_list,name=buffs
+actions+=/call_action_list,name=cds
+actions+=/call_action_list,name=core
+actions+=/call_action_list,name=filler
+
+actions.asc=crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25
+actions.asc+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
+actions.asc+=/windstrike
+
+actions.buffs=crash_lightning,if=!buff.crash_lightning.up&active_enemies>1&variable.furyCheck25
+actions.buffs+=/rockbiter,if=talent.landslide.enabled&!buff.landslide.up&charges_fractional>1.7
+actions.buffs+=/fury_of_air,if=!ticking&maelstrom>=20
+actions.buffs+=/flametongue,if=!buff.flametongue.up
+actions.buffs+=/frostbrand,if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck25
+actions.buffs+=/flametongue,if=buff.flametongue.remains<4.8+gcd
+actions.buffs+=/frostbrand,if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25
+actions.buffs+=/totem_mastery,if=buff.resonance_totem.remains<2
+
+# Bloodlust casting behavior mirrors the simulator settings for proxy bloodlust. See options 'bloodlust_percent', and 'bloodlust_time'. 
+actions.cds=bloodlust,if=target.health.pct<25|time>0.500
+actions.cds+=/berserking,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
+actions.cds+=/blood_fury,if=buff.ascendance.up|(feral_spirit.remains>5)|level<100
+actions.cds+=/potion,if=buff.ascendance.up|!talent.ascendance.enabled&feral_spirit.remains>5|target.time_to_die<=60
+actions.cds+=/feral_spirit
+actions.cds+=/ascendance,if=cooldown.strike.remains>0
+actions.cds+=/earth_elemental
+
+actions.core=earthen_spike,if=variable.furyCheck25
+actions.core+=/sundering,if=active_enemies>=3
+actions.core+=/stormstrike,if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool70&variable.furyCheck35)
+actions.core+=/crash_lightning,if=active_enemies>=3&variable.furyCheck25
+actions.core+=/lightning_bolt,if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck45&maelstrom>=40
+actions.core+=/stormstrike,if=variable.OCPool70&variable.furyCheck35
+actions.core+=/sundering
+actions.core+=/crash_lightning,if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck25
+actions.core+=/flametongue,if=talent.searing_assault.enabled
+actions.core+=/lava_lash,if=buff.hot_hand.react
+actions.core+=/crash_lightning,if=active_enemies>1&variable.furyCheck25
+
+actions.filler=rockbiter,if=maelstrom<70
+actions.filler+=/crash_lightning,if=talent.crashing_storm.enabled&variable.OCPool60&variable.furyCheck25
+actions.filler+=/lava_lash,if=variable.OCPool80&variable.furyCheck45
+actions.filler+=/rockbiter
+actions.filler+=/flametongue
+
+actions.opener=rockbiter,if=maelstrom<15&time<gcd
+
+head=crest_of_the_undying_visionary,id=160630,bonus_id=4824/1507/4775,azerite_powers=416/30/0/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=
+shoulders=flamesterilized_spaulders,id=160632,bonus_id=4824/1507/4775,azerite_powers=483/21/0/13
+back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
+chest=chainvest_of_assured_quality,id=160627,bonus_id=4824/1507/4775,azerite_powers=447/459/0/13
+wrists=rubywrought_sparkguards,id=160629,bonus_id=4800/1507
+hands=oblivion_crushers,id=160721,bonus_id=4800/1507
+waist=titanspark_energy_girdle,id=160633,bonus_id=4800/1507
+legs=blighted_anima_greaves,id=160716,bonus_id=4800/1507
+feet=fused_monstrosity_stompers,id=160628,bonus_id=4800/1507
+finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
+finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
+trinket1=construct_overcharger,id=160652,bonus_id=4800/1507
+trinket2=frenetic_corpuscle,id=160648,bonus_id=4800/1507
+main_hand=mothers_twin_gaze,id=160682,bonus_id=4800/1507,enchant=galeforce_striking
+off_hand=mothers_twin_gaze,id=160682,bonus_id=4800/1507,enchant=quick_navigation
+
+# Gear Summary
+# gear_ilvl=386.19
+# gear_agility=4387
+# gear_stamina=7205
+# gear_crit_rating=926
+# gear_haste_rating=1313
+# gear_mastery_rating=553
+# gear_versatility_rating=211
+# gear_armor=2738
