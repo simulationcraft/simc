@@ -806,7 +806,7 @@ public:
     azerite_power_t killer_frost; // TODO : check if it procs KM from both swings as well
     azerite_power_t icy_citadel;
     azerite_power_t latent_chill; // TODO : check that the wording actually means what it means
-    azerite_power_t glacial_contagion; // TODO : does the amp to obliterate affect both hits ?
+    azerite_power_t glacial_contagion; // TODO : does the amp to obliterate affect both hits ? Does the trait interact with Frostscythe ?
     azerite_power_t echoing_howl; // TODO : I have no idea how that actually works ingame
 
     // Unholy
@@ -2326,6 +2326,11 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       weapon = &( p -> main_hand_weapon );
       aoe = 2;
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
+
+      // Damage is off ingame by about 13.5%
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/324
+      if ( p -> bugs )
+        base_multiplier *= 1.0 - 0.135;
     }
 
     int n_targets() const override
