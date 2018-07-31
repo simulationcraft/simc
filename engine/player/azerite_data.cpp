@@ -164,21 +164,9 @@ void azerite_state_t::initialize()
 {
   range::for_each( m_player -> items, [ this ]( const item_t& item ) {
     range::for_each( item.parsed.azerite_ids, [ & ]( unsigned id ) {
-      m_state[ id ] = false;
       m_items[ id ].push_back( &( item ) );
     } );
   });
-}
-
-bool azerite_state_t::is_initialized( unsigned id ) const
-{
-  auto it = m_state.find( id );
-  if ( it != m_state.end() )
-  {
-    return it -> second;
-  }
-
-  return false;
 }
 
 azerite_power_t azerite_state_t::get_power( unsigned id )
@@ -188,23 +176,6 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
   {
     return {};
   }
-
-  auto it = m_state.find( id );
-  if ( it == m_state.end() )
-  {
-    return {};
-  }
-
-  // Already initialized (successful invocation of get_power for this actor with the same id), so
-  // don't give out the spell data again
-  if ( it -> second )
-  {
-    m_player -> sim -> errorf( "%s attempting to re-initialize azerite power %u",
-        m_player -> name(), id );
-    return {};
-  }
-
-  it -> second = true;
 
   const auto& power = m_player -> dbc.azerite_power( id );
 
@@ -249,30 +220,30 @@ azerite_power_t azerite_state_t::get_power( unsigned id )
   }
   else
   {
-    if ( m_player -> sim -> debug )
+    // Item-related azerite effects are only enabled when "all" is defined
+    if ( m_items[ id ].size() > 0 && m_player -> sim -> azerite_status == AZERITE_ENABLED )
     {
-      std::stringstream s;
-      const auto& items = m_items[ power.id ];
-
-      for ( size_t i = 0; i < items.size(); ++i )
+      if ( m_player -> sim -> debug )
       {
-        s << items[ i ] -> full_name()
-          << " (id=" << items[ i ] -> parsed.data.id
-          << ", ilevel=" << items[ i ] -> item_level() << ")";
+        std::stringstream s;
+        const auto& items = m_items[ power.id ];
 
-        if ( i < items.size() - 1 )
+        for ( size_t i = 0; i < items.size(); ++i )
         {
-          s << ", ";
+          s << items[ i ] -> full_name()
+            << " (id=" << items[ i ] -> parsed.data.id
+            << ", ilevel=" << items[ i ] -> item_level() << ")";
+
+          if ( i < items.size() - 1 )
+          {
+            s << ", ";
+          }
         }
+
+        m_player -> sim -> out_debug.printf( "%s initializing azerite power %s: %s",
+            m_player -> name(), power.name, s.str().c_str() );
       }
 
-      m_player -> sim -> out_debug.printf( "%s initializing azerite power %s: %s",
-          m_player -> name(), power.name, s.str().c_str() );
-    }
-
-    // Item-related azerite effects are only enabled when "all" is defined
-    if ( m_player -> sim -> azerite_status == AZERITE_ENABLED )
-    {
       return { m_player, m_player -> find_spell( power.spell_id ), m_items[ id ] };
     }
     else
@@ -412,8 +383,6 @@ bool azerite_state_t::parse_override( sim_t* sim, const std::string&, const std:
       }
 
       m_overrides[ power->id ].push_back( ilevel );
-      // Note, overridden powers should also have init state tracked
-      m_state[ power->id ] = false;
     }
   }
 
@@ -514,7 +483,23 @@ std::vector<unsigned> azerite_state_t::enabled_spells() const
 {
   std::vector<unsigned> spells;
 
-  for ( const auto& entry : m_state )
+  for ( const auto& entry : m_items )
+  {
+    if ( ! is_enabled( entry.first ) )
+    {
+      continue;
+    }
+
+    const auto& power = m_player -> dbc.azerite_power( entry.first );
+    if ( power.id == 0 )
+    {
+      continue;
+    }
+
+    spells.push_back( power.spell_id );
+  }
+
+  for ( const auto& entry : m_overrides )
   {
     if ( ! is_enabled( entry.first ) )
     {
