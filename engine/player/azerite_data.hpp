@@ -174,6 +174,13 @@ void overwhelming_power( special_effect_t& );
 void earthlink( special_effect_t& );
 void wandering_soul( special_effect_t& );
 void swirling_sands( special_effect_t& );
+void tradewinds( special_effect_t& );
+void unstable_catalyst( special_effect_t& );
+void stand_as_one( special_effect_t& );
+void archive_of_the_titans( special_effect_t& );
+void laser_matrix( special_effect_t& );
+void blightborne_infusion( special_effect_t& );
+void incite_the_pack( special_effect_t& );
 } // Namespace special_effects ends
 
 } // Namespace azerite ends
