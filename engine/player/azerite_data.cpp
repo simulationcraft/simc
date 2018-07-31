@@ -567,6 +567,7 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280581, special_effects::stand_as_one          );  // CollectiveWill
   unique_gear::register_special_effect( 280555, special_effects::archive_of_the_titans );
   unique_gear::register_special_effect( 280380, special_effects::laser_matrix          );
+  unique_gear::register_special_effect( 273823, special_effects::blightborne_infusion  );
 }
 
 
@@ -1035,6 +1036,7 @@ void stand_as_one( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
 void archive_of_the_titans( special_effect_t& effect )
 {
   azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
@@ -1092,6 +1094,29 @@ void laser_matrix( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void blightborne_infusion( special_effect_t& effect )
+{
+  azerite_power_t power = effect.player->find_azerite_spell( effect.driver()->name_cstr() );
+  if ( !power.enabled() )
+    return;
+
+  const spell_data_t* driver = power.spell_ref().effectN( 1 ).trigger();
+  const spell_data_t* spell  = driver->effectN( 1 ).trigger();
+
+  effect.custom_buff = buff_t::find( effect.player, tokenized_name( spell ) );
+  if ( !effect.custom_buff )
+  {
+    effect.custom_buff = make_buff<stat_buff_t>( effect.player, tokenized_name( spell ), spell )                             
+                             ->add_stat( STAT_CRIT_RATING, power.value( 1 ) );
+  }
+  
+  // Replace the driver spell, the azerite power does not hold the RPPM value
+  effect.spell_id = driver->id();
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 
 void sylvanas_resolve( special_effect_t& effect )
 {
