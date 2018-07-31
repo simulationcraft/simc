@@ -26,6 +26,12 @@ namespace enchants
   custom_cb_t weapon_navigation( unsigned );
 }
 
+namespace trinkets
+{
+  // 8.0.1 - Uldir Trinkets
+  void frenetic_corpuscle( special_effect_t& );
+}
+
 namespace util
 {
 // feasts initialization helper
@@ -172,6 +178,51 @@ custom_cb_t enchants::weapon_navigation( unsigned buff_id )
   };
 }
 
+// Frenetic Corpuscle =======================================================
+
+void trinkets::frenetic_corpuscle( special_effect_t& effect )
+{
+  struct frenetic_corpuscle_cb_t : public dbc_proc_callback_t
+  {
+    struct frenetic_corpuscle_damage_t : public proc_spell_t
+    {
+      frenetic_corpuscle_damage_t( const special_effect_t& effect ) :
+        proc_spell_t( "frenetic_blow", effect.player, effect.player -> find_spell( 278148 ), effect.item )
+      {}
+    };
+
+    action_t* damage;
+
+    frenetic_corpuscle_cb_t( const special_effect_t& effect ) :
+      dbc_proc_callback_t( effect.item, effect ),
+      damage( create_proc_action<frenetic_corpuscle_damage_t>( "frenetic_blow", effect ) )
+    {}
+
+    void execute( action_t* /* a */, action_state_t* state ) override
+    {
+      proc_buff->trigger();
+      if ( proc_buff->check() == proc_buff->max_stack() )
+      {
+        // TODO: Tooltip says "on next attack", which likely uses Frenetic Frenzy buff (278144) to proc trigger the damage
+        // Just immediately trigger the damage here, can revisit later and implement a new special_effect callback if needed
+        damage->set_target( state->target );
+        damage->execute();
+        proc_buff->expire();
+      }
+    }
+  };
+
+  buff_t* buff = buff_t::find( effect.player, "frothing_rage" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "frothing_rage", effect.player->find_spell( 278143 ), effect.item );
+  }
+
+  effect.custom_buff = buff;
+  new frenetic_corpuscle_cb_t( effect );
+}
+
+
 } // namespace bfa
 } // anon namespace
 
@@ -195,4 +246,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 264958, "264957Trigger" ); // Monelite Scope of Alacrity
   register_special_effect( 265090, "265092Trigger" ); // Incendiary Ammunition
   register_special_effect( 265094, "265096Trigger" ); // Frost-Laced Ammunition
+
+  // Trinkets
+  register_special_effect( 278140, trinkets::frenetic_corpuscle );
 }
