@@ -659,10 +659,17 @@ namespace warlock
           if ( result_is_hit( s->result ) )
           {
             warlock_td_t* tdata = this->td( s->target );
+
             if ( tdata->dots_seed_of_corruption->is_ticking() && tdata->soc_threshold > 0 )
             {
               tdata->soc_threshold = 0;
               tdata->dots_seed_of_corruption->cancel();
+            }
+
+            if ( p()->active.corruption )
+            {
+              p()->active.corruption->target = s->target;
+              p()->active.corruption->schedule_execute();
             }
           }
         }
@@ -705,13 +712,8 @@ namespace warlock
       {
         if ( result_is_hit( s->result ) )
         {
-          td( s->target )->soc_threshold = s->composite_spell_power();
+          td( s->target )->soc_threshold = s->composite_spell_power() * ( data().effectN(1).base_value() / 100.0 );
         }
-
-        assert(p()->active.corruption);
-        p()->active.corruption->target = s->target;
-        p()->active.corruption->schedule_execute();
-
         affliction_spell_t::impact( s );
       }
 
@@ -719,7 +721,8 @@ namespace warlock
       {
         affliction_spell_t::last_tick( d );
 
-        if (!d->end_event) {
+        if (!d->end_event)
+        {
           explosion->deathbloom = true;
         }
         explosion->target = d->target;
@@ -1132,7 +1135,6 @@ namespace warlock
     {
       active.corruption = new corruption_t(this, "");
       active.corruption->background = true;
-      active.corruption->aoe = -1;
     }
   }
 
