@@ -113,6 +113,8 @@ namespace warlock
           if (td->dots_seed_of_corruption->is_ticking() && id != p()->spells.seed_of_corruption_aoe->id)
           {
             accumulate_seed_of_corruption(td, s->result_amount);
+            if (sim->log)
+              sim->out_debug.printf("remaining damage to explode seed %f", td->soc_threshold);
           }
         }
       }
@@ -352,10 +354,11 @@ namespace warlock
     struct corruption_t : public affliction_spell_t
     {
       corruption_t( warlock_t* p, const std::string& options_str) :
-        affliction_spell_t( "Corruption", p, p -> find_spell( 172 ) )
+        affliction_spell_t( "Corruption", p, p -> find_spell(172) )  //triggers 146739
       {
         parse_options(options_str);
         may_crit = false;
+        tick_zero = false;
         dot_duration = data().effectN( 1 ).trigger()->duration();
         spell_power_mod.tick = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
         base_tick_time = data().effectN( 1 ).trigger()->effectN( 1 ).period();
@@ -394,21 +397,21 @@ namespace warlock
 
       void tick( dot_t* d ) override
       {
-        if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
+        if (result_is_hit(d->state->result) && p()->talents.nightfall->ok())
         {
           auto success = p()->buffs.nightfall->trigger();
-          if ( success )
+          if (success)
           {
             p()->procs.nightfall->occur();
           }
         }
 
-        if ( result_is_hit( d->state->result ) && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T20, B2 ) )
+        if (result_is_hit(d->state->result) && p()->sets->has_set_bonus(WARLOCK_AFFLICTION, T20, B2))
         {
           bool procced = p()->affliction_t20_2pc_rppm->trigger(); //check for RPPM
 
-          if ( procced )
-            p()->resource_gain( RESOURCE_SOUL_SHARD, 1.0, p()->gains.affliction_t20_2pc ); //trigger the buff
+          if (procced)
+            p()->resource_gain(RESOURCE_SOUL_SHARD, 1.0, p()->gains.affliction_t20_2pc); //trigger the buff
         }
 
         if (result_is_hit(d->state->result) && p()->azerite.inevitable_demise.ok())
@@ -520,7 +523,7 @@ namespace warlock
             }
           }
 
-          real_ua->target = s->target;
+          real_ua->set_target( s->target );
           real_ua->schedule_execute();
         }
       }
@@ -633,15 +636,22 @@ namespace warlock
     {
       struct seed_of_corruption_aoe_t : public affliction_spell_t
       {
+        corruption_t* corruption;
         bool deathbloom; //azerite_trait
+
         seed_of_corruption_aoe_t( warlock_t* p ) :
-          affliction_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) )
+          affliction_spell_t( "seed_of_corruption_aoe", p, p -> find_spell( 27285 ) ),
+          corruption( new corruption_t(p,"") )
         {
           aoe = -1;
-          dual = true;
           background = true;
           deathbloom = false;
           p->spells.seed_of_corruption_aoe = this;
+          base_costs[RESOURCE_MANA] = 0;
+
+          corruption->background = true;
+          corruption->dual = true;
+          corruption->base_costs[RESOURCE_MANA] = 0;
         }
 
         double bonus_da(const action_state_t* s) const override
@@ -664,6 +674,9 @@ namespace warlock
               tdata->soc_threshold = 0;
               tdata->dots_seed_of_corruption->cancel();
             }
+
+            corruption->set_target(s->target);
+            corruption->execute();
           }
         }
       };
@@ -680,6 +693,7 @@ namespace warlock
       {
         parse_options( options_str );
         may_crit = false;
+        tick_zero = false;
         base_tick_time = dot_duration;
         hasted_ticks = false;
         add_child( explosion );
@@ -698,6 +712,18 @@ namespace warlock
         if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T21, B4 ) )
           p()->active.tormented_agony->schedule_execute();
 
+        if (target->get_dot("seed_of_corruption", p())->is_ticking() || has_travel_events_for(target))
+        {
+          for (auto& possible : target_list())
+          {
+            if (!(possible->get_dot("seed_of_corruption", p())->is_ticking() || has_travel_events_for(possible)))
+            {
+              set_target(possible);
+              break;
+            }
+          }
+        }
+
         affliction_spell_t::execute();
       }
 
@@ -707,10 +733,6 @@ namespace warlock
         {
           td( s->target )->soc_threshold = s->composite_spell_power();
         }
-
-        assert(p()->active.corruption);
-        p()->active.corruption->target = s->target;
-        p()->active.corruption->schedule_execute();
 
         affliction_spell_t::impact( s );
       }
@@ -722,8 +744,8 @@ namespace warlock
         if (!d->end_event) {
           explosion->deathbloom = true;
         }
-        explosion->target = d->target;
-        explosion->execute();
+        explosion->set_target( d->target );
+        explosion->schedule_execute();
       }
     };
 
@@ -1128,12 +1150,15 @@ namespace warlock
     azerite.deathbloom                  = find_azerite_spell("Deathbloom");
 
     // seed applies corruption
+    /*
     if (specialization() == WARLOCK_AFFLICTION)
     {
       active.corruption = new corruption_t(this, "");
       active.corruption->background = true;
-      active.corruption->aoe = -1;
+      active.corruption->dual = true;
+      active.corruption->base_costs[RESOURCE_MANA] = 0;
     }
+    */
   }
 
   void warlock_t::init_gains_affliction()

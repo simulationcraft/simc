@@ -300,7 +300,7 @@ namespace warlock {
         {
           da += p()->azerite.forbidden_knowledge.value();
           if (sim->log)
-            sim->out_debug.printf("forbidden knowledge added %f", p()->azerite.forbidden_knowledge.value());
+            sim->out_log.printf("forbidden knowledge added %f", p()->azerite.forbidden_knowledge.value());
         }
         da += p()->buffs.shadows_bite->check_value();
         return da;

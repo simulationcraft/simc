@@ -802,14 +802,14 @@ namespace warlock {
         if (!havocd && p()->legendary.magistrike_restraints && rng().roll(duplicate_chance))
         {
           duplicate->original_target = s->target;
-          duplicate->target = s->target;
+          duplicate->set_target( s->target );
           duplicate->target_cache.is_valid = false;
           duplicate->target_list();
           duplicate->target_cache.is_valid = true;
           if (duplicate->target_cache.list.size() > 0)
           {
             size_t target_to_strike = rng().range(size_t(), duplicate->target_cache.list.size());
-            duplicate->target = duplicate->target_cache.list[target_to_strike];
+            duplicate->set_target( duplicate->target_cache.list[target_to_strike] );
             duplicate->execute();
           }
         }
@@ -1119,7 +1119,7 @@ namespace warlock {
 
         if (result_is_hit(s->result))
         {
-          immolate->target = s->target;
+          immolate->set_target( s->target );
           immolate->execute();
         }
       }
