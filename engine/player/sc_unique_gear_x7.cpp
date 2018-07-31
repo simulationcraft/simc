@@ -74,11 +74,28 @@ void consumables::galley_banquet( special_effect_t& effect )
 
 void consumables::bountiful_captains_feast( special_effect_t& effect )
 {
-  util::init_feast( effect,
-    { { STAT_STRENGTH,  259456 },
-      { STAT_AGILITY,   259454 },
-      { STAT_INTELLECT, 259455 },
-      { STAT_STAMINA,   259457 } } );
+  effect.stat = effect.player -> convert_hybrid_stat( STAT_STR_AGI_INT );
+  switch ( effect.stat ) {
+    case STAT_STRENGTH:
+      effect.trigger_spell_id = 259456;
+      break;
+    case STAT_AGILITY:
+      effect.trigger_spell_id = 259454;
+      break;
+    case STAT_INTELLECT:
+      effect.trigger_spell_id = 259455;
+      break;
+    default:
+      break;
+  }
+
+  if (effect.player -> role == ROLE_TANK && !effect.player->sim->bfa_opts.bountiful_feast_as_dps )
+  {
+    effect.stat = STAT_STAMINA;
+    effect.trigger_spell_id = 259457;
+  }
+
+  effect.stat_amount = effect.player -> find_spell( effect.trigger_spell_id ) -> effectN( 1 ).average( effect.player );
 }
 
 // Gale-Force Striking ======================================================

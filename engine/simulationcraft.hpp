@@ -1086,6 +1086,12 @@ struct sim_t : private sc_thread_t
   } auras;
 
   // Expansion specific custom parameters. Defaults in the constructor.
+  struct bfa_opt_t
+  {
+    // BFA
+    bool                bountiful_feast_as_dps = true;
+  } bfa_opts;
+
   struct legion_opt_t
   {
     // Legion
@@ -7522,6 +7528,10 @@ void trigger( action_t* residual_action, player_t* t, double amount );
 // Expansion specific methods and helpers
 namespace expansion
 {
+// BFA (WoW 8.0)
+namespace bfa
+{
+} // namespace bfa
 // Legion (WoW 7.0)
 namespace legion
 {

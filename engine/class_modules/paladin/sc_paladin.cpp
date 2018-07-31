@@ -1185,7 +1185,8 @@ std::string paladin_t::default_food() const
                                  "disabled";
 
   bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
-  std::string protection_food = (true_level > 100) ? ( dps ? "lavish_suramar_feast" : "seedbattered_fish_plate" ) :
+  std::string protection_food = (true_level > 110) ? "bountiful_captains_feast" :
+                                (true_level >= 100) ? ( dps ? "lavish_suramar_feast" : "seedbattered_fish_plate" ) :
                                 (true_level >= 90) ? ( dps ? "pickled_eel" : "whiptail_fillet" ) :
                                 (true_level >= 85) ? "chun_tian_spring_rolls" :
                                 (true_level >= 80) ? "seafood_magnifique_feast" :
