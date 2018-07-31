@@ -566,9 +566,9 @@ void register_azerite_powers()
   unique_gear::register_special_effect( 280626, special_effects::stand_as_one          );  // Stand as One
   unique_gear::register_special_effect( 280581, special_effects::stand_as_one          );  // CollectiveWill
   unique_gear::register_special_effect( 280555, special_effects::archive_of_the_titans );
-  unique_gear::register_special_effect( 280380, special_effects::laser_matrix          );
+  unique_gear::register_special_effect( 280559, special_effects::laser_matrix          );
   unique_gear::register_special_effect( 273823, special_effects::blightborne_infusion  );
-  unique_gear::register_special_effect( 273823, special_effects::incite_the_pack       );
+  unique_gear::register_special_effect( 280410, special_effects::incite_the_pack       );
 }
 
 
