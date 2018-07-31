@@ -7,7 +7,7 @@ role=spell
 position=back
 
 head=horrific_amalgams_hood,id=160616,bonus_id=4824/1507,azerite_powers=404/22/13
-neck=,id=158075,azerite_level=21
+neck=heart_of_azeroth,id=158075,bonus_id=4929/4930/4936/1536,azerite_level=33
 shoulder=amice_of_corrupting_horror,id=160726,bonus_id=4824/1507,azerite_powers=236/461/13
 back=fetid_horrors_tanglecloak,id=160643,bonus_id=4800/1507
 chest=robes_of_the_unraveler,id=160614,bonus_id=4824/1507,azerite_powers=405/30/13
@@ -16,8 +16,8 @@ hands=mutagenic_protofluid_handwraps,id=160715,bonus_id=4800/1507
 waist=cord_of_septic_envelopment,id=160727,bonus_id=4800/1507
 legs=leggings_of_lingering_infestation,id=160615,bonus_id=4800/1507
 feet=volatile_walkers,id=160714,bonus_id=4800/1507
-finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507
-finger2=rotscour_ring,id=160645,bonus_id=4800/1507
+finger1=band_of_certain_annihilation,id=160646,bonus_id=4800/1507,enchant=pact_of_haste
+finger2=rotscour_ring,id=160645,bonus_id=4800/1507,enchant=pact_of_haste
 trinket1=twitching_tentacle_of_xalzaix,id=160656,bonus_id=4800/1507
 trinket2=vigilants_bloodshaper,id=160651,bonus_id=4800/1507
 main_hand=tusk_of_the_reborn_prophet,id=160691,bonus_id=4800/1507,enchant=torrent_of_elements
