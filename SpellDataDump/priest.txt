@@ -4135,7 +4135,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Charges          : 2 (9 seconds cooldown)
 Category         : 1590: Shadow Priest (137033 effect#12)
-Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Twist of Fate (265258 effect#1), Harvested Thoughts (273321 effect#1), Whispers of the Damned (275726 effect#1)
+Affecting spells : Mastery: Madness (77486 effect#1), Twist of Fate (123254 effect#1), Holy Priest (137031 effect#3), Shadow Priest (137033 effect#1), Surrender to Madness (193223 effect#2), Voidform (194249 effect#1), Shadowform (232698 effect#1), Empty Mind (247226 effect#1), Twist of Fate (265258 effect#1), Harvested Thoughts (273321 effect#1), Whispers of the Damned (275726 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5910,7 +5910,8 @@ Effects          :
                    Affected Spells: Atonement (194384)
 Description      : Your healing and absorption is increased by ${$s1}.1% on targets with Atonement.
 
-Name             : Moment of Repose (id=272775) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Moment of Repose (id=272775) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Physical
 Azerite Power Id : 113
@@ -5925,10 +5926,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723883)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1264.228 (avg=4.065041) | Trigger Spell: 272776 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 7631.902 (avg=98.15951) | Trigger Spell: 272776 | Target: Self (1)
+                   Hotfixed: Average (4.06504 -> 98.1595)
 Description      : Pain Suppression applies Atonement to the target and instantly heals them for $s1.
 
-Name             : Permeating Glow (id=272780) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Permeating Glow (id=272780) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 114
@@ -5942,7 +5945,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723891)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 252.8455 (avg=0.813008) | Trigger Spell: 272782 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 572.3926 (avg=7.361963) | Trigger Spell: 272782 | Target: Self (1)
+                   Hotfixed: Average (0.813008 -> 7.36196)
 Description      : Flash Heal increases the healing of your Flash Heals on that ally by $s1 for $272783d.
 
 Name             : Searing Dialogue (id=272788) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -5962,7 +5966,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 101.1381 (avg=0.325203) | Target: Self (1)
 Description      : Mind Sear deals an additional $s1 damage to enemies suffering from your Shadow Word: Pain.
 
-Name             : Ruinous Bolt (rank=Drustvar) (id=273150) [Scaling Spell (-1), Passive] 
+Name             : Ruinous Bolt (id=273150) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 156
@@ -5979,7 +5984,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 799.9999 (avg=2.572347) | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
-Name             : Weal and Woe (id=273307) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Weal and Woe (id=273307) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 164
@@ -5993,12 +5999,15 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724827)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 505.691 (avg=1.626016) | Trigger Spell: 273308 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 381.5951 (avg=4.907975) | Trigger Spell: 273308 | Target: Self (1)
+                   Hotfixed: Average (1.62602 -> 4.90798)
 #2 (id=724828)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 884.9592 (avg=2.845528) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 1430.982 (avg=18.40491) | Target: Self (1)
+                   Hotfixed: Average (2.84553 -> 18.4049)
 Description      : Healing an ally with Penance increases the damage of your next Smite by $s1. Damaging an enemy with Penance increases the absorption of your next Power Word: Shield by $s2.
 
-Name             : Blessed Sanctuary (id=273313) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Blessed Sanctuary (id=273313) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 165
@@ -6012,7 +6021,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724838)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 442.4796 (avg=1.422764) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 715.4908 (avg=9.202454) | Target: Self (1)
+                   Hotfixed: Average (1.42276 -> 9.20245)
 Description      : Echo of Light from Holy Word: Sanctify heals for an additional ${$s1*2}.
 
 Name             : Thought Harvester (id=273319) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6033,7 +6043,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 632.1137 (avg=2.03252) | Trigger Spell: 273320 | Target: Self (1)
 Description      : Casting Vampiric Touch increases the damage of your next $?s205351[Shadow Word: Void][Mind Blast] by $s1.
 
-Name             : Meticulous Scheming (rank=Tiragarde Sound) (id=273682) [Scaling Spell (-1), Passive] 
+Name             : Meticulous Scheming (id=273682) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 192
@@ -6057,7 +6068,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 224.1442 (avg=0.720721) | Target: Self (1)
 Description      : Your spells and abilities have a chance to grant you Meticulous Scheming for $273685d, which transforms into Seize the Moment! after you cast $s3 different spells, granting you $s4 Haste for $273714d.
 
-Name             : Rezan's Fury (rank=Zuldazar) (id=273790) [Scaling Spell (-1), Passive] 
+Name             : Rezan's Fury (id=273790) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 157
@@ -6076,7 +6088,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
 Description      : Your damaging abilities have a chance to call a Child of Rezan to viciously rend your target, dealing $s1 Physical damage and causing them to bleed for ${($273794d/$273794t2)*$s2} damage over $273794d.
 
-Name             : Blightborne Infusion (rank=Drustvar) (id=273823) [Scaling Spell (-7), Passive] 
+Name             : Blightborne Infusion (id=273823) [Scaling Spell (-7), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 193
@@ -6093,7 +6106,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=1.2) | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul increases your Critical Strike by $s1.
 
-Name             : Secrets of the Deep (rank=Stormsong Valley) (id=273829) [Scaling Spell (-1), Passive] 
+Name             : Secrets of the Deep (id=273829) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 195
@@ -6114,7 +6128,8 @@ Description      : Your spells and abilities have a chance to create a Surging D
 
 Rarely, a Void Droplet will be created, increasing your primary stat by $s2 for $273843d instead.
 
-Name             : Filthy Transfusion (rank=Nazmir) (id=273834) [Scaling Spell (-1), Passive] 
+Name             : Filthy Transfusion (id=273834) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 194
@@ -6150,7 +6165,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1999.73 (avg=6.43) | Trigger Spell: 274368 | Target: Self (1)
 Description      : When you cast Fade, absorb $s1 Magic damage for $274369d.
 
-Name             : Depth of the Shadows (id=275541) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Depth of the Shadows (id=275541) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 227
@@ -6165,10 +6181,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728629)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 34.21 (avg=0.11) | Trigger Spell: 275542 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 42.92943 (avg=0.552147) | Trigger Spell: 275542 | Target: Self (1)
+                   Hotfixed: Average (0.11 -> 0.552147)
 Description      : Each time $?s204197[Purge the Wicked][Shadow Word: Pain] deals damage, the healing of your next Shadow Mend is increased by $s1, up to a maximum of ${$s1*30}.
 
-Name             : Prayerful Litany (id=275602) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Prayerful Litany (id=275602) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Physical
 Azerite Power Id : 228
@@ -6182,7 +6200,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728716)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 108.85 (avg=0.35) | Target: Self (1)
+                   Base Value: 8 | Scaled Value: 1097.086 (avg=14.11043) | Target: Self (1)
+                   Hotfixed: Average (0.35 -> 14.1104)
 Description      : Prayer of Healing restores an additional $s1 health to the most injured ally it affects.
 
 Name             : Whispers of the Damned (id=275722) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6203,7 +6222,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 233.25 (avg=0.75) | Trigger Spell: 275725 | Target: Self (1)
 Description      : Void Bolt increases the damage of $?s205351[Shadow Word: Void][Mind Blast] by $s1 for $275726d, stacking up to 6 times.
 
-Name             : Gift of Forgiveness (id=277680) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Gift of Forgiveness (id=277680) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Physical
 Azerite Power Id : 397
@@ -6217,12 +6237,14 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732992)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 350.0632 (avg=1.125605) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 286.1963 (avg=3.680981) | Target: Self (1)
+                   Hotfixed: Average (1.1256 -> 3.68098)
 #2 (id=734277)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Smite deals an additional $s1 damage if you have at least $s2 Atonements active.
 
-Name             : Everlasting Light (id=277681) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Everlasting Light (id=277681) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 400
@@ -6236,7 +6258,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732993)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 799.5116 (avg=2.570777) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 953.9877 (avg=12.26994) | Target: Self (1)
+                   Hotfixed: Average (2.57078 -> 12.2699)
 Description      : Heal restores up to $s1 additional health, based on your missing mana.
 
 Name             : Spiteful Apparitions (id=277682) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6256,7 +6279,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 100.3354 (avg=0.322622) | Target: Self (1)
 Description      : Shadowy Apparitions deal an additional $s1 damage to enemies suffering from your Vampiric Touch.
 
-Name             : Contemptuous Homily (id=278629) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Contemptuous Homily (id=278629) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 398
@@ -6272,11 +6296,13 @@ Effects          :
 #1 (id=734461)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 278902 | Target: Self (1)
 #2 (id=734462)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 126.8804 (avg=1.631902) | Target: Self (1)
                    Affected Spells: Penance (47666)
+                   Hotfixed: Average (0.406504 -> 1.6319)
 Description      : Penance deals an additional $s2 damage and extends your $?s204197[Purge the Wicked][Shadow Word: Pain] by ${$s1/1000} sec per bolt.
 
-Name             : Enduring Luminescence (id=278643) [Scaling Spell (-1), Spell Family (6), Passive] 
+Name             : Enduring Luminescence (id=278643) [Scaling Spell (-8), Spell Family (6), Passive] 
+Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Priest
 School           : Holy
 Azerite Power Id : 399
@@ -6292,8 +6318,9 @@ Effects          :
 #1 (id=734477)   : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | Trigger Spell: 279245 | Target: Self (1)
 #2 (id=734478)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 250.2682 (avg=0.804721) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 548.543 (avg=7.055215) | Target: Self (1)
                    Affected Spells: Power Word: Radiance (194509)
+                   Hotfixed: Average (0.804721 -> 7.05521)
 Description      : Power Word: Radiance restores $s2 additional health, and applies Atonement for $s1% of its normal duration.
 
 Name             : Word of Mending (id=278645) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6333,7 +6360,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 500.2298 (avg=1.608456) | Target: Self (1)
                    Affected Spells: Holy Fire (14914), Purge the Wicked (204197), Purge the Wicked (204213)
 #2 (id=734494)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 446.1065 (avg=1.434426) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 133.8961 (avg=0.430534) | Target: Self (1)
+                   Hotfixed: Average (1.43443 -> 0.430534)
 Description      : Holy Fire deals an additional $s1 damage instantly, and restores $s2 mana each time it deals damage.
 
 Name             : Death Throes (id=278659) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6429,7 +6457,8 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 Description      : When you successfully Dispel Magic, heal yourself and $s2 injured allies for $s1.
 
-Name             : Barrage Of Many Bombs (rank=Goblin Engineering) (id=280163) [Scaling Spell (-8), Passive] 
+Name             : Barrage Of Many Bombs (id=280163) [Scaling Spell (-8), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -6458,7 +6487,8 @@ Description      : Your spells and abilities have a chance to fire a bomb at you
 
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
-Name             : Ricocheting Inflatable Pyrosaw (rank=Goblin Engineering) (id=280168) [Passive] 
+Name             : Ricocheting Inflatable Pyrosaw (id=280168) [Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -6487,7 +6517,8 @@ Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, 
 
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
-Name             : Auto-Self-Cauterizer (rank=Goblin Engineering) (id=280172) [Scaling Spell (-8), Passive] 
+Name             : Auto-Self-Cauterizer (id=280172) [Scaling Spell (-8), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Internal Cooldown: 1 seconds
@@ -6517,7 +6548,8 @@ Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 *Efficacy may vary.
 
-Name             : Synaptic Spark Capacitor (rank=Gnomish Engineering) (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
+Name             : Synaptic Spark Capacitor (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -6544,7 +6576,8 @@ Description      : Your spells and abilities have a chance to cause the target t
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
-Name             : Relational Normalization Gizmo (rank=Gnomish Engineering) (id=280178) [Scaling Spell (-1), Passive] 
+Name             : Relational Normalization Gizmo (id=280178) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Internal Cooldown: 10 seconds
@@ -6570,7 +6603,8 @@ Description      : Your spells and abilities have a chance to grow or shrink the
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
-Name             : Personal Absorb-o-Tron (rank=Gnomish Engineering) (id=280181) [Passive] 
+Name             : Personal Absorb-o-Tron (id=280181) [Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Internal Cooldown: 60 seconds
@@ -6596,7 +6630,8 @@ Description      : Taking damage has a chance to call your Personal Absorb-o-Tro
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
 
-Name             : Dagger in the Back (rank=Tiragarde Sound) (id=280284) [Scaling Spell (-1), Passive] 
+Name             : Dagger in the Back (id=280284) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 479
@@ -6616,7 +6651,8 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2
 Description      : Your damaging spells and abilities have a chance to fling a dagger at your target, causing them to bleed for ${$s1*$280286d/$280286t1} Physical damage over $280286d, stacking up to $280286u times. Stabbing them in the back applies $s2 stacks.
 
-Name             : Thunderous Blast (rank=Vol'dun) (id=280380) [Scaling Spell (-8), Passive] 
+Name             : Thunderous Blast (id=280380) [Scaling Spell (-8), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 482
@@ -6652,7 +6688,8 @@ Effects          :
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
 Description      : Your damage is increased by up to $s1%, diminishing for each ally affected by your Atonement.
 
-Name             : Tidal Surge (rank=Stormsong Valley) (id=280402) [Scaling Spell (-1), Passive] 
+Name             : Tidal Surge (id=280402) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Frost
 Azerite Power Id : 478
@@ -6669,7 +6706,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 827.733 (avg=2.661521) | Trigger Spell: 280403 | Target: Self (1)
 Description      : Your damaging spells and abilities have a chance to release a tidal surge, dealing $s1 Frost damage to your target and slowing their movement speed by $280404s2% for $280404d.
 
-Name             : Blood Rite (rank=Nazmir) (id=280407) [Scaling Spell (-7), Passive] 
+Name             : Blood Rite (id=280407) [Scaling Spell (-7), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 480
@@ -6687,7 +6725,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (avg=1.129518) | Trigger Spell: 280408 | Target: Self (1)
 Description      : Your spells and abilities have a chance to increase your Haste by $s1 for $280409d. Killing an enemy refreshes the duration of this effect.
 
-Name             : Incite the Pack (rank=Zuldazar) (id=280410) [Scaling Spell (-1), Passive] 
+Name             : Incite the Pack (id=280410) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 481
@@ -6709,7 +6748,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0
 Description      : You occasionally loose a tremendous roar, increasing your Mastery by $s1 and granting $s2 Mastery to up to $280413i nearby allies. Lasts $280412d.
 
-Name             : Swirling Sands (rank=Vol'dun) (id=280429) [Scaling Spell (-7), Passive] 
+Name             : Swirling Sands (id=280429) [Scaling Spell (-7), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 196
@@ -6730,7 +6770,8 @@ Effects          :
                    Base Value: 6000 | Scaled Value: 6000
 Description      : Your spells and abilities have a chance to conjure Swirling Sands, increasing your Critical Strike by $s1 for $280433d. Your critical effects extend Swirling Sands by ${$s2/1000} sec, up to a maximum duration of ${$280433d+($s3/1000)} sec.
 
-Name             : Archive of the Titans (rank=Uldir) (id=280555) [Scaling Spell (-1), Passive] 
+Name             : Archive of the Titans (id=280555) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 483
@@ -6749,7 +6790,8 @@ Description      : Your armor gathers and analyzes combat data every $280708t1 s
 
 Enables $@spellname280573 within Uldir.
 
-Name             : Laser Matrix (rank=Uldir) (id=280559) [Scaling Spell (-8), Passive] 
+Name             : Laser Matrix (id=280559) [Scaling Spell (-8), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 485
@@ -6770,7 +6812,8 @@ Description      : Your spells and abilities have a chance to release a barrage 
 
 Enables $@spellname280573 within Uldir.
 
-Name             : Glory in Battle (rank=Horde) (id=280577) [Scaling Spell (-7), Passive] 
+Name             : Glory in Battle (id=280577) [Scaling Spell (-7), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 486
@@ -6790,7 +6833,8 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280780d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
-Name             : Retaliatory Fury (rank=Horde) (id=280579) [Scaling Spell (-1), Passive] 
+Name             : Retaliatory Fury (id=280579) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 487
@@ -6811,7 +6855,8 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280788d. 
 Attacking a member of the opposite faction is more likely to activate this effect.
 
-Name             : Combined Might (rank=Horde) (id=280580) [Scaling Spell (-1), Passive] 
+Name             : Combined Might (id=280580) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 490
@@ -6831,7 +6876,8 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 Description      : Your abilities have a chance to plant a factional banner for $280841d, empowering yourself and up to $s2 allies with the spirit of the Horde.
 
-Name             : Collective Will (rank=Horde) (id=280581) [Scaling Spell (-1), Passive] 
+Name             : Collective Will (id=280581) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 491
@@ -6851,7 +6897,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1866 (avg=6) | Target: Self (1)
 Description      : Your abilities have a chance to drop a Horde Banner for $280830d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
-Name             : Battlefield Focus (rank=Horde) (id=280582) [Scaling Spell (-8), Passive] 
+Name             : Battlefield Focus (id=280582) [Scaling Spell (-8), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 488
@@ -6872,7 +6919,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Your abilities have a chance to apply $s2 stacks of Battlefield Focus to an enemy, increasing damage taken from members of the Horde by $s1. Applying Battlefield Focus to a member of the Alliance grants an additional $s3 stacks. 
 
-Name             : Sylvanas' Resolve (rank=Horde) (id=280598) [Scaling Spell (-1), Passive] 
+Name             : Sylvanas' Resolve (id=280598) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 489
@@ -6892,7 +6940,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 280810 | Target: Self (1)
 Description      : Your abilities have a chance to increase your $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 for $280809d. If an ally dies nearby, you gain this effect.
 
-Name             : Liberator's Might (rank=Alliance) (id=280623) [Scaling Spell (-7), Passive] 
+Name             : Liberator's Might (id=280623) [Scaling Spell (-7), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 492
@@ -6912,7 +6961,8 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant $s1 Critical Strike and $s2 Haste for $280852d. 
 Attacking a member of the opposite faction significantly increases this chance.
 
-Name             : Last Gift (rank=Alliance) (id=280624) [Scaling Spell (-1), Passive] 
+Name             : Last Gift (id=280624) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 493
@@ -6933,7 +6983,8 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant $s1 Mastery and absorb $s2 damage for $280862d. 
 Taking damage from a member of the opposite faction has a chance to activate this effect. 
 
-Name             : Stronger Together (rank=Alliance) (id=280625) [Scaling Spell (-1), Passive] 
+Name             : Stronger Together (id=280625) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 496
@@ -6953,7 +7004,8 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4
 Description      : Your abilities have a chance to plant a factional banner for $280866d, empowering yourself and up to $s2 allies with the spirit of the Alliance.
 
-Name             : Stand As One (rank=Alliance) (id=280626) [Scaling Spell (-1), Passive] 
+Name             : Stand As One (id=280626) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 497
@@ -6973,7 +7025,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1866 (avg=6) | Target: Self (1)
 Description      : Your abilities have a chance to drop an Alliance Banner for $280858d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
-Name             : Battlefield Precision (rank=Alliance) (id=280627) [Scaling Spell (-8), Passive] 
+Name             : Battlefield Precision (id=280627) [Scaling Spell (-8), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 494
@@ -6994,7 +7047,8 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5
 Description      : Your abilities have a chance to apply $s2 stacks of Battlefield Focus to an enemy, increasing damage taken from members of the Alliance by $s1. Applying Battlefield Focus to a member of the Horde grants an additional $s3 stacks. 
 
-Name             : Anduin's Dedication (rank=Alliance) (id=280628) [Scaling Spell (-1), Passive] 
+Name             : Anduin's Dedication (id=280628) [Scaling Spell (-1), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 495
@@ -7107,7 +7161,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 172.3948 (avg=0.554324) | Trigger Spell: 281515 | Target: Self (1)
 Description      : Your spells and abilities have a chance to leak Azerite on the ground around you. Standing in the Azerite increases your primary stat by $s1 for $281516d.
 
-Name             : Tradewinds (rank=Tiragarde Sound) (id=281841) [Scaling Spell (-7), Passive] 
+Name             : Tradewinds (id=281841) [Scaling Spell (-7), Passive] 
+Hotfixed         : Rank
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 505
