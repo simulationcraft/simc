@@ -38,6 +38,7 @@ actions+=/blood_fury,if=cooldown.coordinated_assault.remains>30
 actions+=/ancestral_call,if=cooldown.coordinated_assault.remains>30
 actions+=/fireblood,if=cooldown.coordinated_assault.remains>30
 actions+=/lights_judgment
+actions+=/arcane_torrent,if=cooldown.kill_command.remains>gcd.max&focus<=30
 actions+=/potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)
 actions+=/variable,name=can_gcd,value=!talent.mongoose_bite.enabled|buff.mongoose_fury.down|(buff.mongoose_fury.remains-(((buff.mongoose_fury.remains*focus.regen+focus)%action.mongoose_bite.cost)*gcd.max)>gcd.max)
 actions+=/steel_trap
