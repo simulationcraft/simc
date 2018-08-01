@@ -712,11 +712,11 @@ namespace warlock
         if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T21, B4 ) )
           p()->active.tormented_agony->schedule_execute();
 
-        if (target->get_dot("seed_of_corruption", p())->is_ticking() || has_travel_events_for(target))
+        if (td(target)->dots_seed_of_corruption->is_ticking() || has_travel_events_for(target))
         {
           for (auto& possible : target_list())
           {
-            if (!(possible->get_dot("seed_of_corruption", p())->is_ticking() || has_travel_events_for(possible)))
+            if (!(td(possible)->dots_seed_of_corruption->is_ticking() || has_travel_events_for(possible)))
             {
               set_target(possible);
               break;
