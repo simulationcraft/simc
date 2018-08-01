@@ -26,15 +26,9 @@ MISTWEAVER:
 -- Summon Jade Serpent Statue
 
 BREWMASTER:
-- Change the intial midigation % of stagger into an absorb (spell id 115069)
-- Fortuitous Sphers - Finish implementing
-- Break up Healing Elixers and Fortuitous into two spells; one for proc and one for heal
-- Gift of the Ox - Check if 35% chance is baseline and increased by HP percent from there
-- Double Check that Brewmasters mitigate 15% of Magical Damage
-- Stagger - Effect says 10 but tooltip say 6%; double check
 - Not Modeled:
 -- Summon Black Ox Statue
--- Invoke Niuzao
+-- Guard
 -- Zen Meditation
 */
 #include "simulationcraft.hpp"
@@ -2056,8 +2050,8 @@ struct monk_action_t: public Base
   bool hasted_gcd;
   bool brewmaster_damage_increase;
   bool brewmaster_damage_increase_dot;
-  bool brewmaster_damage_increase_dot_two;
   bool brewmaster_damage_increase_two;
+  bool brewmaster_damage_increase_dot_two;
   bool brewmaster_damage_increase_dot_three;
   bool brewmaster_healing_increase;
 
@@ -2090,13 +2084,12 @@ public:
     ab( n, player, s ),
     sef_ability( SEF_NONE ),
     ww_mastery( false ),
-    affected_by(),
 
     hasted_gcd( ab::data().affected_by( player -> spec.mistweaver_monk -> effectN( 4 ) ) ),
     brewmaster_damage_increase( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 1 ) ) ),
-    brewmaster_damage_increase_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 7 ) ) ),
 
     brewmaster_damage_increase_dot( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 2 ) ) ),
+    brewmaster_damage_increase_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 7 ) ) ),
     brewmaster_damage_increase_dot_two( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 6 ) ) ),
     brewmaster_damage_increase_dot_three( ab::data().affected_by( player -> spec.brewmaster_monk -> effectN( 8 ) ) ),
 
@@ -2114,7 +2107,8 @@ public:
     windwalker_damage_increase_dot_three( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 7 ) ) ),
     windwalker_damage_increase_dot_four( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 8 ) ) ),
 
-    windwalker_healing_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 11 ) ) )
+    windwalker_healing_increase( ab::data().affected_by( player -> spec.windwalker_monk -> effectN( 11 ) ) ),
+    affected_by()
   {
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
@@ -5474,8 +5468,6 @@ struct purifying_brew_t: public monk_spell_t
   {
     monk_spell_t::execute();
 
-    double stagger_pct = p() -> current_stagger_tick_dmg_percent();
-
     if ( p() -> talent.healing_elixir -> ok() )
     {
       if ( p() -> cooldown.healing_elixir -> up() )
@@ -8223,13 +8215,7 @@ void monk_t::target_mitigation( school_e school,
     }
   }
 
-  double health_before_hit = resources.current[RESOURCE_HEALTH];
-
   player_t::target_mitigation( school, dt, s );
-
-  // cap HP% at 0 HP since SimC can fall below 0 HP
-  double health_percent_after_the_hit = fmax( ( resources.current[RESOURCE_HEALTH] - s -> result_amount ) / max_health(), 0 );
-
 
   // Gift of the Ox Trigger Calculations ===========================================================
 
@@ -9207,6 +9193,14 @@ expr_t* monk_t::create_expression( const std::string& name_str )
       return new stagger_percent_expr_t( *this );
     else if ( splits[1] == "remains" )
       return new stagger_remains_expr_t( *this );
+    else if ( splits[1] == "amount_remains" )
+    {
+      return make_fn_expr( name_str, [this]() { return current_stagger_amount_remains(); } );
+    }
+    else if ( splits[1] == "ticking" )
+    {
+      return make_fn_expr( name_str, [this]() { return has_stagger(); } );
+    }
   }
 
   else if ( splits.size() == 2 && splits[0] == "spinning_crane_kick" )
