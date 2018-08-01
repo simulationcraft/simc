@@ -7265,6 +7265,8 @@ void mage_t::reset()
   event_t::cancel( ignite_spread_event );
   event_t::cancel( time_anomaly_tick_event );
 
+  state = state_t();
+
   if ( spec.savant -> ok() )
   {
     recalculate_resource_max( RESOURCE_MANA );
@@ -7479,12 +7481,11 @@ expr_t* mage_t::create_expression( const std::string& name_str )
   // Evaluates to:  0.0 if IF talent not chosen or IF stack unchanged
   //                1.0 if next IF stack increases
   //               -1.0 if IF stack decreases
-  if ( name_str == "incanters_flow_dir" )
+  if ( util::str_compare_ci( name_str, "incanters_flow_dir" ) )
   {
     struct incanters_flow_dir_expr_t : public mage_expr_t
     {
-      incanters_flow_dir_expr_t( mage_t& m ) :
-        mage_expr_t( "incanters_flow_dir", m )
+      incanters_flow_dir_expr_t( mage_t& m ) : mage_expr_t( "incanters_flow_dir", m )
       { }
 
       virtual double evaluate() override
@@ -7503,43 +7504,34 @@ expr_t* mage_t::create_expression( const std::string& name_str )
     return new incanters_flow_dir_expr_t( *this );
   }
 
-  // Arcane Burn Flag Expression ==============================================
-  if ( name_str == "burn_phase" )
+  if ( util::str_compare_ci( name_str, "burn_phase" ) )
   {
     struct burn_phase_expr_t : public mage_expr_t
     {
-      burn_phase_expr_t( mage_t& m ) :
-        mage_expr_t( "burn_phase", m )
+      burn_phase_expr_t( mage_t& m ) : mage_expr_t( "burn_phase", m )
       { }
 
       virtual double evaluate() override
-      {
-        return mage.burn_phase.on();
-      }
+      { return mage.burn_phase.on(); }
     };
 
     return new burn_phase_expr_t( *this );
   }
 
-  if ( name_str == "burn_phase_duration" )
+  if ( util::str_compare_ci( name_str, "burn_phase_duration" ) )
   {
     struct burn_phase_duration_expr_t : public mage_expr_t
     {
-      burn_phase_duration_expr_t( mage_t& m ) :
-        mage_expr_t( "burn_phase_duration", m )
+      burn_phase_duration_expr_t( mage_t& m ) : mage_expr_t( "burn_phase_duration", m )
       { }
 
       virtual double evaluate() override
-      {
-        return mage.burn_phase.duration( mage.sim -> current_time() )
-                              .total_seconds();
-      }
+      { return mage.burn_phase.duration( mage.sim -> current_time() ).total_seconds(); }
     };
 
     return new burn_phase_duration_expr_t( *this );
   }
 
-  // Icicle Expressions =======================================================
   if ( util::str_compare_ci( name_str, "shooting_icicles" ) )
   {
     struct sicicles_expr_t : public mage_expr_t
@@ -7554,9 +7546,22 @@ expr_t* mage_t::create_expression( const std::string& name_str )
     return new sicicles_expr_t( *this );
   }
 
+  if ( util::str_compare_ci( name_str, "brain_freeze_active" ) )
+  {
+    struct brain_freeze_expr_t : public mage_expr_t
+    {
+      brain_freeze_expr_t( mage_t& m ) : mage_expr_t( "brain_freeze_active", m )
+      { }
+
+      virtual double evaluate() override
+      { return mage.state.brain_freeze_active; }
+    };
+
+    return new brain_freeze_expr_t( *this );
+  }
+
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  // Ground AoE expressions ===================================================
   if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "ground_aoe" ) )
   {
     struct ground_aoe_expr_t : public mage_expr_t
