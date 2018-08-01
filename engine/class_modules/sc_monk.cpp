@@ -2140,6 +2140,8 @@ public:
       windwalker_healing_increase( ab::data().affected_by( player->spec.windwalker_monk->effectN( 11 ) ) ),
       affected_by()
   {
+
+    init_affected_by();
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
     ab::trigger_gcd = timespan_t::from_seconds( 1.5 );
@@ -2238,6 +2240,28 @@ public:
       }
       default:
         break;
+    }
+  }
+
+  /**
+   * Initialize all affected_by members and print out debug info
+   */
+  void init_affected_by()
+  {
+    struct affect_init_t{
+      const spelleffect_data_t& effect;
+      bool& affects;
+    } affects[] = {
+        {p()->talent.serenity -> effectN(1), affected_by.serenity},
+    };
+
+    for (const auto& a : affects)
+    {
+      a.affects = base_t::data().affected_by( a.effect );
+      if (a.affects)
+      {
+        ab::sim->print_debug("Action {} ({}) affected by {} (idx={}).", ab::name(), ab::data().id(), a.effect.spell()->name_cstr(), a.effect.spell_effect_num()+1);
+      }
     }
   }
 
@@ -2837,14 +2861,6 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     special    = true;
     may_glance = false;
-  }
-
-  void init() override
-  {
-    base_t::init();
-
-    // Figure out what spells are affected by Serenity's cooldown reduction
-    affected_by.serenity = cooldown->duration > timespan_t::zero() && base_costs[ RESOURCE_CHI ] > 0;
   }
 
   void init_finished() override
