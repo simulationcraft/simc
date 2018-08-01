@@ -5477,7 +5477,7 @@ void hunter_t::apl_bm()
   default_list -> add_action( this, "Kill Command" );
   default_list -> add_talent( this, "Dire Beast" );
   default_list -> add_action( this, "Barbed Shot", "if=pet.cat.buff.frenzy.down&charges_fractional>1.4|full_recharge_time<gcd.max|target.time_to_die<9" );
-  default_list -> add_talent( this, "Barrage" );
+  default_list -> add_talent( this, "Barrage,if=active_enemies>1" );
   default_list -> add_action( this, "Multi-Shot", "if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)" );
   default_list -> add_action( this, "Cobra Shot", "if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(buff.bestial_wrath.up&active_enemies>1|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains>focus.time_to_max|focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost)" );
 }
@@ -5521,7 +5521,7 @@ void hunter_t::apl_mm()
   default_list -> add_action( this, "Aimed Shot", "if=buff.precise_shots.down&buff.double_tap.down&(active_enemies>2&buff.trick_shots.up|active_enemies<3&full_recharge_time<cast_time+gcd)" );
   default_list -> add_action( this, "Rapid Fire", "if=active_enemies<3|buff.trick_shots.up" );
   default_list -> add_talent( this, "Explosive Shot" );
-  default_list -> add_talent( this, "Barrage" );
+  default_list -> add_talent( this, "Barrage,if=active_enemies>1" );
   default_list -> add_talent( this, "Piercing Shot" );
   default_list -> add_talent( this, "A Murder of Crows" );
   default_list -> add_action( this, "Multi-Shot", "if=active_enemies>2&buff.trick_shots.down" );
