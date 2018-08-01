@@ -114,7 +114,7 @@ namespace warlock
           {
             accumulate_seed_of_corruption(td, s->result_amount);
             if (sim->log)
-              sim->out_debug.printf("remaining damage to explode seed %f", td->soc_threshold);
+              sim->out_log.printf("remaining damage to explode seed %f", td->soc_threshold);
           }
         }
       }
@@ -1220,5 +1220,41 @@ namespace warlock
     fil->add_action( "drain_soul,interrupt_global=1,chain=1,cycle_targets=1,if=target.time_to_die<=gcd" );
     fil->add_action( "drain_soul,interrupt_global=1,chain=1" );
     fil->add_action( "shadow_bolt" );
+  }
+
+  expr_t* warlock_t::create_aff_expression(const std::string& name_str)
+  {
+    if (name_str == "deathbolt_setup")
+    {
+      return make_fn_expr("deathbolt_setup", [this]() {
+        bool ready = false;
+
+        timespan_t setup;
+        double gcds_required = 0.0;
+        timespan_t gcd = base_gcd * gcd_current_haste_value;
+
+        gcds_required += 1 + ( talents.absolute_corruption->ok() ? 0 : 1 ) + ( talents.siphon_life->ok() ? 1 : 0 ) + resources.current[RESOURCE_SOUL_SHARD];
+        setup = gcd * gcds_required;
+        if (talents.phantom_singularity->ok() && cooldowns.phantom_singularity->remains() <= setup)
+        {
+          gcds_required += 1;
+          setup += gcd;
+        }
+        if (cooldowns.darkglare->remains() <= setup)
+        {
+          gcds_required += 1;
+          setup += gcd;
+        }
+        if (sim->log)
+          sim->out_log.printf("setup required %s", setup);
+
+        if (cooldowns.deathbolt->remains() <= setup)
+          ready = true;
+
+        return ready;
+      });
+    }
+
+    return player_t::create_expression(name_str);
   }
 }

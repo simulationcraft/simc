@@ -230,6 +230,8 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ):
     cooldowns.soul_fire = get_cooldown("soul_fire");
     cooldowns.sindorei_spite_icd = get_cooldown( "sindorei_spite_icd" );
     cooldowns.call_dreadstalkers = get_cooldown("call_dreadstalkers");
+    cooldowns.deathbolt = get_cooldown("deathbolt");
+    cooldowns.phantom_singularity = get_cooldown("phantom_singularity");
     cooldowns.darkglare = get_cooldown("summon_darkglare");
     cooldowns.demonic_tyrant = get_cooldown( "summon_demonic_tyrant" );
 
@@ -1015,6 +1017,10 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
       }
       return con;
     });
+  }
+  else if (name_str == "deathbolt_setup")
+  {
+    return create_aff_expression(name_str);
   }
 
   return player_t::create_expression( name_str );

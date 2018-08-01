@@ -269,6 +269,8 @@ namespace warlock
         propagate_const<cooldown_t*> soul_fire;
         propagate_const<cooldown_t*> sindorei_spite_icd;
         propagate_const<cooldown_t*> call_dreadstalkers;
+        propagate_const<cooldown_t*> deathbolt;
+        propagate_const<cooldown_t*> phantom_singularity;
         propagate_const<cooldown_t*> darkglare;
         propagate_const<cooldown_t*> demonic_tyrant;
       } cooldowns;
@@ -519,6 +521,7 @@ namespace warlock
       void init_procs_affliction();
       void create_options_affliction();
       void create_apl_affliction();
+      expr_t*   create_aff_expression(const std::string& name_str);
 
       // sc_warlock_demonology
       action_t* create_action_demonology( const std::string& action_name, const std::string& options_str );
