@@ -2220,7 +2220,8 @@ void priest_t::generate_apl_shadow()
   single->add_talent( this, "Surrender to Madness",
                       "if=buff.voidform.stack>=(15+buff.bloodlust.up)&"
                       "target.time_to_die>200|target.time_to_die<75" );
-  single->add_talent( this, "Dark Void" );
+  single->add_talent( this, "Dark Void",
+                      "if=raid_event.adds.in>10" );
   single->add_action( this, "Shadowfiend",
                       "if=!talent.mindbender.enabled" );  
   single->add_talent( this, "Mindbender",
@@ -2265,7 +2266,8 @@ void priest_t::generate_apl_shadow()
   cleave->add_action( this, "Void Bolt" );
   cleave->add_talent( this, "Shadow Word: Death", "target_if=target.time_to_die<3|buff.voidform.down" );
   cleave->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
-  cleave->add_talent( this, "Dark Void" );
+  cleave->add_talent( this, "Dark Void",
+                      "if=raid_event.adds.in>10" );
   cleave->add_action( this, "Shadowfiend",
                       "if=!talent.mindbender.enabled" );  
   cleave->add_talent( this, "Mindbender",
@@ -2299,7 +2301,8 @@ void priest_t::generate_apl_shadow()
                    "if=talent.dark_void.enabled&"
                    "dot.shadow_word_pain.remains>travel_time" );
   aoe->add_talent( this, "Surrender to Madness", "if=buff.voidform.stack>=(15+buff.bloodlust.up)" );
-  aoe->add_talent( this, "Dark Void" );
+  aoe->add_talent( this, "Dark Void",
+                   "if=raid_event.adds.in>10" );
   aoe->add_action( this, "Shadowfiend",
                       "if=!talent.mindbender.enabled" );  
   aoe->add_talent( this, "Mindbender",
