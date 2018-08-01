@@ -26,7 +26,6 @@ MISTWEAVER:
 -- Summon Jade Serpent Statue
 
 BREWMASTER:
-- Celestial Fortune needs to be implemented.
 - Change the intial midigation % of stagger into an absorb (spell id 115069)
 - Fortuitous Sphers - Finish implementing
 - Break up Healing Elixers and Fortuitous into two spells; one for proc and one for heal
@@ -156,7 +155,6 @@ public:
   typedef player_t base_t;
 
   // Active
-  heal_t*   active_celestial_fortune_proc;
   action_t* windwalking_aura;
 
   struct
@@ -178,6 +176,7 @@ public:
     action_t* sunrise_technique;
     actions::spells::stagger_self_damage_t* stagger_self_damage;
     action_t* fit_to_burst;
+    heal_t*   celestial_fortune;
   } active_actions;
 
   combo_strikes_e previous_combo_strike;
@@ -286,8 +285,6 @@ public:
   struct procs_t
   {
     proc_t* bok_proc;
-    proc_t* eye_of_the_tiger;
-    proc_t* mana_tea;
   } proc;
 
   struct talents_t
@@ -667,7 +664,6 @@ public:
       heavy_stagger_threshold( 0.03333 ) // Heavy transfers at 66.6% Stagger; 3.34% every 1/2 sec
   {
     // actives
-    active_celestial_fortune_proc = nullptr;
     windwalking_aura = nullptr;
 
 
@@ -6292,16 +6288,15 @@ struct refreshing_jade_wind_t: public monk_spell_t
 
 struct celestial_fortune_t : public monk_heal_t
 {
-  proc_t* proc_tracker;
-
   celestial_fortune_t( monk_t& p )
-    : monk_heal_t( "celestial_fortune", p, p.passives.celestial_fortune ),
-    proc_tracker( p.get_proc( name_str ) )
+    : monk_heal_t( "celestial_fortune", p, p.passives.celestial_fortune )
   {
     background = true;
     proc = true;
     target = player;
     may_crit = false;
+
+    base_multiplier = p.spec.celestial_fortune -> effectN( 1 ).percent();
   }
 
   // Need to disable multipliers in init() so that it doesn't double-dip on anything  
@@ -6312,25 +6307,6 @@ struct celestial_fortune_t : public monk_heal_t
     // action_multiplier() to be called so we can override.
     snapshot_flags &= STATE_NO_MULTIPLIER;
     snapshot_flags |= STATE_MUL_DA;
-  }
-
-  virtual double action_multiplier() const override
-  {
-    double am = p() -> spec.celestial_fortune -> effectN( 1 ).percent();
-        
-    return am;
-  }
-
-  virtual bool ready() override
-  {
-    return p() -> specialization() == MONK_BREWMASTER;
-  }
-
-  virtual void execute() override
-  {
-    proc_tracker -> occur();
-
-    monk_heal_t::execute();
   }
 };
 
@@ -6345,8 +6321,8 @@ struct fit_to_burst_t : public monk_heal_t
     target = player;
     base_dd_min = base_dd_max = p.azerite.fit_to_burst.value();
   }
-
 };
+
 } // end namespace heals
 
 namespace absorbs {
@@ -6725,8 +6701,10 @@ action_t* monk_t::create_action( const std::string& name,
 
 void monk_t::trigger_celestial_fortune( action_state_t* s )
 {
-  if ( ! spec.celestial_fortune -> ok() || s -> action == active_celestial_fortune_proc || s -> result_raw == 0.0 )
+  if ( ! spec.celestial_fortune -> ok() || s -> action == active_actions.celestial_fortune || s -> result_raw == 0.0 )
+  {
     return;
+  }
 
   // flush out percent heals
   if ( s -> action -> type == ACTION_HEAL )
@@ -6737,10 +6715,10 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
   }
 
   // Attempt to proc the heal
-  if ( active_celestial_fortune_proc && rng().roll( composite_melee_crit_chance() ) )
+  if ( active_actions.celestial_fortune && rng().roll( composite_melee_crit_chance() ) )
   {
-    active_celestial_fortune_proc -> base_dd_max = active_celestial_fortune_proc -> base_dd_min = s -> result_amount;
-    active_celestial_fortune_proc -> schedule_execute();
+    active_actions.celestial_fortune -> base_dd_max = active_actions.celestial_fortune -> base_dd_min = s -> result_amount;
+    active_actions.celestial_fortune -> schedule_execute();
   }
 }
 
@@ -7164,6 +7142,7 @@ void monk_t::init_spells()
     windwalking_aura = new actions::windwalking_aura_t( this );
 
   active_actions.sunrise_technique = new actions::sunrise_technique_t( this );
+  active_actions.celestial_fortune = new actions::heals::celestial_fortune_t( *this );
 }
 
 // monk_t::init_base ========================================================
@@ -7444,8 +7423,6 @@ void monk_t::init_procs()
   base_t::init_procs();
 
   proc.bok_proc                   = get_proc( "bok_proc" );
-  proc.eye_of_the_tiger           = get_proc( "eye_of_the_tiger" );
-  proc.mana_tea                   = get_proc( "mana_tea" );
 }
 
 // monk_t::init_rng =======================================================
@@ -8329,16 +8306,9 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school,
 
 void monk_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s )
 {
-  // Celestial Fortune procs a heal every now and again
-/*  if ( s -> action -> id != passives.healing_elixir -> id() 
-    || s -> action -> id != passives.gift_of_the_ox_heal -> id() )
-  {
-  */
-//    if ( spec.celestial_fortune -> ok() )
-//      trigger_celestial_fortune( s );
-//  }
-
   player_t::assess_heal( school, dmg_type, s );
+
+  trigger_celestial_fortune( s );
 }
 
 // =========================================================================
