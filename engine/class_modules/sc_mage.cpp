@@ -6944,7 +6944,7 @@ void mage_t::apl_frost()
   action_priority_list_t* movement     = get_action_priority_list( "movement"  );
 
   default_list -> add_action( this, "Counterspell" );
-  default_list -> add_action( this, "Ice Lance", "if=prev_gcd.1.flurry&!buff.fingers_of_frost.react",
+  default_list -> add_action( this, "Ice Lance", "if=prev_gcd.1.flurry&brain_freeze_active&!buff.fingers_of_frost.react",
     "If the mage has FoF after casting instant Flurry, we can delay the Ice Lance and use other high priority action, if available." );
   default_list -> add_action( this, "Time Warp", "if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(prev_gcd.1.icy_veins|target.time_to_die<50)" );
   default_list -> add_action( "call_action_list,name=cooldowns" );
