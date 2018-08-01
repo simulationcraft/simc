@@ -3196,7 +3196,6 @@ struct internal_bleeding_t
 
   void trigger( const action_state_t* s )
   {
-    auto p = static_cast<const hunter_t*>( s -> action -> player );
     if ( action )
     {
       auto td = action->td( s -> target );
