@@ -5553,6 +5553,7 @@ void hunter_t::apl_surv()
   for ( std::string racial : { "berserking", "blood_fury", "ancestral_call", "fireblood" } )
     default_list -> add_action( racial + ",if=cooldown.coordinated_assault.remains>30" );
   default_list -> add_action( "lights_judgment" );
+  default_list->add_action( "arcane_torrent,if=cooldown.kill_command.remains>gcd.max&focus<=30" );
 
   // In-combat potion
   default_list -> add_action( "potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)" );
@@ -5576,7 +5577,7 @@ void hunter_t::apl_surv()
   default_list -> add_action( this, "Aspect of the Eagle", "if=target.distance>=6" );
   default_list -> add_action( "mongoose_bite_eagle,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60" );
   default_list -> add_talent( this, "Mongoose Bite", "target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60" );
-  default_list -> add_talent( this, "Butchery" );
+  default_list -> add_talent( this, "Butchery,if=active_enemies>1" );
   default_list -> add_action( "raptor_strike_eagle,target_if=min:dot.internal_bleeding.stack" );
   default_list -> add_action( this, "Raptor Strike", "target_if=min:dot.internal_bleeding.stack" );
 }
