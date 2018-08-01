@@ -19,8 +19,8 @@ legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
 feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
 finger1=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
 finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=dead_eye_spyglass,id=159623,bonus_id=4779/1512/4786
-trinket2=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+trinket1=gore_crusted_butchers_block,id=159616,bonus_id=4779/1512/4786
+trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
 main_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=galeforce_striking
 off_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=quick_navigation
 
@@ -48,8 +48,8 @@ legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
 feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
 finger1=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
 finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=dead_eye_spyglass,id=159623,bonus_id=4779/1512/4786
-trinket2=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+trinket1=gore_crusted_butchers_block,id=159616,bonus_id=4779/1512/4786
+trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
 main_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 save=PR_Warrior_Arms.simc
@@ -76,8 +76,8 @@ legs=legplates_of_profane_sacrifice,id=159443,bonus_id=4779/1512/4786
 feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
 finger1=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
 finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
-trinket1=dead_eye_spyglass,id=159623,bonus_id=4779/1512/4786
-trinket2=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+trinket1=gore_crusted_butchers_block,id=159616,bonus_id=4779/1512/4786
+trinket2=rezans_gleaming_eye,id=158712,bonus_id=4779/1512/4786
 main_hand=adulation_enforcer,id=159632,bonus_id=4779/1512/4786,enchant=galeforce_striking
 off_hand=disc_of_indomitable_will,id=158713,bonus_id=4779/1512/4786,enchant=quick_navigation
 
