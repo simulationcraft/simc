@@ -797,7 +797,7 @@ public:
   double current_stagger_tick_dmg();
   double current_stagger_tick_dmg_percent();
   double current_stagger_amount_remains();
-  double current_stagger_dot_remains();
+  timespan_t current_stagger_dot_remains();
   double stagger_base_value();
   double stagger_pct( int target_level );
   void trigger_celestial_fortune( action_state_t* );
@@ -9108,16 +9108,16 @@ double monk_t::current_stagger_tick_dmg_percent()
 
 // monk_t::current_stagger_dot_duration ==================================================
 
-double monk_t::current_stagger_dot_remains()
+timespan_t monk_t::current_stagger_dot_remains()
 {
-  double remains = 0;
   if ( active_actions.stagger_self_damage )
   {
     dot_t* dot = active_actions.stagger_self_damage -> get_dot();
 
-    remains = dot -> ticks_left();
+    return dot -> remains();
   }
-  return remains;
+
+  return timespan_t::zero();
 }
 
 // monk_t::create_expression ==================================================
@@ -9167,19 +9167,6 @@ expr_t* monk_t::create_expression( const std::string& name_str )
         return player.current_stagger_tick_dmg_percent() * 100;
       }
     };
-    struct stagger_remains_expr_t : public expr_t
-    {
-      monk_t& player;
-      stagger_remains_expr_t(monk_t& p) :
-        expr_t( "stagger_remains" ),
-        player(p)
-      { }
-
-      virtual double evaluate() override
-      {
-        return player.current_stagger_dot_remains();
-      }
-    };
 
     if ( splits[1] == "light" )
       return new stagger_threshold_expr_t( *this, light_stagger_threshold );
@@ -9192,7 +9179,9 @@ expr_t* monk_t::create_expression( const std::string& name_str )
     else if ( splits[1] == "pct" )
       return new stagger_percent_expr_t( *this );
     else if ( splits[1] == "remains" )
-      return new stagger_remains_expr_t( *this );
+    {
+      return make_fn_expr( name_str, [this]() { return current_stagger_dot_remains(); } );
+    }
     else if ( splits[1] == "amount_remains" )
     {
       return make_fn_expr( name_str, [this]() { return current_stagger_amount_remains(); } );
