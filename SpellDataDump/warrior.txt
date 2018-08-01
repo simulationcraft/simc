@@ -138,7 +138,6 @@ Description      : Wounds the target, causing $s1 Physical damage instantly and 
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
 Name             : Cleave (id=845) [Spell Family (4)] 
-Hotfixed         : Cooldown (6000 -> 9000)
 Class            : Warrior
 School           : Physical
 Resource         : 20 Rage (1) (id=99)
@@ -157,7 +156,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=357)      : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.45000 | Radius: 8 yards | Target: Cone Front (104)
-                   Hotfixed: AP Coefficient (0.3 -> 0.45)
 #2 (id=722907)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Strikes all enemies in front of you with a sweeping attack for $s1 Physical damage. Hitting $s2 or more targets inflicts Deep Wounds.
@@ -217,7 +215,6 @@ Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing 
 Tooltip          : $?s199023[Demoralized, dealing $s2% less damage.][Demoralized, dealing $s1% less damage to the shouting Warrior.]
 
 Name             : Slam (id=1464) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Arms Warrior
 School           : Physical
 Resource         : 20 Rage (1) (id=127)
@@ -316,11 +313,9 @@ Effects          :
 #5 (id=737891)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: War Machine (262232), Endless Rage (280283), Meat Cleaver (280392)
-                   Hotfixed: Affects Spells
 #6 (id=737893)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Charge (100), Bloodbath (12292), Bloodthirst (23881), Raging Blow (85288), Furious Slash (100130), Dragon Roar (118000), Meat Cleaver (280392), Siegebreaker (280772)
-                   Hotfixed: Affects Spells
 #7 (id=737894)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute Off-Hand (163558), Execute (260798), Execute (280849)
@@ -475,10 +470,8 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=1900)     : Trigger Spell (64): Execute
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 50 | Trigger Spell: 280849 | Target: Enemy (6)
-                   Hotfixed: Misc Value (0 -> 50)
 #2 (id=229536)   : Trigger Spell (64): Execute Off-Hand
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 100 | Trigger Spell: 163558 | Target: Enemy (6)
-                   Hotfixed: Misc Value (0 -> 100)
 #3 (id=738697)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self (1)
 Description      : Attempt to finish off a wounded foe, causing ${$280849sw1+$163558sw1} Physical damage. Only usable on enemies that have less than 20% health.
@@ -505,7 +498,6 @@ Attributes       : ....x... ........ x.x..x.. ........   ...x...x .x...... .....
 Effects          :
 #1 (id=2203)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-                   Hotfixed: AP Coefficient (0.39312 -> 0.5)
 #2 (id=236564)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -20 | Scaled Value: -20 | Radius: 0 - 8 yards | Mechanic: Snare | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=357188)   : Dummy (3)
@@ -940,7 +932,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | Target: Self (1)
 #2 (id=280400)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -20 | Scaled Value: -20 | Misc Value: 0x7e | Target: Self (1)
-                   Hotfixed: Base Value (-15 -> -20)
 Description      : Raise your shield, reflecting spells cast on you and reducing magical damage you take by $s2%. $?a188672[Lasts $d.][Lasts $d or until a spell is reflected.]
 Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spell cast on you.]
 Magical damage taken reduced by $s2%.
@@ -952,7 +943,7 @@ Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#2), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165642 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), The Walls Fell (215057 effect#2), Frothing Berserker (215572 effect#1), Wall of Iron (253428 effect#1), Punish (275334 effect#1), Brace for Impact (278124 effect#2), Siegebreaker (280773 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effect#1), Avatar (107574 effect#1), Shield Block (132404 effect#2), Warrior (137047 effect#1), Protection Warrior (137048 effect#1), Arms Warrior (137049 effect#2), Fury Warrior (137050 effect#1), Vicious Strike (165642 effect#1), Kakushan's Stormscale Gauntlets (207844 effect#1), Colossus Smash (208086 effect#1), The Walls Fell (215057 effect#2), Frothing Berserker (215572 effect#1), Punish (275334 effect#1), Brace for Impact (278124 effect#2), Siegebreaker (280773 effect#1)
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1096,7 +1087,7 @@ Effects          :
 Description      : Victory Rush enabled.
 Tooltip          : Victory Rush enabled.
 
-Name             : Victory Rush (id=34428) [Scaling Spell (-1), Spell Family (4)] 
+Name             : Victory Rush (id=34428) [Spell Family (4)] 
 Class            : Arms Fury Protection Warrior
 School           : Physical
 Spell Level      : 5
@@ -1113,7 +1104,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=24417)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-                   Hotfixed: Average (1 -> 0)
 Description      : Strikes the target, causing $s1 damage and healing you for $118779s1% of your maximum health.
 
 Only usable within $32216d after you kill an enemy that yields experience or honor.
@@ -1154,7 +1144,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=36872)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07500 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-                   Hotfixed: AP Coefficient (0.058032 -> 0.075)
 Description      : $@spelldesc190411
 
 Name             : Titan's Grip (id=46917) [Spell Family (4), Passive] 
@@ -1211,7 +1200,6 @@ Immune to crowd control.
 Variables        : $dmg=${(1+$d)*($50622sw1+$95738sw1)}
 
 Name             : Shockwave (id=46968) [Spell Family (4)] 
-Hotfixed         : Cooldown (30000 -> 40000), Category Cooldown (30000 -> 40000)
 Class            : Protection Warrior
 School           : Physical
 Spell Level      : 50
@@ -1282,7 +1270,6 @@ Effects          :
 Description      : $@spelldesc6544
 
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
-Hotfixed         : Scaling Spell, Max Scaling Level
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Max Scaling Level: 80
@@ -1298,7 +1285,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=48506)    : Apply Aura (6) | Modify Rating (189)
                    Base Value: 15 | Scaled Value: 15 (avg=0.340909) | Misc Value: 1879048192 | Target: Self (1)
-                   Hotfixed: Average (0 -> 0.340909)
 Description      : Increases your Versatility by $s1.
 
 Name             : Heroic Throw (id=57755) [Spell Family (4)] 
@@ -1871,7 +1857,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=107864)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.69000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (0.6 -> 0.69)
 #2 (id=107865)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: rage | Target: Self (1)
 #3 (id=737788)   : Trigger Spell (64): Furious Slash
@@ -2536,11 +2521,9 @@ Effects          :
 #1 (id=179732)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
-                   Hotfixed: Base Value (0 -> 5)
 #2 (id=186944)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
-                   Hotfixed: Base Value (0 -> 5)
 #3 (id=191017)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: 1386 | Target: Self (1)
 #4 (id=191018)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
@@ -2565,7 +2548,6 @@ Effects          :
 #12 (id=261033)   : Apply Aura (6) | Add Percent Modifier (108): Spell Generated Threat (2)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 2 | Target: Self (1)
                    Affected Spells: Victory Rush (118779)
-                   Hotfixed: Affects Spells
 #13 (id=261034)   : Apply Aura (6) | Modify Block% (51)
                    Base Value: 8 | Scaled Value: 8 | Misc Value: 11 | Target: Self (1)
 #14 (id=261035)   : Apply Aura (6) | Unknown(463)
@@ -2607,19 +2589,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179733)   : Apply Aura (6) | Unknown(213)
                    Base Value: 300 | Scaled Value: 300 | Target: Self (1)
-                   Hotfixed: Base Value (330 -> 300)
 #2 (id=186754)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
-                   Hotfixed: Base Value (18 -> 30)
 #3 (id=191014)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
-                   Hotfixed: Base Value (18 -> 30)
 #4 (id=191015)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 12 | Scaled Value: 12 | Target: Self (1)
                    Affected Spells: Bladestorm (46924), Bladestorm (50622), Bladestorm Off-Hand (95738), Bladestorm (227847)
-                   Hotfixed: Base Value (25 -> 12)
 #5 (id=191016)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #6 (id=261047)   : Apply Aura (6) | Dummy (4)
@@ -2654,16 +2632,13 @@ Effects          :
 #1 (id=179734)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -12 | Scaled Value: -12 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
-                   Hotfixed: Base Value (-16 -> -12)
 #2 (id=191010)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -12 | Scaled Value: -12 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rend (772), Cleave (845), Slam (1464), Hamstring (1715), Execute (5308), Thunder Clap (6343), Revenge (6572), Overpower (7384), Warbringer (7922), Bloodbath (12292), Mortal Strike (12294), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Whirlwind Off-Hand (44949), Shockwave (46968), Bladestorm (50622), Heroic Leap (52174), Heroic Throw (57755), Raging Blow (85384), Bladestorm Off-Hand (95738), Raging Blow (96103), Furious Slash (100130), Storm Bolt (107570), Deep Wounds (115767), Dragon Roar (118000), Charge (126664), Ravager (156287), Execute Off-Hand (163558), Colossus Smash (167105), Rampage (184707), Rampage (184709), Whirlwind (199658), Whirlwind (199667), Whirlwind (199850), Rampage (201363), Rampage (201364), Impending Victory (202168), Opportunity Strikes (203178), Devastator (236282), Skullsplitter (260643), Execute (260798), Deep Wounds (262115), Warbreaker (262161), Bloodbath (274818), Bloodbath (280736), Siegebreaker (280772), Execute (280849)
-                   Hotfixed: Base Value (-16 -> -12)
 #3 (id=191011)   : Apply Aura (6) | Unknown(213)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #4 (id=191012)   : Apply Aura (6) | Modify Auto Attack Damage Done% (344)
                    Base Value: -30 | Scaled Value: -30 | Target: Self (1)
-                   Hotfixed: Base Value (-25 -> -30)
 #5 (id=191013)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1672 | Target: Self (1)
                    Affected Spells (Category): Raging Blow (85288)
@@ -2989,7 +2964,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=236210)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (2 -> 1.5)
 Description      : Smashes the enemy's armor, dealing $s1 Physical damage, and increasing damage you deal to them by $208086s1% for $208086d.
 
 Name             : Enrage (id=184361) [Spell Family (4), Passive] 
@@ -3092,16 +3066,12 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Enemy (6)
 #2 (id=267215)   : Trigger Spell (64): Rampage
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 10 | Trigger Spell: 184707 | Target: Enemy (6)
-                   Hotfixed: Misc Value (50 -> 10)
 #3 (id=267216)   : Trigger Spell (64): Rampage
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 150 | Trigger Spell: 184709 | Target: Enemy (6)
-                   Hotfixed: Misc Value (325 -> 150)
 #4 (id=268060)   : Trigger Spell (64): Rampage
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 450 | Trigger Spell: 201364 | Target: Enemy (6)
-                   Hotfixed: Misc Value (600 -> 450)
 #5 (id=268061)   : Trigger Spell (64): Rampage
                    Base Value: 0 | Scaled Value: 0 | Misc Value: 500 | Trigger Spell: 201363 | Target: Enemy (6)
-                   Hotfixed: Misc Value (625 -> 500)
 Description      : Enrages you and unleashes a series of $s1 brutal strikes for a total of $<damage> Physical damage.
 Variables        : $damage=${$184707s1+$184709s1+$201364s1+$201363s1}
 
@@ -3435,7 +3405,6 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
 Effects          :
 #1 (id=293808)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11600 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-                   Hotfixed: AP Coefficient (0.145 -> 0.116)
 Description      : $@spelldesc1680
 
 Name             : Whirlwind (id=199667) [Spell Family (4)] 
@@ -3455,7 +3424,6 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
 Effects          :
 #1 (id=293819)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.37500 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-                   Hotfixed: SP Coefficient (0.3 -> 0.375)
 #2 (id=293820)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.07000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : $@spelldesc190411
@@ -3477,7 +3445,6 @@ Attributes       : ....x... ........ x.x..... ........   ....x... .x...... .....
 Effects          :
 #1 (id=294125)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.11600 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-                   Hotfixed: AP Coefficient (0.145 -> 0.116)
 Description      : $@spelldesc1680
 
 Name             : Activating Specialization (id=200749) [Hidden] 
@@ -5248,7 +5215,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=485944)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.84000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (0.67704 -> 0.84)
 #2 (id=485945)   : Energize Power (30)
                    Base Value: 200 | Scaled Value: 200 | Misc Value: rage | Target: Self (1)
 Description      : Bash an enemy's skull, dealing $s1 Physical damage.
@@ -5256,7 +5222,6 @@ Description      : Bash an enemy's skull, dealing $s1 Physical damage.
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
 
 Name             : Sweeping Strikes (id=260708) [Spell Family (4)] 
-Hotfixed         : Cooldown (25000 -> 30000)
 Class            : Arms Warrior
 School           : Physical
 Spell Level      : 22
@@ -5398,7 +5363,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=623203)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.50000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-                   Hotfixed: AP Coefficient (2 -> 1.5)
 Description      : Smash the ground and shatter the armor of all enemies within $A1 yds, dealing $s1 Physical damage and increasing damage you deal to them by $208086s1% for $208086d.
 
 Name             : Deadly Calm (id=262228) [Spell Family (4)] 
@@ -5469,7 +5433,6 @@ Description      : $@spelldesc262231
 Tooltip          : Movement speed increased by $s2%.
 
 Name             : Deep Wounds (id=262304) [Spell Family (4), Passive] 
-Hotfixed         : Attributes
 Class            : Arms Warrior
 School           : Physical
 Spell Level      : 55
@@ -6269,7 +6232,6 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | Target: Self (1)
 #2 (id=728327)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | Target: Self (1)
-                   Hotfixed: Base Value (10 -> 15)
 Description      : When Shockwave strikes at least $s1 targets, its cooldown is reduced by $s2 sec.
 
 Name             : Test of Might (id=275529) [Scaling Spell (-1), Spell Family (4), Passive] 
@@ -6640,7 +6602,6 @@ Effects          :
 Description      : When you use $?s202168[Impending Victory][Victory Rush], gain $s1 Physical absorb for $280212d.
 
 Name             : Barrage Of Many Bombs (rank=Goblin Engineering) (id=280163) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8), Proc Flags (2446608 -> 332048), Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -6659,7 +6620,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs
                    Base Value: 0 | Scaled Value: 908.2944 (avg=11.68224) | Trigger Spell: 280662 | Target: Self (1)
-                   Hotfixed: Average (2.90719 -> 11.6822)
 #2 (id=737506)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #3 (id=737507)   : Dummy (3)
@@ -6671,7 +6631,6 @@ Description      : Your spells and abilities have a chance to fire a bomb at you
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (rank=Goblin Engineering) (id=280168) [Passive] 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -6701,7 +6660,6 @@ Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, 
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (rank=Goblin Engineering) (id=280172) [Scaling Spell (-8), Passive] 
-Hotfixed         : Internal Cooldown (0 -> 1000)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Internal Cooldown: 1 seconds
@@ -6721,7 +6679,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 7266.355 (avg=93.45795) | Target: Self (1)
-                   Hotfixed: Sub Type (42 -> 4), Trigger Spell (280583 -> 0)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -6733,7 +6690,6 @@ Increases your Kul Tiran or Zandalari Engineering by $s3.
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (rank=Gnomish Engineering) (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
-Hotfixed         : Scaling Spell, Max Scaling Level, Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -6756,7 +6712,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 581.3088 (avg=7.47664)
-                   Hotfixed: NEW EFFECT
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -6871,7 +6826,6 @@ Effects          :
 Description      : Dealing damage has a chance to call down a Thunderous Blast, dealing $s1 Nature damage to the enemy and increasing the damage of Thunderous Blast by $280385s1%. At ${$s2*$280385s1}% increased damage, Thunderous Blast will critically hit and reset this effect.
 
 Name             : Meat Cleaver (id=280392) [Spell Family (4), Passive, Hidden] 
-Hotfixed         : Affecting Spells
 Class            : Warrior
 School           : Physical
 Affecting spells : Recklessness (1719 effect#5), 
@@ -7092,7 +7046,6 @@ Effects          :
 Description      : Your abilities have a chance to drop a Horde Banner for $280830d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
 Name             : Battlefield Focus (rank=Horde) (id=280582) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 488
@@ -7107,7 +7060,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738194)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 208.2589 (avg=2.678571) | Trigger Spell: 280816 | Target: Self (1)
-                   Hotfixed: Average (0.665399 -> 2.67857)
 #2 (id=738645)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=738646)   : Dummy (3)
@@ -7216,7 +7168,6 @@ Effects          :
 Description      : Your abilities have a chance to drop an Alliance Banner for $280858d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
 Name             : Battlefield Precision (rank=Alliance) (id=280627) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 494
@@ -7231,7 +7182,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738287)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 208.2589 (avg=2.678571) | Trigger Spell: 280854 | Target: Self (1)
-                   Hotfixed: Average (0.665399 -> 2.67857)
 #2 (id=738705)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=738706)   : Dummy (3)

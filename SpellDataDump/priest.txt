@@ -122,7 +122,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=236)      : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.50000 | Target: Enemy (6)
-                   Hotfixed: SP Coefficient (0.533 -> 0.5)
 Description      : Smites an enemy for $s1 Holy damage$?s231682[ and absorbs the next $<shield> damage dealt by the enemy]?s231687[ and has a $231687s1% chance to reset the cooldown of Holy Fire][].
 Variables        : $shield=${($SPS*$231682s1/100)*(1+$@versadmg)}
 
@@ -168,10 +167,8 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=242)      : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.22000 | Target: Enemy (6)
-                   Hotfixed: SP Coefficient (0.2 -> 0.22)
 #2 (id=254257)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.16500 | Target: Enemy (6)
-                   Hotfixed: SP Coefficient (0.15 -> 0.165)
 #3 (id=323674)   : Energize Power (30)
                    Base Value: 400 | Scaled Value: 400 | Misc Value: insanity | Target: Self (1)
 Description      : A word of darkness that causes $s1 Shadow damage instantly, and an additional $o2 Shadow damage over $d.$?a185916[
@@ -1008,7 +1005,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Target: Enemy (6)
 #2 (id=25010)    : Apply Aura (6) | Periodic Health Leech (53): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 0.5 | SP Coefficient: 0.27500 | Target: Enemy (6)
-                   Hotfixed: SP Coefficient (0.25 -> 0.275)
 #3 (id=323673)   : Energize Power (30)
                    Base Value: 600 | Scaled Value: 600 | Misc Value: insanity | Target: Self (1)
 Description      : A touch of darkness that causes $34914o2 Shadow damage over $34914d, and heals you for ${$e2*100}% of damage dealt.
@@ -1128,7 +1124,6 @@ Description      : For the next $d, Power Word: Shield absorbs an additional $s1
 Tooltip          : Power Word: Shield absorbs an additional $s1%.
 
 Name             : Penance (id=47540) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Discipline Priest
 School           : Holy
 Resource         : 2% Base Mana (0) (id=2193)
@@ -1213,11 +1208,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=39897)    : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | Target: Unknown(77)
-                   Hotfixed: SP Coefficient (0.42 -> 0.4)
 Description      : $@spelldesc47540
 
 Name             : Penance (id=47750) [Spell Family (6)] 
-Hotfixed         : Attributes
 Class            : Priest
 School           : Holy
 Spell Level      : 60
@@ -1357,7 +1350,6 @@ Description      : $@spelldesc48045
 Tooltip          : Causing shadow damage to all targets within $a2 yards.
 
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
-Hotfixed         : Scaling Spell, Max Scaling Level
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Max Scaling Level: 80
@@ -1373,7 +1365,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=48506)    : Apply Aura (6) | Modify Rating (189)
                    Base Value: 15 | Scaled Value: 15 (avg=0.340909) | Misc Value: 1879048192 | Target: Self (1)
-                   Hotfixed: Average (0 -> 0.340909)
 Description      : Increases your Versatility by $s1.
 
 Name             : Glyph of Shackle Undead (id=57986) [Spell Family (6), Passive, Hidden] 
@@ -1501,7 +1492,6 @@ Description      : When you cast Flash Heal or Heal, the remaining cooldown on H
 When you cast Smite, the remaining cooldown on Holy Word: Chastise is reduced by $88625s2 sec.
 
 Name             : Psychic Horror (id=64044) [Spell Family (6)] 
-Hotfixed         : Spell Level (74 -> 1)
 Class            : Priest
 School           : Shadow
 Spell Level      : 1
@@ -2583,7 +2573,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=165487)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | Target: Enemy (6)
-                   Hotfixed: SP Coefficient (1.1 -> 1)
 #2 (id=168466)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100
 Description      : Strikes an enemy with heavenly power, dealing $s1 Holy damage and restoring $<mana>% of your maximum mana.
@@ -2706,11 +2695,9 @@ Effects          :
 #3 (id=191077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 16 | Scaled Value: 16 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346), Dark Ascension (280800)
-                   Hotfixed: Base Value (10 -> 16)
 #4 (id=191078)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 16 | Scaled Value: 16 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346), Dark Ascension (280800)
-                   Hotfixed: Base Value (10 -> 16)
 #5 (id=191079)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | Target: Self (1)
 #6 (id=260947)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -2768,14 +2755,11 @@ Effects          :
 #1 (id=179717)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -29 | Scaled Value: -29 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346), Dark Ascension (280800)
-                   Hotfixed: Base Value (-25 -> -29)
 #2 (id=191068)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -29 | Scaled Value: -29 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Smite (585), Shadow Word: Pain (589), Mind Blast (8092), Holy Fire (14914), Mind Flay (15407), Shadow Word: Death (32379), Vampiric Touch (34914), Penance (47666), Mind Sear (48045), Mind Sear (49821), Holy Word: Chastise (88625), Halo (120696), Divine Star (122128), Power Word: Solace (129250), Holy Nova (132157), Shadowy Apparition (148859), Shadow Word: Death (199911), Purge the Wicked (204197), Purge the Wicked (204213), Shadow Word: Void (205351), Shadow Crash (205386), Void Bolt (205448), Schism (214621), Void Eruption (228360), Void Torrent (263165), Dark Void (263346), Dark Ascension (280800)
-                   Hotfixed: Base Value (-25 -> -29)
 #3 (id=191069)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -29 | Scaled Value: -29 | Target: Self (1)
-                   Hotfixed: Base Value (-25 -> -29)
 #4 (id=191070)   : Apply Aura (6) | Modify Mana Pool% (419)
                    Base Value: -80 | Scaled Value: -80 | Target: Self (1)
 #5 (id=191071)   : Apply Aura (6) | Modify Mechanic Duration% (Stacking) (232)
@@ -4334,7 +4318,6 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 24 yards/sec
 Cooldown         : 90 seconds
-Triggered by     : Push Active Ability to Bar (225879)
 Attributes       : ........ ........ ..x..... .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4494,7 +4477,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=318771)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | Target: Enemy (6)
-                   Hotfixed: SP Coefficient (1.5 -> 1.4)
 #2 (id=318779)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 127 | Target: Enemy (6)
 Description      : Attack the enemy's soul with a surge of Shadow energy, dealing $s1 Shadow damage and increasing damage that you deal to the target by $s2% for $d.
@@ -4730,7 +4712,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=343748)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.95000 | Target: Enemy (6)
-                   Hotfixed: SP Coefficient (0.8 -> 0.95)
 Description      : $@spelldesc228260
 
 Name             : Smite (rank=Rank 2) (id=231682) [Spell Family (6), Passive] 
@@ -4787,7 +4768,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349532)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3000 | Scaled Value: 3000 | Misc Value: 12 | Target: Self (1)
-                   Hotfixed: Base Value (2000 -> 3000)
 #2 (id=358154)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | Target: Self (1)
 Description      : Void Bolt extends the duration of your Shadow Word: Pain and Vampiric Touch on all nearby targets by $@switch<$s2>[${$s1/1000}][${$s1/1000}.1] sec.
@@ -5930,8 +5910,7 @@ Effects          :
                    Affected Spells: Atonement (194384)
 Description      : Your healing and absorption is increased by ${$s1}.1% on targets with Atonement.
 
-Name             : Moment of Repose (id=272775) [Scaling Spell (-8), Spell Family (6), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Moment of Repose (id=272775) [Scaling Spell (-1), Spell Family (6), Passive] 
 Class            : Priest
 School           : Physical
 Azerite Power Id : 113
@@ -5946,12 +5925,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723883)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 7631.902 (avg=98.15951) | Trigger Spell: 272776 | Target: Self (1)
-                   Hotfixed: Average (4.06504 -> 98.1595)
+                   Base Value: 0 | Scaled Value: 1264.228 (avg=4.065041) | Trigger Spell: 272776 | Target: Self (1)
 Description      : Pain Suppression applies Atonement to the target and instantly heals them for $s1.
 
-Name             : Permeating Glow (id=272780) [Scaling Spell (-8), Spell Family (6), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Permeating Glow (id=272780) [Scaling Spell (-1), Spell Family (6), Passive] 
 Class            : Priest
 School           : Holy
 Azerite Power Id : 114
@@ -5965,8 +5942,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723891)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 572.3926 (avg=7.361963) | Trigger Spell: 272782 | Target: Self (1)
-                   Hotfixed: Average (0.813008 -> 7.36196)
+                   Base Value: 0 | Scaled Value: 252.8455 (avg=0.813008) | Trigger Spell: 272782 | Target: Self (1)
 Description      : Flash Heal increases the healing of your Flash Heals on that ally by $s1 for $272783d.
 
 Name             : Searing Dialogue (id=272788) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6003,8 +5979,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 799.9999 (avg=2.572347) | Trigger Spell: 273825 | Target: Self (1)
 Description      : Your spells and abilities have a chance to draw a Wandering Soul from Thros to serve you for $280204d. The Soul blasts a nearby enemy every $280204t2 sec, dealing $s1 Shadow damage.
 
-Name             : Weal and Woe (id=273307) [Scaling Spell (-8), Spell Family (6), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Weal and Woe (id=273307) [Scaling Spell (-1), Spell Family (6), Passive] 
 Class            : Priest
 School           : Holy
 Azerite Power Id : 164
@@ -6018,15 +5993,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724827)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 381.5951 (avg=4.907975) | Trigger Spell: 273308 | Target: Self (1)
-                   Hotfixed: Average (1.62602 -> 4.90798)
+                   Base Value: 0 | Scaled Value: 505.691 (avg=1.626016) | Trigger Spell: 273308 | Target: Self (1)
 #2 (id=724828)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 1430.982 (avg=18.40491) | Target: Self (1)
-                   Hotfixed: Average (2.84553 -> 18.4049)
+                   Base Value: 0 | Scaled Value: 884.9592 (avg=2.845528) | Target: Self (1)
 Description      : Healing an ally with Penance increases the damage of your next Smite by $s1. Damaging an enemy with Penance increases the absorption of your next Power Word: Shield by $s2.
 
-Name             : Blessed Sanctuary (id=273313) [Scaling Spell (-8), Spell Family (6), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Blessed Sanctuary (id=273313) [Scaling Spell (-1), Spell Family (6), Passive] 
 Class            : Priest
 School           : Holy
 Azerite Power Id : 165
@@ -6040,8 +6012,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=724838)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 715.4908 (avg=9.202454) | Target: Self (1)
-                   Hotfixed: Average (1.42276 -> 9.20245)
+                   Base Value: 0 | Scaled Value: 442.4796 (avg=1.422764) | Target: Self (1)
 Description      : Echo of Light from Holy Word: Sanctify heals for an additional ${$s1*2}.
 
 Name             : Thought Harvester (id=273319) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6179,8 +6150,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 1999.73 (avg=6.43) | Trigger Spell: 274368 | Target: Self (1)
 Description      : When you cast Fade, absorb $s1 Magic damage for $274369d.
 
-Name             : Depth of the Shadows (id=275541) [Scaling Spell (-8), Spell Family (6), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Depth of the Shadows (id=275541) [Scaling Spell (-1), Spell Family (6), Passive] 
 Class            : Priest
 School           : Holy
 Azerite Power Id : 227
@@ -6195,12 +6165,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728629)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 42.92943 (avg=0.552147) | Trigger Spell: 275542 | Target: Self (1)
-                   Hotfixed: Average (0.11 -> 0.552147)
+                   Base Value: 0 | Scaled Value: 34.21 (avg=0.11) | Trigger Spell: 275542 | Target: Self (1)
 Description      : Each time $?s204197[Purge the Wicked][Shadow Word: Pain] deals damage, the healing of your next Shadow Mend is increased by $s1, up to a maximum of ${$s1*30}.
 
-Name             : Prayerful Litany (id=275602) [Scaling Spell (-8), Spell Family (6), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Prayerful Litany (id=275602) [Scaling Spell (-1), Spell Family (6), Passive] 
 Class            : Priest
 School           : Physical
 Azerite Power Id : 228
@@ -6214,8 +6182,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=728716)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 1097.086 (avg=14.11043) | Target: Self (1)
-                   Hotfixed: Average (0.35 -> 14.1104)
+                   Base Value: 8 | Scaled Value: 108.85 (avg=0.35) | Target: Self (1)
 Description      : Prayer of Healing restores an additional $s1 health to the most injured ally it affects.
 
 Name             : Whispers of the Damned (id=275722) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6236,8 +6203,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 233.25 (avg=0.75) | Trigger Spell: 275725 | Target: Self (1)
 Description      : Void Bolt increases the damage of $?s205351[Shadow Word: Void][Mind Blast] by $s1 for $275726d, stacking up to 6 times.
 
-Name             : Gift of Forgiveness (id=277680) [Scaling Spell (-8), Spell Family (6), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Gift of Forgiveness (id=277680) [Scaling Spell (-1), Spell Family (6), Passive] 
 Class            : Priest
 School           : Physical
 Azerite Power Id : 397
@@ -6251,14 +6217,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732992)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 286.1963 (avg=3.680981) | Target: Self (1)
-                   Hotfixed: Average (1.1256 -> 3.68098)
+                   Base Value: 0 | Scaled Value: 350.0632 (avg=1.125605) | Target: Self (1)
 #2 (id=734277)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3
 Description      : Smite deals an additional $s1 damage if you have at least $s2 Atonements active.
 
-Name             : Everlasting Light (id=277681) [Scaling Spell (-8), Spell Family (6), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Everlasting Light (id=277681) [Scaling Spell (-1), Spell Family (6), Passive] 
 Class            : Priest
 School           : Holy
 Azerite Power Id : 400
@@ -6272,8 +6236,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=732993)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 953.9877 (avg=12.26994) | Target: Self (1)
-                   Hotfixed: Average (2.57078 -> 12.2699)
+                   Base Value: 0 | Scaled Value: 799.5116 (avg=2.570777) | Target: Self (1)
 Description      : Heal restores up to $s1 additional health, based on your missing mana.
 
 Name             : Spiteful Apparitions (id=277682) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6293,8 +6256,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 100.3354 (avg=0.322622) | Target: Self (1)
 Description      : Shadowy Apparitions deal an additional $s1 damage to enemies suffering from your Vampiric Touch.
 
-Name             : Contemptuous Homily (id=278629) [Scaling Spell (-8), Spell Family (6), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Contemptuous Homily (id=278629) [Scaling Spell (-1), Spell Family (6), Passive] 
 Class            : Priest
 School           : Holy
 Azerite Power Id : 398
@@ -6310,13 +6272,11 @@ Effects          :
 #1 (id=734461)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1000 | Scaled Value: 1000 | Trigger Spell: 278902 | Target: Self (1)
 #2 (id=734462)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 126.8804 (avg=1.631902) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 126.4227 (avg=0.406504) | Target: Self (1)
                    Affected Spells: Penance (47666)
-                   Hotfixed: Average (0.406504 -> 1.6319)
 Description      : Penance deals an additional $s2 damage and extends your $?s204197[Purge the Wicked][Shadow Word: Pain] by ${$s1/1000} sec per bolt.
 
-Name             : Enduring Luminescence (id=278643) [Scaling Spell (-8), Spell Family (6), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Enduring Luminescence (id=278643) [Scaling Spell (-1), Spell Family (6), Passive] 
 Class            : Priest
 School           : Holy
 Azerite Power Id : 399
@@ -6332,9 +6292,8 @@ Effects          :
 #1 (id=734477)   : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | Trigger Spell: 279245 | Target: Self (1)
 #2 (id=734478)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 548.543 (avg=7.055215) | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 250.2682 (avg=0.804721) | Target: Self (1)
                    Affected Spells: Power Word: Radiance (194509)
-                   Hotfixed: Average (0.804721 -> 7.05521)
 Description      : Power Word: Radiance restores $s2 additional health, and applies Atonement for $s1% of its normal duration.
 
 Name             : Word of Mending (id=278645) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6374,8 +6333,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 500.2298 (avg=1.608456) | Target: Self (1)
                    Affected Spells: Holy Fire (14914), Purge the Wicked (204197), Purge the Wicked (204213)
 #2 (id=734494)   : Apply Aura (6) | Modify Rating (189)
-                   Base Value: 0 | Scaled Value: 133.8961 (avg=0.430534) | Target: Self (1)
-                   Hotfixed: Average (1.43443 -> 0.430534)
+                   Base Value: 0 | Scaled Value: 446.1065 (avg=1.434426) | Target: Self (1)
 Description      : Holy Fire deals an additional $s1 damage instantly, and restores $s2 mana each time it deals damage.
 
 Name             : Death Throes (id=278659) [Scaling Spell (-1), Spell Family (6), Passive] 
@@ -6472,7 +6430,6 @@ Effects          :
 Description      : When you successfully Dispel Magic, heal yourself and $s2 injured allies for $s1.
 
 Name             : Barrage Of Many Bombs (rank=Goblin Engineering) (id=280163) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8), Proc Flags (2446608 -> 332048), Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -6491,7 +6448,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs
                    Base Value: 0 | Scaled Value: 908.2944 (avg=11.68224) | Trigger Spell: 280662 | Target: Self (1)
-                   Hotfixed: Average (2.90719 -> 11.6822)
 #2 (id=737506)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #3 (id=737507)   : Dummy (3)
@@ -6503,7 +6459,6 @@ Description      : Your spells and abilities have a chance to fire a bomb at you
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (rank=Goblin Engineering) (id=280168) [Passive] 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -6533,7 +6488,6 @@ Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, 
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (rank=Goblin Engineering) (id=280172) [Scaling Spell (-8), Passive] 
-Hotfixed         : Internal Cooldown (0 -> 1000)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Internal Cooldown: 1 seconds
@@ -6553,7 +6507,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 7266.355 (avg=93.45795) | Target: Self (1)
-                   Hotfixed: Sub Type (42 -> 4), Trigger Spell (280583 -> 0)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -6565,7 +6518,6 @@ Increases your Kul Tiran or Zandalari Engineering by $s3.
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (rank=Gnomish Engineering) (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
-Hotfixed         : Scaling Spell, Max Scaling Level, Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -6588,7 +6540,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 581.3088 (avg=7.47664)
-                   Hotfixed: NEW EFFECT
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -6901,7 +6852,6 @@ Effects          :
 Description      : Your abilities have a chance to drop a Horde Banner for $280830d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
 Name             : Battlefield Focus (rank=Horde) (id=280582) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 488
@@ -6916,7 +6866,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738194)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 208.2589 (avg=2.678571) | Trigger Spell: 280816 | Target: Self (1)
-                   Hotfixed: Average (0.665399 -> 2.67857)
 #2 (id=738645)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=738646)   : Dummy (3)
@@ -7025,7 +6974,6 @@ Effects          :
 Description      : Your abilities have a chance to drop an Alliance Banner for $280858d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
 Name             : Battlefield Precision (rank=Alliance) (id=280627) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 494
@@ -7040,7 +6988,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738287)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 208.2589 (avg=2.678571) | Trigger Spell: 280854 | Target: Self (1)
-                   Hotfixed: Average (0.665399 -> 2.67857)
 #2 (id=738705)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=738706)   : Dummy (3)
@@ -7123,7 +7070,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738597)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.95000 | Target: Enemy (6)
-                   Hotfixed: SP Coefficient (0.8 -> 0.95)
 Description      : $@spelldesc280711
 
 Name             : Holy Nova (id=281265) [Spell Family (6)] 

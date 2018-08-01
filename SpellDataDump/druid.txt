@@ -349,7 +349,6 @@ Effects          :
 Description      : Nullifies corrupting effects on the friendly target, removing all Curse and Poison effects.
 
 Name             : Soothe (id=2908) [Spell Family (7)] 
-Hotfixed         : Spell Level (60 -> 56), Attributes
 Class            : Balance Feral Guardian Restoration Druid
 School           : Nature
 Resource         : 5.6% Base Mana (0) (id=186)
@@ -357,7 +356,6 @@ Spell Level      : 56
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 10 seconds
-Stance Mask      : 0x40000002
 Affecting spells : Astral Influence (197524 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -942,7 +940,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=10065)    : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.40000 | Target: Friend (21)
-                   Hotfixed: SP Coefficient (2.1 -> 2.4)
 Description      : Instantly heals a friendly target for $s1.
 
 Name             : Rebirth (id=20484) [Spell Family (7)] 
@@ -1258,7 +1255,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=23639)    : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.09000 | Target: Friend (21)
-                   Hotfixed: SP Coefficient (0.08 -> 0.09)
 Description      : Heals the target for $o1 over $d. When Lifebloom expires or is dispelled, the target is instantly healed for $33778s1. Limit 1.
 Tooltip          : Healing $w1 every second.
 Blooms for additional healing when effect expires or is dispelled.
@@ -1548,7 +1544,6 @@ Effects          :
 Description      : $@spelldesc114333
 
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
-Hotfixed         : Scaling Spell, Max Scaling Level
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Max Scaling Level: 80
@@ -1564,7 +1559,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=48506)    : Apply Aura (6) | Modify Rating (189)
                    Base Value: 15 | Scaled Value: 15 (avg=0.340909) | Misc Value: 1879048192 | Target: Self (1)
-                   Hotfixed: Average (0 -> 0.340909)
 Description      : Increases your Versatility by $s1.
 
 Name             : The Ursol Chameleon (id=58158) 
@@ -1884,7 +1878,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=68168)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.08000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
-                   Hotfixed: AP Coefficient (0.062244 -> 0.08)
 #2 (id=312099)   : Energize Power (30)
                    Base Value: 50 | Scaled Value: 50 | Misc Value: rage | Target: Self (1)
 Description      : Strikes all nearby enemies, dealing $s1 Bleed damage and an additional $192090o1 Bleed damage over $192090d. When applied from Bear Form, this effect can stack up to $192090u times.
@@ -3422,11 +3415,9 @@ Effects          :
 #8 (id=260749)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 31 | Scaled Value: 31 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Ferocious Bite (22568), Mangle (33917), Thrash (77758), Starsurge (78674), Sunfire (93402), Swipe (106785), Thrash (106830), Rake (155722), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Swipe (213771)
-                   Hotfixed: Base Value (25 -> 31)
 #9 (id=260750)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 31 | Scaled Value: 31 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Solar Wrath (5176), Shred (5221), Ferocious Bite (22568), Mangle (33917), Thrash (77758), Starsurge (78674), Sunfire (93402), Swipe (106785), Thrash (106830), Rake (155722), Moonfire (164812), Sunfire (164815), Solar Wrath (190984), Thrash (192090), Lunar Strike (194153), Starsurge (197626), Lunar Strike (197628), Solar Wrath (197629), Sunfire (197630), Swipe (213771)
-                   Hotfixed: Base Value (25 -> 31)
 #10 (id=739719)   : Apply Aura (6) | Override Attack Power per Spell Power% (404)
                    Base Value: 104 | Scaled Value: 104 | Target: Self (1)
 Description      : Restoration Druid core passive
@@ -3705,10 +3696,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=216287)   : Apply Aura (6) | Periodic Damage (3): arcane every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.12000 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (0.14 -> 0.12)
 #2 (id=216288)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (0.18 -> 0.15)
 #3 (id=216290)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | Misc Value: combo_points | Target: Self (1)
 Description      : A quick beam of lunar light burns the enemy for $s2 Arcane damage and then an additional $o1 Arcane damage over $d.
@@ -3856,7 +3845,6 @@ Effects          :
 Description      : Increases your chance to critically strike by $s1%.
 
 Name             : Tranquility (id=157982) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Nature
 Spell Level      : 1
@@ -5023,11 +5011,9 @@ Effects          :
 #1 (id=290499)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -73 | Scaled Value: -73 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-                   Hotfixed: Base Value (-90 -> -73)
 #2 (id=290500)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -73 | Scaled Value: -73 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Moonfire (8921), Moonfire (164812)
-                   Hotfixed: Base Value (-90 -> -73)
 
 Name             : Flourish (id=197721) [Spell Family (7)] 
 Class            : Druid
@@ -5159,7 +5145,6 @@ School           : Physical
 Duration         : 10 seconds
 Cooldown         : 90 seconds
 Stance Mask      : 0x00000010
-Triggered by     : Push Active Ability to Bar (225867)
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5198,7 +5183,6 @@ Effects          :
 #1 (id=297711)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 5000 | Scaled Value: 5000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Tiger's Fury (5217)
-                   Hotfixed: Base Value (4000 -> 5000)
 Description      : The cooldown on Tiger's Fury resets when a target dies with one of your Bleed effects active, and Tiger's Fury last ${$s1/1000} additional seconds.
 
 Name             : Blood Scent (id=202022) [Spell Family (7), Passive] 
@@ -5502,7 +5486,6 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=298422)   : Apply Aura (6) | Periodic Energize Power (24): every 0.75 seconds
                    Base Value: 5 | Scaled Value: 5 | Misc Value: 8 | Target: Self (1)
-                   Hotfixed: Period (500 -> 750), Base Value (3.33333 -> 5)
 #2 (id=298423)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | Target: Self (1)
 #3 (id=736081)   : Apply Aura (6) | Dummy (4)
@@ -5514,7 +5497,7 @@ Description      : While in combat you generate $m3 Astral Power every $m4 sec.
 While out of combat your Astral Power rebalances to 50 instead of depleting to empty.
 Tooltip          : Grants $m3 Astral Power every $m4 sec while in combat or while below 50 Astral Power.
 
-Name             : Shooting Stars (id=202497) [Scaling Spell (-1), Spell Family (7)] 
+Name             : Shooting Stars (id=202497) [Spell Family (7)] 
 Class            : Druid
 School           : Astral
 Spell Level      : 1
@@ -5532,10 +5515,8 @@ Attributes       : ........ ........ ........ ...x....   .......x ..x..... .....
 Effects          :
 #1 (id=298525)   : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.36000 | Target: Enemy (6)
-                   Hotfixed: Average (0.58 -> 0), SP Coefficient (0.18 -> 0.36)
 #2 (id=298537)   : Energize Power (30)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: astral_power | Target: Self (1)
-                   Hotfixed: Base Value (20 -> 40)
 Description      : $@spelldesc202342
 
 Name             : New Moon (rank=Artifact) (id=202767) [Spell Family (7)] 
@@ -5547,7 +5528,6 @@ GCD              : 1.5 seconds
 Velocity         : 20 yards/sec
 Charges          : 3 (15 seconds cooldown)
 Category         : 1584
-Triggered by     : Push Active Ability to Bar (225865)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5799,7 +5779,6 @@ Effects          :
 Description      : When you deal direct damage with Thrash, you gain a charge of Earthwarden, reducing the damage of the next auto attack you take by $s1%. Earthwarden may have up to $203975u charges.
 
 Name             : Earthwarden (id=203975) [Spell Family (7)] 
-Hotfixed         : Tooltip
 Class            : Druid
 School           : Physical
 Duration         : Aura (infinite)
@@ -5997,7 +5976,6 @@ School           : Nature
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 90 seconds
-Triggered by     : Push Active Ability to Bar (225868)
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6383,7 +6361,6 @@ Attributes       : ........ ........ x....... x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=313366)   : School Damage (2): astral
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.11000 | Radius: 0 - 6 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-                   Hotfixed: SP Coefficient (0.135 -> 0.11)
 Description      : $@spelldesc202770
 
 Name             : Fury of Elune (id=211547) [Spell Family (7)] 
@@ -6556,7 +6533,6 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=317225)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.30000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
-                   Hotfixed: AP Coefficient (0.2 -> 0.3)
 Description      : Swipe nearby enemies, inflicting $s3 Physical damage.
 
 Name             : Protection of Ashamane (id=214274) [Spell Family (7), Hidden] 
@@ -7902,8 +7878,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 447.84 (avg=1.44) | Target: Self (1)
 Description      : Taking damage has a chance to create an upwelling of Azerite beneath your feet, increasing your Health by $s1 and your Armor by $s2 while you stand within it. Lasts $271560d.
 
-Name             : Fungal Essence (id=272802) [Scaling Spell (-8), Spell Family (7), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Fungal Essence (id=272802) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
 Azerite Power Id : 120
@@ -7918,8 +7893,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=723924)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 3732 (avg=48) | Trigger Spell: 272805 | Target: Self (1)
-                   Hotfixed: Average (3 -> 48)
+                   Base Value: 0 | Scaled Value: 933 (avg=3) | Trigger Spell: 272805 | Target: Self (1)
 Description      : Swiftmend causes your Efflorescence mushroom to burst, healing a nearby injured ally for $s1.
 Tooltip          : Swiftmend causes your Efflorescence mushroom to burst, healing a nearby injured ally for $s1.
 
@@ -8258,8 +8232,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 93.3 (avg=0.3) | Trigger Spell: 274425 | Target: Self (1)
 Description      : Tiger's Fury increases the damage of your next four Shreds by $s1.
 
-Name             : Autumn Leaves (id=274432) [Scaling Spell (-8), Spell Family (7), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Autumn Leaves (id=274432) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Nature
 Azerite Power Id : 210
@@ -8273,8 +8246,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=726761)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 186.6 (avg=2.4) | Target: Self (1)
-                   Hotfixed: Average (0.6 -> 2.4)
+                   Base Value: 0 | Scaled Value: 186.6 (avg=0.6) | Target: Self (1)
 Description      : If Rejuvenation is your only heal over time effect on the target, increase the healing of Rejuvenation by $s1. 
 
 Name             : Reawakening (id=274813) [Scaling Spell (-1), Passive] 
@@ -8579,8 +8551,7 @@ Effects          :
                    Affected Spells: Maul (6807), Enraged Maul (236716)
 Description      : Maul deals $s2 additional damage, and Maul reduces the cost of your next Ironfur by ${$279541s1/-10} Rage stacking up to $279541u times.
 
-Name             : Waking Dream (id=278513) [Scaling Spell (-8), Spell Family (7), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Waking Dream (id=278513) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
 Azerite Power Id : 363
@@ -8594,14 +8565,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734259)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 143.0982 (avg=1.840491) | Trigger Spell: 278958 | Target: Self (1)
-                   Hotfixed: Average (0.321353 -> 1.84049)
+                   Base Value: 0 | Scaled Value: 99.94078 (avg=0.321353) | Trigger Spell: 278958 | Target: Self (1)
 #2 (id=734260)   : Dummy (3)
                    Base Value: 4000 | Scaled Value: 4000
 Description      : Ysera's Gift now heals every ${$s2/1000} sec, and heals for an additional $s1 for each of your active Rejuvenations.
 
-Name             : Rampant Growth (id=278515) [Scaling Spell (-8), Spell Family (7), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Rampant Growth (id=278515) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
 Azerite Power Id : 362
@@ -8615,9 +8584,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=734262)   : Apply Aura (6) | Add Flat Modifier (107): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 85.85886 (avg=1.104294) | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 50.00009 (avg=0.160772) | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Regrowth (8936)
-                   Hotfixed: Average (0.160772 -> 1.10429)
 Description      : Regrowth heals for ${$s1*($8936d/$8936t2)} more over its duration, and its healing over time effect also applies to the target of your Lifebloom.
 
 Name             : Blood Mist (id=279524) [Scaling Spell (-1), Spell Family (7), Passive] 
@@ -8732,7 +8700,6 @@ Effects          :
 Description      : Moonfire deals $s2% increased damage and also hits another nearby enemy within $279621A1 yds of the target.
 
 Name             : Twin Moons (id=279621) [Hidden] 
-Hotfixed         : Attributes
 Class            : Hunter, Druid
 School           : Physical
 Range            : 100 yards
@@ -8835,8 +8802,7 @@ Effects          :
 Description      : $@spelldesc202345
 Tooltip          : Haste increased by $s1%.
 
-Name             : Grove Tending (id=279778) [Scaling Spell (-8), Spell Family (7), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
+Name             : Grove Tending (id=279778) [Scaling Spell (-1), Spell Family (7), Passive] 
 Class            : Druid
 School           : Physical
 Azerite Power Id : 172
@@ -8851,8 +8817,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Scales with item level (354)
 Effects          :
 #1 (id=736321)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 858.5889 (avg=11.04294) | Trigger Spell: 279779 | Target: Self (1)
-                   Hotfixed: Average (0.964059 -> 11.0429)
+                   Base Value: 0 | Scaled Value: 299.8223 (avg=0.964059) | Trigger Spell: 279779 | Target: Self (1)
 Description      : Swiftmend heals the target for ${$s1*($279793d/$279793t1)} over $279793d.
 
 Name             : Unstable Flames (id=279899) [Scaling Spell (-7), Passive] 
@@ -8910,7 +8875,6 @@ Effects          :
 Description      : When you use Barkskin or Survival Instincts, absorb $s1 damage over $280165d.
 
 Name             : Barrage Of Many Bombs (rank=Goblin Engineering) (id=280163) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8), Proc Flags (2446608 -> 332048), Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -8929,7 +8893,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs
                    Base Value: 0 | Scaled Value: 908.2944 (avg=11.68224) | Trigger Spell: 280662 | Target: Self (1)
-                   Hotfixed: Average (2.90719 -> 11.6822)
 #2 (id=737506)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #3 (id=737507)   : Dummy (3)
@@ -8941,7 +8904,6 @@ Description      : Your spells and abilities have a chance to fire a bomb at you
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (rank=Goblin Engineering) (id=280168) [Passive] 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -8971,7 +8933,6 @@ Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, 
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (rank=Goblin Engineering) (id=280172) [Scaling Spell (-8), Passive] 
-Hotfixed         : Internal Cooldown (0 -> 1000)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Internal Cooldown: 1 seconds
@@ -8991,7 +8952,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 7266.355 (avg=93.45795) | Target: Self (1)
-                   Hotfixed: Sub Type (42 -> 4), Trigger Spell (280583 -> 0)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -9003,7 +8963,6 @@ Increases your Kul Tiran or Zandalari Engineering by $s3.
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (rank=Gnomish Engineering) (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
-Hotfixed         : Scaling Spell, Max Scaling Level, Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -9026,7 +8985,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 581.3088 (avg=7.47664)
-                   Hotfixed: NEW EFFECT
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -9323,7 +9281,6 @@ Effects          :
 Description      : Your abilities have a chance to drop a Horde Banner for $280830d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
 Name             : Battlefield Focus (rank=Horde) (id=280582) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 488
@@ -9338,7 +9295,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738194)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 208.2589 (avg=2.678571) | Trigger Spell: 280816 | Target: Self (1)
-                   Hotfixed: Average (0.665399 -> 2.67857)
 #2 (id=738645)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=738646)   : Dummy (3)
@@ -9447,7 +9403,6 @@ Effects          :
 Description      : Your abilities have a chance to drop an Alliance Banner for $280858d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
 Name             : Battlefield Precision (rank=Alliance) (id=280627) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 494
@@ -9462,7 +9417,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738287)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 208.2589 (avg=2.678571) | Trigger Spell: 280854 | Target: Self (1)
-                   Hotfixed: Average (0.665399 -> 2.67857)
 #2 (id=738705)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=738706)   : Dummy (3)

@@ -454,7 +454,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 621 | Target: Unknown(87)
 Description      : Place a frost trap that creates an ice slick around itself for $13810d when the first enemy approaches it. All enemies within $13810s1 yards will be slowed by $135299s1% while in the area of effect. Trap will exist for $13809d.
 
-Name             : Claw (rank=Basic Attack) (id=16827) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Claw (rank=Basic Attack) (id=16827) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Resource         : 25 Focus (2) (id=676)
@@ -473,7 +473,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=8519)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-                   Hotfixed: Average (0.114 -> 0)
 Description      : Claw the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
 Variables        : $aotb=$?s191384[${1.3}][${1.0}]
 $ce=$?s152244[${1.7}][${1.5}]
@@ -481,7 +480,7 @@ $spiked=$?s53184[${1.1}][${1.0}]
 $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
-Name             : Bite (rank=Basic Attack) (id=17253) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Bite (rank=Basic Attack) (id=17253) [Spell Family (9)] 
 Class            : Hunter, Death Knight
 School           : Physical
 Resource         : 25 Focus (2) (id=706)
@@ -501,7 +500,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=8994)     : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-                   Hotfixed: Average (0.114 -> 0)
 Description      : Bite the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
 Variables        : $aotb=$?s191384[${1.3}][${1.0}]
 $ce=$?s152244[${1.7}][${1.5}]
@@ -967,7 +965,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | Misc Value: 1 | Target: Self (1)
 Description      : Increases Agility by $s1.
 
-Name             : Smack (rank=Basic Attack) (id=49966) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Smack (rank=Basic Attack) (id=49966) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Resource         : 25 Focus (2) (id=2269)
@@ -986,7 +984,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=42080)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | Target: Enemy (6)
-                   Hotfixed: Average (0.114 -> 0)
 Description      : Smack the enemy, causing ${$<damage>} damage. Deals $62762s2% more damage and costs $62762s1% more Focus when your pet has 50 or more Focus.
 Variables        : $aotb=$?s191384[${1.3}][${1.0}]
 $ce=$?s152244[${1.7}][${1.5}]
@@ -1252,7 +1249,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Chain Multiplier: 1 | Chain Targets: 2 | Target: Enemy (6)
 
 Name             : Increase Versatility 15 (id=55564) [Scaling Spell (-1), Passive, Hidden] 
-Hotfixed         : Scaling Spell, Max Scaling Level
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Max Scaling Level: 80
@@ -1268,7 +1264,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=48506)    : Apply Aura (6) | Modify Rating (189)
                    Base Value: 15 | Scaled Value: 15 (avg=0.340909) | Misc Value: 1879048192 | Target: Self (1)
-                   Hotfixed: Average (0 -> 0.340909)
 Description      : Increases your Versatility by $s1.
 
 Name             : Kindred Spirits (id=56315) [Spell Family (9), Passive] 
@@ -1509,14 +1504,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=67988)    : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | Target: Self (1)
-                   Hotfixed: SP Coefficient (2.25 -> 1.9)
 #2 (id=90635)    : Apply Aura (6) | Dummy (4)
                    Base Value: 190 | Scaled Value: 190 | Target: Self (1)
-                   Hotfixed: Base Value (225 -> 190)
 #3 (id=171318)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | Target: Self (1)
                    Affected Spells: A Murder of Crows (131894), A Murder of Crows (131900), Stampede (201594)
-                   Hotfixed: SP Coefficient (2.25 -> 1.9)
 Description      : Increases the damage done by your pets by ${$s1}.1%.
 
 Name             : Arcane Torrent (rank=Racial) (id=80483) 
@@ -1615,7 +1607,7 @@ Effects          :
                    Base Value: 4 | Scaled Value: 4 | Target: Unknown(32)
 Description      : Summons your fifth pet to you.
 
-Name             : Kill Command (id=83381) [Scaling Spell (-1), Spell Family (9)] 
+Name             : Kill Command (id=83381) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -1631,7 +1623,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=83776)    : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.50000 | Target: Enemy (6)
-                   Hotfixed: Average (0.9 -> 0)
 Description      : $@spelldesc34026
 
 Name             : Mail Specialization (rank=Passive) (id=86538) [Passive, Hidden] 
@@ -1905,8 +1896,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 Description      : Enables Worgens to switch between human and Worgan forms
 
-Name             : Burrow Attack (rank=Exotic Ability) (id=95714) [Scaling Spell (4), Spell Family (9)] 
-Hotfixed         : Affecting Spells
+Name             : Burrow Attack (rank=Exotic Ability) (id=95714) [Spell Family (9)] 
 Class            : Hunter
 School           : Nature
 Spell Level      : 20
@@ -1922,7 +1912,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .x...
 Effects          :
 #1 (id=101379)   : School Damage (2): nature
                    Base Value: 0 | Scaled Value: 0 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-                   Hotfixed: Average (0.074 -> 0)
 Description      : The Worm burrows into the earth, shaking the ground above dealing $<damage> Nature damage over $93433d.
 Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage= ${($95714m1+(($RAP*0.60)*0.096))*8*(1+$@versadmg)*$<bmMastery>}
@@ -2580,14 +2569,11 @@ Effects          :
 #1 (id=179699)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -12 | Scaled Value: -12 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
-                   Hotfixed: Base Value (-20 -> -12)
 #2 (id=191134)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -12 | Scaled Value: -12 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
-                   Hotfixed: Base Value (-20 -> -12)
 #3 (id=191135)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -12 | Scaled Value: -12 | Target: Self (1)
-                   Hotfixed: Base Value (-20 -> -12)
 #4 (id=191136)   : Apply Aura (6) | Dummy (4)
                    Base Value: -100 | Scaled Value: -100 | Misc Value: 14 | Target: Self (1)
 #5 (id=191137)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Effect 1 (3)
@@ -2610,11 +2596,9 @@ Effects          :
 #11 (id=260892)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -15 | Scaled Value: -15 | Target: Self (1)
                    Affected Spells: Barrage (120361)
-                   Hotfixed: Sub Type (457 -> 108), Base Value (100 -> -15), Misc Value (1715 -> 0), Affects Spells
 #12 (id=260893)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 100 | Scaled Value: 100 | Misc Value: 1715 | Target: Self (1)
                    Affected Spells (Category): Aimed Shot (19434)
-                   Hotfixed: Sub Type (4 -> 457), Base Value (0 -> 100), Misc Value (0 -> 1715)
 #13 (id=260894)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #14 (id=260895)   : Apply Aura (6) | Dummy (4)
@@ -2627,7 +2611,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #18 (id=742056)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
-                   Hotfixed: NEW EFFECT
 
 Name             : Survival Hunter (id=137017) [Spell Family (9), Passive, Hidden] 
 Class            : Survival Hunter
@@ -2644,14 +2627,11 @@ Effects          :
 #1 (id=179700)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -7 | Scaled Value: -7 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
-                   Hotfixed: Base Value (0 -> -7)
 #2 (id=191130)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -7 | Scaled Value: -7 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Command (34026), Steady Shot (56641), Barrage (120361), A Murder of Crows (131900), Steel Trap (162487), Chimaera Shot (171454), Chimaera Shot (171457), Arcane Shot (185358), Raptor Strike (186270), Bursting Shot (186387), Carve (187708), Cobra Shot (193455), Piercing Shot (198670), Stomp (199530), Stampede (201594), Butchery (212436), Explosive Shot (212680), Rapid Fire (257045), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Kill Command (259489), Serpent Sting (259491), Violent Reaction (260231), Volley (260247), Rapid Fire (263585), Wildfire Bomb (265157), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666), Wildfire Bomb (269747), Flanking Strike (269751), Flanking Strike (269752), Explosive Shot (269850), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Volatile Bomb (271048), Volatile Bomb (271049), Harpoon (271625), Serpent Sting (271788), Wildfire Cluster (272745), Latent Poison (273289), Multi-Shot (278565)
-                   Hotfixed: Base Value (0 -> -7)
 #3 (id=191131)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -7 | Scaled Value: -7 | Target: Self (1)
-                   Hotfixed: Base Value (0 -> -7)
 #4 (id=191132)   : Apply Aura (6) | Modify Power Regen (110)
                    Base Value: -50 | Scaled Value: -50 | Misc Value: 2 | Target: Self (1)
 #5 (id=191133)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
@@ -2660,7 +2640,6 @@ Effects          :
 #6 (id=260877)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -50 | Scaled Value: -50 | Target: Self (1)
                    Affected Spells: Auto Shot (75)
-                   Hotfixed: Sub Type (4 -> 108), Base Value (0 -> -50), Affects Spells
 #7 (id=260878)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | Target: Self (1)
 #8 (id=260879)   : Apply Aura (6) | Dummy (4)
@@ -3023,7 +3002,6 @@ Description      : The Spider wraps webs around the target, slowing movement by 
 Tooltip          : Movement speed reduced by $s1%.
 
 Name             : Molten Hide (rank=Special Ability) (id=160124) [Spell Family (9)] 
-Hotfixed         : Affecting Spells, Spell Family
 Class            : Hunter
 School           : Fire
 Spell Level      : 74
@@ -3594,7 +3572,6 @@ Effects          :
 Description      : Interrupts spellcasting, preventing any spell in that school from being cast for $d.
 
 Name             : Carve (id=187708) [Spell Family (9)] 
-Hotfixed         : Spell Level (42 -> 28)
 Class            : Survival Hunter
 School           : Physical
 Resource         : 35 Focus (2) (id=10219)
@@ -4479,7 +4456,6 @@ Effects          :
 Description      : Tell your pet to wake up.
 
 Name             : Explosive Shot (id=212431) [Spell Family (9)] 
-Hotfixed         : Cooldown (330 -> 250), Category Cooldown (330 -> 250)
 Class            : Hunter
 School           : Fire
 Resource         : 20 Focus (2) (id=11773)
@@ -4990,7 +4966,6 @@ Attributes       : .x...... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=479998)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26000 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (0.4 -> 0.26)
 Description      : Shoot a stream of arrows at your target every, dealing $s1 damage every $t sec.
 
 Name             : Hunter's Mark (id=257284) [Spell Family (9)] 
@@ -5064,7 +5039,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | Misc Value: 9 | Target: Self (1)
 #4 (id=738673)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | Misc Value: 9 | Target: Self (1)
-                   Hotfixed: Base Value (50 -> 40)
 Description      : When Multi-Shot hits $s2 or more targets, your next Aimed Shot will ricochet and hit up to $s1 additional targets for $s4% of normal damage, or each shot of your next Rapid Fire will ricochet to $s3 additional nearby targets.
 
 Name             : Trick Shots (id=257622) [Spell Family (9)] 
@@ -5147,7 +5121,6 @@ Description      : $@spelldesc257944
 Tooltip          : Critical strike chance increased by $s1%.
 
 Name             : Kill Command (id=259277) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Hunter
 School           : Physical
 Spell Level      : 1
@@ -5203,7 +5176,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=483863)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (1 -> 0.9)
 Description      : A brutal attack that deals $s1 Physical damage and grants you Mongoose Fury.
 
 |cFFFFFFFFMongoose Fury|r
@@ -5330,7 +5302,6 @@ Variables        : $damage=${$ap*($s1/100)*(1+$@versadmg)}
 
 
 Name             : Serpent Sting (id=259491) [Spell Family (9)] 
-Hotfixed         : Attributes
 Class            : Survival Hunter
 School           : Nature
 Resource         : 20 Focus (2) (id=12530)
@@ -5808,7 +5779,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=485543)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2500 | Scaled Value: 2500 | Target: Self (1)
-                   Hotfixed: Base Value (3000 -> 2500)
 Description      : Casting Arcane Shot or Multi-Shot reduces the cooldown of Trueshot by ${$m1/1000}.1 sec.
 
 Name             : Haste (id=261582) [Scaling Spell (-1), Passive] 
@@ -5899,21 +5869,17 @@ Effects          :
 #1 (id=651809)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.65000 | Target: Unknown(120)
                    Affected Spells: Claw (16827), Bite (17253), Smack (49966), A Murder of Crows (131900), Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Serpent Sting (259491), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666)
-                   Hotfixed: SP Coefficient (1 -> 1.65)
 #2 (id=651810)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.65000 | Misc Value: 22 | Target: Unknown(120)
                    Affected Spells: Claw (16827), Bite (17253), Smack (49966), A Murder of Crows (131900), Raptor Strike (186270), Carve (187708), Butchery (212436), Mongoose Bite (259387), Chakrams (259396), Chakrams (259398), Serpent Sting (259491), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267666)
-                   Hotfixed: SP Coefficient (1 -> 1.65)
 #3 (id=651811)   : Apply Aura (6) | Periodic Trigger Spell (23): Spirit Bond every 5 seconds
                    Base Value: 0 | Scaled Value: 0 | Trigger Spell: 263140 | Target: Self (1)
 #4 (id=651823)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Spirit Bond (263140)
-                   Hotfixed: SP Coefficient (0.15 -> 0.1)
 #5 (id=651825)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.10000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Spirit Bond (263140)
-                   Hotfixed: SP Coefficient (0.15 -> 0.1)
 Description      : You and your pet's Focus spending abilities deal ${$s1}.1% increased damage.
 
 While your pet is active, you both regenerate ${$s4}.1% of maximum health every $t3 sec.
@@ -6830,7 +6796,6 @@ Allies receiving this effect will become Sated and unable to benefit from Primal
 Tooltip          : Haste increased by $s1%.
 
 Name             : Survival of the Fittest (rank=Tenacity Ability) (id=264735) [Spell Family (9)] 
-Hotfixed         : Cooldown (0 -> 180000), Category Cooldown (0 -> 180000), Category
 Class            : Tenacity Hunter Pet
 School           : Physical
 Range            : 50000 yards
@@ -6912,7 +6877,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=709186)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.70000 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (0.62868 -> 0.7)
 Description      : A vicious slash dealing $s1 Physical damage.
 
 Name             : Mongoose Bite (id=265888) [Spell Family (9)] 
@@ -6935,7 +6899,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=710469)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.90000 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (0.493272 -> 0.9)
 Description      : A brutal attack that deals $sw1 Physical damage and grants you Mongoose Fury.
 
 |cFFFFFFFFMongoose Fury|r
@@ -6990,7 +6953,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=710489)   : Apply Aura (6) | Restore Power (85)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 2 | Target: Self (1)
-                   Hotfixed: Base Value (15 -> 10)
 Description      : $@spelldesc265895
 Tooltip          : Generating ${$m1/5} Focus every sec.
 
@@ -7442,7 +7404,6 @@ Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... .....
 Effects          :
 #1 (id=718226)   : Dummy (3)
                    Base Value: 117 | Scaled Value: 117 | Target: Enemy (6)
-                   Hotfixed: Base Value (90 -> 117)
 Description      : You and your pet leap to the target and strike it as one, dealing a total of $<damage> Physical damage.
 
 |cFFFFFFFFGenerates $269752s2 Focus for you and your pet.|r
@@ -7466,7 +7427,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=718232)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.17000 | Target: Enemy (6)
-                   Hotfixed: AP Coefficient (0.9 -> 1.17)
 #2 (id=718234)   : Energize Power (30)
                    Base Value: 30 | Scaled Value: 30 | Misc Value: focus | Target: Self (1)
 Description      : $@spelldesc269751
@@ -8614,7 +8574,6 @@ Effects          :
 Description      : Moonfire deals $s2% increased damage and also hits another nearby enemy within $279621A1 yds of the target.
 
 Name             : Twin Moons (id=279621) [Hidden] 
-Hotfixed         : Attributes
 Class            : Hunter, Druid
 School           : Physical
 Range            : 100 yards
@@ -8741,7 +8700,6 @@ Effects          :
 Description      : Increases the Silithid's movement speed by $s1%.
 
 Name             : Barrage Of Many Bombs (rank=Goblin Engineering) (id=280163) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8), Proc Flags (2446608 -> 332048), Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -8760,7 +8718,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737505)   : Apply Aura (6) | Proc Trigger Spell (42): Barrage Of Many Bombs
                    Base Value: 0 | Scaled Value: 908.2944 (avg=11.68224) | Trigger Spell: 280662 | Target: Self (1)
-                   Hotfixed: Average (2.90719 -> 11.6822)
 #2 (id=737506)   : Dummy (3)
                    Base Value: 4 | Scaled Value: 4
 #3 (id=737507)   : Dummy (3)
@@ -8772,7 +8729,6 @@ Description      : Your spells and abilities have a chance to fire a bomb at you
 Increases your Kul Tiran or Zandalari Engineering by $s4.
 
 Name             : Ricocheting Inflatable Pyrosaw (rank=Goblin Engineering) (id=280168) [Passive] 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -8802,7 +8758,6 @@ Beneficial spells have a chance to hurl a Mechanized External Needle Dispenser, 
 Increases your Kul Tiran or Zandalari Engineering by $s3.
 
 Name             : Auto-Self-Cauterizer (rank=Goblin Engineering) (id=280172) [Scaling Spell (-8), Passive] 
-Hotfixed         : Internal Cooldown (0 -> 1000)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Internal Cooldown: 1 seconds
@@ -8822,7 +8777,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=737533)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 7266.355 (avg=93.45795) | Target: Self (1)
-                   Hotfixed: Sub Type (42 -> 4), Trigger Spell (280583 -> 0)
 #2 (id=737534)   : Dummy (3)
                    Base Value: 30 | Scaled Value: 30
 #3 (id=738963)   : Apply Aura (6) | Skill (30)
@@ -8834,7 +8788,6 @@ Increases your Kul Tiran or Zandalari Engineering by $s3.
 *Efficacy may vary.
 
 Name             : Synaptic Spark Capacitor (rank=Gnomish Engineering) (id=280174) [Scaling Spell (-8), Spell Family (7), Passive] 
-Hotfixed         : Scaling Spell, Max Scaling Level, Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Proc Chance      : 101%
@@ -8857,7 +8810,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | Misc Value: 2499 | Target: Self (1)
 #3 (id=742699)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 581.3088 (avg=7.47664)
-                   Hotfixed: NEW EFFECT
 Description      : Your spells and abilities have a chance to cause the target to become a Spark Coil for $280655d. Enemies within $s1 yards of the Spark Coil take $280847s2 damage every 2 seconds and deal $280847s1% reduced damage to you.
 
 Increases your Kul Tiran or Zandalari Engineering by $s2.
@@ -9154,7 +9106,6 @@ Effects          :
 Description      : Your abilities have a chance to drop a Horde Banner for $280830d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
 Name             : Battlefield Focus (rank=Horde) (id=280582) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 488
@@ -9169,7 +9120,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738194)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 208.2589 (avg=2.678571) | Trigger Spell: 280816 | Target: Self (1)
-                   Hotfixed: Average (0.665399 -> 2.67857)
 #2 (id=738645)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=738646)   : Dummy (3)
@@ -9278,7 +9228,6 @@ Effects          :
 Description      : Your abilities have a chance to drop an Alliance Banner for $280858d, increasing $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] by $s1 and maximum health by $s2 for yourself and up to 4 allies.
 
 Name             : Battlefield Precision (rank=Alliance) (id=280627) [Scaling Spell (-8), Passive] 
-Hotfixed         : Scaling Spell (-1 -> -8)
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
 School           : Physical
 Azerite Power Id : 494
@@ -9293,7 +9242,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=738287)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 208.2589 (avg=2.678571) | Trigger Spell: 280854 | Target: Self (1)
-                   Hotfixed: Average (0.665399 -> 2.67857)
 #2 (id=738705)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20
 #3 (id=738706)   : Dummy (3)
@@ -9354,7 +9302,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=739063)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 5 | Scaled Value: 5 | Target: Self (1)
-                   Hotfixed: Base Value (10 -> 5)
 Description      : $@spelldesc120679
 Tooltip          : Haste increased by $s1%.
 
