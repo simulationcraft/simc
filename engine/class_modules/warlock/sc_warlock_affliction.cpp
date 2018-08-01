@@ -1254,6 +1254,20 @@ namespace warlock
         return ready;
       });
     }
+    else if (name_str == "target_uas")
+    {
+      return make_fn_expr("target_uas", [this]() {
+        double uas = 0.0;
+
+        auto td = get_target_data(target);
+        for (int i = 0; i < MAX_UAS; i++)
+        {
+          uas += td->dots_unstable_affliction[i]->is_ticking();
+        }
+
+        return uas;
+      });
+    }
 
     return player_t::create_expression(name_str);
   }

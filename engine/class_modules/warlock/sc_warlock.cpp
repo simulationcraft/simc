@@ -1022,6 +1022,10 @@ expr_t* warlock_t::create_expression( const std::string& name_str )
   {
     return create_aff_expression(name_str);
   }
+  else if (name_str == "target_uas")
+  {
+    return create_aff_expression(name_str);
+  }
 
   return player_t::create_expression( name_str );
 }
