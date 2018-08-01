@@ -6985,6 +6985,7 @@ void mage_t::apl_frost()
     "Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even "
     "against a single target, especially with low mastery.");
   single -> add_talent( this, "Ice Nova" );
+  single -> add_action( this, "Flurry", "if=!buff.brain_freeze.react&buff.winters_reach.react&azerite.winters_reach.rank>=2" );
   single -> add_action( this, "Frostbolt" );
   single -> add_action( "call_action_list,name=movement" );
   single -> add_action( this, "Ice Lance" );
