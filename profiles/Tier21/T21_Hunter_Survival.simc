@@ -58,7 +58,7 @@ actions+=/serpent_sting,target_if=min:remains,if=refreshable&buff.mongoose_fury.
 actions+=/aspect_of_the_eagle,if=target.distance>=6
 actions+=/mongoose_bite_eagle,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60
 actions+=/mongoose_bite,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60
-actions+=/butchery
+actions+=/butchery,if=active_enemies>1
 actions+=/raptor_strike_eagle,target_if=min:dot.internal_bleeding.stack
 actions+=/raptor_strike,target_if=min:dot.internal_bleeding.stack
 
