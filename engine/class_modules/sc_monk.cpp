@@ -2077,14 +2077,7 @@ struct monk_action_t : public Base
   sef_ability_e sef_ability;
   bool ww_mastery;
 
-  bool hasted_gcd;
-  bool brewmaster_damage_increase;
-  bool brewmaster_damage_increase_dot;
-  bool brewmaster_damage_increase_two;
-  bool brewmaster_damage_increase_dot_two;
-  bool brewmaster_damage_increase_dot_three;
-  bool brewmaster_healing_increase;
-
+  bool mistweaver_hasted_gcd;
   bool mistweaver_damage_increase;
   bool mistweaver_damage_increase_dot;
 
@@ -2100,6 +2093,17 @@ struct monk_action_t : public Base
   // Affect flags for various dynamic effects
   struct
   {
+    struct
+    {
+      bool spell_da1;
+      bool spell_da2;
+      bool spell_da3;
+      bool spell_ta1;
+      bool spell_ta2;
+      bool spell_ta3;
+      bool hasted_cooldown;
+    } brewmaster;
+
     bool serenity;
     bool sunrise_technique;
   } affected_by;
@@ -2115,16 +2119,7 @@ public:
       sef_ability( SEF_NONE ),
       ww_mastery( false ),
 
-      hasted_gcd( ab::data().affected_by( player->spec.mistweaver_monk->effectN( 4 ) ) ),
-      brewmaster_damage_increase( ab::data().affected_by( player->spec.brewmaster_monk->effectN( 1 ) ) ),
-
-      brewmaster_damage_increase_dot( ab::data().affected_by( player->spec.brewmaster_monk->effectN( 2 ) ) ),
-      brewmaster_damage_increase_two( ab::data().affected_by( player->spec.brewmaster_monk->effectN( 7 ) ) ),
-      brewmaster_damage_increase_dot_two( ab::data().affected_by( player->spec.brewmaster_monk->effectN( 6 ) ) ),
-      brewmaster_damage_increase_dot_three( ab::data().affected_by( player->spec.brewmaster_monk->effectN( 8 ) ) ),
-
-      brewmaster_healing_increase( ab::data().affected_by( player->spec.brewmaster_monk->effectN( 18 ) ) ),
-
+      mistweaver_hasted_gcd( ab::data().affected_by( player->spec.mistweaver_monk->effectN( 6 ) ) ),
       mistweaver_damage_increase( ab::data().affected_by( player->spec.mistweaver_monk->effectN( 1 ) ) ),
       mistweaver_damage_increase_dot( ab::data().affected_by( player->spec.mistweaver_monk->effectN( 2 ) ) ),
 
@@ -2140,7 +2135,6 @@ public:
       windwalker_healing_increase( ab::data().affected_by( player->spec.windwalker_monk->effectN( 11 ) ) ),
       affected_by()
   {
-
     init_affected_by();
     ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
@@ -2149,20 +2143,19 @@ public:
     {
       case MONK_BREWMASTER:
       {
-        if ( brewmaster_damage_increase )
+        if ( affected_by.brewmaster.spell_da1 )
           ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 1 ).percent();
-        if ( brewmaster_damage_increase_two )
+        if ( affected_by.brewmaster.spell_da2 )
           ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 7 ).percent();
-
-        if ( brewmaster_damage_increase_dot )
-          ab::base_td_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 2 ).percent();
-        if ( brewmaster_damage_increase_dot_two )
-          ab::base_td_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 6 ).percent();
-        if ( brewmaster_damage_increase_dot_three )
-          ab::base_td_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 8 ).percent();
-
-        if ( brewmaster_healing_increase )
+        if ( affected_by.brewmaster.spell_da3 )
           ab::base_dd_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 18 ).percent();
+
+        if ( affected_by.brewmaster.spell_ta1 )
+          ab::base_td_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 2 ).percent();
+        if ( affected_by.brewmaster.spell_ta2 )
+          ab::base_td_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 6 ).percent();
+        if ( affected_by.brewmaster.spell_ta3 )
+          ab::base_td_multiplier *= 1.0 + player->spec.brewmaster_monk->effectN( 8 ).percent();
 
         // Reduce GCD from 1.5 sec to 1 sec
         if ( ab::data().affected_by( player->spec.brewmaster_monk->effectN( 14 ) ) )
@@ -2248,19 +2241,28 @@ public:
    */
   void init_affected_by()
   {
-    struct affect_init_t{
+    struct affect_init_t
+    {
       const spelleffect_data_t& effect;
       bool& affects;
     } affects[] = {
-        {p()->talent.serenity -> effectN(1), affected_by.serenity},
+        {p()->talent.serenity->effectN( 1 ), affected_by.serenity},
+        {p()->spec.brewmaster_monk->effectN( 1 ), affected_by.brewmaster.spell_da1},
+        {p()->spec.brewmaster_monk->effectN( 7 ), affected_by.brewmaster.spell_da2},
+        {p()->spec.brewmaster_monk->effectN( 18 ), affected_by.brewmaster.spell_da3},
+        {p()->spec.brewmaster_monk->effectN( 2 ), affected_by.brewmaster.spell_ta1},
+        {p()->spec.brewmaster_monk->effectN( 6 ), affected_by.brewmaster.spell_ta2},
+        {p()->spec.brewmaster_monk->effectN( 8 ), affected_by.brewmaster.spell_ta3},
+        {p()->spec.brewmaster_monk->effectN( 8 ), affected_by.brewmaster.hasted_cooldown},
     };
 
-    for (const auto& a : affects)
+    for ( const auto& a : affects )
     {
       a.affects = base_t::data().affected_by( a.effect );
-      if (a.affects)
+      if ( a.affects )
       {
-        ab::sim->print_debug("Action {} ({}) affected by {} (idx={}).", ab::name(), ab::data().id(), a.effect.spell()->name_cstr(), a.effect.spell_effect_num()+1);
+        ab::sim->print_debug( "Action {} ({}) affected by {} (idx={}).", ab::name(), ab::data().id(),
+                              a.effect.spell()->name_cstr(), a.effect.spell_effect_num() + 1 );
       }
     }
   }
@@ -2293,6 +2295,11 @@ public:
   void init() override
   {
     ab::init();
+
+    if ( affected_by.brewmaster.hasted_cooldown )
+    {
+      ab::cooldown->hasted = true;
+    }
 
     /* Iterate through power entries, and find if there are resources linked to one of our stances
      */
@@ -2649,7 +2656,7 @@ public:
     if ( t == timespan_t::zero() )
       return t;
 
-    if ( hasted_gcd && ab::player->specialization() == MONK_MISTWEAVER )
+    if ( mistweaver_hasted_gcd && ab::player->specialization() == MONK_MISTWEAVER )
       t *= ab::player->cache.attack_haste();
     if ( t < ab::min_gcd )
       t = ab::min_gcd;
