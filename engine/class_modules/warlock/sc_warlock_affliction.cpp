@@ -1148,17 +1148,6 @@ namespace warlock
     azerite.sudden_onset                = find_azerite_spell("Sudden Onset");
     azerite.wracking_brilliance         = find_azerite_spell("Wracking Brilliance");
     azerite.deathbloom                  = find_azerite_spell("Deathbloom");
-
-    // seed applies corruption
-    /*
-    if (specialization() == WARLOCK_AFFLICTION)
-    {
-      active.corruption = new corruption_t(this, "");
-      active.corruption->background = true;
-      active.corruption->dual = true;
-      active.corruption->base_costs[RESOURCE_MANA] = 0;
-    }
-    */
   }
 
   void warlock_t::init_gains_affliction()

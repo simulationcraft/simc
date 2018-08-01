@@ -668,7 +668,7 @@ namespace warlock
             bool procced = p()->grimoire_of_sacrifice_rppm->trigger();
             if ( procced )
             {
-              p()->active.grimoire_of_sacrifice_proc->target = execute_state->target;
+              p()->active.grimoire_of_sacrifice_proc->set_target( execute_state->target );
               p()->active.grimoire_of_sacrifice_proc->execute();
             }
           }
