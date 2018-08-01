@@ -2326,11 +2326,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       weapon = &( p -> main_hand_weapon );
       aoe = 2;
       base_multiplier *= 1.0 + p -> o() -> spec.blood_death_knight -> effectN( 1 ).percent();
-
-      // Damage is off ingame by about 13.5%
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/324
-      if ( p -> bugs )
-        base_multiplier *= 1.0 - 0.135;
     }
 
     int n_targets() const override
