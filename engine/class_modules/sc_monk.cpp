@@ -9335,9 +9335,11 @@ private:
   monk_t& p;
 };
 
+namespace items
+{
 // MONK MODULE INTERFACE ====================================================
 
-static void do_trinket_init( monk_t*                  player,
+void do_trinket_init( monk_t*                  player,
                              specialization_e         spec,
                              const special_effect_t*& ptr,
                              const special_effect_t&  effect )
@@ -9357,21 +9359,21 @@ static void do_trinket_init( monk_t*                  player,
 // Legion Artifact Effects --------------------------------------------------------
 
 // Brewmaster Legion Artifact
-static void fu_zan_the_wanderers_companion( special_effect_t& effect )
+void fu_zan_the_wanderers_companion( special_effect_t& effect )
 {
   monk_t* monk = debug_cast<monk_t*> ( effect.player );
   do_trinket_init( monk, MONK_BREWMASTER, monk -> fu_zan_the_wanderers_companion, effect );
 }
 
 // Mistweaver Legion Artifact
-static void sheilun_staff_of_the_mists( special_effect_t& effect )
+void sheilun_staff_of_the_mists( special_effect_t& effect )
 {
   monk_t* monk = debug_cast<monk_t*> ( effect.player );
   do_trinket_init( monk, MONK_MISTWEAVER, monk -> sheilun_staff_of_the_mists, effect );
 }
 
 // Windwalker Legion Artifact
-static void fists_of_the_heavens( special_effect_t& effect )
+void fists_of_the_heavens( special_effect_t& effect )
 {
   monk_t* monk = debug_cast<monk_t*> ( effect.player );
   do_trinket_init( monk, MONK_WINDWALKER, monk -> fists_of_the_heavens, effect );
@@ -9633,6 +9635,47 @@ struct the_wind_blows_t : public unique_gear::scoped_actor_callback_t<monk_t>
   }
 };
 
+void init()
+{
+  // Legion Artifacts
+      unique_gear::register_special_effect( 214854, fists_of_the_heavens );
+      unique_gear::register_special_effect( 214483, sheilun_staff_of_the_mists );
+      unique_gear::register_special_effect( 214852, fu_zan_the_wanderers_companion );
+
+      // Legion Legendary Effects
+      // General
+      unique_gear::register_special_effect( 207692, cinidaria_the_symbiote_t() );
+      unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t() );
+      unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
+      unique_gear::register_special_effect( 208051, sephuzs_secret_t(), true );
+
+      // Brewmaster
+      unique_gear::register_special_effect( 224489, firestone_walkers_t() );
+      unique_gear::register_special_effect( 208878, fundamental_observation_t() );
+      unique_gear::register_special_effect( 208837, gai_plins_soothing_sash_t() );
+      unique_gear::register_special_effect( 208881, jewel_of_the_lost_abbey_t() );
+      unique_gear::register_special_effect( 212935, salsalabims_lost_tunic_t() );
+      unique_gear::register_special_effect( 248044, stormstouts_last_gasp_t() );
+
+      // Mistweaver
+      unique_gear::register_special_effect( 217153, eithas_lunar_glides_of_eramas_t() );
+      unique_gear::register_special_effect( 217473, eye_of_collidus_the_warp_watcher_t() );
+      unique_gear::register_special_effect( 216506, leggings_of_the_black_flame_t() );
+      unique_gear::register_special_effect( 217634, ovyds_winter_wrap_t() );
+      unique_gear::register_special_effect( 206902, petrichor_lagniappe_t() );
+      unique_gear::register_special_effect( 212123, unison_spaulders_t() );
+
+      // Windwalker
+      unique_gear::register_special_effect( 208842, cenedril_reflector_of_hatred_t() );
+      unique_gear::register_special_effect( 209256, drinking_horn_cover_t() );
+      unique_gear::register_special_effect( 213112, hidden_masters_forbidden_touch_t() );
+      unique_gear::register_special_effect( 208045, katsuos_eclipse_t() );
+      unique_gear::register_special_effect( 212132, march_of_the_legion_t() );
+      unique_gear::register_special_effect( 235053, the_emperors_capacitor_t() );
+      unique_gear::register_special_effect( 248101, the_wind_blows_t() );
+}
+} // items
+
 struct monk_module_t: public module_t
 {
   monk_module_t(): module_t( MONK ) {}
@@ -9647,42 +9690,7 @@ struct monk_module_t: public module_t
 
   virtual void static_init() const override
   {
-    // Legion Artifacts
-    unique_gear::register_special_effect( 214854, fists_of_the_heavens );
-    unique_gear::register_special_effect( 214483, sheilun_staff_of_the_mists );
-    unique_gear::register_special_effect( 214852, fu_zan_the_wanderers_companion );
-
-    // Legion Legendary Effects
-    // General
-    unique_gear::register_special_effect( 207692, cinidaria_the_symbiote_t() );
-    unique_gear::register_special_effect( 207428, prydaz_xavarics_magnum_opus_t() );
-    unique_gear::register_special_effect( 208051, sephuzs_secret_enabler_t() );
-    unique_gear::register_special_effect( 208051, sephuzs_secret_t(), true );
-
-    // Brewmaster
-    unique_gear::register_special_effect( 224489, firestone_walkers_t() );
-    unique_gear::register_special_effect( 208878, fundamental_observation_t() );
-    unique_gear::register_special_effect( 208837, gai_plins_soothing_sash_t() );
-    unique_gear::register_special_effect( 208881, jewel_of_the_lost_abbey_t() );
-    unique_gear::register_special_effect( 212935, salsalabims_lost_tunic_t() );
-    unique_gear::register_special_effect( 248044, stormstouts_last_gasp_t() );
-
-    // Mistweaver
-    unique_gear::register_special_effect( 217153, eithas_lunar_glides_of_eramas_t() );
-    unique_gear::register_special_effect( 217473, eye_of_collidus_the_warp_watcher_t() );
-    unique_gear::register_special_effect( 216506, leggings_of_the_black_flame_t() );
-    unique_gear::register_special_effect( 217634, ovyds_winter_wrap_t() );
-    unique_gear::register_special_effect( 206902, petrichor_lagniappe_t() );
-    unique_gear::register_special_effect( 212123, unison_spaulders_t() );
-
-    // Windwalker
-    unique_gear::register_special_effect( 208842, cenedril_reflector_of_hatred_t() );
-    unique_gear::register_special_effect( 209256, drinking_horn_cover_t() );
-    unique_gear::register_special_effect( 213112, hidden_masters_forbidden_touch_t() );
-    unique_gear::register_special_effect( 208045, katsuos_eclipse_t() );
-    unique_gear::register_special_effect( 212132, march_of_the_legion_t() );
-    unique_gear::register_special_effect( 235053, the_emperors_capacitor_t() );
-    unique_gear::register_special_effect( 248101, the_wind_blows_t() );
+    items::init();
   }
 
 
