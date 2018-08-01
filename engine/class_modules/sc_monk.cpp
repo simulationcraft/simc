@@ -2253,7 +2253,7 @@ public:
         {p()->spec.brewmaster_monk->effectN( 2 ), affected_by.brewmaster.spell_ta1},
         {p()->spec.brewmaster_monk->effectN( 6 ), affected_by.brewmaster.spell_ta2},
         {p()->spec.brewmaster_monk->effectN( 8 ), affected_by.brewmaster.spell_ta3},
-        {p()->spec.brewmaster_monk->effectN( 8 ), affected_by.brewmaster.hasted_cooldown},
+        {p()->spec.brewmaster_monk->effectN( 4 ), affected_by.brewmaster.hasted_cooldown},
     };
 
     for ( const auto& a : affects )
@@ -4271,6 +4271,8 @@ struct keg_smash_t : public monk_melee_attack_t
 
     cooldown->duration = p.spec.keg_smash->cooldown();
     cooldown->duration = p.spec.keg_smash->charge_cooldown();
+
+    affected_by.brewmaster.hasted_cooldown = true; // TODO: remove if we get affected_by for categories.
 
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
