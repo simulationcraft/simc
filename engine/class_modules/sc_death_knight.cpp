@@ -7824,7 +7824,8 @@ std::string death_knight_t::default_flask() const
 
 std::string death_knight_t::default_rune() const
 {
-  return ( true_level >= 110 ) ? "defiled" :
+  return ( true_level >= 120 ) ? "battle_scarred" :
+         ( true_level >= 110 ) ? "defiled" :
          ( true_level >= 100 ) ? "stout" :
          "disabled";
 }
