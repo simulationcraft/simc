@@ -8530,7 +8530,10 @@ double death_knight_t::composite_leech() const
 {
   double m = player_t::composite_leech();
 
-  m += buffs.voracious -> data().effectN( 1 ).percent();
+  if ( buffs.voracious -> up() )
+  {
+    m += buffs.voracious -> data().effectN( 1 ).percent();
+  }
 
   return m;
 }
