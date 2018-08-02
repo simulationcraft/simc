@@ -1,16 +1,16 @@
 shaman="PR_Shaman_Elemental"
 spec=elemental
 level=120
-race=tauren
+race=troll
 role=spell
 position=ranged_back
-talents=1301021
+talents=2303023
 
 # Default consumables
-potion=prolonged_power
-flask=whispered_pact
-food=lemon_herb_filet
-augmentation=defiled
+potion=battle_potion_of_intellect
+flask=flask_of_endless_fathoms
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -91,30 +91,30 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=saurscale_coif,id=154955,ilevel=340
-neck=shaleshell_pendant,id=154970,ilevel=340
-shoulders=saurscale_spaulders,id=154959,ilevel=340
-back=drape_of_the_golden_city,id=154968,ilevel=340
-chest=saurscale_chestguard,id=154958,ilevel=340
-wrists=saurscale_wristguards,id=154952,ilevel=340
-hands=saurscale_gloves,id=154953,ilevel=340
-waist=saurscale_girdle,id=154957,ilevel=340
-legs=saurscale_leggings,id=154954,ilevel=340
-feet=saurscale_boots,id=154956,ilevel=340
-finger1=beaten_copper_loop,id=154987,bonus_id=1751,ilevel=340
-finger2=sea_sapphire_band,id=154969,ilevel=340
-trinket1=bijou_of_the_golden_city,id=154983,bonus_id=607,ilevel=340
-trinket2=shimmering_rune,id=154981,bonus_id=604,ilevel=340
-main_hand=dinomancy_cudgel,id=154978,ilevel=340
-off_hand=golden_protectorate,id=154985,ilevel=340
+head=visage_of_bloody_horrors,id=159381,bonus_id=4819/1512,azerite_powers=457/18/14/13
+neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
+shoulders=amalgamated_abomination_spaulders,id=159385,bonus_id=4819/1512,azerite_powers=194/459/83/13
+back=raals_bib,id=159294,bonus_id=4779/1512
+chest=loablessed_chestguard,id=158355,bonus_id=4819/1512,azerite_powers=457/21/15/13
+wrists=arcglass_bindings,id=159380,bonus_id=4779/1512
+hands=thornshaper_mitts,id=159399,bonus_id=4779/1512
+waist=chain_of_consummate_power,id=159377,bonus_id=4779/1512
+legs=gaolers_chainmail_gaiters,id=159392,bonus_id=4779/1512
+feet=souldrifting_sabatons,id=158308,bonus_id=4779/1512
+finger1=lord_waycrests_signet,id=158362,bonus_id=4779/1512,enchant=pact_of_critical_strike
+finger2=murky_cerulean_signet,id=158318,bonus_id=4779/1512,enchant=pact_of_critical_strike
+trinket1=lady_waycrests_music_box,id=159631,bonus_id=4779/1512
+trinket2=conch_of_dark_whispers,id=159620,bonus_id=4779/1512
+main_hand=leaxas_thoughtpiercer,id=159652,bonus_id=4779/1512,enchant=torrent_of_elements
+off_hand=targe_of_the_ancient_warder,id=159665,bonus_id=4779/1512
 
 # Gear Summary
-# gear_ilvl=340.00
+# gear_ilvl=340.44
 # gear_strength=108
-# gear_stamina=3373
-# gear_intellect=2907
-# gear_crit_rating=823
-# gear_haste_rating=644
-# gear_mastery_rating=780
-# gear_versatility_rating=720
+# gear_stamina=4362
+# gear_intellect=3573
+# gear_crit_rating=1383
+# gear_haste_rating=498
+# gear_mastery_rating=474
+# gear_versatility_rating=125
 # gear_armor=3566

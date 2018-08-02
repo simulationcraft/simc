@@ -781,7 +781,7 @@ public:
   // without breaking targeting information. Note, causes overhead as an extra action_state_t object
   // is needed to carry the information.
   void trigger_secondary_ability( const action_state_t* source_state, action_t* secondary_action,
-      bool inherit_state = false );
+                                  bool inherit_state = false );
 
   template <typename T_CONTAINER, typename T_DATA>
   T_CONTAINER* get_data_entry( const std::string& name, std::vector<T_DATA*>& entries )
@@ -3846,7 +3846,7 @@ struct rockbiter_t : public shaman_spell_t
   void init() override
   {
     shaman_spell_t::init();
-    may_proc_stormbringer = true;
+    may_proc_stormbringer      = true;
     may_proc_strength_of_earth = false;
   }
 
@@ -6365,17 +6365,15 @@ struct flametongue_buff_t : public buff_t
 
 // shaman_t::trigger_secondary_ability ======================================
 
-void shaman_t::trigger_secondary_ability( const action_state_t* source_state,
-                                          action_t*             secondary_action,
-                                          bool                  inherit_state )
+void shaman_t::trigger_secondary_ability( const action_state_t* source_state, action_t* secondary_action,
+                                          bool inherit_state )
 {
   auto secondary_state = secondary_action->get_state( inherit_state ? source_state : nullptr );
   // Snapshot the state if no inheritance is defined
-  if ( ! inherit_state )
+  if ( !inherit_state )
   {
     secondary_state->target = source_state->target;
-    secondary_action->snapshot_state( secondary_state,
-                                      secondary_action->amount_type( secondary_state ) );
+    secondary_action->snapshot_state( secondary_state, secondary_action->amount_type( secondary_state ) );
   }
 
   secondary_action->schedule_execute( secondary_state );
@@ -7242,7 +7240,7 @@ void shaman_t::trigger_searing_assault( const action_state_t* state )
 {
   assert( debug_cast<shaman_spell_t*>( state->action ) != nullptr && "Searing Assault called on invalid action type" );
 
-  if ( ! talent.searing_assault->ok() )
+  if ( !talent.searing_assault->ok() )
   {
     return;
   }
@@ -7478,14 +7476,14 @@ void shaman_t::create_buffs()
   buff.lightning_shield_overcharge = new lightning_shield_overcharge_buff_t( this );
   buff.flametongue                 = new flametongue_buff_t( this );
   buff.forceful_winds              = make_buff<buff_t>( this, "forceful_winds", find_spell( 262652 ) )
-    ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
-    ->set_default_value( find_spell( 262652 )->effectN( 1 ).percent() );
+                            ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
+                            ->set_default_value( find_spell( 262652 )->effectN( 1 ).percent() );
 
-  buff.landslide                   = new landslide_buff_t( this );
-  buff.icy_edge                    = new icy_edge_buff_t( this );
-  buff.molten_weapon               = new molten_weapon_buff_t( this );
-  buff.crackling_surge             = new crackling_surge_buff_t( this );
-  buff.gathering_storms            = new gathering_storms_buff_t( this );
+  buff.landslide        = new landslide_buff_t( this );
+  buff.icy_edge         = new icy_edge_buff_t( this );
+  buff.molten_weapon    = new molten_weapon_buff_t( this );
+  buff.crackling_surge  = new crackling_surge_buff_t( this );
+  buff.gathering_storms = new gathering_storms_buff_t( this );
 
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
   buff.feral_spirit =
@@ -7580,18 +7578,22 @@ std::string shaman_t::generate_bloodlust_options()
 std::string shaman_t::default_potion() const
 {
   std::string elemental_pot =
-      ( true_level > 100 )
-          ? "prolonged_power"
-          : ( true_level >= 90 )
-                ? "draenic_intellect"
-                : ( true_level >= 85 ) ? "jade_serpent" : ( true_level >= 80 ) ? "volcanic" : "disabled";
+      ( true_level > 110 )
+          ? "battle_potion_of_intellect"
+          : ( true_level > 100 )
+                ? "prolonged_power"
+                : ( true_level >= 90 )
+                      ? "draenic_intellect"
+                      : ( true_level >= 85 ) ? "jade_serpent" : ( true_level >= 80 ) ? "volcanic" : "disabled";
 
   std::string enhance_pot =
-      ( true_level > 110 ) ? "battle_potion_of_agility"
-                : ( true_level > 100 ) ? "prolonged_power"
-                          : ( true_level >= 90 ) ? "draenic_agility"
-                                    : ( true_level >= 85 ) ? "virmens_bite" 
-                                              : ( true_level >= 80 ) ? "tolvir" : "disabled";
+      ( true_level > 110 )
+          ? "battle_potion_of_agility"
+          : ( true_level > 100 )
+                ? "prolonged_power"
+                : ( true_level >= 90 )
+                      ? "draenic_agility"
+                      : ( true_level >= 85 ) ? "virmens_bite" : ( true_level >= 80 ) ? "tolvir" : "disabled";
 
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_pot : elemental_pot;
 }
@@ -7601,18 +7603,22 @@ std::string shaman_t::default_potion() const
 std::string shaman_t::default_flask() const
 {
   std::string elemental_flask =
-      ( true_level > 100 )
-          ? "whispered_pact"
-          : ( true_level >= 90 )
-                ? "greater_draenic_intellect_flask"
-                : ( true_level >= 85 ) ? "warm_sun" : ( true_level >= 80 ) ? "draconic_mind" : "disabled";
+      ( true_level > 110 )
+          ? "flask_of_endless_fathoms"
+          : ( true_level > 100 )
+                ? "whispered_pact"
+                : ( true_level >= 90 )
+                      ? "greater_draenic_intellect_flask"
+                      : ( true_level >= 85 ) ? "warm_sun" : ( true_level >= 80 ) ? "draconic_mind" : "disabled";
 
   std::string enhance_flask =
-      ( true_level > 110 ) ? "currents"
-                : ( true_level > 100 ) ? "seventh_demon"
-                          : ( true_level >= 90 ) ? "greater_draenic_agility_flask"
-                                    : ( true_level >= 85 ) ? "spring_blossoms"
-                                              : ( true_level >= 80 ) ? "winds" : "disabled";
+      ( true_level > 110 )
+          ? "currents"
+          : ( true_level > 100 )
+                ? "seventh_demon"
+                : ( true_level >= 90 )
+                      ? "greater_draenic_agility_flask"
+                      : ( true_level >= 85 ) ? "spring_blossoms" : ( true_level >= 80 ) ? "winds" : "disabled";
 
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_flask : elemental_flask;
 }
@@ -7621,18 +7627,25 @@ std::string shaman_t::default_flask() const
 
 std::string shaman_t::default_food() const
 {
-  std::string elemental_food =
-      ( true_level > 100 ) ? "lemon_herb_filet"
-          : ( true_level > 90 ) ? "pickled_eel"
-                                : ( true_level >= 90 ) ? "mogu_fish_stew"
-                                                       : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+  std::string elemental_food = ( true_level > 110 )
+                                   ? "bountiful_captains_feast"
+                                   : ( true_level > 100 )
+                                         ? "lemon_herb_filet"
+                                         : ( true_level > 90 )
+                                               ? "pickled_eel"
+                                               : ( true_level >= 90 )
+                                                     ? "mogu_fish_stew"
+                                                     : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
-  std::string enhance_food =
-      ( true_level > 110 ) ? "bountiful_captains_feast"
-            : ( true_level > 100 ) ? "lemon_herb_filet"
-                      : ( true_level > 90 ) ? "buttered_sturgeon"
-                                  : ( true_level >= 90 ) ? "sea_mist_rice_noodles"
-                                            : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+  std::string enhance_food = ( true_level > 110 )
+                                 ? "bountiful_captains_feast"
+                                 : ( true_level > 100 )
+                                       ? "lemon_herb_filet"
+                                       : ( true_level > 90 )
+                                             ? "buttered_sturgeon"
+                                             : ( true_level >= 90 )
+                                                   ? "sea_mist_rice_noodles"
+                                                   : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_food : elemental_food;
 }
@@ -7641,12 +7654,13 @@ std::string shaman_t::default_food() const
 
 std::string shaman_t::default_rune() const
 {
-  std::string elemental_rune = ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "focus" : "disabled";
+  std::string elemental_rune = ( true_level >= 120 )
+                                   ? "battle_scarred"
+                                   : ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "focus" : "disabled";
 
-  std::string enhance_rune = 
-      (true_level >= 120) ? "battle_scarred" 
-                : ( true_level >= 110 ) ? "defiled" 
-                          : ( true_level >= 100 ) ? "hyper" : "disabled";
+  std::string enhance_rune = ( true_level >= 120 )
+                                 ? "battle_scarred"
+                                 : ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "hyper" : "disabled";
 
   return specialization() == SHAMAN_ENHANCEMENT ? enhance_rune : elemental_rune;
 }
@@ -7693,7 +7707,7 @@ void shaman_t::init_action_list_elemental()
   def->add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<2" );
   def->add_action( this, "Fire Elemental" );
   def->add_talent( this, "Storm Elemental" );
-  def->add_action( this, "earth elemental",
+  def->add_action( this, "Earth Elemental",
                    "if=cooldown.fire_elemental.remains<120&!talent.storm_elemental.enabled|cooldown.storm_elemental."
                    "remains<120&talent.storm_elemental.enabled" );
   // On-use items
@@ -7813,11 +7827,14 @@ void shaman_t::init_action_list_enhancement()
   def->add_action(
       "variable,name=furyCheck25,value=(!talent.fury_of_air.enabled|(talent.fury_of_air.enabled&maelstrom>25))" );
   def->add_action(
-      "variable,name=OCPool80,value=(!talent.overcharge.enabled|active_enemies>1|(talent.overcharge.enabled&active_enemies=1&(cooldown.lightning_bolt.remains>=2*gcd|maelstrom>80)))" );
+      "variable,name=OCPool80,value=(!talent.overcharge.enabled|active_enemies>1|(talent.overcharge.enabled&active_"
+      "enemies=1&(cooldown.lightning_bolt.remains>=2*gcd|maelstrom>80)))" );
   def->add_action(
-      "variable,name=OCPool70,value=(!talent.overcharge.enabled|active_enemies>1|(talent.overcharge.enabled&active_enemies=1&(cooldown.lightning_bolt.remains>=2*gcd|maelstrom>70)))" );
+      "variable,name=OCPool70,value=(!talent.overcharge.enabled|active_enemies>1|(talent.overcharge.enabled&active_"
+      "enemies=1&(cooldown.lightning_bolt.remains>=2*gcd|maelstrom>70)))" );
   def->add_action(
-      "variable,name=OCPool60,value=(!talent.overcharge.enabled|active_enemies>1|(talent.overcharge.enabled&active_enemies=1&(cooldown.lightning_bolt.remains>=2*gcd|maelstrom>60)))" );
+      "variable,name=OCPool60,value=(!talent.overcharge.enabled|active_enemies>1|(talent.overcharge.enabled&active_"
+      "enemies=1&(cooldown.lightning_bolt.remains>=2*gcd|maelstrom>60)))" );
 
   // Turn on auto-attack first thing
   def->add_action( "auto_attack" );
@@ -7843,7 +7860,8 @@ void shaman_t::init_action_list_enhancement()
   buffs->add_action( this, "Flametongue", "if=!buff.flametongue.up" );
   buffs->add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&!buff.frostbrand.up&variable.furyCheck25" );
   buffs->add_action( this, "Flametongue", "if=buff.flametongue.remains<4.8+gcd" );
-  buffs->add_action( this, "Frostbrand", "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25" );
+  buffs->add_action( this, "Frostbrand",
+                     "if=talent.hailstorm.enabled&buff.frostbrand.remains<4.8+gcd&variable.furyCheck25" );
   buffs->add_talent( this, "Totem Mastery", "if=buff.resonance_totem.remains<2" );
 
   cds->add_action( this, "Bloodlust", generate_bloodlust_options(),
@@ -7859,9 +7877,11 @@ void shaman_t::init_action_list_enhancement()
 
   core->add_talent( this, "Earthen Spike", "if=variable.furyCheck25" );
   core->add_talent( this, "Sundering", "if=active_enemies>=3" );
-  core->add_action( this, "Stormstrike", "if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool70&variable.furyCheck35)" );
+  core->add_action( this, "Stormstrike",
+                    "if=buff.stormbringer.up|(buff.gathering_storms.up&variable.OCPool70&variable.furyCheck35)" );
   core->add_action( this, "Crash Lightning", "if=active_enemies>=3&variable.furyCheck25" );
-  core->add_action( this, "Lightning Bolt", "if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck45&maelstrom>=40" );
+  core->add_action( this, "Lightning Bolt",
+                    "if=talent.overcharge.enabled&active_enemies=1&variable.furyCheck45&maelstrom>=40" );
   core->add_action( this, "Stormstrike", "if=variable.OCPool70&variable.furyCheck35" );
   core->add_talent( this, "Sundering" );
   core->add_action( this, "Crash Lightning", "if=talent.forceful_winds.enabled&active_enemies>1&variable.furyCheck25" );
