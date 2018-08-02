@@ -6,22 +6,22 @@ role=spell
 position=ranged_back
 talents=2303023
 
-head=Visage_Of_Bloody_Horrors,id=159381,bonus_id=4819/1512,azerite_powers=457/18/14/13
+head=Visage_Of_Bloody_Horrors,id=159381,bonus_id=4779/1512/4775/4786,azerite_powers=457/18/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=Amalgamated_Abomination_Spaulders,id=159385,bonus_id=4819/1512,azerite_powers=194/459/83/13
-back=Raals_Bib,id=159294,bonus_id=4779/1512
-chest=Loablessed_Chestguard,id=158355,bonus_id=4819/1512,azerite_powers=457/21/15/13
-wrist=Arcglass_Bindings,id=159380,bonus_id=4779/1512
-hands=Thornshaper_Mitts,id=159399,bonus_id=4779/1512
-waist=Chain_of_Consummate_Power,id=159377,bonus_id=4779/1512
-legs=Gaolers_Chainmail_Gaiters,id=159392,bonus_id=4779/1512
-feet=Souldrifting_Sabatons,id=158308,bonus_id=4779/1512
-finger1=Lord_Waycrests_Signet,id=158362,bonus_id=4779/1512,enchant=Pact_of_critical_strike
-finger2=Murky_Cerulean_Signet,id=158318,bonus_id=4779/1512,enchant=Pact_of_critical_strike
-main_hand=Leaxas_Thoughtpiercer,id=159652,bonus_id=4779/1512,enchant=Torrent_of_Elements
-off_hand=Targe_of_the_Ancient_Warder,id=159665,bonus_id=4779/1512
-trinket1=Lady_Waycrests_Music_Box,id=159631,bonus_id=4779/1512
-trinket2=Conch_of_Dark_Whispers,id=159620,bonus_id=4779/1512
+shoulders=Amalgamated_Abomination_Spaulders,id=159385,bonus_id=4779/1512/4775/4786,azerite_powers=194/459/83/13
+back=Raals_Bib,id=159294,bonus_id=4779/1512/4786
+chest=Loablessed_Chestguard,id=158355,bonus_id=4779/1512/4775/4786,azerite_powers=457/21/15/13
+wrist=Arcglass_Bindings,id=159380,bonus_id=4779/1512/4786
+hands=Thornshaper_Mitts,id=159399,bonus_id=4779/1512/4786
+waist=Chain_of_Consummate_Power,id=159377,bonus_id=4779/1512/4786
+legs=Gaolers_Chainmail_Gaiters,id=159392,bonus_id=4779/1512/4786
+feet=Souldrifting_Sabatons,id=158308,bonus_id=4779/1512/4786
+finger1=Lord_Waycrests_Signet,id=158362,bonus_id=4779/1512/4786,enchant=Pact_of_critical_strike
+finger2=Murky_Cerulean_Signet,id=158318,bonus_id=4779/1512/4786,enchant=Pact_of_critical_strike
+main_hand=Leaxas_Thoughtpiercer,id=159652,bonus_id=4779/1512/4786,enchant=Torrent_of_Elements
+off_hand=Targe_of_the_Ancient_Warder,id=159665,bonus_id=4779/1512/4786
+trinket1=Lady_Waycrests_Music_Box,id=159631,bonus_id=4779/1512/4786
+trinket2=Conch_of_Dark_Whispers,id=159620,bonus_id=4779/1512/4786
 
 save=PR_Shaman_Elemental.simc
 
