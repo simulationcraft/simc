@@ -7696,48 +7696,6 @@ void death_knight_t::default_apl_dps_precombat()
   precombat -> add_action( "potion" );
 }
 
-// death_knight_t::default_apl_blood ========================================
-
-void death_knight_t::default_apl_blood()
-{
-  action_priority_list_t* def        = get_action_priority_list( "default" );
-  action_priority_list_t* standard   = get_action_priority_list( "standard" );
-  // action_priority_list_t* cooldowns  = get_action_priority_list( "cooldowns" ); // Not used atm
-
-  // Setup precombat APL for DPS spec
-  default_apl_dps_precombat();
-
-  def -> add_action( "auto_attack" );
-  def -> add_action( this, "Mind Freeze" );
-
-  // Racials
-  def -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
-  def -> add_action( "blood_fury" );
-  def -> add_action( "berserking,if=buff.dancing_rune_weapon.up" );
-
-  // On-use items
-  def -> add_action( "use_items" );
-
-  // Cooldowns
-  def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
-  def -> add_action( this, "Dancing Rune Weapon", "if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)" );
-  def -> add_talent( this, "Tombstone", "if=buff.bone_shield.stack>=7" );
-  def -> add_action( "call_action_list,name=standard" );
-
-  // Single Target Rotation
-  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<10" );
-  standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
-  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.remains<=gcd*2" );
-  standard -> add_action( this, "Blood Boil", "if=charges_fractional>=1.8&buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)" );
-  standard -> add_action( this, "Marrowrend", "if=(buff.bone_shield.stack<5&talent.ossuary.enabled)|buff.bone_shield.remains<gcd*3" );
-  standard -> add_talent( this, "Bonestorm", "if=runic_power>=100&spell_targets.bonestorm>=3" );
-  standard -> add_action( this, "Death Strike", "if=buff.blood_shield.up|(runic_power.deficit<15&(runic_power.deficit<25|!buff.dancing_rune_weapon.up))" );
-  standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up" );
-  standard -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up" );
-  standard -> add_action( this, "Death and Decay" );
-  standard -> add_action( this, "Heart Strike", "if=rune.time_to_3<gcd|buff.bone_shield.stack>6" );
-}
-
 // death_knight_t::default_potion ===========================================
 
 std::string death_knight_t::default_potion() const
@@ -7828,6 +7786,52 @@ std::string death_knight_t::default_rune() const
          ( true_level >= 110 ) ? "defiled" :
          ( true_level >= 100 ) ? "stout" :
          "disabled";
+}
+
+// death_knight_t::default_apl_blood ========================================
+
+void death_knight_t::default_apl_blood()
+{
+  action_priority_list_t* def        = get_action_priority_list( "default" );
+  action_priority_list_t* standard   = get_action_priority_list( "standard" );
+  // action_priority_list_t* cooldowns  = get_action_priority_list( "cooldowns" ); // Not used atm
+
+  // Setup precombat APL for DPS spec
+  default_apl_dps_precombat();
+
+  def -> add_action( "auto_attack" );
+  def -> add_action( this, "Mind Freeze" );
+
+  // Racials
+  def -> add_action( "blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)" );
+  def -> add_action( "berserking" );
+
+  // On-use items
+  def -> add_action( "use_items" );
+
+  // Cooldowns
+  def -> add_action( "potion,if=buff.dancing_rune_weapon.up" );
+  def -> add_action( this, "Dancing Rune Weapon", "if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready" );
+  def -> add_talent( this, "Tombstone", "if=buff.bone_shield.stack>=7" );
+  def -> add_action( "call_action_list,name=standard" );
+
+  // Single Target Rotation
+  standard -> add_talent( this, "Blooddrinker", "if=!buff.dancing_rune_weapon.up" );
+  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)" );
+  standard -> add_action( this, "Death Strike", "if=runic_power.deficit>=10" );
+  standard -> add_action( this, "Blood Boil", "if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)" );
+  standard -> add_action( this, "Marrowrend", "if=buff.bone_shield.stack<5&talent.ossuary.enabled" );
+  standard -> add_talent( this, "Bonestorm", "if=runic_power>=100&!buff.dancing_rune_weapon.up" );
+  standard -> add_action( this, "Death Strike", "if=runic_power.deficit<(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
+  standard -> add_talent( this, "Rune Strike", "if=(charges_fractional>=1.8|buff.dancing_rune_weapon.up)&rune.time_to_3>=gcd" );
+  standard -> add_action( this, "Heart Strike", "if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd" );
+  standard -> add_action( this, "Blood Boil", "if=buff.dancing_rune_weapon.up" );
+  standard -> add_action( this, "Death and Decay", "if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled" );
+  standard -> add_talent( this, "Consumption" );
+  standard -> add_action( this, "Blood Boil" );
+  standard -> add_action( this, "Heart Strike", "if=rune.time_to_3<gcd|buff.bone_shield.stack>6" );
+  standard -> add_talent( this, "Rune Strike" );
+  standard -> add_action( "arcane_torrent,if=runic_power.deficit>20" );
 }
 
 // death_knight_t::default_apl_frost ========================================
