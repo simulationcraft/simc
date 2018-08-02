@@ -5443,18 +5443,18 @@ void warrior_t::init_resources( bool force )
 std::string warrior_t::default_potion() const
 {
   std::string fury_pot =
-      ( true_level > 100 )
-          ? "old_war"
-          : ( true_level >= 90 )
-                ? "draenic_strength"
-                : ( true_level >= 85 ) ? "mogu_power" : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
+    ( true_level > 110 ) ? "battle_potion_of_strength"
+      : ( true_level > 100 ) ? "old_war"
+          : ( true_level >= 90 ) ? "draenic_strength"
+                : ( true_level >= 85 ) ? "mogu_power" 
+                      : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
 
   std::string arms_pot =
-      ( true_level > 100 )
-          ? "old_war"
-          : ( true_level >= 90 )
-                ? "draenic_strength"
-                : ( true_level >= 85 ) ? "mogu_power" : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
+    ( true_level > 110 ) ? "battle_potion_of_strength"
+      : ( true_level > 100 ) ? "old_war"
+          : ( true_level >= 90 ) ? "draenic_strength"
+                : ( true_level >= 85 ) ? "mogu_power" 
+                      : ( true_level >= 80 ) ? "golemblood_potion" : "disabled";
 
   std::string protection_pot =
       ( true_level > 100 )
@@ -5480,11 +5480,11 @@ std::string warrior_t::default_potion() const
 
 std::string warrior_t::default_flask() const
 {
-  return ( true_level > 100 )
-             ? "flask_of_the_countless_armies"
-             : ( true_level >= 90 )
-                   ? "greater_draenic_strength_flask"
-                   : ( true_level >= 85 ) ? "winters_bite" : ( true_level >= 80 ) ? "titanic_strength" : "disabled";
+  return ( true_level > 110 ) ? "undertow"
+          : ( true_level > 100 ) ? "flask_of_the_countless_armies"
+             : ( true_level >= 90 ) ? "greater_draenic_strength_flask"
+                   : ( true_level >= 85 ) ? "winters_bite" 
+                        : ( true_level >= 80 ) ? "titanic_strength" : "disabled";
 }
 
 // warrior_t::default_food ==================================================
@@ -5492,22 +5492,21 @@ std::string warrior_t::default_flask() const
 std::string warrior_t::default_food() const
 {
   std::string fury_food =
-      ( true_level > 100 )
-          ? "the_hungry_magister"
-          : ( true_level > 90 ) ? "buttered_sturgeon"
-                                : ( true_level >= 85 ) ? "sea_mist_rice_noodles"
-                                                       : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+    ( true_level > 110 ) ? "bountiful_captains_feast"
+                 : ( true_level > 100 ) ? "the_hungry_magister"
+                                : ( true_level > 90 ) ? "buttered_sturgeon"
+                                               : ( true_level >= 85 ) ? "sea_mist_rice_noodles"
+                                                              : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
   std::string arms_food =
-      ( true_level > 100 )
-          ? "the_hungry_magister"
-          : ( true_level > 90 ) ? "buttered_sturgeon"
-                                : ( true_level >= 85 ) ? "sea_mist_rice_noodles"
-                                                       : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
+    ( true_level > 110 ) ? "bountiful_captains_feast"
+                 : ( true_level > 100 ) ? "the_hungry_magister"
+                                : ( true_level > 90 ) ? "buttered_sturgeon"
+                                               : ( true_level >= 85 ) ? "sea_mist_rice_noodles"
+                                                              : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
 
   std::string protection_food =
-      ( true_level > 100 )
-          ? "lavish_suramar_feast"
+      ( true_level > 100 ) ? "lavish_suramar_feast"
           : ( true_level > 90 ) ? "buttered_sturgeon"
                                 : ( true_level >= 85 ) ? "sea_mist_rice_noodles"
                                                        : ( true_level >= 80 ) ? "seafood_magnifique_feast" : "disabled";
@@ -5529,7 +5528,9 @@ std::string warrior_t::default_food() const
 
 std::string warrior_t::default_rune() const
 {
-  return ( true_level >= 110 ) ? "defiled" : ( true_level >= 100 ) ? "hyper" : "disabled";
+  return ( true_level >= 120 ) ? "battle_scarred" :
+         ( true_level >= 110 ) ? "defiled" : 
+         ( true_level >= 100 ) ? "hyper" : "disabled";
 }
 
 // warrior_t::init_actions ==================================================
