@@ -739,7 +739,8 @@ std::string warlock_t::default_potion() const
 {
   std::string lvl110_potion = "prolonged_power";
 
-  return ( true_level >= 100 ) ? lvl110_potion :
+  return ( true_level >  110 ) ? "battle_potion_of_intellect" :
+         ( true_level >= 100 ) ? lvl110_potion :
          ( true_level >=  90 ) ? "draenic_intellect" :
          ( true_level >=  85 ) ? "jade_serpent" :
          ( true_level >=  80 ) ? "volcanic" :
@@ -748,7 +749,8 @@ std::string warlock_t::default_potion() const
 
 std::string warlock_t::default_flask() const
 {
-  return ( true_level >= 100 ) ? "whispered_pact" :
+  return ( true_level >  110 ) ? "endless_fathoms" :
+         ( true_level >= 100 ) ? "whispered_pact" :
          ( true_level >=  90 ) ? "greater_draenic_intellect_flask" :
          ( true_level >=  85 ) ? "warm_sun" :
          ( true_level >=  80 ) ? "draconic_mind" :
@@ -767,14 +769,16 @@ std::string warlock_t::default_food() const
     (specialization() == WARLOCK_AFFLICTION) ?    "nightborne_delicacy_platter" :
                                                   "azshari_salad";
 
-  return ( true_level > 100 ) ? lvl110_food :
+  return ( true_level > 110 ) ? "bountiful_captains_feast" :
+         ( true_level > 100 ) ? lvl110_food :
          ( true_level >  90 ) ? lvl100_food :
                                 "disabled";
 }
 
 std::string warlock_t::default_rune() const
 {
-  return ( true_level >= 110 ) ? "defiled" :
+  return ( true_level >= 120 ) ? "battle_scarred" :
+         ( true_level >= 110 ) ? "defiled" :
          ( true_level >= 100 ) ? "focus" :
                                  "disabled";
 }

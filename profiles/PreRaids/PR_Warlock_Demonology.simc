@@ -7,10 +7,10 @@ position=ranged_back
 talents=1103021
 
 # Default consumables
-potion=prolonged_power
-flask=whispered_pact
-food=azshari_salad
-augmentation=defiled
+potion=battle_potion_of_intellect
+flask=endless_fathoms
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
