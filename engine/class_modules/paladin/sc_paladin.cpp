@@ -1153,7 +1153,8 @@ std::string paladin_t::default_potion() const
                                 "disabled";
 
   bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
-  std::string protection_pot = (true_level > 100) ? ( dps ? "prolonged_power" : "unbending_potion" ) :
+  std::string protection_pot = (true_level > 110) ? "battle_potion_of_strength" :
+                               (true_level > 100) ? ( dps ? "prolonged_power" : "unbending_potion" ) :
                                (true_level >= 90) ? "draenic_strength" :
                                (true_level >= 85) ? "mogu_power" :
                                (true_level >= 80) ? "mogu_power" :
@@ -1187,7 +1188,8 @@ std::string paladin_t::default_food() const
                                  "disabled";
 
   bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
-  std::string protection_food = (true_level > 100) ? ( dps ? "lavish_suramar_feast" : "seedbattered_fish_plate" ) :
+  std::string protection_food = (true_level > 110) ? "swamp_fish_n_chips" :
+                                (true_level > 100) ? ( dps ? "lavish_suramar_feast" : "seedbattered_fish_plate" ) :
                                 (true_level >= 90) ? ( dps ? "pickled_eel" : "whiptail_fillet" ) :
                                 (true_level >= 85) ? "chun_tian_spring_rolls" :
                                 (true_level >= 80) ? "seafood_magnifique_feast" :
@@ -1228,7 +1230,8 @@ std::string paladin_t::default_flask() const
                                   "disabled";
 
   bool dps = (primary_role() == ROLE_ATTACK) || (talents.seraphim -> ok());
-  std::string protection_flask = (true_level > 100) ? (dps ? "flask_of_the_countless_armies" : "flask_of_ten_thousand_scars") :
+  std::string protection_flask = (true_level > 110) ? "undertow" :
+                                 (true_level > 100) ? (dps ? "flask_of_the_countless_armies" : "flask_of_ten_thousand_scars") :
                                  (true_level >= 90) ? (dps ? "greater_draenic_strength_flask" : "greater_draenic_stamina_flask") :
                                  (true_level >= 85) ? "earth" :
                                  (true_level >= 80) ? "steelskin" :
