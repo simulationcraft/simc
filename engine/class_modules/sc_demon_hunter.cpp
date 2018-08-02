@@ -5090,42 +5090,42 @@ stat_e demon_hunter_t::primary_stat() const
 
 std::string demon_hunter_t::default_flask() const
 {
-  return (true_level >  100) ? "seventh_demon" :
-    (true_level >= 90) ? "greater_draenic_agility_flask" :
-    (true_level >= 85) ? "spring_blossoms" :
-    (true_level >= 80) ? "winds" :
-    "disabled";
+  return (true_level >  110) ? "currents" :
+         (true_level >  100) ? "seventh_demon" :
+         (true_level >= 90) ? "greater_draenic_agility_flask" :
+         (true_level >= 85) ? "spring_blossoms" :
+         (true_level >= 80) ? "winds" : "disabled";
 }
 
 // demon_hunter_t::default_potion ==================================================
 
 std::string demon_hunter_t::default_potion() const
 {
-  return (true_level > 100) ? (specialization() == DEMON_HUNTER_HAVOC ? "prolonged_power" : "unbending_potion") :
-    (true_level >= 90) ? (specialization() == DEMON_HUNTER_HAVOC ? "draenic_agility" : "draenic_versatility") :
-    (true_level >= 85) ? "virmens_bite" :
-    (true_level >= 80) ? "tolvir" :
-    "disabled";
+  return (true_level > 110) ? (specialization() == DEMON_HUNTER_HAVOC ? "battle_potion_of_agility" : "steelskin_potion") :
+         (true_level > 100) ? (specialization() == DEMON_HUNTER_HAVOC ? "prolonged_power" : "unbending_potion") :
+         (true_level >= 90) ? (specialization() == DEMON_HUNTER_HAVOC ? "draenic_agility" : "draenic_versatility") :
+         (true_level >= 85) ? "virmens_bite" :
+         (true_level >= 80) ? "tolvir" : "disabled";
 }
 
 // demon_hunter_t::default_food ====================================================
 
 std::string demon_hunter_t::default_food() const
 {
-  return (true_level >  100) ? (specialization() == DEMON_HUNTER_HAVOC ? "the_hungry_magister" : "lavish_suramar_feast") :
-    (true_level >  90) ? "pickled_eel" :
-    (true_level >= 90) ? "sea_mist_rice_noodles" :
-    (true_level >= 80) ? "seafood_magnifique_feast" :
-    "disabled";
+  return (true_level >  110) ? "bountiful_captains_feast" :
+         (true_level >  100) ? "lavish_suramar_feast" :
+         (true_level >  90) ? "pickled_eel" :
+         (true_level >= 90) ? "sea_mist_rice_noodles" :
+         (true_level >= 80) ? "seafood_magnifique_feast" : "disabled";
 }
 
 // demon_hunter_t::default_rune ====================================================
 
 std::string demon_hunter_t::default_rune() const
 {
-  return (true_level >= 110) ? "defiled" :
-    (true_level >= 100) ? "hyper" :
-    "disabled";
+  return (true_level >= 120) ? "battle_scarred" :
+         (true_level >= 110) ? "defiled" :
+         (true_level >= 100) ? "hyper" : "disabled";
 }
 
 // ==========================================================================
