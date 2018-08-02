@@ -41,7 +41,7 @@ T22_Generate_Priest.simc
 #T22_Generate_Rogue.simc
 
 # Shaman
-#T22_Generate_Shaman.simc
+T22_Generate_Shaman.simc
 
 # Warlock
 #T22_Generate_Warlock.simc

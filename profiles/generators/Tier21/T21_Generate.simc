@@ -1,4 +1,4 @@
-# T21M
+# T21
 # Tier 21 Antorus, the Burning Throne
 # * Ilvl Cap: 240 (250 for Argus gear)
 # * 2 Legendaries (Aman'thul doesn't count) at their max ilevel (265)
@@ -47,5 +47,3 @@ T21_Generate_Warlock.simc
 
 # Warrior
 T21_Generate_Warrior.simc
-
-#save_profile_with_actions=0
