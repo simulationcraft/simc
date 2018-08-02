@@ -1,8 +1,9 @@
 warlock="PR_Warlock_Affliction"
 level=120
 race=troll
-role=spell
 spec=affliction
+role=spell
+position=ranged_back
 talents=3302023
 default_pet=felhunter
 
@@ -11,7 +12,7 @@ neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulder=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4775/4786
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
 chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4775/4786
-wrists=iron_kelp_wristwraps,id=159256,bonus_id=4779/1512/4786
+wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
 hands=gloves_of_staunched_wounds,id=159253,bonus_id=4779/1512/4786
 waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786
 legs=bloodstained_sous_chef_pants,id=159285,bonus_id=4779/1512/4786
@@ -28,8 +29,9 @@ save=PR_Warlock_Affliction.simc
 warlock="PR_Warlock_Demonology"
 level=120
 race=troll
-role=spell
 spec=demonology
+role=spell
+position=ranged_back
 talents=1103021
 default_pet=felguard
 
@@ -38,7 +40,7 @@ neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulder=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4775/4786
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
 chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4775/4786
-wrists=iron_kelp_wristwraps,id=159256,bonus_id=4779/1512/4786
+wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
 hands=gloves_of_staunched_wounds,id=159253,bonus_id=4779/1512/4786
 waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786
 legs=bloodstained_sous_chef_pants,id=159285,bonus_id=4779/1512/4786
@@ -55,8 +57,9 @@ save=PR_Warlock_Demonology.simc
 warlock="PR_Warlock_Destruction"
 level=120
 race=troll
-role=spell
 spec=destruction
+role=spell
+position=ranged_back
 talents=2202023
 default_pet=imp
 
@@ -65,7 +68,7 @@ neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulder=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4775/4786
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
 chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4775/4786
-wrists=iron_kelp_wristwraps,id=159256,bonus_id=4779/1512/4786
+wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
 hands=gloves_of_staunched_wounds,id=159253,bonus_id=4779/1512/4786
 waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786
 legs=bloodstained_sous_chef_pants,id=159285,bonus_id=4779/1512/4786

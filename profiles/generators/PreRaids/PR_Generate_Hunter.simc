@@ -1,17 +1,17 @@
 hunter="PR_Hunter_Beast_Mastery"
 level=120
 race=orc
+spec=beast_mastery
 role=attack
 position=ranged_back
 talents=1303011
-spec=beast_mastery
 
 head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4775/4786
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4775/4786
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=loa_blessed_chestguard,id=158355,bonus_id=4779/1512/4775/4786
-wrists=arc_glass_bindings,id=159380,bonus_id=4779/1512/4786
+chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4775/4786
+wrists=arcglass_bindings,id=159380,bonus_id=4779/1512/4786
 hands=water_shapers,id=159366,bonus_id=4779/1512/4786
 waist=anchor_chain_girdle,id=159386,bonus_id=4779/1512/4786
 legs=corpuscular_greaves,id=159384,bonus_id=4779/1512/4786
@@ -19,7 +19,7 @@ feet=souldrifting_sabatons,id=158308,bonus_id=4779/1512/4786
 finger1=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
 finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=dead_eye_spyglass,id=159623,bonus_id=4779/1512/4786
+trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
 main_hand=snakebite_recurve,id=159637,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 save=PR_Hunter_Beast_Mastery.simc
@@ -28,19 +28,19 @@ save=PR_Hunter_Beast_Mastery.simc
 hunter="PR_Hunter_Marksmanship"
 level=120
 race=lightforged_draenei
+spec=marksmanship
 role=attack
 position=ranged_back
 talents=2103012
-spec=marksmanship
 
 head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4775/4786
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4775/4786
 back=cloak_of_the_restless_tribes,id=159288,bonus_id=4779/1512/4786
-chest=loa_blessed_chestguard,id=158355,bonus_id=4779/1512/4775/4786
+chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4775/4786
 wrists=bindings_of_the_calling_depths,id=159364,bonus_id=4779/1512/4786
 hands=water_shapers,id=159366,bonus_id=4779/1512/4786
-waist=chain_linked_safety_cord,id=159353,bonus_id=4779/1512/4786
+waist=chainlinked_safety_cord,id=159353,bonus_id=4779/1512/4786
 legs=unstoppable_zealots_legplates,id=159367,bonus_id=4779/1512/4786
 feet=boots_of_the_headlong_conqueror,id=159371,bonus_id=4779/1512/4786
 finger1=jade_ophidian_band,id=162544,bonus_id=4779/1512/4786,enchant=pact_of_mastery
@@ -55,18 +55,18 @@ save=PR_Hunter_Marksmanship.simc
 hunter="PR_Hunter_Survival"
 level=120
 race=lightforged_draenei
-role=hybrid
+spec=survival
+role=attack
 position=back
 talents=1101011
-spec=survival
 
 head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4775/4786
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4775/4786
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=loa_blessed_chestguard,id=158355,bonus_id=4779/1512/4775/4786
+chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4775/4786
 wrists=dread_captains_irons,id=159372,bonus_id=4779/1512/4786
-hands=bite_resistant_chain_gloves,id=155892,bonus_id=4779/1512/4786
+hands=biteresistant_chain_gloves,id=155892,bonus_id=4779/1512/4786
 waist=belt_of_the_consecrated_tomb,id=159369,bonus_id=4779/1512/4786
 legs=legguards_of_the_awakening_brood,id=159375,bonus_id=4779/1512/4786
 feet=bramble_looped_boots,id=159404,bonus_id=4779/1512/4786
@@ -74,7 +74,7 @@ finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_ha
 finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
 trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
-main_hand=twin_strike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
+main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 save=PR_Hunter_Survival.simc
 

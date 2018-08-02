@@ -1,25 +1,25 @@
 rogue="PR_Rogue_Assassination"
 level=120
 race=troll
+spec=assassination
 role=attack
 position=back
 talents=2120031
-spec=assassination
 
-head=iron_captains_hat,id=155888,bonus_id=4779/1512/4775/4786
+head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4775/4786
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4775/4786
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4775/4786
-wrists=servo_arm_bindings,id=158353,bonus_id=4779/1512/4786
+wrists=servoarm_bindings,id=158353,bonus_id=4779/1512/4786
 hands=underrot_grotto_tenders,id=159344,bonus_id=4779/1512/4786
 waist=port_pillagers_belt,id=159309,bonus_id=4779/1512/4786
 legs=seawalkers_pantaloons,id=159322,bonus_id=4779/1512/4786
-feet=sand_shined_snakeskin_sandals,id=159327,bonus_id=4779/1512/4786
+feet=sandshined_snakeskin_sandals,id=159327,bonus_id=4779/1512/4786
 finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
 finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
 trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
-trinket2=dead_eye_spyglass,id=159623,bonus_id=4779/1512/4786
+trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
 main_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=galeforce_striking
 off_hand=howlis_crystal_shiv,id=159131,bonus_id=4779/1512/4786,enchant=quick_navigation
 
@@ -29,20 +29,20 @@ save=PR_Rogue_Assassination.simc
 rogue="PR_Rogue_Outlaw"
 level=120
 race=dwarf
+spec=outlaw
 role=attack
 position=back
 talents=2310023
-spec=outlaw
 
-head=iron_captains_hat,id=155888,bonus_id=4779/1512/4775/4786
+head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4775/4786
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4775/4786
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
 chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4775/4786
 wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
-hands=gloves_of_corrupted_water,id=159321,bonus_id=4779/1512/4786
+hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
 waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786
-legs=singe_blotched_britches,id=159306,bonus_id=4779/1512/4786
+legs=singeblotched_britches,id=159306,bonus_id=4779/1512/4786
 feet=mercenary_miners_boots,id=159336,bonus_id=4779/1512/4786
 finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
 finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
@@ -57,12 +57,12 @@ save=PR_Rogue_Outlaw.simc
 rogue="PR_Rogue_Subtlety"
 level=120
 race=blood_elf
+spec=subtlety
 role=attack
 position=back
 talents=2320031
-spec=subtlety
 
-head=iron_captains_hat,id=155888,bonus_id=4779/1512/4775/4786
+head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4775/4786
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
 shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4775/4786
 back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
@@ -74,9 +74,9 @@ legs=shambling_berserkers_leggings,id=155869,bonus_id=4779/1512/4786
 feet=kraggs_rigging_scalers,id=155862,bonus_id=4779/1512/4786
 finger1=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_mastery
 finger2=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_mastery
-trinket1=dead_eye_spyglass,id=159623,bonus_id=4779/1512/4786
+trinket1=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
 trinket2=azerokks_resonating_heart,id=159612,bonus_id=4779/1512/4786
-main_hand=heart_piercing_stalactite,id=159134,bonus_id=4779/1512/4786,enchant=galeforce_striking
-off_hand=heart_piercing_stalactite,id=159134,bonus_id=4779/1512/4786,enchant=masterful_navigation
+main_hand=heartpiercing_stalactite,id=159134,bonus_id=4779/1512/4786,enchant=galeforce_striking
+off_hand=heartpiercing_stalactite,id=159134,bonus_id=4779/1512/4786,enchant=masterful_navigation
 
 save=PR_Rogue_Subtlety.simc

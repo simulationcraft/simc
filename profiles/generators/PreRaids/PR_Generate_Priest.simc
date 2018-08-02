@@ -1,11 +1,10 @@
-# Shadow
 priest="PR_Priest_Shadow"
 level=120
-talents=3111322
 race=pandaren
 spec=shadow
 role=spell
-position=back
+position=ranged_back
+talents=3111322
 
 head=soulfuel_headdress,id=159279,bonus_id=4819/1512
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
@@ -21,7 +20,7 @@ finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512,enchant=pact
 finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512,enchant=pact_of_haste
 trinket1=lady_waycrests_music_box,id=159631,bonus_id=4779/1512
 trinket2=conch_of_dark_whispers,id=159620,bonus_id=4779/1512
-main_hand=leaxas_thought_piercer,id=159652,bonus_id=4779/1512,enchant=torrent_of_elements
+main_hand=leaxas_thoughtpiercer,id=159652,bonus_id=4779/1512,enchant=torrent_of_elements
 off_hand=rattling_jar_of_eyes,id=159668,bonus_id=4779/1512
 
 save=PR_Priest_Shadow.simc
