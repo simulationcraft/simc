@@ -1380,6 +1380,7 @@ void paladin_t::init_spells()
   if ( azerite.inner_light.enabled() )
     active_inner_light_damage = new inner_light_damage( this );
 
+  azerite.indomitable_justice   = find_azerite_spell( "Indomitable Justice" );
 }
 
 // paladin_t::primary_role ==================================================

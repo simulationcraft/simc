@@ -936,7 +936,6 @@ void paladin_t::init_spells_retribution()
   azerite.divine_right          = find_azerite_spell( 453 );
   azerite.expurgation           = find_azerite_spell( 187 );
   azerite.grace_of_the_justicar = find_azerite_spell( 393 );
-  azerite.indomitable_justice   = find_azerite_spell( 235 );
   azerite.relentless_inquisitor = find_azerite_spell( 154 );
   azerite.zealotry              = find_azerite_spell( 396 );
 }
