@@ -7016,9 +7016,7 @@ void mage_t::apl_frost()
   cooldowns -> add_talent( this, "Rune of Power", "if=time_to_die>10+cast_time&time_to_die<25" );
   cooldowns -> add_talent( this, "Rune of Power",
     "if=active_enemies=1&talent.glacial_spike.enabled&buff.icicles.stack=5&("
-    "!talent.ebonbolt.enabled&buff.brain_freeze.react"
-    "|talent.ebonbolt.enabled&(full_recharge_time<=cooldown.ebonbolt.remains&buff.brain_freeze.react"
-    "|cooldown.ebonbolt.remains<cast_time&!buff.brain_freeze.react))",
+    "buff.brain_freeze.react|talent.ebonbolt.enabled&cooldown.ebonbolt.remains<cast_time)",
     "With Glacial Spike, Rune of Power should be used right before the Glacial Spike combo (i.e. with 5 Icicles and a Brain Freeze). "
     "When Ebonbolt is off cooldown, Rune of Power can also be used just with 5 Icicles." );
   cooldowns -> add_talent( this, "Rune of Power",
