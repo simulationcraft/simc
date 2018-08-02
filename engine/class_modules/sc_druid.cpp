@@ -7187,19 +7187,22 @@ void druid_t::create_buffs()
 // ALL Spec Pre-Combat Action Priority List =================================
 std::string druid_t::default_flask() const
 {
-   std::string balance_flask =   (true_level > 100) ? "whispered_pact" :
+   std::string balance_flask =   (true_level > 110) ? "endless_fathoms" :
+                                 (true_level > 100) ? "whispered_pact" :
                                  (true_level >= 90) ? "greater_draenic_intellect_flask" :
                                  (true_level >= 85) ? "warm_sun" :
                                  (true_level >= 80) ? "draconic_mind" :
                                  "disabled";
 
-   std::string feral_flask =     (true_level >  100) ? "seventh_demon" :
+   std::string feral_flask =     (true_level >  110) ? "flask_of_the_currents" :
+                                 (true_level >  100) ? "seventh_demon" :
                                  (true_level >= 90) ? "greater_draenic_agility_flask" :
                                  (true_level >= 85) ? "spring_blossoms" :
                                  (true_level >= 80) ? "winds" :
                                  "disabled";
 
-   std::string guardian_flask =  (true_level >  100) ? "seventh_demon" :
+   std::string guardian_flask =  (true_level >  110) ? "flask_of_the_currents" :
+                                 (true_level >  100) ? "seventh_demon" :
                                  (true_level >= 90) ? "greater_draenic_agility_flask" :
                                  (true_level >= 85) ? "spring_blossoms" :
                                  (true_level >= 80) ? "winds" :
@@ -7220,7 +7223,8 @@ std::string druid_t::default_flask() const
 }
 std::string druid_t::default_potion() const
 {
-   std::string balance_pot =  (true_level > 100) ? "deadly_grace" :
+   std::string balance_pot =  (true_level > 110) ? "battle_potion_of_intellect" :
+                              (true_level > 100) ? "deadly_grace" :
                               (true_level >= 90) ? "draenic_intellect" :
                               (true_level >= 85) ? "jade_serpent" :
                               (true_level >= 80) ? "volcanic" :
@@ -7254,7 +7258,8 @@ std::string druid_t::default_potion() const
 
 std::string druid_t::default_food() const
 {
-   return (true_level > 100 && specialization() == DRUID_FERAL) ? "lemon_herb_filet" :
+   return (true_level > 110) ? "bountiful_captains_feast" :
+          (true_level > 100 && specialization() == DRUID_FERAL) ? "lemon_herb_filet" :
           (true_level >  100) ? "lavish_suramar_feast" :
           (true_level >  90) ?  "pickled_eel" :
           (true_level >= 90) ?  "sea_mist_rice_noodles" :
@@ -7264,7 +7269,8 @@ std::string druid_t::default_food() const
 
 std::string druid_t::default_rune() const
 {
-   return (true_level >= 110) ? "defiled" :
+   return (true_level >= 120) ? "battle_scarred" :
+          (true_level >= 110) ? "defiled" :
           (true_level >= 100) ? "hyper" :
           "disabled";
 }
