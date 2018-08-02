@@ -8,9 +8,9 @@ talents=3323323
 
 # Default consumables
 potion=old_war
-flask=seventh_demon
-food=lavish_suramar_feast
-augmentation=defiled
+flask=flask_of_the_currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
