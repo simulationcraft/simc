@@ -5,7 +5,7 @@ race=night_elf
 timeofday=night
 role=attack
 position=back
-talents=2220311
+talents=3210223
 
 # Default consumables
 potion=prolonged_power
@@ -48,6 +48,7 @@ actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&buff.metamorphosis.up
 actions.cooldown+=/nemesis,target_if=min:target.time_to_die,if=raid_event.adds.exists&debuff.nemesis.down&(active_enemies>desired_targets|raid_event.adds.in>60)
 actions.cooldown+=/nemesis,if=!raid_event.adds.exists
 actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|target.time_to_die<60
+actions.cooldown+=/use_item,name=lustrous_golden_plumage
 
 actions.dark_slash=dark_slash,if=fury>=80&(!variable.blade_dance|!cooldown.blade_dance.ready)
 actions.dark_slash+=/annihilation,if=debuff.dark_slash.up
@@ -87,30 +88,29 @@ actions.normal+=/fel_rush,if=movement.distance>15|(buff.out_of_range.up&!talent.
 actions.normal+=/vengeful_retreat,if=movement.distance>15
 actions.normal+=/throw_glaive,if=talent.demon_blades.enabled
 
-head=vigilant_bondbreaker_headdress,id=134446,bonus_id=1727/1492
-neck=breathless_choker,id=137461,bonus_id=1727/1492,enchant_id=5439
-shoulders=crashing_oceantide_mantle,id=137364,bonus_id=1727/1492
-back=cloak_of_manaspun_silk,id=134410,bonus_id=1727/1492,enchant_id=5435
-chest=vest_of_rupturing_diamonds,id=137336,bonus_id=1727/1492
-wrists=adorned_guardians_bracers,id=133621,bonus_id=1727/1492
-hands=guileful_intruder_handguards,id=137480,bonus_id=1727/1492
-waist=ravens_veil_belt,id=139243,bonus_id=1727/1492
-legs=ashen_satyr_leggings,id=134448,bonus_id=1727/1492
-feet=tunnel_trudger_footguards,id=137397,bonus_id=1727/1492
-finger1=band_of_callous_dominance,id=134528,bonus_id=1727/1492,enchant_id=5427
-finger2=utgarde_royal_signet,id=133637,bonus_id=1727/1492,enchant_id=5427
-trinket1=chaos_talisman,id=137459,bonus_id=1727/1492
-trinket2=faulty_countermeasure,id=137539,bonus_id=1727/1492
-main_hand=twinblades_of_the_deceiver,id=127829,bonus_id=719,gem_id=137407/133684/137407,relic_id=3412/3412/3412
-off_hand=twinblades_of_the_deceiver,id=127830
+head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4775/4786
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4775/4786
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4775/4786
+wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
+hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
+waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786
+legs=singeblotched_britches,id=159306,bonus_id=4779/1512/4786
+feet=mercenary_miners_boots,id=159336,bonus_id=4779/1512/4786
+finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+main_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=galeforce_striking
+off_hand=warglaive_of_the_sand_queen,id=160110,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=178.25
-# gear_agility=398
-# gear_stamina=712
-# gear_crit_rating=609
-# gear_haste_rating=227
-# gear_mastery_rating=24
-# gear_versatility_rating=63
-# gear_armor=290
-# set_bonus=tier19p_leather_2pc=1
+# gear_ilvl=341.38
+# gear_agility=2883
+# gear_stamina=4465
+# gear_crit_rating=255
+# gear_haste_rating=1194
+# gear_mastery_rating=209
+# gear_versatility_rating=822
+# gear_armor=1427

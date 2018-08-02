@@ -1,10 +1,10 @@
-warlock="T21_Warlock_Demonology"
+warlock="PR_Warlock_Demonology"
 spec=demonology
-level=110
+level=120
 race=troll
 role=spell
 position=ranged_back
-talents=2103021
+talents=1103021
 
 # Default consumables
 potion=prolonged_power
@@ -84,32 +84,29 @@ actions.nether_portal_building+=/power_siphon,if=buff.wild_imps.stack>=2&buff.de
 actions.nether_portal_building+=/hand_of_guldan,if=soul_shard>=5
 actions.nether_portal_building+=/call_action_list,name=build_a_shard
 
-head=soulhunters_cowl,id=151944,bonus_id=3612/1502
-neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_claw
-shoulders=grim_inquisitors_shoulderguards,id=152177,bonus_id=3612/1502
-back=grim_inquisitors_cloak,id=152172,bonus_id=3612/1502,enchant=binding_of_intellect
-chest=gambeson_of_sargeras_corruption,id=152679,bonus_id=3612/1502
-wrists=blooddrenched_bindings,id=151954,bonus_id=3612/1502
-hands=grim_inquisitors_gloves,id=152173,bonus_id=3612/1502
-waist=cord_of_surging_hysteria,id=151942,bonus_id=3612/1502
-legs=grim_inquisitors_leggings,id=152175,bonus_id=3612/1502
-feet=lady_dacidions_silk_slippers,id=151945,bonus_id=3612/1502
-finger1=soul_of_the_netherlord,id=151649,bonus_id=3630,gems=9haste,enchant=9haste
-finger2=wilfreds_sigil_of_superior_summoning,id=132369,bonus_id=3630,gems=9haste,enchant=binding_of_haste
-trinket1=prototype_personnel_decimator,id=151962,bonus_id=3612/1502
-trinket2=amanthuls_vision,id=154172,bonus_id=4213
-main_hand=spine_of_thalkiel,id=137246
-off_hand=skull_of_the_manari,id=128943,bonus_id=748/1505/1505/1505,gem_id=155852/155849/155848
+head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4775/4786
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4775/4786
+back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
+chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4775/4786
+wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
+hands=gloves_of_staunched_wounds,id=159253,bonus_id=4779/1512/4786
+waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786
+legs=bloodstained_sous_chef_pants,id=159285,bonus_id=4779/1512/4786
+feet=deranged_alchemists_slippers,id=159235,bonus_id=4779/1512/4786
+finger1=footbomb_championship_ring,id=159462,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=loop_of_pulsing_veins,id=159463,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=ignition_mages_fuse,id=159615,bonus_id=4779/1512/4786
+trinket2=balefire_branch,id=159630,bonus_id=4779/1512/4786
+main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=torrent_of_elements
 
 # Gear Summary
-# gear_ilvl=248.25
-# gear_stamina=1323
-# gear_intellect=1045
-# gear_crit_rating=356
-# gear_haste_rating=690
-# gear_mastery_rating=406
-# gear_versatility_rating=138
-# gear_armor=249
-# set_bonus=tier21_2pc=1
-# set_bonus=tier21_4pc=1
+# gear_ilvl=341.47
+# gear_stamina=4465
+# gear_intellect=3423
+# gear_crit_rating=209
+# gear_haste_rating=1081
+# gear_mastery_rating=1077
+# gear_versatility_rating=55
+# gear_armor=870
 default_pet=felguard

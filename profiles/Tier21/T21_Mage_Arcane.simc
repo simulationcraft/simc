@@ -3,7 +3,7 @@ spec=arcane
 level=110
 race=troll
 role=spell
-position=back
+position=ranged_back
 talents=3032021
 
 # Default consumables

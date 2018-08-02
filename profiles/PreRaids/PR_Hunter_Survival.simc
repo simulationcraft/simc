@@ -1,16 +1,16 @@
-hunter="T21_Hunter_Survival"
+hunter="PR_Hunter_Survival"
 spec=survival
-level=110
-race=troll
+level=120
+race=lightforged_draenei
 role=attack
 position=back
 talents=1101011
 
 # Default consumables
-potion=prolonged_power
-flask=seventh_demon
-food=lavish_suramar_feast
-augmentation=defiled
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -61,31 +61,29 @@ actions+=/mongoose_bite,target_if=min:dot.internal_bleeding.stack,if=buff.mongoo
 actions+=/raptor_strike_eagle,target_if=min:dot.internal_bleeding.stack
 actions+=/raptor_strike,target_if=min:dot.internal_bleeding.stack
 
-head=helm_of_the_awakened_soul,id=152423,bonus_id=3612/1502
-neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_claw
-shoulders=serpentstalker_mantle,id=152135,bonus_id=3612/1502
-back=serpentstalker_drape,id=152131,bonus_id=3612/1502,enchant=binding_of_agility
-chest=serpentstalker_tunic,id=152130,bonus_id=3612/1502
-wrists=call_of_the_wild,id=137101,bonus_id=3630
-hands=serpentstalker_grips,id=152132,bonus_id=3612/1502
-waist=sash_of_the_gilded_rose,id=152007,bonus_id=3612/1502
-legs=battalionshattering_leggings,id=152002,bonus_id=3612/1502
-feet=deft_soulhunters_sabatons,id=151996,bonus_id=3612/1502
-finger1=seal_of_the_portalmaster,id=152063,bonus_id=3612/1502,enchant=binding_of_haste
-finger2=sephuzs_secret,id=132452,bonus_id=3630,gem_id=151583,enchant=binding_of_haste
-trinket1=seeping_scourgewing,id=151964,bonus_id=3612/1502
-trinket2=golganneths_vitality,id=154174,bonus_id=3997
-main_hand=talonclaw,id=128808,bonus_id=728/1505/1505/1505,gem_id=155853/155855/155847
+head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4775/4786
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4775/4786
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4775/4786
+wrists=dread_captains_irons,id=159372,bonus_id=4779/1512/4786
+hands=biteresistant_chain_gloves,id=155892,bonus_id=4779/1512/4786
+waist=belt_of_the_consecrated_tomb,id=159369,bonus_id=4779/1512/4786
+legs=legguards_of_the_awakening_brood,id=159375,bonus_id=4779/1512/4786
+feet=bramble_looped_boots,id=159404,bonus_id=4779/1512/4786
+finger1=ritual_binders_ring,id=159459,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=seal_of_the_regal_loa,id=159458,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+trinket2=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+main_hand=twinstrike_polearm,id=158370,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=248.07
-# gear_agility=848
-# gear_stamina=1322
-# gear_crit_rating=462
-# gear_haste_rating=425
-# gear_mastery_rating=172
-# gear_versatility_rating=276
-# gear_armor=595
-# set_bonus=tier21_2pc=1
-# set_bonus=tier21_4pc=1
+# gear_ilvl=341.47
+# gear_agility=2883
+# gear_stamina=4465
+# gear_crit_rating=335
+# gear_haste_rating=1175
+# gear_mastery_rating=209
+# gear_versatility_rating=762
+# gear_armor=2059
 summon_pet=cat

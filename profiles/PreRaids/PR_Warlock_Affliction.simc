@@ -1,10 +1,10 @@
 warlock="PR_Warlock_Affliction"
 spec=affliction
 level=120
-race=human
+race=troll
 role=spell
-position=back
-talents=3101011
+position=ranged_back
+talents=3302023
 
 # Default consumables
 potion=prolonged_power
@@ -74,29 +74,29 @@ actions.single=unstable_affliction,if=soul_shard=5
 actions.single+=/call_action_list,name=dg_soon,if=(cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|cooldown.summon_darkglare.up)&time_to_die>cooldown.summon_darkglare.remains
 actions.single+=/call_action_list,name=regular,if=!((cooldown.summon_darkglare.remains<time_to_shard*(5-soul_shard)|time_to_die>cooldown.summon_darkglare.remains)&cooldown.summon_darkglare.up)
 
-head=collar_of_enclosure,id=134424,bonus_id=1492/1727
-neck=wolfstride_pendant,id=133633,bonus_id=1492/1727,enchant=mark_of_the_trained_soldier
-shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1492/1727
-back=drape_of_the_raven_lord,id=136770,bonus_id=1492/1727,enchant_id=5436
-chest=fetid_gutcover_apron,id=134414,bonus_id=1492/1727
-wrists=wristbands_of_cursed_torment,id=137314,bonus_id=1492/1727
-hands=inksmudged_handwraps,id=134421,bonus_id=1492/1727
-waist=belt_of_eternal_torment,id=137331,bonus_id=1492/1727
-legs=riverrider_legwraps,id=134427,bonus_id=1492/1727
-feet=cushioned_treads_of_glory,id=136774,bonus_id=1492/1727
-finger1=archdruids_tainted_seal,id=134487,bonus_id=1492/1727,enchant_id=5429
-finger2=ring_of_twisted_webbing,id=134540,bonus_id=1492/1727,enchant_id=5429
-trinket1=naraxas_spiked_tongue,id=137349,bonus_id=1492/1727
-trinket2=orb_of_voidsight,id=133596
-main_hand=ulthalesh_the_deadwind_harvester,id=128942,ilevel=180,gem_id=142063/141283/142063
+head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4775/4786
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4775/4786
+back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
+chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4775/4786
+wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
+hands=gloves_of_staunched_wounds,id=159253,bonus_id=4779/1512/4786
+waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786
+legs=bloodstained_sous_chef_pants,id=159285,bonus_id=4779/1512/4786
+feet=deranged_alchemists_slippers,id=159235,bonus_id=4779/1512/4786
+finger1=footbomb_championship_ring,id=159462,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=loop_of_pulsing_veins,id=159463,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=ignition_mages_fuse,id=159615,bonus_id=4779/1512/4786
+trinket2=balefire_branch,id=159630,bonus_id=4779/1512/4786
+main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=torrent_of_elements
 
 # Gear Summary
-# gear_ilvl=180.40
-# gear_stamina=729
-# gear_intellect=617
-# gear_crit_rating=75
-# gear_haste_rating=281
-# gear_mastery_rating=564
-# gear_armor=176
-# set_bonus=tier19p_cloth_2pc=1
+# gear_ilvl=341.47
+# gear_stamina=4465
+# gear_intellect=3423
+# gear_crit_rating=209
+# gear_haste_rating=1081
+# gear_mastery_rating=1077
+# gear_versatility_rating=55
+# gear_armor=870
 default_pet=felhunter

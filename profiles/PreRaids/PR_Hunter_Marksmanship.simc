@@ -1,16 +1,16 @@
-hunter="T21_Hunter_Marksmanship"
+hunter="PR_Hunter_Marksmanship"
 spec=marksmanship
-level=110
-race=troll
+level=120
+race=lightforged_draenei
 role=attack
 position=ranged_back
-talents=3103012
+talents=2103012
 
 # Default consumables
-potion=prolonged_power
-flask=seventh_demon
-food=lavish_suramar_feast
-augmentation=defiled
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -59,32 +59,29 @@ actions+=/arcane_shot,if=active_enemies<3&(focus>70|buff.steady_focus.down&(focu
 actions+=/serpent_sting,if=refreshable
 actions+=/steady_shot
 
-head=serpentstalker_helmet,id=152133,bonus_id=3612/1502
-neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
-shoulders=serpentstalker_mantle,id=152135,bonus_id=3612/1502
-back=wildstalker_cape,id=147140,bonus_id=1512/3563,enchant_id=5435
-chest=wildstalker_chestguard,id=147139,bonus_id=1512/3563
-wrists=wristguards_of_ominous_forging,id=152089,bonus_id=3612/1502
-hands=serpentstalker_grips,id=152132,bonus_id=3612/1502
-waist=depraved_tacticians_waistguard,id=152006,bonus_id=3612/1502
-legs=serpentstalker_legguards,id=152134,bonus_id=3612/1502
-feet=ullrs_feather_snowshoes,id=137033,bonus_id=3630
-finger1=soul_of_the_huntmaster,id=151641,bonus_id=3630,gem_id=151584,enchant=binding_of_mastery
-finger2=sullied_seal_of_the_pantheon,id=151972,bonus_id=3612/1502,enchant=binding_of_mastery
-trinket1=amanthuls_vision,id=154172,bonus_id=4213
-trinket2=shadowsinged_fang,id=151968,bonus_id=3612/1502
-main_hand=thasdorah_legacy_of_the_windrunners,id=128826,bonus_id=727/1505/1505/1505,gem_id=155853/155847/155854
+head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4775/4786
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4775/4786
+back=cloak_of_the_restless_tribes,id=159288,bonus_id=4779/1512/4786
+chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4775/4786
+wrists=bindings_of_the_calling_depths,id=159364,bonus_id=4779/1512/4786
+hands=water_shapers,id=159366,bonus_id=4779/1512/4786
+waist=chainlinked_safety_cord,id=159353,bonus_id=4779/1512/4786
+legs=unstoppable_zealots_legplates,id=159367,bonus_id=4779/1512/4786
+feet=boots_of_the_headlong_conqueror,id=159371,bonus_id=4779/1512/4786
+finger1=jade_ophidian_band,id=162544,bonus_id=4779/1512/4786,enchant=pact_of_mastery
+finger2=overseers_lost_seal,id=159460,bonus_id=4779/1512/4786,enchant=pact_of_mastery
+trinket1=lustrous_golden_plumage,id=159617,bonus_id=4779/1512/4786
+trinket2=azerokks_resonating_heart,id=159612,bonus_id=4779/1512/4786
+main_hand=korgus_blackpowder_rifle,id=159657,bonus_id=4779/1512/4786,enchant=masterful_navigation
 
 # Gear Summary
-# gear_ilvl=245.93
-# gear_agility=707
-# gear_stamina=1296
-# gear_crit_rating=459
-# gear_haste_rating=363
-# gear_mastery_rating=511
-# gear_versatility_rating=190
-# gear_armor=583
-# set_bonus=tier20_2pc=1
-# set_bonus=tier21_2pc=1
-# set_bonus=tier21_4pc=1
+# gear_ilvl=341.47
+# gear_agility=2678
+# gear_stamina=4465
+# gear_crit_rating=268
+# gear_haste_rating=300
+# gear_mastery_rating=1173
+# gear_versatility_rating=880
+# gear_armor=2059
 summon_pet=cat

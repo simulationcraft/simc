@@ -1,10 +1,10 @@
 deathknight="PR_Death_Knight_Unholy"
 spec=unholy
 level=120
-race=draenei
+race=troll
 role=attack
 position=back
-talents=1210023
+talents=2203023
 
 # Default consumables
 potion=prolonged_power
@@ -90,28 +90,28 @@ actions.generic+=/death_coil,if=runic_power.deficit<20&!variable.pooling_for_gar
 actions.generic+=/festering_strike,if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&cooldown.army_of_the_dead.remains>5
 actions.generic+=/death_coil,if=!variable.pooling_for_gargoyle
 
-head=crown_of_ash,id=137526,bonus_id=1492/1826
-neck=pendant_of_the_watchful_eye,id=137536,bonus_id=1492/1826,enchant=mark_of_the_hidden_satyr
-shoulders=frozen_pendulum_shoulderguards,id=134518,bonus_id=1492/1826
-back=goldscar_pelt,id=133639,bonus_id=1492/1826,enchant=binding_of_strength
-chest=inferno_breastplate,id=134503,bonus_id=1492/1826
-wrists=voidtouched_wristplates,id=133632,bonus_id=1492/1826
-hands=serrated_mandible_grips,id=137429,bonus_id=1492/1826
-waist=slack_tide_girdle,id=133770,bonus_id=1492/1826
-legs=keelhauler_legplates,id=134514,bonus_id=1492/1826
-feet=rook_footmans_warboots,id=139241,bonus_id=1492/1826
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=1492/1826,enchant=binding_of_haste
-finger2=band_of_fused_coral,id=134532,bonus_id=1492/1826,enchant=binding_of_haste
-trinket1=faulty_countermeasure,id=137539,bonus_id=1492/1826
-trinket2=chaos_talisman,id=137459,bonus_id=1492/1826
-main_hand=apocalypse,id=128403,gem_id=137492/137549/136718,relic_id=1492:1727/1492:1727/1492:1727,enchant=rune_of_the_fallen_crusader
+head=soulspun_casque,id=155866,bonus_id=4779/1512/4775/4786
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=lockjaw_shoulderplate,id=159407,bonus_id=4779/1512/4775/4786
+back=sporecallers_shroud,id=159292,bonus_id=4779/1512/4786
+chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=4779/1512/4775/4786
+wrists=shadowshroud_vambraces,id=160212,bonus_id=4779/1512/4786
+hands=risen_lords_oversized_gauntlets,id=159457,bonus_id=4779/1512/4786
+waist=cannoneers_toolbelt,id=159434,bonus_id=4779/1512/4786
+legs=legplates_of_charged_duality,id=159435,bonus_id=4779/1512/4786
+feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
+finger1=overseers_lost_seal,id=159460,bonus_id=4779/1512/4786,enchant=pact_of_versatility
+finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_versatility
+trinket1=gorecrusted_butchers_block,id=159616,bonus_id=4779/1512/4786
+trinket2=jes_howler,id=159627,bonus_id=4779/1512/4786
+main_hand=dismembered_submersible_claw,id=159650,bonus_id=4779/1512/4786,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=180.00
-# gear_strength=397
-# gear_stamina=712
-# gear_crit_rating=320
-# gear_haste_rating=565
-# gear_mastery_rating=34
-# gear_armor=618
-# set_bonus=tier19p_plate_2pc=1
+# gear_ilvl=341.47
+# gear_strength=2883
+# gear_stamina=4465
+# gear_crit_rating=842
+# gear_haste_rating=499
+# gear_mastery_rating=325
+# gear_versatility_rating=811
+# gear_armor=3050

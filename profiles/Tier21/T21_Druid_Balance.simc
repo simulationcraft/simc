@@ -3,7 +3,7 @@ spec=balance
 level=110
 race=troll
 role=spell
-position=back
+position=ranged_back
 talents=3000231
 
 # Default consumables

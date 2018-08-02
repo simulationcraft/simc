@@ -3,7 +3,7 @@ spec=frost
 level=110
 race=dwarf
 role=spell
-position=back
+position=ranged_back
 talents=2011031
 
 # Default consumables
@@ -32,7 +32,7 @@ actions.precombat+=/frostbolt
 # Executed every time the actor is available.
 actions=counterspell
 # If the mage has FoF after casting instant Flurry, we can delay the Ice Lance and use other high priority action, if available.
-actions+=/ice_lance,if=prev_gcd.1.flurry&!buff.fingers_of_frost.react
+actions+=/ice_lance,if=prev_gcd.1.flurry&brain_freeze_active&!buff.fingers_of_frost.react
 actions+=/time_warp,if=buff.bloodlust.down&(buff.exhaustion.down|equipped.shard_of_the_exodar)&(prev_gcd.1.icy_veins|target.time_to_die<50)
 actions+=/call_action_list,name=cooldowns
 # The target threshold isn't exact. Between 3-5 targets, the differences between the ST and AoE action lists are rather small. However, Freezing Rain prefers using AoE action list sooner as it benefits greatly from the high priority Blizzard action.
@@ -96,6 +96,7 @@ actions.single+=/glacial_spike,if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|ac
 # Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even against a single target, especially with low mastery.
 actions.single+=/blizzard,if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time
 actions.single+=/ice_nova
+actions.single+=/flurry,if=!buff.brain_freeze.react&buff.winters_reach.react&azerite.winters_reach.rank>=2
 actions.single+=/frostbolt
 actions.single+=/call_action_list,name=movement
 actions.single+=/ice_lance

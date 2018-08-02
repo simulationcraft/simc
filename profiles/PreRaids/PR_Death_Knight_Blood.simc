@@ -1,0 +1,77 @@
+deathknight="PR_Death_Knight_Blood"
+spec=blood
+level=120
+race=blood_elf
+role=tank
+position=front
+talents=3112033
+
+# Default consumables
+potion=old_war
+flask=countless_armies
+food=lavish_suramar_feast
+augmentation=defiled
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/potion
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/mind_freeze
+actions+=/arcane_torrent,if=runic_power.deficit>20
+actions+=/blood_fury
+actions+=/berserking,if=buff.dancing_rune_weapon.up
+actions+=/use_items
+actions+=/potion,if=buff.dancing_rune_weapon.up
+actions+=/dancing_rune_weapon,if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)
+actions+=/tombstone,if=buff.bone_shield.stack>=7
+actions+=/call_action_list,name=standard
+
+actions.standard=death_strike,if=runic_power.deficit<10
+actions.standard+=/blooddrinker,if=!buff.dancing_rune_weapon.up
+actions.standard+=/marrowrend,if=buff.bone_shield.remains<=gcd*2
+actions.standard+=/blood_boil,if=charges_fractional>=1.8&buff.haemostasis.stack<5&(buff.haemostasis.stack<3|!buff.dancing_rune_weapon.up)
+actions.standard+=/marrowrend,if=(buff.bone_shield.stack<5&talent.ossuary.enabled)|buff.bone_shield.remains<gcd*3
+actions.standard+=/bonestorm,if=runic_power>=100&spell_targets.bonestorm>=3
+actions.standard+=/death_strike,if=buff.blood_shield.up|(runic_power.deficit<15&(runic_power.deficit<25|!buff.dancing_rune_weapon.up))
+actions.standard+=/heart_strike,if=buff.dancing_rune_weapon.up
+actions.standard+=/death_and_decay,if=buff.crimson_scourge.up
+actions.standard+=/death_and_decay
+actions.standard+=/heart_strike,if=rune.time_to_3<gcd|buff.bone_shield.stack>6
+
+head=soulspun_casque,id=155866,bonus_id=4779/1512/4775/4786
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=lockjaw_shoulderplate,id=159407,bonus_id=4779/1512/4775/4786
+back=sporecallers_shroud,id=159292,bonus_id=4779/1512/4786
+chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=4779/1512/4775/4786
+wrists=shadowshroud_vambraces,id=160212,bonus_id=4779/1512/4786
+hands=risen_lords_oversized_gauntlets,id=159457,bonus_id=4779/1512/4786
+waist=cannoneers_toolbelt,id=159434,bonus_id=4779/1512/4786
+legs=legplates_of_charged_duality,id=159435,bonus_id=4779/1512/4786
+feet=sabatons_of_rampaging_elements,id=159679,bonus_id=4779/1512/4786
+finger1=overseers_lost_seal,id=159460,bonus_id=4779/1512/4786,enchant=pact_of_versatility
+finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_versatility
+trinket1=gorecrusted_butchers_block,id=159616,bonus_id=4779/1512/4786
+trinket2=jes_howler,id=159627,bonus_id=4779/1512/4786
+main_hand=dismembered_submersible_claw,id=159650,bonus_id=4779/1512/4786,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_ilvl=341.47
+# gear_strength=2883
+# gear_stamina=4465
+# gear_crit_rating=842
+# gear_haste_rating=499
+# gear_mastery_rating=325
+# gear_versatility_rating=811
+# gear_armor=3050

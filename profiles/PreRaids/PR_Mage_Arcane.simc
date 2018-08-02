@@ -4,7 +4,7 @@ level=120
 race=troll
 role=spell
 position=back
-talents=1021012
+talents=3032021
 
 # Default consumables
 potion=deadly_grace
@@ -92,29 +92,27 @@ actions.movement+=/arcane_missiles
 actions.movement+=/arcane_orb
 actions.movement+=/supernova
 
-head=collar_of_enclosure,id=134424,bonus_id=1727
-neck=stabilized_energy_pendant,id=134488,bonus_id=1727,enchant=mark_of_the_hidden_satyr
-shoulders=amice_of_the_unfurling_tempest,id=134432,bonus_id=1727
-back=cloak_of_manaspun_silk,id=134410,bonus_id=1727,enchant=binding_of_intellect
-chest=flameheart_vestment,id=137504,bonus_id=1727
-wrists=tunnel_fiend_bracers,id=134435,bonus_id=1727
-hands=scarabcaller_grips,id=134418,bonus_id=1727
-waist=cord_of_wicked_pyromania,id=137488,bonus_id=1727
-legs=legwraps_of_rampant_turmoil,id=137453,bonus_id=1727
-feet=treads_of_light,id=139280,bonus_id=1727
-finger1=band_of_the_wyrm_matron,id=134524,bonus_id=1727,enchant=binding_of_critical_strike
-finger2=ring_of_contempt,id=134490,bonus_id=1727,enchant=binding_of_critical_strike
-trinket1=oakhearts_gnarled_root,id=137306,bonus_id=1727
-trinket2=naraxas_spiked_tongue,id=137349,bonus_id=1727
-main_hand=aluneth,id=127857,ilevel=180
+head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4775/4786
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4775/4786
+back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
+chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4775/4786
+wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
+hands=captains_dustfinders,id=159237,bonus_id=4779/1512/4786
+waist=aqusirrs_swirling_sash,id=159239,bonus_id=4779/1512/4786
+legs=chumcoated_leggings,id=158302,bonus_id=4779/1512/4786
+feet=devilsaur_worshipers_sandals,id=158303,bonus_id=4779/1512/4786
+finger1=seal_of_the_city_watch,id=162542,bonus_id=4779/1512/4786,enchant=pact_of_mastery
+finger2=murky_cerulean_signet,id=158318,bonus_id=4779/1512/4786,enchant=pact_of_mastery
+trinket1=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
+trinket2=balefire_branch,id=159630,bonus_id=4779/1512/4786
+main_hand=seabreeze,id=158371,bonus_id=4779/1512/4786,enchant=torrent_of_elements
 
 # Gear Summary
-# gear_ilvl=163.20
-# gear_stamina=622
-# gear_intellect=520
-# gear_crit_rating=336
-# gear_haste_rating=168
-# gear_mastery_rating=70
-# gear_versatility_rating=181
-# gear_armor=160
-# set_bonus=tier19p_cloth_2pc=1
+# gear_ilvl=341.47
+# gear_stamina=4465
+# gear_intellect=3423
+# gear_crit_rating=977
+# gear_haste_rating=253
+# gear_mastery_rating=1194
+# gear_armor=870

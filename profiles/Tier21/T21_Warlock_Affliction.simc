@@ -3,7 +3,7 @@ spec=affliction
 level=110
 race=human
 role=spell
-position=back
+position=ranged_back
 talents=3302022
 
 # Default consumables

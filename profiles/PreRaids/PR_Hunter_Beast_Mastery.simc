@@ -4,7 +4,7 @@ level=120
 race=orc
 role=attack
 position=ranged_back
-talents=2102012
+talents=1303011
 
 # Default consumables
 potion=battle_potion_of_agility
@@ -49,35 +49,31 @@ actions+=/chimaera_shot
 actions+=/kill_command
 actions+=/dire_beast
 actions+=/barbed_shot,if=pet.cat.buff.frenzy.down&charges_fractional>1.4|full_recharge_time<gcd.max|target.time_to_die<9
-actions+=/barrage
 actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
 actions+=/cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(buff.bestial_wrath.up&active_enemies>1|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains>focus.time_to_max|focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost)
 
-head=collar_of_honorable_exultation,id=136777,ilevel=180
-neck=strand_of_the_stars,id=137487,ilevel=180,enchant=mark_of_the_distant_army
-shoulders=epaulets_of_deceitful_intent,id=134480,ilevel=180
-back=cape_of_rigid_order,id=134402,ilevel=180,enchant=200agi
-chest=thunderfused_valkyr_hauberk,id=133622,ilevel=180
-wrists=remorseless_chain_armbands,id=137405,ilevel=180
-hands=lavabreaker_gauntlets,id=137519,ilevel=180
-waist=belt_of_mighty_links,id=137456,ilevel=180
-legs=mute_erasure_legguards,id=134475,ilevel=180
-feet=whelp_handlers_lined_boots,id=134464,ilevel=180
-finger1=archdruids_tainted_seal,id=134487,ilevel=180,enchant=200mastery
-finger2=ring_of_twisted_webbing,id=134540,ilevel=180,enchant=200mastery
-trinket1=naraxas_spiked_tongue,id=137349,ilevel=180
-trinket2=chrono_shard,id=137419,ilevel=180
-main_hand=titanstrike,id=128861,ilevel=180
+head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4775/4786
+neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
+shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4775/4786
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4775/4786
+wrists=arcglass_bindings,id=159380,bonus_id=4779/1512/4786
+hands=water_shapers,id=159366,bonus_id=4779/1512/4786
+waist=anchor_chain_girdle,id=159386,bonus_id=4779/1512/4786
+legs=corpuscular_greaves,id=159384,bonus_id=4779/1512/4786
+feet=souldrifting_sabatons,id=158308,bonus_id=4779/1512/4786
+finger1=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=galecallers_boon,id=159614,bonus_id=4779/1512/4786
+trinket2=deadeye_spyglass,id=159623,bonus_id=4779/1512/4786
+main_hand=snakebite_recurve,id=159637,bonus_id=4779/1512/4786,enchant=quick_navigation
 
 # Gear Summary
-# gear_ilvl=180.00
-# gear_agility=640
-# gear_stamina=713
-# gear_crit_rating=61
-# gear_haste_rating=203
-# gear_mastery_rating=932
-# gear_versatility_rating=54
-# gear_armor=412
-# set_bonus=journey_through_time_2pc=1
-# set_bonus=tier19p_mail_2pc=1
+# gear_ilvl=341.47
+# gear_agility=2883
+# gear_stamina=4465
+# gear_crit_rating=1028
+# gear_haste_rating=1242
+# gear_mastery_rating=209
+# gear_armor=2059
 summon_pet=cat

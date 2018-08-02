@@ -3,7 +3,7 @@ spec=shadow
 level=120
 race=pandaren
 role=spell
-position=back
+position=ranged_back
 talents=3111322
 
 # Default consumables
@@ -39,7 +39,7 @@ actions.aoe=void_eruption
 actions.aoe+=/dark_ascension,if=buff.voidform.down
 actions.aoe+=/void_bolt,if=talent.dark_void.enabled&dot.shadow_word_pain.remains>travel_time
 actions.aoe+=/surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)
-actions.aoe+=/dark_void
+actions.aoe+=/dark_void,if=raid_event.adds.in>10
 actions.aoe+=/shadowfiend,if=!talent.mindbender.enabled
 actions.aoe+=/mindbender,if=talent.mindbender.enabled
 actions.aoe+=/shadow_crash,if=raid_event.adds.in>5&raid_event.adds.duration<20
@@ -51,7 +51,7 @@ actions.cleave+=/dark_ascension,if=buff.voidform.down
 actions.cleave+=/void_bolt
 actions.cleave+=/shadow_word_death,target_if=target.time_to_die<3|buff.voidform.down
 actions.cleave+=/surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)
-actions.cleave+=/dark_void
+actions.cleave+=/dark_void,if=raid_event.adds.in>10
 actions.cleave+=/shadowfiend,if=!talent.mindbender.enabled
 actions.cleave+=/mindbender,if=talent.mindbender.enabled
 actions.cleave+=/mind_blast
@@ -69,7 +69,7 @@ actions.single+=/dark_ascension,if=buff.voidform.down
 actions.single+=/void_bolt
 actions.single+=/shadow_word_death,if=target.time_to_die<3|cooldown.shadow_word_death.charges=2
 actions.single+=/surrender_to_madness,if=buff.voidform.stack>=(15+buff.bloodlust.up)&target.time_to_die>200|target.time_to_die<75
-actions.single+=/dark_void
+actions.single+=/dark_void,if=raid_event.adds.in>10
 actions.single+=/shadowfiend,if=!talent.mindbender.enabled
 actions.single+=/mindbender,if=talent.mindbender.enabled
 actions.single+=/vampiric_touch,if=((dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking)|(talent.shadow_word_void.enabled&cooldown.shadow_word_void.charges=2))&azerite.thought_harvester.rank>1&cooldown.mind_blast.up&buff.harvested_thoughts.down
