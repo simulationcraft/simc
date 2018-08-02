@@ -9659,7 +9659,7 @@ double monk_t::stagger_pct( int target_level )
     k_value = 1423;
     break;
   case 113:
-    k_value = 2107;
+    k_value = level() == 110 ? 1423 : 2107;
     break;
   case 120:
   case 121:
