@@ -84,11 +84,11 @@ actions.nether_portal_building+=/power_siphon,if=buff.wild_imps.stack>=2&buff.de
 actions.nether_portal_building+=/hand_of_guldan,if=soul_shard>=5
 actions.nether_portal_building+=/call_action_list,name=build_a_shard
 
-head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4775/4786
+head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4786/4775
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4775/4786
+shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775
 back=drape_of_the_loyal_vassal,id=158375,bonus_id=4779/1512/4786
-chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4775/4786
+chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775
 wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
 hands=gloves_of_staunched_wounds,id=159253,bonus_id=4779/1512/4786
 waist=ouroborial_sash,id=159255,bonus_id=4779/1512/4786

@@ -6,11 +6,11 @@ role=spell
 position=ranged_back
 talents=2303023
 
-head=Visage_Of_Bloody_Horrors,id=159381,bonus_id=4779/1512/4775/4786,azerite_powers=457/18/14/13
+head=Visage_Of_Bloody_Horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=457/18/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=27
-shoulders=Amalgamated_Abomination_Spaulders,id=159385,bonus_id=4779/1512/4775/4786,azerite_powers=194/459/83/13
+shoulders=Amalgamated_Abomination_Spaulders,id=159385,bonus_id=4779/1512/4786/4775,azerite_powers=194/459/83/13
 back=Raals_Bib,id=159294,bonus_id=4779/1512/4786
-chest=Loablessed_Chestguard,id=158355,bonus_id=4779/1512/4775/4786,azerite_powers=457/21/15/13
+chest=Loablessed_Chestguard,id=158355,bonus_id=4779/1512/4786/4775,azerite_powers=457/21/15/13
 wrist=Arcglass_Bindings,id=159380,bonus_id=4779/1512/4786
 hands=Thornshaper_Mitts,id=159399,bonus_id=4779/1512/4786
 waist=Chain_of_Consummate_Power,id=159377,bonus_id=4779/1512/4786
@@ -34,11 +34,11 @@ role=attack
 position=back
 talents=3101033
 
-head=sethraliss_fanged_helm,id=159374,bonus_id=4779/1512/4775/4786,azerite_powers=196/461/0/13
+head=sethraliss_fanged_helm,id=159374,bonus_id=4779/1512/4786/4775,azerite_powers=196/461/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4775/4786,azerite_powers=416/461/0/13
+shoulder=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4786/4775,azerite_powers=416/461/0/13
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=triheart_chestguard,id=159362,bonus_id=4779/1512/4775/4786,azerite_powers=447/459/0/13
+chest=triheart_chestguard,id=159362,bonus_id=4779/1512/4786/4775,azerite_powers=447/459/0/13
 wrists=raouls_barrelhook_bracers,id=159356,bonus_id=4779/1512/4786
 hands=water_shapers,id=159366,bonus_id=4779/1512/4786
 waist=anchor_chain_girdle,id=159386,bonus_id=4779/1512/4786

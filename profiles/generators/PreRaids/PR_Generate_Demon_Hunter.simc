@@ -8,11 +8,11 @@ talents=3210223
 
 timeofday=night
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4775/4786
+head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4775/4786
+shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4775/4786
+chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775
 wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
 hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
 waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786
@@ -38,11 +38,11 @@ talents=1213121
 
 timeofday=night
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4775/4786
+head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4775/4786
+shoulder=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4775/4786
+chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775
 wrists=sea_dogs_cuffs,id=158305,bonus_id=4779/1512/4786
 hands=gloves_of_corrupted_waters,id=159321,bonus_id=4779/1512/4786
 waist=belt_of_gleaming_determination,id=158306,bonus_id=4779/1512/4786

@@ -90,11 +90,11 @@ actions.generic+=/death_coil,if=runic_power.deficit<20&!variable.pooling_for_gar
 actions.generic+=/festering_strike,if=((((debuff.festering_wound.stack<4&!buff.unholy_frenzy.up)|debuff.festering_wound.stack<3)&cooldown.apocalypse.remains<3)|debuff.festering_wound.stack<1)&cooldown.army_of_the_dead.remains>5
 actions.generic+=/death_coil,if=!variable.pooling_for_gargoyle
 
-head=soulspun_casque,id=155866,bonus_id=4779/1512/4775/4786
+head=soulspun_casque,id=155866,bonus_id=4779/1512/4786/4775
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=lockjaw_shoulderplate,id=159407,bonus_id=4779/1512/4775/4786
+shoulders=lockjaw_shoulderplate,id=159407,bonus_id=4779/1512/4786/4775
 back=sporecallers_shroud,id=159292,bonus_id=4779/1512/4786
-chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=4779/1512/4775/4786
+chest=chestguard_of_the_deep_denizen,id=159408,bonus_id=4779/1512/4786/4775
 wrists=shadowshroud_vambraces,id=160212,bonus_id=4779/1512/4786
 hands=risen_lords_oversized_gauntlets,id=159457,bonus_id=4779/1512/4786
 waist=cannoneers_toolbelt,id=159434,bonus_id=4779/1512/4786

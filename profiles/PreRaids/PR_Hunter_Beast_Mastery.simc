@@ -52,11 +52,11 @@ actions+=/barbed_shot,if=pet.cat.buff.frenzy.down&charges_fractional>1.4|full_re
 actions+=/multishot,if=spell_targets>1&(pet.cat.buff.beast_cleave.remains<gcd.max|pet.cat.buff.beast_cleave.down)
 actions+=/cobra_shot,if=(active_enemies<2|cooldown.kill_command.remains>focus.time_to_max)&(buff.bestial_wrath.up&active_enemies>1|cooldown.kill_command.remains>1+gcd&cooldown.bestial_wrath.remains>focus.time_to_max|focus-cost+focus.regen*(cooldown.kill_command.remains-1)>action.kill_command.cost)
 
-head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4775/4786
+head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4786/4775
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4775/4786
+shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4786/4775
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4775/4786
+chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4786/4775
 wrists=arcglass_bindings,id=159380,bonus_id=4779/1512/4786
 hands=water_shapers,id=159366,bonus_id=4779/1512/4786
 waist=anchor_chain_girdle,id=159386,bonus_id=4779/1512/4786

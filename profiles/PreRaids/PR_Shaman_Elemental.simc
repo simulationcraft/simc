@@ -91,11 +91,11 @@ actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 # Frost Shock is our movement filler.
 actions.single_target+=/frost_shock,moving=1
 
-head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4775/4786,azerite_powers=457/18/14/13
+head=visage_of_bloody_horrors,id=159381,bonus_id=4779/1512/4786/4775,azerite_powers=457/18/14/13
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
-shoulders=amalgamated_abomination_spaulders,id=159385,bonus_id=4779/1512/4775/4786,azerite_powers=194/459/83/13
+shoulders=amalgamated_abomination_spaulders,id=159385,bonus_id=4779/1512/4786/4775,azerite_powers=194/459/83/13
 back=raals_bib,id=159294,bonus_id=4779/1512/4786
-chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4775/4786,azerite_powers=457/21/15/13
+chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4786/4775,azerite_powers=457/21/15/13
 wrists=arcglass_bindings,id=159380,bonus_id=4779/1512/4786
 hands=thornshaper_mitts,id=159399,bonus_id=4779/1512/4786
 waist=chain_of_consummate_power,id=159377,bonus_id=4779/1512/4786

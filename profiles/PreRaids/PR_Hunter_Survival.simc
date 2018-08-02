@@ -61,11 +61,11 @@ actions+=/mongoose_bite,target_if=min:dot.internal_bleeding.stack,if=buff.mongoo
 actions+=/raptor_strike_eagle,target_if=min:dot.internal_bleeding.stack
 actions+=/raptor_strike,target_if=min:dot.internal_bleeding.stack
 
-head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4775/4786
+head=coif_of_the_court_spider,id=159358,bonus_id=4779/1512/4786/4775
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4775/4786
+shoulders=gaping_maw_shoulderguard,id=159352,bonus_id=4779/1512/4786/4775
 back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
-chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4775/4786
+chest=loablessed_chestguard,id=158355,bonus_id=4779/1512/4786/4775
 wrists=dread_captains_irons,id=159372,bonus_id=4779/1512/4786
 hands=biteresistant_chain_gloves,id=155892,bonus_id=4779/1512/4786
 waist=belt_of_the_consecrated_tomb,id=159369,bonus_id=4779/1512/4786

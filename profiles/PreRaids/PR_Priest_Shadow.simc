@@ -84,28 +84,28 @@ actions.single+=/vampiric_touch,if=refreshable&target.time_to_die>6|(talent.mise
 actions.single+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(cooldown.void_bolt.up|cooldown.mind_blast.up)
 actions.single+=/shadow_word_pain
 
-head=soulfuel_headdress,id=159279,bonus_id=4819/1512
+head=soulfuel_headdress,id=159279,bonus_id=4779/1512/4786/4775
 neck=heart_of_azeroth,id=158075,bonus_id=4929/1524,azerite_level=
-shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4819/1512
-back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512
-chest=loa_betrayers_vestments,id=159233,bonus_id=4819/1512
-wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512
-hands=handwraps_of_oscillating_polarity,id=159247,bonus_id=4779/1512
-waist=sailcloth_waistband,id=158346,bonus_id=4779/1512
-legs=rowdy_revelers_legwraps,id=158350,bonus_id=4779/1512
-feet=sandswept_sandals,id=159259,bonus_id=4779/1512
-finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512,enchant=pact_of_haste
-finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512,enchant=pact_of_haste
-trinket1=lady_waycrests_music_box,id=159631,bonus_id=4779/1512
-trinket2=conch_of_dark_whispers,id=159620,bonus_id=4779/1512
-main_hand=leaxas_thoughtpiercer,id=159652,bonus_id=4779/1512,enchant=torrent_of_elements
-off_hand=rattling_jar_of_eyes,id=159668,bonus_id=4779/1512
+shoulders=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775
+back=cloak_of_questionable_intent,id=159287,bonus_id=4779/1512/4786
+chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775
+wrists=wraps_of_everliving_fealty,id=158348,bonus_id=4779/1512/4786
+hands=handwraps_of_oscillating_polarity,id=159247,bonus_id=4779/1512/4786
+waist=sailcloth_waistband,id=158346,bonus_id=4779/1512/4786
+legs=rowdy_revelers_legwraps,id=158350,bonus_id=4779/1512/4786
+feet=sandswept_sandals,id=159259,bonus_id=4779/1512/4786
+finger1=seal_of_questionable_loyalties,id=158314,bonus_id=4779/1512/4786,enchant=pact_of_haste
+finger2=band_of_the_ancient_dredger,id=159461,bonus_id=4779/1512/4786,enchant=pact_of_haste
+trinket1=lady_waycrests_music_box,id=159631,bonus_id=4779/1512/4786
+trinket2=conch_of_dark_whispers,id=159620,bonus_id=4779/1512/4786
+main_hand=leaxas_thoughtpiercer,id=159652,bonus_id=4779/1512/4786,enchant=torrent_of_elements
+off_hand=rattling_jar_of_eyes,id=159668,bonus_id=4779/1512/4786
 
 # Gear Summary
-# gear_ilvl=340.44
-# gear_stamina=4362
-# gear_intellect=3573
+# gear_ilvl=341.38
+# gear_stamina=4465
+# gear_intellect=3626
 # gear_crit_rating=1029
 # gear_haste_rating=1240
 # gear_mastery_rating=209
-# gear_armor=860
+# gear_armor=870
