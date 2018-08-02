@@ -1258,6 +1258,10 @@ void enemy_t::init_defense()
       case 18: a = 144; break;
       case 19: a = 145; break;
       case 20: a = 146; break;
+      case 21: a = 160; break;
+      case 22: a = 173; break;
+      case 23: a = 185; break;
+      case 24: a = 191; break;
       case 90: a = 794; break; // checked
       case 91: a = 504; break;
       case 92: a = 571; break;
