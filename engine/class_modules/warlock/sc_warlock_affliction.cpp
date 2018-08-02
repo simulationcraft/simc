@@ -1233,7 +1233,12 @@ namespace warlock
         double gcds_required = 0.0;
         timespan_t gcd = base_gcd * gcd_current_haste_value;
 
-        gcds_required += 1 + ( talents.absolute_corruption->ok() ? 0 : 1 ) + ( talents.siphon_life->ok() ? 1 : 0 ) + resources.current[RESOURCE_SOUL_SHARD];
+        auto td = get_target_data(target);
+
+        gcds_required += td->dots_agony->remains() <= td->dots_agony->duration() ? 1 : 0;
+        gcds_required += talents.absolute_corruption->ok() ? 0 : (td->dots_corruption->remains() <= td->dots_corruption->duration() ? 1 : 0);
+        gcds_required += talents.siphon_life->ok() ? (td->dots_siphon_life->remains() <= td->dots_siphon_life->duration() ? 1 : 0) : 0;
+        gcds_required += resources.current[RESOURCE_SOUL_SHARD];
         setup = gcd * gcds_required;
         if (talents.phantom_singularity->ok() && cooldowns.phantom_singularity->remains() <= setup)
         {
@@ -1252,20 +1257,6 @@ namespace warlock
           ready = true;
 
         return ready;
-      });
-    }
-    else if (name_str == "target_uas")
-    {
-      return make_fn_expr("target_uas", [this]() {
-        double uas = 0.0;
-
-        auto td = get_target_data(target);
-        for (int i = 0; i < MAX_UAS; i++)
-        {
-          uas += td->dots_unstable_affliction[i]->is_ticking();
-        }
-
-        return uas;
       });
     }
 
