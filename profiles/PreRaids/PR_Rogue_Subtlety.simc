@@ -100,11 +100,11 @@ actions.stealthed+=/shadowstrike,cycle_targets=1,if=talent.secret_technique.enab
 actions.stealthed+=/shuriken_storm,if=spell_targets.shuriken_storm>=3
 actions.stealthed+=/shadowstrike
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775
+head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=479/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775
+shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=240/461/0/13
 back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775
+chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=414/461/0/13
 wrists=blood_elders_bindings,id=159324,bonus_id=4779/1512/4786
 hands=corrosive_handlers_gloves,id=159305,bonus_id=4779/1512/4786
 waist=unscrupulous_geologists_belt,id=159725,bonus_id=4779/1512/4786

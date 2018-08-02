@@ -6,11 +6,11 @@ role=spell
 position=back
 talents=3032021
 
-head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4786/4775
+head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4786/4775,azerite_powers=167/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775
+shoulder=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775,azerite_powers=167/21/0/13
 back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
-chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775
+chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775,azerite_powers=127/461/0/13
 wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
 hands=captains_dustfinders,id=159237,bonus_id=4779/1512/4786
 waist=aqusirrs_swirling_sash,id=159239,bonus_id=4779/1512/4786
@@ -33,11 +33,11 @@ role=spell
 position=ranged_back
 talents=1011022
 
-head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4786/4775
+head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4786/4775,azerite_powers=128/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775
+shoulder=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775,azerite_powers=377/21/0/13
 back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
-chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775
+chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775,azerite_powers=168/461/0/13
 wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
 hands=captains_dustfinders,id=159237,bonus_id=4779/1512/4786
 waist=aqusirrs_swirling_sash,id=159239,bonus_id=4779/1512/4786
@@ -60,11 +60,11 @@ role=spell
 position=ranged_back
 talents=1013033
 
-head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4786/4775
+head=secret_spinners_miter,id=158315,bonus_id=4779/1512/4786/4775,azerite_powers=170/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=27
-shoulder=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775
+shoulder=mantle_of_ceremonial_ascension,id=158344,bonus_id=4779/1512/4786/4775,azerite_powers=381/21/0/13
 back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
-chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775
+chest=loa_betrayers_vestments,id=159233,bonus_id=4779/1512/4786/4775,azerite_powers=381/461/0/13
 wrists=ironkelp_wristwraps,id=159256,bonus_id=4779/1512/4786
 hands=captains_dustfinders,id=159237,bonus_id=4779/1512/4786
 waist=aqusirrs_swirling_sash,id=159239,bonus_id=4779/1512/4786

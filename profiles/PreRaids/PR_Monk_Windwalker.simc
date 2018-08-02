@@ -190,11 +190,11 @@ actions.st+=/chi_burst,if=energy.time_to_max>1&talent.serenity.enabled
 actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains,if=!prev_gcd.1.tiger_palm&!prev_gcd.1.energizing_elixir&(chi.max-chi>=2|energy.time_to_max<3)&!buff.serenity.up
 actions.st+=/chi_burst,if=chi.max-chi>=3&energy.time_to_max>1&!talent.serenity.enabled
 
-head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775
+head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775,azerite_powers=184/30/0/13
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=
-shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775
+shoulders=mantle_of_fastidious_machinations,id=158304,bonus_id=4779/1512/4786/4775,azerite_powers=388/461/0/13
 back=parrotfeather_cloak,id=155884,bonus_id=4779/1512/4786
-chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775
+chest=spymasters_wrap,id=155860,bonus_id=4779/1512/4786/4775,azerite_powers=391/20/0/13
 wrists=blood_elders_bindings,id=159324,bonus_id=4779/1512/4786
 hands=corrosive_handlers_gloves,id=159305,bonus_id=4779/1512/4786
 waist=unscrupulous_geologists_belt,id=159725,bonus_id=4779/1512/4786
