@@ -1,10 +1,10 @@
 rogue="T21_Rogue_Assassination"
 level=110
 race=human
+spec=assassination
 role=attack
 position=back
 talents=1130111
-spec=assassination
 
 head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
 neck=collar_of_nullflame,id=151973,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
@@ -29,10 +29,10 @@ save=T21_Rogue_Assassination.simc
 rogue="T21_Rogue_Assassination_Exsg"
 level=110
 race=human
+spec=assassination
 role=attack
 position=back
 talents=2110131
-spec=assassination
 
 head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
 neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier
@@ -57,11 +57,10 @@ save=T21_Rogue_Assassination_Exsg.simc
 rogue="T21_Rogue_Outlaw"
 level=110
 race=dwarf
-timeofday=day
+spec=outlaw
 role=attack
 position=back
 talents=3310022
-spec=outlaw
 
 head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
@@ -86,11 +85,10 @@ save=T21_Rogue_Outlaw.simc
 rogue="T21_Rogue_Outlaw_SnD"
 level=110
 race=dwarf
-timeofday=day
+spec=outlaw
 role=attack
 position=back
 talents=1310021
-spec=outlaw
 
 head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
 neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
@@ -115,10 +113,10 @@ save=T21_Rogue_Outlaw_SnD.simc
 rogue="T21_Rogue_Subtlety"
 level=110
 race=dwarf
+spec=subtlety
 role=attack
 position=back
 talents=3310012
-spec=subtlety
 
 head=cavalier_hat_of_the_dashing_scoundrel,id=152163,bonus_id=3612/1502
 neck=vulcanarcore_pendant,id=151965,bonus_id=3612/1502,enchant=mark_of_the_trained_soldier

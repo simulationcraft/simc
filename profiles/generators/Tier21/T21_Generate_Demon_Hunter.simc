@@ -1,7 +1,7 @@
 demonhunter="T21_Demon_Hunter_Havoc"
-spec=havoc
 level=110
 race=blood_elf
+spec=havoc
 role=attack
 position=back
 talents=3210223
@@ -25,12 +25,13 @@ off_hand=twinblades_of_the_deceiver,id=127830
 
 save=T21_Demon_Hunter_Havoc.simc
 
+
 demonhunter="T21_Demon_Hunter_Vengeance"
-spec=vengeance
 level=110
 race=blood_elf
+spec=vengeance
 role=attack
-position=back
+position=front
 talents=1213121
 
 head=felreaper_hood,id=152121,bonus_id=3612/1502

@@ -1,9 +1,10 @@
 deathknight="T21_Death_Knight_Blood"
 level=110
 race=blood_elf
-role=tank
-talents=3112033
 spec=blood
+role=tank
+position=front
+talents=3112033
 
 head=dreadwake_helm,id=152115,bonus_id=3612/1502
 neck=chain_of_the_unmaker,id=152283,bonus_id=3612/1502,enchant=mark_of_the_hidden_satyr
@@ -25,9 +26,9 @@ save=T21_Death_Knight_Blood.simc
 
 
 deathknight="T21_Death_Knight_Frost"
-spec=frost
 level=110
 race=human
+spec=frost
 role=attack
 position=back
 talents=3202013
@@ -55,9 +56,10 @@ save=T21_Death_Knight_Frost.simc
 deathknight="T21_Death_Knight_Unholy"
 level=110
 race=troll
-role=dps
-talents=3203002
 spec=unholy
+role=attack
+position=back
+talents=3203002
 
 food=azshari_salad
 
