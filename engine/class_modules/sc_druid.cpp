@@ -7230,7 +7230,8 @@ std::string druid_t::default_potion() const
                               (true_level >= 80) ? "volcanic" :
                               "disabled";
 
-      std::string feral_pot = (true_level > 100) ? "potion_of_prolonged_power" :
+      std::string feral_pot = (true_level > 110) ? "battle_potion_of_agility" :
+                              (true_level > 100) ? "potion_of_prolonged_power" :
                               (true_level >= 90) ? "draenic_agility" :
                               (true_level >= 85) ? "virmens_bite" :
                               (true_level >= 80) ? "tolvir" :
