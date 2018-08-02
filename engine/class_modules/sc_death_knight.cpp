@@ -5906,7 +5906,7 @@ struct remorseless_winter_t : public death_knight_spell_t
   {
     timespan_t t = death_knight_spell_t::gcd();
     // Remorseless Winter's gcd is affected by haste twice
-    if ( p -> bugs )
+    if ( p() -> bugs )
     {
       t *= this -> composite_haste();
     }
