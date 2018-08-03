@@ -5320,7 +5320,8 @@ struct freeze_t : public action_t
     may_miss = may_crit = callbacks = false;
     dual = true;
     trigger_gcd = timespan_t::zero();
-    ignore_false_positive = true;
+
+    use_off_gcd = ignore_false_positive = true;
     action_skill = 1;
 
     if ( p -> talents.lonely_winter -> ok() )
