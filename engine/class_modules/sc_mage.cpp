@@ -6975,20 +6975,20 @@ void mage_t::apl_frost()
     "sure not to waste Brain Freeze charges) with or without Freezing Rain." );
   single -> add_action( this, "Ice Lance", "if=buff.fingers_of_frost.react",
     "Trying to pool charges of FoF for anything isn't worth it. Use them as they come." );
-  single -> add_talent( this, "Ray of Frost", "if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0",
-    "Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. "
-    "This is only a small gain, as Ray of Frost isn't too impactful." );
   single -> add_talent( this, "Comet Storm" );
   single -> add_talent( this, "Ebonbolt", "if=!talent.glacial_spike.enabled|buff.icicles.stack=5&!buff.brain_freeze.react",
     "Without GS, Ebonbolt is used on cooldown. With GS, Ebonbolt is only used to fill in the blank spots when fishing for a Brain Freeze proc, i.e. "
     "the mage reaches 5 Icicles but still doesn't have a Brain Freeze proc." );
+  single -> add_talent( this, "Ray of Frost", "if=!action.frozen_orb.in_flight&ground_aoe.frozen_orb.remains=0",
+    "Ray of Frost is used after all Fingers of Frost charges have been used and there isn't active Frozen Orb that could generate more. "
+    "This is only a small gain against multiple targets, as Ray of Frost isn't too impactful." );
+  single -> add_action( this, "Blizzard", "if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time",
+    "Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even "
+    "against a single target, especially with low mastery.");
   single -> add_talent( this, "Glacial Spike", "if=buff.brain_freeze.react|prev_gcd.1.ebonbolt|active_enemies>1&talent.splitting_ice.enabled",
     "Glacial Spike is used when there's a Brain Freeze proc active (i.e. only when it can be shattered). This is a small to medium gain "
     "in most situations. Low mastery leans towards using it when available. When using Splitting Ice and having another target nearby, "
     "it's slightly better to use GS when available, as the second target doesn't benefit from shattering the main target." );
-  single -> add_action( this, "Blizzard", "if=cast_time=0|active_enemies>1|buff.zannesu_journey.stack=5&buff.zannesu_journey.remains>cast_time",
-    "Blizzard is used as low priority filler against 2 targets. When using Freezing Rain, it's a medium gain to use the instant Blizzard even "
-    "against a single target, especially with low mastery.");
   single -> add_talent( this, "Ice Nova" );
   single -> add_action( this, "Flurry", "if=!buff.brain_freeze.react&buff.winters_reach.react&azerite.winters_reach.rank>=2" );
   single -> add_action( this, "Frostbolt" );
