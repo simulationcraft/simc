@@ -7704,9 +7704,9 @@ void druid_t::apl_balance()
   default_list->add_action("use_items");
   default_list -> add_talent( this, "Warrior of Elune");
   default_list -> add_action("run_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1");
-  default_list -> add_action("innervate,if=azerite.lively_spirit.enabled&cooldown.incarnation.up");
+  default_list -> add_action("innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.up|cooldown.celestial_alignment.remains<12)");
   default_list -> add_action( "incarnation,if=astral_power>=40" );
-  default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
+  default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)" );
   default_list -> add_action("run_action_list,name=aoe,if=spell_targets.starfall>=3");
   default_list -> add_action("run_action_list,name=st");
 
