@@ -6400,7 +6400,7 @@ double brambles_handler( const action_state_t* s )
     weapon_ap = p -> main_hand_weapon.dps * WEAPON_POWER_COEFFICIENT;
   }
 
-	double attack_power = ( p -> cache.attack_power() + weapon_ap ) * p -> composite_attack_power_multiplier();
+  double attack_power = ( p -> cache.attack_power() + weapon_ap ) * p -> composite_attack_power_multiplier();
 
   // Brambles coefficient is not in spelldata :(
   double absorb_cap = attack_power * 0.06;
