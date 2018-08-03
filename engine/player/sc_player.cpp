@@ -7168,30 +7168,29 @@ struct arcane_pulse_t : public racial_spell_t
   {
     may_crit = true;
     aoe      = -1;
+    // these are sadly hardcoded in the tooltip
+    attack_power_mod.direct = 0.5;
+    spell_power_mod.direct = 0.25;
   }
 
-  void init() override
-  {
-    spell_t::init();
-    snapshot_flags |= STATE_AP | STATE_SP | STATE_CRIT;
-  }
-
-  double attack_direct_power_coefficient( const action_state_t* ) const override
+  double attack_direct_power_coefficient( const action_state_t* s ) const override
   {
     auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
     auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
 
-    // Hardcoded into the tooltip
-    return ap >= sp ? 2.0 : 0.0;
+    if ( ap <= sp )
+      return 0;
+    return racial_spell_t::attack_direct_power_coefficient( s );
   }
 
-  double spell_direct_power_coefficient( const action_state_t* ) const override
+  double spell_direct_power_coefficient( const action_state_t* s ) const override
   {
     auto ap = composite_attack_power() * player->composite_attack_power_multiplier();
     auto sp = composite_spell_power() * player->composite_spell_power_multiplier();
 
-    // Hardcoded into the tooltip
-    return sp > ap ? 0.75 : 0.0;
+    if ( ap > sp )
+      return 0;
+    return racial_spell_t::spell_direct_power_coefficient( s );
   }
 };
 
