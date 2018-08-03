@@ -6693,9 +6693,11 @@ void mage_t::apl_precombat()
     precombat -> add_action( "water_elemental" );
   // Pet & variables
   if ( specialization() == MAGE_ARCANE )
+  {
     precombat -> add_action( "summon_arcane_familiar" ) ;
     precombat -> add_action( "variable,name=conserve_mana,op=set,value=35,if=talent.overpowered.enabled" , "conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP.") ;
     precombat -> add_action( "variable,name=conserve_mana,op=set,value=45,if=!talent.overpowered.enabled" ) ;
+  }
   // Snapshot Stats
   precombat -> add_action( "snapshot_stats" );
 
