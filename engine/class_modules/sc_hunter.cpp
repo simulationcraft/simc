@@ -1828,11 +1828,15 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     if ( o() -> azerite.pack_alpha.ok() )
     {
       const pet_t* pets[] = { o() -> pets.animal_companion, o() -> pets.dire_beast, o() -> pets.spitting_cobra };
+      // TODO: it also counts Stampede as a single pet
       auto pet_count = range::count_if( pets, []( const pet_t* p ) { return p && !p -> is_sleeping(); } );
-      // 28-06-2018: Pack Alpha seems to count the main pet if there are other ones up from the looks of it
-      if ( pet_count > 0 && o() -> bugs )
-        pet_count++;
-      b += pack_alpha_bonus_da * pet_count;
+      double bonus = pack_alpha_bonus_da * pet_count;
+      // 04-08-2018: it looks like Pack Alpha bonus damage is not affected by the
+      // blanket pet damage aura of Animal Companion; not sure how they do this in-game
+      // but we simply premultiply it to cancel-out the effect
+      if ( o() -> talents.animal_companion -> ok() )
+        bonus *= 1.0 / ( 1.0 + o() -> talents.animal_companion -> effectN( 2 ).percent() );
+      b += bonus;
     }
 
     return b;
