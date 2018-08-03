@@ -22,9 +22,9 @@ namespace { // UNNAMED NAMESPACE
   Still need AP Coeff for Treants
 
   Guardian ==================================================================
-  Azerite traits
   Investigate Mastery-AP as a modifier on ability damage
   Blacklist FR from trigger_natures_guardian()
+  Catweaving APL
 
   Resto =====================================================================
 
@@ -7320,12 +7320,6 @@ void druid_t::apl_precombat()
      precombat->add_action(   "variable,name=use_thrash,value=1,if=equipped.luffa_wrappings" );
   }
 
-  // Guardian: rotational control variables
-  if ( specialization() == DRUID_GUARDIAN )
-  {
-    precombat -> add_action( "variable,name=thrash_over_mangle,value=equipped.luffa_wrappings" );
-  }
-
   // Forms
   if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
   {
@@ -7733,55 +7727,35 @@ void druid_t::apl_balance()
 void druid_t::apl_guardian()
 {
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
-  action_priority_list_t* cooldowns       = get_action_priority_list( "cooldowns" );
-  action_priority_list_t* st              = get_action_priority_list( "st" );
-  action_priority_list_t* aoe             = get_action_priority_list( "aoe" );
 
   std::vector<std::string> item_actions   = get_item_actions();
-  /* std::vector<std::string> racial_actions = get_racial_actions(); */
+  std::vector<std::string> racial_actions = get_racial_actions();
 
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( "call_action_list,name=cooldowns" );
-  default_list -> add_action( "call_action_list,name=st,if=active_enemies=1" );
-  default_list -> add_action( "call_action_list,name=aoe,if=active_enemies>1" );
-
-  st -> add_action( this, "Maul", "if=rage.deficit<8" );
-  st -> add_action( this, "Moonfire", "if=buff.incarnation.up&dot.moonfire.refreshable|!dot.moonfire.ticking" );
-  st -> add_talent( this, "Pulverize", "if=cooldown.thrash_bear.remains<2*gcd&dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
-  st -> add_action( "thrash_bear,if=variable.thrash_over_mangle|talent.rend_and_tear.enabled&dot.thrash_bear.stack<dot.thrash_bear.max_stacks" );
-  st -> add_action( this, "Mangle" );
-  st -> add_action( "thrash_bear" );
-  st -> add_action( this, "Moonfire", "if=buff.galactic_guardian.up|(!talent.galactic_guardian.enabled&dot.moonfire.refreshable)" );
-  st -> add_action( this, "Maul" );
-  st -> add_action( this, "Moonfire", "if=dot.moonfire.refreshable&talent.galactic_guardian.enabled&!equipped.lady_and_the_child" );
-  st -> add_action( "swipe_bear" );
-
-  aoe -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&equipped.lady_and_the_child&cooldown.thrash_bear.remains<2*gcd&buff.galactic_guardian.remains<2*gcd&(active_enemies<4|equipped.fury_of_nature&active_enemies<5)" );
-  aoe -> add_talent( this, "Pulverize", "target_if=cooldown.thrash_bear.remains<2*gcd&dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
-  aoe -> add_action( this, "Mangle", "if=buff.incarnation.up&!variable.thrash_over_mangle&active_enemies<4" );
-  aoe -> add_action( "thrash_bear" );
-  aoe -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&equipped.lady_and_the_child&buff.galactic_guardian.remains<gcd&(active_enemies<4|equipped.fury_of_nature&active_enemies<5)" );
-  aoe -> add_action( this, "Maul", "if=rage.deficit<8&(!talent.incarnation_guardian_of_ursoc.enabled&active_enemies<4|talent.incarnation_guardian_of_ursoc.enabled&active_enemies<6)" );
-  aoe -> add_action( this, "Mangle", "if=!talent.galactic_guardian.enabled&active_enemies<5|talent.galactic_guardian.enabled&active_enemies<4" );
-  aoe -> add_action( this, "Moonfire", "target_if=!talent.galactic_guardian.enabled&dot.moonfire.refreshable&(!equipped.fury_of_nature&active_enemies<8|equipped.fury_of_nature&active_enemies<11)|buff.galactic_guardian.up&!equipped.lady_and_the_child&active_enemies<3" );
-  aoe -> add_action( this, "Maul", "if=!talent.incarnation_guardian_of_ursoc.enabled&active_enemies<5|talent.incarnation_guardian_of_ursoc.enabled&active_enemies<6" );
-  aoe -> add_action( this, "Moonfire", "target_if=!equipped.lady_and_the_child&dot.moonfire.refreshable&active_enemies<3" );
-  aoe -> add_action( "swipe_bear" );
-
 
   if ( sim -> allow_potions )
-    cooldowns -> add_action( "potion" );
-
+    default_list -> add_action( "potion" );
   // Racials don't currently work
-  /* for (size_t i = 0; i < racial_actions.size(); i++) */
-  /*   cooldowns -> add_action( racial_actions[i] ); */
 
-  cooldowns -> add_talent( this, "Lunar Beam" );
-  cooldowns -> add_action( "incarnation" );
-  cooldowns -> add_action( this, "Barkskin", "if=talent.brambles.enabled|talent.survival_of_the_fittest.enabled" );
-  cooldowns -> add_action( this, "Bristling Fur" );
-  cooldowns -> add_action( "proc_sephuz,if=cooldown.thrash_bear.remains=0" );
-  cooldowns -> add_action( "use_items" );
+  for (size_t i = 0; i < racial_actions.size(); i++)
+    default_list -> add_action( racial_actions[i] );
+
+
+  default_list -> add_action( this, "Barkskin" );
+  default_list -> add_talent( this, "Lunar Beam" );
+  default_list -> add_talent( this, "Bristling Fur" );
+  default_list -> add_action( "use_items" );
+  default_list -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
+  default_list -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
+  default_list -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
+  default_list -> add_action( "incarnation" );
+  default_list -> add_action( "thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)" );
+  default_list -> add_action( "swipe,if=buff.incarnation.down&active_enemies>4" );
+  default_list -> add_action( this, "Mangle", "if=dot.thrash_bear.ticking" );
+  default_list -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
+  default_list -> add_action( "thrash" );
+  default_list -> add_action( this, "Maul" );
+  default_list -> add_action( "swipe" );
 }
 
 // Restoration Combat Action Priority List ==================================
