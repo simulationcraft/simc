@@ -259,6 +259,7 @@ public:
   double predator_rppm_rate;
   double initial_astral_power;
   int    initial_moon_stage;
+  int    lively_spirit_stacks; //to set how many spells a healer will cast during Innervate
   bool ahhhhh_the_great_outdoors;
   bool t21_2pc;
   bool t21_4pc;
@@ -352,6 +353,7 @@ public:
     buff_t* stampeding_roar;
     buff_t* wild_charge_movement;
     buff_t* sephuzs_secret;
+    buff_t* innervate;
 
     // Balance
     buff_t* natures_balance;
@@ -415,6 +417,7 @@ public:
     // Azerite
     buff_t* dawning_sun;
     buff_t* sunblaze;
+    buff_t* lively_spirit;
     buff_t* shredding_fury;
     buff_t* iron_jaws;
     buff_t* raking_ferocity;
@@ -426,6 +429,7 @@ public:
   {
     cooldown_t* berserk;
     cooldown_t* celestial_alignment;
+    cooldown_t* innervate;
     cooldown_t* growl;
     cooldown_t* incarnation;
     cooldown_t* mangle;
@@ -531,6 +535,7 @@ public:
     const spell_data_t* critical_strikes;       // Feral & Guardian
     const spell_data_t* leather_specialization; // All Specializations
     const spell_data_t* omen_of_clarity;        // Feral & Restoration
+    const spell_data_t* innervate;              // Balance & Restoration
 
     // Feral
     const spell_data_t* feral;
@@ -701,6 +706,7 @@ public:
     predator_rppm_rate( 0.0 ),
     initial_astral_power( 8 ),
     initial_moon_stage( NEW_MOON ),
+    lively_spirit_stacks(9),  //set a usually fitting default value
     ahhhhh_the_great_outdoors( false ),
     t21_2pc(false),
     t21_4pc(false),
@@ -733,6 +739,7 @@ public:
     cooldown.tigers_fury         = get_cooldown( "tigers_fury"         );
     cooldown.warrior_of_elune    = get_cooldown( "warrior_of_elune"    );
     cooldown.barkskin            = get_cooldown( "barkskin"            );
+    cooldown.innervate           = get_cooldown( "innervate"           );
 
     cooldown.wod_pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
 
@@ -1304,6 +1311,26 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate(CACHE_HASTE);
     add_invalidate(CACHE_SPELL_HASTE);
+  }
+};
+
+//Innervate Buff ============================================================
+struct innervate_buff_t : public druid_buff_t<buff_t>
+{
+  innervate_buff_t(druid_t& p) :
+    base_t(p, "innervate", p.spec.innervate)
+  {}
+
+  void expire_override(int expiration_stacks, timespan_t remaining_duration) override
+  {
+    buff_t::expire_override(expiration_stacks, remaining_duration);
+
+    druid_t* p = debug_cast<druid_t*>(player);
+
+    if (p->azerite.lively_spirit.enabled())
+    {
+      p->buff.lively_spirit->trigger(p->lively_spirit_stacks);
+    }
   }
 };
 
@@ -5284,13 +5311,18 @@ struct incarnation_t : public druid_spell_t
 };
 
 // Innervate ================================================================
-
 struct innervate_t : public druid_spell_t
 {
   innervate_t( druid_t* p, const std::string& options_str ) :
     druid_spell_t( "innervate", p, p -> find_specialization_spell( "Innervate" ), options_str )
   {
     harmful = false;
+  }
+  virtual void execute() override
+  {
+    druid_spell_t::execute();
+
+    p()->buff.innervate->trigger();
   }
 };
 
@@ -6684,6 +6716,7 @@ void druid_t::init_spells()
   spec.astral_power               = find_specialization_spell( "Astral Power" );
   spec.balance                    = find_specialization_spell( "Balance Druid" );
   spec.celestial_alignment        = find_specialization_spell( "Celestial Alignment" );
+  spec.innervate                  = find_specialization_spell( "Innervate" );
   spec.moonkin_form               = find_specialization_spell( "Moonkin Form" );
   spec.eclipse                    = find_specialization_spell( "Eclipse");
   spec.starfall                   = find_specialization_spell( "Starfall" );
@@ -6990,6 +7023,8 @@ void druid_t::create_buffs()
 
   buff.prowl = buff_creator_t( this, "prowl", find_class_spell( "Prowl" ) );
 
+  buff.innervate = new innervate_buff_t(*this);
+
   // Azerite
   buff.shredding_fury =
       buff_creator_t( this, "shredding_fury", find_spell( 274426 ) ).default_value( azerite.shredding_fury.value() );
@@ -7001,6 +7036,9 @@ void druid_t::create_buffs()
   buff.dawning_sun = buff_creator_t(this, "dawning_sun", find_spell(276154));
 
   buff.sunblaze = buff_creator_t(this, "sunblaze", find_spell(274399));
+
+  buff.lively_spirit = make_buff<stat_buff_t>(this, "lively_spirit", find_spell(279648))
+    ->add_stat(STAT_INTELLECT, azerite.lively_spirit.value());
 
   // Talent buffs
 
@@ -7666,6 +7704,7 @@ void druid_t::apl_balance()
   default_list->add_action("use_items");
   default_list -> add_talent( this, "Warrior of Elune");
   default_list -> add_action("run_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1");
+  default_list -> add_action("innervate,if=azerite.lively_spirit.enabled&cooldown.incarnation.up");
   default_list -> add_action( "incarnation,if=astral_power>=40" );
   default_list -> add_action( this, "Celestial Alignment", "if=astral_power>=40" );
   default_list -> add_action("run_action_list,name=aoe,if=spell_targets.starfall>=3");
@@ -8666,6 +8705,7 @@ void druid_t::create_options()
   add_option( opt_bool  ( "feral_t21_4pc", t21_4pc) );
   add_option( opt_float ( "initial_astral_power", initial_astral_power ) );
   add_option( opt_int   ( "initial_moon_stage", initial_moon_stage ) );
+  add_option( opt_int   ( "lively_spirit_stacks", lively_spirit_stacks));
   add_option( opt_bool  ( "outside", ahhhhh_the_great_outdoors ) );
 }
 
@@ -9143,6 +9183,7 @@ void druid_t::copy_from( player_t* source )
   predator_rppm_rate = p -> predator_rppm_rate;
   initial_astral_power = p -> initial_astral_power;
   initial_moon_stage = p -> initial_moon_stage;
+  lively_spirit_stacks = p->lively_spirit_stacks;
   t21_2pc = p -> t21_2pc;
   t21_4pc = p -> t21_4pc;
   ahhhhh_the_great_outdoors = p -> ahhhhh_the_great_outdoors;
