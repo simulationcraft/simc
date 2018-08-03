@@ -7,9 +7,9 @@ position=front
 talents=2112132
 
 # Default consumables
-potion=unbending_potion
-flask=flask_of_ten_thousand_scars
-food=seedbattered_fish_plate
+potion=battle_potion_of_strength
+flask=undertow
+food=swamp_fish_n_chips
 augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
