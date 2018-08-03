@@ -414,7 +414,7 @@ public:
     // Frost
     buff_t* brain_freeze;
     buff_t* fingers_of_frost;
-    buff_t* icicles;                           // Buff to track icicles - doesn't always line up with icicle count though!
+    buff_t* icicles;
     buff_t* icy_veins;
 
     buff_t* bone_chilling;
@@ -768,7 +768,7 @@ public:
 
   // Public mage functions:
   action_t* get_icicle();
-  void      trigger_icicle( const action_state_t* trigger_state, bool chain = false, player_t* chain_target = nullptr );
+  void      trigger_icicle( player_t* icicle_target, bool chain = false );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
   void      trigger_arcane_charge( int stacks = 1 );
   bool      apply_crowd_control( const action_state_t* state, spell_mechanic type );
@@ -1899,21 +1899,23 @@ struct frost_mage_spell_t : public mage_spell_t
     return p() -> cache.mastery() * p() -> spec.icicles -> effectN( 3 ).sp_coeff();
   }
 
-  void trigger_icicle_gain( action_state_t* state, action_t* icicle_action )
+  void trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action )
   {
     if ( ! p() -> spec.icicles -> ok() )
       return;
 
-    p() -> buffs.icicles -> trigger();
+    unsigned max_icicles = as<unsigned>( p() -> spec.icicles -> effectN( 2 ).base_value() );
 
     // Shoot one if capped
-    if ( as<int>( p() -> icicles.size() ) == p() -> spec.icicles -> effectN( 2 ).base_value() )
+    if ( p() -> icicles.size() == max_icicles )
     {
-      p() -> trigger_icicle( state );
+      p() -> trigger_icicle( icicle_target );
     }
 
-    icicle_tuple_t tuple{ p() -> sim -> current_time(), icicle_action };
-    p() -> icicles.push_back( tuple );
+    p() -> buffs.icicles -> trigger();
+    p() -> icicles.push_back( { p() -> sim -> current_time(), icicle_action } );
+
+    assert( p() -> icicles.size() <= max_icicles );
   }
 
   virtual void impact_state( action_state_t* s, dmg_e rt )
@@ -3520,7 +3522,7 @@ struct flurry_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    trigger_icicle_gain( execute_state, p() -> icicle.flurry );
+    trigger_icicle_gain( target, p() -> icicle.flurry );
 
     bool brain_freeze = p() -> buffs.brain_freeze -> up();
     p() -> state.brain_freeze_active = brain_freeze;
@@ -3588,7 +3590,7 @@ struct frostbolt_t : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    trigger_icicle_gain( execute_state, p() -> icicle.frostbolt );
+    trigger_icicle_gain( target, p() -> icicle.frostbolt );
 
     double fof_proc_chance = p() -> spec.fingers_of_frost -> effectN( 1 ).percent();
     fof_proc_chance *= 1.0 + p() -> talents.frozen_touch -> effectN( 1 ).percent();
@@ -3999,7 +4001,7 @@ struct ice_lance_t : public frost_mage_spell_t
     // fired. If target dies, Icicles stop.
     if ( ! p() -> talents.glacial_spike -> ok() )
     {
-      p() -> trigger_icicle( execute_state, true, target );
+      p() -> trigger_icicle( target, true );
     }
     if ( p() -> azerite.whiteout.enabled() )
     {
@@ -5391,6 +5393,7 @@ struct icicle_event_t : public event_t
 
     schedule( timespan_t::from_seconds( cast_time ) );
   }
+
   virtual const char* name() const override
   { return "icicle_event"; }
 
@@ -5402,8 +5405,7 @@ struct icicle_event_t : public event_t
     if ( target -> is_sleeping() )
     {
       if ( mage -> sim -> debug )
-        mage -> sim -> out_debug.printf( "%s icicle use on %s (sleeping target), stopping",
-            mage -> name(), target -> name() );
+        mage -> sim -> out_debug.printf( "%s icicle use on %s (sleeping target), stopping", mage -> name(), target -> name() );
       return;
     }
 
@@ -5417,8 +5419,7 @@ struct icicle_event_t : public event_t
     {
       mage -> icicle_event = make_event<icicle_event_t>( sim(), *mage, new_action, target );
       if ( mage -> sim -> debug )
-        mage -> sim -> out_debug.printf( "%s icicle use on %s (chained), total=%u",
-                               mage -> name(), target -> name(), as<unsigned>( mage -> icicles.size() ) );
+        mage -> sim -> out_debug.printf( "%s icicle use on %s (chained), total=%u", mage -> name(), target -> name(), mage -> icicles.size() );
     }
   }
 };
@@ -6329,31 +6330,6 @@ void mage_t::create_buffs()
   // Frost
   buffs.brain_freeze           = make_buff<buffs::brain_freeze_buff_t>( this );
   buffs.fingers_of_frost       = make_buff( this, "fingers_of_frost", find_spell( 44544 ) );
-  // Buff to track icicles. This does not, however, track the true amount of icicles present.
-  // Instead, as it does in game, it tracks icicle buff stack count based on the number of *casts*
-  // of icicle generating spells. icicles are generated on impact, so they are slightly de-synced.
-  //
-  // A note about in-game implementation. At first, it might seem that each stack has an independent
-  // expiration timer, but the timing is a bit off and it just doesn't happen in the cases where
-  // Icicle buff is incremented but the actual Icicle never created.
-  //
-  // Instead, the buff is incremented when:
-  //   * Frostbolt executes
-  //   * Ice Nine creates another Icicle
-  //   * One of the Icicles overflows
-  //
-  // It is unclear if the buff is incremented twice or three times when Ice Nine procs and two Icicles
-  // overflow (combat log doesn't track refreshes for Icicles buff).
-  //
-  // The buff is decremented when:
-  //   * One of the Icicles is removed
-  //     - Launched after Ice Lance
-  //     - Launched on overflow
-  //     - Removed as a part of Glacial Spike execute
-  //     - Expired after 60 sec
-  //
-  // This explains why some Icicle stacks remain if Glacial Spike executes with 5 Icicle stacks but less
-  // than 5 actual Icicles.
   buffs.icicles                = make_buff( this, "icicles", find_spell( 205473 ) );
   buffs.icy_veins              = make_buff<buffs::icy_veins_buff_t>( this );
 
@@ -7659,23 +7635,15 @@ action_t* mage_t::get_icicle()
   return nullptr;
 }
 
-void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, player_t* chain_target )
+void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
 {
+  assert( icicle_target );
+
   if ( ! spec.icicles -> ok() )
     return;
 
   if ( icicles.empty() )
     return;
-
-  player_t* icicle_target;
-  if ( chain_target )
-  {
-    icicle_target = chain_target;
-  }
-  else
-  {
-    icicle_target = trigger_state -> target;
-  }
 
   if ( chain && ! icicle_event )
   {
@@ -7683,15 +7651,11 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
     if ( ! icicle_action )
       return;
 
-    assert( icicle_target );
     icicle_event = make_event<events::icicle_event_t>( *sim, *this, icicle_action, icicle_target, true );
 
     if ( sim -> debug )
     {
-      sim -> out_debug.printf( "%s icicle use on %s%s, total=%u",
-                               name(), icicle_target -> name(),
-                               chain ? " (chained)" : "",
-                               as<unsigned>( icicles.size() ) );
+      sim -> out_debug.printf( "%s icicle use on %s (chained), total=%u", name(), icicle_target -> name(), icicles.size() );
     }
   }
   else if ( ! chain )
@@ -7705,10 +7669,7 @@ void mage_t::trigger_icicle( const action_state_t* trigger_state, bool chain, pl
 
     if ( sim -> debug )
     {
-      sim -> out_debug.printf( "%s icicle use on %s%s, total=%u",
-                               name(), icicle_target -> name(),
-                               chain ? " (chained)" : "",
-                               as<unsigned>( icicles.size() ) );
+      sim -> out_debug.printf( "%s icicle use on %s, total=%u", name(), icicle_target -> name(), icicles.size() );
     }
   }
 }
