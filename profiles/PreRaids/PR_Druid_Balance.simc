@@ -7,10 +7,10 @@ position=ranged_back
 talents=2000231
 
 # Default consumables
-potion=deadly_grace
-flask=whispered_pact
-food=lavish_suramar_feast
-augmentation=defiled
+potion=battle_potion_of_intellect
+flask=endless_fathoms
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -37,8 +37,9 @@ actions+=/lights_judgment,if=buff.celestial_alignment.up|buff.incarnation.up
 actions+=/use_items
 actions+=/warrior_of_elune
 actions+=/run_action_list,name=ed,if=equipped.the_emerald_dreamcatcher&active_enemies<=1
+actions+=/innervate,if=azerite.lively_spirit.enabled&(cooldown.incarnation.up|cooldown.celestial_alignment.remains<12)
 actions+=/incarnation,if=astral_power>=40
-actions+=/celestial_alignment,if=astral_power>=40
+actions+=/celestial_alignment,if=astral_power>=40&(!azerite.lively_spirit.enabled|buff.lively_spirit.up)
 actions+=/run_action_list,name=aoe,if=spell_targets.starfall>=3
 actions+=/run_action_list,name=st
 

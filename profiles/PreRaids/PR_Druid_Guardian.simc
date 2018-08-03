@@ -8,9 +8,9 @@ talents=1111123
 
 # Default consumables
 potion=old_war
-flask=seventh_demon
-food=lavish_suramar_feast
-augmentation=defiled
+flask=flask_of_the_currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -22,7 +22,6 @@ augmentation=defiled
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
-actions.precombat+=/variable,name=thrash_over_mangle,value=equipped.luffa_wrappings
 actions.precombat+=/bear_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
@@ -31,38 +30,27 @@ actions.precombat+=/potion
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/call_action_list,name=cooldowns
-actions+=/call_action_list,name=st,if=active_enemies=1
-actions+=/call_action_list,name=aoe,if=active_enemies>1
-
-actions.aoe=moonfire,target_if=buff.galactic_guardian.up&equipped.lady_and_the_child&cooldown.thrash_bear.remains<2*gcd&buff.galactic_guardian.remains<2*gcd&(active_enemies<4|equipped.fury_of_nature&active_enemies<5)
-actions.aoe+=/pulverize,target_if=cooldown.thrash_bear.remains<2*gcd&dot.thrash_bear.stack=dot.thrash_bear.max_stacks
-actions.aoe+=/mangle,if=buff.incarnation.up&!variable.thrash_over_mangle&active_enemies<4
-actions.aoe+=/thrash_bear
-actions.aoe+=/moonfire,target_if=buff.galactic_guardian.up&equipped.lady_and_the_child&buff.galactic_guardian.remains<gcd&(active_enemies<4|equipped.fury_of_nature&active_enemies<5)
-actions.aoe+=/maul,if=rage.deficit<8&(!talent.incarnation_guardian_of_ursoc.enabled&active_enemies<4|talent.incarnation_guardian_of_ursoc.enabled&active_enemies<6)
-actions.aoe+=/mangle,if=!talent.galactic_guardian.enabled&active_enemies<5|talent.galactic_guardian.enabled&active_enemies<4
-actions.aoe+=/moonfire,target_if=!talent.galactic_guardian.enabled&dot.moonfire.refreshable&(!equipped.fury_of_nature&active_enemies<8|equipped.fury_of_nature&active_enemies<11)|buff.galactic_guardian.up&!equipped.lady_and_the_child&active_enemies<3
-actions.aoe+=/maul,if=!talent.incarnation_guardian_of_ursoc.enabled&active_enemies<5|talent.incarnation_guardian_of_ursoc.enabled&active_enemies<6
-actions.aoe+=/moonfire,target_if=!equipped.lady_and_the_child&dot.moonfire.refreshable&active_enemies<3
-actions.aoe+=/swipe_bear
+actions+=/maul,if=rage.deficit<10&active_enemies<4
+actions+=/pulverize,target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks
+actions+=/moonfire,target_if=dot.moonfire.refreshable&active_enemies<2
+actions+=/incarnation
+actions+=/thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)
+actions+=/swipe,if=buff.incarnation.down&active_enemies>4
+actions+=/mangle,if=dot.thrash_bear.ticking
+actions+=/moonfire,target_if=buff.galactic_guardian.up&active_enemies<2
+actions+=/thrash
+actions+=/maul
+actions+=/swipe
 
 actions.cooldowns=potion
-actions.cooldowns+=/lunar_beam
-actions.cooldowns+=/incarnation
-actions.cooldowns+=/barkskin,if=talent.brambles.enabled|talent.survival_of_the_fittest.enabled
-actions.cooldowns+=/proc_sephuz,if=cooldown.thrash_bear.remains=0
+actions.cooldowns+=/blood_fury
+actions.cooldowns+=/berserking
+actions.cooldowns+=/arcane_torrent
+actions.cooldowns+=/lights_judgment
+actions.cooldowns+=/barkskin,if=buff.bear_form.up
+actions.cooldowns+=/lunar_beam,if=buff.bear_form.up
+actions.cooldowns+=/bristling_fur,if=buff.bear_form.up
 actions.cooldowns+=/use_items
-
-actions.st=maul,if=rage.deficit<8
-actions.st+=/moonfire,if=buff.incarnation.up&dot.moonfire.refreshable|!dot.moonfire.ticking
-actions.st+=/pulverize,if=cooldown.thrash_bear.remains<2*gcd&dot.thrash_bear.stack=dot.thrash_bear.max_stacks
-actions.st+=/thrash_bear,if=variable.thrash_over_mangle|talent.rend_and_tear.enabled&dot.thrash_bear.stack<dot.thrash_bear.max_stacks
-actions.st+=/mangle
-actions.st+=/thrash_bear
-actions.st+=/moonfire,if=buff.galactic_guardian.up|(!talent.galactic_guardian.enabled&dot.moonfire.refreshable)
-actions.st+=/maul
-actions.st+=/moonfire,if=dot.moonfire.refreshable&talent.galactic_guardian.enabled&!equipped.lady_and_the_child
-actions.st+=/swipe_bear
 
 head=irontide_captains_hat,id=155888,bonus_id=4779/1512/4786/4775
 neck=heart_of_azeroth,id=158075,bonus_id=4932/4933/4936/1524,azerite_level=

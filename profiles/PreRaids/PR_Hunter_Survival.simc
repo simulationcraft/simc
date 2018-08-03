@@ -7,10 +7,10 @@ position=back
 talents=1101011
 
 # Default consumables
-potion=prolonged_power
-flask=seventh_demon
-food=azshari_salad
-augmentation=defiled
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -38,6 +38,7 @@ actions+=/blood_fury,if=cooldown.coordinated_assault.remains>30
 actions+=/ancestral_call,if=cooldown.coordinated_assault.remains>30
 actions+=/fireblood,if=cooldown.coordinated_assault.remains>30
 actions+=/lights_judgment
+actions+=/arcane_torrent,if=cooldown.kill_command.remains>gcd.max&focus<=30
 actions+=/potion,if=buff.coordinated_assault.up&(buff.berserking.up|buff.blood_fury.up|!race.troll&!race.orc)
 actions+=/variable,name=can_gcd,value=!talent.mongoose_bite.enabled|buff.mongoose_fury.down|(buff.mongoose_fury.remains-(((buff.mongoose_fury.remains*focus.regen+focus)%action.mongoose_bite.cost)*gcd.max)>gcd.max)
 actions+=/steel_trap
@@ -57,7 +58,6 @@ actions+=/serpent_sting,target_if=min:remains,if=refreshable&buff.mongoose_fury.
 actions+=/aspect_of_the_eagle,if=target.distance>=6
 actions+=/mongoose_bite_eagle,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60
 actions+=/mongoose_bite,target_if=min:dot.internal_bleeding.stack,if=buff.mongoose_fury.up|focus>60
-actions+=/butchery
 actions+=/raptor_strike_eagle,target_if=min:dot.internal_bleeding.stack
 actions+=/raptor_strike,target_if=min:dot.internal_bleeding.stack
 

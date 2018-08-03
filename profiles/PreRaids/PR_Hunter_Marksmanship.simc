@@ -7,10 +7,10 @@ position=ranged_back
 talents=2103012
 
 # Default consumables
-potion=prolonged_power
-flask=seventh_demon
-food=nightborne_delicacy_platter
-augmentation=defiled
+potion=battle_potion_of_agility
+flask=currents
+food=bountiful_captains_feast
+augmentation=battle_scarred
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -50,7 +50,6 @@ actions+=/arcane_shot,if=active_enemies<3&buff.precise_shots.up&cooldown.aimed_s
 actions+=/aimed_shot,if=buff.precise_shots.down&buff.double_tap.down&(active_enemies>2&buff.trick_shots.up|active_enemies<3&full_recharge_time<cast_time+gcd)
 actions+=/rapid_fire,if=active_enemies<3|buff.trick_shots.up
 actions+=/explosive_shot
-actions+=/barrage
 actions+=/piercing_shot
 actions+=/a_murder_of_crows
 actions+=/multishot,if=active_enemies>2&buff.trick_shots.down
