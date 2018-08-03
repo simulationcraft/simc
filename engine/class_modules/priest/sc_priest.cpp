@@ -459,7 +459,7 @@ void the_twins_painful_touch( special_effect_t& effect )
   assert( priest );
   do_trinket_init( priest, PRIEST_SHADOW, priest->active_items.the_twins_painful_touch, effect );
 
-  if ( priest->buffs.the_twins_painful_touch )
+  if ( priest->active_items.the_twins_painful_touch )
   {
     // Activate buff proc chance
     priest->buffs.the_twins_painful_touch->set_chance(
