@@ -6691,8 +6691,13 @@ void mage_t::apl_precombat()
   // Water Elemental
   if ( specialization() == MAGE_FROST )
     precombat -> add_action( "water_elemental" );
+  // Pet & variables
   if ( specialization() == MAGE_ARCANE )
+  {
     precombat -> add_action( "summon_arcane_familiar" ) ;
+    precombat -> add_action( "variable,name=conserve_mana,op=set,value=35,if=talent.overpowered.enabled" , "conserve_mana is the mana percentage we want to go down to during conserve. It needs to leave enough room to worst case scenario spam AB only during AP.") ;
+    precombat -> add_action( "variable,name=conserve_mana,op=set,value=45,if=!talent.overpowered.enabled" ) ;
+  }
   // Snapshot Stats
   precombat -> add_action( "snapshot_stats" );
 
@@ -6824,9 +6829,9 @@ void mage_t::apl_arcane()
   conserve -> add_talent( this, "Rune of Power", "if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(full_recharge_time<=execute_time|recharge_time<=cooldown.arcane_power.remains|target.time_to_die<=cooldown.arcane_power.remains)" );
   conserve -> add_action( this, "Arcane Missiles", "if=mana.pct<=95&buff.clearcasting.react,chain=1" );
   conserve -> add_action( this, "Arcane Blast", "if=equipped.mystic_kilt_of_the_rune_master&buff.arcane_charge.stack=0" );
-  conserve -> add_action( this, "Arcane Barrage", "if=(buff.arcane_charge.stack=buff.arcane_charge.max_stack)&(mana.pct<=35|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd))", "During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible and then swap to a 4x AB->Abarr conserve rotation. This is mana neutral for RoT, mana negative with arcane familiar. Only use arcane barrage with less than 4 Arcane charges if we risk going too low on mana for our next burn" );
+  conserve -> add_action( this, "Arcane Barrage", "if=((buff.arcane_charge.stack=buff.arcane_charge.max_stack)&(mana.pct<=variable.conserve_mana)|(talent.arcane_orb.enabled&cooldown.arcane_orb.remains<=gcd))|mana.pct<=(variable.conserve_mana-10)", "During conserve, we still just want to continue not dropping charges as long as possible.So keep 'burning' as long as possible (aka conserve_mana threshhold) and then swap to a 4x AB->Abarr conserve rotation. This is mana neutral for RoT, mana negative with arcane familiar. If we do not have 4 AC, we can dip slightly lower to get a 4th AC." );
   conserve -> add_talent( this, "Supernova", "if=mana.pct<=95", "Supernova is barely worth casting, which is why it is so far down, only just above AB. " );
-  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>=3&(mana.pct>=40|buff.arcane_charge.stack=3)", "Keep 'burning' in aoe situations until 40%. After that only cast AE with 3 Arcane charges, since it's almost equal mana cost to a 3 stack AB anyway. At that point AoE rotation will be AB x3 -> AE -> Abarr" );
+  conserve -> add_action( this, "Arcane Explosion", "if=active_enemies>=3&(mana.pct>=variable.conserve_mana|buff.arcane_charge.stack=3)", "Keep 'burning' in aoe situations until conserve_mana pct. After that only cast AE with 3 Arcane charges, since it's almost equal mana cost to a 3 stack AB anyway. At that point AoE rotation will be AB x3 -> AE -> Abarr" );
   conserve -> add_action( "arcane_torrent");
   conserve -> add_action( this, "Arcane Blast" );
   conserve -> add_action( this, "Arcane Barrage" );
