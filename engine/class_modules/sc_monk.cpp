@@ -2177,10 +2177,6 @@ public:
       {
         if ( affected_by.windwalker.spell_da1 )
         {
-          // cancel out Fists of Fury damage and use the tick version as a direct damage
-          if ( ab::data().id() == 117418 )
-            ab::base_dd_multiplier *= 1.0;
-          else
             ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 1 ).percent();
         }
         if ( affected_by.windwalker.spell_da2 )
@@ -2200,10 +2196,6 @@ public:
 
         if ( affected_by.windwalker.spell_ta1 )
         {
-          // treat Fists of Fury damage as a direct damage instead of a tick damage
-          if ( ab::data().id() == 117418 )
-            ab::base_dd_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 2 ).percent();
-          else
             ab::base_td_multiplier *= 1.0 + player->spec.windwalker_monk->effectN( 2 ).percent();
         }
         if ( affected_by.windwalker.spell_ta2 )
