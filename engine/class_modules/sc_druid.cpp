@@ -261,6 +261,7 @@ public:
   int    initial_moon_stage;
   int    lively_spirit_stacks; //to set how many spells a healer will cast during Innervate
   bool ahhhhh_the_great_outdoors;
+  bool catweave_bear;
   bool t21_2pc;
   bool t21_4pc;
 
@@ -708,6 +709,7 @@ public:
     initial_moon_stage( NEW_MOON ),
     lively_spirit_stacks(9),  //set a usually fitting default value
     ahhhhh_the_great_outdoors( false ),
+    catweave_bear( false ),
     t21_2pc(false),
     t21_4pc(false),
     active( active_actions_t() ),
@@ -7359,7 +7361,9 @@ void druid_t::apl_precombat()
   }
 
   // Forms
-  if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+  if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) ||
+       ( specialization() == DRUID_GUARDIAN && catweave_bear && talent.feral_affinity -> ok() ) ||
+       primary_role() == ROLE_ATTACK )
   {
     precombat -> add_action( this, "Cat Form" );
     precombat -> add_action( this, "Prowl" );
@@ -7766,35 +7770,66 @@ void druid_t::apl_balance()
 void druid_t::apl_guardian()
 {
   action_priority_list_t* default_list    = get_action_priority_list( "default" );
+  action_priority_list_t* cooldowns       = get_action_priority_list( "cooldowns" );
 
   std::vector<std::string> item_actions   = get_item_actions();
   std::vector<std::string> racial_actions = get_racial_actions();
 
-  default_list -> add_action( "auto_attack" );
-
   if ( sim -> allow_potions )
-    default_list -> add_action( "potion" );
+    cooldowns -> add_action( "potion" );
   // Racials don't currently work
 
   for (size_t i = 0; i < racial_actions.size(); i++)
-    default_list -> add_action( racial_actions[i] );
+    cooldowns -> add_action( racial_actions[i] );
+  cooldowns -> add_action( this, "Barkskin", "if=buff.bear_form.up" );
+  cooldowns -> add_talent( this, "Lunar Beam", "if=buff.bear_form.up" );
+  cooldowns -> add_talent( this, "Bristling Fur", "if=buff.bear_form.up" );
+  cooldowns -> add_action( "use_items" );
 
+  if ( catweave_bear && talent.feral_affinity -> ok() )
+  {
+    action_priority_list_t* bear = get_action_priority_list( "bear" );
+    action_priority_list_t* cat  = get_action_priority_list( "cat" );
 
-  default_list -> add_action( this, "Barkskin" );
-  default_list -> add_talent( this, "Lunar Beam" );
-  default_list -> add_talent( this, "Bristling Fur" );
-  default_list -> add_action( "use_items" );
-  default_list -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
-  default_list -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
-  default_list -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
-  default_list -> add_action( "incarnation" );
-  default_list -> add_action( "thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)" );
-  default_list -> add_action( "swipe,if=buff.incarnation.down&active_enemies>4" );
-  default_list -> add_action( this, "Mangle", "if=dot.thrash_bear.ticking" );
-  default_list -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
-  default_list -> add_action( "thrash" );
-  default_list -> add_action( this, "Maul" );
-  default_list -> add_action( "swipe" );
+    default_list -> add_action( this, "Rake", "if=buff.prowl.up&buff.cat_form.up" );
+    default_list -> add_action( "auto_attack" );
+    default_list -> add_action( "call_action_list,name=cooldowns" );
+    default_list -> add_action( "call_action_list,name=cat,if=talent.feral_affinity.enabled&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&rage<45&buff.incarnation.down&buff.galactic_guardian.down)|(buff.cat_form.up&energy>20)|(dot.rip.ticking&dot.rip.remains<3&target.health.pct<25))" );
+    default_list -> add_action( "call_action_list,name=bear" );
+
+    bear -> add_action( this, "Bear Form" );
+    bear -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
+    bear -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
+    bear -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
+    bear -> add_action( "incarnation" );
+    bear -> add_action( "thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)" );
+    bear -> add_action( "swipe,if=buff.incarnation.down&active_enemies>4" );
+    bear -> add_action( this, "Mangle", "if=dot.thrash_bear.ticking" );
+    bear -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
+    bear -> add_action( "thrash" );
+    bear -> add_action( this, "Maul" );
+    bear -> add_action( "swipe" );
+
+    cat -> add_action( this, "Cat Form" );
+    cat -> add_action( "rip,if=dot.rip.refreshable&combo_points=5" );
+    cat -> add_action( "ferocious_bite,if=combo_points=5" );
+    cat -> add_action( "rake,if=dot.rake.refreshable&combo_points<5" );
+    cat -> add_action( this, "Shred" );
+  } else {
+    default_list -> add_action( "auto_attack" );
+    default_list -> add_action( "call_action_list,name=cooldowns" );
+    default_list -> add_action( this, "Maul", "if=rage.deficit<10&active_enemies<4" );
+    default_list -> add_talent( this, "Pulverize", "target_if=dot.thrash_bear.stack=dot.thrash_bear.max_stacks" );
+    default_list -> add_action( this, "Moonfire", "target_if=dot.moonfire.refreshable&active_enemies<2" );
+    default_list -> add_action( "incarnation" );
+    default_list -> add_action( "thrash,if=(buff.incarnation.down&active_enemies>1)|(buff.incarnation.up&active_enemies>4)" );
+    default_list -> add_action( "swipe,if=buff.incarnation.down&active_enemies>4" );
+    default_list -> add_action( this, "Mangle", "if=dot.thrash_bear.ticking" );
+    default_list -> add_action( this, "Moonfire", "target_if=buff.galactic_guardian.up&active_enemies<2" );
+    default_list -> add_action( "thrash" );
+    default_list -> add_action( this, "Maul" );
+    default_list -> add_action( "swipe" );
+  }
 }
 
 // Restoration Combat Action Priority List ==================================
@@ -8707,6 +8742,7 @@ void druid_t::create_options()
   add_option( opt_int   ( "initial_moon_stage", initial_moon_stage ) );
   add_option( opt_int   ( "lively_spirit_stacks", lively_spirit_stacks));
   add_option( opt_bool  ( "outside", ahhhhh_the_great_outdoors ) );
+  add_option( opt_bool  ( "catweave_bear", catweave_bear ) );
 }
 
 // druid_t::create_profile ==================================================
