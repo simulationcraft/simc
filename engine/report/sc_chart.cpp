@@ -1165,7 +1165,7 @@ bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s,
   bc.set( "plotOptions.bar.dataLabels.enabled", true );
   bc.set( "plotOptions.bar.dataLabels.align", "left" );
   bc.set( "plotOptions.bar.dataLabels.verticalAlign", "middle" );
-  bc.set( "plotOptions.bar.dataLabels.style.fontSize", "14px" );
+  bc.set( "plotOptions.bar.dataLabels.style.fontSize", "12px" );
   bc.set( "plotOptions.bar.dataLabels.style.fontWeight", "none" );
   bc.set( "plotOptions.bar.dataLabels.style.textShadow", "none" );
 
