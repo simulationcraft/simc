@@ -8,10 +8,10 @@ position=front
 talents=1213121
 
 # Default consumables
-potion=steelskin_potion
-flask=currents
-food=bountiful_captains_feast
-augmentation=battle_scarred
+potion=unbending_potion
+flask=seventh_demon
+food=lavish_suramar_feast
+augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

@@ -8,9 +8,9 @@ talents=1222312
 
 # Default consumables
 potion=old_war
-flask=undertow
+flask=flask_of_the_countless_armies
 food=lavish_suramar_feast
-augmentation=battle_scarred
+augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,

@@ -4,13 +4,13 @@ level=120
 race=troll
 role=spell
 position=back
-talents=3032021
+talents=2032021
 
 # Default consumables
-potion=battle_potion_of_intellect
-flask=endless_fathoms
-food=bountiful_captains_feast
-augmentation=battle_scarred
+potion=deadly_grace
+flask=whispered_pact
+food=lemon_herb_filet
+augmentation=defiled
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
